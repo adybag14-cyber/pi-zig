@@ -17,6 +17,9 @@ const State = struct {
     file: ?std.Io.File,
     fd: isize,
     writable: bool,
+    // Existing descriptor owners retain their original typed-array accessor.
+    // Only explicit private byte-view owners opt in before frontend parity.
+    array_buffer_views: bool = false,
     bindings: c.JSValue,
     close_promise: c.JSValue,
     closing: bool = false,
@@ -33,6 +36,12 @@ const State = struct {
         self.file = null;
     }
 };
+fn viewBacking(self: *State, value: c.JSValue, offset: *usize, length: *usize, element: *usize) c.JSValue {
+    return if (self.array_buffer_views)
+        c.JS_PiGetArrayBufferViewBuffer(self.engine.context, value, offset, length, element)
+    else
+        c.JS_GetTypedArrayBuffer(self.engine.context, value, offset, length, element);
+}
 fn state(engine: *js.Engine, receiver: c.JSValue) !*State {
     const result = c.JS_GetOpaque2(engine.context, receiver, engine.native_env_node_file_class) orelse return js.capture(engine);
     return @ptrCast(@alignCast(result));
@@ -195,7 +204,7 @@ const Job = struct {
                 var offset: usize = undefined;
                 var length: usize = undefined;
                 var element: usize = undefined;
-                const backing = try scope.own(try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, self.target, &offset, &length, &element)));
+                const backing = try scope.own(try engine.checked(viewBacking(self.self, self.target, &offset, &length, &element)));
                 var total: usize = undefined;
                 const data = c.JS_GetArrayBuffer(engine.context, &total, backing);
                 if ((data == null and self.count != 0) or offset > total or length > total - offset or self.from > length or self.count > length - self.from) return error.NativeReadDestinationDetached;
@@ -215,7 +224,7 @@ const Job = struct {
                         var offset: usize = undefined;
                         var length: usize = undefined;
                         var element: usize = undefined;
-                        const backing = try scope.own(try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, view, &offset, &length, &element)));
+                        const backing = try scope.own(try engine.checked(viewBacking(self.self, view, &offset, &length, &element)));
                         var total: usize = undefined;
                         const data = c.JS_GetArrayBuffer(engine.context, &total, backing);
                         if (data == null or offset > total or length > total - offset or count > length) return error.NativeReadDestinationDetached;
@@ -287,7 +296,7 @@ fn invoke(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, meth
         var offset: usize = undefined;
         var length: usize = undefined;
         var element: usize = undefined;
-        const backing = try scope.own(try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, target, &offset, &length, &element)));
+        const backing = try scope.own(try engine.checked(viewBacking(self, target, &offset, &length, &element)));
 
         const from = try number(engine, h.arg(args, 1));
         const count = try number(engine, h.arg(args, 2));
@@ -320,7 +329,7 @@ fn invoke(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, meth
             var offset: usize = undefined;
             var length: usize = undefined;
             var element: usize = undefined;
-            _ = try scope.own(try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, view, &offset, &length, &element)));
+            _ = try scope.own(try engine.checked(viewBacking(self, view, &offset, &length, &element)));
             if (length > std.math.maxInt(c_uint)) return error.InvalidNativeFileVectorLength;
             buffer.* = uv.uv_buf_init(null, @intCast(length));
             total = try std.math.add(usize, total, length);
@@ -336,7 +345,7 @@ fn invoke(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, meth
                 var offset: usize = undefined;
                 var view_length: usize = undefined;
                 var element: usize = undefined;
-                const backing = try scope.own(try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, view, &offset, &view_length, &element)));
+                const backing = try scope.own(try engine.checked(viewBacking(self, view, &offset, &view_length, &element)));
                 var backing_length: usize = undefined;
                 const data = c.JS_GetArrayBuffer(engine.context, &backing_length, backing);
                 if (data == null or offset > backing_length or view_length > backing_length - offset or length > view_length) return error.InvalidNativeNodeContent;
@@ -395,14 +404,22 @@ fn fdValue(context: ?*c.JSContext, receiver: c.JSValue) callconv(.c) c.JSValue {
     return c.JS_NewInt64(engine.context, if (self.closed.load(.acquire)) -1 else self.fd);
 }
 pub fn create(scope: *h.Scope, file: std.Io.File, writable: bool, bindings: c.JSValue) !c.JSValue {
+    return createFile(scope, file, writable, bindings, false);
+}
+// Private opt-in for genuine normalized ArrayBufferView operations. No public
+// module or existing FileHandle owner selects this path until integration gates.
+pub fn createArrayBufferViewFile(scope: *h.Scope, file: std.Io.File, writable: bool, bindings: c.JSValue) !c.JSValue {
+    return createFile(scope, file, writable, bindings, true);
+}
+fn createFile(scope: *h.Scope, file: std.Io.File, writable: bool, bindings: c.JSValue, array_buffer_views: bool) !c.JSValue {
     const fd: isize = if (builtin.os.tag == .windows) Native._open_osfhandle(@intCast(@intFromPtr(file.handle)), 0x8000 | @as(c_int, if (writable) 2 else 0)) else file.handle;
     if (fd < 0) {
         file.close(scope.engine.native_io.?);
         return error.NativeFileDescriptorAdmissionFailed;
     }
-    return createWithDescriptor(scope, file, fd, writable, bindings);
+    return createWithDescriptor(scope, file, fd, writable, bindings, array_buffer_views);
 }
-fn createWithDescriptor(scope: *h.Scope, file: std.Io.File, fd: isize, writable: bool, bindings: c.JSValue) !c.JSValue {
+fn createWithDescriptor(scope: *h.Scope, file: std.Io.File, fd: isize, writable: bool, bindings: c.JSValue, array_buffer_views: bool) !c.JSValue {
     const engine = scope.engine;
     // This function consumes the native file on every outcome.
     var transferred = false;
@@ -420,7 +437,7 @@ fn createWithDescriptor(scope: *h.Scope, file: std.Io.File, fd: isize, writable:
     const value = try scope.own(try engine.checked(c.JS_NewObjectProtoClass(engine.context, prototype, engine.native_env_node_file_class)));
     const self = try engine.gpa.create(State);
     errdefer if (!transferred) engine.gpa.destroy(self);
-    self.* = .{ .engine = engine, .file = file, .fd = fd, .writable = writable, .bindings = c.JS_DupValue(engine.context, bindings), .close_promise = c.pi_js_undefined() };
+    self.* = .{ .engine = engine, .file = file, .fd = fd, .writable = writable, .array_buffer_views = array_buffer_views, .bindings = c.JS_DupValue(engine.context, bindings), .close_promise = c.pi_js_undefined() };
     _ = c.JS_SetOpaque(value, self);
     transferred = true;
     const atom = c.JS_NewAtom(engine.context, "fd");
@@ -445,5 +462,9 @@ fn createWithDescriptor(scope: *h.Scope, file: std.Io.File, fd: isize, writable:
 // Takes ownership of a descriptor created by the pinned libuv open primitive.
 pub fn createDescriptor(scope: *h.Scope, fd: uv.uv_file, writable: bool, bindings: c.JSValue) !c.JSValue {
     const native_file: std.Io.File = .{ .handle = if (builtin.os.tag == .windows) @ptrCast(uv.uv_get_osfhandle(fd).?) else fd, .flags = .{ .nonblocking = false } };
-    return createWithDescriptor(scope, native_file, fd, writable, bindings);
+    return createWithDescriptor(scope, native_file, fd, writable, bindings, false);
+}
+pub fn createArrayBufferViewDescriptor(scope: *h.Scope, fd: uv.uv_file, writable: bool, bindings: c.JSValue) !c.JSValue {
+    const native_file: std.Io.File = .{ .handle = if (builtin.os.tag == .windows) @ptrCast(uv.uv_get_osfhandle(fd).?) else fd, .flags = .{ .nonblocking = false } };
+    return createWithDescriptor(scope, native_file, fd, writable, bindings, true);
 }

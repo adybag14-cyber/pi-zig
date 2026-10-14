@@ -1,0 +1,70 @@
+{
+  "schema": "pi-quickjs-arraybufferview-embedding-v1",
+  "upstream_repository": "https://github.com/quickjs-ng/quickjs",
+  "upstream_tag": "v0.17.0",
+  "upstream_commit": "6d46d07d04041b40f4f49eaa7fdebe44c314c699",
+  "integration_base_head": "31e5c660ad404639ed09824bcae76685a40c70b1",
+  "base_frozen_source_manifest": "env-filehandle-group-debug-fh8-stream4-fs20-compile-first-e6220e1-20261014-source-before.json",
+  "api": "JS_PiGetArrayBufferViewBuffer",
+  "scope": "Additive owner-thread embedding accessor for normalized byte-view primitives; no public JS class, frontend or module installation",
+  "typed_array_path": "unchanged existing accessor for brand/OOB/backing/offset/element; new wrapper corrects tracking byte length using interpreter array.count << size_log2",
+  "dataview_brand": "JS_IsDataView and get_dataview",
+  "dataview_bounds": "unchanged interpreter dataview_is_oob predicate",
+  "dataview_tracking": "same live byte length calculation as interpreter byteLength getter",
+  "ownership": "borrowed input; owned js_dup backing reference on success",
+  "observable_js_property_reads": 0,
+  "observable_frontend_validation": "Must remain in complete Node frontend; this intrinsic does not replace byteLength/offset/buffer getter phases",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "base_sha256": "F4964A32020538D733A92E179B945C985708A09B2B77E510806A9CB1C446B9FB",
+      "candidate_sha256": "621D70B8E4A728392367D4E19764AD1E55BFF3E0C10DBD88225AFB516CF2BCE0",
+      "base_git_blob": "4328131d214d9e324768364d72847d36eb0a6d90"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "base_sha256": "37D58C41E561DABD3E936C65877339CFF7610E93BC151AA4278C72AD01349E60",
+      "candidate_sha256": "6B4DFF130FB26CF66DC6A8BFAB9B22EADBAC426849025213873DA4BFBB18D748",
+      "base_git_blob": "5bafff47ddc077627d7e163ff4adaa6cb203836b"
+    }
+  ],
+  "source_oracles_pending": false,
+  "native_gpa_gc_qualified": true,
+  "public_activation": false,
+  "full_filehandle_graph_qualified": false,
+  "original_typed_accessor_body_unchanged": true,
+  "source_observations": {
+    "receipt": "env-node-view-source-capture-24-e6220e1-20261014-first.json",
+    "source": 1902,
+    "candidate": 5483,
+    "bodies": 4,
+    "source_candidate_body_node_temp_drift": 0,
+    "span_cases": 15,
+    "kernel_cases": 4,
+    "public_cases": 7,
+    "public_explicit_scalar_byteLength_reads": 2,
+    "kernel_and_vector_getter_reads": 0,
+    "typed_tracking_resize_before_bytes": 6,
+    "typed_tracking_resize_after_bytes": 10
+  },
+  "original_typed_accessor_normalized_bytes_sha256": "B500372DE1A4347B4CF9D412D1AA07F47EB84085CDE704732CAED0136CAC89EC",
+  "native_qualification": {
+    "platform": "windows",
+    "mode": "Debug",
+    "working_source_files": 5491,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "intrinsic_source_cases": 15,
+    "full_host_allocation_sweep": true,
+    "real_gc": true,
+    "compile_receipt": "env-filehandle-group-debug-arraybufferview4-compile-first-e6220e1-20261014.json",
+    "runtime_receipt": "env-filehandle-group-debug-arraybufferview4-runtime-first-e6220e1-20261014.json",
+    "all_post_drift": 0,
+    "compile_runtime_source_drift": 0,
+    "kernel4_qualified": false,
+    "public7_qualified": false,
+    "release_safe_qualified": false,
+    "posix_native": false
+  }
+}

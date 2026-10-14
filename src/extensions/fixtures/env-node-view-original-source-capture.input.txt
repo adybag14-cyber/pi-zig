@@ -1,0 +1,35 @@
+// Actual reference only: never loaded by the Zig host or extension runtime.
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import crypto from 'node:crypto';
+import {types} from 'node:util';
+import {createRequire} from 'node:module';
+if(process.versions.node!=='24.14.0')throw Error('Pinned original Node version drift');
+const require=createRequire(import.meta.url);
+const {internalBinding}=require('internal/test/binding');
+if(typeof internalBinding!=='function'||typeof globalThis.gc!=='function')throw Error('Required actual reference binding/GC unavailable');
+const binding=internalBinding('fs'),use=binding.kUsePromises;
+const [root]=process.argv.slice(2);
+const digest=async file=>crypto.createHash('sha256').update(await fs.readFile(file)).digest('hex').toUpperCase();
+const descriptors=prototype=>Object.fromEntries(['buffer','byteOffset','byteLength'].map(key=>[key,Object.getOwnPropertyDescriptor(prototype,key).get]));
+const dataView=descriptors(DataView.prototype),typed=descriptors(Object.getPrototypeOf(Uint8Array.prototype));
+const typedName=Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Uint8Array.prototype),Symbol.toStringTag).get;
+const elementSizes={Int8Array:1,Uint8Array:1,Uint8ClampedArray:1,Int16Array:2,Uint16Array:2,Int32Array:4,Uint32Array:4,Float16Array:2,Float32Array:4,Float64Array:8,BigInt64Array:8,BigUint64Array:8};
+const spanOf=view=>{const isDataView=types.isDataView(view),getter=isDataView?dataView:typed;const offset=Reflect.apply(getter.byteOffset,view,[]),length=Reflect.apply(getter.byteLength,view,[]),buffer=Reflect.apply(getter.buffer,view,[]);return{offset,length,buffer,elementBytes:isDataView?1:elementSizes[Reflect.apply(typedName,view,[])]}};
+const records=[];
+for(const name of ['env-node-view-span','env-node-view-kernel','env-node-view-public-getters']){
+    const input=path.join(root,name+'-source-body-24-20261014.txt'),inputHash=await digest(input),body=await fs.readFile(input,'utf8');
+    const tree=await fs.mkdtemp(path.join(os.tmpdir(),'pi-view-source-')),filename=path.join(tree,'file');
+    await fs.writeFile(filename,new Uint8Array([0,1,2,3,4,5,6,7,8,9]));
+    const file=await fs.open(filename,'r+'),fd=file.fd;
+    const kernel={read:(view,offset,length,position)=>binding.read(fd,view,offset,length,position,use),write:(view,offset,length,position)=>binding.writeBuffer(fd,view,offset,length,position,use),readv:(views,position)=>binding.readBuffers(fd,views,position,use),writev:(views,position)=>binding.writeBuffers(fd,views,position,use)};
+    const packet=await new Function('spanOf','nativeCollect','kernel','file','return(async()=>{'+body+';return packet})()')(spanOf,globalThis.gc,kernel,file);
+    if(file.fd!==-1)await file.close();
+    const output=path.join(root,name+'-source-data-24-20261014.json');
+    await fs.writeFile(output,JSON.stringify(packet,null,2)+'\n');
+    if(await digest(input)!==inputHash)throw Error('Reference observer body drift');
+    records.push({name,input_sha256:inputHash,output_sha256:await digest(output),cases:Object.keys(packet).length});
+}
+await fs.writeFile(path.join(root,'env-node-view-source-capture-24-20261014-packets.json'),JSON.stringify({node:process.versions.node,platform:process.platform,records,native_qualified:false,public_frontend_qualified:false},null,2)+'\n');
+console.log(JSON.stringify({terminal:'passed',records}));

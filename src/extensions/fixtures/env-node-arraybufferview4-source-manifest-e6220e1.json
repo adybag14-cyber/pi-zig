@@ -1,0 +1,69 @@
+{
+  "schema": "native-arraybufferview4-source-v1",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "source_snapshot_tracked_files": 1902,
+  "node_version": "24.14.0",
+  "node_windows_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "node_source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "libuv_version": "1.51.0",
+  "libuv_provenance_sha256": "9AE11C0E2B27BE84AD914E7A937B83A9C5A5264A2A5330411DE7B933C6E7AFBC",
+  "compiler_manifest_sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+  "source_corpora": 3,
+  "span_fields": 15,
+  "kernel_fields": 4,
+  "normalized_frontend_observed_fields": 7,
+  "expected_tests": 4,
+  "required_tests": [
+    "native Env ArrayBufferView actual compiled intrinsic inventory",
+    "native Env ArrayBufferView intrinsic spans match actual Node24 brand shadowed getters resizable detach and retained backing GC",
+    "native Env ArrayBufferView intrinsic result roots release at every host allocation failure"
+  ],
+  "fixtures": [
+    {
+      "path": "src/extensions/fixtures/env-node-view-span-source-24.input.txt",
+      "sha256": "5B5322F37BD1DD376FA4F2D4FAE1AFC323A8BA093301B55B8C5AC381F7A6BCDE"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-view-span-source-24.json",
+      "sha256": "AAFE0A45B4DB0DEF908933798245310CA1AB1F4608C804B75DBC37F24519B9F5"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-view-kernel-source-24.input.txt",
+      "sha256": "B2F56B51C172B8729DF509D5A3C7C3F2E2C43F616001484037883CA911201AD3"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-view-kernel-source-24.json",
+      "sha256": "19A53AB1907B5073228852529AC8B5DB7E94C57E22E3A77156701456FB0DB379"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-view-public-getters-source-24.input.txt",
+      "sha256": "EF0B052F1AD99D7F18D75DF888A9CDD94F124FDDBAB3A80971FAFAEF722E2CC2"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-view-public-getters-source-24.json",
+      "sha256": "BDD7735D4243CA2AAC3EFFC1336DECF0316FBC2AE7A89E1CB840C19E4DBCE111"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-view-original-source-capture.input.txt",
+      "sha256": "5CC8DCA923269B40817225D958EBBFB8F719DF0300B731A6CE342CCC136DEB32"
+    }
+  ],
+  "native_inputs": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "621D70B8E4A728392367D4E19764AD1E55BFF3E0C10DBD88225AFB516CF2BCE0"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "6B4DFF130FB26CF66DC6A8BFAB9B22EADBAC426849025213873DA4BFBB18D748"
+    }
+  ],
+  "scope": "Private intrinsic spans only: all15 actual Node fields, real VM GC, complete host allocation failure sweep. Kernel4/public7 reference captures retained; full frontend, graph, Env and POSIX native remain unqualified.",
+  "lifecycle_module_imported": false,
+  "full_filehandle_graph_qualified": false,
+  "full_env_package_qualified": false,
+  "posix_native_qualified": false,
+  "public_guest_activation": false,
+  "existing_descriptor_defaults_switched": false,
+  "public_frontend_complete": false
+}

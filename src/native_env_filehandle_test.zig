@@ -215,3 +215,54 @@ test "native Env FileHandle metadata vectored workers pending close and view roo
     if (@import("builtin").os.tag != .windows) return error.MissingRequiredPlatformFileHandleDescriptorAllocationReference;
     try std.testing.checkAllAllocationFailures(std.testing.allocator, descriptorAllocation, .{});
 }
+
+fn retainedContents(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, method: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = js.Engine.fromContext(context.?);
+    const args = if (argc > 0) argv[0..@intCast(argc)] else &.{};
+    const contents = @import("extensions/native_env_node_fs_contents.zig");
+    const h = @import("extensions/native_env_remote_helpers.zig");
+    const value = (if (method == 0) contents.readRetained(engine, data[0], data[1], h.arg(args, 0)) else contents.writeRetained(engine, data[0], data[1], h.arg(args, 0), h.arg(args, 1))) catch |err| return @import("extensions/native_durable.zig").rejectedPromise(engine, err);
+    defer engine.freeValue(value);
+    return @import("extensions/native_durable.zig").resolvedPromise(engine, value) catch |err| @import("extensions/native_durable.zig").rejectedPromise(engine, err);
+}
+test "native Env FileHandle internal retained content engine preserves descriptor cursor abort cause and zero writes like original Node24" {
+    if (@import("builtin").os.tag != .windows) return error.MissingRequiredPlatformFileHandleRetainedContentsReference;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try tmp.dir.writeFile(std.testing.io, .{ .sub_path = "file", .data = "abcdef" });
+    const raw = try tmp.dir.openFile(std.testing.io, "file", .{ .mode = .read_write });
+    const engine = em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 }) catch |err| {
+        raw.close(std.testing.io);
+        return err;
+    };
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const bindings = scope.object() catch |err| {
+        raw.close(std.testing.io);
+        return err;
+    };
+    const file = try scope.own(try @import("extensions/native_env_node_file_io.zig").create(&scope, raw, true, bindings));
+    try @import("extensions/node_buffer.zig").install(engine);
+    var promises = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer promises.deinit(engine);
+    try scope.put(bindings, "promise_constructor", promises.constructor);
+    try scope.put(bindings, "promise_resolve", promises.resolve);
+    try scope.put(bindings, "promise_then", promises.then_function);
+    try scope.put(bindings, "fileHandleBuffer", try scope.global("Buffer"));
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "file", file);
+    var data = [_]c.JSValue{ bindings, file };
+    try scope.put(global, "readRetained", try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, retainedContents, "readRetained", 1, 0, data.len, &data))));
+    try scope.put(global, "writeRetained", try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, retainedContents, "writeRetained", 2, 1, data.len, &data))));
+    const source = @embedFile("extensions/fixtures/env-node-filehandle-retained-contents-source-24.json");
+    try scope.put(global, "fileRetainedContentsSource", try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, source.ptr, source.len, "actual-node24-filehandle-retained-contents.json"))));
+    const result = engine.evalModule(@embedFile("extensions/fixtures/env-node-filehandle-retained-contents-source-24.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(fileRetainedContentsSource))throw Error(JSON.stringify({actual:packet,expected:fileRetainedContentsSource}));export const proof=true;", "native-filehandle-retained-contents-source.mjs") catch |err| {
+        std.debug.print("Native FileHandle retained contents Source failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}

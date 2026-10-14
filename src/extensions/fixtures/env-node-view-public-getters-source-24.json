@@ -1,0 +1,90 @@
+{
+  "read": {
+    "count": 3,
+    "same": true,
+    "gets": [
+      "byteLength",
+      "byteLength"
+    ],
+    "bytes": [
+      0,
+      0,
+      0,
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "write": {
+    "count": 2,
+    "same": true,
+    "gets": [
+      "byteLength",
+      "byteLength"
+    ]
+  },
+  "readv": {
+    "count": 6,
+    "same": true,
+    "left": [
+      0,
+      0,
+      24,
+      25,
+      0,
+      0,
+      0,
+      0
+    ],
+    "right": [
+      0,
+      0,
+      3,
+      4,
+      5,
+      0,
+      0,
+      0
+    ],
+    "gets": [
+      [],
+      []
+    ]
+  },
+  "writev": {
+    "count": 5,
+    "same": true,
+    "gets": [
+      [],
+      []
+    ]
+  },
+  "pendingClose": {
+    "same": true,
+    "fdRetained": true
+  },
+  "pendingRead": {
+    "count": 4,
+    "same": true,
+    "fdClosed": true,
+    "bytes": [
+      0,
+      0,
+      24,
+      25,
+      3,
+      0
+    ],
+    "gets": []
+  },
+  "closed": {
+    "name": "Error",
+    "code": "EBADF",
+    "syscall": "read",
+    "gets": []
+  }
+}

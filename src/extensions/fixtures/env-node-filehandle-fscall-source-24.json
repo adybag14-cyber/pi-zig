@@ -1,0 +1,37 @@
+{
+  "assertion": {
+    "name": "Error",
+    "message": "handle must be an instance of FileHandle\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n",
+    "keys": [
+      "code"
+    ],
+    "code": "ERR_INTERNAL_ASSERTION"
+  },
+  "refThrow": {
+    "same": true,
+    "trace": [
+      "ref",
+      "unref"
+    ]
+  },
+  "unrefOverrides": {
+    "same": true,
+    "trace": [
+      "ref",
+      "buffer",
+      "returned",
+      "unref"
+    ]
+  },
+  "fdThrow": {
+    "same": true,
+    "trace": [
+      "fd"
+    ]
+  },
+  "awaitIntrinsics": {
+    "bytes": 0,
+    "constructors": 2,
+    "poison": 0
+  }
+}

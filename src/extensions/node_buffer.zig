@@ -104,7 +104,7 @@ pub fn fromBytes(engine: *engine_mod.Engine, bytes: []const u8) !c.JSValue {
     return fromBacking(engine, backing, 0, bytes.len);
 }
 
-fn fromBacking(engine: *engine_mod.Engine, backing: c.JSValue, offset: usize, size: usize) !c.JSValue {
+pub fn fromBacking(engine: *engine_mod.Engine, backing: c.JSValue, offset: usize, size: usize) !c.JSValue {
     const prototype = engine.buffer_prototype orelse return error.NativeBufferUnavailable;
     var args = [_]c.JSValue{ backing, c.JS_NewInt64(engine.context, @intCast(offset)), c.JS_NewInt64(engine.context, @intCast(size)) };
     defer engine.freeValue(args[1]);

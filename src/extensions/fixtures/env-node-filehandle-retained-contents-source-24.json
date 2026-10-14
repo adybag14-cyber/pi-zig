@@ -1,0 +1,28 @@
+{
+  "initial": {
+    "text": "abcdef",
+    "fdPreserved": true
+  },
+  "writeType": "undefined",
+  "afterWrite": {
+    "fdPreserved": true,
+    "size": 14
+  },
+  "afterCursor": "",
+  "readAbort": {
+    "name": "AbortError",
+    "code": "ABORT_ERR",
+    "message": "The operation was aborted",
+    "cause": true,
+    "fdPreserved": true
+  },
+  "writeAbort": {
+    "name": "AbortError",
+    "code": "ABORT_ERR",
+    "message": "The operation was aborted",
+    "cause": true,
+    "fdPreserved": true
+  },
+  "zeroWrite": "undefined",
+  "finalFdPreserved": true
+}

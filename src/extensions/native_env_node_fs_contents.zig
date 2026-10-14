@@ -25,7 +25,16 @@ fn abort(scope: *Scope, saved: c.JSValue) !?c.JSValue {
 fn wait(scope: *Scope, saved: c.JSValue, pending: c.JSValue, stage: Stage) !c.JSValue {
     return h.wait(advance, scope, saved, pending, stage);
 }
+fn bufferConstructor(scope: *Scope, saved: c.JSValue) !c.JSValue {
+    return if (scope.truthy(try scope.get(saved, "retained"))) scope.get(try scope.get(saved, "bindings"), "fileHandleBuffer") else scope.global("Buffer");
+}
 fn finish(scope: *Scope, saved: c.JSValue, value: c.JSValue, rejected: bool) !c.JSValue {
+    // A borrowed FileHandle survives both successful and rejected content
+    // operations. Its enclosing FileHandle fsCall owns the operation reference.
+    if (scope.truthy(try scope.get(saved, "retained"))) {
+        if (rejected) return h.throw(scope, value);
+        return value;
+    }
     try scope.put(saved, "result", value);
     try scope.put(saved, "rejected", c.pi_js_bool(scope.engine.context, @intFromBool(rejected)));
     return wait(scope, saved, try scope.invoke(try scope.get(saved, "file"), "close", &.{}), .closed);
@@ -73,7 +82,7 @@ fn step(scope: *Scope, saved: c.JSValue, value: c.JSValue, rejected: bool, stage
             try scope.put(saved, "size", integer(scope, size));
             try scope.put(saved, "total", integer(scope, 0));
             try scope.put(saved, "chunked", c.pi_js_bool(scope.engine.context, @intFromBool(length > 512 * 1024)));
-            try scope.put(saved, "buffer", try scope.invoke(try scope.global("Buffer"), "allocUnsafeSlow", &.{integer(scope, length)}));
+            try scope.put(saved, "buffer", try scope.invoke(try bufferConstructor(scope, saved), "allocUnsafeSlow", &.{integer(scope, length)}));
             try scope.put(saved, "chunks", try scope.array());
             try scope.put(saved, "decoded", try scope.text(""));
             return readNext(scope, saved);
@@ -101,7 +110,7 @@ fn step(scope: *Scope, saved: c.JSValue, value: c.JSValue, rejected: bool, stage
                 if (encoded) return finish(scope, saved, if (previous == 0) try scope.invoke(result, "toString", &.{try scope.get(saved, "encoding")}) else try scope.concat(try scope.get(saved, "decoded"), try @import("native_env_node_fs_decoder.zig").decode(scope, saved, result, true)), false);
                 if (size == 0 and previous != 0) {
                     _ = try scope.invoke(chunks, "push", &.{result});
-                    return finish(scope, saved, try scope.invoke(try scope.global("Buffer"), "concat", &.{ chunks, integer(scope, total) }), false);
+                    return finish(scope, saved, try scope.invoke(try bufferConstructor(scope, saved), "concat", &.{ chunks, integer(scope, total) }), false);
                 }
                 return finish(scope, saved, result, false);
             }
@@ -110,7 +119,7 @@ fn step(scope: *Scope, saved: c.JSValue, value: c.JSValue, rejected: bool, stage
                 try scope.put(saved, "decoded", try scope.concat(try scope.get(saved, "decoded"), try @import("native_env_node_fs_decoder.zig").decode(scope, saved, read_buffer, false)));
             } else if (size == 0) {
                 _ = try scope.invoke(chunks, "push", &.{read_buffer});
-                try scope.put(saved, "buffer", try scope.invoke(try scope.global("Buffer"), "allocUnsafeSlow", &.{integer(scope, 64 * 1024)}));
+                try scope.put(saved, "buffer", try scope.invoke(try bufferConstructor(scope, saved), "allocUnsafeSlow", &.{integer(scope, 64 * 1024)}));
             }
             return readNext(scope, saved);
         },
@@ -137,4 +146,34 @@ pub fn invoke(engine: *js.Engine, bindings: c.JSValue, args: []const c.JSValue, 
     }
     if (try abort(&scope, saved)) |reason| return h.throw(&scope, reason);
     return c.JS_DupValue(engine.context, try wait(&scope, saved, try scope.invoke(try scope.get(bindings, "fs"), "open", &.{ h.arg(args, 0), try scope.text(if (append) "a" else if (write) "w" else "r") }), .opened));
+}
+
+/// Internal content engine for an already owned descriptor. Options and buffer
+/// arguments have been normalized by the public frontend before admission.
+/// This does not install or emulate a partial public FileHandle class.
+pub fn readRetained(engine: *js.Engine, bindings: c.JSValue, file: c.JSValue, options: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const saved = try scope.object();
+    try scope.put(saved, "bindings", bindings);
+    try scope.put(saved, "retained", c.pi_js_bool(engine.context, 1));
+    try scope.put(saved, "file", file);
+    try scope.put(saved, "write", c.pi_js_bool(engine.context, 0));
+    try scope.put(saved, "signal", try h.optional(&scope, options, "signal"));
+    try scope.put(saved, "encoding", try h.optional(&scope, options, "encoding"));
+    if (try abort(&scope, saved)) |reason| return h.throw(&scope, reason);
+    return c.JS_DupValue(engine.context, try wait(&scope, saved, try scope.invoke(file, "stat", &.{}), .stat));
+}
+pub fn writeRetained(engine: *js.Engine, bindings: c.JSValue, file: c.JSValue, bytes: c.JSValue, signal: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const saved = try scope.object();
+    try scope.put(saved, "bindings", bindings);
+    try scope.put(saved, "retained", c.pi_js_bool(engine.context, 1));
+    try scope.put(saved, "file", file);
+    try scope.put(saved, "write", c.pi_js_bool(engine.context, 1));
+    try scope.put(saved, "signal", signal);
+    try scope.put(saved, "buffer", bytes);
+    if (try abort(&scope, saved)) |reason| return h.throw(&scope, reason);
+    return c.JS_DupValue(engine.context, try writeNext(&scope, saved));
 }

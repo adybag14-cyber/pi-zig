@@ -1,0 +1,112 @@
+{
+  "empty": {
+    "value": null,
+    "buffer": [
+      []
+    ],
+    "index": 0,
+    "length": 0
+  },
+  "object": {
+    "same": true,
+    "value": {
+      "owned": true
+    },
+    "buffer": [
+      null,
+      0,
+      false
+    ],
+    "index": 1,
+    "length": 3
+  },
+  "single": {
+    "same": true,
+    "value": [
+      1,
+      2,
+      3
+    ],
+    "buffer": [],
+    "index": 0,
+    "length": 3
+  },
+  "partial": {
+    "shared": true,
+    "original": [
+      9,
+      2,
+      3,
+      4
+    ],
+    "value": [
+      9,
+      2
+    ],
+    "buffer": [
+      [
+        3,
+        4
+      ]
+    ],
+    "index": 0,
+    "length": 4
+  },
+  "cross": {
+    "value": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "buffer": [
+      null,
+      [
+        5
+      ],
+      [
+        6
+      ]
+    ],
+    "index": 1,
+    "length": 6
+  },
+  "all": {
+    "value": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "buffer": [],
+    "index": 0,
+    "length": 4
+  },
+  "stringListLength": {
+    "value": "abcde",
+    "buffer": [],
+    "index": 0,
+    "length": 5
+  },
+  "surrogate": {
+    "value": "Ω\ud83e",
+    "buffer": [
+      null,
+      "\udd8ax"
+    ],
+    "index": 1,
+    "length": 4
+  },
+  "compaction": {
+    "value": [
+      1
+    ],
+    "buffer": [
+      [
+        2
+      ]
+    ],
+    "index": 0,
+    "length": 2
+  }
+}

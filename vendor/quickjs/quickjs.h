@@ -1145,6 +1145,13 @@ JS_EXTERN JSValue JS_GetTypedArrayBuffer(JSContext *ctx, JSValueConst obj,
                                          size_t *pbyte_offset,
                                          size_t *pbyte_length,
                                          size_t *pbytes_per_element);
+/* Pi embedding accessor for normalized ArrayBufferView I/O. Returns an owned
+   backing reference, accepts genuine DataViews, and invokes no JS properties.
+   This does not replace a Node frontend's observable argument validation. */
+JS_EXTERN JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,
+                                                size_t *pbyte_offset,
+                                                size_t *pbyte_length,
+                                                size_t *pbytes_per_element);
 JS_EXTERN JSValue JS_NewUint8Array(JSContext *ctx, uint8_t *buf, size_t len,
                                    JSReallocArrayBufferDataFunc *realloc_func,
                                    void *opaque, bool is_shared);

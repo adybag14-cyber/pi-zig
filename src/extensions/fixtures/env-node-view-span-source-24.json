@@ -1,0 +1,71 @@
+{
+  "fixed": {
+    "offset": 2,
+    "length": 5,
+    "elementBytes": 1,
+    "sameBacking": true
+  },
+  "shadowed": {
+    "offset": 2,
+    "length": 5,
+    "elementBytes": 1,
+    "sameBacking": true
+  },
+  "shadowedGets": [],
+  "typed": {
+    "offset": 2,
+    "length": 6,
+    "elementBytes": 2,
+    "sameBacking": true
+  },
+  "trackingBefore": {
+    "offset": 2,
+    "length": 6,
+    "elementBytes": 1,
+    "sameBacking": true
+  },
+  "typedTrackingBefore": {
+    "offset": 2,
+    "length": 6,
+    "elementBytes": 2,
+    "sameBacking": true
+  },
+  "trackingAfter": {
+    "offset": 2,
+    "length": 10,
+    "elementBytes": 1,
+    "sameBacking": true
+  },
+  "typedTrackingAfter": {
+    "offset": 2,
+    "length": 10,
+    "elementBytes": 2,
+    "sameBacking": true
+  },
+  "fixedAfterGrow": {
+    "offset": 2,
+    "length": 4,
+    "elementBytes": 1,
+    "sameBacking": true
+  },
+  "trackingOob": {
+    "error": "TypeError"
+  },
+  "fixedOob": {
+    "error": "TypeError"
+  },
+  "detached": {
+    "error": "TypeError"
+  },
+  "nonView": {
+    "error": "TypeError"
+  },
+  "proxy": {
+    "error": "TypeError"
+  },
+  "retainedAfterGc": [
+    3,
+    4,
+    5
+  ]
+}
