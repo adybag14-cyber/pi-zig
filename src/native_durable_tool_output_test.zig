@@ -2528,8 +2528,8 @@ test "native durable v2 generation real scheduler runs genuine GenerationTask mo
     engine.native_io = std.testing.io;
     const durable = @import("extensions/native_durable.zig");
     const tasks = @import("extensions/native_durable_tasks.zig");
-    try durable.install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try durable.install(engine);
     const storage = try durable.memoryObject(engine);
     defer engine.freeValue(storage);
     const session = try durable.sessionObject(engine, storage);
@@ -2647,8 +2647,8 @@ test "native durable v2 generation public Harness submits input and waits for an
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
-    try @import("extensions/native_durable.zig").install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/native_durable.zig").install(engine);
     const result = engine.evalModule(
         \\import{Harness,MemoryStorage,createRegistry,LiveDoc,UsageDoc}from'@earendil-works/pi-durable';const context={},reports=[];const model={id:'m',maxTokens:100,contextWindow:10000},usage={input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};const models={getModel:()=>model,streamSimple:()=>({async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>({role:'assistant',provider:'p',model:'m',content:[{type:'text',text:'answer'}],stopReason:'stop',usage})})};
         \\const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry(),models,settings:{compaction:{enabled:false}},onReport:error=>reports.push(String(error))},context);try{const root=await harness.root(context,{agent:{model:{provider:'p',modelId:'m'}}});const submission=await root.submit({type:'input',content:'hello'},context);const record=await submission.wait(context);if(record.status!=='done'||record.answer===undefined)throw Error(JSON.stringify(record));if((await submission.status(context)).status!=='done')throw Error('status');const again=await harness.submission(submission.id,context);if(again.id!==submission.id)throw Error('lookup');if((await again.abort(context))!=='settled')throw Error('terminal abort');if(reports.length)throw Error(JSON.stringify(reports));}finally{await harness.close(context)}
@@ -2690,8 +2690,8 @@ test "native durable v2 generation submission waiters cancel independently and p
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
-    try @import("extensions/native_durable.zig").install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/native_durable.zig").install(engine);
     const result = engine.evalModule(
         \\import{Harness,MemoryStorage,createRegistry}from'@earendil-works/pi-durable';let ready,resolve;const started=new Promise(r=>ready=r),answer=new Promise(r=>resolve=r),usage={input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};const models={getModel:()=>({id:'m',maxTokens:100,contextWindow:10000}),streamSimple:()=>({async*[Symbol.asyncIterator](){ready();yield{type:'start',partial:{content:[]}}},result:()=>answer})};const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry(),models,settings:{compaction:{enabled:false}}},{});try{const root=await harness.root({},{agent:{model:{provider:'p',modelId:'m'}}}),submission=await root.submit({type:'input',content:'hello'},{});await started;const controller=new AbortController(),reason={original:true};let caught;const first=submission.wait({abortSignal:controller.signal}).catch(error=>{caught=error}),second=submission.wait({});await Promise.resolve();await Promise.resolve();controller.abort(reason);await first;if(caught!==reason)throw Error('waiter cause identity');if((await submission.abort({}))!=='already_placed')throw Error('placed abort result');resolve({role:'assistant',provider:'p',model:'m',content:[{type:'text',text:'done'}],stopReason:'stop',usage});if((await second).status!=='done')throw Error('other waiter lost');if((await submission.wait({})).status!=='done')throw Error('settled wait');}finally{await harness.close({})}
     , "native-submission-waiter-cancel") catch |err| {
@@ -2705,8 +2705,8 @@ test "native durable v2 generation public tool round executes and continues to f
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
-    try @import("extensions/native_durable.zig").install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/native_durable.zig").install(engine);
     try @import("extensions/text_decoder.zig").install(engine);
     const result = engine.evalModule(
         \\import{Harness,MemoryStorage,createRegistry,defineExtension,defineTool,LiveDoc,UsageDoc}from'@earendil-works/pi-durable';let calls=0,executed=0;const usage={input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}},registry=createRegistry();registry.install(defineExtension({name:'native-test',tools:[defineTool({name:'echo',description:'echo',parameters:{type:'object'},execute:async(args,api,context)=>{executed++;api.output('progress');return{output:[{type:'text',text:'tool done'}]}}})]}));const models={getModel:()=>({id:'m',maxTokens:100,contextWindow:10000}),streamSimple:()=>{calls++;const first=calls===1;return{async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>({role:'assistant',provider:'p',model:'m',content:first?[{type:'toolCall',id:'c1',name:'echo',arguments:{}}]:[{type:'text',text:'final answer'}],stopReason:first?'toolUse':'stop',usage})}}};const reports=[],harness=await Harness.open(new MemoryStorage(),{registry,models,settings:{compaction:{enabled:false}},onReport:error=>reports.push(String(error))},{});try{const root=await harness.root({},{agent:{model:{provider:'p',modelId:'m'}}}),submission=await root.submit({type:'input',content:'run tool'},{});const record=await submission.wait({});if(record.status!=='done'||calls!==2||executed!==1)throw Error(JSON.stringify({record,calls,executed,reports}));const live=await harness.snapshot(LiveDoc,root.id,{}),ledger=await harness.snapshot(UsageDoc,root.id,{});if(Object.keys(live).length||ledger.models['p/m'].totalTokens!==6||reports.length)throw Error(JSON.stringify({live,ledger,reports}));}finally{await harness.close({})}
@@ -2721,8 +2721,8 @@ test "native durable v2 generation repeated idle submissions retry and deferred 
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
-    try @import("extensions/native_durable.zig").install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/native_durable.zig").install(engine);
     const result = engine.evalModule(
         \\import{Harness,MemoryStorage,createRegistry,UsageDoc}from'@earendil-works/pi-durable';const results=[];for(const scenario of['repeat','retry','deferred']){let calls=0,polls=0;const usage={input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}},final=()=>({role:'assistant',provider:'p',model:'m',content:[{type:'text',text:'answer'}],stopReason:'stop',usage}),models={getModel:()=>({id:'m',maxTokens:100,contextWindow:10000}),streamSimple:()=>{calls++;const message=scenario==='retry'&&calls===1?{...final(),content:[],stopReason:'error',errorMessage:'503 unavailable'}:scenario==='deferred'?{role:'assistant',content:[],stopReason:'deferred',deferred:{id:'h',pollAfterMs:0}}:final();return{async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>message}},fetchDeferred:async(model,handle,options)=>{polls++;if(handle.id!=='h'||!(options.signal instanceof AbortSignal))throw Error('deferred binding');return final()}};const reports=[],harness=await Harness.open(new MemoryStorage(),{registry:createRegistry(),models,settings:{compaction:{enabled:false},retry:{enabled:true,maxRetries:1,baseDelayMs:0}},onReport:error=>reports.push(String(error))},{});try{const root=await harness.root({},{agent:{model:{provider:'p',modelId:'m'}}});for(let index=0;index<(scenario==='repeat'?2:1);index++){const submission=await root.submit({type:'input',content:'hello'},{});if((await submission.wait({})).status!=='done')throw Error('not done');await root.waitForIdle({});await new Promise(resolve=>setTimeout(resolve,0));}const ledger=await harness.snapshot(UsageDoc,root.id,{});const expectedCalls=scenario==='deferred'?1:2;if(calls!==expectedCalls||polls!==(scenario==='deferred'?1:0)||ledger.models['p/m'].totalTokens!==(scenario==='deferred'?3:6)||reports.length)throw Error(JSON.stringify({scenario,calls,polls,ledger,reports}));results.push({scenario,calls,polls,tokens:ledger.models['p/m'].totalTokens});}finally{await harness.close({})}}globalThis.generationProgressScenarios=results;
     , "native-generation-repeated-retry-deferred") catch |err| {
@@ -2736,8 +2736,8 @@ test "native durable v2 generation public sequential parallel and unavailable to
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
-    try @import("extensions/native_durable.zig").install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/native_durable.zig").install(engine);
     try @import("extensions/text_decoder.zig").install(engine);
     const result = engine.evalModule(@embedFile("extensions/fixtures/durable-generation-round-policies-runtime.txt"), "native-generation-round-policies") catch |err| {
         std.debug.print("Generation round policies: {s}\n", .{engine.last_error orelse "missing"});
@@ -2750,8 +2750,8 @@ test "native durable v2 generation queued submission withdrawal and closing wait
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
-    try @import("extensions/native_durable.zig").install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/native_durable.zig").install(engine);
     const result = engine.evalModule(@embedFile("extensions/fixtures/durable-submission-lifecycle-runtime.txt"), "native-submission-lifecycle") catch |err| {
         std.debug.print("Submission lifecycle {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "missing" });
         return err;
@@ -2769,6 +2769,7 @@ fn exerciseGenerationOwnershipWithEngine(engine: *engine_mod.Engine) !void {
     engine.native_io = std.testing.io;
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
     try @import("extensions/native_durable.zig").install(engine);
     var captured = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
     defer captured.deinit(engine);
@@ -2810,7 +2811,6 @@ fn exerciseGenerationOwnershipWithEngine(engine: *engine_mod.Engine) !void {
         const result = try engine.awaitValue(pending);
         defer engine.freeValue(result);
     }
-    try @import("extensions/timers.zig").install(engine, std.testing.io);
     const stream_factory = try engine.eval(@embedFile("extensions/fixtures/durable-generation-stream-protocol-runtime.txt"), "allocation-generation-stream", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(stream_factory);
     const model = try vm.object(engine);
@@ -2930,8 +2930,8 @@ test "native durable v2 generation public blocking background and manual compact
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
-    try @import("extensions/native_durable.zig").install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/native_durable.zig").install(engine);
     const result = engine.evalModule(@embedFile("extensions/fixtures/durable-generation-compaction-runtime.txt"), "native-generation-real-compaction") catch |err| {
         std.debug.print("Generation compaction: {s}\n", .{engine.last_error orelse "missing"});
         return err;
@@ -3007,8 +3007,8 @@ test "native durable v2 generation new publication refills an enabled scheduler 
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 2000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
-    try @import("extensions/native_durable.zig").install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/native_durable.zig").install(engine);
     const prepared = try engine.evalModule(@embedFile("extensions/fixtures/durable-generation-empty-refill-setup.txt"), "native-empty-refill-setup");
     engine.freeValue(prepared);
     const global = c.JS_GetGlobalObject(engine.context);

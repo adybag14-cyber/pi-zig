@@ -25,9 +25,19 @@
     17332
   ],
   "other_profiles": "Pending",
-  "shared_consumer_regression": "Pending statistics/hooks/private run preparation/lifecycle at new helper source",
+  "shared_consumer_regression": "WindowsRS token4/statistics11/events12/prepare11/lifecycle11 plusgeneration35/compaction8 passed; latest generationgoldenrecaptured and testtimerorderfixed, scopes/heads explicitlyrecorded",
   "public_activation": false,
   "full_factory_qualified": false,
   "full_pi_qualified": false,
-  "observed_utc": "2026-10-14T13:40:33.6203052+00:00"
+  "observed_utc": "2026-10-14T14:40:33.6203052+01:00",
+  "hosted": {
+    "status": "all_six_terminal_success_and_downloaded_artifacts_independently_audited",
+    "head": "a84887c1329f451cf2fcbfbe2970401491ee675b",
+    "run_id": 38577957385,
+    "tests_each": 4,
+    "original_cases": 30,
+    "source_files": 5000,
+    "compiler_files": 19546,
+    "post_drift": 0
+  }
 }

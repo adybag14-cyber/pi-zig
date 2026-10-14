@@ -1,0 +1,32 @@
+{
+  "status": "Windows_ReleaseSafe_generation35_and_sharedcompaction8_passed",
+  "source_base": "82d853e640a4dcba65d56ea13a8b8d5aefe52509",
+  "source_delta": "Ten test-only timer setup order corrections, timer installed before durable.install auto-installs when native_io exists; production duplicate-install guard unchanged",
+  "generation_tests": 35,
+  "generation_skipped": 0,
+  "latest_preparation_reference": "Actual1692 GenerationTask.prepare three unchanged historicalscenarios recaptured; historicaleba fixturepreserved",
+  "shared_compaction_tests": 8,
+  "source_files": 5007,
+  "compiler_files": 19546,
+  "post_drift": 0,
+  "test_timeout_seconds": 120,
+  "runtime_outer_seconds": 300,
+  "original_host_test_options": "Original existing15/30s and explicit10s retained, no timeout increase",
+  "compaction_warm_compile_in_runtime": "59s warmrecompile due nativeidentity update, then648ms actual8tests, original300s outer unchanged",
+  "prior_caller_results": {
+    "post_drift": 0,
+    "statistics": 11,
+    "lifecycle": 11,
+    "full_source_files": 4999,
+    "source_head": "25709f6",
+    "events": 12,
+    "compiler_files": 19546,
+    "token_estimate": 4,
+    "prepare": 11
+  },
+  "negatives": "Original24/35, refreshed25/35, then timer-order35/35; all raw failed receipts retained outside and selectedtrace inthisdirectory",
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "observed_utc": "2026-10-14T14:57:13.2599820+00:00"
+}
