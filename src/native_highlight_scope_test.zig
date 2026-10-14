@@ -86,6 +86,7 @@ test "native highlight inline roots nested actual grammar scanner completes128 l
         try eval(engine,
             \\scopeCore.registerLanguage('inline-nested',()=>({contains:[{className:'section',begin:/\(/,end:/\)/,contains:['self']}]}));
             \\for(const depth of [32,64,128]){const code='('.repeat(depth)+'owned'+')'.repeat(depth);const result=scopeCore.highlight(code,{language:'inline-nested',ignoreIllegals:false});if(result.errorRaised||result.illegal||result.code!==code||(result.value.match(/hljs-section/g)||[]).length!==depth)throw Error('Nested grammar stack or token regression');}
+            \\for(const depth of [32,64,128]){let contains=[];for(let level=0;level<depth;level++)contains=[{className:'section',begin:/\(/,end:/\)/,contains}];const name='inline-distinct-'+depth;scopeCore.registerLanguage(name,()=>({contains}));const code='('.repeat(depth)+'owned'+')'.repeat(depth);const result=scopeCore.highlight(code,{language:name,ignoreIllegals:false});if(result.errorRaised||result.illegal||result.code!==code||(result.value.match(/hljs-section/g)||[]).length!==depth)throw Error('Distinct nested compiler Scope stack regression');scopeCore.unregisterLanguage(name);}
             \\scopeCore.unregisterLanguage('inline-nested');const recovered=scopeCore.highlight('{}',{language:'json'});if(recovered.errorRaised||recovered.illegal)throw Error('Post-nesting recovery failed');delete globalThis.scopeCore;
         );
         collect(engine);
