@@ -324,6 +324,7 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, native_binary_tests.root_module, quickjs, sqlite_lib_dir);
     native_binary_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-binary-operators", "Use actual guest runtime arithmetic and comparison semantics in native algorithms").dependOn(&b.addRunArtifact(native_binary_tests).step);
+    b.step("build-native-binary-operators", "Compile original VM arithmetic ABI regression independently of runtime deadlines").dependOn(&native_binary_tests.step);
     const image_strategy_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_image_resize_strategy_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native image JavaScript-valued strategy"} });
     linkQuickJs(b, image_strategy_tests.root_module, quickjs, sqlite_lib_dir);
     image_strategy_tests.root_module.addImport("catalog_tool", catalog_tool);

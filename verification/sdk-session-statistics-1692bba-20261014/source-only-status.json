@@ -1,6 +1,6 @@
 {
   "upstream": "1692bba6347a287ab0f3cb554a4430fafffc474b",
-  "scope": "Source-only ordinary getSessionStats/getContextUsage and shared projected estimator VM index/offset arithmetic; not compiled or activated",
+  "scope": "Ordinary getSessionStats/getContextUsage and shared projected estimator VM index/offset arithmetic. Component candidate28486b9 qualified on six profiles; full integration remains pending.",
   "original_source33": {
     "drift": 0,
     "source": 1955,
@@ -15,12 +15,12 @@
     "projected offset JS addition coercion",
     "fractional findIndex comparison preserving VM values"
   ],
-  "source36": "Original latest Linux/macOS doublecaptures each36factories PASSED, rawrowsequalbothOS, source1955/deps26280Linux26275Mac/Node4560/candidate4669post0",
+  "source36": "Corrected caller-owned log snapshot original36 from Linux/macOS doublecaptures run38561905295; source1955/deps26280Linux26275Mac/Node4560/candidate4681post0. Previous whole-disposal observations retained historically.",
   "golden_fixture": "Genuine latest36 raw rows projected with provenance metadata; original33 capture retained historically",
-  "native_status": "Exacthead hosted6matrix pending; first semantic compilation not yet qualified",
+  "native_status": "All six candidate28486b9 profiles passed run38564369919; independently audited full4945 source/19546compiler manifests with zero drift. See qualification.json and hosted-six-artifacts-audit-38564369919.json.",
   "format": "pinned Zig0.16 fmt passed",
   "public_activation": false,
   "full_factory_qualified": false,
   "full_pi_qualified": false,
-  "completed_utc": "2026-10-14T12:41:22.9245789+01:00"
+  "completed_utc": "2026-10-14T12:56:59.6452534+00:00"
 }
