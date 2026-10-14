@@ -1,0 +1,34 @@
+{
+  "status": "admitted",
+  "free_kib": 27006764,
+  "threshold_kib": 16777216,
+  "single_job_threshold_kib": 16777216,
+  "concurrent_job_threshold_kib": 16777216,
+  "policy_authority": "Root normal16GiB admission; maximum two coordinated native reservations",
+  "calibration": "Normal16GiB floor; no calibrated8GiB fallback",
+  "calibration_evidence": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-rs-install-compile-20261013.stderr.log",
+  "other_native": [
+    {
+      "ProcessId": 45676,
+      "ParentProcessId": 20692,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-ai-compat build-native-ai-env-keys build-native-crypto-random -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-14T19:55:16.1245070Z"
+    },
+    {
+      "ProcessId": 56956,
+      "ParentProcessId": 53580,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe test -fllvm -cflags -std=gnu11 -- C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\src\\durable\\process_probe.c .zig-cache\\o\\69a2b7614ad394b3eaf9644fc7a31e87\\pi-quickjs.lib .zig-cache\\o\\0e970f1df410ccf26aebcc9fc5844755\\pi-sqlite.lib -ODebug -I C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\vendor\\quickjs -I C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\vendor\\libfyaml -I C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\src\\extensions -I C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\vendor\\photon-native -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d --dep native_icu_api --dep native_photon_link --dep native_vm_identity --dep catalog_tool -Mroot=C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\src\\native_crypto_random_test.zig -ODebug -Mnative_icu_api=C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\src\\extensions\\icu\\native_icu_api.zig .zig-cache\\o\\11c184b90a9863e46f7ca56ddb2c7310\\pi-photon.lib -ODebug -I C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\vendor\\photon-native -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d -Mnative_photon_link=C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\src\\ai\\photon_session.zig -Mnative_vm_identity=.zig-cache\\c\\04a9726ccae8b33d2396107042a25a33\\options.zig -ODebug -Mcatalog_tool=C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\tools\\catalog.zig .zig-cache\\o\\523c92a84e1bb13015c4f7557c3193a8\\pi-icu78-i18n.lib .zig-cache\\o\\456b7436d0bfaa6046dfb8a7e6dda6e8\\pi-native-yaml.lib .zig-cache\\o\\0e970f1df410ccf26aebcc9fc5844755\\pi-sqlite.lib .zig-cache\\o\\77e46c008dc8267f37fb27529cffbc7d\\pi-icu78-common.lib -ladvapi32 .zig-cache\\o\\8d5897770884f2bcfb92f60487dfb9ed\\pi-icu78-stubdata.lib -lc++ -lc --test-filter \"native secure Crypto\" --cache-dir .zig-cache --global-cache-dir C:\\Users\\adyba\\AppData\\Local\\zig --name test --zig-lib-dir C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\ --listen=-",
+      "created_utc": "2026-10-14T19:55:27.3171900Z"
+    }
+  ],
+  "source": 5283,
+  "tools": 19546,
+  "native_launched": false,
+  "llvm": "true",
+  "jobs": 1,
+  "test_timeout_seconds": 120,
+  "outer_timeout_seconds": 300,
+  "observed_utc": "2026-10-14T19:55:27.7387704+00:00"
+}

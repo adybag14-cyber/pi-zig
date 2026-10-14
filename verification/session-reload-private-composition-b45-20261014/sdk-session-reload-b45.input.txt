@@ -1,0 +1,24 @@
+// Caller-owned receiver/dependencies. The reload method and provider reset are
+// the actual imported implementations; this is not a full factory test.
+const {reload,registerApiProvider,getApiProvider}=reloadAPI;
+const scenarios=['unbound','defaults-added','modifiers-added','explicit-tools','null-defaults','shutdown-handlers','shutdown-reject','flags-throw','invalidate-throw','settings-reject','queue-throw','resource-reject','bound-ui','bound-commands','bound-shutdown','bound-listener','before-reject','start-reject','extend-reject','pending-add-throw','build-throw','active-iterator-throw','before-getter-throw','flags-identity'];
+const rows=[];
+for(const scenario of scenarios){
+ const trace=[],failure=(at)=>new Error('owned '+at),flags={owned:'flag'},pending=new Set(),oldDefaults=['read'],newDefaults=['read','bash'];
+ let settingsReloaded=false,activeCalls=0,runner;
+ const oldRunner={getFlagValues(){trace.push('flags');if(scenario==='flags-throw')throw failure('flags');return flags;},hasHandlers(type){trace.push(['handlers',type]);return scenario==='shutdown-handlers'||scenario==='shutdown-reject';},async emit(event){trace.push(['old-emit',event]);await Promise.resolve();trace.push('old-emitted');if(scenario==='shutdown-reject')throw failure('shutdown');},invalidate(){trace.push('invalidate');if(scenario==='invalidate-throw')throw failure('invalidate');}};
+ const nextRunner={async emit(event){trace.push(['new-emit',event]);await Promise.resolve();if(scenario==='start-reject')throw failure('start');},reportUnhandledMcpServers(){trace.push('report');}};
+ const settings={getDefaultTools(){trace.push(['defaults',settingsReloaded]);return scenario==='null-defaults'?null:settingsReloaded?newDefaults:oldDefaults;},async reload(){trace.push('settings-reload');await Promise.resolve();if(scenario==='settings-reject')throw failure('settings');settingsReloaded=true;trace.push('settings-reloaded');}};
+ const session={_extensionRunner:oldRunner,_usesDefaultTools:scenario!=='explicit-tools',_defaultToolModifiers:scenario==='modifiers-added'?['-read','+ls']:[],settingsManager:settings,_pendingToolNames:pending,_resourceLoader:{async reload(){trace.push('resources');await Promise.resolve();if(scenario==='resource-reject')throw failure('resources');}},syncQueueModesFromSettings(){trace.push('queue');if(scenario==='queue-throw')throw failure('queue');},getActiveToolNames(){trace.push(['active',++activeCalls]);if(scenario==='active-iterator-throw')return{[Symbol.iterator](){throw failure('active-iterator');}};return scenario==='explicit-tools'?['custom']:['read'];},_buildRuntime(options){trace.push(['build',options,options.flagValues===flags]);if(scenario==='build-throw')throw failure('build');runner=nextRunner;this._extensionRunner=runner;},async extendResourcesFromExtensions(reason){trace.push(['extend',reason]);await Promise.resolve();if(scenario==='extend-reject')throw failure('extend');}};
+ if(scenario==='pending-add-throw')pending.add=()=>{throw failure('pending-add');};
+ const bound=scenario.startsWith('bound-')||['before-reject','start-reject','extend-reject','before-getter-throw'].includes(scenario);
+ const field=scenario==='bound-commands'?'_extensionCommandContextActions':scenario==='bound-shutdown'?'_extensionShutdownHandler':scenario==='bound-listener'?'_extensionErrorListener':'_extensionUIContext';
+ if(bound)session[field]={owned:field};
+ const options={async beforeSessionStart(){trace.push(['before',this===options]);await Promise.resolve();if(scenario==='before-reject')throw failure('before');}};
+ if(scenario==='before-getter-throw')Object.defineProperty(options,'beforeSessionStart',{get(){trace.push('before-getter');throw failure('before-getter');}});
+ registerApiProvider({api:'owned-reload-provider',stream(){throw Error('not called');},streamSimple(){throw Error('not called');}});
+ let error=null,result;
+ try{result=await reload.call(session,options);}catch(err){error={name:err.name,message:err.message};}
+ rows.push({scenario,trace,error,result:result===undefined?'undefined':result,pending:[...pending],reset:!getApiProvider('owned-reload-provider'),runnerReplaced:session._extensionRunner===nextRunner});
+}
+globalThis.reloadRows=rows;

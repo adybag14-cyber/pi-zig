@@ -11,11 +11,11 @@ extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 
 pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
     const method = try engine.checked(c.JS_NewCFunction(engine.context, start, "_emitAgentSettled", 0));
-    errdefer engine.freeValue(method);
+    defer engine.freeValue(method);
     const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
     defer engine.freeValue(parent);
     if (c.JS_SetPrototype(engine.context, method, parent) < 0) return js.capture(engine);
-    try sdk.put(engine, exports, "_emitAgentSettled", method);
+    if (c.JS_DefinePropertyValueStr(engine.context, exports, "_emitAgentSettled", c.JS_DupValue(engine.context, method), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
 fn start(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);

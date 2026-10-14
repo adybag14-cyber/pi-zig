@@ -30,7 +30,7 @@ pub fn installWithDependencies(engine: *em.Engine, prototype: c.JSValue, depende
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     }
     inline for (.{ "_beforeToolCall", "_afterToolCall", "_compactBeforeNextAssistantResponse", "_dispatchTurnEndBoundary" }, 0..) |name, index| {
-        const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, helperCallback, name, if (index == 3) 2 else 1, @intCast(index), roots.len, &roots));
+        const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, helperCallback, name, if (index == 2) 1 else 2, @intCast(index), roots.len, &roots));
         defer engine.freeValue(function);
         const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
         defer engine.freeValue(parent);

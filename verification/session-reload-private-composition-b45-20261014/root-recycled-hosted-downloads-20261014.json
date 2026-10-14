@@ -1,0 +1,40 @@
+{
+  "status": "duplicate_downloads_recycled_after_byte_exact_archive_and_github_verification",
+  "items": [
+    {
+      "github_checkpoint": "f3e3a95a4fed7fd8bdb2ce919eca4036281f5cdc",
+      "all_archive_bytes_verified": true,
+      "archive_sha256": "E2B951A04235C9CCD402F7EFB740CCE48308D4859C05969EBB70363EC320BC84",
+      "bytes": 32877245.0,
+      "files": 49,
+      "recycle_bin": true,
+      "archive": "C:\\Users\\adyba\\pi-zig-compaction-files-hosted-20261014\\verification\\context-uuid-summary-hosted-20261014\\hosted-context-restore-38610577795-20261014.zip",
+      "original_absence_verified": true,
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\hosted-context-restore-38610577795-20261014"
+    },
+    {
+      "github_checkpoint": "f3e3a95a4fed7fd8bdb2ce919eca4036281f5cdc",
+      "all_archive_bytes_verified": true,
+      "archive_sha256": "8E115F9CFA86FDE87673DA93F135BAFF565DAFDC8F8276D16355E3557E7720E3",
+      "bytes": 32904068.0,
+      "files": 49,
+      "recycle_bin": true,
+      "archive": "C:\\Users\\adyba\\pi-zig-compaction-files-hosted-20261014\\verification\\context-uuid-summary-hosted-20261014\\hosted-uuid-38613431173-20261014.zip",
+      "original_absence_verified": true,
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\hosted-uuid-38613431173-20261014"
+    },
+    {
+      "github_checkpoint": "f3e3a95a4fed7fd8bdb2ce919eca4036281f5cdc",
+      "all_archive_bytes_verified": true,
+      "archive_sha256": "96FD6160927A24EBF9A53B9A15019E1E747BB4F4C979B5A30532C61375F53E59",
+      "bytes": 32992954.0,
+      "files": 49,
+      "recycle_bin": true,
+      "archive": "C:\\Users\\adyba\\pi-zig-compaction-files-hosted-20261014\\verification\\context-uuid-summary-hosted-20261014\\hosted-summary-generation-38623865372-20261014.zip",
+      "original_absence_verified": true,
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\hosted-summary-generation-38623865372-20261014"
+    }
+  ],
+  "observed_utc": "2026-10-14T20:07:47.4557132+00:00",
+  "total_bytes": 98774267.0
+}

@@ -10,7 +10,11 @@ extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 
 pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
     const callback = try engine.checked(c.JS_NewCFunction(engine.context, send, "sendUserMessage", 2));
-    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "sendUserMessage", callback, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+    defer engine.freeValue(callback);
+    const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
+    defer engine.freeValue(parent);
+    if (c.JS_SetPrototype(engine.context, callback, parent) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "sendUserMessage", c.JS_DupValue(engine.context, callback), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
 
 fn send(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {

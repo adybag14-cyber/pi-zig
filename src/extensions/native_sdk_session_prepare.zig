@@ -13,12 +13,13 @@ const Stage = enum(c_int) { compacted, handlers, images };
 
 pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
     const method = try engine.checked(c.JS_NewCFunction(engine.context, start, "_prepareRun", 1));
-    errdefer engine.freeValue(method);
+    defer engine.freeValue(method);
     const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
     defer engine.freeValue(parent);
     if (c.JS_SetPrototype(engine.context, method, parent) < 0) return js.capture(engine);
-    try sdk.put(engine, prototype, "_prepareRun", method);
-    try sdk.put(engine, prototype, "_findLastAssistantMessage", try engine.checked(c.JS_NewCFunction(engine.context, lastAssistant, "_findLastAssistantMessage", 0)));
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "_prepareRun", c.JS_DupValue(engine.context, method), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+    const last = try engine.checked(c.JS_NewCFunction(engine.context, lastAssistant, "_findLastAssistantMessage", 0));
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "_findLastAssistantMessage", last, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     try sdk.put(engine, prototype, "getActiveToolNames", try engine.checked(c.JS_NewCFunction(engine.context, activeTools, "getActiveToolNames", 0)));
 }
 fn start(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {

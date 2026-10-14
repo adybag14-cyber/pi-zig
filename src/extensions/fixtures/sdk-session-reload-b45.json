@@ -1,0 +1,1155 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "inputSha256": "4465add379efa7b278c635a815ed321ee3c85da7fab42bee64c1a7fc355ffb0c",
+  "cases": 24,
+  "scope": "Actual AgentSession.prototype.reload and actual compat registry reset on caller-owned receiver; full factory and builtin transport execution are outside this corpus",
+  "rows": [
+    {
+      "scenario": "unbound",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ]
+      ],
+      "error": null,
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "defaults-added",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ]
+      ],
+      "error": null,
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "modifiers-added",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ]
+      ],
+      "error": null,
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "explicit-tools",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "custom"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ]
+      ],
+      "error": null,
+      "result": "undefined",
+      "pending": [
+        "custom"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "null-defaults",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ]
+      ],
+      "error": null,
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "shutdown-handlers",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        [
+          "old-emit",
+          {
+            "type": "session_shutdown",
+            "reason": "reload"
+          }
+        ],
+        "old-emitted",
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ]
+      ],
+      "error": null,
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "shutdown-reject",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        [
+          "old-emit",
+          {
+            "type": "session_shutdown",
+            "reason": "reload"
+          }
+        ],
+        "old-emitted"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned shutdown"
+      },
+      "result": "undefined",
+      "pending": [],
+      "reset": false,
+      "runnerReplaced": false
+    },
+    {
+      "scenario": "flags-throw",
+      "trace": [
+        "flags"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned flags"
+      },
+      "result": "undefined",
+      "pending": [],
+      "reset": false,
+      "runnerReplaced": false
+    },
+    {
+      "scenario": "invalidate-throw",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned invalidate"
+      },
+      "result": "undefined",
+      "pending": [],
+      "reset": false,
+      "runnerReplaced": false
+    },
+    {
+      "scenario": "settings-reject",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned settings"
+      },
+      "result": "undefined",
+      "pending": [],
+      "reset": false,
+      "runnerReplaced": false
+    },
+    {
+      "scenario": "queue-throw",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned queue"
+      },
+      "result": "undefined",
+      "pending": [],
+      "reset": false,
+      "runnerReplaced": false
+    },
+    {
+      "scenario": "resource-reject",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned resources"
+      },
+      "result": "undefined",
+      "pending": [],
+      "reset": true,
+      "runnerReplaced": false
+    },
+    {
+      "scenario": "bound-ui",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ],
+        [
+          "before",
+          true
+        ],
+        [
+          "new-emit",
+          {
+            "type": "session_start",
+            "reason": "reload"
+          }
+        ],
+        "report",
+        [
+          "extend",
+          "reload"
+        ]
+      ],
+      "error": null,
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "bound-commands",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ],
+        [
+          "before",
+          true
+        ],
+        [
+          "new-emit",
+          {
+            "type": "session_start",
+            "reason": "reload"
+          }
+        ],
+        "report",
+        [
+          "extend",
+          "reload"
+        ]
+      ],
+      "error": null,
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "bound-shutdown",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ],
+        [
+          "before",
+          true
+        ],
+        [
+          "new-emit",
+          {
+            "type": "session_start",
+            "reason": "reload"
+          }
+        ],
+        "report",
+        [
+          "extend",
+          "reload"
+        ]
+      ],
+      "error": null,
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "bound-listener",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ],
+        [
+          "before",
+          true
+        ],
+        [
+          "new-emit",
+          {
+            "type": "session_start",
+            "reason": "reload"
+          }
+        ],
+        "report",
+        [
+          "extend",
+          "reload"
+        ]
+      ],
+      "error": null,
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "before-reject",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ],
+        [
+          "before",
+          true
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned before"
+      },
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "start-reject",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ],
+        [
+          "before",
+          true
+        ],
+        [
+          "new-emit",
+          {
+            "type": "session_start",
+            "reason": "reload"
+          }
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned start"
+      },
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "extend-reject",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ],
+        [
+          "before",
+          true
+        ],
+        [
+          "new-emit",
+          {
+            "type": "session_start",
+            "reason": "reload"
+          }
+        ],
+        "report",
+        [
+          "extend",
+          "reload"
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned extend"
+      },
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "pending-add-throw",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned pending-add"
+      },
+      "result": "undefined",
+      "pending": [],
+      "reset": true,
+      "runnerReplaced": false
+    },
+    {
+      "scenario": "build-throw",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned build"
+      },
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": false
+    },
+    {
+      "scenario": "active-iterator-throw",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned active-iterator"
+      },
+      "result": "undefined",
+      "pending": [],
+      "reset": true,
+      "runnerReplaced": false
+    },
+    {
+      "scenario": "before-getter-throw",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ],
+        "before-getter"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned before-getter"
+      },
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    },
+    {
+      "scenario": "flags-identity",
+      "trace": [
+        "flags",
+        [
+          "handlers",
+          "session_shutdown"
+        ],
+        "invalidate",
+        [
+          "defaults",
+          false
+        ],
+        "settings-reload",
+        "settings-reloaded",
+        "queue",
+        "resources",
+        [
+          "defaults",
+          true
+        ],
+        [
+          "active",
+          1
+        ],
+        [
+          "active",
+          2
+        ],
+        [
+          "build",
+          {
+            "activeToolNames": [
+              "read",
+              "bash"
+            ],
+            "flagValues": {
+              "owned": "flag"
+            },
+            "includeAllExtensionTools": true
+          },
+          true
+        ]
+      ],
+      "error": null,
+      "result": "undefined",
+      "pending": [
+        "read"
+      ],
+      "reset": true,
+      "runnerReplaced": true
+    }
+  ]
+}

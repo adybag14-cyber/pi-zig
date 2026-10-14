@@ -1,0 +1,17 @@
+{
+  "scope": "Actual upstream AgentSession.prototype.reload on caller-owned receivers, with actual shared compat registry reset",
+  "source_head": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "cases": 24,
+  "source_input_sha256": "4465add379efa7b278c635a815ed321ee3c85da7fab42bee64c1a7fc355ffb0c",
+  "native_tests": 4,
+  "host_allocation_positions": 291,
+  "native_pair_prefix": "root-sdk-session-reload",
+  "normal_free_memory_floor_gib": 16,
+  "source_files": 5288,
+  "compiler_files": 19546,
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "remaining": "Full actual registry64 still fails on builtin render/execute definitions and missing reload in full assembly until real shared production compat is wired; strict Source166 remains negative",
+  "observed_utc": "2026-10-14T20:08:50.4419795+00:00"
+}

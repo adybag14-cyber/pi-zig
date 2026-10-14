@@ -1577,6 +1577,19 @@ pub fn build(b: *std.Build) void {
     summary_generation_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-summary-generation", "Compare original summaries and full prepared compaction including split turns and native ownership").dependOn(&b.addRunArtifact(summary_generation_tests).step);
     b.step("build-native-sdk-summary-generation", "Compile full summary generation and prepared compaction independently").dependOn(&summary_generation_tests.step);
+    const registry_composition_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_registry_composition_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native private registry"}, .use_llvm = use_llvm });
+    linkQuickJs(b, registry_composition_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(registry_composition_tests.root_module, sqlite_lib_dir, sqlite_library);
+    registry_composition_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-registry-composition", "Compile real private session constructor registry and hook composition").dependOn(&registry_composition_tests.step);
+    b.step("test-native-sdk-registry-composition", "Expose actual Original64 behavior and strict Source166 gaps without missing-method placeholders").dependOn(&b.addRunArtifact(registry_composition_tests).step);
+
+    const reload_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_reload_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary reload"}, .use_llvm = use_llvm });
+    linkQuickJs(b, reload_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(reload_tests.root_module, sqlite_lib_dir, sqlite_library);
+    reload_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-session-reload", "Compile ordinary reload with actual shared provider registry reset").dependOn(&reload_tests.step);
+    b.step("test-native-sdk-session-reload", "Compare actual upstream reload ordering and failure boundaries").dependOn(&b.addRunArtifact(reload_tests).step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);

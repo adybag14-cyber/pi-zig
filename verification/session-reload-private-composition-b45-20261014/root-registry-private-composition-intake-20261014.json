@@ -1,0 +1,30 @@
+[
+  {
+    "path": "src/extensions/native_sdk_session_registry.zig",
+    "sha256": "299A2C44F49F205280602ABF792BD251D4292A70BE3A7263F4C64DFEE23473D8"
+  },
+  {
+    "path": "src/native_sdk_registry_private_assembly.zig",
+    "sha256": "64E85095F48ED373FD0715EB1785636AD8782AAACABB90038D93691152C243AF"
+  },
+  {
+    "path": "src/native_sdk_registry_composition_test.zig",
+    "sha256": "C2CBBAD12E3E7887C30C2CD3821B3515759C90A2262165D9BF30C01143E5D655"
+  },
+  {
+    "path": "src/extensions/fixtures/sdk-session-registry-b45.input.txt",
+    "sha256": "0E1D71BCAD612F6B01B35D97F5585A261623A5726FB9BDC58C7D63D845B450FB"
+  },
+  {
+    "path": "src/extensions/fixtures/sdk-session-registry-b45.json",
+    "sha256": "EA4C5660B8734A47F83B390F3C6E4383D28A88696DCA582E921B4378ADFE66EB"
+  },
+  {
+    "path": "src/extensions/fixtures/sdk-registry-private-factory.input.txt",
+    "sha256": "0FB2A5A76A9BA552651F3EC6B84336E7BC6D4C08C3605DDE2F3DB70B342D37FA"
+  },
+  {
+    "path": "src/extensions/fixtures/sdk-session-prototype-original-e622.json",
+    "sha256": "9F1675519B1BF45EB4B7C10DE6B0FDF6BD1163DB05AE8F9F4E2B8091CA4D922D"
+  }
+]

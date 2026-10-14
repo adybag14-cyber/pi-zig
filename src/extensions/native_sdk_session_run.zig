@@ -11,11 +11,11 @@ const Stage = enum(c_int) { prepared, prompted, post, boundary, continued, final
 
 pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
     const method = try engine.checked(c.JS_NewCFunction(engine.context, start, "_startRun", 2));
-    errdefer engine.freeValue(method);
+    defer engine.freeValue(method);
     const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
     defer engine.freeValue(parent);
     if (c.JS_SetPrototype(engine.context, method, parent) < 0) return js.capture(engine);
-    try sdk.put(engine, exports, "_startRun", method);
+    if (c.JS_DefinePropertyValueStr(engine.context, exports, "_startRun", c.JS_DupValue(engine.context, method), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
 fn start(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);

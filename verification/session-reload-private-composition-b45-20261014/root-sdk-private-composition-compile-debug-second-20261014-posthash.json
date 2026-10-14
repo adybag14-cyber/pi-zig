@@ -1,0 +1,11 @@
+{
+  "source": 5283,
+  "source_after": 5283,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "admitted_free_kib": 27537424,
+  "threshold_kib": 16777216,
+  "admission_policy": "normal16GiB with coordinated maximum two native reservations",
+  "completed_utc": "2026-10-14T19:53:49.6558858+00:00"
+}

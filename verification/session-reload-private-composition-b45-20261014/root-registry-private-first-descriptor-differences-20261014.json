@@ -1,0 +1,257 @@
+{
+  "missing": [
+    "_executeNestedToolCall",
+    "_exceedsCompactionThreshold",
+    "_refreshFinalizedContext",
+    "_applyBoundaryDrafts",
+    "_createBoundaryPreviewManager",
+    "_getPendingBoundaryMessages",
+    "_buildBoundaryContext",
+    "_commitBoundaryDrafts",
+    "_reportInvalidBoundaryContinuation",
+    "_emitSessionCompactFailed",
+    "setActiveToolsByName",
+    "sendCustomMessage",
+    "_appendCustomMessage",
+    "_flushPendingCustomMessages",
+    "_runDefaultCompaction",
+    "_clearManualCompactionState",
+    "compact",
+    "_checkCompaction",
+    "_runAutoCompaction",
+    "bindExtensions",
+    "extendResourcesFromExtensions",
+    "buildExtensionResourcePaths",
+    "getExtensionSourceLabel",
+    "reload",
+    "executeBash",
+    "recordBashResult",
+    "navigateTree",
+    "exportToHtml",
+    "exportToJsonl",
+    "summarizeForBugReport"
+  ],
+  "scope": "Diagnostic failed ordinary class composition; no factory/application qualification",
+  "descriptor_differences": [
+    {
+      "key": "_beforeToolCall",
+      "expected": {
+        "key": "_beforeToolCall",
+        "kind": "data",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_beforeToolCall",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false
+        }
+      },
+      "actual": {
+        "key": "_beforeToolCall",
+        "kind": "data",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_beforeToolCall",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "key": "_afterToolCall",
+      "expected": {
+        "key": "_afterToolCall",
+        "kind": "data",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_afterToolCall",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false
+        }
+      },
+      "actual": {
+        "key": "_afterToolCall",
+        "kind": "data",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_afterToolCall",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "key": "_emitAgentSettled",
+      "expected": {
+        "key": "_emitAgentSettled",
+        "kind": "data",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_emitAgentSettled",
+          "length": 0,
+          "async": true,
+          "ownPrototype": false
+        }
+      },
+      "actual": {
+        "key": "_emitAgentSettled",
+        "kind": "data",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_emitAgentSettled",
+          "length": 0,
+          "async": true,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "key": "_findLastAssistantMessage",
+      "expected": {
+        "key": "_findLastAssistantMessage",
+        "kind": "data",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_findLastAssistantMessage",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false
+        }
+      },
+      "actual": {
+        "key": "_findLastAssistantMessage",
+        "kind": "data",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_findLastAssistantMessage",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "key": "_startRun",
+      "expected": {
+        "key": "_startRun",
+        "kind": "data",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_startRun",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false
+        }
+      },
+      "actual": {
+        "key": "_startRun",
+        "kind": "data",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_startRun",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "key": "_prepareRun",
+      "expected": {
+        "key": "_prepareRun",
+        "kind": "data",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_prepareRun",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false
+        }
+      },
+      "actual": {
+        "key": "_prepareRun",
+        "kind": "data",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "_prepareRun",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "key": "sendUserMessage",
+      "expected": {
+        "key": "sendUserMessage",
+        "kind": "data",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "sendUserMessage",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false
+        }
+      },
+      "actual": {
+        "key": "sendUserMessage",
+        "kind": "data",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "valueType": "function",
+        "function": {
+          "name": "sendUserMessage",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false
+        }
+      }
+    }
+  ],
+  "expected_count": 166,
+  "observed_utc": "2026-10-14T19:59:35.1740730+00:00",
+  "actual_count": 136
+}
