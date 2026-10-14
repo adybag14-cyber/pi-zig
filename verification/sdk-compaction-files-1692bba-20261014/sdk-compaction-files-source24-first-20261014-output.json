@@ -1,0 +1,361 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "c7ae738b303ddf4f0b8cb20e74eb7d53bcd3bb6d8d10c32abf69a1cd91f06b72",
+  "scope": "Actual unchanged original compaction/utils.ts exports; caller-owned values and temporary restored standard method overrides; no Source bodies replaced",
+  "cases": 24,
+  "rows": [
+    {
+      "name": "ordinary-function-metadata",
+      "value": [
+        {
+          "key": "createFileOps",
+          "name": "createFileOps",
+          "length": 0,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        },
+        {
+          "key": "extractFileOpsFromMessage",
+          "name": "extractFileOpsFromMessage",
+          "length": 2,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        },
+        {
+          "key": "computeFileLists",
+          "name": "computeFileLists",
+          "length": 1,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        },
+        {
+          "key": "formatFileOperations",
+          "name": "formatFileOperations",
+          "length": 2,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        }
+      ]
+    },
+    {
+      "name": "create-fields-and-fresh-sets",
+      "value": {
+        "keys": [
+          "read",
+          "written",
+          "edited"
+        ],
+        "sets": [
+          true,
+          true,
+          true
+        ],
+        "fresh": true,
+        "snapshot": {
+          "read": [],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "assistant-calls-and-deduplication",
+      "value": {
+        "ops": {
+          "read": [
+            "a"
+          ],
+          "written": [
+            "b"
+          ],
+          "edited": [
+            "c"
+          ]
+        },
+        "lists": {
+          "readFiles": [
+            "a"
+          ],
+          "modifiedFiles": [
+            "b",
+            "c"
+          ]
+        }
+      }
+    },
+    {
+      "name": "falsy-nonstring-paths",
+      "value": {
+        "read": [],
+        "written": [],
+        "edited": []
+      }
+    },
+    {
+      "name": "nested-tool-results",
+      "value": {
+        "read": [
+          "a"
+        ],
+        "written": [
+          "b"
+        ],
+        "edited": []
+      }
+    },
+    {
+      "name": "nested-nullish-and-unknown-roles",
+      "value": {
+        "read": [],
+        "written": [],
+        "edited": []
+      }
+    },
+    {
+      "name": "nested-custom-iterator",
+      "value": {
+        "log": [
+          "start",
+          "end"
+        ],
+        "ops": {
+          "read": [],
+          "written": [],
+          "edited": [
+            "a"
+          ]
+        }
+      }
+    },
+    {
+      "name": "fresh-role-getter",
+      "value": {
+        "reads": 2,
+        "ops": {
+          "read": [
+            "a"
+          ],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "path-read-twice-live-value",
+      "value": {
+        "log": [
+          "name",
+          "arguments",
+          "path",
+          "path"
+        ],
+        "ops": {
+          "read": [
+            7
+          ],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "content-read-twice",
+      "value": {
+        "reads": 2,
+        "ops": {
+          "read": [
+            "a"
+          ],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "block-brand-and-property-order",
+      "value": {
+        "log": [
+          "has:type",
+          "get:type",
+          "has:arguments",
+          "has:name",
+          "get:name",
+          "get:arguments"
+        ],
+        "ops": {
+          "read": [
+            "a"
+          ],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "nested-invalid-iterable-typeerror",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "nested-abrupt-iterator-close",
+      "value": {
+        "same": true,
+        "log": [
+          "closed"
+        ]
+      }
+    },
+    {
+      "name": "lists-merge-sort-and-read-only",
+      "value": {
+        "readFiles": [
+          "a",
+          "z"
+        ],
+        "modifiedFiles": [
+          "B",
+          "b",
+          "c",
+          "d"
+        ]
+      }
+    },
+    {
+      "name": "lists-input-access-order",
+      "value": {
+        "result": {
+          "readFiles": [
+            "a"
+          ],
+          "modifiedFiles": [
+            "b",
+            "c"
+          ]
+        },
+        "log": [
+          "edited",
+          "written",
+          "read"
+        ]
+      }
+    },
+    {
+      "name": "lists-mutable-has",
+      "value": {
+        "result": {
+          "readFiles": [
+            "b"
+          ],
+          "modifiedFiles": []
+        },
+        "log": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    {
+      "name": "lists-constructor-before-spreads",
+      "value": {
+        "result": {
+          "readFiles": [
+            "a"
+          ],
+          "modifiedFiles": [
+            "b",
+            "c"
+          ]
+        },
+        "log": [
+          "Set",
+          "edited",
+          "written",
+          "construct:b,c"
+        ]
+      }
+    },
+    {
+      "name": "format-empty",
+      "value": ""
+    },
+    {
+      "name": "format-both-and-order",
+      "value": "\n\n<read-files>\nb\na\n</read-files>\n\n<modified-files>\nc\nd\n</modified-files>"
+    },
+    {
+      "name": "format-length-coercion",
+      "value": {
+        "result": "\n\n<read-files>\nfile\n</read-files>",
+        "log": [
+          "length",
+          "number",
+          "join:\n"
+        ]
+      }
+    },
+    {
+      "name": "format-join-and-template-conversion",
+      "value": {
+        "result": "\n\n<read-files>\nfile\n</read-files>",
+        "log": [
+          "join-get",
+          [
+            "join-call",
+            true,
+            "\n"
+          ],
+          "string"
+        ]
+      }
+    },
+    {
+      "name": "format-symbol-return-throws",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "format-push-resolved-before-join",
+      "value": {
+        "result": "\n\n<read-files>\nfile\n</read-files>",
+        "log": [
+          "push-get",
+          "join",
+          "push-call"
+        ]
+      }
+    },
+    {
+      "name": "constructors-return-original-objects",
+      "value": {
+        "ops": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "lists": {
+          "readFiles": [],
+          "modifiedFiles": []
+        },
+        "formattedInstance": true
+      }
+    }
+  ]
+}
