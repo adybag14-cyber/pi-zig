@@ -1461,6 +1461,11 @@ pub fn build(b: *std.Build) void {
     highlight_inherit_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-highlight-inherit", "Compile actual Original inheritance comparator without execution").dependOn(&highlight_inherit_tests.step);
     b.step("test-native-highlight-inherit", "Compare actual Original24 inherited keys hidden shadows live mutations proxy order errors callbacks and GC").dependOn(&b.addRunArtifact(highlight_inherit_tests).step);
+    const read_prompt_b45_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_read_prompt_b45_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "b45 read range", "quoted empty command", "one empty argument", "prompt token separators" }, .use_llvm = use_llvm });
+    linkQuickJs(b, read_prompt_b45_tests.root_module, quickjs, sqlite_lib_dir);
+    read_prompt_b45_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-read-prompt-b45", "Compile private genuine b45 read-range and native prompt comparison without execution").dependOn(&read_prompt_b45_tests.step);
+    b.step("test-native-read-prompt-b45", "Compare actual Original54 numeric ranges live callbacks quoted empties Unicode prompts GC and allocation cleanup").dependOn(&b.addRunArtifact(read_prompt_b45_tests).step);
     const source_paths_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_source_paths_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Source path cwd"}, .use_llvm = use_llvm });
     linkQuickJs(b, source_paths_tests.root_module, quickjs, sqlite_lib_dir);
     source_paths_tests.root_module.addImport("catalog_tool", catalog_tool);

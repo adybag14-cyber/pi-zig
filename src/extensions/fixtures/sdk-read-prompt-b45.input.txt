@@ -1,0 +1,43 @@
+const rangeCases = [
+  [undefined, undefined], [null, null], [undefined, 3], [null, '3'], [2, undefined], [2, null],
+  [2, 3], ['2', '3'], [' 2 ', ' 3 '], ['', 3], [' ', 3], ['no', 3],
+  [NaN, 3], [Infinity, 3], [-Infinity, 3], [2, NaN], [2, Infinity], [true, 3],
+  [2, false], [2n, 3], [Symbol('offset'), 3], [{ valueOf(){ throw Error('must not coerce'); } }, 3],
+  [0, 1], [-0, 1], [1, 0], [-2, 3], [1.5, 2.25], ['0x10', '0b10'],
+  ['1e2', '2e1'], [Number.MAX_VALUE, Number.MAX_VALUE],
+];
+const rows = rangeCases.map(([offset, limit], index) => ({ kind: 'range', index, value: readPromptAPI.formatReadLineRange(offset, limit) }));
+const promptCases = [
+  '', '""', "''", '"" next', 'one "" three', '"" \'\'', 'a""b \'\'c',
+  '"unterminated', '""""', 'a\u00a0""\u2028b\ufeffc', "'a\u202f b' c", 'a\u0085b\u180ec',
+];
+for (const [index, input] of promptCases.entries()) {
+  const args = readPromptAPI.parseCommandArgs(input);
+  rows.push({ kind: 'prompt', index, input, args, substituted: readPromptAPI.substituteArgs('$1|$2|$3|${1:-fallback}|${@:-all}|${ARGUMENTS:-all}|${@:2:2}', args) });
+}
+function live(index, action) {
+  const log = [], sentinel = { tag: 'read-range-sentinel' };
+  let value, failure;
+  try { value = action(log, sentinel); }
+  catch (error) { failure = error === sentinel ? { same: true } : { name: error.name, message: error.message }; }
+  rows.push({ kind: 'live', index, ...(failure ? { failure } : { value }), log: [...log] });
+}
+function patch(target, key, descriptor, action) {
+  const old = Object.getOwnPropertyDescriptor(target, key);
+  Object.defineProperty(target, key, descriptor);
+  try { return action(); } finally { Object.defineProperty(target, key, old); }
+}
+live(0, log => patch(String.prototype, 'trim', { configurable: true, value(){ log.push(['trim', String(this)]); return 'nonempty'; } }, () => readPromptAPI.formatReadLineRange('2', '3')));
+live(1, (log, sentinel) => patch(String.prototype, 'trim', { configurable: true, value(){ log.push('trim'); throw sentinel; } }, () => readPromptAPI.formatReadLineRange('2', 3)));
+live(2, log => { const number = Number; return patch(globalThis, 'Number', { configurable: true, get(){ log.push('Number'); return number; } }, () => readPromptAPI.formatReadLineRange('2', '3')); });
+live(3, log => patch(Number, 'isFinite', { configurable: true, get(){ log.push('get isFinite'); return function(value){ log.push(['isFinite', value, this === Number]); return true; }; } }, () => readPromptAPI.formatReadLineRange(2, 3)));
+live(4, log => patch(globalThis, 'Number', { configurable: true, get(){ log.push('Number'); throw Error('unexpected Number access'); } }, () => readPromptAPI.formatReadLineRange({}, 3)));
+live(5, (log, sentinel) => patch(Number, 'isFinite', { configurable: true, value(value){ log.push(value); if(value === 3) throw sentinel; return true; } }, () => readPromptAPI.formatReadLineRange(2, 3)));
+live(6, log => patch(String.prototype, 'trim', { configurable: true, value(){ log.push('trim'); return ''; } }, () => readPromptAPI.formatReadLineRange('2', 3)));
+live(7, log => { const original = Number; function replacement(value){ log.push(['convert', value]); return 7; } replacement.isFinite = function(value){ log.push(['finite', value, this === replacement]); return true; }; return patch(globalThis, 'Number', { configurable: true, value: replacement }, () => readPromptAPI.formatReadLineRange('2', '3')); });
+const templates = [{ name: 'p', content: '$1|$2|${1:-fallback}|${@:-all}|${@:2}' }];
+for (const [index, input] of ['/p "" next', '/p\u00a0""\u2028next', '/p ""', 'ordinary text'].entries()) {
+  rows.push({ kind: 'expand', index, input, value: readPromptAPI.expandPromptTemplate(input, templates) });
+}
+if (rows.length !== 54) throw Error('Read/prompt54 input inventory mismatch ' + rows.length);
+globalThis.sdkReadPromptRows = rows;

@@ -233,6 +233,12 @@ fn commandWhitespaceWidth(raw: []const u8, index: usize) usize {
     return 0;
 }
 
+fn appendCommandArgument(gpa: std.mem.Allocator, arguments: *std.ArrayList([]const u8), value: []const u8) !void {
+    const owned = try gpa.dupe(u8, value);
+    errdefer gpa.free(owned);
+    try arguments.append(gpa, owned);
+}
+
 pub fn parseCommandArgs(gpa: std.mem.Allocator, raw: []const u8) ![]const []const u8 {
     var arguments: std.ArrayList([]const u8) = .empty;
     errdefer {
@@ -259,7 +265,7 @@ pub fn parseCommandArgs(gpa: std.mem.Allocator, raw: []const u8) ![]const []cons
             has_token = true;
         } else if (commandWhitespaceWidth(raw, position) > 0) {
             if (has_token) {
-                try arguments.append(gpa, try gpa.dupe(u8, current.items));
+                try appendCommandArgument(gpa, &arguments, current.items);
                 current.clearRetainingCapacity();
                 has_token = false;
             }
@@ -269,7 +275,7 @@ pub fn parseCommandArgs(gpa: std.mem.Allocator, raw: []const u8) ![]const []cons
             has_token = true;
         }
     }
-    if (has_token) try arguments.append(gpa, try gpa.dupe(u8, current.items));
+    if (has_token) try appendCommandArgument(gpa, &arguments, current.items);
     return try arguments.toOwnedSlice(gpa);
 }
 

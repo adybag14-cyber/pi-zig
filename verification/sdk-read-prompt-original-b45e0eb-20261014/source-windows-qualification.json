@@ -1,0 +1,25 @@
+{
+  "status": "actual_b45_original54_doublecapture_passed",
+  "candidate": "7dd5f3610771ba4300c55f44509b139df97da916",
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "input_sha256": "69d0ec5799320367518330e125ff1e63d5e0f91c06ebeeb9025b1403f3238d26",
+  "complete_raw_sha256": "D6E28AECE5D2E50F356832462777E33B90D69DE2E477760BF250B05A69708209",
+  "complete_doublecapture_byte_identical": true,
+  "cases": 54,
+  "source_files": 1965,
+  "dependencies": 31064,
+  "node_files": 1774,
+  "candidate_files": 5147,
+  "controls": 5,
+  "all_before_after_drift": 0,
+  "owned_pids": [
+    50896,
+    31300
+  ],
+  "owned_pids_absent": true,
+  "native_qualified": false,
+  "public_activation": false,
+  "catalog_scope": "Historical pinned typed metadata only; latest generated catalog unqualified",
+  "observed_modules": 146,
+  "completed_utc": "2026-10-14T18:18:30.9861839+00:00"
+}

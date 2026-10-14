@@ -1,0 +1,25 @@
+{
+  "pid": 50896,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "argv": [
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-b45-observe-20261014.mjs",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-read-prompt-b45-local-source-capture-20261014.mjs",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-read-prompt54-b45-original-local-20261014-first-output.json",
+    "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\verification\\sdk-read-prompt-original-b45e0eb-20261014\\input54.txt",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-read-prompt54-b45-original-local-20261014-frozen.json"
+  ],
+  "live_command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-b45-observe-20261014.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-read-prompt-b45-local-source-capture-20261014.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-read-prompt54-b45-original-local-20261014-first-output.json C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\verification\\sdk-read-prompt-original-b45e0eb-20261014\\input54.txt C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-read-prompt54-b45-original-local-20261014-frozen.json",
+  "created_utc": "2026-10-14T18:14:11.3515667Z",
+  "launched_utc": "2026-10-14T18:14:11.3491893+00:00",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T18:14:20.7399751+00:00"
+}
