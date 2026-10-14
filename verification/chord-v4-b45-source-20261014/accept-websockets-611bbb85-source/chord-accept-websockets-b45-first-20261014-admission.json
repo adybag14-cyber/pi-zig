@@ -1,0 +1,10 @@
+{
+  "free_bytes": 24429793280,
+  "required_bytes": 2147483648,
+  "native_roots": [],
+  "max_roots": 2,
+  "heap_mb": 256,
+  "source_node_reservation": true,
+  "root_authority": "Root granted serial actual Source13 doublecapture exact611bbb85/full5545; normal2GiB256MB30s/full1965/31064/1774+candidatecontrols; AI b06 HTTP20 Source peer; no native or State job",
+  "utc": "2026-10-14T22:23:58.1278859+00:00"
+}

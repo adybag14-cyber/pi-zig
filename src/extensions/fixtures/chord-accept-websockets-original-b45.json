@@ -1,0 +1,148 @@
+{
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "cases": [
+    {
+      "name": "factory installs an ordinary connection listener and returns void",
+      "value": {
+        "length": 3,
+        "undefined": true
+      }
+    },
+    {
+      "name": "authenticated principal and client role stamp actual host connection",
+      "value": {
+        "accepted": [
+          {
+            "principal": {
+              "user": "alice"
+            },
+            "kind": "client"
+          }
+        ],
+        "binaryType": "arraybuffer",
+        "connections": 1,
+        "errors": 0
+      }
+    },
+    {
+      "name": "frames arriving during authentication are queued until actual accept",
+      "value": {
+        "before": {
+          "accepted": 0,
+          "sent": 0
+        },
+        "after": [
+          {
+            "t": "pong",
+            "n": 7
+          },
+          {
+            "t": "hello"
+          }
+        ],
+        "accepted": 1
+      }
+    },
+    {
+      "name": "undefined principal closes unauthenticated socket",
+      "value": {
+        "accepted": 0,
+        "closes": [
+          1000
+        ],
+        "connections": 0
+      }
+    },
+    {
+      "name": "rejected authentication closes socket without accepting",
+      "value": {
+        "accepted": 0,
+        "closes": [
+          1000
+        ],
+        "errors": 0
+      }
+    },
+    {
+      "name": "synchronous auth failure preserves raw identity after immediate wrapping",
+      "value": {
+        "same": true,
+        "wrapped": true,
+        "closes": []
+      }
+    },
+    {
+      "name": "public promise resolve lookup precedes auth invocation",
+      "value": {
+        "events": [
+          "resolve.get",
+          "principal.get",
+          "principal.call",
+          "resolve.call",
+          "principal.get"
+        ],
+        "accepted": 1
+      }
+    },
+    {
+      "name": "host accept getter precedes cloning auth options",
+      "value": {
+        "events": [
+          "principal.get",
+          "accept.get",
+          "principal.get",
+          "custom.get"
+        ],
+        "accepted": 1
+      }
+    },
+    {
+      "name": "fulfillment ignores the host accept return value",
+      "value": {
+        "thenReads": 0,
+        "accepted": 1
+      }
+    },
+    {
+      "name": "authentication resolving after socket close accepts no live connection",
+      "value": {
+        "accepted": 1,
+        "connections": 0,
+        "closes": [
+          1000
+        ]
+      }
+    },
+    {
+      "name": "untrusted binary input is rejected before authentication finishes",
+      "value": {
+        "before": {
+          "closes": [
+            1000
+          ],
+          "accepted": 0
+        },
+        "accepted": 1,
+        "connections": 0
+      }
+    },
+    {
+      "name": "large outgoing values are deflated through the actual wrapped link",
+      "value": {
+        "binary": true,
+        "smaller": true,
+        "type": "result",
+        "id": 1,
+        "valueSame": true
+      }
+    },
+    {
+      "name": "ordinary factory can be constructed while installing server listener",
+      "value": {
+        "installed": 1,
+        "object": "object",
+        "length": 3
+      }
+    }
+  ]
+}
