@@ -1,0 +1,82 @@
+[
+  {
+    "specifier": "@earendil-works/chord",
+    "path": "packages/chord",
+    "package_sha256": "D1013B1316B6A87D13C49DC6FF8BAE6D46276B477D0EAF028EABD96D86B90247"
+  },
+  {
+    "specifier": "@earendil-works/pi-agent-core",
+    "path": "packages/agent",
+    "package_sha256": "2B4F9472716A5888FB77A5748D78900642FD82FE71C962728B1371498EBC235E"
+  },
+  {
+    "specifier": "@earendil-works/pi-ai",
+    "path": "packages/ai",
+    "package_sha256": "1297CDF902A2649B8F79FA2367A0A213D7B94AE81C0C4D9D13157BFE24112AC9"
+  },
+  {
+    "specifier": "@earendil-works/pi-codemode",
+    "path": "packages/codemode",
+    "package_sha256": "C01C6C0AA35956B8624B8C977E51E55786B81D86F34A90D222EE9F03FE0C6091"
+  },
+  {
+    "specifier": "@earendil-works/pi-coding-agent",
+    "path": "packages/coding-agent",
+    "package_sha256": "05755FACDD1BE81617CE3A53E6AD40AB621667BDCDC795A528DB03FFAB6C9CED"
+  },
+  {
+    "specifier": "@earendil-works/pi-durable",
+    "path": "packages/durable",
+    "package_sha256": "49997C2A63031D864C081016A5F4EA943C0280625319D6DB85617FDC359F8222"
+  },
+  {
+    "specifier": "@earendil-works/pi-env",
+    "path": "packages/env",
+    "package_sha256": "7930DB276A2CACA0AEAE0CCB8FB526FCC97E31153516CEF0DA01E459643DD23F"
+  },
+  {
+    "specifier": "@earendil-works/pi-evals",
+    "path": "packages/evals",
+    "package_sha256": "76455D5FF75374E447FEE7C41DD1BB77E20D9A74BEC748799A203B13E853F12F"
+  },
+  {
+    "specifier": "@earendil-works/pi-mcp",
+    "path": "packages/mcp",
+    "package_sha256": "2DD60991AC137E3E5DAA06EA091CDCBBB533AFF48B5709BED733C38596BE6E74"
+  },
+  {
+    "specifier": "@earendil-works/pi-telemetry",
+    "path": "packages/telemetry",
+    "package_sha256": "7706DAFBE8F125E0D658690C3E5B11C8E265C2611B02EAEA9218263424D4C527"
+  },
+  {
+    "specifier": "@earendil-works/pi-tui",
+    "path": "packages/tui",
+    "package_sha256": "825DD2B1199043DADD9C4F9251DAC888E41FEEF2B82DEDBA24F8CE7C88CFD42C"
+  },
+  {
+    "specifier": "pi-extension-custom-provider-anthropic",
+    "path": "packages/coding-agent/examples/extensions/custom-provider-anthropic",
+    "package_sha256": "5EDA18EB2502242A9C55A7D6B2E27E3276AE27D9DD9743D1EA463C4BCCB0AC2D"
+  },
+  {
+    "specifier": "pi-extension-custom-provider-gitlab-duo",
+    "path": "packages/coding-agent/examples/extensions/custom-provider-gitlab-duo",
+    "package_sha256": "8436E1069CAA9074DDCF8EA255019976829A358842635D419EF0087FC2D99CE5"
+  },
+  {
+    "specifier": "pi-extension-gondolin",
+    "path": "packages/coding-agent/examples/extensions/gondolin",
+    "package_sha256": "4EE1A6045E1EFC9150C1B9486202B2AE829EA00FD08E1027C5BCCB56015099F3"
+  },
+  {
+    "specifier": "pi-extension-sandbox",
+    "path": "packages/coding-agent/examples/extensions/sandbox",
+    "package_sha256": "B2088901DB43356065837D2A1C4194A015A0F7008A5CC489AD4F799F74A340AE"
+  },
+  {
+    "specifier": "pi-extension-with-deps",
+    "path": "packages/coding-agent/examples/extensions/with-deps",
+    "package_sha256": "3A83A5EB8C65877E59A80CD8DED6C757DFAF79BADD94AF473975ACC52B7D5FB3"
+  }
+]
