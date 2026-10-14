@@ -4,12 +4,23 @@ pub const js = @import("native_js_values.zig");
 pub const c = js.c;
 pub const Scope = struct {
     engine: *js.Engine,
+    // Most native operations retain only a handful of temporary VM values.
+    // Keep their actual roots on the native stack; larger scopes retain the
+    // same ownership and failure behavior through the heap spill array.
+    inline_values: [32]c.JSValue = undefined,
+    inline_len: usize = 0,
     owned: std.ArrayList(c.JSValue) = .empty,
     pub fn deinit(self: *Scope) void {
+        for (self.inline_values[0..self.inline_len]) |value| self.engine.freeValue(value);
         for (self.owned.items) |value| self.engine.freeValue(value);
         self.owned.deinit(self.engine.gpa);
     }
     pub fn keep(self: *Scope, value: c.JSValue) !c.JSValue {
+        if (self.inline_len < self.inline_values.len) {
+            self.inline_values[self.inline_len] = value;
+            self.inline_len += 1;
+            return value;
+        }
         self.owned.append(self.engine.gpa, value) catch |err| {
             self.engine.freeValue(value);
             return err;

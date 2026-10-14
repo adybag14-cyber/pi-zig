@@ -53,6 +53,10 @@ fn diagnoseFailure(engine: *em.Engine, gpa: std.mem.Allocator, mapped: anyerror)
         std.debug.print("Latest GPA captured exception: {s}\n", .{message});
     }
 }
+fn allocationBaseline(gpa: std.mem.Allocator, marker: []const u8) void {
+    const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+    if (failing.fail_index == std.math.maxInt(usize)) std.debug.print("{s}={d}\n", .{ marker, failing.alloc_index });
+}
 pub fn inventory(marker: []const u8) !void {
     const functions = @import("builtin").test_functions;
     const names = try std.testing.allocator.alloc([]const u8, functions.len);
@@ -106,6 +110,65 @@ test "native latest Chord1692 private continuation fresh OOM escape preserves st
     defer engine.freeValue(traps);
     try std.testing.expect(em.c.JS_IsStrictEqual(engine.context, traps, em.c.JS_NewInt32(engine.context, 0)));
 }
+fn weakReference(engine: *em.Engine, target: em.c.JSValue) !em.c.JSValue {
+    var args = [_]em.c.JSValue{target};
+    return engine.checked(em.c.JS_CallConstructor(engine.context, engine.native_weak_ref_constructor.?, 1, &args));
+}
+fn weakTarget(engine: *em.Engine, reference: em.c.JSValue) !em.c.JSValue {
+    return engine.checked(em.c.JS_Call(engine.context, engine.native_weak_ref_deref.?, reference, 0, null));
+}
+test "native latest Chord1692 inline and spilled scope roots survive GC unwind and failed spill releases its target" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    const Scope = @import("extensions/native_chord_values.zig").Scope;
+    const inline_target = try js.object(engine);
+    const spilled_target = try js.object(engine);
+    const inline_weak = try weakReference(engine, inline_target);
+    defer engine.freeValue(inline_weak);
+    const spilled_weak = try weakReference(engine, spilled_target);
+    defer engine.freeValue(spilled_weak);
+    {
+        var scope: Scope = .{ .engine = engine };
+        defer scope.deinit();
+        _ = try scope.keep(inline_target);
+        for (0..31) |_| _ = try scope.keep(try js.object(engine));
+        _ = try scope.keep(spilled_target);
+        engine.finishJob();
+        em.c.JS_RunGC(engine.runtime);
+        const held_inline = try weakTarget(engine, inline_weak);
+        defer engine.freeValue(held_inline);
+        const held_spill = try weakTarget(engine, spilled_weak);
+        defer engine.freeValue(held_spill);
+        try std.testing.expect(em.c.JS_IsStrictEqual(engine.context, inline_target, held_inline));
+        try std.testing.expect(em.c.JS_IsStrictEqual(engine.context, spilled_target, held_spill));
+    }
+    engine.finishJob();
+    em.c.JS_RunGC(engine.runtime);
+    const released_inline = try weakTarget(engine, inline_weak);
+    defer engine.freeValue(released_inline);
+    const released_spill = try weakTarget(engine, spilled_weak);
+    defer engine.freeValue(released_spill);
+    try std.testing.expect(em.c.JS_IsUndefined(released_inline) and em.c.JS_IsUndefined(released_spill));
+    const failed_target = try js.object(engine);
+    const failed_weak = try weakReference(engine, failed_target);
+    defer engine.freeValue(failed_weak);
+    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = 0 });
+    {
+        const original_allocator = engine.gpa;
+        engine.gpa = failing.allocator();
+        defer engine.gpa = original_allocator;
+        var scope: Scope = .{ .engine = engine };
+        defer scope.deinit();
+        for (0..32) |_| _ = try scope.keep(try js.object(engine));
+        try std.testing.expectError(error.OutOfMemory, scope.keep(failed_target));
+        try std.testing.expect(failing.has_induced_failure);
+    }
+    engine.finishJob();
+    em.c.JS_RunGC(engine.runtime);
+    const released_failed = try weakTarget(engine, failed_weak);
+    defer engine.freeValue(released_failed);
+    try std.testing.expect(em.c.JS_IsUndefined(released_failed));
+}
 test "native latest Chord1692 actual Source8 object factories reload cells resource adoption signals tasks" {
     const engine = try setup(std.testing.allocator);
     defer engine.deinit();
@@ -145,6 +208,7 @@ test "native latest Chord1692 actual object refs root signals and declarations s
 test "native latest Chord1692 complete actual object factory root call and teardown GPA sweep" {
     const Probe = struct {
         fn run(gpa: std.mem.Allocator) !void {
+            defer allocationBaseline(gpa, "CHORD_OBJECT_GPA_BASELINE_ALLOCATIONS");
             const engine = try setup(gpa);
             defer engine.deinit();
             const generation = engine.native_allocation_generation;
@@ -167,6 +231,7 @@ const composed_owned =
 test "native latest Chord1692 full composed reload resources remote state frames packed C allocation and teardown GPA sweep" {
     const Probe = struct {
         fn run(gpa: std.mem.Allocator) !void {
+            defer allocationBaseline(gpa, "CHORD_COMPOSED_GPA_BASELINE_ALLOCATIONS");
             const engine = try setup(gpa);
             defer engine.deinit();
             const generation = engine.native_allocation_generation;
