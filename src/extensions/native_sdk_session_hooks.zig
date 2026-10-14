@@ -24,6 +24,7 @@ pub fn validateDependencies(engine: *em.Engine, dependencies: c.JSValue) !void {
 }
 pub fn installWithDependencies(engine: *em.Engine, prototype: c.JSValue, dependencies: c.JSValue) !void {
     try validateDependencies(engine, dependencies);
+    try @import("native_sdk_compaction_threshold.zig").install(engine, prototype, dependencies);
     var roots = [_]c.JSValue{dependencies};
     inline for (names, 0..) |name, index| {
         const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, installerCallback, name, 0, @intCast(index), roots.len, &roots));
@@ -438,7 +439,7 @@ fn requestRouted(engine: *em.Engine, owner: c.JSValue, route: c.JSValue) !void {
             _ = try scope.invoke(session, "_emit", &.{event});
         }
     }
-    if (try exceeds(&scope, owner, try scope.get(route, "model"), try scope.get(owner, "projection"))) return wait(engine, owner, try scope.invoke(session, "_runAutoCompaction", &.{ try scope.text("threshold"), c.pi_js_bool(engine.context, 0) }), .compactRequest);
+    if (scope.truthy(try scope.invoke(session, "_exceedsCompactionThreshold", &.{ try scope.get(route, "model"), try scope.get(owner, "projection") }))) return wait(engine, owner, try scope.invoke(session, "_runAutoCompaction", &.{ try scope.text("threshold"), c.pi_js_bool(engine.context, 0) }), .compactRequest);
     try finishRequest(engine, owner, true);
 }
 fn finishRequest(engine: *em.Engine, owner: c.JSValue, routed: bool) !void {
@@ -450,14 +451,6 @@ fn finishRequest(engine: *em.Engine, owner: c.JSValue, routed: bool) !void {
     const selection = if (routed) try scope.get(owner, "route") else owner;
     inline for (.{ "model", "thinkingLevel" }) |name| try scope.put(result, name, try scope.get(selection, name));
     try finish(engine, owner, result);
-}
-fn exceeds(scope: *Scope, owner: c.JSValue, model: c.JSValue, projection: c.JSValue) !bool {
-    const window = try scope.get(model, "contextWindow");
-    if (scope.truthy(try scope.own(try scope.engine.checked(c.JS_PiBinaryOperator(scope.engine.context, 5, window, c.JS_NewInt32(scope.engine.context, 0)))))) return false;
-    const session = try scope.get(owner, "agent");
-    const estimate = try dependency(scope, owner, "estimateProjectedContextTokens", &.{ projection, try scope.invoke(try scope.get(session, "sessionManager"), "getBranch", &.{}) });
-    const settings = try scope.invoke(try scope.get(session, "settingsManager"), "getCompactionSettings", &.{try scope.get(session, "model")});
-    return scope.truthy(try dependency(scope, owner, "shouldCompact", &.{ try scope.get(estimate, "tokens"), window, settings }));
 }
 fn beginHelper(engine: *em.Engine, session: c.JSValue, dependencies: c.JSValue, input: c.JSValue, second: c.JSValue, helper: Helper) !c.JSValue {
     const pending = try flow.create(engine, session);
@@ -524,7 +517,7 @@ fn helperStart(engine: *em.Engine, owner: c.JSValue, helper: Helper) !void {
         .compact => {
             const projection = try scope.invoke(try scope.get(session, "sessionManager"), "buildSessionProjection", &.{});
             const model = try scope.get(session, "model");
-            if (scope.truthy(model) and !try @import("native_sdk_virtual.zig").isVirtual(engine, model) and try exceeds(&scope, owner, model, projection)) return wait(engine, owner, try scope.invoke(session, "_runAutoCompaction", &.{ try scope.text("threshold"), c.pi_js_bool(engine.context, 0) }), .helperCompact);
+            if (scope.truthy(model) and !try @import("native_sdk_virtual.zig").isVirtual(engine, model) and scope.truthy(try scope.invoke(session, "_exceedsCompactionThreshold", &.{ model, projection }))) return wait(engine, owner, try scope.invoke(session, "_runAutoCompaction", &.{ try scope.text("threshold"), c.pi_js_bool(engine.context, 0) }), .helperCompact);
             const result = try scope.own(try js.spread(engine, input));
             try scope.put(result, "messages", try scope.get(projection, "messages"));
             try finish(engine, owner, result);
