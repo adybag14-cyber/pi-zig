@@ -1,0 +1,197 @@
+[
+  {
+    "path": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "bytes": 7153406
+  },
+  {
+    "path": "durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+    "bytes": 4665338
+  },
+  {
+    "path": "Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "path": "root-compaction-threshold-b06-compile-debug-first-shard0-of8-20261014-admission.json",
+    "sha256": "8A87A4C2F84E29A2809A95FB39DAD4367ADDF6041786ABD6BACDFA1518B8D1D2",
+    "bytes": 360
+  },
+  {
+    "path": "root-compaction-threshold-b06-compile-debug-first-shard0-of8-20261014-controls-before.json",
+    "sha256": "E497AB35AE2088CB317A8D235E1622ECA45DEC6FC941B72C9000C78FCDADF6E0",
+    "bytes": 837
+  },
+  {
+    "path": "root-compaction-threshold-b06-compile-debug-first-shard0-of8-20261014-posthash.json",
+    "sha256": "A052B95D2EB3189F4999E352143BB0606E015D639DCC256AF7F0CBD4E4A57986",
+    "bytes": 420
+  },
+  {
+    "path": "root-compaction-threshold-b06-compile-debug-first-shard0-of8-20261014-source-before.json",
+    "sha256": "8E6B9FAC6579488B3836739DFD38771B0A8F35A33ECE6E7CC27DF21062693C2E",
+    "bytes": 922377
+  },
+  {
+    "path": "root-compaction-threshold-b06-compile-debug-first-shard0-of8-20261014.json",
+    "sha256": "67D921081D25DCBDAE443619D38290DDCCD066AA5AFD586838F399B6BF86CF0B",
+    "bytes": 1014
+  },
+  {
+    "path": "root-compaction-threshold-b06-compile-debug-first-shard0-of8-20261014.stderr.log",
+    "sha256": "2FD8BB5788C8F74C529954BA647BAA74D4B0B163A8D8294AD5D9EB6185E44B65",
+    "bytes": 13342
+  },
+  {
+    "path": "root-compaction-threshold-b06-compile-debug-first-shard0-of8-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-complete-shard0-of1-20261014-admission.json",
+    "sha256": "66F4D4AD8AB696D42B4C3AD9DB47CE1E7E3D54BDDF770434CC38EAC65A15CAC3",
+    "bytes": 360
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-complete-shard0-of1-20261014-controls-before.json",
+    "sha256": "E497AB35AE2088CB317A8D235E1622ECA45DEC6FC941B72C9000C78FCDADF6E0",
+    "bytes": 837
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-complete-shard0-of1-20261014-posthash.json",
+    "sha256": "AB39D20D2FC3C186041F2746BA99ABC75018A8A8E6EC47CB7DD9F9095C503EC4",
+    "bytes": 420
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-complete-shard0-of1-20261014-source-before.json",
+    "sha256": "8E6B9FAC6579488B3836739DFD38771B0A8F35A33ECE6E7CC27DF21062693C2E",
+    "bytes": 922377
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-complete-shard0-of1-20261014.json",
+    "sha256": "564F43251E4E88042FFCBAB9FFDBF4C88A21FC68FD7DC5EB89AF3B7EBA036305",
+    "bytes": 1016
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-complete-shard0-of1-20261014.stderr.log",
+    "sha256": "71C64EEEB2AD9C5290B48823C6D5B63ADD21AD5B43D0476296F03DEB8833939B",
+    "bytes": 32162
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-complete-shard0-of1-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-first-shard0-of8-20261014-admission.json",
+    "sha256": "344D30275C28CC2994BCB5DD12F5148FEA163C36034F5C0E3D38661AB56CDFAA",
+    "bytes": 360
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-first-shard0-of8-20261014-controls-before.json",
+    "sha256": "E497AB35AE2088CB317A8D235E1622ECA45DEC6FC941B72C9000C78FCDADF6E0",
+    "bytes": 837
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-first-shard0-of8-20261014-posthash.json",
+    "sha256": "5ADA37049A377ED60F48B32BD668A58E9DFFE8C30DB4EB8097AFC1AE80A4A73A",
+    "bytes": 420
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-first-shard0-of8-20261014-source-before.json",
+    "sha256": "8E6B9FAC6579488B3836739DFD38771B0A8F35A33ECE6E7CC27DF21062693C2E",
+    "bytes": 922377
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-first-shard0-of8-20261014.json",
+    "sha256": "F963534E0DDA4716CDA71A71504DF00F8D9D04E9F0FD99286FFAF881C890216C",
+    "bytes": 1013
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-first-shard0-of8-20261014.stderr.log",
+    "sha256": "5848A3EEA3537161636BDD8561A07363783109C8E795DD38FD38477EC45912CA",
+    "bytes": 17701
+  },
+  {
+    "path": "root-compaction-threshold-b06-runtime-debug-first-shard0-of8-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "root-compaction-threshold-b06-source20-second-20261014-admission.json",
+    "sha256": "2449B335876BDAFDF0CC40B204188FBE4079021A701D372B4AE20DF67E14C240",
+    "bytes": 247
+  },
+  {
+    "path": "root-compaction-threshold-b06-source20-second-20261014-extra-before.json",
+    "sha256": "1C76FF47194A5629E9155F6C944C3AC831610A755EB572A596F03AB2E1103E9C",
+    "bytes": 1867
+  },
+  {
+    "path": "root-compaction-threshold-b06-source20-second-20261014-output.json",
+    "sha256": "A5BFED1D36B3C1399321FDE32910D2F2106633D7941C73CFCADEE6D7C89D4A43",
+    "bytes": 7199
+  },
+  {
+    "path": "root-compaction-threshold-b06-source20-second-20261014-posthash.json",
+    "sha256": "7B83B6F31DE5E6F25CF05A54F44B2ECE54D41CB061CEDA76E0FC6B143974BFA0",
+    "bytes": 678
+  },
+  {
+    "path": "root-compaction-threshold-b06-source20-second-20261014.json",
+    "sha256": "3E064779EEDCA77335071A67A4098FF5840F0C4886999A6402EBD65E03F961D6",
+    "bytes": 1183
+  },
+  {
+    "path": "root-compaction-threshold-b06-source20-second-20261014.stderr.log",
+    "sha256": "85F06D754D415A7E17CF5D2950C2E6850045DA8AB2156B72500CD09E7E11CDCF",
+    "bytes": 178
+  },
+  {
+    "path": "root-compaction-threshold-b06-source20-second-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "bytes": 352993
+  },
+  {
+    "path": "Run-RootCompactionThresholdB06Native-20261014.ps1",
+    "sha256": "FA90C6B53704343FD08D0B5043374F06A9ED6FFE7D427FE4AD1A76DB8DD96414",
+    "bytes": 6766
+  },
+  {
+    "path": "Run-RootCompactionThresholdB06Source-20261014.ps1",
+    "sha256": "625532B9498F471C83E2A006FDE7E82FB7FEEB7E01EEABB34A62B4060673864B",
+    "bytes": 5740
+  },
+  {
+    "path": "sdk-compaction-threshold-b06-caller-20261014.mjs",
+    "sha256": "30039681C05B7BD0B892BB41D510E3953FCE197FFE8520E8CADB660CB99F0C1E",
+    "bytes": 2663
+  },
+  {
+    "path": "sdk-compaction-threshold-b06-source-capture-20261014.mjs",
+    "sha256": "D3E4670AE9C5F77FCE88F95E48A4D8AAC339C73169AAD55E01D408D2840A9064",
+    "bytes": 1005
+  },
+  {
+    "path": "sdk-source-b06-dependency-contract-audit-20261014.json",
+    "sha256": "F92707660EDA10B0ACADBF5435D84B29A5A5B9AA9D719643E3157E2C406387AB",
+    "bytes": 210982
+  },
+  {
+    "path": "sdk-source-b06-full-manifest-20261014.json",
+    "sha256": "810E220B73299EBFE48BE1E44189758F885BEC8BC7D8150D8D7AF687D7CDEAC4",
+    "bytes": 555591
+  },
+  {
+    "path": "sdk-source-b06-observe-20261014.mjs",
+    "sha256": "E7472C88CE8B73DD27BC973EA50357B8D0E11AB841A9CAB11E2C09995FF5F96C",
+    "bytes": 3102
+  }
+]
