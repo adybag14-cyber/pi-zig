@@ -1,0 +1,27 @@
+{
+  "upstream": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "scope": "Original compaction estimateTokens over actual VM values and iterators, plus shared ordinary session estimator consumer migration",
+  "source_cases": 30,
+  "source_reference": "Actual unchanged original compaction.ts export on pinned WindowsNode24; no factory/body replacement, full1955Source/31064dependencies/1774Node post0",
+  "source_input_sha256": "A1C87B0B46B6358525922B56927EB333E25759D2CE7BC9DC3D27592F1EBCBF04",
+  "native_status": "Source authored and pinnedZig0.16 formatted; first semantic compile/runtime and downstream integration regressions pending",
+  "removed_differences": [
+    "Early f64 coercion instead of live VM addition/division",
+    "Indexed collection reads and arbitrary array length caps in token heuristic",
+    "Repeated message.role getters instead of one switch read",
+    "Missing live Math.ceil return/call order",
+    "JSON/Object method lookup and argument getter order",
+    "Iterator abrupt-close and thrown object identity"
+  ],
+  "retained_limits": "Engine interruption/cancellation budgets remain enforced by native iterator",
+  "remaining": [
+    "Native original30 comparison/GC/fullGPA",
+    "Statistics hooks private prepare/lifecycle integration regressions",
+    "Durable generation/compaction regressions for shared retry change",
+    "Full factory/application parity"
+  ],
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "observed_utc": "2026-10-14T13:30:11.9198719+00:00"
+}

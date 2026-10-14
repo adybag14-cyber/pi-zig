@@ -3,7 +3,6 @@ const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const temp = @import("native_sdk_prompt_scope.zig");
-const usage = @import("native_sdk_session_usage.zig");
 const js = @import("native_js_values.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
 const c = em.c;
@@ -68,7 +67,7 @@ pub fn estimate(engine: *em.Engine, projection: c.JSValue, branch: c.JSValue) !c
             var iteration: Scope = .{ .engine = engine };
             defer iteration.deinit();
             const message = try keyAt(&iteration, messages, cursor);
-            trailing = try scope.concat(trailing, c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, message)));
+            trailing = try scope.concat(trailing, try scope.own(try @import("native_sdk_compaction_estimate.zig").estimateTokens(engine, message)));
             cursor = try scope.own(try engine.checked(c.JS_PiIncrement(engine.context, cursor)));
         }
         tokens = try scope.concat(usage_tokens, trailing);
@@ -79,7 +78,7 @@ pub fn estimate(engine: *em.Engine, projection: c.JSValue, branch: c.JSValue) !c
         errdefer estimate_iterator.closePreserving();
         while (try estimate_iterator.next()) |message| {
             defer engine.freeValue(message);
-            tokens = try scope.concat(tokens, c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, message)));
+            tokens = try scope.concat(tokens, try scope.own(try @import("native_sdk_compaction_estimate.zig").estimateTokens(engine, message)));
         }
         trailing = tokens;
     }
@@ -128,7 +127,7 @@ pub fn estimate(engine: *em.Engine, projection: c.JSValue, branch: c.JSValue) !c
     }
     const projected_messages = try scope.get(projection, "messages");
     const system = try scope.own(try @import("native_sdk_transcript_replay.zig").currentSystemMessage(engine, projected_messages));
-    tokens = if (scope.truthy(system)) c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, system)) else c.JS_NewInt32(engine.context, 0);
+    tokens = if (scope.truthy(system)) try scope.own(try @import("native_sdk_compaction_estimate.zig").estimateTokens(engine, system)) else c.JS_NewInt32(engine.context, 0);
     const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
     var message_iterator = try js.Iterator.init(engine, try scope.get(projection, "messages"), symbol);
     defer message_iterator.deinit();
@@ -137,7 +136,7 @@ pub fn estimate(engine: *em.Engine, projection: c.JSValue, branch: c.JSValue) !c
         defer engine.freeValue(message);
         var iteration: Scope = .{ .engine = engine };
         defer iteration.deinit();
-        if (!try is(&iteration, try iteration.get(message, "role"), "system")) tokens = try scope.concat(tokens, c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, message)));
+        if (!try is(&iteration, try iteration.get(message, "role"), "system")) tokens = try scope.concat(tokens, try scope.own(try @import("native_sdk_compaction_estimate.zig").estimateTokens(engine, message)));
     }
     last_index = c.pi_js_null();
     return estimateResult(&scope, tokens, c.JS_NewInt32(engine.context, 0), tokens, last_index);

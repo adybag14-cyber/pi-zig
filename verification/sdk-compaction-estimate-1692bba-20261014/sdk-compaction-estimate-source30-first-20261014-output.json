@@ -1,0 +1,267 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "a1c87b0b46b6358525922b56927eb333e25759d2ce7bc9dc3d27592f1ebcbf04",
+  "scope": "Actual unchanged original compaction.ts estimateTokens export; caller-owned values and temporary restored standard method overrides; no Source bodies replaced",
+  "cases": 30,
+  "rows": [
+    {
+      "name": "function-metadata",
+      "value": {
+        "name": "estimateTokens",
+        "length": 1,
+        "ownPrototype": true,
+        "prototype": {
+          "writable": true,
+          "enumerable": false,
+          "configurable": false
+        },
+        "constructor": true
+      }
+    },
+    {
+      "name": "user-text-rounding",
+      "value": [
+        0,
+        1,
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "user-text-images",
+      "value": 1202
+    },
+    {
+      "name": "text-falsy-values",
+      "value": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "custom-and-tool-results",
+      "value": [
+        1202,
+        1202
+      ]
+    },
+    {
+      "name": "assistant-block-types",
+      "value": 7
+    },
+    {
+      "name": "system-sections-and-tools",
+      "value": 14
+    },
+    {
+      "name": "bash-and-summaries",
+      "value": [
+        3,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "unknown-role-short-circuit",
+      "value": {
+        "result": 0,
+        "reads": 1
+      }
+    },
+    {
+      "name": "role-getter-read-once",
+      "value": {
+        "result": 2,
+        "reads": 1
+      }
+    },
+    {
+      "name": "custom-content-iterator",
+      "value": {
+        "result": 1202,
+        "log": [
+          "start",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "assistant-custom-iterator",
+      "value": {
+        "result": 2,
+        "log": [
+          "start",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "text-getter-evaluation-order",
+      "value": {
+        "result": 2,
+        "log": [
+          "type",
+          "text",
+          "text",
+          "length"
+        ]
+      }
+    },
+    {
+      "name": "block-type-live-else-branch",
+      "value": {
+        "result": 1200,
+        "log": [
+          1,
+          "text",
+          2
+        ]
+      }
+    },
+    {
+      "name": "assistant-block-type-getters",
+      "value": {
+        "result": 2,
+        "log": [
+          "type",
+          "type",
+          "type",
+          "name",
+          "name.length",
+          "arguments"
+        ]
+      }
+    },
+    {
+      "name": "sections-values-getter-order",
+      "value": {
+        "result": 2,
+        "log": [
+          "sections-1",
+          "values-get",
+          "sections-2",
+          [
+            "values-call",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "tools-stringify-getter-order",
+      "value": {
+        "result": 1,
+        "log": [
+          "tools-1",
+          "stringify-get",
+          "tools-2",
+          [
+            "stringify-call",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "mutable-math-ceil-return",
+      "value": {
+        "result": "custom-result",
+        "log": [
+          [
+            1.25,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "ceil-method-before-final-coercion",
+      "value": {
+        "result": 7,
+        "log": [
+          "ceil-get",
+          "coerce:number",
+          [
+            "ceil-call",
+            1.25
+          ]
+        ]
+      }
+    },
+    {
+      "name": "string-length-plus-is-VM-addition",
+      "value": 13700
+    },
+    {
+      "name": "tool-name-and-json-length-addition",
+      "value": 9
+    },
+    {
+      "name": "bigint-length-keeps-mixed-type-error",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "iterator-abrupt-close-original-error",
+      "value": {
+        "same": true,
+        "log": [
+          "closed"
+        ]
+      }
+    },
+    {
+      "name": "iterator-return-error-preserves-body-error",
+      "value": {
+        "same": true,
+        "log": [
+          "return"
+        ]
+      }
+    },
+    {
+      "name": "iterator-next-error-does-not-close",
+      "value": {
+        "same": true,
+        "log": []
+      }
+    },
+    {
+      "name": "large-iterable-without-artificial-cap",
+      "value": {
+        "result": 17500,
+        "count": 70000
+      }
+    },
+    {
+      "name": "assistant-missing-text-original-typeerror",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "json-undefined-length-original-typeerror",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "math-ceil-thrown-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "normal-constructor-behavior",
+      "value": {
+        "instance": true,
+        "keys": []
+      }
+    }
+  ]
+}
