@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 275
     env:
-      PI_SHELL_ALLOCATION_SHARDS: ${{ matrix.mode == 'Debug' && matrix.os == 'macos-latest' && '128' || matrix.mode == 'Debug' && matrix.os == 'ubuntu-latest' && '32' || matrix.mode == 'Debug' && matrix.os == 'windows-latest' && '32' || matrix.mode == 'ReleaseSafe' && matrix.os == 'macos-latest' && '64' || '8' }}
+      PI_SHELL_ALLOCATION_SHARDS: ${{ matrix.mode == 'Debug' && matrix.os == 'macos-latest' && '256' || matrix.mode == 'Debug' && matrix.os == 'ubuntu-latest' && '32' || matrix.mode == 'Debug' && matrix.os == 'windows-latest' && '32' || matrix.mode == 'ReleaseSafe' && matrix.os == 'macos-latest' && '64' || '8' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -66,7 +66,7 @@ jobs:
           $taskReceipt='verification/native-sdk-tool-shell-renderers-candidate'
           $taskUniverse=$null;$taskPrevious=0;$taskIndices=[Collections.Generic.List[int]]::new()
           $taskShardCount=[int]$env:PI_SHELL_ALLOCATION_SHARDS
-          if($taskShardCount -notin @(8,16,32,64,128)){throw'Unexpected allocation partition profile'}
+          if($taskShardCount -notin @(8,16,32,64,128,256)){throw'Unexpected allocation partition profile'}
           $taskBatchWatch=[Diagnostics.Stopwatch]::StartNew()
           foreach($taskShard in 0..($taskShardCount-1)){
             $taskRemainingSeconds=250*60-$taskBatchWatch.Elapsed.TotalSeconds
