@@ -95,7 +95,7 @@ fn remove(context: ?*c.JSContext, value: c.JSValue, atom: c.JSAtom) callconv(.c)
     return c.JS_DeleteProperty(context, state(value).properties, atom, 0);
 }
 const exotic: c.JSClassExoticMethods = .{ .get_own_property = descriptor, .get_own_property_names = names, .define_own_property = define, .delete_property = remove };
-fn call(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
+fn call(_: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
     const owned = state(function);
     return invoke(owned, function, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0) catch |err| fail(owned.engine, err);
 }
@@ -139,7 +139,7 @@ fn invoke(owned: *State, function: c.JSValue, target: c.JSValue, args: []const c
 pub fn create(engine: *Engine, name: [*:0]const u8, length: c_int, body: Callback, values: []const c.JSValue) !c.JSValue {
     var class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &class);
-    const definition: c.JSClassDef = .{ .class_name = "Native CJS Legacy Function", .call = call, .finalizer = finalizer, .gc_mark = mark, .exotic = &exotic };
+    const definition: c.JSClassDef = .{ .class_name = "Native CJS Legacy Function", .call = call, .finalizer = finalizer, .gc_mark = mark, .exotic = @constCast(&exotic) };
     if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
     const prototype = try engine.checked(c.JS_GetFunctionProto(engine.context));
     defer engine.freeValue(prototype);

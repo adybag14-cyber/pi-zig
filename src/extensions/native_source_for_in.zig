@@ -58,7 +58,7 @@ pub const Iterator = struct {
         while (self.position < self.keys.items.len) {
             const atom = self.keys.items[self.position];
             self.position += 1;
-            if (try self.presentNow(atom)) return self.engine.checked(c.JS_AtomToValue(self.engine.context, atom));
+            if (try self.presentNow(atom)) return try self.engine.checked(c.JS_AtomToValue(self.engine.context, atom));
         }
         return null;
     }
