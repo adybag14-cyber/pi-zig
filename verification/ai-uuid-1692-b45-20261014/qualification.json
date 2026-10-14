@@ -1,0 +1,126 @@
+{
+  "public_activation": false,
+  "second_runtime": "6/6 passed",
+  "native_platform": "Windows Debug",
+  "compiler_files": 19546,
+  "compiler_drift": 0,
+  "new_source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "full_factory_qualified": false,
+  "code_commit": "70b90cd4614c8be40000d81c0a5e67648e988e21",
+  "latest_rows_identical": true,
+  "production_crypto_qualified": false,
+  "scope": "Original UUIDv7 method26 with caller-owned deterministic clock and crypto; module-state GC and complete representative host-allocation graph; additive VM operator regression. Explicit BigInt host installer qualifies observed null conversion only, not all V8 diagnostics or production global Crypto.",
+  "latest_cases": 26,
+  "evidence": [
+    {
+      "sha256": "75A4EDC1BB046F6D60E179F56150A70B758720B33EA1DB4628EA6A0202B3CD75",
+      "path": "Run-RootAiUuidSource-20261014.ps1"
+    },
+    {
+      "sha256": "D689F7A91EAFB014F34F1B3355E582199C5FB573BD24BF9BA7F81750D1867159",
+      "path": "Run-RootAiUuidB45Source-20261014.ps1"
+    },
+    {
+      "sha256": "DE592278E3590E8570B9959C546F3F44BBB41626B3729B17799C8977DDBEA999",
+      "path": "ai-uuid-1692-source-capture-20261014.mjs"
+    },
+    {
+      "sha256": "FD8E2336643C585AD2F0D688ACC05B6B70A0590CCA5E8FB29931BC42EDE121DD",
+      "path": "ai-uuid-b45-source-capture-20261014.mjs"
+    },
+    {
+      "sha256": "D66C5842B75D67E14410A9235EA312102F32B5B84D14E3C782346F4BEDE41470",
+      "path": "ai-uuid-source26-first-20261014.json"
+    },
+    {
+      "sha256": "7E3713748FF07BD6584D58635F55D003B10D538ADF47B1E4FDE34C4ED3F19786",
+      "path": "ai-uuid-source26-first-20261014-posthash.json"
+    },
+    {
+      "sha256": "44AE59A585301CA0E2439D913125092A6FE5508F6EA888DCEFD53EB969296606",
+      "path": "ai-uuid-source26-first-20261014-output.json"
+    },
+    {
+      "sha256": "1931DF22D5A609B6CAEB766EE3F689F9E49FC879DF2FE75A691F5A64995E945A",
+      "path": "ai-uuid-b45-source26-first-20261014.json"
+    },
+    {
+      "sha256": "6828F1E78743E02228E0D1A1CB264F116764828F208A550EE86AC57DCAE44707",
+      "path": "ai-uuid-b45-source26-first-20261014-posthash.json"
+    },
+    {
+      "sha256": "DA19E5D2C858ABEF0A10A602666B482F251DD550F0BCA6FA9B80DA09EB983B71",
+      "path": "ai-uuid-b45-source26-first-20261014-output.json"
+    },
+    {
+      "sha256": "82670C46C8E67E73039BBF217EE46C8E56E569FE37A4D7A3E26B5372B7E37AAB",
+      "path": "Run-RootAiUuidCompile-20261014.ps1"
+    },
+    {
+      "sha256": "D659FC8EB8512C1C196296CA6BB97905F6D798996146AA84E0717DA8842C715A",
+      "path": "Run-RootAiUuidRuntime-20261014.ps1"
+    },
+    {
+      "sha256": "DD4DB7A1A86CE0EC0D72FB3C4AF3A6659C50777C65252CDE1F332DD84C93090D",
+      "path": "root-upstream-b45-session-helper-body-audit-20261014.json"
+    },
+    {
+      "sha256": "236DD41CCB6F762D939AB9256E5C11528FCAFAFE48BC86D33A6ED80023DD544D",
+      "path": "root-ai-uuid-compile-debug-first-20261014.json"
+    },
+    {
+      "sha256": "356FAB8E619F66E2917FBFE492FE2F61E97019C47423DB3837EBCCC959DA0CA5",
+      "path": "root-ai-uuid-compile-debug-first-20261014-posthash.json"
+    },
+    {
+      "sha256": "6359D278AE8A15FADE784293433CD33EE23925CB58447874B5133371D4ECB778",
+      "path": "root-ai-uuid-compile-debug-first-20261014.stderr.log"
+    },
+    {
+      "sha256": "8D75928DFE019425AC89AC013A770E80C69BCFA0B4DD651D4061DB147B521463",
+      "path": "root-ai-uuid-runtime-debug-first-20261014.json"
+    },
+    {
+      "sha256": "86F1F2AB60327D62F0DDABEDC312FC8AABBCC940C6E95ADD4FFA42773A830503",
+      "path": "root-ai-uuid-runtime-debug-first-20261014-posthash.json"
+    },
+    {
+      "sha256": "65D315162D3FFD9FD5C194BA8401FC0E7BA7D0930F98CB56F049132EC2024404",
+      "path": "root-ai-uuid-runtime-debug-first-20261014.stderr.log"
+    },
+    {
+      "sha256": "A2D51F91C6DC1924484C9B651982BDDEF401D58E354FF637C306158B75FF3AE1",
+      "path": "root-ai-uuid-compile-debug-second-20261014.json"
+    },
+    {
+      "sha256": "A12EAE37DBEA9A9806FF58B328F47A2A1D20CEEB3FFDF27C506EB303CA2A0050",
+      "path": "root-ai-uuid-compile-debug-second-20261014-posthash.json"
+    },
+    {
+      "sha256": "C686FAFBF4EE76426364D899EE3155F450F24BE5572D3FF072159CF0FF292EEA",
+      "path": "root-ai-uuid-compile-debug-second-20261014.stderr.log"
+    },
+    {
+      "sha256": "6ECD3FC5EE2E785C4EBF1AD9A5837541A6BFCDA30ACB24948727465E80A54F32",
+      "path": "root-ai-uuid-runtime-debug-second-20261014.json"
+    },
+    {
+      "sha256": "F4DB9B3F40B63685349288B27207F58F09CD1824111197ECE8DD2A2C9885764C",
+      "path": "root-ai-uuid-runtime-debug-second-20261014-posthash.json"
+    },
+    {
+      "sha256": "B0A407013207BED56B369B2635E4960474AF90B2B0E4C4B873AD136564D853A2",
+      "path": "root-ai-uuid-runtime-debug-second-20261014.stderr.log"
+    },
+    {
+      "sha256": "0EBE42C0B5655B4C9CAF0A97F962B03AB49AA0FE2F1E98B76BB040691ED9D4BF",
+      "path": "root-ai-uuid-compile-debug-second-20261014-source-before.json"
+    }
+  ],
+  "initial_runtime": "retained failed original null-to-BigInt diagnostic comparison",
+  "original_source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "source_files": 5181,
+  "source_drift": 0,
+  "original_cases": 26,
+  "native_tests": 6
+}

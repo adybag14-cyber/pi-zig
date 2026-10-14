@@ -1,0 +1,44 @@
+[
+  {
+    "identical": true,
+    "new_sha256": "234A48D4B999E69188FDFA49173CCFA7887D947E443EF206CC30219515105A1F",
+    "path": "packages/ai/src/utils/uuid.ts",
+    "old_sha256": "234A48D4B999E69188FDFA49173CCFA7887D947E443EF206CC30219515105A1F"
+  },
+  {
+    "identical": true,
+    "new_sha256": "E0814F35BDCC93B017FA45589A6920E46B5480B88FBA01EF93E5D2D4E815F0F2",
+    "path": "packages/ai/src/utils/transcript.ts",
+    "old_sha256": "E0814F35BDCC93B017FA45589A6920E46B5480B88FBA01EF93E5D2D4E815F0F2"
+  },
+  {
+    "identical": true,
+    "new_sha256": "47A8770C5F8296B8D19E9F4930387E0E97AB4E333E96C25E0F0561BA0C80F2F2",
+    "path": "packages/ai/src/utils/retry.ts",
+    "old_sha256": "47A8770C5F8296B8D19E9F4930387E0E97AB4E333E96C25E0F0561BA0C80F2F2"
+  },
+  {
+    "identical": true,
+    "new_sha256": "E0FA206E8C49A98C024708068DF39C0E4944F4251633425FC083B2FBB5EC0AC6",
+    "path": "packages/coding-agent/src/core/agent-session.ts",
+    "old_sha256": "E0FA206E8C49A98C024708068DF39C0E4944F4251633425FC083B2FBB5EC0AC6"
+  },
+  {
+    "identical": true,
+    "new_sha256": "D5AEBD41333957B57FA3F1BEE2A18B3C00B5D47BB1B4AF6F913CF8CD791099C8",
+    "path": "packages/coding-agent/src/core/compaction/compaction.ts",
+    "old_sha256": "D5AEBD41333957B57FA3F1BEE2A18B3C00B5D47BB1B4AF6F913CF8CD791099C8"
+  },
+  {
+    "identical": true,
+    "new_sha256": "37EAB7698CDBFF8B5987D4529005EA16D7E1AE4A5344D7D0443C3466444AA90E",
+    "path": "packages/coding-agent/src/core/compaction/utils.ts",
+    "old_sha256": "37EAB7698CDBFF8B5987D4529005EA16D7E1AE4A5344D7D0443C3466444AA90E"
+  },
+  {
+    "identical": true,
+    "new_sha256": "AEF8FEA51000F291C1C51D81FD9B30F7A2BDD0E68370AD84B969E5FD15667E98",
+    "path": "packages/coding-agent/src/core/settings-manager.ts",
+    "old_sha256": "AEF8FEA51000F291C1C51D81FD9B30F7A2BDD0E68370AD84B969E5FD15667E98"
+  }
+]

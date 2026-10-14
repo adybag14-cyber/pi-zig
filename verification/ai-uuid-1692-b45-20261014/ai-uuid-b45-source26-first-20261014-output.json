@@ -1,0 +1,376 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "inputSha256": "9a79b6a802e2725b31d2239a47a9e790772efe3a9ee7f40f880946a03f71d540",
+  "scope": "Actual unchanged original UUIDv7 module with caller-owned deterministic Date/crypto hooks; module timestamp and sequence preserved across every scenario",
+  "cases": 26,
+  "rows": [
+    {
+      "name": "ordinary-function-metadata",
+      "value": {
+        "name": "uuidv7",
+        "length": 1,
+        "keys": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "prototype": [
+          true,
+          false,
+          false
+        ],
+        "constructor": true
+      },
+      "trace": []
+    },
+    {
+      "name": "ordinary-clock",
+      "value": "00000000-03e8-7089-8466-88abccddeeff",
+      "trace": [
+        "date",
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "ordinary-clock-moves-forward",
+      "value": "00000000-07d0-7089-8466-88accddeef00",
+      "trace": [
+        "date",
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "ordinary-clock-clamps-backwards",
+      "value": "00000000-07d0-7089-8466-88afcedff001",
+      "trace": [
+        "date",
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "explicit-zero",
+      "value": "00000000-0000-7089-8466-88b0cfe0f102",
+      "trace": [
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "explicit-maximum",
+      "value": "ffffffff-ffff-7089-8466-88b3d0e1f203",
+      "trace": [
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "explicit-follower-earlier",
+      "value": "00000000-0001-7089-8466-88b4d1e2f304",
+      "trace": [
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "ordinary-after-follower-retains-clock",
+      "value": "00000000-07d0-7089-8466-88b7d2e3f405",
+      "trace": [
+        "date",
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "explicit-null-requests-clock-encodes-zero",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert null to a BigInt"
+      },
+      "trace": [
+        "date",
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "negative-range",
+      "error": {
+        "name": "RangeError",
+        "message": "UUIDv7 timestamp must be an integer between 0 and 281474976710655"
+      },
+      "trace": []
+    },
+    {
+      "name": "fractional-range",
+      "error": {
+        "name": "RangeError",
+        "message": "UUIDv7 timestamp must be an integer between 0 and 281474976710655"
+      },
+      "trace": []
+    },
+    {
+      "name": "too-large-range",
+      "error": {
+        "name": "RangeError",
+        "message": "UUIDv7 timestamp must be an integer between 0 and 281474976710655"
+      },
+      "trace": []
+    },
+    {
+      "name": "nan-range",
+      "error": {
+        "name": "RangeError",
+        "message": "UUIDv7 timestamp must be an integer between 0 and 281474976710655"
+      },
+      "trace": []
+    },
+    {
+      "name": "infinity-range",
+      "error": {
+        "name": "RangeError",
+        "message": "UUIDv7 timestamp must be an integer between 0 and 281474976710655"
+      },
+      "trace": []
+    },
+    {
+      "name": "string-range",
+      "error": {
+        "name": "RangeError",
+        "message": "UUIDv7 timestamp must be an integer between 0 and 281474976710655"
+      },
+      "trace": []
+    },
+    {
+      "name": "bigint-range",
+      "error": {
+        "name": "RangeError",
+        "message": "UUIDv7 timestamp must be an integer between 0 and 281474976710655"
+      },
+      "trace": []
+    },
+    {
+      "name": "object-range-does-not-coerce",
+      "error": {
+        "name": "RangeError",
+        "message": "UUIDv7 timestamp must be an integer between 0 and 281474976710655"
+      },
+      "trace": []
+    },
+    {
+      "name": "explicit-does-not-read-date",
+      "value": "00000000-007b-7089-8466-88bbd4e5f607",
+      "trace": [
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "random-rejection-before-sequence-increment",
+      "error": {
+        "name": "Error",
+        "message": "random-marker"
+      },
+      "trace": []
+    },
+    {
+      "name": "sequence-after-random-rejection",
+      "value": "00000000-0141-7089-8466-88bcd5e6f708",
+      "trace": [
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "mutable-math-max-receiver-and-order",
+      "value": "00000000-07d0-7089-8466-88bfd6e7f809",
+      "trace": [
+        "date",
+        [
+          "max",
+          true,
+          500,
+          2000
+        ],
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "mutable-number-conversion",
+      "value": "00000000-0063-7089-8466-88c0d7e8f90a",
+      "trace": [
+        [
+          "isInteger",
+          true,
+          99
+        ],
+        [
+          "random",
+          16
+        ],
+        [
+          "number",
+          "99"
+        ],
+        [
+          "number",
+          "0"
+        ],
+        [
+          "number",
+          "0"
+        ],
+        [
+          "number",
+          "0"
+        ],
+        [
+          "number",
+          "0"
+        ],
+        [
+          "number",
+          "0"
+        ],
+        [
+          "number",
+          "0"
+        ],
+        [
+          "number",
+          "137"
+        ],
+        [
+          "number",
+          "4"
+        ],
+        [
+          "number",
+          "102"
+        ],
+        [
+          "number",
+          "136"
+        ],
+        [
+          "number",
+          "192"
+        ]
+      ]
+    },
+    {
+      "name": "mutable-bigint-conversion",
+      "value": "00000000-0063-7089-8466-88c3d8e9fa0b",
+      "trace": [
+        [
+          "random",
+          16
+        ],
+        [
+          "bigint",
+          99
+        ],
+        [
+          "bigint",
+          0
+        ],
+        [
+          "bigint",
+          8
+        ],
+        [
+          "bigint",
+          16
+        ],
+        [
+          "bigint",
+          24
+        ],
+        [
+          "bigint",
+          32
+        ],
+        [
+          "bigint",
+          40
+        ]
+      ]
+    },
+    {
+      "name": "array-from-receiver-and-callback",
+      "value": "00000000-0058-7089-8466-88c4d9eafb0c",
+      "trace": [
+        [
+          "random",
+          16
+        ],
+        [
+          "from",
+          true,
+          16,
+          "",
+          1,
+          false
+        ]
+      ]
+    },
+    {
+      "name": "ordinary-construction",
+      "value": {
+        "prototype": true,
+        "keys": []
+      },
+      "trace": [
+        [
+          "random",
+          16
+        ]
+      ]
+    },
+    {
+      "name": "tail-bits-variant-and-monotonic-sequence",
+      "value": {
+        "a": "00000000-022b-7089-8466-88c8dbecfd0e",
+        "b": "00000000-022b-7089-8466-88cbdcedfe0f",
+        "ordered": true,
+        "version": "7",
+        "variant": "8"
+      },
+      "trace": [
+        [
+          "random",
+          16
+        ],
+        [
+          "random",
+          16
+        ]
+      ]
+    }
+  ]
+}
