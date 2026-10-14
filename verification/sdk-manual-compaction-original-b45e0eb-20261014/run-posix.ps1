@@ -22,7 +22,7 @@ $taskInitial=@(Get-Content -LiteralPath (Join-Path $taskReceipts 'tracked-initia
 foreach($taskRow in $taskInitial){if((Get-FileHash -LiteralPath $taskRow.path).Hash -cne $taskRow.sha256){throw 'Tracked Source changed during npm ci'}}
  $env:PI_PACKAGE_DIR='/owned/pi-package';
 $env:NODE_OPTIONS='';$env:NODE_PATH=''
-& (Join-Path $taskCandidate 'verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1') -Executable $taskNode -WorkingDirectory $taskSource -Arguments @('--max-old-space-size=128',(Join-Path $taskSource 'packages/ai/scripts/hydrate-model-catalog.ts'),$taskCatalog) -ReceiptBase (Join-Path $taskReceipts 'official-hydration') -TimeoutSeconds 300
+& (Join-Path $taskCandidate 'verification/sdk-manual-compaction-original-b45e0eb-20261014/run-native-owner.ps1') -Executable $taskNode -WorkingDirectory $taskSource -Arguments @('--max-old-space-size=128',(Join-Path $taskSource 'packages/ai/scripts/hydrate-model-catalog.ts'),$taskCatalog) -ReceiptBase (Join-Path $taskReceipts 'official-hydration') -TimeoutSeconds 300
 foreach($taskRow in $taskInitial){if((Get-FileHash -LiteralPath $taskRow.path).Hash -cne $taskRow.sha256){throw 'Original hydration changed tracked Source'}}
 $taskHydrated=@(Get-ChildItem -LiteralPath (Join-Path $taskSource 'packages/ai/src/providers/data') -File -Force|ForEach-Object{[ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash}})
 if($taskInitial.Count -ne 1922 -or $taskHydrated.Count -ne 43){throw 'Complete original Source inventory changed'}
@@ -70,7 +70,7 @@ foreach($taskFamily in $taskFamilies){
         if($Task -eq 'inherit'){$taskCaptureArgs+=@('--expose-gc')}
         $taskCaptureArgs+=@('--max-old-space-size=256','--conditions=source','--experimental-transform-types','--import',($taskObserverUri.Uri.AbsoluteUri))
         $taskCaptureArgs+=$taskCaptureTail
-        try{& (Join-Path $taskCandidate 'verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1') -Executable $taskNode -WorkingDirectory $taskSource -Arguments $taskCaptureArgs -ReceiptBase $taskBase -TimeoutSeconds 300}catch{$taskFailure=$_}
+        try{& (Join-Path $taskCandidate 'verification/sdk-manual-compaction-original-b45e0eb-20261014/run-native-owner.ps1') -Executable $taskNode -WorkingDirectory $taskSource -Arguments $taskCaptureArgs -ReceiptBase $taskBase -TimeoutSeconds 300}catch{$taskFailure=$_}
         $taskAfter=Verify-Original
         [ordered]@{before=$taskBefore;after=$taskAfter;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 7|Set-Content -LiteralPath "$taskBase-posthash.json" -Encoding utf8NoBOM
         if($taskFailure){throw $taskFailure}

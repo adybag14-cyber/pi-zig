@@ -1,0 +1,349 @@
+capture (macos-latest)	Set up job	﻿2026-10-14T20:34:00.3642380Z Current runner version: '2.337.0'
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3672050Z ##[group]Runner Image Provisioner
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3672790Z Hosted Compute Agent
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3673200Z Version: 20260828.587
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3673670Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3674170Z Build Date: 2026-08-28T16:44:25Z
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3674670Z Worker ID: {73256373-60aa-40a7-a054-0789eafe666d}
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3675170Z Azure Region: westus
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3675560Z ##[endgroup]
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3676730Z ##[group]Operating System
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3677220Z macOS
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3677610Z 26.6.2
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3677950Z 25G83
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3678380Z ##[endgroup]
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3678740Z ##[group]Runner Image
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3679170Z Image: macos-26-arm64
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3679600Z Version: 20260907.0351.1
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3680440Z Included Software: https://github.com/actions/runner-images/blob/macos-26-arm64/20260907.0351/images/macos/macos-26-arm64-Readme.md
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3681850Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-26-arm64%2F20260907.0351
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3682660Z ##[endgroup]
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3683570Z ##[group]GITHUB_TOKEN Permissions
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3685370Z Contents: read
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3685830Z Metadata: read
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3686300Z ##[endgroup]
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3688150Z Secret source: Actions
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3688800Z Cache mode: write
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.3689390Z Prepare workflow directory
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.4096230Z Prepare all required actions
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.4150580Z Getting action download info
+capture (macos-latest)	Set up job	2026-10-14T20:34:00.7495980Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+capture (macos-latest)	Set up job	2026-10-14T20:34:01.0382060Z Download action repository 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+capture (macos-latest)	Set up job	2026-10-14T20:34:01.1667980Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+capture (macos-latest)	Set up job	2026-10-14T20:34:01.3874280Z Complete job name: capture (macos-latest)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-14T20:34:01.4457510Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4458740Z with:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4459090Z   persist-credentials: false
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4459500Z   repository: adybag14-cyber/pi-zig
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4462660Z   token: ***
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4462990Z   ssh-strict: true
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4463320Z   ssh-user: git
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4463640Z   clean: true
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4463980Z   sparse-checkout-cone-mode: true
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4464370Z   fetch-depth: 1
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4464690Z   fetch-tags: false
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4465020Z   show-progress: true
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4465350Z   lfs: false
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4465670Z   submodules: false
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4466000Z   set-safe-directory: true
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4466380Z   allow-unsafe-pr-checkout: false
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.4467060Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.8473090Z Syncing repository: adybag14-cyber/pi-zig
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.8474850Z ##[group]Getting Git version info
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.8475460Z Working directory is '/Users/runner/work/pi-zig/pi-zig'
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.8476230Z [command]/opt/homebrew/bin/git version
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9086530Z git version 2.55.0
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9106630Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9116930Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/2c330f3a-1040-46f2-a5ce-cbc3102dc1d3/.gitconfig'
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9142560Z Temporarily overriding HOME='/Users/runner/work/_temp/2c330f3a-1040-46f2-a5ce-cbc3102dc1d3' before making global git config changes
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9144110Z Adding repository directory to the temporary git global config as a safe directory
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9155730Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/pi-zig/pi-zig
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9339750Z Deleting the contents of '/Users/runner/work/pi-zig/pi-zig'
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9346490Z ##[group]Initializing the repository
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9349330Z [command]/opt/homebrew/bin/git init /Users/runner/work/pi-zig/pi-zig
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9688850Z hint: Using 'master' as the name for the initial branch. This default branch name
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9693470Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9694440Z hint: to use in all of your new repositories, which will suppress this warning,
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9695150Z hint: call:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9696640Z hint:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9698040Z hint: 	git config --global init.defaultBranch <name>
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9699340Z hint:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9700720Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9701960Z hint: 'development'. The just-created branch can be renamed via this command:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9702590Z hint:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9702930Z hint: 	git branch -m <name>
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9703350Z hint:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9703840Z hint: Disable this message with "git config set advice.defaultBranchName false"
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9704660Z Initialized empty Git repository in /Users/runner/work/pi-zig/pi-zig/.git/
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9706180Z [command]/opt/homebrew/bin/git remote add origin https://github.com/adybag14-cyber/pi-zig
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9792690Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9795790Z ##[group]Disabling automatic garbage collection
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9796560Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9880600Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9881430Z ##[group]Setting up auth
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9887690Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.9974460Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:02.1284270Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:02.1367790Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:02.3129330Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:02.3450140Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:02.5630430Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:02.5633190Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:02.5634110Z ##[group]Fetching the repository
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:02.5635590Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +fc816543bea2b7d068966f6948e845c375db39f1:refs/remotes/origin/checkpoint/native-manual-compaction-b45-original-20261014
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:05.3251300Z From https://github.com/adybag14-cyber/pi-zig
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:05.3252700Z  * [new ref]         fc816543bea2b7d068966f6948e845c375db39f1 -> origin/checkpoint/native-manual-compaction-b45-original-20261014
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:05.3263800Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:05.3265100Z ##[group]Determining the checkout info
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:05.3266340Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:05.3275890Z [command]/opt/homebrew/bin/git sparse-checkout disable
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:05.3387240Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:05.3531770Z ##[group]Checking out the ref
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:05.3625120Z [command]/opt/homebrew/bin/git checkout --progress --force -B checkpoint/native-manual-compaction-b45-original-20261014 refs/remotes/origin/checkpoint/native-manual-compaction-b45-original-20261014
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.4568910Z Updating files:  66% (3640/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.4785570Z Updating files:  67% (3657/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.5064300Z Updating files:  68% (3712/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.5243000Z Updating files:  69% (3767/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.5384280Z Updating files:  70% (3821/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.7132110Z Updating files:  71% (3876/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.7921510Z Updating files:  72% (3930/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.8049170Z Updating files:  73% (3985/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.8561630Z Updating files:  74% (4039/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.8703880Z Updating files:  75% (4094/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.8925800Z Updating files:  76% (4149/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.8945040Z Updating files:  77% (4203/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.9024180Z Updating files:  78% (4258/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.9171510Z Updating files:  79% (4312/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.9342150Z Updating files:  80% (4367/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.9570200Z Updating files:  81% (4421/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.9622700Z Updating files:  82% (4476/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.9665510Z Updating files:  83% (4531/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.9803410Z Updating files:  84% (4585/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:06.9931240Z Updating files:  85% (4640/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.0057380Z Updating files:  86% (4694/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.0294310Z Updating files:  87% (4749/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.0463650Z Updating files:  88% (4804/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.0616050Z Updating files:  89% (4858/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.0692540Z Updating files:  90% (4913/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.0791310Z Updating files:  91% (4967/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.0866480Z Updating files:  92% (5022/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.1005490Z Updating files:  93% (5076/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.1127020Z Updating files:  94% (5131/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.1216070Z Updating files:  95% (5186/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.1398970Z Updating files:  96% (5240/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.1537710Z Updating files:  97% (5295/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.1695340Z Updating files:  98% (5349/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.1948540Z Updating files:  99% (5404/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.1949970Z Updating files: 100% (5458/5458)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.1950640Z Updating files: 100% (5458/5458), done.
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.2074150Z Switched to a new branch 'checkpoint/native-manual-compaction-b45-original-20261014'
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.2086100Z branch 'checkpoint/native-manual-compaction-b45-original-20261014' set up to track 'origin/checkpoint/native-manual-compaction-b45-original-20261014'.
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.2180130Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.2564620Z [command]/opt/homebrew/bin/git log -1 --format=%H
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.2565220Z fc816543bea2b7d068966f6948e845c375db39f1
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.2566880Z ##[group]Removing auth
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.2567410Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.2707810Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.4283730Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.4398680Z http.https://github.com/.extraheader
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.4414600Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.4519000Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.6235840Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.6539530Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8352850Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-14T20:34:07.8622700Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8629760Z with:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8630130Z   repository: earendil-works/pi
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8630420Z   ref: b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8630690Z   path: .reference-source
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8630940Z   persist-credentials: false
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8633760Z   token: ***
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8634150Z   ssh-strict: true
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8634410Z   ssh-user: git
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8634600Z   clean: true
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8634820Z   sparse-checkout-cone-mode: true
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8635060Z   fetch-depth: 1
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8635300Z   fetch-tags: false
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8635470Z   show-progress: true
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8635670Z   lfs: false
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8635820Z   submodules: false
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8636060Z   set-safe-directory: true
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8636340Z   allow-unsafe-pr-checkout: false
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:07.8636590Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0655280Z Syncing repository: earendil-works/pi
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0710170Z ##[group]Getting Git version info
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0719590Z Working directory is '/Users/runner/work/pi-zig/pi-zig/.reference-source'
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0733940Z [command]/opt/homebrew/bin/git version
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0782090Z git version 2.55.0
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0783860Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0785630Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/f16afde6-1a8d-4318-8667-e9a6207e25e5/.gitconfig'
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0786530Z Temporarily overriding HOME='/Users/runner/work/_temp/f16afde6-1a8d-4318-8667-e9a6207e25e5' before making global git config changes
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0788990Z Adding repository directory to the temporary git global config as a safe directory
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0789880Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/pi-zig/pi-zig/.reference-source
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0806130Z ##[group]Initializing the repository
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.0815640Z [command]/opt/homebrew/bin/git init /Users/runner/work/pi-zig/pi-zig/.reference-source
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1043490Z hint: Using 'master' as the name for the initial branch. This default branch name
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1050820Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1052520Z hint: to use in all of your new repositories, which will suppress this warning,
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1054880Z hint: call:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1055870Z hint:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1056610Z hint: 	git config --global init.defaultBranch <name>
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1057530Z hint:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1058580Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1062330Z hint: 'development'. The just-created branch can be renamed via this command:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1062890Z hint:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1063200Z hint: 	git branch -m <name>
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1063590Z hint:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1063950Z hint: Disable this message with "git config set advice.defaultBranchName false"
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1064790Z Initialized empty Git repository in /Users/runner/work/pi-zig/pi-zig/.reference-source/.git/
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1077660Z [command]/opt/homebrew/bin/git remote add origin https://github.com/earendil-works/pi
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1166140Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1167650Z ##[group]Disabling automatic garbage collection
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1198550Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1263520Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1263950Z ##[group]Setting up auth
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1268230Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.1361350Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.2983570Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.3291350Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.4956670Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.5209030Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.6812280Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.6919680Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.6920130Z ##[group]Fetching the repository
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:08.6924910Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:09.8678630Z From https://github.com/earendil-works/pi
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:09.8690000Z  * branch            b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb -> FETCH_HEAD
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:09.8694440Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:09.8694890Z ##[group]Determining the checkout info
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:09.8695330Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:09.8695630Z [command]/opt/homebrew/bin/git sparse-checkout disable
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:09.8819370Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:09.8936780Z ##[group]Checking out the ref
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:09.8940490Z [command]/opt/homebrew/bin/git checkout --progress --force b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.2666150Z HEAD is now at b45e0eb feat(chord): references hydrate their state before use (protocol 4)
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.2814760Z ##[endgroup]
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.2822570Z [command]/opt/homebrew/bin/git log -1 --format=%H
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.2924140Z b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.2931270Z ##[group]Removing auth
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.2935360Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.3012700Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.4309290Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.4371670Z http.https://github.com/.extraheader
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.4422260Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.4423730Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.5772010Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.5859140Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (macos-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:10.7072440Z ##[endgroup]
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	﻿2026-10-14T20:34:10.7247590Z ##[group]Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:10.7247960Z with:
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:10.7248090Z   node-version: 24.14.0
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:10.7248290Z   always-auth: false
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:10.7248460Z   check-latest: false
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:10.7250530Z   token: ***
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:10.7250680Z ##[endgroup]
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:10.8619200Z Attempting to download 24.14.0...
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:10.8839090Z (node:2161) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:10.8843660Z (Use `node --trace-deprecation ...` to show where the warning was created)
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:11.6961320Z Acquiring 24.14.0 - arm64 from https://github.com/actions/node-versions/releases/download/24.14.0-22380502845/node-24.14.0-darwin-arm64.tar.gz
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:12.4544110Z Extracting ...
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:12.4755100Z [command]/usr/bin/tar xz --strip 1 -C /Users/runner/work/_temp/a0dc6906-9c5e-490b-970c-694903228b51 -f /Users/runner/work/_temp/5becc51d-9b7a-4e1d-95cc-f70775da8840
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:13.9443430Z Adding to the cache ...
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:16.9615330Z ##[group]Environment details
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:17.4629850Z node: v24.14.0
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:17.4630960Z npm: 11.9.0
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:17.4631540Z yarn: 1.22.22
+capture (macos-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:17.4633450Z ##[endgroup]
+capture (macos-latest)	Record every original tracked Source file before preparation	﻿2026-10-14T20:34:17.4862550Z ##[group]Run $ErrorActionPreference='Stop'
+capture (macos-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:17.4863540Z [36;1m$ErrorActionPreference='Stop'[0m
+capture (macos-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:17.4864500Z [36;1m$taskSource=Join-Path (Get-Location) '.reference-source'[0m
+capture (macos-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:17.4865650Z [36;1m$taskReceipts='verification/sdk-manual-compaction-original-result'[0m
+capture (macos-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:17.4866980Z [36;1mNew-Item -ItemType Directory -Path $taskReceipts | Out-Null[0m
+capture (macos-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:17.4868980Z [36;1mif((git -C $taskSource rev-parse HEAD).Trim() -cne 'b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb'){throw 'Original Source checkout mismatch'}[0m
+capture (macos-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:17.4870370Z [36;1m$taskRows=@(git -C $taskSource ls-files|Sort-Object|ForEach-Object{$taskPath=Join-Path $taskSource $_;[ordered]@{path=$taskPath;sha256=(Get-FileHash -LiteralPath $taskPath).Hash}})[0m
+capture (macos-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:17.4871420Z [36;1m$taskRows|ConvertTo-Json -Depth 4|Set-Content "$taskReceipts/tracked-initial.json" -Encoding utf8NoBOM[0m
+capture (macos-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:17.4914300Z shell: /usr/local/bin/pwsh -command ". '{0}'"
+capture (macos-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:17.4914970Z ##[endgroup]
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	﻿2026-10-14T20:34:19.9634990Z ##[group]Run npm ci --ignore-scripts --no-audit --no-fund
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9635580Z [36;1mnpm ci --ignore-scripts --no-audit --no-fund[0m
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9670860Z shell: /bin/bash -e {0}
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9671130Z ##[endgroup]
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.1137070Z npm warn Unknown project config "min-release-age". This will stop working in the next major version of npm.
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.4997900Z npm warn EBADENGINE Unsupported engine {
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.5098020Z npm warn EBADENGINE   package: 'autoevals@0.3.0',
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.5199310Z npm warn EBADENGINE   required: {
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.5299940Z npm warn EBADENGINE     npm: 'please-use-pnpm',
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.5405510Z npm warn EBADENGINE     pnpm: '>=10.27.0',
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.5507070Z npm warn EBADENGINE     yarn: 'please-use-pnpm'
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.5607620Z npm warn EBADENGINE   },
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.5668320Z npm warn EBADENGINE   current: { node: 'v24.14.0', npm: '11.9.0' }
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.5670570Z npm warn EBADENGINE }
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:22.0089260Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:22.0544180Z npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:22.3923310Z npm warn deprecated prebuild-install@7.1.3: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:23.3797060Z npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:33.2241460Z 
+capture (macos-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:33.2344310Z added 299 packages in 13s
+capture (macos-latest)	Capture actual unchanged b45 manual compaction44 exports twice	﻿2026-10-14T20:34:33.4424100Z ##[group]Run & verification/sdk-manual-compaction-original-b45e0eb-20261014/run-posix.ps1
+capture (macos-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:33.4425530Z [36;1m& verification/sdk-manual-compaction-original-b45e0eb-20261014/run-posix.ps1[0m
+capture (macos-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:33.4461000Z shell: /usr/local/bin/pwsh -command ". '{0}'"
+capture (macos-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:33.4461500Z ##[endgroup]
+capture (macos-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:35.3397450Z [31;1m&: [0m/Users/runner/work/pi-zig/pi-zig/verification/sdk-manual-compaction-original-b45e0eb-20261014/run-posix.ps1:25[0m
+capture (macos-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:35.3406300Z [31;1m[0m[36;1mLine |[0m
+capture (macos-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:35.3408750Z [31;1m[0m[36;1m[36;1m  25 | [0m & [36;1m(Join-Path $taskCandidate 'verification/sdk-session-loadout-e6220e1[0m …[0m
+capture (macos-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:35.3411170Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+capture (macos-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:35.3413230Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mThe term[0m
+capture (macos-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:35.3418690Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m[31;1m[36;1m     | [31;1m'/Users/runner/work/pi-zig/pi-zig/verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1' is not recognized as a name of a cmdlet, function, script file, or executable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.[0m
+capture (macos-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:35.3843940Z ##[error]Process completed with exit code 1.
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	﻿2026-10-14T20:34:35.3939640Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.3940110Z with:
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.3940470Z   name: original-sdk-manual-compaction-b45-macos-latest-fc816543bea2b7d068966f6948e845c375db39f1
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.3940960Z   retention-days: 14
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.3941280Z   path: verification/sdk-manual-compaction-original-result/
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.3941570Z   if-no-files-found: warn
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.3941810Z   compression-level: 6
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.3942150Z   overwrite: false
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.3942370Z   include-hidden-files: false
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.3942740Z ##[endgroup]
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.6155190Z (node:2440) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.6160410Z (Use `node --trace-deprecation ...` to show where the warning was created)
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.6216690Z With the provided path, there will be 1 file uploaded
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.6218460Z Artifact name is valid!
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.6219650Z Root directory input is valid!
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.9538430Z Beginning upload of artifact content to blob storage
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:35.9836480Z (node:2440) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:36.2049060Z Uploaded bytes 93778
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:36.2524930Z Finished uploading artifact content to blob storage!
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:36.2556690Z SHA256 digest of uploaded artifact zip is 1291f617a39a6ead48cc9dd656a69260cebf44660712bc0050fad3894d58fa97
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:36.2561750Z Finalizing artifact upload
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:36.5344550Z Artifact original-sdk-manual-compaction-b45-macos-latest-fc816543bea2b7d068966f6948e845c375db39f1.zip successfully finalized. Artifact ID 11927746055
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:36.5348220Z Artifact original-sdk-manual-compaction-b45-macos-latest-fc816543bea2b7d068966f6948e845c375db39f1 has been successfully uploaded! Final size is 93778 bytes. Artifact ID is 11927746055
+capture (macos-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:36.5350940Z Artifact download URL: https://github.com/adybag14-cyber/pi-zig/actions/runs/38633126153/artifacts/11927746055
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-14T20:34:36.5503470Z Post job cleanup.
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:36.6672410Z [command]/opt/homebrew/bin/git version
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:36.6812320Z git version 2.55.0
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:36.6839220Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/b9f67678-f643-47fc-ac43-1d66cc3b2cc0/.gitconfig'
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:36.6849090Z Temporarily overriding HOME='/Users/runner/work/_temp/b9f67678-f643-47fc-ac43-1d66cc3b2cc0' before making global git config changes
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:36.6852260Z Adding repository directory to the temporary git global config as a safe directory
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:36.6854340Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/pi-zig/pi-zig/.reference-source
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:36.6955810Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:36.7051200Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:36.8447980Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:36.8524810Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:36.9944960Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.0030160Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-14T20:34:37.2060100Z Post job cleanup.
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.3253300Z [command]/opt/homebrew/bin/git version
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.3318340Z git version 2.55.0
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.3410410Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/248cff0c-1862-49e6-8f88-6aad733f1af5/.gitconfig'
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.3411460Z Temporarily overriding HOME='/Users/runner/work/_temp/248cff0c-1862-49e6-8f88-6aad733f1af5' before making global git config changes
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.3412290Z Adding repository directory to the temporary git global config as a safe directory
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.3413210Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/pi-zig/pi-zig
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.3420740Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.3503530Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.4973570Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.5000420Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.6711850Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (macos-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:37.6915070Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (macos-latest)	Complete job	﻿2026-10-14T20:34:37.8520410Z Cleaning up orphan processes
+capture (macos-latest)	Complete job	2026-10-14T20:34:38.2555040Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262, actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

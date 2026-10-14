@@ -1,0 +1,327 @@
+capture (ubuntu-latest)	Set up job	﻿2026-10-14T20:33:54.8838178Z Current runner version: '2.337.0'
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8862027Z ##[group]Runner Image Provisioner
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8862978Z Hosted Compute Agent
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8863644Z Version: 20261012.601
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8864332Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8865062Z Build Date: 2026-10-12T17:48:21Z
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8865740Z Worker ID: {a73bc823-76b2-4e91-9e4c-8ba2751d4619}
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8866415Z Region: westus3
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8867308Z Cloud: Azure
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8867842Z ##[endgroup]
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8869341Z ##[group]Operating System
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8870005Z Ubuntu
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8870505Z 24.04.5
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8871027Z LTS
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8871528Z ##[endgroup]
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8872069Z ##[group]Runner Image
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8872655Z Image: ubuntu-24.04
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8873187Z Version: 20261012.334.1
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8874204Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8875815Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8876748Z ##[endgroup]
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8877796Z ##[group]GITHUB_TOKEN Permissions
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8880504Z Contents: read
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8881074Z Metadata: read
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8881623Z ##[endgroup]
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8883574Z Secret source: Actions
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8884494Z Cache mode: write
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.8885129Z Prepare workflow directory
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.9180597Z Prepare all required actions
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:54.9227023Z Getting action download info
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:55.2423454Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:55.3958446Z Download action repository 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:55.5812160Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+capture (ubuntu-latest)	Set up job	2026-10-14T20:33:55.9981716Z Complete job name: capture (ubuntu-latest)
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-14T20:33:56.0836548Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0838275Z with:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0839373Z   persist-credentials: false
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0840482Z   repository: adybag14-cyber/pi-zig
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0848153Z   token: ***
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0849006Z   ssh-strict: true
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0850161Z   ssh-user: git
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0851017Z   clean: true
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0851903Z   sparse-checkout-cone-mode: true
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0852937Z   fetch-depth: 1
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0853783Z   fetch-tags: false
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0854639Z   show-progress: true
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0855502Z   lfs: false
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0856320Z   submodules: false
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0857233Z   set-safe-directory: true
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0858215Z   allow-unsafe-pr-checkout: false
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.0859872Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.1888044Z Syncing repository: adybag14-cyber/pi-zig
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.1891481Z ##[group]Getting Git version info
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.1893107Z Working directory is '/home/runner/work/pi-zig/pi-zig'
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.1895127Z [command]/usr/bin/git version
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.1931157Z git version 2.55.0
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.1953040Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.1966977Z Temporarily overriding HOME='/home/runner/work/_temp/03c695ff-0629-4cc2-9e43-e75c6894a484' before making global git config changes
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.1971224Z Adding repository directory to the temporary git global config as a safe directory
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.1974226Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pi-zig/pi-zig
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2020377Z Deleting the contents of '/home/runner/work/pi-zig/pi-zig'
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2026815Z ##[group]Initializing the repository
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2031292Z [command]/usr/bin/git init /home/runner/work/pi-zig/pi-zig
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2107737Z hint: Using 'master' as the name for the initial branch. This default branch name
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2111011Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2114200Z hint: to use in all of your new repositories, which will suppress this warning,
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2117245Z hint: call:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2118747Z hint:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2120900Z hint: 	git config --global init.defaultBranch <name>
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2123023Z hint:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2124946Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2128297Z hint: 'development'. The just-created branch can be renamed via this command:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2130369Z hint:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2131475Z hint: 	git branch -m <name>
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2132481Z hint:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2134137Z hint: Disable this message with "git config set advice.defaultBranchName false"
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2136498Z Initialized empty Git repository in /home/runner/work/pi-zig/pi-zig/.git/
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2139847Z [command]/usr/bin/git remote add origin https://github.com/adybag14-cyber/pi-zig
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2169592Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2172224Z ##[group]Disabling automatic garbage collection
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2174520Z [command]/usr/bin/git config --local gc.auto 0
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2205061Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2207081Z ##[group]Setting up auth
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2210917Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2239721Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2536649Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2567511Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2763952Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2797642Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.2979767Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.3138275Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.3141004Z ##[group]Fetching the repository
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:33:56.3151185Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +fc816543bea2b7d068966f6948e845c375db39f1:refs/remotes/origin/checkpoint/native-manual-compaction-b45-original-20261014
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.0679344Z From https://github.com/adybag14-cyber/pi-zig
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.0680820Z  * [new ref]         fc816543bea2b7d068966f6948e845c375db39f1 -> origin/checkpoint/native-manual-compaction-b45-original-20261014
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.0683810Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.0684831Z ##[group]Determining the checkout info
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.0685853Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.0693280Z [command]/usr/bin/git sparse-checkout disable
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.0739882Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.0767616Z ##[group]Checking out the ref
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.0782598Z [command]/usr/bin/git checkout --progress --force -B checkpoint/native-manual-compaction-b45-original-20261014 refs/remotes/origin/checkpoint/native-manual-compaction-b45-original-20261014
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.9915401Z Switched to a new branch 'checkpoint/native-manual-compaction-b45-original-20261014'
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.9917839Z branch 'checkpoint/native-manual-compaction-b45-original-20261014' set up to track 'origin/checkpoint/native-manual-compaction-b45-original-20261014'.
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.9940014Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:00.9977947Z [command]/usr/bin/git log -1 --format=%H
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0001779Z fc816543bea2b7d068966f6948e845c375db39f1
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0010090Z ##[group]Removing auth
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0014073Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0041168Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0233049Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0256269Z http.https://github.com/.extraheader
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0262919Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0292434Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0476966Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0501198Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0685387Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-14T20:34:01.0932111Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0932622Z with:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0932968Z   repository: earendil-works/pi
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0933409Z   ref: b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0933823Z   path: .reference-source
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0934230Z   persist-credentials: false
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0936646Z   token: ***
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0936949Z   ssh-strict: true
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0937300Z   ssh-user: git
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0937610Z   clean: true
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0937975Z   sparse-checkout-cone-mode: true
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0938331Z   fetch-depth: 1
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0938625Z   fetch-tags: false
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0938997Z   show-progress: true
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0939646Z   lfs: false
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0939971Z   submodules: false
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0940338Z   set-safe-directory: true
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0940681Z   allow-unsafe-pr-checkout: false
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.0941099Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.1757401Z Syncing repository: earendil-works/pi
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.1773659Z ##[group]Getting Git version info
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.1774801Z Working directory is '/home/runner/work/pi-zig/pi-zig/.reference-source'
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.1819555Z [command]/usr/bin/git version
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.1861916Z git version 2.55.0
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.1890345Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.1898365Z Temporarily overriding HOME='/home/runner/work/_temp/ecfd72bb-9da4-4b59-a39b-f666c5762e63' before making global git config changes
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.1899755Z Adding repository directory to the temporary git global config as a safe directory
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.1904118Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pi-zig/pi-zig/.reference-source
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.2404522Z ##[group]Initializing the repository
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.2411184Z [command]/usr/bin/git init /home/runner/work/pi-zig/pi-zig/.reference-source
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3811685Z hint: Using 'master' as the name for the initial branch. This default branch name
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3812899Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3813977Z hint: to use in all of your new repositories, which will suppress this warning,
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3814964Z hint: call:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3815487Z hint:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3816106Z hint: 	git config --global init.defaultBranch <name>
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3816830Z hint:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3817459Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3818661Z hint: 'development'. The just-created branch can be renamed via this command:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3819649Z hint:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3820312Z hint: 	git branch -m <name>
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3821269Z hint:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3822709Z hint: Disable this message with "git config set advice.defaultBranchName false"
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3824072Z Initialized empty Git repository in /home/runner/work/pi-zig/pi-zig/.reference-source/.git/
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.3831801Z [command]/usr/bin/git remote add origin https://github.com/earendil-works/pi
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.5678887Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.5679964Z ##[group]Disabling automatic garbage collection
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.5683963Z [command]/usr/bin/git config --local gc.auto 0
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.6921663Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.6922505Z ##[group]Setting up auth
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.6930446Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.6965216Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.7174068Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.7210227Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.7396293Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.7425816Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.7610720Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.7701756Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.7702506Z ##[group]Fetching the repository
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:01.7711293Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.5302451Z From https://github.com/earendil-works/pi
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.5303285Z  * branch            b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb -> FETCH_HEAD
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.5307082Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.5307811Z ##[group]Determining the checkout info
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.5310081Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.5315429Z [command]/usr/bin/git sparse-checkout disable
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.5354279Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.5382406Z ##[group]Checking out the ref
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.5386532Z [command]/usr/bin/git checkout --progress --force b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6775269Z Note: switching to 'b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb'.
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6776016Z 
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6776563Z You are in 'detached HEAD' state. You can look around, make experimental
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6777574Z changes and commit them, and you can discard any commits you make in this
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6778656Z state without impacting any branches by switching back to a branch.
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6779484Z 
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6779925Z If you want to create a new branch to retain commits you create, you may
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6780880Z do so (now or later) by using -c with the switch command. Example:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6781438Z 
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6782320Z   git switch -c <new-branch-name>
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6782653Z 
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6782896Z Or undo this operation with:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6783133Z 
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6783250Z   git switch -
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6783436Z 
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6783678Z Turn off this advice by setting config variable advice.detachedHead to false
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6784026Z 
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6784315Z HEAD is now at b45e0eb feat(chord): references hydrate their state before use (protocol 4)
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6785787Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6817781Z [command]/usr/bin/git log -1 --format=%H
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6839922Z b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6847394Z ##[group]Removing auth
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6850798Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.6879186Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.7061750Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.7081456Z http.https://github.com/.extraheader
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.7088214Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.7115818Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.7298552Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.7324333Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (ubuntu-latest)	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:03.7531657Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	﻿2026-10-14T20:34:03.7687725Z ##[group]Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:03.7688245Z with:
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:03.7688532Z   node-version: 24.14.0
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:03.7688855Z   always-auth: false
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:03.7689396Z   check-latest: false
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:03.7691578Z   token: ***
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:03.7691894Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:03.9030208Z Attempting to download 24.14.0...
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:03.9130104Z (node:2369) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:03.9131172Z (Use `node --trace-deprecation ...` to show where the warning was created)
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:05.0301772Z Acquiring 24.14.0 - x64 from https://github.com/actions/node-versions/releases/download/24.14.0-22380502845/node-24.14.0-linux-x64.tar.gz
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:05.6133149Z Extracting ...
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:05.6231709Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/0ab14e15-a2fe-463f-8777-88e766cca5d0 -f /home/runner/work/_temp/eb91dbb0-1d87-4911-83da-d9053053e3b0
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:06.9304164Z Adding to the cache ...
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:12.6063838Z ##[group]Environment details
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:12.8168317Z node: v24.14.0
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:12.8168857Z npm: 11.9.0
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:12.8169456Z yarn: 1.22.22
+capture (ubuntu-latest)	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-14T20:34:12.8170272Z ##[endgroup]
+capture (ubuntu-latest)	Record every original tracked Source file before preparation	﻿2026-10-14T20:34:12.8319781Z ##[group]Run $ErrorActionPreference='Stop'
+capture (ubuntu-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:12.8320388Z [36;1m$ErrorActionPreference='Stop'[0m
+capture (ubuntu-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:12.8320910Z [36;1m$taskSource=Join-Path (Get-Location) '.reference-source'[0m
+capture (ubuntu-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:12.8321471Z [36;1m$taskReceipts='verification/sdk-manual-compaction-original-result'[0m
+capture (ubuntu-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:12.8322074Z [36;1mNew-Item -ItemType Directory -Path $taskReceipts | Out-Null[0m
+capture (ubuntu-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:12.8322835Z [36;1mif((git -C $taskSource rev-parse HEAD).Trim() -cne 'b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb'){throw 'Original Source checkout mismatch'}[0m
+capture (ubuntu-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:12.8323907Z [36;1m$taskRows=@(git -C $taskSource ls-files|Sort-Object|ForEach-Object{$taskPath=Join-Path $taskSource $_;[ordered]@{path=$taskPath;sha256=(Get-FileHash -LiteralPath $taskPath).Hash}})[0m
+capture (ubuntu-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:12.8324881Z [36;1m$taskRows|ConvertTo-Json -Depth 4|Set-Content "$taskReceipts/tracked-initial.json" -Encoding utf8NoBOM[0m
+capture (ubuntu-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:12.8352016Z shell: /usr/bin/pwsh -command ". '{0}'"
+capture (ubuntu-latest)	Record every original tracked Source file before preparation	2026-10-14T20:34:12.8352543Z ##[endgroup]
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	﻿2026-10-14T20:34:19.5392052Z ##[group]Run npm ci --ignore-scripts --no-audit --no-fund
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.5392564Z [36;1mnpm ci --ignore-scripts --no-audit --no-fund[0m
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.5432563Z shell: /usr/bin/bash -e {0}
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.5433019Z ##[endgroup]
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.6170543Z npm warn Unknown project config "min-release-age". This will stop working in the next major version of npm.
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9237228Z npm warn EBADENGINE Unsupported engine {
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9238092Z npm warn EBADENGINE   package: 'autoevals@0.3.0',
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9238825Z npm warn EBADENGINE   required: {
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9239766Z npm warn EBADENGINE     npm: 'please-use-pnpm',
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9240242Z npm warn EBADENGINE     pnpm: '>=10.27.0',
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9240713Z npm warn EBADENGINE     yarn: 'please-use-pnpm'
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9241132Z npm warn EBADENGINE   },
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9241592Z npm warn EBADENGINE   current: { node: 'v24.14.0', npm: '11.9.0' }
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:19.9242044Z npm warn EBADENGINE }
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.6994755Z npm warn deprecated prebuild-install@7.1.3: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.8903517Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:20.9810330Z npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:21.8117913Z npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:28.1430074Z 
+capture (ubuntu-latest)	Install exact lockfile dependencies without lifecycle scripts	2026-10-14T20:34:28.1431832Z added 301 packages in 9s
+capture (ubuntu-latest)	Capture actual unchanged b45 manual compaction44 exports twice	﻿2026-10-14T20:34:28.1824746Z ##[group]Run & verification/sdk-manual-compaction-original-b45e0eb-20261014/run-posix.ps1
+capture (ubuntu-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:28.1826000Z [36;1m& verification/sdk-manual-compaction-original-b45e0eb-20261014/run-posix.ps1[0m
+capture (ubuntu-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:28.1848507Z shell: /usr/bin/pwsh -command ". '{0}'"
+capture (ubuntu-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:28.1849352Z ##[endgroup]
+capture (ubuntu-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:31.8996395Z [31;1m&: [0m/home/runner/work/pi-zig/pi-zig/verification/sdk-manual-compaction-original-b45e0eb-20261014/run-posix.ps1:25[0m
+capture (ubuntu-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:31.8997404Z [31;1m[0m[36;1mLine |[0m
+capture (ubuntu-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:31.8998250Z [31;1m[0m[36;1m[36;1m  25 | [0m & [36;1m(Join-Path $taskCandidate 'verification/sdk-session-loadout-e6220e1[0m …[0m
+capture (ubuntu-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:31.8999581Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+capture (ubuntu-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:31.9000474Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mThe term[0m
+capture (ubuntu-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:31.9002641Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m[31;1m[36;1m     | [31;1m'/home/runner/work/pi-zig/pi-zig/verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1' is not recognized as a name of a cmdlet, function, script file, or executable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.[0m
+capture (ubuntu-latest)	Capture actual unchanged b45 manual compaction44 exports twice	2026-10-14T20:34:31.9528281Z ##[error]Process completed with exit code 1.
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	﻿2026-10-14T20:34:31.9997377Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:31.9997864Z with:
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:31.9998407Z   name: original-sdk-manual-compaction-b45-ubuntu-latest-fc816543bea2b7d068966f6948e845c375db39f1
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:31.9999015Z   retention-days: 14
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:31.9999522Z   path: verification/sdk-manual-compaction-original-result/
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:31.9999995Z   if-no-files-found: warn
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.0000329Z   compression-level: 6
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.0001059Z   overwrite: false
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.0001411Z   include-hidden-files: false
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.0001734Z ##[endgroup]
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.1564038Z (node:2467) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.1565214Z (Use `node --trace-deprecation ...` to show where the warning was created)
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.1613438Z With the provided path, there will be 1 file uploaded
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.1617923Z Artifact name is valid!
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.1618898Z Root directory input is valid!
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.5385270Z Beginning upload of artifact content to blob storage
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.5633390Z (node:2467) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.9138190Z Uploaded bytes 93786
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.9799042Z Finished uploading artifact content to blob storage!
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.9800472Z SHA256 digest of uploaded artifact zip is 63aac445ba8c72f586b9643788c96b73fc564d084ce5364a384cd513d0387737
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:32.9802138Z Finalizing artifact upload
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:33.2489948Z Artifact original-sdk-manual-compaction-b45-ubuntu-latest-fc816543bea2b7d068966f6948e845c375db39f1.zip successfully finalized. Artifact ID 11927341166
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:33.2491567Z Artifact original-sdk-manual-compaction-b45-ubuntu-latest-fc816543bea2b7d068966f6948e845c375db39f1 has been successfully uploaded! Final size is 93786 bytes. Artifact ID is 11927341166
+capture (ubuntu-latest)	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-14T20:34:33.2494767Z Artifact download URL: https://github.com/adybag14-cyber/pi-zig/actions/runs/38633126153/artifacts/11927341166
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-14T20:34:33.3008756Z Post job cleanup.
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.3838816Z [command]/usr/bin/git version
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.3875335Z git version 2.55.0
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.3907137Z Temporarily overriding HOME='/home/runner/work/_temp/2be43681-a123-42d8-9af1-b61fadaf720e' before making global git config changes
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.3908806Z Adding repository directory to the temporary git global config as a safe directory
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.3912652Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pi-zig/pi-zig/.reference-source
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.4250470Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.4291997Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.4506878Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.4536008Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.4782740Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.4819279Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-14T20:34:33.6074265Z Post job cleanup.
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.6934869Z [command]/usr/bin/git version
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.6980174Z git version 2.55.0
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.7018744Z Temporarily overriding HOME='/home/runner/work/_temp/1cef3e8d-03c1-4b2f-908c-e9ddc81f7804' before making global git config changes
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.7020539Z Adding repository directory to the temporary git global config as a safe directory
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.7024712Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pi-zig/pi-zig
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.7090307Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.7124030Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.7337943Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.7367594Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.7623743Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+capture (ubuntu-latest)	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-14T20:34:33.7647571Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+capture (ubuntu-latest)	Complete job	﻿2026-10-14T20:34:33.7995011Z Cleaning up orphan processes
+capture (ubuntu-latest)	Complete job	2026-10-14T20:34:33.8242113Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262, actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
