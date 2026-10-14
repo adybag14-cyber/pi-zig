@@ -1,0 +1,15 @@
+{
+  "head": "7453d4d616fa5ac7a91831d7e2db32f00851675d",
+  "tree": "04d4d3a661d7389a3c8f0f4964327e6042b6f84f",
+  "os": "macos-latest",
+  "mode": "ReleaseSafe",
+  "allocation_shards": 8,
+  "source_count": 5514,
+  "tools_count": 19543,
+  "source_cases": 32,
+  "source_fixture_platform": "Windows",
+  "genuine_original_source_replay": "actual32_b45_Windows_explicit_GC_doublecapture_dee03_POSIX_original_pending",
+  "public_class_metadata_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "public_activation": false
+}

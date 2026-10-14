@@ -1,0 +1,19 @@
+{
+  "head": "7453d4d616fa5ac7a91831d7e2db32f00851675d",
+  "os": "windows-latest",
+  "mode": "ReleaseSafe",
+  "status": "passed",
+  "source_cases": 32,
+  "source_fixture_platform": "Windows",
+  "genuine_original_source_replay": "actual32_b45_Windows_explicit_GC_doublecapture_dee03_POSIX_original_pending",
+  "public_class_metadata_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "tests_each": 5,
+  "shards": 8,
+  "baseline": 261,
+  "completed_indices": 261,
+  "missing": 0,
+  "duplicates": 0,
+  "public_activation": false,
+  "completed_utc": "2026-10-14T22:14:53.3500906+00:00"
+}
