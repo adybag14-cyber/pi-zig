@@ -78,3 +78,4 @@ src/extensions/fixtures/sdk-tool-shell-renderers-e622.json whitespace=cr-at-eol
 src/extensions/fixtures/sdk-tool-renderers-e622-dark.json whitespace=cr-at-eol
 # The original ordinary-session skill fixture retains its supplied EOF bytes.
 verification/sdk-statistics-original-1692bba-20261014/sdk-prompt-handlers-skill.md whitespace=cr-at-eol,-blank-at-eof
+verification/native-timer-oom-identity-20261014/*.log whitespace=cr-at-eol,-blank-at-eof
