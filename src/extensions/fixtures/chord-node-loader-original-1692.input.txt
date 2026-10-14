@@ -1,0 +1,15 @@
+const cases=[],root=globalThis.chordLoaderFixtureRoot,relative=url=>url.replace(root,''),info=e=>({name:e?.name,message:e?.message?.replace(root,'')});
+globalThis.loaderTrace=[];globalThis.loaderSequence=0;
+const empty={type:'object',properties:{},additionalProperties:false},token=name=>api.local(name,{version:1,input:empty,members:{marker:api.opaque('marker@1')}});
+globalThis.loaderTokenA=token('loader.a');globalThis.loaderTokenB=token('loader.b');globalThis.loaderTokenTyped=token('loader.typed');
+const failures=[],host=api.createHost({name:'loader',loader:api.nodeLoader,onError(e){failures.push(info(e))}}),modules=[root+'a/facet-a.mjs?old=9#anchor',new URL(root+'b/facet-b.mjs')];
+await host.load(modules);const a=host.get(loaderTokenA,{}),b=host.get(loaderTokenB,{});await Promise.all([a.ready,b.ready]);
+const first=loaderTrace.slice(),names=[...host.facets.keys()].map(relative);
+cases.push({name:'actual loader registers every root before cross root dependency import',names,same:a.marker===b.marker,generation:a.marker.generation,trace:first.map(v=>({facet:v.facet,module:relative(v.module),shared:relative(v.shared),live:!v.signal.aborted}))});
+const old=a.marker,report=await host.reload(modules),second=loaderTrace.slice(2);
+cases.push({name:'actual fresh loader generation shared once and installed old runs abort',same:a.marker===b.marker,changed:a.marker!==old,generation:a.marker.generation,codeVersion:report.codeVersion,changedTypes:report.changed,oldSignals:first.map(v=>v.signal.aborted),trace:second.map(v=>({facet:v.facet,module:relative(v.module),shared:relative(v.shared),live:!v.signal.aborted}))});
+await host.load([root+'typed/facet.ts?discard=1']);const typed=host.get(loaderTokenTyped,{});await typed.ready;cases.push({name:'actual native compatible TypeScript guest module loaded through real Host factory',value:typed.marker,facetNames:[...host.facets.keys()].map(relative),last:{facet:loaderTrace.at(-1).facet,module:relative(loaderTrace.at(-1).module),live:!loaderTrace.at(-1).signal.aborted}});
+for(const path of['invalid/bad.mjs','invalid/no-default.mjs']){let error;try{await api.nodeLoader([root+path])}catch(e){error=info(e)}cases.push({name:'actual loader refuses '+path,error});}
+const none=await api.nodeLoader([]);cases.push({name:'actual empty loader still returns an async empty facet list',empty:Array.isArray(none)&&none.length===0,constructor:api.nodeLoader.constructor.name,length:api.nodeLoader.length});
+a.release();b.release();typed.release();await host.close();cases.push({name:'actual loader Host close aborts all installed runs and disposes owned objects',signals:loaderTrace.map(v=>v.signal.aborted),objects:host.objects.size,failures});
+globalThis.chordNodeLoaderCases=cases;

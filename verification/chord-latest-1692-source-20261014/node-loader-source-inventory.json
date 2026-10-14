@@ -1,0 +1,49 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "cases": 7,
+  "oracle": "src/extensions/fixtures/chord-node-loader-original-1692.json",
+  "oracle_sha256": "B739C043FEA6F6963512851E66302139459ACC4818C341695005D7641C7BCB03",
+  "input": "src/extensions/fixtures/chord-node-loader-original-1692.input.txt",
+  "input_sha256": "C1E3756E870ECD79811E4E75BD1647DF581EEFEFAD0993E0DE505261DC8F97A4",
+  "guest_inputs": [
+    {
+      "path": "src/extensions/fixtures/chord-node-loader-1692/a/facet-a.mjs",
+      "sha256": "E0C90D165C86816CA462BB6910E57C5A6457CD73925691BA9941A7DAD77A2423"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-node-loader-1692/b/facet-b.mjs",
+      "sha256": "421D86C32618E62979287039C2E7CF0D02440E8178CF558A4159502153D49B0B"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-node-loader-1692/b/shared.mjs",
+      "sha256": "C21287B094121ABE71CDE567D04F8DFC1EF034AC3596F2166394C8C209DCAFA8"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-node-loader-1692/invalid/bad.mjs",
+      "sha256": "F21813F8B97C27EE4CC182E82B2FD88D638D8759E5A150B7B726C2A753155ECA"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-node-loader-1692/invalid/no-default.mjs",
+      "sha256": "739B3FBFED14D49E0EA3A09BE0694658AD9F0D776CDD4D57E45C59D77CB32C74"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-node-loader-1692/typed/facet.ts",
+      "sha256": "37738ECE24601CA29156D04F272230CA72311039BC1F65D570AC75973AB4BE50"
+    }
+  ],
+  "case_names": [
+    "actual loader registers every root before cross root dependency import",
+    "actual fresh loader generation shared once and installed old runs abort",
+    "actual native compatible TypeScript guest module loaded through real Host factory",
+    "actual loader refuses invalid/bad.mjs",
+    "actual loader refuses invalid/no-default.mjs",
+    "actual empty loader still returns an async empty facet list",
+    "actual loader Host close aborts all installed runs and disposes owned objects"
+  ],
+  "source_closure": 34793,
+  "guest_files": 6,
+  "actual_factory_calls": true,
+  "source_body_replaced": false,
+  "native_qualified": false,
+  "public_activation": false
+}

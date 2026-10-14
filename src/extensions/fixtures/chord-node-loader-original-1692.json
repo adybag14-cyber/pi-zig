@@ -1,0 +1,105 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "cases": [
+    {
+      "name": "actual loader registers every root before cross root dependency import",
+      "names": [
+        "a/facet-a.mjs#anchor",
+        "b/facet-b.mjs"
+      ],
+      "same": true,
+      "generation": 1,
+      "trace": [
+        {
+          "facet": "a",
+          "module": "a/facet-a.mjs?chord2-reload=1#anchor",
+          "shared": "b/shared.mjs?chord2-reload=1",
+          "live": true
+        },
+        {
+          "facet": "b",
+          "module": "b/facet-b.mjs?chord2-reload=1",
+          "shared": "b/shared.mjs?chord2-reload=1",
+          "live": true
+        }
+      ]
+    },
+    {
+      "name": "actual fresh loader generation shared once and installed old runs abort",
+      "same": true,
+      "changed": true,
+      "generation": 2,
+      "codeVersion": 2,
+      "changedTypes": [
+        "loader.a",
+        "loader.b"
+      ],
+      "oldSignals": [
+        true,
+        true
+      ],
+      "trace": [
+        {
+          "facet": "a",
+          "module": "a/facet-a.mjs?chord2-reload=2#anchor",
+          "shared": "b/shared.mjs?chord2-reload=2",
+          "live": true
+        },
+        {
+          "facet": "b",
+          "module": "b/facet-b.mjs?chord2-reload=2",
+          "shared": "b/shared.mjs?chord2-reload=2",
+          "live": true
+        }
+      ]
+    },
+    {
+      "name": "actual native compatible TypeScript guest module loaded through real Host factory",
+      "value": {
+        "typed": true
+      },
+      "facetNames": [
+        "a/facet-a.mjs#anchor",
+        "b/facet-b.mjs",
+        "typed/facet.ts"
+      ],
+      "last": {
+        "facet": "typed",
+        "module": "typed/facet.ts?chord2-reload=3",
+        "live": true
+      }
+    },
+    {
+      "name": "actual loader refuses invalid/bad.mjs",
+      "error": {
+        "name": "TypeError",
+        "message": "invalid/bad.mjs: default export must be a facet (defineFacet)"
+      }
+    },
+    {
+      "name": "actual loader refuses invalid/no-default.mjs",
+      "error": {
+        "name": "TypeError",
+        "message": "invalid/no-default.mjs: default export must be a facet (defineFacet)"
+      }
+    },
+    {
+      "name": "actual empty loader still returns an async empty facet list",
+      "empty": true,
+      "constructor": "AsyncFunction",
+      "length": 1
+    },
+    {
+      "name": "actual loader Host close aborts all installed runs and disposes owned objects",
+      "signals": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "objects": 0,
+      "failures": []
+    }
+  ]
+}

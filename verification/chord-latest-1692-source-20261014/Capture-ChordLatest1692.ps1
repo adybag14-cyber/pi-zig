@@ -7,6 +7,13 @@ $captureResolver=Join-Path $captureEvidence 'sdk-source-1692-observe-20261014.mj
 $captureFixture=Join-Path 'C:/Users/adyba/pi-zig-chord-full-composition-e6220e1-20261013/src/extensions/fixtures' $Fixture
 $captureOutput=Join-Path $captureEvidence "$Attempt-output.json"
 $captureInputs=@($captureDriver,$captureResolver,$captureFixture,(Join-Path $captureEvidence 'sdk-source-1692-dependency-contract-audit-20261014.json')) | ForEach-Object { [ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash} }
+if($GlobalName -ceq 'chordNodeLoaderCases'){
+ $captureGuestManifest=Join-Path $captureEvidence 'chord-node-loader-1692-guests-manifest.json'
+ $captureGuests=@(Get-Content -LiteralPath $captureGuestManifest -Raw|ConvertFrom-Json)
+ foreach($captureGuest in $captureGuests){if((Get-FileHash -LiteralPath $captureGuest.path).Hash -cne $captureGuest.sha256){throw 'Pinned guest fixture drift'}}
+ $captureInputs+=@([ordered]@{path=$captureGuestManifest;sha256=(Get-FileHash -LiteralPath $captureGuestManifest).Hash})
+ $captureInputs+=@($captureGuests)
+}
 function Get-CaptureHashes {
  foreach($captureManifest in $captureRows){
   $captureManifestPath=Join-Path $captureEvidence $captureManifest.name

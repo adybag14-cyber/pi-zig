@@ -191,6 +191,11 @@ pub const Engine = struct {
     native_typebox_literal_stack: ?c.JSValue = null,
     commonjs_cache: c.JSValue,
     source_loader: ?SourceLoader = null,
+    // Optional Chord nodeLoader owner. Existing source loading is preserved
+    // unless that real loader installs generation-aware callbacks.
+    native_chord_loader_state: ?c.JSValue = null,
+    native_chord_module_normalize: ?*const fn (*Engine, []const u8, []const u8) anyerror!?[]u8 = null,
+    native_chord_module_input: ?*const fn (*Engine, []const u8) anyerror!?ModuleInput = null,
 
     pub fn init(gpa: std.mem.Allocator, options: Options) !*Engine {
         if (options.deterministic_clock) |clock| try clock.validate();
@@ -259,6 +264,7 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        if (self.native_chord_loader_state) |value| self.freeValue(value);
         if (self.native_codemode_deinit) |cleanup| cleanup(self);
         if (self.native_command_metadata_deinit) |cleanup| cleanup(self);
         if (self.native_sdk_builtin_execution_cleanup) |cleanup| cleanup(self);
@@ -357,12 +363,35 @@ pub const Engine = struct {
 
     pub fn setSourceLoader(self: *Engine, loader: SourceLoader) void {
         self.source_loader = loader;
-        const normalizer: ?*const c.JSModuleNormalizeFunc = if (loader.normalize != null) normalizeModule else null;
+        const normalizer: ?*const c.JSModuleNormalizeFunc = if (loader.normalize != null or self.native_chord_module_normalize != null) normalizeModule else null;
         c.JS_SetModuleLoaderFunc(self.runtime, normalizer, moduleLoader, self);
+    }
+    pub fn setChordModuleHooks(self: *Engine, normalize: *const fn (*Engine, []const u8, []const u8) anyerror!?[]u8, input: *const fn (*Engine, []const u8) anyerror!?ModuleInput) void {
+        self.native_chord_module_normalize = normalize;
+        self.native_chord_module_input = input;
+        c.JS_SetModuleLoaderFunc(self.runtime, normalizeModule, moduleLoader, self);
     }
 
     fn normalizeModule(context: ?*c.JSContext, base: [*c]const u8, name: [*c]const u8, context_data: ?*anyopaque) callconv(.c) [*c]u8 {
         const self: *Engine = @ptrCast(@alignCast(context_data.?));
+        if (self.native_chord_module_normalize) |hook| {
+            const selected = hook(self, std.mem.span(base), std.mem.span(name)) catch |err| {
+                if (err == error.JavaScriptException) {
+                    _ = self.throwCaptured();
+                } else if (err == error.OutOfMemory) {
+                    _ = self.throwNativeOutOfMemory();
+                } else _ = c.JS_ThrowReferenceError(context, "Native Chord module resolution failed: %s", @as([*:0]const u8, @errorName(err)));
+                return null;
+            };
+            if (selected) |bytes| {
+                defer self.gpa.free(bytes);
+                const allocation = c.js_malloc(context, bytes.len + 1) orelse return null;
+                const output: [*]u8 = @ptrCast(allocation);
+                @memcpy(output[0..bytes.len], bytes);
+                output[bytes.len] = 0;
+                return output;
+            }
+        }
         const specifier = std.mem.span(name);
         const registered = self.native_module_names.contains(specifier);
         // Node builtins always use native host bindings. Schema packages may
@@ -483,6 +512,7 @@ pub const Engine = struct {
     }
 
     pub fn loadModuleInput(self: *Engine, name: []const u8) !ModuleInput {
+        if (self.native_chord_module_input) |hook| if (try hook(self, name)) |input| return input;
         const loader = self.source_loader orelse return error.NativeModuleLoaderUnavailable;
         if (loader.input) |input| return input(loader.context, self, name);
         return .{ .source = try loader.load(loader.context, self.gpa, name) };
@@ -546,10 +576,11 @@ pub const Engine = struct {
         const meta = try self.checked(c.JS_GetImportMeta(self.context, module));
         defer self.freeValue(meta);
         if (c.JS_DefinePropertyValueStr(self.context, meta, "main", c.pi_js_bool(self.context, @intFromBool(main)), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
-        if (!std.fs.path.isAbsolute(filename)) return;
-        const url = try file_urls.fromPath(self.gpa, filename, builtin.os.tag == .windows);
+        const is_file_url = std.mem.startsWith(u8, filename, "file:");
+        if (!is_file_url and !std.fs.path.isAbsolute(filename)) return;
+        const url = if (is_file_url) try self.gpa.dupe(u8, filename) else try file_urls.fromPath(self.gpa, filename, builtin.os.tag == .windows);
         defer self.gpa.free(url);
-        const platform_path = try self.gpa.dupe(u8, filename);
+        const platform_path = if (is_file_url) try file_urls.toPath(self.gpa, filename, builtin.os.tag == .windows) else try self.gpa.dupe(u8, filename);
         defer self.gpa.free(platform_path);
         if (builtin.os.tag == .windows) for (platform_path) |*byte| {
             if (byte.* == '/') byte.* = '\\';

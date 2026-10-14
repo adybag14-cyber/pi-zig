@@ -738,6 +738,14 @@ pub fn build(b: *std.Build) void {
     const chord_latest_run = b.addRunArtifact(chord_latest_tests);
     chord_latest_run.has_side_effects = true;
     b.step("test-native-chord-latest-source", "Replay actual latest Source factory8 full-links8 closed2 with GC and complete allocator-failure ownership").dependOn(&chord_latest_run.step);
+    const chord_loader_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_node_loader_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native latest Chord1692 NodeLoader"} });
+    linkQuickJs(b, chord_loader_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_loader_tests.root_module, sqlite_lib_dir, sqlite_library);
+    linkTypeScriptParser(b, chord_loader_tests.root_module, typescript_parser);
+    b.step("build-native-chord-node-loader-source", "Compile actual generation-aware native Chord module loader without running it").dependOn(&chord_loader_tests.step);
+    const chord_loader_run = b.addRunArtifact(chord_loader_tests);
+    chord_loader_run.has_side_effects = true;
+    b.step("test-native-chord-node-loader-source", "Replay actual Source7 module loader generations guest TypeScript and host cleanup").dependOn(&chord_loader_run.step);
     const chord_connection_boundaries = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_boundary_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord connection boundary inventory", "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions", "native WeakRef" } });
     linkQuickJs(b, chord_connection_boundaries.root_module, quickjs, sqlite_lib_dir);
     chord_connection_boundaries.root_module.addImport("catalog_tool", catalog_tool);

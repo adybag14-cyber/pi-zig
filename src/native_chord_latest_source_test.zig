@@ -1,7 +1,7 @@
 const std = @import("std");
 const em = @import("extensions/engine.zig");
 const js = @import("extensions/native_js_values.zig");
-fn setup(gpa: std.mem.Allocator) !*em.Engine {
+pub fn setup(gpa: std.mem.Allocator) !*em.Engine {
     const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
     errdefer engine.deinit();
     engine.native_io = std.testing.io;
@@ -29,7 +29,7 @@ fn unpack(engine: *em.Engine, _: em.c.JSValue, args: []const em.c.JSValue, captu
     defer scope.deinit();
     return scope.result(try @import("extensions/native_chord_packing.zig").unpack(&scope, captures[0], if (args.len > 0) args[0] else em.c.pi_js_undefined()));
 }
-fn replay(engine: *em.Engine, comptime stem: []const u8, comptime global: []const u8) !void {
+pub fn replay(engine: *em.Engine, comptime stem: []const u8, comptime global: []const u8) !void {
     const original = @embedFile("extensions/fixtures/" ++ stem ++ ".json");
     const root = em.c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(root);

@@ -1,0 +1,58 @@
+{
+  "observed_utc": "2026-10-14T12:41:38.7054482+00:00",
+  "free_bytes": 19620466688,
+  "max_old_space_mib": 256,
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "drivers": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Capture-ChordLatest1692.mjs",
+      "sha256": "3B2FADBEB1CCA880C6BD91AA48C7EF46FFF4D00DAF353DA1F1169F6800EC6F1F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-1692-observe-20261014.mjs",
+      "sha256": "ADA432E1D692741B750A3F874EAF6C57ADA6C78B6026C19DF34DD2093F54A147"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-chord-full-composition-e6220e1-20261013\\src\\extensions\\fixtures\\chord-node-loader-original-1692.input.txt",
+      "sha256": "C1E3756E870ECD79811E4E75BD1647DF581EEFEFAD0993E0DE505261DC8F97A4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-1692-dependency-contract-audit-20261014.json",
+      "sha256": "9BAA9BB1CAD40D495D5938DC2A678FCBF0F2A33160561F42179DF66B840CA1F1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-node-loader-1692-guests-manifest.json",
+      "sha256": "3DB9A29BEE1EBF4C078F19CD6176EB3EEEE8DC59957E167680DB7962854CF8FC"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/chord-node-loader-1692\\a\\facet-a.mjs",
+      "relative": "a/facet-a.mjs",
+      "sha256": "E0C90D165C86816CA462BB6910E57C5A6457CD73925691BA9941A7DAD77A2423"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/chord-node-loader-1692\\b\\facet-b.mjs",
+      "relative": "b/facet-b.mjs",
+      "sha256": "421D86C32618E62979287039C2E7CF0D02440E8178CF558A4159502153D49B0B"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/chord-node-loader-1692\\b\\shared.mjs",
+      "relative": "b/shared.mjs",
+      "sha256": "C21287B094121ABE71CDE567D04F8DFC1EF034AC3596F2166394C8C209DCAFA8"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/chord-node-loader-1692\\invalid\\bad.mjs",
+      "relative": "invalid/bad.mjs",
+      "sha256": "F21813F8B97C27EE4CC182E82B2FD88D638D8759E5A150B7B726C2A753155ECA"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/chord-node-loader-1692\\invalid\\no-default.mjs",
+      "relative": "invalid/no-default.mjs",
+      "sha256": "739B3FBFED14D49E0EA3A09BE0694658AD9F0D776CDD4D57E45C59D77CB32C74"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/chord-node-loader-1692\\typed\\facet.ts",
+      "relative": "typed/facet.ts",
+      "sha256": "37738ECE24601CA29156D04F272230CA72311039BC1F65D570AC75973AB4BE50"
+    }
+  ]
+}
