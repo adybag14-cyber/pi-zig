@@ -1,0 +1,18 @@
+{
+  "status": "negative_preserved",
+  "source_cases": 32,
+  "passed_tests": 9,
+  "failed_tests": 1,
+  "host_positions": 895,
+  "source": 5585,
+  "compiler": 19546,
+  "original": 1965,
+  "all_post_drift": 0,
+  "failure_at": "GC completion module eval",
+  "pending_retention_check": "passed",
+  "bare_weak_reference_post_settlement_check": "unqualified",
+  "product_change": false,
+  "public_activation": false,
+  "full_pi_qualified": false,
+  "raw_zip_sha256": "7CB7BA6887726058F0F6510A6205BB3C6154C958A70CD8A26DC2523199C16D16"
+}
