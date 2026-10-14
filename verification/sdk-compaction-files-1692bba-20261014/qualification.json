@@ -31,10 +31,21 @@
     50196,
     11820
   ],
-  "other_profiles": "Pending",
+  "other_profiles": "All six Windows/Linux/macOS Debug and ReleaseSafe profiles passed and downloaded artifacts independently audited",
   "scope": "Actual original createFileOps/extractFileOpsFromMessage/computeFileLists/formatFileOperations; ordinary function constructor metadata, live getters and iterators, set method and formatting order. Larger prepare/manual/automatic compaction flows remain unfinished.",
   "qualified_intake": "Only previously qualified Env4a11 Buffer/Path trusted native OOM and captured guest-exception branches; unrelated path semantics unchanged",
   "public_activation": false,
   "full_factory_qualified": false,
-  "full_pi_qualified": false
+  "full_pi_qualified": false,
+  "hosted_all_six": {
+    "source_bytes_identical": true,
+    "artifact_audit": "hosted-six-artifacts-audit-38588885320.json",
+    "run": 38588885320,
+    "compiler_files": 19546,
+    "original_cases": 24,
+    "post_drift": 0,
+    "source_files": 5038,
+    "tests_each": 4,
+    "head": "b757e02d9ae892efafe11b072d13d6c290ff4fb2"
+  }
 }
