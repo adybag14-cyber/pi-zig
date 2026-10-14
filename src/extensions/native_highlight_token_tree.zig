@@ -129,8 +129,11 @@ const Renderer = struct {
     fn walk(self: *Renderer, node: c.JSValue, depth: usize) anyerror!void {
         var scope: Scope = .{ .engine = self.engine };
         defer scope.deinit();
-        if (self.engine.cancelled.load(.acquire) or depth > 512) {
-            _ = try self.engine.checked(c.JS_ThrowInternalError(self.engine.context, if (depth > 512) "stack overflow" else "interrupted"));
+        // Every recursive step enters the actual VM forEach callback, whose
+        // configured stack limit supplies the overflow check. Source has no
+        // independent token-tree depth cutoff.
+        if (self.engine.cancelled.load(.acquire)) {
+            _ = try self.engine.checked(c.JS_ThrowInternalError(self.engine.context, "interrupted"));
             unreachable;
         }
         if (c.JS_IsString(node)) {
