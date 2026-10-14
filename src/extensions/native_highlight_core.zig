@@ -22,7 +22,13 @@ fn function(s: *Scope, state: c.JSValue, kind: Kind, name: [*:0]const u8, length
     return s.own(try legacy.create(s.engine, name, length, invoke, &.{ state, c.JS_NewInt32(s.engine.context, @intFromEnum(kind)) }));
 }
 fn callback(s: *Scope, state: c.JSValue, kind: Kind) !c.JSValue {
-    return function(s, state, kind, "", if (kind == .sort) 2 else 1);
+    if (kind == .fire_each) return function(s, state, kind, "", 1);
+    var roots = [_]c.JSValue{ state, c.JS_NewInt32(s.engine.context, @intFromEnum(kind)) };
+    return s.own(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, arrowCallback, "", if (kind == .sort) 2 else 1, 0, roots.len, &roots)));
+}
+fn arrowCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    return invoke(engine, c.pi_js_undefined(), if (argc > 0) argv[0..@intCast(argc)] else &.{}, roots[0..2]) catch |err| sdk.fail(engine, err);
 }
 fn call(s: *Scope, state: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
     return s.call(try s.get(state, name), c.pi_js_undefined(), args);
