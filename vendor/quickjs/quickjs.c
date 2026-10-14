@@ -17238,6 +17238,25 @@ static __exception int js_for_in_next(JSContext *ctx, JSValue *sp)
     return 0;
 }
 
+/* Project-owned additive owner-thread boundary around the existing VM for-in
+   implementation. Public interpreter opcode behavior remains unchanged. */
+JSValue JS_PiForInStart(JSContext *ctx, JSValueConst value)
+{
+    return build_for_in_iterator(ctx, JS_DupValue(ctx, value));
+}
+
+JSValue JS_PiForInNext(JSContext *ctx, JSValueConst iterator, int *done)
+{
+    JSValue stack[3] = { iterator, JS_UNDEFINED, JS_TRUE };
+    *done = 1;
+    if (js_for_in_next(ctx, stack + 1) < 0)
+        return JS_EXCEPTION;
+    if (JS_IsException(stack[1]))
+        return JS_EXCEPTION;
+    *done = JS_ToBool(ctx, stack[2]);
+    return stack[1];
+}
+
 static JSValue JS_GetIterator2(JSContext *ctx, JSValueConst obj,
                                JSValueConst method)
 {
