@@ -1,0 +1,15 @@
+{
+  "observed_utc": "2026-10-14T21:08:05.7290675+00:00",
+  "free_bytes": 26339528704,
+  "required_bytes": 17179869184,
+  "other_native": [],
+  "other_native_roots": 0,
+  "root_authority": "Root reviewed runtimeSecond9FD233DC exact73b4/full5439/1965/19546/control normal16/300/120/10; contracts6/cells4fullHOST shared4actual21GC/baselineONLY; Rootnojob Rendererremoteonly; 2026-10-14",
+  "outer_seconds": 300,
+  "test_seconds": 120,
+  "host_seconds": 10,
+  "jobs": 1,
+  "llvm": "default",
+  "sole8_exception_used": false,
+  "public_activation": false
+}

@@ -9,6 +9,7 @@ fn setup(gpa: std.mem.Allocator) !*em.Engine {
     const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
     errdefer engine.deinit();
     engine.native_io = std.testing.io;
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
     var s: h.Scope = .{ .engine = engine };
     defer s.deinit();
     const classes = try @import("extensions/native_chord_full_v4.zig").classes(engine);
@@ -39,6 +40,15 @@ const Probe = struct {
                 if (message != null) {
                     defer c.JS_FreeCString(engine.context, message);
                     std.debug.print("V4 shared actual Source21: {s}\n", .{std.mem.span(message)});
+                    const stack = c.JS_GetPropertyStr(engine.context, exception, "stack");
+                    defer engine.freeValue(stack);
+                    if (!c.JS_IsException(stack)) {
+                        const stack_text = c.JS_ToCString(engine.context, stack);
+                        if (stack_text != null) {
+                            defer c.JS_FreeCString(engine.context, stack_text);
+                            std.debug.print("V4 shared actual JS stack: {s}\n", .{std.mem.span(stack_text)});
+                        }
+                    }
                 }
             };
             return mapped;
