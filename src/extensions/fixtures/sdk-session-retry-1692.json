@@ -1,0 +1,437 @@
+{"sourceHead":"1692bba6347a287ab0f3cb554a4430fafffc474b","inputSha256":"f0446ded6c120c4528efdc3d643a399181b6c0672fc83f2f13242281bfeeac85","scope":"Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs","factoryCount":31,"rows":[
+    {
+      "name": "method-metadata",
+      "value": {
+        "_summarizationRetryCallbacks": {
+          "name": "_summarizationRetryCallbacks",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_finishCancelledRetry": {
+          "name": "_finishCancelledRetry",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_prepareRetry": {
+          "name": "_prepareRetry",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_omitRecoveryAttempt": {
+          "name": "_omitRecoveryAttempt",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        }
+      }
+    },
+    {
+      "name": "callback-metadata",
+      "value": [
+        {
+          "key": "onRetryScheduled",
+          "name": "onRetryScheduled",
+          "length": 4,
+          "ownPrototype": false
+        },
+        {
+          "key": "onRetryAttemptStart",
+          "name": "onRetryAttemptStart",
+          "length": 0,
+          "ownPrototype": false
+        },
+        {
+          "key": "onRetryFinished",
+          "name": "onRetryFinished",
+          "length": 0,
+          "ownPrototype": false
+        }
+      ]
+    },
+    {
+      "name": "callback-events",
+      "value": {
+        "events": [
+          {
+            "type": "summarization_retry_scheduled",
+            "attempt": 1,
+            "maxAttempts": 4,
+            "delayMs": 8,
+            "errorMessage": "failure"
+          },
+          {
+            "type": "summarization_retry_attempt_start",
+            "source": "compaction",
+            "reason": "manual"
+          },
+          {
+            "type": "summarization_retry_finished"
+          }
+        ],
+        "allUndefined": true
+      }
+    },
+    {
+      "name": "callback-live-source-spread",
+      "value": [
+        {
+          "type": "custom-type",
+          "source": "branchSummary",
+          "extra": "later"
+        }
+      ]
+    },
+    {
+      "name": "callback-lexical-session-live-emit",
+      "value": {
+        "events": [
+          {
+            "type": "summarization_retry_finished"
+          }
+        ],
+        "undefined": true
+      }
+    },
+    {
+      "name": "callback-thrown-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "cancel-zero-no-event",
+      "value": {
+        "events": [],
+        "attempt": 0
+      }
+    },
+    {
+      "name": "cancel-attempt-event",
+      "value": {
+        "events": [
+          {
+            "type": "auto_retry_end",
+            "success": false,
+            "attempt": 3,
+            "finalError": "Retry cancelled"
+          }
+        ],
+        "attempt": 0
+      }
+    },
+    {
+      "name": "cancel-strict-string-zero",
+      "value": {
+        "events": [
+          {
+            "type": "auto_retry_end",
+            "success": false,
+            "attempt": "0",
+            "finalError": "Retry cancelled"
+          }
+        ],
+        "attempt": 0
+      }
+    },
+    {
+      "name": "prepare-disabled",
+      "value": {
+        "result": false,
+        "events": [],
+        "attempt": 0
+      }
+    },
+    {
+      "name": "prepare-exhausted",
+      "value": {
+        "result": false,
+        "events": [],
+        "attempt": 0
+      }
+    },
+    {
+      "name": "prepare-exhausted-bigint",
+      "value": {
+        "result": false,
+        "attempt": "0",
+        "type": "bigint"
+      }
+    },
+    {
+      "name": "prepare-zero-delay-success",
+      "value": {
+        "result": true,
+        "events": [
+          {
+            "type": "auto_retry_start",
+            "attempt": 1,
+            "maxAttempts": 2,
+            "delayMs": 0,
+            "errorMessage": "error"
+          }
+        ],
+        "omitted": [
+          true
+        ],
+        "attempt": 1,
+        "controllerCleared": true
+      }
+    },
+    {
+      "name": "prepare-error-fallback",
+      "value": [
+        {
+          "type": "auto_retry_start",
+          "attempt": 1,
+          "maxAttempts": 2,
+          "delayMs": 0,
+          "errorMessage": "Unknown error"
+        }
+      ]
+    },
+    {
+      "name": "prepare-emitter-failure-before-controller",
+      "value": {
+        "same": true,
+        "attempt": 1,
+        "noController": true
+      }
+    },
+    {
+      "name": "prepare-omit-failure-before-controller",
+      "value": {
+        "same": true,
+        "events": [
+          {
+            "type": "auto_retry_start",
+            "attempt": 1,
+            "maxAttempts": 2,
+            "delayMs": 0,
+            "errorMessage": "Unknown error"
+          }
+        ],
+        "attempt": 1,
+        "noController": true
+      }
+    },
+    {
+      "name": "prepare-abort-during-backoff",
+      "value": {
+        "result": false,
+        "events": [
+          {
+            "type": "auto_retry_start",
+            "attempt": 1,
+            "maxAttempts": 2,
+            "delayMs": 100,
+            "errorMessage": "failure"
+          },
+          {
+            "type": "auto_retry_end",
+            "success": false,
+            "attempt": 1,
+            "finalError": "Retry cancelled"
+          }
+        ],
+        "attempt": 0,
+        "controllerCleared": true
+      }
+    },
+    {
+      "name": "prepare-finish-error-finally-clears",
+      "value": {
+        "same": true,
+        "controllerCleared": true
+      }
+    },
+    {
+      "name": "omit-single-persisted",
+      "value": {
+        "log": [
+          [
+            "find",
+            0
+          ],
+          [
+            "edit",
+            "m",
+            null
+          ],
+          [
+            "emit",
+            "entry_appended",
+            "edit-m"
+          ],
+          [
+            "refresh"
+          ]
+        ],
+        "undefined": true
+      }
+    },
+    {
+      "name": "omit-message-and-tool-results",
+      "value": [
+        [
+          "find",
+          0
+        ],
+        [
+          "find",
+          1
+        ],
+        [
+          "find",
+          2
+        ],
+        [
+          "edit",
+          "m",
+          null
+        ],
+        [
+          "emit",
+          "entry_appended",
+          "edit-m"
+        ],
+        [
+          "edit",
+          "a",
+          null
+        ],
+        [
+          "emit",
+          "entry_appended",
+          "edit-a"
+        ],
+        [
+          "edit",
+          "b",
+          null
+        ],
+        [
+          "emit",
+          "entry_appended",
+          "edit-b"
+        ],
+        [
+          "refresh"
+        ]
+      ]
+    },
+    {
+      "name": "omit-unresolved-nonprojected",
+      "value": [
+        [
+          "find",
+          0
+        ],
+        [
+          "refresh"
+        ]
+      ]
+    },
+    {
+      "name": "omit-unresolved-projected-rejects",
+      "value": {
+        "message": "Cannot persist recovery omission because a projected message has no source entry",
+        "log": [
+          [
+            "find",
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "name": "omit-falsy-id-skipped",
+      "value": [
+        [
+          "find",
+          0
+        ],
+        [
+          "refresh"
+        ]
+      ]
+    },
+    {
+      "name": "omit-no-entry-no-event",
+      "value": [
+        [
+          "find",
+          0
+        ],
+        [
+          "edit",
+          "m",
+          null
+        ],
+        [
+          "refresh"
+        ]
+      ]
+    },
+    {
+      "name": "omit-mapper-thrown-identity",
+      "value": {
+        "same": true,
+        "log": []
+      }
+    },
+    {
+      "name": "delay-numeric",
+      "value": [
+        10,
+        40,
+        15
+      ]
+    },
+    {
+      "name": "delay-mutable-pow-is-not-used",
+      "value": 40
+    },
+    {
+      "name": "delay-coercion-order",
+      "value": {
+        "result": 6,
+        "log": [
+          "base-get",
+          "attempt:number",
+          "base:number",
+          "cap-get"
+        ]
+      }
+    },
+    {
+      "name": "delay-safe-integer-fallback",
+      "value": 900
+    },
+    {
+      "name": "sleep-aborted",
+      "value": {
+        "message": "Aborted"
+      }
+    },
+    {
+      "name": "sleep-zero-delay",
+      "value": {
+        "undefined": true
+      }
+    }
+  ]}

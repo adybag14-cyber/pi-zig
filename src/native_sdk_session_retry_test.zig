@@ -43,24 +43,57 @@ fn setup(engine: *em.Engine, environment: *std.process.Environ.Map) !void {
     // Private test bindings invoke native helpers directly. Public export/module
     // metadata and complete SDK factory composition require separate gates.
     try sdk.put(engine, global, "retryHelperAPI", c.JS_DupValue(engine.context, helpers));
+    const source = @embedFile("extensions/fixtures/sdk-session-retry-1692.json");
+    try sdk.put(engine, global, "sessionRetrySource", try engine.checked(c.JS_ParseJSON(engine.context, source.ptr, source.len, "sdk-session-retry-1692.json")));
     const adapter = try engine.evalModule(
         \\globalThis.createRetryCase=async()=>createNativeConstructorPhase();
     , "native-sdk-session-retry-adapter.mjs");
     engine.freeValue(adapter);
 }
 
-test "native SDK session retry executes31 original corpus cases with native callbacks omission and abortable backoff" {
+test "native SDK session retry matches31 original factory callback omission and abortable backoff observations" {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     var environment: std.process.Environ.Map = .init(std.testing.allocator);
     defer environment.deinit();
     try setup(engine, &environment);
     const observed = engine.evalModule(@embedFile("extensions/fixtures/sdk-session-retry-1692.input.txt") ++
-        "\nif(sessionRetryRows.length!==31)throw Error('31 retry cases must execute');", "native-sdk-session-retry-corpus.mjs") catch |err| {
+        "\nif(sessionRetrySource.sourceHead!=='1692bba6347a287ab0f3cb554a4430fafffc474b'||sessionRetryRows.length!==31||sessionRetrySource.rows.length!==31||sessionRetrySource.factoryCount!==31)throw Error('31 original latest retry cases required');for(let i=0;i<31;i++)if(JSON.stringify(sessionRetryRows[i])!==JSON.stringify(sessionRetrySource.rows[i]))throw Error(JSON.stringify({case:i,actual:sessionRetryRows[i],expected:sessionRetrySource.rows[i]}));", "native-sdk-session-retry-corpus.mjs") catch |err| {
         std.debug.print("Session retry corpus: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
     };
     engine.freeValue(observed);
+    c.JS_RunGC(engine.runtime);
+}
+test "native SDK session retry classifier executes30 original overflow provider identity and model fallback cases" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try setup(engine, &environment);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/sdk-session-retry-classifier-1692.input.txt") ++
+        "\nif(sessionRetryClassifierRows.length!==30)throw Error('30 classifier cases must execute');", "native-sdk-session-retry-classifier-corpus.mjs") catch |err| {
+        std.debug.print("Session retry classifier corpus: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}
+test "native SDK session retry classifier retained some callback owns its message across collection" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try setup(engine, &environment);
+    const prepared = try engine.evalModule(
+        \\(()=>{const message={stopReason:'error',errorMessage:'prompt too long'},original=Array.prototype.some;let callback;Array.prototype.some=function(value,...args){callback=value;return original.call(this,value,...args);};try{if(!retryHelperAPI.isContextOverflow(message))throw Error('expected overflow');}finally{Array.prototype.some=original;}globalThis.classifierRetained={callback,pattern:retryHelperAPI.getOverflowPatterns()[0]};})();export const prepared=true;
+    , "native-sdk-session-retry-classifier-gc-prepare.mjs");
+    engine.freeValue(prepared);
+    c.JS_RunGC(engine.runtime);
+    const completed = try engine.evalModule(
+        \\if(classifierRetained.callback(classifierRetained.pattern)!==true)throw Error('classifier callback message lost');delete globalThis.classifierRetained;export const completed=true;
+    , "native-sdk-session-retry-classifier-gc-complete.mjs");
+    engine.freeValue(completed);
     c.JS_RunGC(engine.runtime);
 }
 test "native SDK session retry retains callback source timer controller and promise owners across collection" {

@@ -16,18 +16,18 @@
     "existing_binary_cases_0_through_8": "unchanged"
   },
   "source_cases": 31,
-  "source_reference": "pending remote original Source capture",
-  "native": "Syntax formatted; first hosted compile and native corpus/GC/full allocation-failure execution pending. Original31 reference comparison remains separate until genuine captures are verified.",
+  "source_reference": "Original latest Source31 verified on Linux/macOS twice each, run38564569613, raw rows identical, full source/dependencies/Node tool pre/post drift0. Native row comparison pending new candidate.",
+  "native": "Initial11-test LinuxDebug passed at e54b3db; otherfive profiles live. Revised13-test candidate adds exact original31 comparison and classifier30/retainedcallback tests, pending execution.",
   "source_retry_pattern": "Exact original1692 50 retryable and9 nonretryable patterns, including optional an in provider returned an error and unable to forward upstream",
   "remaining": [
-    "Genuine original31 reference intake and byte-row comparison",
-    "Separate original overflow/classifier corpus capture and comparison",
+    "Revised13-test native six-platform/profile original31 comparison",
+    "Separate original classifier30 reference capture/intake/comparison",
     "Full manual/automatic compaction and summaries",
-    "Native helper timer OOM regression integration",
+    "Focused timer native allocation regression evidence",
     "Existing Durable retry regression after shared delay/classifier change"
   ],
   "public_activation": false,
   "full_factory_qualified": false,
   "full_pi_qualified": false,
-  "completed_utc": "2026-10-14T12:36:42.8549472+00:00"
+  "completed_utc": "2026-10-14T12:49:31.9032044+00:00"
 }
