@@ -754,6 +754,13 @@ pub fn build(b: *std.Build) void {
     const chord_manager_run = b.addRunArtifact(chord_manager_tests);
     chord_manager_run.has_side_effects = true;
     b.step("test-native-chord-manager-source", "Replay actual Source manager/control and exclusive kernel process lock").dependOn(&chord_manager_run.step);
+    const chord_cluster_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_cluster_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native latest Chord1692 Cluster"} });
+    linkQuickJs(b, chord_cluster_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_cluster_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("build-native-chord-cluster-source", "Compile actual cross-host Reload coordinator and child reconciliation").dependOn(&chord_cluster_tests.step);
+    const chord_cluster_run = b.addRunArtifact(chord_cluster_tests);
+    chord_cluster_run.has_side_effects = true;
+    b.step("test-native-chord-cluster-source", "Replay original Source4 cross-host commit vote rollback retained root and late hello reconciliation").dependOn(&chord_cluster_run.step);
     const chord_connection_boundaries = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_boundary_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord connection boundary inventory", "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions", "native WeakRef" } });
     linkQuickJs(b, chord_connection_boundaries.root_module, quickjs, sqlite_lib_dir);
     chord_connection_boundaries.root_module.addImport("catalog_tool", catalog_tool);

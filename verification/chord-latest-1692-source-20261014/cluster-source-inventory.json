@@ -1,0 +1,18 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "oracle": "src/extensions/fixtures/chord-cluster-original-1692.json",
+  "oracle_sha256": "75C6220EE11AC31676065D2FDD6A3BEAF3EDDEC781CD62322260D65F9AFEDB12",
+  "input": "src/extensions/fixtures/chord-cluster-original-1692.input.txt",
+  "input_sha256": "28C69BDF5481210B31B1635A7AA419A8491BF831C937A3A4F1B22B57CCC686E5",
+  "cases": 4,
+  "case_names": [
+    "actual cluster prepares votes commits FIFO and old roots retain their implementation until retirement",
+    "actual failing child vote rolls back every host and preserves the serving object",
+    "actual remote facet removal tombstone then readdition installs a fresh object",
+    "actual child hello reconciles remembered remote modules before admitting the current generation"
+  ],
+  "source_closure": 34793,
+  "source_body_replaced": false,
+  "native_qualified": false,
+  "public_activation": false
+}

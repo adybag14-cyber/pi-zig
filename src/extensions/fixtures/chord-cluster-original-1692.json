@@ -1,0 +1,118 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "cases": [
+    {
+      "name": "actual cluster prepares votes commits FIFO and old roots retain their implementation until retirement",
+      "before": "v1 a",
+      "after": "v2 b",
+      "old": [
+        "v1 p",
+        "v1 p"
+      ],
+      "versions": [
+        2,
+        2
+      ],
+      "report": {
+        "codeVersion": 2,
+        "previous": 1,
+        "changed": [],
+        "removed": [],
+        "prepared": [],
+        "gated": [],
+        "children": {
+          "session:S1": {
+            "codeVersion": 2,
+            "previous": 1,
+            "changed": [
+              "cluster.greeter"
+            ],
+            "removed": [],
+            "prepared": [
+              "cluster.greeter\u0000{}\u0000p:{\"host\":\"server\"}"
+            ],
+            "gated": []
+          }
+        }
+      },
+      "shapes": [
+        2
+      ],
+      "retired": [
+        true,
+        true
+      ]
+    },
+    {
+      "name": "actual failing child vote rolls back every host and preserves the serving object",
+      "failure": {
+        "name": "ChordError",
+        "code": "unavailable",
+        "namesWorker": true,
+        "factoryCause": true
+      },
+      "versions": [
+        1,
+        1
+      ],
+      "stable": "v1 stable"
+    },
+    {
+      "name": "actual remote facet removal tombstone then readdition installs a fresh object",
+      "removed": {
+        "codeVersion": 2,
+        "previous": 1,
+        "changed": [],
+        "removed": [],
+        "prepared": [],
+        "gated": [],
+        "children": {
+          "session:S1": {
+            "codeVersion": 2,
+            "previous": 1,
+            "changed": [],
+            "removed": [
+              "cluster.greeter"
+            ],
+            "prepared": [],
+            "gated": []
+          }
+        }
+      },
+      "restored": {
+        "codeVersion": 3,
+        "previous": 2,
+        "changed": [],
+        "removed": [],
+        "prepared": [],
+        "gated": [],
+        "children": {
+          "session:S1": {
+            "codeVersion": 3,
+            "previous": 2,
+            "changed": [
+              "cluster.greeter"
+            ],
+            "removed": [],
+            "prepared": [],
+            "gated": []
+          }
+        }
+      },
+      "gone": "gone",
+      "value": "v3 restored",
+      "versions": [
+        3,
+        3
+      ]
+    },
+    {
+      "name": "actual child hello reconciles remembered remote modules before admitting the current generation",
+      "value": "late-v2 join",
+      "versions": [
+        2,
+        2
+      ]
+    }
+  ]
+}
