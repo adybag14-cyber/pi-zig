@@ -1,4 +1,4 @@
-//! Private Root-intake assembly, source-only and uncompiled in this worktree.
+//! Private Root-intake assembly; full class and factory runtime parity remain incomplete.
 //! Imports are the actual Root ordinary helpers; no opaque legacy AgentSession
 //! prototype is inherited and no missing method gets an implementation here.
 const std = @import("std");
