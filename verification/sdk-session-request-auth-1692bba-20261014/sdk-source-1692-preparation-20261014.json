@@ -1,0 +1,15 @@
+{
+  "head": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "external_npm_identical": 365,
+  "installed_metadata_pins": 281,
+  "platform_optional_absent": 80,
+  "unchanged_stale_absent": 4,
+  "workspaces": 16,
+  "tracked_source": 1912,
+  "official_hydrated_metadata": 43,
+  "full_source": 1955,
+  "tracked_drift": 0,
+  "catalog_metadata_sha256": "439C53478C84ED27A58F8B54E1C3BD45810E5A969515B4E3666A3898D51EE22F",
+  "catalog_scope": "Pinned official typed catalog metadata for Source class oracles; latest generated model catalog is a separate pending gate",
+  "completed_utc": "2026-10-14T10:49:20.3246517+00:00"
+}

@@ -1,0 +1,19 @@
+{
+  "status": "admission_failed",
+  "free_kib": 6126016,
+  "threshold_kib": 8388608,
+  "single_job_threshold_kib": 8388608,
+  "concurrent_job_threshold_kib": 16777216,
+  "policy_authority": "Root explicit 20261013 calibrated budget instruction",
+  "calibration": "Full Root ReleaseSafe install MaxRSS 2GiB; warm UI24/24 completed14s at approximately11GiB free with post0",
+  "calibration_evidence": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-rs-install-compile-20261013.stderr.log",
+  "other_native": [],
+  "source": 4898,
+  "tools": 19546,
+  "native_launched": false,
+  "llvm": "default",
+  "jobs": 1,
+  "test_timeout_seconds": 120,
+  "outer_timeout_seconds": 1320,
+  "observed_utc": "2026-10-14T10:41:25.2326006+00:00"
+}

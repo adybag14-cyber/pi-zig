@@ -1,0 +1,45 @@
+{
+  "implementation_commit": "def240911953f80e432e8b2eead6e69572eb16db",
+  "upstream": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "methods": [
+    "_getRequiredRequestAuth",
+    "_getSummarizationRequestAuth",
+    "_modelForMessage",
+    "_recordSelection"
+  ],
+  "source_cases": 49,
+  "original_latest_factory_instances": 49,
+  "latest_rows_identical_to_prior_e622_source49": true,
+  "latest_original_posthash": {
+    "node_distribution": 1774,
+    "drift": 0,
+    "source": 1955,
+    "reference_dependencies": 31064
+  },
+  "local_debug": {
+    "compiler": 19546,
+    "status": "passed before latest fixture path and source-head assertion change",
+    "full_allocation_sweep": true,
+    "source": 4898,
+    "tests": 11,
+    "gc": true,
+    "drift": 0
+  },
+  "local_release_safe": {
+    "native_launched": false,
+    "minimum_kib": 8388608,
+    "status": "admission_failed_before_launch",
+    "free_kib": 6126016
+  },
+  "candidate_exact_head_hosted": "pending six platform/build-mode qualification",
+  "lexical_dependency_scope": "Actual native HTTP/SSE function supplies private import identity for auth branch comparison; compatibility module/factory import assembly and transport behavior are separate unqualified gates",
+  "public_activation": false,
+  "compat_stream_import_assembly_qualified": false,
+  "transport_qualified_by_this_component": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "test_timeout_seconds": 120,
+  "host_await_timeout_ms": 10000,
+  "runtime_outer_seconds": 300,
+  "compile_only_outer_seconds": 1320
+}

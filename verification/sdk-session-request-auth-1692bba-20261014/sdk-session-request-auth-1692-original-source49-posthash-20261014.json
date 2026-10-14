@@ -1,0 +1,26 @@
+{
+  "observed_utc": "2026-10-14T10:55:00.3777445+00:00",
+  "scope": "Full posthash after original Source49 session request auth capture; observer calls original installer unchanged; no original constructor or method body replacement",
+  "manifests": [
+    {
+      "manifest": "sdk-source-1692-full-manifest-20261014.json",
+      "files": 1955,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "files": 31064,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "files": 1774,
+      "drift": 0,
+      "changed": []
+    }
+  ],
+  "driver_sha256": "812E437F8C8870791DD46914383C767F677F4E6F70C5EBCE833F60A26C05B3E6",
+  "input_sha256": "6701D99450BE0A79A2C584392F37DE279EFA14E660C845AD8381F2BEA0CA8528"
+}

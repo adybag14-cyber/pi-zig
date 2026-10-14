@@ -1,0 +1,16 @@
+{
+  "implementation_commit": "def240911953f80e432e8b2eead6e69572eb16db",
+  "local_debug_files": 4898,
+  "unchanged_files": 4897,
+  "changed_test_only": [
+    "src/native_sdk_session_request_auth_test.zig"
+  ],
+  "new_fixture_paths": [
+    "src/extensions/fixtures/sdk-session-request-auth-1692.input.txt",
+    "src/extensions/fixtures/sdk-session-request-auth-1692.json"
+  ],
+  "production_source_drift": 0,
+  "current_exact_tree_local_qualified": false,
+  "reason": "New latest fixture paths and explicit upstream source-head assertion require exact-head hosted execution",
+  "completed_utc": "2026-10-14T10:59:51.9443158+00:00"
+}
