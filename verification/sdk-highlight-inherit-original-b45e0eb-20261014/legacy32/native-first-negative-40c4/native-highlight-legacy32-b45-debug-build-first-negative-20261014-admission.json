@@ -1,0 +1,29 @@
+{
+  "minimum_free_gib": 16,
+  "free_kib": 23093968,
+  "existing_native_processes": [
+    {
+      "ProcessId": 45800,
+      "ParentProcessId": 60864,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-chord-shared-v4-gpa-3 -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+      "CreationDate": "2026-10-14T22:37:50.140211+01:00"
+    },
+    {
+      "ProcessId": 41224,
+      "ParentProcessId": 45800,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-chord-v4-full-graph-b45-20261014\\.zig-cache\\o\\adc795f2b00151bf0e5c951f7dc3f01e\\build.exe",
+      "CommandLine": ".zig-cache\\o\\adc795f2b00151bf0e5c951f7dc3f01e\\build.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib C:\\Users\\adyba\\pi-zig-chord-v4-full-graph-b45-20261014 .zig-cache C:\\Users\\adyba\\AppData\\Local\\zig --seed 0xf2b7e3a4 -Z68374ecfa088bc76 test-native-chord-shared-v4-gpa-3 -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+      "CreationDate": "2026-10-14T22:37:50.207358+01:00"
+    },
+    {
+      "ProcessId": 37020,
+      "ParentProcessId": 41224,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-chord-v4-full-graph-b45-20261014\\.zig-cache\\o\\421585a90cafb3fb27c0cc9e4f4bdaf2\\test.exe",
+      "CommandLine": ".\\.zig-cache\\o\\421585a90cafb3fb27c0cc9e4f4bdaf2\\test.exe --cache-dir=.\\.zig-cache --seed=0xf2b7e3a4 --listen=-",
+      "CreationDate": "2026-10-14T22:37:56.167757+01:00"
+    }
+  ],
+  "wrapper_sha256": "B8201CF35C42E4FF98904C7A9318FD360E43534D12360EADA7275AD594BE54CD",
+  "checked_utc": "2026-10-14T21:39:17.3333616+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "pid": 42064,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "argv": [
+    "build",
+    "test-native-highlight-legacy-function32",
+    "-Doptimize=Debug",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-highlight-legacy-function32 -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "created_utc": "2026-10-14T21:41:53.6073831Z",
+  "launched_utc": "2026-10-14T21:41:53.6056874+00:00",
+  "working_directory": "C:/Users/adyba/pi-zig-sdk-events-hosted-20261013",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "failed",
+  "exit_code": 1,
+  "completed_utc": "2026-10-14T21:42:02.8597440+00:00"
+}

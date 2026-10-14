@@ -1,0 +1,314 @@
+[
+  {
+    "row": 20,
+    "name": "poison function exact own descriptor flags and extensibility",
+    "actual": {
+      "name": "poison function exact own descriptor flags and extensibility",
+      "value": {
+        "sameGetterSetter": true,
+        "name": "",
+        "length": 0,
+        "keys": [
+          "length",
+          "name"
+        ],
+        "extensible": true,
+        "sealed": false,
+        "frozen": false,
+        "nameDescriptor": {
+          "writable": false,
+          "enumerable": false,
+          "configurable": true,
+          "type": "string",
+          "get": "undefined",
+          "set": "undefined"
+        },
+        "lengthDescriptor": {
+          "writable": false,
+          "enumerable": false,
+          "configurable": true,
+          "type": "number",
+          "get": "undefined",
+          "set": "undefined"
+        },
+        "ownPrototype": false
+      }
+    },
+    "expected": {
+      "name": "poison function exact own descriptor flags and extensibility",
+      "value": {
+        "sameGetterSetter": true,
+        "name": "",
+        "length": 0,
+        "keys": [
+          "length",
+          "name"
+        ],
+        "extensible": false,
+        "sealed": true,
+        "frozen": true,
+        "nameDescriptor": {
+          "writable": false,
+          "enumerable": false,
+          "configurable": false,
+          "type": "string",
+          "get": "undefined",
+          "set": "undefined"
+        },
+        "lengthDescriptor": {
+          "writable": false,
+          "enumerable": false,
+          "configurable": false,
+          "type": "number",
+          "get": "undefined",
+          "set": "undefined"
+        },
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "row": 21,
+    "name": "poison getter identity shared across fresh Arguments reads",
+    "actual": {
+      "name": "poison getter identity shared across fresh Arguments reads",
+      "value": {
+        "getSame": false,
+        "setSame": false,
+        "getSetSame": false
+      }
+    },
+    "expected": {
+      "name": "poison getter identity shared across fresh Arguments reads",
+      "value": {
+        "getSame": true,
+        "setSame": true,
+        "getSetSame": true
+      }
+    }
+  },
+  {
+    "row": 22,
+    "name": "poison getter identity shared across separate API invocations",
+    "actual": {
+      "name": "poison getter identity shared across separate API invocations",
+      "value": {
+        "same": false
+      }
+    },
+    "expected": {
+      "name": "poison getter identity shared across separate API invocations",
+      "value": {
+        "same": true
+      }
+    }
+  },
+  {
+    "row": 25,
+    "name": "Reflect construct preserves genuine sloppy caller",
+    "actual": {
+      "name": "Reflect construct preserves genuine sloppy caller",
+      "value": {
+        "observations": [
+          {
+            "present": true,
+            "length": 1,
+            "sameFirst": true,
+            "callerName": null,
+            "callerLength": null
+          }
+        ],
+        "resultKeys": [
+          "a"
+        ],
+        "after": {
+          "argumentsNull": true,
+          "callerNull": true
+        }
+      }
+    },
+    "expected": {
+      "name": "Reflect construct preserves genuine sloppy caller",
+      "value": {
+        "observations": [
+          {
+            "present": true,
+            "length": 1,
+            "sameFirst": true,
+            "callerName": "ReflectConstructorCaller",
+            "callerLength": 1
+          }
+        ],
+        "resultKeys": [
+          "a"
+        ],
+        "after": {
+          "argumentsNull": true,
+          "callerNull": true
+        }
+      }
+    }
+  },
+  {
+    "row": 27,
+    "name": "proxy construct trap preserves genuine caller boundary",
+    "actual": {
+      "name": "proxy construct trap preserves genuine caller boundary",
+      "value": {
+        "observations": [
+          {
+            "present": true,
+            "length": 1,
+            "sameFirst": true,
+            "callerName": null,
+            "callerLength": null
+          }
+        ],
+        "resultKeys": [
+          "a"
+        ],
+        "after": {
+          "argumentsNull": true,
+          "callerNull": true
+        }
+      }
+    },
+    "expected": {
+      "name": "proxy construct trap preserves genuine caller boundary",
+      "value": {
+        "observations": [
+          {
+            "present": true,
+            "length": 1,
+            "sameFirst": true,
+            "callerName": "ConstructTrap",
+            "callerLength": 2
+          }
+        ],
+        "resultKeys": [
+          "a"
+        ],
+        "after": {
+          "argumentsNull": true,
+          "callerNull": true
+        }
+      }
+    }
+  },
+  {
+    "row": 28,
+    "name": "newTarget prototype getter precedes legacy frame activation",
+    "actual": {
+      "name": "newTarget prototype getter precedes legacy frame activation",
+      "value": {
+        "log": [
+          {
+            "phase": "prototype",
+            "argumentsNull": false,
+            "callerNull": true
+          },
+          {
+            "phase": "body",
+            "firstSame": true
+          }
+        ],
+        "keys": [
+          "a"
+        ]
+      }
+    },
+    "expected": {
+      "name": "newTarget prototype getter precedes legacy frame activation",
+      "value": {
+        "log": [
+          {
+            "phase": "prototype",
+            "argumentsNull": true,
+            "callerNull": true
+          },
+          {
+            "phase": "body",
+            "firstSame": true
+          }
+        ],
+        "keys": [
+          "a"
+        ]
+      }
+    }
+  },
+  {
+    "row": 29,
+    "name": "throwing newTarget prototype preserves sentinel and inactive frame",
+    "actual": {
+      "name": "throwing newTarget prototype preserves sentinel and inactive frame",
+      "value": {
+        "log": [
+          {
+            "argumentsNull": false,
+            "callerNull": true
+          }
+        ],
+        "same": true,
+        "argumentsNull": true,
+        "callerNull": true
+      }
+    },
+    "expected": {
+      "name": "throwing newTarget prototype preserves sentinel and inactive frame",
+      "value": {
+        "log": [
+          {
+            "argumentsNull": true,
+            "callerNull": true
+          }
+        ],
+        "same": true,
+        "argumentsNull": true,
+        "callerNull": true
+      }
+    }
+  },
+  {
+    "row": 30,
+    "name": "active arguments data redefinition observes actual legacy behavior",
+    "actual": {
+      "name": "active arguments data redefinition observes actual legacy behavior",
+      "value": {
+        "sameValue": false,
+        "nullValue": true,
+        "stillActive": true
+      }
+    },
+    "expected": {
+      "name": "active arguments data redefinition observes actual legacy behavior",
+      "value": {
+        "sameValue": false,
+        "nullValue": false,
+        "stillActive": true
+      }
+    }
+  },
+  {
+    "row": 31,
+    "name": "active caller data redefinition observes actual legacy behavior",
+    "actual": {
+      "name": "active caller data redefinition observes actual legacy behavior",
+      "value": {
+        "currentName": "ActiveCaller",
+        "sameValue": false,
+        "nullValue": true,
+        "stillSame": true
+      }
+    },
+    "expected": {
+      "name": "active caller data redefinition observes actual legacy behavior",
+      "value": {
+        "currentName": "ActiveCaller",
+        "sameValue": true,
+        "nullValue": false,
+        "stillSame": true
+      }
+    }
+  }
+]
