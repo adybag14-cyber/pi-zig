@@ -1,0 +1,25 @@
+{
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "candidate": "87de2e6030dcbb5c0342a0174aa57e442ffce818",
+  "actual_source_cases": 28,
+  "actual_factory_calls": true,
+  "source_body_replaced": false,
+  "original16_caller_prefix_byte_identical": true,
+  "original16_observations_equal": true,
+  "double_capture_byte_equal": true,
+  "output_sha256": "F2322FD72C583B8FD213955578EC0CD1BEF0B5B675A319CC00BB24748D2D7629",
+  "source_inputs": 1965,
+  "dependency_inputs": 31064,
+  "node_inputs": 1774,
+  "candidate_inputs": 5574,
+  "all_post_drift": 0,
+  "owned_pids": [
+    12320,
+    73708
+  ],
+  "owned_pids_absent": true,
+  "native_qualified": false,
+  "full_chord_qualified": false,
+  "public_activation": false,
+  "final_post_utc": "2026-10-14T22:54:26.2139059+00:00"
+}
