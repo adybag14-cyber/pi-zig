@@ -74,3 +74,38 @@ test "native Chordb45 replicated state measured complete Source16 host allocatio
     try Probe.run(failing.allocator());
     std.debug.print("CHORD_REPLICATED_STATE_HOST_BASELINE_ALLOCATIONS={d}\n", .{failing.alloc_index});
 }
+
+test "native Chordb45 replicated state complete Source16 GC and teardown every host allocation failure" {
+    var baseline: std.testing.FailingAllocator = .init(std.testing.allocator, .{});
+    try Probe.run(baseline.allocator());
+    try std.testing.expect(!baseline.has_induced_failure);
+    try std.testing.expectEqual(baseline.allocated_bytes, baseline.freed_bytes);
+    const total = baseline.alloc_index;
+    try std.testing.expect(total > 0);
+    if (@import("builtin").os.tag == .windows) try std.testing.expectEqual(@as(usize, 1114), total);
+    std.debug.print("CHORD_REPLICATED_STATE_GPA_BASELINE_ALLOCATIONS={d}\n", .{total});
+    var completed: usize = 0;
+    for (0..total) |index| {
+        var failing: std.testing.FailingAllocator = .init(std.testing.allocator, .{ .fail_index = index });
+        if (Probe.run(failing.allocator())) |_| {
+            std.debug.print("Replicated state GPA index{d}/{d} unexpectedly succeeded induced={}\n", .{ index, total, failing.has_induced_failure });
+            return if (failing.has_induced_failure) error.SwallowedOutOfMemoryError else error.NondeterministicMemoryUsage;
+        } else |err| switch (err) {
+            error.OutOfMemory => {
+                if (!failing.has_induced_failure) return error.UnexpectedOutOfMemoryError;
+                if (failing.allocated_bytes != failing.freed_bytes) {
+                    std.debug.print("Replicated state GPA index{d}/{d} leaked allocated{d} freed{d}\n", .{ index, total, failing.allocated_bytes, failing.freed_bytes });
+                    std.debug.dumpStackTrace(&.{ .return_addresses = &failing.stack_addresses, .skipped = .unknown });
+                    return error.MemoryLeakDetected;
+                }
+            },
+            else => {
+                std.debug.print("Replicated state GPA index{d}/{d} unexpected {s}\n", .{ index, total, @errorName(err) });
+                std.debug.dumpStackTrace(&.{ .return_addresses = &failing.stack_addresses, .skipped = .unknown });
+                return err;
+            },
+        }
+        completed += 1;
+    }
+    std.debug.print("CHORD_REPLICATED_STATE_GPA_COMPLETE={{\"start\":0,\"end\":{d},\"baseline\":{d},\"completed\":{d},\"leaks\":0,\"unexpected_errors\":0}}\n", .{ total, total, completed });
+}
