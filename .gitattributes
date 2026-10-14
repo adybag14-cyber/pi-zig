@@ -77,4 +77,6 @@ verification/sdk-constructor-public-values-e6220e1-20261013/** whitespace=blank-
 # AI Source callers and terminal receipts retain their captured CRLF/EOF bytes.
 src/extensions/fixtures/ai-env-keys-b45.input.txt whitespace=cr-at-eol
 src/extensions/fixtures/crypto-random-node24.input.txt whitespace=cr-at-eol,-blank-at-eof
+src/extensions/fixtures/ai-provider-helpers-b45.input.txt whitespace=cr-at-eol
 verification/ai-compat-env-crypto-b45-20261014/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/ai-provider-helpers-b45-20261014/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
