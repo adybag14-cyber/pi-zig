@@ -1,0 +1,14 @@
+{
+  "target": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\hosted-compaction84-24419e0-38638026361-20261014",
+  "files": 199,
+  "bytes": 38110319.0,
+  "archive": "C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\verification\\compaction-hosted-six-24419e0-20261014\\all-six-original-artifacts.zip",
+  "published_commit": "dc58a511da081c374b671876d725eb2bffaf72b0",
+  "published_blob": "27465424a4690935cf0d3a6054cd3c1a1ab53bd5",
+  "every_file_matches_published_archive": true,
+  "non_reparse_containment_verified": true,
+  "disposition": "RecycleBin",
+  "verified_utc": "2026-10-14T22:18:34.5841231+00:00",
+  "absence_verified": true,
+  "completed_utc": "2026-10-14T22:18:34.9213590+00:00"
+}
