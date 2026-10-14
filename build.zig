@@ -1536,6 +1536,12 @@ pub fn build(b: *std.Build) void {
     compaction_text_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-compaction-text", "Compare original summary serialization and failure text with complete native owner graphs").dependOn(&b.addRunArtifact(compaction_text_tests).step);
     b.step("build-native-sdk-compaction-text", "Compile original summary serialization independently of runtime deadlines").dependOn(&compaction_text_tests.step);
+    const ai_retry_call_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_retry_call_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI retry call"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ai_retry_call_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(ai_retry_call_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_retry_call_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-ai-retry-call", "Compare original assistant retry async behavior and complete native owner graphs").dependOn(&b.addRunArtifact(ai_retry_call_tests).step);
+    b.step("build-native-ai-retry-call", "Compile original assistant retry separately from runtime deadlines").dependOn(&ai_retry_call_tests.step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);
