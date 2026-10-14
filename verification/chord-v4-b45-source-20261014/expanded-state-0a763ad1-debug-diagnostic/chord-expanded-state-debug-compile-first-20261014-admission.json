@@ -1,0 +1,18 @@
+{
+  "observed_utc": "2026-10-14T22:59:38.4845417+00:00",
+  "free_bytes": 27270479872,
+  "required_bytes": 17179869184,
+  "other_native": [],
+  "source_inputs": 5597,
+  "original_source_inputs": 1965,
+  "compiler_inputs": 19546,
+  "normal_floor": true,
+  "sole8_exception_used": false,
+  "root_authority": "Root granted expandedState28 compile-only exact0a763ad1 full5597/1965/19546 controls ownerB52054EA normal16 j1 1320; Root/Renderer nojobs AI may latercoordinatepeer; no runtime orcombinedfactory job authorized",
+  "compile_seconds": 1320,
+  "runtime_authorized": false,
+  "jobs": 1,
+  "llvm": "default",
+  "compiler_peak_calibrated": false,
+  "public_activation": false
+}
