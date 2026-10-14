@@ -28,13 +28,16 @@ pub fn reportAsync(s: *Scope, value: c.JSValue) !void {
 }
 pub fn report(s: *Scope, receiver: c.JSValue, reporter: c.JSValue, value: c.JSValue) !void {
     const generation = s.engine.native_allocation_generation;
-    const result = js.call(s.engine, reporter, receiver, &.{try toError(s, value)}) catch |err| {
+    const result = invokeReport(s, receiver, reporter, value) catch |err| {
         const mapped = s.engine.nativeAllocationError(err, generation);
         if (mapped != error.JavaScriptException) return mapped;
         try reportAsync(s, try toError(s, s.engine.captured_exception orelse return err));
         return;
     };
     s.engine.freeValue(result);
+}
+fn invokeReport(s: *Scope, receiver: c.JSValue, reporter: c.JSValue, value: c.JSValue) !c.JSValue {
+    return js.call(s.engine, reporter, receiver, &.{try toError(s, value)});
 }
 pub fn own(s: *Scope, receiver: c.JSValue, bindings: c.JSValue, kind: h.Kind) !c.JSValue {
     return (try h.actor(s, receiver, bindings, kind)).data;

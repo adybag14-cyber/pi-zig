@@ -1,0 +1,10 @@
+{
+  "free_bytes": 24118407168,
+  "required_bytes": 2147483648,
+  "native_roots": [],
+  "max_roots": 2,
+  "heap_mb": 256,
+  "source_node_reservation": true,
+  "root_authority": "Root reviewed SourceState16 ownerB7864F4C driverF3DEF505 caller284692B3 clean9ae69c76 normal2GiB256MB30 full1965/31064/1774/candidatecontrols; RendererLegacy32 compile peer; 2026-10-14",
+  "utc": "2026-10-14T21:51:22.9192669+00:00"
+}

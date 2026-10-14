@@ -1,0 +1,17 @@
+{
+  "free_bytes": 23391559680,
+  "required_bytes": 2147483648,
+  "native_roots": [
+    {
+      "ProcessId": 70872,
+      "ParentProcessId": 58864,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-highlight-legacy-function32 -Doptimize=Debug -j1 --test-timeout 120s --summary all"
+    }
+  ],
+  "max_roots": 2,
+  "heap_mb": 256,
+  "source_node_reservation": true,
+  "root_authority": "Root grantedState16 serialdoublecapture B7864F4C/F3DEF505/284692B3 exactclean9ae69c76; firstpassed/fullpost0; normal2GiB256MB30/full1965/31064/1774/candidatecontrols; RendererLegacy32 peer; 2026-10-14",
+  "utc": "2026-10-14T21:52:23.5682257+00:00"
+}

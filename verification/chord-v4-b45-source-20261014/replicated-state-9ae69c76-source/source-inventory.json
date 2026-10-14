@@ -1,0 +1,41 @@
+{
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "candidate": "9ae69c76df62876bebf02adafb0d4b6f89502989",
+  "source_cases": 16,
+  "case_names": [
+    "mutable state takes immutable root ownership",
+    "hydration has exact background context and subscriber receiver",
+    "change preserves old revision and clones inserted values",
+    "empty changes publish no revision",
+    "replacement transfers root and publishes only real changes",
+    "change callback reentrancy fails atomically and then recovers",
+    "replacement from change callback fails atomically",
+    "async change callback is rejected without committing",
+    "subscribers serialize a pending hydration before updates",
+    "bounded pending queue keeps newest revisions after overflow",
+    "unsubscribe discards pending updates without joining callback",
+    "source attachment drains buffered revisions before later hydration",
+    "source publishes exact immutable values without reading ops",
+    "source cursor gap reports and disposes once retaining value",
+    "source unsafe snapshot cleans up before rethrow",
+    "factory is an ordinary constructible source function"
+  ],
+  "caller_sha256": "284692B3C7894CE26EA7CC456C13FA4E9836DB0C5F8491E60B5B772A9FCA5128",
+  "golden_sha256": "8019A2744735506440762455EAE8B5CBEF098AD26C53B6A1FD8335E751A25E40",
+  "source_inputs": 1965,
+  "dependency_inputs": 31064,
+  "node_inputs": 1774,
+  "candidate_inputs": 5502,
+  "post_drift": 0,
+  "owned_pids_absent": [
+    55220,
+    64744
+  ],
+  "actual_factory_and_context_calls": true,
+  "source_body_replaced": false,
+  "missing_method_stubs": false,
+  "completed_utc": "2026-10-14T21:52:32.5257601Z",
+  "native_qualified": false,
+  "public_activation": false,
+  "full_pi_qualified": false
+}

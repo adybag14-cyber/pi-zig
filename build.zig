@@ -805,6 +805,13 @@ pub fn build(b: *std.Build) void {
         shared_gpa_run.has_side_effects = true;
         b.step(b.fmt("test-native-chord-shared-v4-gpa-{d}", .{partition}), "Run unchanged full Source21 GC teardown and every index in one required allocation partition").dependOn(&shared_gpa_run.step);
     }
+    const chord_state_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_replicated_state_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chordb45 replicated state"} });
+    linkQuickJs(b, chord_state_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_state_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("build-native-chord-replicated-state-source", "Compile actual b45 replicatedState Source16 diagnostic with genuine context and timers").dependOn(&chord_state_tests.step);
+    const chord_state_run = b.addRunArtifact(chord_state_tests);
+    chord_state_run.has_side_effects = true;
+    b.step("test-native-chord-replicated-state-source", "Diagnose actual Source16 replicated state GC and complete allocation baseline; failure sweep remains separately required").dependOn(&chord_state_run.step);
     const chord_connection_boundaries = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_boundary_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord connection boundary inventory", "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions", "native WeakRef" } });
     linkQuickJs(b, chord_connection_boundaries.root_module, quickjs, sqlite_lib_dir);
     chord_connection_boundaries.root_module.addImport("catalog_tool", catalog_tool);
