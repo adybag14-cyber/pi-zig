@@ -1,0 +1,101 @@
+name: Native assistant retry and summary text qualification
+
+on:
+  push:
+    branches: [work/native-ai-retry-summary-1692-20261014]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-ai-retry-summary-candidate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [Debug, ReleaseSafe]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact source and compiler
+        id: freeze
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-ai-retry-summary-candidate'
+          New-Item -ItemType Directory -Path $taskReceipt -Force | Out-Null
+          if ((git rev-parse HEAD).Trim() -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }
+          if ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }
+          $taskZigInfo = [IO.FileInfo]::new((Get-Command zig | Select-Object -First 1).Source)
+          $taskZigTarget = $taskZigInfo.ResolveLinkTarget($true)
+          $taskZig = if ($taskZigTarget) { $taskZigTarget.FullName } else { $taskZigInfo.FullName }
+          $taskToolRoot = Split-Path -Parent $taskZig
+          $taskZigEnv = (& zig env) -join "`n"
+          $taskLibMatch = [regex]::Match($taskZigEnv, '\.lib_dir = ("(?:[^"\\]|\\.)*")')
+          if (!$taskLibMatch.Success) { throw 'Cannot identify the Zig library directory' }
+          $taskLib = $taskLibMatch.Groups[1].Value | ConvertFrom-Json
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object { [ordered]@{path=$_; sha256=(Get-FileHash -LiteralPath $_).Hash} })
+          $taskTools = @(Get-ChildItem -LiteralPath $taskToolRoot -File -Recurse | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName; sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
+          $taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"
+          $taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"
+          [ordered]@{head=$env:EXPECTED_HEAD; tree=(git rev-parse 'HEAD^{tree}').Trim(); mode='${{ matrix.mode }}'; source_count=$taskInputs.Count; tool_count=@($taskTools).Count; public_activation=$false; scope='Original retryAssistantCall and compaction serializer/failure helpers with unchanged upstream observations and full native ownership; full factory integration remains unfinished'} | ConvertTo-Json | Set-Content "$taskReceipt/source.json"
+      - name: Compile original assistant retry and summary text artifacts
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-native-ai-retry-call build-native-sdk-compaction-text -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-ai-retry-summary-candidate/compile.log
+          if ($LASTEXITCODE -ne 0) { throw 'Retry and summary text cold compilation failed' }
+      - name: Exercise original assistant retry and summary text with complete owner graphs
+        id: runtime
+        shell: pwsh
+        timeout-minutes: 5
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskReceipt = 'verification/native-ai-retry-summary-candidate'
+          & zig build test-native-ai-retry-call test-native-sdk-compaction-text -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/runtime.log"
+          if ($LASTEXITCODE -ne 0) { throw 'Retry or summary text runtime failed' }
+          $taskLog = Get-Content "$taskReceipt/runtime.log" -Raw
+          if ($taskLog -notmatch '(?m)Build Summary:.*\b8/8 tests passed') { throw 'All8 retry and summary text tests must execute' }
+          foreach ($taskCase in @(@{target='test-native-ai-retry-call';count=4},@{target='test-native-sdk-compaction-text';count=4})) {
+            $taskPattern = '(?ms)^'+[regex]::Escape($taskCase.target)+' success\r?\n[^\r\n]*run test '+$taskCase.count+' pass \('+$taskCase.count+' total\)'
+            if ([regex]::Matches($taskLog,$taskPattern).Count -ne 1) { throw "Artifact execution changed: $($taskCase.target)" }
+          }
+          foreach ($taskName in @('ai-retry-call-1692','sdk-compaction-text-1692')) {
+            $taskFixture = Get-Content "src/extensions/fixtures/$taskName.json" -Raw | ConvertFrom-Json
+            if ($taskFixture.sourceHead -cne '1692bba6347a287ab0f3cb554a4430fafffc474b') { throw 'Latest original upstream contract required' }
+            if (@($taskFixture.rows).Count -ne 30 -or $taskFixture.cases -ne 30) { throw 'Each original30 helper corpus must remain complete' }
+            if ((Get-FileHash -LiteralPath "src/extensions/fixtures/$taskName.input.txt").Hash.ToLowerInvariant() -cne $taskFixture.inputSha256) { throw 'Original helper input hash differs' }
+          }
+          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';tests=8;source_cases=60;retry_cases=30;summary_text_cases=30;original_factory_instances=0;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
+      - name: Verify frozen inputs after terminal execution
+        if: ${{ always() && steps.freeze.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-ai-retry-summary-candidate'
+          foreach ($taskKind in @('inputs','tools')) {
+            $taskRows = @(Get-Content "$taskReceipt/$taskKind.json" -Raw | ConvertFrom-Json)
+            $taskDrift = @($taskRows | Where-Object { !(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 } | ForEach-Object path)
+            [ordered]@{count=$taskRows.Count; drift=$taskDrift; completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/$taskKind-posthash.json"
+            if ($taskDrift.Count) { throw "Candidate frozen $taskKind changed" }
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-ai-retry-summary-candidate-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-ai-retry-summary-candidate/
