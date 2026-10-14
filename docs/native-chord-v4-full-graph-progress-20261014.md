@@ -45,6 +45,11 @@ implementation body or missing-method fallback is introduced.
   listeners and unseen snapshots while reading the binding's member values.
   Consumer Host bindingIdle/forgetBinding implement timeout and capped LRU
   ownership. Routing creates/reuses bindings by key and adds independent views.
+- Connection flow control now has an unactivated v4 module for ordered lazy
+  units, per-hold/member state slots, bounded pending operation bytes, lazy
+  provider reset or relay resync overflow, acknowledgements, and diagnostics.
+  The unchanged protocol-violation reporter is reused from its historical
+  module; protocol mismatch reporting/close text is explicitly version4.
 
 ## Qualification boundary and remaining integration
 
