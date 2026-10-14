@@ -1,0 +1,27 @@
+{
+  "status": "VM_ABI_guest_agreement_passed_Original_inherit24_differential_failed",
+  "head": "0263d660de1c2bad76f5ab8e1c2808c1b509e779",
+  "VM_tests_passed": 4,
+  "VM_baseline": 48,
+  "VM_partition": 0,
+  "VM_partitions": 8,
+  "VM_covered_indices": 6,
+  "VM_full_GPA_qualified": false,
+  "Original_tests_passed": 1,
+  "Original_tests_total": 3,
+  "Original_differing_rows": [
+    0,
+    15,
+    16,
+    18
+  ],
+  "first_difference": "Original sloppy CJS inherit owns arguments/caller keys; native ordinary wrapper lacks them",
+  "proxy_order_normalized": false,
+  "Original_expected_edits": 0,
+  "source_body_rewrites": 0,
+  "Original_inherit_qualified": false,
+  "Source5116_Original1955_vendor1318_compiler19546_controls4_post_drift": 0,
+  "all_owned_PIDs_absent": true,
+  "public_activation": false,
+  "recorded_utc": "2026-10-14T17:56:09.1748381+00:00"
+}

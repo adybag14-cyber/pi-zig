@@ -1,0 +1,254 @@
+[
+  {
+    "index": 0,
+    "name": "function descriptors and empty inherit",
+    "actual": {
+      "name": "function descriptors and empty inherit",
+      "value": {
+        "name": "inherit",
+        "length": 1,
+        "keys": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "ownPrototype": true,
+        "empty": {
+          "keys": [],
+          "entries": [],
+          "nullPrototype": true
+        }
+      }
+    },
+    "expected": {
+      "name": "function descriptors and empty inherit",
+      "value": {
+        "name": "inherit",
+        "length": 1,
+        "keys": [
+          "length",
+          "name",
+          "arguments",
+          "caller",
+          "prototype"
+        ],
+        "ownPrototype": true,
+        "empty": {
+          "keys": [],
+          "entries": [],
+          "nullPrototype": true
+        }
+      }
+    }
+  },
+  {
+    "index": 15,
+    "name": "proxy own keys descriptors prototype and get order",
+    "actual": {
+      "name": "proxy own keys descriptors prototype and get order",
+      "value": {
+        "result": {
+          "keys": [
+            "a",
+            "b",
+            "parent"
+          ],
+          "entries": [
+            [
+              "a",
+              1
+            ],
+            [
+              "b",
+              2
+            ],
+            [
+              "parent",
+              3
+            ]
+          ],
+          "nullPrototype": true
+        },
+        "log": [
+          "prototype",
+          "ownKeys",
+          [
+            "descriptor",
+            "a"
+          ],
+          [
+            "descriptor",
+            "b"
+          ],
+          "prototype",
+          [
+            "get",
+            "a"
+          ],
+          [
+            "get",
+            "b"
+          ],
+          [
+            "get",
+            "parent"
+          ]
+        ]
+      }
+    },
+    "expected": {
+      "name": "proxy own keys descriptors prototype and get order",
+      "value": {
+        "result": {
+          "keys": [
+            "a",
+            "b",
+            "parent"
+          ],
+          "entries": [
+            [
+              "a",
+              1
+            ],
+            [
+              "b",
+              2
+            ],
+            [
+              "parent",
+              3
+            ]
+          ],
+          "nullPrototype": true
+        },
+        "log": [
+          "ownKeys",
+          "prototype",
+          [
+            "descriptor",
+            "a"
+          ],
+          [
+            "get",
+            "a"
+          ],
+          [
+            "descriptor",
+            "b"
+          ],
+          [
+            "get",
+            "b"
+          ],
+          [
+            "descriptor",
+            "parent"
+          ],
+          "prototype",
+          [
+            "get",
+            "parent"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "index": 16,
+    "name": "proxy prototype shadow order",
+    "actual": {
+      "name": "proxy prototype shadow order",
+      "value": {
+        "result": {
+          "keys": [
+            "a",
+            "parent"
+          ],
+          "entries": [
+            [
+              "a",
+              3
+            ],
+            [
+              "parent",
+              2
+            ]
+          ],
+          "nullPrototype": true
+        },
+        "log": [
+          "parent.ownKeys",
+          [
+            "parent.descriptor",
+            "hidden"
+          ],
+          [
+            "parent.descriptor",
+            "parent"
+          ],
+          "parent.ownKeys",
+          [
+            "parent.descriptor",
+            "hidden"
+          ],
+          [
+            "parent.descriptor",
+            "parent"
+          ]
+        ]
+      }
+    },
+    "expected": {
+      "name": "proxy prototype shadow order",
+      "value": {
+        "result": {
+          "keys": [
+            "a",
+            "parent"
+          ],
+          "entries": [
+            [
+              "a",
+              3
+            ],
+            [
+              "parent",
+              2
+            ]
+          ],
+          "nullPrototype": true
+        },
+        "log": [
+          "parent.ownKeys",
+          [
+            "parent.descriptor",
+            "parent"
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "index": 18,
+    "name": "proxy ownKeys sentinel identity",
+    "actual": {
+      "name": "proxy ownKeys sentinel identity",
+      "value": {
+        "same": true,
+        "log": [
+          "prototype",
+          "ownKeys"
+        ]
+      }
+    },
+    "expected": {
+      "name": "proxy ownKeys sentinel identity",
+      "value": {
+        "same": true,
+        "log": [
+          "ownKeys"
+        ]
+      }
+    }
+  }
+]

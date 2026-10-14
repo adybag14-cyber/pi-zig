@@ -1,0 +1,268 @@
+test-native-highlight-inherit
++- run test 1 pass, 2 fail (3 total)
+error: 'native_highlight_inherit_test.test.native highlight inherit matches actual Original24 ordering proxy traps errors callbacks and GC' failed:
+       Actual Original inherit24 mismatch:
+       [{"name":"function descriptors and empty inherit","value":{"name":"inherit","length":1,"keys":["length","name","prototype"],"ownPrototype":true,"empty":{"keys":[],"entries":[],"nullPrototype":true}}},{"name":"null undefined and extra null values","value":{"keys":["a"],"entries":[["a",1]],"nullPrototype":true}},{"name":"primitive source values","value":[{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true}]},{"name":"UTF16 string indices","value":{"keys":["0","1","2","3","4"],"entries":[["0","a"],["1","界"],["2","\ud83d"],["3","\ude00"],["4","\ud800"]],"nullPrototype":true}},{"name":"own then inherited enumerable order","value":{"keys":["own","parent","tail"],"entries":[["own",3],["parent",1],["tail",2]],"nullPrototype":true}},{"name":"nonenumerable own shadow hides inherited","value":{"keys":["own","visible"],"entries":[["own",4],["visible",2]],"nullPrototype":true}},{"name":"own shadow does not read inherited getter","value":{"result":{"keys":["same"],"entries":[["same",2]],"nullPrototype":true},"log":[]}},{"name":"numeric key order by prototype layer","value":{"keys":["0","2","3","10","own","parent"],"entries":[["0","zero"],["2","two"],["3","parent3"],["10","ten"],["own",2],["parent",1]],"nullPrototype":true}},{"name":"symbols excluded","value":{"keys":["a"],"entries":[["a",1]],"nullPrototype":true}},{"name":"null prototype and proto named own key","value":{"keys":["__proto__","a"],"entries":[["__proto__",{"marker":1}],["a",2]],"nullPrototype":true}},{"name":"own getter deletes next own key","value":{"result":{"keys":["a","c"],"entries":[["a",1],["c",3]],"nullPrototype":true},"log":["a"]}},{"name":"own getter deletes next inherited key","value":{"keys":["a","c"],"entries":[["a",1],["c",3]],"nullPrototype":true}},{"name":"getter changes prototype during enumeration","value":{"keys":["a","b"],"entries":[["a",1],["b",7]],"nullPrototype":true}},{"name":"getter changes next property enumerability","value":{"keys":["a","b","c"],"entries":[["a",1],["b",2],["c",3]],"nullPrototype":true}},{"name":"getter adds own key during enumeration","value":{"keys":["a","b"],"entries":[["a",1],["b",2]],"nullPrototype":true}},{"name":"proxy own keys descriptors prototype and get order","value":{"result":{"keys":["a","b","parent"],"entries":[["a",1],["b",2],["parent",3]],"nullPrototype":true},"log":["prototype","ownKeys",["descriptor","a"],["descriptor","b"],"prototype",["get","a"],["get","b"],["get","parent"]]}},{"name":"proxy prototype shadow order","value":{"result":{"keys":["a","parent"],"entries":[["a",3],["parent",2]],"nullPrototype":true},"log":["parent.ownKeys",["parent.descriptor","hidden"],["parent.descriptor","parent"],"parent.ownKeys",["parent.descriptor","hidden"],["parent.descriptor","parent"]]}},{"name":"getter sentinel identity","value":{"same":true}},{"name":"proxy ownKeys sentinel identity","value":{"same":true,"log":["prototype","ownKeys"]}},{"name":"proxy descriptor sentinel identity","value":{"same":true,"log":["ownKeys","descriptor"]}},{"name":"live Object create target setters","value":{"same":true,"log":[["create",true],["set","a",1],["set","a",2],["set","b",3]],"result":{"keys":["a","b"],"entries":[["a",2],["b",3]],"nullPrototype":true}}},{"name":"retained extra-object callback and return","value":{"result":{"keys":["a","b","c"],"entries":[["a",1],["b",2],["c",3]],"nullPrototype":true},"returnedUndefined":true,"callback":{"name":"","length":1,"ownPrototype":true}}},{"name":"ordinary constructor returns null-prototype result","value":{"keys":["a","b"],"entries":[["a",1],["b",2]],"nullPrototype":true}},{"name":"retained closure traces result through actual GC","value":{"alive":true,"result":{"keys":["a","b","afterGC"],"entries":[["a",1],["b",2],["afterGC",3]],"nullPrototype":true}}}]
+       Expected:
+       [{"name":"function descriptors and empty inherit","value":{"name":"inherit","length":1,"keys":["length","name","arguments","caller","prototype"],"ownPrototype":true,"empty":{"keys":[],"entries":[],"nullPrototype":true}}},{"name":"null undefined and extra null values","value":{"keys":["a"],"entries":[["a",1]],"nullPrototype":true}},{"name":"primitive source values","value":[{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true}]},{"name":"UTF16 string indices","value":{"keys":["0","1","2","3","4"],"entries":[["0","a"],["1","界"],["2","\ud83d"],["3","\ude00"],["4","\ud800"]],"nullPrototype":true}},{"name":"own then inherited enumerable order","value":{"keys":["own","parent","tail"],"entries":[["own",3],["parent",1],["tail",2]],"nullPrototype":true}},{"name":"nonenumerable own shadow hides inherited","value":{"keys":["own","visible"],"entries":[["own",4],["visible",2]],"nullPrototype":true}},{"name":"own shadow does not read inherited getter","value":{"result":{"keys":["same"],"entries":[["same",2]],"nullPrototype":true},"log":[]}},{"name":"numeric key order by prototype layer","value":{"keys":["0","2","3","10","own","parent"],"entries":[["0","zero"],["2","two"],["3","parent3"],["10","ten"],["own",2],["parent",1]],"nullPrototype":true}},{"name":"symbols excluded","value":{"keys":["a"],"entries":[["a",1]],"nullPrototype":true}},{"name":"null prototype and proto named own key","value":{"keys":["__proto__","a"],"entries":[["__proto__",{"marker":1}],["a",2]],"nullPrototype":true}},{"name":"own getter deletes next own key","value":{"result":{"keys":["a","c"],"entries":[["a",1],["c",3]],"nullPrototype":true},"log":["a"]}},{"name":"own getter deletes next inherited key","value":{"keys":["a","c"],"entries":[["a",1],["c",3]],"nullPrototype":true}},{"name":"getter changes prototype during enumeration","value":{"keys":["a","b"],"entries":[["a",1],["b",7]],"nullPrototype":true}},{"name":"getter changes next property enumerability","value":{"keys":["a","b","c"],"entries":[["a",1],["b",2],["c",3]],"nullPrototype":true}},{"name":"getter adds own key during enumeration","value":{"keys":["a","b"],"entries":[["a",1],["b",2]],"nullPrototype":true}},{"name":"proxy own keys descriptors prototype and get order","value":{"result":{"keys":["a","b","parent"],"entries":[["a",1],["b",2],["parent",3]],"nullPrototype":true},"log":["ownKeys","prototype",["descriptor","a"],["get","a"],["descriptor","b"],["get","b"],["descriptor","parent"],"prototype",["get","parent"]]}},{"name":"proxy prototype shadow order","value":{"result":{"keys":["a","parent"],"entries":[["a",3],["parent",2]],"nullPrototype":true},"log":["parent.ownKeys",["parent.descriptor","parent"]]}},{"name":"getter sentinel identity","value":{"same":true}},{"name":"proxy ownKeys sentinel identity","value":{"same":true,"log":["ownKeys"]}},{"name":"proxy descriptor sentinel identity","value":{"same":true,"log":["ownKeys","descriptor"]}},{"name":"live Object create target setters","value":{"same":true,"log":[["create",true],["set","a",1],["set","a",2],["set","b",3]],"result":{"keys":["a","b"],"entries":[["a",2],["b",3]],"nullPrototype":true}}},{"name":"retained extra-object callback and return","value":{"result":{"keys":["a","b","c"],"entries":[["a",1],["b",2],["c",3]],"nullPrototype":true},"returnedUndefined":true,"callback":{"name":"","length":1,"ownPrototype":true}}},{"name":"ordinary constructor returns null-prototype result","value":{"keys":["a","b"],"entries":[["a",1],["b",2]],"nullPrototype":true}},{"name":"retained closure traces result through actual GC","value":{"alive":true,"result":{"keys":["a","b","afterGC"],"entries":[["a",1],["b",2],["afterGC",3]],"nullPrototype":true}}}]
+       C:\Users\adyba\pi-zig-sdk-events-hosted-20261013\src\native_highlight_inherit_test.zig:34:9: 0x7ff721b58119 in exercise (test_zcu.obj)
+               return error.InheritSourceMismatch;
+               ^
+       C:\Users\adyba\pi-zig-sdk-events-hosted-20261013\src\native_highlight_inherit_test.zig:40:5: 0x7ff721bbef5c in test.native highlight inherit matches actual Original24 ordering proxy traps errors callbacks and GC (test_zcu.obj)
+           try exercise(std.testing.allocator);
+           ^
+error: 'native_highlight_inherit_test.test.native highlight inherit releases every full original probe allocation failure' failed:
+       Actual Original inherit24 mismatch:
+       [{"name":"function descriptors and empty inherit","value":{"name":"inherit","length":1,"keys":["length","name","prototype"],"ownPrototype":true,"empty":{"keys":[],"entries":[],"nullPrototype":true}}},{"name":"null undefined and extra null values","value":{"keys":["a"],"entries":[["a",1]],"nullPrototype":true}},{"name":"primitive source values","value":[{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true}]},{"name":"UTF16 string indices","value":{"keys":["0","1","2","3","4"],"entries":[["0","a"],["1","界"],["2","\ud83d"],["3","\ude00"],["4","\ud800"]],"nullPrototype":true}},{"name":"own then inherited enumerable order","value":{"keys":["own","parent","tail"],"entries":[["own",3],["parent",1],["tail",2]],"nullPrototype":true}},{"name":"nonenumerable own shadow hides inherited","value":{"keys":["own","visible"],"entries":[["own",4],["visible",2]],"nullPrototype":true}},{"name":"own shadow does not read inherited getter","value":{"result":{"keys":["same"],"entries":[["same",2]],"nullPrototype":true},"log":[]}},{"name":"numeric key order by prototype layer","value":{"keys":["0","2","3","10","own","parent"],"entries":[["0","zero"],["2","two"],["3","parent3"],["10","ten"],["own",2],["parent",1]],"nullPrototype":true}},{"name":"symbols excluded","value":{"keys":["a"],"entries":[["a",1]],"nullPrototype":true}},{"name":"null prototype and proto named own key","value":{"keys":["__proto__","a"],"entries":[["__proto__",{"marker":1}],["a",2]],"nullPrototype":true}},{"name":"own getter deletes next own key","value":{"result":{"keys":["a","c"],"entries":[["a",1],["c",3]],"nullPrototype":true},"log":["a"]}},{"name":"own getter deletes next inherited key","value":{"keys":["a","c"],"entries":[["a",1],["c",3]],"nullPrototype":true}},{"name":"getter changes prototype during enumeration","value":{"keys":["a","b"],"entries":[["a",1],["b",7]],"nullPrototype":true}},{"name":"getter changes next property enumerability","value":{"keys":["a","b","c"],"entries":[["a",1],["b",2],["c",3]],"nullPrototype":true}},{"name":"getter adds own key during enumeration","value":{"keys":["a","b"],"entries":[["a",1],["b",2]],"nullPrototype":true}},{"name":"proxy own keys descriptors prototype and get order","value":{"result":{"keys":["a","b","parent"],"entries":[["a",1],["b",2],["parent",3]],"nullPrototype":true},"log":["prototype","ownKeys",["descriptor","a"],["descriptor","b"],"prototype",["get","a"],["get","b"],["get","parent"]]}},{"name":"proxy prototype shadow order","value":{"result":{"keys":["a","parent"],"entries":[["a",3],["parent",2]],"nullPrototype":true},"log":["parent.ownKeys",["parent.descriptor","hidden"],["parent.descriptor","parent"],"parent.ownKeys",["parent.descriptor","hidden"],["parent.descriptor","parent"]]}},{"name":"getter sentinel identity","value":{"same":true}},{"name":"proxy ownKeys sentinel identity","value":{"same":true,"log":["prototype","ownKeys"]}},{"name":"proxy descriptor sentinel identity","value":{"same":true,"log":["ownKeys","descriptor"]}},{"name":"live Object create target setters","value":{"same":true,"log":[["create",true],["set","a",1],["set","a",2],["set","b",3]],"result":{"keys":["a","b"],"entries":[["a",2],["b",3]],"nullPrototype":true}}},{"name":"retained extra-object callback and return","value":{"result":{"keys":["a","b","c"],"entries":[["a",1],["b",2],["c",3]],"nullPrototype":true},"returnedUndefined":true,"callback":{"name":"","length":1,"ownPrototype":true}}},{"name":"ordinary constructor returns null-prototype result","value":{"keys":["a","b"],"entries":[["a",1],["b",2]],"nullPrototype":true}},{"name":"retained closure traces result through actual GC","value":{"alive":true,"result":{"keys":["a","b","afterGC"],"entries":[["a",1],["b",2],["afterGC",3]],"nullPrototype":true}}}]
+       Expected:
+       [{"name":"function descriptors and empty inherit","value":{"name":"inherit","length":1,"keys":["length","name","arguments","caller","prototype"],"ownPrototype":true,"empty":{"keys":[],"entries":[],"nullPrototype":true}}},{"name":"null undefined and extra null values","value":{"keys":["a"],"entries":[["a",1]],"nullPrototype":true}},{"name":"primitive source values","value":[{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true},{"keys":[],"entries":[],"nullPrototype":true}]},{"name":"UTF16 string indices","value":{"keys":["0","1","2","3","4"],"entries":[["0","a"],["1","界"],["2","\ud83d"],["3","\ude00"],["4","\ud800"]],"nullPrototype":true}},{"name":"own then inherited enumerable order","value":{"keys":["own","parent","tail"],"entries":[["own",3],["parent",1],["tail",2]],"nullPrototype":true}},{"name":"nonenumerable own shadow hides inherited","value":{"keys":["own","visible"],"entries":[["own",4],["visible",2]],"nullPrototype":true}},{"name":"own shadow does not read inherited getter","value":{"result":{"keys":["same"],"entries":[["same",2]],"nullPrototype":true},"log":[]}},{"name":"numeric key order by prototype layer","value":{"keys":["0","2","3","10","own","parent"],"entries":[["0","zero"],["2","two"],["3","parent3"],["10","ten"],["own",2],["parent",1]],"nullPrototype":true}},{"name":"symbols excluded","value":{"keys":["a"],"entries":[["a",1]],"nullPrototype":true}},{"name":"null prototype and proto named own key","value":{"keys":["__proto__","a"],"entries":[["__proto__",{"marker":1}],["a",2]],"nullPrototype":true}},{"name":"own getter deletes next own key","value":{"result":{"keys":["a","c"],"entries":[["a",1],["c",3]],"nullPrototype":true},"log":["a"]}},{"name":"own getter deletes next inherited key","value":{"keys":["a","c"],"entries":[["a",1],["c",3]],"nullPrototype":true}},{"name":"getter changes prototype during enumeration","value":{"keys":["a","b"],"entries":[["a",1],["b",7]],"nullPrototype":true}},{"name":"getter changes next property enumerability","value":{"keys":["a","b","c"],"entries":[["a",1],["b",2],["c",3]],"nullPrototype":true}},{"name":"getter adds own key during enumeration","value":{"keys":["a","b"],"entries":[["a",1],["b",2]],"nullPrototype":true}},{"name":"proxy own keys descriptors prototype and get order","value":{"result":{"keys":["a","b","parent"],"entries":[["a",1],["b",2],["parent",3]],"nullPrototype":true},"log":["ownKeys","prototype",["descriptor","a"],["get","a"],["descriptor","b"],["get","b"],["descriptor","parent"],"prototype",["get","parent"]]}},{"name":"proxy prototype shadow order","value":{"result":{"keys":["a","parent"],"entries":[["a",3],["parent",2]],"nullPrototype":true},"log":["parent.ownKeys",["parent.descriptor","parent"]]}},{"name":"getter sentinel identity","value":{"same":true}},{"name":"proxy ownKeys sentinel identity","value":{"same":true,"log":["ownKeys"]}},{"name":"proxy descriptor sentinel identity","value":{"same":true,"log":["ownKeys","descriptor"]}},{"name":"live Object create target setters","value":{"same":true,"log":[["create",true],["set","a",1],["set","a",2],["set","b",3]],"result":{"keys":["a","b"],"entries":[["a",2],["b",3]],"nullPrototype":true}}},{"name":"retained extra-object callback and return","value":{"result":{"keys":["a","b","c"],"entries":[["a",1],["b",2],["c",3]],"nullPrototype":true},"returnedUndefined":true,"callback":{"name":"","length":1,"ownPrototype":true}}},{"name":"ordinary constructor returns null-prototype result","value":{"keys":["a","b"],"entries":[["a",1],["b",2]],"nullPrototype":true}},{"name":"retained closure traces result through actual GC","value":{"alive":true,"result":{"keys":["a","b","afterGC"],"entries":[["a",1],["b",2],["afterGC",3]],"nullPrototype":true}}}]
+       C:\Users\adyba\pi-zig-sdk-events-hosted-20261013\src\native_highlight_inherit_test.zig:34:9: 0x7ff721b58119 in exercise (test_zcu.obj)
+               return error.InheritSourceMismatch;
+               ^
+       C:\Users\adyba\pi-zig-sdk-events-hosted-20261013\src\test_support\exhaustive_allocation_shards.zig:49:5: 0x7ff721b582f5 in run__anon_66150 (test_zcu.obj)
+           try @call(.auto, body, .{baseline.allocator()} ++ args);
+           ^
+       C:\Users\adyba\pi-zig-sdk-events-hosted-20261013\src\test_support\exhaustive_allocation_shards.zig:41:5: 0x7ff721b58dad in check__anon_66110 (test_zcu.obj)
+           try run(std.testing.allocator, family, label, body, args, shard, shards);
+           ^
+       C:\Users\adyba\pi-zig-sdk-events-hosted-20261013\src\native_highlight_inherit_test.zig:43:5: 0x7ff721b58e95 in test.native highlight inherit releases every full original probe allocation failure (test_zcu.obj)
+           try @import("test_support/exhaustive_allocation_shards.zig").check(.worker, "highlight-inherit", exercise, .{});
+           ^
+failed command: ".\\.zig-cache\\o\\3a617c4fb5b34e09ab82e6b93891e663\\test.exe" "--cache-dir=.\\.zig-cache" --seed=0x1046895d --listen=-
+
+Build Summary: 154/156 steps succeeded (1 failed); 1/3 tests passed (2 failed)
+test-native-highlight-inherit transitive failure
++- run test 1 pass, 2 fail (3 total)
+   +- compile test Debug native cached 103ms MaxRSS:19M
+      +- WriteFile cached
+      +- compile lib pi-quickjs Debug native cached 53ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile lib pi-icu78-i18n Debug native cached 98ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile lib pi-icu78-common Debug native cached 109ms MaxRSS:19M
+      |  |  |  +- WriteFile cached
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native cached 47ms MaxRSS:19M
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native (reused)
+      |  |  +- compile lib pi-icu78-common Debug native (+3 more reused dependencies)
+      |  +- WriteFile cached
+      |  +- compile lib pi-native-yaml Debug native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native cached 110ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native cached 33ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native cached 42ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native cached 49ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native cached 32ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native cached 36ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native cached 34ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native cached 42ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native cached 29ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native cached 44ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native cached 34ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native cached 38ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native cached 50ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native cached 44ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native cached 34ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native cached 44ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native cached 42ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native cached 41ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native cached 30ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native cached 14ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native cached 17ms MaxRSS:19M
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)
+      |  +- WriteFile cached
+      |  +- compile lib pi-sqlite Debug native cached 47ms MaxRSS:19M
+      |  +- compile lib pi-icu78-i18n Debug native (+3 more reused dependencies)
+      |  +- compile lib pi-native-yaml Debug native (+81 more reused dependencies)
+      |  +- compile lib pi-sqlite Debug native (reused)
+      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)
+      +- WriteFile cached
+      +- compile lib pi-photon Debug native cached 16ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_0 Debug native cached 41ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_0 Debug native cached 46ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_1 Debug native cached 34ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_1 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_2 Debug native cached 45ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_2 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_3 Debug native cached 46ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_3 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_4 Debug native cached 49ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_4 Debug native cached 47ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_5 Debug native cached 46ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_5 Debug native cached 49ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_6 Debug native cached 61ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_6 Debug native cached 30ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_7 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_7 Debug native cached 49ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_8 Debug native cached 52ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_8 Debug native cached 50ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_9 Debug native cached 52ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_9 Debug native cached 33ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_10 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_10 Debug native cached 37ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_11 Debug native cached 52ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_11 Debug native cached 46ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_12 Debug native cached 34ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_12 Debug native cached 61ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_13 Debug native cached 50ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_13 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_14 Debug native cached 42ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_14 Debug native cached 41ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_15 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_15 Debug native cached 44ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_imports Debug native cached 32ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-browser_imports Debug native cached 41ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native cached 35ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_native Debug native cached 35ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_native Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_api Debug native cached 38ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_browser_api Debug native cached 51ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native cached 46ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native cached 51ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native cached 51ms MaxRSS:19M
+      |  +- compile obj pi-photon-photon_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_15 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_15 Debug native (reused)
+      |  +- compile obj pi-photon-codec_imports Debug native (reused)
+      |  +- compile obj pi-photon-browser_imports Debug native (reused)
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native (reused)
+      |  +- compile obj pi-photon-photon_native Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_native Debug native (reused)
+      |  +- compile obj pi-photon-session_api Debug native (reused)
+      |  +- compile obj pi-photon-session_browser_api Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native (reused)
+      +- compile lib pi-photon Debug native (+126 more reused dependencies)
+      +- options cached
+
+error: the following build command failed with exit code 1:
+.zig-cache\o\86ecb82ee7536d0946a081ac7147d65c\build.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\zig.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib C:\Users\adyba\pi-zig-sdk-events-hosted-20261013 .zig-cache C:\Users\adyba\AppData\Local\zig --seed 0x1046895d -Z3dacb607db38702b test-native-highlight-inherit -Doptimize=Debug -j1 --test-timeout 120s --summary all
