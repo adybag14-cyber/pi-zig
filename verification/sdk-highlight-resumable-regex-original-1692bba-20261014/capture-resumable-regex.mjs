@@ -1,0 +1,12 @@
+import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{join}from'node:path';import{pathToFileURL}from'node:url';
+const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
+const verify=()=>['source','dependencies','node-tools','candidate'].map(name=>{const rows=JSON.parse(readFileSync(join(process.env.PI_RENDERER_RECEIPTS,name+'-before.json'),'utf8').replace(/^\uFEFF/,''));for(const row of rows)if(hash(row.path)!==row.sha256.toLowerCase())throw Error('Frozen '+name+' drift '+row.path);return{name,count:rows.length,drift:0};});
+const before=verify(),root=process.env.PI_RENDERER_SOURCE_ROOT;
+const{default:core}=await import(pathToFileURL(join(root,'node_modules/highlight.js/lib/core.js')).href);
+const constructors=new Map();
+for(const insensitive of[false,true]){const name='pi-original-resumable-regex-'+insensitive;core.registerLanguage(name,()=>({case_insensitive:insensitive,contains:[{begin:/a/,end:/b/}]}));core.highlight('ab',{language:name,ignoreIllegals:true});const language=core.getLanguage(name);constructors.set(insensitive,language.matcher.constructor);}
+let instances=0;globalThis.makeResumableRegex=options=>{instances++;return new(constructors.get(Boolean(options.case_insensitive)))()};
+const input=readFileSync(process.argv[3],'utf8');await import('data:text/javascript,'+encodeURIComponent(input));
+if(sdkResumableRegexRows.length!==24||instances!==24)throw Error('Original ResumableMultiRegex24 inventory mismatch '+sdkResumableRegexRows.length+'/'+instances);
+const observedModules=readFileSync(join(process.env.PI_RENDERER_RECEIPTS,'modules-'+process.pid+'.jsonl'),'utf8').trim().split('\n').map(JSON.parse);for(const row of observedModules.filter(row=>row.kind==='observed-module'))if(hash(row.path)!==row.sha256)throw Error('Observed original module drift');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'1692bba6347a287ab0f3cb554a4430fafffc474b',inputSha256:createHash('sha256').update(input).digest('hex'),platform:process.platform,arch:process.arch,cases:sdkResumableRegexRows.length,instances,node:{version:process.version,path:process.execPath,sha256:hash(process.execPath),execArgv:process.execArgv},before,after:verify(),scope:'Original actual highlight.js10.7.3 ResumableMultiRegex constructors from real compiled caller grammars; caller input unchanged, no Source body rewrite; private algorithms only, no public class metadata certificate',rows:sdkResumableRegexRows,observedModules},null,2));
