@@ -1,0 +1,29 @@
+{
+  "status": "Windows_Debug_original_VM_arithmetic_regression_passed",
+  "source_head": "1da1a1a37b5f485c7767d57bd09427ce6de3fdd1",
+  "tests": 2,
+  "named_operator_tests": 1,
+  "transitive_tests": 1,
+  "binary_operation_count": 10,
+  "increment": true,
+  "decrement": true,
+  "comparison": "Real guest operators for numbers, signed zero, NaN, Infinity, strings, BigInt including negative exponent and zero divisors, original coercion order and thrown object identity",
+  "source_files": 4961,
+  "compiler_files": 19546,
+  "compile_runtime_source_bytes_identical": true,
+  "source_post_drift": 0,
+  "tool_post_drift": 0,
+  "compile_outer_seconds": 1320,
+  "runtime_outer_seconds": 300,
+  "test_seconds": 120,
+  "minimum_free_gib": 16,
+  "owned_pids_gone": [
+    7648,
+    52116
+  ],
+  "other_platforms_profiles": "Pending next hosted regression candidate; no cross-platform qualification inferred",
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "observed_utc": "2026-10-14T13:05:57.5722576+00:00"
+}
