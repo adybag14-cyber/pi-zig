@@ -22,6 +22,7 @@ pub fn setup(gpa: std.mem.Allocator) !*em.Engine {
     const root = em.c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(root);
     try js.define(engine, root, "nativeLatestChordApi", em.c.JS_DupValue(engine.context, api));
+    try js.define(engine, root, "nativeLatestChordBindings", em.c.JS_DupValue(engine.context, classes.bindings));
     return engine;
 }
 fn unpack(engine: *em.Engine, _: em.c.JSValue, args: []const em.c.JSValue, captures: []const em.c.JSValue) !em.c.JSValue {
@@ -44,7 +45,9 @@ fn diagnoseFailure(engine: *em.Engine, gpa: std.mem.Allocator, mapped: anyerror)
     if (mapped == error.OutOfMemory) return;
     const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
     std.debug.print("Latest GPA index{d} error={s}: {s}\n", .{ failing.fail_index, @errorName(mapped), engine.last_error orelse "no diagnostic" });
+    if (failing.has_induced_failure) std.debug.dumpStackTrace(&.{ .return_addresses = &failing.stack_addresses, .skipped = .unknown });
     if (engine.captured_exception) |exception| {
+        std.debug.print("Latest GPA allocation generation{d} captured tag{d} null{any} undefined{any}\n", .{ engine.native_allocation_generation, em.c.pi_js_native_allocation_error_generation(exception), em.c.JS_IsNull(exception), em.c.JS_IsUndefined(exception) });
         const message = engine.toString(exception) catch return;
         defer gpa.free(message);
         std.debug.print("Latest GPA captured exception: {s}\n", .{message});

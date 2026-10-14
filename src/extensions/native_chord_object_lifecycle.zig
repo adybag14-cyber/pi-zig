@@ -165,7 +165,10 @@ fn beginDispose(s: *Scope, work: c.JSValue, forced: bool, reason: c.JSValue) any
         _ = try h.invoke(s, try s.get(record, "callAbort"), "abort", &.{failure});
     }
     _ = try h.invoke(s, try s.get(record, "activationAbort"), "abort", &.{failure});
-    return h.wait(disposeStep, s.engine, work, if (was_activating) try s.get(record, "ready") else c.pi_js_undefined(), 0);
+    // Source awaits ready only for an activating object. A live object's
+    // synchronous disposal prefix must run before release returns.
+    if (!was_activating) return disposeStep(s.engine, work, c.pi_js_undefined(), false, 0);
+    return h.wait(disposeStep, s.engine, work, try s.get(record, "ready"), 0);
 }
 fn handlesGone(s: *Scope, record: c.JSValue, failure: c.JSValue) !void {
     const holds = try h.snapshot(s, try s.get(record, "refs"));
