@@ -4,7 +4,8 @@
     "_summarizationRetryCallbacks",
     "_finishCancelledRetry",
     "_prepareRetry",
-    "_omitRecoveryAttempt"
+    "_omitRecoveryAttempt",
+    "_isRetryableError"
   ],
   "helper": "Coding-agent sleep with actual global Promise/setTimeout/clearTimeout/signal callbacks and VM-visible roots",
   "shared_delay": "Actual VM exponentiation and left-to-right live Math/Number/property coercion; no mutable Math.pow substitution",
@@ -16,16 +17,17 @@
   },
   "source_cases": 31,
   "source_reference": "pending remote original Source capture",
-  "native": "uncompiled;fmt-only",
-  "source_retry_pattern": "Latest1692 unable to forward upstream gateway pattern added",
+  "native": "Syntax formatted; first hosted compile and native corpus/GC/full allocation-failure execution pending. Original31 reference comparison remains separate until genuine captures are verified.",
+  "source_retry_pattern": "Exact original1692 50 retryable and9 nonretryable patterns, including optional an in provider returned an error and unable to forward upstream",
   "remaining": [
-    "_isRetryableError/context overflow helper native integration",
+    "Genuine original31 reference intake and byte-row comparison",
+    "Separate original overflow/classifier corpus capture and comparison",
     "Full manual/automatic compaction and summaries",
     "Native helper timer OOM regression integration",
-    "Existing Durable retry regression after shared delay change"
+    "Existing Durable retry regression after shared delay/classifier change"
   ],
   "public_activation": false,
   "full_factory_qualified": false,
   "full_pi_qualified": false,
-  "completed_utc": "2026-10-14T12:22:21.9071768+00:00"
+  "completed_utc": "2026-10-14T12:36:42.8549472+00:00"
 }

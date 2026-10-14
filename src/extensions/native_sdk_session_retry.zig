@@ -7,8 +7,9 @@ const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const flow = @import("native_agent_async.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
 const c = em.c;
-const Method = enum(c_int) { _summarizationRetryCallbacks, _finishCancelledRetry, _prepareRetry, _omitRecoveryAttempt };
+const Method = enum(c_int) { _summarizationRetryCallbacks, _finishCancelledRetry, _prepareRetry, _omitRecoveryAttempt, _isRetryableError };
 pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
+    _ = try @import("native_ai_error_classification.zig").initialize(engine);
     inline for (std.meta.fields(Method)) |field| {
         const function = try engine.checked(c.pi_js_function_magic(engine.context, dispatch, field.name, if (field.value == 1) 0 else 1, field.value));
         defer engine.freeValue(function);
@@ -34,8 +35,21 @@ fn run(engine: *em.Engine, session: c.JSValue, method: Method, first: c.JSValue,
         ._summarizationRetryCallbacks => return callbacks(engine, session, first),
         ._finishCancelledRetry => try finishCancelled(engine, session),
         ._omitRecoveryAttempt => try omit(engine, session, first, second),
+        ._isRetryableError => return c.pi_js_bool(engine.context, @intFromBool(try isRetryable(engine, session, first))),
     }
     return c.pi_js_undefined();
+}
+fn isRetryable(engine: *em.Engine, session: c.JSValue, message: c.JSValue) !bool {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    var model = try scope.invoke(session, "_modelForMessage", &.{message});
+    if (c.JS_IsNull(model) or c.JS_IsUndefined(model)) model = try scope.get(session, "model");
+    var window = c.pi_js_undefined();
+    if (!c.JS_IsNull(model) and !c.JS_IsUndefined(model)) window = try scope.get(model, "contextWindow");
+    if (c.JS_IsNull(window) or c.JS_IsUndefined(window)) window = c.JS_NewInt32(engine.context, 0);
+    const classifier = @import("native_ai_error_classification.zig");
+    if (try classifier.overflow(engine, message, window)) return false;
+    return classifier.retryable(engine, message);
 }
 fn callbacks(engine: *em.Engine, session: c.JSValue, source: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };

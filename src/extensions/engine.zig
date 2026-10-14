@@ -83,6 +83,7 @@ pub const Engine = struct {
     native_ai_session_resources: ?c.JSValue = null,
     native_ai_model_values: ?c.JSValue = null,
     native_provider_env_lookup: ?c.JSValue = null,
+    native_ai_retry_patterns: ?c.JSValue = null,
     native_cache_warmer_bindings: ?c.JSValue = null,
     native_sdk_command_runner_constructor: ?c.JSValue = null,
     native_sdk_reserved_shortcuts: ?c.JSValue = null,
@@ -277,6 +278,7 @@ pub const Engine = struct {
         if (self.native_ai_session_resources) |value| self.freeValue(value);
         if (self.native_ai_model_values) |value| self.freeValue(value);
         if (self.native_provider_env_lookup) |value| self.freeValue(value);
+        if (self.native_ai_retry_patterns) |value| self.freeValue(value);
         if (self.native_cache_warmer_bindings) |value| self.freeValue(value);
         if (self.native_sdk_command_runner_constructor) |value| self.freeValue(value);
         if (self.native_sdk_reserved_shortcuts) |value| self.freeValue(value);

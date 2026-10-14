@@ -1,32 +1,10 @@
 //! Source provider retry patterns run in the captured C VM RegExp intrinsic.
 const engine_mod = @import("engine.zig");
-const vm = @import("native_values.zig");
 const js = @import("native_js_values.zig");
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
-fn matches(engine: *Engine, text: c.JSValue, pattern: []const u8) !bool {
-    const source = try engine.checked(c.JS_NewStringLen(engine.context, pattern.ptr, pattern.len));
-    defer engine.freeValue(source);
-    const flags = try engine.checked(c.JS_NewString(engine.context, "i"));
-    defer engine.freeValue(flags);
-    var args = [_]c.JSValue{ source, flags };
-    const regexp = try engine.checked(c.JS_CallConstructor(engine.context, engine.intrinsic_regexp_constructor, 2, &args));
-    defer engine.freeValue(regexp);
-    const result = try vm.invoke(engine, regexp, "test", &.{text});
-    defer engine.freeValue(result);
-    return c.JS_ToBool(engine.context, result) != 0;
-}
 pub fn retryable(engine: *Engine, message: c.JSValue) !bool {
-    const reason = try vm.get(engine, message, "stopReason");
-    defer engine.freeValue(reason);
-    const error_reason = try engine.checked(c.JS_NewString(engine.context, "error"));
-    defer engine.freeValue(error_reason);
-    if (!c.JS_IsStrictEqual(engine.context, reason, error_reason)) return false;
-    const text = try vm.get(engine, message, "errorMessage");
-    defer engine.freeValue(text);
-    if (c.JS_ToBool(engine.context, text) == 0) return false;
-    if (try matches(engine, text, @embedFile("nonretryable-provider-pattern.txt"))) return false;
-    return matches(engine, text, @embedFile("retryable-provider-pattern.txt"));
+    return @import("native_ai_error_classification.zig").retryable(engine, message);
 }
 pub fn delay(engine: *Engine, policy: c.JSValue, attempt: c.JSValue) !c.JSValue {
     const Scope = @import("native_sdk_prompt_scope.zig").Scope;
