@@ -48,5 +48,21 @@
   "preserved_negative": "chord-contract-placement-b45-first-20261014",
   "native_qualified": false,
   "public_activation": false,
-  "full_pi_qualified": false
+  "full_pi_qualified": false,
+  "native_source28_debug": {
+    "head": "44dafcd77c1e8166c5839e78fbc017fa8a780b87",
+    "source_cases": 28,
+    "compiled_tests": 4,
+    "host_gpa_baseline": 2140,
+    "all_host_indices": "passed",
+    "native_gc": "passed",
+    "source_inputs": 5318,
+    "original_inputs": 1965,
+    "compiler_inputs": 19546,
+    "post_drift": 0,
+    "root_pid_absent": true,
+    "c_malloc_exhaustive": false,
+    "broader_observable_hooks": "unqualified",
+    "full_contract_equivalence": false
+  }
 }
