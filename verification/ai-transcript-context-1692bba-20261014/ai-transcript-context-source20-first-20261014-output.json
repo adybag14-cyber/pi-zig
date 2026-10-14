@@ -1,0 +1,277 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "ebb657ff622899f5de33d00e51ba4937b742740a7dbf182ab1919193b2cabead",
+  "scope": "Actual unchanged original transcript.ts initial-system and normalizeContext exports; caller-owned values and restored public method override; no Source bodies replaced",
+  "cases": 20,
+  "rows": [
+    {
+      "name": "ordinary-export-metadata",
+      "value": [
+        {
+          "key": "createInitialSystemMessage",
+          "name": "createInitialSystemMessage",
+          "length": 2,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        },
+        {
+          "key": "normalizeContext",
+          "name": "normalizeContext",
+          "length": 1,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        }
+      ]
+    },
+    {
+      "name": "empty-initial-is-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "prompt-only-fields-and-order",
+      "value": {
+        "result": {
+          "role": "system",
+          "content": "system",
+          "timestamp": 0
+        },
+        "keys": [
+          "role",
+          "content",
+          "timestamp"
+        ]
+      }
+    },
+    {
+      "name": "tools-only-preserves-array-reference",
+      "value": {
+        "result": {
+          "role": "system",
+          "content": "",
+          "toolsAdded": [
+            {
+              "name": "read"
+            }
+          ],
+          "timestamp": 0
+        },
+        "keys": [
+          "role",
+          "content",
+          "toolsAdded",
+          "timestamp"
+        ],
+        "same": true
+      }
+    },
+    {
+      "name": "both-fields-preserve-inputs",
+      "value": {
+        "promptSame": true,
+        "toolsSame": true,
+        "keys": [
+          "role",
+          "content",
+          "toolsAdded",
+          "timestamp"
+        ]
+      }
+    },
+    {
+      "name": "empty-values-produce-no-system",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "null-prompt-original-typeerror",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "null-tools-original-typeerror",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "length-getter-and-number-coercion-order",
+      "value": {
+        "log": [
+          "prompt.length",
+          "prompt:number",
+          "tools.length",
+          "tools:number"
+        ],
+        "promptSame": true,
+        "toolsSame": true
+      }
+    },
+    {
+      "name": "primitive-falsy-values-are-not-undefined",
+      "value": [
+        {
+          "undefined": true
+        },
+        {
+          "undefined": true
+        },
+        {
+          "undefined": true
+        }
+      ]
+    },
+    {
+      "name": "normalize-without-initial-preserves-messages",
+      "value": {
+        "result": {
+          "messages": [
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ]
+        },
+        "same": true,
+        "keys": [
+          "messages"
+        ]
+      }
+    },
+    {
+      "name": "normalize-prepends-system-with-message-identity",
+      "value": {
+        "result": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "system",
+              "toolsAdded": [
+                {
+                  "name": "read"
+                }
+              ],
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ]
+        },
+        "newArray": true,
+        "messageSame": true,
+        "toolsSame": true
+      }
+    },
+    {
+      "name": "context-property-getter-order",
+      "value": [
+        "prompt",
+        "tools",
+        "prompt.length",
+        "tools.length",
+        "messages"
+      ]
+    },
+    {
+      "name": "existing-system-message-is-retained",
+      "value": {
+        "messages": [
+          {
+            "role": "system",
+            "content": "new",
+            "timestamp": 0
+          },
+          {
+            "role": "system",
+            "content": "old",
+            "timestamp": 7
+          },
+          {
+            "role": "user",
+            "content": "hello"
+          }
+        ]
+      }
+    },
+    {
+      "name": "custom-message-iterator",
+      "value": {
+        "result": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "system",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ]
+        },
+        "log": [
+          "start",
+          "end"
+        ]
+      }
+    },
+    {
+      "name": "array-spread-does-not-call-mutable-push",
+      "value": {
+        "messages": [
+          {
+            "role": "system",
+            "content": "system",
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "hello"
+          }
+        ]
+      }
+    },
+    {
+      "name": "noniterable-is-preserved-without-system",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "noniterable-with-system-throws",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "iterator-next-error-preserves-identity-without-close",
+      "value": {
+        "same": true,
+        "log": []
+      }
+    },
+    {
+      "name": "ordinary-constructor-return-values",
+      "value": {
+        "initialInstance": true,
+        "context": {
+          "messages": []
+        },
+        "contextInstance": false
+      }
+    }
+  ]
+}

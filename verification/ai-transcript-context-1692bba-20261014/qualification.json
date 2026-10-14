@@ -1,0 +1,71 @@
+{
+  "original_cases": 20,
+  "full_pi_qualified": false,
+  "native_tests": 4,
+  "compiler_drift": 0,
+  "scope": "Actual original transcript20; Windows Debug4/4 including retained identities, garbage collection and complete representative host allocation failure graph. No full application or public activation qualification.",
+  "source_drift": 0,
+  "public_activation": false,
+  "evidence": [
+    {
+      "sha256": "B53F538537B303270BB9C70099EBB833627793DB0BC4FDE37488D0FA11A2CD0E",
+      "path": "Run-RootAiTranscriptContextSource-20261014.ps1"
+    },
+    {
+      "sha256": "2642499D748BABE25D52F0B1242CB8A78121BF37545D2D7E02A10C82409367FC",
+      "path": "ai-transcript-context-1692-source-capture-20261014.mjs"
+    },
+    {
+      "sha256": "F3AEBB0569DBDD8F6741E5977AD8B41367EF555D4C16067245B1B1E731F15080",
+      "path": "ai-transcript-context-source20-first-20261014.json"
+    },
+    {
+      "sha256": "FD13B235845B8294465C3B799EEDD3CEF22FECBD1C89DE9FF3B16458FD0EA6F9",
+      "path": "ai-transcript-context-source20-first-20261014-posthash.json"
+    },
+    {
+      "sha256": "4949E97FCB4053647C55C21CB96EF258D260146D4434A1428089249BBD562610",
+      "path": "ai-transcript-context-source20-first-20261014-output.json"
+    },
+    {
+      "sha256": "4BA37B07771FDBEEFACBCD21F0FA75834995390B1163671AC1E9C7D86CCC7650",
+      "path": "Run-RootAiTranscriptContextCompile-20261014.ps1"
+    },
+    {
+      "sha256": "474A4DC9914353BD4E633A543F1B039D4CE287ED9DFEF0D8AB0A67AD7E2923AB",
+      "path": "Run-RootAiTranscriptContextRuntime-20261014.ps1"
+    },
+    {
+      "sha256": "A4397EBA4BFFA62CD807EC3E6F4EED1967020554634BCA0F8CCC8584D598AA33",
+      "path": "root-ai-transcript-context-compile-debug-first-20261014.json"
+    },
+    {
+      "sha256": "088368CAB24FB650566D51F55939D60918F54347C803F4AF589E048F9B5C8635",
+      "path": "root-ai-transcript-context-compile-debug-first-20261014-posthash.json"
+    },
+    {
+      "sha256": "B1B9C5CDC3930813D7967976EA95247CD499B8613F152DE9583D50D12E4F96FA",
+      "path": "root-ai-transcript-context-compile-debug-first-20261014-source-before.json"
+    },
+    {
+      "sha256": "FCA833792F86E20B7EDBA25B2ED57D8DFEDD552F5E2CE2B717F975603B524690",
+      "path": "root-ai-transcript-context-compile-debug-first-20261014.stderr.log"
+    },
+    {
+      "sha256": "DA76F2A05EDF3CFDC32C48BD81E6B1D93463C16D2159C09C215012498B08EA84",
+      "path": "root-ai-transcript-context-runtime-debug-first-20261014.json"
+    },
+    {
+      "sha256": "CF3D9835AB0ED522C7B5E26840CB8632513BAA3EF8AEDEEA39A67F4B8E9A1D68",
+      "path": "root-ai-transcript-context-runtime-debug-first-20261014-posthash.json"
+    },
+    {
+      "sha256": "84E1BB06145E0DCBACB55B475F0B2C7D7B841482FAA7D4E36EFF5C61FE99367E",
+      "path": "root-ai-transcript-context-runtime-debug-first-20261014.stderr.log"
+    }
+  ],
+  "compiler_files": 19546,
+  "code_commit": "86aaaa01",
+  "source_files": 5136,
+  "source_head": "1692bba6347a287ab0f3cb554a4430fafffc474b"
+}
