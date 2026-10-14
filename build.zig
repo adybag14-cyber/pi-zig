@@ -1436,6 +1436,11 @@ pub fn build(b: *std.Build) void {
     syntax_html_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-syntax-html", "Compile actual Source HTML theme formatter and named numeric entity helpers").dependOn(&syntax_html_tests.step);
     b.step("test-native-syntax-html", "Compare genuine full Source62 formatter callbacks metadata and complete native allocation cleanup").dependOn(&b.addRunArtifact(syntax_html_tests).step);
+    const highlight_tree_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_token_tree_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native highlight token tree"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_tree_tests.root_module, quickjs, sqlite_lib_dir);
+    highlight_tree_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-token-tree", "Compile actual highlight token tree and HTML emitter private algorithms").dependOn(&highlight_tree_tests.step);
+    b.step("test-native-highlight-token-tree", "Compare genuine original24 tree aliasing escaped HTML callbacks GC and native allocation cleanup").dependOn(&b.addRunArtifact(highlight_tree_tests).step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);

@@ -1,0 +1,371 @@
+[
+  {
+    "name": "text \"\"",
+    "tree": {
+      "children": []
+    },
+    "html": ""
+  },
+  {
+    "name": "text \"<&>\\\"'\"",
+    "tree": {
+      "children": [
+        "<&>\"'"
+      ]
+    },
+    "html": "&lt;&amp;&gt;&quot;&#x27;"
+  },
+  {
+    "name": "text \"alpha\\n\\nbeta\\n\"",
+    "tree": {
+      "children": [
+        "alpha\n\nbeta\n"
+      ]
+    },
+    "html": "alpha\n\nbeta\n"
+  },
+  {
+    "name": "text \"α界😀\"",
+    "tree": {
+      "children": [
+        "α界😀"
+      ]
+    },
+    "html": "α界😀"
+  },
+  {
+    "name": "text \"\\ud800\"",
+    "tree": {
+      "children": [
+        "\ud800"
+      ]
+    },
+    "html": "\ud800"
+  },
+  {
+    "name": "text \"\\u0000\"",
+    "tree": {
+      "children": [
+        "\u0000"
+      ]
+    },
+    "html": "\u0000"
+  },
+  {
+    "name": "text \"word\"",
+    "tree": {
+      "children": [
+        "word"
+      ]
+    },
+    "html": "word"
+  },
+  {
+    "name": "text \"\\n\"",
+    "tree": {
+      "children": [
+        "\n"
+      ]
+    },
+    "html": "\n"
+  },
+  {
+    "name": "keyword",
+    "tree": {
+      "children": [
+        {
+          "kind": "keyword",
+          "children": [
+            "if"
+          ]
+        }
+      ]
+    },
+    "html": "<span class=\"hljs-keyword\">if</span>"
+  },
+  {
+    "name": "empty keyword",
+    "tree": {
+      "children": []
+    },
+    "html": ""
+  },
+  {
+    "name": "nested nodes",
+    "tree": {
+      "children": [
+        {
+          "kind": "function",
+          "children": [
+            "a",
+            {
+              "kind": "title",
+              "children": [
+                "b"
+              ]
+            },
+            "c"
+          ]
+        }
+      ]
+    },
+    "html": "<span class=\"hljs-function\">a<span class=\"hljs-title\">b</span>c</span>"
+  },
+  {
+    "name": "falsy node kind",
+    "tree": {
+      "children": [
+        {
+          "kind": "",
+          "children": [
+            "x"
+          ]
+        },
+        {
+          "kind": null,
+          "children": [
+            "x"
+          ]
+        },
+        {
+          "children": [
+            "x"
+          ]
+        },
+        {
+          "kind": 0,
+          "children": [
+            "x"
+          ]
+        },
+        {
+          "kind": false,
+          "children": [
+            "x"
+          ]
+        }
+      ]
+    },
+    "html": "xxxxx"
+  },
+  {
+    "name": "close root and closed node identity",
+    "rootUndefined": true,
+    "closedIsChild": true,
+    "tree": {
+      "children": [
+        {
+          "kind": "keyword",
+          "children": []
+        }
+      ]
+    },
+    "html": "<span class=\"hljs-keyword\"></span>"
+  },
+  {
+    "name": "close all nodes",
+    "rootCloseUndefined": true,
+    "finalize": true,
+    "tree": {
+      "children": [
+        {
+          "kind": "keyword",
+          "children": [
+            {
+              "kind": "title",
+              "children": [
+                "x"
+              ]
+            }
+          ]
+        },
+        "tail"
+      ]
+    },
+    "html": "<span class=\"hljs-keyword\"><span class=\"hljs-title\">x</span></span>tail"
+  },
+  {
+    "name": "add original data node",
+    "same": true,
+    "tree": {
+      "children": [
+        {
+          "kind": "string",
+          "children": [
+            "a",
+            {
+              "kind": "subst",
+              "children": [
+                "b"
+              ]
+            },
+            "c"
+          ]
+        }
+      ]
+    },
+    "html": "<span class=\"hljs-string\">a<span class=\"hljs-subst\">b</span>c</span>"
+  },
+  {
+    "name": "prefix undefined",
+    "tree": {
+      "children": [
+        {
+          "kind": "keyword",
+          "children": [
+            "x"
+          ]
+        }
+      ]
+    },
+    "html": "<span class=\"undefinedkeyword\">x</span>"
+  },
+  {
+    "name": "prefix ",
+    "tree": {
+      "children": [
+        {
+          "kind": "keyword",
+          "children": [
+            "x"
+          ]
+        }
+      ]
+    },
+    "html": "<span class=\"keyword\">x</span>"
+  },
+  {
+    "name": "prefix owned-",
+    "tree": {
+      "children": [
+        {
+          "kind": "keyword",
+          "children": [
+            "x"
+          ]
+        }
+      ]
+    },
+    "html": "<span class=\"owned-keyword\">x</span>"
+  },
+  {
+    "name": "prefix null",
+    "tree": {
+      "children": [
+        {
+          "kind": "keyword",
+          "children": [
+            "x"
+          ]
+        }
+      ]
+    },
+    "html": "<span class=\"nullkeyword\">x</span>"
+  },
+  {
+    "name": "prefix 0",
+    "tree": {
+      "children": [
+        {
+          "kind": "keyword",
+          "children": [
+            "x"
+          ]
+        }
+      ]
+    },
+    "html": "<span class=\"0keyword\">x</span>"
+  },
+  {
+    "name": "prefix coerced-",
+    "tree": {
+      "children": [
+        {
+          "kind": "keyword",
+          "children": [
+            "x"
+          ]
+        }
+      ]
+    },
+    "html": "<span class=\"coerced-keyword\">x</span>"
+  },
+  {
+    "name": "sublanguage root retained by identity",
+    "same": true,
+    "sub": {
+      "tree": {
+        "children": [
+          {
+            "kind": "keyword",
+            "children": [
+              "x"
+            ]
+          },
+          "tail"
+        ],
+        "kind": "javascript",
+        "sublanguage": true
+      },
+      "html": "<span class=\"javascript\"><span class=\"other-keyword\">x</span>tail</span>"
+    },
+    "tree": {
+      "children": [
+        {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "x"
+              ]
+            },
+            "tail"
+          ],
+          "kind": "javascript",
+          "sublanguage": true
+        }
+      ]
+    },
+    "html": "<span class=\"javascript\"><span class=\"hljs-keyword\">x</span>tail</span>"
+  },
+  {
+    "name": "shared sublanguage changes kind in prior tree",
+    "same": true,
+    "first": {
+      "tree": {
+        "children": [
+          {
+            "children": [
+              "x"
+            ],
+            "kind": "xml",
+            "sublanguage": true
+          }
+        ]
+      },
+      "html": "<span class=\"xml\">x</span>"
+    },
+    "second": {
+      "tree": {
+        "children": [
+          {
+            "children": [
+              "x"
+            ],
+            "kind": "xml",
+            "sublanguage": true
+          }
+        ]
+      },
+      "html": "<span class=\"xml\">x</span>"
+    }
+  },
+  {
+    "name": "caller retained forEach callback survives returned renderer",
+    "html": "x",
+    "retained": 1,
+    "returned": [
+      false
+    ]
+  }
+]

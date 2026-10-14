@@ -1,0 +1,16 @@
+const rows=[];
+const observe=(name,run)=>rows.push({name,...run()});
+const snapshot=e=>({tree:JSON.parse(e.toJSON()),html:e.toHTML()});
+for(const text of ['', '<&>"\'', 'alpha\n\nbeta\n', '\u03b1\u754c\ud83d\ude00','\ud800','\0','word','\n'])observe('text '+JSON.stringify(text),()=>{const e=makeTokenTreeEmitter({classPrefix:'hljs-'});e.addText(text);return snapshot(e)});
+observe('keyword',()=>{const e=makeTokenTreeEmitter({classPrefix:'hljs-'});e.addKeyword('if','keyword');return snapshot(e)});
+observe('empty keyword',()=>{const e=makeTokenTreeEmitter({classPrefix:'hljs-'});e.addKeyword('','keyword');return snapshot(e)});
+observe('nested nodes',()=>{const e=makeTokenTreeEmitter({classPrefix:'hljs-'});e.openNode('function');e.addText('a');e.openNode('title');e.addText('b');e.closeNode();e.addText('c');e.closeNode();return snapshot(e)});
+observe('falsy node kind',()=>{const e=makeTokenTreeEmitter({classPrefix:'hljs-'});for(const kind of ['',null,undefined,0,false]){e.openNode(kind);e.addText('x');e.closeNode()}return snapshot(e)});
+observe('close root and closed node identity',()=>{const e=makeTokenTreeEmitter({classPrefix:'hljs-'});const rootClose=e.closeNode();e.openNode('keyword');const node=e.closeNode();return{rootUndefined:rootClose===undefined,closedIsChild:node===e.root.children[0],...snapshot(e)}});
+observe('close all nodes',()=>{const e=makeTokenTreeEmitter({classPrefix:'hljs-'});e.openNode('keyword');e.openNode('title');e.addText('x');e.closeAllNodes();e.addText('tail');return{rootCloseUndefined:e.closeNode()===undefined,finalize:e.finalize(),...snapshot(e)}});
+observe('add original data node',()=>{const e=makeTokenTreeEmitter({classPrefix:'hljs-'});const node={kind:'string',children:['a',{kind:'subst',children:['b']},'c']};e.add(node);return{same:e.root.children[0]===node,...snapshot(e)}});
+for(const prefix of [undefined,'','owned-',null,0,{toString(){return'coerced-'}}])observe('prefix '+String(prefix),()=>{const e=makeTokenTreeEmitter({classPrefix:prefix});e.addKeyword('x','keyword');return snapshot(e)});
+observe('sublanguage root retained by identity',()=>{const e=makeTokenTreeEmitter({classPrefix:'hljs-'}),sub=makeTokenTreeEmitter({classPrefix:'other-'});sub.addKeyword('x','keyword');e.addSublanguage(sub,'javascript');sub.addText('tail');return{same:e.root.children[0]===sub.root,sub:snapshot(sub),...snapshot(e)}});
+observe('shared sublanguage changes kind in prior tree',()=>{const first=makeTokenTreeEmitter({classPrefix:'hljs-'}),second=makeTokenTreeEmitter({classPrefix:'hljs-'}),sub=makeTokenTreeEmitter({classPrefix:'hljs-'});sub.addText('x');first.addSublanguage(sub,'javascript');second.addSublanguage(sub,'xml');return{same:first.root.children[0]===second.root.children[0],first:snapshot(first),second:snapshot(second)}});
+observe('caller retained forEach callback survives returned renderer',()=>{const original=Array.prototype.forEach,captured=[];Array.prototype.forEach=function(callback,...args){captured.push(callback);return Reflect.apply(original,this,[callback,...args])};const e=makeTokenTreeEmitter({classPrefix:'hljs-'});e.addText('x');let html;try{html=e.toHTML()}finally{Array.prototype.forEach=original}const returned=captured.map(callback=>callback('later')===undefined);return{html,retained:captured.length,returned}});
+globalThis.sdkTokenTreeRows=rows;
