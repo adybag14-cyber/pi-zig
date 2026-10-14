@@ -1518,6 +1518,12 @@ pub fn build(b: *std.Build) void {
     compaction_files_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-compaction-files", "Compare original file-operation tracking and formatting with complete native ownership checks").dependOn(&b.addRunArtifact(compaction_files_tests).step);
     b.step("build-native-sdk-compaction-files", "Compile original file-operation tracking separately from runtime deadlines").dependOn(&compaction_files_tests.step);
+    const live_projection_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_projection_live_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK live projection"}, .use_llvm = use_llvm });
+    linkQuickJs(b, live_projection_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(live_projection_tests.root_module, sqlite_lib_dir, sqlite_library);
+    live_projection_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-session-projection-live", "Compare original canonical projections live getter ordering and complete native ownership").dependOn(&b.addRunArtifact(live_projection_tests).step);
+    b.step("build-native-sdk-session-projection-live", "Compile original canonical projections independently of runtime deadlines").dependOn(&live_projection_tests.step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);
