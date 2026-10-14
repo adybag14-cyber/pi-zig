@@ -1,4 +1,4 @@
-{"sourceHead":"1692bba6347a287ab0f3cb554a4430fafffc474b","inputSha256":"6cd07bedca62930c7424d87718e15d2c5957dd619cd6acb1ad20b75d86c29b51","scope":"Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs","factoryCount":36,"rows":[
+{"sourceHead":"1692bba6347a287ab0f3cb554a4430fafffc474b","inputSha256":"06955a781c6f33eebc2495cb1172848a85a1e2682b11f5ecc44dd4ca24908361","scope":"Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs","factoryCount":36,"rows":[
     {
       "name": "method-metadata",
       "value": {
@@ -383,8 +383,7 @@
         "log": [
           "file",
           "id",
-          "context",
-          "id"
+          "context"
         ]
       }
     },

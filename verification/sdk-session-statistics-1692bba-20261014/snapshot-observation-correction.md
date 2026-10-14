@@ -1,0 +1,5 @@
+The first Source36 observer returned a live log array. Its finally block called the original session.dispose(), which appended a sessionId getter observation after getSessionStats() had returned. Native case13 correctly observed the three events during the method call. Run38560382141 therefore failed the fixture comparison; its negative logs remain in the external evidence directory.
+
+The corrected observer snapshots that caller-owned log before disposal. No upstream method body changed. Genuine original createAgentSession captures on Linux and macOS, twice per platform, produced identical 36 rows in run38561905295 at e6e0e52. The raw captures and full source/dependency/tool pre/post verification are retained here; proof publication is f472b7349d1c5d0fca93e4c0c16e693f47f27e4d. The expected fixture is a raw JSON projection of those original observations, not a manually adjusted expected value.
+
+Native validation of this corrected fixture is pending the six-platform/profile candidate run. Full factory and application parity remain unqualified. This candidate starts at ca74e0f and excludes subsequent uncompiled retry implementation work.
