@@ -10,7 +10,8 @@
   "native_ports": [
     "src/extensions/native_highlight_token_tree.zig",
     "src/extensions/native_highlight_regex.zig",
-    "src/extensions/native_highlight_multi_regex.zig"
+    "src/extensions/native_highlight_multi_regex.zig",
+    "src/extensions/native_highlight_resumable_regex.zig"
   ],
   "source_original_constructor_capture_run": 38573862642,
   "source_original_HTML_formatter_run": 38570185401,
