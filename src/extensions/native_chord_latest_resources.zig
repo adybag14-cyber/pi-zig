@@ -64,7 +64,27 @@ fn optionalClose(engine: *Engine, receiver: c.JSValue, value: c.JSValue) !c.JSVa
     return js.call(engine, function, spec, &.{value});
 }
 fn chain(engine: *Engine, _: c.JSValue, work: c.JSValue, awaited: c.JSValue, stage: c_int) !c.JSValue {
-    return host_values.wait(resumeResource, engine, work, awaited, stage);
+    const continuation = try host_values.wait(resourceContinuation, engine, work, awaited, stage);
+    engine.freeValue(continuation);
+    return js.get(engine, work, "promise");
+}
+fn settleResource(engine: *Engine, work: c.JSValue, rejected: bool, value: c.JSValue) !c.JSValue {
+    const callback_value = try js.get(engine, work, if (rejected) "reject" else "resolve");
+    defer engine.freeValue(callback_value);
+    return js.call(engine, callback_value, c.pi_js_undefined(), &.{value});
+}
+fn resourceContinuation(engine: *Engine, work: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) anyerror!c.JSValue {
+    const generation = engine.native_allocation_generation;
+    return resumeResource(engine, work, value, rejected, stage) catch |err| {
+        // The enclosing pending-job boundary retains its existing narrow fresh
+        // native allocation escape. Ordinary errors reject this invocation's
+        // own capability, preserving the actual async method's identity.
+        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return err;
+        _ = durable.reject(engine, err);
+        const reason = c.JS_GetException(engine.context);
+        defer engine.freeValue(reason);
+        return settleResource(engine, work, true, reason);
+    };
 }
 fn job(engine: *Engine, receiver: c.JSValue, bindings: c.JSValue, signal: c.JSValue, order: c.JSValue) !c.JSValue {
     const work = try js.object(engine);
@@ -73,6 +93,13 @@ fn job(engine: *Engine, receiver: c.JSValue, bindings: c.JSValue, signal: c.JSVa
     try js.define(engine, work, "bindings", c.JS_DupValue(engine.context, bindings));
     try js.define(engine, work, "signal", c.JS_DupValue(engine.context, signal));
     try js.define(engine, work, "order", c.JS_DupValue(engine.context, order));
+    var functions: [2]c.JSValue = undefined;
+    const promise = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
+    defer engine.freeValue(promise);
+    defer for (functions) |function| engine.freeValue(function);
+    try js.define(engine, work, "promise", c.JS_DupValue(engine.context, promise));
+    try js.define(engine, work, "resolve", c.JS_DupValue(engine.context, functions[0]));
+    try js.define(engine, work, "reject", c.JS_DupValue(engine.context, functions[1]));
     return work;
 }
 fn invoke(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue, method: Method, bindings: c.JSValue) anyerror!c.JSValue {
@@ -153,9 +180,9 @@ fn resumeResource(engine: *Engine, work: c.JSValue, value: c.JSValue, rejected: 
     defer engine.freeValue(bindings);
     if (rejected) {
         if (stage == 0) try setState(engine, receiver, "closed");
-        return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value)));
+        return settleResource(engine, work, true, value);
     }
-    if (stage == 2) return c.pi_js_undefined();
+    if (stage == 2) return settleResource(engine, work, false, c.pi_js_undefined());
     if (stage == 1) return failure(engine, bindings, receiver, "aborted", " opened after abort");
     const signal = try js.get(engine, work, "signal");
     defer engine.freeValue(signal);
@@ -165,7 +192,9 @@ fn resumeResource(engine: *Engine, work: c.JSValue, value: c.JSValue, rejected: 
         try setState(engine, receiver, "closed");
         const closed = try optionalClose(engine, receiver, value);
         defer engine.freeValue(closed);
-        return chain(engine, bindings, work, closed, 1);
+        const continued = try chain(engine, bindings, work, closed, 1);
+        engine.freeValue(continued);
+        return c.pi_js_undefined();
     }
     const self = try state(engine, receiver, bindings, false);
     engine.freeValue(self.value);
@@ -175,7 +204,7 @@ fn resumeResource(engine: *Engine, work: c.JSValue, value: c.JSValue, rejected: 
     defer engine.freeValue(order);
     const ignored = try js.invoke(engine, order, "push", &.{receiver});
     engine.freeValue(ignored);
-    return c.pi_js_undefined();
+    return settleResource(engine, work, false, c.pi_js_undefined());
 }
 fn construct(engine: *Engine, target: c.JSValue, args: []const c.JSValue, data: []const c.JSValue) !c.JSValue {
     const facade = c.JS_ToBool(engine.context, data[1]) > 0;

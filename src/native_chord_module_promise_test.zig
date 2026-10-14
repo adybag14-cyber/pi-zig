@@ -43,6 +43,15 @@ fn dynamicImports(engine: *em.Engine) !void {
     try engine.registerModule("native-spec-rejection.mjs", "await Promise.resolve();throw globalThis.dynamicFailureMarker;");
     try evaluate(engine, dynamic, "intrinsic-module-dynamic.mjs");
 }
+fn armVmBudget(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    var budget: u32 = undefined;
+    if (argc != 1 or c.JS_ToUint32(context, &budget, argv[0]) < 0) return c.JS_ThrowTypeError(context, "VM budget argument required");
+    var usage: c.JSMemoryUsage = undefined;
+    c.JS_ComputeMemoryUsage(engine.runtime, &usage);
+    c.JS_SetMemoryLimit(engine.runtime, @as(usize, @intCast(usage.malloc_size)) + budget + 1);
+    return c.pi_js_undefined();
+}
 test "native Chord intrinsic module compiled inventory" {
     try latest.inventory("CHORD_MODULE_PROMISE_COMPILED_INVENTORY");
 }
@@ -80,4 +89,54 @@ test "native Chord intrinsic module complete pure guest TLA dynamic import ident
         }
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}
+test "native Chord intrinsic module direct VM heap limit sweep settles TLA and dynamic import failures and releases memory owners" {
+    const counts = c.pi_js_native_memory_owners();
+    var failures: usize = 0;
+    var successes: usize = 0;
+    var failures_by_program: [2]usize = .{ 0, 0 };
+    var successes_by_program: [2]usize = .{ 0, 0 };
+    var completed: usize = 0;
+    for (0..2) |program| {
+        for (0..257) |step| {
+            const budget = step * 32;
+            var unexpected: ?anyerror = null;
+            {
+                const engine = try create(std.testing.allocator);
+                defer engine.deinit();
+                defer c.JS_RunGC(engine.runtime);
+                defer c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+                try engine.bindFunction("nativeArmVmBudget", armVmBudget, 1);
+                if (program == 1) try engine.registerModule("native-limit-import.mjs", "await 0;export const value=7;");
+                const source = if (program == 0) try std.fmt.allocPrint(std.testing.allocator, "nativeArmVmBudget({d});await 0;export const value=7;", .{budget}) else try std.fmt.allocPrint(std.testing.allocator, "nativeArmVmBudget({d});const ns=await import('native-limit-import.mjs');if(ns.value!==7)throw Error('import value');export const value=ns.value;", .{budget});
+                defer std.testing.allocator.free(source);
+                if (engine.evalModule(source, "intrinsic-module-limit.mjs")) |result| {
+                    defer engine.freeValue(result);
+                    c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+                    const value = try engine.checked(c.JS_GetPropertyStr(engine.context, result, "value"));
+                    defer engine.freeValue(value);
+                    try std.testing.expect(c.JS_IsNumber(value));
+                    var number: i32 = undefined;
+                    if (c.JS_ToInt32(engine.context, &number, value) < 0) return error.ModuleResultConversionFailed;
+                    try std.testing.expectEqual(@as(i32, 7), number);
+                    successes += 1;
+                    successes_by_program[program] += 1;
+                } else |err| {
+                    if (err == error.JavaScriptException) {
+                        failures += 1;
+                        failures_by_program[program] += 1;
+                    } else unexpected = err;
+                }
+            }
+            try std.testing.expectEqual(counts, c.pi_js_native_memory_owners());
+            if (unexpected) |err| {
+                std.debug.print("Direct VM heap limit program{d} budget{d} unexpected {s}\n", .{ program, budget, @errorName(err) });
+                return err;
+            }
+            completed += 1;
+        }
+        try std.testing.expect(failures_by_program[program] > 0 and successes_by_program[program] > 0);
+    }
+    try std.testing.expect(failures > 0 and successes > 0);
+    std.debug.print("CHORD_MODULE_VM_HEAP_LIMIT_COVERAGE={{\"programs\":2,\"minimum_budget\":0,\"maximum_budget\":8192,\"step\":32,\"completed\":{d},\"failures\":{d},\"successes\":{d},\"failures_by_program\":[{d},{d}],\"successes_by_program\":[{d},{d}],\"owner_leaks\":0}}\n", .{ completed, failures, successes, failures_by_program[0], failures_by_program[1], successes_by_program[0], successes_by_program[1] });
 }
