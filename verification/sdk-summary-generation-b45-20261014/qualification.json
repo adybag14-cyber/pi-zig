@@ -1,0 +1,103 @@
+{
+  "platform": "Windows Debug",
+  "source_head": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "native_tests": 4,
+  "source_drift": 0,
+  "public_activation": false,
+  "code_commit": "59077dc88751c0ef9d2c58a57da38d525492168a",
+  "session_manual_compact_qualified": false,
+  "compiler_files": 19546,
+  "global_compat_qualified": false,
+  "source_files": 5254,
+  "prompt_capture_cases": 3,
+  "original_cases": 45,
+  "full_factory_qualified": false,
+  "scope": "Actual generateSummaryWithUsage/generateSummary/compact algorithms; all45 Source cases with supplied stream and native conversion/serialization/retry/usage/file tracking. Exact prompt strings observed via3 actual upstream calls. Native pending GC and complete representative split/history/file host-allocation graph.",
+  "evidence": [
+    {
+      "path": "Run-RootSummaryPromptsB45Source-20261014.ps1",
+      "sha256": "16765A4DA291EF13D38694A0C4EDA2E1CAFBF9A68F4DF32EE951E698910EBE5D"
+    },
+    {
+      "path": "sdk-summary-prompts-b45-source-capture-20261014.mjs",
+      "sha256": "6FE80B4D5F70385F3407E03C8D229A7A8F7969E28DBB8789FEABE661079E7C2C"
+    },
+    {
+      "path": "sdk-summary-prompts-b45.input.json",
+      "sha256": "DE2D4A1588248FE59C14BE2254D9EE5C79E75AA36934113B81B60C01CB92CC86"
+    },
+    {
+      "path": "sdk-summary-prompts-b45-source3-first-20261014.json",
+      "sha256": "1A1CE8882C5EC69BE7BFC1DF13BC1FB5EF7042582C82C9A25AB09013EA5CAD0D"
+    },
+    {
+      "path": "sdk-summary-prompts-b45-source3-first-20261014-posthash.json",
+      "sha256": "A70304FFDDF611F51B98FC28F14F4A5046C153C7ABA523C6F0ECA9EB36C11BE1"
+    },
+    {
+      "path": "sdk-summary-prompts-b45-source3-first-20261014-output.json",
+      "sha256": "82AAF05DB8FE2786607313A07844624CAEC17B33800FFFD79A7D78031EBA70EB"
+    },
+    {
+      "path": "Run-RootSummaryGenerationB45Source-20261014.ps1",
+      "sha256": "A50A2DEB902E6B094EF192EF9D6DB0D13DA89DCD055D1DF3183784BAAAA91BB4"
+    },
+    {
+      "path": "sdk-summary-generation-b45-source-capture-20261014.mjs",
+      "sha256": "5AC790AB533D2F3A4D0BAFDA5A05CBCBEC79596CFC2A33DFC9CD5BF55E06BB7F"
+    },
+    {
+      "path": "sdk-summary-generation-b45.input.txt",
+      "sha256": "891FF13852540CADE5ABA7726488CAAE59C9E38BDDF124BE80B948B6BD966B38"
+    },
+    {
+      "path": "sdk-summary-generation-b45-source45-first-20261014.json",
+      "sha256": "649E0FE676B99632F6DA42607FD9C01C048CA8EA46235E0CA5F08ACBBB8FF892"
+    },
+    {
+      "path": "sdk-summary-generation-b45-source45-first-20261014-posthash.json",
+      "sha256": "96C8290B84471AA7B2831795272A3CEC9B78CCB40EE92BAC8F0321360D3096EE"
+    },
+    {
+      "path": "sdk-summary-generation-b45-source45-first-20261014-output.json",
+      "sha256": "A55AE87D0D126ADB32F3008F54C3F002F3B47F54719FA15A629D93C58EC31D49"
+    },
+    {
+      "path": "Run-RootSummaryGenerationCompile-20261014.ps1",
+      "sha256": "EF418340BA571F2269F223CCC1B4EEDFEFF8579E57D0D9941B6E08A96E376771"
+    },
+    {
+      "path": "Run-RootSummaryGenerationRuntime-20261014.ps1",
+      "sha256": "992222939679D30D7A485F089FC57ED0F4A10261C6CEC800C03A4D48875FB1D3"
+    },
+    {
+      "path": "root-sdk-summary-generation-compile-debug-first-20261014.json",
+      "sha256": "7EE5C90E0A7AD8D0E09678C5FC3C478340BACA531BD3183545A8BDDF67458E3F"
+    },
+    {
+      "path": "root-sdk-summary-generation-compile-debug-first-20261014-posthash.json",
+      "sha256": "3A8DE87DA9A67DBA92058169A72FD0D7804C4FEB047E5E34A8B2616BA3069D08"
+    },
+    {
+      "path": "root-sdk-summary-generation-compile-debug-first-20261014-source-before.json",
+      "sha256": "661BF887E031BAD769F81A599C7F1D483EC6A0B48E8E68F77C867A9A16357F1D"
+    },
+    {
+      "path": "root-sdk-summary-generation-compile-debug-first-20261014.stderr.log",
+      "sha256": "E8D923F20499F5C1C41D3C3EC1618F5E4ADB5D407C76515FFC5277A72A3CEFA2"
+    },
+    {
+      "path": "root-sdk-summary-generation-runtime-debug-first-20261014.json",
+      "sha256": "431B67109913071178718BEC08A05801B36DF3D55BA5005522A0A2A78AFC8AC5"
+    },
+    {
+      "path": "root-sdk-summary-generation-runtime-debug-first-20261014-posthash.json",
+      "sha256": "6350CACD9F0EB23B38F1DCE7D9A851010165ABCD3ED024704DC4818DDEA5F86A"
+    },
+    {
+      "path": "root-sdk-summary-generation-runtime-debug-first-20261014.stderr.log",
+      "sha256": "081B13199B5C61CC907611A8BB48953793AFC757E811BB5876A901A01353F8C1"
+    }
+  ],
+  "compiler_drift": 0
+}
