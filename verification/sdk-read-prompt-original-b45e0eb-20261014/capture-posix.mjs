@@ -1,0 +1,21 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {join} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const root=process.env.PI_RENDERER_SOURCE_ROOT,receipts=process.env.PI_RENDERER_RECEIPTS;
+const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
+const verify=()=>['source','dependencies','node-tools','candidate'].map(name=>{
+  const rows=JSON.parse(readFileSync(join(receipts,name+'-before.json'),'utf8').replace(/^\uFEFF/,''));
+  for(const row of rows)if(hash(row.path)!==row.sha256.toLowerCase())throw Error('Frozen '+name+' drift '+row.path);
+  return{name,count:rows.length,drift:0};
+});
+const before=verify();
+const render=await import(pathToFileURL(join(root,'packages/coding-agent/src/core/tools/render-utils.ts')).href);
+const prompt=await import(pathToFileURL(join(root,'packages/coding-agent/src/core/prompt-templates.ts')).href);
+globalThis.readPromptAPI={formatReadLineRange:render.formatReadLineRange,parseCommandArgs:prompt.parseCommandArgs,substituteArgs:prompt.substituteArgs,expandPromptTemplate:prompt.expandPromptTemplate};
+const input=readFileSync(process.argv[3],'utf8');
+await import('data:text/javascript,'+encodeURIComponent(input));
+if(sdkReadPromptRows.length!==54)throw Error('Original b45 read/prompt54 inventory mismatch');
+const observedModules=readFileSync(join(receipts,'modules-'+process.pid+'.jsonl'),'utf8').trim().split('\n').map(JSON.parse);
+for(const row of observedModules.filter(row=>row.kind==='observed-module'))if(hash(row.path)!==row.sha256)throw Error('Observed original module drift');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb',inputSha256:createHash('sha256').update(input).digest('hex'),platform:process.platform,arch:process.arch,cases:sdkReadPromptRows.length,node:{version:process.version,path:process.execPath,sha256:hash(process.execPath),execArgv:process.execArgv},before,after:verify(),scope:'Actual unchanged b45 read/prompt exports and dependencies; numeric parsing/live callbacks/quoted empty arguments/Unicode/defaults/slices/expansion; no Source body rewrite or raw normalizer; historical typed catalog metadata only',rows:sdkReadPromptRows,observedModules},null,2));
