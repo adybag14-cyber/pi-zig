@@ -30,6 +30,7 @@ pub fn constructor(engine: *em.Engine, dependencies: c.JSValue, reference: c.JSV
     try @import("extensions/native_sdk_session_auto_compaction.zig").install(engine, staging);
     try @import("extensions/native_sdk_session_request_auth.zig").install(engine, staging, dependencies);
     try @import("extensions/native_sdk_session_hooks.zig").installWithDependencies(engine, staging, dependencies);
+    try @import("extensions/native_sdk_check_compaction.zig").install(engine, staging, dependencies);
 
     const prototype = try scope.object();
     const result = try scope.own(try @import("extensions/native_sdk_session_construct.zig").constructor(engine, prototype));

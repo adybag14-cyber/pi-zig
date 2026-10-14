@@ -1,0 +1,897 @@
+{
+  "sourceHead": "b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "inputSha256": "0b4980eb9f8a359df79744c0ec8ad27e8f70a414667be4c0064bb9c44cff58d5",
+  "cases": 32,
+  "scope": "Actual checkCompaction body with genuine imported classifiers and estimates; caller-owned receiver collaborators; no full factory qualification",
+  "rows": [
+    {
+      "label": "disabled",
+      "events": [
+        [
+          "settings",
+          true
+        ]
+      ],
+      "value": false,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "aborted",
+      "events": [
+        [
+          "settings",
+          true
+        ]
+      ],
+      "value": false,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "aborted-skip-false",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch"
+      ],
+      "value": false,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "foreign-error",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch"
+      ],
+      "value": false,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "stale-boundary",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch"
+      ],
+      "value": false,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "overflow-retry-true",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "omit",
+          true,
+          true,
+          true
+        ],
+        [
+          "compact",
+          "overflow",
+          true,
+          true
+        ]
+      ],
+      "value": true,
+      "attempted": true,
+      "failedIsMessage": true
+    },
+    {
+      "label": "overflow-retry-false",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "omit",
+          true,
+          true,
+          true
+        ],
+        [
+          "compact",
+          "overflow",
+          true,
+          true
+        ]
+      ],
+      "value": false,
+      "attempted": true,
+      "failedIsMessage": false
+    },
+    {
+      "label": "overflow-retry-object",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "omit",
+          true,
+          true,
+          true
+        ],
+        [
+          "compact",
+          "overflow",
+          true,
+          true
+        ]
+      ],
+      "value": {
+        "retry": "owned"
+      },
+      "attempted": true,
+      "failedIsMessage": true
+    },
+    {
+      "label": "overflow-stop",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "compact",
+          "overflow",
+          false,
+          false
+        ]
+      ],
+      "value": true,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "length-retry",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "omit",
+          true,
+          true,
+          true
+        ],
+        [
+          "compact",
+          "overflow",
+          true,
+          true
+        ]
+      ],
+      "value": true,
+      "attempted": true,
+      "failedIsMessage": true
+    },
+    {
+      "label": "length-at-limit",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch"
+      ],
+      "value": false,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "length-no-model",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch"
+      ],
+      "value": false,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "second-overflow",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "emit",
+          {
+            "type": "compaction_end",
+            "reason": "overflow",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Context overflow recovery failed after one compact-and-retry attempt. Try reducing context or switching to a larger-context model."
+          }
+        ],
+        [
+          "failed",
+          {
+            "reason": "overflow",
+            "errorMessage": "Context overflow recovery failed after one compact-and-retry attempt. Try reducing context or switching to a larger-context model.",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ]
+      ],
+      "value": false,
+      "attempted": true,
+      "failedIsMessage": false
+    },
+    {
+      "label": "second-length",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "emit",
+          {
+            "type": "compaction_end",
+            "reason": "overflow",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Truncated response recovery failed after one compact-and-retry attempt."
+          }
+        ],
+        [
+          "failed",
+          {
+            "reason": "overflow",
+            "errorMessage": "Truncated response recovery failed after one compact-and-retry attempt.",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ]
+      ],
+      "value": false,
+      "attempted": true,
+      "failedIsMessage": false
+    },
+    {
+      "label": "omitted-assistant",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "omit",
+          true,
+          true,
+          true
+        ],
+        [
+          "compact",
+          "overflow",
+          true,
+          true
+        ]
+      ],
+      "value": true,
+      "attempted": true,
+      "failedIsMessage": true
+    },
+    {
+      "label": "deleted-assistant-context-edit",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch"
+      ],
+      "value": false,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "replaced-assistant-context-edit",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "omit",
+          true,
+          true,
+          true
+        ],
+        [
+          "compact",
+          "overflow",
+          true,
+          true
+        ]
+      ],
+      "value": true,
+      "attempted": true,
+      "failedIsMessage": true
+    },
+    {
+      "label": "unrelated-context-edit",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "omit",
+          true,
+          true,
+          true
+        ],
+        [
+          "compact",
+          "overflow",
+          true,
+          true
+        ]
+      ],
+      "value": true,
+      "attempted": true,
+      "failedIsMessage": true
+    },
+    {
+      "label": "compaction-after-assistant",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch"
+      ],
+      "value": false,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "zero-usage-estimate",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "compact",
+          "threshold",
+          false,
+          false
+        ]
+      ],
+      "value": true,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "error-estimate",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "compact",
+          "threshold",
+          false,
+          false
+        ]
+      ],
+      "value": true,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "stale-usage",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch"
+      ],
+      "value": false,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "pure-estimate-after-compaction",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "compact",
+          "threshold",
+          false,
+          false
+        ]
+      ],
+      "value": true,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "context-edit-threshold",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "compact",
+          "threshold",
+          false,
+          false
+        ]
+      ],
+      "value": true,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "direct-threshold",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "compact",
+          "threshold",
+          false,
+          false
+        ]
+      ],
+      "value": true,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "direct-no-threshold",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch"
+      ],
+      "value": false,
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "settings-throws",
+      "events": [
+        [
+          "settings",
+          true
+        ]
+      ],
+      "error": "owned",
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "model-throws",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ]
+      ],
+      "error": "owned",
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "projection-throws",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection"
+      ],
+      "error": "owned",
+      "attempted": false,
+      "failedIsMessage": false
+    },
+    {
+      "label": "omit-throws",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "omit",
+          true,
+          true,
+          true
+        ]
+      ],
+      "error": "owned",
+      "attempted": true,
+      "failedIsMessage": false
+    },
+    {
+      "label": "compact-rejects",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "omit",
+          true,
+          true,
+          true
+        ],
+        [
+          "compact",
+          "overflow",
+          true,
+          true
+        ]
+      ],
+      "error": "owned",
+      "attempted": true,
+      "failedIsMessage": false
+    },
+    {
+      "label": "failed-event-rejects",
+      "events": [
+        [
+          "settings",
+          true
+        ],
+        [
+          "message-model",
+          true
+        ],
+        "branch",
+        "projection",
+        [
+          "persisted-id",
+          true
+        ],
+        "branch",
+        [
+          "emit",
+          {
+            "type": "compaction_end",
+            "reason": "overflow",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Context overflow recovery failed after one compact-and-retry attempt. Try reducing context or switching to a larger-context model."
+          }
+        ],
+        [
+          "failed",
+          {
+            "reason": "overflow",
+            "errorMessage": "Context overflow recovery failed after one compact-and-retry attempt. Try reducing context or switching to a larger-context model.",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ]
+      ],
+      "error": "owned",
+      "attempted": true,
+      "failedIsMessage": false
+    }
+  ]
+}

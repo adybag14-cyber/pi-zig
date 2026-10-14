@@ -1,0 +1,47 @@
+const rows=[];
+const labels=['disabled','aborted','aborted-skip-false','foreign-error','stale-boundary',
+  'overflow-retry-true','overflow-retry-false','overflow-retry-object','overflow-stop',
+  'length-retry','length-at-limit','length-no-model','second-overflow','second-length',
+  'omitted-assistant','deleted-assistant-context-edit','replaced-assistant-context-edit',
+  'unrelated-context-edit','compaction-after-assistant','zero-usage-estimate','error-estimate',
+  'stale-usage','pure-estimate-after-compaction','context-edit-threshold','direct-threshold',
+  'direct-no-threshold','settings-throws','model-throws','projection-throws','omit-throws',
+  'compact-rejects','failed-event-rejects'];
+function usage(input=10,output=2){return{input,output,cacheRead:0,cacheWrite:0,totalTokens:input+output,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};}
+for(const label of labels){
+  const events=[],marker={owned:label},model={id:'fixture',provider:'fixture',api:'openai-completions',contextWindow:100,maxTokens:50};
+  const message={role:'assistant',provider:'fixture',model:'fixture',api:'openai-completions',content:[{type:'text',text:'answer'}],stopReason:'stop',usage:usage(),timestamp:10};
+  const tools=[{role:'toolResult',toolCallId:'call',toolName:'read',content:[],isError:false,timestamp:11}];
+  const isError=['foreign-error','overflow-retry-true','overflow-retry-false','overflow-retry-object','second-overflow','omitted-assistant','deleted-assistant-context-edit','replaced-assistant-context-edit','unrelated-context-edit','compaction-after-assistant','omit-throws','compact-rejects','failed-event-rejects'].includes(label);
+  if(isError){message.stopReason='error';message.errorMessage='maximum context length exceeded';message.usage=usage(0,0);}
+  if(label.startsWith('length-')||label==='second-length'){message.stopReason='length';message.usage=usage(10,label==='length-at-limit'?50:2);}
+  if(label.startsWith('aborted'))message.stopReason='aborted';
+  if(label==='overflow-stop')message.usage=usage(101,2);
+  if(label==='zero-usage-estimate'||label==='pure-estimate-after-compaction')message.usage=usage(0,0);
+  if(label==='error-estimate'||label==='stale-usage'){message.stopReason='error';message.errorMessage='ordinary service failure';message.usage=usage(0,0);}
+  if(label==='direct-threshold')message.usage=usage(90,2);
+  const assistantEntry={id:'assistant-id',type:'message',timestamp:'1970-01-01T00:00:00.010Z',message};
+  const branch=[assistantEntry];
+  if(['stale-boundary','stale-usage','pure-estimate-after-compaction','compaction-after-assistant'].includes(label))branch.push({id:'compact-id',type:'compaction',timestamp:label==='stale-boundary'?'1970-01-01T00:00:00.020Z':'1970-01-01T00:00:00.005Z',firstKeptEntryId:'assistant-id',summary:'old',tokensBefore:200});
+  if(label.includes('context-edit'))branch.push({id:'edit-id',type:'context_edit',targetId:label==='unrelated-context-edit'?'other-id':'assistant-id',replacement:label==='deleted-assistant-context-edit'?null:[],timestamp:'1970-01-01T00:00:00.011Z'});
+  let projection={entries:[{sourceEntry:assistantEntry,messages:[message]}],messages:[message]};
+  if(['omitted-assistant','deleted-assistant-context-edit','replaced-assistant-context-edit','compaction-after-assistant'].includes(label))projection={entries:[],messages:[]};
+  if(label==='context-edit-threshold')projection={entries:[{sourceEntry:{type:'context_edit',id:'projected-edit'},messages:[{role:'user',content:'x'.repeat(400)}]}],messages:[{role:'user',content:'x'.repeat(400)}]};
+  let messages=[message];
+  if(['zero-usage-estimate','pure-estimate-after-compaction'].includes(label))messages=[{role:'user',content:'x'.repeat(400),timestamp:1}];
+  if(label==='error-estimate'||label==='stale-usage')messages=[{...message,stopReason:'stop',usage:usage(90,2),timestamp:label==='stale-usage'?3:8},message];
+  const session={model,agent:{state:{messages}},_overflowRecoveryAttempted:['second-overflow','second-length','failed-event-rejects'].includes(label),
+    settingsManager:{getCompactionSettings(selected){events.push(['settings',selected===model]);if(label==='settings-throws')throw marker;return{enabled:label!=='disabled',reserveTokens:20,keepRecentTokens:1};}},
+    sessionManager:{getBranch(){events.push('branch');return branch;},buildSessionProjection(){events.push('projection');if(label==='projection-throws')throw marker;return projection;}},
+    _modelForMessage(value){events.push(['message-model',value===message]);if(label==='model-throws')throw marker;return['foreign-error','length-no-model'].includes(label)?undefined:model;},
+    _findPersistedMessageEntryId(value){events.push(['persisted-id',value===message]);return 'assistant-id';},
+    _omitRecoveryAttempt(value,result){events.push(['omit',value===message,result===tools,this._overflowRecoveryAttempted]);if(label==='omit-throws')throw marker;},
+    _emit(event){events.push(['emit',event]);},
+    async _emitSessionCompactFailed(event){events.push(['failed',event]);if(label==='failed-event-rejects')throw marker;},
+    async _runAutoCompaction(reason,retry){events.push(['compact',reason,retry,this._overflowRecoveryAttempted]);if(label==='compact-rejects')throw marker;return label==='overflow-retry-false'?false:label==='overflow-retry-object'?{retry:'owned'}:true;},
+  };
+  try{const value=await checkCompactionB06.call(session,message,label==='aborted-skip-false'?false:undefined,tools);rows.push({label,events,value,attempted:session._overflowRecoveryAttempted,failedIsMessage:session._failedResponse===message});}
+  catch(error){rows.push({label,events,error:error===marker?'owned':{name:error.name,message:error.message},attempted:session._overflowRecoveryAttempted,failedIsMessage:session._failedResponse===message});}
+}
+if(rows.length!==32)throw Error('All32 automatic trigger cases required');
+globalThis.checkCompactionB06Rows=rows;

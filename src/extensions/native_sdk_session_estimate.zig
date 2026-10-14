@@ -52,36 +52,12 @@ pub fn estimate(engine: *em.Engine, projection: c.JSValue, branch: c.JSValue) !c
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const messages = try scope.get(projection, "messages");
-    const info = try lastUsage(&scope, messages);
-    var last_index = if (info) |item| item.index else c.pi_js_null();
-    var usage_tokens = c.JS_NewInt32(engine.context, 0);
-    var trailing = c.JS_NewInt32(engine.context, 0);
-    var tokens = c.JS_NewInt32(engine.context, 0);
-    if (info) |item| {
-        usage_tokens = try calculateContextTokens(&scope, item.report);
-        var cursor = try scope.own(try arithmetic.binary(engine, .add, item.index, c.JS_NewInt32(engine.context, 1)));
-        var steps: usize = 0;
-        while (try arithmetic.compare(engine, .less, cursor, try scope.get(messages, "length"))) {
-            steps +|= 1;
-            try estimateBudget(engine, steps);
-            var iteration: Scope = .{ .engine = engine };
-            defer iteration.deinit();
-            const message = try keyAt(&iteration, messages, cursor);
-            trailing = try scope.concat(trailing, try scope.own(try @import("native_sdk_compaction_estimate.zig").estimateTokens(engine, message)));
-            cursor = try scope.own(try engine.checked(c.JS_PiIncrement(engine.context, cursor)));
-        }
-        tokens = try scope.concat(usage_tokens, trailing);
-    } else {
-        const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
-        var estimate_iterator = try js.Iterator.init(engine, messages, symbol);
-        defer estimate_iterator.deinit();
-        errdefer estimate_iterator.closePreserving();
-        while (try estimate_iterator.next()) |message| {
-            defer engine.freeValue(message);
-            tokens = try scope.concat(tokens, try scope.own(try @import("native_sdk_compaction_estimate.zig").estimateTokens(engine, message)));
-        }
-        trailing = tokens;
-    }
+    const base = try contextInScope(&scope, messages);
+    const info = base.info;
+    var last_index = base.last_index;
+    const usage_tokens = base.usage_tokens;
+    const trailing = base.trailing;
+    var tokens = base.tokens;
     if (info) |item| {
         var offset = c.JS_NewInt32(engine.context, 0);
         var entry_id = c.pi_js_undefined();
@@ -201,4 +177,46 @@ fn assistantUsage(scope: *Scope, message: c.JSValue) !c.JSValue {
     const tokens = try calculateContextTokens(scope, try scope.get(message, "usage"));
     if (try scope.positive(tokens)) return scope.get(message, "usage");
     return c.pi_js_undefined();
+}
+
+pub fn estimateContext(engine: *em.Engine, messages: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const base = try contextInScope(&scope, messages);
+    return estimateResult(&scope, base.tokens, base.usage_tokens, base.trailing, base.last_index);
+}
+const ContextEstimate = struct { info: ?LastUsage, last_index: c.JSValue, usage_tokens: c.JSValue, trailing: c.JSValue, tokens: c.JSValue };
+fn contextInScope(scope: *Scope, messages: c.JSValue) !ContextEstimate {
+    const engine = scope.engine;
+    const info = try lastUsage(scope, messages);
+    const last_index = if (info) |item| item.index else c.pi_js_null();
+    var usage_tokens = c.JS_NewInt32(engine.context, 0);
+    var trailing = c.JS_NewInt32(engine.context, 0);
+    var tokens = c.JS_NewInt32(engine.context, 0);
+    if (info) |item| {
+        usage_tokens = try calculateContextTokens(scope, item.report);
+        var cursor = try scope.own(try arithmetic.binary(engine, .add, item.index, c.JS_NewInt32(engine.context, 1)));
+        var steps: usize = 0;
+        while (try arithmetic.compare(engine, .less, cursor, try scope.get(messages, "length"))) {
+            steps +|= 1;
+            try estimateBudget(engine, steps);
+            var iteration: Scope = .{ .engine = engine };
+            defer iteration.deinit();
+            const message = try keyAt(&iteration, messages, cursor);
+            trailing = try scope.concat(trailing, try scope.own(try @import("native_sdk_compaction_estimate.zig").estimateTokens(engine, message)));
+            cursor = try scope.own(try engine.checked(c.JS_PiIncrement(engine.context, cursor)));
+        }
+        tokens = try scope.concat(usage_tokens, trailing);
+    } else {
+        const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
+        var estimate_iterator = try js.Iterator.init(engine, messages, symbol);
+        defer estimate_iterator.deinit();
+        errdefer estimate_iterator.closePreserving();
+        while (try estimate_iterator.next()) |message| {
+            defer engine.freeValue(message);
+            tokens = try scope.concat(tokens, try scope.own(try @import("native_sdk_compaction_estimate.zig").estimateTokens(engine, message)));
+        }
+        trailing = tokens;
+    }
+    return .{ .info = info, .last_index = last_index, .usage_tokens = usage_tokens, .trailing = trailing, .tokens = tokens };
 }

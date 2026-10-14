@@ -102,7 +102,7 @@ fn toolCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVal
     const value = is(&scope, scope.get(if (argc > 0) argv[0] else c.pi_js_undefined(), "type") catch |err| return sdk.fail(engine, err), "toolCall") catch |err| return sdk.fail(engine, err);
     return c.pi_js_bool(engine.context, @intFromBool(value));
 }
-fn latestCompaction(engine: *em.Engine, branch: c.JSValue) !c.JSValue {
+pub fn latestCompaction(engine: *em.Engine, branch: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     var cursor = try arithmetic.binary(engine, .subtract, try scope.get(branch, "length"), c.JS_NewInt32(engine.context, 1));
