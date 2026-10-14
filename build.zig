@@ -1446,6 +1446,11 @@ pub fn build(b: *std.Build) void {
     highlight_multi_regex_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-highlight-multi-regex", "Compile actual highlight MultiRegex class and backreference compiler private algorithms").dependOn(&highlight_multi_regex_tests.step);
     b.step("test-native-highlight-multi-regex", "Compare genuine original30 regex metadata coercion getters matching GC and native allocation cleanup").dependOn(&b.addRunArtifact(highlight_multi_regex_tests).step);
+    const highlight_resumable_regex_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_resumable_regex_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ResumableMultiRegex"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_resumable_regex_tests.root_module, quickjs, sqlite_lib_dir);
+    highlight_resumable_regex_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-resumable-regex", "Compile actual resumable highlight matcher native methods and traced callbacks").dependOn(&highlight_resumable_regex_tests.step);
+    b.step("test-native-highlight-resumable-regex", "Compare original24 resume fallback caches iterators callbacks GC and native allocation cleanup").dependOn(&b.addRunArtifact(highlight_resumable_regex_tests).step);
     const source_paths_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_source_paths_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Source path cwd"}, .use_llvm = use_llvm });
     linkQuickJs(b, source_paths_tests.root_module, quickjs, sqlite_lib_dir);
     source_paths_tests.root_module.addImport("catalog_tool", catalog_tool);

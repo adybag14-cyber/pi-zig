@@ -1,0 +1,206 @@
+{
+  "status": "genuine_original_ResumableMultiRegex24_Windows_double_capture_qualified_native_pending",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "candidate": "4dfb77680cdfcb4218ba8f05ef3fdc2b29d6c1d5",
+  "scope": "Actual highlight.js10.7.3 ResumableMultiRegex from real compiled caller grammars; cache identity, ignored match resume/fallback, live methods/coercion, retained callbacks, iterator close and sentinel identity; class descriptors observed; full grammar unfinished",
+  "cases": 24,
+  "instances_each": 24,
+  "platform": "win32",
+  "input_sha256": "c3eed9547b44c3f15292f9b33d26ee5682bab0fd0e7f7b37c886902c65254ddf",
+  "raw_double_capture_byte_identical": true,
+  "raw_sha256": "EC3B5082C0DCC0C0A356A2D4DA22618EAAA3984E970CE8757365FF7D54D4F885",
+  "fixture_projection": "System.Text.Json GetRawText original rows JSON copied verbatim with whitespace; no row rewriting",
+  "fixture_sha256": "D399C3E2A6CBA6332FBFE88A65D287A166B46AF448186CC0DA357A780F5739BA",
+  "source_body_rewrites": 0,
+  "expected_row_edits": 0,
+  "captures": [
+    {
+      "attempt": "first",
+      "pid": 47968,
+      "status": "passed",
+      "created_utc": "2026-10-14T16:34:15.0629962Z",
+      "completed_utc": "2026-10-14T16:34:22.0856633+00:00",
+      "outer_seconds": 300,
+      "owner_sha256": "B34FD6F41DEE7089E04D15896C301C3F339FE168F167BD55D085F282E7A62B56",
+      "raw_sha256": "EC3B5082C0DCC0C0A356A2D4DA22618EAAA3984E970CE8757365FF7D54D4F885",
+      "before": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-resumable-regex24-original-local-corrected-20261014-candidate.json",
+          "manifest_sha256": "76D864817371B822739E42A65B51217585B112F42D92ED5344B0D4A45259C608",
+          "count": 4964,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-resumable-regex24-original-local-corrected-20261014-controls.json",
+          "manifest_sha256": "F81037D06E15733FB5D958CD19465698182A8939311512657C01BC32E3F34BEB",
+          "count": 5,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-resumable-regex24-original-local-corrected-20261014-candidate.json",
+          "manifest_sha256": "76D864817371B822739E42A65B51217585B112F42D92ED5344B0D4A45259C608",
+          "count": 4964,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-resumable-regex24-original-local-corrected-20261014-controls.json",
+          "manifest_sha256": "F81037D06E15733FB5D958CD19465698182A8939311512657C01BC32E3F34BEB",
+          "count": 5,
+          "drift": 0
+        }
+      ],
+      "owned_pid_absent": true
+    },
+    {
+      "attempt": "second",
+      "pid": 45308,
+      "status": "passed",
+      "created_utc": "2026-10-14T16:34:55.7454344Z",
+      "completed_utc": "2026-10-14T16:35:03.6098969+00:00",
+      "outer_seconds": 300,
+      "owner_sha256": "447FCD55D0F36AC4BE51C93D6FB9AF18BD932D449AD978DFCB89D9ADFFFAEAC7",
+      "raw_sha256": "EC3B5082C0DCC0C0A356A2D4DA22618EAAA3984E970CE8757365FF7D54D4F885",
+      "before": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-resumable-regex24-original-local-corrected-20261014-candidate.json",
+          "manifest_sha256": "76D864817371B822739E42A65B51217585B112F42D92ED5344B0D4A45259C608",
+          "count": 4964,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-resumable-regex24-original-local-corrected-20261014-controls.json",
+          "manifest_sha256": "F81037D06E15733FB5D958CD19465698182A8939311512657C01BC32E3F34BEB",
+          "count": 5,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-resumable-regex24-original-local-corrected-20261014-candidate.json",
+          "manifest_sha256": "76D864817371B822739E42A65B51217585B112F42D92ED5344B0D4A45259C608",
+          "count": 4964,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-resumable-regex24-original-local-corrected-20261014-controls.json",
+          "manifest_sha256": "F81037D06E15733FB5D958CD19465698182A8939311512657C01BC32E3F34BEB",
+          "count": 5,
+          "drift": 0
+        }
+      ],
+      "owned_pid_absent": true
+    }
+  ],
+  "observed_modules": [
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-1692-observe-20261014.mjs",
+      "sha256": "ada432e1d692741b750a3f874eaf6c57ada6c78b6026c19df34dd2093f54a147"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-resumable-regex-local-source-capture-20261014.mjs",
+      "sha256": "fce0d0162a3fb991241ec15a262a224d3e6e92469e41c4b4f0c8efd8af95eb7d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\core.js",
+      "sha256": "c4d10bcc7cb543c36198d34d2ecfcee9f8fbdd82ec1531daa3962c86a6c95468"
+    }
+  ],
+  "node": {
+    "version": "v24.14.0",
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "execArgv": [
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-1692-observe-20261014.mjs"
+    ]
+  },
+  "local_controls": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-resumable-regex24-original-local-corrected-20261014-controls.json",
+  "local_frozen_list": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-resumable-regex24-original-local-corrected-20261014-frozen.json",
+  "original_POSIX_capture_pending": true,
+  "native_qualified": false,
+  "public_class_metadata_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "full_factory_qualified": false,
+  "public_activation": false,
+  "verified_utc": "2026-10-14T16:38:15.5170513+00:00"
+}

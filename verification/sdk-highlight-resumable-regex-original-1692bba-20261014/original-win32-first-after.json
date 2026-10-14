@@ -1,0 +1,32 @@
+[
+  {
+    "manifest": "sdk-source-1692-full-manifest-20261014.json",
+    "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+    "count": 1955,
+    "drift": 0
+  },
+  {
+    "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "count": 31064,
+    "drift": 0
+  },
+  {
+    "manifest": "root-current8a-npm-tools-before.json",
+    "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "count": 1774,
+    "drift": 0
+  },
+  {
+    "manifest": "sdk-highlight-resumable-regex24-original-local-corrected-20261014-candidate.json",
+    "manifest_sha256": "76D864817371B822739E42A65B51217585B112F42D92ED5344B0D4A45259C608",
+    "count": 4964,
+    "drift": 0
+  },
+  {
+    "manifest": "sdk-highlight-resumable-regex24-original-local-corrected-20261014-controls.json",
+    "manifest_sha256": "F81037D06E15733FB5D958CD19465698182A8939311512657C01BC32E3F34BEB",
+    "count": 5,
+    "drift": 0
+  }
+]
