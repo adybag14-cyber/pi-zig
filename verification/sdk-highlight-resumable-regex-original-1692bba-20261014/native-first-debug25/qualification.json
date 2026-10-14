@@ -1,0 +1,137 @@
+{
+  "status": "actual_Original25_comparison_GC_retained_callback_return_and_first_allocation_partition_passed",
+  "head": "2a60b29dd9d92b4f18b3600d34d087d75f8de649",
+  "platform": "Windows",
+  "mode": "Debug",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "source_cases": 25,
+  "tests": 3,
+  "baseline": 483,
+  "allocation_partition": 0,
+  "allocation_partitions": 8,
+  "covered_start": 0,
+  "covered_end_exclusive": 60,
+  "covered_indices": 60,
+  "remaining_indices": 423,
+  "full_allocation_coverage_qualified": false,
+  "original_raw_rows_edited": 0,
+  "source_body_rewrites": 0,
+  "public_class_metadata_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "full_factory_qualified": false,
+  "public_activation": false,
+  "phases": [
+    {
+      "phase": "build",
+      "owner_sha256": "FA916C9395B70D742942B6EE19335065F2AF285D8CF23CE9517C3A5188027135",
+      "owner": {
+        "pid": 48864,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "argv": [
+          "build",
+          "build-native-highlight-resumable-regex",
+          "-Doptimize=Debug",
+          "-j1",
+          "--test-timeout",
+          "120s",
+          "--summary",
+          "all"
+        ],
+        "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-highlight-resumable-regex -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+        "created_utc": "2026-10-14T16:54:32.3083752Z",
+        "launched_utc": "2026-10-14T16:54:32.3066505+00:00",
+        "working_directory": "C:/Users/adyba/pi-zig-sdk-events-hosted-20261013",
+        "outer_seconds": 1320,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-14T16:54:42.1678892+00:00"
+      },
+      "post": {
+        "source": 5014,
+        "source_after": 5014,
+        "source_drift": 0,
+        "tools": 19546,
+        "tool_drift": 0,
+        "original": 1955,
+        "original_drift": 0,
+        "vendor": 1317,
+        "vendor_drift": 0,
+        "controls": 4,
+        "control_drift": 0,
+        "completed_utc": "2026-10-14T17:54:56.9755503+01:00"
+      }
+    },
+    {
+      "phase": "test",
+      "owner_sha256": "711140773C7146D8AABFB2759AD0C72330E0543010ABDEB86F16249FDEA623AF",
+      "owner": {
+        "pid": 12900,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "argv": [
+          "build",
+          "test-native-highlight-resumable-regex",
+          "-Doptimize=Debug",
+          "-j1",
+          "--test-timeout",
+          "120s",
+          "--summary",
+          "all"
+        ],
+        "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-highlight-resumable-regex -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+        "created_utc": "2026-10-14T16:57:35.1417882Z",
+        "launched_utc": "2026-10-14T16:57:35.1403321+00:00",
+        "working_directory": "C:/Users/adyba/pi-zig-sdk-events-hosted-20261013",
+        "outer_seconds": 300,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-14T16:57:41.6719728+00:00"
+      },
+      "post": {
+        "source": 5014,
+        "source_after": 5014,
+        "source_drift": 0,
+        "tools": 19546,
+        "tool_drift": 0,
+        "original": 1955,
+        "original_drift": 0,
+        "vendor": 1317,
+        "vendor_drift": 0,
+        "controls": 4,
+        "control_drift": 0,
+        "completed_utc": "2026-10-14T17:57:52.5427436+01:00"
+      }
+    }
+  ],
+  "paired_manifests": [
+    {
+      "kind": "source",
+      "sha256": "5FA2ACABFFA73BBEC53FF4623092E2656718E0D8988F901A39A799D0A517D608",
+      "both_phases_identical": true
+    },
+    {
+      "kind": "original",
+      "sha256": "C002505EEED0D96B3C3897A8160D2F9BB18CAC02976C5131CB2A1DCFBD4D2547",
+      "both_phases_identical": true
+    },
+    {
+      "kind": "vendor",
+      "sha256": "11216C6E48AC8FDB4518198BD61519A78691B147DFD0562B8700D4BB23E4CC61",
+      "both_phases_identical": true
+    },
+    {
+      "kind": "controls",
+      "sha256": "4EAF8254E67E0C3F137D7A62A35AB7619B6A8B5AE7FEF67FEF20CDDDCF03E210",
+      "both_phases_identical": true
+    }
+  ],
+  "compile_outer_seconds": 1320,
+  "runtime_outer_seconds": 300,
+  "test_seconds": 120,
+  "host_await_ms": 10000,
+  "verified_utc": "2026-10-14T16:59:59.9967447+00:00",
+  "retained_callback_return_and_receiver_regression_passed": true
+}
