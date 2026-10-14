@@ -1565,6 +1565,12 @@ pub fn build(b: *std.Build) void {
     ai_uuid_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-uuid", "Compare original UUIDv7 sequence clock and mutable guest hooks with native ownership").dependOn(&b.addRunArtifact(ai_uuid_tests).step);
     b.step("build-native-ai-uuid", "Compile original UUIDv7 separately from runtime checks").dependOn(&ai_uuid_tests.step);
+    const complete_summary_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_complete_summarization_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native complete summarization"}, .use_llvm = use_llvm });
+    linkQuickJs(b, complete_summary_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(complete_summary_tests.root_module, sqlite_lib_dir, sqlite_library);
+    complete_summary_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-complete-summarization", "Compare actual summarization request orchestration with module-bound native dependencies").dependOn(&b.addRunArtifact(complete_summary_tests).step);
+    b.step("build-native-sdk-complete-summarization", "Compile summarization request ownership separately from runtime checks").dependOn(&complete_summary_tests.step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);
@@ -2513,6 +2519,7 @@ pub fn build(b: *std.Build) void {
     addCompileOnlyGroup(b, "build-hosted-latest-foundation-components", &.{ "test-native-durable-codemode-outcome", "test-native-durable-codemode-journal-core", "test-extension-filesystem", "test-native-tui-alt-source", "test-native-tui-base-source" });
     addCompileOnlyGroup(b, "build-hosted-latest-application-components", &.{ "test-custom-editor-frontend", "test-print-mode-process", "test-mcp-runtime", "test-mcp-configured" });
     addCompileOnlyGroup(b, "build-hosted-model-components", &.{ "test-native-durable-codemode-model-catalog", "test-native-models-typed-services", "test-native-models-stream-regressions" });
+    addCompileOnlyGroup(b, "build-native-models-context-integration", &.{ "test-native-models-typed-services", "test-native-models-stream-regressions", "test-native-ai-transcript-context" });
     addCompileOnlyGroup(b, "build-hosted-catalog-components", &.{ "test-latest-catalog", "test-maintenance", "test-exhaustive-allocation-coverage", "test-exhaustive-allocation-helper", "test-latest12-small-contracts" });
     addCompileOnlyGroup(b, "build-hosted-chord-components", &.{ "test-native-chord-context-source", "test-native-chord-resource-source", "test-native-chord-contract-source", "test-native-chord-clone-source", "test-native-chord-normalization-evaluate-source" });
     addCompileOnlyGroup(b, "build-hosted-sdk-components", &.{ "test-native-sdk-send-user", "test-native-sdk-session-queries", "test-native-sdk-query-consumers", "test-native-sdk-session-lifecycle", "test-native-sdk-message-conversion", "test-native-sdk-session-prepare" });

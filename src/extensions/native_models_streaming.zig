@@ -35,34 +35,7 @@ fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSVal
     };
 }
 fn normalize(scope: *Scope, context: c.JSValue) !c.JSValue {
-    const prompt = try scope.get(context, "systemPrompt");
-    const tools = try scope.get(context, "tools");
-    const has_prompt = !c.JS_IsUndefined(prompt) and scope.truthy(try scope.get(prompt, "length"));
-    const has_tools = !c.JS_IsUndefined(tools) and scope.truthy(try scope.get(tools, "length"));
-    var messages = try scope.get(context, "messages");
-    if (has_prompt or has_tools) {
-        const first = try scope.object();
-        try scope.put(first, "role", try scope.text("system"));
-        try scope.put(first, "content", if (nullish(prompt)) try scope.text("") else prompt);
-        if (has_tools) try scope.put(first, "toolsAdded", tools);
-        try scope.put(first, "timestamp", c.JS_NewInt32(scope.engine.context, 0));
-        const list = try scope.array();
-        try scope.index(list, 0, first);
-        // Array spread uses the public iterator, preserving caller semantics.
-        const symbol = try scope.get(try scope.global("Symbol"), "iterator");
-        const iterator = try scope.call(try scope.own(try js.getKey(scope.engine, messages, symbol)), messages, &.{});
-        var index: u32 = 1;
-        while (true) {
-            const row = try scope.invoke(iterator, "next", &.{});
-            if (scope.truthy(try scope.get(row, "done"))) break;
-            try scope.index(list, index, try scope.get(row, "value"));
-            index += 1;
-        }
-        messages = list;
-    }
-    const result = try scope.object();
-    try scope.put(result, "messages", messages);
-    return result;
+    return scope.own(try @import("native_ai_transcript_context.zig").normalize(scope.engine, context));
 }
 fn invoke(engine: *em.Engine, store: c.JSValue, action: Action, args: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
