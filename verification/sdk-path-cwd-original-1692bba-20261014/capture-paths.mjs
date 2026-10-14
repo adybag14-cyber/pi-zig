@@ -1,0 +1,10 @@
+import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{join}from'node:path';import{pathToFileURL}from'node:url';
+const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
+const verify=()=>['source','dependencies','node-tools','candidate'].map(name=>{const rows=JSON.parse(readFileSync(join(process.env.PI_RENDERER_RECEIPTS,name+'-before.json'),'utf8').replace(/^\uFEFF/,''));for(const row of rows)if(hash(row.path)!==row.sha256.toLowerCase())throw Error('Frozen '+name+' drift '+row.path);return{name,count:rows.length,drift:0};});
+const before=verify(),root=process.env.PI_RENDERER_SOURCE_ROOT;
+globalThis.nodePathAPI=await import('node:path');globalThis.originalProcess=(await import('node:process')).default;
+globalThis.sourcePathAPI=await import(pathToFileURL(join(root,'packages/coding-agent/src/utils/paths.ts')).href);
+const input=readFileSync(process.argv[3],'utf8');await import('data:text/javascript,'+encodeURIComponent(input));
+if(sdkPathCwdRows.length!==40)throw Error('Original path cwd40 inventory mismatch '+sdkPathCwdRows.length);
+const observedModules=readFileSync(join(process.env.PI_RENDERER_RECEIPTS,'modules-'+process.pid+'.jsonl'),'utf8').trim().split('\n').map(JSON.parse);for(const row of observedModules.filter(row=>row.kind==='observed-module'))if(hash(row.path)!==row.sha256)throw Error('Observed original module drift');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'1692bba6347a287ab0f3cb554a4430fafffc474b',inputSha256:createHash('sha256').update(input).digest('hex'),platform:process.platform,arch:process.arch,cases:sdkPathCwdRows.length,node:{version:process.version,path:process.execPath,sha256:hash(process.execPath),execArgv:process.execArgv},before,after:verify(),scope:'Original unchanged utils/paths.ts and pinned Node24.14.0 actual node:path; caller-owned process.cwd override restored in finally, no process.chdir or filesystem mutation, no Source body rewrite or TypeError normalization',rows:sdkPathCwdRows,observedModules},null,2));
