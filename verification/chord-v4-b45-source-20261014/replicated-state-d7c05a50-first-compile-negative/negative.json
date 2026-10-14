@@ -1,0 +1,18 @@
+{
+  "candidate": "d7c05a5086ade1dc4c1b22278e2ab2bb68911d41",
+  "status": "compile_failed",
+  "error": "src/extensions/native_chord_replicated_mutable.zig:40: root source file struct native_chord_host_values has no member named runtimeError",
+  "source_inputs": 5525,
+  "original_source_inputs": 1965,
+  "compiler_inputs": 19546,
+  "source_drift": 0,
+  "original_source_drift": 0,
+  "compiler_drift": 0,
+  "controls_drift": 0,
+  "owned_pid": 73332,
+  "owned_pid_absent": true,
+  "runtime_executed": false,
+  "full_host_gpa_qualified": false,
+  "public_activation": false,
+  "followup": "Replace nonexistent runtimeError with existing ordinaryError; preserve exact Source reentrancy messages; require a distinct compile retry"
+}

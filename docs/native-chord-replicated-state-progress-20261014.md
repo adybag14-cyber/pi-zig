@@ -40,3 +40,7 @@ outside the explicitly expected Source error class/message pair unchanged.
 All authored modules currently have pinned Zig0.16 fmt/AST evidence only.
 Full replicatedState qualification: false. Full Chord/Pi qualification: false.
 Public activation: false.
+
+First native compile at d7c05a5086ade1dc4c1b22278e2ab2bb68911d41 failed because the mutable-state reentrancy branch called nonexistent `h.runtimeError`. The complete failed receipt, compiler output, RSS samples, owners, and frozen manifests are retained in `verification/chord-v4-b45-source-20261014/replicated-state-d7c05a50-first-compile-negative/`. All 5525 candidate, 1965 Original, and 19546 compiler inputs and controls had zero post drift; owned PID 73332 was absent. No runtime ran.
+
+The source-only repair uses the existing `h.ordinaryError` helper, matching upstream ordinary `Error` construction and preserving both exact error messages. Pinned Zig 0.16.0 formatting and AST checks pass. This does not establish semantic compilation, native Source16 behavior, GC, or host allocation qualification. A distinct reviewed compile retry and subsequent runtime reservation are still required.

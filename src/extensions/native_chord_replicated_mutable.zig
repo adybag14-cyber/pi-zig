@@ -37,7 +37,7 @@ fn invoke(engine: *h.Engine, state: c.JSValue, bindings: c.JSValue, args: []cons
     const tracker = try s.get(owned, "tracker");
     if (method == .value) return js.get(engine, tracker, "value");
     if (method == .subscribe) return js.invoke(engine, try s.get(owned, "publisher"), "subscribe", &.{h.arg(args, 0)});
-    if (try h.flag(&s, owned, "changing")) return h.runtimeError(&s, if (method == .change) "Replicated state cannot be changed reentrantly from a change callback" else "Replicated state cannot be replaced from a change callback");
+    if (try h.flag(&s, owned, "changing")) return h.ordinaryError(&s, &.{try s.text(if (method == .change) "Replicated state cannot be changed reentrantly from a change callback" else "Replicated state cannot be replaced from a change callback")});
     const prepared = if (method == .change) value: {
         try h.field(&s, owned, "changing", c.pi_js_bool(engine.context, 1));
         const result = prepare(&s, tracker, h.arg(args, 1)) catch |err| {
