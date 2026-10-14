@@ -158,6 +158,8 @@ const Renderer = struct {
         if (c.JS_ToInt64(engine.context, &depth, depth_value) < 0) return js.capture(engine);
         var renderer: Renderer = .{ .engine = engine, .owner = owner };
         try renderer.walk(node, @intCast(depth + 1));
-        return c.pi_js_undefined();
+        // TokenTree._walk returns its builder; forEach ignores the return, but
+        // a caller that retains the arrow callback can still observe it later.
+        return c.JS_DupValue(engine.context, owner);
     }
 };
