@@ -1,0 +1,125 @@
+name: Private actual latest Chord1692 Source27 plus Loader7 Manager12 Cluster4 diagnostic
+on:
+  push:
+    branches: [work/chord-latest-exports-1692-20261014]
+  workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Full reviewed private candidate commit SHA
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: native-chord-source54-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        mode: [Debug, ReleaseSafe]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact source Source27 C vendor and complete compiler
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_sha || github.sha }}
+          EVENT_HEAD: ${{ github.sha }}
+        run: |
+          if ($env:EXPECTED_HEAD -cne $env:EVENT_HEAD) { throw 'Reviewed event head mismatch' }
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordSource54Candidate.ps1 -Phase Freeze -Mode '${{ matrix.mode }}' -ExpectedHead $env:EXPECTED_HEAD -Platform '${{ matrix.os }}'
+      - name: Compile actual latest graph with separate1320s owned deadline
+        shell: pwsh
+        timeout-minutes: 23
+        run: |
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordSource54Candidate.ps1 -Phase Compile -Mode '${{ matrix.mode }}' -ExpectedHead '${{ inputs.expected_sha || github.sha }}' -Platform '${{ matrix.os }}'
+      - name: Run Source54 GC core ResourceAwait full GPA and Loader7 Manager12 Cluster4 component diagnostics under original guards
+        shell: pwsh
+        timeout-minutes: 6
+        run: |
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordSource54Candidate.ps1 -Phase Run -Mode '${{ matrix.mode }}' -ExpectedHead '${{ inputs.expected_sha || github.sha }}' -Platform '${{ matrix.os }}'
+      - name: Prove every source vendor and compiler byte unchanged afterward
+        if: always()
+        shell: pwsh
+        run: |
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordSource54Candidate.ps1 -Phase Post -Mode '${{ matrix.mode }}' -ExpectedHead '${{ inputs.expected_sha || github.sha }}' -Platform '${{ matrix.os }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-chord-source54-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          include-hidden-files: true
+          path: verification/native-chord-source54-candidate/**
+  coverage:
+    needs: platform
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ inputs.expected_sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: native-chord-source54-*-${{ github.sha }}
+          path: chord-latest-results
+      - name: Require all six exact-head platform and mode terminal qualifications
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_sha || github.sha }}
+          MATRIX_STATUS: ${{ needs.platform.result }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . ./verification/chord-latest-1692-source-20261014/Assert-ChordComposedPartitions.ps1
+          if ($env:MATRIX_STATUS -cne 'success') { throw 'A candidate platform did not pass' }
+          $candidateSummary = @()
+          $candidateSourceCount = $null
+          foreach ($candidateOs in @('windows-latest','ubuntu-latest','macos-latest')) {
+            foreach ($candidateMode in @('Debug','ReleaseSafe')) {
+              $candidateRoot = "chord-latest-results/native-chord-source54-$candidateOs-$candidateMode-$env:EXPECTED_HEAD"
+              $candidateSource = Get-Content "$candidateRoot/source.json" -Raw | ConvertFrom-Json
+              $candidateResult = Get-Content "$candidateRoot/result.json" -Raw | ConvertFrom-Json
+              if ($candidateSource.head -cne $env:EXPECTED_HEAD -or $candidateResult.head -cne $env:EXPECTED_HEAD -or $candidateResult.mode -cne $candidateMode -or $candidateResult.platform -cne $candidateOs -or $candidateResult.status -cne 'passed' -or $candidateResult.source_cases -ne 27 -or $candidateResult.compiled_tests -ne 13 -or $candidateResult.gc -cne 'passed' -or $candidateResult.all_gpa_failures -cne 'passed') { throw 'Missing exact-head semantic gates' }
+              $candidateLog=(Get-Content "$candidateRoot/runtime.stdout.log" -Raw)+[Environment]::NewLine+(Get-Content "$candidateRoot/runtime.stderr.log" -Raw)
+              $candidateComposed=Assert-ChordComposedPartitions -Log $candidateLog
+              $candidateCoverage=Get-Content "$candidateRoot/composed-gpa-coverage.json" -Raw|ConvertFrom-Json
+              foreach($candidateProof in @($candidateCoverage,$candidateResult.composed_gpa_coverage)) {
+                if($candidateProof.baseline -ne $candidateComposed.baseline -or $candidateProof.start -ne 0 -or $candidateProof.end -ne $candidateComposed.end -or $candidateProof.completed -ne $candidateComposed.completed -or $candidateProof.gaps -ne 0 -or $candidateProof.duplicates -ne 0 -or $candidateProof.leaks -ne 0 -or $candidateProof.unexpected_errors -ne 0 -or !$candidateProof.whole_probe_each_index) { throw 'Composed GPA coverage receipt disagrees with actual runtime' }
+              }
+              if ($candidateResult.public_activation -or $candidateResult.node_loader_qualified -or $candidateResult.manager_qualified -or $candidateResult.full_pi_qualified) { throw 'Partial graph incorrectly activated' }
+              if ($candidateResult.auxiliary_source_cases -ne 27 -or $candidateResult.total_source_cases -ne 54 -or $candidateResult.auxiliary_compiled_tests -ne 14) { throw 'Auxiliary Source27 diagnostic did not run' }
+              $candidateAuxiliary = @(Get-Content "$candidateRoot/auxiliary-result.json" -Raw | ConvertFrom-Json)
+              if ($candidateAuxiliary.Count -ne 4 -or ($candidateAuxiliary.source_cases | Measure-Object -Sum).Sum -ne 27 -or ($candidateAuxiliary.compiled_tests | Measure-Object -Sum).Sum -ne 14) { throw 'Auxiliary compiled inventory changed' }
+              foreach ($candidateAux in $candidateAuxiliary) { if ($candidateAux.gc -cne 'passed' -or ($candidateAux.all_gpa_failures -cne $(if($candidateAux.marker -ceq 'CHORD_RESOURCE_AWAIT_COMPILED_INVENTORY'){'passed'}else{'not_yet_qualified'})) -or $candidateAux.fork_driver -cne 'not_yet_implemented' -or $candidateAux.full_qualification) { throw 'Auxiliary component scope incorrectly qualified' } }
+              foreach ($candidateOwnerName in @('compile','runtime')) {
+                $candidateOwner = Get-Content "$candidateRoot/$candidateOwnerName-owner.json" -Raw | ConvertFrom-Json
+                if ($candidateOwner.head -cne $env:EXPECTED_HEAD -or $candidateOwner.status -cne 'passed' -or $candidateOwner.exit_code -ne 0 -or $candidateOwner.jobs -ne 1 -or $candidateOwner.test_timeout_seconds -ne 120 -or $candidateOwner.host_await_seconds -ne 10 -or ($candidateOwnerName -ceq 'compile' -and $candidateOwner.deadline_seconds -ne 1320) -or ($candidateOwnerName -ceq 'runtime' -and $candidateOwner.deadline_seconds -ne 300)) { throw 'Owned terminal state or original guards changed' }
+              }
+              foreach ($candidateKind in @('inputs','tools')) {
+                $candidatePost = Get-Content "$candidateRoot/$candidateKind-posthash.json" -Raw | ConvertFrom-Json
+                if (!$candidatePost.count -or $candidatePost.drift_count -ne 0 -or @($candidatePost.drift).Count) { throw 'Source vendor or tool bytes drifted' }
+              }
+              $candidateNames = Get-Content "$candidateRoot/inventory-posthash.json" -Raw | ConvertFrom-Json
+              if ($candidateNames.tracked_inventory_changes -or $candidateNames.tool_inventory_changes -or @($candidateNames.unexpected_untracked).Count) { throw 'Source or compiler inventory changed' }
+              if ($null -eq $candidateSourceCount) { $candidateSourceCount = $candidateSource.source_count } elseif ($candidateSourceCount -ne $candidateSource.source_count) { throw 'Platform source inventories differ' }
+              $candidateSummary += [ordered]@{ head = $env:EXPECTED_HEAD; platform = $candidateOs; mode = $candidateMode; status = 'passed'; source_cases = 27; native_tests = 13; composed_gpa_allocations = $candidateComposed.completed; source_count = $candidateSource.source_count; tool_count = $candidateSource.tool_count; public_activation = $false; node_loader_qualified = $false; manager_qualified = $false; full_pi_qualified = $false }
+            }
+          }
+          $candidateSummary | ConvertTo-Json -Depth 5 | Set-Content chord-latest-results/qualification.json -Encoding utf8NoBOM
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-chord-source54-coverage-${{ github.sha }}
+          retention-days: 14
+          path: chord-latest-results/qualification.json
