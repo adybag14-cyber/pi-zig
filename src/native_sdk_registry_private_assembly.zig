@@ -69,6 +69,11 @@ fn runtime(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) cal
     const engine = em.Engine.fromContext(context.?);
     return @import("extensions/native_sdk_extension_runtime.zig").create(engine, c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
 }
+fn providerCallbacks(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    if (argc != 6) return sdk.fail(engine, error.RequiredNativeFactoryProviderBindings);
+    return @import("extensions/native_sdk_factory_provider_callbacks.zig").create(engine, args[0], args[1], args[2], args[3], args[4], args[5]) catch |err| sdk.fail(engine, err);
+}
 fn memoryStorage(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
     // Fixture constructor adapter returns the real qualified native in-memory
     // storage protocol. This does not certify Source storage class metadata.
@@ -105,6 +110,7 @@ pub fn setup(engine: *em.Engine, environment: *std.process.Environ.Map) !void {
     const reference = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, reference_bytes, reference_bytes.len, "sdk-session-prototype-original-e622.json")));
     try scope.put(namespace, "AgentSession", try scope.own(try constructor(engine, dependencies, reference)));
     try scope.put(namespace, "createExtensionRuntime", try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, runtime, "createExtensionRuntime", 0))));
+    try scope.put(namespace, "createFactoryProviderCallbacks", try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, providerCallbacks, "createFactoryProviderCallbacks", 6))));
     try scope.put(namespace, "applyToolModifiers", try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, @import("extensions/native_sdk_tool_modifiers.zig").callback, "applyToolModifiers", 2))));
     try scope.put(namespace, "InMemorySettingsStorage", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "InMemorySettingsStorage", 0, memoryStorage, &.{try scope.get(namespace, "SettingsManager")})));
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));

@@ -4,7 +4,7 @@ globalThis.nativeRegistryFactoryCount=0;
 globalThis.nativeRegistryWeak=[];
 globalThis.registryFactoryAPI={SessionManager:registryNative.SessionManager,SettingsManager:registryNative.SettingsManager,InMemorySettingsStorage:registryNative.InMemorySettingsStorage};
 globalThis.createLoadoutCaseReceiver=async(extra={})=>{
-  const {Agent,AgentSession,SettingsManager,SessionManager,createExtensionRuntime,applyToolModifiers}=registryNative;
+  const {Agent,AgentSession,SettingsManager,SessionManager,createExtensionRuntime,applyToolModifiers,createFactoryProviderCallbacks}=registryNative;
   const runtime=createExtensionRuntime(),resources={getExtensions:()=>({extensions:[],errors:[],runtime}),getSkills:()=>({skills:[],diagnostics:[]}),getPrompts:()=>({prompts:[],diagnostics:[]}),getThemes:()=>({themes:[],diagnostics:[]}),getAgentsFiles:()=>({agentsFiles:[]}),getSystemPrompt:()=>undefined,getSystemPromptSource:()=>undefined,getAppendSystemPrompt:()=>[],getAppendSystemPromptSources:()=>[],extendResources(){},async reload(){}};
   const model={id:'fixture',name:'fixture',provider:'fixture',api:'openai-completions',baseUrl:'https://fixture.invalid',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:10000,maxTokens:1000};
   const models={getModel:(p,id)=>p==='fixture'&&id==='fixture'?model:undefined,getModels:()=>[model],getAvailableSnapshot:()=>[model],hasConfiguredAuth:()=>true,getError:()=>undefined};
@@ -14,9 +14,12 @@ globalThis.createLoadoutCaseReceiver=async(extra={})=>{
   const selected=modifiers?applyToolModifiers(defaults,modifiers):opts.tools;
   const allowed=modifiers?(opts.noTools==='all'?selected:undefined):(opts.tools??(opts.noTools==='all'?[]:undefined));
   const context=manager.buildSessionContext();
-  const agent=new Agent({initialState:{model,thinkingLevel:'off',systemPrompt:'',messages:context.messages,tools:[]},streamFn:registryNativeStream,convertToLlm:registryNative.convertToLlm});
-  const warmer=new registryCacheWarmer.CacheWarmer(models,manager,()=>settings.getCacheWarmingMode());
-  const session=new AgentSession({agent,sessionManager:manager,settingsManager:settings,cwd:'C:/Users/adyba/pi-zig-update-evidence-20261003/',resourceLoader:resources,modelRuntime:models,cacheWarmer:warmer,extensionRunnerRef:{},initialActiveToolNames:selected??defaults,usesDefaultTools:(opts.tools===undefined||modifiers!==undefined)&&!opts.noTools,defaultToolModifiers:modifiers,allowedToolNames:allowed});
+  const runnerRef={},agentBox={},cacheCallbacks=createFactoryProviderCallbacks(settings,models,manager,runnerRef,agentBox,undefined);
+  const warmer=new registryCacheWarmer.CacheWarmer(models,manager,cacheCallbacks.getCacheMode,cacheCallbacks.decideCacheWarming);
+  const callbacks=createFactoryProviderCallbacks(settings,models,manager,runnerRef,agentBox,warmer);
+  const agent=new Agent({initialState:{model,thinkingLevel:'off',systemPrompt:'',messages:context.messages,tools:[]},streamFn:callbacks.streamFn,convertToLlm:registryNative.convertToLlm,onPayload:callbacks.onPayload,onResponse:callbacks.onResponse,onProviderStreamEvent:callbacks.onProviderStreamEvent,transformContext:callbacks.transformContext,sessionId:manager.getSessionId(),steeringMode:settings.getSteeringMode(),followUpMode:settings.getFollowUpMode(),transport:settings.getTransport(),thinkingBudgets:settings.getThinkingBudgets(),maxRetryDelayMs:settings.getProviderRetrySettings().maxRetryDelayMs});
+  agentBox.value=agent;
+  const session=new AgentSession({agent,sessionManager:manager,settingsManager:settings,cwd:'C:/Users/adyba/pi-zig-update-evidence-20261003/',resourceLoader:resources,modelRuntime:models,cacheWarmer:warmer,extensionRunnerRef:runnerRef,initialActiveToolNames:selected??defaults,usesDefaultTools:(opts.tools===undefined||modifiers!==undefined)&&!opts.noTools,defaultToolModifiers:modifiers,allowedToolNames:allowed});
   if(!(session instanceof AgentSession)||Object.keys(session).length!==66||!Object.hasOwn(session,'_handleAgentEvent'))throw Error('Real native constructor/full66 initialization absent');
   nativeRegistryFactoryCount++;nativeRegistryWeak.push(new WeakRef(session));
   return session;
