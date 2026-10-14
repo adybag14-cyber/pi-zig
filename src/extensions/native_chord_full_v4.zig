@@ -88,6 +88,11 @@ fn createClasses(engine: *h.Engine) !Classes {
     }
     try js.define(engine, api, "inflateMessage", try @import("native_node_function.zig").create(engine, "inflateMessage", 1, inflateMessage, &.{}));
     try @import("native_chord_accept_websockets.zig").install(engine, api, bindings);
+    // state.ts imports the genuine shared context module. Preserve its exact
+    // BACKGROUND_CONTEXT identity rather than manufacturing another context.
+    try @import("native_durable_context.zig").install(engine);
+    const context = engine.native_module_values.get("@earendil-works/chord/context") orelse return error.NativeChordContextUnavailable;
+    try @import("native_chord_replicated_state.zig").install(engine, api, try s.get(context, "BACKGROUND_CONTEXT"));
     try h.field(&s, api, "PACK_THRESHOLD", c.JS_NewInt32(engine.context, @import("native_chord_packing_v4.zig").threshold));
     try h.field(&s, api, "PROTOCOL_VERSION", c.JS_NewInt32(engine.context, 4));
     try @import("native_chord_json.zig").install(engine, api);
