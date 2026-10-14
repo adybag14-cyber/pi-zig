@@ -1,0 +1,99 @@
+name: Native automatic compaction decision and pending GC qualification
+on:
+  push:
+    branches: [checkpoint/native-sdk-check-compaction-candidate-20261014]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-sdk-check-compaction-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        mode: [Debug, ReleaseSafe]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact candidate and complete compiler
+        id: freeze
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskReceipt='verification/native-sdk-check-compaction-candidate'
+          [void](New-Item -ItemType Directory -Path $taskReceipt)
+          if((git rev-parse HEAD).Trim() -cne '${{ github.sha }}'){throw 'Exact candidate mismatch'}
+          if((& zig version).Trim() -cne '0.16.0'){throw 'Compiler version mismatch'}
+          $taskInfo=[IO.FileInfo]::new((Get-Command zig).Source)
+          $taskResolved=$taskInfo.ResolveLinkTarget($true)
+          $taskZig=if($taskResolved){$taskResolved.FullName}else{$taskInfo.FullName}
+          $taskToolRoot=Split-Path -Parent $taskZig
+          $taskInputs=@(git ls-files|Sort-Object|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}})
+          $taskTools=@(Get-ChildItem -LiteralPath $taskToolRoot -File -Recurse|Sort-Object FullName|ForEach-Object{[ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash}})
+          $taskInputs|ConvertTo-Json -Depth 4|Set-Content "$taskReceipt/inputs.json"
+          $taskTools|ConvertTo-Json -Depth 4|Set-Content "$taskReceipt/tools.json"
+          [ordered]@{head='${{ github.sha }}';tree=(git rev-parse 'HEAD^{tree}').Trim();platform='${{ matrix.os }}';mode='${{ matrix.mode }}';tool_root=$taskToolRoot;source_count=$taskInputs.Count;tool_count=$taskTools.Count;original_head='b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6';original_cases=32;original_fixture_platform='Windows';genuine_posix_source_capture_qualified=$false;public_activation=$false;full_pi_qualified=$false}|ConvertTo-Json|Set-Content "$taskReceipt/source.json"
+      - name: Compile exact native artifact
+        shell: pwsh
+        timeout-minutes: 23
+        run: |
+          & .github/scripts/run-owned-native-candidate.ps1 -Executable (Get-Command zig).Source -WorkingDirectory (Get-Location).Path -Arguments @('build','build-native-sdk-check-compaction','build-native-sdk-registry-composition','-Doptimize=${{ matrix.mode }}','-Duse-llvm=true','-j1','--summary','all') -ReceiptBase 'verification/native-sdk-check-compaction-candidate/compile' -TimeoutSeconds 1320
+      - name: Compare genuine original cases and complete native allocation universe
+        shell: pwsh
+        timeout-minutes: 7
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskReceipt='verification/native-sdk-check-compaction-candidate'
+          $env:PI_EXHAUSTIVE_ALLOCATION_SHARD='0';$env:PI_EXHAUSTIVE_ALLOCATION_SHARDS='1'
+          & .github/scripts/run-owned-native-candidate.ps1 -Executable (Get-Command zig).Source -WorkingDirectory (Get-Location).Path -Arguments @('build','test-native-sdk-check-compaction','-Doptimize=${{ matrix.mode }}','-Duse-llvm=true','-j1','--test-timeout','120s','--summary','all') -ReceiptBase "$taskReceipt/runtime" -TimeoutSeconds 300
+          $taskLog=Get-Content -LiteralPath "$taskReceipt/runtime.stderr.log" -Raw
+          if($taskLog -notmatch '(?m)^Build Summary:.*\b10/10 tests passed'){throw 'All ten selected tests must pass'}
+          $taskInventoryMarkers=@([regex]::Matches($taskLog,'(?m)^CHECK_COMPACTION_TEST_INVENTORY=(\[[^\r\n]*\])'))
+          if($taskInventoryMarkers.Count -ne 1){throw 'Compiled inventory marker missing or repeated'}
+          $taskInventory=@($taskInventoryMarkers[0].Groups[1].Value|ConvertFrom-Json)
+          if($taskInventory.Count -ne 10 -or @($taskInventory|Sort-Object -Unique).Count -ne 10){throw 'Compiled inventory changed'}
+          foreach($taskName in @('native check compaction actual b06 overflow length edits stale usage and one retry','native check compaction complete host allocation universe','native check compaction actual async method descriptor','native check compaction pending recovery retains message and session through GC and retires both','native compaction threshold matches genuine b06 method and live override dispatch','native SDK session events compaction utilities match original Source values getters and failures')){
+            if(@($taskInventory|Where-Object{$_.EndsWith('.test.'+$taskName,[StringComparison]::Ordinal)}).Count -ne 1){throw 'Required exact selected regression missing'}
+          }
+          $taskBaseline=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_BASELINE check-compaction32 total=(\d+)$'))
+          if($taskBaseline.Count -ne 1){throw 'Unique unlimited baseline missing'}
+          $taskTotal=[int]$taskBaseline[0].Groups[1].Value
+          if($taskTotal -le 0){throw 'Empty allocation universe'}
+          $taskRange="EXHAUSTIVE_ALLOCATION_RANGE check-compaction32 0/1 range=[0,$taskTotal) total=$taskTotal"
+          $taskComplete="EXHAUSTIVE_ALLOCATION_COMPLETE check-compaction32 0/1 range=[0,$taskTotal) total=$taskTotal"
+          foreach($taskMarker in @($taskRange,$taskComplete)){if([regex]::Matches($taskLog,'(?m)^'+[regex]::Escape($taskMarker)+'\r?$').Count -ne 1){throw 'Exact complete range missing'}}
+          $taskBegin=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_INDEX_BEGIN check-compaction32 (\d+)$')|ForEach-Object{[int]$_.Groups[1].Value})
+          $taskDone=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE check-compaction32 (\d+)$')|ForEach-Object{[int]$_.Groups[1].Value})
+          if($taskBegin.Count -ne $taskTotal -or $taskDone.Count -ne $taskTotal){throw 'Incomplete allocation universe'}
+          for($taskIndex=0;$taskIndex -lt $taskTotal;$taskIndex++){if($taskBegin[$taskIndex] -ne $taskIndex -or $taskDone[$taskIndex] -ne $taskIndex){throw 'Allocation gap or duplicate'}}
+          [ordered]@{head='${{ github.sha }}';platform='${{ matrix.os }}';mode='${{ matrix.mode }}';status='passed';tests=10;source_cases=32;baseline=$taskTotal;completed=$taskDone.Count;missing=0;duplicates=0;allocation_scope='Native allocator, not exhaustive C malloc';test_timeout_seconds=120;outer_timeout_seconds=300;genuine_posix_source_capture_qualified=$false;public_activation=$false;full_pi_qualified=$false}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
+      - name: Verify all frozen files after terminal execution
+        if: ${{ always() && steps.freeze.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskReceipt='verification/native-sdk-check-compaction-candidate'
+          foreach($taskKind in @('inputs','tools')){
+            $taskRows=@(Get-Content -LiteralPath "$taskReceipt/$taskKind.json" -Raw|ConvertFrom-Json)
+            $taskDrift=@($taskRows|Where-Object{!(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256}|ForEach-Object path)
+            $taskNames=if($taskKind -eq 'inputs'){@(git ls-files|Sort-Object)}else{$taskSource=Get-Content -LiteralPath "$taskReceipt/source.json" -Raw|ConvertFrom-Json;@(Get-ChildItem -LiteralPath $taskSource.tool_root -File -Recurse|ForEach-Object FullName|Sort-Object)}
+            $taskInventory=@(Compare-Object @($taskRows.path|Sort-Object) $taskNames)
+            [ordered]@{count=$taskRows.Count;drift=$taskDrift;inventory_drift=$taskInventory.Count;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 4|Set-Content "$taskReceipt/$taskKind-posthash.json"
+            if($taskDrift.Count -or $taskInventory.Count){throw 'Frozen candidate/compiler changed'}
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-sdk-check-compaction-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-sdk-check-compaction-candidate/
