@@ -1,0 +1,205 @@
+{
+  "status": "genuine_original_inherit24_Windows_double_capture_qualified_native_pending",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "candidate": "a7f60a577fc8960032dfc165af4c2e0c99f3ca90",
+  "scope": "Actual unchanged highlight.js10.7.3 exported inherit function; inherited/numeric keys, nonenumerable shadows, live mutation, proxies, original exceptions, ordinary constructor and retained closure through real Node GC",
+  "cases": 24,
+  "input_sha256": "bfc5789295a0412c901aa6bdfd8cfa06f650fc218e49066f3d1311bc6dc21bd1",
+  "raw_sha256": "1FA2269127E2F02E59B67A265F007A4DF03FCFC2A3CCC1955FCF2C4208D35FA8",
+  "fixture_sha256": "34917EA30265B93E494C686A9A70A1A8F5DCA06E478961FE2E5782AD000BA842",
+  "raw_double_capture_byte_identical": true,
+  "source_body_rewrites": 0,
+  "raw_normalizations": 0,
+  "expected_row_edits": 0,
+  "actual_Node_GC": true,
+  "captures": [
+    {
+      "attempt": "first",
+      "pid": 45316,
+      "status": "passed",
+      "created_utc": "2026-10-14T17:24:10.1038573Z",
+      "completed_utc": "2026-10-14T17:24:17.2200428+00:00",
+      "outer_seconds": 300,
+      "owner_sha256": "C81883991DCF4CA327B39F29EED6EAC6C435D42BCEFEBB094C4464AE86390AA3",
+      "raw_sha256": "1FA2269127E2F02E59B67A265F007A4DF03FCFC2A3CCC1955FCF2C4208D35FA8",
+      "before": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-inherit24-original-local-20261014-candidate.json",
+          "manifest_sha256": "ACC3AC6908F0FB1F796BFD0E9AC7F6BA416285613682BBDE510C5099E7BDD81E",
+          "count": 5096,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-inherit24-original-local-20261014-controls.json",
+          "manifest_sha256": "808F46281CD278445EF4FB987CEFB676E315D80A5386B5D827A460FFF8D5CE84",
+          "count": 5,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-inherit24-original-local-20261014-candidate.json",
+          "manifest_sha256": "ACC3AC6908F0FB1F796BFD0E9AC7F6BA416285613682BBDE510C5099E7BDD81E",
+          "count": 5096,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-inherit24-original-local-20261014-controls.json",
+          "manifest_sha256": "808F46281CD278445EF4FB987CEFB676E315D80A5386B5D827A460FFF8D5CE84",
+          "count": 5,
+          "drift": 0
+        }
+      ],
+      "owned_pid_absent": true
+    },
+    {
+      "attempt": "second",
+      "pid": 66584,
+      "status": "passed",
+      "created_utc": "2026-10-14T17:24:47.6715034Z",
+      "completed_utc": "2026-10-14T17:24:54.0909755+00:00",
+      "outer_seconds": 300,
+      "owner_sha256": "ADF6328BB0D8CC93DB329B8EA97341E0EFAB7167D94929B98B3C1B206EA03713",
+      "raw_sha256": "1FA2269127E2F02E59B67A265F007A4DF03FCFC2A3CCC1955FCF2C4208D35FA8",
+      "before": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-inherit24-original-local-20261014-candidate.json",
+          "manifest_sha256": "ACC3AC6908F0FB1F796BFD0E9AC7F6BA416285613682BBDE510C5099E7BDD81E",
+          "count": 5096,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-inherit24-original-local-20261014-controls.json",
+          "manifest_sha256": "808F46281CD278445EF4FB987CEFB676E315D80A5386B5D827A460FFF8D5CE84",
+          "count": 5,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-inherit24-original-local-20261014-candidate.json",
+          "manifest_sha256": "ACC3AC6908F0FB1F796BFD0E9AC7F6BA416285613682BBDE510C5099E7BDD81E",
+          "count": 5096,
+          "drift": 0
+        },
+        {
+          "manifest": "sdk-highlight-inherit24-original-local-20261014-controls.json",
+          "manifest_sha256": "808F46281CD278445EF4FB987CEFB676E315D80A5386B5D827A460FFF8D5CE84",
+          "count": 5,
+          "drift": 0
+        }
+      ],
+      "owned_pid_absent": true
+    }
+  ],
+  "observed_modules": [
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-1692-observe-20261014.mjs",
+      "sha256": "ada432e1d692741b750a3f874eaf6c57ada6c78b6026c19df34dd2093f54a147"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-inherit-local-source-capture-20261014.mjs",
+      "sha256": "d7ded663f0ae85213b632f7be520b5530ac698cd906dc25169fc508a05847cca"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\core.js",
+      "sha256": "c4d10bcc7cb543c36198d34d2ecfcee9f8fbdd82ec1531daa3962c86a6c95468"
+    }
+  ],
+  "node": {
+    "version": "v24.14.0",
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "execArgv": [
+      "--expose-gc",
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-1692-observe-20261014.mjs"
+    ]
+  },
+  "native_qualified": false,
+  "native_VM_self_agreement_does_not_qualify_Original_inherit": true,
+  "original_POSIX_capture_pending": true,
+  "public_export_metadata_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "full_factory_qualified": false,
+  "public_activation": false,
+  "verified_utc": "2026-10-14T17:30:25.0328196+00:00"
+}

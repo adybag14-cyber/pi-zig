@@ -1,0 +1,674 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "bfc5789295a0412c901aa6bdfd8cfa06f650fc218e49066f3d1311bc6dc21bd1",
+  "platform": "win32",
+  "arch": "x64",
+  "cases": 24,
+  "node": {
+    "version": "v24.14.0",
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "execArgv": [
+      "--expose-gc",
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-1692-observe-20261014.mjs"
+    ]
+  },
+  "before": [
+    {
+      "name": "sdk-source-1692-full-manifest-20261014.json",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "name": "sdk-highlight-inherit24-original-local-20261014-candidate.json",
+      "count": 5096,
+      "drift": 0
+    },
+    {
+      "name": "sdk-highlight-inherit24-original-local-20261014-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "name": "sdk-source-1692-full-manifest-20261014.json",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "name": "sdk-highlight-inherit24-original-local-20261014-candidate.json",
+      "count": 5096,
+      "drift": 0
+    },
+    {
+      "name": "sdk-highlight-inherit24-original-local-20261014-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "scope": "Original actual highlight.js10.7.3 exported inherit called unchanged; inherited/nonenumerable/deletion/proxy ordering, sentinel identity and real GC; no Source body rewrite",
+  "rows": [
+    {
+      "name": "function descriptors and empty inherit",
+      "value": {
+        "name": "inherit",
+        "length": 1,
+        "keys": [
+          "length",
+          "name",
+          "arguments",
+          "caller",
+          "prototype"
+        ],
+        "ownPrototype": true,
+        "empty": {
+          "keys": [],
+          "entries": [],
+          "nullPrototype": true
+        }
+      }
+    },
+    {
+      "name": "null undefined and extra null values",
+      "value": {
+        "keys": [
+          "a"
+        ],
+        "entries": [
+          [
+            "a",
+            1
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "primitive source values",
+      "value": [
+        {
+          "keys": [],
+          "entries": [],
+          "nullPrototype": true
+        },
+        {
+          "keys": [],
+          "entries": [],
+          "nullPrototype": true
+        },
+        {
+          "keys": [],
+          "entries": [],
+          "nullPrototype": true
+        },
+        {
+          "keys": [],
+          "entries": [],
+          "nullPrototype": true
+        }
+      ]
+    },
+    {
+      "name": "UTF16 string indices",
+      "value": {
+        "keys": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "entries": [
+          [
+            "0",
+            "a"
+          ],
+          [
+            "1",
+            "界"
+          ],
+          [
+            "2",
+            "\ud83d"
+          ],
+          [
+            "3",
+            "\ude00"
+          ],
+          [
+            "4",
+            "\ud800"
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "own then inherited enumerable order",
+      "value": {
+        "keys": [
+          "own",
+          "parent",
+          "tail"
+        ],
+        "entries": [
+          [
+            "own",
+            3
+          ],
+          [
+            "parent",
+            1
+          ],
+          [
+            "tail",
+            2
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "nonenumerable own shadow hides inherited",
+      "value": {
+        "keys": [
+          "own",
+          "visible"
+        ],
+        "entries": [
+          [
+            "own",
+            4
+          ],
+          [
+            "visible",
+            2
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "own shadow does not read inherited getter",
+      "value": {
+        "result": {
+          "keys": [
+            "same"
+          ],
+          "entries": [
+            [
+              "same",
+              2
+            ]
+          ],
+          "nullPrototype": true
+        },
+        "log": []
+      }
+    },
+    {
+      "name": "numeric key order by prototype layer",
+      "value": {
+        "keys": [
+          "0",
+          "2",
+          "3",
+          "10",
+          "own",
+          "parent"
+        ],
+        "entries": [
+          [
+            "0",
+            "zero"
+          ],
+          [
+            "2",
+            "two"
+          ],
+          [
+            "3",
+            "parent3"
+          ],
+          [
+            "10",
+            "ten"
+          ],
+          [
+            "own",
+            2
+          ],
+          [
+            "parent",
+            1
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "symbols excluded",
+      "value": {
+        "keys": [
+          "a"
+        ],
+        "entries": [
+          [
+            "a",
+            1
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "null prototype and proto named own key",
+      "value": {
+        "keys": [
+          "__proto__",
+          "a"
+        ],
+        "entries": [
+          [
+            "__proto__",
+            {
+              "marker": 1
+            }
+          ],
+          [
+            "a",
+            2
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "own getter deletes next own key",
+      "value": {
+        "result": {
+          "keys": [
+            "a",
+            "c"
+          ],
+          "entries": [
+            [
+              "a",
+              1
+            ],
+            [
+              "c",
+              3
+            ]
+          ],
+          "nullPrototype": true
+        },
+        "log": [
+          "a"
+        ]
+      }
+    },
+    {
+      "name": "own getter deletes next inherited key",
+      "value": {
+        "keys": [
+          "a",
+          "c"
+        ],
+        "entries": [
+          [
+            "a",
+            1
+          ],
+          [
+            "c",
+            3
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "getter changes prototype during enumeration",
+      "value": {
+        "keys": [
+          "a",
+          "b"
+        ],
+        "entries": [
+          [
+            "a",
+            1
+          ],
+          [
+            "b",
+            7
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "getter changes next property enumerability",
+      "value": {
+        "keys": [
+          "a",
+          "b",
+          "c"
+        ],
+        "entries": [
+          [
+            "a",
+            1
+          ],
+          [
+            "b",
+            2
+          ],
+          [
+            "c",
+            3
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "getter adds own key during enumeration",
+      "value": {
+        "keys": [
+          "a",
+          "b"
+        ],
+        "entries": [
+          [
+            "a",
+            1
+          ],
+          [
+            "b",
+            2
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "proxy own keys descriptors prototype and get order",
+      "value": {
+        "result": {
+          "keys": [
+            "a",
+            "b",
+            "parent"
+          ],
+          "entries": [
+            [
+              "a",
+              1
+            ],
+            [
+              "b",
+              2
+            ],
+            [
+              "parent",
+              3
+            ]
+          ],
+          "nullPrototype": true
+        },
+        "log": [
+          "ownKeys",
+          "prototype",
+          [
+            "descriptor",
+            "a"
+          ],
+          [
+            "get",
+            "a"
+          ],
+          [
+            "descriptor",
+            "b"
+          ],
+          [
+            "get",
+            "b"
+          ],
+          [
+            "descriptor",
+            "parent"
+          ],
+          "prototype",
+          [
+            "get",
+            "parent"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "proxy prototype shadow order",
+      "value": {
+        "result": {
+          "keys": [
+            "a",
+            "parent"
+          ],
+          "entries": [
+            [
+              "a",
+              3
+            ],
+            [
+              "parent",
+              2
+            ]
+          ],
+          "nullPrototype": true
+        },
+        "log": [
+          "parent.ownKeys",
+          [
+            "parent.descriptor",
+            "parent"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "getter sentinel identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "proxy ownKeys sentinel identity",
+      "value": {
+        "same": true,
+        "log": [
+          "ownKeys"
+        ]
+      }
+    },
+    {
+      "name": "proxy descriptor sentinel identity",
+      "value": {
+        "same": true,
+        "log": [
+          "ownKeys",
+          "descriptor"
+        ]
+      }
+    },
+    {
+      "name": "live Object create target setters",
+      "value": {
+        "same": true,
+        "log": [
+          [
+            "create",
+            true
+          ],
+          [
+            "set",
+            "a",
+            1
+          ],
+          [
+            "set",
+            "a",
+            2
+          ],
+          [
+            "set",
+            "b",
+            3
+          ]
+        ],
+        "result": {
+          "keys": [
+            "a",
+            "b"
+          ],
+          "entries": [
+            [
+              "a",
+              2
+            ],
+            [
+              "b",
+              3
+            ]
+          ],
+          "nullPrototype": true
+        }
+      }
+    },
+    {
+      "name": "retained extra-object callback and return",
+      "value": {
+        "result": {
+          "keys": [
+            "a",
+            "b",
+            "c"
+          ],
+          "entries": [
+            [
+              "a",
+              1
+            ],
+            [
+              "b",
+              2
+            ],
+            [
+              "c",
+              3
+            ]
+          ],
+          "nullPrototype": true
+        },
+        "returnedUndefined": true,
+        "callback": {
+          "name": "",
+          "length": 1,
+          "ownPrototype": true
+        }
+      }
+    },
+    {
+      "name": "ordinary constructor returns null-prototype result",
+      "value": {
+        "keys": [
+          "a",
+          "b"
+        ],
+        "entries": [
+          [
+            "a",
+            1
+          ],
+          [
+            "b",
+            2
+          ]
+        ],
+        "nullPrototype": true
+      }
+    },
+    {
+      "name": "retained closure traces result through actual GC",
+      "value": {
+        "alive": true,
+        "result": {
+          "keys": [
+            "a",
+            "b",
+            "afterGC"
+          ],
+          "entries": [
+            [
+              "a",
+              1
+            ],
+            [
+              "b",
+              2
+            ],
+            [
+              "afterGC",
+              3
+            ]
+          ],
+          "nullPrototype": true
+        }
+      }
+    }
+  ],
+  "observedModules": [
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-1692-observe-20261014.mjs",
+      "sha256": "ada432e1d692741b750a3f874eaf6c57ada6c78b6026c19df34dd2093f54a147"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-inherit-local-source-capture-20261014.mjs",
+      "sha256": "d7ded663f0ae85213b632f7be520b5530ac698cd906dc25169fc508a05847cca"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\core.js",
+      "sha256": "c4d10bcc7cb543c36198d34d2ecfcee9f8fbdd82ec1531daa3962c86a6c95468"
+    }
+  ]
+}

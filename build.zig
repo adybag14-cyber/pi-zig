@@ -1451,6 +1451,16 @@ pub fn build(b: *std.Build) void {
     highlight_resumable_regex_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-highlight-resumable-regex", "Compile actual resumable highlight matcher native methods and traced callbacks").dependOn(&highlight_resumable_regex_tests.step);
     b.step("test-native-highlight-resumable-regex", "Compare original24 resume fallback caches iterators callbacks GC and native allocation cleanup").dependOn(&b.addRunArtifact(highlight_resumable_regex_tests).step);
+    const vm_for_in_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_for_in_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native VM for-in"}, .use_llvm = use_llvm });
+    linkQuickJs(b, vm_for_in_tests.root_module, quickjs, sqlite_lib_dir);
+    vm_for_in_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-vm-for-in", "Compile additive owned VM for-in ABI qualifier without execution").dependOn(&vm_for_in_tests.step);
+    b.step("test-native-vm-for-in", "Compare actual guest VM for-in errors mutations GC cancellation and all host allocation failures").dependOn(&b.addRunArtifact(vm_for_in_tests).step);
+    const highlight_inherit_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_inherit_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native highlight inherit"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_inherit_tests.root_module, quickjs, sqlite_lib_dir);
+    highlight_inherit_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-inherit", "Compile actual Original inheritance comparator without execution").dependOn(&highlight_inherit_tests.step);
+    b.step("test-native-highlight-inherit", "Compare actual Original24 inherited keys hidden shadows live mutations proxy order errors callbacks and GC").dependOn(&b.addRunArtifact(highlight_inherit_tests).step);
     const source_paths_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_source_paths_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Source path cwd"}, .use_llvm = use_llvm });
     linkQuickJs(b, source_paths_tests.root_module, quickjs, sqlite_lib_dir);
     source_paths_tests.root_module.addImport("catalog_tool", catalog_tool);
