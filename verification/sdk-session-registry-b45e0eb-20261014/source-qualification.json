@@ -1,0 +1,33 @@
+{
+  "status": "actual_b45_Original_AgentSession64_factory_doublecapture_passed",
+  "candidate": "033377502f9459101911e10c204ea17d3ff822dd",
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "input_sha256": "0E1D71BCAD612F6B01B35D97F5585A261623A5726FB9BDC58C7D63D845B450FB",
+  "golden_sha256": "EA4C5660B8734A47F83B390F3C6E4383D28A88696DCA582E921B4378ADFE66EB",
+  "cases": 64,
+  "actual_factory_instances_each": 64,
+  "doublecapture_raw_rows_identical": true,
+  "historical52_input_bytes_preserved": true,
+  "historical52_raw_rows_unchanged": true,
+  "source_files": 1965,
+  "dependency_files": 31064,
+  "node_tool_files": 1774,
+  "candidate_files": 5216,
+  "controls": 5,
+  "all_phase_post_drift": 0,
+  "owned_pids": [
+    46332,
+    66100
+  ],
+  "owned_pids_absent": true,
+  "observed_modules": 1337,
+  "first_output_sha256": "BC0040B1C20C23E2E414025204D98BFA4A7C66C257A5171ED497E3185AD0AB71",
+  "second_output_sha256": "B9988C9C3988A4A83AB84CC4386BB9EF7835D5A32F5717DC5C2200D436F8A277",
+  "native_registry_qualified": false,
+  "full_composition_qualified": false,
+  "public_activation": false,
+  "source_body_rewrites": 0,
+  "expected_row_edits": 0,
+  "catalog_scope": "Historical pinned typed metadata only; latest generated catalog unqualified",
+  "completed_utc": "2026-10-14T18:42:47.4355391+00:00"
+}
