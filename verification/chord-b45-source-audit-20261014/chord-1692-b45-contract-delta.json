@@ -1,0 +1,975 @@
+{
+  "base": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "head": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "api_delta_sha256": "37BFD730D9BD78EAC426E1E0408DF5736B1ADB1434D8CC4EF5288940D88AD1C5",
+  "upstream_commits": 8,
+  "changed_files": 69,
+  "changed_chord_files": 49,
+  "source_changes": [
+    {
+      "path": "packages/chord/src/cell.ts",
+      "old_sha256": "B188544739BCEAC489954FB64E9E920529BF91B72F45C26053139BDE865634FE",
+      "new_sha256": "66A6A32F321EDE326D14686609C6B2C1A24A23D617529391580A5DA57F1CBD42",
+      "additions": 60,
+      "deletions": 5
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "old_sha256": "898B5F41FE4F294B36FBCBABCAE41CC6BA6EA52636C79A42660C916F387A9F3C",
+      "new_sha256": "E3406C40B697949E074B4C5BABFB05CCB1FBA505386AEF3A3CDBE515EC56B01A",
+      "additions": 512,
+      "deletions": 240
+    },
+    {
+      "path": "packages/chord/src/contract.ts",
+      "old_sha256": "FD821D188EC97B83612725822B665B3026753D3A0D5339F05799B8321B95184C",
+      "new_sha256": "146966C0CCFA57774E972AC9F3CA2A5EB4ECDB4DD7F922DC07D6B885E4696435",
+      "additions": 128,
+      "deletions": 28
+    },
+    {
+      "path": "packages/chord/src/declare.ts",
+      "old_sha256": "94DE2CB9E3B57625123CA34980776E85A1B700B98FB891BF39F6BBF9D37E2455",
+      "new_sha256": "665BD4356582DAF8AB7053F19A7038F9DEA1F79169D9F4FDA75FCD47B51B0A54",
+      "additions": 3,
+      "deletions": 2
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "old_sha256": "FE06D53948E9234CE7287DDDC5CCE74C1C4B34A81E03D1E71680ADE120C620DE",
+      "new_sha256": "2E187C2A0B0D337A70BB7A3C76C0FAB3D6C84916D80930A4DB412318C9446B9B",
+      "additions": 260,
+      "deletions": 97
+    },
+    {
+      "path": "packages/chord/src/index.ts",
+      "old_sha256": "6AC3B5BF09F53B156A6E4A1811DDF53EF2B68FF32E0EC65058D4E097A26AF126",
+      "new_sha256": "91A898C957A318052F871C27A27343CA46DEF4B39D54C54B2CF30E4279410C3F",
+      "additions": 9,
+      "deletions": 4
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "old_sha256": "81D58CBD307E78252FF47F3602133B7C288567FBD0027C3C6E4473F342F5BD54",
+      "new_sha256": "878BA5346B0F4EA271717381FDD7FCE95A3AA9DAABB3797307A667613A81E7E6",
+      "additions": 3,
+      "deletions": 4
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "old_sha256": "9945B5F0FF60D71D25C11215E8CA77BD2D806134B7BDA51EAB21615D051D13E5",
+      "new_sha256": "485A309A247F9B7ED5E82DFDBEA2BC8970B140C28275E5D1CF122F8034F9D6FF",
+      "additions": 249,
+      "deletions": 51
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "old_sha256": "64E6FC000C0BEDEC92963890638320DFB63BC273D8931F86ABCEDFD32FF4A7EA",
+      "new_sha256": "2BBA660874ADCE52021C26DE6B494ADC3C2D9C3730E192E35D5F8E4106F422C7",
+      "additions": 25,
+      "deletions": 3
+    },
+    {
+      "path": "packages/chord/src/remote.ts",
+      "old_sha256": "D33B84EF81EA4569487C60F2622CBBB5517641FB01A90A4592D3FBE6C6CCE6A8",
+      "new_sha256": "FA0890148A42BDBE6FEF332A7612B03E220C44D05660E2FA6C0E48883E17326F",
+      "additions": 484,
+      "deletions": 203
+    },
+    {
+      "path": "packages/chord/src/types.ts",
+      "old_sha256": "767C3078902F107A7E1F5E493A871F038938F1348DBA7C925C0CEFFB78016729",
+      "new_sha256": "4C184B2C0429993CBEC2314DACB07F6C6F99930CCD2EAE19564B8E6926F4B7F4",
+      "additions": 25,
+      "deletions": 15
+    },
+    {
+      "path": "packages/chord/src/websocket.ts",
+      "old_sha256": "465490436ABF3E8A16345338530F8B590C8AA5F60BBDC372956C68F4A98A15D2",
+      "new_sha256": "11B97CC583BE58602C2125DD54A919B3013DDA2154B44CBE9110AC70AE4F342A",
+      "additions": 6,
+      "deletions": 6
+    },
+    {
+      "path": "packages/chord/src/wire.ts",
+      "old_sha256": "8F9A01D80BDD50C4FD6267A69057E8AC2CA7D1A9DD28B96770ED2480A9A79ACD",
+      "new_sha256": "7AFF74B4D9E72A2E64C179AB1B4B84913453EA5006CFC1E28390CB87C9656706",
+      "additions": 33,
+      "deletions": 13
+    }
+  ],
+  "old_runtime_exports": [
+    {
+      "name": "bind",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "coverage",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "local",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "method",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "opaque",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "remote",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "ChordError",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "forbidden",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "invalid",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "isChordError",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "createHost",
+      "type_only": false,
+      "module": "./host.ts"
+    },
+    {
+      "name": "defineFacet",
+      "type_only": false,
+      "module": "./host.ts"
+    },
+    {
+      "name": "hostPrincipal",
+      "type_only": false,
+      "module": "./host.ts"
+    },
+    {
+      "name": "copyJson",
+      "type_only": false,
+      "module": "./json.ts"
+    },
+    {
+      "name": "isJsonValue",
+      "type_only": false,
+      "module": "./json.ts"
+    },
+    {
+      "name": "inflateMessage",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "ipcLink",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "memoryLinkPair",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "PACK_THRESHOLD",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "webSocketLink",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "defineRegistry",
+      "type_only": false,
+      "module": "./registry.ts"
+    },
+    {
+      "name": "replicatedState",
+      "type_only": false,
+      "module": "./state.ts"
+    },
+    {
+      "name": "acceptWebSockets",
+      "type_only": false,
+      "module": "./websocket.ts"
+    },
+    {
+      "name": "PROTOCOL_VERSION",
+      "type_only": false,
+      "module": "./wire.ts"
+    }
+  ],
+  "new_runtime_exports": [
+    {
+      "name": "bind",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "coverage",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "hostFamily",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "hostNamed",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "local",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "method",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "opaque",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "remote",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "ChordError",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "forbidden",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "invalid",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "isChordError",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "createHost",
+      "type_only": false,
+      "module": "./host.ts"
+    },
+    {
+      "name": "defineFacet",
+      "type_only": false,
+      "module": "./host.ts"
+    },
+    {
+      "name": "copyJson",
+      "type_only": false,
+      "module": "./json.ts"
+    },
+    {
+      "name": "isJsonValue",
+      "type_only": false,
+      "module": "./json.ts"
+    },
+    {
+      "name": "inflateMessage",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "ipcLink",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "memoryLinkPair",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "PACK_THRESHOLD",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "webSocketLink",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "defineRegistry",
+      "type_only": false,
+      "module": "./registry.ts"
+    },
+    {
+      "name": "replicatedState",
+      "type_only": false,
+      "module": "./state.ts"
+    },
+    {
+      "name": "acceptWebSockets",
+      "type_only": false,
+      "module": "./websocket.ts"
+    },
+    {
+      "name": "PROTOCOL_VERSION",
+      "type_only": false,
+      "module": "./wire.ts"
+    }
+  ],
+  "all_new_exports": [
+    {
+      "name": "Cell",
+      "type_only": true,
+      "module": "./cell.ts"
+    },
+    {
+      "name": "AcceptOptions",
+      "type_only": true,
+      "module": "./connection.ts"
+    },
+    {
+      "name": "LinkOptions",
+      "type_only": true,
+      "module": "./connection.ts"
+    },
+    {
+      "name": "Context",
+      "type_only": true,
+      "module": "./context/index.ts"
+    },
+    {
+      "name": "ContextKey",
+      "type_only": true,
+      "module": "./context/index.ts"
+    },
+    {
+      "name": "Accepts",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "Adapter",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "AnyContract",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "bind",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "coverage",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "Description",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "HostFamily",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "HostNamed",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "hostFamily",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "hostNamed",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "ImplementationOf",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "InputOf",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "LocalContract",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "local",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "method",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "opaque",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "Placement",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "PlacementFor",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "Ref",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "RemoteContract",
+      "type_only": true,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "remote",
+      "type_only": false,
+      "module": "./contract.ts"
+    },
+    {
+      "name": "EventOf",
+      "type_only": true,
+      "module": "./declare.ts"
+    },
+    {
+      "name": "Resource",
+      "type_only": true,
+      "module": "./declare.ts"
+    },
+    {
+      "name": "ResourceDeclaration",
+      "type_only": true,
+      "module": "./declare.ts"
+    },
+    {
+      "name": "Subscribable",
+      "type_only": true,
+      "module": "./declare.ts"
+    },
+    {
+      "name": "ValueOf",
+      "type_only": true,
+      "module": "./declare.ts"
+    },
+    {
+      "name": "Draft",
+      "type_only": true,
+      "module": "./delta/index.ts"
+    },
+    {
+      "name": "ChordError",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "ChordErrorCode",
+      "type_only": true,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "forbidden",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "invalid",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "isChordError",
+      "type_only": false,
+      "module": "./errors.ts"
+    },
+    {
+      "name": "ConnectOptions",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "PrincipalMatch",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "PrincipalPattern",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "Route",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "createHost",
+      "type_only": false,
+      "module": "./host.ts"
+    },
+    {
+      "name": "defineFacet",
+      "type_only": false,
+      "module": "./host.ts"
+    },
+    {
+      "name": "Facet",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "FacetApi",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "FacetDefinition",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "FacetLoader",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "Host",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "HostOptions",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "LoadOptions",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "PluginRef",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "RootOptions",
+      "type_only": true,
+      "module": "./host.ts"
+    },
+    {
+      "name": "CopyJsonOptions",
+      "type_only": true,
+      "module": "./json.ts"
+    },
+    {
+      "name": "copyJson",
+      "type_only": false,
+      "module": "./json.ts"
+    },
+    {
+      "name": "isJsonValue",
+      "type_only": false,
+      "module": "./json.ts"
+    },
+    {
+      "name": "JsonRepresentation",
+      "type_only": true,
+      "module": "./json.ts"
+    },
+    {
+      "name": "JsonValue",
+      "type_only": true,
+      "module": "./json.ts"
+    },
+    {
+      "name": "IpcChannel",
+      "type_only": true,
+      "module": "./link.ts"
+    },
+    {
+      "name": "inflateMessage",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "ipcLink",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "Link",
+      "type_only": true,
+      "module": "./link.ts"
+    },
+    {
+      "name": "memoryLinkPair",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "PACK_THRESHOLD",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "WebSocketLike",
+      "type_only": true,
+      "module": "./link.ts"
+    },
+    {
+      "name": "WebSocketLinkOptions",
+      "type_only": true,
+      "module": "./link.ts"
+    },
+    {
+      "name": "webSocketLink",
+      "type_only": false,
+      "module": "./link.ts"
+    },
+    {
+      "name": "Factory",
+      "type_only": true,
+      "module": "./object.ts"
+    },
+    {
+      "name": "HostServeOptions",
+      "type_only": true,
+      "module": "./object.ts"
+    },
+    {
+      "name": "Lifetime",
+      "type_only": true,
+      "module": "./object.ts"
+    },
+    {
+      "name": "ReferencedServeOptions",
+      "type_only": true,
+      "module": "./object.ts"
+    },
+    {
+      "name": "Self",
+      "type_only": true,
+      "module": "./object.ts"
+    },
+    {
+      "name": "ServeOptions",
+      "type_only": true,
+      "module": "./object.ts"
+    },
+    {
+      "name": "ServeOptionsFor",
+      "type_only": true,
+      "module": "./object.ts"
+    },
+    {
+      "name": "StateInit",
+      "type_only": true,
+      "module": "./object.ts"
+    },
+    {
+      "name": "StateOptions",
+      "type_only": true,
+      "module": "./object.ts"
+    },
+    {
+      "name": "defineRegistry",
+      "type_only": false,
+      "module": "./registry.ts"
+    },
+    {
+      "name": "Registry",
+      "type_only": true,
+      "module": "./registry.ts"
+    },
+    {
+      "name": "RegistryTable",
+      "type_only": true,
+      "module": "./registry.ts"
+    },
+    {
+      "name": "RegistryView",
+      "type_only": true,
+      "module": "./registry.ts"
+    },
+    {
+      "name": "ReloadOptions",
+      "type_only": true,
+      "module": "./reload.ts"
+    },
+    {
+      "name": "ReloadReport",
+      "type_only": true,
+      "module": "./reload.ts"
+    },
+    {
+      "name": "AttachedReplicatedState",
+      "type_only": true,
+      "module": "./state.ts"
+    },
+    {
+      "name": "MutableReplicatedState",
+      "type_only": true,
+      "module": "./state.ts"
+    },
+    {
+      "name": "ReplicatedState",
+      "type_only": true,
+      "module": "./state.ts"
+    },
+    {
+      "name": "ReplicatedStateDelivery",
+      "type_only": true,
+      "module": "./state.ts"
+    },
+    {
+      "name": "ReplicatedStateSource",
+      "type_only": true,
+      "module": "./state.ts"
+    },
+    {
+      "name": "ReplicatedStateSourceAttachment",
+      "type_only": true,
+      "module": "./state.ts"
+    },
+    {
+      "name": "ReplicatedStateSourceFrame",
+      "type_only": true,
+      "module": "./state.ts"
+    },
+    {
+      "name": "ReplicatedStateSourceOptions",
+      "type_only": true,
+      "module": "./state.ts"
+    },
+    {
+      "name": "replicatedState",
+      "type_only": false,
+      "module": "./state.ts"
+    },
+    {
+      "name": "Ctx",
+      "type_only": true,
+      "module": "./types.ts"
+    },
+    {
+      "name": "GetOptions",
+      "type_only": true,
+      "module": "./types.ts"
+    },
+    {
+      "name": "Readable",
+      "type_only": true,
+      "module": "./types.ts"
+    },
+    {
+      "name": "RefStatus",
+      "type_only": true,
+      "module": "./types.ts"
+    },
+    {
+      "name": "Shape",
+      "type_only": true,
+      "module": "./types.ts"
+    },
+    {
+      "name": "StateEvent",
+      "type_only": true,
+      "module": "./types.ts"
+    },
+    {
+      "name": "acceptWebSockets",
+      "type_only": false,
+      "module": "./websocket.ts"
+    },
+    {
+      "name": "WebSocketAcceptOptions",
+      "type_only": true,
+      "module": "./websocket.ts"
+    },
+    {
+      "name": "WebSocketServerLike",
+      "type_only": true,
+      "module": "./websocket.ts"
+    },
+    {
+      "name": "Frame",
+      "type_only": true,
+      "module": "./wire.ts"
+    },
+    {
+      "name": "PROTOCOL_VERSION",
+      "type_only": false,
+      "module": "./wire.ts"
+    }
+  ],
+  "added_literal_test_cases": [
+    {
+      "path": "packages/chord/test/awaiting.test.ts",
+      "sha256": "B5833C31EDEC90166992614EA37641770A6ECD953AB0F3B28CD7D653EF29BB39",
+      "literal_cases": [
+        "an aborted get rejects and releases only its reference; the binding stays for the others",
+        "a ctx.get still waiting when its call settles rejects aborted and releases its reference",
+        "a get times out after readyTimeout with ready_timeout and releases its hold",
+        "ctx.get resolves hydrated; the call's reference is released when the call ends"
+      ]
+    },
+    {
+      "path": "packages/chord/test/bindings.test.ts",
+      "sha256": "C0FF59197F52CC1AAFC3926B3D4350BB3A459452623AB735F0B46E514D970E4E",
+      "literal_cases": [
+        "N references to one object: one hold, one snapshot per member, one frame per change, one release",
+        "a held reference stays subscribed without listeners; values are readable at once after ready",
+        "a lingering binding keeps its hold and state; a reference taken meanwhile costs nothing on the link",
+        "at most `cap` bindings linger: the least recently released goes first",
+        "normalized-equal inputs and equal principal keys share; other principals and fingerprints do not",
+        "null, empty and undefined values hydrate; a state-free variant is ready; a failed snapshot rejects",
+        "reading before the first hydration throws not_ready",
+        "transfer no state alone; a full reference joining starts it once; its release stops it",
+        "a relayed hold carries its client connection's id; the server's own holds carry none",
+        "an origin a client sends is ignored: the server stamps its own",
+        "a version 3 peer is refused; shapes carry no code version"
+      ]
+    },
+    {
+      "path": "packages/chord/test/flow-units.test.ts",
+      "sha256": "F2B4BE5D31A27802314090BE39533FA712D1271044E9C87782A9EF168BD5B978",
+      "literal_cases": [
+        "with large streams waiting behind a full window, a new get resolves at once and calls are answered",
+        "a snapshot larger than the window arrives whole; later changes wait for acknowledgements",
+        "a link that reports no sizes (IPC) never holds state back",
+        "waiting ops stay under the per-link cap however many streams stall; each then gets one reset",
+        "each origin hold is one downstream hold; nothing is left after release, close or revoke",
+        "a stalled tab overflows and gets a reset while another tab keeps getting every change"
+      ]
+    },
+    {
+      "path": "packages/chord/test/hydration.test.ts",
+      "sha256": "FB3B1D40E165862F720F9CB2385FC88E194DFC2E68BE144972806068877F75B9",
+      "literal_cases": [
+        "an object that forwards and derives from a remote member goes live with its value",
+        "a member read inside a factory throws not_ready; it is a plain value once live",
+        "a host object of a child holding the parent's object goes live once the parent admits the child",
+        "a reference cycle across hosts fails at readyTimeout with a cycle hint"
+      ]
+    },
+    {
+      "path": "packages/chord/test/placement.test.ts",
+      "sha256": "4A62BB83ACE13DC9B0A6257396F1E77701199869E1AD57A6DE986427EE9829E8",
+      "literal_cases": [
+        "a get goes where the contract places the input: here, a child, or the parent, never named by the caller",
+        "serve refuses a type the host is not the place of, also at a reload",
+        "a host refuses a hold its own contract places elsewhere, and a relay one whose target disagrees",
+        "the host comes from the normalized input: unknown fields and defaults do not change it",
+        "placement is part of the contract: a moved type is a breaking change, never bridged by an adapter",
+        "types: the family's field is a required string of the input, and remote contracts need a host"
+      ]
+    },
+    {
+      "path": "packages/chord/test/principals.test.ts",
+      "sha256": "681780B8AE3D7D76347338E6CDFC564878134048518B074FEE475384A24CDFE0",
+      "literal_cases": [
+        "factories, methods and contexts see the app's principal type",
+        "the host's own principal is recognized by key: an equal object reaches the same objects",
+        "a child's parent acts as the principal the child gave `connect`; relayed callers keep theirs",
+        "refuses a host, a parent link or a route without its principal"
+      ]
+    },
+    {
+      "path": "packages/chord/test/provider-cost.test.ts",
+      "sha256": "115175A3ED310CD404ED8A6A07510474227B05185E21DD32144BFEA2C826DB13",
+      "literal_cases": [
+        "one change to K clients: K encodes (one per feed), one frame per link, the same ops on every link"
+      ]
+    },
+    {
+      "path": "packages/chord/test/state-init.test.ts",
+      "sha256": "963531C8A92AC7D95C54005BF6984B7C1278419C53BB694ED3601238A062CA66",
+      "literal_cases": [
+        "runs after the resources are open and before the object goes live: nothing sees another value",
+        "an init cell cannot be read inside the factory",
+        "a throwing or invalid init fails the activation and closes its resources; the next get tries again",
+        "init runs in a root: it can call other objects",
+        "keeps an existing cell without running init; a cell the reload adds runs init while it prepares",
+        "a failing init of an added cell refuses the reload; the old code keeps running",
+        "in a gated reload, an added cell runs init at the gate"
+      ]
+    },
+    {
+      "path": "packages/chord/test/types.test.ts",
+      "sha256": "3629B28E2DC29463F45DCED5E36F576CD0A4F5608684F6945719D20FFCBBAC38",
+      "literal_cases": [
+        "state members are T; other variants' members need narrowing; gets are awaited"
+      ]
+    },
+    {
+      "path": "packages/chord/test/variants.test.ts",
+      "sha256": "4C0527704E6C4DAAC0F578087A4EA033C6DD4DC9C5EEAF8FC7CDD671651FE16A",
+      "literal_cases": [
+        "a new variant's members arrive with its shape; a member outside the variant throws not_in_variant",
+        "keeps the last values readable, sends one fresh unit, and a reference joining meanwhile waits for it"
+      ]
+    }
+  ],
+  "literal_case_count": 46,
+  "protocol_before": 2,
+  "protocol_after": 4,
+  "full_checkout_tracked_count": 1922,
+  "hydration_prepared": false,
+  "dependencies_prepared": false,
+  "source_capture_qualified": false,
+  "native_qualified": false,
+  "public_activation": false,
+  "full_pi_qualified": false
+}
