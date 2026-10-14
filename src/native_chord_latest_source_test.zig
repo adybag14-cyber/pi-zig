@@ -53,14 +53,17 @@ fn diagnoseFailure(engine: *em.Engine, gpa: std.mem.Allocator, mapped: anyerror)
         std.debug.print("Latest GPA captured exception: {s}\n", .{message});
     }
 }
-test "native latest Chord1692 compiled selected inventory" {
+pub fn inventory(marker: []const u8) !void {
     const functions = @import("builtin").test_functions;
     const names = try std.testing.allocator.alloc([]const u8, functions.len);
     defer std.testing.allocator.free(names);
     for (functions, names) |function, *name| name.* = function.name;
     const encoded = try std.json.Stringify.valueAlloc(std.testing.allocator, names, .{});
     defer std.testing.allocator.free(encoded);
-    std.debug.print("CHORD_LATEST_COMPILED_INVENTORY={s}\n", .{encoded});
+    std.debug.print("{s}={s}\n", .{ marker, encoded });
+}
+test "native latest Chord1692 compiled selected inventory" {
+    try inventory("CHORD_LATEST_COMPILED_INVENTORY");
 }
 test "native latest Chord1692 actual Source8 object factories reload cells resource adoption signals tasks" {
     const engine = try setup(std.testing.allocator);

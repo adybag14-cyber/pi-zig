@@ -2,6 +2,9 @@ const std = @import("std");
 const builtin = @import("builtin");
 const latest = @import("native_chord_latest_source_test.zig");
 const js = @import("extensions/native_js_values.zig");
+test "native latest Chord1692 NodeLoader compiled inventory" {
+    try latest.inventory("CHORD_LOADER_COMPILED_INVENTORY");
+}
 test "native latest Chord1692 NodeLoader actual Source7 roots imports generations TypeScript defaults and Host teardown" {
     const engine = try latest.setup(std.testing.allocator);
     defer engine.deinit();

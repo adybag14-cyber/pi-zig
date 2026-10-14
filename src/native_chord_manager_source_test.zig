@@ -2,6 +2,9 @@ const std = @import("std");
 const latest = @import("native_chord_latest_source_test.zig");
 const js = @import("extensions/native_js_values.zig");
 const em = @import("extensions/engine.zig");
+test "native latest Chord1692 Manager compiled inventory" {
+    try latest.inventory("CHORD_MANAGER_COMPILED_INVENTORY");
+}
 fn setup(gpa: std.mem.Allocator) !*em.Engine {
     const engine = try latest.setup(gpa);
     errdefer engine.deinit();
