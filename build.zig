@@ -1498,6 +1498,12 @@ pub fn build(b: *std.Build) void {
     session_request_auth_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-session-request-auth", "Compare original ordinary session auth routing and branch selection with complete owner graphs").dependOn(&b.addRunArtifact(session_request_auth_tests).step);
     b.step("build-native-sdk-session-request-auth", "Compile session auth and routing bodies separately from runtime deadlines").dependOn(&session_request_auth_tests.step);
+    const session_statistics_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_statistics_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session statistics"}, .use_llvm = use_llvm });
+    linkQuickJs(b, session_statistics_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(session_statistics_tests.root_module, sqlite_lib_dir, sqlite_library);
+    session_statistics_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-session-statistics", "Compare ordinary session billing and context usage with original Source and complete owner graphs").dependOn(&b.addRunArtifact(session_statistics_tests).step);
+    b.step("build-native-sdk-session-statistics", "Compile ordinary statistics and context usage separately from runtime deadlines").dependOn(&session_statistics_tests.step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);

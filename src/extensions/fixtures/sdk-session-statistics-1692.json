@@ -1,0 +1,560 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "230e5aa95139a6445c0a78c86e5fb9b9837f5f3abc2b41dbbd4d32617bab04ff",
+  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
+  "factoryCount": 33,
+  "rows": [
+    {
+      "name": "method-metadata",
+      "value": {
+        "getSessionStats": {
+          "name": "getSessionStats",
+          "length": 0,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "getContextUsage": {
+          "name": "getContextUsage",
+          "length": 0,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "value": {
+        "sessionFile": "/stats-fixture",
+        "sessionId": "stats-fixture",
+        "userMessages": 0,
+        "assistantMessages": 0,
+        "toolCalls": 0,
+        "toolResults": 0,
+        "totalMessages": 0,
+        "tokens": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0
+        },
+        "cost": 0,
+        "contextUsage": {
+          "tokens": 0,
+          "contextWindow": 10000,
+          "percent": 0
+        }
+      }
+    },
+    {
+      "name": "message-counters",
+      "value": {
+        "sessionFile": "/stats-fixture",
+        "sessionId": "stats-fixture",
+        "userMessages": 1,
+        "assistantMessages": 1,
+        "toolCalls": 2,
+        "toolResults": 1,
+        "totalMessages": 4,
+        "tokens": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "total": 10
+        },
+        "cost": 0.25,
+        "contextUsage": {
+          "tokens": 0,
+          "contextWindow": 10000,
+          "percent": 0
+        }
+      }
+    },
+    {
+      "name": "usage-entry-and-summaries",
+      "value": {
+        "sessionFile": "/stats-fixture",
+        "sessionId": "stats-fixture",
+        "userMessages": 0,
+        "assistantMessages": 0,
+        "toolCalls": 0,
+        "toolResults": 0,
+        "totalMessages": 0,
+        "tokens": {
+          "input": 13,
+          "output": 23,
+          "cacheRead": 33,
+          "cacheWrite": 43,
+          "total": 112
+        },
+        "cost": 6,
+        "contextUsage": {
+          "tokens": null,
+          "contextWindow": 10000,
+          "percent": null
+        }
+      }
+    },
+    {
+      "name": "tool-result-billing",
+      "value": {
+        "sessionFile": "/stats-fixture",
+        "sessionId": "stats-fixture",
+        "userMessages": 0,
+        "assistantMessages": 1,
+        "toolCalls": 0,
+        "toolResults": 1,
+        "totalMessages": 2,
+        "tokens": {
+          "input": 3,
+          "output": 4,
+          "cacheRead": 5,
+          "cacheWrite": 6,
+          "total": 18
+        },
+        "cost": 0.75,
+        "contextUsage": {
+          "tokens": 0,
+          "contextWindow": 10000,
+          "percent": 0
+        }
+      }
+    },
+    {
+      "name": "string-addition-coercion",
+      "value": {
+        "sessionFile": "/stats-fixture",
+        "sessionId": "stats-fixture",
+        "userMessages": 0,
+        "assistantMessages": 0,
+        "toolCalls": 0,
+        "toolResults": 0,
+        "totalMessages": 0,
+        "tokens": {
+          "input": "015",
+          "output": "026",
+          "cacheRead": "037",
+          "cacheWrite": "048",
+          "total": "015026037048"
+        },
+        "cost": "00.51",
+        "contextUsage": {
+          "tokens": 0,
+          "contextWindow": 10000,
+          "percent": 0
+        }
+      }
+    },
+    {
+      "name": "usage-value-getter-order",
+      "value": {
+        "result": {
+          "sessionFile": "/stats-fixture",
+          "sessionId": "stats-fixture",
+          "userMessages": 0,
+          "assistantMessages": 0,
+          "toolCalls": 0,
+          "toolResults": 0,
+          "totalMessages": 0,
+          "tokens": {
+            "input": 1,
+            "output": 1,
+            "cacheRead": 1,
+            "cacheWrite": 1,
+            "total": 4
+          },
+          "cost": 0.5,
+          "contextUsage": {
+            "tokens": 0,
+            "contextWindow": 10000,
+            "percent": 0
+          }
+        },
+        "log": [
+          "input",
+          "output",
+          "cacheRead",
+          "cacheWrite",
+          "cost",
+          "total"
+        ]
+      }
+    },
+    {
+      "name": "usage-primitive-coercion",
+      "value": {
+        "result": {
+          "sessionFile": "/stats-fixture",
+          "sessionId": "stats-fixture",
+          "userMessages": 0,
+          "assistantMessages": 0,
+          "toolCalls": 0,
+          "toolResults": 0,
+          "totalMessages": 0,
+          "tokens": {
+            "input": 2,
+            "output": 1,
+            "cacheRead": 1,
+            "cacheWrite": 1,
+            "total": 5
+          },
+          "cost": 1,
+          "contextUsage": {
+            "tokens": 0,
+            "contextWindow": 10000,
+            "percent": 0
+          }
+        },
+        "log": [
+          "default",
+          "default"
+        ]
+      }
+    },
+    {
+      "name": "assistant-live-filter",
+      "value": {
+        "result": {
+          "sessionFile": "/stats-fixture",
+          "sessionId": "stats-fixture",
+          "userMessages": 0,
+          "assistantMessages": 1,
+          "toolCalls": "02",
+          "toolResults": 0,
+          "totalMessages": 1,
+          "tokens": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          },
+          "cost": 0.25,
+          "contextUsage": {
+            "tokens": 0,
+            "contextWindow": 10000,
+            "percent": 0
+          }
+        },
+        "log": [
+          [
+            true,
+            true,
+            false,
+            1,
+            false
+          ]
+        ]
+      }
+    },
+    {
+      "name": "assistant-nonarray-content",
+      "value": {
+        "sessionFile": "/stats-fixture",
+        "sessionId": "stats-fixture",
+        "userMessages": 0,
+        "assistantMessages": 1,
+        "toolCalls": 0,
+        "toolResults": 0,
+        "totalMessages": 1,
+        "tokens": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "total": 10
+        },
+        "cost": 0.25,
+        "contextUsage": {
+          "tokens": 0,
+          "contextWindow": 10000,
+          "percent": 0
+        }
+      }
+    },
+    {
+      "name": "entry-type-repeated-getters",
+      "value": {
+        "result": {
+          "sessionFile": "/stats-fixture",
+          "sessionId": "stats-fixture",
+          "userMessages": 1,
+          "assistantMessages": 0,
+          "toolCalls": 0,
+          "toolResults": 0,
+          "totalMessages": 1,
+          "tokens": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          },
+          "cost": 0,
+          "contextUsage": {
+            "tokens": 0,
+            "contextWindow": 10000,
+            "percent": 0
+          }
+        },
+        "log": [
+          "type",
+          "type",
+          "type",
+          "type",
+          "type"
+        ]
+      }
+    },
+    {
+      "name": "summary-usage-double-getter",
+      "value": {
+        "result": {
+          "sessionFile": "/stats-fixture",
+          "sessionId": "stats-fixture",
+          "userMessages": 0,
+          "assistantMessages": 0,
+          "toolCalls": 0,
+          "toolResults": 0,
+          "totalMessages": 0,
+          "tokens": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          },
+          "cost": 0.25,
+          "contextUsage": {
+            "tokens": 0,
+            "contextWindow": 10000,
+            "percent": 0
+          }
+        },
+        "reads": 2
+      }
+    },
+    {
+      "name": "context-live-return-identity",
+      "value": {
+        "same": true,
+        "keys": [
+          "sessionFile",
+          "sessionId",
+          "userMessages",
+          "assistantMessages",
+          "toolCalls",
+          "toolResults",
+          "totalMessages",
+          "tokens",
+          "cost",
+          "contextUsage"
+        ],
+        "tokenKeys": [
+          "input",
+          "output",
+          "cacheRead",
+          "cacheWrite",
+          "total"
+        ]
+      }
+    },
+    {
+      "name": "result-getter-order",
+      "value": {
+        "result": {
+          "sessionFile": "/custom",
+          "sessionId": "custom",
+          "userMessages": 0,
+          "assistantMessages": 0,
+          "toolCalls": 0,
+          "toolResults": 0,
+          "totalMessages": 0,
+          "tokens": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          },
+          "cost": 0,
+          "contextUsage": {}
+        },
+        "log": [
+          "file",
+          "id",
+          "context",
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "entries-iterator-close",
+      "value": {
+        "same": true,
+        "log": [
+          "return"
+        ]
+      }
+    },
+    {
+      "name": "usage-getter-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "context-no-model",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "context-zero-window",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "context-null-window",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "context-negative-window",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "context-empty",
+      "value": {
+        "tokens": 0,
+        "contextWindow": 10000,
+        "percent": 0
+      }
+    },
+    {
+      "name": "context-text-estimate",
+      "value": {
+        "tokens": 2,
+        "contextWindow": 10000,
+        "percent": 0.02
+      }
+    },
+    {
+      "name": "context-reported-usage",
+      "value": {
+        "tokens": 100,
+        "contextWindow": 10000,
+        "percent": 1
+      }
+    },
+    {
+      "name": "context-unknown-after-compaction",
+      "value": {
+        "tokens": null,
+        "contextWindow": 10000,
+        "percent": null
+      }
+    },
+    {
+      "name": "context-post-compaction-usage",
+      "value": {
+        "tokens": 100,
+        "contextWindow": 10000,
+        "percent": 1
+      }
+    },
+    {
+      "name": "context-aborted-after-compaction",
+      "value": {
+        "tokens": null,
+        "contextWindow": 10000,
+        "percent": null
+      }
+    },
+    {
+      "name": "context-error-after-compaction",
+      "value": {
+        "tokens": null,
+        "contextWindow": 10000,
+        "percent": null
+      }
+    },
+    {
+      "name": "context-zero-usage-after-compaction",
+      "value": {
+        "tokens": null,
+        "contextWindow": 10000,
+        "percent": null
+      }
+    },
+    {
+      "name": "context-window-coercion",
+      "value": {
+        "tokens": 0,
+        "sameWindow": true,
+        "percent": 0,
+        "log": [
+          "number",
+          "number"
+        ]
+      }
+    },
+    {
+      "name": "context-compaction-double-index-getter",
+      "value": {
+        "result": {
+          "tokens": null,
+          "contextWindow": 10000,
+          "percent": null
+        },
+        "log": [
+          "index",
+          "index",
+          "index"
+        ]
+      }
+    },
+    {
+      "name": "context-live-flatmap-and-some",
+      "value": {
+        "result": {
+          "tokens": 10,
+          "contextWindow": 10000,
+          "percent": 0.1
+        },
+        "log": [
+          [
+            "flatMap",
+            true
+          ],
+          [
+            "some",
+            false,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "context-limit-getter-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "context-projected-usage-getter-identity",
+      "value": {
+        "same": true
+      }
+    }
+  ]
+}

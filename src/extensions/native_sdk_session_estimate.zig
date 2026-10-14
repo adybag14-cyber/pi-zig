@@ -5,6 +5,7 @@ const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const temp = @import("native_sdk_prompt_scope.zig");
 const usage = @import("native_sdk_session_usage.zig");
 const js = @import("native_js_values.zig");
+const arithmetic = @import("native_image_arithmetic.zig");
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 pub fn install(engine: *em.Engine, dependencies: c.JSValue) !void {
@@ -49,28 +50,24 @@ pub fn estimate(engine: *em.Engine, projection: c.JSValue, branch: c.JSValue) !c
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const messages = try scope.get(projection, "messages");
-    var last_usage: ?usize = null;
-    var last_usage_object = c.pi_js_undefined();
-    var cursor = try sdk.length(engine, messages);
-    while (cursor > 0) {
-        cursor -= 1;
-        const message = try at(&scope, messages, cursor);
-        const reported = try assistantUsage(&scope, message);
-        if (scope.truthy(reported)) {
-            last_usage = cursor;
-            last_usage_object = reported;
-            break;
-        }
-    }
+    const info = try lastUsage(&scope, messages);
+    var last_index = if (info) |item| item.index else c.pi_js_null();
     var usage_tokens = c.JS_NewInt32(engine.context, 0);
-    var tokens = c.JS_NewInt32(engine.context, 0);
     var trailing = c.JS_NewInt32(engine.context, 0);
-    // Source calls estimateContextTokens before deciding whether the recorded
-    // usage is trustworthy, including its estimates on the invalidated path.
-    if (last_usage) |index| {
-        usage_tokens = try calculateContextTokens(&scope, last_usage_object);
-        var next = index + 1;
-        while (next < try sdk.length(engine, messages)) : (next += 1) trailing = try scope.concat(trailing, c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, try at(&scope, messages, next))));
+    var tokens = c.JS_NewInt32(engine.context, 0);
+    if (info) |item| {
+        usage_tokens = try calculateContextTokens(&scope, item.report);
+        var cursor = try scope.own(try arithmetic.binary(engine, .add, item.index, c.JS_NewInt32(engine.context, 1)));
+        var steps: usize = 0;
+        while (try arithmetic.compare(engine, .less, cursor, try scope.get(messages, "length"))) {
+            steps +|= 1;
+            try estimateBudget(engine, steps);
+            var iteration: Scope = .{ .engine = engine };
+            defer iteration.deinit();
+            const message = try keyAt(&iteration, messages, cursor);
+            trailing = try scope.concat(trailing, c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, message)));
+            cursor = try scope.own(try engine.checked(c.JS_PiIncrement(engine.context, cursor)));
+        }
         tokens = try scope.concat(usage_tokens, trailing);
     } else {
         const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
@@ -83,77 +80,113 @@ pub fn estimate(engine: *em.Engine, projection: c.JSValue, branch: c.JSValue) !c
         }
         trailing = tokens;
     }
-    var trusted = false;
-    if (last_usage) |usage_index| {
-        var offset: usize = 0;
-        var usage_entry_id = c.pi_js_undefined();
-        const projected = try scope.get(projection, "entries");
+    if (info) |item| {
+        var offset = c.JS_NewInt32(engine.context, 0);
+        var entry_id = c.pi_js_undefined();
+        const entries = try scope.get(projection, "entries");
         const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
-        var iterator = try js.Iterator.init(engine, projected, symbol);
+        var iterator = try js.Iterator.init(engine, entries, symbol);
         defer iterator.deinit();
         errdefer iterator.closePreserving();
-        while (try iterator.next()) |row| {
-            defer engine.freeValue(row);
-            const next = offset + try sdk.length(engine, try scope.get(row, "messages"));
-            if (usage_index < next) {
-                usage_entry_id = try scope.get(try scope.get(row, "sourceEntry"), "id");
+        while (try iterator.next()) |entry| {
+            defer engine.freeValue(entry);
+            var iteration: Scope = .{ .engine = engine };
+            defer iteration.deinit();
+            const next = try scope.concat(offset, try iteration.get(try iteration.get(entry, "messages"), "length"));
+            if (try arithmetic.compare(engine, .less, item.index, next)) {
+                entry_id = try scope.get(try iteration.get(entry, "sourceEntry"), "id");
                 try iterator.close();
                 break;
             }
             offset = next;
         }
-        var usage_entry_index: i64 = -1;
-        if (scope.truthy(usage_entry_id)) {
-            var roots = [_]c.JSValue{usage_entry_id};
+        var usage_index = c.JS_NewInt32(engine.context, -1);
+        if (scope.truthy(entry_id)) {
+            var roots = [_]c.JSValue{entry_id};
             const predicate = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, findUsageEntry, "", 1, 0, roots.len, &roots)));
-            const found = try scope.invoke(branch, "findIndex", &.{predicate});
-            var numeric: i64 = undefined;
-            if (c.JS_ToInt64(engine.context, &numeric, found) < 0) return js.capture(engine);
-            usage_entry_index = numeric;
+            usage_index = try scope.invoke(branch, "findIndex", &.{predicate});
         }
-        var invalidating_index: i64 = -1;
-        cursor = try sdk.length(engine, branch);
-        while (cursor > 0) {
-            cursor -= 1;
-            const typ = try scope.get(try at(&scope, branch, cursor), "type");
-            if (try is(&scope, typ, "context_edit") or try is(&scope, typ, "compaction")) {
-                invalidating_index = @intCast(cursor);
+        var invalidating = c.JS_NewInt32(engine.context, -1);
+        var cursor = try scope.own(try arithmetic.binary(engine, .subtract, try scope.get(branch, "length"), c.JS_NewInt32(engine.context, 1)));
+        var steps: usize = 0;
+        while (try arithmetic.compare(engine, .greater_equal, cursor, c.JS_NewInt32(engine.context, 0))) {
+            steps +|= 1;
+            try estimateBudget(engine, steps);
+            var iteration: Scope = .{ .engine = engine };
+            defer iteration.deinit();
+            const entry = try keyAt(&iteration, branch, cursor);
+            if (try is(&iteration, try iteration.get(entry, "type"), "context_edit") or try is(&iteration, try iteration.get(entry, "type"), "compaction")) {
+                invalidating = cursor;
                 break;
             }
+            cursor = try scope.own(try arithmetic.binary(engine, .subtract, cursor, c.JS_NewInt32(engine.context, 1)));
         }
-        trusted = usage_entry_index > invalidating_index;
+        if (try arithmetic.compare(engine, .greater, usage_index, invalidating)) return estimateResult(&scope, tokens, usage_tokens, trailing, last_index);
     }
-    if (!trusted) {
-        const projected_messages = try scope.get(projection, "messages");
-        const system = try scope.own(try @import("native_sdk_transcript_replay.zig").currentSystemMessage(engine, projected_messages));
-        tokens = if (scope.truthy(system)) c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, system)) else c.JS_NewInt32(engine.context, 0);
-        const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
-        var iterator = try js.Iterator.init(engine, try scope.get(projection, "messages"), symbol);
-        defer iterator.deinit();
-        errdefer iterator.closePreserving();
-        while (try iterator.next()) |message| {
-            defer engine.freeValue(message);
-            if (!try is(&scope, try scope.get(message, "role"), "system")) tokens = try scope.concat(tokens, c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, message)));
-        }
-        usage_tokens = c.JS_NewInt32(engine.context, 0);
-        trailing = tokens;
-        last_usage = null;
+    const projected_messages = try scope.get(projection, "messages");
+    const system = try scope.own(try @import("native_sdk_transcript_replay.zig").currentSystemMessage(engine, projected_messages));
+    tokens = if (scope.truthy(system)) c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, system)) else c.JS_NewInt32(engine.context, 0);
+    const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
+    var iterator = try js.Iterator.init(engine, try scope.get(projection, "messages"), symbol);
+    defer iterator.deinit();
+    errdefer iterator.closePreserving();
+    while (try iterator.next()) |message| {
+        defer engine.freeValue(message);
+        var iteration: Scope = .{ .engine = engine };
+        defer iteration.deinit();
+        if (!try is(&iteration, try iteration.get(message, "role"), "system")) tokens = try scope.concat(tokens, c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, message)));
     }
+    last_index = c.pi_js_null();
+    return estimateResult(&scope, tokens, c.JS_NewInt32(engine.context, 0), tokens, last_index);
+}
+const LastUsage = struct { index: c.JSValue, report: c.JSValue };
+fn lastUsage(scope: *Scope, messages: c.JSValue) !?LastUsage {
+    const engine = scope.engine;
+    var cursor = try scope.own(try arithmetic.binary(engine, .subtract, try scope.get(messages, "length"), c.JS_NewInt32(engine.context, 1)));
+    var steps: usize = 0;
+    while (try arithmetic.compare(engine, .greater_equal, cursor, c.JS_NewInt32(engine.context, 0))) {
+        steps +|= 1;
+        try estimateBudget(engine, steps);
+        var iteration: Scope = .{ .engine = engine };
+        defer iteration.deinit();
+        const message = try keyAt(&iteration, messages, cursor);
+        const report = try assistantUsage(&iteration, message);
+        if (iteration.truthy(report)) return .{ .index = cursor, .report = try scope.own(c.JS_DupValue(engine.context, report)) };
+        cursor = try scope.own(try arithmetic.binary(engine, .subtract, cursor, c.JS_NewInt32(engine.context, 1)));
+    }
+    return null;
+}
+fn keyAt(scope: *Scope, array: c.JSValue, index: c.JSValue) !c.JSValue {
+    return scope.own(try js.getKey(scope.engine, array, index));
+}
+fn estimateResult(scope: *Scope, tokens: c.JSValue, reported: c.JSValue, trailing: c.JSValue, index: c.JSValue) !c.JSValue {
     const result = try scope.object();
     try scope.put(result, "tokens", tokens);
-    try scope.put(result, "usageTokens", usage_tokens);
+    try scope.put(result, "usageTokens", reported);
     try scope.put(result, "trailingTokens", trailing);
-    try scope.put(result, "lastUsageIndex", if (last_usage) |index| c.JS_NewUint32(engine.context, @intCast(index)) else c.pi_js_null());
-    return c.JS_DupValue(engine.context, result);
+    try scope.put(result, "lastUsageIndex", index);
+    return c.JS_DupValue(scope.engine.context, result);
 }
+fn estimateBudget(engine: *em.Engine, steps: usize) !void {
+    if (engine.cancelled.load(.acquire) or (steps % 256 == 0 and block: {
+        engine.interrupts +|= 1;
+        break :block engine.interrupts > engine.options.interrupt_budget;
+    })) {
+        _ = try engine.checked(c.JS_ThrowInternalError(engine.context, "interrupted"));
+        unreachable;
+    }
+}
+
 fn findUsageEntry(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const entry = if (argc > 0) args[0] else c.pi_js_undefined();
     const id = sdk.get(engine, entry, "id") catch |err| return sdk.fail(engine, err);
     defer engine.freeValue(id);
     return c.pi_js_bool(engine.context, @intFromBool(c.JS_IsStrictEqual(engine.context, id, roots[0])));
 }
-fn calculateContextTokens(scope: *Scope, report: c.JSValue) !c.JSValue {
+pub fn calculateContextTokens(scope: *Scope, report: c.JSValue) !c.JSValue {
     const total = try scope.get(report, "totalTokens");
     if (scope.truthy(total)) return total;
     var sum = try scope.concat(try scope.get(report, "input"), try scope.get(report, "output"));
