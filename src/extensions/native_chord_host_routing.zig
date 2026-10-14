@@ -154,7 +154,7 @@ fn bindValue(engine: *h.Engine, handle: c.JSValue, value: c.JSValue, mode: c_int
     defer s.deinit();
     if (mode == 2) {
         _ = try h.invoke(&s, handle, "gone", &.{value});
-    } else if (try s.equal(try s.get(handle, "status"), "loading") and c.JS_IsUndefined(try s.get(handle, "binding"))) _ = try h.invoke(&s, value, "hold", &.{handle});
+    } else if (!try h.flag(&s, handle, "ended") and c.JS_IsUndefined(try s.get(handle, "hold"))) _ = try h.invoke(&s, value, "hold", &.{ handle, c.pi_js_bool(engine.context, 0) });
     return c.pi_js_undefined();
 }
 fn bindWhenSynced(s: *Scope, handle: c.JSValue, pending: c.JSValue) !void {
@@ -164,27 +164,40 @@ fn bindWhenSynced(s: *Scope, handle: c.JSValue, pending: c.JSValue) !void {
     _ = try h.invoke(s, pending, "then", &.{ fulfilled, rejected });
 }
 pub fn acquireRemote(s: *Scope, bindings: c.JSValue, host: c.JSValue, token: c.JSValue, at: c.JSValue, input: c.JSValue, options: c.JSValue, owner: c.JSValue) !c.JSValue {
-    if (!try s.equal(try s.get(token, "scope"), "remote")) return h.invalid(s, bindings, "local", &.{ try s.get(token, "name"), try s.text(" is local and cannot be reached at "), at });
-    const principal = if (c.JS_IsUndefined(try s.get(options, "principal")) or c.JS_IsStrictEqual(s.engine.context, try s.get(options, "principal"), try s.get(host, "principal"))) c.pi_js_undefined() else try s.get(options, "principal");
-    const fields = try s.record();
-    inline for (.{ "contract", "at", "input", "principal", "owner" }, .{ token, at, input, principal, owner }) |name, value| try h.field(s, fields, name, value);
-    try h.field(s, fields, "address", try remoteAddress(s, at, token, input, principal));
-    const handle = try h.construct(s, bindings, "RemoteRef", &.{ host, fields });
-    _ = try h.invoke(s, try s.get(host, "remotes"), "add", &.{handle});
+    const first_principal = if (h.nullish(options)) c.pi_js_undefined() else try s.get(options, "principal");
+    const principal = if (c.JS_IsUndefined(first_principal) or c.JS_ToBool(s.engine.context, try h.invoke(s, host, "isSelf", &.{try s.get(options, "principal")})) != 0) c.pi_js_undefined() else try s.get(options, "principal");
+    const key = try @import("native_chord_host_placement_v4.zig").remoteKey(s, bindings, host, token, input, if (h.nullish(principal)) try s.get(host, "principal") else principal);
+    const map = try s.get(host, "bindings");
+    var binding = try h.invoke(s, map, "get", &.{key});
+    const fresh = c.JS_IsUndefined(binding) or try h.flag(s, binding, "ended");
+    if (c.JS_IsUndefined(binding) or try h.flag(s, binding, "ended")) {
+        const fields = try s.record();
+        inline for (.{ "key", "contract", "at", "input", "principal" }, .{ key, token, at, input, principal }) |name, value| try h.field(s, fields, name, value);
+        binding = try h.construct(s, bindings, "RemoteBinding", &.{ host, fields });
+        _ = try h.invoke(s, map, "set", &.{ key, binding });
+    }
+    const state = if (h.nullish(options)) c.pi_js_undefined() else try s.get(options, "state");
+    const ref = try h.construct(s, bindings, "RemoteRef", &.{ binding, owner, c.pi_js_bool(s.engine.context, @intFromBool(!c.JS_IsStrictEqual(s.engine.context, state, c.pi_js_bool(s.engine.context, 0)))) });
+    const data = (try h.actor(s, host, bindings, .HostImpl)).data;
+    _ = try h.invoke(s, try s.get(data, "lingering"), "delete", &.{key});
+    _ = try h.invoke(s, binding, "addView", &.{ref});
+    if (fresh) try holdBinding(s, bindings, host, binding, at, principal);
+    return ref;
+}
+fn holdBinding(s: *Scope, bindings: c.JSValue, host: c.JSValue, binding: c.JSValue, at: c.JSValue, principal: c.JSValue) !void {
     const direct = try childNamed(s, host, at);
     if (!c.JS_IsUndefined(try s.get(host, "upstream"))) {
-        _ = try h.invoke(s, try s.get(host, "upstream"), "hold", &.{handle});
+        _ = try h.invoke(s, try s.get(host, "upstream"), "hold", &.{ binding, c.pi_js_bool(s.engine.context, 0) });
     } else if (!c.JS_IsUndefined(direct)) {
         const synchronization = try h.invoke(s, direct, "whenSynced", &.{});
         var captures = [_]c.JSValue{direct};
         const target = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, bindResult, "", 0, 0, 1, &captures)));
-        try bindWhenSynced(s, handle, try h.invoke(s, synchronization, "then", &.{target}));
+        try bindWhenSynced(s, binding, try h.invoke(s, synchronization, "then", &.{target}));
     } else {
         const data = (try h.actor(s, host, bindings, .HostImpl)).data;
         const route = try routeFor(s, data, at);
         if (c.JS_IsUndefined(route)) {
-            _ = try h.invoke(s, handle, "gone", &.{try h.errorValue(s, bindings, "unavailable", &.{ try s.text("no route to "), at }, c.pi_js_undefined())});
-        } else try bindWhenSynced(s, handle, try s.keep(try resolve(s.engine, bindings, host, route, at, if (h.nullish(principal)) try s.get(host, "principal") else principal, c.pi_js_undefined())));
+            _ = try h.invoke(s, binding, "gone", &.{try h.errorValue(s, bindings, "unavailable", &.{ try s.text("no route to "), at }, c.pi_js_undefined())});
+        } else try bindWhenSynced(s, binding, try s.keep(try resolve(s.engine, bindings, host, route, at, if (h.nullish(principal)) try s.get(host, "principal") else principal, c.pi_js_undefined())));
     }
-    return handle;
 }

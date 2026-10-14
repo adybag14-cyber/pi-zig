@@ -40,6 +40,11 @@ implementation body or missing-method fallback is introduced.
   retained values through reconnect, terminal and linger cleanup, and calls
   waiting for a live hold. Its channel return uses actual async-return promise
   adoption. Its installer is not yet called by the factory.
+- RemoteRef now has its own owner, status, ready settlement, proxy, method
+  callers, and release boundary over a shared binding. ViewReadable owns
+  listeners and unseen snapshots while reading the binding's member values.
+  Consumer Host bindingIdle/forgetBinding implement timeout and capped LRU
+  ownership. Routing creates/reuses bindings by key and adds independent views.
 
 ## Qualification boundary and remaining integration
 
@@ -49,15 +54,18 @@ for this full graph branch. No native lane is requested for this incomplete
 assembly. The existing private factory still imports protocol2 and historical
 cells/contracts: it must not be used to claim protocol4 runtime parity.
 
-The next coherent integration includes RemoteRef/ViewReadable around the new
-shared RemoteBinding, provider/relay protocol4 state units and flow
+The next coherent integration includes provider/relay protocol4 state units and flow
 control, connection authorization/route principals, consumer linger ownership,
-and reload prepare hydration/init ordering. The remote routing function has
-only received its explicit resolved destination argument; it still constructs
-the old per-view RemoteRef and must be replaced with shared binding ownership.
+and reload prepare hydration/init ordering. The remote routing function now
+constructs shared bindings and independent views; the existing protocol2
+channel cannot yet carry these protocol4 holds and must be replaced before
+factory assembly.
 Remaining observable getter/callback/error order must be audited against the
 actual Source, including rollback-finally behavior under overridden public
 methods, reentrant publication, and pending reference aborts.
+In particular, audit live pending-map iteration across view callbacks and the
+precise safe-callback boundary around observable member value getters. Source
+fixtures must establish these behaviors before runtime qualification.
 
 The next Source fixtures must invoke the actual b45 factories and full object
 graph, with the existing official resolver and full1965/31064/1774 closure
