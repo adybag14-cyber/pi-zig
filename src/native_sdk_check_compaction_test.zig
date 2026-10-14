@@ -63,3 +63,33 @@ test "native check compaction actual async method descriptor" {
     , "check-compaction-descriptor.mjs");
     engine.freeValue(evaluated);
 }
+
+test "native check compaction pending recovery retains message and session through GC and retires both" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    errdefer std.debug.print("Pending compaction GC failure: {s}\n", .{engine.last_error orelse "none"});
+    try setup(engine);
+    const prepared = try engine.evalModule(
+        \\globalThis.checkGcMessage={role:'assistant',stopReason:'error',errorMessage:'maximum context length exceeded',timestamp:10,usage:{input:0,output:0,cacheRead:0,cacheWrite:0,totalTokens:0}};
+        \\globalThis.checkGcSession={model:{contextWindow:100,maxTokens:50},agent:{state:{messages:[]}},settingsManager:{getCompactionSettings(){return{enabled:true,reserveTokens:20};}},sessionManager:{getBranch(){return[];},buildSessionProjection(){return{entries:[],messages:[]};}},_modelForMessage(){return this.model;},_findPersistedMessageEntryId(){return undefined;},_omitRecoveryAttempt(){if(!this._overflowRecoveryAttempted)throw Error('recovery omission order');},_runAutoCompaction(reason,retry){if(reason!=='overflow'||retry!==true)throw Error('recovery arguments');return new Promise(resolve=>{globalThis.checkGcRelease=resolve;});}};
+        \\globalThis.checkGcSessionWeak=new WeakRef(checkGcSession);globalThis.checkGcMessageWeak=new WeakRef(checkGcMessage);globalThis.checkGcPending=checkCompactionB06.call(checkGcSession,checkGcMessage);delete globalThis.checkGcSession;delete globalThis.checkGcMessage;export const ready=true;
+    , "check-compaction-gc-prepare.mjs");
+    engine.freeValue(prepared);
+    engine.finishJob();
+    c.JS_RunGC(engine.runtime);
+    const retained = try engine.eval("checkGcSessionWeak.deref()!==undefined&&checkGcMessageWeak.deref()!==undefined&&typeof checkGcRelease==='function'", "check-compaction-gc-retained.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(retained);
+    try std.testing.expect(c.JS_ToBool(engine.context, retained) == 1);
+    engine.finishJob();
+    const completed = try engine.evalModule(
+        // Hold caller references while inspecting the settled postcondition;
+        // the asynchronous invocation may retire its own roots on completion.
+        \\globalThis.checkGcAssertionSession=checkGcSessionWeak.deref();globalThis.checkGcAssertionMessage=checkGcMessageWeak.deref();if(!checkGcAssertionSession||!checkGcAssertionMessage)throw Error('pending recovery roots lost');checkGcRelease(true);if((await checkGcPending)!==true||checkGcAssertionSession._failedResponse!==checkGcAssertionMessage)throw Error('pending recovery message lost');delete globalThis.checkGcAssertionSession;delete globalThis.checkGcAssertionMessage;delete globalThis.checkGcPending;delete globalThis.checkGcRelease;export const done=true;
+    , "check-compaction-gc-complete.mjs");
+    engine.freeValue(completed);
+    engine.finishJob();
+    c.JS_RunGC(engine.runtime);
+    const collected = try engine.eval("checkGcSessionWeak.deref()===undefined&&checkGcMessageWeak.deref()===undefined", "check-compaction-gc-collected.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(collected);
+    try std.testing.expect(c.JS_ToBool(engine.context, collected) == 1);
+}
