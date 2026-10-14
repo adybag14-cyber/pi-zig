@@ -7,9 +7,7 @@ const Method = enum(c_int) { start, run, open, unwind, currentInstalled, refresh
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = h.Engine.fromContext(context.?);
     const method: Method = @enumFromInt(operation);
-    const generation = engine.native_allocation_generation;
     const result = invoke(engine, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, method, data[0]) catch |err| {
-        if (@import("native_chord_native_failure.zig").escape(engine, err, generation)) |escaped| return escaped;
         return if (method == .open or method == .unwind or method == .call) @import("native_durable.zig").rejectedPromise(engine, err) else @import("native_durable.zig").reject(engine, err);
     };
     if (method == .open or method == .unwind or method == .call) {

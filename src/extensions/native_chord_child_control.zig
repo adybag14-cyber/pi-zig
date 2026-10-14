@@ -77,9 +77,7 @@ pub fn API(comptime process_lock: ProcessLock) type {
                     try js.spreadInto(engine, status, value);
                     try send(&s, state, status);
                 },
-                .on_shutdown => {
-                    _ = try h.invoke(&s, try s.get(state, "shutdown"), "add", &.{value});
-                },
+                .on_shutdown => return js.invoke(engine, try s.get(state, "shutdown"), "add", &.{value}),
                 .lock => {
                     const process = try s.keep(try js.global(engine, "process"));
                     const name = try s.get(try s.get(process, "env"), "CHORD2_LOCK");

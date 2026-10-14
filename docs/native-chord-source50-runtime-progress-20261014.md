@@ -1,0 +1,22 @@
+The latest authority is upstream commit 1692bba6347a287ab0f3cb554a4430fafffc474b. Historical e622 component qualifications remain historical. This private graph has no public package activation or complete Pi qualification.
+
+The original caller inventory is now 50 cases: actual Host/Object/Ref/Ctx/reload/link/protocol factories (27), actual NodeLoader (7), actual generic manager/child control (9), actual kernel processLock (3), and actual cross-host reload coordinator/child reconciliation (4). Every new oracle ran against unchanged original Source factories. Loader, manager, kernel-lock, and cluster captures each matched a second capture byte for byte, with the complete 34,793-file original Source/dependency/Node closure unchanged. The loader also froze all six actual guest module files before and after capture. JS and TypeScript files in these fixtures are guest inputs, not implementations.
+
+The normal 16 GiB local compile-only run at private head 426af22045eeb03dfa8abd5e4577cdf13dcb154d compiled all four target executables successfully in Debug. All 5,211 working source/vendor inputs, 1,955 pinned original Source inputs, and 19,546 pinned Zig distribution inputs remained unchanged, including their inventories. The exact owned Zig root PID 52696 exited. Runtime did not execute in that compile job. Zig reported a 1 GiB MaxRSS for each test compiler invocation; the one-second descendant working-set samples reached 1,040,064,512 bytes. Those samples are lower bounds, not a calibrated compiler memory budget.
+
+The separately authorized runtime batch used the identical frozen inputs, one target at a time, each with outer 300 seconds, test 120 seconds, host await 10 seconds, default LLVM, and -j1. All four complete post-hash checks remained unchanged and all exact owned root PIDs exited.
+
+| Target | Exact compiled inventory | Terminal result at 426af22 |
+| --- | --- | --- |
+| Original Source27 core, GC, private native-error controls, two full allocator sweeps | 10 | 8 passed; the two allocator sweeps failed with JavaScriptPromiseUnsettled at indices 1155 and 1178 |
+| Original NodeLoader7 with real filesystem imports, generation queries, guest TypeScript and GC teardown | 3 | All passed |
+| Original manager/control9 and real kernel-lock3 | 4 | 3 passed; one child-control return-value mismatch |
+| Original cross-host cluster4 with retained roots, failed votes, removal/readdition and late hello reconciliation | 3 | All passed |
+
+The private continuation failure helper escapes only native error.OutOfMemory or an exception classified by the existing exact fresh-tag/generation rule. It never classifies names, message text, guest fields, predicates, or earlier rethrows. The extra control gate passed for a fresh asynchronous escape, stale native errors, user replacements, and lookalikes. The unsettled allocator failures showed that applying the escape at synchronous Host/Object entry points can prevent an enclosing QuickJS async module from settling. The current correction keeps the escape at pending-job continuations and restores ordinary synchronous throw/rejection behavior. It still requires a new exact-head native runtime check.
+
+The manager mismatch was an implementation error: the original childControl.onShutdown arrow returns shutdown.add(handler), even though its TypeScript signature declares void. The native implementation now restores that actual Set return. The original oracle is unchanged.
+
+The kernel lock uses a real first-instance Windows named pipe, an abstract Unix socket on Linux/Android, and a protected filesystem socket on BSD/macOS. The native engine retains the owner until explicit release or shutdown. Only the Windows runtime has executed locally at this point; the six-platform hosted diagnostic is separate evidence. A true native forkDriver backend, child IPC/event pumping, descendant lifetime handling, and full auxiliary allocation-failure coverage remain open. An unimported native IPC byte transport is in progress and is not included in any runtime claim.
+
+Local evidence is retained under C:/Users/adyba/pi-zig-update-evidence-20261003 with prefixes chord-latest-source50-debug-compile-first-20261014 and chord-latest-source50-debug-runtime-first-20261014. The private six-platform candidate runs use the same source-bound inventory and original guards. A failed, pending, cancelled, or running hosted job is not a qualification.

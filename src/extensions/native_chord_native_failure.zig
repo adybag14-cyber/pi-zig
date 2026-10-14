@@ -1,5 +1,7 @@
 //! Escape only a genuine fresh native allocator failure from private Chord continuations.
 //! Ordinary guest errors and earlier native errors retain their Source catch/rejection behavior.
+//! Use only at pending-job continuation boundaries. Synchronous methods keep
+//! normal throw/rejection behavior so an enclosing async module can settle.
 const em = @import("engine.zig");
 const c = em.c;
 pub fn escape(engine: *em.Engine, err: anyerror, generation: u64) ?c.JSValue {
