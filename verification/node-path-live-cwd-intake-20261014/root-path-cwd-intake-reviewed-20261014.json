@@ -1,0 +1,46 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "files": [
+    {
+      "sha256": "377B41F044812F61066B61D0A70723A90019E1F41FD2617DF4DC252BBCBC02B5",
+      "git_blob": "c57090b4444910155adcc1efe500ba27b160c2a8",
+      "path": "src/extensions/node_path.zig"
+    },
+    {
+      "sha256": "F1504B31515ACF48BB623E61DAAA83BD809BBF0B87FE244E0952FF90EF12FB76",
+      "git_blob": "e0bf98579a7a8c1676fadc8eed06d4699d381af4",
+      "path": "src/extensions/native_sdk_source_paths.zig"
+    },
+    {
+      "sha256": "46D15275D3C55F34F037C14C73007841EDCE94EFB784861A6C534D93677A532C",
+      "git_blob": "b786a8a90b964167145cfd9dbcd687559dd2baca",
+      "path": "src/native_sdk_source_paths_test.zig"
+    },
+    {
+      "sha256": "A8C7F1080C4FAC186F5939A788503DFC5981212CD87310A358645684B98D85AF",
+      "git_blob": "0e568f10325b485a862de0842fc8ffccfc6387ee",
+      "path": "src/extensions/fixtures/sdk-path-cwd-1692.input.txt"
+    },
+    {
+      "sha256": "0FDB888F62B21E7C5A59AD320888516617DA03D4B7D4AE9CFD85790FED3AFA69",
+      "git_blob": "3de445c8955bfd030d6fb5e47c9933a1fe09f02f",
+      "path": "src/extensions/fixtures/sdk-path-cwd-1692-win32.json"
+    },
+    {
+      "sha256": "89A11B770F78CA63884AAD3E507F5D0479ED0FAB07355CBB171B768534052D3B",
+      "git_blob": "19202d7f286b0c03d5753b4aac57984b66647b62",
+      "path": "src/extensions/fixtures/sdk-path-cwd-1692-linux.json"
+    },
+    {
+      "sha256": "89A11B770F78CA63884AAD3E507F5D0479ED0FAB07355CBB171B768534052D3B",
+      "git_blob": "19202d7f286b0c03d5753b4aac57984b66647b62",
+      "path": "src/extensions/fixtures/sdk-path-cwd-1692-darwin.json"
+    }
+  ],
+  "public_activation": false,
+  "qualified_head": "ac0d6be16993a7097cde6df6117f21b5c7ea9d0e",
+  "qualified_run": 38590027673,
+  "scope": "Exact qualified node_path plus Source40 comparator; Root native_process runtime version exposure retained",
+  "root_regression": "Pending",
+  "proof_head": "ad441d6e4cd53c09c197c424b928a58aee2b68be"
+}

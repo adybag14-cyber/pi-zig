@@ -34,7 +34,7 @@ c8a2b37d0a69a04e1eef7482196142ec91c1ee8c34a6245808804c0c837ae384  .github/workfl
 fd4eb8c8d7b7b4c4bdae0a2f9b21c4d033cb66a65625d52142bc45a5752e21d4  .github/workflows/sdk-stdio-composition-diagnostics.yml
 50411e85d9ebf376c5dfe10ddb02d09bbbc26e9e92b026668dbe5d79df72dfb0  .github/workflows/upstream-contract.yml
 d88eb16a7c09168aa173028415d8e109a059e2909547a48beec5993bae1ca146  .gitignore
-5c1265942d2ab90490b331aed89236f3f7cc7a78d5f2a82c8d3936e8dbe490e7  ARTIFACT-MANIFEST.json
+621330d39c34a6005b8d4b3f8aa6685c6cbd844c8faeff1296967577cd28584e  ARTIFACT-MANIFEST.json
 478f6df9f7f13d5a42b5125eace556fb1542f2e1029d817d621e92ac8b10de34  AUTH-DIALOG-E2E-179.txt
 f3b5cc37e6c5a20ec48fca038935eeb2b794d80b54cedfc2a24fb31571b3ee64  AUTH-E2E-177.txt
 29ff7df8799c72fa04856ab9e4d6f7f5e4af8b91610cb99924b854e46adfed75  AUTH-FLOW-E2E-178.txt
@@ -4613,6 +4613,18 @@ b3d0e83bd0acc3b0cdaa8b5e9bc08f629801248e0000d8c3f9cf27e9679538ef  verification/n
 43cbd2171928e24b2a205ce3503fbd0ed656e89be9a642d082ba6b2a6bcfd8a6  verification/native-vm-arithmetic-20261014/root-vm-arithmetic-runtime-debug-first-20261014.json
 0a340bc945ebd466ee3512f4559361c91434dc6b7fad2f4c441e8670fa80d4be  verification/native-vm-arithmetic-20261014/root-vm-arithmetic-runtime-debug-first-20261014.stderr.log
 550d812fc9ecb05c05042722edc0449221c7636a19e9144937f8bfd6d72f32e8  verification/native-worker-wheel-output-20261012.json
+a287f6b1bcd66a003839a6f686a32d488214f5a7ca800728d04fca4ee0c141a6  verification/node-path-live-cwd-intake-20261014/qualification.json
+92fabad662df5b3a901fc13220e92aaea71be9d7f267f41adbfb11cb4f85b687  verification/node-path-live-cwd-intake-20261014/qualified-upstream-six-profile-path40.json
+422c36332fa7fdaf67ed97a72f3e6dfce62dcc4a8e986d1b9eb3bdec7a95bbc9  verification/node-path-live-cwd-intake-20261014/root-path-cwd-intake-compile-debug-first-20261014-admission.json
+4c31fa00789de31b4e2fbad37cc5d4a875d97e5325fffe10ed8d2ae5093de388  verification/node-path-live-cwd-intake-20261014/root-path-cwd-intake-compile-debug-first-20261014-posthash.json
+c4ab080b6d2827dc1a7e5272c9bbd35c648cafa1a77c674af97e29831f9c0901  verification/node-path-live-cwd-intake-20261014/root-path-cwd-intake-compile-debug-first-20261014-source-before.json
+5c5cee1e9c45f2410c7a12dc1e2085f7812d94bc50bcc775249fbd86cc4a236f  verification/node-path-live-cwd-intake-20261014/root-path-cwd-intake-compile-debug-first-20261014.json
+6251e861e3b58d3b9bb91c624e1bd7092c919d5b6f733679f49b245e30066894  verification/node-path-live-cwd-intake-20261014/root-path-cwd-intake-compile-debug-first-20261014.stderr.log
+f3a31fd1ba8bf4635f43b840d74af57715e8663716ef4c5a87d8ff8151d4e254  verification/node-path-live-cwd-intake-20261014/root-path-cwd-intake-reviewed-20261014.json
+4626bd24a2ae11989483fd355bab365422a839047196b458a437457e9931aecc  verification/node-path-live-cwd-intake-20261014/root-path-cwd-intake-runtime-debug-first-20261014-admission.json
+872377ea855e1283fbffac5d724852133705a91fdb906968a624676b5a5973c4  verification/node-path-live-cwd-intake-20261014/root-path-cwd-intake-runtime-debug-first-20261014-posthash.json
+f4267296c1d93e734e5bc9d59d96b8ae21ae385ac43838ff627c046a91830868  verification/node-path-live-cwd-intake-20261014/root-path-cwd-intake-runtime-debug-first-20261014.json
+9f23684748a134ef410b0dca4e21ccbbc322fa3ff852e808f49117432a211e8f  verification/node-path-live-cwd-intake-20261014/root-path-cwd-intake-runtime-debug-first-20261014.stderr.log
 e2d98842de1eca6e77f5b89d6d6d8c6cf17a7b3fb2ba35252cd1dfb6718aa07b  verification/sdk-block-images-19cb534-20261013/qualification.json
 eff47d2746ed57e5f5c056c94f7a0422d6cb187e062a04f5c4b506a94f24d724  verification/sdk-block-images-19cb534-20261013/root-sdk-block-images-native-debug-first-20261013-posthash.json
 a13f784772e52f4a7bed256ce2397614379bc8aac931e549c0fe47b7794d4d9f  verification/sdk-block-images-19cb534-20261013/root-sdk-block-images-native-debug-first-20261013.json
