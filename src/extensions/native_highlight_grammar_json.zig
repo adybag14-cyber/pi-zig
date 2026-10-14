@@ -3,7 +3,7 @@
 //! No native/scanner/public qualification until the actual grammar differential.
 const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const ordinary = @import("native_legacy_function.zig");
 const c = em.c;
 

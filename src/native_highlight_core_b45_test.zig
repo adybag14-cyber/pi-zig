@@ -3,7 +3,7 @@ const std = @import("std");
 const em = @import("extensions/engine.zig");
 const Scope = @import("extensions/native_sdk_prompt_scope.zig").Scope;
 const c = em.c;
-fn exercise(gpa: std.mem.Allocator) !void {
+pub fn exercise(gpa: std.mem.Allocator) !void {
     const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     const generation = engine.native_allocation_generation;

@@ -1,6 +1,6 @@
 //! Complete Source highlight.js10.7.3 Ruby factory; source-only draft.
 const em = @import("engine.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const ordinary = @import("native_legacy_function.zig");
 const c = em.c;
 const method_re = "([a-zA-Z_]\\w*[!?=]?|[-+~]@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\]=?)";

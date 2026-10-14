@@ -2,7 +2,7 @@
 //! Includes actual private concat/lookahead callback dispatch; differential pending.
 const std = @import("std");
 const em = @import("engine.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const ordinary = @import("native_legacy_function.zig");
 const c = em.c;
 const digit = "[0-9](_?[0-9])*";

@@ -2,7 +2,7 @@
 //! Source-only; cyclic-user-graph behavior follows Source, native interrupts bound work.
 const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const legacy = @import("native_legacy_function.zig");
 const c = em.c;
 fn sourceError(engine: *em.Engine, message: []const u8) !c.JSValue {

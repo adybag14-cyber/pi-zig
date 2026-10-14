@@ -3,7 +3,7 @@
 const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
 const ordinary = @import("native_node_function.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const regex = @import("native_highlight_regex.zig");
 const c = em.c;
 const Kind = enum(i32) { comment, shebang, shebang_begin, same, same_begin, same_end };

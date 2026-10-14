@@ -5,7 +5,7 @@ const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const extensions = @import("native_highlight_compiler_extensions.zig");
 const regex = @import("native_highlight_regex.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const c = em.c;
 const Callback = enum(c_int) { compile, dependency, expand, variant, contains, child, begin_rule };
 

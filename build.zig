@@ -1471,6 +1471,16 @@ pub fn build(b: *std.Build) void {
     highlight_legacy32_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-highlight-legacy-function32", "Compile genuine Original32 broader legacy diagnostic; expected negative before source repairs").dependOn(&highlight_legacy32_tests.step);
     b.step("test-native-highlight-legacy-function32", "Compare actual poison identity descriptor flags constructor frame ordering and active redefinition without weakening acceptance").dependOn(&b.addRunArtifact(highlight_legacy32_tests).step);
+    const highlight_scope_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_scope_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native highlight inline roots"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_scope_tests.root_module, quickjs, sqlite_lib_dir);
+    highlight_scope_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-scope", "Compile highlighter-local inline32 root lifetime spill failure and deep grammar ownership regressions").dependOn(&highlight_scope_tests.step);
+    b.step("test-native-highlight-scope", "Check actual WeakRef32/33 lifetime first spill OOM cleanup and128 nested grammar stack recovery").dependOn(&b.addRunArtifact(highlight_scope_tests).step);
+    const highlight_profile_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_core_profile_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native highlight inline profile"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_profile_tests.root_module, quickjs, sqlite_lib_dir);
+    highlight_profile_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-core-profile", "Compile unchanged actual74 allocation measurement separately from exhaustive GPA qualification").dependOn(&highlight_profile_tests.step);
+    b.step("test-native-highlight-core-profile", "Measure full unchanged actual74 baseline and ownership after local inline-root optimization; not exhaustive GPA").dependOn(&b.addRunArtifact(highlight_profile_tests).step);
     const highlight_core_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_core_b45_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native full eager21 highlight core"}, .use_llvm = use_llvm });
     linkQuickJs(b, highlight_core_tests.root_module, quickjs, sqlite_lib_dir);
     highlight_core_tests.root_module.addImport("catalog_tool", catalog_tool);

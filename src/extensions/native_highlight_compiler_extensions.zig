@@ -4,7 +4,7 @@ const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
 const ordinary = @import("native_node_function.zig");
 const regex = @import("native_highlight_regex.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const c = em.c;
 pub const Kind = enum { match, begin_keywords, illegal, relevance };
 

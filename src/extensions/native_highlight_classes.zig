@@ -4,7 +4,7 @@ const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const class = @import("native_class.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const c = em.c;
 const Kind = enum(c_int) { response_ignore, top, root, add, open, close, close_all, json, walk, walk_static, collapse, walk_child, collapse_child, is_string, keyword, text, sublanguage, html, finalize, html_text, html_open, html_close, html_value, html_span };
 fn arg(args: []const c.JSValue, index: usize) c.JSValue {

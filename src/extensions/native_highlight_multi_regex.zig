@@ -4,7 +4,7 @@ const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const regex = @import("native_highlight_regex.zig");
 const classes = @import("native_class.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const c = em.c;
 
 pub const MultiRegex = struct {

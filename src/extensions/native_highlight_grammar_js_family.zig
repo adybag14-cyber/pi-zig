@@ -1,7 +1,7 @@
 //! Complete Source JavaScript/TypeScript factory bodies; source-only draft.
 const std = @import("std");
 const em = @import("engine.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const ordinary = @import("native_legacy_function.zig");
 const c = em.c;
 const ident = "[A-Za-z$_][0-9A-Za-z$_]*";

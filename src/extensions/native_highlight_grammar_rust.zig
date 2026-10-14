@@ -1,6 +1,6 @@
 //! Complete Source highlight.js10.7.3 Rust factory body; private source-only.
 const em = @import("engine.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const ordinary = @import("native_legacy_function.zig");
 const c = em.c;
 const keywords = "abstract as async await become box break const continue crate do dyn else enum extern false final fn for if impl in let loop macro match mod move mut override priv pub ref return self Self static struct super trait true try type typeof unsafe unsized use virtual where while yield";

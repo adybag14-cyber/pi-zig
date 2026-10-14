@@ -2,7 +2,7 @@
 //! Private only. The separate lazy191-language loader is not claimed or stubbed.
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const ordinary = @import("native_node_function.zig");
 const c = em.c;
 fn highlightCall(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {

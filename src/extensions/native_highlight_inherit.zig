@@ -6,7 +6,7 @@ const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const ordinary = @import("native_node_function.zig");
 const enumeration = @import("native_source_for_in.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const c = em.c;
 
 pub fn create(engine: *em.Engine) !c.JSValue {

@@ -5,7 +5,7 @@ const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const classes = @import("native_class.zig");
 const multi = @import("native_highlight_multi_regex.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 const Method = enum(c_int) { getMatcher, resumingScanAtSamePosition, considerAll, addRule, exec };

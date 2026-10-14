@@ -2,7 +2,7 @@
 //! Shared native construction preserves the two actual factory branches and graphs.
 const std = @import("std");
 const em = @import("engine.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const Scope = @import("native_highlight_scope.zig").Scope;
 const ordinary = @import("native_legacy_function.zig");
 const c = em.c;
 const namespace = "[a-zA-Z_]\\w*::";
