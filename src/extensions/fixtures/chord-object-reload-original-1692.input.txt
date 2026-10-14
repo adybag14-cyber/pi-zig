@@ -1,0 +1,37 @@
+const cases=[],info=e=>({name:e?.name,code:e?.code,reason:e?.reason,message:e?.message}),outcome=async fn=>{try{return{value:await fn()}}catch(e){return{error:info(e)}}},flush=async()=>{for(let i=0;i<16;i++)await Promise.resolve()};
+const empty={type:'object',properties:{},additionalProperties:false},number={type:'number'},str={type:'string'};
+{
+ const errors=[],log=[],host=api.createHost({name:'identity',onError(e){errors.push(info(e))}}),t=api.local('identity.owner',{version:1,input:empty,members:{owner:api.opaque('owner@1'),ping:api.method(undefined,number),void:api.method(),echo:api.method(number,number)}}),owner={native:true};
+ host.serve(t,(_i,p,self)=>{log.push(['factory',p===host.principal]);const r=self.resource('owner',{version:1,open(){log.push('open');return owner},close(v){log.push(['close',v===owner])}});return{owner:self.expose(r),ping(ctx){log.push(['ping',ctx.codeVersion,ctx.principal===host.principal]);return 7},void(){return 99},echo(n){return n+1}}},{lifetime:'host'});
+ await host.ready();const a=host.get(t,{}, {principal:{user:1}}),b=host.get(t,{}, {principal:{user:2}});await Promise.all([a.ready,b.ready]);const observed={same:a.owner===b.owner,objects:host.objects.size,pins:host.hostObjects.size,principal:[...host.objects.values()][0].principal===host.principal,ping:await a.ping(),voidIsUndefined:(await a.void())===undefined,echo:await a.echo(4),fields:Object.keys(a.shape),version:a.shape.codeVersion};a.release();b.release();await flush();observed.afterRelease=host.objects.size;await host.close();cases.push({name:'actual host lifetime one identity optional method args and void result',observed,log,errors,final:host.objects.size});
+}
+{
+ const host=api.createHost({name:'invalid-lifetime',onError(){}}),remote=api.remote('lifetime.remote',{version:1,input:empty,variants:{active:{}}}),required=api.local('lifetime.required',{version:1,input:{type:'object',properties:{id:str},required:['id']}}),local=api.local('lifetime.local',{version:1,input:empty});
+ const failures=[];for(const [t,o]of[[remote,{lifetime:'host'}],[required,{lifetime:'host'}],[local,{lifetime:'host',linger:1}],[local,{lifetime:'other'}]])failures.push(await outcome(()=>host.serve(t,()=>({}),o)));await host.close();cases.push({name:'actual lifetime invalid remote input linger and unknown lifetime',failures});
+}
+{
+ const host=api.createHost({name:'migration',dev:true,onError(){}}),t=api.local('migration.owner',{version:1,input:empty,members:{read:api.method(undefined,number),bump:api.method(number,number)}}),log=[];
+ const facet=(version,options={})=>({name:'counter',setup(f){f.serve(t,(_i,_p,self)=>{const n=self.state('n',number,1,{version,migrate(old,from){log.push(['migrate',old,from,version]);return old+10},...options});return{read(){return n.value},bump(v,ctx){n.change(ctx,x=>x+v);return n.value}}})}});
+ await host.install(facet(1));const ref=host.get(t,{});await ref.ready;await ref.bump(2);const before=await ref.read(),report=await host.reload([facet(2)]),after=await ref.read(),lower=await outcome(()=>host.reload([facet(1)])),stable=await ref.read();ref.release();await host.close();cases.push({name:'actual per cell raised migration lowered rejection and rollback stability',before,report,after,lower,stable,log});
+}
+{
+ const host=api.createHost({name:'adopt',onError(){}}),log=[],t=api.local('adopt.owner',{version:1,input:empty,members:{native:api.opaque('native@1')}}),facet=n=>({name:'native',setup(f){f.serve(t,(_i,_p,self)=>{const r=self.resource('r',{version:1,open(){log.push(['open',n]);return{id:1}},close(v){log.push(['close',n,v.id])}});return{native:self.expose(r)}})}});
+ await host.install(facet(1));const ref=host.get(t,{});await ref.ready;const value=ref.native,report=await host.reload([facet(2)]),same=ref.native===value;ref.release();await host.close();cases.push({name:'actual kept resource adopts latest close without reopening',same,report,log});
+}
+{
+ const host=api.createHost({name:'facet-signals',onError(){}}),signals=[],t=api.local('facet.owner',{version:1,input:empty}),facet=(n,fail=false)=>({name:'facet',setup(f){signals.push(f.signal);f.signal.addEventListener('abort',()=>{});if(fail)throw new Error('setup failed '+n);f.serve(t,()=>({}))}});
+ await host.install(facet(1));await host.reload([facet(2)]);const replaced=signals.map(s=>s.aborted),failed=await outcome(()=>host.reload([facet(3,true)])),rolledBack=signals.map(s=>s.aborted);await host.reload([],{remove:['facet']});const removed=signals.map(s=>s.aborted);await host.close();cases.push({name:'actual facet run signals replacement setup rollback and removal',replaced,failed,rolledBack,removed});
+}
+{
+ const log=[],host=api.createHost({name:'derive',dev:true,onError(e){log.push(['error',info(e)])}}),t=api.local('derive.owner',{version:1,input:empty,members:{read:api.method(undefined,number)}}),facet=scale=>({name:'derive',setup(f){f.serve(t,(_i,_p,self)=>{const n=self.state('n',number,3),d=self.derive([n],v=>v*scale);self.on('state',d,value=>{log.push(['listen',scale,value])});return{read(){return d.value}}})}});
+ await host.install(facet(1));const ref=host.get(t,{});await ref.ready;await flush();const before=await ref.read(),report=await host.reload([facet(2)]);await flush();const after=await ref.read();ref.release();await host.close();cases.push({name:'actual fresh positional derivations and listener activation current value',before,report,after,log});
+}
+{
+ const host=api.createHost({name:'root-signal',onError(){}}),controller=new AbortController(),events=[];let ctx;
+ await host.root(c=>{ctx=c;c.signal.addEventListener('abort',()=>events.push('late'))},{signal:controller.signal});controller.abort('after closed');let expired;try{ctx.check(host)}catch(e){expired=info(e)}await host.close();cases.push({name:'actual closed contexts detach source signal listeners',closed:ctx.closed,aborted:ctx.signal.aborted,events,expired});
+}
+{
+ const log=[],errors=[],host=api.createHost({name:'tasks',taskStopDeadline:100,onError(e){errors.push(info(e))}}),t=api.local('tasks.owner',{version:1,input:empty}),stops=[];let firstStarted;const started=new Promise(r=>firstStarted=r);const facet=n=>({name:'tasks',setup(f){f.serve(t,(_i,_p,self)=>{self.task(async ctx=>{log.push(['start',n]);if(n===1)firstStarted();await new Promise(resolve=>{ctx.signal.addEventListener('abort',()=>{log.push(['abort',n]);stops.push(()=>{log.push(['finish',n]);resolve()})},{once:true})});});return{}},{lifetime:'host'})}});
+ await host.install(facet(1));await started;const report=await host.reload([facet(2)]);await flush();const before=log.slice();stops.shift()();await flush();const after=log.slice();const closing=host.close();await flush();while(stops.length)stops.shift()();await closing;cases.push({name:'actual stopped tasks finish before replacement begins',report,before,after,final:log,errors});
+}
+globalThis.chordObjectReloadCases=cases;

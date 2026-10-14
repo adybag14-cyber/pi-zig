@@ -33,7 +33,7 @@ fn resolveDependency(engine: *h.Engine, bindings: c.JSValue, name: c.JSValue, va
         const ref = try h.invoke(&s, try s.get(bindings, "refsByProxy"), "get", &.{value});
         if (!h.nullish(ref)) return s.result(ref);
     }
-    const resource = try s.keep(try @import("native_chord_resources.zig").resourceOf(engine, value, try s.get(bindings, "resourceBindings")));
+    const resource = try s.keep(try @import("native_chord_latest_resources.zig").resourceOf(engine, value, try s.get(bindings, "resourceBindings")));
     if (c.JS_IsUndefined(resource)) return h.typeError(&s, &.{ try s.text("resource "), name, try s.text(": deps must be references or resources of this object") });
     return s.result(resource);
 }
@@ -130,7 +130,7 @@ fn invoke(engine: *h.Engine, bindings: c.JSValue, receiver: c.JSValue, args: []c
         return s.result(derived);
     }
     if (method == .expose) {
-        const resource = try s.keep(try @import("native_chord_resources.zig").resourceOf(engine, h.arg(args, 0), try s.get(bindings, "resourceBindings")));
+        const resource = try s.keep(try @import("native_chord_latest_resources.zig").resourceOf(engine, h.arg(args, 0), try s.get(bindings, "resourceBindings")));
         const resources = try h.values(&s, try s.get(decls, "resources"));
         if (c.JS_IsUndefined(resource) or c.JS_ToBool(engine.context, try h.invoke(&s, resources, "includes", &.{resource})) == 0) return h.typeError(&s, &.{try s.text("expose takes a resource declared by this object")});
         return s.result(try h.construct(&s, bindings, "ExposedImpl", &.{resource}));

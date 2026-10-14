@@ -1,0 +1,24 @@
+{
+  "observed_utc": "2026-10-14T11:23:34.2209844+00:00",
+  "free_bytes": 11180990464,
+  "max_old_space_mib": 256,
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "drivers": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Capture-ChordLatest1692.mjs",
+      "sha256": "94F8CF4050666D6B5EC3824C26E4E0B0B11D238AB18C3E09713D0A5FC3C39BF3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-1692-observe-20261014.mjs",
+      "sha256": "ADA432E1D692741B750A3F874EAF6C57ADA6C78B6026C19DF34DD2093F54A147"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-chord-full-composition-e6220e1-20261013\\src\\extensions\\fixtures\\chord-object-reload-original-1692.input.txt",
+      "sha256": "367454CE0BC9333932A4C8592078955E9754B24232F75C33282EAF626AB0DFE9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-1692-dependency-contract-audit-20261014.json",
+      "sha256": "9BAA9BB1CAD40D495D5938DC2A678FCBF0F2A33160561F42179DF66B840CA1F1"
+    }
+  ]
+}

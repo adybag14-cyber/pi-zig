@@ -1,0 +1,270 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "cases": [
+    {
+      "name": "actual host lifetime one identity optional method args and void result",
+      "observed": {
+        "same": true,
+        "objects": 1,
+        "pins": 1,
+        "principal": true,
+        "ping": 7,
+        "voidIsUndefined": true,
+        "echo": 5,
+        "fields": [
+          "variant",
+          "members",
+          "contract",
+          "codeVersion"
+        ],
+        "version": 1,
+        "afterRelease": 1
+      },
+      "log": [
+        [
+          "factory",
+          true
+        ],
+        "open",
+        [
+          "ping",
+          1,
+          true
+        ],
+        [
+          "close",
+          true
+        ]
+      ],
+      "errors": [],
+      "final": 0
+    },
+    {
+      "name": "actual lifetime invalid remote input linger and unknown lifetime",
+      "failures": [
+        {
+          "error": {
+            "name": "TypeError",
+            "message": "lifetime.remote: lifetime \"host\" needs a local type (remote types are referenced)"
+          }
+        },
+        {
+          "error": {
+            "name": "TypeError",
+            "message": "lifetime.required: lifetime \"host\" needs an input that accepts {} (the object's one address)"
+          }
+        },
+        {
+          "error": {
+            "name": "TypeError",
+            "message": "lifetime.local: an object of lifetime \"host\" does not linger (it lives as long as the host)"
+          }
+        },
+        {
+          "error": {
+            "name": "TypeError",
+            "message": "lifetime.local: unknown lifetime other"
+          }
+        }
+      ]
+    },
+    {
+      "name": "actual per cell raised migration lowered rejection and rollback stability",
+      "before": 3,
+      "report": {
+        "codeVersion": 2,
+        "previous": 1,
+        "changed": [
+          "migration.owner"
+        ],
+        "removed": [],
+        "prepared": [
+          "migration.owner\u0000{}\u0000host"
+        ],
+        "gated": [
+          "migration.owner\u0000{}\u0000host"
+        ]
+      },
+      "after": 13,
+      "lower": {
+        "error": {
+          "name": "ChordError",
+          "code": "invalid",
+          "reason": "state",
+          "message": "invalid/state: reload aborted: invalid/state: migration.owner\u0000{}\u0000host: version of state n lowered from 2 to 1"
+        }
+      },
+      "stable": 13,
+      "log": [
+        [
+          "migrate",
+          3,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "actual kept resource adopts latest close without reopening",
+      "same": true,
+      "report": {
+        "codeVersion": 2,
+        "previous": 1,
+        "changed": [
+          "adopt.owner"
+        ],
+        "removed": [],
+        "prepared": [
+          "adopt.owner\u0000{}\u0000host"
+        ],
+        "gated": []
+      },
+      "log": [
+        [
+          "open",
+          1
+        ],
+        [
+          "close",
+          2,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "actual facet run signals replacement setup rollback and removal",
+      "replaced": [
+        true,
+        false
+      ],
+      "failed": {
+        "error": {
+          "name": "ChordError",
+          "code": "unavailable",
+          "message": "unavailable: reload aborted: unavailable: reload: setup failed 3"
+        }
+      },
+      "rolledBack": [
+        true,
+        false,
+        true
+      ],
+      "removed": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "actual fresh positional derivations and listener activation current value",
+      "before": 3,
+      "report": {
+        "codeVersion": 2,
+        "previous": 1,
+        "changed": [
+          "derive.owner"
+        ],
+        "removed": [],
+        "prepared": [
+          "derive.owner\u0000{}\u0000host"
+        ],
+        "gated": []
+      },
+      "after": 6,
+      "log": [
+        [
+          "listen",
+          1,
+          3
+        ],
+        [
+          "listen",
+          2,
+          6
+        ]
+      ]
+    },
+    {
+      "name": "actual closed contexts detach source signal listeners",
+      "closed": true,
+      "aborted": false,
+      "events": [],
+      "expired": {
+        "name": "ChordError",
+        "code": "aborted",
+        "reason": "expired",
+        "message": "aborted/expired: ctx expired: its call already settled"
+      }
+    },
+    {
+      "name": "actual stopped tasks finish before replacement begins",
+      "report": {
+        "codeVersion": 2,
+        "previous": 1,
+        "changed": [
+          "tasks.owner"
+        ],
+        "removed": [],
+        "prepared": [
+          "tasks.owner\u0000{}\u0000host"
+        ],
+        "gated": []
+      },
+      "before": [
+        [
+          "start",
+          1
+        ],
+        [
+          "abort",
+          1
+        ]
+      ],
+      "after": [
+        [
+          "start",
+          1
+        ],
+        [
+          "abort",
+          1
+        ],
+        [
+          "finish",
+          1
+        ],
+        [
+          "start",
+          2
+        ]
+      ],
+      "final": [
+        [
+          "start",
+          1
+        ],
+        [
+          "abort",
+          1
+        ],
+        [
+          "finish",
+          1
+        ],
+        [
+          "start",
+          2
+        ],
+        [
+          "abort",
+          2
+        ],
+        [
+          "finish",
+          2
+        ]
+      ],
+      "errors": []
+    }
+  ]
+}

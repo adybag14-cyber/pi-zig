@@ -1,0 +1,223 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "cases": [
+    {
+      "name": "actual v2 frame schema optional args constrained descriptions versions and error codes",
+      "valid": [
+        true,
+        true,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "actual memory link raw deflate bytes size and deferred unpack",
+      "size": 963,
+      "packed": true,
+      "bytes": 678,
+      "base64": "7dQxDQAgEANAL2+NMH8CYUcG21tEAgaQcFvnpr24dfbMNVqXdGAHvsADEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCQkIQlJSEISkpCEJCQhCUlIQhKSkIQkJCEJSUhCEpKQhCT8SRgP",
+      "same": true
+    },
+    {
+      "name": "actual binary websocket envelope deflate length inflate and opaque receive",
+      "size": 527,
+      "byteLength": 527,
+      "type": "Uint8Array",
+      "binaryType": "arraybuffer",
+      "base64": "AAAAIXsidCI6InJlc3VsdCIsImlkIjoxLCJ6IjoidmFsdWUife3VsQkAIAwEwF0yhtsI2glaWCji7q5hcVX6J/93YtY1I8XIu/VcHBH4AkWwBeaQCDSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMa0pCGNKQhDWlIQxrSkIY0pCENaUhDGtKQhjSkIQ1pSEMafqZh3Ac=",
+      "same": true,
+      "packed": true,
+      "value": true
+    },
+    {
+      "name": "actual websocket malformed binary refused packed and unknown type close outcomes",
+      "outcomes": [
+        {
+          "closed": true,
+          "reasons": [
+            "protocol error"
+          ],
+          "socketClose": [
+            [
+              1000
+            ]
+          ]
+        },
+        {
+          "closed": true,
+          "reasons": [
+            "protocol error"
+          ],
+          "socketClose": [
+            [
+              1000
+            ]
+          ]
+        },
+        {
+          "closed": true,
+          "reasons": [
+            "protocol error"
+          ],
+          "socketClose": [
+            [
+              1000
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "actual IPC write callback EPIPE ends link without error event",
+      "closed": true,
+      "sizeIsUndefined": true,
+      "sent": [
+        {
+          "chord2": {
+            "t": "ping",
+            "n": 1
+          }
+        }
+      ],
+      "removed": [
+        [
+          "message",
+          true
+        ],
+        [
+          "disconnect",
+          true
+        ]
+      ],
+      "reasons": [
+        "ipc send failed: EPIPE"
+      ]
+    },
+    {
+      "name": "actual byte window bounds state slots while call results pass and ack flushes",
+      "first": true,
+      "ops": true,
+      "overflow": false,
+      "before": [
+        "hello",
+        "result"
+      ],
+      "after": [
+        {
+          "t": "hello"
+        },
+        {
+          "t": "result",
+          "id": 7,
+          "value": "control"
+        },
+        {
+          "t": "state",
+          "id": 1,
+          "reset": {
+            "n": 1
+          }
+        },
+        {
+          "t": "state",
+          "id": 1,
+          "ops": [
+            [
+              "p",
+              [
+                "n"
+              ],
+              2
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "actual invalid ack closes untrusted connection",
+      "connections": 0,
+      "closed": true,
+      "errors": [
+        {
+          "name": "ChordError",
+          "message": "invalid/protocol: link to peer: ack 9999 outside 0..1",
+          "code": "invalid",
+          "reason": "protocol"
+        }
+      ]
+    },
+    {
+      "name": "actual absent old and future protocol versions are refused once",
+      "casesMismatch": [
+        {
+          "versions": [
+            {
+              "local": 2,
+              "peer": 1
+            }
+          ],
+          "reasons": [
+            "protocol-version 2"
+          ],
+          "connections": 0,
+          "errors": []
+        },
+        {
+          "protocol": 1,
+          "versions": [
+            {
+              "local": 2,
+              "peer": 1
+            }
+          ],
+          "reasons": [
+            "protocol-version 2"
+          ],
+          "connections": 0,
+          "errors": []
+        },
+        {
+          "protocol": 3,
+          "versions": [
+            {
+              "local": 2,
+              "peer": 3
+            }
+          ],
+          "reasons": [
+            "protocol-version 2"
+          ],
+          "connections": 0,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "actual maxCalls rejects excess work keeps connection and finishes earlier call",
+      "rejected": {
+        "error": {
+          "name": "ChordError",
+          "message": "unavailable/too_many_calls: Too many calls in progress on this connection (1); wait for earlier ones to finish",
+          "code": "unavailable",
+          "reason": "too_many_calls"
+        }
+      },
+      "incoming": 1,
+      "value": 42,
+      "after": 0,
+      "errors": []
+    }
+  ]
+}

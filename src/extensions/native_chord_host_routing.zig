@@ -170,7 +170,7 @@ pub fn acquireRemote(s: *Scope, bindings: c.JSValue, host: c.JSValue, token: c.J
     const fields = try s.record();
     inline for (.{ "contract", "at", "input", "principal", "owner" }, .{ token, at, input, principal, owner }) |name, value| try h.field(s, fields, name, value);
     try h.field(s, fields, "address", try remoteAddress(s, at, token, input, principal));
-    const handle = try h.construct(s, bindings, "RemoteHandle", &.{ host, fields });
+    const handle = try h.construct(s, bindings, "RemoteRef", &.{ host, fields });
     _ = try h.invoke(s, try s.get(host, "remotes"), "add", &.{handle});
     const direct = try childNamed(s, host, at);
     if (!c.JS_IsUndefined(try s.get(host, "upstream"))) {

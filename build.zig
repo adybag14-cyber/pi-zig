@@ -82,6 +82,14 @@ pub fn build(b: *std.Build) void {
     quickjs.root_module.link_libcpp = true;
     quickjs.root_module.linkLibrary(native_yaml);
     quickjs.root_module.addIncludePath(b.path("vendor/quickjs"));
+    // Chord protocol-v2 packing uses the pinned C deflate implementation from
+    // Node24.14.0. Its runtime allocations use the native Zig owner.
+    quickjs.root_module.addIncludePath(b.path("vendor/chord-zlib-node-24.14.0"));
+    quickjs.root_module.addCSourceFiles(.{
+        .root = b.path("vendor/chord-zlib-node-24.14.0"),
+        .files = &.{ "adler32.c", "compress.c", "cpu_features.c", "crc32.c", "deflate.c", "infback.c", "inffast.c", "inflate.c", "inftrees.c", "trees.c", "uncompr.c", "zutil.c" },
+        .flags = &.{ "-std=gnu11", "-DCPU_NO_SIMD", "-DZLIB_IMPLEMENTATION", "-fno-strict-aliasing" },
+    });
     // Native public storage is installed for every extension VM. Carry SQLite
     // through this common dependency so CLI, SDK and bindings all receive it.
     linkSqlite(quickjs.root_module, sqlite_lib_dir, sqlite_library);
@@ -723,6 +731,13 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, chord_connection_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_connection_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-chord-connection-source", "Replay actual Source Connection owner protocol constructor keepalive consumers provider frames GC and all allocation failures").dependOn(&b.addRunArtifact(chord_connection_tests).step);
+    const chord_latest_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_latest_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native latest Chord1692"} });
+    linkQuickJs(b, chord_latest_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_latest_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("build-native-chord-latest-source", "Compile actual latest Source Host Object Ref context protocol-v2 composition without starting runtime guards").dependOn(&chord_latest_tests.step);
+    const chord_latest_run = b.addRunArtifact(chord_latest_tests);
+    chord_latest_run.has_side_effects = true;
+    b.step("test-native-chord-latest-source", "Replay actual latest Source factory8 full-links8 closed2 with GC and complete allocator-failure ownership").dependOn(&chord_latest_run.step);
     const chord_connection_boundaries = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_boundary_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord connection boundary inventory", "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions", "native WeakRef" } });
     linkQuickJs(b, chord_connection_boundaries.root_module, quickjs, sqlite_lib_dir);
     chord_connection_boundaries.root_module.addImport("catalog_tool", catalog_tool);
@@ -2474,6 +2489,7 @@ fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Ste
     linkDurable(b, module);
     if (sqlite_lib_dir) |directory| module.addLibraryPath(.{ .cwd_relative = directory });
     module.addIncludePath(b.path("vendor/quickjs"));
+    module.addIncludePath(b.path("vendor/chord-zlib-node-24.14.0"));
     module.addIncludePath(b.path("vendor/libfyaml"));
     module.addIncludePath(b.path("src/extensions"));
     module.addImport("native_icu_api", b.modules.get("native_icu_api").?);

@@ -4,7 +4,7 @@ const h = r.h;
 const js = r.js;
 const c = r.c;
 const Scope = r.Scope;
-const schema = @import("native_chord_host_record_schema.zig");
+const schema = @import("native_chord_object_schema.zig");
 fn kindOf(s: *Scope, behavior: c.JSValue) !c.JSValue {
     return if (c.JS_IsString(try s.get(behavior, "variant"))) s.get(behavior, "variant") else c.pi_js_undefined();
 }
@@ -136,7 +136,7 @@ pub fn checkProviders(s: *Scope, bindings: c.JSValue, reload: c.JSValue) anyerro
         const next = try s.get(try h.invoke(s, services, "get", &.{name}), "contract");
         const old = try r.optional(s, try h.invoke(s, try s.get(try s.get(host, "current"), "services"), "get", &.{name}), "contract");
         if (c.JS_IsUndefined(old) or !c.JS_IsStrictEqual(s.engine.context, try s.get(old, "version"), try s.get(next, "version"))) continue;
-        const why = try s.keep(try @import("native_chord_contracts.zig").coverage(s.engine, try s.get(next, "description"), try s.get(old, "description")));
+        const why = try s.keep(try @import("native_chord_latest_contracts.zig").coverage(s.engine, try s.get(next, "description"), try s.get(old, "description")));
         if (!c.JS_IsUndefined(why)) _ = try h.throwValue(s, try h.errorValue(s, bindings, "contract_mismatch", &.{ name, try s.text("@"), try s.get(next, "version"), try s.text(" changed incompatibly without a version bump ("), why, try s.text(")") }, c.pi_js_undefined()));
     }
     const facets = try r.copyMap(s, try s.get(host, "facets"));

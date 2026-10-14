@@ -1,0 +1,81 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "fixtures": [
+    {
+      "name": "chord-object-reload-original-1692",
+      "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+      "cases": 8,
+      "oracle": "src/extensions/fixtures/chord-object-reload-original-1692.json",
+      "oracle_sha256": "9694B228C614371011D6FB45E7F18F568AA79D18C6990C8134CE3908613C461D",
+      "input": "src/extensions/fixtures/chord-object-reload-original-1692.input.txt",
+      "input_sha256": "367454CE0BC9333932A4C8592078955E9754B24232F75C33282EAF626AB0DFE9",
+      "case_names": [
+        "actual host lifetime one identity optional method args and void result",
+        "actual lifetime invalid remote input linger and unknown lifetime",
+        "actual per cell raised migration lowered rejection and rollback stability",
+        "actual kept resource adopts latest close without reopening",
+        "actual facet run signals replacement setup rollback and removal",
+        "actual fresh positional derivations and listener activation current value",
+        "actual closed contexts detach source signal listeners",
+        "actual stopped tasks finish before replacement begins"
+      ]
+    },
+    {
+      "name": "chord-full-links-original-1692",
+      "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+      "cases": 8,
+      "oracle": "src/extensions/fixtures/chord-full-links-original-1692.json",
+      "oracle_sha256": "21762A8D2BE0A777D70FBBC7A3BACF7B66EF906FA35CEB680E142396B32D9831",
+      "input": "src/extensions/fixtures/chord-full-links-original-1692.input.txt",
+      "input_sha256": "EC697364D7AB87B9D579BD5D08666E13E05583999665B2E92967A688BB5AE8EE",
+      "case_names": [
+        "actual client server typed calls state ops root stamping and complete disposal",
+        "actual upstream replacement preserves remote identity and resets subscribed feed",
+        "actual latest already-closed connection guards never retain a route",
+        "actual latest constructor upstream preserves closed guard",
+        "actual routing refuses unavailable destination and local token crossing",
+        "actual principal invalidation closes stamped connection and matching record",
+        "actual restamp keeps connection and fences disposed old principal hold",
+        "actual three-host relay authorizes twice forwards state calls roots and tears down"
+      ]
+    },
+    {
+      "name": "chord-full-host-closed-original-1692",
+      "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+      "cases": 2,
+      "oracle": "src/extensions/fixtures/chord-full-host-closed-original-1692.json",
+      "oracle_sha256": "F6D1651084CB0892BD15BA7BF050E39C6C854475DA4550ED8D57B32FC62EC25F",
+      "input": "src/extensions/fixtures/chord-full-host-closed-original-1692.input.txt",
+      "input_sha256": "961C869338A2FE494E0B7D64AD948F9EA3BA52B8C618FFBCEDE52073C9F7B366",
+      "case_names": [
+        "latest actual Host accept connect retain no already-closed connection",
+        "latest actual Host constructor upstream uses closed connection guard"
+      ]
+    },
+    {
+      "name": "chord-v2-original-1692",
+      "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+      "cases": 9,
+      "oracle": "src/extensions/fixtures/chord-v2-original-1692.json",
+      "oracle_sha256": "D64C4BA23C70D3A47114928CC9788C191775DFF17F3B086E2113166D46C1A8A8",
+      "input": "src/extensions/fixtures/chord-v2-original-1692.input.txt",
+      "input_sha256": "E5CF260939DDE586D92A0D70B550B5E5A7BCB492DE2B66BFBCC2EC4644EF1166",
+      "case_names": [
+        "actual v2 frame schema optional args constrained descriptions versions and error codes",
+        "actual memory link raw deflate bytes size and deferred unpack",
+        "actual binary websocket envelope deflate length inflate and opaque receive",
+        "actual websocket malformed binary refused packed and unknown type close outcomes",
+        "actual IPC write callback EPIPE ends link without error event",
+        "actual byte window bounds state slots while call results pass and ack flushes",
+        "actual invalid ack closes untrusted connection",
+        "actual absent old and future protocol versions are refused once",
+        "actual maxCalls rejects excess work keeps connection and finishes earlier call"
+      ]
+    }
+  ],
+  "total_cases": 27,
+  "full_source_inputs": 34793,
+  "source_body_replaced": false,
+  "native_qualified": false,
+  "public_activation": false
+}
