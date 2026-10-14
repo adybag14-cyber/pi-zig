@@ -1,0 +1,159 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "3410588963c68efd4045aa6634b4ac913841cc6c40f90a9039596a00ba9f52e3",
+  "scope": "Actual unchanged original GenerationTask.definition.phases.prepare; caller-owned historical scenario data, real SystemEntry and LiveDoc identities; no Source bodies or expected rows rewritten",
+  "cases": 3,
+  "rows": [
+    {
+      "scenario": "blocking",
+      "trace": [
+        [
+          "env"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "task",
+          {
+            "reason": "threshold"
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            },
+            "conversationId": 3,
+            "background": false
+          }
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "waiting",
+            "checkpoint": {
+              "phase": "prepare",
+              "attempt": 1,
+              "compacted": 20,
+              "threshold": true
+            },
+            "on": [
+              20
+            ],
+            "policy": "allSettled"
+          }
+        ]
+      ]
+    },
+    {
+      "scenario": "background",
+      "trace": [
+        [
+          "env"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "scan",
+          {
+            "conversationId": 3
+          },
+          1
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "task",
+          {
+            "reason": "threshold"
+          },
+          {
+            "ownership": {
+              "kind": "conversation"
+            },
+            "conversationId": 3,
+            "background": true
+          }
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "request",
+              "attempt": 1,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "thinkingLevel": "off",
+              "streamOptions": {
+                "temperature": 0.2
+              },
+              "cutoff": 2
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "scenario": "background-existing",
+      "trace": [
+        [
+          "env"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "scan",
+          {
+            "conversationId": 3
+          },
+          1
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "request",
+              "attempt": 1,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "thinkingLevel": "off",
+              "streamOptions": {
+                "temperature": 0.2
+              },
+              "cutoff": 2
+            }
+          }
+        ]
+      ]
+    }
+  ]
+}

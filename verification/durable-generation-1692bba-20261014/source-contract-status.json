@@ -1,0 +1,29 @@
+{
+  "status": "latest_original_generation_prepare_contract_recaptured_native_rerun_pending",
+  "upstream": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "historical_fixture_source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "scenarios": 3,
+  "input": "durable-generation-prepare-threshold-runtime.txt unchanged",
+  "body": "Actual unchanged GenerationTask.definition.phases.prepare with genuine SystemEntry/LiveDoc, no body/expected row rewrites",
+  "reason": "Native checkpoint.threshold=true is correct latestSource172; old historicalfixture omitted it",
+  "new_fixture": "durable-generation-prepare-threshold-1692-original.json",
+  "historical_fixture_preserved": true,
+  "source_post": {
+    "dependencies": 31064,
+    "original": 1955,
+    "drift": 0,
+    "node_tools": 1774
+  },
+  "regression_before": "24/35 pass,11fail; firstfailure historicalexpectedrow mismatch. Other10 failures remain to inspect; no fullintegration claim",
+  "diagnostics": "Failure trace logger and explicit error-union return casts only; no nativeproduction semantics changed",
+  "remaining": [
+    "Rerun complete35 generation suite against recaptured preparationcontract",
+    "Inspect remaining real scheduler/Harness failures individually",
+    "Complete sharedcompaction regression",
+    "Full factory/application parity"
+  ],
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "observed_utc": "2026-10-14T14:39:56.6383735+00:00"
+}

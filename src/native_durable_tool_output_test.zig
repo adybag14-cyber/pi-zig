@@ -2145,8 +2145,12 @@ test "native durable v2 generation preparation matches actual Source pinned requ
 }
 
 test "native durable v2 generation preparation matches actual Source compaction admission" {
+    try exerciseGenerationCompactionAdmission();
+}
+fn exerciseGenerationCompactionAdmission() !void {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
+    errdefer |err| std.debug.print("Generation admission setup/runtime error={s} diagnostic={s}\n", .{ @errorName(err), engine.last_error orelse "none" });
     try @import("extensions/native_durable.zig").install(engine);
     var captured = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
     defer captured.deinit(engine);
@@ -2157,8 +2161,9 @@ test "native durable v2 generation preparation matches actual Source compaction 
     defer engine.freeValue(live);
     const make = try engine.eval(@embedFile("extensions/fixtures/durable-generation-prepare-threshold-runtime.txt"), "actual-generation-prepare-input", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(make);
-    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-generation-prepare-threshold-original.json"));
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-generation-prepare-threshold-1692-original.json"));
     defer source.deinit();
+    try std.testing.expectEqualStrings("1692bba6347a287ab0f3cb554a4430fafffc474b", source.value.object.get("source").?.string);
     for (source.value.object.get("rows").?.array.items) |row| {
         const scenario = row.object.get("scenario").?.string;
         const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
@@ -2174,8 +2179,11 @@ test "native durable v2 generation preparation matches actual Source compaction 
         var failure = c.pi_js_undefined();
         defer engine.freeValue(failure);
         if (engine.awaitValue(pending)) |result| engine.freeValue(result) else |err| {
-            if (!std.mem.eql(u8, scenario, "empty")) return err;
-            const exception = engine.captured_exception orelse return err;
+            if (!std.mem.eql(u8, scenario, "empty")) {
+                std.debug.print("Generation compaction admission scenario={s} error={s} diagnostic={s}\n", .{ scenario, @errorName(err), engine.last_error orelse "none" });
+                return @as(anyerror!void, err);
+            }
+            const exception = engine.captured_exception orelse return @as(anyerror!void, err);
             failure = try vm.object(engine);
             try @import("extensions/native_tool_info.zig").putData(engine, failure, "name", try vm.get(engine, exception, "name"));
             try @import("extensions/native_tool_info.zig").putData(engine, failure, "message", try vm.get(engine, exception, "message"));
@@ -2186,6 +2194,11 @@ test "native durable v2 generation preparation matches actual Source compaction 
         defer std.testing.allocator.free(text);
         var actual = try json.Owned.parse(std.testing.allocator, text);
         defer actual.deinit();
+        if (!json.equal(row, actual.value)) {
+            const expected_text = try json.stringify(std.testing.allocator, row);
+            defer std.testing.allocator.free(expected_text);
+            std.debug.print("Generation admission mismatch scenario={s}\nactual={s}\nexpected={s}\n", .{ scenario, text, expected_text });
+        }
         try std.testing.expect(json.equal(row, actual.value));
     }
 }

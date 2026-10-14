@@ -1,0 +1,11 @@
+{
+  "observed_utc": "2026-10-14T13:55:04.1790049+00:00",
+  "job": "root-sdk-estimator-regression-compile-releasesafe-first-20261014",
+  "event": "New untracked workflow file was briefly authored in frozen worktree; moved to external evidence before terminal posthash",
+  "path": ".github/workflows/native-sdk-compaction-estimate-candidate.yml",
+  "staged_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-sdk-compaction-estimate-candidate-staged-20261014.yml",
+  "compiled_input": false,
+  "existing_tracked_source_bytes_modified": false,
+  "required_acceptance": "Full original frozen source/tool hash and inventory postcheck; record transient noncompiler file in qualification rather than claim uninterrupted whole-tree immutability",
+  "workflow_sha256": "1F69AF664181426946E16FEB4B00CD6C9683DAFC415B33534E91DBFD835C1261"
+}

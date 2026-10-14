@@ -862,6 +862,7 @@ pub fn build(b: *std.Build) void {
     linkTypeScriptParser(b, generation_tests.root_module, typescript_parser);
     const generation_run = b.addRunArtifact(generation_tests);
     b.step("test-native-durable-generation", "Compare native generation phases and prompt planning with upstream").dependOn(&generation_run.step);
+    b.step("build-native-durable-generation", "Compile generation regression separately from its bounded runtime").dependOn(&generation_tests.step);
     const durable_view_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_view_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable view"} });
     linkQuickJs(b, durable_view_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, durable_view_tests.root_module, typescript_parser);
