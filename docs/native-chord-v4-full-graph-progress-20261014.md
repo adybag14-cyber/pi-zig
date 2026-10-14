@@ -61,6 +61,12 @@ implementation body or missing-method fallback is introduced.
   demand, retaining the genuine existing cancel/root/call ownership. The
   connection close path clears the new pending-slot and byte accounting and
   detaches shared bindings. These modules also remain unactivated.
+- The v4 connection owner, dispatcher, links, and provider hold-admission
+  modules are authored. They use protocol4 hello/mismatch, pendingCap, explicit
+  principal/origin stamping, consumer and provider placement checks, hold-wide
+  sub/unsub/resync, shape snapshot lists, and hold/member state routing. Links
+  retain the actual chord2 IPC envelope while using v4 args/value packing.
+  Relay and reload integration still gate factory assembly.
 
 ## Qualification boundary and remaining integration
 
