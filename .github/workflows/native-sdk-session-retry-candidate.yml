@@ -77,7 +77,10 @@ jobs:
           $taskFixture = Get-Content src/extensions/fixtures/sdk-session-retry-1692.json -Raw | ConvertFrom-Json
           if ($taskFixture.sourceHead -cne '1692bba6347a287ab0f3cb554a4430fafffc474b' -or $taskFixture.factoryCount -ne 31 -or @($taskFixture.rows).Count -ne 31) { throw 'Complete latest original31 reference required' }
           if ((Get-FileHash -LiteralPath src/extensions/fixtures/sdk-session-retry-1692.input.txt).Hash.ToLowerInvariant() -cne $taskFixture.inputSha256) { throw 'Original retry input hash differs' }
-          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';tests=13;corpus_cases=31;original_reference_comparison=$true;classifier_corpus_cases=30;classifier_original_reference_comparison=$false;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
+          $taskClassifier = Get-Content src/extensions/fixtures/sdk-session-retry-classifier-1692.json -Raw | ConvertFrom-Json
+          if ($taskClassifier.sourceHead -cne '1692bba6347a287ab0f3cb554a4430fafffc474b' -or $taskClassifier.factoryCount -ne 30 -or @($taskClassifier.rows).Count -ne 30) { throw 'Complete latest original30 classifier reference required' }
+          if ((Get-FileHash -LiteralPath src/extensions/fixtures/sdk-session-retry-classifier-1692.input.txt).Hash.ToLowerInvariant() -cne $taskClassifier.inputSha256) { throw 'Original classifier input hash differs' }
+          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';tests=13;corpus_cases=31;original_reference_comparison=$true;classifier_corpus_cases=30;classifier_original_reference_comparison=$true;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
       - name: Exercise original VM arithmetic remainder exponentiation and decrement boundary
         shell: pwsh
         timeout-minutes: 5

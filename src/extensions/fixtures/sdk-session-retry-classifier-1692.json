@@ -1,0 +1,429 @@
+{"sourceHead":"1692bba6347a287ab0f3cb554a4430fafffc474b","inputSha256":"e1cd548a937ccce20dc5e0b6e3251226b8db36454f87dfa61c449eac8def7742","scope":"Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs","factoryCount":30,"rows":[
+    {
+      "name": "all-overflow-patterns",
+      "value": {
+        "patterns": [
+          {
+            "source": "prompt (?:is )?too long",
+            "flags": "i"
+          },
+          {
+            "source": "prompt exceeds max length",
+            "flags": "i"
+          },
+          {
+            "source": "request_too_large",
+            "flags": "i"
+          },
+          {
+            "source": "input is too long for requested model",
+            "flags": "i"
+          },
+          {
+            "source": "exceeds the context window",
+            "flags": "i"
+          },
+          {
+            "source": "exceeds (?:the )?(?:model'?s )?maximum context length(?: of [\\d,]+ tokens?|\\s*\\([\\d,]+\\))",
+            "flags": "i"
+          },
+          {
+            "source": "input token count.*exceeds the maximum",
+            "flags": "i"
+          },
+          {
+            "source": "maximum prompt length is \\d+",
+            "flags": "i"
+          },
+          {
+            "source": "reduce the length of the messages",
+            "flags": "i"
+          },
+          {
+            "source": "maximum context length is \\d+ tokens",
+            "flags": "i"
+          },
+          {
+            "source": "exceeds (?:the )?maximum allowed input length of [\\d,]+ tokens?",
+            "flags": "i"
+          },
+          {
+            "source": "input \\(\\d+ tokens\\) is longer than the model'?s context length \\(\\d+ tokens\\)",
+            "flags": "i"
+          },
+          {
+            "source": "exceeds the limit of \\d+",
+            "flags": "i"
+          },
+          {
+            "source": "exceeds the available context size",
+            "flags": "i"
+          },
+          {
+            "source": "greater than the context length",
+            "flags": "i"
+          },
+          {
+            "source": "context window exceeds limit",
+            "flags": "i"
+          },
+          {
+            "source": "exceeded model token limit",
+            "flags": "i"
+          },
+          {
+            "source": "too large for model with \\d+ maximum context length",
+            "flags": "i"
+          },
+          {
+            "source": "prompt has [\\d,]+ tokens?, but the configured context size is [\\d,]+ tokens?",
+            "flags": "i"
+          },
+          {
+            "source": "model_context_window_exceeded",
+            "flags": "i"
+          },
+          {
+            "source": "prompt too long; exceeded (?:max )?context length",
+            "flags": "i"
+          },
+          {
+            "source": "range of input length should be",
+            "flags": "i"
+          },
+          {
+            "source": "context[_ ]length[_ ]exceeded",
+            "flags": "i"
+          },
+          {
+            "source": "too many tokens",
+            "flags": "i"
+          },
+          {
+            "source": "token limit exceeded",
+            "flags": "i"
+          }
+        ],
+        "matches": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "nonoverflow-exclusions",
+      "value": [
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "cerebras-bodyless",
+      "value": [
+        {
+          "cerebras": true,
+          "other": false
+        },
+        {
+          "cerebras": true,
+          "other": false
+        },
+        {
+          "cerebras": true,
+          "other": false
+        },
+        {
+          "cerebras": false,
+          "other": false
+        }
+      ]
+    },
+    {
+      "name": "stop-silent-overflow",
+      "value": [
+        true,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "stop-string-plus-and-bigint",
+      "value": {
+        "string": true,
+        "bigint": true
+      }
+    },
+    {
+      "name": "length-zero-output-threshold",
+      "value": [
+        false,
+        false,
+        true,
+        false,
+        true,
+        false
+      ]
+    },
+    {
+      "name": "length-strict-output-zero",
+      "value": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "length-context-bigint-throws",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "overflow-falsy-error-message",
+      "value": [
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "overflow-error-getter-order",
+      "value": {
+        "result": true,
+        "log": [
+          "stop",
+          "error",
+          "error",
+          "error",
+          "error",
+          "error"
+        ]
+      }
+    },
+    {
+      "name": "overflow-callback-live-getter",
+      "value": {
+        "result": true,
+        "log": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "name": "overflow-usage-getter-order",
+      "value": {
+        "result": true,
+        "log": [
+          "stop",
+          "stop",
+          "usage",
+          "input",
+          "usage",
+          "cache"
+        ]
+      }
+    },
+    {
+      "name": "overflow-array-some-live",
+      "value": {
+        "result": true,
+        "log": [
+          {
+            "length": 3,
+            "callbackLength": 1,
+            "callbackName": "",
+            "prototype": false
+          },
+          {
+            "length": 25,
+            "callbackLength": 1,
+            "callbackName": "",
+            "prototype": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "overflow-pattern-object-identity",
+      "value": {
+        "distinctArrays": true,
+        "sameObjects": true,
+        "count": 25
+      }
+    },
+    {
+      "name": "overflow-shared-pattern-test-mutation",
+      "value": {
+        "result": true,
+        "called": 1
+      }
+    },
+    {
+      "name": "overflow-returned-array-mutation-is-local",
+      "value": {
+        "count": 25,
+        "result": true
+      }
+    },
+    {
+      "name": "overflow-regexp-test-live",
+      "value": {
+        "result": true,
+        "log": [
+          "^(Throttling error|Service unavailable):",
+          "rate limit",
+          "too many requests",
+          "prompt (?:is )?too long"
+        ]
+      }
+    },
+    {
+      "name": "overflow-getter-thrown-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "retry-provider-transient-patterns",
+      "value": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "retry-account-limits-win",
+      "value": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "retry-error-message-getter-twice",
+      "value": {
+        "result": true,
+        "log": [
+          "stop",
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "retry-shared-regexp-identity",
+      "value": {
+        "count": 4,
+        "nonretryableSame": true,
+        "retryableSame": true
+      }
+    },
+    {
+      "name": "retry-wrong-stop-short-circuits",
+      "value": {
+        "result": false,
+        "reads": 0
+      }
+    },
+    {
+      "name": "recoverable-length",
+      "value": [
+        true,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "recoverable-length-coercion",
+      "value": {
+        "result": true,
+        "log": [
+          "number",
+          "number"
+        ]
+      }
+    },
+    {
+      "name": "session-model-window-before-classifier",
+      "value": {
+        "result": true,
+        "log": [
+          [
+            "model",
+            true,
+            "error"
+          ],
+          "window"
+        ]
+      }
+    },
+    {
+      "name": "session-overflow-beats-retry",
+      "value": [
+        false,
+        true,
+        false
+      ]
+    },
+    {
+      "name": "session-null-model-fallback",
+      "value": {
+        "silent": false,
+        "error": true
+      }
+    },
+    {
+      "name": "session-zero-context-preserved",
+      "value": true
+    },
+    {
+      "name": "session-model-getter-thrown-identity",
+      "value": {
+        "same": true
+      }
+    }
+  ]}
