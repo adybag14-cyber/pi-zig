@@ -1,0 +1,111 @@
+{
+  "status": "first_Windows_Debug_actual_original_paths40_comparison_GC_and_partition_passed",
+  "head": "db584e86964447de660ff4361aaa468125058dc1",
+  "source_original_run": 38579832214,
+  "input_sha256": "A8C7F1080C4FAC186F5939A788503DFC5981212CD87310A358645684B98D85AF",
+  "expected_sha256": "0FDB888F62B21E7C5A59AD320888516617DA03D4B7D4AE9CFD85790FED3AFA69",
+  "native_node_path_sha256": "377B41F044812F61066B61D0A70723A90019E1F41FD2617DF4DC252BBCBC02B5",
+  "native_Source_helper_sha256": "F1504B31515ACF48BB623E61DAAA83BD809BBF0B87FE244E0952FF90EF12FB76",
+  "cases": 40,
+  "tests_passed": 3,
+  "tests_total": 3,
+  "allocation_baseline": 794,
+  "partition": 0,
+  "partitions": 8,
+  "range_start": 0,
+  "range_end": 99,
+  "completed_indices": 99,
+  "remaining_indices": 695,
+  "duplicates": 0,
+  "full_qualification_pending": true,
+  "public_export_metadata_qualified": false,
+  "full_Node_path_API_qualified": false,
+  "full_read_write_renderers_qualified": false,
+  "source_files": 4870,
+  "original_source_files": 1955,
+  "vendor_files": 1317,
+  "compiler_files": 19546,
+  "compile_runtime_working_original_vendor_manifests_identical": true,
+  "all_post_drift": 0,
+  "minimum_free_gib": 16,
+  "compile_seconds": 1320,
+  "runtime_seconds": 300,
+  "test_seconds": 120,
+  "host_await_ms": 10000,
+  "owner_wrapper_peer_allowlist": "compile coordinatedChord ancestry; runtime coordinatedRoot ancestry; exact source/vendor/original/compiler and owned arguments/deadlines unchanged",
+  "scope": "Private actual Source40 cwd callback/order/exception/display algorithms through test wrappers; not all Node path API/public export metadata",
+  "receipts": [
+    {
+      "file": "native-sdk-source-path-cwd-debug-build-first-20261014.process.json",
+      "sha256": "54738C584A26D0159E4B2A2B5A675B1949DC3E38C050D0DFBD63CAB56A78C3F4"
+    },
+    {
+      "file": "native-sdk-source-path-cwd-debug-build-first-20261014-admission.json",
+      "sha256": "4054366D1890A42B0E7569A194117D59BF08A605CFF1E0B4731BBDD6D49427C9"
+    },
+    {
+      "file": "native-sdk-source-path-cwd-debug-build-first-20261014-posthash.json",
+      "sha256": "3DC18391F8761BC19E9A9083CB1075AE7D3C08248A90A07E74D3A0031F134D9F"
+    },
+    {
+      "file": "native-sdk-source-path-cwd-debug-build-first-20261014.stderr.log",
+      "sha256": "5DEA484D5E45AB066FC3E9C2D51674B984E078A51A75A89A61457E7A6EC2F7BB"
+    },
+    {
+      "file": "native-sdk-source-path-cwd-debug-build-first-20261014.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "kind": "source",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-sdk-source-path-cwd-debug-build-first-20261014-source-before.json",
+      "sha256": "9B68A2A28C9E0280DDC5CF311E66782B7AA2C42DE1207E184E32FF5FDA8C3F3B"
+    },
+    {
+      "kind": "original",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-sdk-source-path-cwd-debug-build-first-20261014-original-before.json",
+      "sha256": "C002505EEED0D96B3C3897A8160D2F9BB18CAC02976C5131CB2A1DCFBD4D2547"
+    },
+    {
+      "kind": "vendor",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-sdk-source-path-cwd-debug-build-first-20261014-vendor-before.json",
+      "sha256": "43DFA48272E8CBABCCEF2FD256C94750CFCCC9F2EEA879E881C3F22DACE4AAD9"
+    },
+    {
+      "file": "native-sdk-source-path-cwd-debug-test-first-20261014.process.json",
+      "sha256": "CFB0D9EBDB290C70368FF8D59E5DDE441785785ED34DB10FBF7FF35E4370926E"
+    },
+    {
+      "file": "native-sdk-source-path-cwd-debug-test-first-20261014-admission.json",
+      "sha256": "3065E8EF8393C1FACCAF3BF21D6973D6AE7C8D332C9FCCC8FAEDF2122626AB03"
+    },
+    {
+      "file": "native-sdk-source-path-cwd-debug-test-first-20261014-posthash.json",
+      "sha256": "71422F610EE1E74072310FAAD3FD916C2ABA08997A51A1D31D39A6EE91062AD2"
+    },
+    {
+      "file": "native-sdk-source-path-cwd-debug-test-first-20261014.stderr.log",
+      "sha256": "31B26DF3B0023A9D100A4837D22160921CD67753FC4E2AC2D29484F7ABA4C136"
+    },
+    {
+      "file": "native-sdk-source-path-cwd-debug-test-first-20261014.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "kind": "source",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-sdk-source-path-cwd-debug-test-first-20261014-source-before.json",
+      "sha256": "9B68A2A28C9E0280DDC5CF311E66782B7AA2C42DE1207E184E32FF5FDA8C3F3B"
+    },
+    {
+      "kind": "original",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-sdk-source-path-cwd-debug-test-first-20261014-original-before.json",
+      "sha256": "C002505EEED0D96B3C3897A8160D2F9BB18CAC02976C5131CB2A1DCFBD4D2547"
+    },
+    {
+      "kind": "vendor",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-sdk-source-path-cwd-debug-test-first-20261014-vendor-before.json",
+      "sha256": "43DFA48272E8CBABCCEF2FD256C94750CFCCC9F2EEA879E881C3F22DACE4AAD9"
+    }
+  ],
+  "public_activation": false,
+  "checked_utc": "2026-10-14T15:30:02.3313321+00:00"
+}

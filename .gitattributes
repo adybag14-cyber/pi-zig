@@ -81,3 +81,4 @@ verification/sdk-statistics-original-1692bba-20261014/sdk-prompt-handlers-skill.
 verification/native-timer-oom-identity-20261014/*.log whitespace=cr-at-eol,-blank-at-eof
 verification/sdk-syntax-html-original-1692bba-20261014/native-first-debug/*.log whitespace=cr-at-eol,-blank-at-eof
 verification/sdk-highlight-tree-original-1692bba-20261014/native-first-debug/*.log whitespace=cr-at-eol,-blank-at-eof
+verification/sdk-path-cwd-original-1692bba-20261014/native-first-debug/*.log whitespace=cr-at-eol,-blank-at-eof
