@@ -1,0 +1,32 @@
+{
+  "status": "actual_b45_original_core74_doublecapture_and_explicit_Node_GC_qualified",
+  "candidate": "dbfa580ee14a31a33669d530a2c27254b7cc9d77",
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "cases": 74,
+  "input_sha256": "b20e28b6a85b4d16b0758d65bea0d7d911942963976c9354fac4e63b8c4ac9e3",
+  "doublecapture_rows_identical": true,
+  "prior_capture_rows_unchanged": true,
+  "actual_Node_GC_available": true,
+  "actual_Node_GC_executed": true,
+  "actual_Node_GC": "await setImmediate; actual globalThis.gc(); await setImmediate after unchanged corpus",
+  "source_files": 1965,
+  "dependencies": 31064,
+  "node_tools": 1774,
+  "candidate_files": 5374,
+  "controls": 5,
+  "all_pre_post_drift": 0,
+  "observed_modules": 26,
+  "owned_pids": [
+    64788,
+    72072
+  ],
+  "owned_pids_absent": true,
+  "raw_sha256": "DFBF42192195628DF376C62C316E4F539D042DF4D92221B7D898ACBF652CA8B1",
+  "driver_sha256": "E0CA8B6EDD8E046CBDDEACA3F206818D086330C6D93FC3C4A5D03634FCDA45C5",
+  "owner_sha256": "387C6B59199D804A23BC201E8D9583C408B0C24AEE2A499335EAD33526578BE5",
+  "Source_body_rewrites": 0,
+  "raw_normalizations": 0,
+  "native_full_grammar_qualified": false,
+  "public_activation": false,
+  "verified_utc": "2026-10-14T20:55:58.6140505+00:00"
+}

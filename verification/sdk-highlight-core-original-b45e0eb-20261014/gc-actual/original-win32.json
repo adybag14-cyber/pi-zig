@@ -1,0 +1,5098 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "actualNodeGcExecuted": true,
+  "cases": 74,
+  "inputSha256": "b20e28b6a85b4d16b0758d65bea0d7d911942963976c9354fac4e63b8c4ac9e3",
+  "platform": "win32",
+  "node": {
+    "version": "v24.14.0",
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "execArgv": [
+      "--expose-gc",
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-b45-observe-20261014.mjs"
+    ]
+  },
+  "before": [
+    {
+      "manifest": "sdk-source-b45-full-manifest-20261014.json",
+      "count": 1965,
+      "drift": 0
+    },
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "manifest": "sdk-core74-b45-gc-original-local-20261014-candidate.json",
+      "count": 5374,
+      "drift": 0
+    },
+    {
+      "manifest": "sdk-core74-b45-gc-original-local-20261014-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "manifest": "sdk-source-b45-full-manifest-20261014.json",
+      "count": 1965,
+      "drift": 0
+    },
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "manifest": "sdk-core74-b45-gc-original-local-20261014-candidate.json",
+      "count": 5374,
+      "drift": 0
+    },
+    {
+      "manifest": "sdk-core74-b45-gc-original-local-20261014-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "scope": "Unchanged actual highlight.js10.7.3 inherit; actual eager21 factories and63 scanner+syntax outputs, common-mode JSON graph and private classes obtained from genuine scanner callbacks without Source rewriting, actual Node GC. No Source body rewriting. Historical typed catalog metadata only; latest generated catalog unqualified.",
+  "rows": [
+    {
+      "name": "actual eager language registration order and factory metadata",
+      "value": {
+        "languages": [
+          "python",
+          "java",
+          "go",
+          "javascript",
+          "json",
+          "cpp",
+          "typescript",
+          "php",
+          "ruby",
+          "c",
+          "csharp",
+          "nix",
+          "bash",
+          "rust",
+          "scala",
+          "kotlin",
+          "swift",
+          "dart",
+          "groovy",
+          "perl",
+          "lua"
+        ],
+        "factories": [
+          {
+            "name": "python",
+            "metadata": {
+              "name": "python",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "java",
+            "metadata": {
+              "name": "java",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "go",
+            "metadata": {
+              "name": "go",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "javascript",
+            "metadata": {
+              "name": "javascript",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "json",
+            "metadata": {
+              "name": "json",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "cpp",
+            "metadata": {
+              "name": "cpp",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "typescript",
+            "metadata": {
+              "name": "typescript",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "php",
+            "metadata": {
+              "name": "php",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "ruby",
+            "metadata": {
+              "name": "ruby",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "c",
+            "metadata": {
+              "name": "c",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "csharp",
+            "metadata": {
+              "name": "csharp",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "nix",
+            "metadata": {
+              "name": "nix",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "bash",
+            "metadata": {
+              "name": "bash",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "rust",
+            "metadata": {
+              "name": "rust",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "scala",
+            "metadata": {
+              "name": "scala",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "kotlin",
+            "metadata": {
+              "name": "kotlin",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "swift",
+            "metadata": {
+              "name": "swift",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "dart",
+            "metadata": {
+              "name": "dart",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "groovy",
+            "metadata": {
+              "name": "groovy",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "perl",
+            "metadata": {
+              "name": "perl",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "lua",
+            "metadata": {
+              "name": "lua",
+              "length": 1,
+              "ownKeys": [
+                "length",
+                "name",
+                "arguments",
+                "caller",
+                "prototype"
+              ],
+              "ownPrototype": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "python scanner 0",
+      "value": {
+        "language": "python",
+        "relevance": 6,
+        "illegal": false,
+        "value": "<span class=\"hljs-function\"><span class=\"hljs-keyword\">def</span> <span class=\"hljs-title\">greet</span>(<span class=\"hljs-params\">name</span>):</span>\n    <span class=\"hljs-keyword\">return</span> <span class=\"hljs-string\">f&quot;Hello <span class=\"hljs-subst\">{name}</span>&quot;</span> <span class=\"hljs-comment\"># <span class=\"hljs-doctag\">TODO:</span> greet</span>\n",
+        "code": "def greet(name):\n    return f\"Hello {name}\" # TODO: greet\n",
+        "tree": {
+          "children": [
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "def"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "greet"
+                  ]
+                },
+                "(",
+                {
+                  "kind": "params",
+                  "children": [
+                    "name"
+                  ]
+                },
+                "):"
+              ]
+            },
+            "\n    ",
+            {
+              "kind": "keyword",
+              "children": [
+                "return"
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "f\"Hello ",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "{name}"
+                  ]
+                },
+                "\""
+              ]
+            },
+            " ",
+            {
+              "kind": "comment",
+              "children": [
+                "# ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " greet"
+              ]
+            },
+            "\n"
+          ]
+        },
+        "rendered": "K(def)D( )D(greet)D(()D(name)D():)\nD(    )K(return)D( )S(f\"Hello )S({name})S(\")D( )C(# )C(TODO:)C( greet)\n"
+      }
+    },
+    {
+      "name": "python scanner 1",
+      "value": {
+        "language": "python",
+        "relevance": 3,
+        "illegal": false,
+        "value": "<span class=\"hljs-class\"><span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">Caf</span>é:</span>\n    value = [<span class=\"hljs-literal\">True</span>, <span class=\"hljs-literal\">None</span>, <span class=\"hljs-number\">0x2a</span>, <span class=\"hljs-number\">1.5e-2</span>]\n",
+        "code": "class Café:\n    value = [True, None, 0x2a, 1.5e-2]\n",
+        "tree": {
+          "children": [
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "class"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Caf"
+                  ]
+                },
+                "é:"
+              ]
+            },
+            "\n    value = [",
+            {
+              "kind": "literal",
+              "children": [
+                "True"
+              ]
+            },
+            ", ",
+            {
+              "kind": "literal",
+              "children": [
+                "None"
+              ]
+            },
+            ", ",
+            {
+              "kind": "number",
+              "children": [
+                "0x2a"
+              ]
+            },
+            ", ",
+            {
+              "kind": "number",
+              "children": [
+                "1.5e-2"
+              ]
+            },
+            "]\n"
+          ]
+        },
+        "rendered": "K(class)D( )D(Caf)D(é:)\nD(    value = [)D(True)D(, )D(None)D(, )N(0x2a)D(, )N(1.5e-2)D(])\n"
+      }
+    },
+    {
+      "name": "python scanner 2",
+      "value": {
+        "language": "python",
+        "relevance": 2,
+        "illegal": false,
+        "value": "x = <span class=\"hljs-string\">&quot;&lt;&amp;\\&quot;&quot;</span>\n\n<span class=\"hljs-built_in\">print</span>(x)",
+        "code": "x = \"<&\\\"\"\n\nprint(x)",
+        "tree": {
+          "children": [
+            "x = ",
+            {
+              "kind": "string",
+              "children": [
+                "\"<&",
+                "\\\"",
+                "\""
+              ]
+            },
+            "\n\n",
+            {
+              "kind": "built_in",
+              "children": [
+                "print"
+              ]
+            },
+            "(x)"
+          ]
+        },
+        "rendered": "D(x = )S(\"<&\\\"\")\n\nD(print)D((x))"
+      }
+    },
+    {
+      "name": "java scanner 0",
+      "value": {
+        "language": "java",
+        "relevance": 8,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">public</span> <span class=\"hljs-class\"><span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">Hello</span> </span>{ <span class=\"hljs-function\"><span class=\"hljs-keyword\">public</span> <span class=\"hljs-keyword\">static</span> <span class=\"hljs-keyword\">void</span> <span class=\"hljs-title\">main</span><span class=\"hljs-params\">(String[] args)</span> </span>{ System.out.println(<span class=\"hljs-string\">&quot;hi&quot;</span>); } }",
+        "code": "public class Hello { public static void main(String[] args) { System.out.println(\"hi\"); } }",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "public"
+              ]
+            },
+            " ",
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "class"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Hello"
+                  ]
+                },
+                " "
+              ]
+            },
+            "{ ",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "public"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "static"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "void"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "main"
+                  ]
+                },
+                {
+                  "kind": "params",
+                  "children": [
+                    "(String[] args)"
+                  ]
+                },
+                " "
+              ]
+            },
+            "{ System.out.println(",
+            {
+              "kind": "string",
+              "children": [
+                "\"hi\""
+              ]
+            },
+            "); } }"
+          ]
+        },
+        "rendered": "K(public)D( )K(class)D( )D(Hello)D( )D({ )K(public)D( )K(static)D( )K(void)D( )D(main)D((String[] args))D( )D({ System.out.println()S(\"hi\")D(); } })"
+      }
+    },
+    {
+      "name": "java scanner 1",
+      "value": {
+        "language": "java",
+        "relevance": 7,
+        "illegal": false,
+        "value": "<span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> hello</span>\n<span class=\"hljs-meta\">@Deprecated</span> <span class=\"hljs-class\"><span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">A</span>&lt;<span class=\"hljs-title\">T</span>&gt; </span>{ <span class=\"hljs-keyword\">private</span> <span class=\"hljs-keyword\">final</span> <span class=\"hljs-keyword\">int</span> value = <span class=\"hljs-number\">0x2a</span>; }",
+        "code": "// TODO: hello\n@Deprecated class A<T> { private final int value = 0x2a; }",
+        "tree": {
+          "children": [
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " hello"
+              ]
+            },
+            "\n",
+            {
+              "kind": "meta",
+              "children": [
+                "@Deprecated"
+              ]
+            },
+            " ",
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "class"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "A"
+                  ]
+                },
+                "<",
+                {
+                  "kind": "title",
+                  "children": [
+                    "T"
+                  ]
+                },
+                "> "
+              ]
+            },
+            "{ ",
+            {
+              "kind": "keyword",
+              "children": [
+                "private"
+              ]
+            },
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "final"
+              ]
+            },
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "int"
+              ]
+            },
+            " value = ",
+            {
+              "kind": "number",
+              "children": [
+                "0x2a"
+              ]
+            },
+            "; }"
+          ]
+        },
+        "rendered": "C(// )C(TODO:)C( hello)\nD(@Deprecated)D( )K(class)D( )D(A)D(<)D(T)D(> )D({ )K(private)D( )K(final)D( )K(int)D( value = )N(0x2a)D(; })"
+      }
+    },
+    {
+      "name": "java scanner 2",
+      "value": {
+        "language": "java",
+        "relevance": 1,
+        "illegal": false,
+        "value": "String s = <span class=\"hljs-string\">&quot;&lt;&gt;&amp;\\&quot;&quot;</span>;",
+        "code": "String s = \"<>&\\\"\";",
+        "tree": {
+          "children": [
+            "String s = ",
+            {
+              "kind": "string",
+              "children": [
+                "\"<>&",
+                "\\\"",
+                "\""
+              ]
+            },
+            ";"
+          ]
+        },
+        "rendered": "D(String s = )S(\"<>&\\\"\")D(;)"
+      }
+    },
+    {
+      "name": "go scanner 0",
+      "value": {
+        "language": "go",
+        "relevance": 6,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">package</span> main\n<span class=\"hljs-keyword\">import</span> <span class=\"hljs-string\">&quot;fmt&quot;</span>\n<span class=\"hljs-function\"><span class=\"hljs-keyword\">func</span> <span class=\"hljs-title\">main</span><span class=\"hljs-params\">()</span></span> { fmt.Println(<span class=\"hljs-string\">&quot;hello&quot;</span>) }",
+        "code": "package main\nimport \"fmt\"\nfunc main() { fmt.Println(\"hello\") }",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "package"
+              ]
+            },
+            " main\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "import"
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "\"fmt\""
+              ]
+            },
+            "\n",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "func"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "main"
+                  ]
+                },
+                {
+                  "kind": "params",
+                  "children": [
+                    "()"
+                  ]
+                }
+              ]
+            },
+            " { fmt.Println(",
+            {
+              "kind": "string",
+              "children": [
+                "\"hello\""
+              ]
+            },
+            ") }"
+          ]
+        },
+        "rendered": "K(package)D( main)\nK(import)D( )S(\"fmt\")\nK(func)D( )D(main)D(())D( { fmt.Println()S(\"hello\")D() })"
+      }
+    },
+    {
+      "name": "go scanner 1",
+      "value": {
+        "language": "go",
+        "relevance": 6,
+        "illegal": false,
+        "value": "<span class=\"hljs-comment\">// <span class=\"hljs-doctag\">NOTE:</span> go</span>\n<span class=\"hljs-keyword\">type</span> Pair <span class=\"hljs-keyword\">struct</span> { Left <span class=\"hljs-keyword\">int</span>; Right <span class=\"hljs-keyword\">string</span> }\n<span class=\"hljs-keyword\">var</span> n = <span class=\"hljs-number\">1.25e3</span>",
+        "code": "// NOTE: go\ntype Pair struct { Left int; Right string }\nvar n = 1.25e3",
+        "tree": {
+          "children": [
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "NOTE:"
+                  ]
+                },
+                " go"
+              ]
+            },
+            "\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "type"
+              ]
+            },
+            " Pair ",
+            {
+              "kind": "keyword",
+              "children": [
+                "struct"
+              ]
+            },
+            " { Left ",
+            {
+              "kind": "keyword",
+              "children": [
+                "int"
+              ]
+            },
+            "; Right ",
+            {
+              "kind": "keyword",
+              "children": [
+                "string"
+              ]
+            },
+            " }\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "var"
+              ]
+            },
+            " n = ",
+            {
+              "kind": "number",
+              "children": [
+                "1.25e3"
+              ]
+            }
+          ]
+        },
+        "rendered": "C(// )C(NOTE:)C( go)\nK(type)D( Pair )K(struct)D( { Left )K(int)D(; Right )K(string)D( })\nK(var)D( n = )N(1.25e3)"
+      }
+    },
+    {
+      "name": "go scanner 2",
+      "value": {
+        "language": "go",
+        "relevance": 2,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">var</span> raw = <span class=\"hljs-string\">`a &lt; b &amp; c`</span>",
+        "code": "var raw = `a < b & c`",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "var"
+              ]
+            },
+            " raw = ",
+            {
+              "kind": "string",
+              "children": [
+                "`a < b & c`"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(var)D( raw = )S(`a < b & c`)"
+      }
+    },
+    {
+      "name": "javascript scanner 0",
+      "value": {
+        "language": "javascript",
+        "relevance": 6,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">const</span> greet = <span class=\"hljs-function\">(<span class=\"hljs-params\">name</span>) =&gt;</span> <span class=\"hljs-string\">`Hello <span class=\"hljs-subst\">${name}</span>`</span>; <span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> hi</span>",
+        "code": "const greet = (name) => `Hello ${name}`; // TODO: hi",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "const"
+              ]
+            },
+            " greet ",
+            "= ",
+            {
+              "kind": "function",
+              "children": [
+                "(",
+                {
+                  "kind": "params",
+                  "children": [
+                    "name"
+                  ]
+                },
+                ") =>"
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "`Hello ",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "${name}"
+                  ]
+                },
+                "`"
+              ]
+            },
+            "; ",
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " hi"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(const)D( greet = )D(()D(name)D() =>)D( )S(`Hello )S(${name})S(`)D(; )C(// )C(TODO:)C( hi)"
+      }
+    },
+    {
+      "name": "javascript scanner 1",
+      "value": {
+        "language": "javascript",
+        "relevance": 9,
+        "illegal": false,
+        "value": "<span class=\"hljs-class\"><span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">A</span> <span class=\"hljs-keyword\">extends</span> <span class=\"hljs-title\">B</span> </span>{ <span class=\"hljs-keyword\">async</span> <span class=\"hljs-function\"><span class=\"hljs-title\">run</span>(<span class=\"hljs-params\"></span>)</span> { <span class=\"hljs-keyword\">return</span> <span class=\"hljs-regexp\">/ab+c/gi</span>.test(<span class=\"hljs-string\">&quot;abc&quot;</span>); } }",
+        "code": "class A extends B { async run() { return /ab+c/gi.test(\"abc\"); } }",
+        "tree": {
+          "children": [
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "class"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "A"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "extends"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "B"
+                  ]
+                },
+                " "
+              ]
+            },
+            "{ ",
+            {
+              "kind": "keyword",
+              "children": [
+                "async"
+              ]
+            },
+            " ",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "title",
+                  "children": [
+                    "run"
+                  ]
+                },
+                "(",
+                {
+                  "kind": "params",
+                  "children": []
+                },
+                ")"
+              ]
+            },
+            " ",
+            "{ ",
+            {
+              "kind": "keyword",
+              "children": [
+                "return"
+              ]
+            },
+            " ",
+            {
+              "kind": "regexp",
+              "children": [
+                "/ab+c/gi"
+              ]
+            },
+            ".test",
+            "(",
+            {
+              "kind": "string",
+              "children": [
+                "\"abc\""
+              ]
+            },
+            ")",
+            "; ",
+            "} }"
+          ]
+        },
+        "rendered": "K(class)D( )D(A)D( )K(extends)D( )D(B)D( )D({ )K(async)D( )D(run)D(()D())D( { )K(return)D( )D(/ab+c/gi)D(.test()S(\"abc\")D(); } })"
+      }
+    },
+    {
+      "name": "javascript scanner 2",
+      "value": {
+        "language": "javascript",
+        "relevance": 3,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">const</span> s = <span class=\"hljs-string\">&quot;&lt;&gt;&amp;\\&quot;&quot;</span>;\n<span class=\"hljs-keyword\">let</span> n = <span class=\"hljs-number\">0x2a</span>;",
+        "code": "const s = \"<>&\\\"\";\nlet n = 0x2a;",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "const"
+              ]
+            },
+            " s ",
+            "= ",
+            {
+              "kind": "string",
+              "children": [
+                "\"<>&",
+                "\\\"",
+                "\""
+              ]
+            },
+            ";\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "let"
+              ]
+            },
+            " n ",
+            "= ",
+            {
+              "kind": "number",
+              "children": [
+                "0x2a"
+              ]
+            },
+            ";"
+          ]
+        },
+        "rendered": "K(const)D( s = )S(\"<>&\\\"\")D(;)\nK(let)D( n = )N(0x2a)D(;)"
+      }
+    },
+    {
+      "name": "json scanner 0",
+      "value": {
+        "language": "json",
+        "relevance": 15,
+        "illegal": false,
+        "value": "{<span class=\"hljs-attr\">&quot;name&quot;</span>:<span class=\"hljs-string\">&quot;Café&quot;</span>,<span class=\"hljs-attr\">&quot;ok&quot;</span>:<span class=\"hljs-literal\">true</span>,<span class=\"hljs-attr\">&quot;value&quot;</span>:<span class=\"hljs-literal\">null</span>,<span class=\"hljs-attr\">&quot;list&quot;</span>:[<span class=\"hljs-number\">1</span>,<span class=\"hljs-number\">2.5e3</span>]}",
+        "code": "{\"name\":\"Café\",\"ok\":true,\"value\":null,\"list\":[1,2.5e3]}",
+        "tree": {
+          "children": [
+            "{",
+            {
+              "kind": "attr",
+              "children": [
+                "\"name\""
+              ]
+            },
+            ":",
+            {
+              "kind": "string",
+              "children": [
+                "\"Café\""
+              ]
+            },
+            ",",
+            {
+              "kind": "attr",
+              "children": [
+                "\"ok\""
+              ]
+            },
+            ":",
+            {
+              "kind": "literal",
+              "children": [
+                "true"
+              ]
+            },
+            ",",
+            {
+              "kind": "attr",
+              "children": [
+                "\"value\""
+              ]
+            },
+            ":",
+            {
+              "kind": "literal",
+              "children": [
+                "null"
+              ]
+            },
+            ",",
+            {
+              "kind": "attr",
+              "children": [
+                "\"list\""
+              ]
+            },
+            ":",
+            "[",
+            {
+              "kind": "number",
+              "children": [
+                "1"
+              ]
+            },
+            ",",
+            {
+              "kind": "number",
+              "children": [
+                "2.5e3"
+              ]
+            },
+            "]",
+            "}"
+          ]
+        },
+        "rendered": "D({)D(\"name\")D(:)S(\"Café\")D(,)D(\"ok\")D(:)D(true)D(,)D(\"value\")D(:)D(null)D(,)D(\"list\")D(:[)N(1)D(,)N(2.5e3)D(]})"
+      }
+    },
+    {
+      "name": "json scanner 1",
+      "value": {
+        "language": "json",
+        "relevance": 10,
+        "illegal": false,
+        "value": "<span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> comments</span>\n{<span class=\"hljs-attr\">&quot;a&quot;</span>:<span class=\"hljs-number\">1</span>,<span class=\"hljs-comment\">/* <span class=\"hljs-doctag\">NOTE:</span> inline */</span><span class=\"hljs-attr\">&quot;b&quot;</span>:[<span class=\"hljs-literal\">false</span>]}",
+        "code": "// TODO: comments\n{\"a\":1,/* NOTE: inline */\"b\":[false]}",
+        "tree": {
+          "children": [
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " comments"
+              ]
+            },
+            "\n",
+            "{",
+            {
+              "kind": "attr",
+              "children": [
+                "\"a\""
+              ]
+            },
+            ":",
+            {
+              "kind": "number",
+              "children": [
+                "1"
+              ]
+            },
+            ",",
+            {
+              "kind": "comment",
+              "children": [
+                "/* ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "NOTE:"
+                  ]
+                },
+                " inline */"
+              ]
+            },
+            {
+              "kind": "attr",
+              "children": [
+                "\"b\""
+              ]
+            },
+            ":",
+            "[",
+            {
+              "kind": "literal",
+              "children": [
+                "false"
+              ]
+            },
+            "]",
+            "}"
+          ]
+        },
+        "rendered": "C(// )C(TODO:)C( comments)\nD({)D(\"a\")D(:)N(1)D(,)C(/* )C(NOTE:)C( inline */)D(\"b\")D(:[)D(false)D(]})"
+      }
+    },
+    {
+      "name": "json scanner 2",
+      "value": {
+        "language": "json",
+        "relevance": 6,
+        "illegal": false,
+        "value": "{<span class=\"hljs-attr\">&quot;escaped&quot;</span>:<span class=\"hljs-string\">&quot;&lt;&gt;&amp;\\&quot;&quot;</span>,<span class=\"hljs-attr\">&quot;bad&quot;</span>:undefined}",
+        "code": "{\"escaped\":\"<>&\\\"\",\"bad\":undefined}",
+        "tree": {
+          "children": [
+            "{",
+            {
+              "kind": "attr",
+              "children": [
+                "\"escaped\""
+              ]
+            },
+            ":",
+            {
+              "kind": "string",
+              "children": [
+                "\"<>&",
+                "\\\"",
+                "\""
+              ]
+            },
+            ",",
+            {
+              "kind": "attr",
+              "children": [
+                "\"bad\""
+              ]
+            },
+            ":undefined",
+            "}"
+          ]
+        },
+        "rendered": "D({)D(\"escaped\")D(:)S(\"<>&\\\"\")D(,)D(\"bad\")D(:undefined})"
+      }
+    },
+    {
+      "name": "cpp scanner 0",
+      "value": {
+        "language": "cpp",
+        "relevance": 10,
+        "illegal": false,
+        "value": "<span class=\"hljs-meta\">#<span class=\"hljs-meta-keyword\">include</span> <span class=\"hljs-meta-string\">&lt;iostream&gt;</span></span>\n<span class=\"hljs-function\"><span class=\"hljs-keyword\">int</span> <span class=\"hljs-title\">main</span><span class=\"hljs-params\">()</span> </span>{ std::cout &lt;&lt; <span class=\"hljs-string\">&quot;hello&quot;</span>; <span class=\"hljs-keyword\">return</span> <span class=\"hljs-number\">0</span>; }",
+        "code": "#include <iostream>\nint main() { std::cout << \"hello\"; return 0; }",
+        "tree": {
+          "children": [
+            {
+              "kind": "meta",
+              "children": [
+                "#",
+                {
+                  "kind": "meta-keyword",
+                  "children": [
+                    "include"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "meta-string",
+                  "children": [
+                    "<iostream>"
+                  ]
+                }
+              ]
+            },
+            "\n",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "int"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "main"
+                  ]
+                },
+                {
+                  "kind": "params",
+                  "children": [
+                    "()"
+                  ]
+                },
+                " "
+              ]
+            },
+            "{ ",
+            "std::",
+            "cout << ",
+            {
+              "kind": "string",
+              "children": [
+                "\"hello\""
+              ]
+            },
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "return"
+              ]
+            },
+            " ",
+            {
+              "kind": "number",
+              "children": [
+                "0"
+              ]
+            },
+            ";",
+            " }"
+          ]
+        },
+        "rendered": "D(#)D(include)D( )D(<iostream>)\nK(int)D( )D(main)D(())D( )D({ std::cout << )S(\"hello\")D(; )K(return)D( )N(0)D(; })"
+      }
+    },
+    {
+      "name": "cpp scanner 1",
+      "value": {
+        "language": "cpp",
+        "relevance": 5,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">template</span>&lt;<span class=\"hljs-class\"><span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">T</span>&gt;</span> <span class=\"hljs-class\"><span class=\"hljs-keyword\">struct</span> <span class=\"hljs-title\">A</span> {</span> <span class=\"hljs-keyword\">const</span> T value; }; <span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> cpp</span>",
+        "code": "template<class T> struct A { const T value; }; // TODO: cpp",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "template"
+              ]
+            },
+            "<",
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "class"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "T"
+                  ]
+                },
+                ">"
+              ]
+            },
+            " ",
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "struct"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "A"
+                  ]
+                },
+                " {"
+              ]
+            },
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "const"
+              ]
+            },
+            " T value; }; ",
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " cpp"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(template)D(<)K(class)D( )D(T)D(>)D( )K(struct)D( )D(A)D( {)D( )K(const)D( T value; }; )C(// )C(TODO:)C( cpp)"
+      }
+    },
+    {
+      "name": "cpp scanner 2",
+      "value": {
+        "language": "cpp",
+        "relevance": 3,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">auto</span> n = <span class=\"hljs-number\">0x2a</span>; <span class=\"hljs-keyword\">auto</span> s = <span class=\"hljs-string\">R&quot;tag(&lt;&gt;&amp;)tag&quot;</span>;",
+        "code": "auto n = 0x2a; auto s = R\"tag(<>&)tag\";",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "auto"
+              ]
+            },
+            " n ",
+            "= ",
+            {
+              "kind": "number",
+              "children": [
+                "0x2a"
+              ]
+            },
+            ";",
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "auto"
+              ]
+            },
+            " s ",
+            "= ",
+            {
+              "kind": "string",
+              "children": [
+                "R\"tag(<>&)tag\""
+              ]
+            },
+            ";"
+          ]
+        },
+        "rendered": "K(auto)D( n = )N(0x2a)D(; )K(auto)D( s = )S(R\"tag(<>&)tag\")D(;)"
+      }
+    },
+    {
+      "name": "typescript scanner 0",
+      "value": {
+        "language": "typescript",
+        "relevance": 5,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">interface</span> User { name: <span class=\"hljs-built_in\">string</span>; active?: <span class=\"hljs-built_in\">boolean</span> }\n<span class=\"hljs-keyword\">const</span> greet = (u: User): <span class=\"hljs-function\"><span class=\"hljs-params\">string</span> =&gt;</span> u.name;",
+        "code": "interface User { name: string; active?: boolean }\nconst greet = (u: User): string => u.name;",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "interface"
+              ]
+            },
+            " User ",
+            "{ name",
+            ": ",
+            {
+              "kind": "built_in",
+              "children": [
+                "string"
+              ]
+            },
+            "; ",
+            "active",
+            "?",
+            ": ",
+            {
+              "kind": "built_in",
+              "children": [
+                "boolean"
+              ]
+            },
+            " }\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "const"
+              ]
+            },
+            " greet ",
+            "= ",
+            "(",
+            "u",
+            ": ",
+            "User)",
+            ": ",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "params",
+                  "children": [
+                    "string"
+                  ]
+                },
+                " =>"
+              ]
+            },
+            " ",
+            "u",
+            ".name",
+            ";"
+          ]
+        },
+        "rendered": "K(interface)D( User { name: )D(string)D(; active?: )D(boolean)D( })\nK(const)D( greet = (u: User): )D(string)D( =>)D( u.name;)"
+      }
+    },
+    {
+      "name": "typescript scanner 1",
+      "value": {
+        "language": "typescript",
+        "relevance": 7,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">type</span> Value&lt;T&gt; = T | <span class=\"hljs-literal\">null</span>;\n<span class=\"hljs-keyword\">export</span> <span class=\"hljs-keyword\">async</span> <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> <span class=\"hljs-title\">run</span>(<span class=\"hljs-params\"></span>): <span class=\"hljs-title\">Promise</span>&lt;<span class=\"hljs-title\">number</span>&gt; </span>{ <span class=\"hljs-keyword\">return</span> <span class=\"hljs-number\">42</span>; }",
+        "code": "type Value<T> = T | null;\nexport async function run(): Promise<number> { return 42; }",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "type"
+              ]
+            },
+            " Value",
+            "<",
+            "T",
+            "> ",
+            "= ",
+            "T ",
+            "| ",
+            {
+              "kind": "literal",
+              "children": [
+                "null"
+              ]
+            },
+            ";\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "export"
+              ]
+            },
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "async"
+              ]
+            },
+            " ",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "function"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "run"
+                  ]
+                },
+                "(",
+                {
+                  "kind": "params",
+                  "children": []
+                },
+                "): ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Promise"
+                  ]
+                },
+                "<",
+                {
+                  "kind": "title",
+                  "children": [
+                    "number"
+                  ]
+                },
+                "> "
+              ]
+            },
+            "{ ",
+            {
+              "kind": "keyword",
+              "children": [
+                "return"
+              ]
+            },
+            " ",
+            {
+              "kind": "number",
+              "children": [
+                "42"
+              ]
+            },
+            "; ",
+            "}"
+          ]
+        },
+        "rendered": "K(type)D( Value<T> = T | )D(null)D(;)\nK(export)D( )K(async)D( )K(function)D( )D(run)D(()D(): )D(Promise)D(<)D(number)D(> )D({ )K(return)D( )N(42)D(; })"
+      }
+    },
+    {
+      "name": "typescript scanner 2",
+      "value": {
+        "language": "typescript",
+        "relevance": 4,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">const</span> text: <span class=\"hljs-built_in\">string</span> = <span class=\"hljs-string\">`&lt;&gt;&amp;<span class=\"hljs-subst\">${<span class=\"hljs-number\">1</span>}</span>`</span>;",
+        "code": "const text: string = `<>&${1}`;",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "const"
+              ]
+            },
+            " text",
+            ": ",
+            {
+              "kind": "built_in",
+              "children": [
+                "string"
+              ]
+            },
+            " ",
+            "= ",
+            {
+              "kind": "string",
+              "children": [
+                "`<>&",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "${",
+                    {
+                      "kind": "number",
+                      "children": [
+                        "1"
+                      ]
+                    },
+                    "}"
+                  ]
+                },
+                "`"
+              ]
+            },
+            ";"
+          ]
+        },
+        "rendered": "K(const)D( text: )D(string)D( = )S(`<>&)S(${)N(1)S(})S(`)D(;)"
+      }
+    },
+    {
+      "name": "php scanner 0",
+      "value": {
+        "language": "php",
+        "relevance": 17,
+        "illegal": false,
+        "value": "<span class=\"hljs-meta\">&lt;?php</span> <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> <span class=\"hljs-title\">greet</span>(<span class=\"hljs-params\"><span class=\"hljs-variable\">$name</span></span>) </span>{ <span class=\"hljs-keyword\">return</span> <span class=\"hljs-string\">&quot;Hello <span class=\"hljs-subst\">$name</span>&quot;</span>; } <span class=\"hljs-meta\">?&gt;</span>",
+        "code": "<?php function greet($name) { return \"Hello $name\"; } ?>",
+        "tree": {
+          "children": [
+            {
+              "kind": "meta",
+              "children": [
+                "<?php"
+              ]
+            },
+            " ",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "function"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "greet"
+                  ]
+                },
+                "(",
+                {
+                  "kind": "params",
+                  "children": [
+                    {
+                      "kind": "variable",
+                      "children": [
+                        "$name"
+                      ]
+                    }
+                  ]
+                },
+                ") "
+              ]
+            },
+            "{ ",
+            {
+              "kind": "keyword",
+              "children": [
+                "return"
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "\"Hello ",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "$name"
+                  ]
+                },
+                "\""
+              ]
+            },
+            "; } ",
+            {
+              "kind": "meta",
+              "children": [
+                "?>"
+              ]
+            }
+          ]
+        },
+        "rendered": "D(<?php)D( )K(function)D( )D(greet)D(()D($name)D() )D({ )K(return)D( )S(\"Hello )S($name)S(\")D(; } )D(?>)"
+      }
+    },
+    {
+      "name": "php scanner 1",
+      "value": {
+        "language": "php",
+        "relevance": 15,
+        "illegal": false,
+        "value": "<span class=\"hljs-meta\">&lt;?php</span> <span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> php</span>\n<span class=\"hljs-class\"><span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">A</span> <span class=\"hljs-keyword\">extends</span> <span class=\"hljs-title\">B</span> </span>{ <span class=\"hljs-keyword\">public</span> <span class=\"hljs-keyword\">const</span> VALUE = <span class=\"hljs-number\">42</span>; }",
+        "code": "<?php // TODO: php\nclass A extends B { public const VALUE = 42; }",
+        "tree": {
+          "children": [
+            {
+              "kind": "meta",
+              "children": [
+                "<?php"
+              ]
+            },
+            " ",
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " php"
+              ]
+            },
+            "\n",
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "class"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "A"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "extends"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "B"
+                  ]
+                },
+                " "
+              ]
+            },
+            "{ ",
+            {
+              "kind": "keyword",
+              "children": [
+                "public"
+              ]
+            },
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "const"
+              ]
+            },
+            " VALUE = ",
+            {
+              "kind": "number",
+              "children": [
+                "42"
+              ]
+            },
+            "; }"
+          ]
+        },
+        "rendered": "D(<?php)D( )C(// )C(TODO:)C( php)\nK(class)D( )D(A)D( )K(extends)D( )D(B)D( )D({ )K(public)D( )K(const)D( VALUE = )N(42)D(; })"
+      }
+    },
+    {
+      "name": "php scanner 2",
+      "value": {
+        "language": "php",
+        "relevance": 3,
+        "illegal": false,
+        "value": "&lt;div&gt;<span class=\"hljs-meta\">&lt;?=</span> htmlspecialchars(<span class=\"hljs-string\">&quot;&lt;&gt;&amp;&quot;</span>) <span class=\"hljs-meta\">?&gt;</span>&lt;/div&gt;",
+        "code": "<div><?= htmlspecialchars(\"<>&\") ?></div>",
+        "tree": {
+          "children": [
+            "<div>",
+            {
+              "kind": "meta",
+              "children": [
+                "<?="
+              ]
+            },
+            " htmlspecialchars(",
+            {
+              "kind": "string",
+              "children": [
+                "\"<>&\""
+              ]
+            },
+            ") ",
+            {
+              "kind": "meta",
+              "children": [
+                "?>"
+              ]
+            },
+            "</div>"
+          ]
+        },
+        "rendered": "D(<div>)D(<?=)D( htmlspecialchars()S(\"<>&\")D() )D(?>)D(</div>)"
+      }
+    },
+    {
+      "name": "ruby scanner 0",
+      "value": {
+        "language": "ruby",
+        "relevance": 5,
+        "illegal": false,
+        "value": "<span class=\"hljs-function\"><span class=\"hljs-keyword\">def</span> <span class=\"hljs-title\">greet</span><span class=\"hljs-params\">(name)</span></span>\n  <span class=\"hljs-string\">&quot;Hello <span class=\"hljs-subst\">#{name}</span>&quot;</span>\n<span class=\"hljs-keyword\">end</span>",
+        "code": "def greet(name)\n  \"Hello #{name}\"\nend",
+        "tree": {
+          "children": [
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "def"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "greet"
+                  ]
+                },
+                {
+                  "kind": "params",
+                  "children": [
+                    "(name)"
+                  ]
+                }
+              ]
+            },
+            "\n  ",
+            {
+              "kind": "string",
+              "children": [
+                "\"Hello ",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "#{name}"
+                  ]
+                },
+                "\""
+              ]
+            },
+            "\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "end"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(def)D( )D(greet)D((name))\nD(  )S(\"Hello )S(#{name})S(\")\nK(end)"
+      }
+    },
+    {
+      "name": "ruby scanner 1",
+      "value": {
+        "language": "ruby",
+        "relevance": 6,
+        "illegal": false,
+        "value": "<span class=\"hljs-class\"><span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">A</span> &lt; B</span>\n  <span class=\"hljs-keyword\">attr_reader</span> <span class=\"hljs-symbol\">:value</span>\n<span class=\"hljs-keyword\">end</span> <span class=\"hljs-comment\"># <span class=\"hljs-doctag\">TODO:</span> ruby</span>",
+        "code": "class A < B\n  attr_reader :value\nend # TODO: ruby",
+        "tree": {
+          "children": [
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "class"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "A"
+                  ]
+                },
+                " ",
+                "< ",
+                "B"
+              ]
+            },
+            "\n  ",
+            {
+              "kind": "keyword",
+              "children": [
+                "attr_reader"
+              ]
+            },
+            " ",
+            {
+              "kind": "symbol",
+              "children": [
+                ":",
+                "value"
+              ]
+            },
+            "\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "end"
+              ]
+            },
+            " ",
+            {
+              "kind": "comment",
+              "children": [
+                "# ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " ruby"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(class)D( )D(A)D( < B)\nD(  )K(attr_reader)D( )D(:value)\nK(end)D( )C(# )C(TODO:)C( ruby)"
+      }
+    },
+    {
+      "name": "ruby scanner 2",
+      "value": {
+        "language": "ruby",
+        "relevance": 2,
+        "illegal": false,
+        "value": "value = <span class=\"hljs-regexp\">/ab+c/i</span>\ntext = <span class=\"hljs-string\">&quot;&lt;&gt;&amp;&quot;</span>",
+        "code": "value = /ab+c/i\ntext = \"<>&\"",
+        "tree": {
+          "children": [
+            "value ",
+            "= ",
+            {
+              "kind": "regexp",
+              "children": [
+                "/ab+c/i"
+              ]
+            },
+            "\ntext ",
+            "= ",
+            {
+              "kind": "string",
+              "children": [
+                "\"<>&\""
+              ]
+            }
+          ]
+        },
+        "rendered": "D(value = )D(/ab+c/i)\nD(text = )S(\"<>&\")"
+      }
+    },
+    {
+      "name": "c scanner 0",
+      "value": {
+        "language": "c",
+        "relevance": 9,
+        "illegal": false,
+        "value": "<span class=\"hljs-meta\">#<span class=\"hljs-meta-keyword\">include</span> <span class=\"hljs-meta-string\">&lt;stdio.h&gt;</span></span>\n<span class=\"hljs-function\"><span class=\"hljs-keyword\">int</span> <span class=\"hljs-title\">main</span><span class=\"hljs-params\">(<span class=\"hljs-keyword\">void</span>)</span> </span>{ <span class=\"hljs-built_in\">printf</span>(<span class=\"hljs-string\">&quot;hello&quot;</span>); <span class=\"hljs-keyword\">return</span> <span class=\"hljs-number\">0</span>; }",
+        "code": "#include <stdio.h>\nint main(void) { printf(\"hello\"); return 0; }",
+        "tree": {
+          "children": [
+            {
+              "kind": "meta",
+              "children": [
+                "#",
+                {
+                  "kind": "meta-keyword",
+                  "children": [
+                    "include"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "meta-string",
+                  "children": [
+                    "<stdio.h>"
+                  ]
+                }
+              ]
+            },
+            "\n",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "int"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "main"
+                  ]
+                },
+                {
+                  "kind": "params",
+                  "children": [
+                    "(",
+                    {
+                      "kind": "keyword",
+                      "children": [
+                        "void"
+                      ]
+                    },
+                    ")"
+                  ]
+                },
+                " "
+              ]
+            },
+            "{ ",
+            {
+              "kind": "built_in",
+              "children": [
+                "printf"
+              ]
+            },
+            "(",
+            {
+              "kind": "string",
+              "children": [
+                "\"hello\""
+              ]
+            },
+            ")",
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "return"
+              ]
+            },
+            " ",
+            {
+              "kind": "number",
+              "children": [
+                "0"
+              ]
+            },
+            ";",
+            " }"
+          ]
+        },
+        "rendered": "D(#)D(include)D( )D(<stdio.h>)\nK(int)D( )D(main)D(()K(void)D())D( )D({ )D(printf)D(()S(\"hello\")D(); )K(return)D( )N(0)D(; })"
+      }
+    },
+    {
+      "name": "c scanner 1",
+      "value": {
+        "language": "c",
+        "relevance": 5,
+        "illegal": false,
+        "value": "<span class=\"hljs-comment\">/* <span class=\"hljs-doctag\">TODO:</span> c */</span>\n<span class=\"hljs-class\"><span class=\"hljs-keyword\">struct</span> <span class=\"hljs-title\">Pair</span> {</span> <span class=\"hljs-keyword\">int</span> left; <span class=\"hljs-keyword\">const</span> <span class=\"hljs-keyword\">char</span> *right; };",
+        "code": "/* TODO: c */\nstruct Pair { int left; const char *right; };",
+        "tree": {
+          "children": [
+            {
+              "kind": "comment",
+              "children": [
+                "/* ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " c */"
+              ]
+            },
+            "\n",
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "struct"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Pair"
+                  ]
+                },
+                " {"
+              ]
+            },
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "int"
+              ]
+            },
+            " left; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "const"
+              ]
+            },
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "char"
+              ]
+            },
+            " *right; };"
+          ]
+        },
+        "rendered": "C(/* )C(TODO:)C( c */)\nK(struct)D( )D(Pair)D( {)D( )K(int)D( left; )K(const)D( )K(char)D( *right; };)"
+      }
+    },
+    {
+      "name": "c scanner 2",
+      "value": {
+        "language": "c",
+        "relevance": 4,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">unsigned</span> n = <span class=\"hljs-number\">0x2a</span>U; <span class=\"hljs-keyword\">const</span> <span class=\"hljs-keyword\">char</span> *s = <span class=\"hljs-string\">&quot;&lt;&gt;&amp;\\&quot;&quot;</span>;",
+        "code": "unsigned n = 0x2aU; const char *s = \"<>&\\\"\";",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "unsigned"
+              ]
+            },
+            " n ",
+            "= ",
+            {
+              "kind": "number",
+              "children": [
+                "0x2a"
+              ]
+            },
+            "U;",
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "const"
+              ]
+            },
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "char"
+              ]
+            },
+            " *s ",
+            "= ",
+            {
+              "kind": "string",
+              "children": [
+                "\"<>&",
+                "\\\"",
+                "\""
+              ]
+            },
+            ";"
+          ]
+        },
+        "rendered": "K(unsigned)D( n = )N(0x2a)D(U; )K(const)D( )K(char)D( *s = )S(\"<>&\\\"\")D(;)"
+      }
+    },
+    {
+      "name": "csharp scanner 0",
+      "value": {
+        "language": "csharp",
+        "relevance": 6,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">using</span> System;\n<span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">Hello</span> { <span class=\"hljs-function\"><span class=\"hljs-keyword\">static</span> <span class=\"hljs-keyword\">void</span> <span class=\"hljs-title\">Main</span>(<span class=\"hljs-params\"></span>)</span> { Console.WriteLine(<span class=\"hljs-string\">&quot;hello&quot;</span>); } }",
+        "code": "using System;\nclass Hello { static void Main() { Console.WriteLine(\"hello\"); } }",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "using"
+              ]
+            },
+            " System;\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "class"
+              ]
+            },
+            " ",
+            {
+              "kind": "title",
+              "children": [
+                "Hello"
+              ]
+            },
+            " {",
+            " ",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "static"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "void"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Main"
+                  ]
+                },
+                "(",
+                {
+                  "kind": "params",
+                  "children": []
+                },
+                ")"
+              ]
+            },
+            " { Console.WriteLine(",
+            {
+              "kind": "string",
+              "children": [
+                "\"hello\""
+              ]
+            },
+            "); } }"
+          ]
+        },
+        "rendered": "K(using)D( System;)\nK(class)D( )D(Hello)D( { )K(static)D( )K(void)D( )D(Main)D(()D())D( { Console.WriteLine()S(\"hello\")D(); } })"
+      }
+    },
+    {
+      "name": "csharp scanner 1",
+      "value": {
+        "language": "csharp",
+        "relevance": 5,
+        "illegal": false,
+        "value": "<span class=\"hljs-function\"><span class=\"hljs-keyword\">public</span> <span class=\"hljs-keyword\">record</span> <span class=\"hljs-title\">Person</span>(<span class=\"hljs-params\"><span class=\"hljs-built_in\">string</span> Name</span>)</span>; <span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> csharp</span>",
+        "code": "public record Person(string Name); // TODO: csharp",
+        "tree": {
+          "children": [
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "public"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "record"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Person"
+                  ]
+                },
+                "(",
+                {
+                  "kind": "params",
+                  "children": [
+                    {
+                      "kind": "built_in",
+                      "children": [
+                        "string"
+                      ]
+                    },
+                    " Name"
+                  ]
+                },
+                ")"
+              ]
+            },
+            "; ",
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " csharp"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(public)D( )K(record)D( )D(Person)D(()D(string)D( Name)D())D(; )C(// )C(TODO:)C( csharp)"
+      }
+    },
+    {
+      "name": "csharp scanner 2",
+      "value": {
+        "language": "csharp",
+        "relevance": 4,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">var</span> s = <span class=\"hljs-string\">$&quot;&lt;&gt;&amp;<span class=\"hljs-subst\">{<span class=\"hljs-number\">42</span>}</span>&quot;</span>; <span class=\"hljs-built_in\">decimal</span> n = <span class=\"hljs-number\">1.25</span>m;",
+        "code": "var s = $\"<>&{42}\"; decimal n = 1.25m;",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "var"
+              ]
+            },
+            " s = ",
+            {
+              "kind": "string",
+              "children": [
+                "$\"<>&",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "{",
+                    {
+                      "kind": "number",
+                      "children": [
+                        "42"
+                      ]
+                    },
+                    "}"
+                  ]
+                },
+                "\""
+              ]
+            },
+            "; ",
+            {
+              "kind": "built_in",
+              "children": [
+                "decimal"
+              ]
+            },
+            " n = ",
+            {
+              "kind": "number",
+              "children": [
+                "1.25"
+              ]
+            },
+            "m;"
+          ]
+        },
+        "rendered": "K(var)D( s = )S($\"<>&)S({)N(42)S(})S(\")D(; )D(decimal)D( n = )N(1.25)D(m;)"
+      }
+    },
+    {
+      "name": "nix scanner 0",
+      "value": {
+        "language": "nix",
+        "relevance": 2,
+        "illegal": false,
+        "value": "{ pkgs ? <span class=\"hljs-built_in\">import</span> &lt;nixpkgs&gt; {} }: pkgs.mkShell { <span class=\"hljs-attr\">packages</span> = [ pkgs.git ]; }",
+        "code": "{ pkgs ? import <nixpkgs> {} }: pkgs.mkShell { packages = [ pkgs.git ]; }",
+        "tree": {
+          "children": [
+            "{ pkgs ? ",
+            {
+              "kind": "built_in",
+              "children": [
+                "import"
+              ]
+            },
+            " <nixpkgs> {} }: pkgs.mkShell { ",
+            {
+              "kind": "attr",
+              "children": [
+                "packages"
+              ]
+            },
+            " = [ pkgs.git ]; }"
+          ]
+        },
+        "rendered": "D({ pkgs ? )D(import)D( <nixpkgs> {} }: pkgs.mkShell { )D(packages)D( = [ pkgs.git ]; })"
+      }
+    },
+    {
+      "name": "nix scanner 1",
+      "value": {
+        "language": "nix",
+        "relevance": 7,
+        "illegal": false,
+        "value": "<span class=\"hljs-comment\"># <span class=\"hljs-doctag\">TODO:</span> nix</span>\n<span class=\"hljs-keyword\">let</span> <span class=\"hljs-attr\">value</span> = <span class=\"hljs-literal\">true</span>; <span class=\"hljs-keyword\">in</span> <span class=\"hljs-keyword\">if</span> value <span class=\"hljs-keyword\">then</span> <span class=\"hljs-string\">&quot;ok&quot;</span> <span class=\"hljs-keyword\">else</span> <span class=\"hljs-literal\">null</span>",
+        "code": "# TODO: nix\nlet value = true; in if value then \"ok\" else null",
+        "tree": {
+          "children": [
+            {
+              "kind": "comment",
+              "children": [
+                "# ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " nix"
+              ]
+            },
+            "\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "let"
+              ]
+            },
+            " ",
+            {
+              "kind": "attr",
+              "children": [
+                "value"
+              ]
+            },
+            " = ",
+            {
+              "kind": "literal",
+              "children": [
+                "true"
+              ]
+            },
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "in"
+              ]
+            },
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "if"
+              ]
+            },
+            " value ",
+            {
+              "kind": "keyword",
+              "children": [
+                "then"
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "\"ok\""
+              ]
+            },
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "else"
+              ]
+            },
+            " ",
+            {
+              "kind": "literal",
+              "children": [
+                "null"
+              ]
+            }
+          ]
+        },
+        "rendered": "C(# )C(TODO:)C( nix)\nK(let)D( )D(value)D( = )D(true)D(; )K(in)D( )K(if)D( value )K(then)D( )S(\"ok\")D( )K(else)D( )D(null)"
+      }
+    },
+    {
+      "name": "nix scanner 2",
+      "value": {
+        "language": "nix",
+        "relevance": 5,
+        "illegal": false,
+        "value": "{ <span class=\"hljs-attr\">text</span> = <span class=\"hljs-string\">&quot;&lt;&gt;&amp;<span class=\"hljs-subst\">${<span class=\"hljs-built_in\">builtins</span>.<span class=\"hljs-built_in\">toString</span> <span class=\"hljs-number\">42</span>}</span>&quot;</span>; }",
+        "code": "{ text = \"<>&${builtins.toString 42}\"; }",
+        "tree": {
+          "children": [
+            "{ ",
+            {
+              "kind": "attr",
+              "children": [
+                "text"
+              ]
+            },
+            " = ",
+            {
+              "kind": "string",
+              "children": [
+                "\"<>&",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "${",
+                    {
+                      "kind": "built_in",
+                      "children": [
+                        "builtins"
+                      ]
+                    },
+                    ".",
+                    {
+                      "kind": "built_in",
+                      "children": [
+                        "toString"
+                      ]
+                    },
+                    " ",
+                    {
+                      "kind": "number",
+                      "children": [
+                        "42"
+                      ]
+                    },
+                    "}"
+                  ]
+                },
+                "\""
+              ]
+            },
+            "; }"
+          ]
+        },
+        "rendered": "D({ )D(text)D( = )S(\"<>&)S(${)S(builtins)S(.)S(toString)S( )N(42)S(})S(\")D(; })"
+      }
+    },
+    {
+      "name": "bash scanner 0",
+      "value": {
+        "language": "bash",
+        "relevance": 15,
+        "illegal": false,
+        "value": "<span class=\"hljs-meta\">#!/usr/bin/env bash</span>\n<span class=\"hljs-keyword\">for</span> name <span class=\"hljs-keyword\">in</span> one two; <span class=\"hljs-keyword\">do</span> <span class=\"hljs-built_in\">echo</span> <span class=\"hljs-string\">&quot;Hello <span class=\"hljs-variable\">$name</span>&quot;</span>; <span class=\"hljs-keyword\">done</span>",
+        "code": "#!/usr/bin/env bash\nfor name in one two; do echo \"Hello $name\"; done",
+        "tree": {
+          "children": [
+            {
+              "kind": "meta",
+              "children": [
+                "#!/usr/bin/env bash"
+              ]
+            },
+            "\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "for"
+              ]
+            },
+            " name ",
+            {
+              "kind": "keyword",
+              "children": [
+                "in"
+              ]
+            },
+            " one two; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "do"
+              ]
+            },
+            " ",
+            {
+              "kind": "built_in",
+              "children": [
+                "echo"
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "\"Hello ",
+                {
+                  "kind": "variable",
+                  "children": [
+                    "$name"
+                  ]
+                },
+                "\""
+              ]
+            },
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "done"
+              ]
+            }
+          ]
+        },
+        "rendered": "D(#!/usr/bin/env bash)\nK(for)D( name )K(in)D( one two; )K(do)D( )D(echo)D( )S(\"Hello )S($name)S(\")D(; )K(done)"
+      }
+    },
+    {
+      "name": "bash scanner 1",
+      "value": {
+        "language": "bash",
+        "relevance": 7,
+        "illegal": false,
+        "value": "<span class=\"hljs-comment\"># <span class=\"hljs-doctag\">TODO:</span> shell</span>\n<span class=\"hljs-keyword\">function</span> <span class=\"hljs-function\"><span class=\"hljs-title\">run</span></span>() { <span class=\"hljs-built_in\">local</span> n=42; <span class=\"hljs-built_in\">printf</span> <span class=\"hljs-string\">&quot;%s\\n&quot;</span> <span class=\"hljs-string\">&quot;<span class=\"hljs-variable\">$n</span>&quot;</span>; }",
+        "code": "# TODO: shell\nfunction run() { local n=42; printf \"%s\\n\" \"$n\"; }",
+        "tree": {
+          "children": [
+            {
+              "kind": "comment",
+              "children": [
+                "# ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " shell"
+              ]
+            },
+            "\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "function"
+              ]
+            },
+            " ",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "title",
+                  "children": [
+                    "run"
+                  ]
+                }
+              ]
+            },
+            "() { ",
+            {
+              "kind": "built_in",
+              "children": [
+                "local"
+              ]
+            },
+            " n=42; ",
+            {
+              "kind": "built_in",
+              "children": [
+                "printf"
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "\"%s",
+                "\\n",
+                "\""
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "\"",
+                {
+                  "kind": "variable",
+                  "children": [
+                    "$n"
+                  ]
+                },
+                "\""
+              ]
+            },
+            "; }"
+          ]
+        },
+        "rendered": "C(# )C(TODO:)C( shell)\nK(function)D( )D(run)D(() { )D(local)D( n=42; )D(printf)D( )S(\"%s\\n\")D( )S(\")S($n)S(\")D(; })"
+      }
+    },
+    {
+      "name": "bash scanner 2",
+      "value": {
+        "language": "bash",
+        "relevance": 3,
+        "illegal": false,
+        "value": "cat &lt;&lt;<span class=\"hljs-string\">EOF\n&lt;&gt;&amp; ${HOME}\nEOF</span>",
+        "code": "cat <<EOF\n<>& ${HOME}\nEOF",
+        "tree": {
+          "children": [
+            "cat ",
+            "<<",
+            {
+              "kind": "string",
+              "children": [
+                "EOF\n<>& ${HOME}\nEOF"
+              ]
+            }
+          ]
+        },
+        "rendered": "D(cat <<)S(EOF)\nS(<>& ${HOME})\nS(EOF)"
+      }
+    },
+    {
+      "name": "rust scanner 0",
+      "value": {
+        "language": "rust",
+        "relevance": 5,
+        "illegal": false,
+        "value": "<span class=\"hljs-function\"><span class=\"hljs-keyword\">fn</span> <span class=\"hljs-title\">main</span></span>() { <span class=\"hljs-keyword\">let</span> name = <span class=\"hljs-string\">&quot;hello&quot;</span>; <span class=\"hljs-built_in\">println!</span>(<span class=\"hljs-string\">&quot;{}&quot;</span>, name); }",
+        "code": "fn main() { let name = \"hello\"; println!(\"{}\", name); }",
+        "tree": {
+          "children": [
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "fn"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "main"
+                  ]
+                }
+              ]
+            },
+            "() { ",
+            {
+              "kind": "keyword",
+              "children": [
+                "let"
+              ]
+            },
+            " name = ",
+            {
+              "kind": "string",
+              "children": [
+                "\"hello\""
+              ]
+            },
+            "; ",
+            {
+              "kind": "built_in",
+              "children": [
+                "println!"
+              ]
+            },
+            "(",
+            {
+              "kind": "string",
+              "children": [
+                "\"{}\""
+              ]
+            },
+            ", name); }"
+          ]
+        },
+        "rendered": "K(fn)D( )D(main)D(() { )K(let)D( name = )S(\"hello\")D(; )D(println!)D(()S(\"{}\")D(, name); })"
+      }
+    },
+    {
+      "name": "rust scanner 1",
+      "value": {
+        "language": "rust",
+        "relevance": 4,
+        "illegal": false,
+        "value": "<span class=\"hljs-meta\">#[derive(Debug)]</span>\n<span class=\"hljs-class\"><span class=\"hljs-keyword\">struct</span> <span class=\"hljs-title\">Pair</span></span>&lt;T&gt; { left: T, right: <span class=\"hljs-built_in\">String</span> } <span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> rust</span>",
+        "code": "#[derive(Debug)]\nstruct Pair<T> { left: T, right: String } // TODO: rust",
+        "tree": {
+          "children": [
+            {
+              "kind": "meta",
+              "children": [
+                "#[derive(Debug)]"
+              ]
+            },
+            "\n",
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "struct"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Pair"
+                  ]
+                }
+              ]
+            },
+            "<T> { left: T, right: ",
+            {
+              "kind": "built_in",
+              "children": [
+                "String"
+              ]
+            },
+            " } ",
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " rust"
+              ]
+            }
+          ]
+        },
+        "rendered": "D(#[derive(Debug)])\nK(struct)D( )D(Pair)D(<T> { left: T, right: )D(String)D( } )C(// )C(TODO:)C( rust)"
+      }
+    },
+    {
+      "name": "rust scanner 2",
+      "value": {
+        "language": "rust",
+        "relevance": 4,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">let</span> n: <span class=\"hljs-built_in\">u32</span> = <span class=\"hljs-number\">0xff</span>; <span class=\"hljs-keyword\">let</span> s = <span class=\"hljs-string\">r#&quot;&lt;&gt;&amp;&quot;#</span>;",
+        "code": "let n: u32 = 0xff; let s = r#\"<>&\"#;",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "let"
+              ]
+            },
+            " n: ",
+            {
+              "kind": "built_in",
+              "children": [
+                "u32"
+              ]
+            },
+            " = ",
+            {
+              "kind": "number",
+              "children": [
+                "0xff"
+              ]
+            },
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "let"
+              ]
+            },
+            " s = ",
+            {
+              "kind": "string",
+              "children": [
+                "r#\"<>&\"#"
+              ]
+            },
+            ";"
+          ]
+        },
+        "rendered": "K(let)D( n: )D(u32)D( = )N(0xff)D(; )K(let)D( s = )S(r#\"<>&\"#)D(;)"
+      }
+    },
+    {
+      "name": "scala scanner 0",
+      "value": {
+        "language": "scala",
+        "relevance": 13,
+        "illegal": false,
+        "value": "<span class=\"hljs-class\"><span class=\"hljs-keyword\">object</span> <span class=\"hljs-title\">Hello</span> <span class=\"hljs-keyword\">extends</span> <span class=\"hljs-title\">App</span> </span>{ println(<span class=\"hljs-string\">&quot;hello&quot;</span>) }",
+        "code": "object Hello extends App { println(\"hello\") }",
+        "tree": {
+          "children": [
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "object"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Hello"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "extends"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "App"
+                  ]
+                },
+                " "
+              ]
+            },
+            "{ println(",
+            {
+              "kind": "string",
+              "children": [
+                "\"hello\""
+              ]
+            },
+            ") }"
+          ]
+        },
+        "rendered": "K(object)D( )D(Hello)D( )K(extends)D( )D(App)D( )D({ println()S(\"hello\")D() })"
+      }
+    },
+    {
+      "name": "scala scanner 1",
+      "value": {
+        "language": "scala",
+        "relevance": 3,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">case</span> <span class=\"hljs-class\"><span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">Pair</span>[<span class=\"hljs-type\">A</span>](<span class=\"hljs-params\">left: <span class=\"hljs-type\">A</span>, right: <span class=\"hljs-type\">String</span></span>) <span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> scala</span></span>",
+        "code": "case class Pair[A](left: A, right: String) // TODO: scala",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "case"
+              ]
+            },
+            " ",
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "class"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Pair"
+                  ]
+                },
+                "[",
+                {
+                  "kind": "type",
+                  "children": [
+                    "A"
+                  ]
+                },
+                "](",
+                {
+                  "kind": "params",
+                  "children": [
+                    "left: ",
+                    {
+                      "kind": "type",
+                      "children": [
+                        "A"
+                      ]
+                    },
+                    ", right: ",
+                    {
+                      "kind": "type",
+                      "children": [
+                        "String"
+                      ]
+                    }
+                  ]
+                },
+                ") ",
+                {
+                  "kind": "comment",
+                  "children": [
+                    "// ",
+                    {
+                      "kind": "doctag",
+                      "children": [
+                        "TODO:"
+                      ]
+                    },
+                    " scala"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "rendered": "K(case)D( )K(class)D( )D(Pair)D([)D(A)D(]()D(left: )D(A)D(, right: )D(String)D() )C(// )C(TODO:)C( scala)"
+      }
+    },
+    {
+      "name": "scala scanner 2",
+      "value": {
+        "language": "scala",
+        "relevance": 4,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">val</span> value = <span class=\"hljs-string\">s&quot;&lt;&gt;&amp;<span class=\"hljs-subst\">${42}</span>&quot;</span>; <span class=\"hljs-keyword\">val</span> none: <span class=\"hljs-type\">Option</span>[<span class=\"hljs-type\">Int</span>] = <span class=\"hljs-type\">None</span>",
+        "code": "val value = s\"<>&${42}\"; val none: Option[Int] = None",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "val"
+              ]
+            },
+            " value = ",
+            {
+              "kind": "string",
+              "children": [
+                "s\"<>&",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "${42}"
+                  ]
+                },
+                "\""
+              ]
+            },
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "val"
+              ]
+            },
+            " none: ",
+            {
+              "kind": "type",
+              "children": [
+                "Option"
+              ]
+            },
+            "[",
+            {
+              "kind": "type",
+              "children": [
+                "Int"
+              ]
+            },
+            "] = ",
+            {
+              "kind": "type",
+              "children": [
+                "None"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(val)D( value = )S(s\"<>&)S(${42})S(\")D(; )K(val)D( none: )D(Option)D([)D(Int)D(] = )D(None)"
+      }
+    },
+    {
+      "name": "kotlin scanner 0",
+      "value": {
+        "language": "kotlin",
+        "relevance": 8,
+        "illegal": false,
+        "value": "<span class=\"hljs-function\"><span class=\"hljs-keyword\">fun</span> <span class=\"hljs-title\">main</span><span class=\"hljs-params\">()</span></span> { <span class=\"hljs-keyword\">val</span> name = <span class=\"hljs-string\">&quot;hello&quot;</span>; println(name) }",
+        "code": "fun main() { val name = \"hello\"; println(name) }",
+        "tree": {
+          "children": [
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "fun"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "main"
+                  ]
+                },
+                {
+                  "kind": "params",
+                  "children": [
+                    "()"
+                  ]
+                }
+              ]
+            },
+            " { ",
+            {
+              "kind": "keyword",
+              "children": [
+                "val"
+              ]
+            },
+            " name = ",
+            {
+              "kind": "string",
+              "children": [
+                "\"hello\""
+              ]
+            },
+            "; println(name) }"
+          ]
+        },
+        "rendered": "K(fun)D( )D(main)D(())D( { )K(val)D( name = )S(\"hello\")D(; println(name) })"
+      }
+    },
+    {
+      "name": "kotlin scanner 1",
+      "value": {
+        "language": "kotlin",
+        "relevance": 5,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">data</span> <span class=\"hljs-class\"><span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">Pair</span>&lt;<span class=\"hljs-type\">T</span>&gt;</span>(<span class=\"hljs-keyword\">val</span> left: T, <span class=\"hljs-keyword\">val</span> right: String) <span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> kotlin</span>",
+        "code": "data class Pair<T>(val left: T, val right: String) // TODO: kotlin",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "data"
+              ]
+            },
+            " ",
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "class"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Pair"
+                  ]
+                },
+                "<",
+                {
+                  "kind": "type",
+                  "children": [
+                    "T"
+                  ]
+                },
+                ">"
+              ]
+            },
+            "(",
+            {
+              "kind": "keyword",
+              "children": [
+                "val"
+              ]
+            },
+            " left: T, ",
+            {
+              "kind": "keyword",
+              "children": [
+                "val"
+              ]
+            },
+            " right: String) ",
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " kotlin"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(data)D( )K(class)D( )D(Pair)D(<)D(T)D(>)D(()K(val)D( left: T, )K(val)D( right: String) )C(// )C(TODO:)C( kotlin)"
+      }
+    },
+    {
+      "name": "kotlin scanner 2",
+      "value": {
+        "language": "kotlin",
+        "relevance": 5,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">val</span> text = <span class=\"hljs-string\">&quot;&lt;&gt;&amp;<span class=\"hljs-subst\">${<span class=\"hljs-number\">42</span>}</span>&quot;</span>; <span class=\"hljs-keyword\">val</span> n: <span class=\"hljs-built_in\">Double</span> = <span class=\"hljs-number\">1.25</span>",
+        "code": "val text = \"<>&${42}\"; val n: Double = 1.25",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "val"
+              ]
+            },
+            " text = ",
+            {
+              "kind": "string",
+              "children": [
+                "\"<>&",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "${",
+                    {
+                      "kind": "number",
+                      "children": [
+                        "42"
+                      ]
+                    },
+                    "}"
+                  ]
+                },
+                "\""
+              ]
+            },
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "val"
+              ]
+            },
+            " n: ",
+            {
+              "kind": "built_in",
+              "children": [
+                "Double"
+              ]
+            },
+            " = ",
+            {
+              "kind": "number",
+              "children": [
+                "1.25"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(val)D( text = )S(\"<>&)S(${)N(42)S(})S(\")D(; )K(val)D( n: )D(Double)D( = )N(1.25)"
+      }
+    },
+    {
+      "name": "swift scanner 0",
+      "value": {
+        "language": "swift",
+        "relevance": 9,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">import</span> Foundation\n<span class=\"hljs-function\"><span class=\"hljs-keyword\">func</span> <span class=\"hljs-title\">greet</span>(<span class=\"hljs-keyword\">_</span> <span class=\"hljs-params\">name</span>: <span class=\"hljs-type\">String</span>)</span> -&gt; <span class=\"hljs-type\">String</span> { <span class=\"hljs-keyword\">return</span> <span class=\"hljs-string\">&quot;Hello <span class=\"hljs-subst\">\\(name)</span>&quot;</span> }",
+        "code": "import Foundation\nfunc greet(_ name: String) -> String { return \"Hello \\(name)\" }",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "import"
+              ]
+            },
+            " Foundation",
+            "\n",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "func"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "greet"
+                  ]
+                },
+                "(",
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "_"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "params",
+                  "children": [
+                    "name"
+                  ]
+                },
+                ":",
+                " ",
+                {
+                  "kind": "type",
+                  "children": [
+                    "String"
+                  ]
+                },
+                ")"
+              ]
+            },
+            " ",
+            "->",
+            " ",
+            {
+              "kind": "type",
+              "children": [
+                "String"
+              ]
+            },
+            " { ",
+            {
+              "kind": "keyword",
+              "children": [
+                "return"
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "\"Hello ",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "\\(name)"
+                  ]
+                },
+                "\""
+              ]
+            },
+            " }"
+          ]
+        },
+        "rendered": "K(import)D( Foundation)\nK(func)D( )D(greet)D(()K(_)D( )D(name)D(: )D(String)D())D( -> )D(String)D( { )K(return)D( )S(\"Hello )S(\\(name))S(\")D( })"
+      }
+    },
+    {
+      "name": "swift scanner 1",
+      "value": {
+        "language": "swift",
+        "relevance": 4,
+        "illegal": false,
+        "value": "<span class=\"hljs-class\"><span class=\"hljs-keyword\">struct</span> <span class=\"hljs-title\">Pair</span>&lt;<span class=\"hljs-title\">T</span>&gt; </span>{ <span class=\"hljs-keyword\">let</span> left: <span class=\"hljs-type\">T</span>; <span class=\"hljs-keyword\">let</span> right: <span class=\"hljs-type\">String</span> } <span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> swift</span>",
+        "code": "struct Pair<T> { let left: T; let right: String } // TODO: swift",
+        "tree": {
+          "children": [
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "struct"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Pair"
+                  ]
+                },
+                "<",
+                {
+                  "kind": "title",
+                  "children": [
+                    "T"
+                  ]
+                },
+                "> "
+              ]
+            },
+            "{ ",
+            {
+              "kind": "keyword",
+              "children": [
+                "let"
+              ]
+            },
+            " left: ",
+            {
+              "kind": "type",
+              "children": [
+                "T"
+              ]
+            },
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "let"
+              ]
+            },
+            " right: ",
+            {
+              "kind": "type",
+              "children": [
+                "String"
+              ]
+            },
+            " } ",
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " swift"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(struct)D( )D(Pair)D(<)D(T)D(> )D({ )K(let)D( left: )D(T)D(; )K(let)D( right: )D(String)D( } )C(// )C(TODO:)C( swift)"
+      }
+    },
+    {
+      "name": "swift scanner 2",
+      "value": {
+        "language": "swift",
+        "relevance": 5,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">let</span> text <span class=\"hljs-operator\">=</span> <span class=\"hljs-string\">&quot;&lt;&gt;&amp;<span class=\"hljs-subst\">\\(<span class=\"hljs-number\">42</span>)</span>&quot;</span>; <span class=\"hljs-keyword\">let</span> value: <span class=\"hljs-type\">Int</span>? <span class=\"hljs-operator\">=</span> <span class=\"hljs-literal\">nil</span>",
+        "code": "let text = \"<>&\\(42)\"; let value: Int? = nil",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "let"
+              ]
+            },
+            " text ",
+            {
+              "kind": "operator",
+              "children": [
+                "="
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "\"<>&",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "\\(",
+                    {
+                      "kind": "number",
+                      "children": [
+                        "42"
+                      ]
+                    },
+                    ")"
+                  ]
+                },
+                "\""
+              ]
+            },
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "let"
+              ]
+            },
+            " value: ",
+            {
+              "kind": "type",
+              "children": [
+                "Int"
+              ]
+            },
+            "?",
+            " ",
+            {
+              "kind": "operator",
+              "children": [
+                "="
+              ]
+            },
+            " ",
+            {
+              "kind": "literal",
+              "children": [
+                "nil"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(let)D( text )D(=)D( )S(\"<>&)S(\\()N(42)S())S(\")D(; )K(let)D( value: )D(Int)D(? )D(=)D( )D(nil)"
+      }
+    },
+    {
+      "name": "dart scanner 0",
+      "value": {
+        "language": "dart",
+        "relevance": 4,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">void</span> main() { <span class=\"hljs-keyword\">final</span> name = <span class=\"hljs-string\">&quot;hello&quot;</span>; <span class=\"hljs-built_in\">print</span>(name); }",
+        "code": "void main() { final name = \"hello\"; print(name); }",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "void"
+              ]
+            },
+            " main() { ",
+            {
+              "kind": "keyword",
+              "children": [
+                "final"
+              ]
+            },
+            " name = ",
+            {
+              "kind": "string",
+              "children": [
+                "\"hello\""
+              ]
+            },
+            "; ",
+            {
+              "kind": "built_in",
+              "children": [
+                "print"
+              ]
+            },
+            "(name); }"
+          ]
+        },
+        "rendered": "K(void)D( main() { )K(final)D( name = )S(\"hello\")D(; )D(print)D((name); })"
+      }
+    },
+    {
+      "name": "dart scanner 1",
+      "value": {
+        "language": "dart",
+        "relevance": 4,
+        "illegal": false,
+        "value": "<span class=\"hljs-class\"><span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">Pair</span>&lt;<span class=\"hljs-title\">T</span>&gt; </span>{ <span class=\"hljs-keyword\">final</span> T left; Pair(<span class=\"hljs-keyword\">this</span>.left); } <span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> dart</span>",
+        "code": "class Pair<T> { final T left; Pair(this.left); } // TODO: dart",
+        "tree": {
+          "children": [
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "class"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Pair"
+                  ]
+                },
+                "<",
+                {
+                  "kind": "title",
+                  "children": [
+                    "T"
+                  ]
+                },
+                "> "
+              ]
+            },
+            "{ ",
+            {
+              "kind": "keyword",
+              "children": [
+                "final"
+              ]
+            },
+            " T left; Pair(",
+            {
+              "kind": "keyword",
+              "children": [
+                "this"
+              ]
+            },
+            ".left); } ",
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " dart"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(class)D( )D(Pair)D(<)D(T)D(> )D({ )K(final)D( T left; Pair()K(this)D(.left); } )C(// )C(TODO:)C( dart)"
+      }
+    },
+    {
+      "name": "dart scanner 2",
+      "value": {
+        "language": "dart",
+        "relevance": 4,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">final</span> text = <span class=\"hljs-string\">&quot;&lt;&gt;&amp;<span class=\"hljs-subst\">${<span class=\"hljs-number\">42</span>}</span>&quot;</span>; <span class=\"hljs-built_in\">num</span> value = <span class=\"hljs-number\">1.25</span>;",
+        "code": "final text = \"<>&${42}\"; num value = 1.25;",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "final"
+              ]
+            },
+            " text = ",
+            {
+              "kind": "string",
+              "children": [
+                "\"<>&",
+                {
+                  "kind": "subst",
+                  "children": [
+                    "${",
+                    {
+                      "kind": "number",
+                      "children": [
+                        "42"
+                      ]
+                    },
+                    "}"
+                  ]
+                },
+                "\""
+              ]
+            },
+            "; ",
+            {
+              "kind": "built_in",
+              "children": [
+                "num"
+              ]
+            },
+            " value = ",
+            {
+              "kind": "number",
+              "children": [
+                "1.25"
+              ]
+            },
+            ";"
+          ]
+        },
+        "rendered": "K(final)D( text = )S(\"<>&)S(${)N(42)S(})S(\")D(; )D(num)D( value = )N(1.25)D(;)"
+      }
+    },
+    {
+      "name": "groovy scanner 0",
+      "value": {
+        "language": "groovy",
+        "relevance": 3,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">def</span> greet(name) { <span class=\"hljs-string\">&quot;Hello ${name}&quot;</span> }\nprintln greet(<span class=\"hljs-string\">&quot;world&quot;</span>)",
+        "code": "def greet(name) { \"Hello ${name}\" }\nprintln greet(\"world\")",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "def"
+              ]
+            },
+            " greet(name) { ",
+            {
+              "kind": "string",
+              "children": [
+                "\"Hello ${name}\""
+              ]
+            },
+            " }\nprintln greet(",
+            {
+              "kind": "string",
+              "children": [
+                "\"world\""
+              ]
+            },
+            ")"
+          ]
+        },
+        "rendered": "K(def)D( greet(name) { )S(\"Hello ${name}\")D( })\nD(println greet()S(\"world\")D())"
+      }
+    },
+    {
+      "name": "groovy scanner 1",
+      "value": {
+        "language": "groovy",
+        "relevance": 2,
+        "illegal": false,
+        "value": "<span class=\"hljs-class\"><span class=\"hljs-keyword\">class</span> <span class=\"hljs-title\">Pair</span>&lt;<span class=\"hljs-title\">T</span>&gt; {</span> T left; String right } <span class=\"hljs-comment\">// <span class=\"hljs-doctag\">TODO:</span> groovy</span>",
+        "code": "class Pair<T> { T left; String right } // TODO: groovy",
+        "tree": {
+          "children": [
+            {
+              "kind": "class",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "class"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "Pair"
+                  ]
+                },
+                "<",
+                {
+                  "kind": "title",
+                  "children": [
+                    "T"
+                  ]
+                },
+                "> {"
+              ]
+            },
+            " T left; String right } ",
+            {
+              "kind": "comment",
+              "children": [
+                "// ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " groovy"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(class)D( )D(Pair)D(<)D(T)D(> {)D( T left; String right } )C(// )C(TODO:)C( groovy)"
+      }
+    },
+    {
+      "name": "groovy scanner 2",
+      "value": {
+        "language": "groovy",
+        "relevance": 4,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">def</span> text = <span class=\"hljs-string\">&quot;&lt;&gt;&amp;${42}&quot;</span>; <span class=\"hljs-keyword\">def</span> pattern = <span class=\"hljs-regexp\">~/ab+c/</span>",
+        "code": "def text = \"<>&${42}\"; def pattern = ~/ab+c/",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "def"
+              ]
+            },
+            " text = ",
+            {
+              "kind": "string",
+              "children": [
+                "\"<>&${42}\""
+              ]
+            },
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "def"
+              ]
+            },
+            " pattern = ",
+            {
+              "kind": "regexp",
+              "children": [
+                "~/ab+c/"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(def)D( text = )S(\"<>&${42}\")D(; )K(def)D( pattern = )D(~/ab+c/)"
+      }
+    },
+    {
+      "name": "perl scanner 0",
+      "value": {
+        "language": "perl",
+        "relevance": 7,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">use</span> strict;\n<span class=\"hljs-keyword\">my</span> $name = <span class=\"hljs-string\">&quot;hello&quot;</span>; <span class=\"hljs-keyword\">print</span> <span class=\"hljs-string\">&quot;$name\\n&quot;</span>;",
+        "code": "use strict;\nmy $name = \"hello\"; print \"$name\\n\";",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "use"
+              ]
+            },
+            " strict",
+            ";\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "my"
+              ]
+            },
+            " ",
+            "$name",
+            " ",
+            "= ",
+            {
+              "kind": "string",
+              "children": [
+                "\"hello\""
+              ]
+            },
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "print"
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "\"",
+                "$name",
+                "\\n",
+                "\""
+              ]
+            },
+            ";"
+          ]
+        },
+        "rendered": "K(use)D( strict;)\nK(my)D( $name = )S(\"hello\")D(; )K(print)D( )S(\"$name\\n\")D(;)"
+      }
+    },
+    {
+      "name": "perl scanner 1",
+      "value": {
+        "language": "perl",
+        "relevance": 12,
+        "illegal": false,
+        "value": "<span class=\"hljs-comment\"># <span class=\"hljs-doctag\">TODO:</span> perl</span>\n<span class=\"hljs-function\"><span class=\"hljs-keyword\">sub</span> <span class=\"hljs-title\">greet</span> </span>{ <span class=\"hljs-keyword\">my</span> ($name) = @_; <span class=\"hljs-keyword\">return</span> $name; }",
+        "code": "# TODO: perl\nsub greet { my ($name) = @_; return $name; }",
+        "tree": {
+          "children": [
+            {
+              "kind": "comment",
+              "children": [
+                "# ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " perl"
+              ]
+            },
+            "\n",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "sub"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "greet"
+                  ]
+                },
+                " "
+              ]
+            },
+            "{ ",
+            {
+              "kind": "keyword",
+              "children": [
+                "my"
+              ]
+            },
+            " ",
+            "(",
+            "$name",
+            ") ",
+            "= ",
+            "@_",
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "return"
+              ]
+            },
+            " ",
+            "$name",
+            "; ",
+            "}"
+          ]
+        },
+        "rendered": "C(# )C(TODO:)C( perl)\nK(sub)D( )D(greet)D( )D({ )K(my)D( ($name) = @_; )K(return)D( $name; })"
+      }
+    },
+    {
+      "name": "perl scanner 2",
+      "value": {
+        "language": "perl",
+        "relevance": 10,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">my</span> $text = <span class=\"hljs-string\">q{&lt;&gt;&amp;}</span>; <span class=\"hljs-keyword\">my</span> $pattern = <span class=\"hljs-regexp\">qr/ab+c/i</span>;",
+        "code": "my $text = q{<>&}; my $pattern = qr/ab+c/i;",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "my"
+              ]
+            },
+            " ",
+            "$text",
+            " ",
+            "= ",
+            {
+              "kind": "string",
+              "children": [
+                "q{<>&}"
+              ]
+            },
+            "; ",
+            {
+              "kind": "keyword",
+              "children": [
+                "my"
+              ]
+            },
+            " ",
+            "$pattern",
+            " ",
+            "= ",
+            {
+              "kind": "regexp",
+              "children": [
+                "qr/ab+c/i"
+              ]
+            },
+            ";"
+          ]
+        },
+        "rendered": "K(my)D( $text = )S(q{<>&})D(; )K(my)D( $pattern = )D(qr/ab+c/i)D(;)"
+      }
+    },
+    {
+      "name": "lua scanner 0",
+      "value": {
+        "language": "lua",
+        "relevance": 8,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">local</span> <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> <span class=\"hljs-title\">greet</span><span class=\"hljs-params\">(name)</span></span> <span class=\"hljs-keyword\">return</span> <span class=\"hljs-string\">&quot;Hello &quot;</span> .. name <span class=\"hljs-keyword\">end</span>\n<span class=\"hljs-built_in\">print</span>(greet(<span class=\"hljs-string\">&quot;world&quot;</span>))",
+        "code": "local function greet(name) return \"Hello \" .. name end\nprint(greet(\"world\"))",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "local"
+              ]
+            },
+            " ",
+            {
+              "kind": "function",
+              "children": [
+                {
+                  "kind": "keyword",
+                  "children": [
+                    "function"
+                  ]
+                },
+                " ",
+                {
+                  "kind": "title",
+                  "children": [
+                    "greet"
+                  ]
+                },
+                {
+                  "kind": "params",
+                  "children": [
+                    "(name)"
+                  ]
+                }
+              ]
+            },
+            " ",
+            {
+              "kind": "keyword",
+              "children": [
+                "return"
+              ]
+            },
+            " ",
+            {
+              "kind": "string",
+              "children": [
+                "\"Hello \""
+              ]
+            },
+            " .. name ",
+            {
+              "kind": "keyword",
+              "children": [
+                "end"
+              ]
+            },
+            "\n",
+            {
+              "kind": "built_in",
+              "children": [
+                "print"
+              ]
+            },
+            "(greet(",
+            {
+              "kind": "string",
+              "children": [
+                "\"world\""
+              ]
+            },
+            "))"
+          ]
+        },
+        "rendered": "K(local)D( )K(function)D( )D(greet)D((name))D( )K(return)D( )S(\"Hello \")D( .. name )K(end)\nD(print)D((greet()S(\"world\")D()))"
+      }
+    },
+    {
+      "name": "lua scanner 1",
+      "value": {
+        "language": "lua",
+        "relevance": 5,
+        "illegal": false,
+        "value": "<span class=\"hljs-comment\">-- <span class=\"hljs-doctag\">TODO:</span> lua</span>\n<span class=\"hljs-keyword\">local</span> values = { <span class=\"hljs-literal\">true</span>, <span class=\"hljs-literal\">false</span>, <span class=\"hljs-literal\">nil</span>, <span class=\"hljs-number\">42</span> }",
+        "code": "-- TODO: lua\nlocal values = { true, false, nil, 42 }",
+        "tree": {
+          "children": [
+            {
+              "kind": "comment",
+              "children": [
+                "-- ",
+                {
+                  "kind": "doctag",
+                  "children": [
+                    "TODO:"
+                  ]
+                },
+                " lua"
+              ]
+            },
+            "\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "local"
+              ]
+            },
+            " values = { ",
+            {
+              "kind": "literal",
+              "children": [
+                "true"
+              ]
+            },
+            ", ",
+            {
+              "kind": "literal",
+              "children": [
+                "false"
+              ]
+            },
+            ", ",
+            {
+              "kind": "literal",
+              "children": [
+                "nil"
+              ]
+            },
+            ", ",
+            {
+              "kind": "number",
+              "children": [
+                "42"
+              ]
+            },
+            " }"
+          ]
+        },
+        "rendered": "C(-- )C(TODO:)C( lua)\nK(local)D( values = { )D(true)D(, )D(false)D(, )D(nil)D(, )N(42)D( })"
+      }
+    },
+    {
+      "name": "lua scanner 2",
+      "value": {
+        "language": "lua",
+        "relevance": 7,
+        "illegal": false,
+        "value": "<span class=\"hljs-keyword\">local</span> text = <span class=\"hljs-string\">[[&lt;&gt;&amp;]]</span>\n<span class=\"hljs-keyword\">local</span> n = <span class=\"hljs-number\">1.25e3</span>",
+        "code": "local text = [[<>&]]\nlocal n = 1.25e3",
+        "tree": {
+          "children": [
+            {
+              "kind": "keyword",
+              "children": [
+                "local"
+              ]
+            },
+            " text = ",
+            {
+              "kind": "string",
+              "children": [
+                "[[<>&]]"
+              ]
+            },
+            "\n",
+            {
+              "kind": "keyword",
+              "children": [
+                "local"
+              ]
+            },
+            " n = ",
+            {
+              "kind": "number",
+              "children": [
+                "1.25e3"
+              ]
+            }
+          ]
+        },
+        "rendered": "K(local)D( text = )S([[<>&]])\nK(local)D( n = )N(1.25e3)"
+      }
+    },
+    {
+      "name": "JSON factory live helper getter and receiver order",
+      "value": {
+        "trace": [
+          "C_LINE_COMMENT_MODE",
+          "C_BLOCK_COMMENT_MODE",
+          "QUOTE_STRING_MODE",
+          "C_NUMBER_MODE",
+          "BACKSLASH_ESCAPE",
+          "inherit:get",
+          {
+            "kind": "inherit:call",
+            "receiver": true,
+            "args": 2
+          },
+          "inherit:get",
+          {
+            "kind": "inherit:call",
+            "receiver": true,
+            "args": 1
+          }
+        ],
+        "rootKeys": [
+          "name",
+          "contains",
+          "keywords",
+          "illegal"
+        ],
+        "typeTags": [
+          "QUOTE_STRING_MODE",
+          "C_NUMBER_MODE",
+          "\\{",
+          "\\[",
+          "C_LINE_COMMENT_MODE",
+          "C_BLOCK_COMMENT_MODE"
+        ],
+        "valueContainsSharesTypes": true,
+        "arrayContainsSharesTypes": true,
+        "commentsShared": true,
+        "literalShared": true
+      }
+    },
+    {
+      "name": "common modes exact frozen graph identity and callbacks",
+      "value": [
+        {
+          "name": "MATCH_NOTHING_RE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "lastIndex"
+          ],
+          "source": "\\b\\B"
+        },
+        {
+          "name": "IDENT_RE",
+          "type": "string"
+        },
+        {
+          "name": "UNDERSCORE_IDENT_RE",
+          "type": "string"
+        },
+        {
+          "name": "NUMBER_RE",
+          "type": "string"
+        },
+        {
+          "name": "C_NUMBER_RE",
+          "type": "string"
+        },
+        {
+          "name": "BINARY_NUMBER_RE",
+          "type": "string"
+        },
+        {
+          "name": "RE_STARTERS_RE",
+          "type": "string"
+        },
+        {
+          "name": "SHEBANG",
+          "type": "function",
+          "metadata": {
+            "name": "SHEBANG",
+            "length": 0,
+            "ownKeys": [
+              "length",
+              "name"
+            ],
+            "ownPrototype": false
+          }
+        },
+        {
+          "name": "BACKSLASH_ESCAPE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "begin",
+            "relevance"
+          ]
+        },
+        {
+          "name": "APOS_STRING_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "className",
+            "begin",
+            "end",
+            "illegal",
+            "contains"
+          ]
+        },
+        {
+          "name": "QUOTE_STRING_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "className",
+            "begin",
+            "end",
+            "illegal",
+            "contains"
+          ]
+        },
+        {
+          "name": "PHRASAL_WORDS_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "begin"
+          ]
+        },
+        {
+          "name": "COMMENT",
+          "type": "function",
+          "metadata": {
+            "name": "COMMENT",
+            "length": 2,
+            "ownKeys": [
+              "length",
+              "name",
+              "arguments",
+              "caller",
+              "prototype"
+            ],
+            "ownPrototype": true
+          }
+        },
+        {
+          "name": "C_LINE_COMMENT_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "className",
+            "begin",
+            "end",
+            "contains"
+          ]
+        },
+        {
+          "name": "C_BLOCK_COMMENT_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "className",
+            "begin",
+            "end",
+            "contains"
+          ]
+        },
+        {
+          "name": "HASH_COMMENT_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "className",
+            "begin",
+            "end",
+            "contains"
+          ]
+        },
+        {
+          "name": "NUMBER_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "className",
+            "begin",
+            "relevance"
+          ]
+        },
+        {
+          "name": "C_NUMBER_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "className",
+            "begin",
+            "relevance"
+          ]
+        },
+        {
+          "name": "BINARY_NUMBER_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "className",
+            "begin",
+            "relevance"
+          ]
+        },
+        {
+          "name": "CSS_NUMBER_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "className",
+            "begin",
+            "relevance"
+          ]
+        },
+        {
+          "name": "REGEXP_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "begin",
+            "contains"
+          ]
+        },
+        {
+          "name": "TITLE_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "className",
+            "begin",
+            "relevance"
+          ]
+        },
+        {
+          "name": "UNDERSCORE_TITLE_MODE",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "className",
+            "begin",
+            "relevance"
+          ]
+        },
+        {
+          "name": "METHOD_GUARD",
+          "type": "object",
+          "frozen": true,
+          "keys": [
+            "begin",
+            "relevance"
+          ]
+        },
+        {
+          "name": "END_SAME_AS_BEGIN",
+          "type": "function",
+          "metadata": {
+            "name": "END_SAME_AS_BEGIN",
+            "length": 1,
+            "ownKeys": [
+              "length",
+              "name",
+              "arguments",
+              "caller",
+              "prototype"
+            ],
+            "ownPrototype": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "COMMENT copies options then appends actual phrasal and doctag",
+      "value": {
+        "keys": [
+          "className",
+          "begin",
+          "end",
+          "contains",
+          "relevance"
+        ],
+        "className": "comment",
+        "begin": "begin",
+        "end": "end",
+        "relevance": 3,
+        "sameContains": true,
+        "items": [
+          {
+            "tag": "kept"
+          },
+          {
+            "begin": "\\b(a|an|the|are|I'm|isn't|don't|doesn't|won't|but|just|should|pretty|simply|enough|gonna|going|wtf|so|such|will|you|your|they|like|more)\\b"
+          },
+          {
+            "className": "doctag",
+            "begin": "(?:TODO|FIXME|NOTE|BUG|OPTIMIZE|HACK|XXX):",
+            "relevance": 0
+          }
+        ],
+        "samePhrasal": true
+      }
+    },
+    {
+      "name": "SHEBANG binary mutation and callback beginning guard",
+      "value": {
+        "keys": [
+          "className",
+          "begin",
+          "end",
+          "relevance",
+          "on:begin",
+          "binary"
+        ],
+        "begin": "^#![ ]*\\/.*\\bnode\\b.*",
+        "end": "$",
+        "relevance": 0,
+        "mutatedBegin": "^#![ ]*\\/.*\\bnode\\b.*",
+        "log": [
+          1
+        ]
+      }
+    },
+    {
+      "name": "END_SAME_AS_BEGIN uses live response data and retains same mode",
+      "value": {
+        "same": true,
+        "keys": [
+          "on:begin",
+          "on:end"
+        ],
+        "data": {
+          "_beginMatch": "first"
+        },
+        "ignored": true
+      }
+    },
+    {
+      "name": "actual TokenTreeEmitter and TokenTree inheritance descriptors",
+      "value": {
+        "emitterKeys": [
+          "rootNode",
+          "stack",
+          "options"
+        ],
+        "emitterMetadata": {
+          "name": "TokenTreeEmitter",
+          "length": 1,
+          "ownKeys": [
+            "length",
+            "name",
+            "prototype"
+          ],
+          "ownPrototype": true
+        },
+        "treeMetadata": {
+          "name": "TokenTree",
+          "length": 0,
+          "ownKeys": [
+            "length",
+            "name",
+            "prototype",
+            "_walk",
+            "_collapse"
+          ],
+          "ownPrototype": true
+        },
+        "emitterPrototypeKeys": [
+          "constructor",
+          "addKeyword",
+          "addText",
+          "addSublanguage",
+          "toHTML",
+          "finalize"
+        ],
+        "treePrototypeKeys": [
+          "constructor",
+          "top",
+          "root",
+          "add",
+          "openNode",
+          "closeNode",
+          "closeAllNodes",
+          "toJSON",
+          "walk"
+        ],
+        "sameProto": true,
+        "rootIdentity": true,
+        "topIdentity": true
+      }
+    },
+    {
+      "name": "actual TokenTree live overridden methods and static walker receiver",
+      "value": {
+        "trace": [
+          [
+            "open",
+            "keyword"
+          ],
+          [
+            "text",
+            "owned"
+          ],
+          [
+            "close"
+          ],
+          [
+            "builder-open",
+            "outer"
+          ],
+          [
+            "static-child",
+            true,
+            "one"
+          ],
+          [
+            "static-child",
+            true,
+            "two"
+          ],
+          [
+            "builder-close",
+            "outer"
+          ]
+        ],
+        "sameBuilder": true
+      }
+    },
+    {
+      "name": "actual TokenTree collapse empty and nested string children",
+      "value": {
+        "empty": {
+          "children": [
+            ""
+          ]
+        },
+        "nested": {
+          "children": [
+            "a",
+            {
+              "kind": "string",
+              "children": [
+                "bc"
+              ]
+            },
+            "d"
+          ]
+        }
+      }
+    },
+    {
+      "name": "actual HTMLRenderer constructor and live walk capture",
+      "value": {
+        "html": "&lt;&gt;&amp;&quot;&#x27;<span class=\"hljs-string\">text</span>",
+        "observedAfter": {
+          "metadata": {
+            "name": "HTMLRenderer",
+            "length": 2,
+            "ownKeys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "ownPrototype": true
+          },
+          "keys": [
+            "buffer",
+            "classPrefix"
+          ],
+          "prototypeKeys": [
+            "constructor",
+            "addText",
+            "openNode",
+            "closeNode",
+            "value",
+            "span"
+          ],
+          "classPrefix": "hljs-"
+        }
+      }
+    },
+    {
+      "name": "actual Response class obtained from genuine compiled grammar callback",
+      "value": {
+        "observed": {
+          "metadata": {
+            "name": "Response",
+            "length": 1,
+            "ownKeys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "ownPrototype": true
+          },
+          "keys": [
+            "data",
+            "isMatchIgnored"
+          ],
+          "prototypeKeys": [
+            "constructor",
+            "ignoreMatch"
+          ],
+          "sameData": true,
+          "ignoredBefore": false,
+          "ignoredAfter": true
+        },
+        "value": "xy",
+        "relevance": 0
+      }
+    }
+  ],
+  "observedModules": [
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b45-observe-20261014.mjs",
+      "sha256": "277c6ccc272a30c512c9bc18cc1adafe9a3f2a99403704020d9c4ff17d2b8d82"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-core74-b45-gc-source-capture-20261014.mjs",
+      "sha256": "e0ca8b6edd8e046cbddeaca3f206818d086330c6d93fc3c4a5d03634fcda45c5"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\core.js",
+      "sha256": "c4d10bcc7cb543c36198d34d2ecfcee9f8fbdd82ec1531daa3962c86a6c95468"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\syntax-highlight.ts",
+      "sha256": "6849a5ead44fb9e76d5e93047641bf34f21483c67400b7056c97f0028c8c4612"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\bash.js",
+      "sha256": "760337399a01bba07ca386b26d67b4979cef2cd8619c4c012f3e2d3696513805"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\c.js",
+      "sha256": "9465ff9b3b7f72057acc56509dd3184f4742cd90c907ac8a9162a22ae4081dcc"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\cpp.js",
+      "sha256": "d75213a6d84131f2951481c65ce72996e2af98ffa02f72fc088b8ef6032fa619"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\csharp.js",
+      "sha256": "ebcc1a0eb1cfc68bccf4691ba86661da6773e22003062c95b0163d29640da048"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\dart.js",
+      "sha256": "d803a195fdc1e233d573e7b57852a88ecd5674f425d7ccbb398df7868d73a4c7"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\go.js",
+      "sha256": "2f7e722c1261a41636561e8857075264109a11c86c0de73cefe50db39396ba59"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\groovy.js",
+      "sha256": "469a021e26a94093fbcb5491f41db234889a7cf0183e1bf0c2f49a10cdefde4b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\java.js",
+      "sha256": "3e19b818d4a4d48a0710f9d9965d3ae6fee86bdfd2314aa8f9aec89c47cf6908"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\javascript.js",
+      "sha256": "f0edc556ff97da57eede63732b476927da43da502b999186a4d9dac28f688fcd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\json.js",
+      "sha256": "ebb4ccb8af5c7b49f01af8b81b75e0a0bbb0aed5b3074b4f5c44f023e246fd2a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\kotlin.js",
+      "sha256": "c7e0b63200229f1c2b311cf810044dd999b5e8b92f27266c06a999dd374ae31c"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\lua.js",
+      "sha256": "88a0ff413042cf4085e1c64c14ee9368ea66516f5b816548a51a9169b6e66ebd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\nix.js",
+      "sha256": "988d14d6bbe8d40609f13b8d76f55e096c64e9745740a70002ff1bf2de122757"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\perl.js",
+      "sha256": "6080515bade18921d32207f656f558857d976b195accbef86204c00c0beb3e2d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\php.js",
+      "sha256": "6106a3585adc0ef5d8d52449bac71c14e1fdfc7e5a6257b8bd03a7964b58bfbd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\python.js",
+      "sha256": "a7145981d1c4fbe9979021d16f34728408e95e72374173c878e24babd378bbc3"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\ruby.js",
+      "sha256": "ac7d96bd0483aeb712efbd60dfb675b04de0375293a4f3bd046353591e2bff86"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\rust.js",
+      "sha256": "bdc8e553ec27818f6679efd1ab30a5aa71cdf915b2205d51b4ce575d9898ad47"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\scala.js",
+      "sha256": "f00bc0c4c74ebcf0fdf4d16ed770d8391c9ef59ebf46876379887ad29dfd42fb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\swift.js",
+      "sha256": "68de29ed46414356e02d838b848ff2e4590b69fe1bd6286cf3a57e7ba156d6c2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\typescript.js",
+      "sha256": "8deb81f57cdad5fbb3d3afe1af393924d5ed17c81951d72459e03f141a6589cb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\html.ts",
+      "sha256": "d3abd075ab64807a1facae1511ec0b9b22f63153c7808eb63e7560fb00b1d48b"
+    }
+  ]
+}

@@ -13,7 +13,7 @@
   "candidate_files": 5315,
   "controls": 5,
   "all_pre_post_drift": 0,
-  "actual_Node_GC": true,
+  "actual_Node_GC": false,
   "owned_pids": [
     55204,
     21280
@@ -24,5 +24,8 @@
   "Source_body_rewrites": 0,
   "raw_normalizations": 0,
   "public_activation": false,
-  "verified_utc": "2026-10-14T20:14:41.8319341+00:00"
+  "verified_utc": "2026-10-14T21:14:41.8319341+01:00",
+  "actual_Node_GC_available": true,
+  "actual_Node_GC_executed": false,
+  "explicit_GC_successor": "gc-actual/source-qualification.json"
 }
