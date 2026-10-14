@@ -1,0 +1,30 @@
+{
+  "write": {
+    "bytes": 4,
+    "same": true
+  },
+  "read": {
+    "bytes": 6,
+    "same": true,
+    "values": [
+      [
+        10,
+        31,
+        32
+      ],
+      [],
+      [
+        33,
+        34,
+        15
+      ]
+    ]
+  },
+  "pendingClose": {
+    "same": true,
+    "fdRetained": true
+  },
+  "pendingWrite": 3,
+  "closed": true,
+  "freshClosedPromises": true
+}

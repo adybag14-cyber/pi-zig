@@ -1,0 +1,91 @@
+{
+  "datasync": {
+    "ok": true,
+    "type": "undefined"
+  },
+  "chmod": {
+    "ok": true,
+    "type": "undefined"
+  },
+  "chown": {
+    "ok": true,
+    "type": "undefined"
+  },
+  "utimes": {
+    "ok": true,
+    "type": "undefined"
+  },
+  "metadata": {
+    "modeSame": true,
+    "ownerSame": true,
+    "atimeMs": 1700000000125,
+    "mtimeMs": 1700000001750,
+    "size": 8
+  },
+  "closed": [
+    {
+      "method": "datasync",
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "Error",
+          "message": "file closed",
+          "code": "EBADF",
+          "syscall": "fdatasync",
+          "keys": [
+            "code",
+            "syscall"
+          ]
+        }
+      }
+    },
+    {
+      "method": "chmod",
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "Error",
+          "message": "file closed",
+          "code": "EBADF",
+          "syscall": "fchmod",
+          "keys": [
+            "code",
+            "syscall"
+          ]
+        }
+      }
+    },
+    {
+      "method": "chown",
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "Error",
+          "message": "file closed",
+          "code": "EBADF",
+          "syscall": "fchown",
+          "keys": [
+            "code",
+            "syscall"
+          ]
+        }
+      }
+    },
+    {
+      "method": "utimes",
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "Error",
+          "message": "file closed",
+          "code": "EBADF",
+          "syscall": "futimes",
+          "keys": [
+            "code",
+            "syscall"
+          ]
+        }
+      }
+    }
+  ]
+}

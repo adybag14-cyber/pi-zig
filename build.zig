@@ -680,6 +680,13 @@ pub fn build(b: *std.Build) void {
     env_guest_run.setEnvironmentVariable("PI_TEST_ENV_DAEMON", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env.exe" else "pi-env"));
     b.step("test-native-env-guest", "Compare actual native Env module values and classes against unmodified latest Source").dependOn(&env_guest_run.step);
     addCompileOnlyGroup(b, "build-hosted-native-env-guest", &.{ "test-native-env-guest", "test-env-list-files", "test-env" });
+    const env_filehandle_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_env_filehandle_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Env FileHandle"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
+    linkQuickJs(b, env_filehandle_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(env_filehandle_tests.root_module, sqlite_lib_dir, sqlite_library);
+    const env_filehandle_run = b.addRunArtifact(env_filehandle_tests);
+    if (diagnostic_tests) env_filehandle_run.stdio = .inherit;
+    b.step("test-native-env-filehandle", "Compare native FileHandle primitives with actual Node24 source; full method/stream graph stays unqualified").dependOn(&env_filehandle_run.step);
+    addCompileOnlyGroup(b, "build-hosted-native-env-filehandle", &.{"test-native-env-filehandle"});
     const capability_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     const native_durable_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native durable VM"}, .use_llvm = use_llvm });
     linkQuickJs(b, native_durable_tests.root_module, quickjs, sqlite_lib_dir);

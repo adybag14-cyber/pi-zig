@@ -1,0 +1,16 @@
+{
+  "name": "env-node-safe-finally-source-24-e6220e1-20261014",
+  "pid": 45328,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "C:\\Program Files\\nodejs\\node.exe --max-old-space-size=256 --conditions=source --expose-internals env-node-safe-finally-source-24-e6220e1-20261014.mjs",
+  "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+  "created_utc": "2026-10-14T12:25:53.5758591Z",
+  "launched_utc": "2026-10-14T12:25:53.5724944+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T12:25:53.8025663+00:00"
+}

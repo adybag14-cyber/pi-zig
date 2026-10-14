@@ -1,0 +1,47 @@
+{
+  "fulfilled": {
+    "ok": true,
+    "value": "value",
+    "cleanup": 1
+  },
+  "rejected": {
+    "ok": false,
+    "same": true,
+    "cleanup": 1
+  },
+  "cleanupThrow": {
+    "ok": false,
+    "same": true
+  },
+  "bare": {
+    "ok": false,
+    "same": false,
+    "name": "TypeError",
+    "gets": 0,
+    "cleanup": 1
+  },
+  "orderValue": "order",
+  "order": [
+    "underlyingObserver",
+    "cleanup",
+    "outerObserver",
+    "awaited"
+  ],
+  "species": {
+    "ok": true,
+    "value": "species",
+    "events": [
+      "constructor",
+      "species",
+      "construct",
+      "cleanup"
+    ]
+  },
+  "valueIdentity": true,
+  "valueThenGets": 5,
+  "poison": {
+    "prototype": true,
+    "value": "protected",
+    "calls": 0
+  }
+}

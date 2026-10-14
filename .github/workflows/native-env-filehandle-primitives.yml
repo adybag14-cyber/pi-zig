@@ -1,0 +1,125 @@
+name: Private native FileHandle primitives7 and Source oracles
+on:
+  push:
+    branches: [work/env-node-filehandle-e6220e1-20261014]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: private-native-env-node-filehandle-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  windows-native:
+    needs: source-only
+    if: github.ref_name == 'work/env-node-filehandle-e6220e1-20261014'
+    runs-on: windows-latest
+    timeout-minutes: 70
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        mode: [Debug, ReleaseSafe]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Compile private FileHandle7 without runtime execution
+        timeout-minutes: 23
+        shell: pwsh
+        run: |
+          & ./tools/Invoke-EnvFileHandleQualification.ps1 -Phase Compile -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedManifestHash '52DCFB71381C173C3CB72A35173657B3CC83775250350A7E31EF0A1D8F5E4513' -AdmissionGiB 8 -HostedSoleJob -OuterSeconds 1320 -Receipt verification/env-filehandle/compile
+          if($LASTEXITCODE -ne 0){throw 'FileHandle7 compile failed'}
+      - name: Run all7 mandatory original Node and allocation bodies
+        timeout-minutes: 7
+        shell: pwsh
+        run: |
+          & ./tools/Invoke-EnvFileHandleQualification.ps1 -Phase Run -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedManifestHash '52DCFB71381C173C3CB72A35173657B3CC83775250350A7E31EF0A1D8F5E4513' -AdmissionGiB 8 -HostedSoleJob -OuterSeconds 300 -Receipt verification/env-filehandle/run
+          if($LASTEXITCODE -ne 0){throw 'FileHandle7 runtime failed'}
+      - name: Compile frozen private candidate without executing tests
+        timeout-minutes: 23
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory -lt 8MB){throw 'Private sole-runner native8GiB admission refused'}
+          & ./tools/Invoke-EnvGuestQualification.ps1 -Phase Compile -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedSourceManifestHash 'A856D7422FC9F730AF84740E529647F93F728A096EF984E5C3E10AE685F1B3A6' -ExpectedGuestManifestHash 'C405FEBEBBE4DB73C58EC1BBAD204BCA32DB8C9DF4ED44F9B7E91138E76B7956' -ExpectedNodeReaderManifestHash '93588A6E6E0928D47BA51E3383AA3AA13F847362DC7E16F38151E6FEA67B1235' -ExpectedNodeFsManifestHash 'FD4EB4EC8353380D9D092934E79C13ACE39119BA8984397F00130F51FFB3B0D1' -ExpectedCompilerManifestHash 'DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB' -OuterSeconds 1320 -Receipt verification/env-node-fs/compile
+          if($LASTEXITCODE -ne 0){throw 'Private candidate compile failed'}
+      - name: Run all20 selected Source comparators and original Env gates
+        timeout-minutes: 7
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory -lt 8MB){throw 'Private sole-runner native8GiB admission refused'}
+          & ./tools/Invoke-EnvGuestQualification.ps1 -Phase Run -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedSourceManifestHash 'A856D7422FC9F730AF84740E529647F93F728A096EF984E5C3E10AE685F1B3A6' -ExpectedGuestManifestHash 'C405FEBEBBE4DB73C58EC1BBAD204BCA32DB8C9DF4ED44F9B7E91138E76B7956' -ExpectedNodeReaderManifestHash '93588A6E6E0928D47BA51E3383AA3AA13F847362DC7E16F38151E6FEA67B1235' -ExpectedNodeFsManifestHash 'FD4EB4EC8353380D9D092934E79C13ACE39119BA8984397F00130F51FFB3B0D1' -ExpectedCompilerManifestHash 'DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB' -OuterSeconds 300 -Receipt verification/env-node-fs/run
+          if($LASTEXITCODE -ne 0){throw 'Private candidate runtime failed'}
+          $coverage=Get-Content verification/env-node-fs/run/guest-coverage.json -Raw|ConvertFrom-Json
+          if($coverage.actual_compiled_tests -ne 20 -or $coverage.passed -ne 20 -or $coverage.skipped -ne 0 -or $coverage.failed -ne 0 -or $coverage.public_guest_activation -or $coverage.full_env_package_qualified){throw 'FS20 terminal coverage or scope mismatch'}
+      - name: Retain exact source tools inventory and terminal evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: private-env-filehandle-windows-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          include-hidden-files: true
+          path: |
+            verification/env-filehandle/**
+            verification/env-node-fs/**
+  source-only:
+    if: github.ref_name == 'work/env-node-filehandle-e6220e1-20261014'
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: earendil-works/pi
+          ref: e6220e1316f86af818a0ccbfe1c09d7e918b41cf
+          path: verification/env-node-fs-reference
+          persist-credentials: false
+      - name: Download checksum-pinned reference Node24.14.0
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $arch=[Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
+          if($IsWindows -and $arch -eq 'X64'){$archive='node-v24.14.0-win-x64.zip';$hash='313FA40C0D7B18575821DE8CB17483031FE07D95DE5994F6F435F3B345F85C66';$binary='node-v24.14.0-win-x64/node.exe'}
+          elseif($IsLinux -and $arch -eq 'X64'){$archive='node-v24.14.0-linux-x64.tar.xz';$hash='41CD79BB7877C81605A9E68EC4C91547774F46A40C67A17E34D7179EF11729DF';$binary='node-v24.14.0-linux-x64/bin/node'}
+          elseif($IsMacOS -and $arch -eq 'Arm64'){$archive='node-v24.14.0-darwin-arm64.tar.gz';$hash='A1A54F46A750D2523D628D924AAB61758A51C9DAD3E0238BEB14141BE9615DD3';$binary='node-v24.14.0-darwin-arm64/bin/node'}
+          elseif($IsMacOS -and $arch -eq 'X64'){$archive='node-v24.14.0-darwin-x64.tar.gz';$hash='F2879EB810E25993A0578E5D878930266FD2EAFCFFE9F2839B3D8DB354D4879E';$binary='node-v24.14.0-darwin-x64/bin/node'}
+          else{throw 'Unsupported Source-only tool platform'}
+          $tool=Join-Path $env:RUNNER_TEMP env-node-fs-node24
+          New-Item -ItemType Directory -Path $tool|Out-Null
+          $file=Join-Path $tool $archive
+          Invoke-WebRequest -Uri "https://nodejs.org/dist/v24.14.0/$archive" -OutFile $file -TimeoutSec 90
+          if((Get-FileHash -LiteralPath $file).Hash -cne $hash){throw 'Reference archive checksum mismatch'}
+          if($IsWindows){Expand-Archive -LiteralPath $file -DestinationPath $tool}else{& tar -xf $file -C $tool}
+          if($LASTEXITCODE -ne 0){throw 'Reference Node extraction failed'}
+          $receipt='verification/env-node-fs-source-only'
+          New-Item -ItemType Directory -Path $receipt|Out-Null
+          [ordered]@{node=(Join-Path $tool $binary);archive=$archive;archive_sha256=$hash;node_sha256=(Get-FileHash -LiteralPath (Join-Path $tool $binary)).Hash}|ConvertTo-Json|Set-Content "$receipt/tool.json"
+      - name: Capture five genuine platform Node24 packets without native qualification
+        timeout-minutes: 2
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          & ./tools/Invoke-EnvFileHandleSourceCapture.ps1 -ExpectedHead '${{ github.sha }}' -SourceRoot verification/env-node-fs-reference -ToolReceipt verification/env-node-fs-source-only/tool.json -Receipt verification/env-node-fs-source-only
+          if($LASTEXITCODE -ne 0){throw 'Original platform Source capture failed'}
+          $proof=Get-Content verification/env-node-fs-source-only/source-only.json -Raw|ConvertFrom-Json
+          if($proof.records.Count -ne 5 -or $proof.source_files -ne 1902 -or $proof.source_drift -ne 0 -or $proof.tool_drift -or $proof.native_qualified -or $proof.full_env_qualified -or $proof.public_activation){throw 'Source-only proof or scope mismatch'}
+      - name: Retain genuine POSIX packets and explicit unqualified native boundary
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: private-env-filehandle-source-only-${{ matrix.os }}-${{ github.sha }}
+          retention-days: 14
+          include-hidden-files: true
+          path: verification/env-node-fs-source-only/**

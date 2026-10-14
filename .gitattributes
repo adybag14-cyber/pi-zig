@@ -84,3 +84,10 @@ src/extensions/fixtures/env-node-fs-*-e6220e1.input.txt whitespace=cr-at-eol,-bl
 src/extensions/fixtures/env-node-stats-source-e6220e1.input.txt whitespace=cr-at-eol
 src/extensions/fixtures/env-node-fs-source-capture-e6220e1.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 src/extensions/fixtures/env-node-fs-source-manifest-e6220e1.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# FileHandle reference packets preserve captured terminal bytes.
+src/extensions/fixtures/env-node-filehandle-*.input.txt whitespace=cr-at-eol,-blank-at-eof
+src/extensions/fixtures/env-node-filehandle-*-24.json whitespace=cr-at-eol
+src/extensions/fixtures/env-node-safe-finally-*.input.txt whitespace=cr-at-eol,-blank-at-eof
+src/extensions/fixtures/env-node-safe-finally-*.json whitespace=cr-at-eol
+src/extensions/fixtures/env-node-filehandle-primitives7-source-manifest-e6220e1.json whitespace=cr-at-eol
+verification/env-node-filehandle-primitives7-20261014/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

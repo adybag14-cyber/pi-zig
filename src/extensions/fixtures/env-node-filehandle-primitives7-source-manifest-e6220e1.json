@@ -1,0 +1,78 @@
+{
+  "schema": "native-filehandle-primitives7-source-v1",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "source_snapshot_tracked_files": 1902,
+  "node_version": "24.14.0",
+  "node_windows_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "node_source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "libuv_version": "1.51.0",
+  "libuv_provenance_sha256": "9AE11C0E2B27BE84AD914E7A937B83A9C5A5264A2A5330411DE7B933C6E7AFBC",
+  "source_corpora": 5,
+  "expected_tests": 7,
+  "required_tests": [
+    "native Env FileHandle actual compiled primitive inventory",
+    "native Env FileHandle protected finally matches actual Node24 primordial ordering species identity and prototype poisoning",
+    "native Env FileHandle protected constructor and pending finally roots release every host allocation failure",
+    "native Env FileHandle real descriptor metadata operations match original Node24 timestamps ownership and closed errors",
+    "native Env FileHandle real libuv vectors match original Node24 buffer identity slices cursor partial EOF and closed errors",
+    "native Env FileHandle metadata vectored workers pending close and view roots release every host allocation failure"
+  ],
+  "fixtures": [
+    {
+      "path": "src/extensions/fixtures/env-node-filehandle-descriptor-gpa-source-24.input.txt",
+      "sha256": "DC56DB1701EB79E16A3D2FD3507D06AF3EE54F8D4A270BEA2795C1FC83679606"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-filehandle-descriptor-gpa-source-24.json",
+      "sha256": "DA8DED3849A09760EC4134911AD9F76047895554F252D0DA9A2E8172F4E0343B"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-filehandle-metadata-source-24.input.txt",
+      "sha256": "5047BD2A948DC306B0BAF90C4C620230B22F3B2CF5ED155180C2FA025CE99230"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-filehandle-metadata-source-24.json",
+      "sha256": "CC7B0DF82D5CE62A65A78B74F61BE7AC5614AE290E2A04D6267CC55ACCA2196E"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-filehandle-original-source-capture.input.txt",
+      "sha256": "27C98705649687323AC415191B65806EA2335D37F7C3D88F5E5121FEE386A072"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-filehandle-vectors-source-24.input.txt",
+      "sha256": "B481A8DAB8A8D01E7F2809DC6327F92EC4F2FB9E5C2E8283F2E461BD0F013A57"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-filehandle-vectors-source-24.json",
+      "sha256": "09B895657990C5300B8ADF975491322E162EA139B1AFD75A7F06A76910E27C08"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-safe-finally-allocation-driver.input.txt",
+      "sha256": "BB5A33AEC1D3E7F02E7CE19E72A7F80BEB3C1207A409DA4F7309566F5A8CFC64"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-safe-finally-allocation-driver.json",
+      "sha256": "C8E2B9EBCC5A08F061A11E862761481332749E281B426BFE947FF3D08034924C"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-safe-finally-source-24.input.txt",
+      "sha256": "DB53A4DCBD379DFC82D953061900BF74699B8D571EA951EE3DF7BD77652E0E8B"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-safe-finally-source-24.json",
+      "sha256": "4BCAEA5E9AE0B334C695CA5B0C382CC47117E62C5294F7E486A11A2FBB878A5E"
+    }
+  ],
+  "captured_platform": "win32",
+  "scope": "Private protected Promise and pinned libuv descriptor metadata/vectors; shared public FileHandle lifecycle/method/stream graph remains inactive and unqualified.",
+  "lifecycle_module_imported": false,
+  "full_filehandle_graph_qualified": false,
+  "full_env_package_qualified": false,
+  "posix_native_qualified": false,
+  "public_guest_activation": false,
+  "retained_local_debug7": "verification/env-node-filehandle-primitives7-20261014",
+  "retained_local_source_count": 5333,
+  "retained_local_tool_count": 19546,
+  "retained_local_source_tool_drift": 0,
+  "compiler_manifest_sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+}

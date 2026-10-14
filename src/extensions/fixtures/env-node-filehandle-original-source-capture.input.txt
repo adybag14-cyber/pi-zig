@@ -1,0 +1,49 @@
+// Verification-only Node24 oracle input. The shipped host remains Zig/C.
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import crypto from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
+const nativeFinally=require('internal/test/binding').primordials.SafePromisePrototypeFinally;
+const [sourceRoot,candidateRoot,receiptRoot]=process.argv.slice(2).map(value=>path.resolve(value));
+const expectedHead='e6220e1316f86af818a0ccbfe1c09d7e918b41cf';
+if(process.versions.node!=='24.14.0')throw Error('Pinned reference Node version mismatch');
+const git=(...args)=>execFileSync('git',['-C',sourceRoot,...args],{encoding:'utf8',windowsHide:true}).trim();
+if(git('rev-parse','HEAD')!==expectedHead)throw Error('Original source head mismatch');
+const digest=async file=>crypto.createHash('sha256').update(await fs.readFile(file)).digest('hex').toUpperCase();
+const sourceFiles=git('ls-files').split('\n').map(value=>value.trim()).filter(Boolean).sort();
+if(sourceFiles.length!==1902)throw Error('Original tracked source inventory mismatch');
+const sourceRows=async()=>{const rows=[];for(const file of sourceFiles)rows.push({path:file,sha256:await digest(path.join(sourceRoot,file))});return rows};
+const before=await sourceRows(),toolBefore=await digest(process.execPath);
+await fs.mkdir(receiptRoot,{recursive:true});
+await fs.writeFile(path.join(receiptRoot,'source-before.json'),JSON.stringify(before,null,2)+'\n');
+const names=['env-node-safe-finally-source-24','env-node-safe-finally-allocation-driver','env-node-filehandle-metadata-source-24','env-node-filehandle-vectors-source-24','env-node-filehandle-descriptor-gpa-source-24'];
+const records=[];
+for(const name of names){
+    const inputPath=path.join(candidateRoot,'src/extensions/fixtures',name+'.input.txt');
+    const inputHash=await digest(inputPath),input=await fs.readFile(inputPath,'utf8');
+    let file;
+    if(name.startsWith('env-node-filehandle-')){
+        const tree=await fs.mkdtemp(path.join(os.tmpdir(),'pi-fh-source-'));
+        const filename=path.join(tree,'file');
+        await fs.writeFile(filename,name.includes('metadata')?'metadata':new Uint8Array([10,11,12,13,14,15,16,17,18,19]));
+        file=await fs.open(filename,'r+');
+    }
+    const packet=await new Function('file','nativeFinally','return(async()=>{'+input+';return packet})()')(file,nativeFinally);
+    const outputPath=path.join(receiptRoot,name+'.json');
+    await fs.writeFile(outputPath,JSON.stringify(packet,null,2)+'\n');
+    if(await digest(inputPath)!==inputHash)throw Error('Oracle input changed during capture');
+    const expected=JSON.parse(await fs.readFile(path.join(candidateRoot,'src/extensions/fixtures',name+'.json'),'utf8'));
+    const windowsMatch=JSON.stringify(packet)===JSON.stringify(expected);
+    if(process.platform==='win32'&&!windowsMatch)throw Error('Actual Windows reference packet differs: '+name);
+    records.push({name,input_sha256:inputHash,output_sha256:await digest(outputPath),cases:Object.keys(packet).length,windows_reference_match:process.platform==='win32'?windowsMatch:null});
+}
+const after=await sourceRows(),toolAfter=await digest(process.execPath);
+const sourceDrift=after.filter((row,index)=>row.path!==before[index].path||row.sha256!==before[index].sha256);
+const result={schema:'env-node-filehandle-source-only-v1',upstream:expectedHead,node:{version:process.versions.node,platform:process.platform,arch:process.arch,sha256:toolBefore},source_files:sourceFiles.length,source_drift:sourceDrift.length,tool_drift:toolBefore!==toolAfter,records,native_qualified:false,full_filehandle_graph_qualified:false,full_env_qualified:false,public_activation:false};
+await fs.writeFile(path.join(receiptRoot,'source-after.json'),JSON.stringify(after,null,2)+'\n');
+await fs.writeFile(path.join(receiptRoot,'source-only.json'),JSON.stringify(result,null,2)+'\n');
+if(sourceDrift.length||toolBefore!==toolAfter||git('rev-parse','HEAD')!==expectedHead)throw Error('Source/tool post drift');
+console.log(JSON.stringify({terminal:'passed',scope:'SOURCE_ONLY',platform:process.platform,records:records.length}));

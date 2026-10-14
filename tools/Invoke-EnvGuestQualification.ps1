@@ -5,6 +5,7 @@ param(
     [Parameter(Mandatory)][string]$ExpectedGuestManifestHash,
     [string]$ExpectedNodeReaderManifestHash,
     [string]$ExpectedNodeFsManifestHash,
+    [string]$ExpectedCompilerManifestHash,
     [ValidateSet('Compile','Run')][string]$Phase='Run',
     [string]$Receipt='verification/env-guest',
     [int]$OuterSeconds=300
@@ -53,8 +54,21 @@ if($ExpectedNodeFsManifestHash){
 $taskInputs=@(git ls-files|Sort-Object|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}})
 $taskToolRoot=Split-Path -Parent $taskZig
 $taskTools=@(Get-ChildItem -LiteralPath $taskToolRoot -Recurse -File -Force|Sort-Object FullName|ForEach-Object{[ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash}})
+if($ExpectedCompilerManifestHash){
+    $taskPinnedPath='verification/env-node-filehandle-primitives7-20261014/pinned-compiler-manifest.json'
+    if((Get-FileHash -LiteralPath $taskPinnedPath).Hash -cne $ExpectedCompilerManifestHash){throw 'Pinned complete compiler proof drift'}
+    $taskPinned=Get-Content -LiteralPath $taskPinnedPath -Raw|ConvertFrom-Json
+    $taskExpectedTools=@{}
+    foreach($taskFile in $taskPinned.inputs){$taskExpectedTools[$taskFile.path.Substring($taskPinned.root.Length+1).Replace('\','/')]=$taskFile.sha256}
+    if($taskExpectedTools.Count -ne 19546 -or $taskTools.Count -ne 19546){throw 'Pinned complete compiler inventory mismatch'}
+    foreach($taskFile in $taskTools){$taskRelative=[IO.Path]::GetRelativePath($taskToolRoot,$taskFile.path).Replace('\','/');if(!$taskExpectedTools.ContainsKey($taskRelative) -or $taskExpectedTools[$taskRelative] -cne $taskFile.sha256){throw "Pinned compiler input drift: $taskRelative"}}
+}
 $taskInputs|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'inputs-before.json') -Encoding utf8NoBOM
 $taskTools|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'tools-before.json') -Encoding utf8NoBOM
+$taskMinimumGiB=if($env:GITHUB_ACTIONS -ceq 'true'){8}else{16}
+$taskFreeKiB=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory
+[ordered]@{free_kib=$taskFreeKiB;minimum_gib=$taskMinimumGiB;policy=if($taskMinimumGiB -eq 8){'Explicitly authorized sole hosted runner'}else{'Normal local16GiB'};checked_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content (Join-Path $taskReceipt 'admission.json')
+if($taskFreeKiB -lt $taskMinimumGiB*1MB){throw 'Fresh native admission refused after full prehash'}
 [ordered]@{head=$taskHead;tree=(git rev-parse 'HEAD^{tree}').Trim();upstream=$taskOriginal.upstream;mode=$Mode;phase=$Phase;source_count=$taskInputs.Count;tool_count=$taskTools.Count;source_manifest_sha256=$ExpectedSourceManifestHash;guest_manifest_sha256=$ExpectedGuestManifestHash;node_reader_manifest_sha256=$ExpectedNodeReaderManifestHash;zig=$taskZig;outer_seconds=$OuterSeconds;test_timeout_seconds=120;host_timeout_seconds=10;public_guest_activation=$false;full_env_package_qualified=$false;scope='Private Connection and RemoteExecutionEnv guest candidate plus original typed Env gates; Node/Local and full public package remain unqualified.'}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'source.json') -Encoding utf8NoBOM
 $taskStart=[Diagnostics.ProcessStartInfo]::new()
 $taskStart.FileName=$taskZig

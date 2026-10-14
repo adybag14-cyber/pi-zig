@@ -7,7 +7,7 @@ const errors = @import("native_env_node_errors.zig");
 const owner = @import("native_env_io.zig");
 const c = js.c;
 const uv = @import("native_uv_api").c;
-const Method = enum(c_int) { read, write, stat, truncate, sync, close };
+const Method = enum(c_int) { read, write, stat, truncate, sync, close, datasync, chmod, chown, utimes, readv, writev };
 const Native = struct {
     extern "c" fn _open_osfhandle(isize, c_int) c_int;
     extern "c" fn _close(c_int) c_int;
@@ -52,18 +52,26 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visitor: ?*const c.JS_MarkFunc
 }
 fn syscall(method: Method) []const u8 {
     return switch (method) {
-        .read => "read",
-        .write => "write",
+        .read, .readv => "read",
+        .write, .writev => "write",
         .stat => "fstat",
         .truncate => "ftruncate",
         .sync => "fsync",
         .close => "close",
+        .datasync => "fdatasync",
+        .chmod => "fchmod",
+        .chown => "fchown",
+        .utimes => "futimes",
     };
 }
 fn closedError(scope: *h.Scope, method: Method) !c.JSValue {
     const result = try scope.own(try js.builtin(scope.engine, "Error", &.{try scope.text("file closed")}));
     try scope.put(result, "code", try scope.text("EBADF"));
-    try scope.put(result, "syscall", try scope.text(syscall(method)));
+    try scope.put(result, "syscall", try scope.text(switch (method) {
+        .readv => "readv",
+        .writev => "writev",
+        else => syscall(method),
+    }));
     return result;
 }
 fn systemFailure(scope: *h.Scope, method: Method, failure: anyerror) !c.JSValue {
@@ -86,6 +94,8 @@ const Job = struct {
     self: *State,
     receiver: c.JSValue,
     target: c.JSValue,
+    views: c.JSValue,
+    vectors: []uv.uv_buf_t = &.{},
     method: Method,
     bytes: []u8 = &.{},
     count: usize = 0,
@@ -95,6 +105,11 @@ const Job = struct {
     stat: ?uv.uv_stat_t = null,
     native_status: c_int = 0,
     bigint: bool = false,
+    mode: c_int = 0,
+    uid: uv.uv_uid_t = 0,
+    gid: uv.uv_gid_t = 0,
+    atime: f64 = 0,
+    mtime: f64 = 0,
     failure: ?anyerror = null,
     aborted: std.atomic.Value(bool) = .init(false),
     has_reference: bool = false,
@@ -125,6 +140,9 @@ const Job = struct {
         defer self.self.mutex.unlock(io);
         const file = self.self.file orelse return error.NativeFileClosed;
         _ = file;
+        // The public writev fast path never enters libuv for an empty array.
+        // No request exists in that path, so there is nothing to clean up.
+        if (self.method == .writev and self.vectors.len == 0) return;
         var request: uv.uv_fs_t = undefined;
         defer uv.uv_fs_req_cleanup(&request);
         const fd: uv.uv_file = @intCast(self.self.fd);
@@ -136,12 +154,19 @@ const Job = struct {
             .stat => uv.uv_fs_fstat(null, &request, fd, null),
             .truncate => uv.uv_fs_ftruncate(null, &request, fd, @intCast(self.size), null),
             .sync => uv.uv_fs_fsync(null, &request, fd, null),
+            .datasync => uv.uv_fs_fdatasync(null, &request, fd, null),
+            .chmod => uv.uv_fs_fchmod(null, &request, fd, self.mode, null),
+            .chown => uv.uv_fs_fchown(null, &request, fd, self.uid, self.gid, null),
+            .utimes => uv.uv_fs_futime(null, &request, fd, self.atime, self.mtime, null),
             .read, .write => operation: {
                 var buffer = uv.uv_buf_init(self.bytes.ptr, @intCast(self.bytes.len));
                 break :operation if (self.method == .read) uv.uv_fs_read(null, &request, fd, &buffer, 1, if (self.position) |at| @intCast(at) else -1, null) else uv.uv_fs_write(null, &request, fd, &buffer, 1, if (self.position) |at| @intCast(at) else -1, null);
             },
+            .readv, .writev => operation: {
+                break :operation if (self.method == .readv) uv.uv_fs_read(null, &request, fd, self.vectors.ptr, @intCast(self.vectors.len), if (self.position) |at| @intCast(at) else -1, null) else uv.uv_fs_write(null, &request, fd, self.vectors.ptr, @intCast(self.vectors.len), if (self.position) |at| @intCast(at) else -1, null);
+            },
         };
-        if (result < 0) self.native_status = result else if (self.method == .stat) self.stat = request.statbuf else if (self.method == .read or self.method == .write) self.count = @intCast(result);
+        if (result < 0) self.native_status = result else if (self.method == .stat) self.stat = request.statbuf else if (self.method == .read or self.method == .write or self.method == .readv or self.method == .writev) self.count = @intCast(result);
     }
     fn cancel(task: *owner.Task) void {
         const self: *Job = @alignCast(@fieldParentPtr("task", task));
@@ -180,6 +205,30 @@ const Job = struct {
                 try scope.put(object, "buffer", self.target);
                 break :read object;
             },
+            .readv, .writev => vector: {
+                if (self.method == .readv) {
+                    var consumed: usize = 0;
+                    for (self.vectors, 0..) |buffer, index| {
+                        const count = @min(@as(usize, @intCast(buffer.len)), self.count - consumed);
+                        if (count == 0) continue;
+                        const view = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, self.views, @intCast(index))));
+                        var offset: usize = undefined;
+                        var length: usize = undefined;
+                        var element: usize = undefined;
+                        const backing = try scope.own(try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, view, &offset, &length, &element)));
+                        var total: usize = undefined;
+                        const data = c.JS_GetArrayBuffer(engine.context, &total, backing);
+                        if (data == null or offset > total or length > total - offset or count > length) return error.NativeReadDestinationDetached;
+                        @memcpy(data[offset..][0..count], buffer.base[0..count]);
+                        consumed += count;
+                    }
+                    if (consumed != self.count) return error.InvalidNativeReadVectorCount;
+                }
+                const object = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
+                try scope.put(object, if (self.method == .readv) "bytesRead" else "bytesWritten", c.JS_NewFloat64(engine.context, @floatFromInt(self.count)));
+                try scope.put(object, "buffers", self.target);
+                break :vector object;
+            },
             else => c.pi_js_undefined(),
         };
         self.releaseReference();
@@ -190,6 +239,8 @@ const Job = struct {
         const engine = self.self.engine;
         self.releaseReference();
         engine.gpa.free(self.bytes);
+        engine.gpa.free(self.vectors);
+        engine.freeValue(self.views);
         engine.freeValue(self.target);
         engine.freeValue(self.receiver);
         task.releaseFunctions();
@@ -199,6 +250,14 @@ const Job = struct {
 fn number(engine: *js.Engine, value: c.JSValue) !f64 {
     var result: f64 = undefined;
     if (c.JS_ToFloat64(engine.context, &result, value) < 0) return js.capture(engine);
+    return result;
+}
+// These descriptor primitives receive normalized numeric arguments from the
+// public FileHandle layer. Keep casts bounded even before that layer is installed.
+fn boundedInteger(engine: *js.Engine, value: c.JSValue, min: f64, max: f64) !f64 {
+    if (!c.JS_IsNumber(value)) return error.InvalidNativeFileInteger;
+    const result = try number(engine, value);
+    if (!std.math.isFinite(result) or @trunc(result) != result or result < min or result > max) return error.InvalidNativeFileInteger;
     return result;
 }
 fn invoke(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, method: Method) !c.JSValue {
@@ -220,7 +279,7 @@ fn invoke(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, meth
     const promise = try scope.own(new_promise);
     const hub = try owner.get(engine);
     const job = try engine.gpa.create(Job);
-    job.* = .{ .task = .{ .hub = hub, .work = Job.run, .complete = Job.complete, .destroy = Job.destroy, .cancel = Job.cancel, .resolve = functions[0], .reject = functions[1] }, .self = self, .receiver = c.JS_DupValue(engine.context, receiver), .target = c.pi_js_undefined(), .method = method };
+    job.* = .{ .task = .{ .hub = hub, .work = Job.run, .complete = Job.complete, .destroy = Job.destroy, .cancel = Job.cancel, .resolve = functions[0], .reject = functions[1] }, .self = self, .receiver = c.JS_DupValue(engine.context, receiver), .target = c.pi_js_undefined(), .views = c.pi_js_undefined(), .method = method };
     transferred = true;
     errdefer Job.destroy(&job.task);
     if (method == .read or method == .write) {
@@ -247,7 +306,64 @@ fn invoke(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, meth
             const at = try number(engine, position);
             if (std.math.isFinite(at) and at >= 0 and at <= 9007199254740991 and @trunc(at) == at) job.position = @intFromFloat(at);
         }
-    } else if (method == .truncate) job.size = @intFromFloat(try number(engine, h.arg(args, 0))) else if (method == .stat) job.bigint = scope.truthy(try h.optional(&scope, h.arg(args, 0), "bigint"));
+    } else if (method == .readv or method == .writev) {
+        const buffers = h.arg(args, 0);
+        if (!c.JS_IsArray(buffers)) return error.InvalidNativeFileVector;
+        const count: u32 = @intFromFloat(try boundedInteger(engine, try scope.get(buffers, "length"), 0, std.math.maxInt(u32)));
+        const views = try scope.array();
+        job.views = c.JS_DupValue(engine.context, views);
+        job.target = c.JS_DupValue(engine.context, buffers);
+        job.vectors = try engine.gpa.alloc(uv.uv_buf_t, count);
+        var total: usize = 0;
+        for (job.vectors, 0..) |*buffer, index| {
+            const view = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, buffers, @intCast(index))));
+            var offset: usize = undefined;
+            var length: usize = undefined;
+            var element: usize = undefined;
+            _ = try scope.own(try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, view, &offset, &length, &element)));
+            if (length > std.math.maxInt(c_uint)) return error.InvalidNativeFileVectorLength;
+            buffer.* = uv.uv_buf_init(null, @intCast(length));
+            total = try std.math.add(usize, total, length);
+            try scope.index(views, @intCast(index), view);
+        }
+        job.bytes = try engine.gpa.alloc(u8, total);
+        var cursor: usize = 0;
+        for (job.vectors, 0..) |*buffer, index| {
+            const length: usize = @intCast(buffer.len);
+            buffer.base = job.bytes.ptr + cursor;
+            if (method == .writev and length != 0) {
+                const view = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, views, @intCast(index))));
+                var offset: usize = undefined;
+                var view_length: usize = undefined;
+                var element: usize = undefined;
+                const backing = try scope.own(try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, view, &offset, &view_length, &element)));
+                var backing_length: usize = undefined;
+                const data = c.JS_GetArrayBuffer(engine.context, &backing_length, backing);
+                if (data == null or offset > backing_length or view_length > backing_length - offset or length > view_length) return error.InvalidNativeNodeContent;
+                @memcpy(job.bytes[cursor..][0..length], data[offset..][0..length]);
+            }
+            cursor += length;
+        }
+        const position = h.arg(args, 1);
+        if (c.JS_IsNumber(position)) {
+            const at = try number(engine, position);
+            if (std.math.isFinite(at) and at >= 0 and at <= 9007199254740991 and @trunc(at) == at) job.position = @intFromFloat(at);
+        }
+    } else if (method == .truncate) job.size = @intFromFloat(try boundedInteger(engine, h.arg(args, 0), 0, 9007199254740991)) else if (method == .stat) job.bigint = scope.truthy(try h.optional(&scope, h.arg(args, 0), "bigint")) else if (method == .chmod) {
+        const mode: u32 = @intFromFloat(try boundedInteger(engine, h.arg(args, 0), 0, std.math.maxInt(u32)));
+        job.mode = @bitCast(mode);
+    } else if (method == .chown) {
+        const uid = try boundedInteger(engine, h.arg(args, 0), -1, std.math.maxInt(u32));
+        const gid = try boundedInteger(engine, h.arg(args, 1), -1, std.math.maxInt(u32));
+        job.uid = if (uid == -1) std.math.maxInt(uv.uv_uid_t) else @truncate(@as(u32, @intFromFloat(uid)));
+        job.gid = if (gid == -1) std.math.maxInt(uv.uv_gid_t) else @truncate(@as(u32, @intFromFloat(gid)));
+    } else if (method == .utimes) {
+        if (!c.JS_IsNumber(h.arg(args, 0)) or !c.JS_IsNumber(h.arg(args, 1))) return error.InvalidNativeFileTime;
+        job.atime = try number(engine, h.arg(args, 0));
+        job.mtime = try number(engine, h.arg(args, 1));
+        // Normalized Date/string inputs may deliberately carry libuv's
+        // UV_FS_UTIME_OMIT (NaN) and UV_FS_UTIME_NOW (Infinity) values.
+    }
     if (method == .close) {
         self.closing = true;
         if (self.active.load(.acquire) == 0) self.closed.store(true, .release);
@@ -313,7 +429,12 @@ fn createWithDescriptor(scope: *h.Scope, file: std.Io.File, fd: isize, writable:
     if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     inline for (std.meta.fields(Method)) |field| {
         if (comptime field.value == @intFromEnum(Method.close)) continue;
-        const function = try engine.checked(c.JS_NewCFunctionMagic(engine.context, dispatch, field.name, if (field.value == @intFromEnum(Method.read) or field.value == @intFromEnum(Method.write)) 4 else if (field.value == @intFromEnum(Method.truncate)) 1 else 0, c.JS_CFUNC_generic_magic, @intCast(field.value)));
+        const function = try engine.checked(c.JS_NewCFunctionMagic(engine.context, dispatch, field.name, switch (@as(Method, @enumFromInt(field.value))) {
+            .read, .write => 4,
+            .truncate, .chmod => 1,
+            .chown, .utimes, .readv, .writev => 2,
+            else => 0,
+        }, c.JS_CFUNC_generic_magic, @intCast(field.value)));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, function, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     }
     var close_data = [_]c.JSValue{value};
