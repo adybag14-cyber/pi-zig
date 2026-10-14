@@ -1,0 +1,30 @@
+{
+  "observed_utc": "2026-10-14T22:16:04.5263380+00:00",
+  "free_bytes": 20984213504,
+  "required_bytes": 17179869184,
+  "other_native": [
+    {
+      "ProcessId": 58076,
+      "ParentProcessId": 40176,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-sdk-compaction-threshold -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-14T22:15:15.7973190Z"
+    },
+    {
+      "ProcessId": 52476,
+      "ParentProcessId": 16964,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe test -fllvm -cflags -std=gnu11 -- C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\durable\\process_probe.c .zig-cache\\o\\4d8dac53505d00903cdd336de57b7013\\pi-quickjs.lib .zig-cache\\o\\9a2d2506fd2c477a0833cf0ab2143f2c\\pi-sqlite.lib -ODebug -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\quickjs -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\libfyaml -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\extensions -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\photon-native -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d --dep native_icu_api --dep native_photon_link --dep native_vm_identity --dep catalog_tool -Mroot=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\native_sdk_compaction_threshold_test.zig -ODebug -Mnative_icu_api=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\extensions\\icu\\native_icu_api.zig .zig-cache\\o\\a3689f0192e75ad9858e6ed7a89eb42e\\pi-photon.lib -ODebug -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\photon-native -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d -Mnative_photon_link=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\ai\\photon_session.zig -Mnative_vm_identity=.zig-cache\\c\\6673f6fbb725a0e1bfa7d84a46d8baa4\\options.zig -ODebug -Mcatalog_tool=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\tools\\catalog.zig .zig-cache\\o\\32bda7e013f93e1045e2b8a32cfe6418\\pi-icu78-i18n.lib .zig-cache\\o\\2da206847139bf567a1f5c92adcd0b6f\\pi-native-yaml.lib .zig-cache\\o\\9a2d2506fd2c477a0833cf0ab2143f2c\\pi-sqlite.lib .zig-cache\\o\\1bfabd0664c968fa35b507a6fe586cea\\pi-icu78-common.lib -ladvapi32 .zig-cache\\o\\28892179445c02eff8435e0e889d2b2e\\pi-icu78-stubdata.lib -lc++ -lc --test-filter \"native compaction threshold\" --test-filter \"constructor hooks match 16\" --test-filter \"compaction utilities match original\" --test-filter \"initialization phase matches66\" --cache-dir .zig-cache --global-cache-dir C:\\Users\\adyba\\AppData\\Local\\zig --name test --zig-lib-dir C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\ --listen=-",
+      "created_utc": "2026-10-14T22:15:27.7801150Z"
+    }
+  ],
+  "other_native_roots": 1,
+  "root_authority": "Root State matching diagnostic runtime exactd5f9a01f frozen5535/1965/19546 compile-second PASS; normal16 j1 300outer120test10host; Source16 GC measured HOST baseline only; peer Root threshold/hook pair; no additional job",
+  "outer_seconds": 300,
+  "test_seconds": 120,
+  "host_seconds": 10,
+  "jobs": 1,
+  "llvm": "default",
+  "sole8_exception_used": false,
+  "public_activation": false
+}

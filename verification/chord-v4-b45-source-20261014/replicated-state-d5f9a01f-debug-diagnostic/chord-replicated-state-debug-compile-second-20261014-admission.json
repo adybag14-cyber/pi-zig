@@ -1,0 +1,18 @@
+{
+  "observed_utc": "2026-10-14T22:14:37.3986444+00:00",
+  "free_bytes": 23974072320,
+  "required_bytes": 17179869184,
+  "other_native": [],
+  "source_inputs": 5535,
+  "original_source_inputs": 1965,
+  "compiler_inputs": 19546,
+  "normal_floor": true,
+  "sole8_exception_used": false,
+  "root_authority": "Root 2026-10-14 State retry compile-only exactd5f9a01f owner08A26C74 normal16 j1 1320 full5535/1965/19546; peer Root threshold20/hook pair; no runtime authorized",
+  "compile_seconds": 1320,
+  "runtime_authorized": false,
+  "jobs": 1,
+  "llvm": "default",
+  "compiler_peak_calibrated": false,
+  "public_activation": false
+}
