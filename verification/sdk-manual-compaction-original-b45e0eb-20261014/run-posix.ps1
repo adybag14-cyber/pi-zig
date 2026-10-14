@@ -80,7 +80,10 @@ foreach($taskFamily in $taskFamilies){
     $taskSecond=$(if($Task -ne 'renderers'){$taskCaptures[1].rows}else{$taskCaptures[1].raw})|ConvertTo-Json -Depth 100 -Compress
     if($taskFirst -cne $taskSecond){throw "Original $taskFamily raw double capture drift"}
     $taskMatchesWindows=$null
-    $taskWindows=(Get-Content -LiteralPath (Join-Path $taskCandidate 'src/extensions/fixtures/sdk-session-manual-compaction-b45.json') -Raw|ConvertFrom-Json).rows; $taskMatchesWindows=(@($taskCaptures[0].rows|Where-Object scenario -cne 'no-model')|ConvertTo-Json -Depth 100 -Compress) -ceq (@($taskWindows|Where-Object scenario -cne 'no-model')|ConvertTo-Json -Depth 100 -Compress); if(!$taskMatchesWindows){throw 'Actual83 platform-independent manual observations differ'}
+    $taskWindows=@((Get-Content -LiteralPath (Join-Path $taskCandidate 'src/extensions/fixtures/sdk-session-manual-compaction-b45.json') -Raw|ConvertFrom-Json).rows)+@((Get-Content -LiteralPath (Join-Path $taskBundle 'original-windows-auto40.json') -Raw|ConvertFrom-Json).rows)
+    if($taskWindows.Count -ne 84 -or $taskCaptures[0].rows.Count -ne 84){throw 'All84 compaction observations required'}
+    $taskMatchesWindows=(@($taskCaptures[0].rows|Where-Object scenario -cne 'no-model')|ConvertTo-Json -Depth 100 -Compress) -ceq (@($taskWindows|Where-Object scenario -cne 'no-model')|ConvertTo-Json -Depth 100 -Compress)
+    if(!$taskMatchesWindows){throw 'Actual83 platform-independent compaction observations differ'}
     $taskResults += [ordered]@{family=$taskFamily;platform=$taskCaptures[0].platform;arch=$taskCaptures[0].arch;cases=$taskCaptures[0].cases;double_capture_identical=$true;windows_raw_equivalent=$taskMatchesWindows;first_sha256=(Get-FileHash -LiteralPath (Join-Path $taskReceipts "$taskFamily-first-output.json")).Hash;second_sha256=(Get-FileHash -LiteralPath (Join-Path $taskReceipts "$taskFamily-second-output.json")).Hash}
 }
 $taskPost=Verify-Original
