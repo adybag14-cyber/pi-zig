@@ -32351,7 +32351,8 @@ static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
 
     /* cannot run JS_LoadModuleInternal synchronously because it would
        cause an unexpected recursion in js_evaluate_module() */
-    JS_EnqueueJob(ctx, js_dynamic_import_job, 5, vc(args));
+    if (JS_EnqueueJob(ctx, js_dynamic_import_job, 5, vc(args)) < 0)
+        goto exception;
 done:
     JS_FreeValue(ctx, basename_val);
     JS_FreeValue(ctx, resolving_funcs[0]);
@@ -32363,8 +32364,13 @@ done:
     JS_FreeValue(ctx, attributes_obj);
     err = JS_GetException(ctx);
     ret = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, vc(&err));
-    JS_FreeValue(ctx, ret);
     JS_FreeValue(ctx, err);
+    if (JS_IsException(ret)) {
+        JS_FreeValue(ctx, promise);
+        promise = ret;
+    } else {
+        JS_FreeValue(ctx, ret);
+    }
     goto done;
 }
 
