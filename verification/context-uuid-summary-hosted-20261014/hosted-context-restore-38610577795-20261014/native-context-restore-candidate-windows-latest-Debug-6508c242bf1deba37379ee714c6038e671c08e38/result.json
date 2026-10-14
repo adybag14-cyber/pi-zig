@@ -1,0 +1,17 @@
+{
+  "head": "6508c242bf1deba37379ee714c6038e671c08e38",
+  "status": "passed",
+  "mode": "Debug",
+  "platform": "windows-latest",
+  "tests": 18,
+  "source_cases": 42,
+  "context_cases": 20,
+  "restore_cases": 22,
+  "constructor_phase_tests": 10,
+  "original_factory_instances": 0,
+  "test_timeout_seconds": 120,
+  "host_await_timeout_ms": 10000,
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "completed_utc": "2026-10-14T18:07:28.3670243+00:00"
+}

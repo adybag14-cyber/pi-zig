@@ -1,0 +1,85 @@
+{
+  "artifacts": [
+    {
+      "result_sha256": "6F89F6BB4C930932B4DAE2E0F7BC9D40BCDE1F69D9186FBDB314951CCFA85A43",
+      "source_files": 5176,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "F18CC9C7795C2ADD03A43FA6BFA948BEBE81AF5549276F85C84D58231F965C49",
+      "platform": "macos-latest",
+      "mode": "Debug",
+      "source_cases": 42,
+      "tests": 18
+    },
+    {
+      "result_sha256": "27567915C4FA88971A4264CD4867DB9375936175F128E47F6855BEB58437B7A9",
+      "source_files": 5176,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "4DFB934714D91B2E84F714CC403EB5C0A3FF4B48B703EBB8AA37C4D251A27562",
+      "platform": "macos-latest",
+      "mode": "ReleaseSafe",
+      "source_cases": 42,
+      "tests": 18
+    },
+    {
+      "result_sha256": "E471B0C6E9C6FF772448F41B486E0AB5A3CB25F75B7E0C05E14782E8C023BE10",
+      "source_files": 5176,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "B059C01BBC6A4849DC9244D058B020F04AF3EE325EDECE0BC3DE4A2C6AB0AE66",
+      "platform": "ubuntu-latest",
+      "mode": "Debug",
+      "source_cases": 42,
+      "tests": 18
+    },
+    {
+      "result_sha256": "4335FF00B672B546AB8B9790EE7BE2C16D97ABAD90D2A24246318550745935BA",
+      "source_files": 5176,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "061A8B25142BAB38A9E67607066EF2B3F7A6C9C6A0EAFD9A1277ECC1240E94E2",
+      "platform": "ubuntu-latest",
+      "mode": "ReleaseSafe",
+      "source_cases": 42,
+      "tests": 18
+    },
+    {
+      "result_sha256": "DE1FEE4E64098C2D9B61EC1EBFD1D410D6030AC3F06BE661564193A99F324AC7",
+      "source_files": 5176,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "CABD2861EA8973A13B3596DBE111E96C01EBF0F35497E1815012287AE5346B2B",
+      "platform": "windows-latest",
+      "mode": "Debug",
+      "source_cases": 42,
+      "tests": 18
+    },
+    {
+      "result_sha256": "D9CC30FF2A58A1B636D1ED073B7B26E2C0690AD6C3815FC8882BA7C5E35703F3",
+      "source_files": 5176,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "FF9260CC7DF1A1C1360B51CB4721648D500030A546DF58148AE8740B14AE5342",
+      "platform": "windows-latest",
+      "mode": "ReleaseSafe",
+      "source_cases": 42,
+      "tests": 18
+    }
+  ],
+  "cross_platform_source_bytes_identical": true,
+  "public_activation": false,
+  "head": "6508c242bf1deba37379ee714c6038e671c08e38",
+  "scope": "Context20/transcript restore22 and constructor initialization only; full session factory remains unqualified",
+  "run_id": 38610577795,
+  "observed_utc": "2026-10-14T20:04:07.8411015+00:00",
+  "full_pi_qualified": false,
+  "full_factory_qualified": false,
+  "status": "all_six_downloaded_artifacts_independently_audited"
+}

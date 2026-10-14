@@ -1,0 +1,85 @@
+{
+  "artifacts": [
+    {
+      "result_sha256": "9EEEB175F8D1F55D5BF7BA6F86D87819FF3643F4B5FB1AABE96950C529CB4466",
+      "source_files": 5209,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "6F7BB11BAB56460CC33997C250253F476169B43D598B945A034A296D24110F22",
+      "platform": "macos-latest",
+      "mode": "Debug",
+      "source_cases": 26,
+      "tests": 6
+    },
+    {
+      "result_sha256": "D7BA391D854ED8677D216DA8846D9ED54364A3F1CB246A1779E93730352BF50B",
+      "source_files": 5209,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "7E98D389184E32C13C906DC9C3C2340FEAA179BDE527E428D5CCE5B3F32AA7D9",
+      "platform": "macos-latest",
+      "mode": "ReleaseSafe",
+      "source_cases": 26,
+      "tests": 6
+    },
+    {
+      "result_sha256": "1297833DF383B2A68413E093A773489EAC1B9704C440CC392BFC322E177292CD",
+      "source_files": 5209,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "56BA18F3EFB4BE06518495B544C3EB770304FB0400F06C0C5390127F9EB8C633",
+      "platform": "ubuntu-latest",
+      "mode": "Debug",
+      "source_cases": 26,
+      "tests": 6
+    },
+    {
+      "result_sha256": "103882E06DD4E62EEC2287035EF4545606D0BB12C7DB0D8051822886E1D977AD",
+      "source_files": 5209,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "3C8679A707EAB1EB713F54AF04003C0CD352641CDB9F8F3ACAC32EDE2D6B08C6",
+      "platform": "ubuntu-latest",
+      "mode": "ReleaseSafe",
+      "source_cases": 26,
+      "tests": 6
+    },
+    {
+      "result_sha256": "507CA489CB21A9854A40A0880F90C3E1C72F1A9DA79D979CCB182D1367B0C3C5",
+      "source_files": 5209,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "2C7AC80DE17210799CDD354DCD7F7BFDF305AD1C55358EC9A3D3F40D88AED3A1",
+      "platform": "windows-latest",
+      "mode": "Debug",
+      "source_cases": 26,
+      "tests": 6
+    },
+    {
+      "result_sha256": "881DFC86CB085626A0363120924CD43CA8925DEE7ECA92C3B92E0746172B83BF",
+      "source_files": 5209,
+      "compiler_post_drift": 0,
+      "compiler_files": 19546,
+      "source_post_drift": 0,
+      "runtime_sha256": "65F6C06FF448B240CDD76A0DB380CC2ADD9C8EBFDC819802145D2CFAEC2A6158",
+      "platform": "windows-latest",
+      "mode": "ReleaseSafe",
+      "source_cases": 26,
+      "tests": 6
+    }
+  ],
+  "cross_platform_source_bytes_identical": true,
+  "public_activation": false,
+  "head": "b48183066fb9245809a717c63629548ba6760037",
+  "scope": "Original UUID26 and native operators; production secure Crypto is separate and full application remains unqualified",
+  "run_id": 38613431173,
+  "observed_utc": "2026-10-14T20:04:09.0707944+00:00",
+  "full_pi_qualified": false,
+  "full_factory_qualified": false,
+  "status": "all_six_downloaded_artifacts_independently_audited"
+}

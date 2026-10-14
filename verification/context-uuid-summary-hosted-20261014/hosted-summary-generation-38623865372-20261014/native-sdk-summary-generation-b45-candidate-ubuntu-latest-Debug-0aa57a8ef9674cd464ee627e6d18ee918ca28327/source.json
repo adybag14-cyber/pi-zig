@@ -1,0 +1,9 @@
+{
+  "head": "0aa57a8ef9674cd464ee627e6d18ee918ca28327",
+  "tree": "3e787296c1afdf1492a47b382d9f3f391349004d",
+  "mode": "Debug",
+  "source_count": 5277,
+  "tool_count": 19546,
+  "public_activation": false,
+  "scope": "Originalb45 completeSummarization28 and summary generation45 with exact prompts and native GC/ownership; controlled default dependency is not global compat/provider qualification; full factory remains unfinished"
+}

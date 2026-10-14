@@ -1,0 +1,9 @@
+{
+  "head": "6508c242bf1deba37379ee714c6038e671c08e38",
+  "tree": "910a306fd9cc16f30b4290f5f09c7116f11b5ffc",
+  "mode": "ReleaseSafe",
+  "source_count": 5176,
+  "tool_count": 19546,
+  "public_activation": false,
+  "scope": "Original context20 and transcript restore22 with live receiver identity and native ownership; constructor initialization regression; complete factory remains unfinished"
+}
