@@ -80,3 +80,5 @@ src/extensions/fixtures/crypto-random-node24.input.txt whitespace=cr-at-eol,-bla
 src/extensions/fixtures/ai-provider-helpers-b45.input.txt whitespace=cr-at-eol
 verification/ai-compat-env-crypto-b45-20261014/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/ai-provider-helpers-b45-20261014/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/ai-http-wire-b45-20261014/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/ai-http-wire-b45-20261014/ai-http-owner-hooks-unqualified-20261014.patch whitespace=-blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
