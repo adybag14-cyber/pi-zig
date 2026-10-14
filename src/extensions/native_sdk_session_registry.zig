@@ -442,7 +442,8 @@ fn rebuild(scope: *Scope, receiver: c.JSValue, names: c.JSValue) !void {
     try scope.set(receiver, "_baseSystemPromptOptions", try scope.own(try @import("native_sdk_prompt_normalize.zig").normalize(scope.engine, options)));
 }
 fn optionalText(scope: *Scope, value: c.JSValue) !?[]u8 {
-    return if (temp.nullish(value)) null else scope.engine.toString(value);
+    if (temp.nullish(value)) return null;
+    return try scope.engine.toString(value);
 }
 fn buildRuntime(scope: *Scope, receiver: c.JSValue, options: c.JSValue) !void {
     const resize = try scope.invoke(try scope.get(receiver, "settingsManager"), "getImageAutoResize", &.{});

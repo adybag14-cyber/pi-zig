@@ -15,17 +15,17 @@ pub fn constructor(engine: *em.Engine, dependencies: c.JSValue, reference: c.JSV
     // These are actual bodies, not caller-overridden witnesses. Install the
     // qualified loadout after legacy query overlaps, and Root restore last.
     inline for (.{
-        "native_sdk_session_public_values.zig",   "native_sdk_session_queries.zig",
-        "native_sdk_session_utilities.zig",       "native_sdk_session_events.zig",
-        "native_sdk_session_control.zig",         "native_sdk_session_queue.zig",
-        "native_sdk_session_models.zig",          "native_sdk_session_prepare.zig",
-        "native_sdk_session_prompt.zig",          "native_sdk_session_prompt_images.zig",
-        "native_sdk_session_prompt_handlers.zig", "native_sdk_session_post_run.zig",
-        "native_sdk_session_run.zig",             "native_sdk_session_settled.zig",
-        "native_sdk_session_retry.zig",           "native_sdk_session_statistics.zig",
-        "native_sdk_send_user.zig",               "native_sdk_session_registry.zig",
-        "native_sdk_session_loadout.zig",         "native_sdk_session_restore.zig",
-    }) |file| try @import("extensions/" ++ file).install(engine, staging);
+        @import("extensions/native_sdk_session_public_values.zig"),   @import("extensions/native_sdk_session_queries.zig"),
+        @import("extensions/native_sdk_session_utilities.zig"),       @import("extensions/native_sdk_session_events.zig"),
+        @import("extensions/native_sdk_session_control.zig"),         @import("extensions/native_sdk_session_queue.zig"),
+        @import("extensions/native_sdk_session_models.zig"),          @import("extensions/native_sdk_session_prepare.zig"),
+        @import("extensions/native_sdk_session_prompt.zig"),          @import("extensions/native_sdk_session_prompt_images.zig"),
+        @import("extensions/native_sdk_session_prompt_handlers.zig"), @import("extensions/native_sdk_session_post_run.zig"),
+        @import("extensions/native_sdk_session_run.zig"),             @import("extensions/native_sdk_session_settled.zig"),
+        @import("extensions/native_sdk_session_retry.zig"),           @import("extensions/native_sdk_session_statistics.zig"),
+        @import("extensions/native_sdk_send_user.zig"),               @import("extensions/native_sdk_session_registry.zig"),
+        @import("extensions/native_sdk_session_loadout.zig"),         @import("extensions/native_sdk_session_restore.zig"),
+    }) |module| try module.install(engine, staging);
     try @import("extensions/native_sdk_session_request_auth.zig").install(engine, staging, dependencies);
     try @import("extensions/native_sdk_session_hooks.zig").installWithDependencies(engine, staging, dependencies);
 
