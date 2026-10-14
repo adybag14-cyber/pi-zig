@@ -1,0 +1,42 @@
+{
+  "status": "Windows_Debug_original30_comparison_GC_full_native_allocation_sweep_passed",
+  "source_head": "2b6cab963580c15d6b4b8bf45261d53730904e8e",
+  "upstream": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "original_cases": 30,
+  "tests": 4,
+  "named_tests": 3,
+  "transitive_tests": 1,
+  "source_files": 5080,
+  "compiler_files": 19546,
+  "compiler_manifest": "../native-vm-arithmetic-20261014/compiler-full-prehash.json",
+  "source_manifest": "root-sdk-compaction-text-compile-debug-first-20261014-source-before.json",
+  "source_manifest_sha256": "F7C42AE8153965436B65E4563605B34B0641BB2A3E370624F89156DC17F699C7",
+  "compile_runtime_source_manifests_identical": true,
+  "source_post_drift": 0,
+  "compiler_post_drift": 0,
+  "genuine_source_closure": [
+    1955,
+    31064,
+    1774
+  ],
+  "original_reference_post_drift": 0,
+  "input_sha256": "55AAFC2903C84E9058AF399E9E9B42D1251726D4862F2E1B1D4D585FC314B708",
+  "native_GC": true,
+  "full_native_allocation_failure_sweep": true,
+  "large_iterator_messages": 70000,
+  "compile_outer_seconds": 1320,
+  "runtime_outer_seconds": 300,
+  "test_seconds": 120,
+  "host_await_ms": 10000,
+  "normal_admission_gib": 16,
+  "owned_pids_gone": [
+    59672,
+    59148,
+    69508
+  ],
+  "other_profiles": "Pending",
+  "scope": "Actual serializeConversation/getSummarizationFailure. Thinking omitted, JSON tool arguments, live method/getter/iterator/destructuring order, UTF16 truncation, exact summary failure messages and thrown-value identity. Provider summary generation/retries/manual/automatic orchestration and complete factory/application remain unfinished.",
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false
+}

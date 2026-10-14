@@ -1,0 +1,8 @@
+{
+  "status": "admitted",
+  "observed_utc": "2026-10-14T16:15:52.4551075+00:00",
+  "coordinated_with": "Root Source30 text oracle reservation; at most one other coordinated native reservation",
+  "free_kib": 23003904,
+  "required_kib": 2097152,
+  "heap_mb": 256
+}
