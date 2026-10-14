@@ -1610,6 +1610,12 @@ pub fn build(b: *std.Build) void {
     validation_b06_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-tool-validation-b06", "Compile actual b06 guard and validation regressions").dependOn(&validation_b06_tests.step);
     b.step("test-native-tool-validation-b06", "Compare genuine b06 argumentsError and early validation order").dependOn(&b.addRunArtifact(validation_b06_tests).step);
+    const threshold_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_compaction_threshold_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native compaction threshold", "constructor hooks match 16", "compaction utilities match original", "initialization phase matches66" }, .use_llvm = use_llvm });
+    linkQuickJs(b, threshold_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(threshold_tests.root_module, sqlite_lib_dir, sqlite_library);
+    threshold_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-compaction-threshold", "Compile real ordinary threshold and live hook dispatch").dependOn(&threshold_tests.step);
+    b.step("test-native-sdk-compaction-threshold", "Compare genuine threshold20 and constructor hook regressions").dependOn(&b.addRunArtifact(threshold_tests).step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);

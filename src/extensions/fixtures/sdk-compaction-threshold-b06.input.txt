@@ -1,0 +1,28 @@
+const rows = [];
+for (const label of ['zero','negative','null','undefined','nan','string','low','high',
+  'disabled','reserve','settings-model','changing-window','branch-throws','messages-throws','window-throws','settings-throws']) {
+  const events=[], marker={owned:label};let reads=0;
+  const model={get contextWindow(){events.push(['window',++reads]);
+    if(label==='window-throws'&&reads===2)throw marker;
+    if(label==='changing-window'&&reads===2)return 1000;
+    return ({zero:0,negative:-1,null:null,undefined:undefined,nan:NaN,string:'1',low:1,high:1000})[label] ?? (label==='undefined'?undefined:label==='null'?null:1);
+  }};
+  const projection={entries:[],get messages(){events.push('messages');if(label==='messages-throws')throw marker;return[{role:'user',content:'abcdefgh',timestamp:1}];}};
+  const session={get model(){events.push('session:model');return label==='settings-model'?{selected:true}:model;},
+    get sessionManager(){events.push('manager:get');return{getBranch(){events.push('branch');if(label==='branch-throws')throw marker;return[];}};},
+    get settingsManager(){events.push('settings:get');return{getCompactionSettings(selected){events.push(['settings',selected===model,selected?.selected===true]);if(label==='settings-throws')throw marker;return{enabled:label!=='disabled',reserveTokens:label==='reserve'?100:0};}};},
+  };
+  try{rows.push({label,events,value:thresholdB06.exceeds.call(session,model,projection)});}
+  catch(error){rows.push({label,events,error:error===marker?'owned':{name:error.name,message:error.message}});}
+}
+for(const label of ['override-false','override-true','override-throws','override-getter']){
+  const events=[],marker={owned:label},model={id:'physical',provider:'fixture',contextWindow:1};let projections=0;
+  const session={model,sessionManager:{buildSessionProjection(){events.push(['projection',++projections]);return{messages:[{role:'user',content:'projection'+projections}]};}},
+    get _exceedsCompactionThreshold(){events.push('threshold:get');if(label==='override-getter')throw marker;return function(m,p){events.push(['threshold:call',this===session,m===model,p.messages[0].content]);if(label==='override-throws')throw marker;return label==='override-true';};},
+    async _runAutoCompaction(reason,retry){events.push(['compact',reason,retry]);return false;},
+  };
+  try{rows.push({label,events,value:await thresholdB06.before.call(session,{messages:[],custom:'retained'})});}
+  catch(error){rows.push({label,events,error:error===marker?'owned':{name:error.name,message:error.message}});}
+}
+if(rows.length!==20)throw Error('All20 threshold cases required');
+globalThis.thresholdB06Rows=rows;

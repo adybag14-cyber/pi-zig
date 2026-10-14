@@ -1,0 +1,433 @@
+{
+  "sourceHead": "b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "inputSha256": "30039681c05b7bd0b892bb41d510e3953fce197ffe8520e8cadb660cb99f0c1e",
+  "cases": 20,
+  "scope": "Actual ordinary threshold method and live method override dispatch, genuine imported token estimates; no full session factory qualification",
+  "rows": [
+    {
+      "label": "zero",
+      "events": [
+        [
+          "window",
+          1
+        ]
+      ],
+      "value": false
+    },
+    {
+      "label": "negative",
+      "events": [
+        [
+          "window",
+          1
+        ]
+      ],
+      "value": false
+    },
+    {
+      "label": "null",
+      "events": [
+        [
+          "window",
+          1
+        ]
+      ],
+      "value": false
+    },
+    {
+      "label": "undefined",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages",
+        "messages",
+        "messages",
+        [
+          "window",
+          2
+        ],
+        "settings:get",
+        "session:model",
+        [
+          "settings",
+          true,
+          false
+        ]
+      ],
+      "value": false
+    },
+    {
+      "label": "nan",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages",
+        "messages",
+        "messages",
+        [
+          "window",
+          2
+        ],
+        "settings:get",
+        "session:model",
+        [
+          "settings",
+          true,
+          false
+        ]
+      ],
+      "value": false
+    },
+    {
+      "label": "string",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages",
+        "messages",
+        "messages",
+        [
+          "window",
+          2
+        ],
+        "settings:get",
+        "session:model",
+        [
+          "settings",
+          true,
+          false
+        ]
+      ],
+      "value": true
+    },
+    {
+      "label": "low",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages",
+        "messages",
+        "messages",
+        [
+          "window",
+          2
+        ],
+        "settings:get",
+        "session:model",
+        [
+          "settings",
+          true,
+          false
+        ]
+      ],
+      "value": true
+    },
+    {
+      "label": "high",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages",
+        "messages",
+        "messages",
+        [
+          "window",
+          2
+        ],
+        "settings:get",
+        "session:model",
+        [
+          "settings",
+          true,
+          false
+        ]
+      ],
+      "value": false
+    },
+    {
+      "label": "disabled",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages",
+        "messages",
+        "messages",
+        [
+          "window",
+          2
+        ],
+        "settings:get",
+        "session:model",
+        [
+          "settings",
+          true,
+          false
+        ]
+      ],
+      "value": false
+    },
+    {
+      "label": "reserve",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages",
+        "messages",
+        "messages",
+        [
+          "window",
+          2
+        ],
+        "settings:get",
+        "session:model",
+        [
+          "settings",
+          true,
+          false
+        ]
+      ],
+      "value": true
+    },
+    {
+      "label": "settings-model",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages",
+        "messages",
+        "messages",
+        [
+          "window",
+          2
+        ],
+        "settings:get",
+        "session:model",
+        [
+          "settings",
+          false,
+          true
+        ]
+      ],
+      "value": true
+    },
+    {
+      "label": "changing-window",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages",
+        "messages",
+        "messages",
+        [
+          "window",
+          2
+        ],
+        "settings:get",
+        "session:model",
+        [
+          "settings",
+          true,
+          false
+        ]
+      ],
+      "value": false
+    },
+    {
+      "label": "branch-throws",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch"
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "messages-throws",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages"
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "window-throws",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages",
+        "messages",
+        "messages",
+        [
+          "window",
+          2
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "settings-throws",
+      "events": [
+        [
+          "window",
+          1
+        ],
+        "manager:get",
+        "branch",
+        "messages",
+        "messages",
+        "messages",
+        [
+          "window",
+          2
+        ],
+        "settings:get",
+        "session:model",
+        [
+          "settings",
+          true,
+          false
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "override-false",
+      "events": [
+        [
+          "projection",
+          1
+        ],
+        "threshold:get",
+        [
+          "threshold:call",
+          true,
+          true,
+          "projection1"
+        ]
+      ],
+      "value": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "projection1"
+          }
+        ],
+        "custom": "retained"
+      }
+    },
+    {
+      "label": "override-true",
+      "events": [
+        [
+          "projection",
+          1
+        ],
+        "threshold:get",
+        [
+          "threshold:call",
+          true,
+          true,
+          "projection1"
+        ],
+        [
+          "compact",
+          "threshold",
+          false
+        ],
+        [
+          "projection",
+          2
+        ]
+      ],
+      "value": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "projection2"
+          }
+        ],
+        "custom": "retained"
+      }
+    },
+    {
+      "label": "override-throws",
+      "events": [
+        [
+          "projection",
+          1
+        ],
+        "threshold:get",
+        [
+          "threshold:call",
+          true,
+          true,
+          "projection1"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "override-getter",
+      "events": [
+        [
+          "projection",
+          1
+        ],
+        "threshold:get"
+      ],
+      "error": "owned"
+    }
+  ]
+}
