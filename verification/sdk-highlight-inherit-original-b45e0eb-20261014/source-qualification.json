@@ -1,0 +1,32 @@
+{
+  "status": "actual_b45_original_inherit40_doublecapture_passed",
+  "candidate": "d1a48dfa1016fe8b34cf06acf3a19e0ccbba4cb7",
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "input_sha256": "41f49b7e16a9bbf1a982b41bf9eedf65ce948b2f7c386a964a3d3b4e8a643dbc",
+  "cases": 40,
+  "doublecapture_rows_identical": true,
+  "complete_doublecapture_bytes_identical": true,
+  "historical24_input_bytes_preserved": true,
+  "historical24_raw_rows_unchanged": true,
+  "actual_Node_GC": true,
+  "source_files": 1965,
+  "dependencies": 31064,
+  "node_tools": 1774,
+  "candidate_files": 5262,
+  "controls": 5,
+  "all_phase_post_drift": 0,
+  "owned_pids": [
+    47896,
+    62300
+  ],
+  "owned_pids_absent": true,
+  "first_output_sha256": "CACB90621E28937E8CA9514FD073E063DDF300CCE38CD219E14BE17392D9F81F",
+  "second_output_sha256": "CACB90621E28937E8CA9514FD073E063DDF300CCE38CD219E14BE17392D9F81F",
+  "native_enumerator_qualified": false,
+  "native_legacy_function_semantics_qualified": false,
+  "public_activation": false,
+  "Source_body_rewrites": 0,
+  "expected_row_edits": 0,
+  "catalog_scope": "Historical pinned typed metadata only; latest generated catalog unqualified",
+  "verified_utc": "2026-10-14T19:23:13.6096868+00:00"
+}
