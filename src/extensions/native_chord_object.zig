@@ -3,14 +3,17 @@ const h = @import("native_chord_host_values.zig");
 const Scope = h.Scope;
 const js = h.js;
 const c = h.c;
-const Method = enum(c_int) { start, run, open, unwind, currentInstalled, refreshSchemas, allDecls, stageListeners, startRuntime, startTasks, stopListeners, startTask, stopTasks, openGate, admit, lease, call, rootEnded, addRef, release, dispose, guard };
+const Method = enum(c_int) { start, run, open, waitHydrated, withinReadyTimeout, initCells, unwind, currentInstalled, refreshSchemas, allDecls, stageListeners, startRuntime, startTasks, stopListeners, startTask, stopTasks, openGate, admit, lease, call, rootEnded, addRef, release, dispose, guard };
+fn isAsync(method: Method) bool {
+    return method == .open or method == .waitHydrated or method == .withinReadyTimeout or method == .initCells or method == .unwind or method == .call;
+}
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = h.Engine.fromContext(context.?);
     const method: Method = @enumFromInt(operation);
     const result = invoke(engine, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, method, data[0]) catch |err| {
-        return if (method == .open or method == .unwind or method == .call) @import("native_durable.zig").rejectedPromise(engine, err) else @import("native_durable.zig").reject(engine, err);
+        return if (isAsync(method)) @import("native_durable.zig").rejectedPromise(engine, err) else @import("native_durable.zig").reject(engine, err);
     };
-    if (method == .open or method == .unwind or method == .call) {
+    if (isAsync(method)) {
         defer engine.freeValue(result);
         return h.resolved(engine, result) catch |err| @import("native_durable.zig").rejectedPromise(engine, err);
     }
@@ -26,15 +29,13 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
     const host = try s.get(receiver, "host");
     switch (method) {
         .start => {
-            const work = try workFor(&s, receiver, bindings);
-            const started = try s.keep(try h.wait(activate, engine, work, h.arg(args, 0), 0));
-            const ready = try s.keep(try h.wait(startedResult, engine, work, started, 0));
-            try h.field(&s, receiver, "ready", ready);
-            h.ignore(engine, ready);
-            return c.pi_js_undefined();
+            return @import("native_chord_object_activation_v4.zig").start(engine, receiver, bindings, h.arg(args, 0));
         },
         .run => return run(&s, receiver, h.arg(args, 0), h.arg(args, 1), bindings),
-        .open => return @import("native_chord_object_lifecycle.zig").open(engine, receiver, bindings, h.arg(args, 0), h.arg(args, 1), h.arg(args, 2)),
+        .open => return @import("native_chord_object_open_v4.zig").open(engine, receiver, bindings, h.arg(args, 0), h.arg(args, 1), h.arg(args, 2)),
+        .waitHydrated => return @import("native_chord_object_hydration_v4.zig").waitHydrated(engine, bindings, receiver, h.arg(args, 0)),
+        .withinReadyTimeout => return @import("native_chord_object_hydration_v4.zig").withinReadyTimeout(engine, bindings, receiver, h.arg(args, 0), h.arg(args, 1)),
+        .initCells => return @import("native_chord_object_init_v4.zig").initCells(engine, receiver, h.arg(args, 0), h.arg(args, 1)),
         .unwind => return @import("native_chord_object_lifecycle.zig").unwind(engine, receiver, bindings, h.arg(args, 0)),
         .currentInstalled => {
             const behaviors = try s.get(receiver, "implementations");
@@ -154,74 +155,13 @@ fn reportFailure(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
     const engine = h.Engine.fromContext(context.?);
     return js.invoke(engine, data[0], "report", &.{if (argc > 0) argv[0] else c.pi_js_undefined()}) catch |err| @import("native_durable.zig").reject(engine, err);
 }
-fn abandoned(s: *Scope, record: c.JSValue, bindings: c.JSValue) !c.JSValue {
-    return h.errorValue(s, bindings, "aborted", &.{ try s.get(record, "address"), try s.text(" abandoned") }, c.pi_js_undefined());
-}
-fn activate(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) anyerror!c.JSValue {
-    var s: Scope = .{ .engine = engine };
-    defer s.deinit();
-    const record = try s.get(work, "object");
-    const bindings = try s.get(work, "bindings");
-    const host = try s.get(record, "host");
-    if (stage == 2) {
-        if (rejected) _ = try h.invoke(&s, host, "report", &.{value});
-        _ = try h.invoke(&s, try s.get(record, "pending"), "delete", &.{try s.get(try s.get(work, "run"), "decls")});
-        return h.throwValue(&s, try s.get(work, "failure"));
-    }
-    if (stage == 3) {
-        const cleanup = try h.invoke(&s, record, "unwind", &.{try s.get(work, "run")});
-        return h.wait(activate, engine, work, cleanup, 2);
-    }
-    if (stage == 0) {
-        const signal = try s.get(try s.get(record, "activationAbort"), "signal");
-        if (try h.flag(&s, signal, "aborted")) return h.throwValue(&s, try abandoned(&s, record, bindings));
-        const service = try h.invoke(&s, host, "service", &.{try s.get(record, "typeName")});
-        if (c.JS_IsUndefined(service)) {
-            const options = try s.record();
-            try h.field(&s, options, "reason", try s.text("unknown_type"));
-            return h.throwValue(&s, try h.errorValue(&s, bindings, "unavailable", &.{ try s.get(record, "typeName"), try s.text(" is not served") }, options));
-        }
-        try h.field(&s, record, "service", service);
-        const run_value = try h.invoke(&s, record, "run", &.{ service, c.pi_js_undefined() });
-        try h.field(&s, work, "run", run_value);
-        const created = try s.get(run_value, "created");
-        const opening = try h.invoke(&s, record, "open", &.{ try s.get(created, "resources"), try s.get(created, "refs"), signal });
-        return h.wait(activate, engine, work, opening, 1);
-    }
-    if (!rejected) {
-        finalize(&s, record, bindings, try s.get(work, "run")) catch |err| {
-            if (err != error.JavaScriptException) return err;
-            return activationFailure(&s, work, engine.captured_exception orelse return err);
-        };
-        _ = try h.invoke(&s, try s.get(record, "pending"), "delete", &.{try s.get(try s.get(work, "run"), "decls")});
-        return c.pi_js_undefined();
-    }
-    return activationFailure(&s, work, value);
-}
-fn activationFailure(s: *Scope, work: c.JSValue, failure: c.JSValue) anyerror!c.JSValue {
-    const record = try s.get(work, "object");
-    const bindings = try s.get(work, "bindings");
-    try h.field(s, work, "failure", failure);
-    _ = try h.invoke(s, try s.get(record, "callAbort"), "abort", &.{failure});
-    _ = try h.invoke(s, record, "stopListeners", &.{});
-    _ = try h.invoke(s, record, "stopTasks", &.{});
-    const registered = try nonempty(s, try s.get(try s.get(record, "decls"), "registrations")) and !try h.flag(s, record, "deferredRuntime");
-    _ = try h.invoke(s, try s.get(record, "implementations"), "clear", &.{});
-    try h.field(s, record, "decls", try h.construct(s, bindings, "Decls", &.{}));
-    if (registered) _ = try h.invoke(s, try s.get(record, "host"), "registriesChanged", &.{});
-    const data = try state(s, record, bindings);
-    const jobs = try h.snapshot(s, try s.get(data, "invocations"));
-    const stopped = try h.snapshot(s, try s.get(data, "stopped"));
-    const all = try h.invoke(s, jobs, "concat", &.{stopped});
-    return h.wait(activate, s.engine, work, try h.invoke(s, try s.keep(try js.global(s.engine, "Promise")), "allSettled", &.{all}), 3);
-}
 pub fn nonempty(s: *Scope, value: c.JSValue) !bool {
     return !c.JS_IsStrictEqual(s.engine.context, try s.get(value, "size"), c.JS_NewInt32(s.engine.context, 0));
 }
-fn finalize(s: *Scope, record: c.JSValue, bindings: c.JSValue, run_value: c.JSValue) anyerror!void {
+pub fn finalize(s: *Scope, record: c.JSValue, bindings: c.JSValue, run_value: c.JSValue) anyerror!void {
     const signal = try s.get(try s.get(record, "activationAbort"), "signal");
     if (try h.flag(s, signal, "aborted")) {
-        _ = try h.throwValue(s, try abandoned(s, record, bindings));
+        _ = try h.throwValue(s, try h.errorValue(s, bindings, "aborted", &.{ try s.get(record, "address"), try s.text(" abandoned") }, c.pi_js_undefined()));
     }
     const host = try s.get(record, "host");
     const service = try s.get(record, "service");
@@ -259,11 +199,11 @@ fn finalize(s: *Scope, record: c.JSValue, bindings: c.JSValue, run_value: c.JSVa
         _ = try h.invoke(s, record, "startRuntime", &.{});
     }
     if (try h.flag(s, signal, "aborted")) {
-        _ = try h.throwValue(s, try abandoned(s, record, bindings));
+        _ = try h.throwValue(s, try h.errorValue(s, bindings, "aborted", &.{ try s.get(record, "address"), try s.text(" abandoned") }, c.pi_js_undefined()));
     }
     try h.field(s, record, "status", try s.text("live"));
 }
-fn startedResult(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) anyerror!c.JSValue {
+pub fn startedResult(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) anyerror!c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const record = try s.get(work, "object");
@@ -364,5 +304,5 @@ pub fn install(engine: *h.Engine, bindings: c.JSValue) !void {
     try h.register(&s, bindings, .ObjectImpl);
     const prototype = try s.record();
     try js.define(engine, bindings, "ObjectImpl", try @import("native_class.zig").constructor(engine, "ObjectImpl", 2, prototype, construct, &.{bindings}));
-    inline for (.{ .{ "start", Method.start, 1, false }, .{ "run", Method.run, 2, false }, .{ "open", Method.open, 3, true }, .{ "unwind", Method.unwind, 1, true }, .{ "currentInstalled", Method.currentInstalled, 0, false }, .{ "refreshSchemas", Method.refreshSchemas, 0, false }, .{ "allDecls", Method.allDecls, 0, false }, .{ "stageListeners", Method.stageListeners, 1, false }, .{ "startRuntime", Method.startRuntime, 0, false }, .{ "startTasks", Method.startTasks, 0, false }, .{ "stopListeners", Method.stopListeners, 0, false }, .{ "stopTasks", Method.stopTasks, 0, false }, .{ "openGate", Method.openGate, 0, false }, .{ "admit", Method.admit, 1, false }, .{ "lease", Method.lease, 1, false }, .{ "call", Method.call, 4, true }, .{ "rootEnded", Method.rootEnded, 1, false }, .{ "addRef", Method.addRef, 1, false }, .{ "release", Method.release, 1, false }, .{ "dispose", Method.dispose, 2, false } }) |item| try h.define(&s, prototype, bindings, item[0], callback, @intFromEnum(item[1]), item[2], false, item[3]);
+    inline for (.{ .{ "start", Method.start, 1, false }, .{ "run", Method.run, 2, false }, .{ "open", Method.open, 3, true }, .{ "waitHydrated", Method.waitHydrated, 1, true }, .{ "withinReadyTimeout", Method.withinReadyTimeout, 2, true }, .{ "initCells", Method.initCells, 2, true }, .{ "unwind", Method.unwind, 1, true }, .{ "currentInstalled", Method.currentInstalled, 0, false }, .{ "refreshSchemas", Method.refreshSchemas, 0, false }, .{ "allDecls", Method.allDecls, 0, false }, .{ "stageListeners", Method.stageListeners, 1, false }, .{ "startRuntime", Method.startRuntime, 0, false }, .{ "startTasks", Method.startTasks, 0, false }, .{ "stopListeners", Method.stopListeners, 0, false }, .{ "stopTasks", Method.stopTasks, 0, false }, .{ "openGate", Method.openGate, 0, false }, .{ "admit", Method.admit, 1, false }, .{ "lease", Method.lease, 1, false }, .{ "call", Method.call, 4, true }, .{ "rootEnded", Method.rootEnded, 1, false }, .{ "addRef", Method.addRef, 1, false }, .{ "release", Method.release, 1, false }, .{ "dispose", Method.dispose, 2, false } }) |item| try h.define(&s, prototype, bindings, item[0], callback, @intFromEnum(item[1]), item[2], false, item[3]);
 }

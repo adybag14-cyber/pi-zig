@@ -19,7 +19,7 @@ pub fn locate(s: *Scope, bindings: c.JSValue, host: c.JSValue, service: c.JSValu
         principal = try s.get(host, "principal");
     }
     const data = (try h.actor(s, host, bindings, .HostImpl)).data;
-    const key = if (c.JS_IsStrictEqual(s.engine.context, principal, try s.get(host, "principal"))) try s.text("host") else try r.concat(s, &.{ try s.text("p:"), try s.keep(try js.call(s.engine, try s.get(data, "principalKey"), host, &.{principal})) });
+    const key = if (c.JS_ToBool(s.engine.context, try h.invoke(s, host, "isSelf", &.{principal})) != 0) try s.text("host") else try r.concat(s, &.{ try s.text("p:"), try s.keep(try js.call(s.engine, try s.get(data, "principalKey"), host, &.{principal})) });
     const located = try s.record();
     try h.field(s, located, "address", try r.concat(s, &.{ name, try s.text("\x00"), identity, try s.text("\x00"), key }));
     try h.field(s, located, "normalized", normalized);

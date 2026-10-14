@@ -163,8 +163,7 @@ fn bindWhenSynced(s: *Scope, handle: c.JSValue, pending: c.JSValue) !void {
     const rejected = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, bindResult, "", 1, 2, 1, &captures)));
     _ = try h.invoke(s, pending, "then", &.{ fulfilled, rejected });
 }
-pub fn acquireRemote(s: *Scope, bindings: c.JSValue, host: c.JSValue, token: c.JSValue, input: c.JSValue, options: c.JSValue, owner: c.JSValue) !c.JSValue {
-    const at = try s.get(options, "at");
+pub fn acquireRemote(s: *Scope, bindings: c.JSValue, host: c.JSValue, token: c.JSValue, at: c.JSValue, input: c.JSValue, options: c.JSValue, owner: c.JSValue) !c.JSValue {
     if (!try s.equal(try s.get(token, "scope"), "remote")) return h.invalid(s, bindings, "local", &.{ try s.get(token, "name"), try s.text(" is local and cannot be reached at "), at });
     const principal = if (c.JS_IsUndefined(try s.get(options, "principal")) or c.JS_IsStrictEqual(s.engine.context, try s.get(options, "principal"), try s.get(host, "principal"))) c.pi_js_undefined() else try s.get(options, "principal");
     const fields = try s.record();

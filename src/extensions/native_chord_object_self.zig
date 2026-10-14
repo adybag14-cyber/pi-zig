@@ -69,13 +69,26 @@ fn invoke(engine: *h.Engine, bindings: c.JSValue, receiver: c.JSValue, args: []c
         const version = r.default(&s, try s.get(options, "version"), c.JS_NewInt32(engine.context, 1));
         if (c.JS_ToBool(engine.context, try s.builtin("Number", "isInteger", &.{version})) == 0 or try r.greater(&s, c.JS_NewInt32(engine.context, 1), version)) return h.typeError(&s, &.{ try s.text("state "), name, try s.text(": version must be a positive integer") });
         const host = try s.get(object, "host");
+        const initial = h.arg(args, 2);
+        const init = if (c.JS_IsObject(initial) and !c.JS_IsFunction(engine.context, initial) and c.JS_IsFunction(engine.context, try s.get(initial, "init"))) try s.get(initial, "init") else c.pi_js_undefined();
         const existing = if (h.nullish(previous)) c.pi_js_undefined() else try h.invoke(&s, try s.get(previous, "cells"), "get", &.{name});
-        const cell = if (h.nullish(existing)) try h.construct(&s, bindings, "Cell", &.{ name, h.arg(args, 1), h.arg(args, 2), try s.get(object, "guard"), try sourceOptions(&s, host) }) else existing;
+        var cell = existing;
+        if (c.JS_IsUndefined(cell)) {
+            const boxed = if (c.JS_IsUndefined(init)) try s.record() else c.pi_js_undefined();
+            if (c.JS_IsUndefined(init)) try h.field(&s, boxed, "value", initial);
+            cell = try h.construct(&s, bindings, "Cell", &.{ name, h.arg(args, 1), boxed, try s.get(object, "guard"), try sourceOptions(&s, host) });
+            if (!c.JS_IsUndefined(init)) {
+                const declaration = try s.list();
+                try js.push(engine, declaration, cell);
+                try js.push(engine, declaration, init);
+                try js.push(engine, try s.get(created, "inits"), declaration);
+            }
+        }
         _ = try h.invoke(&s, cells, "set", &.{ name, cell });
         _ = try h.invoke(&s, try s.get(decls, "cellSchemas"), "set", &.{ name, h.arg(args, 1) });
         _ = try h.invoke(&s, try s.get(decls, "cellVersions"), "set", &.{ name, version });
         const migrate = try s.get(options, "migrate");
-        if (!c.JS_IsUndefined(migrate)) _ = try h.invoke(&s, try s.get(decls, "cellMigrations"), "set", &.{ name, migrate });
+        if (!c.JS_IsUndefined(migrate)) _ = try h.invoke(&s, try s.get(decls, "cellMigrations"), "set", &.{ name, try s.get(options, "migrate") });
         return s.result(cell);
     }
     if (method == .get) return get(&s, bindings, object, previous, decls, created, args);
@@ -158,7 +171,7 @@ fn get(s: *Scope, bindings: c.JSValue, object: c.JSValue, previous: c.JSValue, d
     const options = h.arg(args, 2);
     const principal = try r.optional(s, options, "principal");
     const candidate = !c.JS_IsUndefined(previous);
-    const address = try h.invoke(s, host, "addressOf", &.{ token, h.arg(args, 1), r.default(s, principal, try s.get(host, "principal")), try r.optional(s, options, "at"), c.pi_js_bool(s.engine.context, @intFromBool(candidate)) });
+    const address = try h.invoke(s, host, "addressOf", &.{ token, h.arg(args, 1), r.default(s, principal, try s.get(host, "principal")), c.pi_js_bool(s.engine.context, @intFromBool(candidate)) });
     const refs = try s.get(decls, "refs");
     const declared = try h.invoke(s, refs, "get", &.{address});
     if (!c.JS_IsUndefined(declared)) {
@@ -184,7 +197,7 @@ fn construct(engine: *h.Engine, target: c.JSValue, args: []const c.JSValue, capt
     try h.field(&s, data, "previous", h.arg(args, 1));
     try h.field(&s, data, "decls", try h.construct(&s, captures[0], "Decls", &.{}));
     const created = try s.record();
-    inline for (.{ "refs", "resources", "derives" }) |name| try h.field(&s, created, name, try s.list());
+    inline for (.{ "refs", "resources", "derives", "inits" }) |name| try h.field(&s, created, name, try s.list());
     try h.field(&s, data, "created", created);
     return s.result(result);
 }

@@ -42,7 +42,7 @@ pub fn invalidate(s: *Scope, bindings: c.JSValue, host: c.JSValue, pattern: c.JS
     for (0..try h.length(s, objects)) |index| {
         const object = try s.at(objects, index);
         const principal = try s.get(object, "principal");
-        if (!c.JS_IsStrictEqual(s.engine.context, principal, try s.get(host, "principal")) and try matches(s, pattern, principal)) try js.push(s.engine, matching, object);
+        if (c.JS_ToBool(s.engine.context, try h.invoke(s, host, "isSelf", &.{principal})) == 0 and try matches(s, pattern, principal)) try js.push(s.engine, matching, object);
     }
     return @import("native_chord_latest_dispose.zig").holders(s.engine, bindings, host, matching, reason, try s.text("invalidatePrincipal: disposal failed"), false);
 }

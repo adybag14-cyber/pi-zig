@@ -3,10 +3,17 @@ const h = @import("native_chord_host_values.zig");
 const Scope = h.Scope;
 const js = h.js;
 const c = h.c;
+const async_work = @import("native_chord_async_work.zig");
 const Method = enum(c_int) { closed, check, get, child, close };
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = h.Engine.fromContext(context.?);
-    return invoke(engine, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, @enumFromInt(operation), data[0]) catch |err| @import("native_durable.zig").reject(engine, err);
+    const method: Method = @enumFromInt(operation);
+    return invoke(engine, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, method, data[0]) catch |err| if (method == .get) @import("native_durable.zig").rejectedPromise(engine, err) else @import("native_durable.zig").reject(engine, err);
+}
+fn getFinished(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) anyerror!void {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    try async_work.complete(&s, work, if (rejected) value else try s.get(try s.get(work, "ref"), "proxy"), rejected);
 }
 fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, method: Method, bindings: c.JSValue) anyerror!c.JSValue {
     var s: Scope = .{ .engine = engine };
@@ -33,6 +40,7 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
         return c.pi_js_undefined();
     }
     if (method == .get) {
+        const work = try async_work.create(&s);
         const host = try s.get(receiver, "host");
         _ = try h.invoke(&s, receiver, "check", &.{host});
         const options = try s.record();
@@ -41,7 +49,13 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
         const handle = try h.invoke(&s, host, "acquire", &.{ h.arg(args, 0), h.arg(args, 1), options, try s.text("call") });
         const owned = try h.actor(&s, receiver, bindings, .ObjectCtx);
         _ = try h.invoke(&s, try s.get(owned.data, "refs"), "push", &.{handle});
-        return js.get(engine, handle, "proxy");
+        try h.field(&s, work, "ref", handle);
+        const signals = try s.list();
+        try js.push(engine, signals, try s.get(receiver, "signal"));
+        try js.push(engine, signals, try s.get(try s.get(owned.data, "closing"), "signal"));
+        const pending = try s.keep(try @import("native_chord_ready_v4.zig").awaitReady(engine, bindings, handle, signals, try s.get(host, "readyTimeout")));
+        try async_work.wait(getFinished, &s, work, pending, 0);
+        return async_work.result(&s, work);
     }
     if (method == .child) {
         const host = try s.get(receiver, "host");
@@ -57,6 +71,9 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
     }
     const owned = try h.actor(&s, receiver, bindings, .ObjectCtx);
     try h.field(&s, owned.data, "closed", c.pi_js_bool(engine.context, 1));
+    const expired = try s.record();
+    try h.field(&s, expired, "reason", try s.text("expired"));
+    _ = try h.invoke(&s, try s.get(owned.data, "closing"), "abort", &.{try h.errorValue(&s, bindings, "aborted", &.{try s.text("ctx expired: its call already settled")}, expired)});
     _ = try s.keep(try js.call(engine, try s.get(owned.data, "release"), receiver, &.{}));
     const holds = try h.invoke(&s, try s.get(owned.data, "refs"), "splice", &.{c.JS_NewInt32(engine.context, 0)});
     const iterator_symbol = try s.keep(try engine.checked(c.JS_GetIteratorSymbol(engine.context)));
@@ -76,6 +93,7 @@ fn construct(engine: *h.Engine, target: c.JSValue, args: []const c.JSValue, valu
     const result = try s.keep(try h.allocate(engine, target, bindings, .ObjectCtx));
     const owned = try h.actor(&s, result, bindings, .ObjectCtx);
     try h.field(&s, owned.data, "refs", try s.list());
+    try h.field(&s, owned.data, "closing", try s.keep(try js.builtin(engine, "AbortController", &.{})));
     try h.field(&s, owned.data, "closed", c.pi_js_bool(engine.context, 0));
     try h.field(&s, result, "host", h.arg(args, 0));
     const linked = try @import("native_chord_signal.zig").linked(&s, try s.get(h.arg(args, 1), "signals"));
@@ -93,5 +111,5 @@ pub fn install(engine: *h.Engine, bindings: c.JSValue) !void {
     const prototype = try s.record();
     const constructor = try @import("native_class.zig").constructor(engine, "CtxImpl", 2, prototype, construct, &.{bindings});
     try js.define(engine, bindings, "CtxImpl", constructor);
-    inline for (.{ .{ "closed", Method.closed, 0, true }, .{ "check", Method.check, 1, false }, .{ "get", Method.get, 3, false }, .{ "child", Method.child, 1, false }, .{ "close", Method.close, 0, false } }) |item| try h.define(&s, prototype, bindings, item[0], callback, @intFromEnum(item[1]), item[2], item[3], false);
+    inline for (.{ .{ "closed", Method.closed, 0, true }, .{ "check", Method.check, 1, false }, .{ "get", Method.get, 3, false }, .{ "child", Method.child, 1, false }, .{ "close", Method.close, 0, false } }) |item| try h.define(&s, prototype, bindings, item[0], callback, @intFromEnum(item[1]), item[2], item[3], item[1] == .get);
 }

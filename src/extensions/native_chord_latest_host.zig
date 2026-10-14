@@ -3,13 +3,13 @@ const h = @import("native_chord_host_values.zig");
 const Scope = h.Scope;
 const js = h.js;
 const c = h.c;
-const Method = enum(c_int) { codeVersion, previousCodeVersion, report, install, ready, facetApi, serveInto, startHostObject, currentCodeVersion, hasCodeVersion, retainedCodeVersions, pendingCodeVersion, service, addressOf, acquire, forget, touch, root, joinRoot, endRoot, maybeRetire, registry, buildTables, liveDecls, checkRegistrations, registriesChanged, installTables, get, close, serve, load, resolve, rootSent, foreignRootEnded, nextCodeVersionId, allowRetire, retire, retireImplementation, disposed, retirable, watchRetirement, announceRetired, reloadEnded, whenReloadEnded, facetRunChanged, peekNextCodeVersion, rememberRemoteModules, accept, connect, route, peerHello, connectionClosed, forgetRemote, relay, reload, onReloadFrame, fail, invalidatePrincipal };
+const Method = enum(c_int) { codeVersion, previousCodeVersion, report, install, ready, facetApi, serveInto, startHostObject, currentCodeVersion, hasCodeVersion, retainedCodeVersions, pendingCodeVersion, service, addressOf, acquire, forget, touch, root, joinRoot, endRoot, maybeRetire, registry, buildTables, liveDecls, checkRegistrations, registriesChanged, installTables, isSelf, get, hold, close, serve, load, resolve, rootSent, foreignRootEnded, nextCodeVersionId, allowRetire, retire, retireImplementation, disposed, retirable, watchRetirement, announceRetired, reloadEnded, whenReloadEnded, facetRunChanged, peekNextCodeVersion, rememberRemoteModules, accept, connect, route, peerHello, connectionClosed, forgetRemote, relay, reload, onReloadFrame, fail, invalidatePrincipal };
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = h.Engine.fromContext(context.?);
     const method: Method = @enumFromInt(operation);
     const target = if (method == .serve) data[1] else receiver;
     const result = invoke(engine, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, method, data[0]) catch |err| {
-        return if (method == .root or method == .joinRoot or method == .close or method == .load or method == .resolve or method == .relay or method == .invalidatePrincipal) @import("native_durable.zig").rejectedPromise(engine, err) else @import("native_durable.zig").reject(engine, err);
+        return if (method == .get or method == .root or method == .joinRoot or method == .close or method == .load or method == .resolve or method == .relay or method == .invalidatePrincipal) @import("native_durable.zig").rejectedPromise(engine, err) else @import("native_durable.zig").reject(engine, err);
     };
     if (method == .root or method == .resolve) {
         defer engine.freeValue(result);
@@ -61,8 +61,8 @@ fn reaches(s: *Scope, from: c.JSValue, to: c.JSValue) anyerror!bool {
 fn acquire(s: *Scope, host: c.JSValue, args: []const c.JSValue, bindings: c.JSValue) anyerror!c.JSValue {
     const type_value = h.arg(args, 0);
     const settings = h.arg(args, 2);
-    const at = try optional(s, settings, "at");
-    if (!c.JS_IsUndefined(at) and !c.JS_IsStrictEqual(s.engine.context, at, try s.get(host, "name"))) return s.result(try @import("native_chord_host_routing.zig").acquireRemote(s, bindings, host, type_value, h.arg(args, 1), settings, h.arg(args, 3)));
+    const location = try @import("native_chord_host_placement_v4.zig").elsewhere(s, bindings, host, type_value, h.arg(args, 1));
+    if (!c.JS_IsUndefined(location)) return s.result(try @import("native_chord_host_routing.zig").acquireRemote(s, bindings, host, type_value, try s.get(location, "at"), try s.get(location, "input"), settings, h.arg(args, 3)));
     const provider = try service(s, host, try s.get(type_value, "name"), c.JS_ToBool(s.engine.context, h.arg(args, 5)) != 0);
     if (c.JS_IsUndefined(provider)) return unknown(s, bindings, try s.get(type_value, "name"), host);
     _ = try h.invoke(s, try s.get(bindings, "contracts"), "bind", &.{ try s.get(provider, "contract"), try s.get(try s.get(provider, "options"), "accepts"), type_value });
@@ -70,6 +70,7 @@ fn acquire(s: *Scope, host: c.JSValue, args: []const c.JSValue, bindings: c.JSVa
     const located = try @import("native_chord_host_locate.zig").locate(s, bindings, host, provider, h.arg(args, 1), if (h.nullish(raw_principal)) try s.get(host, "principal") else raw_principal);
     const principal = try s.get(located, "principal");
     const normalized = try s.get(located, "normalized");
+    try @import("native_chord_host_placement_v4.zig").checkProvider(s, bindings, host, type_value, provider, normalized);
     const key = try s.get(located, "address");
     const records = try s.get(host, "objects");
     var record = try h.invoke(s, records, "get", &.{key});
@@ -239,6 +240,13 @@ fn excluding(s: *Scope, entries: c.JSValue, record: c.JSValue) !c.JSValue {
 fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, method: Method, bindings: c.JSValue) anyerror!c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
+    if (method == .isSelf) {
+        const principal = h.arg(args, 0);
+        if (c.JS_IsStrictEqual(engine.context, principal, try s.get(receiver, "principal"))) return c.pi_js_bool(engine.context, 1);
+        const data = (try h.actor(&s, receiver, bindings, .HostImpl)).data;
+        const key = try s.keep(try js.call(engine, try s.get(data, "principalKey"), receiver, &.{principal}));
+        return c.pi_js_bool(engine.context, @intFromBool(c.JS_IsStrictEqual(engine.context, key, try s.get(data, "selfKey"))));
+    }
     if (method == .invalidatePrincipal) return @import("native_chord_host_invalidate.zig").invalidate(&s, bindings, receiver, h.arg(args, 0));
     if (method == .resolve) return @import("native_chord_host_load.zig").resolve(engine, bindings, receiver, h.arg(args, 0));
     if (method == .retire or method == .retireImplementation or method == .allowRetire or method == .retirable or method == .watchRetirement or method == .announceRetired) {
@@ -435,14 +443,10 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
     }
     if (method == .addressOf) {
         const type_value = h.arg(args, 0);
-        const at = h.arg(args, 3);
         const principal = h.arg(args, 2);
-        if (!c.JS_IsUndefined(at) and !c.JS_IsStrictEqual(engine.context, at, try s.get(receiver, "name"))) {
-            const input = try s.keep(try @import("native_chord_canonical.zig").canonicalJson(engine, h.arg(args, 1)));
-            const key = if (c.JS_IsStrictEqual(engine.context, principal, try s.get(receiver, "principal"))) try s.text("host") else try s.keep(try @import("native_chord_canonical.zig").canonicalJson(engine, principal));
-            return @import("native_utf16.zig").concat(engine, &.{ try s.text("@"), at, try s.text("\x00"), try s.get(type_value, "name"), try s.text("\x00"), input, try s.text("\x00"), key });
-        }
-        const provider = try service(&s, receiver, try s.get(type_value, "name"), c.JS_ToBool(engine.context, h.arg(args, 4)) != 0);
+        const location = try @import("native_chord_host_placement_v4.zig").elsewhere(&s, bindings, receiver, type_value, h.arg(args, 1));
+        if (!c.JS_IsUndefined(location)) return s.result(try @import("native_chord_host_placement_v4.zig").remoteKey(&s, bindings, receiver, type_value, try s.get(location, "input"), principal));
+        const provider = try service(&s, receiver, try s.get(type_value, "name"), c.JS_ToBool(engine.context, h.arg(args, 3)) != 0);
         if (c.JS_IsUndefined(provider)) return unknown(&s, bindings, try s.get(type_value, "name"), receiver);
         return s.result(try s.get(try @import("native_chord_host_locate.zig").locate(&s, bindings, receiver, provider, h.arg(args, 1), principal), "address"));
     }
@@ -555,7 +559,8 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
         try @import("native_chord_latest_registry.zig").installTables(engine, bindings, receiver, h.arg(args, 0), h.arg(args, 1), c.JS_ToBool(engine.context, h.arg(args, 2)) != 0);
         return c.pi_js_undefined();
     }
-    if (method == .get) return js.get(engine, try h.invoke(&s, receiver, "acquire", &.{ h.arg(args, 0), h.arg(args, 1), h.arg(args, 2), try s.text("external") }), "proxy");
+    if (method == .get) return @import("native_chord_host_get_v4.zig").get(engine, receiver, bindings, h.arg(args, 0), h.arg(args, 1), h.arg(args, 2));
+    if (method == .hold) return js.get(engine, try h.invoke(&s, receiver, "acquire", &.{ h.arg(args, 0), h.arg(args, 1), h.arg(args, 2), try s.text("external") }), "proxy");
     if (method == .close) return @import("native_chord_latest_dispose.zig").close(engine, bindings, receiver);
     unreachable;
 }
@@ -574,7 +579,7 @@ fn construct(engine: *h.Engine, target: c.JSValue, args: []const c.JSValue, valu
     const result = try s.keep(try h.allocate(engine, target, bindings, .HostImpl));
     const owned = try h.actor(&s, result, bindings, .HostImpl);
     inline for (.{ "name", "dev" }) |name| try h.field(&s, result, name, c.pi_js_undefined());
-    try h.field(&s, result, "principal", try s.get(bindings, "hostPrincipal"));
+    try h.field(&s, result, "principal", c.pi_js_undefined());
     try h.field(&s, result, "inFactory", c.JS_NewInt32(engine.context, 0));
     try h.field(&s, result, "failed", c.pi_js_undefined());
     inline for (.{ "objects", "codeVersions", "facets", "hostObjects" }) |name| try h.field(&s, result, name, try h.map(&s));
@@ -601,14 +606,31 @@ fn construct(engine: *h.Engine, target: c.JSValue, args: []const c.JSValue, valu
     try h.field(&s, result, "name", if (h.nullish(name)) try s.text("host") else name);
     const dev = try s.get(settings, "dev");
     try h.field(&s, result, "dev", if (h.nullish(dev)) c.pi_js_bool(engine.context, 0) else dev);
+    const self_atom = try js.atom(engine, try s.text("self"));
+    defer c.JS_FreeAtom(engine.context, self_atom);
+    const has_self = c.JS_HasProperty(engine.context, settings, self_atom);
+    if (has_self < 0) return js.capture(engine);
+    if (has_self == 0) {
+        const message = try s.text("createHost needs `self`: the principal of the host's own code");
+        return h.throwValue(&s, try s.keep(try js.builtin(engine, "TypeError", &.{message})));
+    }
+    try h.field(&s, result, "principal", try s.get(settings, "self"));
     const principal_key = try s.get(settings, "principalKey");
     try h.field(&s, owned.data, "principalKey", if (h.nullish(principal_key)) try s.get(try s.get(bindings, "schema"), "canonicalJson") else principal_key);
+    try h.field(&s, owned.data, "selfKey", try s.keep(try js.call(engine, try s.get(owned.data, "principalKey"), result, &.{try s.get(settings, "self")})));
     const on_error = try s.get(settings, "onError");
     const observer = if (h.nullish(on_error)) try s.keep(try engine.checked(c.JS_NewCFunctionData2(engine.context, defaultReport, "", 1, 0, 0, null))) else on_error;
     try h.field(&s, owned.data, "onError", observer);
     try h.field(&s, owned.data, "loader", try s.get(settings, "loader"));
     const task_deadline = try s.get(settings, "taskStopDeadline");
     try h.field(&s, result, "taskStopDeadline", if (h.nullish(task_deadline)) c.JS_NewInt32(engine.context, 5000) else task_deadline);
+    const ready_timeout = try s.get(settings, "readyTimeout");
+    try h.field(&s, result, "readyTimeout", if (h.nullish(ready_timeout)) c.JS_NewInt32(engine.context, 60000) else ready_timeout);
+    const linger = try s.get(settings, "linger");
+    const linger_types = try optional(&s, linger, "types");
+    try h.field(&s, owned.data, "lingerTypes", if (h.nullish(linger_types)) try s.record() else linger_types);
+    const linger_cap = try optional(&s, try s.get(settings, "linger"), "cap");
+    try h.field(&s, owned.data, "lingerCap", if (h.nullish(linger_cap)) c.JS_NewInt32(engine.context, 4) else linger_cap);
     const current = try s.record();
     try h.field(&s, current, "id", try s.get(owned.data, "codeVersionSeq"));
     inline for (.{ "services", "tables", "roots" }) |field_name| try h.field(&s, current, field_name, try h.map(&s));
@@ -617,7 +639,7 @@ fn construct(engine: *h.Engine, target: c.JSValue, args: []const c.JSValue, valu
     _ = try h.invoke(&s, try s.get(result, "codeVersions"), "set", &.{ try s.get(current, "id"), current });
     const kind = try s.get(settings, "kind");
     try h.field(&s, result, "kind", if (h.nullish(kind)) try s.text("host") else kind);
-    if (!c.JS_IsUndefined(try s.get(settings, "upstream"))) _ = try h.invoke(&s, result, "connect", &.{ try s.get(settings, "upstream"), try s.get(settings, "upstreamOptions") });
+    if (!c.JS_IsUndefined(try s.get(settings, "upstream"))) _ = try h.invoke(&s, result, "connect", &.{ try s.get(try s.get(settings, "upstream"), "link"), try s.get(settings, "upstream") });
     return s.result(result);
 }
 pub fn install(engine: *h.Engine, bindings: c.JSValue) !void {
@@ -627,6 +649,6 @@ pub fn install(engine: *h.Engine, bindings: c.JSValue) !void {
     const prototype = try s.record();
     try js.define(engine, bindings, "HostImpl", try @import("native_class.zig").constructor(engine, "HostImpl", 1, prototype, construct, &.{bindings}));
     inline for (.{ .{ Method.retainedCodeVersions, 0, false }, .{ Method.disposed, 1, false }, .{ Method.retirable, 0, false }, .{ Method.watchRetirement, 1, false }, .{ Method.announceRetired, 1, false }, .{ Method.reloadEnded, 0, false }, .{ Method.whenReloadEnded, 0, false }, .{ Method.facetRunChanged, 2, false }, .{ Method.peekNextCodeVersion, 0, false }, .{ Method.rememberRemoteModules, 2, false }, .{ Method.accept, 2, false }, .{ Method.connect, 1, false }, .{ Method.route, 2, false }, .{ Method.peerHello, 2, false }, .{ Method.connectionClosed, 1, false }, .{ Method.forgetRemote, 1, false }, .{ Method.relay, 1, true }, .{ Method.reload, 1, false }, .{ Method.onReloadFrame, 2, false }, .{ Method.fail, 1, false }, .{ Method.invalidatePrincipal, 1, true } }) |entry| try h.define(&s, prototype, bindings, @tagName(entry[0]), callback, @intFromEnum(entry[0]), entry[1], false, entry[2]);
-    inline for (.{ .{ "codeVersion", Method.codeVersion, 0, true, false }, .{ "previousCodeVersion", Method.previousCodeVersion, 0, true, false }, .{ "report", Method.report, 1, false, false }, .{ "install", Method.install, 1, false, false }, .{ "ready", Method.ready, 0, false, false }, .{ "facetApi", Method.facetApi, 2, false, false }, .{ "serveInto", Method.serveInto, 2, false, false }, .{ "startHostObject", Method.startHostObject, 1, false, false }, .{ "currentCodeVersion", Method.currentCodeVersion, 0, false, false }, .{ "hasCodeVersion", Method.hasCodeVersion, 1, false, false }, .{ "pendingCodeVersion", Method.pendingCodeVersion, 0, false, false }, .{ "service", Method.service, 1, false, false }, .{ "addressOf", Method.addressOf, 4, false, false }, .{ "acquire", Method.acquire, 5, false, false }, .{ "forget", Method.forget, 1, false, false }, .{ "touch", Method.touch, 2, false, false }, .{ "root", Method.root, 1, false, true }, .{ "joinRoot", Method.joinRoot, 3, false, true }, .{ "endRoot", Method.endRoot, 1, false, false }, .{ "maybeRetire", Method.maybeRetire, 0, false, false }, .{ "registry", Method.registry, 1, false, false }, .{ "buildTables", Method.buildTables, 1, false, false }, .{ "liveDecls", Method.liveDecls, 0, false, false }, .{ "checkRegistrations", Method.checkRegistrations, 2, false, false }, .{ "registriesChanged", Method.registriesChanged, 1, false, false }, .{ "installTables", Method.installTables, 2, false, false }, .{ "get", Method.get, 3, false, false }, .{ "close", Method.close, 0, false, true } }) |item| try h.define(&s, prototype, bindings, item[0], callback, @intFromEnum(item[1]), item[2], item[3], item[4]);
+    inline for (.{ .{ "codeVersion", Method.codeVersion, 0, true, false }, .{ "previousCodeVersion", Method.previousCodeVersion, 0, true, false }, .{ "report", Method.report, 1, false, false }, .{ "install", Method.install, 1, false, false }, .{ "ready", Method.ready, 0, false, false }, .{ "facetApi", Method.facetApi, 2, false, false }, .{ "serveInto", Method.serveInto, 2, false, false }, .{ "startHostObject", Method.startHostObject, 1, false, false }, .{ "currentCodeVersion", Method.currentCodeVersion, 0, false, false }, .{ "hasCodeVersion", Method.hasCodeVersion, 1, false, false }, .{ "pendingCodeVersion", Method.pendingCodeVersion, 0, false, false }, .{ "service", Method.service, 1, false, false }, .{ "addressOf", Method.addressOf, 4, false, false }, .{ "acquire", Method.acquire, 5, false, false }, .{ "forget", Method.forget, 1, false, false }, .{ "touch", Method.touch, 2, false, false }, .{ "root", Method.root, 1, false, true }, .{ "joinRoot", Method.joinRoot, 3, false, true }, .{ "endRoot", Method.endRoot, 1, false, false }, .{ "maybeRetire", Method.maybeRetire, 0, false, false }, .{ "registry", Method.registry, 1, false, false }, .{ "buildTables", Method.buildTables, 1, false, false }, .{ "liveDecls", Method.liveDecls, 0, false, false }, .{ "checkRegistrations", Method.checkRegistrations, 2, false, false }, .{ "registriesChanged", Method.registriesChanged, 1, false, false }, .{ "installTables", Method.installTables, 2, false, false }, .{ "isSelf", Method.isSelf, 1, false, false }, .{ "get", Method.get, 3, false, true }, .{ "hold", Method.hold, 3, false, false }, .{ "close", Method.close, 0, false, true } }) |item| try h.define(&s, prototype, bindings, item[0], callback, @intFromEnum(item[1]), item[2], item[3], item[4]);
     inline for (.{ .{ "load", Method.load, 1, true }, .{ "resolve", Method.resolve, 1, true }, .{ "rootSent", Method.rootSent, 2, false }, .{ "foreignRootEnded", Method.foreignRootEnded, 2, false }, .{ "nextCodeVersionId", Method.nextCodeVersionId, 1, false }, .{ "allowRetire", Method.allowRetire, 1, false }, .{ "retire", Method.retire, 0, false }, .{ "retireImplementation", Method.retireImplementation, 2, false } }) |item| try h.define(&s, prototype, bindings, item[0], callback, @intFromEnum(item[1]), item[2], false, item[3]);
 }
