@@ -1,0 +1,109 @@
+{
+  "status": "first_Windows_Debug_actual_original_tree24_algorithm_comparison_GC_and_partition_passed",
+  "head": "f61649d",
+  "source_original_run": 38573862642,
+  "input_sha256": "D8C4C5633C2FD1AC0EDC85DB2938CC93522E70AFB6F28253FBC1560C92818B1A",
+  "expected_sha256": "EAC33F3CA19037330227CA61881B52F5A1F1A7CF784BCB99DD0AEDB581C60E8F",
+  "native_body_sha256": "CFBFF8BF982A878FCDAF835BB1486F978B55AADB42CE7786AAA95BEC4C30EB92",
+  "cases": 24,
+  "original_instances_each": 27,
+  "tests_passed": 3,
+  "tests_total": 3,
+  "allocation_baseline": 501,
+  "partition": 0,
+  "partitions": 8,
+  "range_start": 0,
+  "range_end": 62,
+  "completed_indices": 62,
+  "remaining_indices": 439,
+  "duplicates": 0,
+  "full_qualification_pending": true,
+  "public_class_metadata_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "source_files": 4836,
+  "original_source_files": 1955,
+  "vendor_files": 1317,
+  "compiler_files": 19546,
+  "compile_runtime_working_manifests_identical": true,
+  "all_post_drift": 0,
+  "minimum_free_gib": 16,
+  "compile_seconds": 1320,
+  "runtime_seconds": 300,
+  "test_seconds": 120,
+  "host_await_ms": 10000,
+  "scope": "Private algorithms through thin test wrappers, no Source class export metadata claim",
+  "receipts": [
+    {
+      "file": "native-highlight-token-tree-debug-build-first-20261014.process.json",
+      "sha256": "942A850217F792BD9AF6E736B2E1FB2B9DBA4E4699CDE5E31FF05B29246EB118"
+    },
+    {
+      "file": "native-highlight-token-tree-debug-build-first-20261014-admission.json",
+      "sha256": "0B9F0E6573195510278159311E4A9DB31732FAE86D7C8B964817D397061CF0D9"
+    },
+    {
+      "file": "native-highlight-token-tree-debug-build-first-20261014-posthash.json",
+      "sha256": "44600B6F2AE9704A3EC04F1A12C1328E0FF9E086DC329429259F48DE7CC1205D"
+    },
+    {
+      "file": "native-highlight-token-tree-debug-build-first-20261014.stderr.log",
+      "sha256": "82D4BD79264FC54099996CE0723439DE6AB42950A728C2A2B750B466B0D8ACF6"
+    },
+    {
+      "file": "native-highlight-token-tree-debug-build-first-20261014.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "kind": "source",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-highlight-token-tree-debug-build-first-20261014-source-before.json",
+      "sha256": "F8ECDEEE7FB3A976FB29BE82139E1A0ABA87F6E2A389F3A6E5F120F5F1E5E565"
+    },
+    {
+      "kind": "original",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-highlight-token-tree-debug-build-first-20261014-original-before.json",
+      "sha256": "C002505EEED0D96B3C3897A8160D2F9BB18CAC02976C5131CB2A1DCFBD4D2547"
+    },
+    {
+      "kind": "vendor",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-highlight-token-tree-debug-build-first-20261014-vendor-before.json",
+      "sha256": "43DFA48272E8CBABCCEF2FD256C94750CFCCC9F2EEA879E881C3F22DACE4AAD9"
+    },
+    {
+      "file": "native-highlight-token-tree-debug-test-first-20261014.process.json",
+      "sha256": "2DFF1D6B78675AADF88EFBF796B4F0D19908A253F01482A2A2938208F50DCD25"
+    },
+    {
+      "file": "native-highlight-token-tree-debug-test-first-20261014-admission.json",
+      "sha256": "4D7EABC675C531707A6C2EC3BB6BE0FC6E2AFA949A1E73FC75F70BC1CF2CEC55"
+    },
+    {
+      "file": "native-highlight-token-tree-debug-test-first-20261014-posthash.json",
+      "sha256": "623CD3EADFA9E0A3C9A2944BACD356517355A81CF63C98B74F5110F68ABE94E9"
+    },
+    {
+      "file": "native-highlight-token-tree-debug-test-first-20261014.stderr.log",
+      "sha256": "F4DAA09F1995977F0B50638186A7930AE23DD43D5E497339A6443A91992E5B17"
+    },
+    {
+      "file": "native-highlight-token-tree-debug-test-first-20261014.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "kind": "source",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-highlight-token-tree-debug-test-first-20261014-source-before.json",
+      "sha256": "F8ECDEEE7FB3A976FB29BE82139E1A0ABA87F6E2A389F3A6E5F120F5F1E5E565"
+    },
+    {
+      "kind": "original",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-highlight-token-tree-debug-test-first-20261014-original-before.json",
+      "sha256": "C002505EEED0D96B3C3897A8160D2F9BB18CAC02976C5131CB2A1DCFBD4D2547"
+    },
+    {
+      "kind": "vendor",
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-highlight-token-tree-debug-test-first-20261014-vendor-before.json",
+      "sha256": "43DFA48272E8CBABCCEF2FD256C94750CFCCC9F2EEA879E881C3F22DACE4AAD9"
+    }
+  ],
+  "public_activation": false,
+  "checked_utc": "2026-10-14T14:46:45.3904912+00:00"
+}

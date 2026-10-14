@@ -1,0 +1,2660 @@
+{
+  "minimum_free_gib": 16,
+  "free_kib": 26734676,
+  "existing_native_processes": [
+    {
+      "CimClass": {
+        "CimSuperClassName": "CIM_Process",
+        "CimSuperClass": {
+          "CimSuperClassName": "CIM_LogicalElement",
+          "CimSuperClass": {
+            "CimSuperClassName": "CIM_ManagedSystemElement",
+            "CimSuperClass": "ROOT/CIMV2:CIM_ManagedSystemElement",
+            "CimClassProperties": "Caption Description InstallDate Name Status",
+            "CimClassQualifiers": "Locale = 1033 UUID = \"{8502C518-5FBB-11D2-AAC1-006008C78BC7}\" Abstract = True",
+            "CimClassMethods": "",
+            "CimSystemProperties": "Microsoft.Management.Infrastructure.CimSystemProperties"
+          },
+          "CimClassProperties": [
+            "Caption",
+            "Description",
+            "InstallDate",
+            "Name",
+            "Status",
+            "CreationClassName",
+            "CreationDate",
+            "CSCreationClassName",
+            "CSName",
+            "ExecutionState",
+            "Handle",
+            "KernelModeTime",
+            "OSCreationClassName",
+            "OSName",
+            "Priority",
+            "TerminationDate",
+            "UserModeTime",
+            "WorkingSetSize"
+          ],
+          "CimClassQualifiers": [
+            "Locale = 1033",
+            "UUID = \"{8502C566-5FBB-11D2-AAC1-006008C78BC7}\"",
+            "Abstract = True"
+          ],
+          "CimClassMethods": [],
+          "CimSystemProperties": {
+            "Namespace": "ROOT/CIMV2",
+            "ServerName": "PRECISION5690",
+            "ClassName": "CIM_Process",
+            "Path": null
+          }
+        },
+        "CimClassProperties": [
+          {
+            "Name": "Caption",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MaxLen = 64 read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Description",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "InstallDate",
+            "Value": null,
+            "CimType": 13,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Name",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Status",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MaxLen = 10 read = True ValueMap = ...",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CreationClassName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CreationDate",
+            "Value": null,
+            "CimType": 13,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "Fixed = True read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CSCreationClassName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.CSCreationClassName... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CSName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.CSName\" read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ExecutionState",
+            "Value": null,
+            "CimType": 4,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Handle",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, Key, ReadOnly, NullValue",
+            "Qualifiers": "key = True MaxLen = 256 read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "KernelModeTime",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True Override = \"KernelModeTime\"",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OSCreationClassName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.CreationClassName\" read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OSName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.Name\" read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Priority",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True MappingStrings = ... Override = \"Priority\"",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "TerminationDate",
+            "Value": null,
+            "CimType": 13,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "UserModeTime",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True Override = \"UserModeTime\"",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WorkingSetSize",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CommandLine",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ExecutablePath",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... Privileges = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "HandleCount",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "MaximumWorkingSetSize",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... Privileges = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "MinimumWorkingSetSize",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... Privileges = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OtherOperationCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OtherTransferCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PageFaults",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PageFileUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ParentProcessId",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PeakPageFileUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PeakVirtualSize",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PeakWorkingSetSize",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PrivatePageCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ProcessId",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaNonPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaPeakNonPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaPeakPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ReadOperationCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ReadTransferCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "SessionId",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ThreadCount",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "VirtualSize",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WindowsVersion",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WriteOperationCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WriteTransferCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          }
+        ],
+        "CimClassQualifiers": [
+          {
+            "Name": "Locale",
+            "Value": 1033,
+            "CimType": 7,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "UUID",
+            "Value": "{8502C4DC-5FBB-11D2-AAC1-006008C78BC7}",
+            "CimType": 14,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "CreateBy",
+            "Value": "Create",
+            "CimType": 14,
+            "Flags": "EnableOverride, Restricted"
+          },
+          {
+            "Name": "DeleteBy",
+            "Value": "DeleteInstance",
+            "CimType": 14,
+            "Flags": "EnableOverride, Restricted"
+          },
+          {
+            "Name": "dynamic",
+            "Value": true,
+            "CimType": 1,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "provider",
+            "Value": "CIMWin32",
+            "CimType": 14,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "SupportsCreate",
+            "Value": true,
+            "CimType": 1,
+            "Flags": "EnableOverride, Restricted"
+          },
+          {
+            "Name": "SupportsDelete",
+            "Value": true,
+            "CimType": 1,
+            "Flags": "EnableOverride, Restricted"
+          }
+        ],
+        "CimClassMethods": [
+          {
+            "Name": "Create",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Constructor = True Implemented = True MappingStrings = ... Privileges = ... Static = True ValueMap = ..."
+          },
+          {
+            "Name": "Terminate",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Destructor = True Implemented = True MappingStrings = ... Privileges = ... ValueMap = ..."
+          },
+          {
+            "Name": "GetOwner",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True MappingStrings = ... ValueMap = ..."
+          },
+          {
+            "Name": "GetOwnerSid",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True MappingStrings = ... ValueMap = ..."
+          },
+          {
+            "Name": "SetPriority",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True MappingStrings = ... ValueMap = ..."
+          },
+          {
+            "Name": "AttachDebugger",
+            "ReturnType": 6,
+            "Parameters": "",
+            "Qualifiers": "Implemented = True ValueMap = ..."
+          },
+          {
+            "Name": "GetAvailableVirtualSize",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True ValueMap = ..."
+          }
+        ],
+        "CimSystemProperties": {
+          "Namespace": "root/cimv2",
+          "ServerName": "PRECISION5690",
+          "ClassName": "Win32_Process",
+          "Path": null
+        }
+      },
+      "CimInstanceProperties": [
+        {
+          "Name": "Caption",
+          "Value": "zig.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Description",
+          "Value": "zig.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "InstallDate",
+          "Value": null,
+          "CimType": 13,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Name",
+          "Value": "zig.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Status",
+          "Value": null,
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CreationClassName",
+          "Value": "Win32_Process",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CreationDate",
+          "Value": "2026-10-14T15:42:09.74305+01:00",
+          "CimType": 13,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CSCreationClassName",
+          "Value": "Win32_ComputerSystem",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CSName",
+          "Value": "PRECISION5690",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ExecutionState",
+          "Value": null,
+          "CimType": 4,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Handle",
+          "Value": "57828",
+          "CimType": 14,
+          "Flags": "Property, Key, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "KernelModeTime",
+          "Value": 312500,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OSCreationClassName",
+          "Value": "Win32_OperatingSystem",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OSName",
+          "Value": "Microsoft Windows 11 Pro|C:\\Windows|\\Device\\Harddisk3\\Partition2",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Priority",
+          "Value": 8,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "TerminationDate",
+          "Value": null,
+          "CimType": 13,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "UserModeTime",
+          "Value": 312500,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WorkingSetSize",
+          "Value": 17502208,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CommandLine",
+          "Value": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-durable-generation -Doptimize=ReleaseSafe -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ExecutablePath",
+          "Value": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "HandleCount",
+          "Value": 122,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "MaximumWorkingSetSize",
+          "Value": 1380,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "MinimumWorkingSetSize",
+          "Value": 200,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OtherOperationCount",
+          "Value": 7205,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OtherTransferCount",
+          "Value": 124282,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PageFaults",
+          "Value": 4553,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PageFileUsage",
+          "Value": 4848,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ParentProcessId",
+          "Value": 49968,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PeakPageFileUsage",
+          "Value": 4848,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PeakVirtualSize",
+          "Value": 4764717056,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PeakWorkingSetSize",
+          "Value": 17200,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PrivatePageCount",
+          "Value": 4964352,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ProcessId",
+          "Value": 57828,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaNonPagedPoolUsage",
+          "Value": 8,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaPagedPoolUsage",
+          "Value": 478,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaPeakNonPagedPoolUsage",
+          "Value": 32,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaPeakPagedPoolUsage",
+          "Value": 479,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ReadOperationCount",
+          "Value": 5,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ReadTransferCount",
+          "Value": 98516,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "SessionId",
+          "Value": 1,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ThreadCount",
+          "Value": 4,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "VirtualSize",
+          "Value": 4764717056,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WindowsVersion",
+          "Value": "10.0.26200",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WriteOperationCount",
+          "Value": 1,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WriteTransferCount",
+          "Value": 103,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        }
+      ],
+      "CimSystemProperties": {
+        "Namespace": "root/cimv2",
+        "ServerName": "PRECISION5690",
+        "ClassName": "Win32_Process",
+        "Path": null
+      },
+      "ProcessName": "zig.exe",
+      "Handles": 122,
+      "VM": 4764717056,
+      "WS": 17502208,
+      "Path": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "Caption": "zig.exe",
+      "Description": "zig.exe",
+      "InstallDate": null,
+      "Name": "zig.exe",
+      "Status": null,
+      "CreationClassName": "Win32_Process",
+      "CreationDate": "2026-10-14T15:42:09.74305+01:00",
+      "CSCreationClassName": "Win32_ComputerSystem",
+      "CSName": "PRECISION5690",
+      "ExecutionState": null,
+      "Handle": "57828",
+      "KernelModeTime": 312500,
+      "OSCreationClassName": "Win32_OperatingSystem",
+      "OSName": "Microsoft Windows 11 Pro|C:\\Windows|\\Device\\Harddisk3\\Partition2",
+      "Priority": 8,
+      "TerminationDate": null,
+      "UserModeTime": 312500,
+      "WorkingSetSize": 17502208,
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-durable-generation -Doptimize=ReleaseSafe -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "HandleCount": 122,
+      "MaximumWorkingSetSize": 1380,
+      "MinimumWorkingSetSize": 200,
+      "OtherOperationCount": 7205,
+      "OtherTransferCount": 124282,
+      "PageFaults": 4553,
+      "PageFileUsage": 4848,
+      "ParentProcessId": 49968,
+      "PeakPageFileUsage": 4848,
+      "PeakVirtualSize": 4764717056,
+      "PeakWorkingSetSize": 17200,
+      "PrivatePageCount": 4964352,
+      "ProcessId": 57828,
+      "QuotaNonPagedPoolUsage": 8,
+      "QuotaPagedPoolUsage": 478,
+      "QuotaPeakNonPagedPoolUsage": 32,
+      "QuotaPeakPagedPoolUsage": 479,
+      "ReadOperationCount": 5,
+      "ReadTransferCount": 98516,
+      "SessionId": 1,
+      "ThreadCount": 4,
+      "VirtualSize": 4764717056,
+      "WindowsVersion": "10.0.26200",
+      "WriteOperationCount": 1,
+      "WriteTransferCount": 103,
+      "PSComputerName": null
+    },
+    {
+      "CimClass": {
+        "CimSuperClassName": "CIM_Process",
+        "CimSuperClass": {
+          "CimSuperClassName": "CIM_LogicalElement",
+          "CimSuperClass": {
+            "CimSuperClassName": "CIM_ManagedSystemElement",
+            "CimSuperClass": "ROOT/CIMV2:CIM_ManagedSystemElement",
+            "CimClassProperties": "Caption Description InstallDate Name Status",
+            "CimClassQualifiers": "Locale = 1033 UUID = \"{8502C518-5FBB-11D2-AAC1-006008C78BC7}\" Abstract = True",
+            "CimClassMethods": "",
+            "CimSystemProperties": "Microsoft.Management.Infrastructure.CimSystemProperties"
+          },
+          "CimClassProperties": [
+            "Caption",
+            "Description",
+            "InstallDate",
+            "Name",
+            "Status",
+            "CreationClassName",
+            "CreationDate",
+            "CSCreationClassName",
+            "CSName",
+            "ExecutionState",
+            "Handle",
+            "KernelModeTime",
+            "OSCreationClassName",
+            "OSName",
+            "Priority",
+            "TerminationDate",
+            "UserModeTime",
+            "WorkingSetSize"
+          ],
+          "CimClassQualifiers": [
+            "Locale = 1033",
+            "UUID = \"{8502C566-5FBB-11D2-AAC1-006008C78BC7}\"",
+            "Abstract = True"
+          ],
+          "CimClassMethods": [],
+          "CimSystemProperties": {
+            "Namespace": "ROOT/CIMV2",
+            "ServerName": "PRECISION5690",
+            "ClassName": "CIM_Process",
+            "Path": null
+          }
+        },
+        "CimClassProperties": [
+          {
+            "Name": "Caption",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MaxLen = 64 read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Description",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "InstallDate",
+            "Value": null,
+            "CimType": 13,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Name",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Status",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MaxLen = 10 read = True ValueMap = ...",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CreationClassName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CreationDate",
+            "Value": null,
+            "CimType": 13,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "Fixed = True read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CSCreationClassName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.CSCreationClassName... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CSName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.CSName\" read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ExecutionState",
+            "Value": null,
+            "CimType": 4,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Handle",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, Key, ReadOnly, NullValue",
+            "Qualifiers": "key = True MaxLen = 256 read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "KernelModeTime",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True Override = \"KernelModeTime\"",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OSCreationClassName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.CreationClassName\" read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OSName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.Name\" read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Priority",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True MappingStrings = ... Override = \"Priority\"",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "TerminationDate",
+            "Value": null,
+            "CimType": 13,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "UserModeTime",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True Override = \"UserModeTime\"",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WorkingSetSize",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CommandLine",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ExecutablePath",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... Privileges = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "HandleCount",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "MaximumWorkingSetSize",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... Privileges = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "MinimumWorkingSetSize",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... Privileges = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OtherOperationCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OtherTransferCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PageFaults",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PageFileUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ParentProcessId",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PeakPageFileUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PeakVirtualSize",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PeakWorkingSetSize",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PrivatePageCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ProcessId",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaNonPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaPeakNonPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaPeakPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ReadOperationCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ReadTransferCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "SessionId",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ThreadCount",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "VirtualSize",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WindowsVersion",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WriteOperationCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WriteTransferCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          }
+        ],
+        "CimClassQualifiers": [
+          {
+            "Name": "Locale",
+            "Value": 1033,
+            "CimType": 7,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "UUID",
+            "Value": "{8502C4DC-5FBB-11D2-AAC1-006008C78BC7}",
+            "CimType": 14,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "CreateBy",
+            "Value": "Create",
+            "CimType": 14,
+            "Flags": "EnableOverride, Restricted"
+          },
+          {
+            "Name": "DeleteBy",
+            "Value": "DeleteInstance",
+            "CimType": 14,
+            "Flags": "EnableOverride, Restricted"
+          },
+          {
+            "Name": "dynamic",
+            "Value": true,
+            "CimType": 1,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "provider",
+            "Value": "CIMWin32",
+            "CimType": 14,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "SupportsCreate",
+            "Value": true,
+            "CimType": 1,
+            "Flags": "EnableOverride, Restricted"
+          },
+          {
+            "Name": "SupportsDelete",
+            "Value": true,
+            "CimType": 1,
+            "Flags": "EnableOverride, Restricted"
+          }
+        ],
+        "CimClassMethods": [
+          {
+            "Name": "Create",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Constructor = True Implemented = True MappingStrings = ... Privileges = ... Static = True ValueMap = ..."
+          },
+          {
+            "Name": "Terminate",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Destructor = True Implemented = True MappingStrings = ... Privileges = ... ValueMap = ..."
+          },
+          {
+            "Name": "GetOwner",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True MappingStrings = ... ValueMap = ..."
+          },
+          {
+            "Name": "GetOwnerSid",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True MappingStrings = ... ValueMap = ..."
+          },
+          {
+            "Name": "SetPriority",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True MappingStrings = ... ValueMap = ..."
+          },
+          {
+            "Name": "AttachDebugger",
+            "ReturnType": 6,
+            "Parameters": "",
+            "Qualifiers": "Implemented = True ValueMap = ..."
+          },
+          {
+            "Name": "GetAvailableVirtualSize",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True ValueMap = ..."
+          }
+        ],
+        "CimSystemProperties": {
+          "Namespace": "root/cimv2",
+          "ServerName": "PRECISION5690",
+          "ClassName": "Win32_Process",
+          "Path": null
+        }
+      },
+      "CimInstanceProperties": [
+        {
+          "Name": "Caption",
+          "Value": "build.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Description",
+          "Value": "build.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "InstallDate",
+          "Value": null,
+          "CimType": 13,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Name",
+          "Value": "build.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Status",
+          "Value": null,
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CreationClassName",
+          "Value": "Win32_Process",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CreationDate",
+          "Value": "2026-10-14T15:42:09.820629+01:00",
+          "CimType": 13,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CSCreationClassName",
+          "Value": "Win32_ComputerSystem",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CSName",
+          "Value": "PRECISION5690",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ExecutionState",
+          "Value": null,
+          "CimType": 4,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Handle",
+          "Value": "29524",
+          "CimType": 14,
+          "Flags": "Property, Key, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "KernelModeTime",
+          "Value": 19375000,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OSCreationClassName",
+          "Value": "Win32_OperatingSystem",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OSName",
+          "Value": "Microsoft Windows 11 Pro|C:\\Windows|\\Device\\Harddisk3\\Partition2",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Priority",
+          "Value": 8,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "TerminationDate",
+          "Value": null,
+          "CimType": 13,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "UserModeTime",
+          "Value": 24843750,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WorkingSetSize",
+          "Value": 20168704,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CommandLine",
+          "Value": ".zig-cache\\o\\0320c925c74bba68df715820f36c33cf\\build.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013 .zig-cache C:\\Users\\adyba\\AppData\\Local\\zig --seed 0xca191973 -Z62204dae5c303835 build-native-durable-generation -Doptimize=ReleaseSafe -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ExecutablePath",
+          "Value": "C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\.zig-cache\\o\\0320c925c74bba68df715820f36c33cf\\build.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "HandleCount",
+          "Value": 75,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "MaximumWorkingSetSize",
+          "Value": 1380,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "MinimumWorkingSetSize",
+          "Value": 200,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OtherOperationCount",
+          "Value": 185590,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OtherTransferCount",
+          "Value": 4385444,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PageFaults",
+          "Value": 6900,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PageFileUsage",
+          "Value": 29520,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ParentProcessId",
+          "Value": 57828,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PeakPageFileUsage",
+          "Value": 29712,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PeakVirtualSize",
+          "Value": 4409638912,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PeakWorkingSetSize",
+          "Value": 19768,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PrivatePageCount",
+          "Value": 30228480,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ProcessId",
+          "Value": 29524,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaNonPagedPoolUsage",
+          "Value": 9,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaPagedPoolUsage",
+          "Value": 55,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaPeakNonPagedPoolUsage",
+          "Value": 58,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaPeakPagedPoolUsage",
+          "Value": 58,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ReadOperationCount",
+          "Value": 74450,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ReadTransferCount",
+          "Value": 542161152,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "SessionId",
+          "Value": 1,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ThreadCount",
+          "Value": 3,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "VirtualSize",
+          "Value": 4409475072,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WindowsVersion",
+          "Value": "10.0.26200",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WriteOperationCount",
+          "Value": 157,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WriteTransferCount",
+          "Value": 1878,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        }
+      ],
+      "CimSystemProperties": {
+        "Namespace": "root/cimv2",
+        "ServerName": "PRECISION5690",
+        "ClassName": "Win32_Process",
+        "Path": null
+      },
+      "ProcessName": "build.exe",
+      "Handles": 75,
+      "VM": 4409475072,
+      "WS": 20168704,
+      "Path": "C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\.zig-cache\\o\\0320c925c74bba68df715820f36c33cf\\build.exe",
+      "Caption": "build.exe",
+      "Description": "build.exe",
+      "InstallDate": null,
+      "Name": "build.exe",
+      "Status": null,
+      "CreationClassName": "Win32_Process",
+      "CreationDate": "2026-10-14T15:42:09.820629+01:00",
+      "CSCreationClassName": "Win32_ComputerSystem",
+      "CSName": "PRECISION5690",
+      "ExecutionState": null,
+      "Handle": "29524",
+      "KernelModeTime": 19375000,
+      "OSCreationClassName": "Win32_OperatingSystem",
+      "OSName": "Microsoft Windows 11 Pro|C:\\Windows|\\Device\\Harddisk3\\Partition2",
+      "Priority": 8,
+      "TerminationDate": null,
+      "UserModeTime": 24843750,
+      "WorkingSetSize": 20168704,
+      "CommandLine": ".zig-cache\\o\\0320c925c74bba68df715820f36c33cf\\build.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013 .zig-cache C:\\Users\\adyba\\AppData\\Local\\zig --seed 0xca191973 -Z62204dae5c303835 build-native-durable-generation -Doptimize=ReleaseSafe -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\.zig-cache\\o\\0320c925c74bba68df715820f36c33cf\\build.exe",
+      "HandleCount": 75,
+      "MaximumWorkingSetSize": 1380,
+      "MinimumWorkingSetSize": 200,
+      "OtherOperationCount": 185590,
+      "OtherTransferCount": 4385444,
+      "PageFaults": 6900,
+      "PageFileUsage": 29520,
+      "ParentProcessId": 57828,
+      "PeakPageFileUsage": 29712,
+      "PeakVirtualSize": 4409638912,
+      "PeakWorkingSetSize": 19768,
+      "PrivatePageCount": 30228480,
+      "ProcessId": 29524,
+      "QuotaNonPagedPoolUsage": 9,
+      "QuotaPagedPoolUsage": 55,
+      "QuotaPeakNonPagedPoolUsage": 58,
+      "QuotaPeakPagedPoolUsage": 58,
+      "ReadOperationCount": 74450,
+      "ReadTransferCount": 542161152,
+      "SessionId": 1,
+      "ThreadCount": 3,
+      "VirtualSize": 4409475072,
+      "WindowsVersion": "10.0.26200",
+      "WriteOperationCount": 157,
+      "WriteTransferCount": 1878,
+      "PSComputerName": null
+    },
+    {
+      "CimClass": {
+        "CimSuperClassName": "CIM_Process",
+        "CimSuperClass": {
+          "CimSuperClassName": "CIM_LogicalElement",
+          "CimSuperClass": {
+            "CimSuperClassName": "CIM_ManagedSystemElement",
+            "CimSuperClass": "ROOT/CIMV2:CIM_ManagedSystemElement",
+            "CimClassProperties": "Caption Description InstallDate Name Status",
+            "CimClassQualifiers": "Locale = 1033 UUID = \"{8502C518-5FBB-11D2-AAC1-006008C78BC7}\" Abstract = True",
+            "CimClassMethods": "",
+            "CimSystemProperties": "Microsoft.Management.Infrastructure.CimSystemProperties"
+          },
+          "CimClassProperties": [
+            "Caption",
+            "Description",
+            "InstallDate",
+            "Name",
+            "Status",
+            "CreationClassName",
+            "CreationDate",
+            "CSCreationClassName",
+            "CSName",
+            "ExecutionState",
+            "Handle",
+            "KernelModeTime",
+            "OSCreationClassName",
+            "OSName",
+            "Priority",
+            "TerminationDate",
+            "UserModeTime",
+            "WorkingSetSize"
+          ],
+          "CimClassQualifiers": [
+            "Locale = 1033",
+            "UUID = \"{8502C566-5FBB-11D2-AAC1-006008C78BC7}\"",
+            "Abstract = True"
+          ],
+          "CimClassMethods": [],
+          "CimSystemProperties": {
+            "Namespace": "ROOT/CIMV2",
+            "ServerName": "PRECISION5690",
+            "ClassName": "CIM_Process",
+            "Path": null
+          }
+        },
+        "CimClassProperties": [
+          {
+            "Name": "Caption",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MaxLen = 64 read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Description",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "InstallDate",
+            "Value": null,
+            "CimType": 13,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Name",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Status",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MaxLen = 10 read = True ValueMap = ...",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CreationClassName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CreationDate",
+            "Value": null,
+            "CimType": 13,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "Fixed = True read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CSCreationClassName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.CSCreationClassName... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CSName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.CSName\" read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ExecutionState",
+            "Value": null,
+            "CimType": 4,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Handle",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, Key, ReadOnly, NullValue",
+            "Qualifiers": "key = True MaxLen = 256 read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "KernelModeTime",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True Override = \"KernelModeTime\"",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OSCreationClassName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.CreationClassName\" read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OSName",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "CIM_Key = True MaxLen = 256 Propagated = \"CIM_OperatingSystem.Name\" read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "Priority",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True MappingStrings = ... Override = \"Priority\"",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "TerminationDate",
+            "Value": null,
+            "CimType": 13,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "UserModeTime",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True Override = \"UserModeTime\"",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WorkingSetSize",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "CommandLine",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ExecutablePath",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... Privileges = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "HandleCount",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "MaximumWorkingSetSize",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... Privileges = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "MinimumWorkingSetSize",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... Privileges = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OtherOperationCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "OtherTransferCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PageFaults",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PageFileUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ParentProcessId",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PeakPageFileUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PeakVirtualSize",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PeakWorkingSetSize",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "PrivatePageCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ProcessId",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaNonPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaPeakNonPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "QuotaPeakPagedPoolUsage",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ReadOperationCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ReadTransferCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "SessionId",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "ThreadCount",
+            "Value": null,
+            "CimType": 6,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "VirtualSize",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WindowsVersion",
+            "Value": null,
+            "CimType": 14,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WriteOperationCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          },
+          {
+            "Name": "WriteTransferCount",
+            "Value": null,
+            "CimType": 8,
+            "Flags": "Property, ReadOnly, NullValue",
+            "Qualifiers": "MappingStrings = ... read = True",
+            "ReferenceClassName": null
+          }
+        ],
+        "CimClassQualifiers": [
+          {
+            "Name": "Locale",
+            "Value": 1033,
+            "CimType": 7,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "UUID",
+            "Value": "{8502C4DC-5FBB-11D2-AAC1-006008C78BC7}",
+            "CimType": 14,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "CreateBy",
+            "Value": "Create",
+            "CimType": 14,
+            "Flags": "EnableOverride, Restricted"
+          },
+          {
+            "Name": "DeleteBy",
+            "Value": "DeleteInstance",
+            "CimType": 14,
+            "Flags": "EnableOverride, Restricted"
+          },
+          {
+            "Name": "dynamic",
+            "Value": true,
+            "CimType": 1,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "provider",
+            "Value": "CIMWin32",
+            "CimType": 14,
+            "Flags": "EnableOverride, ToSubclass"
+          },
+          {
+            "Name": "SupportsCreate",
+            "Value": true,
+            "CimType": 1,
+            "Flags": "EnableOverride, Restricted"
+          },
+          {
+            "Name": "SupportsDelete",
+            "Value": true,
+            "CimType": 1,
+            "Flags": "EnableOverride, Restricted"
+          }
+        ],
+        "CimClassMethods": [
+          {
+            "Name": "Create",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Constructor = True Implemented = True MappingStrings = ... Privileges = ... Static = True ValueMap = ..."
+          },
+          {
+            "Name": "Terminate",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Destructor = True Implemented = True MappingStrings = ... Privileges = ... ValueMap = ..."
+          },
+          {
+            "Name": "GetOwner",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True MappingStrings = ... ValueMap = ..."
+          },
+          {
+            "Name": "GetOwnerSid",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True MappingStrings = ... ValueMap = ..."
+          },
+          {
+            "Name": "SetPriority",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True MappingStrings = ... ValueMap = ..."
+          },
+          {
+            "Name": "AttachDebugger",
+            "ReturnType": 6,
+            "Parameters": "",
+            "Qualifiers": "Implemented = True ValueMap = ..."
+          },
+          {
+            "Name": "GetAvailableVirtualSize",
+            "ReturnType": 6,
+            "Parameters": "Microsoft.Management.Infrastructure.Internal.Data.CimMethodParameterDeclarationOfMethod",
+            "Qualifiers": "Implemented = True ValueMap = ..."
+          }
+        ],
+        "CimSystemProperties": {
+          "Namespace": "root/cimv2",
+          "ServerName": "PRECISION5690",
+          "ClassName": "Win32_Process",
+          "Path": null
+        }
+      },
+      "CimInstanceProperties": [
+        {
+          "Name": "Caption",
+          "Value": "zig.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Description",
+          "Value": "zig.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "InstallDate",
+          "Value": null,
+          "CimType": 13,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Name",
+          "Value": "zig.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Status",
+          "Value": null,
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CreationClassName",
+          "Value": "Win32_Process",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CreationDate",
+          "Value": "2026-10-14T15:42:15.932904+01:00",
+          "CimType": 13,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CSCreationClassName",
+          "Value": "Win32_ComputerSystem",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CSName",
+          "Value": "PRECISION5690",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ExecutionState",
+          "Value": null,
+          "CimType": 4,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Handle",
+          "Value": "7780",
+          "CimType": 14,
+          "Flags": "Property, Key, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "KernelModeTime",
+          "Value": 13593750,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OSCreationClassName",
+          "Value": "Win32_OperatingSystem",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OSName",
+          "Value": "Microsoft Windows 11 Pro|C:\\Windows|\\Device\\Harddisk3\\Partition2",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "Priority",
+          "Value": 8,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "TerminationDate",
+          "Value": null,
+          "CimType": 13,
+          "Flags": "Property, ReadOnly, NotModified, NullValue",
+          "IsValueModified": false
+        },
+        {
+          "Name": "UserModeTime",
+          "Value": 20625000,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WorkingSetSize",
+          "Value": 418500608,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "CommandLine",
+          "Value": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe test -fllvm -cflags -std=gnu11 -- C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\durable\\process_probe.c .zig-cache\\o\\0cb98d5d14fcfa68da192be4c99bb8d1\\pi-quickjs.lib .zig-cache\\o\\6782e94d243f3922bf86468b93ebcf79\\pi-typescript-parser.lib -OReleaseSafe -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\quickjs -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\libfyaml -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\extensions -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\photon-native -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\tree-sitter\\lib\\include -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d --dep native_icu_api --dep native_photon_link --dep native_vm_identity -Mroot=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\native_durable_tool_output_test.zig -OReleaseSafe -Mnative_icu_api=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\extensions\\icu\\native_icu_api.zig .zig-cache\\o\\6f60e9be21719e9bd4e294eb31967b21\\pi-photon.lib -OReleaseSafe -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\photon-native -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d -Mnative_photon_link=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\ai\\photon_session.zig -Mnative_vm_identity=.zig-cache\\c\\9278d9b2a20cc77f247ebc3500537861\\options.zig .zig-cache\\o\\c246168e7edd5fd2cd181791db32bb6b\\pi-icu78-i18n.lib .zig-cache\\o\\60af8d0b4887ab0d367b8413caab51a9\\pi-native-yaml.lib .zig-cache\\o\\42cd5fda067d4b39cc76af044e056fc0\\pi-sqlite.lib .zig-cache\\o\\adab80ee1c19844cd6ba34a1d580dde1\\pi-icu78-common.lib -ladvapi32 .zig-cache\\o\\eff42f00226999810b0b110150358f60\\pi-icu78-stubdata.lib -lc++ -lc --test-filter \"native durable v2 generation\" --test-filter \"native durable v2 prompt\" --cache-dir .zig-cache --global-cache-dir C:\\Users\\adyba\\AppData\\Local\\zig --name test --zig-lib-dir C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\ --listen=-",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ExecutablePath",
+          "Value": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "HandleCount",
+          "Value": 191,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "MaximumWorkingSetSize",
+          "Value": 1380,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "MinimumWorkingSetSize",
+          "Value": 200,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OtherOperationCount",
+          "Value": 71694,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "OtherTransferCount",
+          "Value": 1075476,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PageFaults",
+          "Value": 135090,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PageFileUsage",
+          "Value": 2516612,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ParentProcessId",
+          "Value": 29524,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PeakPageFileUsage",
+          "Value": 2549876,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PeakVirtualSize",
+          "Value": 7370739712,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PeakWorkingSetSize",
+          "Value": 436328,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "PrivatePageCount",
+          "Value": 2577010688,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ProcessId",
+          "Value": 7780,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaNonPagedPoolUsage",
+          "Value": 17,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaPagedPoolUsage",
+          "Value": 477,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaPeakNonPagedPoolUsage",
+          "Value": 17,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "QuotaPeakPagedPoolUsage",
+          "Value": 479,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ReadOperationCount",
+          "Value": 81979,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ReadTransferCount",
+          "Value": 271180309,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "SessionId",
+          "Value": 1,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "ThreadCount",
+          "Value": 35,
+          "CimType": 6,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "VirtualSize",
+          "Value": 7336775680,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WindowsVersion",
+          "Value": "10.0.26200",
+          "CimType": 14,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WriteOperationCount",
+          "Value": 11,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        },
+        {
+          "Name": "WriteTransferCount",
+          "Value": 804507,
+          "CimType": 8,
+          "Flags": "Property, ReadOnly, NotModified",
+          "IsValueModified": false
+        }
+      ],
+      "CimSystemProperties": {
+        "Namespace": "root/cimv2",
+        "ServerName": "PRECISION5690",
+        "ClassName": "Win32_Process",
+        "Path": null
+      },
+      "ProcessName": "zig.exe",
+      "Handles": 191,
+      "VM": 7336775680,
+      "WS": 418500608,
+      "Path": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "Caption": "zig.exe",
+      "Description": "zig.exe",
+      "InstallDate": null,
+      "Name": "zig.exe",
+      "Status": null,
+      "CreationClassName": "Win32_Process",
+      "CreationDate": "2026-10-14T15:42:15.932904+01:00",
+      "CSCreationClassName": "Win32_ComputerSystem",
+      "CSName": "PRECISION5690",
+      "ExecutionState": null,
+      "Handle": "7780",
+      "KernelModeTime": 13593750,
+      "OSCreationClassName": "Win32_OperatingSystem",
+      "OSName": "Microsoft Windows 11 Pro|C:\\Windows|\\Device\\Harddisk3\\Partition2",
+      "Priority": 8,
+      "TerminationDate": null,
+      "UserModeTime": 20625000,
+      "WorkingSetSize": 418500608,
+      "CommandLine": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe test -fllvm -cflags -std=gnu11 -- C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\durable\\process_probe.c .zig-cache\\o\\0cb98d5d14fcfa68da192be4c99bb8d1\\pi-quickjs.lib .zig-cache\\o\\6782e94d243f3922bf86468b93ebcf79\\pi-typescript-parser.lib -OReleaseSafe -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\quickjs -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\libfyaml -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\extensions -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\photon-native -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\tree-sitter\\lib\\include -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d --dep native_icu_api --dep native_photon_link --dep native_vm_identity -Mroot=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\native_durable_tool_output_test.zig -OReleaseSafe -Mnative_icu_api=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\extensions\\icu\\native_icu_api.zig .zig-cache\\o\\6f60e9be21719e9bd4e294eb31967b21\\pi-photon.lib -OReleaseSafe -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\photon-native -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d -Mnative_photon_link=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\ai\\photon_session.zig -Mnative_vm_identity=.zig-cache\\c\\9278d9b2a20cc77f247ebc3500537861\\options.zig .zig-cache\\o\\c246168e7edd5fd2cd181791db32bb6b\\pi-icu78-i18n.lib .zig-cache\\o\\60af8d0b4887ab0d367b8413caab51a9\\pi-native-yaml.lib .zig-cache\\o\\42cd5fda067d4b39cc76af044e056fc0\\pi-sqlite.lib .zig-cache\\o\\adab80ee1c19844cd6ba34a1d580dde1\\pi-icu78-common.lib -ladvapi32 .zig-cache\\o\\eff42f00226999810b0b110150358f60\\pi-icu78-stubdata.lib -lc++ -lc --test-filter \"native durable v2 generation\" --test-filter \"native durable v2 prompt\" --cache-dir .zig-cache --global-cache-dir C:\\Users\\adyba\\AppData\\Local\\zig --name test --zig-lib-dir C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\ --listen=-",
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "HandleCount": 191,
+      "MaximumWorkingSetSize": 1380,
+      "MinimumWorkingSetSize": 200,
+      "OtherOperationCount": 71694,
+      "OtherTransferCount": 1075476,
+      "PageFaults": 135090,
+      "PageFileUsage": 2516612,
+      "ParentProcessId": 29524,
+      "PeakPageFileUsage": 2549876,
+      "PeakVirtualSize": 7370739712,
+      "PeakWorkingSetSize": 436328,
+      "PrivatePageCount": 2577010688,
+      "ProcessId": 7780,
+      "QuotaNonPagedPoolUsage": 17,
+      "QuotaPagedPoolUsage": 477,
+      "QuotaPeakNonPagedPoolUsage": 17,
+      "QuotaPeakPagedPoolUsage": 479,
+      "ReadOperationCount": 81979,
+      "ReadTransferCount": 271180309,
+      "SessionId": 1,
+      "ThreadCount": 35,
+      "VirtualSize": 7336775680,
+      "WindowsVersion": "10.0.26200",
+      "WriteOperationCount": 11,
+      "WriteTransferCount": 804507,
+      "PSComputerName": null
+    }
+  ],
+  "wrapper_sha256": "D0126C7BF529EF9B773B49CE6A94B3D151C5FB02B79775D2657720B0A6689BA0",
+  "checked_utc": "2026-10-14T14:42:18.4434959+00:00"
+}

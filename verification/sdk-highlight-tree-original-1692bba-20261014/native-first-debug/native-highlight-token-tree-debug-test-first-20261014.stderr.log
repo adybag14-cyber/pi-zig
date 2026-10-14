@@ -1,0 +1,365 @@
+test-native-highlight-token-tree
++- run test w
+EXHAUSTIVE_ALLOCATION_BASELINE highlight-token-tree total=501
+EXHAUSTIVE_ALLOCATION_RANGE highlight-token-tree 0/8 range=[0,62) total=501
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 0
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 0
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 1
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 1
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 2
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 2
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 3
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 3
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 4
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 4
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 5
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 5
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 6
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 6
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 7
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 7
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 8
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 8
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 9
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 9
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 10
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 10
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 11
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 11
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 12
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 12
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 13
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 13
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 14
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 14
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 15
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 15
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 16
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 16
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 17
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 17
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 18
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 18
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 19
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 19
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 20
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 20
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 21
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 21
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 22
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 22
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 23
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 23
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 24
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 24
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 25
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 25
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 26
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 26
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 27
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 27
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 28
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 28
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 29
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 29
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 30
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 30
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 31
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 31
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 32
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 32
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 33
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 33
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 34
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 34
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 35
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 35
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 36
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 36
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 37
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 37
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 38
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 38
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 39
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 39
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 40
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 40
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 41
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 41
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 42
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 42
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 43
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 43
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 44
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 44
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 45
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 45
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 46
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 46
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 47
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 47
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 48
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 48
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 49
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 49
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 50
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 50
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 51
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 51
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 52
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 52
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 53
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 53
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 54
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 54
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 55
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 55
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 56
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 56
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 57
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 57
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 58
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 58
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 59
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 59
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 60
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 60
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN highlight-token-tree 61
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE highlight-token-tree 61
+EXHAUSTIVE_ALLOCATION_COMPLETE highlight-token-tree 0/8 range=[0,62) total=501
+failed command: ".\\.zig-cache\\o\\5324e07b13bf3302f410051a08ea16f7\\test.exe" "--cache-dir=.\\.zig-cache" --seed=0x1a69446c --listen=-
+
+Build Summary: 156/156 steps succeeded; 3/3 tests passed
+test-native-highlight-token-tree success
++- run test 3 pass (3 total) 382ms MaxRSS:10M
+   +- compile test Debug native cached 77ms MaxRSS:32M
+      +- WriteFile cached
+      +- compile lib pi-quickjs Debug native cached 37ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile lib pi-icu78-i18n Debug native cached 69ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile lib pi-icu78-common Debug native cached 76ms MaxRSS:30M
+      |  |  |  +- WriteFile cached
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native cached 36ms MaxRSS:30M
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native (reused)
+      |  |  +- compile lib pi-icu78-common Debug native (+3 more reused dependencies)
+      |  +- WriteFile cached
+      |  +- compile lib pi-native-yaml Debug native cached 36ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native cached 26ms MaxRSS:28M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native cached 36ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native cached 26ms MaxRSS:28M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native cached 31ms MaxRSS:28M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native cached 26ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native cached 30ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native cached 26ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native cached 26ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native cached 26ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native cached 25ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native cached 26ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native cached 26ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native cached 36ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native cached 35ms MaxRSS:28M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native cached 31ms MaxRSS:28M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native cached 26ms MaxRSS:28M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native cached 25ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native cached 26ms MaxRSS:29M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native cached 35ms MaxRSS:28M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native cached 25ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native cached 26ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native cached 24ms MaxRSS:28M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native cached 28ms MaxRSS:30M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native cached 31ms MaxRSS:28M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native cached 31ms MaxRSS:28M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native cached 26ms MaxRSS:29M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native cached 26ms MaxRSS:30M
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)
+      |  +- WriteFile cached
+      |  +- compile lib pi-sqlite Debug native cached 77ms MaxRSS:30M
+      |  +- compile lib pi-icu78-i18n Debug native (+3 more reused dependencies)
+      |  +- compile lib pi-native-yaml Debug native (+81 more reused dependencies)
+      |  +- compile lib pi-sqlite Debug native (reused)
+      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)
+      +- WriteFile cached
+      +- compile lib pi-photon Debug native cached 15ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_0 Debug native cached 36ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_0 Debug native cached 36ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_1 Debug native cached 26ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_1 Debug native cached 29ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_2 Debug native cached 27ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_2 Debug native cached 27ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_3 Debug native cached 36ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_3 Debug native cached 27ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_4 Debug native cached 35ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_4 Debug native cached 34ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_5 Debug native cached 36ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_5 Debug native cached 26ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_6 Debug native cached 35ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_6 Debug native cached 35ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_7 Debug native cached 35ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_7 Debug native cached 26ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_8 Debug native cached 26ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_8 Debug native cached 35ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_9 Debug native cached 26ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_9 Debug native cached 34ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_10 Debug native cached 35ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_10 Debug native cached 35ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_11 Debug native cached 26ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_11 Debug native cached 35ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_12 Debug native cached 26ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_12 Debug native cached 35ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_13 Debug native cached 27ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_13 Debug native cached 34ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_14 Debug native cached 36ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_14 Debug native cached 25ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_15 Debug native cached 35ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_15 Debug native cached 36ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_imports Debug native cached 26ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-browser_imports Debug native cached 35ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native cached 27ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_native Debug native cached 35ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_native Debug native cached 26ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_api Debug native cached 33ms MaxRSS:30M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_browser_api Debug native cached 34ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native cached 26ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native cached 33ms MaxRSS:31M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native cached 35ms MaxRSS:31M
+      |  +- compile obj pi-photon-photon_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_15 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_15 Debug native (reused)
+      |  +- compile obj pi-photon-codec_imports Debug native (reused)
+      |  +- compile obj pi-photon-browser_imports Debug native (reused)
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native (reused)
+      |  +- compile obj pi-photon-photon_native Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_native Debug native (reused)
+      |  +- compile obj pi-photon-session_api Debug native (reused)
+      |  +- compile obj pi-photon-session_browser_api Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native (reused)
+      +- compile lib pi-photon Debug native (+126 more reused dependencies)
+      +- options cached
+
