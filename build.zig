@@ -1597,6 +1597,13 @@ pub fn build(b: *std.Build) void {
     manual_compaction_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-session-compaction", "Compile ordinary manual compaction and shared summary orchestration").dependOn(&manual_compaction_tests.step);
     b.step("test-native-sdk-session-compaction", "Compare actual upstream manual compaction and failure cleanup").dependOn(&b.addRunArtifact(manual_compaction_tests).step);
+
+    const auto_compaction_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_auto_compaction_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native automatic compaction"}, .use_llvm = use_llvm });
+    linkQuickJs(b, auto_compaction_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(auto_compaction_tests.root_module, sqlite_lib_dir, sqlite_library);
+    auto_compaction_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-session-auto-compaction", "Compile ordinary automatic compaction independently").dependOn(&auto_compaction_tests.step);
+    b.step("test-native-sdk-session-auto-compaction", "Compare actual upstream automatic compaction and controller ownership").dependOn(&b.addRunArtifact(auto_compaction_tests).step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);

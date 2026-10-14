@@ -1,14 +1,15 @@
 //! Actual manual compaction methods; caller-controlled summary generation is
 //! explicit here, while lower summary generation has its own genuine corpus.
 const std = @import("std");
+const builtin = @import("builtin");
 const em = @import("extensions/engine.zig");
 const Scope = @import("extensions/native_sdk_prompt_scope.zig").Scope;
 const c = em.c;
-fn setup(engine: *em.Engine, environment: *std.process.Environ.Map) !void {
+pub fn setup(engine: *em.Engine, environment: *std.process.Environ.Map) !void {
     try @import("native_sdk_complete_summarization_test.zig").setup(engine);
     try @import("extensions/native_crypto_random.zig").install(engine);
     try @import("extensions/abort_signal.zig").install(engine);
-    try environment.put("PI_PACKAGE_DIR", "C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/packages/coding-agent");
+    try environment.put("PI_PACKAGE_DIR", if (builtin.os.tag == .windows) "C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/packages/coding-agent" else "/owned/pi-package");
     try @import("extensions/native_process.zig").install(engine, std.testing.io, environment, &.{"native-manual-compaction"});
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -42,7 +43,7 @@ fn run(gpa: std.mem.Allocator) !void {
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
     const actual = try engine.stringify(try scope.get(global, "manualCompactionRows"));
     defer gpa.free(actual);
-    const bytes = @embedFile("extensions/fixtures/sdk-session-manual-compaction-b45.json");
+    const bytes = if (builtin.os.tag == .windows) @embedFile("extensions/fixtures/sdk-session-manual-compaction-b45.json") else @embedFile("extensions/fixtures/sdk-session-manual-compaction-b45-posix.json");
     const expected = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, bytes, bytes.len, "manual-original44.json")));
     const raw = try engine.stringify(try scope.get(expected, "rows"));
     defer gpa.free(raw);
