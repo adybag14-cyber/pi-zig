@@ -1604,6 +1604,12 @@ pub fn build(b: *std.Build) void {
     auto_compaction_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-session-auto-compaction", "Compile ordinary automatic compaction independently").dependOn(&auto_compaction_tests.step);
     b.step("test-native-sdk-session-auto-compaction", "Compare actual upstream automatic compaction and controller ownership").dependOn(&b.addRunArtifact(auto_compaction_tests).step);
+    const validation_b06_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tool_validation_b06_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native b06 tool validation", "private tool validation workflow", "preserves repeated schema getter order", "caught raw validation callback exceptions" }, .use_llvm = use_llvm });
+    linkQuickJs(b, validation_b06_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(validation_b06_tests.root_module, sqlite_lib_dir, sqlite_library);
+    validation_b06_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-tool-validation-b06", "Compile actual b06 guard and validation regressions").dependOn(&validation_b06_tests.step);
+    b.step("test-native-tool-validation-b06", "Compare genuine b06 argumentsError and early validation order").dependOn(&b.addRunArtifact(validation_b06_tests).step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);

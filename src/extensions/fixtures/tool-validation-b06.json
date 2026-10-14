@@ -1,0 +1,450 @@
+{
+  "sourceHead": "b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "inputSha256": "1e726b029a1b336bbe98126761e00a2c10104c14a00f616e0b65247bb2654184",
+  "cases": 28,
+  "scope": "Actual upstream argumentsError guard and observable early validation order; caller-owned dependencies; not complete provider or application qualification",
+  "rows": [
+    {
+      "label": "truthy:text",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "name",
+        [
+          "error:get",
+          2
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "Invalid arguments for tool \"fixture\": malformed JSON"
+      }
+    },
+    {
+      "label": "truthy:number",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "name",
+        [
+          "error:get",
+          2
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "Invalid arguments for tool \"fixture\": 1"
+      }
+    },
+    {
+      "label": "truthy:boolean",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "name",
+        [
+          "error:get",
+          2
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "Invalid arguments for tool \"fixture\": true"
+      }
+    },
+    {
+      "label": "truthy:array",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "name",
+        [
+          "error:get",
+          2
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "Invalid arguments for tool \"fixture\": 1,2"
+      }
+    },
+    {
+      "label": "truthy:bigint",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "name",
+        [
+          "error:get",
+          2
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "Invalid arguments for tool \"fixture\": 1"
+      }
+    },
+    {
+      "label": "truthy:symbol",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "name",
+        [
+          "error:get",
+          2
+        ]
+      ],
+      "error": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "label": "truthy:object",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "name",
+        [
+          "error:get",
+          2
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "Invalid arguments for tool \"fixture\": object syntax"
+      }
+    },
+    {
+      "label": "truthy:function",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "name",
+        [
+          "error:get",
+          2
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "Invalid arguments for tool \"fixture\": function syntax"
+      }
+    },
+    {
+      "label": "falsy:undefined",
+      "events": [
+        "error:get",
+        "clone:get",
+        "arguments",
+        [
+          "clone:call",
+          false,
+          "3"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "falsy:null",
+      "events": [
+        "error:get",
+        "clone:get",
+        "arguments",
+        [
+          "clone:call",
+          false,
+          "3"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "falsy:false",
+      "events": [
+        "error:get",
+        "clone:get",
+        "arguments",
+        [
+          "clone:call",
+          false,
+          "3"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "falsy:zero",
+      "events": [
+        "error:get",
+        "clone:get",
+        "arguments",
+        [
+          "clone:call",
+          false,
+          "3"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "falsy:negative-zero",
+      "events": [
+        "error:get",
+        "clone:get",
+        "arguments",
+        [
+          "clone:call",
+          false,
+          "3"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "falsy:nan",
+      "events": [
+        "error:get",
+        "clone:get",
+        "arguments",
+        [
+          "clone:call",
+          false,
+          "3"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "falsy:empty",
+      "events": [
+        "error:get",
+        "clone:get",
+        "arguments",
+        [
+          "clone:call",
+          false,
+          "3"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "falsy:zero-bigint",
+      "events": [
+        "error:get",
+        "clone:get",
+        "arguments",
+        [
+          "clone:call",
+          false,
+          "3"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "abrupt:first-error-get",
+      "events": [
+        [
+          "error:get",
+          1
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "abrupt:Error-get",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "Error:get"
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "abrupt:name-get",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "Error:get",
+        "name"
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "abrupt:name-coerce",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "Error:get",
+        "name",
+        [
+          "name:coerce",
+          "string"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "abrupt:second-error-get",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "Error:get",
+        "name",
+        [
+          "name:coerce",
+          "string"
+        ],
+        [
+          "error:get",
+          2
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "abrupt:error-coerce",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "Error:get",
+        "name",
+        [
+          "name:coerce",
+          "string"
+        ],
+        [
+          "error:get",
+          2
+        ],
+        [
+          "error:coerce",
+          "string"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "abrupt:Error-construct",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "Error:get",
+        "name",
+        [
+          "name:coerce",
+          "string"
+        ],
+        [
+          "error:get",
+          2
+        ],
+        [
+          "error:coerce",
+          "string"
+        ],
+        [
+          "Error:construct",
+          "Invalid arguments for tool \"fixture\": syntax"
+        ]
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "abrupt:clone-get",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "clone:get"
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "changed:second-error-value",
+      "events": [
+        [
+          "error:get",
+          1
+        ],
+        "name",
+        [
+          "error:get",
+          2
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "Invalid arguments for tool \"fixture\": null"
+      }
+    },
+    {
+      "label": "changed:Error-callee-before-name",
+      "events": [
+        "Error:get",
+        "name",
+        "Error:original"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "Invalid arguments for tool \"fixture\": syntax"
+      }
+    },
+    {
+      "label": "order:arguments-get-throws",
+      "events": [
+        "clone:get",
+        "arguments"
+      ],
+      "error": "owned"
+    },
+    {
+      "label": "order:parameters-after-clone",
+      "events": [
+        "clone:get",
+        "arguments",
+        [
+          "clone:call",
+          "3"
+        ],
+        "parameters"
+      ],
+      "error": "owned"
+    }
+  ]
+}

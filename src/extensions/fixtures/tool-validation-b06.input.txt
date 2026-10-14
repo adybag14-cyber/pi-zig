@@ -1,0 +1,105 @@
+// Caller-only corpus: validateToolArguments is supplied by the genuine upstream
+// module for the oracle and by the Zig implementation for the native replay.
+const originalClone = Object.getOwnPropertyDescriptor(globalThis, 'structuredClone');
+const originalError = Object.getOwnPropertyDescriptor(globalThis, 'Error');
+const IntrinsicError = Error;
+const rows = [];
+function restore() {
+  Object.defineProperty(globalThis, 'structuredClone', originalClone);
+  Object.defineProperty(globalThis, 'Error', originalError);
+}
+function run(label, configure) {
+  const events = [], marker = { owned: label };
+  const tool = { get parameters() { events.push('parameters'); throw marker; } };
+  const call = {
+    get name() { events.push('name'); return 'fixture'; },
+    get arguments() { events.push('arguments'); return { n: '3' }; },
+  };
+  Object.defineProperty(globalThis, 'structuredClone', {
+    configurable: true,
+    get() { events.push('clone:get'); return function(value) {
+      events.push(['clone:call', this === globalThis, value.n]); throw marker;
+    }; },
+  });
+  try {
+    configure({ events, marker, tool, call });
+    try {
+      const value = validationB06(tool, call);
+      rows.push({ label, events, returned: value });
+    } catch (error) {
+      rows.push({ label, events, error: error === marker ? 'owned' : {
+        name: error.name,
+        ...(error.name === 'Error' ? { message: error.message } : {}),
+      } });
+    }
+  } finally { restore(); }
+}
+for (const [label, value] of [
+  ['text', 'malformed JSON'], ['number', 1], ['boolean', true],
+  ['array', [1, 2]], ['bigint', 1n], ['symbol', Symbol('syntax')],
+  ['object', { toString() { return 'object syntax'; } }],
+  ['function', Object.assign(function() {}, { toString() { return 'function syntax'; } })],
+]) run(`truthy:${label}`, ({ events, call }) => {
+  let reads = 0;
+  Object.defineProperty(call, 'argumentsError', { get() { events.push(['error:get', ++reads]); return value; } });
+});
+for (const [label, value] of [
+  ['undefined', undefined], ['null', null], ['false', false], ['zero', 0],
+  ['negative-zero', -0], ['nan', NaN], ['empty', ''], ['zero-bigint', 0n],
+]) run(`falsy:${label}`, ({ events, call }) => {
+  Object.defineProperty(call, 'argumentsError', { get() { events.push('error:get'); return value; } });
+});
+for (const label of ['first-error-get', 'Error-get', 'name-get', 'name-coerce',
+  'second-error-get', 'error-coerce', 'Error-construct', 'clone-get']) {
+  run(`abrupt:${label}`, ({ events, marker, call }) => {
+    let reads = 0;
+    Object.defineProperty(call, 'argumentsError', { get() {
+      events.push(['error:get', ++reads]);
+      if (label === 'first-error-get' || (label === 'second-error-get' && reads === 2)) throw marker;
+      if (label === 'clone-get') return '';
+      return { [Symbol.toPrimitive](hint) {
+        events.push(['error:coerce', hint]); if (label === 'error-coerce') throw marker; return 'syntax';
+      } };
+    } });
+    Object.defineProperty(call, 'name', { get() {
+      events.push('name'); if (label === 'name-get') throw marker;
+      return { [Symbol.toPrimitive](hint) {
+        events.push(['name:coerce', hint]); if (label === 'name-coerce') throw marker; return 'fixture';
+      } };
+    } });
+    Object.defineProperty(globalThis, 'Error', { configurable: true, get() {
+      events.push('Error:get'); if (label === 'Error-get') throw marker;
+      return function(message) { events.push(['Error:construct', message]);
+        if (label === 'Error-construct') throw marker; return new IntrinsicError(message);
+      };
+    } });
+    if (label === 'clone-get') Object.defineProperty(globalThis, 'structuredClone', {
+      configurable: true, get() { events.push('clone:get'); throw marker; },
+    });
+  });
+}
+run('changed:second-error-value', ({ events, call }) => {
+  let reads = 0;
+  Object.defineProperty(call, 'argumentsError', { get() { events.push(['error:get', ++reads]); return reads === 1 ? 'first' : null; } });
+});
+run('changed:Error-callee-before-name', ({ events, call }) => {
+  call.argumentsError = 'syntax';
+  Object.defineProperty(globalThis, 'Error', { configurable: true, get() {
+    events.push('Error:get'); return function(message) { events.push('Error:original'); return new IntrinsicError(message); };
+  } });
+  Object.defineProperty(call, 'name', { get() {
+    events.push('name'); Object.defineProperty(globalThis, 'Error', { configurable: true, value: function() { events.push('Error:replacement'); throw new IntrinsicError('wrong callee'); } }); return 'fixture';
+  } });
+});
+run('order:arguments-get-throws', ({ events, marker, call }) => {
+  call.argumentsError = false;
+  Object.defineProperty(call, 'arguments', { get() { events.push('arguments'); throw marker; } });
+});
+run('order:parameters-after-clone', ({ events, call }) => {
+  call.argumentsError = false;
+  Object.defineProperty(globalThis, 'structuredClone', { configurable: true, get() {
+    events.push('clone:get'); return value => { events.push(['clone:call', value.n]); return { n: 3 }; };
+  } });
+});
+if (rows.length !== 28) throw new IntrinsicError('Expected all 28 caller cases');
+globalThis.validationB06Rows = rows;

@@ -41,12 +41,15 @@ fn legacyTypeBox(engine: *Engine, schema: c.JSValue) !bool {
 pub fn validateArguments(engine: *Engine, tool: c.JSValue, call: c.JSValue) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    const original = try vm.get(engine, call, "arguments");
-    defer engine.freeValue(original);
+    const arguments_error = try vm.get(engine, call, "argumentsError");
+    defer engine.freeValue(arguments_error);
+    if (c.JS_ToBool(engine.context, arguments_error) != 0) return invalidArguments(engine, call);
     const clone_global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(clone_global);
     const clone_callback = try vm.get(engine, clone_global, "structuredClone");
     defer engine.freeValue(clone_callback);
+    const original = try vm.get(engine, call, "arguments");
+    defer engine.freeValue(original);
     var clone_args = [_]c.JSValue{original};
     const args = if (c.JS_IsUndefined(clone_callback)) try clone.clone(engine, original) else try engine.checked(c.JS_Call(engine.context, clone_callback, c.pi_js_undefined(), 1, &clone_args));
     var returned = false;
@@ -97,6 +100,21 @@ pub fn validateArguments(engine: *Engine, tool: c.JSValue, call: c.JSValue) !c.J
         return args;
     }
     return engine.checked(c.JS_Throw(engine.context, try validationFailureValue(engine, validator, parameters, args, call)));
+}
+/// Preserve new Error(template) evaluation order, repeated live getters and
+/// template-string coercion, including UTF-16 and abrupt user completions.
+fn invalidArguments(engine: *Engine, call: c.JSValue) !c.JSValue {
+    var scope: @import("native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const constructor = try scope.global("Error");
+    const name = try scope.stringify(try scope.get(call, "name"));
+    const prefix = try scope.concat(try scope.text("Invalid arguments for tool \""), name);
+    const named = try scope.concat(prefix, try scope.text("\": "));
+    const detail = try scope.stringify(try scope.get(call, "argumentsError"));
+    const message = try scope.concat(named, detail);
+    var args = [_]c.JSValue{message};
+    const exception = try engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &args));
+    return engine.checked(c.JS_Throw(engine.context, exception));
 }
 fn validationFailureValue(engine: *Engine, validator: c.JSValue, parameters: c.JSValue, args: c.JSValue, call: c.JSValue) !c.JSValue {
     const generation = engine.native_allocation_generation;
