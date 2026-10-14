@@ -1,0 +1,3743 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "inputSha256": "ce7b00a978b2c9610ad1e074f0a3e5f9eacd9e2e9e106594e98b3bcaf1c55e53",
+  "cases": 44,
+  "scope": "Actual upstream ordinary manual32 plus actual default summary8 and finalized projection4 on caller-owned collaborators; actual summary generation included; full factory remains separate",
+  "rows": [
+    {
+      "scenario": "success",
+      "result": {
+        "summary": "owned summary",
+        "firstKeptEntryId": "new",
+        "tokensBefore": 77,
+        "estimatedTokensAfter": 4,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "details": {
+          "owned": true
+        }
+      },
+      "error": null,
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "extension",
+          "session_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "result": {
+              "summary": "owned summary",
+              "firstKeptEntryId": "new",
+              "tokensBefore": 77,
+              "estimatedTokensAfter": 4,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "details": {
+                "owned": true
+              }
+            },
+            "aborted": false,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "extension-summary",
+      "result": {
+        "summary": "owned summary",
+        "firstKeptEntryId": "new",
+        "tokensBefore": 77,
+        "estimatedTokensAfter": 4,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "details": {
+          "owned": true
+        }
+      },
+      "error": null,
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "extension",
+          "session_before_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            true,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "extension",
+          "session_compact",
+          "manual",
+          true,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "result": {
+              "summary": "owned summary",
+              "firstKeptEntryId": "new",
+              "tokensBefore": 77,
+              "estimatedTokensAfter": 4,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "details": {
+                "owned": true
+              }
+            },
+            "aborted": false,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "extension-cancel",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "Compaction cancelled"
+      },
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "extension",
+          "session_before_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": true,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "aborted": true,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          true,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "no-model",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "No model selected.\n\nUse /login to log into a provider via OAuth or API key. See:\n  C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\docs\\providers.md\n  C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\docs\\models.md\n\nThen use /model to select a model."
+      },
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: No model selected.\n\nUse /login to log into a provider via OAuth or API key. See:\n  C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\docs\\providers.md\n  C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\docs\\models.md\n\nThen use /model to select a model."
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: No model selected.\n\nUse /login to log into a provider via OAuth or API key. See:\n  C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\docs\\providers.md\n  C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\docs\\models.md\n\nThen use /model to select a model.",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "empty",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "Nothing to compact (session too small)"
+      },
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: Nothing to compact (session too small)"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: Nothing to compact (session too small)",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "already-compacted",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "Already compacted"
+      },
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: Already compacted"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: Already compacted",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "abort-reject",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned abort-reject"
+      },
+      "sameError": true,
+      "trace": [
+        "abort"
+      ],
+      "clearCount": 0,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "start-throw",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned start-throw"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ]
+      ],
+      "clearCount": 0,
+      "idle": false,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "settings-throw",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned settings-throw"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned settings-throw"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned settings-throw",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "branch-throw",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned branch-throw"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned branch-throw"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned branch-throw",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "preparation-throw",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned preparation-throw"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned preparation-throw"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned preparation-throw",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "extension-reject",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned extension-reject"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "extension",
+          "session_before_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned extension-reject"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned extension-reject",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "summary-reject",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned summary-reject"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned summary-reject"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned summary-reject",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "summary-abort",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "Compaction cancelled"
+      },
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": true,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "aborted": true,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          true,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "append-throw",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned append-throw"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned append-throw"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned append-throw",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "entries-throw",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned entries-throw"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned entries-throw"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned entries-throw",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": false
+    },
+    {
+      "scenario": "refresh-throw",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned refresh-throw"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned refresh-throw"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned refresh-throw",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": false
+    },
+    {
+      "scenario": "projection-throw",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned projection-throw"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned projection-throw"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned projection-throw",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "saved-event-reject",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned saved-event-reject"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "extension",
+          "session_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned saved-event-reject"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned saved-event-reject",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "end-throw",
+      "result": null,
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'signal')"
+      },
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "extension",
+          "session_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "result": {
+              "summary": "owned summary",
+              "firstKeptEntryId": "new",
+              "tokensBefore": 77,
+              "estimatedTokensAfter": 4,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "details": {
+                "owned": true
+              }
+            },
+            "aborted": false,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "failure-event-reject",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned failure-event-reject"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned failure-event-reject"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned failure-event-reject",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "clear-first-throw",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned clear-first-throw"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "extension",
+          "session_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned clear-first-throw"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned clear-first-throw",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          3
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 3,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "clear-final-throw",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned clear-final-throw"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "extension",
+          "session_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "result": {
+              "summary": "owned summary",
+              "firstKeptEntryId": "new",
+              "tokensBefore": 77,
+              "estimatedTokensAfter": 4,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "details": {
+                "owned": true
+              }
+            },
+            "aborted": false,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "clear",
+          2
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "clear-catch-throw",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned clear-catch-throw"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "non-error-rejection",
+      "result": null,
+      "error": {
+        "name": "string",
+        "message": "owned string"
+      },
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned string"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned string",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "extension-abort",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "Compaction cancelled"
+      },
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "extension",
+          "session_before_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": true,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "aborted": true,
+            "willRetry": false,
+            "fromExtension": true
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "extension",
+          "session_compact_failed",
+          "manual",
+          true,
+          true,
+          false
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "no-saved-entry",
+      "result": {
+        "summary": "owned summary",
+        "firstKeptEntryId": "new",
+        "tokensBefore": 77,
+        "estimatedTokensAfter": 4,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "details": {
+          "owned": true
+        }
+      },
+      "error": null,
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "result": {
+              "summary": "owned summary",
+              "firstKeptEntryId": "new",
+              "tokensBefore": 77,
+              "estimatedTokensAfter": 4,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "details": {
+                "owned": true
+              }
+            },
+            "aborted": false,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "runner-removed",
+      "result": {
+        "summary": "owned summary",
+        "firstKeptEntryId": "new",
+        "tokensBefore": 77,
+        "estimatedTokensAfter": 4,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "details": {
+          "owned": true
+        }
+      },
+      "error": null,
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "result": {
+              "summary": "owned summary",
+              "firstKeptEntryId": "new",
+              "tokensBefore": 77,
+              "estimatedTokensAfter": 4,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "details": {
+                "owned": true
+              }
+            },
+            "aborted": false,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "result-getter-order",
+      "result": {
+        "summary": "owned summary",
+        "firstKeptEntryId": "new",
+        "tokensBefore": 77,
+        "estimatedTokensAfter": 4,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "details": {
+          "owned": true
+        }
+      },
+      "error": null,
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "result-get",
+          "summary"
+        ],
+        [
+          "result-get",
+          "firstKeptEntryId"
+        ],
+        [
+          "result-get",
+          "tokensBefore"
+        ],
+        [
+          "result-get",
+          "usage"
+        ],
+        [
+          "result-get",
+          "details"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "extension",
+          "session_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "result": {
+              "summary": "owned summary",
+              "firstKeptEntryId": "new",
+              "tokensBefore": 77,
+              "estimatedTokensAfter": 4,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "details": {
+                "owned": true
+              }
+            },
+            "aborted": false,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "extension-getter-twice",
+      "result": {
+        "summary": "owned summary",
+        "firstKeptEntryId": "new",
+        "tokensBefore": 77,
+        "estimatedTokensAfter": 4,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "details": {
+          "owned": true
+        }
+      },
+      "error": null,
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "extension",
+          "session_before_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        "custom-get",
+        "custom-get",
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            true,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "extension",
+          "session_compact",
+          "manual",
+          true,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "result": {
+              "summary": "owned summary",
+              "firstKeptEntryId": "new",
+              "tokensBefore": 77,
+              "estimatedTokensAfter": 4,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "details": {
+                "owned": true
+              }
+            },
+            "aborted": false,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "failure-event-no-handler",
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned failure-event-no-handler"
+      },
+      "sameError": true,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "aborted": false,
+            "willRetry": false,
+            "errorMessage": "Compaction failed: owned failure-event-no-handler"
+          },
+          true
+        ],
+        [
+          "failed-method",
+          {
+            "reason": "manual",
+            "errorMessage": "Compaction failed: owned failure-event-no-handler",
+            "aborted": false,
+            "willRetry": false,
+            "fromExtension": false
+          }
+        ],
+        [
+          "handlers",
+          "session_compact_failed"
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 0,
+      "messagesSame": false
+    },
+    {
+      "scenario": "idle-resolution",
+      "result": {
+        "summary": "owned summary",
+        "firstKeptEntryId": "new",
+        "tokensBefore": 77,
+        "estimatedTokensAfter": 4,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "details": {
+          "owned": true
+        }
+      },
+      "error": null,
+      "sameError": false,
+      "trace": [
+        "abort",
+        [
+          "public",
+          {
+            "type": "compaction_start",
+            "reason": "manual"
+          },
+          false
+        ],
+        [
+          "settings",
+          true
+        ],
+        "branch",
+        [
+          "handlers",
+          "session_before_compact"
+        ],
+        [
+          "summary",
+          "new",
+          true,
+          "owned instructions",
+          true,
+          "manual"
+        ],
+        [
+          "append",
+          [
+            "owned summary",
+            "new",
+            77,
+            {
+              "owned": true
+            },
+            false,
+            {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          ]
+        ],
+        "entries",
+        "refresh",
+        [
+          "projection",
+          false
+        ],
+        [
+          "projection",
+          true
+        ],
+        [
+          "extension",
+          "session_compact",
+          "manual",
+          false,
+          false,
+          false
+        ],
+        [
+          "clear",
+          1
+        ],
+        [
+          "idle",
+          true
+        ],
+        [
+          "public",
+          {
+            "type": "compaction_end",
+            "reason": "manual",
+            "result": {
+              "summary": "owned summary",
+              "firstKeptEntryId": "new",
+              "tokensBefore": 77,
+              "estimatedTokensAfter": 4,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "details": {
+                "owned": true
+              }
+            },
+            "aborted": false,
+            "willRetry": false
+          },
+          true
+        ],
+        [
+          "clear",
+          2
+        ],
+        [
+          "idle",
+          true
+        ]
+      ],
+      "clearCount": 2,
+      "idle": true,
+      "persisted": 1,
+      "messagesSame": true
+    },
+    {
+      "scenario": "default-success",
+      "trace": [
+        [
+          "auth",
+          true,
+          true
+        ],
+        "retry",
+        [
+          "callbacks",
+          {
+            "source": "compaction",
+            "reason": "manual"
+          }
+        ],
+        [
+          "stream",
+          true,
+          "owned-key",
+          {
+            "Owned": "header"
+          },
+          null,
+          {
+            "OWNED": "env"
+          },
+          true,
+          true,
+          36
+        ],
+        "result"
+      ],
+      "result": {
+        "summary": "generated summary\n\n<read-files>\nread-only\n</read-files>",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 20,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "details": {
+          "readFiles": [
+            "read-only"
+          ],
+          "modifiedFiles": []
+        }
+      },
+      "error": null,
+      "sameError": false
+    },
+    {
+      "scenario": "default-auth-reject",
+      "trace": [
+        [
+          "auth",
+          true,
+          true
+        ]
+      ],
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned default-auth-reject"
+      },
+      "sameError": true
+    },
+    {
+      "scenario": "default-request-getter",
+      "trace": [
+        [
+          "auth",
+          true,
+          true
+        ],
+        "request-headers"
+      ],
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned default-request-getter"
+      },
+      "sameError": true
+    },
+    {
+      "scenario": "default-retry-getter",
+      "trace": [
+        [
+          "auth",
+          true,
+          true
+        ],
+        "retry"
+      ],
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned default-retry-getter"
+      },
+      "sameError": true
+    },
+    {
+      "scenario": "default-callback-reject",
+      "trace": [
+        [
+          "auth",
+          true,
+          true
+        ],
+        "retry",
+        [
+          "callbacks",
+          {
+            "source": "compaction",
+            "reason": "manual"
+          }
+        ]
+      ],
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "owned default-callback-reject"
+      },
+      "sameError": true
+    },
+    {
+      "scenario": "default-provider-error",
+      "trace": [
+        [
+          "auth",
+          true,
+          true
+        ],
+        "retry",
+        [
+          "callbacks",
+          {
+            "source": "compaction",
+            "reason": "manual"
+          }
+        ],
+        [
+          "stream",
+          true,
+          "owned-key",
+          {
+            "Owned": "header"
+          },
+          null,
+          {
+            "OWNED": "env"
+          },
+          true,
+          true,
+          36
+        ],
+        "result"
+      ],
+      "result": null,
+      "error": {
+        "name": "Error",
+        "message": "Summarization failed: owned provider failure"
+      },
+      "sameError": false
+    },
+    {
+      "scenario": "default-empty-history",
+      "trace": [
+        [
+          "auth",
+          true,
+          true
+        ],
+        "retry",
+        [
+          "callbacks",
+          {
+            "source": "compaction",
+            "reason": "manual"
+          }
+        ],
+        [
+          "stream",
+          true,
+          "owned-key",
+          {
+            "Owned": "header"
+          },
+          null,
+          {
+            "OWNED": "env"
+          },
+          true,
+          true,
+          36
+        ],
+        "result"
+      ],
+      "result": {
+        "summary": "generated summary\n\n<read-files>\nread-only\n</read-files>",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 20,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "details": {
+          "readFiles": [
+            "read-only"
+          ],
+          "modifiedFiles": []
+        }
+      },
+      "error": null,
+      "sameError": false
+    },
+    {
+      "scenario": "default-overflow",
+      "trace": [
+        [
+          "auth",
+          true,
+          true
+        ],
+        "retry",
+        [
+          "callbacks",
+          {
+            "source": "compaction",
+            "reason": "overflow"
+          }
+        ],
+        [
+          "stream",
+          true,
+          "owned-key",
+          {
+            "Owned": "header"
+          },
+          null,
+          {
+            "OWNED": "env"
+          },
+          true,
+          true,
+          36
+        ],
+        "result"
+      ],
+      "result": {
+        "summary": "generated summary\n\n<read-files>\nread-only\n</read-files>",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 20,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "details": {
+          "readFiles": [
+            "read-only"
+          ],
+          "modifiedFiles": []
+        }
+      },
+      "error": null,
+      "sameError": false
+    },
+    {
+      "scenario": "refresh-identities",
+      "trace": [
+        "projection",
+        "source-id",
+        [
+          "set",
+          "first",
+          "owned-entry"
+        ],
+        "source-id",
+        [
+          "set",
+          "second",
+          "owned-entry"
+        ]
+      ],
+      "error": null,
+      "sameError": false,
+      "messagesSame": true,
+      "mapped": [
+        "owned-entry",
+        "owned-entry"
+      ]
+    },
+    {
+      "scenario": "refresh-entry-getter",
+      "trace": [
+        "projection",
+        "messages-get"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned refresh-entry-getter"
+      },
+      "sameError": true,
+      "messagesSame": false,
+      "mapped": [
+        null,
+        null
+      ]
+    },
+    {
+      "scenario": "refresh-map-throw",
+      "trace": [
+        "projection",
+        "source-id",
+        [
+          "set",
+          "first",
+          "owned-entry"
+        ]
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned refresh-map-throw"
+      },
+      "sameError": true,
+      "messagesSame": false,
+      "mapped": [
+        null,
+        null
+      ]
+    },
+    {
+      "scenario": "refresh-iterator-close",
+      "trace": [
+        "projection",
+        "source-id",
+        [
+          "set",
+          "first",
+          "owned-entry"
+        ],
+        "closed"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "owned refresh-iterator-close"
+      },
+      "sameError": true,
+      "messagesSame": false,
+      "mapped": [
+        null,
+        null
+      ]
+    }
+  ]
+}

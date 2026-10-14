@@ -1,0 +1,8 @@
+{
+  "required_kib": 2097152,
+  "free_kib": 25637428,
+  "coordinated_with": "Root Source20 transcript context oracle reservation; at most one other coordinated native reservation",
+  "status": "admitted",
+  "observed_utc": "2026-10-14T20:19:20.7219337+00:00",
+  "heap_mb": 256
+}

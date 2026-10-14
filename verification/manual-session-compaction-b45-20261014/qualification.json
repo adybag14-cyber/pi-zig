@@ -1,0 +1,23 @@
+{
+  "code_head": "73221e48f0a88ce65fc06b52e2dcecf32021f146",
+  "source_head": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "actual_cases": 44,
+  "original_manual32_retained_identically": true,
+  "default_summary_cases": 8,
+  "finalized_projection_cases": 4,
+  "native_tests": 4,
+  "native_named_tests": 3,
+  "native_imported_anonymous_tests": 1,
+  "host_allocation_positions": 2256,
+  "source_files": 5378,
+  "compiler_files": 19546,
+  "source_post_drift": 0,
+  "compiler_post_drift": 0,
+  "secure_crypto_intake_sha256": "EFBA9CC34F4FCC32A610BF97AEEFE54627738123660D5F49F49FD172967E283B",
+  "secure_crypto_source_checkpoint": "fc97a56e1739010260b827acb20fa3c0aaab1aa2",
+  "qualification": "Windows Debug actual ordinary helper comparison and host ownership; pending GC and full factory/application qualification remain separate",
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "observed_utc": "2026-10-14T20:32:16.6984236+00:00"
+}
