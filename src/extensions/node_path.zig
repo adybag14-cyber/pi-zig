@@ -258,7 +258,11 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
 fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const flavor: Flavor = if (magic >= 256) .win32 else .posix;
-    return call(engine, @enumFromInt(@as(u8, @intCast(@mod(magic, 256)))), flavor, argv[0..@intCast(argc)]) catch |err| c.JS_ThrowTypeError(context, "Native path operation failed: %s", @as([*:0]const u8, @errorName(err)));
+    return call(engine, @enumFromInt(@as(u8, @intCast(@mod(magic, 256)))), flavor, argv[0..@intCast(argc)]) catch |err| {
+        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+        if (err == error.JavaScriptException) return engine.throwCaptured();
+        return c.JS_ThrowTypeError(context, "Native path operation failed: %s", @as([*:0]const u8, @errorName(err)));
+    };
 }
 
 fn argumentText(engine: *engine_mod.Engine, value: c.JSValue, allocator: std.mem.Allocator) ![]u8 {
