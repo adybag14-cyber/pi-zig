@@ -1,0 +1,60 @@
+{
+  "scope": "Windows Debug focused actual timer callback/Promise/WeakRef and complete native allocation universe31; no six-platform or full AgentSession claim",
+  "timer_sha256": "EC5D370C5839E593A1F0F96351DED08AD2A4A3C8B9AEE65BD09907CAD40AB8C4",
+  "test_sha256": "BF107FEF5C19A83D1EA28182F72F2AF6E6110A3A36C5CA088EB38D91EC2C06F5",
+  "root_product_change_needed": false,
+  "parent_existing_timer_identical": true,
+  "receipts": [
+    {
+      "file": "native-timer-oom-identity-debug-build-first-20261014.process.json",
+      "sha256": "90071C1C6883D390D16FDE7EB831634FBB62E7316693EA172F1366BD6EB18727"
+    },
+    {
+      "file": "native-timer-oom-identity-debug-build-first-20261014-admission.json",
+      "sha256": "53EC41B75AEA2E2C5CF177D7CD07DB8E39FBBD9B81974D3D0C360FE5DC2CFCD5"
+    },
+    {
+      "file": "native-timer-oom-identity-debug-build-first-20261014-posthash.json",
+      "sha256": "8ED154007B044791A8CFA85DA291E7F6F10B4D1B54440EEA7A0F38478E82ADFA"
+    },
+    {
+      "file": "native-timer-oom-identity-debug-build-first-20261014.stderr.log",
+      "sha256": "46459C65085AEF10FB47C97888FE52ADE74A5C330EF37830233A028B354CEE2F"
+    },
+    {
+      "file": "native-timer-oom-identity-debug-build-first-20261014.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-timer-oom-identity-debug-build-first-20261014-source-before.json",
+      "sha256": "AE16983DE58873EE074F2F75B4A1F76463A906ABC99A39E796D01BF3FF929490",
+      "files": 4716
+    },
+    {
+      "file": "native-timer-oom-identity-debug-test-first-20261014.process.json",
+      "sha256": "E2A69E85F84AD2554338CCE5EFB1B34EAD93521E59E44140201A530D6CDF9417"
+    },
+    {
+      "file": "native-timer-oom-identity-debug-test-first-20261014-admission.json",
+      "sha256": "42C28561B576067A03849102E2BEC5BA8A6F7A2E361458D3EA543AAB16916324"
+    },
+    {
+      "file": "native-timer-oom-identity-debug-test-first-20261014-posthash.json",
+      "sha256": "E50A692DA2D09669C1B9C7C9CE10832E469719F412BC72ED0C967EAC0A099D6E"
+    },
+    {
+      "file": "native-timer-oom-identity-debug-test-first-20261014.stderr.log",
+      "sha256": "88B76F4977184181AD15C64848A5EA3858CC61B051BB1C8AD1DED7E500E67CEF"
+    },
+    {
+      "file": "native-timer-oom-identity-debug-test-first-20261014.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-timer-oom-identity-debug-test-first-20261014-source-before.json",
+      "sha256": "AE16983DE58873EE074F2F75B4A1F76463A906ABC99A39E796D01BF3FF929490",
+      "files": 4716
+    }
+  ],
+  "public_activation": false
+}

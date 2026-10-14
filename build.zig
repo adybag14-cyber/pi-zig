@@ -1426,6 +1426,11 @@ pub fn build(b: *std.Build) void {
     sdk_shell_renderers_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-tool-shell-renderers", "Compile private actual Bash PowerShell Source53 presentation").dependOn(&sdk_shell_renderers_tests.step);
     b.step("test-native-sdk-tool-shell-renderers", "Compare original Bash PowerShell timers duration Theme visual output and allocation cleanup").dependOn(&b.addRunArtifact(sdk_shell_renderers_tests).step);
+    const timer_oom_identity_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_timer_oom_identity_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native timer OOM identity"}, .use_llvm = use_llvm });
+    linkQuickJs(b, timer_oom_identity_tests.root_module, quickjs, sqlite_lib_dir);
+    timer_oom_identity_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-timer-oom-identity", "Compile focused actual timer callback native allocation identity and complete ownership proof").dependOn(&timer_oom_identity_tests.step);
+    b.step("test-native-timer-oom-identity", "Exercise actual timers promises GC and every allocation failure with fresh error identity restoration").dependOn(&b.addRunArtifact(timer_oom_identity_tests).step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);
