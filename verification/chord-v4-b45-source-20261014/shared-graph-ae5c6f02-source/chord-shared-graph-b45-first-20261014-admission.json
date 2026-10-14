@@ -1,0 +1,10 @@
+{
+  "free_bytes": 26276020224,
+  "required_bytes": 2147483648,
+  "native_roots": [],
+  "max_roots": 2,
+  "heap_mb": 256,
+  "source_node_reservation": true,
+  "root_authority": "Root grant actualfullfactory21 doublecapture F504CAAD driver7BFFDB07 callerF090D45F sameae5c6f02 full1965/31064/1774/candidate controls; normal2GiB/heap256/30; 2026-10-14",
+  "utc": "2026-10-14T20:29:41.5693336+00:00"
+}

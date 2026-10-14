@@ -1,0 +1,181 @@
+{
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "cases": [
+    {
+      "name": "host factory requires supplied self",
+      "value": {
+        "name": "TypeError",
+        "message": "createHost needs `self`: the principal of the host's own code"
+      }
+    },
+    {
+      "name": "host compares self by principal key",
+      "value": [
+        true,
+        false
+      ]
+    },
+    {
+      "name": "hold is immediate and initially loading",
+      "value": {
+        "promise": "undefined",
+        "loading": true
+      }
+    },
+    {
+      "name": "member read before activation throws not_ready",
+      "value": {
+        "code": "not_ready"
+      }
+    },
+    {
+      "name": "deferred initializers finish before get returns state",
+      "value": {
+        "value": 5,
+        "status": "live",
+        "factories": 1,
+        "initializers": 1
+      }
+    },
+    {
+      "name": "equal self principals share one local object and initialization",
+      "value": {
+        "same": true,
+        "objects": 1,
+        "factories": 1,
+        "initializers": 1,
+        "values": [
+          5,
+          5
+        ]
+      }
+    },
+    {
+      "name": "local calls publish initialized state",
+      "value": [
+        7,
+        7
+      ]
+    },
+    {
+      "name": "ctx get resolves with initialized state",
+      "value": 7
+    },
+    {
+      "name": "different principals own separate local objects",
+      "value": {
+        "different": false,
+        "value": 11,
+        "factories": 2,
+        "initializers": 2
+      }
+    },
+    {
+      "name": "wire version is four",
+      "value": 4
+    },
+    {
+      "name": "normalized remote input shares one binding",
+      "value": {
+        "bindings": 1,
+        "sameAddress": true,
+        "views": 2
+      }
+    },
+    {
+      "name": "remote unhydrated state throws not_ready",
+      "value": {
+        "code": "not_ready"
+      }
+    },
+    {
+      "name": "ready remote views have every state member",
+      "value": {
+        "status": [
+          "live",
+          "live"
+        ],
+        "notes": [],
+        "title": "untitled",
+        "hydrated": true
+      }
+    },
+    {
+      "name": "subscribed remote state begins with a snapshot",
+      "value": [
+        {
+          "type": "snap",
+          "value": []
+        }
+      ]
+    },
+    {
+      "name": "one remote change reaches all views",
+      "value": {
+        "first": [
+          "milk"
+        ],
+        "second": [
+          "milk"
+        ],
+        "last": {
+          "type": "ops",
+          "value": [
+            "milk"
+          ]
+        }
+      }
+    },
+    {
+      "name": "method-only view shares hold and is ready",
+      "value": {
+        "bindings": 1,
+        "status": "live",
+        "views": 3
+      }
+    },
+    {
+      "name": "one released view leaves other view readable",
+      "value": {
+        "first": "released",
+        "second": "live",
+        "value": [
+          "milk"
+        ],
+        "views": 2
+      }
+    },
+    {
+      "name": "last state view stops binding state while methods remain",
+      "value": {
+        "bindings": 1,
+        "stateOn": false,
+        "hydrated": false,
+        "status": "live"
+      }
+    },
+    {
+      "name": "method-only member read throws not_ready",
+      "value": {
+        "code": "not_ready"
+      }
+    },
+    {
+      "name": "state view rehydrates current values on the shared hold",
+      "value": {
+        "bindings": 1,
+        "value": [
+          "milk",
+          "bread"
+        ],
+        "stateOn": true
+      }
+    },
+    {
+      "name": "last remote view releases and forgets binding",
+      "value": {
+        "bindings": 0
+      }
+    }
+  ]
+}
