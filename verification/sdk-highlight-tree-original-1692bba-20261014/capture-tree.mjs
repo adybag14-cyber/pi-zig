@@ -4,7 +4,7 @@ const verify=()=>['source','dependencies','node-tools','candidate'].map(name=>{c
 const before=verify(),root=process.env.PI_RENDERER_SOURCE_ROOT;
 await import(pathToFileURL(join(root,'packages/coding-agent/src/utils/syntax-highlight.ts')).href);
 const{default:core}=await import(pathToFileURL(join(root,'node_modules/highlight.js/lib/core.js')).href);
-const ActualEmitter=core.highlight('',{language:'javascript',ignoreIllegals:true})._emitter.constructor;
+const ActualEmitter=core.highlight('',{language:'javascript',ignoreIllegals:true}).emitter.constructor;
 let instances=0;globalThis.makeTokenTreeEmitter=options=>{instances++;return new ActualEmitter(options)};
 const input=readFileSync(process.argv[3],'utf8');await import('data:text/javascript,'+encodeURIComponent(input));
 if(sdkTokenTreeRows.length!==24||instances!==27)throw Error('Original token-tree24 inventory mismatch '+sdkTokenTreeRows.length+'/'+instances);

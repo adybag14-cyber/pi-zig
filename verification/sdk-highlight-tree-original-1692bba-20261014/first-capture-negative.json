@@ -1,0 +1,16 @@
+{
+  "status": "bothPOSIX_original_capture_jobs_failed_before_case_execution",
+  "run_id": 38573233448,
+  "head": "bafb68002daa66e4e5f02c13db86745a11c22f22",
+  "error": "Capture harness incorrectly read newer-style result._emitter; pinned actual highlight.js10.7.3 core result explicitly exposes result.emitter",
+  "repair": "Use actual10.7.3 result.emitter.constructor, no fallback or Source rewrite",
+  "source_files": 1955,
+  "dependencies_linux": 26280,
+  "dependencies_macos": 26275,
+  "node_files": 4560,
+  "candidate_files": 4773,
+  "all_post_drift": 0,
+  "input_changes": 0,
+  "artifacts": "C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-highlight-tree-original24-bafb680-negative-20261014",
+  "public_activation": false
+}
