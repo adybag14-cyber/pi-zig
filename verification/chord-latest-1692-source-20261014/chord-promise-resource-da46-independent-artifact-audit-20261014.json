@@ -1,0 +1,571 @@
+{
+  "head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+  "run": 38610788981,
+  "status": "failed",
+  "positive_profiles": 5,
+  "negative_profiles": 1,
+  "full_six_qualified": false,
+  "production_probe_golden": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "7D3A60C30504FF822DECD9D4460EF188B190A6300C5A5FE335D2C914FF73C0A1"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-resource-await-guarded-original-1692.input.txt",
+      "sha256": "E557B53B16266098C918C3CB5ACBC244C9585B48722ADAFB551D88E3E1E3C6D4"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-resource-await-guarded-original-1692.json",
+      "sha256": "ED85E242EDD48DE43E0D1E65E498249554503C50A513AE435A27A141B80028C6"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-resource-await-original-1692.input.txt",
+      "sha256": "7222ADEEA568120786DBBCAE3FDEB47E64A98A88C2CD277FBE962419D8B29785"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-resource-await-original-1692.json",
+      "sha256": "ED85E242EDD48DE43E0D1E65E498249554503C50A513AE435A27A141B80028C6"
+    },
+    {
+      "path": "src/extensions/native_chord_host_values.zig",
+      "sha256": "AAAF44AD7C8597241A93CF938935CAFAEEC26D7C0EA42E49EE9F55E1B7E99A32"
+    },
+    {
+      "path": "src/extensions/native_chord_latest_resources.zig",
+      "sha256": "0919E4971F517CD643EAC18FA6CD0BB4E857AD8174687F7D1591952AA9218FA3"
+    },
+    {
+      "path": "src/extensions/native_chord_native_failure.zig",
+      "sha256": "01FAF9E3901E0F96C653C0BD0123CFF0C6E77E8753042B3523AD52036072D616"
+    },
+    {
+      "path": "src/extensions/native_chord_values.zig",
+      "sha256": "EFF61FB18DB454DBCD507BAAB28F001EE8B54F575BB68F61750CDFB70CACB179"
+    },
+    {
+      "path": "src/native_chord_module_promise_test.zig",
+      "sha256": "A4780DADB18885426F635D55CB49EB0C036497DBC6955C503414AA22DDCA64A0"
+    },
+    {
+      "path": "src/native_chord_resource_await_source_test.zig",
+      "sha256": "C935A432D4A3A2496FA017B722555717AF0130A2AF68EFDC970D25F560A9E518"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "00543FBCBBBDDF922C112EFC374900E8DA9BBC8E9E9F4B4FB0AEAA4304C88CD1"
+    }
+  ],
+  "profiles": [
+    {
+      "platform": "windows-latest",
+      "mode": "Debug",
+      "status": "passed",
+      "source_count": 5263,
+      "tool_count": 19546,
+      "allpost_drift": 0,
+      "production_probe_golden_identical": true,
+      "module_vm514": {
+        "programs": 2,
+        "minimum_budget": 0,
+        "maximum_budget": 8192,
+        "step": 32,
+        "completed": 514,
+        "failures": 183,
+        "successes": 331,
+        "failures_by_program": [
+          28,
+          155
+        ],
+        "successes_by_program": [
+          229,
+          102
+        ],
+        "owner_leaks": 0
+      },
+      "focused": {
+        "head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+        "mode": "Debug",
+        "platform": "windows-latest",
+        "status": "passed",
+        "source_cases": 4,
+        "guarded_source_cases": 4,
+        "compiled_tests": 12,
+        "components": [
+          {
+            "component": "module",
+            "compiled_tests": 7,
+            "compiled_names": [
+              "native_chord_module_promise_test.test.native Chord intrinsic module compiled inventory",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest TLA ignores species and own then while public then retains species",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest rejected TLA preserves exact ordinary rejection identity",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest dynamic import fulfillment rejection and own then ignore species",
+              "native_chord_module_promise_test.test.native Chord intrinsic module complete pure guest TLA dynamic import identities and native GC allocation sweep",
+              "native_chord_module_promise_test.test.native Chord intrinsic module direct VM heap limit sweep settles TLA and dynamic import failures and releases memory owners",
+              "extensions.native_durable_storage.test_0"
+            ],
+            "host_gpa_baseline": 21,
+            "all_host_allocation_indices": "passed",
+            "native_gc": "passed",
+            "targeted_vm_budget_coverage": {
+              "programs": 2,
+              "minimum_budget": 0,
+              "maximum_budget": 8192,
+              "step": 32,
+              "completed": 514,
+              "failures": 183,
+              "successes": 331,
+              "failures_by_program": [
+                28,
+                155
+              ],
+              "successes_by_program": [
+                229,
+                102
+              ],
+              "owner_leaks": 0
+            },
+            "c_malloc_exhaustive": false,
+            "status": "passed"
+          },
+          {
+            "component": "resource",
+            "compiled_tests": 5,
+            "compiled_names": [
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait compiled inventory",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait actual Source4 intrinsic species own then abort cleanup and rejection identity with GC",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait original caller caught allocation diagnostic preserves replacement and first failure stack",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait complete actual Source4 factory and native GC teardown allocation sweep",
+              "extensions.native_durable_storage.test_0"
+            ],
+            "host_gpa_baseline": 858,
+            "all_host_allocation_indices": "passed",
+            "native_gc": "passed",
+            "targeted_vm_budget_coverage": null,
+            "c_malloc_exhaustive": false,
+            "status": "passed"
+          }
+        ],
+        "full_source50_regression": "not_run_by_this_focused_workflow",
+        "c_malloc_exhaustive": false,
+        "public_activation": false,
+        "full_pi_qualified": false
+      },
+      "negative": null
+    },
+    {
+      "platform": "windows-latest",
+      "mode": "ReleaseSafe",
+      "status": "passed",
+      "source_count": 5263,
+      "tool_count": 19546,
+      "allpost_drift": 0,
+      "production_probe_golden_identical": true,
+      "module_vm514": {
+        "programs": 2,
+        "minimum_budget": 0,
+        "maximum_budget": 8192,
+        "step": 32,
+        "completed": 514,
+        "failures": 183,
+        "successes": 331,
+        "failures_by_program": [
+          28,
+          155
+        ],
+        "successes_by_program": [
+          229,
+          102
+        ],
+        "owner_leaks": 0
+      },
+      "focused": {
+        "head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+        "mode": "ReleaseSafe",
+        "platform": "windows-latest",
+        "status": "passed",
+        "source_cases": 4,
+        "guarded_source_cases": 4,
+        "compiled_tests": 12,
+        "components": [
+          {
+            "component": "module",
+            "compiled_tests": 7,
+            "compiled_names": [
+              "native_chord_module_promise_test.test.native Chord intrinsic module compiled inventory",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest TLA ignores species and own then while public then retains species",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest rejected TLA preserves exact ordinary rejection identity",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest dynamic import fulfillment rejection and own then ignore species",
+              "native_chord_module_promise_test.test.native Chord intrinsic module complete pure guest TLA dynamic import identities and native GC allocation sweep",
+              "native_chord_module_promise_test.test.native Chord intrinsic module direct VM heap limit sweep settles TLA and dynamic import failures and releases memory owners",
+              "extensions.native_durable_storage.test_0"
+            ],
+            "host_gpa_baseline": 21,
+            "all_host_allocation_indices": "passed",
+            "native_gc": "passed",
+            "targeted_vm_budget_coverage": {
+              "programs": 2,
+              "minimum_budget": 0,
+              "maximum_budget": 8192,
+              "step": 32,
+              "completed": 514,
+              "failures": 183,
+              "successes": 331,
+              "failures_by_program": [
+                28,
+                155
+              ],
+              "successes_by_program": [
+                229,
+                102
+              ],
+              "owner_leaks": 0
+            },
+            "c_malloc_exhaustive": false,
+            "status": "passed"
+          },
+          {
+            "component": "resource",
+            "compiled_tests": 5,
+            "compiled_names": [
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait compiled inventory",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait actual Source4 intrinsic species own then abort cleanup and rejection identity with GC",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait original caller caught allocation diagnostic preserves replacement and first failure stack",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait complete actual Source4 factory and native GC teardown allocation sweep",
+              "extensions.native_durable_storage.test_0"
+            ],
+            "host_gpa_baseline": 858,
+            "all_host_allocation_indices": "passed",
+            "native_gc": "passed",
+            "targeted_vm_budget_coverage": null,
+            "c_malloc_exhaustive": false,
+            "status": "passed"
+          }
+        ],
+        "full_source50_regression": "not_run_by_this_focused_workflow",
+        "c_malloc_exhaustive": false,
+        "public_activation": false,
+        "full_pi_qualified": false
+      },
+      "negative": null
+    },
+    {
+      "platform": "ubuntu-latest",
+      "mode": "Debug",
+      "status": "passed",
+      "source_count": 5263,
+      "tool_count": 19546,
+      "allpost_drift": 0,
+      "production_probe_golden_identical": true,
+      "module_vm514": {
+        "programs": 2,
+        "minimum_budget": 0,
+        "maximum_budget": 8192,
+        "step": 32,
+        "completed": 514,
+        "failures": 183,
+        "successes": 331,
+        "failures_by_program": [
+          28,
+          155
+        ],
+        "successes_by_program": [
+          229,
+          102
+        ],
+        "owner_leaks": 0
+      },
+      "focused": {
+        "head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+        "mode": "Debug",
+        "platform": "ubuntu-latest",
+        "status": "passed",
+        "source_cases": 4,
+        "guarded_source_cases": 4,
+        "compiled_tests": 12,
+        "components": [
+          {
+            "component": "module",
+            "compiled_tests": 7,
+            "compiled_names": [
+              "native_chord_module_promise_test.test.native Chord intrinsic module compiled inventory",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest TLA ignores species and own then while public then retains species",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest rejected TLA preserves exact ordinary rejection identity",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest dynamic import fulfillment rejection and own then ignore species",
+              "native_chord_module_promise_test.test.native Chord intrinsic module complete pure guest TLA dynamic import identities and native GC allocation sweep",
+              "native_chord_module_promise_test.test.native Chord intrinsic module direct VM heap limit sweep settles TLA and dynamic import failures and releases memory owners",
+              "extensions.native_durable_storage.test_0"
+            ],
+            "host_gpa_baseline": 21,
+            "all_host_allocation_indices": "passed",
+            "native_gc": "passed",
+            "targeted_vm_budget_coverage": {
+              "programs": 2,
+              "minimum_budget": 0,
+              "maximum_budget": 8192,
+              "step": 32,
+              "completed": 514,
+              "failures": 183,
+              "successes": 331,
+              "failures_by_program": [
+                28,
+                155
+              ],
+              "successes_by_program": [
+                229,
+                102
+              ],
+              "owner_leaks": 0
+            },
+            "c_malloc_exhaustive": false,
+            "status": "passed"
+          },
+          {
+            "component": "resource",
+            "compiled_tests": 5,
+            "compiled_names": [
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait compiled inventory",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait actual Source4 intrinsic species own then abort cleanup and rejection identity with GC",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait original caller caught allocation diagnostic preserves replacement and first failure stack",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait complete actual Source4 factory and native GC teardown allocation sweep",
+              "extensions.native_durable_storage.test_0"
+            ],
+            "host_gpa_baseline": 858,
+            "all_host_allocation_indices": "passed",
+            "native_gc": "passed",
+            "targeted_vm_budget_coverage": null,
+            "c_malloc_exhaustive": false,
+            "status": "passed"
+          }
+        ],
+        "full_source50_regression": "not_run_by_this_focused_workflow",
+        "c_malloc_exhaustive": false,
+        "public_activation": false,
+        "full_pi_qualified": false
+      },
+      "negative": null
+    },
+    {
+      "platform": "ubuntu-latest",
+      "mode": "ReleaseSafe",
+      "status": "passed",
+      "source_count": 5263,
+      "tool_count": 19546,
+      "allpost_drift": 0,
+      "production_probe_golden_identical": true,
+      "module_vm514": {
+        "programs": 2,
+        "minimum_budget": 0,
+        "maximum_budget": 8192,
+        "step": 32,
+        "completed": 514,
+        "failures": 183,
+        "successes": 331,
+        "failures_by_program": [
+          28,
+          155
+        ],
+        "successes_by_program": [
+          229,
+          102
+        ],
+        "owner_leaks": 0
+      },
+      "focused": {
+        "head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+        "mode": "ReleaseSafe",
+        "platform": "ubuntu-latest",
+        "status": "passed",
+        "source_cases": 4,
+        "guarded_source_cases": 4,
+        "compiled_tests": 12,
+        "components": [
+          {
+            "component": "module",
+            "compiled_tests": 7,
+            "compiled_names": [
+              "native_chord_module_promise_test.test.native Chord intrinsic module compiled inventory",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest TLA ignores species and own then while public then retains species",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest rejected TLA preserves exact ordinary rejection identity",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest dynamic import fulfillment rejection and own then ignore species",
+              "native_chord_module_promise_test.test.native Chord intrinsic module complete pure guest TLA dynamic import identities and native GC allocation sweep",
+              "native_chord_module_promise_test.test.native Chord intrinsic module direct VM heap limit sweep settles TLA and dynamic import failures and releases memory owners",
+              "extensions.native_durable_storage.test_0"
+            ],
+            "host_gpa_baseline": 21,
+            "all_host_allocation_indices": "passed",
+            "native_gc": "passed",
+            "targeted_vm_budget_coverage": {
+              "programs": 2,
+              "minimum_budget": 0,
+              "maximum_budget": 8192,
+              "step": 32,
+              "completed": 514,
+              "failures": 183,
+              "successes": 331,
+              "failures_by_program": [
+                28,
+                155
+              ],
+              "successes_by_program": [
+                229,
+                102
+              ],
+              "owner_leaks": 0
+            },
+            "c_malloc_exhaustive": false,
+            "status": "passed"
+          },
+          {
+            "component": "resource",
+            "compiled_tests": 5,
+            "compiled_names": [
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait compiled inventory",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait actual Source4 intrinsic species own then abort cleanup and rejection identity with GC",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait original caller caught allocation diagnostic preserves replacement and first failure stack",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait complete actual Source4 factory and native GC teardown allocation sweep",
+              "extensions.native_durable_storage.test_0"
+            ],
+            "host_gpa_baseline": 858,
+            "all_host_allocation_indices": "passed",
+            "native_gc": "passed",
+            "targeted_vm_budget_coverage": null,
+            "c_malloc_exhaustive": false,
+            "status": "passed"
+          }
+        ],
+        "full_source50_regression": "not_run_by_this_focused_workflow",
+        "c_malloc_exhaustive": false,
+        "public_activation": false,
+        "full_pi_qualified": false
+      },
+      "negative": null
+    },
+    {
+      "platform": "macos-latest",
+      "mode": "Debug",
+      "status": "failed",
+      "source_count": 5263,
+      "tool_count": 19546,
+      "allpost_drift": 0,
+      "production_probe_golden_identical": true,
+      "module_vm514": {
+        "programs": 2,
+        "minimum_budget": 0,
+        "maximum_budget": 8192,
+        "step": 32,
+        "completed": 514,
+        "failures": 162,
+        "successes": 352,
+        "failures_by_program": [
+          26,
+          136
+        ],
+        "successes_by_program": [
+          231,
+          121
+        ],
+        "owner_leaks": 0
+      },
+      "focused": null,
+      "negative": "Focused owned runtime did not pass original guards"
+    },
+    {
+      "platform": "macos-latest",
+      "mode": "ReleaseSafe",
+      "status": "passed",
+      "source_count": 5263,
+      "tool_count": 19546,
+      "allpost_drift": 0,
+      "production_probe_golden_identical": true,
+      "module_vm514": {
+        "programs": 2,
+        "minimum_budget": 0,
+        "maximum_budget": 8192,
+        "step": 32,
+        "completed": 514,
+        "failures": 162,
+        "successes": 352,
+        "failures_by_program": [
+          26,
+          136
+        ],
+        "successes_by_program": [
+          231,
+          121
+        ],
+        "owner_leaks": 0
+      },
+      "focused": {
+        "head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+        "mode": "ReleaseSafe",
+        "platform": "macos-latest",
+        "status": "passed",
+        "source_cases": 4,
+        "guarded_source_cases": 4,
+        "compiled_tests": 12,
+        "components": [
+          {
+            "component": "module",
+            "compiled_tests": 7,
+            "compiled_names": [
+              "native_chord_module_promise_test.test.native Chord intrinsic module compiled inventory",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest TLA ignores species and own then while public then retains species",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest rejected TLA preserves exact ordinary rejection identity",
+              "native_chord_module_promise_test.test.native Chord intrinsic module pure guest dynamic import fulfillment rejection and own then ignore species",
+              "native_chord_module_promise_test.test.native Chord intrinsic module complete pure guest TLA dynamic import identities and native GC allocation sweep",
+              "native_chord_module_promise_test.test.native Chord intrinsic module direct VM heap limit sweep settles TLA and dynamic import failures and releases memory owners",
+              "extensions.native_durable_storage.test_0"
+            ],
+            "host_gpa_baseline": 21,
+            "all_host_allocation_indices": "passed",
+            "native_gc": "passed",
+            "targeted_vm_budget_coverage": {
+              "programs": 2,
+              "minimum_budget": 0,
+              "maximum_budget": 8192,
+              "step": 32,
+              "completed": 514,
+              "failures": 162,
+              "successes": 352,
+              "failures_by_program": [
+                26,
+                136
+              ],
+              "successes_by_program": [
+                231,
+                121
+              ],
+              "owner_leaks": 0
+            },
+            "c_malloc_exhaustive": false,
+            "status": "passed"
+          },
+          {
+            "component": "resource",
+            "compiled_tests": 5,
+            "compiled_names": [
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait compiled inventory",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait actual Source4 intrinsic species own then abort cleanup and rejection identity with GC",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait original caller caught allocation diagnostic preserves replacement and first failure stack",
+              "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait complete actual Source4 factory and native GC teardown allocation sweep",
+              "extensions.native_durable_storage.test_0"
+            ],
+            "host_gpa_baseline": 858,
+            "all_host_allocation_indices": "passed",
+            "native_gc": "passed",
+            "targeted_vm_budget_coverage": null,
+            "c_malloc_exhaustive": false,
+            "status": "passed"
+          }
+        ],
+        "full_source50_regression": "not_run_by_this_focused_workflow",
+        "c_malloc_exhaustive": false,
+        "public_activation": false,
+        "full_pi_qualified": false
+      },
+      "negative": null
+    }
+  ],
+  "public_activation": false,
+  "full_pi_qualified": false
+}

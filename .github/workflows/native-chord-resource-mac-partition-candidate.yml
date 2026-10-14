@@ -1,0 +1,58 @@
+name: Historical1692 Resource macOS Debug complete858 partition successor
+on:
+  push:
+    branches: [work/chord-resource-mac-debug-partition-1692-20261014]
+  workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Full reviewed historical Resource successor commit SHA
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: native-chord-resource-mac-partition-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  mac_debug:
+    runs-on: macos-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact historical source unchanged production probe and five preserved positives
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_sha || github.sha }}
+          EVENT_HEAD: ${{ github.sha }}
+        run: |
+          if ($env:EXPECTED_HEAD -cne $env:EVENT_HEAD) { throw 'Reviewed successor head mismatch' }
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordResourceMacCandidate.ps1 -Phase Freeze -ExpectedHead $env:EXPECTED_HEAD
+      - name: Compile Resource-only successor with original1320s owned deadline
+        shell: pwsh
+        timeout-minutes: 23
+        run: |
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordResourceMacCandidate.ps1 -Phase Compile -ExpectedHead '${{ inputs.expected_sha || github.sha }}'
+      - name: Run original4 caller negative and all858 guarded indices under original300 120 10 guards
+        shell: pwsh
+        timeout-minutes: 6
+        run: |
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordResourceMacCandidate.ps1 -Phase Run -ExpectedHead '${{ inputs.expected_sha || github.sha }}'
+      - name: Prove every source vendor and compiler byte and inventory unchanged
+        if: always()
+        shell: pwsh
+        run: |
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordResourceMacCandidate.ps1 -Phase Post -ExpectedHead '${{ inputs.expected_sha || github.sha }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-chord-resource-mac-partition-${{ github.sha }}
+          retention-days: 14
+          include-hidden-files: true
+          path: verification/native-chord-resource-mac-partition-candidate/**

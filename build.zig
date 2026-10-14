@@ -768,6 +768,13 @@ pub fn build(b: *std.Build) void {
     const chord_resource_await_run = b.addRunArtifact(chord_resource_await_tests);
     chord_resource_await_run.has_side_effects = true;
     b.step("test-native-chord-resource-await-source", "Replay actual latest Source4 Promise species own then abort cleanup rejection identity GC and every allocation failure").dependOn(&chord_resource_await_run.step);
+    const chord_resource_mac_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_resource_await_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord Resource MacDebug", "native latest Chord1692 ResourceAwait actual Source4 intrinsic species own then abort cleanup and rejection identity with GC", "native latest Chord1692 ResourceAwait original caller caught allocation diagnostic preserves replacement and first failure stack" } });
+    linkQuickJs(b, chord_resource_mac_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_resource_mac_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("build-native-chord-resource-mac-partitions", "Compile original Resource4 and exact complete858 host GPA partitions for measured MacDebug timeout successor").dependOn(&chord_resource_mac_tests.step);
+    const chord_resource_mac_run = b.addRunArtifact(chord_resource_mac_tests);
+    chord_resource_mac_run.has_side_effects = true;
+    b.step("test-native-chord-resource-mac-partitions", "Run unchanged original4 caller negative and every guarded4 host allocation index in two contiguous complete partitions").dependOn(&chord_resource_mac_run.step);
     const chord_module_promise_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_module_promise_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord intrinsic module"} });
     linkQuickJs(b, chord_module_promise_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_module_promise_tests.root_module, sqlite_lib_dir, sqlite_library);

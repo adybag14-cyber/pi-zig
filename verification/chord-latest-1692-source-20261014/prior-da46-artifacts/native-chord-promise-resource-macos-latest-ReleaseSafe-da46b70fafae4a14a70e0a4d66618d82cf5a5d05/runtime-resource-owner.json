@@ -1,0 +1,31 @@
+{
+  "name": "runtime-resource",
+  "status": "passed",
+  "head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+  "pid": 15661,
+  "created_utc": "2026-10-14T18:32:29.2170260Z",
+  "executable": "/Users/runner/work/_temp/a354f8c7-d2ac-48da-afdc-ad0254aaf105/zig-aarch64-macos-0.16.0/zig",
+  "executable_sha256": "E6CD688D25664983833AAE272F501D4BCEEAE304875B8F1741209D15FD13A4EC",
+  "argv": [
+    "build",
+    "test-native-chord-resource-await-source",
+    "-Doptimize=ReleaseSafe",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "command_line": "/Users/runner/work/_temp/a354f8c7-d2ac-48da-afdc-ad0254aaf105/zig-aarch64-macos-0.16.0/zig build test-native-chord-resource-await-source -Doptimize=ReleaseSafe -j1 --test-timeout 120s --summary all",
+  "identity": "Retained kernel Process handle and exact ProcessStartInfo argv, plus live Windows CIM when available",
+  "deadline_seconds": 300,
+  "test_timeout_seconds": 120,
+  "host_await_seconds": 10,
+  "jobs": 1,
+  "llvm": "default",
+  "compiler_peak_calibrated": false,
+  "exit_code": 0,
+  "root_peak_working_set_bytes": null,
+  "completed_utc": "2026-10-14T18:32:52.7882670+00:00",
+  "root_pid_absent": true
+}

@@ -1,0 +1,21 @@
+{
+  "head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+  "tree": "abf8e9198044d2be3e2e11e1ffcb697c14959e7b",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "mode": "Debug",
+  "platform": "windows-latest",
+  "zig": "D:\\a\\_temp\\70b82b9a-d4a6-456b-997c-b8806e5b3ef5\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "zig_version": "0.16.0",
+  "zig_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "compiler_distribution": "D:\\a\\_temp\\70b82b9a-d4a6-456b-997c-b8806e5b3ef5\\zig-x86_64-windows-0.16.0",
+  "source_count": 5263,
+  "tool_count": 19546,
+  "source_cases": 27,
+  "auxiliary_source_cases": 27,
+  "total_source_cases": 54,
+  "public_activation": false,
+  "node_loader_qualified": false,
+  "manager_qualified": false,
+  "full_pi_qualified": false,
+  "scope": "Private actual latest Host Object Ref Ctx reload cluster protocol-v2 graph Source27 + Loader7 Manager12 Cluster4 ResourceAwait4 GC and core/resource full GPA"
+}

@@ -72,3 +72,48 @@ test "native latest Chord1692 ResourceAwait complete actual Source4 factory and 
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, AllocationProbe.run, .{});
 }
+
+// Historical macOS Debug successor: identical whole guarded4 probe at every
+// failure index. Only test granularity changes; original tests remain intact.
+test "native Chord Resource MacDebug partition compiled inventory" {
+    try latest.inventory("CHORD_RESOURCE_MAC_COMPILED_INVENTORY");
+}
+fn resourceMacAllocationPartition(comptime partition: usize) !void {
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try Probe.guarded(baseline.allocator());
+    try std.testing.expect(!baseline.has_induced_failure);
+    try std.testing.expectEqual(baseline.allocated_bytes, baseline.freed_bytes);
+    const total = baseline.alloc_index;
+    try std.testing.expectEqual(@as(usize, 858), total);
+    const middle = total / 2 + total % 2;
+    const start = if (partition == 0) 0 else middle;
+    const end = if (partition == 0) middle else total;
+    std.debug.print("CHORD_RESOURCE_MAC_GPA_BASELINE_ALLOCATIONS={d}\n", .{total});
+    var completed: usize = 0;
+    for (start..end) |fail_index| {
+        // Retain the last actual attempted index if the original guard times out.
+        std.debug.print("CHORD_RESOURCE_MAC_GPA_INDEX={{\"partition\":{d},\"index\":{d},\"baseline\":{d}}}\n", .{ partition, fail_index, total });
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = fail_index });
+        if (Probe.guarded(failing.allocator())) |_| {
+            if (failing.has_induced_failure) return error.SwallowedOutOfMemoryError;
+            return error.NondeterministicMemoryUsage;
+        } else |err| switch (err) {
+            error.OutOfMemory => {
+                if (!failing.has_induced_failure) return error.UnexpectedOutOfMemoryError;
+                if (failing.allocated_bytes != failing.freed_bytes) {
+                    std.debug.dumpStackTrace(&.{ .return_addresses = &failing.stack_addresses, .skipped = .unknown });
+                    return error.MemoryLeakDetected;
+                }
+            },
+            else => return err,
+        }
+        completed += 1;
+    }
+    std.debug.print("CHORD_RESOURCE_MAC_GPA_PARTITION={{\"partition\":{d},\"start\":{d},\"end\":{d},\"baseline\":{d},\"completed\":{d},\"leaks\":0,\"unexpected_errors\":0}}\n", .{ partition, start, end, total, completed });
+}
+test "native Chord Resource MacDebug whole guarded4 GPA partition 0" {
+    try resourceMacAllocationPartition(0);
+}
+test "native Chord Resource MacDebug whole guarded4 GPA partition 1" {
+    try resourceMacAllocationPartition(1);
+}

@@ -1,0 +1,68 @@
+{
+  "head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+  "mode": "ReleaseSafe",
+  "platform": "ubuntu-latest",
+  "status": "passed",
+  "source_cases": 4,
+  "guarded_source_cases": 4,
+  "compiled_tests": 12,
+  "components": [
+    {
+      "component": "module",
+      "compiled_tests": 7,
+      "compiled_names": [
+        "native_chord_module_promise_test.test.native Chord intrinsic module compiled inventory",
+        "native_chord_module_promise_test.test.native Chord intrinsic module pure guest TLA ignores species and own then while public then retains species",
+        "native_chord_module_promise_test.test.native Chord intrinsic module pure guest rejected TLA preserves exact ordinary rejection identity",
+        "native_chord_module_promise_test.test.native Chord intrinsic module pure guest dynamic import fulfillment rejection and own then ignore species",
+        "native_chord_module_promise_test.test.native Chord intrinsic module complete pure guest TLA dynamic import identities and native GC allocation sweep",
+        "native_chord_module_promise_test.test.native Chord intrinsic module direct VM heap limit sweep settles TLA and dynamic import failures and releases memory owners",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "host_gpa_baseline": 21,
+      "all_host_allocation_indices": "passed",
+      "native_gc": "passed",
+      "targeted_vm_budget_coverage": {
+        "programs": 2,
+        "minimum_budget": 0,
+        "maximum_budget": 8192,
+        "step": 32,
+        "completed": 514,
+        "failures": 183,
+        "successes": 331,
+        "failures_by_program": [
+          28,
+          155
+        ],
+        "successes_by_program": [
+          229,
+          102
+        ],
+        "owner_leaks": 0
+      },
+      "c_malloc_exhaustive": false,
+      "status": "passed"
+    },
+    {
+      "component": "resource",
+      "compiled_tests": 5,
+      "compiled_names": [
+        "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait compiled inventory",
+        "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait actual Source4 intrinsic species own then abort cleanup and rejection identity with GC",
+        "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait original caller caught allocation diagnostic preserves replacement and first failure stack",
+        "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait complete actual Source4 factory and native GC teardown allocation sweep",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "host_gpa_baseline": 858,
+      "all_host_allocation_indices": "passed",
+      "native_gc": "passed",
+      "targeted_vm_budget_coverage": null,
+      "c_malloc_exhaustive": false,
+      "status": "passed"
+    }
+  ],
+  "full_source50_regression": "not_run_by_this_focused_workflow",
+  "c_malloc_exhaustive": false,
+  "public_activation": false,
+  "full_pi_qualified": false
+}

@@ -1,0 +1,15 @@
+{
+  "head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+  "mode": "Debug",
+  "platform": "ubuntu-latest",
+  "native_targets": 2,
+  "compiled_tests": 12,
+  "source_cases": 4,
+  "guarded_source_cases": 4,
+  "source_body_replaced": false,
+  "targeted_c_vm_budgets": 514,
+  "c_malloc_exhaustive": false,
+  "full_source50_regression": "not_run_by_this_focused_workflow",
+  "public_activation": false,
+  "full_pi_qualified": false
+}
