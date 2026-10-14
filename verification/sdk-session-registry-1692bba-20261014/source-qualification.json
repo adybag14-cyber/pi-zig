@@ -1,0 +1,135 @@
+{
+  "status": "genuine_latest_Source52_double_capture_qualified_native_pending",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "scope": "Original latest factory AgentSession registry/runtime methods with unchanged Source bodies; full prior40 cases plus12 transcript modifier cases; original factory52 instances per capture; caller supplied definitions/resources/modifiers; no row normalization",
+  "source_body_rewrites": 0,
+  "factories_per_capture": 52,
+  "rows_per_capture": 52,
+  "raw_rows_identical": true,
+  "catalog_scope": "Pinned official typed catalog metadata for Source class oracle; latest generated catalog remains separate pending gate",
+  "captures": [
+    {
+      "attempt": "first",
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-registry-1692-source-first-20261014-output.json",
+        "sha256": "7F8F69B788CA711DF609A301D32CFA3694639C56C64D6433779DEC35CD53452E"
+      },
+      "owner": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-registry-1692-source-first-20261014.process.json",
+        "sha256": "29F0B26CCCE79A0DFD0661FD9F1AE7FCAA891277F5CA7349F1F6EFC767534B53",
+        "status": "passed",
+        "pid": 52832
+      },
+      "before": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "factories": 52,
+      "rows": 52,
+      "observed_modules": 1338
+    },
+    {
+      "attempt": "second",
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-registry-1692-source-second-20261014-output.json",
+        "sha256": "162DF63F464802DBFF889B06AE350D155F009A7DFF9D55B8F1A23A70C756D748"
+      },
+      "owner": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-registry-1692-source-second-20261014.process.json",
+        "sha256": "BBF04AF7A3F36CD8D4B1EA2A0097A71E8F4823E3E045A548623BFACEB63CF3F2",
+        "status": "passed",
+        "pid": 40680
+      },
+      "before": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-source-1692-full-manifest-20261014.json",
+          "manifest_sha256": "8161AAAE1459E0E28EAE1FB4CAA4242E32F8F4E6EBE75DCFCC057CFA6EA73168",
+          "count": 1955,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "factories": 52,
+      "rows": 52,
+      "observed_modules": 1338
+    }
+  ],
+  "input": {
+    "path": "src/extensions/fixtures/sdk-session-registry-1692.input.txt",
+    "sha256": "101A42C798CE3345CDF5A020AB98581F85D3A8F25E11C6B987E7C3D8078F9687"
+  },
+  "fixture": {
+    "path": "src/extensions/fixtures/sdk-session-registry-1692.json",
+    "sha256": "A2AD2B7C72D3E7AA3C3913A8E57554C7DFC758335B2F4B97AD3E9F6C2F9F342D"
+  },
+  "native_status": "Private latest restore modifier/helper and registry WIP authored and syntax-formatted; native comparison/GC/exhaustive failure ownership pending",
+  "public_activation": false,
+  "completed_utc": "2026-10-14T10:57:02.9319340+00:00"
+}

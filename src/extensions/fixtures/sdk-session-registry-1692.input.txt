@@ -1,0 +1,66 @@
+// Caller input for unchanged original AgentSession registry/runtime methods.
+const rows=[],receivers=[];
+const plain=value=>JSON.parse(JSON.stringify(value));
+const fail=label=>{const error=new Error(label);error.stack='registry-fixture-stack';return error;};
+const sourceInfo={path:'<registry:extension>',source:'fixture',scope:'project',origin:'top-level',baseDir:'/fixture/base'};
+const metadata=value=>({keys:Object.keys(value),name:value.name,label:value.label,description:value.description,promptSnippet:value.promptSnippet,promptGuidelines:value.promptGuidelines,exposure:value.exposure,defaultActive:value.defaultActive,parameters:value.parameters,outputSchema:value.outputSchema,constrainedSampling:value.constrainedSampling,prepareArguments:typeof value.prepareArguments,executionMode:value.executionMode,execute:{type:typeof value.execute,name:value.execute?.name,length:value.execute?.length,async:Object.getPrototypeOf(value.execute)===Object.getPrototypeOf(async()=>{}),ownPrototype:Object.hasOwn(value.execute,'prototype')},renderCall:typeof value.renderCall,renderResult:typeof value.renderResult});
+const definition=(name,extra={})=>({name,label:name,description:'Description '+name,promptSnippet:'  '+name+'\n snippet  ',promptGuidelines:[' same ','same',name+' rule',' '],parameters:{type:'object',properties:{value:{type:'string'}}},outputSchema:{type:'string'},constrainedSampling:{type:'json_schema',strict:'prefer'},executionMode:'parallel',execute(toolCallId,params,signal,onUpdate,ctx){return{content:[{type:'text',text:JSON.stringify({name:this.name,toolCallId,params,aborted:signal?.aborted,update:typeof onUpdate,context:ctx?{cwd:ctx.cwd,toolCallId:ctx.toolCallId,aborted:ctx.signal?.aborted}:null})}]};},...extra});
+const snapshot=session=>({definitions:[...session._toolDefinitions].map(([name,entry])=>({name,definition:metadata(entry.definition),sourceInfo:entry.sourceInfo,sourceKeys:Object.keys(entry.sourceInfo)})),registry:[...session._toolRegistry].map(([name,tool])=>({name,tool:metadata(tool),parametersSame:tool.parameters===session._toolDefinitions.get(name).definition.parameters,definitionSame:tool===session._toolDefinitions.get(name).definition})),snippets:[...session._toolPromptSnippets],guidelines:[...session._toolPromptGuidelines],active:session.getActiveToolNames(),callable:session.getCallableToolNames(),pending:[...session._pendingToolNames],hidden:[...session._hiddenDeclarations],prompt:session._baseSystemPromptOptions});
+const scenarios=['unchanged','include-all','explicit-empty','explicit-order','pending-registered','pending-unregistered','hidden-to-direct','new-direct','new-model-only','new-default-inactive','deferred-not-default','codemode-not-default','hidden-not-default','exclude-wins','allow-matches','allow-mcp-unmatched','allow-mcp-filtered','custom-overrides-base','sdk-overrides-extension','extension-first-registration','snippet-empty','guidelines-empty','metadata-getters','snippet-getter-error','guidelines-getter-error','hook-description-hide','wrapped-execute','wrapped-context-null','wrapped-context-explicit','wrapped-live-definition','rebuild-resources','restore-none','restore-tools','restore-add','restore-remove','restore-order','restore-duplicates','restore-empty-names','restore-plain-ignored','restore-star-exact','restore-allowlist','restore-custom-iterator','restore-null-modifiers','restore-iterator-throw','restore-undefined-default','build-default','build-overrides','build-empty-overrides','build-flags','build-runner-ref','build-listener','build-bindings'];
+for(const scenario of scenarios){
+ const session=await createLoadoutCaseReceiver();receivers.push(session);
+ const trace=[],reports=[],alpha=definition('alpha'),beta=definition('beta'),mcp=definition('mcp__server__deferred',{exposure:'deferred'}),search=definition('tool_search'),extension=definition('extension');
+ const registered={definition:extension,sourceInfo};
+ const extensionRecord={path:sourceInfo.path,sourceInfo,tools:new Map([['extension',registered]]),handlers:new Map(),flags:new Map(),commands:new Map(),shortcuts:new Map(),messageRenderers:new Map(),entryRenderers:new Map()};
+ session._extensionRunner.extensions=[extensionRecord];
+ session._extensionRunner.onError(report=>reports.push({extensionPath:report.extensionPath,event:report.event,error:report.error,stack:report.stack}));
+ Object.assign(session,{_baseToolDefinitions:new Map([['alpha',alpha],['beta',beta],['mcp__server__deferred',mcp],['tool_search',search]]),_customTools:[],_toolRegistry:new Map([['alpha',alpha]]),_toolDefinitions:new Map([['alpha',{definition:alpha,sourceInfo:{path:'builtin:alpha',source:'builtin',scope:'temporary',origin:'top-level',baseDir:undefined}}]]),_pendingToolNames:new Set(),_allowedTools:undefined,_excludedTools:undefined,_allowlistFiltersMcp:false,_cwd:'C:/registry/fixture'});
+ session.agent.state.tools=[alpha];
+ let options,execution,error;
+ if(scenario==='include-all')options={includeAllExtensionTools:true};
+ if(scenario==='explicit-empty')options={activeToolNames:[]};
+ if(scenario==='explicit-order')options={activeToolNames:['beta','missing','alpha','beta']};
+ if(scenario==='pending-registered')session._pendingToolNames=new Set(['beta','missing']);
+ if(scenario==='pending-unregistered')session._pendingToolNames=new Set(['missing']);
+ if(scenario==='hidden-to-direct'){session._toolDefinitions.set('alpha',{definition:{...alpha,exposure:'hidden'},sourceInfo});session.agent.state.tools=[];}
+ if(scenario==='new-direct')session._baseToolDefinitions.set('new',definition('new'));
+ if(scenario==='new-model-only')session._baseToolDefinitions.set('new',definition('new',{exposure:'model-only'}));
+ if(scenario==='new-default-inactive')session._baseToolDefinitions.set('new',definition('new',{defaultActive:false}));
+ if(scenario==='deferred-not-default'||scenario==='codemode-not-default'||scenario==='hidden-not-default')session._baseToolDefinitions.set('new',definition('new',{exposure:scenario.split('-')[0]}));
+ if(scenario==='exclude-wins'){session._allowedTools=()=>true;session._excludedTools=name=>name==='alpha'||name.startsWith('mcp__');}
+ if(scenario==='allow-matches')session._allowedTools=name=>name==='beta'||name==='extension';
+ if(scenario==='allow-mcp-unmatched'||scenario==='allow-mcp-filtered'){session._allowedTools=name=>name==='tool_search';session._allowlistFiltersMcp=scenario==='allow-mcp-filtered';options={activeToolNames:['mcp__server__deferred','alpha']};}
+ if(scenario==='custom-overrides-base')session._customTools=[definition('alpha',{description:'SDK alpha'})];
+ if(scenario==='sdk-overrides-extension')session._customTools=[definition('extension',{description:'SDK extension'})];
+ if(scenario==='extension-first-registration')session._extensionRunner.extensions.push({...extensionRecord,path:'<registry:second>',tools:new Map([['extension',{definition:definition('extension',{description:'Second extension'}),sourceInfo:{...sourceInfo,path:'<registry:second>'}}]])});
+ if(scenario==='snippet-empty')alpha.promptSnippet=' \r\n\t ';
+ if(scenario==='guidelines-empty')alpha.promptGuidelines=[' ','\t'];
+ if(scenario==='metadata-getters'){let count=0;Object.defineProperty(alpha,'promptSnippet',{enumerable:true,get(){trace.push(['snippet',++count]);return'  one\ntwo  ';}});Object.defineProperty(alpha,'promptGuidelines',{enumerable:true,get(){trace.push(['guidelines',++count]);return[' first ','first','second'];}});}
+ if(scenario==='snippet-getter-error')Object.defineProperty(alpha,'promptSnippet',{get(){throw fail('snippet-getter');},enumerable:true});
+ if(scenario==='guidelines-getter-error')Object.defineProperty(alpha,'promptGuidelines',{get(){throw fail('guidelines-getter');},enumerable:true});
+ if(scenario==='hook-description-hide')alpha.prepareLoadout=function(loadout){trace.push({declared:loadout.declared.map(t=>t.name),callable:loadout.callable.map(t=>t.name),registered:loadout.registered.map(t=>t.name)});return{descriptions:{alpha:'Prepared alpha'},hiddenDeclarations:['alpha']};};
+ if(scenario==='rebuild-resources'){const original=session._resourceLoader;session._resourceLoader={...original,getSystemPrompt:()=> 'custom source prompt',getAppendSystemPrompt:()=>['one','two'],getSkills:()=>({skills:[{name:'skill',description:'Skill',filePath:'/skills/skill'}],diagnostics:[]}),getAgentsFiles:()=>({agentsFiles:[{path:'/context/AGENTS.md',content:'context'}]})};}
+ try{
+  if(scenario.startsWith('build-')){
+   session._baseToolsOverride=scenario==='build-empty-overrides'?{}:scenario==='build-overrides'?{alpha}:undefined;
+   const runtime=session._extensionRunner.runtime;
+   session._resourceLoader={getExtensions:()=>({extensions:[extensionRecord],errors:[],runtime}),getSystemPrompt:()=>undefined,getAppendSystemPrompt:()=>[],getSkills:()=>({skills:[],diagnostics:[]}),getAgentsFiles:()=>({agentsFiles:[]})};
+   if(scenario==='build-runner-ref')session._extensionRunnerRef={current:session._extensionRunner};
+   if(scenario==='build-listener')session._extensionErrorListener=report=>trace.push(['error-listener',report.event,report.error]);
+   const old=session._extensionRunner;
+   session._buildRuntime({includeAllExtensionTools:true,...(scenario==='build-flags'?{flagValues:new Map([['owned',true],['text','value']])}:{})});
+   trace.push({newRunner:session._extensionRunner!==old,runnerRef:session._extensionRunnerRef?session._extensionRunnerRef.current===session._extensionRunner:undefined,flags:[...session._extensionRunner.getFlagValues()]});
+   if(scenario==='build-listener')session._extensionRunner.emitError({extensionPath:'<fixture>',event:'fixture',error:'owned'});
+   if(scenario==='build-bindings'){const ctx=session._extensionRunner.createToolContext('owned-id',new AbortController().signal);trace.push({active:session._extensionRunner.runtime.getActiveTools(),all:session._extensionRunner.runtime.getAllTools(),settings:session._extensionRunner.runtime.getSettings(),context:{cwd:ctx.cwd,toolCallId:ctx.toolCallId,idle:ctx.isIdle(),systemOptions:session._extensionRunner.getSystemPromptOptionsFn()},callbacks:['getModel','getScopedModels','isIdleFn','isProjectTrustedFn','getSignalFn','abortFn','hasPendingMessagesFn','shutdownHandler','getContextUsageFn','compactFn','getSystemPromptFn','getSystemPromptOptionsFn','executeToolFn','getCallableToolsFn'].map(name=>({field:name,name:session._extensionRunner[name].name,length:session._extensionRunner[name].length,ownPrototype:Object.hasOwn(session._extensionRunner[name],'prototype')}))});}
+  }else{
+   session._refreshToolRegistry(options);
+   if(scenario.startsWith('wrapped-')){const tool=session._toolRegistry.get('alpha'),controller=new AbortController();if(scenario==='wrapped-live-definition')alpha.execute=function(id,params,signal,onUpdate,ctx){return{content:[{type:'text',text:JSON.stringify({live:this===alpha,id,params,cwd:ctx.cwd})}]};};execution=await tool.execute('owned-call',{value:'input'},controller.signal,()=>{},scenario==='wrapped-context-explicit'?{cwd:'/caller-explicit',toolCallId:'caller-id',signal:controller.signal}:scenario==='wrapped-context-null'?null:undefined);}
+   if(scenario.startsWith('restore-')){session._pendingToolNames=new Set(['old']);if(scenario!=='restore-none')session.sessionManager.appendMessage({role:'system',content:'',sections:{preamble:'restored'},toolsAdded:[{name:'beta'},{name:'missing'},...(scenario==='restore-duplicates'?[{name:'beta'}]:[])],timestamp:1234});const modifiers=scenario==='restore-add'?['+alpha','+extension']:scenario==='restore-remove'?['-beta','-missing']:scenario==='restore-order'?['-beta','+alpha','+beta','-alpha','+alpha']:scenario==='restore-duplicates'?['-beta','+beta']:scenario==='restore-empty-names'?['+','-']:scenario==='restore-plain-ignored'?['alpha',42,null,{},'+extension']:scenario==='restore-star-exact'?['+a*','-m*']:scenario==='restore-allowlist'?['+alpha','+blocked']:scenario==='restore-custom-iterator'?{*[Symbol.iterator](){yield'-beta';yield'+alpha';}}:scenario==='restore-null-modifiers'?null:scenario==='restore-iterator-throw'?{*[Symbol.iterator](){yield'+alpha';throw fail('restore-iterator');}}:undefined;if(scenario==='restore-allowlist'){session._allowedTools=name=>name==='alpha';session._refreshToolRegistry();}session._restoreToolsFromTranscript(modifiers);}
+  }
+ }catch(value){error=scenario==='restore-null-modifiers'?{name:value.name,message:value.message}:{name:value.name,message:value.message,stack:value.stack};}
+ let state;try{state=snapshot(session);}catch(value){state={snapshotError:{name:value.name,message:value.message,stack:value.stack},definitions:[...session._toolDefinitions.keys()],registry:[...session._toolRegistry.keys()],snippets:[...session._toolPromptSnippets],guidelines:[...session._toolPromptGuidelines]};}
+ rows.push({scenario,state,trace,reports,execution,error});
+}
+globalThis.sdkSessionRegistryRows={rows:plain(rows)};globalThis.registryCaseReceivers=receivers;
+
+

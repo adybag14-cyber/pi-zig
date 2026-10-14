@@ -68,3 +68,6 @@ src/extensions/fixtures/sdk-session-events-19cb.input.txt -text whitespace=cr-at
 src/extensions/fixtures/sdk-session-hooks-19cb.input.txt -text whitespace=cr-at-eol
 src/extensions/fixtures/sdk-session-estimate-19cb.input.txt -text whitespace=cr-at-eol
 verification/sdk-session-events-19cb534-20261013/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+# Latest registry observer keeps its captured CRLF and EOF input bytes.
+src/extensions/fixtures/sdk-session-registry-1692.input.txt whitespace=cr-at-eol,-blank-at-eof
+src/extensions/fixtures/sdk-session-registry-1692.json whitespace=cr-at-eol
