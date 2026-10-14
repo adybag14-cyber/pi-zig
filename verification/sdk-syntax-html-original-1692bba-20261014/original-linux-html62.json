@@ -1,0 +1,530 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "1d5c4e6468dda77655912566ad64843ee8f51795347b45efea267fd175694007",
+  "platform": "linux",
+  "arch": "x64",
+  "cases": 62,
+  "node": {
+    "version": "v24.14.0",
+    "path": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node",
+    "sha256": "e237a2839d0cbdc9a9a2adda1a184afc0f5b20306ffbe923af5686550472d8a8",
+    "execArgv": [
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs"
+    ]
+  },
+  "before": [
+    {
+      "name": "source",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 26280,
+      "drift": 0
+    },
+    {
+      "name": "node-tools",
+      "count": 4560,
+      "drift": 0
+    },
+    {
+      "name": "candidate",
+      "count": 4739,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "name": "source",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 26280,
+      "drift": 0
+    },
+    {
+      "name": "node-tools",
+      "count": 4560,
+      "drift": 0
+    },
+    {
+      "name": "candidate",
+      "count": 4739,
+      "drift": 0
+    }
+  ],
+  "scope": "Original unchanged syntax-highlight.ts renderHighlightedHtml and html.ts decodeHtmlEntity/decodeHtmlEntityAt; actual eager highlight.js imports present, grammar engine production parity separate",
+  "rows": [
+    {
+      "name": "markup \"\"",
+      "plain": "",
+      "styled": ""
+    },
+    {
+      "name": "markup \"plain\\n\\ntext\\n\"",
+      "plain": "plain\n\ntext\n",
+      "styled": "D[plain]\n\nD[text]\n"
+    },
+    {
+      "name": "markup \"&amp;&lt;&gt;&quot;&apos;\"",
+      "plain": "&<>\"'",
+      "styled": "D[&<>\"']"
+    },
+    {
+      "name": "markup \"&#65;&#x1f600;&#X41;&#-1;&#1114112;&#xD800;\"",
+      "plain": "A😀A&#-1;&#1114112;\ud800",
+      "styled": "D[A😀A&#-1;&#1114112;\ud800]"
+    },
+    {
+      "name": "markup \"&#12tail;&#x41tail;&unknown;&AMP;\"",
+      "plain": "\fA&unknown;&AMP;",
+      "styled": "D[\fA&unknown;&AMP;]"
+    },
+    {
+      "name": "markup \"&abcdefghijklmnop;&amp\"",
+      "plain": "&abcdefghijklmnop;&amp",
+      "styled": "D[&abcdefghijklmnop;&amp]"
+    },
+    {
+      "name": "markup \"<span class=\\\"hljs-keyword\\\">if</span>\"",
+      "plain": "if",
+      "styled": "K[if]"
+    },
+    {
+      "name": "markup \"<span class=\\\"other hljs-keyword extra\\\">if\\n\\nelse\\n</span>\"",
+      "plain": "if\n\nelse\n",
+      "styled": "K[if]\n\nK[else]\n"
+    },
+    {
+      "name": "markup \"<span class='hljs-title.function'>f</span>\"",
+      "plain": "f",
+      "styled": "TF[f]"
+    },
+    {
+      "name": "markup \"<span class=\\\"hljs-title-function\\\">f</span>\"",
+      "plain": "f",
+      "styled": "TH[f]"
+    },
+    {
+      "name": "markup \"<span class=\\\"hljs-title.other\\\">f</span>\"",
+      "plain": "f",
+      "styled": "T[f]"
+    },
+    {
+      "name": "markup \"<span class=\\\"hljs-function\\\">a<span class=\\\"hljs-missing\\\">b</span>c</span>\"",
+      "plain": "abc",
+      "styled": "F[a]F[b]F[c]"
+    },
+    {
+      "name": "markup \"<span class=\\\"hljs-keyword\\\">a<span class=\\\"hljs-title\\\">b</span>c</span>\"",
+      "plain": "abc",
+      "styled": "K[a]T[b]K[c]"
+    },
+    {
+      "name": "markup \"<span>a</span>b\"",
+      "plain": "ab",
+      "styled": "D[a]D[b]"
+    },
+    {
+      "name": "markup \"<span class=\\\"\\\">a</span>b\"",
+      "plain": "ab",
+      "styled": "D[a]D[b]"
+    },
+    {
+      "name": "markup \"<span class=\\\"hljs-missing\\\">a</span>b\"",
+      "plain": "ab",
+      "styled": "D[a]D[b]"
+    },
+    {
+      "name": "markup \"<span class=\\\"hljs-keyword\\\">a</span></span>b\"",
+      "plain": "ab",
+      "styled": "K[a]D[b]"
+    },
+    {
+      "name": "markup \"<span class=\\\"hljs-keyword\\\">a\"",
+      "plain": "a",
+      "styled": "K[a]"
+    },
+    {
+      "name": "markup \"<span class=\\\"hljs-keyword\\\"\"",
+      "plain": "<span class=\"hljs-keyword\"",
+      "styled": "D[<span class=\"hljs-keyword\"]"
+    },
+    {
+      "name": "markup \"<spanx class=\\\"hljs-keyword\\\">x</span>\"",
+      "plain": "<spanx class=\"hljs-keyword\">x",
+      "styled": "D[<spanx class=\"hljs-keyword\">x]"
+    },
+    {
+      "name": "markup \"<SPAN class=\\\"hljs-keyword\\\">x</SPAN>\"",
+      "plain": "<SPAN class=\"hljs-keyword\">x</SPAN>",
+      "styled": "D[<SPAN class=\"hljs-keyword\">x</SPAN>]"
+    },
+    {
+      "name": "markup \"<span\\tclass = \\\"hljs-keyword\\\">x</span>\"",
+      "plain": "x",
+      "styled": "K[x]"
+    },
+    {
+      "name": "markup \"<span\\nclass=\\\"hljs-keyword\\\">x</span>\"",
+      "plain": "x",
+      "styled": "K[x]"
+    },
+    {
+      "name": "markup \"<span\\rclass=\\\"hljs-keyword\\\">x</span>\"",
+      "plain": "x",
+      "styled": "K[x]"
+    },
+    {
+      "name": "markup \"<span class=\\\"hljs-keyword hljs-title\\\">x</span>\"",
+      "plain": "x",
+      "styled": "K[x]"
+    },
+    {
+      "name": "markup \"<span class=\\\"other\\\">&lt;span&gt;</span>\"",
+      "plain": "<span>",
+      "styled": "D[<span>]"
+    },
+    {
+      "name": "markup \"<span class=\\\"hljs-keyword\\\">&amp;\\n&#x1f600;</span>\"",
+      "plain": "&\n😀",
+      "styled": "K[&]\nK[😀]"
+    },
+    {
+      "name": "entity amp",
+      "value": "&"
+    },
+    {
+      "name": "entity lt",
+      "value": "<"
+    },
+    {
+      "name": "entity gt",
+      "value": ">"
+    },
+    {
+      "name": "entity quot",
+      "value": "\""
+    },
+    {
+      "name": "entity apos",
+      "value": "'"
+    },
+    {
+      "name": "entity AMP",
+      "value": null
+    },
+    {
+      "name": "entity unknown",
+      "value": null
+    },
+    {
+      "name": "entity #0",
+      "value": "\u0000"
+    },
+    {
+      "name": "entity #65",
+      "value": "A"
+    },
+    {
+      "name": "entity #x1f600",
+      "value": "😀"
+    },
+    {
+      "name": "entity #X41",
+      "value": "A"
+    },
+    {
+      "name": "entity #xD800",
+      "value": "\ud800"
+    },
+    {
+      "name": "entity #-1",
+      "value": null
+    },
+    {
+      "name": "entity #1114112",
+      "value": null
+    },
+    {
+      "name": "entity #12tail",
+      "value": "\f"
+    },
+    {
+      "name": "entity #x41tail",
+      "value": "A"
+    },
+    {
+      "name": "entity #x",
+      "value": null
+    },
+    {
+      "name": "entity #",
+      "value": null
+    },
+    {
+      "name": "entity # 65",
+      "value": "A"
+    },
+    {
+      "name": "entity #+65",
+      "value": "A"
+    },
+    {
+      "name": "entity #0x41",
+      "value": "\u0000"
+    },
+    {
+      "name": "entityAt [\"a&amp;b\",1]",
+      "value": {
+        "text": "&",
+        "length": 5
+      }
+    },
+    {
+      "name": "entityAt [\"&amp;\",0]",
+      "value": {
+        "text": "&",
+        "length": 5
+      }
+    },
+    {
+      "name": "entityAt [\"x&abcdefghijklmnop;\",1]",
+      "value": null
+    },
+    {
+      "name": "entityAt [\"&amp\",0]",
+      "value": null
+    },
+    {
+      "name": "entityAt [\"&unknown;\",0]",
+      "value": null
+    },
+    {
+      "name": "entityAt [\"x&#x1f600;y\",1]",
+      "value": {
+        "text": "😀",
+        "length": 9
+      }
+    },
+    {
+      "name": "entityAt [\"&amp;\",-1]",
+      "value": null
+    },
+    {
+      "name": "entityAt [\"&amp;\",\"0\"]",
+      "value": {
+        "text": "&",
+        "length": 5
+      }
+    },
+    {
+      "name": "live inherited formatter and fallback order",
+      "result": "DaDbIcDd",
+      "log": [
+        "get title.function",
+        "get title",
+        "get default",
+        "default a",
+        "get title-function",
+        "get title",
+        "get default",
+        "default b",
+        "inherited c",
+        "get default",
+        "default d"
+      ]
+    },
+    {
+      "name": "formatter mutation and empty newlines",
+      "result": "olda\n\noldb\nnewc",
+      "log": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "name": "formatter receiver and original exception identity",
+      "receiver": true,
+      "identical": true
+    },
+    {
+      "name": "theme getter original exception identity",
+      "identical": true
+    },
+    {
+      "name": "live callback metadata",
+      "result": "[x]\n\n[y]",
+      "seen": [
+        {
+          "name": "",
+          "length": 1,
+          "ownPrototype": false
+        }
+      ]
+    },
+    {
+      "name": "live numeric entity builtins",
+      "result": "A",
+      "log": [
+        [
+          "parse",
+          true,
+          [
+            "41tail",
+            16
+          ]
+        ],
+        [
+          "integer",
+          true,
+          65
+        ],
+        [
+          "point",
+          true,
+          65
+        ]
+      ]
+    }
+  ],
+  "observedModules": [
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs",
+      "sha256": "80dabdaffc67e61dc48a04877b27e306573f26503869a722a83c61f9e4b4e364"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/verification/sdk-syntax-html-original-1692bba-20261014/capture-html.mjs",
+      "sha256": "2f0955edaac51b7ac951f76da44c90758caa74542f8ffbe96b0050f511254043"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/syntax-highlight.ts",
+      "sha256": "6849a5ead44fb9e76d5e93047641bf34f21483c67400b7056c97f0028c8c4612"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/core.js",
+      "sha256": "c4d10bcc7cb543c36198d34d2ecfcee9f8fbdd82ec1531daa3962c86a6c95468"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/bash.js",
+      "sha256": "760337399a01bba07ca386b26d67b4979cef2cd8619c4c012f3e2d3696513805"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/c.js",
+      "sha256": "9465ff9b3b7f72057acc56509dd3184f4742cd90c907ac8a9162a22ae4081dcc"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/cpp.js",
+      "sha256": "d75213a6d84131f2951481c65ce72996e2af98ffa02f72fc088b8ef6032fa619"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/csharp.js",
+      "sha256": "ebcc1a0eb1cfc68bccf4691ba86661da6773e22003062c95b0163d29640da048"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/dart.js",
+      "sha256": "d803a195fdc1e233d573e7b57852a88ecd5674f425d7ccbb398df7868d73a4c7"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/go.js",
+      "sha256": "2f7e722c1261a41636561e8857075264109a11c86c0de73cefe50db39396ba59"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/groovy.js",
+      "sha256": "469a021e26a94093fbcb5491f41db234889a7cf0183e1bf0c2f49a10cdefde4b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/java.js",
+      "sha256": "3e19b818d4a4d48a0710f9d9965d3ae6fee86bdfd2314aa8f9aec89c47cf6908"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/javascript.js",
+      "sha256": "f0edc556ff97da57eede63732b476927da43da502b999186a4d9dac28f688fcd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/json.js",
+      "sha256": "ebb4ccb8af5c7b49f01af8b81b75e0a0bbb0aed5b3074b4f5c44f023e246fd2a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/kotlin.js",
+      "sha256": "c7e0b63200229f1c2b311cf810044dd999b5e8b92f27266c06a999dd374ae31c"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/lua.js",
+      "sha256": "88a0ff413042cf4085e1c64c14ee9368ea66516f5b816548a51a9169b6e66ebd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/nix.js",
+      "sha256": "988d14d6bbe8d40609f13b8d76f55e096c64e9745740a70002ff1bf2de122757"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/perl.js",
+      "sha256": "6080515bade18921d32207f656f558857d976b195accbef86204c00c0beb3e2d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/php.js",
+      "sha256": "6106a3585adc0ef5d8d52449bac71c14e1fdfc7e5a6257b8bd03a7964b58bfbd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/python.js",
+      "sha256": "a7145981d1c4fbe9979021d16f34728408e95e72374173c878e24babd378bbc3"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/ruby.js",
+      "sha256": "ac7d96bd0483aeb712efbd60dfb675b04de0375293a4f3bd046353591e2bff86"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/rust.js",
+      "sha256": "bdc8e553ec27818f6679efd1ab30a5aa71cdf915b2205d51b4ce575d9898ad47"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/scala.js",
+      "sha256": "f00bc0c4c74ebcf0fdf4d16ed770d8391c9ef59ebf46876379887ad29dfd42fb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/swift.js",
+      "sha256": "68de29ed46414356e02d838b848ff2e4590b69fe1bd6286cf3a57e7ba156d6c2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/typescript.js",
+      "sha256": "8deb81f57cdad5fbb3d3afe1af393924d5ed17c81951d72459e03f141a6589cb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/html.ts",
+      "sha256": "d3abd075ab64807a1facae1511ec0b9b22f63153c7808eb63e7560fb00b1d48b"
+    }
+  ]
+}

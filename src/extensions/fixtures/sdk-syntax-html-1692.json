@@ -1,0 +1,334 @@
+[
+  {
+    "name": "markup \"\"",
+    "plain": "",
+    "styled": ""
+  },
+  {
+    "name": "markup \"plain\\n\\ntext\\n\"",
+    "plain": "plain\n\ntext\n",
+    "styled": "D[plain]\n\nD[text]\n"
+  },
+  {
+    "name": "markup \"&amp;&lt;&gt;&quot;&apos;\"",
+    "plain": "&<>\"'",
+    "styled": "D[&<>\"']"
+  },
+  {
+    "name": "markup \"&#65;&#x1f600;&#X41;&#-1;&#1114112;&#xD800;\"",
+    "plain": "A😀A&#-1;&#1114112;\ud800",
+    "styled": "D[A😀A&#-1;&#1114112;\ud800]"
+  },
+  {
+    "name": "markup \"&#12tail;&#x41tail;&unknown;&AMP;\"",
+    "plain": "\fA&unknown;&AMP;",
+    "styled": "D[\fA&unknown;&AMP;]"
+  },
+  {
+    "name": "markup \"&abcdefghijklmnop;&amp\"",
+    "plain": "&abcdefghijklmnop;&amp",
+    "styled": "D[&abcdefghijklmnop;&amp]"
+  },
+  {
+    "name": "markup \"<span class=\\\"hljs-keyword\\\">if</span>\"",
+    "plain": "if",
+    "styled": "K[if]"
+  },
+  {
+    "name": "markup \"<span class=\\\"other hljs-keyword extra\\\">if\\n\\nelse\\n</span>\"",
+    "plain": "if\n\nelse\n",
+    "styled": "K[if]\n\nK[else]\n"
+  },
+  {
+    "name": "markup \"<span class='hljs-title.function'>f</span>\"",
+    "plain": "f",
+    "styled": "TF[f]"
+  },
+  {
+    "name": "markup \"<span class=\\\"hljs-title-function\\\">f</span>\"",
+    "plain": "f",
+    "styled": "TH[f]"
+  },
+  {
+    "name": "markup \"<span class=\\\"hljs-title.other\\\">f</span>\"",
+    "plain": "f",
+    "styled": "T[f]"
+  },
+  {
+    "name": "markup \"<span class=\\\"hljs-function\\\">a<span class=\\\"hljs-missing\\\">b</span>c</span>\"",
+    "plain": "abc",
+    "styled": "F[a]F[b]F[c]"
+  },
+  {
+    "name": "markup \"<span class=\\\"hljs-keyword\\\">a<span class=\\\"hljs-title\\\">b</span>c</span>\"",
+    "plain": "abc",
+    "styled": "K[a]T[b]K[c]"
+  },
+  {
+    "name": "markup \"<span>a</span>b\"",
+    "plain": "ab",
+    "styled": "D[a]D[b]"
+  },
+  {
+    "name": "markup \"<span class=\\\"\\\">a</span>b\"",
+    "plain": "ab",
+    "styled": "D[a]D[b]"
+  },
+  {
+    "name": "markup \"<span class=\\\"hljs-missing\\\">a</span>b\"",
+    "plain": "ab",
+    "styled": "D[a]D[b]"
+  },
+  {
+    "name": "markup \"<span class=\\\"hljs-keyword\\\">a</span></span>b\"",
+    "plain": "ab",
+    "styled": "K[a]D[b]"
+  },
+  {
+    "name": "markup \"<span class=\\\"hljs-keyword\\\">a\"",
+    "plain": "a",
+    "styled": "K[a]"
+  },
+  {
+    "name": "markup \"<span class=\\\"hljs-keyword\\\"\"",
+    "plain": "<span class=\"hljs-keyword\"",
+    "styled": "D[<span class=\"hljs-keyword\"]"
+  },
+  {
+    "name": "markup \"<spanx class=\\\"hljs-keyword\\\">x</span>\"",
+    "plain": "<spanx class=\"hljs-keyword\">x",
+    "styled": "D[<spanx class=\"hljs-keyword\">x]"
+  },
+  {
+    "name": "markup \"<SPAN class=\\\"hljs-keyword\\\">x</SPAN>\"",
+    "plain": "<SPAN class=\"hljs-keyword\">x</SPAN>",
+    "styled": "D[<SPAN class=\"hljs-keyword\">x</SPAN>]"
+  },
+  {
+    "name": "markup \"<span\\tclass = \\\"hljs-keyword\\\">x</span>\"",
+    "plain": "x",
+    "styled": "K[x]"
+  },
+  {
+    "name": "markup \"<span\\nclass=\\\"hljs-keyword\\\">x</span>\"",
+    "plain": "x",
+    "styled": "K[x]"
+  },
+  {
+    "name": "markup \"<span\\rclass=\\\"hljs-keyword\\\">x</span>\"",
+    "plain": "x",
+    "styled": "K[x]"
+  },
+  {
+    "name": "markup \"<span class=\\\"hljs-keyword hljs-title\\\">x</span>\"",
+    "plain": "x",
+    "styled": "K[x]"
+  },
+  {
+    "name": "markup \"<span class=\\\"other\\\">&lt;span&gt;</span>\"",
+    "plain": "<span>",
+    "styled": "D[<span>]"
+  },
+  {
+    "name": "markup \"<span class=\\\"hljs-keyword\\\">&amp;\\n&#x1f600;</span>\"",
+    "plain": "&\n😀",
+    "styled": "K[&]\nK[😀]"
+  },
+  {
+    "name": "entity amp",
+    "value": "&"
+  },
+  {
+    "name": "entity lt",
+    "value": "<"
+  },
+  {
+    "name": "entity gt",
+    "value": ">"
+  },
+  {
+    "name": "entity quot",
+    "value": "\""
+  },
+  {
+    "name": "entity apos",
+    "value": "'"
+  },
+  {
+    "name": "entity AMP",
+    "value": null
+  },
+  {
+    "name": "entity unknown",
+    "value": null
+  },
+  {
+    "name": "entity #0",
+    "value": "\u0000"
+  },
+  {
+    "name": "entity #65",
+    "value": "A"
+  },
+  {
+    "name": "entity #x1f600",
+    "value": "😀"
+  },
+  {
+    "name": "entity #X41",
+    "value": "A"
+  },
+  {
+    "name": "entity #xD800",
+    "value": "\ud800"
+  },
+  {
+    "name": "entity #-1",
+    "value": null
+  },
+  {
+    "name": "entity #1114112",
+    "value": null
+  },
+  {
+    "name": "entity #12tail",
+    "value": "\f"
+  },
+  {
+    "name": "entity #x41tail",
+    "value": "A"
+  },
+  {
+    "name": "entity #x",
+    "value": null
+  },
+  {
+    "name": "entity #",
+    "value": null
+  },
+  {
+    "name": "entity # 65",
+    "value": "A"
+  },
+  {
+    "name": "entity #+65",
+    "value": "A"
+  },
+  {
+    "name": "entity #0x41",
+    "value": "\u0000"
+  },
+  {
+    "name": "entityAt [\"a&amp;b\",1]",
+    "value": {
+      "text": "&",
+      "length": 5
+    }
+  },
+  {
+    "name": "entityAt [\"&amp;\",0]",
+    "value": {
+      "text": "&",
+      "length": 5
+    }
+  },
+  {
+    "name": "entityAt [\"x&abcdefghijklmnop;\",1]",
+    "value": null
+  },
+  {
+    "name": "entityAt [\"&amp\",0]",
+    "value": null
+  },
+  {
+    "name": "entityAt [\"&unknown;\",0]",
+    "value": null
+  },
+  {
+    "name": "entityAt [\"x&#x1f600;y\",1]",
+    "value": {
+      "text": "😀",
+      "length": 9
+    }
+  },
+  {
+    "name": "entityAt [\"&amp;\",-1]",
+    "value": null
+  },
+  {
+    "name": "entityAt [\"&amp;\",\"0\"]",
+    "value": {
+      "text": "&",
+      "length": 5
+    }
+  },
+  {
+    "name": "live inherited formatter and fallback order",
+    "result": "DaDbIcDd",
+    "log": [
+      "get title.function",
+      "get title",
+      "get default",
+      "default a",
+      "get title-function",
+      "get title",
+      "get default",
+      "default b",
+      "inherited c",
+      "get default",
+      "default d"
+    ]
+  },
+  {
+    "name": "formatter mutation and empty newlines",
+    "result": "olda\n\noldb\nnewc",
+    "log": [
+      "a",
+      "b"
+    ]
+  },
+  {
+    "name": "formatter receiver and original exception identity",
+    "receiver": true,
+    "identical": true
+  },
+  {
+    "name": "theme getter original exception identity",
+    "identical": true
+  },
+  {
+    "name": "live callback metadata",
+    "result": "[x]\n\n[y]",
+    "seen": [
+      {
+        "name": "",
+        "length": 1,
+        "ownPrototype": false
+      }
+    ]
+  },
+  {
+    "name": "live numeric entity builtins",
+    "result": "A",
+    "log": [
+      [
+        "parse",
+        true,
+        [
+          "41tail",
+          16
+        ]
+      ],
+      [
+        "integer",
+        true,
+        65
+      ],
+      [
+        "point",
+        true,
+        65
+      ]
+    ]
+  }
+]

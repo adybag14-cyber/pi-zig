@@ -1431,6 +1431,11 @@ pub fn build(b: *std.Build) void {
     timer_oom_identity_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-timer-oom-identity", "Compile focused actual timer callback native allocation identity and complete ownership proof").dependOn(&timer_oom_identity_tests.step);
     b.step("test-native-timer-oom-identity", "Exercise actual timers promises GC and every allocation failure with fresh error identity restoration").dependOn(&b.addRunArtifact(timer_oom_identity_tests).step);
+    const syntax_html_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_syntax_highlight_html_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native syntax HTML"}, .use_llvm = use_llvm });
+    linkQuickJs(b, syntax_html_tests.root_module, quickjs, sqlite_lib_dir);
+    syntax_html_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-syntax-html", "Compile actual Source HTML theme formatter and named numeric entity helpers").dependOn(&syntax_html_tests.step);
+    b.step("test-native-syntax-html", "Compare genuine full Source62 formatter callbacks metadata and complete native allocation cleanup").dependOn(&b.addRunArtifact(syntax_html_tests).step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);

@@ -1,0 +1,11 @@
+{
+  "source_run": 38570185401,
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "input_sha256": "1D5C4E6468DDA77655912566AD64843EE8F51795347B45EFEA267FD175694007",
+  "source_input_sha256": "1D5C4E6468DDA77655912566AD64843EE8F51795347B45EFEA267FD175694007",
+  "original_raw_linux_sha256": "B4FA32DCD9E9C76A872D2C9CCDB92D424640A6CD579393B657498C9FAF09A91B",
+  "native_rows_sha256": "77A182465E9BBF78B09230B5664D5D583E631C14F2AAA3880B1D5A41BBFC5E66",
+  "projection": "JSON.parse(genuine_original_linux_capture).rows then JSON.stringify(rows,null,2); no row edits or value normalization",
+  "native_execution": "pending",
+  "public_activation": false
+}
