@@ -2,7 +2,7 @@ name: Native session statistics and context usage qualification
 
 on:
   push:
-    branches: [work/native-sdk-session-statistics-1692-20261014]
+    branches: [work/native-sdk-session-statistics-1692-20261014, work/native-sdk-statistics-snapshot-1692-20261014]
   workflow_dispatch:
 
 permissions:

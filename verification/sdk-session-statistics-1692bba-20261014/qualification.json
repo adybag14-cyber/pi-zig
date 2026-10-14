@@ -1,0 +1,26 @@
+{
+  "status": "qualified_component_all_six_exact_head_profiles",
+  "upstream": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "candidate": "28486b96213a7be100924b519a38c650f4ecce2c",
+  "run_id": 38564369919,
+  "scope": [
+    "getSessionStats",
+    "getContextUsage"
+  ],
+  "tests_each": 11,
+  "original_factory_cases": 36,
+  "original_reference_run": 38561905295,
+  "source_input_sha256": "06955A781C6F33EEBC2495CB1172848A85A1E2682B11F5ECC44DD4CA24908361",
+  "source_files": 4945,
+  "compiler_files": 19546,
+  "post_drift": 0,
+  "retained_callback_gc": true,
+  "full_allocation_failure_sweep": true,
+  "preserved_negative_run": 38560382141,
+  "observer_fix": "Caller-owned returned log snapped before original dispose appended unrelated getter observation; upstream method bodies unchanged",
+  "shared_estimator_consumer_regression": "pending hooks/run-preparation integration regression at updated composition",
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "observed_utc": "2026-10-14T12:52:54.1190972+00:00"
+}
