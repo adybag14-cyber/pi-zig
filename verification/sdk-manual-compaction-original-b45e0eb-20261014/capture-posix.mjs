@@ -1,0 +1,22 @@
+import{readFileSync,writeFileSync}from'node:fs';
+import{createHash}from'node:crypto';
+import{join}from'node:path';
+import{pathToFileURL}from'node:url';
+const root=process.env.PI_RENDERER_SOURCE_ROOT,receipts=process.env.PI_RENDERER_RECEIPTS;
+const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
+const verify=()=>['source','dependencies','node-tools','candidate'].map(name=>{
+ const rows=JSON.parse(readFileSync(join(receipts,name+'-before.json'),'utf8').replace(/^\uFEFF/,''));
+ for(const row of rows)if(hash(row.path)!==row.sha256.toLowerCase())throw Error('Frozen '+name+' drift '+row.path);
+ return{name,count:rows.length,drift:0};
+});
+const before=verify();
+const{AgentSession}=await import(pathToFileURL(join(root,'packages/coding-agent/src/core/agent-session.ts')).href);
+const{createFileOps}=await import(pathToFileURL(join(root,'packages/coding-agent/src/core/compaction/utils.ts')).href);
+const p=AgentSession.prototype;
+globalThis.manualCompactionAPI={compact:p.compact,clear:p._clearManualCompactionState,failed:p._emitSessionCompactFailed,refresh:p._refreshFinalizedContext,defaultSummary:p._runDefaultCompaction,createFileOps};
+const input=readFileSync(process.argv[3],'utf8');
+await import('data:text/javascript,'+encodeURIComponent(input));
+if(manualCompactionRows.length!==44)throw Error('Actual44 manual compaction observations required');
+const observedModules=readFileSync(join(receipts,'modules-'+process.pid+'.jsonl'),'utf8').trim().split('\n').map(JSON.parse);
+for(const row of observedModules.filter(row=>row.kind==='observed-module'))if(hash(row.path)!==row.sha256)throw Error('Observed original module drift');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb',inputSha256:createHash('sha256').update(input).digest('hex'),platform:process.platform,arch:process.arch,cases:44,node:{version:process.version,path:process.execPath,sha256:hash(process.execPath),execArgv:process.execArgv},before,after:verify(),scope:'Actual unchanged b45 ordinary manual compaction32/default summary8/finalized projection4 on caller-owned collaborators; configured package directory /owned/pi-package gives genuine POSIX documentation paths; no Source body rewrite or result normalization; historical typed catalog metadata only',rows:manualCompactionRows,observedModules},null,2));
