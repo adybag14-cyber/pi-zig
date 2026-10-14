@@ -1,0 +1,482 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "6e91087d829fb63914c71a08fbf05a00fce22e5fb309fd5327d58e6fb524f980",
+  "scope": "Actual unchanged original session-manager.ts projection/context exports; caller-owned values and temporary restored standard method overrides; no Source bodies replaced",
+  "cases": 30,
+  "rows": [
+    {
+      "name": "ordinary-export-metadata",
+      "value": [
+        {
+          "key": "buildContextEntries",
+          "name": "buildContextEntries",
+          "length": 3,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        },
+        {
+          "key": "buildSessionProjection",
+          "name": "buildSessionProjection",
+          "length": 3,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        },
+        {
+          "key": "buildSessionContext",
+          "name": "buildSessionContext",
+          "length": 3,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        },
+        {
+          "key": "sessionEntryToContextMessages",
+          "name": "sessionEntryToContextMessages",
+          "length": 1,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        }
+      ]
+    },
+    {
+      "name": "empty-projection",
+      "value": {
+        "entries": [],
+        "messages": [],
+        "thinkingLevel": "off",
+        "model": null
+      }
+    },
+    {
+      "name": "linear-path-and-identity",
+      "value": {
+        "ids": [
+          "a",
+          "b"
+        ],
+        "sourceIdentity": [
+          true,
+          true
+        ],
+        "messageIdentity": [
+          true,
+          true
+        ],
+        "context": {
+          "messages": [
+            {
+              "role": "user",
+              "content": "a",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "b",
+              "timestamp": 0
+            }
+          ],
+          "thinkingLevel": "off",
+          "model": null
+        }
+      }
+    },
+    {
+      "name": "branch-selected-leaf",
+      "value": {
+        "chosen": [
+          "a",
+          "b"
+        ],
+        "fallback": [
+          "a",
+          "c"
+        ],
+        "nullLeaf": []
+      }
+    },
+    {
+      "name": "null-leaf-still-builds-map",
+      "value": {
+        "rows": [],
+        "log": [
+          "construct",
+          "set:a"
+        ]
+      }
+    },
+    {
+      "name": "supplied-truthy-map-like",
+      "value": {
+        "ids": [
+          "a"
+        ],
+        "log": [
+          "a"
+        ]
+      }
+    },
+    {
+      "name": "falsy-map-builds-index",
+      "value": [
+        "a"
+      ]
+    },
+    {
+      "name": "parent-getter-read-twice",
+      "value": {
+        "ids": [
+          "a",
+          "b"
+        ],
+        "reads": 2
+      }
+    },
+    {
+      "name": "live-map-callee-before-id",
+      "value": {
+        "rows": [],
+        "log": [
+          "set-get",
+          "id",
+          "set-call"
+        ]
+      }
+    },
+    {
+      "name": "thinking-and-model-last-state",
+      "value": {
+        "thinking": "high",
+        "model": {
+          "provider": "two",
+          "modelId": "new"
+        }
+      }
+    },
+    {
+      "name": "missing-content-normalization",
+      "value": [
+        {
+          "role": "system",
+          "content": "",
+          "identity": false
+        },
+        {
+          "role": "user",
+          "content": [],
+          "identity": false
+        },
+        {
+          "role": "assistant",
+          "content": [],
+          "identity": false
+        },
+        {
+          "role": "toolResult",
+          "content": [],
+          "identity": false
+        },
+        {
+          "role": "custom",
+          "identity": true
+        }
+      ]
+    },
+    {
+      "name": "unknown-role-skips-content",
+      "value": {
+        "identity": true,
+        "reads": 0
+      }
+    },
+    {
+      "name": "role-getter-short-circuits",
+      "value": {
+        "identity": true,
+        "log": [
+          "role",
+          "role",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "custom-message-null-content",
+      "value": [
+        {
+          "role": "custom",
+          "customType": "x",
+          "content": [],
+          "display": false,
+          "details": {
+            "a": 1
+          },
+          "timestamp": 0
+        }
+      ]
+    },
+    {
+      "name": "branch-summary-falsy-and-truthy",
+      "value": [
+        [],
+        [
+          {
+            "role": "branchSummary",
+            "summary": "summary",
+            "fromId": "a",
+            "timestamp": 0
+          }
+        ]
+      ]
+    },
+    {
+      "name": "compaction-system-getter-read-twice",
+      "value": {
+        "out": [
+          {
+            "role": "system",
+            "content": "base"
+          },
+          {
+            "role": "compactionSummary",
+            "summary": "sum",
+            "tokensBefore": 123,
+            "timestamp": 0
+          }
+        ],
+        "reads": 2,
+        "identity": true
+      }
+    },
+    {
+      "name": "unknown-entry-reads-type-per-branch",
+      "value": {
+        "out": [],
+        "reads": 4
+      }
+    },
+    {
+      "name": "latest-compaction-retained-range",
+      "value": {
+        "ids": [
+          "c",
+          "b",
+          "d"
+        ],
+        "roles": [
+          "compactionSummary",
+          "user",
+          "user"
+        ],
+        "content": [
+          "sum",
+          "b",
+          "d"
+        ]
+      }
+    },
+    {
+      "name": "retained-older-compaction-suppressed",
+      "value": {
+        "ids": [
+          "new",
+          "old",
+          "b"
+        ],
+        "sizes": [
+          1,
+          0,
+          1
+        ],
+        "summaries": [
+          "new",
+          "b"
+        ]
+      }
+    },
+    {
+      "name": "missing-kept-id-only-tail",
+      "value": [
+        "c",
+        "b"
+      ]
+    },
+    {
+      "name": "edit-null-omits-message",
+      "value": {
+        "sizes": [
+          0,
+          0
+        ],
+        "messages": []
+      }
+    },
+    {
+      "name": "edited-assistant-text-and-identity",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "replacement"
+          }
+        ],
+        "source": true,
+        "copied": true
+      }
+    },
+    {
+      "name": "latest-edit-wins",
+      "value": [
+        "two"
+      ]
+    },
+    {
+      "name": "replacement-content-read-twice",
+      "value": {
+        "messages": [
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "replaced"
+              }
+            ],
+            "timestamp": 0
+          }
+        ],
+        "log": [
+          "content",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "custom-edit-keeps-content-reference",
+      "value": {
+        "contentIdentity": true,
+        "messageCopied": true
+      }
+    },
+    {
+      "name": "projection-traverses-index-twice",
+      "value": 3
+    },
+    {
+      "name": "flatmap-remains-live",
+      "value": {
+        "p": {
+          "entries": [
+            {
+              "sourceEntry": {
+                "type": "message",
+                "id": "a",
+                "parentId": null,
+                "message": {
+                  "role": "user",
+                  "content": "a",
+                  "timestamp": 0
+                }
+              },
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "a",
+                  "timestamp": 0
+                }
+              ]
+            }
+          ],
+          "messages": [
+            "custom"
+          ],
+          "thinkingLevel": "off",
+          "model": null
+        },
+        "log": [
+          1
+        ]
+      }
+    },
+    {
+      "name": "index-iterator-abrupt-close",
+      "value": {
+        "same": true,
+        "log": [
+          "closed"
+        ]
+      }
+    },
+    {
+      "name": "path-over-65536-entries",
+      "value": {
+        "length": 70000,
+        "first": "0",
+        "last": "69999"
+      }
+    },
+    {
+      "name": "ordinary-constructors-return-results",
+      "value": {
+        "entries": true,
+        "context": {
+          "messages": [
+            {
+              "role": "user",
+              "content": "a",
+              "timestamp": 0
+            }
+          ],
+          "thinkingLevel": "off",
+          "model": null
+        },
+        "projection": {
+          "entries": [
+            {
+              "sourceEntry": {
+                "type": "message",
+                "id": "a",
+                "parentId": null,
+                "message": {
+                  "role": "user",
+                  "content": "a",
+                  "timestamp": 0
+                }
+              },
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "a",
+                  "timestamp": 0
+                }
+              ]
+            }
+          ],
+          "messages": [
+            {
+              "role": "user",
+              "content": "a",
+              "timestamp": 0
+            }
+          ],
+          "thinkingLevel": "off",
+          "model": null
+        }
+      }
+    }
+  ]
+}
