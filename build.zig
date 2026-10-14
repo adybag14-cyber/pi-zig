@@ -1466,6 +1466,11 @@ pub fn build(b: *std.Build) void {
     highlight_legacy_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-highlight-legacy-function", "Compile isolated actual Original20 legacy-function diagnostic without public binding").dependOn(&highlight_legacy_tests.step);
     b.step("test-native-highlight-legacy-function", "Compare genuine legacy callers Arguments descriptors poison freeze GC cancellation and all native allocation indices").dependOn(&b.addRunArtifact(highlight_legacy_tests).step);
+    const highlight_legacy32_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_legacy32_function_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native legacy32 CJS function"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_legacy32_tests.root_module, quickjs, sqlite_lib_dir);
+    highlight_legacy32_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-legacy-function32", "Compile genuine Original32 broader legacy diagnostic; expected negative before source repairs").dependOn(&highlight_legacy32_tests.step);
+    b.step("test-native-highlight-legacy-function32", "Compare actual poison identity descriptor flags constructor frame ordering and active redefinition without weakening acceptance").dependOn(&b.addRunArtifact(highlight_legacy32_tests).step);
     const read_prompt_b45_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_read_prompt_b45_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "b45 read range", "quoted empty command", "one empty argument", "prompt token separators" }, .use_llvm = use_llvm });
     linkQuickJs(b, read_prompt_b45_tests.root_module, quickjs, sqlite_lib_dir);
     read_prompt_b45_tests.root_module.addImport("catalog_tool", catalog_tool);
