@@ -1571,6 +1571,12 @@ pub fn build(b: *std.Build) void {
     complete_summary_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-complete-summarization", "Compare actual summarization request orchestration with module-bound native dependencies").dependOn(&b.addRunArtifact(complete_summary_tests).step);
     b.step("build-native-sdk-complete-summarization", "Compile summarization request ownership separately from runtime checks").dependOn(&complete_summary_tests.step);
+    const summary_generation_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_summary_generation_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native summary generation"}, .use_llvm = use_llvm });
+    linkQuickJs(b, summary_generation_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(summary_generation_tests.root_module, sqlite_lib_dir, sqlite_library);
+    summary_generation_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-summary-generation", "Compare original summaries and full prepared compaction including split turns and native ownership").dependOn(&b.addRunArtifact(summary_generation_tests).step);
+    b.step("build-native-sdk-summary-generation", "Compile full summary generation and prepared compaction independently").dependOn(&summary_generation_tests.step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);

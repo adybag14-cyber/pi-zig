@@ -14,7 +14,7 @@ fn defaultCompletion(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*
     defer engine.freeValue(function);
     return js.call(engine, function, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(engine, err);
 }
-fn setup(engine: *em.Engine) !void {
+pub fn setup(engine: *em.Engine) !void {
     engine.native_io = std.testing.io;
     try @import("extensions/timers.zig").install(engine, std.testing.io);
     try @import("extensions/native_bigint_host.zig").install(engine);

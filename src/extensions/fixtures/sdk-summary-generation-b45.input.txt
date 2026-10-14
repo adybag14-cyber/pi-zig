@@ -1,0 +1,52 @@
+const api=summaryGenerationAPI,rows=[],oldNow=Date.now;Date.now=()=>1000;
+const names=['metadata','initial','text-wrapper','update','instructions','both','empty-previous','max-capped','max-zero','max-negative','max-string','reserve-fraction','reserve-negative','reserve-nan','reserve-infinity','reserve-coercion','max-getter','reasoning-on','reasoning-off','reasoning-empty','reasoning-object','mixed-content','response-error','response-length','response-tool-call','response-aborted','stream-throw','usage-getter-throw','content-getter','live-math','instructions-coercion','previous-coercion','null-messages','compact-normal','compact-split-history','compact-split-no-history','compact-split-empty-prefix','compact-previous-empty','compact-files','compact-missing-id','compact-preparation-getters','compact-reserve-getters','compact-prefix-error','compact-prefix-tool','compact-prefix-aborted'];
+const scalar=v=>typeof v==='number'&&!Number.isFinite(v)?String(v):v;
+try{for(const name of names){
+ const trace=[],marker={marker:name},headers={Fixture:'header'},env={FIXTURE:'env'},usage={input:1,output:2,cacheRead:3,cacheWrite:4,totalTokens:10,cost:{input:1,output:2,cacheRead:3,cacheWrite:4,total:10}};
+ const model={id:'fixture',api:'summary-fixture',provider:'summary-fixture-provider',maxTokens:1000,reasoning:false};
+ let reserve=1000,previous,instructions,thinking,messages=[{role:'user',content:'User request',timestamp:1},{role:'assistant',content:[{type:'text',text:'Assistant work'}],timestamp:2}],calls=0,result,error;
+ const response=()=>({role:'assistant',content:[{type:'text',text:'summary-'+calls}],stopReason:'stop',usage,timestamp:0});
+ if(name==='update'||name==='both')previous='Prior checkpoint';
+ if(name==='instructions'||name==='both')instructions='Keep file names';
+ if(name==='empty-previous')previous='';
+ if(name==='max-capped')model.maxTokens=17;
+ if(name==='max-zero')model.maxTokens=0;
+ if(name==='max-negative')model.maxTokens=-1;
+ if(name==='max-string')model.maxTokens='20';
+ if(name==='reserve-fraction')reserve=10.9;
+ if(name==='reserve-negative')reserve=-10;
+ if(name==='reserve-nan')reserve=NaN;
+ if(name==='reserve-infinity')reserve=Infinity;
+ if(name==='reserve-coercion')reserve={valueOf(){trace.push('reserve.valueOf');return 22;}};
+ if(name==='max-getter'){let n=0;Object.defineProperty(model,'maxTokens',{get(){trace.push(['model.maxTokens',++n]);return n===1?1:19;}});}
+ if(name.startsWith('reasoning-')){model.reasoning=true;thinking=name==='reasoning-off'?'off':name==='reasoning-empty'?'':name==='reasoning-object'?{level:'high'}:'high';}
+ if(name==='instructions-coercion')instructions={[Symbol.toPrimitive](hint){trace.push(['instructions',hint]);return'focus';}};
+ if(name==='previous-coercion')previous={[Symbol.toPrimitive](hint){trace.push(['previous',hint]);return'prior';}};
+ if(name==='null-messages')messages=null;
+ const oldFloor=Math.floor,oldMin=Math.min;
+ if(name==='live-math'){Math.floor=function(v){trace.push(['floor',this===Math,scalar(v)]);return oldFloor(v);};Math.min=function(...values){trace.push(['min',this===Math,values.map(scalar)]);return oldMin(...values);};}
+ const stream=function(m,c,o){calls++;trace.push({event:'request',call:calls,thisUndefined:this===undefined,modelSame:m===model,context:c,keys:Object.keys(o),options:{...o,maxTokens:scalar(o.maxTokens)},headersSame:o.headers===headers,envSame:o.env===env});if(name==='stream-throw')throw marker;const value=response();
+  if(name==='mixed-content')value.content=[{type:'thinking',thinking:'private'},{type:'text',text:'one'},{type:'text',text:'two'}];
+  if(name==='response-error'||name==='compact-prefix-error'&&calls===(name.startsWith('compact')?2:1)){value.stopReason='error';value.errorMessage='fixture-failure';}
+  if(name==='response-length')value.stopReason='length';
+  if(name==='response-tool-call'||name==='compact-prefix-tool'&&calls===2)value.content=[{type:'toolCall',id:'call',name:'read',arguments:{}}];
+  if(name==='response-aborted'||name==='compact-prefix-aborted'&&calls===2)value.stopReason='aborted';
+  if(name==='usage-getter-throw')Object.defineProperty(value,'usage',{get(){trace.push('usage.get');throw marker;}});
+  if(name==='content-getter'){let n=0;Object.defineProperty(value,'content',{get(){trace.push(['content.get',++n]);return[{type:'text',text:'content-'+n}];}});}
+  return{result(){return value;}};
+ };
+ try{
+  if(name==='metadata')result=Object.entries(api).map(([key,f])=>({key,name:f.name,length:f.length,prototype:Object.hasOwn(f,'prototype'),async:Object.getPrototypeOf(f)===Object.getPrototypeOf(async()=>{})}));
+  else if(name.startsWith('compact-')){
+   const fileOps=createSummaryFileOps(),split=['compact-split-history','compact-split-no-history','compact-split-empty-prefix','compact-previous-empty','compact-reserve-getters','compact-prefix-error','compact-prefix-tool','compact-prefix-aborted'].includes(name);
+   if(name==='compact-files'){fileOps.read.add('read-only');fileOps.read.add('both');fileOps.edited.add('both');fileOps.written.add('new');}
+   const values={firstKeptEntryId:name==='compact-missing-id'?'':'kept',messagesToSummarize:name==='compact-split-no-history'||name==='compact-previous-empty'?[]:messages,turnPrefixMessages:name==='compact-split-empty-prefix'?[]:[{role:'user',content:'Turn prefix',timestamp:3}],isSplitTurn:split,tokensBefore:123,previousSummary:name==='compact-previous-empty'?'':previous,fileOps,settings:{reserveTokens:reserve}};
+   if(name==='compact-reserve-getters'){let n=0;Object.defineProperty(values.settings,'reserveTokens',{get(){trace.push(['settings.reserveTokens',++n]);return n===1?200:500;}});}
+   let preparation=values;if(name==='compact-preparation-getters'){preparation={};for(const key of Object.keys(values))Object.defineProperty(preparation,key,{get(){trace.push(['preparation',key]);return values[key];}});}
+   result=await api.compact(preparation,model,'fixture-api-key',headers,instructions,undefined,thinking,stream,env,undefined,undefined,'owned-route');
+  }else result=await api[name==='text-wrapper'?'generateSummary':'generateSummaryWithUsage'](messages,model,reserve,'fixture-api-key',headers,undefined,instructions,previous,thinking,stream,env,undefined,undefined,'owned-route');
+ }catch(value){if(value===marker)error={marker:true};else error={name:value.name,...(value instanceof TypeError?{}:{message:value.message})};}
+ finally{Math.floor=oldFloor;Math.min=oldMin;}
+ rows.push({name,result,error,trace,calls});
+}}finally{Date.now=oldNow;}
+globalThis.summaryGenerationRows=JSON.parse(JSON.stringify(rows));
