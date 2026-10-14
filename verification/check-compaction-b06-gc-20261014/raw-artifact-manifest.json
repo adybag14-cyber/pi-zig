@@ -1,0 +1,77 @@
+[
+  {
+    "path": "root-check-compaction-b06-gc-retry-compile-debug-first-shard0-of8-20261014-admission.json",
+    "bytes": 805,
+    "sha256": "36FF117054046B0B109E0C2CA6C7D7CD74552E4CF8994E50BC574AB3C9C96C26"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-compile-debug-first-shard0-of8-20261014-controls-before.json",
+    "bytes": 840,
+    "sha256": "7FE245494C8314D3CFB9F656338122437BE4E31C25F0D3647DCF8A9A1E363F37"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-compile-debug-first-shard0-of8-20261014-posthash.json",
+    "bytes": 420,
+    "sha256": "ADBF6922B29C312987E798E25389116B28697EA45D55592E2FB49C61FFD14ED3"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-compile-debug-first-shard0-of8-20261014-source-before.json",
+    "bytes": 925595,
+    "sha256": "1569EB76BE3B6C75F9EC8CAF3F00B3D7D0C48A150990A5DFCAB56BE6AE3BEBD1"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-compile-debug-first-shard0-of8-20261014.json",
+    "bytes": 1053,
+    "sha256": "D99FBAEB6AF4F7180F7E0F6CBB70B70F4ECCA5FDD5B8F942E662BB3E2CCE4C04"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-compile-debug-first-shard0-of8-20261014.stderr.log",
+    "bytes": 13925,
+    "sha256": "D05E5293A602CAB1A61D2146B501261F2A1524F42F95902D434D22FFEB805295"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-compile-debug-first-shard0-of8-20261014.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-runtime-debug-complete-shard0-of1-20261014-admission.json",
+    "bytes": 360,
+    "sha256": "0983255126D365CACF5B0858A9F404EEA02A0BC57674B21322C1711E75EAA0B0"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-runtime-debug-complete-shard0-of1-20261014-controls-before.json",
+    "bytes": 840,
+    "sha256": "7FE245494C8314D3CFB9F656338122437BE4E31C25F0D3647DCF8A9A1E363F37"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-runtime-debug-complete-shard0-of1-20261014-posthash.json",
+    "bytes": 420,
+    "sha256": "58E16141119CEADF8F60BF657692AB2C56CAE6E6D5B281CB1F0B3C3BD1545316"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-runtime-debug-complete-shard0-of1-20261014-source-before.json",
+    "bytes": 925595,
+    "sha256": "1569EB76BE3B6C75F9EC8CAF3F00B3D7D0C48A150990A5DFCAB56BE6AE3BEBD1"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-runtime-debug-complete-shard0-of1-20261014.json",
+    "bytes": 1017,
+    "sha256": "8CFE81CA1B35475BEE068AA43F26B2892B335EE4F4C7A7725AB7F19FFD525CDF"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-runtime-debug-complete-shard0-of1-20261014.stderr.log",
+    "bytes": 119955,
+    "sha256": "B0D68F101561689B291339CB66128D2DCF679D15B5E579B39A6ED8B1CCBEDF5F"
+  },
+  {
+    "path": "root-check-compaction-b06-gc-retry-runtime-debug-complete-shard0-of1-20261014.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "Run-RootCheckCompactionB06GcRetryNative-20261014.ps1",
+    "bytes": 6854,
+    "sha256": "5F80DE1FB1279A8231AC29ED948366C8D903119077C99F4F0774F0531C2CC67A"
+  }
+]
