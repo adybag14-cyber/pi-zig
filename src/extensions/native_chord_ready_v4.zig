@@ -140,6 +140,7 @@ pub fn awaitReady(engine: *h.Engine, bindings: c.JSValue, ref: c.JSValue, signal
     defer s.deinit();
     const work = try async_work.create(&s);
     inline for (.{ "bindings", "ref", "ms" }, .{ bindings, ref, ms }) |name, value| try h.field(&s, work, name, value);
-    startReady(&s, work, signals) catch |err| try async_work.rejectError(&s, work, err);
+    const generation = engine.native_allocation_generation;
+    startReady(&s, work, signals) catch |err| try async_work.rejectErrorSince(&s, work, err, generation);
     return async_work.result(&s, work);
 }
