@@ -1,0 +1,1114 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "8aef9618dae259ab9fee17d1752f14654a8b5c44fc2cb49400ff319f8911e72b",
+  "scope": "Actual unchanged original compaction.ts prepareCompaction export and original lexical projection/token/file helpers; caller-owned values and temporary restored standard method overrides; no Source bodies replaced",
+  "cases": 30,
+  "rows": [
+    {
+      "name": "ordinary-function-metadata",
+      "value": {
+        "name": "prepareCompaction",
+        "length": 2,
+        "prototype": [
+          true,
+          false,
+          false
+        ],
+        "constructor": true
+      }
+    },
+    {
+      "name": "empty-branch",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "single-input-too-small",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "two-inputs-zero-budget",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e1",
+        "messages": [
+          {
+            "role": "user",
+            "content": "first",
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 4,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "threshold-keeps-last-input",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e2",
+        "messages": [
+          {
+            "role": "user",
+            "content": "first",
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "second",
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 6,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "large-budget-no-history",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "assistant-split-turn",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e2",
+        "messages": [],
+        "prefix": [
+          {
+            "role": "user",
+            "content": "request",
+            "timestamp": 0
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "timestamp": 0
+          }
+        ],
+        "split": true,
+        "tokens": 7,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "tool-result-follows-call",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "old",
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "request",
+            "timestamp": 0
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "t",
+                "name": "read",
+                "arguments": {
+                  "path": "a"
+                }
+              }
+            ],
+            "timestamp": 0
+          },
+          {
+            "role": "toolResult",
+            "toolCallId": "t",
+            "toolName": "read",
+            "content": "result",
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 10,
+        "files": {
+          "read": [
+            "a"
+          ],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "assistant-file-operations",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e2",
+        "messages": [
+          {
+            "role": "user",
+            "content": "request",
+            "timestamp": 0
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "t",
+                "name": "read",
+                "arguments": {
+                  "path": "a"
+                }
+              },
+              {
+                "type": "toolCall",
+                "id": "t",
+                "name": "write",
+                "arguments": {
+                  "path": "b"
+                }
+              },
+              {
+                "type": "toolCall",
+                "id": "t",
+                "name": "edit",
+                "arguments": {
+                  "path": "c"
+                }
+              },
+              {
+                "type": "toolCall",
+                "id": "t",
+                "name": "read",
+                "arguments": {
+                  "path": "a"
+                }
+              }
+            ],
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 20,
+        "files": {
+          "read": [
+            "a"
+          ],
+          "written": [
+            "b"
+          ],
+          "edited": [
+            "c"
+          ]
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "nested-result-file-operations",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e2",
+        "messages": [
+          {
+            "role": "user",
+            "content": "request",
+            "timestamp": 0
+          },
+          {
+            "role": "toolResult",
+            "content": "result",
+            "nestedCalls": {
+              "calls": [
+                {
+                  "name": "edit",
+                  "arguments": {
+                    "path": "nested"
+                  }
+                }
+              ]
+            },
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 5,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": [
+            "nested"
+          ]
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "system-state-is-not-summarized",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e2",
+        "messages": [
+          {
+            "role": "user",
+            "content": "first",
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 6,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "metadata-before-kept-input",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e1",
+        "messages": [],
+        "prefix": [
+          {
+            "role": "user",
+            "content": "first",
+            "timestamp": 0
+          }
+        ],
+        "split": true,
+        "tokens": 4,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "already-compacted-tail",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "previous-summary-and-file-history",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e3",
+        "messages": [
+          {
+            "role": "user",
+            "content": "old",
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "middle",
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 6,
+        "previous": "previous",
+        "files": {
+          "read": [
+            "old-read"
+          ],
+          "written": [],
+          "edited": [
+            "old-edit"
+          ]
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "hook-summary-does-not-import-files",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e3",
+        "messages": [
+          {
+            "role": "user",
+            "content": "old",
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "middle",
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 6,
+        "previous": "previous",
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "previous-details-nonarrays-ignored",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e3",
+        "messages": [
+          {
+            "role": "user",
+            "content": "old",
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "middle",
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 6,
+        "previous": "previous",
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "retained-older-compaction-empty",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e5",
+        "messages": [
+          {
+            "role": "user",
+            "content": "middle",
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "new",
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 6,
+        "previous": "latest",
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "recovery-omission-suffix",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e2",
+        "messages": [
+          {
+            "role": "user",
+            "content": "old",
+            "timestamp": 0
+          }
+        ],
+        "prefix": [
+          {
+            "role": "user",
+            "content": "request",
+            "timestamp": 0
+          }
+        ],
+        "split": true,
+        "tokens": 3,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "external-replacement-blocks-suffix-advance",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e1",
+        "messages": [
+          {
+            "role": "user",
+            "content": "updated",
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 4,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "edited-context-is-summarized",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e1",
+        "messages": [],
+        "prefix": [
+          {
+            "role": "user",
+            "content": "edited",
+            "timestamp": 0
+          }
+        ],
+        "split": true,
+        "tokens": 3,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "assistant-usage-controls-tokens",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e2",
+        "messages": [
+          {
+            "role": "user",
+            "content": "old",
+            "timestamp": 0
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "timestamp": 0,
+            "stopReason": "stop",
+            "usage": {
+              "totalTokens": 123,
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 124,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "context-edit-invalidates-earlier-usage",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e2",
+        "messages": [],
+        "prefix": [
+          {
+            "role": "user",
+            "content": "updated",
+            "timestamp": 0
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "timestamp": 0,
+            "stopReason": "stop",
+            "usage": {
+              "totalTokens": 123,
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          }
+        ],
+        "split": true,
+        "tokens": 5,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "negative-and-string-budget",
+      "value": [
+        {
+          "keys": [
+            "firstKeptEntryId",
+            "messagesToSummarize",
+            "turnPrefixMessages",
+            "isSplitTurn",
+            "tokensBefore",
+            "previousSummary",
+            "fileOps",
+            "settings"
+          ],
+          "first": "e1",
+          "messages": [
+            {
+              "role": "user",
+              "content": "old",
+              "timestamp": 0
+            }
+          ],
+          "prefix": [],
+          "split": false,
+          "tokens": 2,
+          "files": {
+            "read": [],
+            "written": [],
+            "edited": []
+          },
+          "settingsIdentity": true
+        },
+        {
+          "keys": [
+            "firstKeptEntryId",
+            "messagesToSummarize",
+            "turnPrefixMessages",
+            "isSplitTurn",
+            "tokensBefore",
+            "previousSummary",
+            "fileOps",
+            "settings"
+          ],
+          "first": "e1",
+          "messages": [
+            {
+              "role": "user",
+              "content": "old",
+              "timestamp": 0
+            }
+          ],
+          "prefix": [],
+          "split": false,
+          "tokens": 2,
+          "files": {
+            "read": [],
+            "written": [],
+            "edited": []
+          },
+          "settingsIdentity": true
+        },
+        {
+          "undefined": true
+        }
+      ]
+    },
+    {
+      "name": "branch-summary-starts-turn",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e2",
+        "messages": [
+          {
+            "role": "branchSummary",
+            "summary": "prior",
+            "fromId": "prior-id",
+            "timestamp": 0
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 5,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "custom-message-starts-turn",
+      "value": {
+        "keys": [
+          "firstKeptEntryId",
+          "messagesToSummarize",
+          "turnPrefixMessages",
+          "isSplitTurn",
+          "tokensBefore",
+          "previousSummary",
+          "fileOps",
+          "settings"
+        ],
+        "first": "e2",
+        "messages": [
+          {
+            "role": "custom",
+            "customType": "x",
+            "content": "custom",
+            "display": true,
+            "timestamp": 0
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "timestamp": 0
+          }
+        ],
+        "prefix": [],
+        "split": false,
+        "tokens": 5,
+        "files": {
+          "read": [],
+          "written": [],
+          "edited": []
+        },
+        "settingsIdentity": true
+      }
+    },
+    {
+      "name": "settings-getter-order-and-reference",
+      "value": {
+        "result": {
+          "keys": [
+            "firstKeptEntryId",
+            "messagesToSummarize",
+            "turnPrefixMessages",
+            "isSplitTurn",
+            "tokensBefore",
+            "previousSummary",
+            "fileOps",
+            "settings"
+          ],
+          "first": "e1",
+          "messages": [
+            {
+              "role": "user",
+              "content": "old",
+              "timestamp": 0
+            }
+          ],
+          "prefix": [],
+          "split": false,
+          "tokens": 2,
+          "files": {
+            "read": [],
+            "written": [],
+            "edited": []
+          },
+          "settingsIdentity": true
+        },
+        "log": [
+          "keep"
+        ]
+      }
+    },
+    {
+      "name": "declared-callbacks-retain-identity",
+      "value": {
+        "result": {
+          "keys": [
+            "firstKeptEntryId",
+            "messagesToSummarize",
+            "turnPrefixMessages",
+            "isSplitTurn",
+            "tokensBefore",
+            "previousSummary",
+            "fileOps",
+            "settings"
+          ],
+          "first": "e2",
+          "messages": [
+            {
+              "role": "user",
+              "content": "old",
+              "timestamp": 0
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "answer"
+                }
+              ],
+              "timestamp": 0
+            }
+          ],
+          "prefix": [],
+          "split": false,
+          "tokens": 4,
+          "files": {
+            "read": [],
+            "written": [],
+            "edited": []
+          },
+          "settingsIdentity": true
+        },
+        "log": [
+          [
+            "isCutPointMessage",
+            1,
+            true,
+            true
+          ],
+          [
+            "isCutPointMessage",
+            1,
+            true,
+            true
+          ],
+          [
+            "isCutPointMessage",
+            1,
+            true,
+            true
+          ],
+          [
+            "isTurnStartMessage",
+            1,
+            true,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "flatmap-declared-helper-identity",
+      "value": {
+        "first": {
+          "keys": [
+            "firstKeptEntryId",
+            "messagesToSummarize",
+            "turnPrefixMessages",
+            "isSplitTurn",
+            "tokensBefore",
+            "previousSummary",
+            "fileOps",
+            "settings"
+          ],
+          "first": "e1",
+          "messages": [
+            {
+              "role": "user",
+              "content": "old",
+              "timestamp": 0
+            }
+          ],
+          "prefix": [],
+          "split": false,
+          "tokens": 2,
+          "files": {
+            "read": [],
+            "written": [],
+            "edited": []
+          },
+          "settingsIdentity": true
+        },
+        "second": {
+          "keys": [
+            "firstKeptEntryId",
+            "messagesToSummarize",
+            "turnPrefixMessages",
+            "isSplitTurn",
+            "tokensBefore",
+            "previousSummary",
+            "fileOps",
+            "settings"
+          ],
+          "first": "e1",
+          "messages": [
+            {
+              "role": "user",
+              "content": "earlier",
+              "timestamp": 0
+            }
+          ],
+          "prefix": [],
+          "split": false,
+          "tokens": 4,
+          "files": {
+            "read": [],
+            "written": [],
+            "edited": []
+          },
+          "settingsIdentity": true
+        },
+        "log": [
+          [
+            "getMessagesFromProjectedEntryForCompaction",
+            1,
+            true,
+            true
+          ],
+          [
+            "getMessagesFromProjectedEntryForCompaction",
+            1,
+            true,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "callback-getter-error-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "ordinary-constructor-result",
+      "value": {
+        "first": "e1",
+        "settingsIdentity": true,
+        "instance": false
+      }
+    }
+  ]
+}
