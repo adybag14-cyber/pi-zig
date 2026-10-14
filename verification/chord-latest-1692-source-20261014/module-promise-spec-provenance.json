@@ -13,5 +13,12 @@
   "native_qualified": false,
   "source54_qualified": false,
   "classifier_changed": false,
-  "public_activation": false
+  "public_activation": false,
+  "module_host_gpa_head": "afdd16cc8128f3dcdac4336bf0a2b108e6c9469a",
+  "module_host_gpa_indices": 21,
+  "module_host_gpa_qualified": true,
+  "native_c_heap_exhaustive_qualified": false,
+  "direct_vm_heap_limit_cases": 514,
+  "direct_vm_heap_limit_qualified": false,
+  "resource_owned_capability_qualified": false
 }
