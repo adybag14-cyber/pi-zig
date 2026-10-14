@@ -1,0 +1,24 @@
+{
+  "pid": 2698,
+  "executable": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node",
+  "executable_sha256": "E237A2839D0CBDC9A9A2ADDA1A184AFC0F5B20306FFBE923AF5686550472D8A8",
+  "argv": [
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-multi-regex-original-1692bba-20261014/capture-multi-regex.mjs",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-multi-regex-original-result/multi-regex-second-output.json",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-multi-regex-original-1692bba-20261014/sdk-highlight-multi-regex-1692.input.txt"
+  ],
+  "live_command_line": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs /home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-multi-regex-original-1692bba-20261014/capture-multi-regex.mjs /home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-multi-regex-original-result/multi-regex-second-output.json /home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-multi-regex-original-1692bba-20261014/sdk-highlight-multi-regex-1692.input.txt",
+  "created_utc": "2026-10-14T16:43:41.1595214Z",
+  "launched_utc": "2026-10-14T16:43:41.1701238+00:00",
+  "working_directory": "/home/runner/work/pi-zig/pi-zig/.reference-source",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T16:43:45.1635685+00:00"
+}

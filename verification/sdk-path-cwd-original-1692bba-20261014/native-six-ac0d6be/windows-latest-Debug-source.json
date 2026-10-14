@@ -1,0 +1,16 @@
+{
+  "head": "ac0d6be16993a7097cde6df6117f21b5c7ea9d0e",
+  "tree": "1971bfea8d49dbd1c714017740b57498cc9710a3",
+  "os": "windows-latest",
+  "mode": "Debug",
+  "allocation_shards": 8,
+  "source_count": 4879,
+  "tools_count": 19543,
+  "source_cases": 40,
+  "source_fixture_platform": "currentOS_actual_original_capture",
+  "genuine_posix_source_replay": "actual40_doublecaptures_Windows_Linux_macOS_run38579832214",
+  "public_export_metadata_qualified": false,
+  "full_Node_path_API_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "public_activation": false
+}

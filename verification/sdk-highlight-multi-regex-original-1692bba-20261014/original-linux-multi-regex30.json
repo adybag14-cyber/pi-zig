@@ -1,0 +1,1442 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "586a9a1b2b05ee8ba6ff2120e1cf378e18a46df982de70ff79e6ad96657a61bf",
+  "platform": "linux",
+  "arch": "x64",
+  "cases": 30,
+  "instances": 30,
+  "node": {
+    "version": "v24.14.0",
+    "path": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node",
+    "sha256": "e237a2839d0cbdc9a9a2adda1a184afc0f5b20306ffbe923af5686550472d8a8",
+    "execArgv": [
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs"
+    ]
+  },
+  "before": [
+    {
+      "name": "source",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 26280,
+      "drift": 0
+    },
+    {
+      "name": "node-tools",
+      "count": 4560,
+      "drift": 0
+    },
+    {
+      "name": "candidate",
+      "count": 4909,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "name": "source",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 26280,
+      "drift": 0
+    },
+    {
+      "name": "node-tools",
+      "count": 4560,
+      "drift": 0
+    },
+    {
+      "name": "candidate",
+      "count": 4909,
+      "drift": 0
+    }
+  ],
+  "scope": "Original actual highlight.js10.7.3 MultiRegex constructors from real compiled caller grammars; caller input unchanged, no Source body rewrite; private algorithms only, no public class metadata certificate",
+  "rows": [
+    {
+      "name": "empty compiler",
+      "value": {
+        "before": {
+          "owner": [
+            {
+              "key": "matchIndexes",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true
+            },
+            {
+              "key": "regexes",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true
+            },
+            {
+              "key": "matchAt",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true
+            },
+            {
+              "key": "position",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true
+            }
+          ],
+          "prototype": [
+            {
+              "key": "constructor",
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "MultiRegex",
+              "length": 0,
+              "ownPrototype": true
+            },
+            {
+              "key": "addRule",
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "addRule",
+              "length": 2,
+              "ownPrototype": false
+            },
+            {
+              "key": "compile",
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "compile",
+              "length": 0,
+              "ownPrototype": false
+            },
+            {
+              "key": "exec",
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "exec",
+              "length": 1,
+              "ownPrototype": false
+            }
+          ],
+          "constructor": [
+            {
+              "key": "length",
+              "enumerable": false,
+              "configurable": true,
+              "writable": false
+            },
+            {
+              "key": "name",
+              "enumerable": false,
+              "configurable": true,
+              "writable": false
+            },
+            {
+              "key": "prototype",
+              "enumerable": false,
+              "configurable": false,
+              "writable": false
+            }
+          ]
+        },
+        "ownerAfter": [
+          {
+            "key": "matchIndexes",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "key": "regexes",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "key": "matchAt",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "key": "position",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "key": "exec",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "name": "",
+            "length": 0,
+            "ownPrototype": false
+          },
+          {
+            "key": "matcherRe",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "key": "lastIndex",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          }
+        ],
+        "exec": {
+          "name": "",
+          "length": 0,
+          "ownPrototype": false
+        },
+        "state": {
+          "position": 0,
+          "matchAt": 1,
+          "indices": [],
+          "expressions": [],
+          "compiled": {
+            "source": "null",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": null
+      }
+    },
+    {
+      "name": "single",
+      "value": {
+        "state": {
+          "position": 1,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/foo/"
+            }
+          ],
+          "compiled": {
+            "source": "(foo)",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            "foo"
+          ],
+          "index": 2,
+          "input": "a foo z",
+          "keys": [
+            "0",
+            "index",
+            "input",
+            "groups",
+            "type",
+            "label",
+            "position"
+          ],
+          "metadata": {
+            "type": "begin",
+            "label": "one",
+            "position": 0
+          }
+        },
+        "after": {
+          "position": 1,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/foo/"
+            }
+          ],
+          "compiled": {
+            "source": "(foo)",
+            "flags": "gm",
+            "lastIndex": 5
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "compile repeated regexes getter",
+      "value": {
+        "log": [
+          "regexes",
+          "regexes"
+        ],
+        "match": null
+      }
+    },
+    {
+      "name": "case insensitive",
+      "value": {
+        "state": {
+          "position": 1,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/foo/"
+            }
+          ],
+          "compiled": {
+            "source": "(foo)",
+            "flags": "gim",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            "FOO"
+          ],
+          "index": 0,
+          "input": "FOO",
+          "keys": [
+            "0",
+            "index",
+            "input",
+            "groups",
+            "type",
+            "position"
+          ],
+          "metadata": {
+            "type": "begin",
+            "position": 0
+          }
+        },
+        "after": {
+          "position": 1,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/foo/"
+            }
+          ],
+          "compiled": {
+            "source": "(foo)",
+            "flags": "gim",
+            "lastIndex": 3
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "multiline anchors",
+      "value": {
+        "state": {
+          "position": 1,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/^foo$/"
+            }
+          ],
+          "compiled": {
+            "source": "(^foo$)",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            "foo"
+          ],
+          "index": 7,
+          "input": "before\nfoo\nafter",
+          "keys": [
+            "0",
+            "index",
+            "input",
+            "groups",
+            "type",
+            "position"
+          ],
+          "metadata": {
+            "type": "begin",
+            "position": 0
+          }
+        },
+        "after": {
+          "position": 1,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/^foo$/"
+            }
+          ],
+          "compiled": {
+            "source": "(^foo$)",
+            "flags": "gm",
+            "lastIndex": 10
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "selection tie first rule",
+      "value": {
+        "state": {
+          "position": 2,
+          "matchAt": 3,
+          "indices": [
+            "1",
+            "2"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/foo/"
+            },
+            {
+              "position": 1,
+              "expression": "/fo./"
+            }
+          ],
+          "compiled": {
+            "source": "(foo)|(fo.)",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            "foo",
+            {
+              "undefined": true
+            }
+          ],
+          "index": 0,
+          "input": "foo",
+          "keys": [
+            "0",
+            "1",
+            "index",
+            "input",
+            "groups",
+            "label",
+            "position"
+          ],
+          "metadata": {
+            "label": "first",
+            "position": 0
+          }
+        },
+        "after": {
+          "position": 2,
+          "matchAt": 3,
+          "indices": [
+            "1",
+            "2"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/foo/"
+            },
+            {
+              "position": 1,
+              "expression": "/fo./"
+            }
+          ],
+          "compiled": {
+            "source": "(foo)|(fo.)",
+            "flags": "gm",
+            "lastIndex": 3
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "selection earliest index",
+      "value": {
+        "state": {
+          "position": 2,
+          "matchAt": 3,
+          "indices": [
+            "1",
+            "2"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/z/"
+            },
+            {
+              "position": 1,
+              "expression": "/a/"
+            }
+          ],
+          "compiled": {
+            "source": "(z)|(a)",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            "a"
+          ],
+          "index": 0,
+          "input": "abz",
+          "keys": [
+            "0",
+            "index",
+            "input",
+            "groups",
+            "label",
+            "position"
+          ],
+          "metadata": {
+            "label": "earlier",
+            "position": 1
+          }
+        },
+        "after": {
+          "position": 2,
+          "matchAt": 3,
+          "indices": [
+            "1",
+            "2"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/z/"
+            },
+            {
+              "position": 1,
+              "expression": "/a/"
+            }
+          ],
+          "compiled": {
+            "source": "(z)|(a)",
+            "flags": "gm",
+            "lastIndex": 1
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "nested captures and second rule",
+      "value": {
+        "state": {
+          "position": 2,
+          "matchAt": 7,
+          "indices": [
+            "1",
+            "4"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/(a(b))c/"
+            },
+            {
+              "position": 1,
+              "expression": "/(x)(y)/"
+            }
+          ],
+          "compiled": {
+            "source": "((a(b))c)|((x)(y))",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            "xy",
+            "x",
+            "y"
+          ],
+          "index": 0,
+          "input": "xy",
+          "keys": [
+            "0",
+            "1",
+            "2",
+            "index",
+            "input",
+            "groups",
+            "label",
+            "position"
+          ],
+          "metadata": {
+            "label": "second",
+            "position": 1
+          }
+        },
+        "after": {
+          "position": 2,
+          "matchAt": 7,
+          "indices": [
+            "1",
+            "4"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/(a(b))c/"
+            },
+            {
+              "position": 1,
+              "expression": "/(x)(y)/"
+            }
+          ],
+          "compiled": {
+            "source": "((a(b))c)|((x)(y))",
+            "flags": "gm",
+            "lastIndex": 2
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "backreference first",
+      "value": {
+        "state": {
+          "position": 1,
+          "matchAt": 3,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/(a)\\1/"
+            }
+          ],
+          "compiled": {
+            "source": "((a)\\2)",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            "aa",
+            "a"
+          ],
+          "index": 0,
+          "input": "aa",
+          "keys": [
+            "0",
+            "1",
+            "index",
+            "input",
+            "groups",
+            "label",
+            "position"
+          ],
+          "metadata": {
+            "label": "pair",
+            "position": 0
+          }
+        },
+        "after": {
+          "position": 1,
+          "matchAt": 3,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/(a)\\1/"
+            }
+          ],
+          "compiled": {
+            "source": "((a)\\2)",
+            "flags": "gm",
+            "lastIndex": 2
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "backreference offset second",
+      "value": {
+        "state": {
+          "position": 2,
+          "matchAt": 6,
+          "indices": [
+            "1",
+            "3"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/(x)/"
+            },
+            {
+              "position": 1,
+              "expression": "/(a)(b)\\2\\1/"
+            }
+          ],
+          "compiled": {
+            "source": "((x))|((a)(b)\\5\\4)",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            "abba",
+            "a",
+            "b"
+          ],
+          "index": 0,
+          "input": "abba",
+          "keys": [
+            "0",
+            "1",
+            "2",
+            "index",
+            "input",
+            "groups",
+            "label",
+            "position"
+          ],
+          "metadata": {
+            "label": "second",
+            "position": 1
+          }
+        },
+        "after": {
+          "position": 2,
+          "matchAt": 6,
+          "indices": [
+            "1",
+            "3"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/(x)/"
+            },
+            {
+              "position": 1,
+              "expression": "/(a)(b)\\2\\1/"
+            }
+          ],
+          "compiled": {
+            "source": "((x))|((a)(b)\\5\\4)",
+            "flags": "gm",
+            "lastIndex": 4
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "noncapture lookahead",
+      "value": {
+        "state": {
+          "position": 1,
+          "matchAt": 4,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/(?:a)(?=(b))(b)/"
+            }
+          ],
+          "compiled": {
+            "source": "((?:a)(?=(b))(b))",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            "ab",
+            "b",
+            "b"
+          ],
+          "index": 0,
+          "input": "ab",
+          "keys": [
+            "0",
+            "1",
+            "2",
+            "index",
+            "input",
+            "groups",
+            "type",
+            "position"
+          ],
+          "metadata": {
+            "type": "begin",
+            "position": 0
+          }
+        },
+        "after": {
+          "position": 1,
+          "matchAt": 4,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/(?:a)(?=(b))(b)/"
+            }
+          ],
+          "compiled": {
+            "source": "((?:a)(?=(b))(b))",
+            "flags": "gm",
+            "lastIndex": 2
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "parentheses inside character class",
+      "value": {
+        "state": {
+          "position": 1,
+          "matchAt": 3,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/[(](a)[)]\\1/"
+            }
+          ],
+          "compiled": {
+            "source": "([(](a)[)]\\2)",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            "(a)a",
+            "a"
+          ],
+          "index": 0,
+          "input": "(a)a",
+          "keys": [
+            "0",
+            "1",
+            "index",
+            "input",
+            "groups",
+            "type",
+            "position"
+          ],
+          "metadata": {
+            "type": "begin",
+            "position": 0
+          }
+        },
+        "after": {
+          "position": 1,
+          "matchAt": 3,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/[(](a)[)]\\1/"
+            }
+          ],
+          "compiled": {
+            "source": "([(](a)[)]\\2)",
+            "flags": "gm",
+            "lastIndex": 4
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "escaped parentheses",
+      "value": {
+        "state": {
+          "position": 1,
+          "matchAt": 3,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/\\((a)\\)\\1/"
+            }
+          ],
+          "compiled": {
+            "source": "(\\((a)\\)\\2)",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            "(a)a",
+            "a"
+          ],
+          "index": 0,
+          "input": "(a)a",
+          "keys": [
+            "0",
+            "1",
+            "index",
+            "input",
+            "groups",
+            "type",
+            "position"
+          ],
+          "metadata": {
+            "type": "begin",
+            "position": 0
+          }
+        },
+        "after": {
+          "position": 1,
+          "matchAt": 3,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/\\((a)\\)\\1/"
+            }
+          ],
+          "compiled": {
+            "source": "(\\((a)\\)\\2)",
+            "flags": "gm",
+            "lastIndex": 4
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "last index skips earlier",
+      "value": {
+        "match": {
+          "values": [
+            "a"
+          ],
+          "index": 2,
+          "input": "a a",
+          "keys": [
+            "0",
+            "index",
+            "input",
+            "groups",
+            "type",
+            "position"
+          ],
+          "metadata": {
+            "type": "begin",
+            "position": 0
+          }
+        },
+        "state": {
+          "position": 1,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/a/"
+            }
+          ],
+          "compiled": {
+            "source": "(a)",
+            "flags": "gm",
+            "lastIndex": 3
+          },
+          "lastIndex": 2
+        }
+      }
+    },
+    {
+      "name": "zero length match",
+      "value": {
+        "state": {
+          "position": 1,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/(?=a)/"
+            }
+          ],
+          "compiled": {
+            "source": "((?=a))",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        },
+        "match": {
+          "values": [
+            ""
+          ],
+          "index": 0,
+          "input": "a",
+          "keys": [
+            "0",
+            "index",
+            "input",
+            "groups",
+            "type",
+            "position"
+          ],
+          "metadata": {
+            "type": "begin",
+            "position": 0
+          }
+        },
+        "after": {
+          "position": 1,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/(?=a)/"
+            }
+          ],
+          "compiled": {
+            "source": "((?=a))",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "empty compile remains sticky",
+      "value": {
+        "match": null,
+        "state": {
+          "position": 1,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/a/"
+            }
+          ],
+          "compiled": {
+            "source": "(a)",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "option identity mutation",
+      "value": {
+        "same": true,
+        "match": {
+          "values": [
+            "a"
+          ],
+          "index": 0,
+          "input": "a",
+          "keys": [
+            "0",
+            "index",
+            "input",
+            "groups",
+            "label",
+            "position"
+          ],
+          "metadata": {
+            "label": "after",
+            "position": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "position string coercion",
+      "value": {
+        "log": [
+          "position.valueOf",
+          [
+            "opts.position",
+            7
+          ]
+        ],
+        "state": {
+          "position": 8,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "expression": "/a/"
+            }
+          ],
+          "compiled": null
+        }
+      }
+    },
+    {
+      "name": "position bigint",
+      "value": {
+        "state": {
+          "position": "8n",
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": "7n",
+              "expression": "/a/"
+            }
+          ],
+          "compiled": null
+        },
+        "assigned": "7n"
+      }
+    },
+    {
+      "name": "matchAt string addition",
+      "value": {
+        "position": 1,
+        "matchAt": "12",
+        "indices": [
+          "1"
+        ],
+        "expressions": [
+          {
+            "position": 0,
+            "expression": "/(a)/"
+          }
+        ],
+        "compiled": null
+      }
+    },
+    {
+      "name": "matchAt bigint mixed addition",
+      "value": {
+        "name": "TypeError",
+        "state": {
+          "position": 1,
+          "matchAt": "1n",
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/a/"
+            }
+          ],
+          "compiled": null
+        }
+      }
+    },
+    {
+      "name": "option position setter error preserves increment",
+      "value": {
+        "same": true,
+        "state": {
+          "position": 1,
+          "matchAt": 1,
+          "indices": [],
+          "expressions": [],
+          "compiled": null
+        }
+      }
+    },
+    {
+      "name": "expression toString error preserves inserted rule",
+      "value": {
+        "same": true,
+        "position": 1,
+        "matchAt": 1,
+        "indices": [
+          "1"
+        ],
+        "rules": 1
+      }
+    },
+    {
+      "name": "expression source getter and toString order",
+      "value": {
+        "log": [
+          "toString",
+          "source"
+        ],
+        "match": {
+          "values": [
+            "a",
+            "a"
+          ],
+          "index": 0,
+          "input": "a",
+          "keys": [
+            "0",
+            "1",
+            "index",
+            "input",
+            "groups",
+            "type",
+            "position"
+          ],
+          "metadata": {
+            "type": "begin",
+            "position": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "compile live RegExp constructor",
+      "value": {
+        "log": [
+          [
+            "(a)",
+            "mg"
+          ]
+        ],
+        "state": {
+          "position": 1,
+          "matchAt": 2,
+          "indices": [
+            "1"
+          ],
+          "expressions": [
+            {
+              "position": 0,
+              "expression": "/a/"
+            }
+          ],
+          "compiled": {
+            "source": "(a)",
+            "flags": "gm",
+            "lastIndex": 0
+          },
+          "lastIndex": 0
+        }
+      }
+    },
+    {
+      "name": "exec live Object assign",
+      "value": {
+        "match": {
+          "values": [
+            "a"
+          ],
+          "index": 0,
+          "input": "a",
+          "keys": [
+            "0",
+            "index",
+            "input",
+            "groups",
+            "label",
+            "position"
+          ],
+          "metadata": {
+            "label": "one",
+            "position": 0
+          }
+        },
+        "log": [
+          [
+            [
+              "label",
+              "position"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "metadata own getters copied",
+      "value": {
+        "match": {
+          "values": [
+            "a"
+          ],
+          "index": 0,
+          "input": "a",
+          "keys": [
+            "0",
+            "index",
+            "input",
+            "groups",
+            "label",
+            "position"
+          ],
+          "metadata": {
+            "label": "value",
+            "position": 0
+          }
+        },
+        "log": [
+          "label"
+        ]
+      }
+    },
+    {
+      "name": "custom matcher receives index and text",
+      "value": {
+        "match": {
+          "values": [
+            "capture"
+          ],
+          "index": 4,
+          "input": "input",
+          "keys": [
+            "0",
+            "index",
+            "input",
+            "label"
+          ],
+          "metadata": {
+            "label": "custom"
+          }
+        },
+        "log": [
+          [
+            "lastIndex",
+            4
+          ],
+          [
+            "exec",
+            "input"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "invalid regular expression",
+      "value": {
+        "name": "SyntaxError",
+        "rules": 1,
+        "position": 1,
+        "matchAt": 1
+      }
+    },
+    {
+      "name": "inherited metadata excluded",
+      "value": {
+        "match": {
+          "values": [
+            "a"
+          ],
+          "index": 0,
+          "input": "a",
+          "keys": [
+            "0",
+            "index",
+            "input",
+            "groups",
+            "own",
+            "position"
+          ],
+          "metadata": {
+            "own": "yes",
+            "position": 0
+          }
+        },
+        "hasInherited": false
+      }
+    }
+  ],
+  "observedModules": [
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs",
+      "sha256": "80dabdaffc67e61dc48a04877b27e306573f26503869a722a83c61f9e4b4e364"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-multi-regex-original-1692bba-20261014/capture-multi-regex.mjs",
+      "sha256": "3ebb3fbf4371e0093ccca62f49e4431aafe5d5400cc9b135fdfe94fb785cb48a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/core.js",
+      "sha256": "c4d10bcc7cb543c36198d34d2ecfcee9f8fbdd82ec1531daa3962c86a6c95468"
+    }
+  ]
+}

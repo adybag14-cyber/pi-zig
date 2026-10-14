@@ -1,0 +1,20 @@
+{
+  "head": "ac0d6be16993a7097cde6df6117f21b5c7ea9d0e",
+  "os": "ubuntu-latest",
+  "mode": "Debug",
+  "status": "passed",
+  "source_cases": 40,
+  "source_fixture_platform": "currentOS_actual_original_capture",
+  "genuine_posix_source_replay": "actual40_doublecaptures_Windows_Linux_macOS_run38579832214",
+  "public_export_metadata_qualified": false,
+  "full_Node_path_API_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "tests_each": 3,
+  "shards": 8,
+  "baseline": 832,
+  "completed_indices": 832,
+  "missing": 0,
+  "duplicates": 0,
+  "public_activation": false,
+  "completed_utc": "2026-10-14T15:40:13.4936779+00:00"
+}
