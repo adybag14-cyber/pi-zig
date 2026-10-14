@@ -1,0 +1,14 @@
+{
+  "head": "9efabf6816231246be2153c89af0571144fbc8c1",
+  "source": 5242,
+  "source_drift": 0,
+  "source_inventory_drift": 0,
+  "compiler": 19546,
+  "compiler_drift": 0,
+  "compiler_inventory_drift": 0,
+  "original_source": 1955,
+  "original_source_drift": 0,
+  "control_inputs": 4,
+  "control_drift": 0,
+  "completed_utc": "2026-10-14T17:48:41.4223215+00:00"
+}

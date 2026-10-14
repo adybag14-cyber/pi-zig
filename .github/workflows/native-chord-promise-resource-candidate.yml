@@ -1,0 +1,103 @@
+name: Private Chord promise Resource4 guarded4 and targeted VM514 diagnostic
+on:
+  push:
+    branches: [work/chord-module-promise-diagnostic-1692-20261014]
+  workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Full reviewed private diagnostic commit SHA
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: native-chord-promise-resource-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        mode: [Debug, ReleaseSafe]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact source original Source54 closure guarded4 and full compiler
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_sha || github.sha }}
+          EVENT_HEAD: ${{ github.sha }}
+        run: |
+          if ($env:EXPECTED_HEAD -cne $env:EVENT_HEAD) { throw 'Reviewed event head mismatch' }
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordPromiseResourceCandidate.ps1 -Phase Freeze -Mode '${{ matrix.mode }}' -ExpectedHead $env:EXPECTED_HEAD -Platform '${{ matrix.os }}'
+      - name: Compile two focused native targets with separate1320s owned deadline
+        shell: pwsh
+        timeout-minutes: 23
+        run: |
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordPromiseResourceCandidate.ps1 -Phase Compile -Mode '${{ matrix.mode }}' -ExpectedHead '${{ inputs.expected_sha || github.sha }}' -Platform '${{ matrix.os }}'
+      - name: Run module7 targeted514 and Resource5 full host GPA with separate300s original guards
+        shell: pwsh
+        timeout-minutes: 11
+        run: |
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordPromiseResourceCandidate.ps1 -Phase Run -Mode '${{ matrix.mode }}' -ExpectedHead '${{ inputs.expected_sha || github.sha }}' -Platform '${{ matrix.os }}'
+      - name: Prove complete source vendor and compiler bytes and inventories unchanged
+        if: always()
+        shell: pwsh
+        run: |
+          & verification/chord-latest-1692-source-20261014/Invoke-ChordPromiseResourceCandidate.ps1 -Phase Post -Mode '${{ matrix.mode }}' -ExpectedHead '${{ inputs.expected_sha || github.sha }}' -Platform '${{ matrix.os }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-chord-promise-resource-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          include-hidden-files: true
+          path: verification/native-chord-promise-resource-candidate/**
+  coverage:
+    needs: platform
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ inputs.expected_sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: native-chord-promise-resource-*-${{ github.sha }}
+          path: chord-promise-results
+      - name: Require all six exact-head focused terminal profiles and full posthash
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_sha || github.sha }}
+          MATRIX_STATUS: ${{ needs.platform.result }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:MATRIX_STATUS -cne 'success') { throw 'A focused diagnostic profile did not pass' }
+          $results = @()
+          $sourceCount = $null
+          foreach ($os in @('windows-latest','ubuntu-latest','macos-latest')) {
+            foreach ($mode in @('Debug','ReleaseSafe')) {
+              $receipt = "chord-promise-results/native-chord-promise-resource-$os-$mode-$env:EXPECTED_HEAD"
+              $source = Get-Content "$receipt/source.json" -Raw | ConvertFrom-Json
+              if ($null -eq $sourceCount) { $sourceCount = $source.source_count } elseif ($sourceCount -ne $source.source_count) { throw 'Platform source inventories differ' }
+              $json = & verification/chord-latest-1692-source-20261014/Invoke-ChordPromiseResourceCandidate.ps1 -Phase Validate -Mode $mode -ExpectedHead $env:EXPECTED_HEAD -Platform $os -Receipt $receipt
+              $results += @($json | ConvertFrom-Json)
+            }
+          }
+          if ($results.Count -ne 6) { throw 'Missing focused profile' }
+          $results | ConvertTo-Json -Depth 10 | Set-Content chord-promise-results/qualification.json -Encoding utf8NoBOM
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-chord-promise-resource-coverage-${{ github.sha }}
+          retention-days: 14
+          path: chord-promise-results/qualification.json

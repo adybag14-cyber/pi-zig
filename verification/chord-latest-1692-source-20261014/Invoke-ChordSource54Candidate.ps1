@@ -1,7 +1,7 @@
-param([ValidateSet('Freeze','Compile','Run','Post')][string]$Phase,[ValidateSet('Debug','ReleaseSafe')][string]$Mode,[Parameter(Mandatory)][string]$ExpectedHead,[string]$Platform=$env:ImageOS)
+param([ValidateSet('Freeze','Compile','Run','Post')][string]$Phase,[ValidateSet('Debug','ReleaseSafe')][string]$Mode,[Parameter(Mandatory)][string]$ExpectedHead,[string]$Platform=$env:ImageOS,[string]$ReceiptPath='verification/native-chord-source54-candidate')
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Assert-ChordComposedPartitions.ps1')
-$candidateReceipt='verification/native-chord-source54-candidate'
+$candidateReceipt=$ReceiptPath
 function Hash-Rows($paths) { @($paths|Sort-Object|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash}}) }
 function Check-Rows($rows) { @($rows|Where-Object{!(Test-Path -LiteralPath $_.path -PathType Leaf) -or (Get-FileHash -LiteralPath $_.path -Algorithm SHA256).Hash -cne $_.sha256}) }
 function Owned-Process([string]$Name,[string[]]$Arguments,[int]$Deadline) {
