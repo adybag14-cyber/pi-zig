@@ -37,6 +37,11 @@ pub fn escapeHtml(scope: *Scope, value: c.JSValue) !c.JSValue {
     return result;
 }
 fn invoke(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, kind: Kind, captured: c.JSValue) !c.JSValue {
+    return switch (kind) {
+        inline else => |selected| invokeKind(engine, receiver, args, selected, captured),
+    };
+}
+fn invokeKind(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, comptime kind: Kind, captured: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const first = arg(args, 0);

@@ -48,6 +48,11 @@ fn expand(scope: *Scope, state: c.JSValue, mode: c.JSValue) !c.JSValue {
     return mode;
 }
 fn invoke(engine: *em.Engine, state: c.JSValue, owner: c.JSValue, kind: Callback, first: c.JSValue, second: c.JSValue) !c.JSValue {
+    return switch (kind) {
+        inline else => |selected| invokeKind(engine, state, owner, selected, first, second),
+    };
+}
+fn invokeKind(engine: *em.Engine, state: c.JSValue, owner: c.JSValue, comptime kind: Callback, first: c.JSValue, second: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const result = switch (kind) {
@@ -99,7 +104,16 @@ fn remove(scope: *Scope, object: c.JSValue, name: [*:0]const u8) !void {
     if (c.JS_DeleteProperty(scope.engine.context, object, atom, c.JS_PROP_THROW) < 0) return js.capture(scope.engine);
 }
 fn compileMode(scope: *Scope, state: c.JSValue, mode: c.JSValue, parent: c.JSValue) !c.JSValue {
-    if (scope.truthy(try scope.get(mode, "isCompiled"))) return mode;
+    if (try prepareMode(scope, state, mode, parent)) return mode;
+    // The original Scope retains every phase's roots until this invocation
+    // returns. Keep the argv vector alive across recursive children as before.
+    const arguments = try flattenContains(scope, state, mode);
+    defer scope.engine.gpa.free(arguments);
+    try compileChildren(scope, state, mode, parent);
+    return finishMatcher(scope, state, mode);
+}
+fn prepareMode(scope: *Scope, state: c.JSValue, mode: c.JSValue, parent: c.JSValue) !bool {
+    if (scope.truthy(try scope.get(mode, "isCompiled"))) return true;
     const early = try scope.array();
     try scope.index(early, 0, try scope.get(state, "compileMatch"));
     try runExtensions(scope, early, mode, parent);
@@ -124,7 +138,10 @@ fn compileMode(scope: *Scope, state: c.JSValue, mode: c.JSValue, parent: c.JSVal
         const insensitive = try scope.get(try scope.get(state, "language"), "case_insensitive");
         try scope.set(mode, "keywords", try scope.own(try @import("native_highlight_keywords.zig").compile(scope.engine, keywords, insensitive, c.pi_js_undefined())));
     }
-    if (scope.truthy(try scope.get(mode, "lexemes")) and scope.truthy(pattern)) return sourceError(scope, "ERR: Prefer `keywords.$pattern` to `mode.lexemes`, BOTH are not allowed. (see mode reference) ");
+    if (scope.truthy(try scope.get(mode, "lexemes")) and scope.truthy(pattern)) {
+        _ = try sourceError(scope, "ERR: Prefer `keywords.$pattern` to `mode.lexemes`, BOTH are not allowed. (see mode reference) ");
+        unreachable;
+    }
     if (!scope.truthy(pattern)) pattern = try scope.get(mode, "lexemes");
     if (!scope.truthy(pattern)) {
         var args = [_]c.JSValue{try scope.text("\\w+")};
@@ -147,6 +164,9 @@ fn compileMode(scope: *Scope, state: c.JSValue, mode: c.JSValue, parent: c.JSVal
     }
     if (scope.truthy(try scope.get(mode, "illegal"))) try scope.set(mode, "illegalRe", try langRe(scope, state, try scope.get(mode, "illegal"), false));
     if (!scope.truthy(try scope.get(mode, "contains"))) try scope.set(mode, "contains", try scope.array());
+    return false;
+}
+fn flattenContains(scope: *Scope, state: c.JSValue, mode: c.JSValue) ![]c.JSValue {
     const empty = try scope.array();
     const concat = try scope.get(empty, "concat");
     const contains = try scope.get(mode, "contains");
@@ -155,12 +175,17 @@ fn compileMode(scope: *Scope, state: c.JSValue, mode: c.JSValue, parent: c.JSVal
     const spread = try scope.own(try @import("native_sdk_transcript_replay.zig").arraySpread(scope.engine, expanded, null));
     const count = try sdk.length(scope.engine, spread);
     const arguments = try scope.engine.gpa.alloc(c.JSValue, count);
-    defer scope.engine.gpa.free(arguments);
+    errdefer scope.engine.gpa.free(arguments);
     for (arguments, 0..) |*value, index| value.* = try scope.own(try scope.engine.checked(c.JS_GetPropertyUint32(scope.engine.context, spread, @intCast(index))));
     try scope.set(mode, "contains", try scope.call(concat, empty, arguments));
+    return arguments;
+}
+fn compileChildren(scope: *Scope, state: c.JSValue, mode: c.JSValue, parent: c.JSValue) !void {
     const children = try scope.get(mode, "contains");
     _ = try scope.invoke(children, "forEach", &.{try function(scope, state, mode, .child)});
     if (scope.truthy(try scope.get(mode, "starts"))) _ = try scope.call(try scope.get(state, "compile"), c.pi_js_undefined(), &.{ try scope.get(mode, "starts"), parent });
+}
+fn finishMatcher(scope: *Scope, state: c.JSValue, mode: c.JSValue) !c.JSValue {
     const constructor = try scope.get(state, "matcherConstructor");
     const matcher = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, 0, null)));
     const terms = try scope.get(mode, "contains");
