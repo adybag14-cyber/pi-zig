@@ -61,6 +61,7 @@ pub const Engine = struct {
     last_error: ?[]u8 = null,
     captured_exception: ?c.JSValue = null,
     native_exception_diagnostics_suppressed: usize = 0,
+    native_json_diagnostic_depth: usize = 0,
     // Installed only by the interactive application's owned worker. Public
     // promise state/result queries must never consume a guest rejection.
     native_application_fatal: ?*anyopaque = null,
@@ -266,6 +267,8 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        _ = c.JS_PiSetJSONParseErrorHook(self.context, null);
+        self.native_json_diagnostic_depth = 0;
         if (self.native_ai_http_cleanup) |cleanup| cleanup(self);
         if (self.native_codemode_deinit) |cleanup| cleanup(self);
         if (self.native_command_metadata_deinit) |cleanup| cleanup(self);

@@ -82,3 +82,5 @@ verification/ai-compat-env-crypto-b45-20261014/** whitespace=blank-at-eol,-blank
 verification/ai-provider-helpers-b45-20261014/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/ai-http-wire-b45-20261014/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/ai-http-wire-b45-20261014/ai-http-owner-hooks-unqualified-20261014.patch whitespace=-blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/ai-json-final-b06-20261014/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/ai-json-final-b06-20261014/*.patch whitespace=-blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

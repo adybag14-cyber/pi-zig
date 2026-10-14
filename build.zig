@@ -1589,6 +1589,12 @@ pub fn build(b: *std.Build) void {
     ai_http_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-http", "Validate owned raw HTTP/SSE transport cancellation teardown and original wire fidelity").dependOn(&b.addRunArtifact(ai_http_tests).step);
     b.step("build-native-ai-http", "Compile native raw transport and narrow owner hooks before runtime").dependOn(&ai_http_tests.step);
+    const ai_json_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_json_parse_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI JSON"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ai_json_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(ai_json_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_json_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-ai-json-parse", "Compare original b06 final JSON helpers and intrinsic delegate error origin").dependOn(&b.addRunArtifact(ai_json_tests).step);
+    b.step("build-native-ai-json-parse", "Compile native final JSON helpers and scoped C parser diagnostics").dependOn(&ai_json_tests.step);
     const ai_uuid_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_uuid_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI UUID"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_uuid_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_uuid_tests.root_module, sqlite_lib_dir, sqlite_library);
