@@ -43,7 +43,9 @@ pub fn gate(s: *Scope, bindings: c.JSValue, reload: c.JSValue) anyerror!c.JSValu
     const work = try s.record();
     try h.field(s, work, "bindings", bindings);
     try h.field(s, work, "reload", reload);
-    return h.wait(gateStep, s.engine, work, try @import("native_chord_reload_timing.zig").drain(s, reload), 0);
+    // drain returns an owned continuation, while wait only borrows its input.
+    const drained = try s.keep(try @import("native_chord_reload_timing.zig").drain(s, reload));
+    return h.wait(gateStep, s.engine, work, drained, 0);
 }
 fn gateStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, phase: c_int) anyerror!c.JSValue {
     var s: Scope = .{ .engine = engine };

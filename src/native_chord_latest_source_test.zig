@@ -40,6 +40,16 @@ fn replay(engine: *em.Engine, comptime stem: []const u8, comptime global: []cons
     };
     engine.freeValue(result);
 }
+fn diagnoseFailure(engine: *em.Engine, gpa: std.mem.Allocator, mapped: anyerror) void {
+    if (mapped == error.OutOfMemory) return;
+    const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+    std.debug.print("Latest GPA index{d} error={s}: {s}\n", .{ failing.fail_index, @errorName(mapped), engine.last_error orelse "no diagnostic" });
+    if (engine.captured_exception) |exception| {
+        const message = engine.toString(exception) catch return;
+        defer gpa.free(message);
+        std.debug.print("Latest GPA captured exception: {s}\n", .{message});
+    }
+}
 test "native latest Chord1692 compiled selected inventory" {
     const functions = @import("builtin").test_functions;
     const names = try std.testing.allocator.alloc([]const u8, functions.len);
@@ -93,7 +103,11 @@ test "native latest Chord1692 complete actual object factory root call and teard
             const generation = engine.native_allocation_generation;
             engine.native_exception_diagnostics_suppressed += 1;
             defer engine.native_exception_diagnostics_suppressed -= 1;
-            const result = engine.evalModule(owned_start ++ "\n" ++ owned_finish, "chord-latest-gpa.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+            const result = engine.evalModule(owned_start ++ "\n" ++ owned_finish, "chord-latest-gpa.mjs") catch |err| {
+                const mapped = engine.nativeAllocationError(err, generation);
+                diagnoseFailure(engine, gpa, mapped);
+                return mapped;
+            };
             engine.freeValue(result);
         }
     };
@@ -113,10 +127,7 @@ test "native latest Chord1692 full composed reload resources remote state frames
             defer engine.native_exception_diagnostics_suppressed -= 1;
             const result = engine.evalModule(composed_owned, "chord-latest-composed-gpa.mjs") catch |err| {
                 const mapped = engine.nativeAllocationError(err, generation);
-                if (mapped != error.OutOfMemory) {
-                    const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
-                    std.debug.print("Latest composed GPA index{d} error={s}: {s}\n", .{ failing.fail_index, @errorName(mapped), engine.last_error orelse "no diagnostic" });
-                }
+                diagnoseFailure(engine, gpa, mapped);
                 return mapped;
             };
             engine.freeValue(result);
