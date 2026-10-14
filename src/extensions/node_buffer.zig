@@ -190,7 +190,7 @@ fn from(engine: *engine_mod.Engine, args: []c.JSValue, depth: usize) anyerror!c.
 
 fn failure(context: ?*c.JSContext, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine_mod.Engine.fromContext(context.?).throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+    if (err == error.OutOfMemory) return engine_mod.Engine.fromContext(context.?).throwNativeOutOfMemory();
     if (err == error.MixingBigIntTypes) return c.JS_ThrowTypeError(context, "Cannot mix BigInt and other types");
     const range = err == error.BufferRange or err == error.BufferBounds or err == error.InvalidBufferSize;
     const code: [*:0]const u8 = if (err == error.BufferRange) "ERR_OUT_OF_RANGE" else if (err == error.BufferBounds) "ERR_BUFFER_OUT_OF_BOUNDS" else if (err == error.InvalidBufferSize) "ERR_INVALID_BUFFER_SIZE" else if (err == error.UnknownBufferEncoding) "ERR_UNKNOWN_ENCODING" else "ERR_INVALID_ARG_TYPE";

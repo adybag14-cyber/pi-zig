@@ -114,6 +114,45 @@ fn weakReference(engine: *em.Engine, target: em.c.JSValue) !em.c.JSValue {
     var args = [_]em.c.JSValue{target};
     return engine.checked(em.c.JS_CallConstructor(engine.context, engine.native_weak_ref_constructor.?, 1, &args));
 }
+test "native latest Chord1692 actual Buffer allocation callback preserves fresh stale and guest lookalike identities" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    const buffer = try @import("extensions/node_buffer.zig").fromBytes(engine, "actual native buffer");
+    defer engine.freeValue(buffer);
+    const method = try js.get(engine, buffer, "toString");
+    defer engine.freeValue(method);
+    const encoding = try engine.checked(em.c.JS_NewString(engine.context, "base64"));
+    defer engine.freeValue(encoding);
+    const generation = engine.native_allocation_generation;
+    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = 0 });
+    {
+        const original_allocator = engine.gpa;
+        engine.gpa = failing.allocator();
+        defer engine.gpa = original_allocator;
+        engine.native_exception_diagnostics_suppressed += 1;
+        defer engine.native_exception_diagnostics_suppressed -= 1;
+        var args = [_]em.c.JSValue{encoding};
+        try std.testing.expectError(error.JavaScriptException, engine.checked(em.c.JS_Call(engine.context, method, buffer, 1, &args)));
+        try std.testing.expectEqual(error.OutOfMemory, engine.nativeAllocationError(error.JavaScriptException, generation));
+        try std.testing.expect(em.c.JS_IsStrictEqual(engine.context, engine.captured_exception.?, engine.native_allocation_exception.?));
+        try std.testing.expect(failing.has_induced_failure);
+    }
+    const root = em.c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    try js.define(engine, root, "oldNativeBufferError", em.c.JS_DupValue(engine.context, engine.captured_exception.?));
+    const stale_generation = engine.native_allocation_generation;
+    try std.testing.expectError(error.JavaScriptException, engine.eval("throw oldNativeBufferError", "buffer-stale-native", em.c.JS_EVAL_TYPE_GLOBAL));
+    try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(error.JavaScriptException, stale_generation));
+    const guest_generation = engine.native_allocation_generation;
+    try std.testing.expectError(error.JavaScriptException, engine.eval("globalThis.bufferNativeTraps=0;globalThis.bufferGuestLookalike={get name(){bufferNativeTraps++;return'OutOfMemory'},get message(){bufferNativeTraps++;return'out of memory'}};Buffer.from({valueOf(){throw bufferGuestLookalike}})", "buffer-guest-lookalike", em.c.JS_EVAL_TYPE_GLOBAL));
+    try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(error.JavaScriptException, guest_generation));
+    const guest = try js.get(engine, root, "bufferGuestLookalike");
+    defer engine.freeValue(guest);
+    try std.testing.expect(em.c.JS_IsStrictEqual(engine.context, guest, engine.captured_exception.?));
+    const traps = try js.get(engine, root, "bufferNativeTraps");
+    defer engine.freeValue(traps);
+    try std.testing.expect(em.c.JS_IsStrictEqual(engine.context, traps, em.c.JS_NewInt32(engine.context, 0)));
+}
 fn weakTarget(engine: *em.Engine, reference: em.c.JSValue) !em.c.JSValue {
     return engine.checked(em.c.JS_Call(engine.context, engine.native_weak_ref_deref.?, reference, 0, null));
 }
