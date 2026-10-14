@@ -1,0 +1,51 @@
+{
+  "head": "caf8ffae7765e4dd27721b786932d0d79e47f6eb",
+  "name": "chord-replicated-state-gpa-debug-compile-first-20261014",
+  "pid": 50248,
+  "created_utc": "2026-10-14T22:19:34.2959573Z",
+  "executable": "C:/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-windows-0.16.0/zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-windows-0.16.0/zig.exe\" build build-native-chord-replicated-state-source -Doptimize=Debug -j1 --summary all",
+  "argv": [
+    "build",
+    "build-native-chord-replicated-state-source",
+    "-Doptimize=Debug",
+    "-j1",
+    "--summary",
+    "all"
+  ],
+  "working_directory": "C:/Users/adyba/pi-zig-chord-v4-state-b45-20261014",
+  "status": "passed",
+  "deadline_seconds": 1320,
+  "jobs": 1,
+  "phase": "compile_only",
+  "runtime_authorized": false,
+  "compiler_peak_calibrated": false,
+  "exit_code": 0,
+  "elapsed_seconds": 11.2414625,
+  "root_peak_working_set_bytes": null,
+  "sampled_process_peak_bytes": [
+    {
+      "pid": 50248,
+      "observed_peak_bytes": 17506304
+    },
+    {
+      "pid": 50108,
+      "observed_peak_bytes": 19976192
+    },
+    {
+      "pid": 27704,
+      "observed_peak_bytes": 17522688
+    },
+    {
+      "pid": 53664,
+      "observed_peak_bytes": 17522688
+    },
+    {
+      "pid": 72392,
+      "observed_peak_bytes": 550551552
+    }
+  ],
+  "peak_scope": "One-second sampled exact descendant ancestry RSS is a lower bound; root kernel peak separate; compiler not calibrated",
+  "completed_utc": "2026-10-14T22:19:46.0297044+00:00"
+}

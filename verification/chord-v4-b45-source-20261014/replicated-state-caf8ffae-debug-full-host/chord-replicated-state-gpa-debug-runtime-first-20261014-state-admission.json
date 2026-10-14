@@ -1,0 +1,23 @@
+{
+  "observed_utc": "2026-10-14T22:20:42.9960521+00:00",
+  "free_bytes": 24668082176,
+  "required_bytes": 17179869184,
+  "other_native": [
+    {
+      "ProcessId": 68440,
+      "ParentProcessId": 49492,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-highlight-core-b45 -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-14T22:19:58.1463000Z"
+    }
+  ],
+  "other_native_roots": 1,
+  "root_authority": "Root matching exactcaf8 full5553/1965/19546 after compile-first PASS; normal16 j1 300outer120test10host; compiled5 actualSource16 GC strictwhole1114; Renderer Core74 runtime sole peer; preserve negatives/no additional job",
+  "outer_seconds": 300,
+  "test_seconds": 120,
+  "host_seconds": 10,
+  "jobs": 1,
+  "llvm": "default",
+  "sole8_exception_used": false,
+  "public_activation": false
+}
