@@ -1542,6 +1542,11 @@ pub fn build(b: *std.Build) void {
     ai_retry_call_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-retry-call", "Compare original assistant retry async behavior and complete native owner graphs").dependOn(&b.addRunArtifact(ai_retry_call_tests).step);
     b.step("build-native-ai-retry-call", "Compile original assistant retry separately from runtime deadlines").dependOn(&ai_retry_call_tests.step);
+    const source_paths_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_source_paths_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Source path cwd"}, .use_llvm = use_llvm });
+    linkQuickJs(b, source_paths_tests.root_module, quickjs, sqlite_lib_dir);
+    source_paths_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-source-path-cwd", "Compile original path helpers and live Node current-directory fallback").dependOn(&source_paths_tests.step);
+    b.step("test-native-sdk-source-path-cwd", "Compare original40 path callbacks ordering identity and native allocation cleanup").dependOn(&b.addRunArtifact(source_paths_tests).step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);

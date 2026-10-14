@@ -147,6 +147,22 @@ pub fn join(gpa: std.mem.Allocator, paths: []const []const u8, flavor: Flavor) s
 }
 
 pub fn resolve(gpa: std.mem.Allocator, cwd: []const u8, paths: []const []const u8, flavor: Flavor) std.mem.Allocator.Error![]u8 {
+    return resolveWith(gpa, paths, flavor, LiteralDirectory{ .path = cwd });
+}
+
+const LiteralDirectory = struct {
+    path: []const u8,
+    fn get(self: LiteralDirectory, _: std.mem.Allocator, _: Flavor) std.mem.Allocator.Error![]const u8 {
+        return self.path;
+    }
+};
+const LiveDirectory = struct {
+    engine: *engine_mod.Engine,
+    fn get(self: LiveDirectory, gpa: std.mem.Allocator, flavor: Flavor) ![]const u8 {
+        return currentDirectory(self.engine, gpa, flavor);
+    }
+};
+fn resolveWith(gpa: std.mem.Allocator, paths: []const []const u8, flavor: Flavor, directory: anytype) ![]u8 {
     var tail: std.ArrayList([]const u8) = .empty;
     defer tail.deinit(gpa);
     var absolute = false;
@@ -154,7 +170,7 @@ pub fn resolve(gpa: std.mem.Allocator, cwd: []const u8, paths: []const []const u
     var index = paths.len;
     while (true) {
         const fallback = index == 0;
-        var path = if (fallback) cwd else paths[index - 1];
+        var path = if (fallback) try directory.get(gpa, flavor) else paths[index - 1];
         var drive_root: ?[]u8 = null;
         defer if (drive_root) |owned| gpa.free(owned);
         if (fallback and flavor == .win32 and device.len > 0 and !std.ascii.eqlIgnoreCase(root(path, flavor).device, device)) {
@@ -273,6 +289,25 @@ fn argumentText(engine: *engine_mod.Engine, value: c.JSValue, allocator: std.mem
 }
 
 fn currentDirectory(engine: *engine_mod.Engine, allocator: std.mem.Allocator, flavor: Flavor) ![]u8 {
+    if (engine.native_module_values.get("node:process")) |module| {
+        const process = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "default"));
+        defer engine.freeValue(process);
+        const function_value = try engine.checked(c.JS_GetPropertyStr(engine.context, process, "cwd"));
+        defer engine.freeValue(function_value);
+        const value = try engine.checked(c.JS_Call(engine.context, function_value, process, 0, null));
+        defer engine.freeValue(value);
+        const text = try engine.toString(value);
+        defer engine.gpa.free(text);
+        const copy = try allocator.dupe(u8, text);
+        if (flavor == .posix and builtin.os.tag == .windows) {
+            for (copy) |*byte| if (byte.* == '\\') {
+                byte.* = '/';
+            };
+            const start = std.mem.indexOfScalar(u8, copy, '/') orelse 0;
+            return copy[start..];
+        }
+        return copy;
+    }
     const io = engine.native_io orelse return error.NativeIoUnavailable;
     // AT_FDCWD is a sentinel, not a descriptor accepted by macOS F_GETPATH
     // or Linux /proc/self/fd. Resolve an owned real directory handle instead.
@@ -321,7 +356,7 @@ fn call(engine: *engine_mod.Engine, method: Method, flavor: Flavor, args: []c.JS
     } else if (method == .join or method == .resolve) {
         const paths = try gpa.alloc([]const u8, args.len);
         for (args, paths) |arg, *path| path.* = try argumentText(engine, arg, gpa);
-        result = if (method == .join) try join(gpa, paths, flavor) else try resolve(gpa, try currentDirectory(engine, gpa, flavor), paths, flavor);
+        result = if (method == .join) try join(gpa, paths, flavor) else try resolveWith(gpa, paths, flavor, LiveDirectory{ .engine = engine });
     } else {
         if (method == .toNamespacedPath and args.len == 0) return c.pi_js_undefined();
         if (args.len == 0) return error.InvalidNativePathArgument;
@@ -347,8 +382,12 @@ fn call(engine: *engine_mod.Engine, method: Method, flavor: Flavor, args: []c.JS
             .relative => {
                 if (args.len < 2) return error.InvalidNativePathArgument;
                 const to = try argumentText(engine, args[1], gpa);
-                const directory = try currentDirectory(engine, gpa, flavor);
-                result = if (flavor == .win32) try std.fs.path.relativeWindows(gpa, directory, null, path, to) else try std.fs.path.relativePosix(gpa, directory, path, to);
+                if (std.mem.eql(u8, path, to)) return engine.checked(c.JS_NewString(engine.context, ""));
+                // Each resolution owns its fallback evaluation. A live cwd
+                // callback can return different values or throw on the second.
+                const from_absolute = try resolveWith(gpa, &.{path}, flavor, LiveDirectory{ .engine = engine });
+                const to_absolute = try resolveWith(gpa, &.{to}, flavor, LiveDirectory{ .engine = engine });
+                result = if (flavor == .win32) try std.fs.path.relativeWindows(gpa, from_absolute, null, from_absolute, to_absolute) else try std.fs.path.relativePosix(gpa, from_absolute, from_absolute, to_absolute);
             },
             .parse => {
                 const parsed = root(path, flavor);
@@ -369,7 +408,7 @@ fn call(engine: *engine_mod.Engine, method: Method, flavor: Flavor, args: []c.JS
             .toNamespacedPath => {
                 result = path;
                 if (flavor == .win32 and path.len > 0) {
-                    const absolute = try resolve(gpa, try currentDirectory(engine, gpa, flavor), &.{path}, flavor);
+                    const absolute = try resolveWith(gpa, &.{path}, flavor, LiveDirectory{ .engine = engine });
                     if (absolute.len >= 3 and absolute[1] == ':' and absolute[2] == '\\') result = try std.fmt.allocPrint(gpa, "\\\\?\\{s}", .{absolute}) else if (std.mem.startsWith(u8, absolute, "\\\\") and absolute.len > 2 and absolute[2] != '?' and absolute[2] != '.') result = try std.fmt.allocPrint(gpa, "\\\\?\\UNC\\{s}", .{absolute[2..]});
                 }
             },
