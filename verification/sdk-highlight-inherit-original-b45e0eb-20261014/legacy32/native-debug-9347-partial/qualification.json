@@ -1,0 +1,31 @@
+{
+  "status": "Windows_Debug_actual_Original32_plus_GC_cancel_targeted_VM514_and_HOST_first_partition_passed",
+  "head": "934740fa7146c14b3debfcbc4fc14a21811f1d54",
+  "tests": 5,
+  "source_cases": 32,
+  "baseline": 261,
+  "host_partition": "0/8",
+  "host_range": [
+    0,
+    32
+  ],
+  "completed_host_indices": 32,
+  "remaining_host_indices": 229,
+  "full_HOST_qualified": false,
+  "targeted_C_VM_heap_iterations": 514,
+  "exhaustive_C_malloc": false,
+  "trusted_OOM_classification": false,
+  "source_files": 5494,
+  "original_files": 1965,
+  "vendor_files": 1319,
+  "compiler_files": 19546,
+  "controls": 4,
+  "all_post_drift": 0,
+  "owned_pids": [
+    70872,
+    70760
+  ],
+  "owned_pids_absent": true,
+  "Root_C_intake": false,
+  "public_activation": false
+}

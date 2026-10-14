@@ -1,0 +1,7 @@
+{
+  "minimum_free_gib": 16,
+  "free_kib": 23393308,
+  "existing_native_processes": [],
+  "wrapper_sha256": "FD6DD6217B85C55E93BBB81DAAD9867CF1E91B78D91BA13C6DE1819C0469364C",
+  "checked_utc": "2026-10-14T21:51:34.4432212+00:00"
+}
