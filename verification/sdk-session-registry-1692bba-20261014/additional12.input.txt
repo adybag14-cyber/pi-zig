@@ -1,0 +1,50 @@
+// Appended to the byte-preserved historical52 caller. Original methods remain unchanged.
+const addedScenarios = ['mcp-live-has-value','mcp-live-prefix-value','mcp-live-has-throw','activated-falsy-number','activated-falsy-string','build-live-Object-receivers','build-default-modifiers-separated','build-override-modifiers-separated','constructor-modifier-restore','constructor-explicit-tools-no-restore','reload-modifiers-default-delta','reload-explicit-tools-no-default-delta'];
+for (const scenario of addedScenarios) {
+  let options = {}, storage;
+  if (scenario.startsWith('constructor-')) {
+    const manager = registryFactoryAPI.SessionManager.inMemory();
+    manager.appendMessage({role:'system',content:'',sections:{preamble:'restored'},toolsAdded:[{name:'read'},{name:'bash'}],timestamp:1234});
+    options = { noTools: undefined, sessionManager: manager, tools: scenario === 'constructor-modifier-restore' ? ['-read','+ls'] : ['read'] };
+  }
+  if (scenario.startsWith('reload-')) {
+    storage = new registryFactoryAPI.InMemorySettingsStorage();
+    storage.withLock('global', () => JSON.stringify({ defaultTools:['read'], retry:{enabled:false}, compaction:{enabled:false}, cacheWarming:'off' }));
+    options = { noTools:undefined, settingsManager:registryFactoryAPI.SettingsManager.fromStorage(storage), tools:scenario === 'reload-modifiers-default-delta' ? ['-read','+ls'] : ['read'] };
+  }
+  const session = await createLoadoutCaseReceiver(options); registryCaseReceivers.push(session);
+  const log = [], sentinel = { tag:'registry-audit-sentinel' };
+  let result, failure;
+  session._excludedTools = undefined; session._allowedTools = undefined;
+  try {
+    if (scenario.startsWith('mcp-')) {
+      session._allowedTools = () => false; session._allowlistFiltersMcp = false;
+      if (scenario === 'mcp-live-prefix-value') {
+        const kept = { tag:'prefix-kept' }, name = { startsWith(prefix){log.push(['startsWith',prefix,this===name]);return kept;} };
+        result = {same:session._isAllowedTool(name)===kept};
+      } else {
+        const old = Object.getOwnPropertyDescriptor(Set.prototype,'has');
+        Object.defineProperty(Set.prototype,'has',{configurable:true,value(name){log.push(['has',[...this],name]);if(scenario==='mcp-live-has-throw')throw sentinel;return 'kept-by-live-has';}});
+        try { result=session._isAllowedTool('ordinary'); } finally {Object.defineProperty(Set.prototype,'has',old);}
+      }
+    } else if (scenario.startsWith('activated-')) {
+      session._isDeclarable = () => scenario === 'activated-falsy-number' ? 0 : '';
+      result = session._isActivatedOnRegistration('read');
+    } else if (scenario.startsWith('build-')) {
+      session._usesDefaultTools=true;session._defaultToolModifiers=['-read','+ls'];
+      session._baseToolsOverride=scenario==='build-default-modifiers-separated'?undefined:{alpha:definition('alpha')};
+      if(scenario==='build-live-Object-receivers') {
+        const object=Object, old=object.getOwnPropertyDescriptor(globalThis,'Object');let lookups=0;
+        object.defineProperty(globalThis,'Object',{configurable:true,get(){const id=++lookups;let proxy;proxy=new Proxy(object,{get(target,key,receiver){const method=Reflect.get(target,key,receiver);if(key!=='entries'&&key!=='fromEntries'&&key!=='keys')return method;return function(...args){log.push([key,id,this===proxy]);return Reflect.apply(method,this,args);};}});return proxy;}});
+        try {session._buildRuntime({});} finally {object.defineProperty(globalThis,'Object',old);}
+      } else session._buildRuntime({});
+      result={active:session.getActiveToolNames(),definitions:[...session._baseToolDefinitions.keys()],modifiers:session._defaultToolModifiers};
+    } else if (scenario.startsWith('reload-')) {
+      storage.withLock('global', () => JSON.stringify({defaultTools:['read','bash'],retry:{enabled:false},compaction:{enabled:false},cacheWarming:'off'}));
+      await session.reload();
+      result={active:session.getActiveToolNames(),pending:[...session._pendingToolNames],usesDefaultTools:session._usesDefaultTools,modifiers:session._defaultToolModifiers};
+    } else result={active:session.getActiveToolNames(),pending:[...session._pendingToolNames],usesDefaultTools:session._usesDefaultTools,modifiers:session._defaultToolModifiers};
+  } catch(error) {failure=error===sentinel?{same:true}:{name:error.name,message:error.message};}
+  sdkSessionRegistryRows.rows.push({scenario,...(failure?{failure}:{result}),log:[...log]});
+}
+if(sdkSessionRegistryRows.rows.length!==64)throw Error('Original registry64 inventory mismatch');

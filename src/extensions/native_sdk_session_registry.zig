@@ -48,6 +48,11 @@ const Closure = enum(c_int) {
 };
 
 pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
+    // Actual mcp-servers.ts initializes its module-private Set before callers
+    // can mutate Set.prototype.has. Its live has method remains observable.
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    _ = try mcpResources(&scope);
     inline for (std.meta.fields(Method)) |field| {
         const kind: Method = @enumFromInt(field.value);
         const installed = try engine.checked(c.pi_js_function_magic(engine.context, methodCallback, field.name, if (kind == ._refreshCurrentModelFromRegistry or kind == ._restoreToolsFromTranscript) 0 else 1, field.value));
@@ -388,10 +393,21 @@ fn guidelines(scope: *Scope, input: c.JSValue) !c.JSValue {
     }
     return scope.invoke(try scope.global("Array"), "from", &.{unique});
 }
-fn mcp(scope: *Scope, name: c.JSValue) !bool {
-    if (scope.truthy(try scope.invoke(name, "startsWith", &.{try scope.text("mcp__")}))) return true;
-    inline for (.{ "list_mcp_resources", "list_mcp_resource_templates", "read_mcp_resource" }) |name_text| if (scope.equal(name, try scope.text(name_text))) return true;
-    return false;
+fn mcpResources(scope: *Scope) !c.JSValue {
+    const key = "pi-native:session-mcp-resource-names";
+    if (!scope.engine.native_module_values.contains(key)) {
+        const values = try scope.array();
+        inline for (.{ "list_mcp_resources", "list_mcp_resource_templates", "read_mcp_resource" }, 0..) |name, index| try scope.index(values, index, try scope.text(name));
+        const set = try construct(scope, try scope.global("Set"), values);
+        const exports = try scope.object();
+        try scope.put(exports, "names", set);
+        try scope.engine.registerValueModule(key, exports);
+    }
+    return scope.get(scope.engine.native_module_values.get(key).?, "names");
+}
+fn mcp(scope: *Scope, name: c.JSValue) !c.JSValue {
+    const prefix = try scope.invoke(name, "startsWith", &.{try scope.text("mcp__")});
+    return if (scope.truthy(prefix)) prefix else scope.invoke(try mcpResources(scope), "has", &.{name});
 }
 fn rebuild(scope: *Scope, receiver: c.JSValue, names: c.JSValue) !void {
     const valid = try map(scope, names, "filter", .valid_name, receiver);
@@ -435,8 +451,9 @@ fn buildRuntime(scope: *Scope, receiver: c.JSValue, options: c.JSValue) !void {
     const definitions = if (scope.truthy(try scope.get(receiver, "_baseToolsOverride"))) overrides: {
         const object = try scope.global("Object");
         const from_entries = try scope.get(object, "fromEntries");
-        const entries = try scope.get(try scope.global("Object"), "entries");
-        const rows = try scope.call(entries, object, &.{try scope.get(receiver, "_baseToolsOverride")});
+        const entries_object = try scope.global("Object");
+        const entries = try scope.get(entries_object, "entries");
+        const rows = try scope.call(entries, entries_object, &.{try scope.get(receiver, "_baseToolsOverride")});
         break :overrides try scope.call(from_entries, object, &.{try map(scope, rows, "map", .override_entry, receiver)});
     } else builtins: {
         const cwd = try scope.engine.toString(try scope.get(receiver, "_cwd"));
@@ -765,14 +782,16 @@ fn dispatch(engine: *em.Engine, receiver: c.JSValue, operation: Method, input: c
             const excluded = try scope.get(receiver, "_excludedTools");
             if (!temp.nullish(excluded) and scope.truthy(try scope.call(excluded, receiver, &.{input}))) break :allowed c.pi_js_bool(engine.context, 0);
             if (!scope.truthy(try scope.get(receiver, "_allowedTools")) or scope.truthy(try scope.invoke(receiver, "_allowedTools", &.{input}))) break :allowed c.pi_js_bool(engine.context, 1);
-            break :allowed c.pi_js_bool(engine.context, @intFromBool(!scope.truthy(try scope.get(receiver, "_allowlistFiltersMcp")) and try mcp(&scope, input)));
+            if (scope.truthy(try scope.get(receiver, "_allowlistFiltersMcp"))) break :allowed c.pi_js_bool(engine.context, 0);
+            break :allowed try mcp(&scope, input);
         },
         ._isDeclarable => declarable: {
             const exposure = try scope.invoke(receiver, "_getToolExposure", &.{input});
             break :declarable c.pi_js_bool(engine.context, @intFromBool(scope.equal(exposure, try scope.text("direct")) or scope.equal(exposure, try scope.text("model-only"))));
         },
         ._isActivatedOnRegistration => activated: {
-            if (!scope.truthy(try scope.invoke(receiver, "_isDeclarable", &.{input}))) break :activated c.pi_js_bool(engine.context, 0);
+            const declarable = try scope.invoke(receiver, "_isDeclarable", &.{input});
+            if (!scope.truthy(declarable)) break :activated declarable;
             const entry = try scope.invoke(try scope.get(receiver, "_toolDefinitions"), "get", &.{input});
             const active = if (temp.nullish(entry)) c.pi_js_undefined() else try scope.get(try scope.get(entry, "definition"), "defaultActive");
             break :activated c.pi_js_bool(engine.context, @intFromBool(!scope.equal(active, c.pi_js_bool(engine.context, 0))));
