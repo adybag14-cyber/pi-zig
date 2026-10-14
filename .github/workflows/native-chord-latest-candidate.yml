@@ -1,4 +1,4 @@
-name: Private actual latest Chord1692 Source27 plus Loader7 Manager12 diagnostic
+name: Private actual latest Chord1692 Source27 plus Loader7 Manager12 Cluster4 diagnostic
 on:
   push:
     branches: [work/chord-latest-native-1692-20261014]
@@ -85,11 +85,11 @@ jobs:
               $candidateRoot = "chord-latest-results/native-chord-latest-$candidateOs-$candidateMode-$env:EXPECTED_HEAD"
               $candidateSource = Get-Content "$candidateRoot/source.json" -Raw | ConvertFrom-Json
               $candidateResult = Get-Content "$candidateRoot/result.json" -Raw | ConvertFrom-Json
-              if ($candidateSource.head -cne $env:EXPECTED_HEAD -or $candidateResult.head -cne $env:EXPECTED_HEAD -or $candidateResult.mode -cne $candidateMode -or $candidateResult.platform -cne $candidateOs -or $candidateResult.status -cne 'passed' -or $candidateResult.source_cases -ne 27 -or $candidateResult.compiled_tests -ne 9 -or $candidateResult.gc -cne 'passed' -or $candidateResult.all_gpa_failures -cne 'passed') { throw 'Missing exact-head semantic gates' }
+              if ($candidateSource.head -cne $env:EXPECTED_HEAD -or $candidateResult.head -cne $env:EXPECTED_HEAD -or $candidateResult.mode -cne $candidateMode -or $candidateResult.platform -cne $candidateOs -or $candidateResult.status -cne 'passed' -or $candidateResult.source_cases -ne 27 -or $candidateResult.compiled_tests -ne 10 -or $candidateResult.gc -cne 'passed' -or $candidateResult.all_gpa_failures -cne 'passed') { throw 'Missing exact-head semantic gates' }
               if ($candidateResult.public_activation -or $candidateResult.node_loader_qualified -or $candidateResult.manager_qualified -or $candidateResult.full_pi_qualified) { throw 'Partial graph incorrectly activated' }
-              if ($candidateResult.auxiliary_source_cases -ne 19 -or $candidateResult.total_source_cases -ne 46 -or $candidateResult.auxiliary_compiled_tests -ne 7) { throw 'Auxiliary Source19 diagnostic did not run' }
+              if ($candidateResult.auxiliary_source_cases -ne 23 -or $candidateResult.total_source_cases -ne 50 -or $candidateResult.auxiliary_compiled_tests -ne 10) { throw 'Auxiliary Source23 diagnostic did not run' }
               $candidateAuxiliary = @(Get-Content "$candidateRoot/auxiliary-result.json" -Raw | ConvertFrom-Json)
-              if ($candidateAuxiliary.Count -ne 2 -or ($candidateAuxiliary.source_cases | Measure-Object -Sum).Sum -ne 19 -or ($candidateAuxiliary.compiled_tests | Measure-Object -Sum).Sum -ne 7) { throw 'Auxiliary compiled inventory changed' }
+              if ($candidateAuxiliary.Count -ne 3 -or ($candidateAuxiliary.source_cases | Measure-Object -Sum).Sum -ne 23 -or ($candidateAuxiliary.compiled_tests | Measure-Object -Sum).Sum -ne 10) { throw 'Auxiliary compiled inventory changed' }
               foreach ($candidateAux in $candidateAuxiliary) { if ($candidateAux.gc -cne 'passed' -or $candidateAux.all_gpa_failures -cne 'not_yet_qualified' -or $candidateAux.fork_driver -cne 'not_yet_implemented' -or $candidateAux.full_qualification) { throw 'Auxiliary component scope incorrectly qualified' } }
               foreach ($candidateOwnerName in @('compile','runtime')) {
                 $candidateOwner = Get-Content "$candidateRoot/$candidateOwnerName-owner.json" -Raw | ConvertFrom-Json
@@ -102,7 +102,7 @@ jobs:
               $candidateNames = Get-Content "$candidateRoot/inventory-posthash.json" -Raw | ConvertFrom-Json
               if ($candidateNames.tracked_inventory_changes -or $candidateNames.tool_inventory_changes -or @($candidateNames.unexpected_untracked).Count) { throw 'Source or compiler inventory changed' }
               if ($null -eq $candidateSourceCount) { $candidateSourceCount = $candidateSource.source_count } elseif ($candidateSourceCount -ne $candidateSource.source_count) { throw 'Platform source inventories differ' }
-              $candidateSummary += [ordered]@{ head = $env:EXPECTED_HEAD; platform = $candidateOs; mode = $candidateMode; status = 'passed'; source_cases = 27; native_tests = 9; source_count = $candidateSource.source_count; tool_count = $candidateSource.tool_count; public_activation = $false; node_loader_qualified = $false; manager_qualified = $false; full_pi_qualified = $false }
+              $candidateSummary += [ordered]@{ head = $env:EXPECTED_HEAD; platform = $candidateOs; mode = $candidateMode; status = 'passed'; source_cases = 27; native_tests = 10; source_count = $candidateSource.source_count; tool_count = $candidateSource.tool_count; public_activation = $false; node_loader_qualified = $false; manager_qualified = $false; full_pi_qualified = $false }
             }
           }
           $candidateSummary | ConvertTo-Json -Depth 5 | Set-Content chord-latest-results/qualification.json -Encoding utf8NoBOM

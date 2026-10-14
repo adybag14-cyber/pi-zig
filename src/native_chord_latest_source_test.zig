@@ -65,6 +65,47 @@ pub fn inventory(marker: []const u8) !void {
 test "native latest Chord1692 compiled selected inventory" {
     try inventory("CHORD_LATEST_COMPILED_INVENTORY");
 }
+fn nativeAsyncFailure(ctx: ?*em.c.JSContext, _: em.c.JSValue, _: c_int, _: [*c]em.c.JSValue) callconv(.c) em.c.JSValue {
+    const owner = em.Engine.fromContext(ctx.?);
+    const Failure = struct {
+        fn next(_: *em.Engine, _: em.c.JSValue, _: em.c.JSValue, _: bool, _: c_int) anyerror!em.c.JSValue {
+            return error.OutOfMemory;
+        }
+    };
+    return @import("extensions/native_chord_host_values.zig").wait(Failure.next, owner, em.c.pi_js_undefined(), em.c.pi_js_undefined(), 0) catch |err| @import("extensions/native_durable.zig").reject(owner, err);
+}
+fn plainNativeFailure(ctx: ?*em.c.JSContext, _: em.c.JSValue, _: c_int, _: [*c]em.c.JSValue) callconv(.c) em.c.JSValue {
+    return em.Engine.fromContext(ctx.?).throwNativeOutOfMemory();
+}
+test "native latest Chord1692 private continuation fresh OOM escape preserves stale user replacement and lookalike identities" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    const failure = @import("extensions/native_chord_native_failure.zig");
+    try engine.bindFunction("nativeAsyncChordFailure", nativeAsyncFailure, 0);
+    try engine.bindFunction("plainNativeChordFailure", plainNativeFailure, 0);
+    const generation = engine.native_allocation_generation;
+    const escaped = engine.evalModule("try{await nativeAsyncChordFailure()}catch(e){globalThis.nativeChordSwallowed=true}", "chord-native-fresh-escape.mjs");
+    try std.testing.expectError(error.JavaScriptException, escaped);
+    try std.testing.expectEqual(error.OutOfMemory, engine.nativeAllocationError(error.JavaScriptException, generation));
+    const root = em.c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    const swallowed = try js.get(engine, root, "nativeChordSwallowed");
+    defer engine.freeValue(swallowed);
+    try std.testing.expect(em.c.JS_IsUndefined(swallowed));
+    try js.define(engine, root, "oldChordNativeError", em.c.JS_DupValue(engine.context, engine.captured_exception.?));
+    const stale_generation = engine.native_allocation_generation;
+    try std.testing.expectError(error.JavaScriptException, engine.eval("throw oldChordNativeError", "chord-stale-native", em.c.JS_EVAL_TYPE_GLOBAL));
+    try std.testing.expect(failure.escape(engine, error.JavaScriptException, stale_generation) == null);
+    const replacement_generation = engine.native_allocation_generation;
+    try std.testing.expectError(error.JavaScriptException, engine.eval("try{plainNativeChordFailure()}catch(e){throw new Error('user replacement')}", "chord-user-replacement", em.c.JS_EVAL_TYPE_GLOBAL));
+    try std.testing.expect(failure.escape(engine, error.JavaScriptException, replacement_generation) == null);
+    const lookalike_generation = engine.native_allocation_generation;
+    try std.testing.expectError(error.JavaScriptException, engine.eval("globalThis.chordNativeTraps=0;throw{get name(){chordNativeTraps++;return'OutOfMemory'},get message(){chordNativeTraps++;return'out of memory'}}", "chord-user-lookalike", em.c.JS_EVAL_TYPE_GLOBAL));
+    try std.testing.expect(failure.escape(engine, error.JavaScriptException, lookalike_generation) == null);
+    const traps = try js.get(engine, root, "chordNativeTraps");
+    defer engine.freeValue(traps);
+    try std.testing.expect(em.c.JS_IsStrictEqual(engine.context, traps, em.c.JS_NewInt32(engine.context, 0)));
+}
 test "native latest Chord1692 actual Source8 object factories reload cells resource adoption signals tasks" {
     const engine = try setup(std.testing.allocator);
     defer engine.deinit();
@@ -86,7 +127,7 @@ test "native latest Chord1692 actual Source9 protocol2 packed bytes window ackno
     try replay(engine, "chord-v2-original-1692", "chordV2Cases");
 }
 const owned_start =
-    \\const api=nativeLatestChordApi,log=[],host=api.createHost({name:'owned',onError(e){throw e}}),schema={type:'object',properties:{},additionalProperties:false},n={type:'number'},token=api.local('owned.counter',{version:1,input:schema,members:{read:api.method(undefined,n)}});host.serve(token,(_i,_p,self)=>{const cell=self.state('n',n,4);return{read(){return cell.value}}});const ref=host.get(token,{});await ref.ready;let resolve;const pending=host.root(async ctx=>{await new Promise(r=>resolve=r);return ref.read(ctx)});globalThis.ownedLatest={host,ref,pending,resolve,log};
+    \\const api=nativeLatestChordApi,log=[],host=api.createHost({name:'owned',onError(e){throw e}}),schema={type:'object',properties:{},additionalProperties:false},n={type:'number'},token=api.local('owned.counter',{version:1,input:schema,members:{read:api.method(undefined,n)}});host.serve(token,(_i,_p,self)=>{const cell=self.state('n',n,4);return{read(){return cell.value}}});const ref=host.get(token,{});await ref.ready;let resolve,started;const began=new Promise(r=>started=r),pending=host.root(async ctx=>{started();await new Promise(r=>resolve=r);return ref.read(ctx)});await Promise.race([pending,began]);globalThis.ownedLatest={host,ref,pending,resolve,log};
 ;
 const owned_finish =
     \\const o=ownedLatest;o.resolve();if(await o.pending!==4)throw Error('owned graph lost');o.ref.release();await o.host.close();if(o.host.objects.size||o.host.connections.size)throw Error('owned teardown incomplete');delete globalThis.ownedLatest;
@@ -120,8 +161,8 @@ test "native latest Chord1692 complete actual object factory root call and teard
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
 }
 const composed_owned =
-    \\const api=nativeLatestChordApi,empty={type:'object',properties:{},additionalProperties:false},n={type:'number'},host=api.createHost({name:'native',onError(e){throw e}}),token=api.local('native.resource',{version:1,input:empty,members:{read:api.method(undefined,n),owner:api.opaque('owner@1')}}),closes=[];const facet=version=>({name:'native',setup(f){f.serve(token,(_i,_p,self)=>{const cell=self.state('n',n,3,{version,migrate(v){return v+1}}),resource=self.resource('r',{version:1,open(){return{ok:true}},close(){closes.push(version)}});return{read(){return cell.value},owner:self.expose(resource)}})}});await host.install(facet(1));const local=host.get(token,{});await local.ready;const owner=local.owner;await host.reload([facet(2)]);if(await local.read()!==4||local.owner!==owner)throw Error('actual candidate migration/adoption failed');local.release();await host.close();if(closes.length!==1||closes[0]!==2||host.objects.size)throw Error('latest resource cleanup lost');
-    \\const server=api.createHost({name:'server',onError(e){throw e}}),client=api.createHost({name:'client',kind:'client',onError(e){throw e}}),remote=api.remote('native.remote',{version:1,input:empty,variants:{live:{state:{n},methods:{add:api.method(n,n),echo:api.method({type:'string'},{type:'string'})}}}});server.serve(remote,(_i,_p,self)=>{const cell=self.state('n',n,1);return{variant:'live',n:cell,add(v,ctx){cell.change(ctx,x=>x+v);return cell.value},echo(v){return v}}});const[a,b]=api.memoryLinkPair();server.accept(a,{principal:{user:1},window:512});client.connect(b);const ref=client.get(remote,{}, {at:'server'});await ref.ready;const values=[],off=ref.n.subscribe(v=>values.push(v));if(await ref.add(2)!==3)throw Error('actual frame call failed');const payload='native-packing'.repeat(6000);if(await ref.echo(payload)!==payload)throw Error('actual native C packing lost bytes');off();ref.release();await client.close();await server.close();if(server.objects.size||server.connections.size||client.remotes.size||client.connections.size)throw Error('actual connection owner cleanup lost');
+    \\const api=nativeLatestChordApi,empty={type:'object',properties:{},additionalProperties:false},n={type:'number'},host=api.createHost({name:'native',onError(e){throw e}}),token=api.local('native.resource',{version:1,input:empty,members:{read:api.method(undefined,n),owner:api.opaque('owner@1')}}),closes=[];const facet=version=>({name:'native',setup(f){f.serve(token,(_i,_p,self)=>{const cell=self.state('n',n,3,{version,migrate(v){return v+1}}),resource=self.resource('r',{version:1,open(){return{ok:true}},close(){closes.push(version)}});return{read(){return cell.value},owner:self.expose(resource)}})}});await host.install(facet(1));const local=host.get(token,{});await local.ready;const owner=local.owner;await host.reload([facet(2)]);if(await local.read()!==4||local.owner!==owner)throw Error('actual candidate migration/adoption failed');await host.close();local.release();if(closes.length!==1||closes[0]!==2||host.objects.size)throw Error('latest resource cleanup lost');
+    \\const server=api.createHost({name:'server',onError(e){throw e}}),client=api.createHost({name:'client',kind:'client',onError(e){throw e}}),remote=api.remote('native.remote',{version:1,input:empty,variants:{live:{state:{n},methods:{add:api.method(n,n),echo:api.method({type:'string'},{type:'string'})}}}});server.serve(remote,(_i,_p,self)=>{const cell=self.state('n',n,1);return{variant:'live',n:cell,add(v,ctx){cell.change(ctx,x=>x+v);return cell.value},echo(v){return v}}});const[a,b]=api.memoryLinkPair();server.accept(a,{principal:{user:1},window:512});client.connect(b);const ref=client.get(remote,{}, {at:'server'});await ref.ready;const values=[],off=ref.n.subscribe(v=>values.push(v));if(await ref.add(2)!==3)throw Error('actual frame call failed');const payload='native-packing'.repeat(6000);if(await ref.echo(payload)!==payload)throw Error('actual native C packing lost bytes');off();await client.close();await server.close();ref.release();if(server.objects.size||server.connections.size||client.remotes.size||client.connections.size)throw Error('actual connection owner cleanup lost');
 ;
 test "native latest Chord1692 full composed reload resources remote state frames packed C allocation and teardown GPA sweep" {
     const Probe = struct {

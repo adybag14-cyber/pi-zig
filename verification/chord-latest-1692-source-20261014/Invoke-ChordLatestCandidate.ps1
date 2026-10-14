@@ -68,18 +68,19 @@ if($Phase -eq 'Freeze'){
  }
  if($candidateCount -ne 27){throw 'Missing original Source cases'}
  $candidateLoaderInventory=Get-Content verification/chord-latest-1692-source-20261014/node-loader-source-inventory.json -Raw|ConvertFrom-Json
+ $candidateClusterInventory=Get-Content verification/chord-latest-1692-source-20261014/cluster-source-inventory.json -Raw|ConvertFrom-Json
  $candidateManagerInventory=Get-Content verification/chord-latest-1692-source-20261014/manager-source-inventory.json -Raw|ConvertFrom-Json
  if($candidateLoaderInventory.cases -ne 7 -or $candidateManagerInventory.total_cases -ne 12){throw 'Auxiliary original Source inventory changed'}
- foreach($candidateExtraInventory in @($candidateLoaderInventory,$candidateManagerInventory)){
+ foreach($candidateExtraInventory in @($candidateLoaderInventory,$candidateManagerInventory,$candidateClusterInventory)){
   if($candidateExtraInventory.source -cne $candidateInventory.source -or $candidateExtraInventory.source_closure -ne 34793 -or $candidateExtraInventory.source_body_replaced -or $candidateExtraInventory.native_qualified -or $candidateExtraInventory.public_activation){throw 'Auxiliary Source authority changed'}
  }
- foreach($candidateExtra in @($candidateLoaderInventory)+@($candidateManagerInventory.fixtures)){
+ foreach($candidateExtra in @($candidateLoaderInventory,$candidateClusterInventory)+@($candidateManagerInventory.fixtures)){
   if((Get-FileHash -LiteralPath $candidateExtra.oracle).Hash -cne $candidateExtra.oracle_sha256 -or (Get-FileHash -LiteralPath $candidateExtra.input).Hash -cne $candidateExtra.input_sha256){throw 'Auxiliary original caller or golden changed'}
   $candidateExtraCases=Get-Content -LiteralPath $candidateExtra.oracle -Raw|ConvertFrom-Json
   if($candidateExtraCases.source -cne $candidateInventory.source -or @($candidateExtraCases.cases).Count -ne $candidateExtra.cases -or (Compare-Object @($candidateExtraCases.cases.name) @($candidateExtra.case_names))){throw 'Auxiliary original cases changed'}
  }
  foreach($candidateGuest in $candidateLoaderInventory.guest_inputs){if((Get-FileHash -LiteralPath $candidateGuest.path).Hash -cne $candidateGuest.sha256){throw 'Actual guest module bytes changed'}}
- foreach($candidateExtraCapture in @('chord-node-loader-1692-source-second-20261014','chord-manager-1692-source-second-20261014','chord-process-lock-1692-source-second-20261014')){
+ foreach($candidateExtraCapture in @('chord-node-loader-1692-source-second-20261014','chord-manager-1692-source-second-20261014','chord-process-lock-1692-source-second-20261014','chord-cluster-1692-source-second-20261014')){
   $candidateExtraProof=Get-Content "verification/chord-latest-1692-source-20261014/$candidateExtraCapture-qualified.json" -Raw|ConvertFrom-Json
   if($candidateExtraProof.source -cne $candidateInventory.source -or !$candidateExtraProof.actual_factory_calls -or $candidateExtraProof.source_body_replaced -or $candidateExtraProof.driver_drift -or $candidateExtraProof.job.status -cne 'passed' -or $candidateExtraProof.job.exit_code -ne 0){throw 'Auxiliary original Source capture failed'}
   foreach($candidateExtraSide in @($candidateExtraProof.pre,$candidateExtraProof.post)){if((@($candidateExtraSide.files)|Measure-Object -Sum).Sum -ne 34793 -or @($candidateExtraSide|Where-Object{$_.drift -ne 0}).Count){throw 'Auxiliary original closure freeze changed'}}
@@ -92,29 +93,29 @@ if($Phase -eq 'Freeze'){
  $candidateVendor=Get-Content vendor/chord-zlib-node-24.14.0/SOURCE.json -Raw|ConvertFrom-Json
  if($candidateVendor.node_commit -cne 'f657bb8ed86365ff3fdbe32e27563e778b41486a' -or !$candidateVendor.c_only -or @($candidateVendor.source_changes).Count){throw 'Pinned direct C dependency changed'}
  foreach($candidateVendorFile in $candidateVendor.selected_files){if((Get-FileHash -LiteralPath ('vendor/chord-zlib-node-24.14.0/'+$candidateVendorFile.path)).Hash -cne $candidateVendorFile.sha256){throw 'Original C dependency bytes changed'}}
- [ordered]@{head=$ExpectedHead;tree=(git rev-parse 'HEAD^{tree}').Trim();source='1692bba6347a287ab0f3cb554a4430fafffc474b';mode=$Mode;platform=$Platform;zig=$candidateZig;zig_version='0.16.0';zig_sha256=(Get-FileHash -LiteralPath $candidateZig).Hash;compiler_distribution=$candidateToolRoot;source_count=$candidateInputs.Count;tool_count=$candidateTools.Count;source_cases=27;auxiliary_source_cases=19;total_source_cases=46;public_activation=$false;node_loader_qualified=$false;manager_qualified=$false;full_pi_qualified=$false;scope='Private actual latest Host Object Ref Ctx reload cluster protocol-v2 graph Source27 GC and full GPA'}|ConvertTo-Json -Depth 6|Set-Content "$candidateReceipt/source.json" -Encoding utf8NoBOM
+ [ordered]@{head=$ExpectedHead;tree=(git rev-parse 'HEAD^{tree}').Trim();source='1692bba6347a287ab0f3cb554a4430fafffc474b';mode=$Mode;platform=$Platform;zig=$candidateZig;zig_version='0.16.0';zig_sha256=(Get-FileHash -LiteralPath $candidateZig).Hash;compiler_distribution=$candidateToolRoot;source_count=$candidateInputs.Count;tool_count=$candidateTools.Count;source_cases=27;auxiliary_source_cases=23;total_source_cases=50;public_activation=$false;node_loader_qualified=$false;manager_qualified=$false;full_pi_qualified=$false;scope='Private actual latest Host Object Ref Ctx reload cluster protocol-v2 graph Source27 GC and full GPA'}|ConvertTo-Json -Depth 6|Set-Content "$candidateReceipt/source.json" -Encoding utf8NoBOM
  return
 }
 if($Phase -eq 'Compile'){
- $candidateFormat=@(git ls-files 'src/extensions/native_chord*.zig')+@('src/native_chord_latest_source_test.zig','src/native_chord_node_loader_source_test.zig','src/native_chord_manager_source_test.zig','build.zig')
+ $candidateFormat=@(git ls-files 'src/extensions/native_chord*.zig')+@('src/native_chord_latest_source_test.zig','src/native_chord_node_loader_source_test.zig','src/native_chord_manager_source_test.zig','src/native_chord_cluster_source_test.zig','build.zig')
  & zig fmt --check @candidateFormat
  if($LASTEXITCODE -ne 0){throw 'Native formatting failed'}
- Owned-Process 'compile' @('build','build-native-chord-latest-source','build-native-chord-node-loader-source','build-native-chord-manager-source',"-Doptimize=$Mode",'-j1','--summary','all') 1320
+ Owned-Process 'compile' @('build','build-native-chord-latest-source','build-native-chord-node-loader-source','build-native-chord-manager-source','build-native-chord-cluster-source',"-Doptimize=$Mode",'-j1','--summary','all') 1320
  return
 }
 if($Phase -eq 'Run'){
- Owned-Process 'runtime' @('build','test-native-chord-latest-source','test-native-chord-node-loader-source','test-native-chord-manager-source',"-Doptimize=$Mode",'-j1','--test-timeout','120s','--summary','all') 300
+ Owned-Process 'runtime' @('build','test-native-chord-latest-source','test-native-chord-node-loader-source','test-native-chord-manager-source','test-native-chord-cluster-source',"-Doptimize=$Mode",'-j1','--test-timeout','120s','--summary','all') 300
  $candidateLog=(Get-Content "$candidateReceipt/runtime.stdout.log" -Raw)+[Environment]::NewLine+(Get-Content "$candidateReceipt/runtime.stderr.log" -Raw)
  $candidateMarker=[regex]::Matches($candidateLog,'CHORD_LATEST_COMPILED_INVENTORY=(\[[^\r\n]*\])')
  if($candidateMarker.Count -ne 1){throw 'Missing or duplicated compiled inventory'}
  $candidateNames=@($candidateMarker[0].Groups[1].Value|ConvertFrom-Json)
- $candidateWanted=@('native latest Chord1692 compiled selected inventory','native latest Chord1692 actual Source8 object factories reload cells resource adoption signals tasks','native latest Chord1692 actual Source8 full Host Connection RemoteRef RelayRef links calls state and invalidation','native latest Chord1692 actual Source2 already closed full Host construction accept connect','native latest Chord1692 actual Source9 protocol2 packed bytes window acknowledgement maxCalls negatives','native latest Chord1692 actual object refs root signals and declarations survive GC then teardown','native latest Chord1692 complete actual object factory root call and teardown GPA sweep','native latest Chord1692 full composed reload resources remote state frames packed C allocation and teardown GPA sweep')
- if($candidateNames.Count -ne 9 -or @($candidateNames|Sort-Object -Unique).Count -ne 9){throw 'Selected compiled inventory changed'}
+ $candidateWanted=@('native latest Chord1692 compiled selected inventory','native latest Chord1692 private continuation fresh OOM escape preserves stale user replacement and lookalike identities','native latest Chord1692 actual Source8 object factories reload cells resource adoption signals tasks','native latest Chord1692 actual Source8 full Host Connection RemoteRef RelayRef links calls state and invalidation','native latest Chord1692 actual Source2 already closed full Host construction accept connect','native latest Chord1692 actual Source9 protocol2 packed bytes window acknowledgement maxCalls negatives','native latest Chord1692 actual object refs root signals and declarations survive GC then teardown','native latest Chord1692 complete actual object factory root call and teardown GPA sweep','native latest Chord1692 full composed reload resources remote state frames packed C allocation and teardown GPA sweep')
+ if($candidateNames.Count -ne 10 -or @($candidateNames|Sort-Object -Unique).Count -ne 10){throw 'Selected compiled inventory changed'}
  foreach($candidateName in $candidateWanted){if(@($candidateNames|Where-Object{$_.EndsWith('.test.'+$candidateName,[StringComparison]::Ordinal)}).Count -ne 1){throw "Missing selected gate $candidateName"}}
  if(@($candidateNames|Where-Object{$_ -ceq 'extensions.native_durable_storage.test_0'}).Count -ne 1){throw 'Missing transitive durable-storage gate'}
- if($candidateLog.IndexOf('run test 9 pass (9 total)',[StringComparison]::Ordinal) -lt 0){throw 'All selected native gates did not execute'}
+ if($candidateLog.IndexOf('run test 10 pass (10 total)',[StringComparison]::Ordinal) -lt 0){throw 'All selected native gates did not execute'}
  $candidateAuxiliary=@()
- foreach($candidateComponent in @(@{marker='CHORD_LOADER_COMPILED_INVENTORY';count=3;source_cases=7;names=@('native latest Chord1692 NodeLoader compiled inventory','native latest Chord1692 NodeLoader actual Source7 roots imports generations TypeScript defaults and Host teardown')},@{marker='CHORD_MANAGER_COMPILED_INVENTORY';count=4;source_cases=12;names=@('native latest Chord1692 Manager compiled inventory','native latest Chord1692 Manager actual Source9 serialized driver ready fatal timeouts liveness replacement child control','native latest Chord1692 Manager actual Source3 kernel exclusive process lock independent names and release')})){
+ foreach($candidateComponent in @(@{marker='CHORD_LOADER_COMPILED_INVENTORY';count=3;source_cases=7;names=@('native latest Chord1692 NodeLoader compiled inventory','native latest Chord1692 NodeLoader actual Source7 roots imports generations TypeScript defaults and Host teardown')},@{marker='CHORD_MANAGER_COMPILED_INVENTORY';count=4;source_cases=12;names=@('native latest Chord1692 Manager compiled inventory','native latest Chord1692 Manager actual Source9 serialized driver ready fatal timeouts liveness replacement child control','native latest Chord1692 Manager actual Source3 kernel exclusive process lock independent names and release')},@{marker='CHORD_CLUSTER_COMPILED_INVENTORY';count=3;source_cases=4;names=@('native latest Chord1692 Cluster compiled inventory','native latest Chord1692 Cluster actual Source4 prepare commit retained roots failed vote removal reconciliation')})){
   $candidateAuxMarker=[regex]::Matches($candidateLog,$candidateComponent.marker+'=(\[[^\r\n]*\])')
   if($candidateAuxMarker.Count -ne 1){throw 'Missing auxiliary compiled inventory'}
   $candidateAuxNames=@($candidateAuxMarker[0].Groups[1].Value|ConvertFrom-Json)
@@ -124,7 +125,7 @@ if($Phase -eq 'Run'){
   $candidateAuxiliary+=@([ordered]@{marker=$candidateComponent.marker;source_cases=$candidateComponent.source_cases;compiled_tests=$candidateComponent.count;compiled_names=$candidateAuxNames;gc='passed';all_gpa_failures='not_yet_qualified';fork_driver='not_yet_implemented';full_qualification=$false})
  }
  $candidateAuxiliary|ConvertTo-Json -Depth 6|Set-Content "$candidateReceipt/auxiliary-result.json" -Encoding utf8NoBOM
- [ordered]@{head=$ExpectedHead;mode=$Mode;platform=$Platform;status='passed';source_cases=27;auxiliary_source_cases=19;total_source_cases=46;compiled_tests=9;auxiliary_compiled_tests=7;compiled_names=$candidateNames;gc='passed';all_gpa_failures='passed';host_await_seconds=10;test_timeout_seconds=120;outer_timeout_seconds=300;public_activation=$false;node_loader_qualified=$false;manager_qualified=$false;full_pi_qualified=$false}|ConvertTo-Json -Depth 6|Set-Content "$candidateReceipt/result.json" -Encoding utf8NoBOM
+ [ordered]@{head=$ExpectedHead;mode=$Mode;platform=$Platform;status='passed';source_cases=27;auxiliary_source_cases=23;total_source_cases=50;compiled_tests=10;auxiliary_compiled_tests=10;compiled_names=$candidateNames;gc='passed';all_gpa_failures='passed';host_await_seconds=10;test_timeout_seconds=120;outer_timeout_seconds=300;public_activation=$false;node_loader_qualified=$false;manager_qualified=$false;full_pi_qualified=$false}|ConvertTo-Json -Depth 6|Set-Content "$candidateReceipt/result.json" -Encoding utf8NoBOM
  return
 }
 if($Phase -eq 'Post'){

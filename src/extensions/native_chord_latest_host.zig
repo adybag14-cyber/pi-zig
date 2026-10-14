@@ -8,7 +8,9 @@ fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]
     const engine = h.Engine.fromContext(context.?);
     const method: Method = @enumFromInt(operation);
     const target = if (method == .serve) data[1] else receiver;
+    const generation = engine.native_allocation_generation;
     const result = invoke(engine, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, method, data[0]) catch |err| {
+        if (@import("native_chord_native_failure.zig").escape(engine, err, generation)) |escaped| return escaped;
         return if (method == .root or method == .joinRoot or method == .close or method == .load or method == .resolve or method == .relay or method == .invalidatePrincipal) @import("native_durable.zig").rejectedPromise(engine, err) else @import("native_durable.zig").reject(engine, err);
     };
     if (method == .root or method == .resolve) {

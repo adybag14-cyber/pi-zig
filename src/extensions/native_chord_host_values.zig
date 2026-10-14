@@ -126,11 +126,13 @@ pub fn wait(comptime next: *const fn (*Engine, c.JSValue, c.JSValue, bool, c_int
     const Adapter = struct {
         fn fulfilled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, phase: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
             const owner = Engine.fromContext(context.?);
-            return next(owner, data[0], if (argc > 0) argv[0] else c.pi_js_undefined(), false, phase) catch |err| @import("native_durable.zig").reject(owner, err);
+            const generation = owner.native_allocation_generation;
+            return next(owner, data[0], if (argc > 0) argv[0] else c.pi_js_undefined(), false, phase) catch |err| @import("native_chord_native_failure.zig").escape(owner, err, generation) orelse @import("native_durable.zig").reject(owner, err);
         }
         fn failed(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, phase: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
             const owner = Engine.fromContext(context.?);
-            return next(owner, data[0], if (argc > 0) argv[0] else c.pi_js_undefined(), true, phase) catch |err| @import("native_durable.zig").reject(owner, err);
+            const generation = owner.native_allocation_generation;
+            return next(owner, data[0], if (argc > 0) argv[0] else c.pi_js_undefined(), true, phase) catch |err| @import("native_chord_native_failure.zig").escape(owner, err, generation) orelse @import("native_durable.zig").reject(owner, err);
         }
     };
     var data = [_]c.JSValue{work};
