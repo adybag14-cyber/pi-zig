@@ -1,0 +1,115 @@
+name: Private native SDK tool shell renderers candidate
+
+on:
+  push:
+    branches: [checkpoint/native-sdk-tool-shell-renderers-candidate-20261014]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-sdk-tool-shell-renderers-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        mode: [Debug, ReleaseSafe]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 275
+    env:
+      PI_SHELL_ALLOCATION_SHARDS: ${{ matrix.mode == 'Debug' && matrix.os == 'macos-latest' && '128' || matrix.mode == 'Debug' && matrix.os == 'ubuntu-latest' && '32' || matrix.mode == 'Debug' && matrix.os == 'windows-latest' && '16' || matrix.mode == 'ReleaseSafe' && matrix.os == 'macos-latest' && '32' || '8' }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact candidate and complete compiler
+        id: freeze
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskReceipt='verification/native-sdk-tool-shell-renderers-candidate'
+          New-Item -ItemType Directory -Path $taskReceipt | Out-Null
+          if((git rev-parse HEAD).Trim() -cne '${{ github.sha }}'){throw'Candidate head mismatch'}
+          if((& zig version).Trim() -cne '0.16.0'){throw'Compiler version mismatch'}
+          $taskZig=(Get-Command zig).Source
+          $taskEnv=(& zig env)-join"`n"
+          $taskMatch=[regex]::Match($taskEnv,'\.lib_dir = ("(?:[^"\\]|\\.)*")')
+          if(!$taskMatch.Success){throw'Compiler library directory absent'}
+          $taskLib=$taskMatch.Groups[1].Value|ConvertFrom-Json
+          $taskInputs=@(git ls-files|Sort-Object|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}})
+          $taskTools=@($taskZig;Get-ChildItem -LiteralPath $taskLib -File -Recurse -Force|Where-Object{!$_.LinkType}|ForEach-Object FullName)|Sort-Object -Unique|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}}
+          $taskInputs|ConvertTo-Json -Depth 4|Set-Content "$taskReceipt/inputs.json"
+          $taskTools|ConvertTo-Json -Depth 4|Set-Content "$taskReceipt/tools.json"
+          [ordered]@{head='${{ github.sha }}';tree=(git rev-parse 'HEAD^{tree}').Trim();os='${{ matrix.os }}';mode='${{ matrix.mode }}';allocation_shards=[int]$env:PI_SHELL_ALLOCATION_SHARDS;source_count=$taskInputs.Count;tools_count=@($taskTools).Count;source_cases=53;source_fixture_platform='Windows';genuine_posix_source_replay='actual53_Linux_macOS_raw_equivalent_run38556609926';public_activation=$false}|ConvertTo-Json|Set-Content "$taskReceipt/source.json"
+      - name: Compile the unchanged native artifact without execution
+        shell: pwsh
+        timeout-minutes: 23
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskZig=(Get-Command zig).Source
+          & verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1 -Executable $taskZig -WorkingDirectory (Get-Location).Path -Arguments @('build','build-native-sdk-tool-shell-renderers','-Doptimize=${{ matrix.mode }}','-j1','--test-timeout','120s','--summary','all') -ReceiptBase 'verification/native-sdk-tool-shell-renderers-candidate/compile' -TimeoutSeconds 1320
+      - name: Execute every original allocation index and full Source53 in bounded partitions
+        shell: pwsh
+        timeout-minutes: 250
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskZig=(Get-Command zig).Source
+          $taskReceipt='verification/native-sdk-tool-shell-renderers-candidate'
+          $taskUniverse=$null;$taskPrevious=0;$taskIndices=[Collections.Generic.List[int]]::new()
+          $taskShardCount=[int]$env:PI_SHELL_ALLOCATION_SHARDS
+          if($taskShardCount -notin @(8,16,32,128)){throw'Unexpected allocation partition profile'}
+          $taskBatchWatch=[Diagnostics.Stopwatch]::StartNew()
+          foreach($taskShard in 0..($taskShardCount-1)){
+            $taskRemainingSeconds=250*60-$taskBatchWatch.Elapsed.TotalSeconds
+            if($taskRemainingSeconds -lt 360){throw'Batch admission stopped before a new partition: less than six minutes remain for the owned300s runtime and10s settlement'}
+            $env:PI_EXHAUSTIVE_ALLOCATION_SHARD=[string]$taskShard
+            $env:PI_EXHAUSTIVE_ALLOCATION_SHARDS=[string]$taskShardCount
+            $taskBase="$taskReceipt/shard-$taskShard"
+            & verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1 -Executable $taskZig -WorkingDirectory (Get-Location).Path -Arguments @('build','test-native-sdk-tool-shell-renderers','-Doptimize=${{ matrix.mode }}','-j1','--test-timeout','120s','--summary','all') -ReceiptBase $taskBase -TimeoutSeconds 300
+            $taskLog=Get-Content -LiteralPath "$taskBase.stderr.log" -Raw
+            if($taskLog -notmatch '(?m)Build Summary:.*\b11/11 tests passed'){throw'Original selected inventory did not pass'}
+            $taskRange=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_RANGE sdk-tool-shell-renderers (\d+)/(\d+) range=\[(\d+),(\d+)\) total=(\d+)$'))
+            if($taskRange.Count -ne 1){throw'Exact allocation range missing or repeated'}
+            $taskValues=@($taskRange[0].Groups|Select-Object -Skip 1|ForEach-Object{[long]$_.Value})
+            $taskStart=$taskValues[2];$taskEnd=$taskValues[3];$taskTotal=$taskValues[4]
+            $taskBaseline=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_BASELINE sdk-tool-shell-renderers total=(\d+)$'))
+            if($taskBaseline.Count -ne 1 -or [long]$taskBaseline[0].Groups[1].Value -ne $taskTotal){throw'Original baseline marker missing or changed'}
+            if($null -eq $taskUniverse){$taskUniverse=$taskTotal}
+            if($taskValues[0] -ne $taskShard -or $taskValues[1] -ne $taskShardCount -or $taskTotal -ne $taskUniverse -or $taskStart -ne $taskPrevious -or $taskStart -ne [math]::Floor($taskTotal*$taskShard/$taskShardCount) -or $taskEnd -ne [math]::Floor($taskTotal*($taskShard+1)/$taskShardCount)){throw'Allocation universe gap/overlap/change'}
+            $taskBegin=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_INDEX_BEGIN sdk-tool-shell-renderers (\d+)$')|ForEach-Object{[int]$_.Groups[1].Value})
+            $taskDone=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE sdk-tool-shell-renderers (\d+)$')|ForEach-Object{[int]$_.Groups[1].Value})
+            if($taskBegin.Count -ne ($taskEnd-$taskStart) -or $taskDone.Count -ne $taskBegin.Count){throw'Original allocation indices missing'}
+            for($taskIndex=0;$taskIndex -lt $taskDone.Count;$taskIndex++){if($taskBegin[$taskIndex] -ne ($taskStart+$taskIndex) -or $taskDone[$taskIndex] -ne ($taskStart+$taskIndex)){throw'Index gap or duplicate'};$taskIndices.Add($taskDone[$taskIndex])}
+            $taskComplete="EXHAUSTIVE_ALLOCATION_COMPLETE sdk-tool-shell-renderers $taskShard/$taskShardCount range=[$taskStart,$taskEnd) total=$taskTotal"
+            if([regex]::Matches($taskLog,[regex]::Escape($taskComplete)).Count -ne 1){throw'Exact terminal partition marker absent'}
+            $taskPrevious=$taskEnd
+          }
+          if($taskPrevious -ne $taskUniverse -or $taskIndices.Count -ne $taskUniverse -or @($taskIndices|Sort-Object -Unique).Count -ne $taskUniverse){throw'Complete allocation universe did not pass'}
+          [ordered]@{head='${{ github.sha }}';os='${{ matrix.os }}';mode='${{ matrix.mode }}';status='passed';source_cases=53;source_fixture_platform='Windows';genuine_posix_source_replay='actual53_Linux_macOS_raw_equivalent_run38556609926';tests_each=11;shards=$taskShardCount;baseline=$taskUniverse;completed_indices=$taskIndices.Count;missing=0;duplicates=0;public_activation=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
+      - name: Verify full frozen Source and tool inputs after terminal execution
+        if: ${{ always() && steps.freeze.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskReceipt='verification/native-sdk-tool-shell-renderers-candidate'
+          foreach($taskKind in @('inputs','tools')){
+            $taskRows=@(Get-Content -LiteralPath "$taskReceipt/$taskKind.json" -Raw|ConvertFrom-Json)
+            $taskDrift=@($taskRows|Where-Object{!(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256}|ForEach-Object path)
+            [ordered]@{count=$taskRows.Count;drift=$taskDrift;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 4|Set-Content "$taskReceipt/$taskKind-posthash.json"
+            if($taskDrift.Count){throw"Frozen $taskKind changed"}
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-sdk-tool-shell-renderers-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-sdk-tool-shell-renderers-candidate/
