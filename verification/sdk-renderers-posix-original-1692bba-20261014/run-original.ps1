@@ -1,8 +1,9 @@
+param([ValidateSet('renderers','statistics')][string]$Task='renderers')
 $ErrorActionPreference='Stop'
 $taskCandidate=(Get-Location).Path
 $taskSource=Join-Path $taskCandidate '.reference-source'
 $taskBundle=Join-Path $taskCandidate 'verification/sdk-renderers-posix-original-1692bba-20261014'
-$taskReceipts=Join-Path $taskCandidate 'verification/sdk-renderers-posix-original-result'
+$taskReceipts=Join-Path $taskCandidate $(if($Task -eq 'statistics'){'verification/sdk-statistics-original-result'}else{'verification/sdk-renderers-posix-original-result'})
 [void](New-Item -ItemType Directory -Path $taskReceipts -Force)
 $taskNode=(Get-Command node).Source
 if((& $taskNode --version).Trim() -cne 'v24.14.0'){throw 'Original Node pin mismatch'}
@@ -48,8 +49,10 @@ function Verify-Original {
 $taskObserverUri=[UriBuilder]::new();$taskObserverUri.Scheme='file';$taskObserverUri.Host='';$taskObserverUri.Port=-1;$taskObserverUri.Path=Join-Path $taskBundle 'observe-original.mjs'
 $env:PI_RENDERER_SOURCE_ROOT=$taskSource;$env:PI_RENDERER_CANDIDATE_ROOT=$taskCandidate;$env:PI_RENDERER_RECEIPTS=$taskReceipts
 $taskResults=@()
-foreach($taskFamily in @('listing','shell')){
-    $taskInput=Join-Path $taskCandidate "src/extensions/fixtures/sdk-tool-$taskFamily-renderers-e622.input.txt"
+$taskFamilies=if($Task -eq 'statistics'){@('statistics')}else{@('listing','shell')}
+foreach($taskFamily in $taskFamilies){
+    $taskInput=if($Task -eq 'statistics'){Join-Path $taskCandidate 'verification/sdk-statistics-original-1692bba-20261014/sdk-session-statistics-1692.input.txt'}else{Join-Path $taskCandidate "src/extensions/fixtures/sdk-tool-$taskFamily-renderers-e622.input.txt"}
+    $taskCaptureScript=if($Task -eq 'statistics'){Join-Path $taskCandidate 'verification/sdk-statistics-original-1692bba-20261014/capture-statistics.mjs'}else{Join-Path $taskBundle 'capture-original.mjs'}
     $taskCaptures=@()
     foreach($taskAttempt in @('first','second')){
         $taskBase=Join-Path $taskReceipts "$taskFamily-$taskAttempt"
@@ -59,17 +62,20 @@ foreach($taskFamily in @('listing','shell')){
         [ordered]@{minimum_free_bytes=2GB;available_bytes=$taskFree;checked_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content -LiteralPath "$taskBase-admission.json" -Encoding utf8NoBOM
         if($taskFree -lt 2GB){throw 'Original Source2GiB admission rejected'}
         $taskFailure=$null
-        try{& (Join-Path $taskCandidate 'verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1') -Executable $taskNode -WorkingDirectory $taskSource -Arguments @('--max-old-space-size=256','--conditions=source','--experimental-transform-types','--import',($taskObserverUri.Uri.AbsoluteUri),(Join-Path $taskBundle 'capture-original.mjs'),$taskFamily,"$taskBase-output.json",$taskInput) -ReceiptBase $taskBase -TimeoutSeconds 300}catch{$taskFailure=$_}
+        $taskCaptureTail=if($Task -eq 'statistics'){@($taskCaptureScript,"$taskBase-output.json",$taskInput)}else{@($taskCaptureScript,$taskFamily,"$taskBase-output.json",$taskInput)}
+        $taskCaptureArgs=@('--max-old-space-size=256','--conditions=source','--experimental-transform-types','--import',($taskObserverUri.Uri.AbsoluteUri))+$taskCaptureTail
+        try{& (Join-Path $taskCandidate 'verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1') -Executable $taskNode -WorkingDirectory $taskSource -Arguments $taskCaptureArgs -ReceiptBase $taskBase -TimeoutSeconds 300}catch{$taskFailure=$_}
         $taskAfter=Verify-Original
         [ordered]@{before=$taskBefore;after=$taskAfter;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 7|Set-Content -LiteralPath "$taskBase-posthash.json" -Encoding utf8NoBOM
         if($taskFailure){throw $taskFailure}
         $taskCaptures += Get-Content -LiteralPath "$taskBase-output.json" -Raw|ConvertFrom-Json
     }
-    $taskFirst=$taskCaptures[0].raw|ConvertTo-Json -Depth 100 -Compress;$taskSecond=$taskCaptures[1].raw|ConvertTo-Json -Depth 100 -Compress
+    $taskFirst=$(if($Task -eq 'statistics'){$taskCaptures[0].rows}else{$taskCaptures[0].raw})|ConvertTo-Json -Depth 100 -Compress
+    $taskSecond=$(if($Task -eq 'statistics'){$taskCaptures[1].rows}else{$taskCaptures[1].raw})|ConvertTo-Json -Depth 100 -Compress
     if($taskFirst -cne $taskSecond){throw "Original $taskFamily raw double capture drift"}
-    $taskWindows=Get-Content -LiteralPath (Join-Path $taskCandidate "src/extensions/fixtures/sdk-tool-$taskFamily-renderers-e622.json") -Raw|ConvertFrom-Json
-    $taskMatchesWindows=$taskFirst -ceq ($taskWindows|ConvertTo-Json -Depth 100 -Compress)
+    $taskMatchesWindows=$null
+    if($Task -ne 'statistics'){$taskWindows=Get-Content -LiteralPath (Join-Path $taskCandidate "src/extensions/fixtures/sdk-tool-$taskFamily-renderers-e622.json") -Raw|ConvertFrom-Json;$taskMatchesWindows=$taskFirst -ceq ($taskWindows|ConvertTo-Json -Depth 100 -Compress)}
     $taskResults += [ordered]@{family=$taskFamily;platform=$taskCaptures[0].platform;arch=$taskCaptures[0].arch;cases=$taskCaptures[0].cases;double_capture_identical=$true;windows_raw_equivalent=$taskMatchesWindows;first_sha256=(Get-FileHash -LiteralPath (Join-Path $taskReceipts "$taskFamily-first-output.json")).Hash;second_sha256=(Get-FileHash -LiteralPath (Join-Path $taskReceipts "$taskFamily-second-output.json")).Hash}
 }
 $taskPost=Verify-Original
-[ordered]@{status='genuine_original_renderer_double_captures_completed';head=$env:GITHUB_SHA;source='1692bba6347a287ab0f3cb554a4430fafffc474b';source_files=$taskSourceRows.Count;dependency_files=$taskDependencies.Count;node_tool_files=$taskNodeTools.Count;candidate_files=$taskCandidateRows.Count;catalog_scope='Pinned official439c5347 typed metadata; latest generated model catalog gate remains separate';families=$taskResults;posthash=$taskPost;public_activation=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $taskReceipts 'result.json') -Encoding utf8NoBOM
+[ordered]@{status=$(if($Task -eq 'statistics'){'genuine_original_statistics36_double_captures_completed'}else{'genuine_original_renderer_double_captures_completed'});head=$env:GITHUB_SHA;source='1692bba6347a287ab0f3cb554a4430fafffc474b';source_files=$taskSourceRows.Count;dependency_files=$taskDependencies.Count;node_tool_files=$taskNodeTools.Count;candidate_files=$taskCandidateRows.Count;catalog_scope='Pinned official439c5347 typed metadata; latest generated model catalog gate remains separate';families=$taskResults;posthash=$taskPost;public_activation=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $taskReceipts 'result.json') -Encoding utf8NoBOM
