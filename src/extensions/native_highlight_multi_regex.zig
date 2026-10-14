@@ -3,6 +3,7 @@ const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const regex = @import("native_highlight_regex.zig");
+const classes = @import("native_class.zig");
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const c = em.c;
 
@@ -16,11 +17,14 @@ pub const MultiRegex = struct {
         var scope: Scope = .{ .engine = engine };
         defer scope.deinit();
         const owner = try scope.object();
+        try initialize(&scope, owner);
+        return .{ .engine = engine, .owner = c.JS_DupValue(engine.context, owner), .language = c.JS_DupValue(engine.context, language) };
+    }
+    fn initialize(scope: *Scope, owner: c.JSValue) !void {
         try scope.put(owner, "matchIndexes", try scope.object());
         try scope.put(owner, "regexes", try scope.array());
-        try scope.put(owner, "matchAt", c.JS_NewInt32(engine.context, 1));
-        try scope.put(owner, "position", c.JS_NewInt32(engine.context, 0));
-        return .{ .engine = engine, .owner = c.JS_DupValue(engine.context, owner), .language = c.JS_DupValue(engine.context, language) };
+        try scope.put(owner, "matchAt", c.JS_NewInt32(scope.engine.context, 1));
+        try scope.put(owner, "position", c.JS_NewInt32(scope.engine.context, 0));
     }
     pub fn deinit(self: *MultiRegex) void {
         self.engine.freeValue(self.owner);
@@ -52,10 +56,15 @@ pub const MultiRegex = struct {
         var scope: Scope = .{ .engine = self.engine };
         defer scope.deinit();
         const expressions = try scope.get(self.owner, "regexes");
-        if (scope.equal(try scope.get(expressions, "length"), c.JS_NewInt32(self.engine.context, 0))) self.empty_exec = true;
-        const map = try scope.get(expressions, "map");
+        if (scope.equal(try scope.get(expressions, "length"), c.JS_NewInt32(self.engine.context, 0))) {
+            self.empty_exec = true;
+            const empty = try scope.own(try self.engine.checked(c.JS_NewCFunction(self.engine.context, emptyExec, "", 0)));
+            try scope.set(self.owner, "exec", empty);
+        }
+        const mapped_expressions = try scope.get(self.owner, "regexes");
+        const map = try scope.get(mapped_expressions, "map");
         const callback = try scope.own(try self.engine.checked(c.JS_NewCFunction(self.engine.context, second, "", 1)));
-        const terminators = try scope.call(map, expressions, &.{callback});
+        const terminators = try scope.call(map, mapped_expressions, &.{callback});
         const joined = try scope.own(try regex.join(self.engine, terminators, c.pi_js_undefined()));
         const constructor = try scope.global("RegExp");
         const text = try scope.own(try regex.source(self.engine, joined));
@@ -82,6 +91,45 @@ pub const MultiRegex = struct {
         return c.JS_DupValue(self.engine.context, result);
     }
 };
+
+// Private grammar compiler class. Methods keep the language as a traced VM
+// closure root and take their observable receiver from the actual call.
+pub fn constructor(engine: *em.Engine, language: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const prototype = try scope.object();
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    var roots = [_]c.JSValue{language};
+    inline for (.{ .{ "addRule", 2 }, .{ "compile", 0 }, .{ "exec", 1 } }, 0..) |entry, index| {
+        const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, methodCall, entry[0], entry[1], @intCast(index), roots.len, &roots)));
+        if (c.JS_DefinePropertyValueStr(engine.context, prototype, entry[0], c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    }
+    return classes.constructor(engine, "MultiRegex", 0, prototype, create, &.{language});
+}
+fn create(engine: *em.Engine, target: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const owner = try scope.own(try classes.object(engine, target));
+    try MultiRegex.initialize(&scope, owner);
+    return c.JS_DupValue(engine.context, owner);
+}
+fn methodCall(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    return invoke(engine, receiver, roots[0], magic, if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(engine, err);
+}
+fn invoke(engine: *em.Engine, receiver: c.JSValue, language: c.JSValue, method: c_int, args: []const c.JSValue) !c.JSValue {
+    var matcher: MultiRegex = .{ .engine = engine, .owner = receiver, .language = language };
+    switch (method) {
+        0 => try matcher.addRule(if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined()),
+        1 => try matcher.compile(),
+        2 => return matcher.exec(if (args.len > 0) args[0] else c.pi_js_undefined()),
+        else => unreachable,
+    }
+    return c.pi_js_undefined();
+}
+fn emptyExec(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    return c.pi_js_null();
+}
 
 fn second(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
