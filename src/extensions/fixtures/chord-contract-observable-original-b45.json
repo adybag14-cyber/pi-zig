@@ -1,0 +1,114 @@
+{
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "cases": [
+    {
+      "name": "remote consults the live Number.isInteger with its receiver",
+      "value": {
+        "seen": [
+          [
+            1,
+            true
+          ]
+        ],
+        "version": 1
+      }
+    },
+    {
+      "name": "remote preserves a live Number.isInteger raw throw",
+      "value": true
+    },
+    {
+      "name": "description header consults a replacement Number.isInteger",
+      "value": {
+        "code": "invalid",
+        "reason": "token"
+      }
+    },
+    {
+      "name": "remote positive version comparison uses VM coercion after integer hook",
+      "value": {
+        "events": [
+          "integer.version",
+          "version.valueOf"
+        ],
+        "kept": true
+      }
+    },
+    {
+      "name": "placedOn reads prefix again and both lengths before coercing",
+      "value": {
+        "result": true,
+        "events": [
+          "prefix1",
+          "startsWith:session:",
+          "left.length",
+          "prefix2",
+          "right.length",
+          "left.valueOf",
+          "right.valueOf"
+        ]
+      }
+    },
+    {
+      "name": "placedOn string-valued lengths compare lexically",
+      "value": {
+        "result": false,
+        "prefixReads": 2
+      }
+    },
+    {
+      "name": "placedOn comparison preserves raw primitive failure after right getter",
+      "value": {
+        "original": true,
+        "events": [
+          "prefix1",
+          "startsWith",
+          "left.length",
+          "prefix2",
+          "right.length",
+          "left.primitive:number"
+        ]
+      }
+    },
+    {
+      "name": "placedOn false prefix short circuits every length and second prefix",
+      "value": {
+        "result": false,
+        "events": [
+          "prefix",
+          "startsWith"
+        ]
+      }
+    },
+    {
+      "name": "named placement getter preserves raw identity without reading input",
+      "value": true
+    },
+    {
+      "name": "placedOn gets startsWith before reading its argument prefix",
+      "value": {
+        "result": false,
+        "events": [
+          "startsWith.get",
+          "prefix.get",
+          "startsWith.call:p"
+        ]
+      }
+    },
+    {
+      "name": "header reads definition.version before rejecting empty name",
+      "value": true
+    },
+    {
+      "name": "placement template converts prefix before reading key",
+      "value": {
+        "result": "p<k>",
+        "events": [
+          "prefix.get",
+          "prefix.primitive:string",
+          "key.get"
+        ]
+      }
+    }
+  ]
+}

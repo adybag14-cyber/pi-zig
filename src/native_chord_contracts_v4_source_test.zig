@@ -46,17 +46,33 @@ fn setup(gpa: std.mem.Allocator) !*em.Engine {
 }
 const Probe = struct {
     fn run(gpa: std.mem.Allocator) !void {
+        return runFixture(gpa, "chord-contract-placement-original-b45", "chordV4ContractCases");
+    }
+    fn observable(gpa: std.mem.Allocator) !void {
+        return runFixture(gpa, "chord-contract-observable-original-b45", "chordV4ObservableCases");
+    }
+    fn runFixture(gpa: std.mem.Allocator, comptime stem: []const u8, comptime global_name: []const u8) !void {
         const engine = try setup(gpa);
         defer engine.deinit();
         defer c.JS_RunGC(engine.runtime);
         const generation = engine.native_allocation_generation;
         engine.native_exception_diagnostics_suppressed += 1;
         defer engine.native_exception_diagnostics_suppressed -= 1;
-        const golden = @embedFile("extensions/fixtures/chord-contract-placement-original-b45.json");
+        const golden = @embedFile("extensions/fixtures/" ++ stem ++ ".json");
         const global = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(global);
         try js.define(engine, global, "chordV4Original", try engine.checked(c.JS_ParseJSON(engine.context, golden.ptr, golden.len, "chord-contract-placement-original-b45.json")));
-        const result = engine.evalModule("const api=nativeChordV4Api;await(async()=>{\n" ++ @embedFile("extensions/fixtures/chord-contract-placement-original-b45.input.txt") ++ "\n})();const actual=chordV4ContractCases;if(actual.length!==chordV4Original.cases.length)throw Error('Source28 count');for(let i=0;i<actual.length;i++)if(JSON.stringify(actual[i])!==JSON.stringify(chordV4Original.cases[i]))throw Error(JSON.stringify({case:i,actual:actual[i],expected:chordV4Original.cases[i]}));", "chord-contract-placement-b45-source.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+        const result = engine.evalModule("const api=nativeChordV4Api;await(async()=>{\n" ++ @embedFile("extensions/fixtures/" ++ stem ++ ".input.txt") ++ "\n})();const actual=globalThis." ++ global_name ++ ";if(actual.length!==chordV4Original.cases.length)throw Error('Source case count');for(let i=0;i<actual.length;i++)if(JSON.stringify(actual[i])!==JSON.stringify(chordV4Original.cases[i]))throw Error(JSON.stringify({case:i,actual:actual[i],expected:chordV4Original.cases[i]}));", "chord-contract-placement-b45-source.mjs") catch |err| {
+            const mapped = engine.nativeAllocationError(err, generation);
+            if (mapped != error.OutOfMemory) if (engine.captured_exception) |exception| {
+                const message = c.JS_ToCString(engine.context, exception);
+                if (message != null) {
+                    defer c.JS_FreeCString(engine.context, message);
+                    std.debug.print("V4 contracts actual Source {s}: {s}\n", .{ stem, std.mem.span(message) });
+                }
+            };
+            return mapped;
+        };
         engine.freeValue(result);
     }
 };
@@ -80,6 +96,21 @@ test "native Chordb45 contracts full Source28 and native GC teardown every host 
                 std.debug.print("CHORD_V4_CONTRACTS_GPA_BASELINE_ALLOCATIONS={d}\n", .{failing.alloc_index});
             };
             return Probe.run(gpa);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, AllocationProbe.run, .{});
+}
+test "native Chordb45 contracts actual Source12 observable integer getter coercion ordering and raw identity with GC" {
+    try Probe.observable(std.testing.allocator);
+}
+test "native Chordb45 contracts full observable Source12 and native GC teardown every host allocation failure" {
+    const AllocationProbe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+            defer if (failing.fail_index == std.math.maxInt(usize)) {
+                std.debug.print("CHORD_V4_OBSERVABLE_GPA_BASELINE_ALLOCATIONS={d}\n", .{failing.alloc_index});
+            };
+            return Probe.observable(gpa);
         }
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, AllocationProbe.run, .{});

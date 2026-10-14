@@ -1,0 +1,35 @@
+{
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "cases": 12,
+  "case_names": [
+    "remote consults the live Number.isInteger with its receiver",
+    "remote preserves a live Number.isInteger raw throw",
+    "description header consults a replacement Number.isInteger",
+    "remote positive version comparison uses VM coercion after integer hook",
+    "placedOn reads prefix again and both lengths before coercing",
+    "placedOn string-valued lengths compare lexically",
+    "placedOn comparison preserves raw primitive failure after right getter",
+    "placedOn false prefix short circuits every length and second prefix",
+    "named placement getter preserves raw identity without reading input",
+    "placedOn gets startsWith before reading its argument prefix",
+    "header reads definition.version before rejecting empty name",
+    "placement template converts prefix before reading key"
+  ],
+  "source_body_replaced": false,
+  "actual_factory_calls": true,
+  "caller": "src/extensions/fixtures/chord-contract-observable-original-b45.input.txt",
+  "caller_sha256": "E4EE16E7D99E1949E4C8B78BB33140ADB2344DB6C5285B7826DC2725068968B4",
+  "oracle": "src/extensions/fixtures/chord-contract-observable-original-b45.json",
+  "oracle_sha256": "08E4F101740E8D842261127EAD79B12CAE29AACC2C1D4266573BCE6C3BF89303",
+  "full_source_inputs": 34803,
+  "source_inputs": 1965,
+  "dependency_inputs": 31064,
+  "node_inputs": 1774,
+  "capture_attempts": [
+    "chord-contract-observable-b45-first-20261014",
+    "chord-contract-observable-b45-second-20261014"
+  ],
+  "native_qualified": false,
+  "public_activation": false,
+  "full_pi_qualified": false
+}

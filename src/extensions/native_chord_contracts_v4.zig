@@ -1,6 +1,5 @@
 //! Actual b45 Chord placement, token descriptions, fingerprints and binding.
 //! Private source-only v4 component; the complete Host graph is not activated.
-const std = @import("std");
 const scoped = @import("native_chord_values.zig");
 const Scope = scoped.Scope;
 const js = scoped.js;
@@ -32,11 +31,14 @@ fn chordError(s: *Scope, bindings: c.JSValue, code: []const u8, reason: ?[]const
     var args = [_]c.JSValue{ try s.text(code), message, options };
     return s.engine.checked(c.JS_Throw(s.engine.context, try s.engine.checked(c.JS_CallConstructor(s.engine.context, constructor, 3, &args))));
 }
-fn integer(value: c.JSValue, engine: *Engine) bool {
-    if (!c.JS_IsNumber(value)) return false;
-    var number: f64 = undefined;
-    if (c.JS_ToFloat64(engine.context, &number, value) < 0) return false;
-    return std.math.isFinite(number) and @floor(number) == number;
+fn integer(value: c.JSValue, engine: *Engine) !bool {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    return c.JS_ToBool(engine.context, try s.builtin("Number", "isInteger", &.{value})) != 0;
+}
+fn comparison(s: *Scope, operation: c_int, left: c.JSValue, right: c.JSValue) !bool {
+    const result = try s.keep(try s.engine.checked(c.JS_PiBinaryOperator(s.engine.context, operation, left, right)));
+    return c.JS_ToBool(s.engine.context, result) != 0;
 }
 fn member(s: *Scope, bindings: c.JSValue, name: c.JSValue, input: c.JSValue, remote: bool) anyerror!c.JSValue {
     for (reserved) |label| if (try s.equal(name, label)) return typeError(s, &.{ try s.text("member name is reserved: "), name });
@@ -71,8 +73,8 @@ fn hasName(s: *Scope, placement: c.JSValue) !bool {
 }
 fn samePlacement(s: *Scope, a: c.JSValue, b: c.JSValue) !bool {
     const left = try s.get(a, "host");
-    const right = try s.get(b, "host");
     const left_json = try s.keep(try canonical.canonicalJson(s.engine, if (c.JS_IsNull(left) or c.JS_IsUndefined(left)) c.pi_js_null() else left));
+    const right = try s.get(b, "host");
     const right_json = try s.keep(try canonical.canonicalJson(s.engine, if (c.JS_IsNull(right) or c.JS_IsUndefined(right)) c.pi_js_null() else right));
     return c.JS_IsStrictEqual(s.engine.context, left_json, right_json);
 }
@@ -80,7 +82,9 @@ pub fn placementText(engine: *Engine, placement: c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     if (try hasName(&s, placement)) return s.result(try s.get(placement, "name"));
-    return strings.concat(engine, &.{ try s.get(placement, "prefix"), try s.text("<"), try s.get(placement, "key"), try s.text(">") });
+    const prefix = try s.keep(try engine.checked(c.JS_ToString(engine.context, try s.get(placement, "prefix"))));
+    const key = try s.keep(try engine.checked(c.JS_ToString(engine.context, try s.get(placement, "key"))));
+    return strings.concat(engine, &.{ prefix, try s.text("<"), key, try s.text(">") });
 }
 fn placementOf(s: *Scope, description: c.JSValue) !c.JSValue {
     const host = try s.get(description, "host");
@@ -97,19 +101,18 @@ pub fn resolveHost(engine: *Engine, chord_error: c.JSValue, type_name: c.JSValue
         try js.define(engine, bindings, "ChordError", c.JS_DupValue(engine.context, chord_error));
         return chordError(&s, bindings, "invalid", "placement", &.{ type_name, try s.text(": input field "), key, try s.text(" names no host") });
     }
-    return strings.concat(engine, &.{ try s.get(placement, "prefix"), value });
+    return engine.checked(c.JS_PiBinaryOperator(engine.context, 0, try s.get(placement, "prefix"), value));
 }
 pub fn placedOn(engine: *Engine, placement: c.JSValue, host_name: c.JSValue) !bool {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     if (try hasName(&s, placement)) return c.JS_IsStrictEqual(engine.context, try s.get(placement, "name"), host_name);
-    const prefix = try s.get(placement, "prefix");
-    const starts = try s.keep(try js.invoke(engine, host_name, "startsWith", &.{prefix}));
+    const starts_with = try s.get(host_name, "startsWith");
+    const starts = try s.keep(try js.call(engine, starts_with, host_name, &.{try s.get(placement, "prefix")}));
     if (c.JS_ToBool(engine.context, starts) <= 0) return false;
-    var name_length: f64 = undefined;
-    var prefix_length: f64 = undefined;
-    if (c.JS_ToFloat64(engine.context, &name_length, try s.get(host_name, "length")) < 0 or c.JS_ToFloat64(engine.context, &prefix_length, try s.get(prefix, "length")) < 0) return js.capture(engine);
-    return name_length > prefix_length;
+    const name_length = try s.get(host_name, "length");
+    const prefix_length = try s.get(try s.get(placement, "prefix"), "length");
+    return comparison(&s, 6, name_length, prefix_length);
 }
 pub fn contractFromDescription(engine: *Engine, chord_error: c.JSValue, description: c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
@@ -120,7 +123,7 @@ pub fn contractFromDescription(engine: *Engine, chord_error: c.JSValue, descript
     const input = try s.get(description, "input");
     const host = try s.get(description, "host");
     const remote = try s.equal(scope, "remote");
-    if (!c.JS_IsString(name) or (!remote and !try s.equal(scope, "local")) or !integer(version, engine) or remote != !c.JS_IsUndefined(host)) {
+    if (!c.JS_IsString(name) or (!remote and !try s.equal(scope, "local")) or !(try integer(version, engine)) or remote != !c.JS_IsUndefined(host)) {
         const bindings = try s.record();
         try js.define(engine, bindings, "ChordError", c.JS_DupValue(engine.context, chord_error));
         return chordError(&s, bindings, "invalid", "token", &.{try s.text("malformed contract token")});
@@ -138,11 +141,9 @@ pub fn contractFromDescription(engine: *Engine, chord_error: c.JSValue, descript
     return finish(&s, result, description);
 }
 fn token(s: *Scope, bindings: c.JSValue, name: c.JSValue, definition: c.JSValue, remote: bool) anyerror!c.JSValue {
-    if (c.JS_ToBool(s.engine.context, name) <= 0) return typeError(s, &.{try s.text("contract name is empty")});
     const version = try s.get(definition, "version");
-    var number: f64 = 0;
-    if (c.JS_IsNumber(version)) _ = c.JS_ToFloat64(s.engine.context, &number, version);
-    if (!integer(version, s.engine) or number < 1) return typeError(s, &.{try s.text("contract version must be a positive integer")});
+    if (c.JS_ToBool(s.engine.context, name) <= 0) return typeError(s, &.{try s.text("contract name is empty")});
+    if (!(try integer(version, s.engine)) or try comparison(s, 4, version, c.JS_NewInt32(s.engine.context, 1))) return typeError(s, &.{try s.text("contract version must be a positive integer")});
     var host = c.pi_js_undefined();
     if (remote) {
         const placement = try s.get(definition, "host");

@@ -1,0 +1,55 @@
+const cases=[];
+const def=version=>({version,input:api.Type.Object({}),host:api.hostNamed('server'),variants:{main:{methods:{ping:api.method()}}}});
+const run=(name,fn)=>{const value=fn();cases.push({name,value})};
+run('remote consults the live Number.isInteger with its receiver',()=>{
+  const original=Number.isInteger,seen=[];Number.isInteger=function(value){seen.push([value,this===Number]);return original(value)};
+  try{const token=api.remote('t.v4.live-integer',def(1));return {seen,version:token.version}}finally{Number.isInteger=original}
+});
+run('remote preserves a live Number.isInteger raw throw',()=>{
+  const original=Number.isInteger,marker={integer:true};Number.isInteger=()=>{throw marker};
+  try{try{api.remote('t.v4.integer-throw',def(1))}catch(error){if(error!==marker)throw error;return true}throw Error('missing integer throw')}finally{Number.isInteger=original}
+});
+run('description header consults a replacement Number.isInteger',()=>{
+  const original=Number.isInteger;Number.isInteger=()=>false;
+  try{try{api.contractFromDescription({name:'t.v4.description-integer',scope:'local',version:1,input:{},variants:{}})}catch(error){if(!api.isChordError(error,'invalid')||error.reason!=='token')throw error;return {code:error.code,reason:error.reason}}throw Error('replacement integer ignored')}finally{Number.isInteger=original}
+});
+run('remote positive version comparison uses VM coercion after integer hook',()=>{
+  const original=Number.isInteger,events=[];const version={valueOf(){events.push('version.valueOf');return 2}};Number.isInteger=value=>{events.push(value===version?'integer.version':'integer.other');return true};
+  try{const token=api.remote('t.v4.version-coercion',def(version));return {events,kept:token.version===version}}finally{Number.isInteger=original}
+});
+run('placedOn reads prefix again and both lengths before coercing',()=>{
+  const events=[];let prefixes=0;const right={get length(){events.push('right.length');return {valueOf(){events.push('right.valueOf');return 3}}}};
+  const placement={key:'key',get prefix(){events.push('prefix'+(++prefixes));return prefixes===1?'session:':right}};
+  const host={startsWith(prefix){events.push('startsWith:'+prefix);return true},get length(){events.push('left.length');return {valueOf(){events.push('left.valueOf');return 20}}}};
+  return {result:api.placedOn(placement,host),events};
+});
+run('placedOn string-valued lengths compare lexically',()=>{
+  let read=0;const placement={key:'key',get prefix(){return ++read===1?'p':{length:'3'}}};const host={startsWith(){return true},length:'20'};
+  return {result:api.placedOn(placement,host),prefixReads:read};
+});
+run('placedOn comparison preserves raw primitive failure after right getter',()=>{
+  const events=[],marker={length:true};let read=0;const placement={key:'key',get prefix(){events.push('prefix'+(++read));return read===1?'p':{get length(){events.push('right.length');return 3}}}};
+  const host={startsWith(){events.push('startsWith');return true},get length(){events.push('left.length');return {[Symbol.toPrimitive](hint){events.push('left.primitive:'+hint);throw marker}}}};
+  try{api.placedOn(placement,host)}catch(error){if(error!==marker)throw error;return {original:true,events}}throw Error('missing primitive throw');
+});
+run('placedOn false prefix short circuits every length and second prefix',()=>{
+  const events=[];const placement={key:'key',get prefix(){events.push('prefix');return 'p'}};const host={startsWith(){events.push('startsWith');return false},get length(){throw Error('length must not be read')}};
+  return {result:api.placedOn(placement,host),events};
+});
+run('named placement getter preserves raw identity without reading input',()=>{
+  const marker={name:true};const placement={get name(){throw marker}};const input=new Proxy({}, {get(){throw Error('input must not be read')}});
+  try{api.resolveHost('t.v4.named-getter',placement,input)}catch(error){if(error!==marker)throw error;return true}throw Error('missing named getter throw');
+});
+run('placedOn gets startsWith before reading its argument prefix',()=>{
+  const events=[];const host={get startsWith(){events.push('startsWith.get');return function(prefix){events.push('startsWith.call:'+prefix);return false}}};const placement={key:'key',get prefix(){events.push('prefix.get');return 'p'}};
+  return {result:api.placedOn(placement,host),events};
+});
+run('header reads definition.version before rejecting empty name',()=>{
+  const marker={version:true};const definition={get version(){throw marker}};
+  try{api.remote('',definition)}catch(error){if(error!==marker)throw error;return true}throw Error('missing header getter throw');
+});
+run('placement template converts prefix before reading key',()=>{
+  const events=[];const placement={get prefix(){events.push('prefix.get');return {[Symbol.toPrimitive](hint){events.push('prefix.primitive:'+hint);return 'p'}}},get key(){events.push('key.get');return 'k'}};
+  return {result:api.placementText(placement),events};
+});
+globalThis.chordV4ObservableCases=cases;
