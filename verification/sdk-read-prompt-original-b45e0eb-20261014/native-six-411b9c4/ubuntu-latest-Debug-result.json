@@ -1,0 +1,21 @@
+{
+  "head": "411b9c4449541c306b7a17aa797c380645e1a8b2",
+  "os": "ubuntu-latest",
+  "mode": "Debug",
+  "status": "passed",
+  "source_cases": 54,
+  "source_fixture_platform": "Windows",
+  "genuine_original_source_replay": "actual_b45_54_doublecaptures_Windows_d6e28aec_Linux_macOS_original_capture_pending",
+  "public_class_metadata_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "full_read_renderer_qualified": false,
+  "source_authority": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "tests_each": 6,
+  "shards": 8,
+  "baseline": 251,
+  "completed_indices": 251,
+  "missing": 0,
+  "duplicates": 0,
+  "public_activation": false,
+  "completed_utc": "2026-10-14T19:12:05.4600773+00:00"
+}

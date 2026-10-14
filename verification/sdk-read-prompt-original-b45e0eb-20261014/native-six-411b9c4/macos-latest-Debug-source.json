@@ -1,0 +1,17 @@
+{
+  "head": "411b9c4449541c306b7a17aa797c380645e1a8b2",
+  "tree": "c8a8bd56bff975adc666d78180d9d0fe62583279",
+  "os": "macos-latest",
+  "mode": "Debug",
+  "allocation_shards": 8,
+  "source_count": 5236,
+  "tools_count": 19543,
+  "source_cases": 54,
+  "source_fixture_platform": "Windows",
+  "genuine_original_source_replay": "actual_b45_54_doublecaptures_Windows_d6e28aec_Linux_macOS_original_capture_pending",
+  "public_class_metadata_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "full_read_renderer_qualified": false,
+  "source_authority": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "public_activation": false
+}
