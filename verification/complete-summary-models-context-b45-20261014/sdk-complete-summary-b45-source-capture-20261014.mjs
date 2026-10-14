@@ -1,0 +1,10 @@
+import {readFileSync,writeFileSync} from 'node:fs';import {createHash} from 'node:crypto';
+const base='file:///C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/packages/';
+const {completeSummarization}=await import(base+'coding-agent/src/core/compaction/compaction.ts');
+const {registerApiProvider}=await import(base+'ai/src/compat.ts');
+const provider=(model,context,options)=>({result(){return globalThis.summaryDefaultEntry(model,context,options);}});
+registerApiProvider({api:'summary-fixture',stream:provider,streamSimple:provider},'summary-fixture');
+globalThis.summaryAPI={completeSummarization};
+const input=readFileSync(process.argv[3]);await import('data:text/javascript,'+encodeURIComponent(input.toString('utf8')));
+if(completeSummaryRows.length!==28)throw Error('Original28 required');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb',inputSha256:createHash('sha256').update(input).digest('hex'),cases:28,scope:'Actual unchanged completeSummarization and retry/UUID dependencies; actual global compat registry with caller-owned custom provider for two default cases. Native orchestration dependency tests do not qualify the complete global compat implementation.',rows:completeSummaryRows},null,2));

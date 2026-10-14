@@ -1,0 +1,152 @@
+{
+  "production_crypto_qualified": false,
+  "platform": "Windows Debug",
+  "summary_source_files": 5212,
+  "compiler_drift": 0,
+  "code_commit": "99364b011ab8e18546d180e6ab4aebbf81bd1ca2",
+  "prior_negative": "Retained compile shadowing failure and runtime controlled-provider receiver mismatch; corrected without changing original28 input or golden",
+  "evidence": [
+    {
+      "sha256": "4F4A2530FF75A98E844475DC68BD1CB81DDD34C9B1670DA5946E3299A747103D",
+      "path": "Run-RootModelsContextCompile-20261014.ps1"
+    },
+    {
+      "sha256": "86A90C58F2C80F64C7304DD99ABF8D3923CB615A0144A5B679131BEB762E0B20",
+      "path": "Run-RootModelsContextRuntime-20261014.ps1"
+    },
+    {
+      "sha256": "153E1C6EA129EC5A02E0562B2D772331ED15B9D4C4067DE967A853E38DA205D5",
+      "path": "Run-RootCompleteSummaryCompile-20261014.ps1"
+    },
+    {
+      "sha256": "CA7B179099CB2B2E1EBCA6BFD2E690BD49BE7EAB3D55B92B4B0E8C5A98F31B46",
+      "path": "Run-RootCompleteSummaryRuntime-20261014.ps1"
+    },
+    {
+      "sha256": "A86236C960EF10408EF061E40C61DDE65D3EA366AECD5D38F67BEE8825136008",
+      "path": "Run-RootCompleteSummaryB45Source-20261014.ps1"
+    },
+    {
+      "sha256": "090B3FC04FA43EE4583431FA3BA491F8FE2CAF6C9BCC5D299446D723448F11BD",
+      "path": "sdk-complete-summary-b45-source-capture-20261014.mjs"
+    },
+    {
+      "sha256": "15C79D38FB0173910F8E38932B4B5E39F696D4C7C9C51432CE892D08E5AFB97E",
+      "path": "sdk-complete-summary-b45.input.txt"
+    },
+    {
+      "sha256": "7FE05DB37ECAB381FA0C70D0DAF1EFD747060D477510C2FE527E235383013123",
+      "path": "sdk-complete-summary-b45-source28-first-20261014.json"
+    },
+    {
+      "sha256": "CEBEA849DC42D68A0921EF7E7F67422376114581F2E4D1D25AF8385DE484E46E",
+      "path": "sdk-complete-summary-b45-source28-first-20261014-posthash.json"
+    },
+    {
+      "sha256": "CE287D1EE9B6D2624471E27A60DDA19E2C0DFBF631A3FAA1D4E8106DF7ED7C3E",
+      "path": "sdk-complete-summary-b45-source28-first-20261014-output.json"
+    },
+    {
+      "sha256": "229DB06A1AF7AFE015E9F5465F7C030BA6D3AA49D6F7C4D0631C72A8E64656B2",
+      "path": "root-models-context-integration-compile-debug-first-20261014.json"
+    },
+    {
+      "sha256": "E8EA0C2FC99C7506E945FB11D702C26CCC0379BFEC423B68FAF7700DEE1CB623",
+      "path": "root-models-context-integration-compile-debug-first-20261014-posthash.json"
+    },
+    {
+      "sha256": "82C0D6CAD729933612D9EAC91D70F7CDA35B6163CC42188EA9942A7C122106D7",
+      "path": "root-models-context-integration-compile-debug-first-20261014.stderr.log"
+    },
+    {
+      "sha256": "1DCD54113CF328E83BD896C22BAE3AB58D0D170E0F091CE2E311B8C1A2BFD96E",
+      "path": "root-models-context-integration-runtime-debug-first-20261014.json"
+    },
+    {
+      "sha256": "2B85770220F85E7D1025E80C3984382D389FBC1CA55F2225DBF88908694999B3",
+      "path": "root-models-context-integration-runtime-debug-first-20261014-posthash.json"
+    },
+    {
+      "sha256": "7BF38A4E6F83602C2F75441624CEACD1C79449A0AAE93A414B29EA32823CA1B7",
+      "path": "root-models-context-integration-runtime-debug-first-20261014.stderr.log"
+    },
+    {
+      "sha256": "22D50ED04ECBEEDCC3851CEB2FC5CF9BF971406665C678DF270F92CC5C64410E",
+      "path": "root-sdk-complete-summary-compile-debug-first-20261014.json"
+    },
+    {
+      "sha256": "383B35DDF837AECE8C33D054A68B60BEB8160D0F1CF2F110D02069518D66BA72",
+      "path": "root-sdk-complete-summary-compile-debug-first-20261014-posthash.json"
+    },
+    {
+      "sha256": "9922D4B1DBE23EC8060728889EA25F2D7F91E56EB41DBE8B52343915C822AA70",
+      "path": "root-sdk-complete-summary-compile-debug-first-20261014.stderr.log"
+    },
+    {
+      "sha256": "B94DFCDFAAAEE5440DF5F3090309D5FB5EE74D18FEA78F370E788B4D460316E4",
+      "path": "root-sdk-complete-summary-compile-debug-second-20261014.json"
+    },
+    {
+      "sha256": "890B346E39E403878035A773907B91809F73242D9D71715FEBDEC6F93747F2E3",
+      "path": "root-sdk-complete-summary-compile-debug-second-20261014-posthash.json"
+    },
+    {
+      "sha256": "E31077BFAC9B58BE06206E6BD32AF6F21E70D31FFF5F7C69D8CEF3C6F38EBBD5",
+      "path": "root-sdk-complete-summary-compile-debug-second-20261014.stderr.log"
+    },
+    {
+      "sha256": "075BF1B1A189534D0645C824C470014C4C2A4CD262251BE1892310E1368C62DA",
+      "path": "root-sdk-complete-summary-runtime-debug-second-20261014.json"
+    },
+    {
+      "sha256": "E096E18CA513C38C80D2D9F71D8E013219612ACE8B1DBEE9F040E9C62534583C",
+      "path": "root-sdk-complete-summary-runtime-debug-second-20261014-posthash.json"
+    },
+    {
+      "sha256": "183B7170168959EE0ADABFA05A676DB6CEC0DBCCDBCD8A5DB65CF665135A4557",
+      "path": "root-sdk-complete-summary-runtime-debug-second-20261014.stderr.log"
+    },
+    {
+      "sha256": "EC342311186B2F442F9D458B3913F7D9D31A91641DDCFEB5A0381782A4F590C0",
+      "path": "root-sdk-complete-summary-compile-debug-third-20261014.json"
+    },
+    {
+      "sha256": "8300ED71C06F3DE035960CE4B6E53DC173F898C55BF925999CDFDD4C8F90DC19",
+      "path": "root-sdk-complete-summary-compile-debug-third-20261014-posthash.json"
+    },
+    {
+      "sha256": "BFC15B15A0DCF99D70E541D22B92DB891651A0B26E843EA957B241701F269020",
+      "path": "root-sdk-complete-summary-compile-debug-third-20261014.stderr.log"
+    },
+    {
+      "sha256": "1F93C0ECE441EFC7C4A468F2AAEF0366BC3F36C93F527EF51AF53381D3758028",
+      "path": "root-sdk-complete-summary-runtime-debug-third-20261014.json"
+    },
+    {
+      "sha256": "7CAD0277DD827FDD6CD7DD2C9F0D423FBECD158DD3B0EB91669F1065B05F8C6A",
+      "path": "root-sdk-complete-summary-runtime-debug-third-20261014-posthash.json"
+    },
+    {
+      "sha256": "99D67F3558E58FCA700EA88A738B108BE545CF1F49917379C3CE8A1E1969D546",
+      "path": "root-sdk-complete-summary-runtime-debug-third-20261014.stderr.log"
+    },
+    {
+      "sha256": "8D7040159C577B00EAFFCB2EEC5699340B727517010EC51CE9938EA02700B585",
+      "path": "root-models-context-integration-compile-debug-first-20261014-source-before.json"
+    },
+    {
+      "sha256": "EB5F2ED47B5B2A5555C7F15D282F5E51629381A94860E89E9F3EAAFDB9C7A660",
+      "path": "root-sdk-complete-summary-compile-debug-third-20261014-source-before.json"
+    }
+  ],
+  "full_factory_qualified": false,
+  "source_head": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "source_drift": 0,
+  "models_integration_regressions": 23,
+  "global_compat_qualified": false,
+  "models_source_files": 5209,
+  "public_activation": false,
+  "compiler_files": 19546,
+  "scope": "Native completeSummarization orchestration: all28 genuine Source observations, pending producer/receiver GC, complete representative host-allocation graph. Module-bound uuid/retry functions are actual native implementations; default completion tests use a controlled caller dependency and do not qualify global compat registry or built-in providers.",
+  "summary_native_tests": 4
+}

@@ -1,0 +1,306 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "inputSha256": "15c79d38fb0173910f8e38932b4b5e39f696d4c7c9c51432ce892d08e5afb97e",
+  "cases": 28,
+  "scope": "Actual unchanged completeSummarization and retry/UUID dependencies; actual global compat registry with caller-owned custom provider for two default cases. Native orchestration dependency tests do not qualify the complete global compat implementation.",
+  "rows": [
+    {
+      "name": "async-function-metadata",
+      "value": {
+        "name": "completeSummarization",
+        "length": 6,
+        "prototype": false,
+        "async": true
+      },
+      "trace": []
+    },
+    {
+      "name": "model-context-and-stream-result-identity",
+      "value": {
+        "same": true
+      },
+      "trace": [
+        [
+          true,
+          true,
+          true,
+          "owned",
+          "none"
+        ],
+        true
+      ]
+    },
+    {
+      "name": "request-copy-order-symbols-and-original-options",
+      "value": {
+        "original": "long",
+        "captured": "route"
+      },
+      "trace": [
+        {
+          "same": false,
+          "keys": [
+            "first",
+            "cacheRetention",
+            "sessionId"
+          ],
+          "symbol": 7,
+          "cache": "none"
+        }
+      ]
+    },
+    {
+      "name": "spread-then-second-session-getter",
+      "value": true,
+      "trace": [
+        [
+          "sessionId",
+          1
+        ],
+        "signal",
+        [
+          "sessionId",
+          2
+        ],
+        [
+          "route",
+          "second"
+        ]
+      ]
+    },
+    {
+      "name": "inherited-and-hidden-options-not-spread",
+      "value": true,
+      "trace": [
+        [
+          "cacheRetention",
+          "sessionId"
+        ]
+      ]
+    },
+    {
+      "name": "empty-session-id-preserved",
+      "value": true,
+      "trace": [
+        ""
+      ]
+    },
+    {
+      "name": "zero-session-id-preserved",
+      "value": true,
+      "trace": [
+        0
+      ]
+    },
+    {
+      "name": "undefined-session-id-generates-uuid",
+      "value": true,
+      "trace": [
+        "00000000-03e8-7089-8466-88abccddeeff"
+      ]
+    },
+    {
+      "name": "null-session-id-generates-next-uuid",
+      "value": true,
+      "trace": [
+        "00000000-03e8-7089-8466-88adccddeeff"
+      ]
+    },
+    {
+      "name": "stream-throw-original-identity",
+      "error": {
+        "marker": true
+      },
+      "trace": []
+    },
+    {
+      "name": "stream-reject-original-identity",
+      "error": {
+        "marker": true
+      },
+      "trace": []
+    },
+    {
+      "name": "result-getter-original-identity",
+      "error": {
+        "marker": true
+      },
+      "trace": []
+    },
+    {
+      "name": "result-reject-original-identity",
+      "error": {
+        "marker": true
+      },
+      "trace": []
+    },
+    {
+      "name": "await-stream-ignores-own-then",
+      "value": true,
+      "trace": []
+    },
+    {
+      "name": "async-return-result-observes-own-then",
+      "value": true,
+      "trace": [
+        [
+          "own-then",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "stream-thenable-awaited-before-result",
+      "value": true,
+      "trace": [
+        "then",
+        "result"
+      ]
+    },
+    {
+      "name": "result-thenable-adopted",
+      "value": true,
+      "trace": [
+        "result.then"
+      ]
+    },
+    {
+      "name": "result-method-receiver",
+      "value": true,
+      "trace": [
+        true
+      ]
+    },
+    {
+      "name": "retry-transient-uses-same-options",
+      "value": {
+        "calls": 2,
+        "stop": "stop"
+      },
+      "trace": [
+        [
+          1,
+          true
+        ],
+        [
+          2,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "retry-disabled-keeps-error-response",
+      "value": true,
+      "trace": []
+    },
+    {
+      "name": "deterministic-error-is-not-retried",
+      "value": {
+        "calls": 1,
+        "stop": "error"
+      },
+      "trace": []
+    },
+    {
+      "name": "aborted-response-is-not-retried",
+      "value": 1,
+      "trace": []
+    },
+    {
+      "name": "null-options-async-rejection",
+      "error": {
+        "name": "TypeError"
+      },
+      "trace": []
+    },
+    {
+      "name": "undefined-options-async-rejection",
+      "error": {
+        "name": "TypeError"
+      },
+      "trace": []
+    },
+    {
+      "name": "noncallable-truthy-stream-rejects",
+      "error": {
+        "name": "TypeError"
+      },
+      "trace": []
+    },
+    {
+      "name": "missing-result-method-rejects",
+      "error": {
+        "name": "TypeError"
+      },
+      "trace": []
+    },
+    {
+      "name": "default-provider-dependency-dispatch",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "summary"
+          }
+        ],
+        "stopReason": "stop",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "timestamp": 0
+      },
+      "trace": [
+        [
+          false,
+          true,
+          true,
+          "default",
+          "none"
+        ]
+      ]
+    },
+    {
+      "name": "falsy-stream-uses-default-dependency",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "summary"
+          }
+        ],
+        "stopReason": "stop",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "timestamp": 0
+      },
+      "trace": [
+        "falsy"
+      ]
+    }
+  ]
+}
