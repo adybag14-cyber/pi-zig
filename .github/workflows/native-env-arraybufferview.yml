@@ -31,13 +31,13 @@ jobs:
         timeout-minutes: 23
         shell: pwsh
         run: |
-          & ./tools/Invoke-EnvArrayBufferViewQualification.ps1 -Phase Compile -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedManifestHash '490ADD7964BC2F7F1150E69EC2D14AA12180897797E5E975D06E1CA2A27AFE06' -AdmissionGiB 8 -HostedSoleJob -OuterSeconds 1320 -Receipt verification/env-arraybufferview/compile
+          & ./tools/Invoke-EnvArrayBufferViewQualification.ps1 -Phase Compile -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedManifestHash '63DEF1ADFA4F02FF595424C89882D1827E0AB29137E4995EA8B3059D272C5644' -AdmissionGiB 8 -HostedSoleJob -OuterSeconds 1320 -Receipt verification/env-arraybufferview/compile
           if($LASTEXITCODE -ne 0){throw 'Intrinsic4 compile failed'}
       - name: Run all15 Source fields real GC and complete host allocation failure sweep
         timeout-minutes: 7
         shell: pwsh
         run: |
-          & ./tools/Invoke-EnvArrayBufferViewQualification.ps1 -Phase Run -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedManifestHash '490ADD7964BC2F7F1150E69EC2D14AA12180897797E5E975D06E1CA2A27AFE06' -AdmissionGiB 8 -HostedSoleJob -OuterSeconds 300 -Receipt verification/env-arraybufferview/run
+          & ./tools/Invoke-EnvArrayBufferViewQualification.ps1 -Phase Run -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedManifestHash '63DEF1ADFA4F02FF595424C89882D1827E0AB29137E4995EA8B3059D272C5644' -AdmissionGiB 8 -HostedSoleJob -OuterSeconds 300 -Receipt verification/env-arraybufferview/run
           if($LASTEXITCODE -ne 0){throw 'Intrinsic4 runtime failed'}
       - name: Retain exact source tools inventory and terminal evidence
         if: always()
@@ -92,7 +92,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference='Stop'
-          & ./tools/Invoke-EnvArrayBufferViewSourceCapture.ps1 -ExpectedHead '${{ github.sha }}' -ExpectedManifestHash '490ADD7964BC2F7F1150E69EC2D14AA12180897797E5E975D06E1CA2A27AFE06' -SourceRoot verification/env-node-fs-reference -ToolReceipt verification/env-node-fs-source-only/tool.json -Receipt verification/env-node-fs-source-only
+          & ./tools/Invoke-EnvArrayBufferViewSourceCapture.ps1 -ExpectedHead '${{ github.sha }}' -ExpectedManifestHash '63DEF1ADFA4F02FF595424C89882D1827E0AB29137E4995EA8B3059D272C5644' -SourceRoot verification/env-node-fs-reference -ToolReceipt verification/env-node-fs-source-only/tool.json -Receipt verification/env-node-fs-source-only
           if($LASTEXITCODE -ne 0){throw 'Original platform Source capture failed'}
           $proof=Get-Content verification/env-node-fs-source-only/source-only.json -Raw|ConvertFrom-Json
           if($proof.records.Count -ne 3 -or $proof.source_files -ne 1902 -or $proof.source_drift -ne 0 -or $proof.tool_drift -or $proof.native_qualified -or $proof.full_env_qualified -or $proof.public_activation){throw 'Source-only proof or scope mismatch'}
