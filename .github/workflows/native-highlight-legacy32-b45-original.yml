@@ -1,0 +1,60 @@
+name: Private original b45 legacy32 with actual GC captures
+
+on:
+  push:
+    branches: [checkpoint/native-highlight-legacy32-b45-original-20261014]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: original-sdk-highlight-legacy32-b45-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: earendil-works/pi
+          ref: b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb
+          path: .reference-source
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.14.0
+      - name: Record every original tracked Source file before preparation
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskSource=Join-Path (Get-Location) '.reference-source'
+          $taskReceipts='verification/sdk-highlight-legacy32-original-result'
+          New-Item -ItemType Directory -Path $taskReceipts | Out-Null
+          if((git -C $taskSource rev-parse HEAD).Trim() -cne 'b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb'){throw 'Original Source checkout mismatch'}
+          $taskRows=@(git -C $taskSource ls-files|Sort-Object|ForEach-Object{$taskPath=Join-Path $taskSource $_;[ordered]@{path=$taskPath;sha256=(Get-FileHash -LiteralPath $taskPath).Hash}})
+          $taskRows|ConvertTo-Json -Depth 4|Set-Content "$taskReceipts/tracked-initial.json" -Encoding utf8NoBOM
+      - name: Install exact lockfile dependencies without lifecycle scripts
+        working-directory: .reference-source
+        timeout-minutes: 12
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Capture actual unchanged b45 legacy32 with actual GC exports twice
+        shell: pwsh
+        timeout-minutes: 20
+        run: |
+          & verification/sdk-highlight-legacy32-original-b45e0eb-20261014/run-posix.ps1
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: original-sdk-highlight-legacy32-b45-${{ matrix.os }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/sdk-highlight-legacy32-original-result/
