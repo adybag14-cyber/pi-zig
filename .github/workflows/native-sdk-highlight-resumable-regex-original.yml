@@ -1,4 +1,4 @@
-name: Private original Source highlight resumable-regex24 captures
+name: Private original Source highlight resumable-regex25 captures
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
         working-directory: .reference-source
         timeout-minutes: 12
         run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: Capture genuine full original highlight resumable-regex24 twice
+      - name: Capture genuine full original highlight resumable-regex25 twice
         shell: pwsh
         timeout-minutes: 20
         run: |

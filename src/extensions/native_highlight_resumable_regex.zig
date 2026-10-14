@@ -118,6 +118,5 @@ fn addEntry(engine: *em.Engine, matcher: c.JSValue, pair: c.JSValue) !c.JSValue 
         break :blk if (try iterator.next()) |value| try scope.own(value) else c.pi_js_undefined();
     } else c.pi_js_undefined();
     try iterator.close();
-    _ = try scope.invoke(matcher, "addRule", &.{ expression, options });
-    return c.pi_js_undefined();
+    return c.JS_DupValue(engine.context, try scope.invoke(matcher, "addRule", &.{ expression, options }));
 }
