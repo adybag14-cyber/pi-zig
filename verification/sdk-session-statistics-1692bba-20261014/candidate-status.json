@@ -1,0 +1,38 @@
+{
+  "upstream": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "methods": [
+    "getSessionStats",
+    "getContextUsage"
+  ],
+  "source_cases": 36,
+  "source_factory_instances_each": 36,
+  "source_platforms": [
+    "linux",
+    "darwin"
+  ],
+  "source_double_captures_each": true,
+  "source_rows_cross_platform_equal": true,
+  "source_run": 38558966901,
+  "source_proof_commit": "4b28ace53a0f8e78b748aadc7c9ac8e3c0cfbe8a",
+  "source_counts": {
+    "linux_dependencies": 26280,
+    "mac_dependencies": 26275,
+    "candidate": 4669,
+    "node_distribution": 4560,
+    "drift": 0,
+    "source": 1955
+  },
+  "input_sha256": "6CD07BEDCA62930C7424D87718E15D2C5957DD619CD6ACB1AD20B75D86C29B51",
+  "golden_projection": "Only provenance fields and raw rows selected from untouched captured JSON; numeric/string values and row/property order unchanged",
+  "native": "pending first semantic compilation and six exact-head hosted checks",
+  "local_native": "not launched below minimum8GiB",
+  "format": "pinned Zig0.16 fmt passed",
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "test_timeout_seconds": 120,
+  "host_await_timeout_ms": 10000,
+  "compile_only_outer_seconds": 1320,
+  "runtime_outer_seconds": 300,
+  "completed_utc": "2026-10-14T11:57:26.0817657+00:00"
+}

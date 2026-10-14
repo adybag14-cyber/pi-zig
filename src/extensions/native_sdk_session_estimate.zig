@@ -74,10 +74,10 @@ pub fn estimate(engine: *em.Engine, projection: c.JSValue, branch: c.JSValue) !c
         tokens = try scope.concat(usage_tokens, trailing);
     } else {
         const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
-        var iterator = try js.Iterator.init(engine, messages, symbol);
-        defer iterator.deinit();
-        errdefer iterator.closePreserving();
-        while (try iterator.next()) |message| {
+        var estimate_iterator = try js.Iterator.init(engine, messages, symbol);
+        defer estimate_iterator.deinit();
+        errdefer estimate_iterator.closePreserving();
+        while (try estimate_iterator.next()) |message| {
             defer engine.freeValue(message);
             tokens = try scope.concat(tokens, c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, message)));
         }
@@ -88,17 +88,17 @@ pub fn estimate(engine: *em.Engine, projection: c.JSValue, branch: c.JSValue) !c
         var entry_id = c.pi_js_undefined();
         const entries = try scope.get(projection, "entries");
         const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
-        var iterator = try js.Iterator.init(engine, entries, symbol);
-        defer iterator.deinit();
-        errdefer iterator.closePreserving();
-        while (try iterator.next()) |entry| {
+        var entry_iterator = try js.Iterator.init(engine, entries, symbol);
+        defer entry_iterator.deinit();
+        errdefer entry_iterator.closePreserving();
+        while (try entry_iterator.next()) |entry| {
             defer engine.freeValue(entry);
             var iteration: Scope = .{ .engine = engine };
             defer iteration.deinit();
             const next = try scope.concat(offset, try iteration.get(try iteration.get(entry, "messages"), "length"));
             if (try arithmetic.compare(engine, .less, item.index, next)) {
                 entry_id = try scope.get(try iteration.get(entry, "sourceEntry"), "id");
-                try iterator.close();
+                try entry_iterator.close();
                 break;
             }
             offset = next;
@@ -130,10 +130,10 @@ pub fn estimate(engine: *em.Engine, projection: c.JSValue, branch: c.JSValue) !c
     const system = try scope.own(try @import("native_sdk_transcript_replay.zig").currentSystemMessage(engine, projected_messages));
     tokens = if (scope.truthy(system)) c.JS_NewFloat64(engine.context, try usage.estimateTokens(engine, system)) else c.JS_NewInt32(engine.context, 0);
     const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
-    var iterator = try js.Iterator.init(engine, try scope.get(projection, "messages"), symbol);
-    defer iterator.deinit();
-    errdefer iterator.closePreserving();
-    while (try iterator.next()) |message| {
+    var message_iterator = try js.Iterator.init(engine, try scope.get(projection, "messages"), symbol);
+    defer message_iterator.deinit();
+    errdefer message_iterator.closePreserving();
+    while (try message_iterator.next()) |message| {
         defer engine.freeValue(message);
         var iteration: Scope = .{ .engine = engine };
         defer iteration.deinit();

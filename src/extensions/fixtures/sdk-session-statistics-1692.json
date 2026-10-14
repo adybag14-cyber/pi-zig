@@ -1,9 +1,4 @@
-{
-  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
-  "inputSha256": "230e5aa95139a6445c0a78c86e5fb9b9837f5f3abc2b41dbbd4d32617bab04ff",
-  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
-  "factoryCount": 33,
-  "rows": [
+{"sourceHead":"1692bba6347a287ab0f3cb554a4430fafffc474b","inputSha256":"6cd07bedca62930c7424d87718e15d2c5957dd619cd6acb1ad20b75d86c29b51","scope":"Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs","factoryCount":36,"rows":[
     {
       "name": "method-metadata",
       "value": {
@@ -457,6 +452,41 @@
       }
     },
     {
+      "name": "context-large-sparse-trusted-usage",
+      "value": {
+        "tokens": 100,
+        "contextWindow": 10000,
+        "percent": 1
+      }
+    },
+    {
+      "name": "context-projected-offset-coercion",
+      "value": {
+        "result": {
+          "tokens": 100,
+          "contextWindow": 10000,
+          "percent": 1
+        },
+        "log": [
+          "default"
+        ]
+      }
+    },
+    {
+      "name": "context-fractional-usage-index",
+      "value": {
+        "result": {
+          "tokens": 100,
+          "contextWindow": 10000,
+          "percent": 1
+        },
+        "calls": 2,
+        "log": [
+          "number"
+        ]
+      }
+    },
+    {
       "name": "context-unknown-after-compaction",
       "value": {
         "tokens": null,
@@ -556,5 +586,4 @@
         "same": true
       }
     }
-  ]
-}
+  ]}
