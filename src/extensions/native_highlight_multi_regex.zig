@@ -66,12 +66,12 @@ pub const MultiRegex = struct {
         const callback = try scope.own(try self.engine.checked(c.JS_NewCFunction(self.engine.context, second, "", 1)));
         const terminators = try scope.call(map, mapped_expressions, &.{callback});
         const joined = try scope.own(try regex.join(self.engine, terminators, c.pi_js_undefined()));
-        const constructor = try scope.global("RegExp");
+        const regexp_constructor = try scope.global("RegExp");
         const text = try scope.own(try regex.source(self.engine, joined));
         const insensitive = try scope.get(self.language, "case_insensitive");
         const flags = try scope.text(if (scope.truthy(insensitive)) "mig" else "mg");
         var args = [_]c.JSValue{ text, flags };
-        const compiled = try scope.own(try self.engine.checked(c.JS_CallConstructor(self.engine.context, constructor, args.len, &args)));
+        const compiled = try scope.own(try self.engine.checked(c.JS_CallConstructor(self.engine.context, regexp_constructor, args.len, &args)));
         try scope.set(self.owner, "matcherRe", compiled);
         try scope.set(self.owner, "lastIndex", c.JS_NewInt32(self.engine.context, 0));
     }

@@ -1,0 +1,11 @@
+{
+  "status": "compile_failed_no_runtime",
+  "candidate": "f2703cd3526d4e1578c7744c069f52f61d0c9318",
+  "error": "native_highlight_multi_regex.zig:69 local const constructor shadows pub fn constructor at97",
+  "source_cases_executed": 0,
+  "full_post_hash_drift": 0,
+  "owned_pid": 44760,
+  "owned_pid_absent": true,
+  "source_cases_qualified": false,
+  "public_activation": false
+}
