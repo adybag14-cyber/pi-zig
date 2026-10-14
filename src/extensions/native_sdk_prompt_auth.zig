@@ -48,7 +48,7 @@ fn raise(scope: *Scope, constructor: c.JSValue, message: c.JSValue) !void {
     const error_value = try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, arguments.len, &arguments));
     _ = try scope.engine.checked(c.JS_Throw(scope.engine.context, error_value));
 }
-fn loginHelp(scope: *Scope) !c.JSValue {
+pub fn loginHelp(scope: *Scope) !c.JSValue {
     const lines = try scope.array();
     try scope.index(lines, 0, try scope.text("Use /login to log into a provider via OAuth or API key. See:"));
     const providers = try scope.own(try @import("native_sdk_prompt_render.zig").resolvePackagePath(scope.engine, "docs/providers.md"));

@@ -1,0 +1,843 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "6701d99450be0a79a2c584392f37de279efa14e660c845ad8381f2bea0ca8528",
+  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
+  "factoryCount": 49,
+  "rows": [
+    {
+      "name": "method-metadata",
+      "value": {
+        "_getRequiredRequestAuth": {
+          "name": "_getRequiredRequestAuth",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_getSummarizationRequestAuth": {
+          "name": "_getSummarizationRequestAuth",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_modelForMessage": {
+          "name": "_modelForMessage",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_recordSelection": {
+          "name": "_recordSelection",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        }
+      }
+    },
+    {
+      "name": "required-key-identity",
+      "value": {
+        "keys": [
+          "model",
+          "apiKey",
+          "headers",
+          "env"
+        ],
+        "sameModel": true,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://fixture.invalid"
+        },
+        "apiKey": "key",
+        "headers": {
+          "undefined": true
+        },
+        "env": {
+          "X": "1"
+        },
+        "thinkingLevel": {
+          "undefined": true
+        }
+      }
+    },
+    {
+      "name": "required-headers-no-key",
+      "value": {
+        "keys": [
+          "model",
+          "apiKey",
+          "headers",
+          "env"
+        ],
+        "sameModel": true,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://fixture.invalid"
+        },
+        "apiKey": {
+          "undefined": true
+        },
+        "headers": [
+          [
+            "keep",
+            "x"
+          ],
+          [
+            "unset",
+            {
+              "undefined": true
+            }
+          ],
+          [
+            "empty",
+            ""
+          ]
+        ],
+        "env": {
+          "undefined": true
+        },
+        "thinkingLevel": {
+          "undefined": true
+        }
+      }
+    },
+    {
+      "name": "required-empty-headers",
+      "value": {
+        "keys": [
+          "model",
+          "apiKey",
+          "headers",
+          "env"
+        ],
+        "sameModel": true,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://fixture.invalid"
+        },
+        "apiKey": "",
+        "headers": [],
+        "env": {
+          "undefined": true
+        },
+        "thinkingLevel": {
+          "undefined": true
+        }
+      }
+    },
+    {
+      "name": "required-base-url-spread",
+      "value": {
+        "keys": [
+          "model",
+          "apiKey",
+          "headers",
+          "env"
+        ],
+        "sameModel": false,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://routed.invalid"
+        },
+        "apiKey": "key",
+        "headers": [
+          [
+            "a",
+            "x"
+          ]
+        ],
+        "env": {
+          "undefined": true
+        },
+        "thinkingLevel": {
+          "undefined": true
+        }
+      }
+    },
+    {
+      "name": "required-falsy-base-url",
+      "value": {
+        "keys": [
+          "model",
+          "apiKey",
+          "headers",
+          "env"
+        ],
+        "sameModel": true,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://fixture.invalid"
+        },
+        "apiKey": "key",
+        "headers": {
+          "undefined": true
+        },
+        "env": {
+          "undefined": true
+        },
+        "thinkingLevel": {
+          "undefined": true
+        }
+      }
+    },
+    {
+      "name": "required-call-receiver-signal",
+      "value": {
+        "result": {
+          "keys": [
+            "model",
+            "apiKey",
+            "headers",
+            "env"
+          ],
+          "sameModel": true,
+          "model": {
+            "id": "fixture",
+            "provider": "fixture",
+            "baseUrl": "https://fixture.invalid"
+          },
+          "apiKey": "key",
+          "headers": {
+            "undefined": true
+          },
+          "env": {
+            "undefined": true
+          },
+          "thinkingLevel": {
+            "undefined": true
+          }
+        },
+        "log": [
+          [
+            true,
+            true,
+            true,
+            [
+              "signal"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "required-thenable",
+      "value": {
+        "result": {
+          "keys": [
+            "model",
+            "apiKey",
+            "headers",
+            "env"
+          ],
+          "sameModel": true,
+          "model": {
+            "id": "fixture",
+            "provider": "fixture",
+            "baseUrl": "https://fixture.invalid"
+          },
+          "apiKey": "key",
+          "headers": {
+            "undefined": true
+          },
+          "env": {
+            "undefined": true
+          },
+          "thinkingLevel": {
+            "undefined": true
+          }
+        },
+        "calls": 1
+      }
+    },
+    {
+      "name": "required-missing",
+      "value": {
+        "name": "Error",
+        "message": "No API key found for fixture."
+      }
+    },
+    {
+      "name": "required-oauth",
+      "value": {
+        "name": "Error",
+        "message": "Authentication failed for \"fixture\". Credentials may have expired or network is unavailable. Run '/login fixture' to re-authenticate."
+      }
+    },
+    {
+      "name": "required-unknown-provider",
+      "value": {
+        "name": "Error",
+        "message": "No API key found for the selected model."
+      }
+    },
+    {
+      "name": "required-guidance-live-join",
+      "value": {
+        "message": "No API key found for fixture.\n\ncustom help",
+        "log": [
+          [
+            3,
+            "\n",
+            true,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "required-guidance-join-thrown-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "required-sync-error-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "required-rejection-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "required-getter-cause-translation",
+      "value": {
+        "name": "Error",
+        "message": "No API key found for fixture."
+      }
+    },
+    {
+      "name": "required-cause-lookalike-not-translated",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "required-cause-getter-thrown",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "required-response-getter-order",
+      "value": {
+        "result": {
+          "keys": [
+            "model",
+            "apiKey",
+            "headers",
+            "env"
+          ],
+          "sameModel": false,
+          "model": {
+            "id": "fixture",
+            "provider": "fixture",
+            "baseUrl": "https://override.invalid"
+          },
+          "apiKey": "key",
+          "headers": [
+            [
+              "a",
+              "x"
+            ]
+          ],
+          "env": {
+            "A": "a"
+          },
+          "thinkingLevel": {
+            "undefined": true
+          }
+        },
+        "log": [
+          "auth",
+          "apiKey",
+          "auth",
+          "baseUrl",
+          "auth",
+          "baseUrl",
+          "auth",
+          "apiKey",
+          "auth",
+          "headers",
+          "env"
+        ]
+      }
+    },
+    {
+      "name": "required-headers-getter-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "summary-physical-auth",
+      "value": {
+        "keys": [
+          "model",
+          "apiKey",
+          "headers",
+          "env",
+          "thinkingLevel"
+        ],
+        "sameModel": true,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://fixture.invalid"
+        },
+        "apiKey": "key",
+        "headers": [
+          [
+            "a",
+            "x"
+          ]
+        ],
+        "env": {
+          "undefined": true
+        },
+        "thinkingLevel": "high"
+      }
+    },
+    {
+      "name": "summary-no-auth",
+      "value": {
+        "keys": [
+          "model",
+          "thinkingLevel"
+        ],
+        "sameModel": true,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://fixture.invalid"
+        },
+        "apiKey": {
+          "undefined": true
+        },
+        "headers": {
+          "undefined": true
+        },
+        "env": {
+          "undefined": true
+        },
+        "thinkingLevel": "off"
+      }
+    },
+    {
+      "name": "summary-swallow-sync-auth-error",
+      "value": {
+        "keys": [
+          "model",
+          "thinkingLevel"
+        ],
+        "sameModel": true,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://fixture.invalid"
+        },
+        "apiKey": {
+          "undefined": true
+        },
+        "headers": {
+          "undefined": true
+        },
+        "env": {
+          "undefined": true
+        },
+        "thinkingLevel": "off"
+      }
+    },
+    {
+      "name": "summary-swallow-rejected-auth-error",
+      "value": {
+        "keys": [
+          "model",
+          "thinkingLevel"
+        ],
+        "sameModel": true,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://fixture.invalid"
+        },
+        "apiKey": {
+          "undefined": true
+        },
+        "headers": {
+          "undefined": true
+        },
+        "env": {
+          "undefined": true
+        },
+        "thinkingLevel": "off"
+      }
+    },
+    {
+      "name": "summary-swallow-response-getter",
+      "value": {
+        "keys": [
+          "model",
+          "thinkingLevel"
+        ],
+        "sameModel": true,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://fixture.invalid"
+        },
+        "apiKey": {
+          "undefined": true
+        },
+        "headers": {
+          "undefined": true
+        },
+        "env": {
+          "undefined": true
+        },
+        "thinkingLevel": "off"
+      }
+    },
+    {
+      "name": "summary-abort-preserves-error",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "summary-aborted-no-auth-still-fallback",
+      "value": {
+        "keys": [
+          "model",
+          "thinkingLevel"
+        ],
+        "sameModel": true,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://fixture.invalid"
+        },
+        "apiKey": {
+          "undefined": true
+        },
+        "headers": {
+          "undefined": true
+        },
+        "env": {
+          "undefined": true
+        },
+        "thinkingLevel": "off"
+      }
+    },
+    {
+      "name": "summary-abort-getter-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "summary-default-import-requires-auth",
+      "value": {
+        "name": "Error",
+        "message": "No API key found for fixture."
+      }
+    },
+    {
+      "name": "summary-default-import-key",
+      "value": {
+        "keys": [
+          "model",
+          "apiKey",
+          "headers",
+          "env",
+          "thinkingLevel"
+        ],
+        "sameModel": true,
+        "model": {
+          "id": "fixture",
+          "provider": "fixture",
+          "baseUrl": "https://fixture.invalid"
+        },
+        "apiKey": "key",
+        "headers": {
+          "undefined": true
+        },
+        "env": {
+          "undefined": true
+        },
+        "thinkingLevel": "off"
+      }
+    },
+    {
+      "name": "summary-virtual-route-before-auth",
+      "value": {
+        "result": {
+          "keys": [
+            "model",
+            "apiKey",
+            "headers",
+            "env",
+            "thinkingLevel"
+          ],
+          "sameModel": true,
+          "model": {
+            "id": "physical",
+            "provider": "fixture",
+            "baseUrl": "https://fixture.invalid"
+          },
+          "apiKey": "key",
+          "headers": {
+            "undefined": true
+          },
+          "env": {
+            "undefined": true
+          },
+          "thinkingLevel": "low"
+        },
+        "log": [
+          [
+            "route",
+            true,
+            true,
+            true,
+            "direct",
+            "off",
+            true
+          ],
+          [
+            "auth",
+            true,
+            true,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "summary-route-rejection-not-swallowed",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "model-physical-match",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "model-physical-provider-mismatch",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "model-physical-id-mismatch",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "model-virtual-lookup-live",
+      "value": {
+        "same": true,
+        "log": [
+          [
+            true,
+            "p",
+            "m"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "model-null-provider-mismatch",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "model-null-provider-match-throws",
+      "value": {
+        "type": "TypeError"
+      }
+    },
+    {
+      "name": "model-getter-throw-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "record-no-model",
+      "value": {
+        "log": [],
+        "undefined": true
+      }
+    },
+    {
+      "name": "record-empty-branch",
+      "value": {
+        "log": [],
+        "undefined": true
+      }
+    },
+    {
+      "name": "record-same-selection",
+      "value": {
+        "log": [],
+        "undefined": true
+      }
+    },
+    {
+      "name": "record-physical-to-physical-unchanged",
+      "value": {
+        "log": [
+          [
+            "lookup",
+            "p",
+            "old"
+          ]
+        ],
+        "undefined": true
+      }
+    },
+    {
+      "name": "record-new-virtual-selection",
+      "value": {
+        "log": [
+          [
+            "lookup",
+            "p",
+            "old"
+          ],
+          [
+            "append",
+            "fixture",
+            "fixture"
+          ]
+        ],
+        "undefined": true
+      }
+    },
+    {
+      "name": "record-leaving-registered-virtual",
+      "value": {
+        "log": [
+          [
+            "lookup",
+            "p",
+            "old"
+          ],
+          [
+            "append",
+            "fixture",
+            "fixture"
+          ]
+        ],
+        "undefined": true
+      }
+    },
+    {
+      "name": "record-response-with-virtual-hold",
+      "value": {
+        "log": [
+          [
+            "lookup",
+            "p",
+            "router"
+          ],
+          [
+            "lookup",
+            "p",
+            "router"
+          ],
+          [
+            "append",
+            "fixture",
+            "fixture"
+          ]
+        ],
+        "undefined": true
+      }
+    },
+    {
+      "name": "record-response-with-stale-router",
+      "value": {
+        "log": [
+          [
+            "lookup",
+            "p",
+            "router"
+          ],
+          [
+            "lookup",
+            "physical",
+            "answer"
+          ],
+          [
+            "append",
+            "fixture",
+            "fixture"
+          ]
+        ],
+        "undefined": true
+      }
+    },
+    {
+      "name": "record-skips-virtual-response",
+      "value": {
+        "log": [
+          [
+            "lookup",
+            "p",
+            "old"
+          ],
+          [
+            "append",
+            "fixture",
+            "fixture"
+          ]
+        ],
+        "undefined": true
+      }
+    },
+    {
+      "name": "record-user-response-does-not-replace",
+      "value": {
+        "log": [
+          [
+            "lookup",
+            "p",
+            "old"
+          ],
+          [
+            "append",
+            "fixture",
+            "fixture"
+          ]
+        ],
+        "undefined": true
+      }
+    }
+  ]
+}
