@@ -1,0 +1,12 @@
+diff --git "a/C:\\Users\\adyba\\pi-upstream-source-1692bba-20261014\\packages\\coding-agent\\src\\index.ts" "b/C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\index.ts"
+index bd48684c..0b8fb1dd 100644
+--- "a/C:\\Users\\adyba\\pi-upstream-source-1692bba-20261014\\packages\\coding-agent\\src\\index.ts"
++++ "b/C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\index.ts"
+@@ -390,6 +390,7 @@ export {
+ 	type WriteToolOptions,
+ 	withFileMutationQueue,
+ } from "./core/tools/index.ts";
++export { formatReadLineRange } from "./core/tools/render-utils.ts";
+ export {
+ 	hasTrustRequiringProjectResources,
+ 	type ProjectTrustDecision,

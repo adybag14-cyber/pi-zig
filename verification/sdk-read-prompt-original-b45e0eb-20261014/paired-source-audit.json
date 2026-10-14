@@ -1,0 +1,58 @@
+{
+  "old_head": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "new_head": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "scope": "Exact six requested changed files; unchanged AgentSession and lock assertions; static source-only audit",
+  "pairs": [
+    {
+      "path": "packages/coding-agent/src/core/export-html/template.js",
+      "old_sha256": "B5BBFFDF5D9EC8BB519DF45C7FF953AC1969AF80E8ABA33331B9F87983F91FA5",
+      "new_sha256": "A2DBF5BC70B95973AD58AFA9AFE61372E1640A13AD9FAFB0C6D7DD772D694879",
+      "identical": false
+    },
+    {
+      "path": "packages/coding-agent/src/core/prompt-templates.ts",
+      "old_sha256": "11DB52A6BEA6F3F094C6F533D4A3162462BDEF4693F238BA1A8A1BE6729D4545",
+      "new_sha256": "1BDAA7B3825F92BF33203FD7587014B878C55B3D812900CCA5CAD08FEFD92171",
+      "identical": false
+    },
+    {
+      "path": "packages/coding-agent/src/core/tools/render-utils.ts",
+      "old_sha256": "088F7EB9AD7DA1415891AF13C0943E584B2FB6FF84FA248B246ED7F128B50C87",
+      "new_sha256": "03233DE3DB6921E16715778DA055821414A57F6161ABDF06BE13DBF8EA8242CC",
+      "identical": false
+    },
+    {
+      "path": "packages/coding-agent/src/core/tools/renderers/read.ts",
+      "old_sha256": "BFCF687D937D04F93FDC8C8FC8611AB9C9B7B5808224D362EBC38C23BF05566B",
+      "new_sha256": "34CE43FCFB7FFF6D2B230C4D8C2034EC00F91BCF06DCB2A157A4679C350A236E",
+      "identical": false
+    },
+    {
+      "path": "packages/coding-agent/src/modes/interactive/components/tree-selector.ts",
+      "old_sha256": "767BEE39141ACF21F70B4E8C01C62DFEFA588BC2EDD8FE2093886A70A77E115F",
+      "new_sha256": "D45561287E743BD49AB724230AA61323472110C320C91EE7521FC828B8FF1FD4",
+      "identical": false
+    },
+    {
+      "path": "packages/coding-agent/src/index.ts",
+      "old_sha256": "F34D55AA94025EF3A5D11FD16625404ED89D74EAC4256CCE6D538AA19D57DB39",
+      "new_sha256": "FF0C6959CF2952A575DD5B988B5E8C6A18D4E556993B05DFFB768797F3A98B1A",
+      "identical": false
+    },
+    {
+      "path": "packages/coding-agent/src/core/agent-session.ts",
+      "old_sha256": "E0FA206E8C49A98C024708068DF39C0E4944F4251633425FC083B2FBB5EC0AC6",
+      "new_sha256": "E0FA206E8C49A98C024708068DF39C0E4944F4251633425FC083B2FBB5EC0AC6",
+      "identical": true
+    },
+    {
+      "path": "package-lock.json",
+      "old_sha256": "E56F77E5F423D2D2CD052DC90622D4C223CD81209A3B996CD4D43587A6A05DEB",
+      "new_sha256": "E56F77E5F423D2D2CD052DC90622D4C223CD81209A3B996CD4D43587A6A05DEB",
+      "identical": true
+    }
+  ],
+  "native_qualified": false,
+  "public_activation": false,
+  "observed_utc": "2026-10-14T18:13:18.1023284+00:00"
+}

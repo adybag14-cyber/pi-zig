@@ -220,6 +220,19 @@ pub fn expand(gpa: std.mem.Allocator, template: []const u8, keys: []const []cons
     return try out.toOwnedSlice(gpa);
 }
 
+// ECMAScript \s over UTF-8 input, including the BOM and Unicode separators.
+fn commandWhitespaceWidth(raw: []const u8, index: usize) usize {
+    const tail = raw[index..];
+    if (std.ascii.isWhitespace(tail[0])) return 1;
+    if (std.mem.startsWith(u8, tail, "\xc2\xa0")) return 2;
+    if (tail.len < 3) return 0;
+    if (tail[0] == 0xe2 and tail[1] == 0x80 and ((tail[2] >= 0x80 and tail[2] <= 0x8a) or tail[2] == 0xa8 or tail[2] == 0xa9 or tail[2] == 0xaf)) return 3;
+    inline for (.{ "\xe1\x9a\x80", "\xe2\x81\x9f", "\xe3\x80\x80", "\xef\xbb\xbf" }) |separator| {
+        if (std.mem.startsWith(u8, tail, separator)) return 3;
+    }
+    return 0;
+}
+
 pub fn parseCommandArgs(gpa: std.mem.Allocator, raw: []const u8) ![]const []const u8 {
     var arguments: std.ArrayList([]const u8) = .empty;
     errdefer {
@@ -229,8 +242,12 @@ pub fn parseCommandArgs(gpa: std.mem.Allocator, raw: []const u8) ![]const []cons
     var current: std.ArrayList(u8) = .empty;
     defer current.deinit(gpa);
     var quote: ?u8 = null;
+    // b45e0eb preserves a token opened by quotes even when its text is empty.
+    var has_token = false;
 
-    for (raw) |byte| {
+    var position: usize = 0;
+    while (position < raw.len) : (position += 1) {
+        const byte = raw[position];
         if (quote) |active| {
             if (byte == active) {
                 quote = null;
@@ -239,16 +256,20 @@ pub fn parseCommandArgs(gpa: std.mem.Allocator, raw: []const u8) ![]const []cons
             }
         } else if (byte == '\'' or byte == '"') {
             quote = byte;
-        } else if (std.ascii.isWhitespace(byte)) {
-            if (current.items.len > 0) {
+            has_token = true;
+        } else if (commandWhitespaceWidth(raw, position) > 0) {
+            if (has_token) {
                 try arguments.append(gpa, try gpa.dupe(u8, current.items));
                 current.clearRetainingCapacity();
+                has_token = false;
             }
+            position += commandWhitespaceWidth(raw, position) - 1;
         } else {
             try current.append(gpa, byte);
+            has_token = true;
         }
     }
-    if (current.items.len > 0) try arguments.append(gpa, try gpa.dupe(u8, current.items));
+    if (has_token) try arguments.append(gpa, try gpa.dupe(u8, current.items));
     return try arguments.toOwnedSlice(gpa);
 }
 
@@ -328,7 +349,7 @@ pub fn substituteArgs(gpa: std.mem.Allocator, content: []const u8, args: []const
                 const target = expression[0..separator];
                 const default = expression[separator + 2 ..];
                 if (std.mem.eql(u8, target, "@") or std.mem.eql(u8, target, "ARGUMENTS")) {
-                    if (args.len > 0) try appendAllArgs(gpa, &out, args) else try out.appendSlice(gpa, default);
+                    if (args.len > 1 or (args.len == 1 and args[0].len > 0)) try appendAllArgs(gpa, &out, args) else try out.appendSlice(gpa, default);
                     index = end + 1;
                     continue;
                 }
@@ -378,11 +399,11 @@ pub fn findByName(templates: []const PromptTemplate, name: []const u8) ?*const P
 pub fn expandInvocation(gpa: std.mem.Allocator, text: []const u8, templates: []const PromptTemplate) !?[]u8 {
     if (text.len < 2 or text[0] != '/') return null;
     var command_end: usize = 1;
-    while (command_end < text.len and !std.ascii.isWhitespace(text[command_end])) : (command_end += 1) {}
+    while (command_end < text.len and commandWhitespaceWidth(text, command_end) == 0) : (command_end += 1) {}
     const name = text[1..command_end];
     const template = findByName(templates, name) orelse return null;
     var args_start = command_end;
-    while (args_start < text.len and std.ascii.isWhitespace(text[args_start])) : (args_start += 1) {}
+    while (args_start < text.len and commandWhitespaceWidth(text, args_start) > 0) args_start += commandWhitespaceWidth(text, args_start);
     const args = try parseCommandArgs(gpa, text[args_start..]);
     defer freeCommandArgs(gpa, args);
     return try substituteArgs(gpa, template.content, args);
@@ -420,6 +441,40 @@ test "replacement text is not recursively substituted" {
     const out = try substituteArgs(gpa, "$1 ${2:-$1}", args);
     defer gpa.free(out);
     try std.testing.expectEqualStrings("$2 $1", out);
+}
+
+test "quoted empty command arguments preserve positional defaults and slices" {
+    const gpa = std.testing.allocator;
+    const args = try parseCommandArgs(gpa, "\"\" '' a\"\" \"unterminated");
+    defer freeCommandArgs(gpa, args);
+    try std.testing.expectEqual(@as(usize, 4), args.len);
+    try std.testing.expectEqualStrings("", args[0]);
+    try std.testing.expectEqualStrings("", args[1]);
+    try std.testing.expectEqualStrings("a", args[2]);
+    try std.testing.expectEqualStrings("unterminated", args[3]);
+    const out = try substituteArgs(gpa, "$1|${1:-fallback}|$3|${@:2:2}", args);
+    defer gpa.free(out);
+    try std.testing.expectEqualStrings("|fallback|a| a", out);
+}
+
+test "one empty argument uses all-argument default while two preserve the joining space" {
+    const gpa = std.testing.allocator;
+    const one = try substituteArgs(gpa, "${@:-fallback}|${ARGUMENTS:-fallback}", &.{""});
+    defer gpa.free(one);
+    try std.testing.expectEqualStrings("fallback|fallback", one);
+    const two = try substituteArgs(gpa, "${@:-fallback}", &.{ "", "" });
+    defer gpa.free(two);
+    try std.testing.expectEqualStrings(" ", two);
+}
+
+test "prompt token separators follow ECMAScript whitespace" {
+    const gpa = std.testing.allocator;
+    const args = try parseCommandArgs(gpa, "a\xc2\xa0\"\"\xe2\x80\xa8b\xef\xbb\xbf'c\xe2\x80\xaf d'\xe1\x9a\x80e");
+    defer freeCommandArgs(gpa, args);
+    try std.testing.expectEqual(@as(usize, 5), args.len);
+    try std.testing.expectEqualStrings("", args[1]);
+    try std.testing.expectEqualStrings("b", args[2]);
+    try std.testing.expectEqualStrings("c\xe2\x80\xaf d", args[3]);
 }
 
 test "frontmatter is stripped and exposed as metadata" {

@@ -1,4 +1,4 @@
-//! Actual Source read renderer bodies. Private; full highlighter/config required.
+//! Source b45e0eb read renderer draft. Private; full highlighter/config required.
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
@@ -29,15 +29,10 @@ fn rawPath(scope: *Scope, args: c.JSValue) !c.JSValue {
     return utils.str(scope, if (temporary.nullish(preferred)) try utils.optional(scope, args, "path") else preferred);
 }
 fn lineRange(scope: *Scope, args: c.JSValue, theme: c.JSValue) !c.JSValue {
-    if (temporary.nullish(try utils.optional(scope, args, "offset")) and temporary.nullish(try utils.optional(scope, args, "limit"))) return scope.text("");
-    const offset = try scope.get(args, "offset");
-    const start = if (temporary.nullish(offset)) integer(scope, 1) else offset;
-    const end = if (!temporary.nullish(try scope.get(args, "limit"))) try op(scope, 1, try op(scope, 0, start, try scope.get(args, "limit")), integer(scope, 1)) else try scope.text("");
-    const color = try scope.get(theme, "fg");
-    const token = try scope.text("warning");
-    var range = try scope.concat(try scope.text(":"), try scope.stringify(start));
-    if (scope.truthy(end)) range = try scope.concat(range, try utils.surround(scope, "-", end, ""));
-    return scope.call(color, theme, &.{ token, range });
+    const offset = try utils.optional(scope, args, "offset");
+    const limit = try utils.optional(scope, args, "limit");
+    const range = try @import("native_sdk_read_line_range.zig").format(scope, offset, limit);
+    return if (scope.truthy(range)) utils.fg(scope, theme, "warning", range) else scope.text("");
 }
 fn classification(scope: *Scope, kind: []const u8, label: c.JSValue) !c.JSValue {
     const value = try scope.object();
