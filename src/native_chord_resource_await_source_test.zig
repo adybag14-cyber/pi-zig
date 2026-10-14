@@ -21,7 +21,14 @@ const Probe = struct {
         defer engine.native_exception_diagnostics_suppressed -= 1;
         latest.replay(engine, "chord-resource-await-original-1692", "chordResourceAwaitCases") catch |err| {
             const mapped = engine.nativeAllocationError(err, generation);
-            if (mapped != error.OutOfMemory) std.debug.print("ResourceAwait complete Source4 probe: {s}: {s}\n", .{ @errorName(mapped), engine.last_error orelse "no diagnostic" });
+            if (mapped != error.OutOfMemory) {
+                std.debug.print("ResourceAwait complete Source4 probe: {s}: {s}; pending_jobs={any} allocation_generation={d}\n", .{ @errorName(mapped), engine.last_error orelse "no diagnostic", js.c.JS_IsJobPending(engine.runtime), engine.native_allocation_generation });
+                if (engine.captured_exception) |exception| {
+                    const text = engine.toString(exception) catch return mapped;
+                    defer gpa.free(text);
+                    std.debug.print("ResourceAwait actual captured exception: {s}\n", .{text});
+                }
+            }
             return mapped;
         };
     }
@@ -30,5 +37,17 @@ test "native latest Chord1692 ResourceAwait actual Source4 intrinsic species own
     try Probe.run(std.testing.allocator);
 }
 test "native latest Chord1692 ResourceAwait complete actual Source4 factory and native GC teardown allocation sweep" {
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+    const AllocationProbe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+            defer if (failing.fail_index == std.math.maxInt(usize)) {
+                std.debug.print("CHORD_RESOURCE_AWAIT_GPA_BASELINE_ALLOCATIONS={d}\n", .{failing.alloc_index});
+            };
+            Probe.run(gpa) catch |err| {
+                if (err != error.OutOfMemory) std.debug.print("ResourceAwait failure index={d} allocations={d} induced={any} error={s}\n", .{ failing.fail_index, failing.alloc_index, failing.has_induced_failure, @errorName(err) });
+                return err;
+            };
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, AllocationProbe.run, .{});
 }

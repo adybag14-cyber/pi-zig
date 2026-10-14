@@ -32160,7 +32160,9 @@ static void JS_LoadModuleInternal(JSContext *ctx, const char *basename,
     JSValue evaluate_promise;
     JSModuleDef *m;
     JSValue ret, err, func_obj, evaluate_resolving_funcs[2];
+    JSValueConst no_capability[2] = { JS_UNDEFINED, JS_UNDEFINED };
     JSValueConst func_data[3];
+    int attach_result = -1;
 
     m = js_host_resolve_imported_module(ctx, basename, filename, attributes);
     if (!m)
@@ -32187,14 +32189,23 @@ static void JS_LoadModuleInternal(JSContext *ctx, const char *basename,
     func_data[0] = resolving_funcs[0];
     func_data[1] = resolving_funcs[1];
     func_data[2] = func_obj;
+    evaluate_resolving_funcs[1] = JS_UNDEFINED;
     evaluate_resolving_funcs[0] = JS_NewCFunctionData(ctx, js_load_module_fulfilled, 0, 0, 3, func_data);
-    evaluate_resolving_funcs[1] = JS_NewCFunctionData(ctx, js_load_module_rejected, 0, 0, 3, func_data);
+    if (!JS_IsException(evaluate_resolving_funcs[0]))
+        evaluate_resolving_funcs[1] = JS_NewCFunctionData(ctx, js_load_module_rejected, 0, 0, 3, func_data);
     JS_FreeValue(ctx, func_obj);
-    ret = js_promise_then(ctx, evaluate_promise, 2, vc(evaluate_resolving_funcs));
-    JS_FreeValue(ctx, ret);
+    /* ContinueDynamicImport uses intrinsic PerformPromiseThen without a
+       result capability; public then/constructor/species are not consulted. */
+    if (!JS_IsException(evaluate_resolving_funcs[0]) &&
+        !JS_IsException(evaluate_resolving_funcs[1]))
+        attach_result = perform_promise_then(ctx, evaluate_promise,
+                                            vc(evaluate_resolving_funcs),
+                                            no_capability);
     JS_FreeValue(ctx, evaluate_resolving_funcs[0]);
     JS_FreeValue(ctx, evaluate_resolving_funcs[1]);
     JS_FreeValue(ctx, evaluate_promise);
+    if (attach_result < 0)
+        goto fail;
 }
 
 /* Return a promise or an exception in case of memory error. Used by
@@ -32504,19 +32515,30 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
         JSModuleDef *m = exec_list->tab[i];
         if (m->status == JS_MODULE_STATUS_EVALUATED) {
             assert(m->eval_has_exception);
-        } else if (m->has_tla) {
-            js_execute_async_module(ctx, m);
         } else {
             JSValue error;
-            if (js_execute_sync_module(ctx, m, &error) < 0) {
+            int result;
+            if (m->has_tla) {
+                result = js_execute_async_module(ctx, m);
+                if (result < 0)
+                    error = JS_GetException(ctx);
+            } else {
+                result = js_execute_sync_module(ctx, m, &error);
+                if (result >= 0)
+                    js_set_module_evaluated(ctx, m);
+            }
+            if (result < 0) {
                 JSValue m_obj = JS_NewModuleValue(ctx, m);
-                js_async_module_execution_rejected(ctx, JS_UNDEFINED,
-                                                   1, vc(&error),
-                                                   0, vc(&m_obj));
+                JSValue rejected = js_async_module_execution_rejected(ctx, JS_UNDEFINED,
+                                                                      1, vc(&error),
+                                                                      0, vc(&m_obj));
                 JS_FreeValue(ctx, m_obj);
                 JS_FreeValue(ctx, error);
-            } else {
-                js_set_module_evaluated(ctx, m);
+                if (JS_IsException(rejected)) {
+                    js_free(ctx, exec_list->tab);
+                    return rejected;
+                }
+                JS_FreeValue(ctx, rejected);
             }
         }
     }
@@ -32527,20 +32549,26 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
 static int js_execute_async_module(JSContext *ctx, JSModuleDef *m)
 {
     JSValue promise, m_obj;
-    JSValue resolve_funcs[2], ret_val;
+    JSValue resolve_funcs[2];
+    JSValueConst no_capability[2] = { JS_UNDEFINED, JS_UNDEFINED };
+    int result = -1;
     promise = js_async_function_call(ctx, m->func_obj, JS_UNDEFINED, 0, NULL, 0);
     if (JS_IsException(promise))
         return -1;
     m_obj = JS_NewModuleValue(ctx, m);
+    resolve_funcs[1] = JS_UNDEFINED;
     resolve_funcs[0] = JS_NewCFunctionData(ctx, js_async_module_execution_fulfilled, 0, 0, 1, vc(&m_obj));
-    resolve_funcs[1] = JS_NewCFunctionData(ctx, js_async_module_execution_rejected, 0, 0, 1, vc(&m_obj));
-    ret_val = js_promise_then(ctx, promise, 2, vc(resolve_funcs));
-    JS_FreeValue(ctx, ret_val);
+    if (!JS_IsException(resolve_funcs[0]))
+        resolve_funcs[1] = JS_NewCFunctionData(ctx, js_async_module_execution_rejected, 0, 0, 1, vc(&m_obj));
+    /* ExecuteAsyncModule attaches intrinsic reactions without a result
+       capability, as Await does. Public species must remain unobservable. */
+    if (!JS_IsException(resolve_funcs[0]) && !JS_IsException(resolve_funcs[1]))
+        result = perform_promise_then(ctx, promise, vc(resolve_funcs), no_capability);
     JS_FreeValue(ctx, m_obj);
     JS_FreeValue(ctx, resolve_funcs[0]);
     JS_FreeValue(ctx, resolve_funcs[1]);
     JS_FreeValue(ctx, promise);
-    return 0;
+    return result;
 }
 
 /* return < 0 in case of exception. *pvalue contains the exception. */
@@ -32668,7 +32696,10 @@ static int js_inner_module_evaluation(JSContext *ctx, JSModuleDef *m,
         m->async_evaluation = true;
         m->async_evaluation_timestamp =
             ctx->rt->module_async_evaluation_next_timestamp++;
-        js_execute_async_module(ctx, m);
+        if (js_execute_async_module(ctx, m) < 0) {
+            *pvalue = JS_GetException(ctx);
+            return -1;
+        }
     } else {
         if (js_execute_sync_module(ctx, m, pvalue) < 0)
             return -1;

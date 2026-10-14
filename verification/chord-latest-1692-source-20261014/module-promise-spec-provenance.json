@@ -1,0 +1,17 @@
+{
+  "baseline_head": "d6dbf51f852783934f0e50cff899e5bbd3a1d0b8",
+  "baseline_quickjs_sha256": "F4964A32020538D733A92E179B945C985708A09B2B77E510806A9CB1C446B9FB",
+  "candidate_quickjs_sha256": "12750E6D11EA6CD09230793AB739136C5F40662AED5CFD559CBF51F9E2F5D454",
+  "public_js_promise_then_unchanged": true,
+  "source4_caller_sha256": "7222ADEEA568120786DBBCAE3FDEB47E64A98A88C2CD277FBE962419D8B29785",
+  "source4_oracle_sha256": "ED85E242EDD48DE43E0D1E65E498249554503C50A513AE435A27A141B80028C6",
+  "primary_spec": [
+    "https://tc39.es/ecma262/2026/multipage/ecmascript-language-scripts-and-modules.html#sec-execute-async-module",
+    "https://tc39.es/ecma262/2026/multipage/ecmascript-language-expressions.html#sec-continuedynamicimport",
+    "https://tc39.es/ecma262/2026/multipage/control-abstraction-objects.html#sec-performpromisethen"
+  ],
+  "native_qualified": false,
+  "source54_qualified": false,
+  "classifier_changed": false,
+  "public_activation": false
+}
