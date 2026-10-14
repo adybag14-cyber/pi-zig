@@ -1547,6 +1547,12 @@ pub fn build(b: *std.Build) void {
     source_paths_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-source-path-cwd", "Compile original path helpers and live Node current-directory fallback").dependOn(&source_paths_tests.step);
     b.step("test-native-sdk-source-path-cwd", "Compare original40 path callbacks ordering identity and native allocation cleanup").dependOn(&b.addRunArtifact(source_paths_tests).step);
+    const transcript_context_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_transcript_context_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI transcript context"}, .use_llvm = use_llvm });
+    linkQuickJs(b, transcript_context_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(transcript_context_tests.root_module, sqlite_lib_dir, sqlite_library);
+    transcript_context_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-ai-transcript-context", "Compare original context normalization and complete native owner graphs").dependOn(&b.addRunArtifact(transcript_context_tests).step);
+    b.step("build-native-ai-transcript-context", "Compile original context normalization independently of runtime deadlines").dependOn(&transcript_context_tests.step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);
