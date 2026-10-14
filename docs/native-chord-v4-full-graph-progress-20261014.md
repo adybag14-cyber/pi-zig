@@ -57,6 +57,10 @@ implementation body or missing-method fallback is introduced.
   The unchanged qualified snapshot-validation body is reused with public
   visibility only; its new callers retain the narrow existing trusted fresh
   allocation guard rather than serializing allocation failures as wire errors.
+- The v4 consumer channel sends hold state/again flags and hold-wide state
+  demand, retaining the genuine existing cancel/root/call ownership. The
+  connection close path clears the new pending-slot and byte accounting and
+  detaches shared bindings. These modules also remain unactivated.
 
 ## Qualification boundary and remaining integration
 
