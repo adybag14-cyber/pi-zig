@@ -1,0 +1,27 @@
+const cases=[],info=e=>({name:e?.name,code:e?.code,reason:e?.reason,message:e?.message}),outcome=async f=>{try{return{value:await f()}}catch(e){return{error:info(e)}}},flush=async()=>{for(let i=0;i<16;i++)await Promise.resolve()};
+let sequence=0;
+function driver({mode='ready',graceful=true,log=[]}={}){const children=[];return{children,spawn(){const listeners=new Set();let exit;const current={pid:++sequence,link:{},exited:new Promise(r=>exit=r),onControl(fn){listeners.add(fn)},emit(message){for(const fn of listeners)fn(message)},finish(code=0,signal=null){exit({code,signal})},send(message){log.push(['send',message.type]);if(graceful&&message.type==='shutdown')this.finish()},killTree(){log.push('kill');this.finish(null,'SIGKILL')}};children.push(current);Promise.resolve().then(()=>{if(mode==='ready')current.emit({type:'ready'});else if(mode==='fatal')current.emit({type:'fatal',message:'boot failed',reason:'storage'});else if(mode==='exit')current.finish(19);});return current}}}
+{
+ const log=[],exits=[],d=driver({log}),m=api.createHostManager({driver:d,onExit(e){exits.push(e)}}),initial={status:m.status,absent:m.instance===undefined,liveness:m.liveness};
+ const[a,b]=await Promise.all([m.start(),m.start()]);a.emit({type:'status',activeCalls:2,viewers:1});const busy=m.liveness;a.emit({type:'status'});const idle=m.liveness;await m.stop();cases.push({name:'actual serialized starts share instance liveness busy idle and graceful stop',initial,same:a===b,spawned:d.children.length,busy,idle:{...idle,idleForNonnegative:idle.idleFor>=0,idleFor:undefined},status:m.status,absent:m.instance===undefined,log,exits,keys:Object.keys(m)});
+}
+{
+ const log=[],d=driver({log}),m=api.createHostManager({driver:d});const a=await m.start(),b=await m.replace();await m.stop();cases.push({name:'actual replacement waits for old exit and starts fresh identity',fresh:a!==b,spawned:d.children.length,status:m.status,log});
+}
+for(const mode of['fatal','exit','never']){
+ const log=[],exits=[],d=driver({mode,log}),m=api.createHostManager({driver:d,readyTimeout:3,onExit(e){exits.push(e)}}),result=await outcome(()=>m.start());await m.stop();cases.push({name:'actual startup '+mode+' kills and awaits exit before rejecting',result,status:m.status,booting:m.liveness.booting,absent:m.instance===undefined,log,exits});
+}
+{
+ const log=[],d=driver({graceful:false,log}),m=api.createHostManager({driver:d,grace:2});await m.start();await m.stop();cases.push({name:'actual grace deadline kills owned tree and awaits terminal exit',status:m.status,absent:m.instance===undefined,log});
+}
+{
+ let first=true;const d=driver(),m=api.createHostManager({driver:{spawn(){if(first){first=false;throw new Error('spawn failed')}return d.spawn()}}}),failed=await outcome(()=>m.start()),afterFailure={status:m.status,booting:m.liveness.booting};await m.start();await m.stop();cases.push({name:'actual spawn failure resets state and serialized queue recovers',failed,afterFailure,spawned:d.children.length,status:m.status});
+}
+{
+ const log=[],d=driver({log}),seen=[],m=api.createHostManager({driver:d,checkInterval:1,keepAlive(live){seen.push({booting:live.booting,activeCalls:live.activeCalls,viewers:live.viewers,durableTasks:live.durableTasks,idle:live.idleFor>=0});return false}});await m.start();for(let i=0;i<100&&m.status!=='stopped';i++)await new Promise(r=>setTimeout(r,1));await m.stop();cases.push({name:'actual keepAlive serializes stop using current liveness',status:m.status,seen,log});
+}
+{
+ const frames=[],handlers=new Set(),callbacks=[];const channel={connected:true,on(name,fn){if(name==='message')handlers.add(fn);return this},send(frame,a,b,callback){frames.push(frame);callbacks.push(callback);callback?.(new Error('EPIPE'));return false},emit(value){for(const fn of handlers)fn(value)}};
+ const control=api.childControl(channel),shutdown=[];const returned=control.onShutdown(()=>shutdown.push('first'));control.onShutdown(()=>shutdown.push('second'));channel.emit(null);channel.emit({other:true});channel.emit({chord2control:{type:'init',value:{seed:7}}});const init=await control.init;channel.emit({chord2control:{type:'shutdown'}});control.ready();control.report({viewers:2});control.fatal(new Error('fatal error'));control.fatal('fatal string');control.fatal(new api.ChordError('unavailable','held',{reason:'locked'}));channel.connected=false;control.ready();cases.push({name:'actual child control init shutdown status fatal and dead peer callback handling',init,shutdown,onShutdownVoid:returned===undefined,frames,sameCallback:callbacks.every(fn=>fn===callbacks[0]),keys:Object.keys(control)});
+}
+globalThis.chordManagerCases=cases;

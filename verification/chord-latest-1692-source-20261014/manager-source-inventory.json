@@ -1,0 +1,41 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "fixtures": [
+    {
+      "oracle": "src/extensions/fixtures/chord-manager-original-1692.json",
+      "oracle_sha256": "BFB086752183F4A3BC84153618433B442B5366AC2EC5896DBB8DB714F8BA4D1F",
+      "input": "src/extensions/fixtures/chord-manager-original-1692.input.txt",
+      "input_sha256": "38859AF04494464F9B8C14E36221B5150A7E0C85D315ACD529BCE3693DE6D6FE",
+      "cases": 9,
+      "case_names": [
+        "actual serialized starts share instance liveness busy idle and graceful stop",
+        "actual replacement waits for old exit and starts fresh identity",
+        "actual startup fatal kills and awaits exit before rejecting",
+        "actual startup exit kills and awaits exit before rejecting",
+        "actual startup never kills and awaits exit before rejecting",
+        "actual grace deadline kills owned tree and awaits terminal exit",
+        "actual spawn failure resets state and serialized queue recovers",
+        "actual keepAlive serializes stop using current liveness",
+        "actual child control init shutdown status fatal and dead peer callback handling"
+      ]
+    },
+    {
+      "oracle": "src/extensions/fixtures/chord-process-lock-original-1692.json",
+      "oracle_sha256": "5DBC56C4358BA080F5B1B855BB4E5A8D594FDDAB6556A01C0E3BEC742C5AB4C6",
+      "input": "src/extensions/fixtures/chord-process-lock-original-1692.input.txt",
+      "input_sha256": "56C78403BB299B2C737D15625806C91199325CA4E2BCE5A5D103640908AEDED6",
+      "cases": 3,
+      "case_names": [
+        "actual exclusive kernel lock refuses second holder and reacquires after release",
+        "actual different names acquire independent kernel locks",
+        "actual release rejects repeated close with native server error"
+      ]
+    }
+  ],
+  "source_closure": 34793,
+  "total_cases": 12,
+  "source_body_replaced": false,
+  "native_qualified": false,
+  "fork_driver_implemented": false,
+  "public_activation": false
+}

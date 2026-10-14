@@ -194,6 +194,7 @@ pub const Engine = struct {
     // Optional Chord nodeLoader owner. Existing source loading is preserved
     // unless that real loader installs generation-aware callbacks.
     native_chord_loader_state: ?c.JSValue = null,
+    native_chord_process_locks: ?c.JSValue = null,
     native_chord_module_normalize: ?*const fn (*Engine, []const u8, []const u8) anyerror!?[]u8 = null,
     native_chord_module_input: ?*const fn (*Engine, []const u8) anyerror!?ModuleInput = null,
 
@@ -265,6 +266,7 @@ pub const Engine = struct {
 
     pub fn deinit(self: *Engine) void {
         if (self.native_chord_loader_state) |value| self.freeValue(value);
+        if (self.native_chord_process_locks) |value| self.freeValue(value);
         if (self.native_codemode_deinit) |cleanup| cleanup(self);
         if (self.native_command_metadata_deinit) |cleanup| cleanup(self);
         if (self.native_sdk_builtin_execution_cleanup) |cleanup| cleanup(self);

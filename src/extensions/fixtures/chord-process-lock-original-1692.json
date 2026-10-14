@@ -1,0 +1,31 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "cases": [
+    {
+      "name": "actual exclusive kernel lock refuses second holder and reacquires after release",
+      "held": {
+        "error": {
+          "name": "ChordError",
+          "code": "unavailable",
+          "reason": "locked",
+          "message": "unavailable/locked: lock pi-zig-native-Chord1692-sole-oracle-🔒 is held by another process"
+        }
+      },
+      "reacquired": true
+    },
+    {
+      "name": "actual different names acquire independent kernel locks",
+      "independent": true
+    },
+    {
+      "name": "actual release rejects repeated close with native server error",
+      "second": {
+        "error": {
+          "name": "Error",
+          "code": "ERR_SERVER_NOT_RUNNING",
+          "message": "Server is not running."
+        }
+      }
+    }
+  ]
+}

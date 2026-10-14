@@ -85,6 +85,7 @@ pub fn build(b: *std.Build) void {
     // Chord protocol-v2 packing uses the pinned C deflate implementation from
     // Node24.14.0. Its runtime allocations use the native Zig owner.
     quickjs.root_module.addIncludePath(b.path("vendor/chord-zlib-node-24.14.0"));
+    quickjs.root_module.addCSourceFile(.{ .file = b.path("src/extensions/native_chord_process_lock.c"), .flags = &.{ "-std=gnu11", "-D_GNU_SOURCE" } });
     quickjs.root_module.addCSourceFiles(.{
         .root = b.path("vendor/chord-zlib-node-24.14.0"),
         .files = &.{ "adler32.c", "compress.c", "cpu_features.c", "crc32.c", "deflate.c", "infback.c", "inffast.c", "inflate.c", "inftrees.c", "trees.c", "uncompr.c", "zutil.c" },
@@ -746,6 +747,13 @@ pub fn build(b: *std.Build) void {
     const chord_loader_run = b.addRunArtifact(chord_loader_tests);
     chord_loader_run.has_side_effects = true;
     b.step("test-native-chord-node-loader-source", "Replay actual Source7 module loader generations guest TypeScript and host cleanup").dependOn(&chord_loader_run.step);
+    const chord_manager_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_manager_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native latest Chord1692 Manager"} });
+    linkQuickJs(b, chord_manager_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_manager_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("build-native-chord-manager-source", "Compile actual generic manager child control and kernel process lock").dependOn(&chord_manager_tests.step);
+    const chord_manager_run = b.addRunArtifact(chord_manager_tests);
+    chord_manager_run.has_side_effects = true;
+    b.step("test-native-chord-manager-source", "Replay actual Source manager/control and exclusive kernel process lock").dependOn(&chord_manager_run.step);
     const chord_connection_boundaries = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_boundary_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord connection boundary inventory", "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions", "native WeakRef" } });
     linkQuickJs(b, chord_connection_boundaries.root_module, quickjs, sqlite_lib_dir);
     chord_connection_boundaries.root_module.addImport("catalog_tool", catalog_tool);

@@ -1,0 +1,5 @@
+const cases=[],name='pi-zig-native-Chord1692-sole-oracle-🔒',other=name+'-other',info=e=>({name:e?.name,code:e?.code,reason:e?.reason,message:e?.message}),outcome=async f=>{try{await f();return{ok:true}}catch(e){return{error:info(e)}}};
+const release=await api.processLock(name),held=await outcome(()=>api.processLock(name));await release();const again=await api.processLock(name);await again();cases.push({name:'actual exclusive kernel lock refuses second holder and reacquires after release',held,reacquired:true});
+const first=await api.processLock(name),second=await api.processLock(other);await second();await first();cases.push({name:'actual different names acquire independent kernel locks',independent:true});
+const close=await api.processLock(name);await close();cases.push({name:'actual release rejects repeated close with native server error',second:await outcome(()=>close())});
+globalThis.chordProcessLockCases=cases;

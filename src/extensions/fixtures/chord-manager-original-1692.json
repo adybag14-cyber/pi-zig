@@ -1,0 +1,238 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "cases": [
+    {
+      "name": "actual serialized starts share instance liveness busy idle and graceful stop",
+      "initial": {
+        "status": "stopped",
+        "absent": true,
+        "liveness": {
+          "booting": false,
+          "activeCalls": 0,
+          "viewers": 0,
+          "durableTasks": 0,
+          "idleFor": 0
+        }
+      },
+      "same": true,
+      "spawned": 1,
+      "busy": {
+        "booting": false,
+        "activeCalls": 2,
+        "viewers": 1,
+        "durableTasks": 0,
+        "idleFor": 0
+      },
+      "idle": {
+        "booting": false,
+        "activeCalls": 0,
+        "viewers": 0,
+        "durableTasks": 0,
+        "idleForNonnegative": true
+      },
+      "status": "stopped",
+      "absent": true,
+      "log": [
+        [
+          "send",
+          "shutdown"
+        ]
+      ],
+      "exits": [
+        {
+          "code": 0,
+          "signal": null
+        }
+      ],
+      "keys": [
+        "status",
+        "instance",
+        "liveness",
+        "start",
+        "stop",
+        "replace"
+      ]
+    },
+    {
+      "name": "actual replacement waits for old exit and starts fresh identity",
+      "fresh": true,
+      "spawned": 2,
+      "status": "stopped",
+      "log": [
+        [
+          "send",
+          "shutdown"
+        ],
+        [
+          "send",
+          "shutdown"
+        ]
+      ]
+    },
+    {
+      "name": "actual startup fatal kills and awaits exit before rejecting",
+      "result": {
+        "error": {
+          "name": "ChordError",
+          "code": "unavailable",
+          "reason": "storage",
+          "message": "unavailable/storage: child failed: boot failed"
+        }
+      },
+      "status": "stopped",
+      "booting": false,
+      "absent": true,
+      "log": [
+        "kill"
+      ],
+      "exits": [
+        {
+          "code": null,
+          "signal": "SIGKILL"
+        }
+      ]
+    },
+    {
+      "name": "actual startup exit kills and awaits exit before rejecting",
+      "result": {
+        "error": {
+          "name": "ChordError",
+          "code": "unavailable",
+          "message": "unavailable: child exited before ready (19)"
+        }
+      },
+      "status": "stopped",
+      "booting": false,
+      "absent": true,
+      "log": [
+        "kill"
+      ],
+      "exits": [
+        {
+          "code": 19,
+          "signal": null
+        }
+      ]
+    },
+    {
+      "name": "actual startup never kills and awaits exit before rejecting",
+      "result": {
+        "error": {
+          "name": "ChordError",
+          "code": "unavailable",
+          "message": "unavailable: child not ready in time"
+        }
+      },
+      "status": "stopped",
+      "booting": false,
+      "absent": true,
+      "log": [
+        "kill"
+      ],
+      "exits": [
+        {
+          "code": null,
+          "signal": "SIGKILL"
+        }
+      ]
+    },
+    {
+      "name": "actual grace deadline kills owned tree and awaits terminal exit",
+      "status": "stopped",
+      "absent": true,
+      "log": [
+        [
+          "send",
+          "shutdown"
+        ],
+        "kill"
+      ]
+    },
+    {
+      "name": "actual spawn failure resets state and serialized queue recovers",
+      "failed": {
+        "error": {
+          "name": "Error",
+          "message": "spawn failed"
+        }
+      },
+      "afterFailure": {
+        "status": "stopped",
+        "booting": false
+      },
+      "spawned": 1,
+      "status": "stopped"
+    },
+    {
+      "name": "actual keepAlive serializes stop using current liveness",
+      "status": "stopped",
+      "seen": [
+        {
+          "booting": false,
+          "activeCalls": 0,
+          "viewers": 0,
+          "durableTasks": 0,
+          "idle": true
+        }
+      ],
+      "log": [
+        [
+          "send",
+          "shutdown"
+        ]
+      ]
+    },
+    {
+      "name": "actual child control init shutdown status fatal and dead peer callback handling",
+      "init": {
+        "seed": 7
+      },
+      "shutdown": [
+        "first",
+        "second"
+      ],
+      "onShutdownVoid": false,
+      "frames": [
+        {
+          "chord2control": {
+            "type": "ready"
+          }
+        },
+        {
+          "chord2control": {
+            "type": "status",
+            "viewers": 2
+          }
+        },
+        {
+          "chord2control": {
+            "type": "fatal",
+            "message": "fatal error"
+          }
+        },
+        {
+          "chord2control": {
+            "type": "fatal",
+            "message": "fatal string"
+          }
+        },
+        {
+          "chord2control": {
+            "type": "fatal",
+            "message": "unavailable/locked: held",
+            "reason": "locked"
+          }
+        }
+      ],
+      "sameCallback": true,
+      "keys": [
+        "init",
+        "lock",
+        "ready",
+        "fatal",
+        "report",
+        "onShutdown"
+      ]
+    }
+  ]
+}
