@@ -1,0 +1,15 @@
+{
+  "observed_utc": "2026-10-14T21:37:49.9714835+00:00",
+  "free_bytes": 24423895040,
+  "required_bytes": 17179869184,
+  "other_native": [],
+  "other_native_roots": 0,
+  "root_authority": "Root reviewed exact4ac GPA runtime31B5FFE9 full5492/1965/19546/vendor/control fiveownedserial normal16/300/120/10 each fourcomplete5318ranges/unchangedProbeGCguards; AISource33 peer; Rootnojob; 2026-10-14",
+  "outer_seconds": 300,
+  "test_seconds": 120,
+  "host_seconds": 10,
+  "jobs": 1,
+  "llvm": "default",
+  "sole8_exception_used": false,
+  "public_activation": false
+}

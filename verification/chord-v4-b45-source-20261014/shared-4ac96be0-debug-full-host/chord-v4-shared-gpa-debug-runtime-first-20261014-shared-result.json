@@ -1,0 +1,43 @@
+{
+  "head": "4ac96be0b5221d6932ea9327417c4cf280b662a0",
+  "target": "test-native-chord-shared-v4-source",
+  "status": "passed",
+  "source_cases": 21,
+  "compiled_expected": 4,
+  "compiled_observed": 4,
+  "compiled_names": [
+    "native_chord_shared_v4_source_test.test.native Chordb45 shared graph diagnostic compiled inventory",
+    "native_chord_shared_v4_source_test.test.native Chordb45 shared graph actual Source21 host initializer identity remote binding state demand and release with GC",
+    "native_chord_shared_v4_source_test.test.native Chordb45 shared graph measured complete Source21 host allocation baseline diagnostic only",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "composed_gpa_coverage": null,
+  "failures": [],
+  "native_gc": "passed",
+  "c_malloc_exhaustive": false,
+  "allocation_scope": "host allocator",
+  "all_gpa_failures": "not_yet_qualified",
+  "owner": {
+    "name": "chord-v4-shared-gpa-debug-runtime-first-20261014-shared",
+    "pid": 49392,
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-chord-shared-v4-source -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+    "command_line_source": "live Win32_Process",
+    "created_utc": "2026-10-14T21:33:27.4984924Z",
+    "launched_utc": "2026-10-14T22:33:27.4966302+01:00",
+    "identity_captured": true,
+    "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+    "working_directory": "C:/Users/adyba/pi-zig-chord-v4-full-graph-b45-20261014",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-14T22:33:34.1941056+01:00"
+  },
+  "root_pid_absent": true,
+  "outer_seconds": 300,
+  "test_seconds": 120,
+  "host_seconds": 10,
+  "public_activation": false,
+  "fork_driver_implemented": false,
+  "full_pi_qualified": false
+}

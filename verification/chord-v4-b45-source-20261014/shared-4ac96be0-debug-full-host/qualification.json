@@ -1,0 +1,42 @@
+{
+  "production_head": "4ac96be0b5221d6932ea9327417c4cf280b662a0",
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "profile": "Windows x86_64 Debug",
+  "scope": "actual full factory Source21 comparisons native GC and all host allocation failure indices",
+  "status": "passed",
+  "source_cases": 21,
+  "unique_compiled_tests": 8,
+  "selected_test_executions": 16,
+  "host_baseline": 5318,
+  "completed_host_indices": 5318,
+  "gaps": 0,
+  "duplicates": 0,
+  "leaks": 0,
+  "unexpected_errors": 0,
+  "whole_probe_and_gc_each_index": true,
+  "source_inputs": 5492,
+  "original_source_inputs": 1965,
+  "compiler_inputs": 19546,
+  "all_post_drift": 0,
+  "owned_zig_processes_terminal": true,
+  "owned_pids": [
+    49392,
+    31256,
+    56596,
+    37144,
+    45800
+  ],
+  "pid_reuse_observed": {
+    "pid": 49392,
+    "owned_zig_created_utc": "2026-10-14T21:33:27.4984924Z",
+    "owned_zig_completed_utc": "2026-10-14T21:33:34.1941056Z",
+    "unrelated_executable": "C:/Windows/System32/smartscreen.exe",
+    "unrelated_created_utc": "2026-10-14T21:39:35.5718530Z",
+    "control_action_taken": false
+  },
+  "completed_utc": "2026-10-14T21:39:39.2355357Z",
+  "c_malloc_exhaustive": false,
+  "full_v4_graph_qualified": false,
+  "public_activation": false,
+  "full_pi_qualified": false
+}

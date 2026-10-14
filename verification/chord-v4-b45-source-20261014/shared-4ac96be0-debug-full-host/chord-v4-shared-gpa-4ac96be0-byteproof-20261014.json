@@ -1,0 +1,10 @@
+{
+  "baseline_head": "fb7d0f9e499a975291148a815c9fc75b81791752",
+  "candidate_head": "4ac96be0b5221d6932ea9327417c4cf280b662a0",
+  "original_diagnostic_test_prefix_unchanged": true,
+  "production_extensions_changed": 0,
+  "caller_sha256": "F090D45F48CFDBBB7A83CAF58468E6524056F345F4C9D463B6CBCAF52217AB7D",
+  "golden_sha256": "0A69D7A519D221638080667632A4191167B468670BDD0CD709BC2A4048CBC985",
+  "native_run": false,
+  "completed_utc": "2026-10-14T21:25:55.2296457+00:00"
+}
