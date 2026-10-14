@@ -73,7 +73,21 @@ fn descriptor(context: ?*c.JSContext, output: [*c]c.JSPropertyDescriptor, value:
     return found;
 }
 fn define(context: ?*c.JSContext, value: c.JSValue, atom: c.JSAtom, field: c.JSValue, getter: c.JSValue, setter: c.JSValue, flags: c_int) callconv(.c) c_int {
-    const properties = state(value).properties;
+    const owned = state(value);
+    const properties = owned.properties;
+    if (owned.active != null and (atom == owned.arguments_atom or atom == owned.caller_atom)) {
+        // Use the VM's ordinary descriptor validator with the live virtual
+        // value. Never write a caller/Arguments snapshot into the inactive table.
+        const temporary = c.JS_NewObjectProto(context, c.pi_js_null());
+        if (c.JS_IsException(temporary)) return -1;
+        defer owned.engine.freeValue(temporary);
+        var current: c.JSPropertyDescriptor = undefined;
+        if (descriptor(context, &current, value, atom) != 1) return -1;
+        defer owned.engine.freeValue(current.getter);
+        defer owned.engine.freeValue(current.setter);
+        if (c.JS_DefinePropertyValue(context, temporary, atom, current.value, current.flags) < 0) return -1;
+        return c.JS_DefineProperty(context, temporary, atom, field, getter, setter, flags);
+    }
     const extensible = c.JS_IsExtensible(context, value);
     if (extensible < 0) return -1;
     if (extensible == 0) {
@@ -88,7 +102,6 @@ fn define(context: ?*c.JSContext, value: c.JSValue, atom: c.JSAtom, field: c.JSV
         }
     }
     // The ordinary table enforces the actual writable/configurable descriptors.
-    // Active legacy redefinition requires additional genuine Source coverage.
     return c.JS_DefineProperty(context, properties, atom, field, getter, setter, flags);
 }
 fn remove(context: ?*c.JSContext, value: c.JSValue, atom: c.JSAtom) callconv(.c) c_int {
@@ -105,6 +118,17 @@ fn invoke(owned: *State, function: c.JSValue, target: c.JSValue, args: []const c
     defer engine.gpa.free(arguments);
     for (arguments, args) |*slot, argument| slot.* = c.JS_DupValue(engine.context, argument);
     defer for (arguments) |argument| engine.freeValue(argument);
+    const retained_function = c.JS_DupValue(engine.context, function);
+    defer engine.freeValue(retained_function);
+    // Ordinary construction resolves newTarget.prototype before entering the
+    // callee. An already active outer invocation stays visible during lookup.
+    const receiver = if (constructing)
+        try @import("native_class.zig").object(engine, target)
+    else if (c.JS_IsNull(target) or c.JS_IsUndefined(target))
+        c.JS_GetGlobalObject(engine.context)
+    else
+        try engine.checked(c.JS_ToObject(engine.context, target));
+    defer engine.freeValue(receiver);
     var identity: usize = 0;
     var caller = try engine.checked(c.JS_PiObserveCallFrame(engine.context, &identity));
     if (logical_frame) |previous| {
@@ -124,13 +148,6 @@ fn invoke(owned: *State, function: c.JSValue, target: c.JSValue, args: []const c
         owned.active = previous_same;
         logical_frame = previous_logical;
     }
-    const receiver = if (constructing)
-        try @import("native_class.zig").object(engine, target)
-    else if (c.JS_IsNull(target) or c.JS_IsUndefined(target))
-        c.JS_GetGlobalObject(engine.context)
-    else
-        try engine.checked(c.JS_ToObject(engine.context, target));
-    defer engine.freeValue(receiver);
     const returned = try owned.callback(engine, receiver, args, owned.values);
     if (!constructing or c.JS_IsObject(returned)) return returned;
     engine.freeValue(returned);

@@ -611,6 +611,7 @@ struct JSContext {
     JSValue async_iterator_proto;
     JSValue array_proto_values;
     JSValue throw_type_error;
+    JSValue pi_legacy_arguments_poison; /* private Source host helper only */
     JSValue eval_obj;
 
     JSValue global_obj; /* global object */
@@ -2956,6 +2957,7 @@ JSContext *JS_NewContextRaw(JSRuntime *rt)
     ctx->error_back_trace = JS_UNDEFINED;
     ctx->error_prepare_stack = JS_UNDEFINED;
     ctx->error_stack_trace_limit = js_int32(10);
+    ctx->pi_legacy_arguments_poison = JS_UNDEFINED;
     init_list_head(&ctx->loaded_modules);
     // TODO(bnoordhuis) use getrandom() etc.
     ctx->random_state = rt->pi_deterministic_time
@@ -3103,6 +3105,7 @@ static void JS_MarkContext(JSRuntime *rt, JSContext *ctx,
     JS_MarkValue(rt, ctx->global_var_obj, mark_func);
 
     JS_MarkValue(rt, ctx->throw_type_error, mark_func);
+    JS_MarkValue(rt, ctx->pi_legacy_arguments_poison, mark_func);
     JS_MarkValue(rt, ctx->eval_obj, mark_func);
 
     JS_MarkValue(rt, ctx->array_proto_values, mark_func);
@@ -3187,6 +3190,7 @@ void JS_FreeContext(JSContext *ctx)
     JS_FreeValue(ctx, ctx->global_var_obj);
 
     JS_FreeValue(ctx, ctx->throw_type_error);
+    JS_FreeValue(ctx, ctx->pi_legacy_arguments_poison);
     JS_FreeValue(ctx, ctx->eval_obj);
 
     JS_FreeValue(ctx, ctx->array_proto_values);
@@ -16977,11 +16981,27 @@ JSValue JS_PiUnmappedArguments(JSContext *ctx, int argc,
     JSShapeProperty *shape;
     if (JS_IsException(value))
         return value;
-    poison = JS_NewCFunction(ctx, pi_legacy_arguments_poison, "", 0);
-    if (JS_IsException(poison)) {
-        JS_FreeValue(ctx, value);
-        return poison;
+    if (JS_IsUndefined(ctx->pi_legacy_arguments_poison)) {
+        poison = JS_NewCFunction(ctx, pi_legacy_arguments_poison, "", 0);
+        if (JS_IsException(poison)) {
+            JS_FreeValue(ctx, value);
+            return poison;
+        }
+        /* Publish only after all immutable Source descriptors are complete. */
+        if (JS_DefineProperty(ctx, poison, JS_ATOM_length, JS_UNDEFINED,
+                              JS_UNDEFINED, JS_UNDEFINED,
+                              JS_PROP_HAS_CONFIGURABLE | JS_PROP_THROW) < 0 ||
+            JS_DefineProperty(ctx, poison, JS_ATOM_name, JS_UNDEFINED,
+                              JS_UNDEFINED, JS_UNDEFINED,
+                              JS_PROP_HAS_CONFIGURABLE | JS_PROP_THROW) < 0 ||
+            JS_PreventExtensions(ctx, poison) < 0) {
+            JS_FreeValue(ctx, poison);
+            JS_FreeValue(ctx, value);
+            return JS_EXCEPTION;
+        }
+        ctx->pi_legacy_arguments_poison = poison;
     }
+    poison = JS_DupValue(ctx, ctx->pi_legacy_arguments_poison);
     /* Only this newly owned value receives the Source host diagnostic. */
     shape = find_own_property(&property, JS_VALUE_GET_OBJ(value), JS_ATOM_callee);
     assert(shape && (shape->flags & JS_PROP_TMASK) == JS_PROP_GETSET);
@@ -16996,6 +17016,8 @@ static JSValue js_function_call(JSContext *ctx, JSValueConst this_val,
                                int argc, JSValueConst *argv);
 static JSValue js_reflect_apply(JSContext *ctx, JSValueConst this_val,
                                int argc, JSValueConst *argv);
+static JSValue js_reflect_construct(JSContext *ctx, JSValueConst this_val,
+                                   int argc, JSValueConst *argv);
 
 /* Read-only Source host caller observation. Skip only the three explicit
  * forwarding builtins; an ordinary native callback boundary yields null. */
@@ -17008,7 +17030,8 @@ JSValue JS_PiObserveCallFrame(JSContext *ctx, uintptr_t *identity)
         if (function->class_id == JS_CLASS_C_FUNCTION) {
             if (function->u.cfunc.cproto == JS_CFUNC_generic)
                 forwarding = function->u.cfunc.c_function.generic == js_function_call ||
-                    function->u.cfunc.c_function.generic == js_reflect_apply;
+                    function->u.cfunc.c_function.generic == js_reflect_apply ||
+                    function->u.cfunc.c_function.generic == js_reflect_construct;
             else if (function->u.cfunc.cproto == JS_CFUNC_generic_magic)
                 forwarding = function->u.cfunc.c_function.generic_magic == js_function_apply;
         }
