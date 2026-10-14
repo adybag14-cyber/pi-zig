@@ -1,0 +1,19 @@
+{
+  "status": "terminal_failed_before_original_rows_or_allocation_baseline",
+  "run_id": 38569188527,
+  "head": "f2c35b8ff07c9d8851c359520302d0988531a316",
+  "compile": "passed",
+  "runtime_tests_passed": 8,
+  "runtime_tests_total": 11,
+  "first_error": "NativeTimersAlreadyInstalled",
+  "cause": "Test setup installed real timers after Theme/TUI initialization had installed them through native_theme_watch.initialize/native_io_watch.install",
+  "repair": "Install real timers before native_tui.install so native_io_watch reuses the existing node:timers module",
+  "production_body_changes": 0,
+  "original_fixture_changes": 0,
+  "source_files": 4725,
+  "tool_files": 19543,
+  "source_post_drift": 0,
+  "tool_post_drift": 0,
+  "artifacts": "C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-shell53-native-first-f2c35b8-20261014",
+  "public_activation": false
+}

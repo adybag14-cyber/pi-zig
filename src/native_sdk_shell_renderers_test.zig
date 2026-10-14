@@ -22,6 +22,7 @@ fn setup(engine: *em.Engine) !void {
     var environment = try std.testing.environ.createMap(engine.gpa);
     defer environment.deinit();
     try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"native-tool-shell-renderers"});
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
     try @import("extensions/native_tui.zig").install(engine);
     const theme = try @import("extensions/native_theme.zig").fromJson(engine, @embedFile("extensions/fixtures/sdk-tool-renderers-e622-dark.json"), "C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/coding-agent/src/modes/interactive/theme/dark.json", .truecolor);
     defer engine.freeValue(theme);
@@ -32,7 +33,6 @@ fn setup(engine: *em.Engine) !void {
     try sdk.put(engine, global, "createShellRenderers", try engine.checked(c.JS_NewCFunction(engine.context, createCall, "createShellRenderers", 1)));
     try sdk.put(engine, global, "formatToolDuration", try engine.checked(c.JS_NewCFunction(engine.context, durationCall, "formatToolDuration", 1)));
     try sdk.put(engine, global, "ignoredRendererTheme", c.pi_js_undefined());
-    try @import("extensions/timers.zig").install(engine, std.testing.io);
     const configured = try engine.evalModule("import{setCapabilityOverrides}from'pi-tui';setCapabilityOverrides({images:null,hyperlinks:false});", "shell-renderers-capabilities.mjs");
     engine.freeValue(configured);
 }
