@@ -91,3 +91,4 @@ src/extensions/fixtures/env-node-safe-finally-*.input.txt whitespace=cr-at-eol,-
 src/extensions/fixtures/env-node-safe-finally-*.json whitespace=cr-at-eol
 src/extensions/fixtures/env-node-filehandle-primitives7-source-manifest-e6220e1.json whitespace=cr-at-eol
 verification/env-node-filehandle-primitives7-20261014/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/env-node-filehandle-qualified-75ea66c-20261014/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

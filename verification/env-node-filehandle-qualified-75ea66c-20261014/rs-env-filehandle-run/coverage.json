@@ -1,0 +1,24 @@
+{
+  "actual_compiled_tests": 7,
+  "named_source_tests": 6,
+  "inventory": [
+    "native_env_filehandle_test.test.native Env FileHandle actual compiled primitive inventory",
+    "native_env_filehandle_test.test.native Env FileHandle protected finally matches actual Node24 primordial ordering species identity and prototype poisoning",
+    "native_env_filehandle_test.test.native Env FileHandle protected constructor and pending finally roots release every host allocation failure",
+    "native_env_filehandle_test.test.native Env FileHandle real descriptor metadata operations match original Node24 timestamps ownership and closed errors",
+    "native_env_filehandle_test.test.native Env FileHandle real libuv vectors match original Node24 buffer identity slices cursor partial EOF and closed errors",
+    "native_env_filehandle_test.test.native Env FileHandle metadata vectored workers pending close and view roots release every host allocation failure",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "passed": 7,
+  "failed": 0,
+  "skipped": 0,
+  "source_corpora": 5,
+  "manifest_sha256": "52DCFB71381C173C3CB72A35173657B3CC83775250350A7E31EF0A1D8F5E4513",
+  "lifecycle_module_imported": false,
+  "full_filehandle_graph_qualified": false,
+  "full_env_package_qualified": false,
+  "posix_native_qualified": false,
+  "public_guest_activation": false,
+  "scope": "Private protected Promise and pinned libuv descriptor metadata/vectors; shared public FileHandle lifecycle/method/stream graph remains inactive and unqualified."
+}

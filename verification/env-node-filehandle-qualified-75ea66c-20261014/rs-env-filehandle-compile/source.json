@@ -1,0 +1,19 @@
+{
+  "head": "75ea66c91352b0f62965e331ac36adcf3a50ca9f",
+  "tree": "6a1bee2a87c84241e8706e7830640744e03e35e7",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "mode": "ReleaseSafe",
+  "phase": "Compile",
+  "source_count": 5360,
+  "tool_count": 19546,
+  "manifest_sha256": "52DCFB71381C173C3CB72A35173657B3CC83775250350A7E31EF0A1D8F5E4513",
+  "outer_seconds": 1320,
+  "test_timeout_seconds": 120,
+  "host_timeout_seconds": 10,
+  "scope": "Private protected Promise and pinned libuv descriptor metadata/vectors; shared public FileHandle lifecycle/method/stream graph remains inactive and unqualified.",
+  "lifecycle_module_imported": false,
+  "public_guest_activation": false,
+  "full_filehandle_graph_qualified": false,
+  "full_env_package_qualified": false,
+  "posix_native_qualified": false
+}

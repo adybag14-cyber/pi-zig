@@ -1,0 +1,21 @@
+{
+  "pid": 1515,
+  "created_utc": "2026-10-14T13:35:23.9452150Z",
+  "executable": "/Users/runner/work/_temp/env-node-fs-node24/node-v24.14.0-darwin-arm64/bin/node",
+  "executable_sha256": "20A18709F0154D668F1BD6F6EA8C2A7AE001447B4B2C339732F22E57A8767A55",
+  "argv": [
+    "--max-old-space-size=256",
+    "--expose-internals",
+    "--conditions=source",
+    "/Users/runner/work/_temp/env-node-filehandle-source-48f47c0fe8ec4046a66ca833443a5038.mjs",
+    "/Users/runner/work/pi-zig/pi-zig/verification/env-node-fs-reference",
+    "/Users/runner/work/pi-zig/pi-zig",
+    "/Users/runner/work/pi-zig/pi-zig/verification/env-node-fs-source-only"
+  ],
+  "command_line": "/Users/runner/work/_temp/env-node-fs-node24/node-v24.14.0-darwin-arm64/bin/node --max-old-space-size=256 --expose-internals --conditions=source /Users/runner/work/_temp/env-node-filehandle-source-48f47c0fe8ec4046a66ca833443a5038.mjs /Users/runner/work/pi-zig/pi-zig/verification/env-node-fs-reference /Users/runner/work/pi-zig/pi-zig /Users/runner/work/pi-zig/pi-zig/verification/env-node-fs-source-only",
+  "identity_source": "retained native Process handle and exact ProcessStartInfo argv",
+  "status": "passed",
+  "native_qualified": false,
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T13:35:24.6783900+00:00"
+}

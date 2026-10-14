@@ -1,0 +1,8 @@
+{
+  "phase": "Compile",
+  "native_compilation": "passed",
+  "runtime_tests_executed": false,
+  "head": "75ea66c91352b0f62965e331ac36adcf3a50ca9f",
+  "full_filehandle_graph_qualified": false,
+  "public_guest_activation": false
+}

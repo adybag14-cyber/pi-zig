@@ -1,0 +1,7 @@
+{
+  "value": "value",
+  "rejected": true,
+  "cleanupRejected": true,
+  "cleanups": 3,
+  "protected": "protected"
+}

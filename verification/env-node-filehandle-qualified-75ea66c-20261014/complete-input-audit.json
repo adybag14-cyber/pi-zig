@@ -1,0 +1,103 @@
+{
+  "qualified_head": "75ea66c91352b0f62965e331ac36adcf3a50ca9f",
+  "run": 38572898382,
+  "common_source_manifest_sha256": "B27018EF911DE0BC530E83C94D28FA0DC17AB94CF425A61FB93B2112F033FBB0",
+  "pinned_compiler_manifest": "verification/env-node-filehandle-primitives7-20261014/pinned-compiler-manifest.json",
+  "pinned_compiler_manifest_sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+  "phases": [
+    {
+      "mode": "debug",
+      "suite": "env-filehandle",
+      "phase": "compile",
+      "source_entries": 5360,
+      "common_source_match": true,
+      "original_input_manifest_sha256": "B27018EF911DE0BC530E83C94D28FA0DC17AB94CF425A61FB93B2112F033FBB0",
+      "tool_entries": 19546,
+      "pinned_all_tool_rows_match": true,
+      "original_tool_manifest_sha256": "CCFBCCA48050D1C072EE355376FF065F3DB702935A744D624A21517D0A5799FB"
+    },
+    {
+      "mode": "debug",
+      "suite": "env-filehandle",
+      "phase": "run",
+      "source_entries": 5360,
+      "common_source_match": true,
+      "original_input_manifest_sha256": "B27018EF911DE0BC530E83C94D28FA0DC17AB94CF425A61FB93B2112F033FBB0",
+      "tool_entries": 19546,
+      "pinned_all_tool_rows_match": true,
+      "original_tool_manifest_sha256": "CCFBCCA48050D1C072EE355376FF065F3DB702935A744D624A21517D0A5799FB"
+    },
+    {
+      "mode": "debug",
+      "suite": "env-node-fs",
+      "phase": "compile",
+      "source_entries": 5360,
+      "common_source_match": true,
+      "original_input_manifest_sha256": "B27018EF911DE0BC530E83C94D28FA0DC17AB94CF425A61FB93B2112F033FBB0",
+      "tool_entries": 19546,
+      "pinned_all_tool_rows_match": true,
+      "original_tool_manifest_sha256": "CCFBCCA48050D1C072EE355376FF065F3DB702935A744D624A21517D0A5799FB"
+    },
+    {
+      "mode": "debug",
+      "suite": "env-node-fs",
+      "phase": "run",
+      "source_entries": 5360,
+      "common_source_match": true,
+      "original_input_manifest_sha256": "B27018EF911DE0BC530E83C94D28FA0DC17AB94CF425A61FB93B2112F033FBB0",
+      "tool_entries": 19546,
+      "pinned_all_tool_rows_match": true,
+      "original_tool_manifest_sha256": "CCFBCCA48050D1C072EE355376FF065F3DB702935A744D624A21517D0A5799FB"
+    },
+    {
+      "mode": "rs",
+      "suite": "env-filehandle",
+      "phase": "compile",
+      "source_entries": 5360,
+      "common_source_match": true,
+      "original_input_manifest_sha256": "B27018EF911DE0BC530E83C94D28FA0DC17AB94CF425A61FB93B2112F033FBB0",
+      "tool_entries": 19546,
+      "pinned_all_tool_rows_match": true,
+      "original_tool_manifest_sha256": "E2A8AA67235EC2CC7A4155AD9753D2DBBB375ADD18F3F4ABAE64DC784EECD57D"
+    },
+    {
+      "mode": "rs",
+      "suite": "env-filehandle",
+      "phase": "run",
+      "source_entries": 5360,
+      "common_source_match": true,
+      "original_input_manifest_sha256": "B27018EF911DE0BC530E83C94D28FA0DC17AB94CF425A61FB93B2112F033FBB0",
+      "tool_entries": 19546,
+      "pinned_all_tool_rows_match": true,
+      "original_tool_manifest_sha256": "E2A8AA67235EC2CC7A4155AD9753D2DBBB375ADD18F3F4ABAE64DC784EECD57D"
+    },
+    {
+      "mode": "rs",
+      "suite": "env-node-fs",
+      "phase": "compile",
+      "source_entries": 5360,
+      "common_source_match": true,
+      "original_input_manifest_sha256": "B27018EF911DE0BC530E83C94D28FA0DC17AB94CF425A61FB93B2112F033FBB0",
+      "tool_entries": 19546,
+      "pinned_all_tool_rows_match": true,
+      "original_tool_manifest_sha256": "E2A8AA67235EC2CC7A4155AD9753D2DBBB375ADD18F3F4ABAE64DC784EECD57D"
+    },
+    {
+      "mode": "rs",
+      "suite": "env-node-fs",
+      "phase": "run",
+      "source_entries": 5360,
+      "common_source_match": true,
+      "original_input_manifest_sha256": "B27018EF911DE0BC530E83C94D28FA0DC17AB94CF425A61FB93B2112F033FBB0",
+      "tool_entries": 19546,
+      "pinned_all_tool_rows_match": true,
+      "original_tool_manifest_sha256": "E2A8AA67235EC2CC7A4155AD9753D2DBBB375ADD18F3F4ABAE64DC784EECD57D"
+    }
+  ],
+  "all_phase_source_rows_equal": true,
+  "all_pinned_compiler_rows_equal": true,
+  "full_filehandle_graph_qualified": false,
+  "full_env_package_qualified": false,
+  "posix_native_qualified": false,
+  "public_activation": false
+}

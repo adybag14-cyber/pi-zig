@@ -1,0 +1,138 @@
+{
+  "positionedWrite": {
+    "nullPrototype": true,
+    "keys": [
+      "bytesWritten",
+      "buffers"
+    ],
+    "count": 4,
+    "sameBuffers": true,
+    "bytes": [
+      [
+        2,
+        3
+      ],
+      [],
+      [
+        6,
+        7
+      ]
+    ]
+  },
+  "positionedRead": {
+    "nullPrototype": true,
+    "keys": [
+      "bytesRead",
+      "buffers"
+    ],
+    "count": 6,
+    "sameBuffers": true,
+    "bytes": [
+      [
+        11,
+        2,
+        3
+      ],
+      [],
+      [
+        6,
+        7,
+        16
+      ]
+    ]
+  },
+  "backing": {
+    "a": [
+      99,
+      11,
+      2,
+      3,
+      99,
+      99
+    ],
+    "b": [
+      88,
+      6,
+      7,
+      16,
+      88
+    ]
+  },
+  "sequentialRead": {
+    "nullPrototype": true,
+    "keys": [
+      "bytesRead",
+      "buffers"
+    ],
+    "count": 5,
+    "sameBuffers": true,
+    "bytes": [
+      [
+        10,
+        11
+      ],
+      [
+        2,
+        3,
+        6
+      ]
+    ]
+  },
+  "partialRead": {
+    "nullPrototype": true,
+    "keys": [
+      "bytesRead",
+      "buffers"
+    ],
+    "count": 2,
+    "sameBuffers": true,
+    "bytes": [
+      [
+        18,
+        19
+      ],
+      [
+        66
+      ]
+    ]
+  },
+  "emptyWrite": {
+    "nullPrototype": true,
+    "keys": [
+      "bytesWritten",
+      "buffers"
+    ],
+    "count": 0,
+    "sameBuffers": true,
+    "bytes": []
+  },
+  "emptyRead": {
+    "name": "Error",
+    "code": "EINVAL",
+    "syscall": "read"
+  },
+  "closed": [
+    {
+      "method": "readv",
+      "name": "Error",
+      "message": "file closed",
+      "code": "EBADF",
+      "syscall": "readv",
+      "keys": [
+        "code",
+        "syscall"
+      ]
+    },
+    {
+      "method": "writev",
+      "name": "Error",
+      "message": "file closed",
+      "code": "EBADF",
+      "syscall": "writev",
+      "keys": [
+        "code",
+        "syscall"
+      ]
+    }
+  ]
+}

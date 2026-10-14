@@ -1,0 +1,7 @@
+{
+  "input": "D:\\a\\pi-zig\\pi-zig\\src\\extensions\\fixtures\\env-node-filehandle-original-source-capture.input.txt",
+  "input_sha256": "27C98705649687323AC415191B65806EA2335D37F7C3D88F5E5121FEE386A072",
+  "temp": "D:\\a\\_temp\\env-node-filehandle-source-98b96321f9a5486c9c477f5df2352b74.mjs",
+  "temp_sha256": "27C98705649687323AC415191B65806EA2335D37F7C3D88F5E5121FEE386A072",
+  "body_rewritten": false
+}

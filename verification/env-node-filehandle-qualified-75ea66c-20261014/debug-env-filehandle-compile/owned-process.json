@@ -1,0 +1,22 @@
+{
+  "pid": 7756,
+  "created_utc": "2026-10-14T13:36:39.5335039Z",
+  "executable": "D:\\a\\_temp\\7a238c61-6038-43b9-93e8-4bbc688e71e4\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "argv": [
+    "build",
+    "build-hosted-native-env-filehandle",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-Ddiagnostic-tests=true",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "command_line": "\"D:\\a\\_temp\\7a238c61-6038-43b9-93e8-4bbc688e71e4\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-hosted-native-env-filehandle -Doptimize=Debug -Duse-llvm=true -Ddiagnostic-tests=true -j1 --test-timeout 120s --summary all",
+  "identity_source": "retained native Process handle and exact ProcessStartInfo argv",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T13:44:15.4460371+00:00"
+}

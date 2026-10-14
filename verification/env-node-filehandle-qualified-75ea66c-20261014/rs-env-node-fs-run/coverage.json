@@ -1,0 +1,27 @@
+{
+  "compiled_tests": 12,
+  "source_named_tests": 12,
+  "passed": 12,
+  "skipped": [],
+  "failed": 0,
+  "source_walk_cases": 20,
+  "source_ignore_cases": 89,
+  "source_error_cases": 6,
+  "source_windows_edge_cases": 6,
+  "full_existing_env_gate": "passed",
+  "inventory": [
+    "env_list_files_test.test.listFiles actual compiled inventory",
+    "env.list_files_test.test.listFiles daemon bytes match actual e6220e1 source across hierarchical ignores globals hidden bounds and errors",
+    "env.list_files_test.test.listFiles protocol errors and nullish defaults match genuine Source without changing other filesystem paths",
+    "env.list_files_test.test.listFiles remote local capability retained directory paging and old daemon fallback use real native transport",
+    "env.list_files_test.test.listFiles nodePlatform maps the exact Source names and preserves unknown names",
+    "env.list_files_test.test.listFiles ignore parser and globs match genuine Source daemon walks including invalid UTF8",
+    "env.list_files_test.test.listFiles owned walk and payload remain leak free at every allocation failure",
+    "env.list_files_test.test.listFiles ignore stacks global config and nested branches remain leak free at every allocation failure",
+    "env.list_files_test.test.listFiles links stay unfollowed while an explicit linked root can be listed",
+    "env.list_files_test.test.listFiles Windows junctions hidden attributes and unpaired UTF16 names match genuine Source bytes",
+    "env.list_files_test.test.listFiles real daemon cancels an admitted walk and keeps subsequent bounded requests healthy",
+    "durable.list_ignore.test.listFiles ignore globs retain hierarchy, escapes, recursive separators, and classes"
+  ],
+  "public_guest_activation": false
+}

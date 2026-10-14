@@ -1,0 +1,7 @@
+{
+  "input": "/home/runner/work/pi-zig/pi-zig/src/extensions/fixtures/env-node-filehandle-original-source-capture.input.txt",
+  "input_sha256": "27C98705649687323AC415191B65806EA2335D37F7C3D88F5E5121FEE386A072",
+  "temp": "/home/runner/work/_temp/env-node-filehandle-source-d6795c9cb4fc4be38e54b8b03f0fbf3b.mjs",
+  "temp_sha256": "27C98705649687323AC415191B65806EA2335D37F7C3D88F5E5121FEE386A072",
+  "body_rewritten": false
+}
