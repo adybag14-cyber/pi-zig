@@ -62,7 +62,7 @@ pub fn copySet(s: *Scope, value: c.JSValue) !c.JSValue {
     return s.keep(try js.builtin(s.engine, "Set", &.{value}));
 }
 pub fn put(s: *Scope, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
-    try js.setKey(s.engine, target, try s.text(name), value);
+    try js.setKey(s.engine, target, try s.text(@import("std").mem.span(name)), value);
 }
 pub fn index(s: *Scope, work: c.JSValue, name: [*:0]const u8) !u32 {
     var result: u32 = undefined;
