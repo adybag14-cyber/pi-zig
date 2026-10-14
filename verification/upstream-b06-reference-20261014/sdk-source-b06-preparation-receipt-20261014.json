@@ -1,0 +1,19 @@
+{
+  "dependency_junctions": [
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b06c1f2-20261014\\node_modules",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules"
+    }
+  ],
+  "latest_catalog_qualified": false,
+  "tracked_files": 1922,
+  "historical_required_absent": 4,
+  "contract_files": 18,
+  "platform_optional_absent": 80,
+  "observed_utc": "2026-10-14T21:24:06.9920228+00:00",
+  "installed_external_metadata": 281,
+  "official_fixture_files": 43,
+  "original_Source_implementation_fallback": false,
+  "full_source_files": 1965,
+  "source_head": "b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6"
+}

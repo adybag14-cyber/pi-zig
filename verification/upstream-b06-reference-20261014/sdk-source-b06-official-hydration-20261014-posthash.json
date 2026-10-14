@@ -1,0 +1,7 @@
+{
+  "historical_catalog_scope": "Source fixture typed metadata only; current generated catalog remains a separate application gate",
+  "tracked_drift": 0,
+  "observed_utc": "2026-10-14T21:18:31.0821341+00:00",
+  "control_drift": 0,
+  "tracked_source_files": 1922
+}

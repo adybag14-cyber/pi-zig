@@ -1,0 +1,583 @@
+{
+  "url": "https://api.github.com/repos/earendil-works/pi/compare/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb...b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+  "html_url": "https://github.com/earendil-works/pi/compare/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb...b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+  "permalink_url": "https://github.com/earendil-works/pi/compare/earendil-works:b45e0eb...earendil-works:b06c1f2",
+  "diff_url": "https://github.com/earendil-works/pi/compare/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb...b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6.diff",
+  "patch_url": "https://github.com/earendil-works/pi/compare/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb...b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6.patch",
+  "base_commit": {
+    "sha": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+    "node_id": "C_kwDOPbFNk9oAKGI0NWUwZWJjYzVhZTJmYzQyYTZmMmYyMzEwNGQxMGU2NTZlNmJlZGI",
+    "commit": {
+      "author": {
+        "name": "Mario Zechner",
+        "email": "badlogicgames@gmail.com",
+        "date": "2026-10-14T14:29:58Z"
+      },
+      "committer": {
+        "name": "Mario Zechner",
+        "email": "badlogicgames@gmail.com",
+        "date": "2026-10-14T14:29:58Z"
+      },
+      "message": "feat(chord): references hydrate their state before use (protocol 4)\n\n- an awaited get or a ready hold has every state member of its variant, local or remote\n- holds subscribe to their variant's state; per-member opt-out with state: false\n- remote binding keys use canonical identity; client holds carry an opaque origin\n- shape frames no longer carry codeVersion",
+      "tree": {
+        "sha": "42e1b9b91ae302a290253166c8ec8800523543cd",
+        "url": "https://api.github.com/repos/earendil-works/pi/git/trees/42e1b9b91ae302a290253166c8ec8800523543cd"
+      },
+      "url": "https://api.github.com/repos/earendil-works/pi/git/commits/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/earendil-works/pi/commits/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+    "html_url": "https://github.com/earendil-works/pi/commit/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+    "comments_url": "https://api.github.com/repos/earendil-works/pi/commits/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb/comments",
+    "author": {
+      "login": "badlogic",
+      "id": 514052,
+      "node_id": "MDQ6VXNlcjUxNDA1Mg==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/514052?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/badlogic",
+      "html_url": "https://github.com/badlogic",
+      "followers_url": "https://api.github.com/users/badlogic/followers",
+      "following_url": "https://api.github.com/users/badlogic/following{/other_user}",
+      "gists_url": "https://api.github.com/users/badlogic/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/badlogic/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/badlogic/subscriptions",
+      "organizations_url": "https://api.github.com/users/badlogic/orgs",
+      "repos_url": "https://api.github.com/users/badlogic/repos",
+      "events_url": "https://api.github.com/users/badlogic/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/badlogic/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "badlogic",
+      "id": 514052,
+      "node_id": "MDQ6VXNlcjUxNDA1Mg==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/514052?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/badlogic",
+      "html_url": "https://github.com/badlogic",
+      "followers_url": "https://api.github.com/users/badlogic/followers",
+      "following_url": "https://api.github.com/users/badlogic/following{/other_user}",
+      "gists_url": "https://api.github.com/users/badlogic/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/badlogic/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/badlogic/subscriptions",
+      "organizations_url": "https://api.github.com/users/badlogic/orgs",
+      "repos_url": "https://api.github.com/users/badlogic/repos",
+      "events_url": "https://api.github.com/users/badlogic/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/badlogic/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "9fe3f371622cad9cc1a3cbf044288abd0252192f",
+        "url": "https://api.github.com/repos/earendil-works/pi/commits/9fe3f371622cad9cc1a3cbf044288abd0252192f",
+        "html_url": "https://github.com/earendil-works/pi/commit/9fe3f371622cad9cc1a3cbf044288abd0252192f"
+      }
+    ]
+  },
+  "merge_base_commit": {
+    "sha": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+    "node_id": "C_kwDOPbFNk9oAKGI0NWUwZWJjYzVhZTJmYzQyYTZmMmYyMzEwNGQxMGU2NTZlNmJlZGI",
+    "commit": {
+      "author": {
+        "name": "Mario Zechner",
+        "email": "badlogicgames@gmail.com",
+        "date": "2026-10-14T14:29:58Z"
+      },
+      "committer": {
+        "name": "Mario Zechner",
+        "email": "badlogicgames@gmail.com",
+        "date": "2026-10-14T14:29:58Z"
+      },
+      "message": "feat(chord): references hydrate their state before use (protocol 4)\n\n- an awaited get or a ready hold has every state member of its variant, local or remote\n- holds subscribe to their variant's state; per-member opt-out with state: false\n- remote binding keys use canonical identity; client holds carry an opaque origin\n- shape frames no longer carry codeVersion",
+      "tree": {
+        "sha": "42e1b9b91ae302a290253166c8ec8800523543cd",
+        "url": "https://api.github.com/repos/earendil-works/pi/git/trees/42e1b9b91ae302a290253166c8ec8800523543cd"
+      },
+      "url": "https://api.github.com/repos/earendil-works/pi/git/commits/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/earendil-works/pi/commits/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+    "html_url": "https://github.com/earendil-works/pi/commit/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+    "comments_url": "https://api.github.com/repos/earendil-works/pi/commits/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb/comments",
+    "author": {
+      "login": "badlogic",
+      "id": 514052,
+      "node_id": "MDQ6VXNlcjUxNDA1Mg==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/514052?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/badlogic",
+      "html_url": "https://github.com/badlogic",
+      "followers_url": "https://api.github.com/users/badlogic/followers",
+      "following_url": "https://api.github.com/users/badlogic/following{/other_user}",
+      "gists_url": "https://api.github.com/users/badlogic/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/badlogic/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/badlogic/subscriptions",
+      "organizations_url": "https://api.github.com/users/badlogic/orgs",
+      "repos_url": "https://api.github.com/users/badlogic/repos",
+      "events_url": "https://api.github.com/users/badlogic/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/badlogic/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "badlogic",
+      "id": 514052,
+      "node_id": "MDQ6VXNlcjUxNDA1Mg==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/514052?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/badlogic",
+      "html_url": "https://github.com/badlogic",
+      "followers_url": "https://api.github.com/users/badlogic/followers",
+      "following_url": "https://api.github.com/users/badlogic/following{/other_user}",
+      "gists_url": "https://api.github.com/users/badlogic/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/badlogic/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/badlogic/subscriptions",
+      "organizations_url": "https://api.github.com/users/badlogic/orgs",
+      "repos_url": "https://api.github.com/users/badlogic/repos",
+      "events_url": "https://api.github.com/users/badlogic/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/badlogic/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "9fe3f371622cad9cc1a3cbf044288abd0252192f",
+        "url": "https://api.github.com/repos/earendil-works/pi/commits/9fe3f371622cad9cc1a3cbf044288abd0252192f",
+        "html_url": "https://github.com/earendil-works/pi/commit/9fe3f371622cad9cc1a3cbf044288abd0252192f"
+      }
+    ]
+  },
+  "status": "ahead",
+  "ahead_by": 2,
+  "behind_by": 0,
+  "total_commits": 2,
+  "commits": [
+    {
+      "sha": "87f9a36419e8164bba77397d15c54ff39fac5e8a",
+      "node_id": "C_kwDOPbFNk9oAKDg3ZjlhMzY0MTllODE2NGJiYTc3Mzk3ZDE1YzU0ZmYzOWZhYzVlOGE",
+      "commit": {
+        "author": {
+          "name": "David Brailovsky",
+          "email": "davidbrai@gmail.com",
+          "date": "2026-10-14T19:41:42Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-10-14T19:41:42Z"
+        },
+        "message": "fix(ai): report malformed final tool-call arguments instead of keeping the parsed prefix (#10944)\n\nWhen a finished tool call's arguments text was not valid JSON, the\nstreaming parser kept only the fields before the error and the tool ran\nwith them. Finished calls are now parsed strictly (with the existing\nstring repair); on failure arguments are {} and argumentsError holds the\nreason and raw text, which validateToolArguments reports to the model.\n\nfixes #10897",
+        "tree": {
+          "sha": "081a9f40f5a7a59e233ee88074abf469355a05a8",
+          "url": "https://api.github.com/repos/earendil-works/pi/git/trees/081a9f40f5a7a59e233ee88074abf469355a05a8"
+        },
+        "url": "https://api.github.com/repos/earendil-works/pi/git/commits/87f9a36419e8164bba77397d15c54ff39fac5e8a",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqz9r2CRC1aQ7uu5UhlAAA0tYQAB3zcqiOz9sjzYVMuE0PPP/B\nRqo9adqWBFqi1EfSJs/5DDgZ1HGTuYw7vjShwgrK1PIxQA01Vbvi5WOUxAL8DOLL\nFTIgkXSyG835cCYUvhP53R99tvOBasiExJIMv/kPt0P5qoUV0rHOO3Ui4/JtWsHd\nJI/hc+rcZFSAYUPiyYTDKJTeWMjzVtUeBZ4BjFITfLs97ZtCDd950cUZmXYe5Sy9\nGL+5s0EwayGdTw2ALZ7NYKTlyUv8eqMmYBHoYTV9WKRNbqDfPTactvMDRFBGnrH/\nEOioHwgNGqycntNX7S8RRZSK3TyPHuc4Tj3D+GW/cOVjh4GAL19SSfGeam+2HsF4\nPm8qBbEFB5CuVjf5oV15GtlNPlqnhEKcH+d6PykD2aU0dRIGTzutXU8zKVszo8jA\nFuLM1Y3RAUOceNgGdTah4tyx3AE9MZA8g6pqcoK1EL4FFsPmw4lbyYbS11cc4Qf+\nNSOoqbhzo7kI0Uh9waG4XsVyRgdrSjeTXpNirUvNZqi2YbbDvsoWBsiNhSIO51sN\nzDcMhbCzg+L5b9mWsKtDGWMf2IlVCeH8y7xtnUfZK57nJrMQ0i/14ObJwPU06/SW\nvTlKoxB6VU1DAXw3t3dIKOqd18/M1InogidK3oxLhL9TXyLGNGuu9cnv6I3DAueb\n4+O2LSDlwrzgOq27thuq\n=3MXb\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree 081a9f40f5a7a59e233ee88074abf469355a05a8\nparent b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb\nauthor David Brailovsky <davidbrai@gmail.com> 1792006902 +0200\ncommitter GitHub <noreply@github.com> 1792006902 +0200\n\nfix(ai): report malformed final tool-call arguments instead of keeping the parsed prefix (#10944)\n\nWhen a finished tool call's arguments text was not valid JSON, the\nstreaming parser kept only the fields before the error and the tool ran\nwith them. Finished calls are now parsed strictly (with the existing\nstring repair); on failure arguments are {} and argumentsError holds the\nreason and raw text, which validateToolArguments reports to the model.\n\nfixes #10897",
+          "verified_at": "2026-10-14T19:41:42Z"
+        }
+      },
+      "url": "https://api.github.com/repos/earendil-works/pi/commits/87f9a36419e8164bba77397d15c54ff39fac5e8a",
+      "html_url": "https://github.com/earendil-works/pi/commit/87f9a36419e8164bba77397d15c54ff39fac5e8a",
+      "comments_url": "https://api.github.com/repos/earendil-works/pi/commits/87f9a36419e8164bba77397d15c54ff39fac5e8a/comments",
+      "author": {
+        "login": "davidbrai",
+        "id": 351026,
+        "node_id": "MDQ6VXNlcjM1MTAyNg==",
+        "avatar_url": "https://avatars.githubusercontent.com/u/351026?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/davidbrai",
+        "html_url": "https://github.com/davidbrai",
+        "followers_url": "https://api.github.com/users/davidbrai/followers",
+        "following_url": "https://api.github.com/users/davidbrai/following{/other_user}",
+        "gists_url": "https://api.github.com/users/davidbrai/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/davidbrai/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/davidbrai/subscriptions",
+        "organizations_url": "https://api.github.com/users/davidbrai/orgs",
+        "repos_url": "https://api.github.com/users/davidbrai/repos",
+        "events_url": "https://api.github.com/users/davidbrai/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/davidbrai/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+          "url": "https://api.github.com/repos/earendil-works/pi/commits/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+          "html_url": "https://github.com/earendil-works/pi/commit/b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb"
+        }
+      ]
+    },
+    {
+      "sha": "b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "node_id": "C_kwDOPbFNk9oAKGIwNmMxZjJjZjFkZWE2YWY4NzQ4ZGRlZWUxOGMyMzU4N2QyY2I3YzY",
+      "commit": {
+        "author": {
+          "name": "David Brailovsky",
+          "email": "davidbrai@gmail.com",
+          "date": "2026-10-14T20:23:30Z"
+        },
+        "committer": {
+          "name": "David Brailovsky",
+          "email": "davidbrai@gmail.com",
+          "date": "2026-10-14T20:23:59Z"
+        },
+        "message": "feat(ai): use Chat Completions for the kimi-coding provider\n\nSwitch kimi-coding to OpenAI Chat Completions at api.kimi.com/coding/v1,\nthe protocol the official Kimi Code client uses. K3, K3-256K, and Kimi For\nCoding accept tools declared in later system messages, so tools loaded\nmid-conversation (e.g. by tool_search) keep the prompt cache. Highspeed\nrejects tool-bearing system messages and keeps added tools top-level.\n\ncloses #10720",
+        "tree": {
+          "sha": "be4c1e96c83d68f62aa59f5c75c1e63abbd3d8c1",
+          "url": "https://api.github.com/repos/earendil-works/pi/git/trees/be4c1e96c83d68f62aa59f5c75c1e63abbd3d8c1"
+        },
+        "url": "https://api.github.com/repos/earendil-works/pi/git/commits/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/earendil-works/pi/commits/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "html_url": "https://github.com/earendil-works/pi/commit/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "comments_url": "https://api.github.com/repos/earendil-works/pi/commits/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/comments",
+      "author": {
+        "login": "davidbrai",
+        "id": 351026,
+        "node_id": "MDQ6VXNlcjM1MTAyNg==",
+        "avatar_url": "https://avatars.githubusercontent.com/u/351026?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/davidbrai",
+        "html_url": "https://github.com/davidbrai",
+        "followers_url": "https://api.github.com/users/davidbrai/followers",
+        "following_url": "https://api.github.com/users/davidbrai/following{/other_user}",
+        "gists_url": "https://api.github.com/users/davidbrai/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/davidbrai/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/davidbrai/subscriptions",
+        "organizations_url": "https://api.github.com/users/davidbrai/orgs",
+        "repos_url": "https://api.github.com/users/davidbrai/repos",
+        "events_url": "https://api.github.com/users/davidbrai/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/davidbrai/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "davidbrai",
+        "id": 351026,
+        "node_id": "MDQ6VXNlcjM1MTAyNg==",
+        "avatar_url": "https://avatars.githubusercontent.com/u/351026?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/davidbrai",
+        "html_url": "https://github.com/davidbrai",
+        "followers_url": "https://api.github.com/users/davidbrai/followers",
+        "following_url": "https://api.github.com/users/davidbrai/following{/other_user}",
+        "gists_url": "https://api.github.com/users/davidbrai/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/davidbrai/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/davidbrai/subscriptions",
+        "organizations_url": "https://api.github.com/users/davidbrai/orgs",
+        "repos_url": "https://api.github.com/users/davidbrai/repos",
+        "events_url": "https://api.github.com/users/davidbrai/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/davidbrai/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "87f9a36419e8164bba77397d15c54ff39fac5e8a",
+          "url": "https://api.github.com/repos/earendil-works/pi/commits/87f9a36419e8164bba77397d15c54ff39fac5e8a",
+          "html_url": "https://github.com/earendil-works/pi/commit/87f9a36419e8164bba77397d15c54ff39fac5e8a"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "sha": "61f825b241df7c85966e7ef8c5195026bef4151a",
+      "filename": "packages/ai/CHANGELOG.md",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2FCHANGELOG.md",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2FCHANGELOG.md?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -10,6 +10,10 @@\n \n - Added cache-preserving thinking level changes for GPT-6 models on the openai provider: with an API key, the level is sent as configuration_update input items instead of changing reasoning.effort, controlled by compat.supportsMidConvoEffort ([#10853](https://github.com/earendil-works/pi/issues/10853))\n \n+### Changed\n+\n+- Changed the `kimi-coding` provider to use OpenAI Chat Completions at `https://api.kimi.com/coding/v1`, the protocol used by the official Kimi Code client. K3, K3-256K, and Kimi For Coding now accept tools added mid-conversation without invalidating the prompt cache. `models.json` overrides of the `kimi-coding` base URL must now include `/v1` ([#10720](https://github.com/earendil-works/pi/issues/10720))\n+\n ### Fixed\n \n - Fixed tool-call argument parsing dropping fields when a string contains an invalid `\\u` escape such as `\\usepackage` ([#10868](https://github.com/earendil-works/pi/issues/10868))\n@@ -21,6 +25,7 @@\n - Fixed Gemini 4 Argon requests on Google Vertex failing with \"Thinking budget is not supported\", and its thinking level being ignored on the Gemini API, by sending `thinkingLevel` for Gemini 4 and later models ([#10890](https://github.com/earendil-works/pi/issues/10890))\n - Fixed Xiaomi MiMo models failing with a 400 at the `minimal` thinking level by sending only the documented thinking on/off toggle and exposing only the `off` and `high` levels ([#10818](https://github.com/earendil-works/pi/issues/10818))\n - Fixed `openai-codex/gpt-6.1-sol` using a 272K context window instead of the 500K window Codex now provides ([#10840](https://github.com/earendil-works/pi/issues/10840))\n+- Fixed tool calls whose final arguments are malformed JSON silently running with only the fields parsed before the error; such calls now carry `argumentsError` and fail validation with the raw arguments text, so the model sees what it sent ([#10897](https://github.com/earendil-works/pi/issues/10897))\n \n ## [1.2.0] - 2026-10-12\n "
+    },
+    {
+      "sha": "1ae67d5e0384ad803e170cee91dfcfe169a6a6c7",
+      "filename": "packages/ai/scripts/generate-models.ts",
+      "status": "modified",
+      "additions": 70,
+      "deletions": 64,
+      "changes": 134,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fscripts%2Fgenerate-models.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fscripts%2Fgenerate-models.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Fscripts%2Fgenerate-models.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -343,13 +343,21 @@ const KIMI_K3_COST = {\n \tcacheRead: 0.3,\n \tcacheWrite: 0,\n } as const;\n-// Kimi Coding is subscription-backed, so models.dev reports zero cost. Use the\n-// equivalent Moonshot API rates to estimate the value of subscription usage.\n-const KIMI_CODING_IMPLIED_COSTS: Record<string, Model<Api>[\"cost\"]> = {\n-\tk3: KIMI_K3_COST,\n-\t\"kimi-for-coding\": { input: 0.95, output: 4, cacheRead: 0.19, cacheWrite: 0 },\n-\t\"kimi-for-coding-highspeed\": { input: 1.9, output: 8, cacheRead: 0.38, cacheWrite: 0 },\n-\t\"kimi-k2-thinking\": { input: 0.6, output: 2.5, cacheRead: 0.15, cacheWrite: 0 },\n+// Kimi Chat Completions settings shared by Moonshot and Kimi Coding.\n+const KIMI_OPENAI_COMPAT: OpenAICompletionsCompat = {\n+\tsupportsStore: false,\n+\tsupportsDeveloperRole: false,\n+\tsupportsReasoningEffort: false,\n+\tmaxTokensField: \"max_tokens\",\n+\tsupportsStrictMode: false,\n+\tthinkingFormat: \"deepseek\",\n+};\n+// Kimi K3-style models take reasoning_effort and need earlier reasoning sent back.\n+const KIMI_K3_OPENAI_COMPAT: OpenAICompletionsCompat = {\n+\t...KIMI_OPENAI_COMPAT,\n+\trequiresReasoningContentOnAssistantMessages: true,\n+\tthinkingFormat: \"openai\",\n+\tsupportsReasoningEffort: true,\n };\n const OPENROUTER_KIMI_K3_MODEL_IDS = new Set([\"moonshotai/kimi-k3\", \"~moonshotai/kimi-latest\"]);\n \n@@ -918,7 +926,7 @@ function applyOpenAIToolSearchMetadata(model: Model<Api>): void {\n // tool-bearing system messages. Kimi K3 accepts both forms; Fireworks and OpenCode pass\n // its tool-bearing form through. GitHub Copilot forwards K3 text but silently drops its\n // tool-bearing message. DeepSeek V4 Pro and OpenAI models behind OpenRouter also accept\n-// plain system text in place.\n+// plain system text in place. Kimi Coding sets these flags in createKimiCodingModels().\n function applyOpenAICompletionsTranscriptMetadata(model: Model<Api>): void {\n \tif (model.api !== \"openai-completions\") return;\n \tconst isKimiK3 =\n@@ -1753,6 +1761,58 @@ function processFireworksModels(provider: ModelsDevProvider | undefined): Model<\n \treturn models;\n }\n \n+// Kimi Coding is subscription-backed, so models.dev reports zero cost. Use the\n+// equivalent Moonshot API rates to estimate the value of subscription usage.\n+const KIMI_CODING_IMPLIED_COSTS: Record<string, Model<Api>[\"cost\"]> = {\n+\tk3: KIMI_K3_COST,\n+\t\"kimi-for-coding\": { input: 0.95, output: 4, cacheRead: 0.19, cacheWrite: 0 },\n+\t\"kimi-for-coding-highspeed\": { input: 1.9, output: 8, cacheRead: 0.38, cacheWrite: 0 },\n+};\n+// Models whose https://api.kimi.com/coding/v1/models entry reports effort levels and\n+// dynamic tool loading (tools declared in later system messages). Highspeed reports\n+// neither and rejects tool-bearing system messages with a 400.\n+const KIMI_CODING_K3_STYLE_MODEL_IDS = new Set([\"k3\", \"k3-256k\", \"kimi-for-coding\"]);\n+\n+// Kimi Coding uses Chat Completions, the same protocol as the official Kimi Code client.\n+function createKimiCodingModels(kimiModels: Record<string, ModelsDevModel>): Model<\"openai-completions\">[] {\n+\tconst models: Model<\"openai-completions\">[] = [];\n+\tfor (const [modelId, m] of Object.entries(kimiModels)) {\n+\t\tif (m.tool_call !== true) continue;\n+\n+\t\tconst isK3Style = KIMI_CODING_K3_STYLE_MODEL_IDS.has(modelId);\n+\t\tconst impliedCost = KIMI_CODING_IMPLIED_COSTS[modelId];\n+\t\t// K3-style models send reasoning_effort, so expose the effort values models.dev lists.\n+\t\tconst effortLevels = isK3Style && m.reasoning_options ? getEffortThinkingLevelMap(m.reasoning_options) : undefined;\n+\n+\t\tmodels.push({\n+\t\t\tid: modelId,\n+\t\t\tname: m.name || modelId,\n+\t\t\tapi: \"openai-completions\",\n+\t\t\tprovider: \"kimi-coding\",\n+\t\t\tbaseUrl: \"https://api.kimi.com/coding/v1\",\n+\t\t\tcompat: {\n+\t\t\t\t...(isK3Style ? KIMI_K3_OPENAI_COMPAT : KIMI_OPENAI_COMPAT),\n+\t\t\t\t// All models accept system text after the conversation starts.\n+\t\t\t\tsupportsMidConvoSystemMessages: true,\n+\t\t\t\t...(isK3Style ? { supportsMidConvoToolAdditions: true } : {}),\n+\t\t\t},\n+\t\t\treasoning: m.reasoning === true,\n+\t\t\tinput: m.modalities?.input?.includes(\"image\") ? [\"text\", \"image\"] : [\"text\"],\n+\t\t\tcost: {\n+\t\t\t\tinput: m.cost?.input || impliedCost?.input || 0,\n+\t\t\t\toutput: m.cost?.output || impliedCost?.output || 0,\n+\t\t\t\tcacheRead: m.cost?.cache_read || impliedCost?.cacheRead || 0,\n+\t\t\t\tcacheWrite: m.cost?.cache_write || impliedCost?.cacheWrite || 0,\n+\t\t\t},\n+\t\t\tcontextWindow: m.limit?.context || 4096,\n+\t\t\tmaxTokens: m.limit?.output || 4096,\n+\t\t\t// Kimi Code reports every model as always-thinking.\n+\t\t\tthinkingLevelMap: { ...effortLevels, off: null },\n+\t\t});\n+\t}\n+\treturn models;\n+}\n+\n async function loadModelsDevData(): Promise<Model<any>[]> {\n \ttry {\n \t\tconsole.log(\"Fetching models from models.dev API...\");\n@@ -2356,63 +2416,14 @@ async function loadModelsDevData(): Promise<Model<any>[]> {\n \n \t\t// Process Kimi For Coding models\n \t\tif (data[\"kimi-code-plan-global\"]?.models) {\n-\t\t\tconst kimiModels = data[\"kimi-code-plan-global\"].models as Record<string, ModelsDevModel>;\n-\t\t\tconst hasCanonicalModel = Object.prototype.hasOwnProperty.call(kimiModels, \"kimi-for-coding\");\n-\n-\t\t\tconst kimiAliases = new Set([\"k2p5\", \"k2p6\", \"k2p7\"]);\n-\n-\t\t\tfor (const [modelId, model] of Object.entries(kimiModels)) {\n-\t\t\t\tconst m = model as ModelsDevModel;\n-\t\t\t\tif (m.tool_call !== true) continue;\n-\t\t\t\t// models.dev may expose versioned aliases (e.g. k2p5/k2p6/k2p7).\n-\t\t\t\t// Normalize aliases to the canonical model id and drop duplicates when canonical exists.\n-\t\t\t\tif (kimiAliases.has(modelId) && hasCanonicalModel) continue;\n-\n-\t\t\t\tconst normalizedId = kimiAliases.has(modelId) ? \"kimi-for-coding\" : modelId;\n-\t\t\t\tconst normalizedName = kimiAliases.has(modelId) ? \"Kimi For Coding\" : m.name || normalizedId;\n-\t\t\t\tconst isKimiK3 = normalizedId === \"k3\";\n-\t\t\t\tconst allowEmptySignature = isKimiK3 || normalizedId === \"kimi-for-coding\";\n-\t\t\t\tconst impliedCost = KIMI_CODING_IMPLIED_COSTS[normalizedId];\n-\n-\t\t\t\tmodels.push({\n-\t\t\t\t\tid: normalizedId,\n-\t\t\t\t\tname: normalizedName,\n-\t\t\t\t\tapi: \"anthropic-messages\",\n-\t\t\t\t\tprovider: \"kimi-coding\",\n-\t\t\t\t\t// Kimi For Coding's Anthropic-compatible API - SDK appends /v1/messages\n-\t\t\t\t\tbaseUrl: \"https://api.kimi.com/coding\",\n-\t\t\t\t\tcompat: {\n-\t\t\t\t\t\t...(allowEmptySignature ? { allowEmptySignature: true } : {}),\n-\t\t\t\t\t\tforceAdaptiveThinking: true,\n-\t\t\t\t\t},\n-\t\t\t\t\treasoning: isKimiK3 || m.reasoning === true,\n-\t\t\t\t\tinput: m.modalities?.input?.includes(\"image\") ? [\"text\", \"image\"] : [\"text\"],\n-\t\t\t\t\tcost: {\n-\t\t\t\t\t\tinput: m.cost?.input || impliedCost?.input || 0,\n-\t\t\t\t\t\toutput: m.cost?.output || impliedCost?.output || 0,\n-\t\t\t\t\t\tcacheRead: m.cost?.cache_read || impliedCost?.cacheRead || 0,\n-\t\t\t\t\t\tcacheWrite: m.cost?.cache_write || impliedCost?.cacheWrite || 0,\n-\t\t\t\t\t},\n-\t\t\t\t\tcontextWindow: m.limit?.context || 4096,\n-\t\t\t\t\tmaxTokens: m.limit?.output || 4096,\n-\t\t\t\t});\n-\t\t\t\trecordModelsDevReasoningOptions(\"kimi-coding\", normalizedId, m);\n-\t\t\t}\n+\t\t\tmodels.push(...createKimiCodingModels(data[\"kimi-code-plan-global\"].models as Record<string, ModelsDevModel>));\n \t\t}\n \n \t\t// Process Moonshot AI models\n \t\tconst moonshotVariants = [\n \t\t\t{ key: \"moonshotai\", provider: \"moonshotai\", baseUrl: \"https://api.moonshot.ai/v1\" },\n \t\t\t{ key: \"moonshotai-cn\", provider: \"moonshotai-cn\", baseUrl: \"https://api.moonshot.cn/v1\" },\n \t\t] as const;\n-\t\tconst moonshotCompat: OpenAICompletionsCompat = {\n-\t\t\tsupportsStore: false,\n-\t\t\tsupportsDeveloperRole: false,\n-\t\t\tsupportsReasoningEffort: false,\n-\t\t\tmaxTokensField: \"max_tokens\",\n-\t\t\tsupportsStrictMode: false,\n-\t\t\tthinkingFormat: \"deepseek\",\n-\t\t};\n \t\tconst getMoonshotProviderModels = (key: \"moonshotai\" | \"moonshotai-cn\"): Record<string, ModelsDevModel> => {\n \t\t\tconst providerModels = data[key]?.models as Record<string, ModelsDevModel> | undefined;\n \t\t\treturn providerModels ? { ...providerModels } : {};\n@@ -2427,12 +2438,7 @@ async function loadModelsDevData(): Promise<Model<any>[]> {\n \t\t\t\tif (m.tool_call !== true) continue;\n \n \t\t\t\tconst isKimiK3 = modelId === \"kimi-k3\";\n-\t\t\t\tconst compat = isKimiK3 ? { ...moonshotCompat } : moonshotCompat;\n-\t\t\t\tif (isKimiK3) {\n-\t\t\t\t\tcompat.requiresReasoningContentOnAssistantMessages = true;\n-\t\t\t\t\tcompat.thinkingFormat = \"openai\";\n-\t\t\t\t\tcompat.supportsReasoningEffort = true;\n-\t\t\t\t}\n+\t\t\t\tconst compat = { ...(isKimiK3 ? KIMI_K3_OPENAI_COMPAT : KIMI_OPENAI_COMPAT) };\n \t\t\t\tmodels.push({\n \t\t\t\t\tid: modelId,\n \t\t\t\t\tname: m.name || modelId,"
+    },
+    {
+      "sha": "dee42ee65ccd718f1e8b55eadfab11c69910a6f9",
+      "filename": "packages/ai/src/api/anthropic-messages.ts",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fapi%2Fanthropic-messages.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fapi%2Fanthropic-messages.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Fsrc%2Fapi%2Fanthropic-messages.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -40,7 +40,7 @@ import type {\n import { appendAssistantMessageDiagnostic } from \"../utils/diagnostics.ts\";\n import { AssistantMessageEventStream } from \"../utils/event-stream.ts\";\n import { headersToRecord } from \"../utils/headers.ts\";\n-import { parseJsonWithRepair, parseStreamingJson } from \"../utils/json-parse.ts\";\n+import { parseJsonWithRepair, parseStreamingJson, parseToolCallArguments } from \"../utils/json-parse.ts\";\n import { getPiUserAgent } from \"../utils/pi-user-agent.ts\";\n import { getProviderEnvValue } from \"../utils/provider-env.ts\";\n import { retryProviderRequest } from \"../utils/provider-retry.ts\";\n@@ -833,7 +833,7 @@ export const stream: StreamFunction<\"anthropic-messages\", AnthropicOptions> = (\n \t\t\t\t\t\t\t\tpartial: output,\n \t\t\t\t\t\t\t});\n \t\t\t\t\t\t} else if (block.type === \"toolCall\") {\n-\t\t\t\t\t\t\tblock.arguments = parseStreamingJson(block.partialJson);\n+\t\t\t\t\t\t\tObject.assign(block, parseToolCallArguments(block.partialJson));\n \t\t\t\t\t\t\t// Finalize in-place and strip the scratch buffer so replay only\n \t\t\t\t\t\t\t// carries parsed arguments.\n \t\t\t\t\t\t\tdelete (block as { partialJson?: string }).partialJson;"
+    },
+    {
+      "sha": "04cd40cf29fbe75576be2a245830245fe836e3f1",
+      "filename": "packages/ai/src/api/bedrock-converse-stream.ts",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fapi%2Fbedrock-converse-stream.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fapi%2Fbedrock-converse-stream.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Fsrc%2Fapi%2Fbedrock-converse-stream.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -53,7 +53,7 @@ import { appendAssistantMessageDiagnostic } from \"../utils/diagnostics.ts\";\n import { normalizeProviderError } from \"../utils/error-body.ts\";\n import { AssistantMessageEventStream } from \"../utils/event-stream.ts\";\n import { providerHeadersToRecord } from \"../utils/headers.ts\";\n-import { parseStreamingJson } from \"../utils/json-parse.ts\";\n+import { parseStreamingJson, parseToolCallArguments } from \"../utils/json-parse.ts\";\n import { resolveHttpProxyUrlForTarget } from \"../utils/node-http-proxy.ts\";\n import { getProviderEnvValue } from \"../utils/provider-env.ts\";\n import { sanitizeSurrogates } from \"../utils/sanitize-unicode.ts\";\n@@ -741,7 +741,7 @@ function handleContentBlockStop(\n \t\t\tstream.push({ type: \"thinking_end\", contentIndex: index, content: block.thinking, partial: output });\n \t\t\tbreak;\n \t\tcase \"toolCall\":\n-\t\t\tblock.arguments = parseStreamingJson(block.partialJson);\n+\t\t\tObject.assign(block, parseToolCallArguments(block.partialJson));\n \t\t\t// Finalize in-place and strip the scratch buffer so replay only\n \t\t\t// carries parsed arguments.\n \t\t\tdelete (block as Block).partialJson;"
+    },
+    {
+      "sha": "11788eb392f6af845be066ac3d0154d62c94c49d",
+      "filename": "packages/ai/src/api/mistral-conversations.ts",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fapi%2Fmistral-conversations.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fapi%2Fmistral-conversations.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Fsrc%2Fapi%2Fmistral-conversations.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -17,7 +17,7 @@ import { combineAbortSignals } from \"../utils/abort-signals.ts\";\n import { AssistantMessageEventStream } from \"../utils/event-stream.ts\";\n import { shortHash } from \"../utils/hash.ts\";\n import { headersToRecord } from \"../utils/headers.ts\";\n-import { parseStreamingJson } from \"../utils/json-parse.ts\";\n+import { parseStreamingJson, parseToolCallArguments } from \"../utils/json-parse.ts\";\n import { getPiUserAgent } from \"../utils/pi-user-agent.ts\";\n import { sanitizeSurrogates } from \"../utils/sanitize-unicode.ts\";\n import { getSystemMessageText, renderSystemMessageUpdate } from \"../utils/text.ts\";\n@@ -761,7 +761,7 @@ async function consumeChatStream(\n \t\tconst block = output.content[index];\n \t\tif (block.type !== \"toolCall\") continue;\n \t\tconst toolBlock = block as ToolCall & { partialArgs?: string };\n-\t\ttoolBlock.arguments = parseStreamingJson<ToolCall[\"arguments\"]>(toolBlock.partialArgs);\n+\t\tObject.assign(toolBlock, parseToolCallArguments(toolBlock.partialArgs));\n \t\t// Finalize in-place and strip the scratch buffer so replay only\n \t\t// carries parsed arguments.\n \t\tdelete toolBlock.partialArgs;"
+    },
+    {
+      "sha": "32cf42b45613d9308a1fce943a1628ddb397e44e",
+      "filename": "packages/ai/src/api/openai-completions.ts",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fapi%2Fopenai-completions.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fapi%2Fopenai-completions.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Fsrc%2Fapi%2Fopenai-completions.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -39,7 +39,7 @@ import { formatProviderError, normalizeProviderError } from \"../utils/error-body\n import { AssistantMessageEventStream } from \"../utils/event-stream.ts\";\n import { shortHash } from \"../utils/hash.ts\";\n import { headersToRecord } from \"../utils/headers.ts\";\n-import { parseStreamingJson } from \"../utils/json-parse.ts\";\n+import { parseStreamingJson, parseToolCallArguments } from \"../utils/json-parse.ts\";\n import { getPiUserAgent } from \"../utils/pi-user-agent.ts\";\n import { getProviderEnvValue } from \"../utils/provider-env.ts\";\n import { retryProviderRequest } from \"../utils/provider-retry.ts\";\n@@ -461,7 +461,7 @@ export const stream: StreamFunction<\"openai-completions\", OpenAICompletionsOptio\n \t\t\t\t\t\t\t});\n \t\t\t\t\t\t}\n \t\t\t\t\t} else {\n-\t\t\t\t\t\tblock.arguments = parseStreamingJson(block.partialArgs);\n+\t\t\t\t\t\tObject.assign(block, parseToolCallArguments(block.partialArgs));\n \t\t\t\t\t}\n \t\t\t\t\t// Finalize in-place and strip the scratch buffers so replay only\n \t\t\t\t\t// carries parsed arguments."
+    },
+    {
+      "sha": "001864d58b28ba9afd9961deb7d2f3ed5a356232",
+      "filename": "packages/ai/src/api/openai-responses-shared.ts",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fapi%2Fopenai-responses-shared.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fapi%2Fopenai-responses-shared.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Fsrc%2Fapi%2Fopenai-responses-shared.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -33,7 +33,7 @@ import type {\n } from \"../types.ts\";\n import type { AssistantMessageEventStream } from \"../utils/event-stream.ts\";\n import { shortHash } from \"../utils/hash.ts\";\n-import { parseStreamingJson } from \"../utils/json-parse.ts\";\n+import { parseStreamingJson, parseToolCallArguments } from \"../utils/json-parse.ts\";\n import { sanitizeSurrogates } from \"../utils/sanitize-unicode.ts\";\n import { getSystemMessageText, renderSystemMessageUpdate } from \"../utils/text.ts\";\n import { resolveTranscript, resolveTranscriptTools } from \"../utils/transcript.ts\";\n@@ -738,7 +738,7 @@ export async function processResponsesStream<TApi extends Api>(\n \t\t\t\tslot?.type === \"toolCall\" &&\n \t\t\t\tslot.block.partialJson !== undefined\n \t\t\t) {\n-\t\t\t\tslot.block.arguments = parseStreamingJson(item.arguments || slot.block.partialJson || \"{}\");\n+\t\t\t\tObject.assign(slot.block, parseToolCallArguments(item.arguments || slot.block.partialJson));\n \t\t\t\tif (item.namespace !== undefined) slot.block.namespace = item.namespace;\n \t\t\t\t// Finalize in-place and strip the scratch buffer so replay only\n \t\t\t\t// carries parsed arguments."
+    },
+    {
+      "sha": "f84b7b5e79dc859eb9fff10652c0c5c40d367f0e",
+      "filename": "packages/ai/src/providers/kimi-coding.ts",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fproviders%2Fkimi-coding.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Fproviders%2Fkimi-coding.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Fsrc%2Fproviders%2Fkimi-coding.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -1,14 +1,14 @@\n-import { anthropicMessagesApi } from \"../api/anthropic-messages.lazy.ts\";\n+import { openAICompletionsApi } from \"../api/openai-completions.lazy.ts\";\n import { envApiKeyAuth, lazyOAuth } from \"../auth/helpers.ts\";\n import { loadKimiCodingOAuth } from \"../auth/oauth/load.ts\";\n import { createProvider, type Provider } from \"../models.ts\";\n import { KIMI_CODING_MODELS } from \"./kimi-coding.models.ts\";\n \n-export function kimiCodingProvider(): Provider<\"anthropic-messages\"> {\n+export function kimiCodingProvider(): Provider<\"openai-completions\"> {\n \treturn createProvider({\n \t\tid: \"kimi-coding\",\n \t\tname: \"Kimi For Coding\",\n-\t\tbaseUrl: \"https://api.kimi.com/coding\",\n+\t\tbaseUrl: \"https://api.kimi.com/coding/v1\",\n \t\tauth: {\n \t\t\tapiKey: envApiKeyAuth(\"Kimi API key\", [\"KIMI_API_KEY\"]),\n \t\t\toauth: lazyOAuth({\n@@ -19,6 +19,6 @@ export function kimiCodingProvider(): Provider<\"anthropic-messages\"> {\n \t\t\t}),\n \t\t},\n \t\tmodels: Object.values(KIMI_CODING_MODELS),\n-\t\tapi: anthropicMessagesApi(),\n+\t\tapi: openAICompletionsApi(),\n \t});\n }"
+    },
+    {
+      "sha": "302f955816c574092e2ce2d64ad6a836e124e98e",
+      "filename": "packages/ai/src/types.ts",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Ftypes.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Ftypes.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Fsrc%2Ftypes.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -441,6 +441,11 @@ export interface ToolCall {\n \tthoughtSignature?: string; // Google-specific: opaque signature for reusing thought context\n \t/** OpenAI Responses namespace for calls to dynamically loaded or namespaced tools. */\n \tnamespace?: string;\n+\t/**\n+\t * Set when the model's complete arguments text was not a valid JSON object. `arguments` is then `{}`.\n+\t * Describes the problem and includes the text the model sent; tool argument validation fails with it.\n+\t */\n+\targumentsError?: string;\n }\n \n export interface Usage {"
+    },
+    {
+      "sha": "d6fdce63961b4bd123ca5292ff9828b68fc34ccf",
+      "filename": "packages/ai/src/utils/json-parse.ts",
+      "status": "modified",
+      "additions": 25,
+      "deletions": 0,
+      "changes": 25,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Futils%2Fjson-parse.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Futils%2Fjson-parse.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Fsrc%2Futils%2Fjson-parse.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -1,4 +1,5 @@\n import { parse as partialParse } from \"partial-json\";\n+import type { ToolCall } from \"../types.ts\";\n \n const VALID_JSON_ESCAPES = new Set(['\"', \"\\\\\", \"/\", \"b\", \"f\", \"n\", \"r\", \"t\"]);\n \n@@ -94,6 +95,30 @@ export function parseJsonWithRepair<T>(json: string): T {\n \t}\n }\n \n+/**\n+ * Parses the model's complete arguments text of a finished tool call.\n+ *\n+ * Unlike {@link parseStreamingJson}, this never keeps a partially parsed prefix: once the call is\n+ * finished, text that is not a valid JSON object means the model sent malformed arguments. In that\n+ * case `arguments` is `{}` and `argumentsError` describes the problem, including the text the\n+ * model sent, so tool validation can report it back to the model.\n+ */\n+export function parseToolCallArguments(json: string | undefined): Pick<ToolCall, \"arguments\" | \"argumentsError\"> {\n+\tif (!json?.trim()) return { arguments: {} };\n+\ttry {\n+\t\tconst parsed = parseJsonWithRepair<ToolCall[\"arguments\"] | null>(json);\n+\t\tif (typeof parsed !== \"object\" || parsed === null || Array.isArray(parsed)) {\n+\t\t\tthrow new Error(\"Tool arguments must be a JSON object\");\n+\t\t}\n+\t\treturn { arguments: parsed };\n+\t} catch (error) {\n+\t\treturn {\n+\t\t\targuments: {},\n+\t\t\targumentsError: `${error instanceof Error ? error.message : String(error)}\\n\\nReceived arguments:\\n${json}`,\n+\t\t};\n+\t}\n+}\n+\n /**\n  * Attempts to parse potentially incomplete JSON during streaming.\n  * Always returns a valid object, even if the JSON is incomplete."
+    },
+    {
+      "sha": "c9e818834a9f555d182f14118c908cc77024f411",
+      "filename": "packages/ai/src/utils/validation.ts",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Futils%2Fvalidation.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Fsrc%2Futils%2Fvalidation.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Fsrc%2Futils%2Fvalidation.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -315,6 +315,9 @@ export function validateToolCall(tools: Tool[], toolCall: ToolCall): any {\n  * @throws Error with formatted message if validation fails\n  */\n export function validateToolArguments(tool: Tool, toolCall: ToolCall): any {\n+\tif (toolCall.argumentsError) {\n+\t\tthrow new Error(`Invalid arguments for tool \"${toolCall.name}\": ${toolCall.argumentsError}`);\n+\t}\n \tconst args = structuredClone(toolCall.arguments);\n \tnormalizeOptionalNulls(args, tool.parameters as JsonSchemaObject);\n \tValue.Convert(tool.parameters, args);"
+    },
+    {
+      "sha": "69615cb0727da9adccaa84d2f607f2d65d2ef36c",
+      "filename": "packages/ai/test/anthropic-adaptive-thinking-models.test.ts",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 6,
+      "changes": 7,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fanthropic-adaptive-thinking-models.test.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fanthropic-adaptive-thinking-models.test.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Ftest%2Fanthropic-adaptive-thinking-models.test.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -12,9 +12,6 @@ const EXPECTED_CURRENT_ADAPTIVE_THINKING_MODELS = [\n \t\"fireworks/accounts/fireworks/models/deepseek-v4p1-flash\",\n \t\"fireworks/accounts/fireworks/models/gpt-oss-120b\",\n \t\"fireworks/accounts/fireworks/models/qwen3p8-max\",\n-\t\"kimi-coding/kimi-for-coding\",\n-\t\"kimi-coding/k3\",\n-\t\"kimi-coding/kimi-for-coding-highspeed\",\n \t\"opencode/claude-opus-4-8\",\n \t\"opencode/claude-opus-5\",\n \t\"vercel-ai-gateway/anthropic/claude-opus-4.8\",\n@@ -41,9 +38,7 @@ describe(\"Anthropic adaptive thinking model metadata\", () => {\n \t\t\t\t\t// Regression for #9323: Fireworks uses catalog effort metadata and\n \t\t\t\t\t// verified fallbacks, not a fixed set of adaptive model names.\n \t\t\t\t\tmodelId.startsWith(\"fireworks/\") ||\n-\t\t\t\t\t/(opus[-.](4[-.][678]|5)|sonnet[-.]4[-.]6|sonnet[-.]5|haiku[-.]5[-.]5|fable[-.]5|kimi-coding\\/)/.test(\n-\t\t\t\t\t\tmodelId,\n-\t\t\t\t\t),\n+\t\t\t\t\t/(opus[-.](4[-.][678]|5)|sonnet[-.]4[-.]6|sonnet[-.]5|haiku[-.]5[-.]5|fable[-.]5)/.test(modelId),\n \t\t\t),\n \t\t);\n \t});"
+    },
+    {
+      "sha": "1c4036a0f3894e55674a2e5fea1eb41b8c650a06",
+      "filename": "packages/ai/test/anthropic-empty-thinking-signature-compat.test.ts",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 9,
+      "changes": 9,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fanthropic-empty-thinking-signature-compat.test.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fanthropic-empty-thinking-signature-compat.test.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Ftest%2Fanthropic-empty-thinking-signature-compat.test.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -134,13 +134,4 @@ describe(\"Anthropic empty thinking signature compat\", () => {\n \t\t\t{ type: \"text\", text: \"internal reasoning\" },\n \t\t]);\n \t});\n-\n-\tit.each([\"k3\"] as const)(\"allows empty signatures for Kimi Coding %s\", async (modelId) => {\n-\t\tconst model = getModel(\"kimi-coding\", modelId);\n-\t\texpect(model.compat?.allowEmptySignature).toBe(true);\n-\n-\t\tconst payload = await capturePayload(model, makeContext(\" \", \"internal reasoning\", \"kimi-coding\", modelId));\n-\t\tconst assistant = payload.messages?.find((message) => message.role === \"assistant\");\n-\t\texpect(assistant?.content).toEqual([{ type: \"thinking\", thinking: \"internal reasoning\", signature: \"\" }]);\n-\t});\n });"
+    },
+    {
+      "sha": "6629782f2b616499aab84d56db70f8645aebd345",
+      "filename": "packages/ai/test/anthropic-force-adaptive-thinking.test.ts",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 14,
+      "changes": 14,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fanthropic-force-adaptive-thinking.test.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fanthropic-force-adaptive-thinking.test.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Ftest%2Fanthropic-force-adaptive-thinking.test.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -89,20 +89,6 @@ describe(\"Anthropic forceAdaptiveThinking compat override\", () => {\n \t\texpect(payload.output_config).toEqual({ effort: \"xhigh\" });\n \t});\n \n-\tit.each([\n-\t\t[\"kimi-for-coding\", \"medium\", \"medium\"],\n-\t\t[\"k3\", \"max\", \"max\"],\n-\t\t[\"kimi-for-coding-highspeed\", \"medium\", \"medium\"],\n-\t] as const)(\n-\t\t\"uses adaptive thinking effort without a token budget for Kimi Coding %s\",\n-\t\tasync (modelId, reasoning, effort) => {\n-\t\t\tconst payload = await capturePayload(getModel(\"kimi-coding\", modelId), { reasoning });\n-\n-\t\t\texpect(payload.thinking).toEqual({ type: \"adaptive\", display: \"summarized\" });\n-\t\t\texpect(payload.output_config).toEqual({ effort });\n-\t\t},\n-\t);\n-\n \tit(\"allows built-in adaptive models to opt out with compat.forceAdaptiveThinking false\", async () => {\n \t\tconst model: Model<\"anthropic-messages\"> = {\n \t\t\t...getModel(\"anthropic\", \"claude-opus-4-8\"),"
+    },
+    {
+      "sha": "5783d956849a91c7971f794dc9884feddc126de3",
+      "filename": "packages/ai/test/json-parse.test.ts",
+      "status": "modified",
+      "additions": 36,
+      "deletions": 1,
+      "changes": 37,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fjson-parse.test.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fjson-parse.test.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Ftest%2Fjson-parse.test.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -1,5 +1,5 @@\n import { describe, expect, it } from \"vitest\";\n-import { parseStreamingJson } from \"../src/utils/json-parse.ts\";\n+import { parseStreamingJson, parseToolCallArguments } from \"../src/utils/json-parse.ts\";\n \n describe(\"parseStreamingJson\", () => {\n \t// #10868\n@@ -20,3 +20,38 @@ describe(\"parseStreamingJson\", () => {\n \t\texpect(parseStreamingJson(String.raw`{\"text\":\"ab\\u00`)).toEqual({ text: \"ab\" });\n \t});\n });\n+\n+// #10897\n+describe(\"parseToolCallArguments\", () => {\n+\tit(\"parses complete JSON and repairs invalid escapes\", () => {\n+\t\texpect(parseToolCallArguments(String.raw`{\"kind\":\"seek\",\"note\":\"\\url\"}`)).toEqual({\n+\t\t\targuments: { kind: \"seek\", note: \"\\\\url\" },\n+\t\t});\n+\t});\n+\n+\tit(\"uses empty arguments for empty text\", () => {\n+\t\texpect(parseToolCallArguments(\"\")).toEqual({ arguments: {} });\n+\t});\n+\n+\tit(\"does not keep the valid prefix of malformed JSON\", () => {\n+\t\tconst raw = '{\"action\":\"apply\",\"actions\":[{\"kind\":\"seek\",\"time\":.5}]}';\n+\t\tconst result = parseToolCallArguments(raw);\n+\t\texpect(result.arguments).toEqual({});\n+\t\texpect(result.argumentsError).toMatch(/\\n\\nReceived arguments:\\n/);\n+\t\texpect(result.argumentsError?.endsWith(raw)).toBe(true);\n+\t});\n+\n+\tit(\"does not complete cut-off JSON\", () => {\n+\t\tconst raw = '{\"kind\":\"seek\",\"clipId\":\"clip-fl';\n+\t\tconst result = parseToolCallArguments(raw);\n+\t\texpect(result.arguments).toEqual({});\n+\t\texpect(result.argumentsError?.endsWith(raw)).toBe(true);\n+\t});\n+\n+\tit(\"rejects JSON that is not an object\", () => {\n+\t\texpect(parseToolCallArguments(\"[1,2]\")).toEqual({\n+\t\t\targuments: {},\n+\t\t\targumentsError: \"Tool arguments must be a JSON object\\n\\nReceived arguments:\\n[1,2]\",\n+\t\t});\n+\t});\n+});"
+    },
+    {
+      "sha": "e0b83283c5d4e0c080c09ca54e310c6b436002b1",
+      "filename": "packages/ai/test/openai-responses-partial-json-cleanup.test.ts",
+      "status": "modified",
+      "additions": 26,
+      "deletions": 0,
+      "changes": 26,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fopenai-responses-partial-json-cleanup.test.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fopenai-responses-partial-json-cleanup.test.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Ftest%2Fopenai-responses-partial-json-cleanup.test.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -103,4 +103,30 @@ describe(\"openai responses partialJson cleanup\", () => {\n \t\texpect(toolCallEnd.toolCall).toBe(persistedToolCall);\n \t\texpect(\"partialJson\" in toolCallEnd.toolCall).toBe(false);\n \t});\n+\n+\t// #10897\n+\tit(\"marks malformed final arguments instead of keeping the parsed prefix\", async () => {\n+\t\tconst model: Model<\"openai-responses\"> = {\n+\t\t\tid: \"gpt-5-mini\",\n+\t\t\tname: \"GPT-5 Mini\",\n+\t\t\tapi: \"openai-responses\",\n+\t\t\tprovider: \"openai\",\n+\t\t\tbaseUrl: \"https://api.openai.com/v1\",\n+\t\t\treasoning: true,\n+\t\t\tinput: [\"text\"],\n+\t\t\tcost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },\n+\t\t\tcontextWindow: 400000,\n+\t\t\tmaxTokens: 128000,\n+\t\t};\n+\t\tconst output = createOutput(model);\n+\t\tconst stream = new AssistantMessageEventStream();\n+\t\tconst argumentsJson = '{\"path\":\"README.md\",\"content\":\"updated\",\"mode\":.5}';\n+\n+\t\tawait processResponsesStream(createFunctionCallEvents(argumentsJson), output, stream, model);\n+\n+\t\tconst toolCall = output.content[0];\n+\t\tif (!toolCall || toolCall.type !== \"toolCall\") throw new Error(\"Expected toolCall block\");\n+\t\texpect(toolCall.arguments).toEqual({});\n+\t\texpect(toolCall.argumentsError?.endsWith(`Received arguments:\\n${argumentsJson}`)).toBe(true);\n+\t});\n });"
+    },
+    {
+      "sha": "ac02be9ad7dfef7b8a03f0738af0579fcbe599ce",
+      "filename": "packages/ai/test/stream.test.ts",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fstream.test.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fstream.test.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Ftest%2Fstream.test.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -1041,7 +1041,7 @@ describe(\"Generate E2E Tests\", () => {\n \t});\n \n \tdescribe.skipIf(!process.env.KIMI_API_KEY)(\n-\t\t\"Kimi For Coding Provider (kimi-for-coding via Anthropic Messages)\",\n+\t\t\"Kimi For Coding Provider (kimi-for-coding via OpenAI Completions)\",\n \t\t() => {\n \t\t\tconst llm = getModel(\"kimi-coding\", \"kimi-for-coding\");\n "
+    },
+    {
+      "sha": "1454cdab54ef3e0bbfb401268fedf380869da0e9",
+      "filename": "packages/ai/test/supports-xhigh.test.ts",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fsupports-xhigh.test.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fsupports-xhigh.test.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Ftest%2Fsupports-xhigh.test.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -209,6 +209,12 @@ describe(\"getSupportedThinkingLevels\", () => {\n \t\texpect(getSupportedThinkingLevels(model!)).toEqual([\"low\", \"high\", \"max\"]);\n \t});\n \n+\tit(\"excludes off for always-thinking Kimi Coding Highspeed\", () => {\n+\t\tconst model = getModel(\"kimi-coding\", \"kimi-for-coding-highspeed\");\n+\t\texpect(model).toBeDefined();\n+\t\texpect(getSupportedThinkingLevels(model!)).not.toContain(\"off\");\n+\t});\n+\n \tit(\"includes only high for OpenCode Grok Build\", () => {\n \t\tconst model = getModel(\"opencode\", \"grok-build-0.1\");\n \t\texpect(model).toBeDefined();"
+    },
+    {
+      "sha": "1a1a99b39831ff7d3c4de4b84a48863bd48a42fa",
+      "filename": "packages/ai/test/transcript-tool-changes.test.ts",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 1,
+      "changes": 28,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Ftranscript-tool-changes.test.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Ftranscript-tool-changes.test.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Ftest%2Ftranscript-tool-changes.test.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -1,6 +1,6 @@\n import { Type } from \"typebox\";\n import { describe, expect, test } from \"vitest\";\n-import { streamSimple } from \"../src/compat.ts\";\n+import { getModel, streamSimple } from \"../src/compat.ts\";\n import type { Api, Context, Model, Tool } from \"../src/types.ts\";\n \n class PayloadCaptured extends Error {}\n@@ -339,6 +339,32 @@ describe(\"transcript system messages\", () => {\n \t\t);\n \t});\n \n+\ttype KimiPayload = {\n+\t\ttools?: Array<{ function?: { name: string } }>;\n+\t\tmessages: Array<{ role: string; tools?: Array<{ function?: { name: string } }> }>;\n+\t};\n+\n+\t// #10720: Kimi Coding uses Chat Completions so K3-style models keep added tools out of the top-level list.\n+\ttest.each([\"k3\", \"k3-256k\", \"kimi-for-coding\"] as const)(\"anchors additions for Kimi Coding %s\", async (modelId) => {\n+\t\tconst payload = await capturePayload<KimiPayload>(getModel(\"kimi-coding\", modelId), additionContext);\n+\n+\t\texpect(payload.tools?.map((value) => value.function?.name)).toEqual([\"base_tool\"]);\n+\t\texpect(payload.messages.find((message) => message.tools)?.tools?.map((value) => value.function?.name)).toEqual([\n+\t\t\t\"late_tool\",\n+\t\t]);\n+\t});\n+\n+\t// #10720: Kimi Code Highspeed rejects tool-bearing system messages.\n+\ttest(\"keeps Kimi Coding Highspeed additions in top-level tools\", async () => {\n+\t\tconst payload = await capturePayload<KimiPayload>(\n+\t\t\tgetModel(\"kimi-coding\", \"kimi-for-coding-highspeed\"),\n+\t\t\tadditionContext,\n+\t\t);\n+\n+\t\texpect(payload.tools?.map((value) => value.function?.name)).toEqual([\"base_tool\", \"late_tool\"]);\n+\t\texpect(payload.messages.some((message) => message.tools !== undefined)).toBe(false);\n+\t});\n+\n \ttest(\"keeps Kimi K2 system text inline without dynamic tool messages\", async () => {\n \t\tconst model: Model<\"openai-completions\"> = {\n \t\t\t...modelBase,"
+    },
+    {
+      "sha": "7cebbe541c61c25e383a10d7dbd14240494acd8f",
+      "filename": "packages/ai/test/validation.test.ts",
+      "status": "modified",
+      "additions": 19,
+      "deletions": 0,
+      "changes": 19,
+      "blob_url": "https://github.com/earendil-works/pi/blob/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fvalidation.test.ts",
+      "raw_url": "https://github.com/earendil-works/pi/raw/b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6/packages%2Fai%2Ftest%2Fvalidation.test.ts",
+      "contents_url": "https://api.github.com/repos/earendil-works/pi/contents/packages%2Fai%2Ftest%2Fvalidation.test.ts?ref=b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+      "patch": "@@ -207,4 +207,23 @@ describe(\"validateToolArguments\", () => {\n \t\t\texpect(() => validateToolArguments(tool, toolCall)).toThrow(\"Validation failed\");\n \t\t}\n \t});\n+\t// #10897\n+\tit(\"reports malformed arguments JSON instead of validating empty arguments\", () => {\n+\t\tconst tool: Tool = {\n+\t\t\tname: \"echo\",\n+\t\t\tdescription: \"Echo tool\",\n+\t\t\tparameters: Type.Object({ value: Type.Optional(Type.String()) }),\n+\t\t};\n+\t\tconst toolCall: ToolCall = {\n+\t\t\ttype: \"toolCall\",\n+\t\t\tid: \"tool-1\",\n+\t\t\tname: \"echo\",\n+\t\t\targuments: {},\n+\t\t\targumentsError: \"Unexpected token\",\n+\t\t};\n+\n+\t\texpect(() => validateToolArguments(tool, toolCall)).toThrow(\n+\t\t\t'Invalid arguments for tool \"echo\": Unexpected token',\n+\t\t);\n+\t});\n });"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "input_sha256": "656EF72204348B0852FEFD398AFDB5E364CB5A6F58F4C8F459471182404AAE6A",
+  "caller_input_drift": [],
+  "driver_sha256": "04B41012960CEC3C0A3AABB99B129E8AA067234061EC93C491EF67235DBCB7B6",
+  "completed_utc": "2026-10-14T20:49:00.3742921+00:00",
+  "manifests": [
+    {
+      "drift": 0,
+      "files": 1965,
+      "name": "source",
+      "changed": []
+    },
+    {
+      "drift": 0,
+      "files": 31064,
+      "name": "dependencies",
+      "changed": []
+    },
+    {
+      "drift": 0,
+      "files": 1774,
+      "name": "node_tools",
+      "changed": []
+    }
+  ]
+}

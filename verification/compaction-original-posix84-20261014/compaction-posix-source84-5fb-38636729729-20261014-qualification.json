@@ -1,0 +1,40 @@
+{
+  "observed_utc": "2026-10-14T21:31:20.1410085+00:00",
+  "public_activation": false,
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "platform_specific_case_retained": "no-model configured documentation path",
+  "head": "5fb1b484942e028744c84d2228282c0314894adc",
+  "windows83_platform_independent_rows_identical": true,
+  "full_posix84_rows_identical": true,
+  "status": "actual_posix84_independently_audited",
+  "platforms": [
+    {
+      "dependency_files": 26275,
+      "all_posthash_drift": 0,
+      "cases": 84,
+      "platform": "darwin",
+      "source_files": 1965,
+      "common_windows_cases": 83,
+      "all_observed_modules_frozen": true,
+      "node_tool_files": 4560,
+      "observed_modules": 1254,
+      "full_double_capture_identical": true,
+      "candidate_files": 5465
+    },
+    {
+      "dependency_files": 26280,
+      "all_posthash_drift": 0,
+      "cases": 84,
+      "platform": "linux",
+      "source_files": 1965,
+      "common_windows_cases": 83,
+      "all_observed_modules_frozen": true,
+      "node_tool_files": 4560,
+      "observed_modules": 1254,
+      "full_double_capture_identical": true,
+      "candidate_files": 5465
+    }
+  ],
+  "full_factory_qualified": false,
+  "run": 38636729729
+}

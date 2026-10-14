@@ -1,0 +1,16 @@
+{
+  "name": "sdk-source-b06-official-hydration-20261014",
+  "pid": 73344,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "C:\\Program Files\\nodejs\\node.exe --max-old-space-size=128 C:\\Users\\adyba\\pi-upstream-source-b06c1f2-20261014\\packages\\ai\\scripts\\hydrate-model-catalog.ts C:/Users/adyba/pi-zig-sdk-events-hosted-20261013/verification/sdk-read-prompt-original-b45e0eb-20261014/models-all-pinned-439c5347.json",
+  "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+  "created_utc": "2026-10-14T21:18:29.7979818Z",
+  "launched_utc": "2026-10-14T21:18:29.7942095+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-b06c1f2-20261014",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T21:18:30.1459717+00:00"
+}

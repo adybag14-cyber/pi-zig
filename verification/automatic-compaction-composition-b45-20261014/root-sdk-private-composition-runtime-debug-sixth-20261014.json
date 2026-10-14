@@ -1,0 +1,16 @@
+{
+  "name": "root-sdk-private-composition-runtime-debug-sixth-20261014",
+  "pid": 24852,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-registry-composition -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-14T21:02:43.5896374Z",
+  "launched_utc": "2026-10-14T21:02:43.5876785+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-native-session-factory-composition-20261013",
+  "status": "failed",
+  "exit_code": 1,
+  "completed_utc": "2026-10-14T21:02:51.5273745+00:00"
+}

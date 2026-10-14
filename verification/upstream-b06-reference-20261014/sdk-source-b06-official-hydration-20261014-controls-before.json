@@ -1,0 +1,14 @@
+[
+  {
+    "sha256": "0CFB4013A1E143BE54872317B180DDB10933001860CFB7D7E29C188B717CF1A7",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Prepare-B06SourceReference-20261014.ps1"
+  },
+  {
+    "sha256": "439C53478C84ED27A58F8B54E1C3BD45810E5A969515B4E3666A3898D51EE22F",
+    "path": "C:/Users/adyba/pi-zig-sdk-events-hosted-20261013/verification/sdk-read-prompt-original-b45e0eb-20261014/models-all-pinned-439c5347.json"
+  },
+  {
+    "sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+    "path": "C:/Program Files/nodejs/node.exe"
+  }
+]

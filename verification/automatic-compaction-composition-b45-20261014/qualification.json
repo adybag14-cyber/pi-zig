@@ -1,0 +1,22 @@
+{
+  "observed_utc": "2026-10-14T21:38:08.1287684+00:00",
+  "compiler_files": 19546,
+  "source_files": 5486,
+  "native_tests": 10,
+  "original_auto_cases": 40,
+  "source_head": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "code_head": "a4f98c3f567ff6672115b5fd572fb0424f9c11d8",
+  "full_factory_qualified": false,
+  "replacement_controller_preserved": true,
+  "compiler_post_drift": 0,
+  "auto_host_allocation_positions": 2503,
+  "manual_host_allocation_positions": 2256,
+  "source_post_drift": 0,
+  "pending_summary_session_and_controller_gc_passed": true,
+  "original_manual_cases": 44,
+  "full_class_qualified": false,
+  "full_class_missing_methods": 26,
+  "full_pi_qualified": false,
+  "installed_descriptor_differences": 0,
+  "public_activation": false
+}
