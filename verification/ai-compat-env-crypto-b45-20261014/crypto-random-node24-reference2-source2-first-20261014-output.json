@@ -1,0 +1,21 @@
+{
+  "nodeVersion": "v24.14.0",
+  "nodeExecutableSha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "inputSha256": "553df020ce53494c80243b43b3c1aecf6653a6f0ccee62cf6cec6e617c12b181",
+  "scope": "Exact primary reference text built into the pinned Node binary, exported through its own natives binding for native port inspection only. These JS bodies remain external reference evidence and must never be embedded or executed as pi-zig application host code.",
+  "cases": 2,
+  "rows": [
+    {
+      "module": "internal/crypto/random",
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/node24-internal-crypto-random-original-reference-20261014.txt",
+      "sha256": "eed6fbc115e73afac44f31a8f9f79b00440f153f84805c4d6ba6705e4f2c1224",
+      "lines": 617
+    },
+    {
+      "module": "internal/crypto/webcrypto",
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/node24-internal-crypto-webcrypto-original-reference-20261014.txt",
+      "sha256": "5ee56d1e3d300e535a735da23f2fcda8607b46a35567009686c97a6f87cd0e45",
+      "lines": 1903
+    }
+  ]
+}
