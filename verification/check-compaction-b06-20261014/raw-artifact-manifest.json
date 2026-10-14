@@ -1,0 +1,197 @@
+[
+  {
+    "path": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "bytes": 7153406
+  },
+  {
+    "path": "durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+    "bytes": 4665338
+  },
+  {
+    "path": "Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "path": "root-check-compaction-b06-compile-debug-first-shard0-of8-20261014-admission.json",
+    "sha256": "2BFF49C8E48C37048286A155A835CF0951DF8FA134130371B1CA0B07704E22DD",
+    "bytes": 360
+  },
+  {
+    "path": "root-check-compaction-b06-compile-debug-first-shard0-of8-20261014-controls-before.json",
+    "sha256": "88B5B9C0B21C1CAA61339D7BA85D54998E4D1BF163CFB1D9BC2CAAC3E6A6E57B",
+    "bytes": 833
+  },
+  {
+    "path": "root-check-compaction-b06-compile-debug-first-shard0-of8-20261014-posthash.json",
+    "sha256": "2EF3ECE7FD53758D81714DBAB6D7F10F0B33CA7CAAA0224EA71BFE85C9A548AD",
+    "bytes": 420
+  },
+  {
+    "path": "root-check-compaction-b06-compile-debug-first-shard0-of8-20261014-source-before.json",
+    "sha256": "478720DA3471625EB0C0072E34FDF5A93F3FE2B8A984CA8C01799E0CB57EBC32",
+    "bytes": 923735
+  },
+  {
+    "path": "root-check-compaction-b06-compile-debug-first-shard0-of8-20261014.json",
+    "sha256": "D55141873840D87948E0BCF5815F6F1857032BBD27F0BBC97B8CA10E0F7C0CFB",
+    "bytes": 1006
+  },
+  {
+    "path": "root-check-compaction-b06-compile-debug-first-shard0-of8-20261014.stderr.log",
+    "sha256": "B69A67D99C6EC4A161DA9E22263DFCE6C590FABD2580E62DDA7D4C184D5605BA",
+    "bytes": 13339
+  },
+  {
+    "path": "root-check-compaction-b06-compile-debug-first-shard0-of8-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-complete-shard0-of1-20261014-admission.json",
+    "sha256": "8F7E8585BC93714DB94ECB036B78E16967DB69280EDE92D778B58352F6ED2744",
+    "bytes": 1249
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-complete-shard0-of1-20261014-controls-before.json",
+    "sha256": "88B5B9C0B21C1CAA61339D7BA85D54998E4D1BF163CFB1D9BC2CAAC3E6A6E57B",
+    "bytes": 833
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-complete-shard0-of1-20261014-posthash.json",
+    "sha256": "683845A6459336FB2761F27F0CF388E6B80BA2EA984775074E75888D3BF0515F",
+    "bytes": 420
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-complete-shard0-of1-20261014-source-before.json",
+    "sha256": "478720DA3471625EB0C0072E34FDF5A93F3FE2B8A984CA8C01799E0CB57EBC32",
+    "bytes": 923735
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-complete-shard0-of1-20261014.json",
+    "sha256": "5C46A6730A2572DEEFED928DCD29205F8606EF81971968D74764925FB0934502",
+    "bytes": 1008
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-complete-shard0-of1-20261014.stderr.log",
+    "sha256": "8D7F8F268529F8DD5224D56CB10AAAFDA53ADD64787B3147AAAF888F084D4857",
+    "bytes": 119815
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-complete-shard0-of1-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-first-shard0-of8-20261014-admission.json",
+    "sha256": "2A14B294693FA8C7AB705C24A49B4B9E41C8C08939B118D4A8C0E4E8AAF21B6E",
+    "bytes": 360
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-first-shard0-of8-20261014-controls-before.json",
+    "sha256": "88B5B9C0B21C1CAA61339D7BA85D54998E4D1BF163CFB1D9BC2CAAC3E6A6E57B",
+    "bytes": 833
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-first-shard0-of8-20261014-posthash.json",
+    "sha256": "8DEC364D910328442F3CFE494FE500FDD9E487EB6A64DDE78C73F9F80D4D4957",
+    "bytes": 420
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-first-shard0-of8-20261014-source-before.json",
+    "sha256": "478720DA3471625EB0C0072E34FDF5A93F3FE2B8A984CA8C01799E0CB57EBC32",
+    "bytes": 923735
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-first-shard0-of8-20261014.json",
+    "sha256": "0B5D1BCFCE762D7AEDFF939467495AB1174B1F2433C85D36416778873459D18D",
+    "bytes": 1005
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-first-shard0-of8-20261014.stderr.log",
+    "sha256": "13C39D8932F062C3F8D2FD46045EEE527A9527E930CAD9F2EEF612D8FA2CBA07",
+    "bytes": 28089
+  },
+  {
+    "path": "root-check-compaction-b06-runtime-debug-first-shard0-of8-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "root-check-compaction-b06-source32-first-20261014-admission.json",
+    "sha256": "70BED1A3C4DDF9CFDD8193A02A482C268ADCBBCA2B09641639B4E2403A3182F0",
+    "bytes": 247
+  },
+  {
+    "path": "root-check-compaction-b06-source32-first-20261014-extra-before.json",
+    "sha256": "6C08E973E57A33566AB389A1E8389C2494A75DA0B589E98F6DDD94F0119C7D9E",
+    "bytes": 1855
+  },
+  {
+    "path": "root-check-compaction-b06-source32-first-20261014-output.json",
+    "sha256": "1E64EDAA2252D1FECC1B102A567C3BCBC091D61B679EAA32CB72B7A454B3AF99",
+    "bytes": 16400
+  },
+  {
+    "path": "root-check-compaction-b06-source32-first-20261014-posthash.json",
+    "sha256": "FD44DC8DBCD3F408B5829999BF6273C689F35F60F57D2CA1089C6B9645A8A9F4",
+    "bytes": 678
+  },
+  {
+    "path": "root-check-compaction-b06-source32-first-20261014.json",
+    "sha256": "9E9E0463346D4A1032C0702B1A5AE04BA0CF1C3179E396864E4AD37D18E78B30",
+    "bytes": 1169
+  },
+  {
+    "path": "root-check-compaction-b06-source32-first-20261014.stderr.log",
+    "sha256": "CDA3625EF8F8862DE01CE161EC2CAAC51A715D6715972533EEAB30988BCC2B48",
+    "bytes": 178
+  },
+  {
+    "path": "root-check-compaction-b06-source32-first-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "bytes": 352993
+  },
+  {
+    "path": "Run-RootCheckCompactionB06Native-20261014.ps1",
+    "sha256": "58BEA14FB1F0C723667680C0BB0A86C19D9F2012B76B340F777AF0DFA9337A96",
+    "bytes": 6750
+  },
+  {
+    "path": "Run-RootCheckCompactionB06Source-20261014.ps1",
+    "sha256": "6414A68DA12DBE270A6701EB6A683D8A1E6CADE74B73CB99780BC0D4A7EE728E",
+    "bytes": 5735
+  },
+  {
+    "path": "sdk-check-compaction-b06-caller-20261014.mjs",
+    "sha256": "0B4980EB9F8A359DF79744C0EC8AD27E8F70A414667BE4C0064BB9C44CFF58D5",
+    "bytes": 5890
+  },
+  {
+    "path": "sdk-check-compaction-b06-source-capture-20261014.mjs",
+    "sha256": "316C46C86AF549543787E244474103D416F252665AD34CB6D8DAE2087866FD41",
+    "bytes": 936
+  },
+  {
+    "path": "sdk-source-b06-dependency-contract-audit-20261014.json",
+    "sha256": "F92707660EDA10B0ACADBF5435D84B29A5A5B9AA9D719643E3157E2C406387AB",
+    "bytes": 210982
+  },
+  {
+    "path": "sdk-source-b06-full-manifest-20261014.json",
+    "sha256": "810E220B73299EBFE48BE1E44189758F885BEC8BC7D8150D8D7AF687D7CDEAC4",
+    "bytes": 555591
+  },
+  {
+    "path": "sdk-source-b06-observe-20261014.mjs",
+    "sha256": "E7472C88CE8B73DD27BC973EA50357B8D0E11AB841A9CAB11E2C09995FF5F96C",
+    "bytes": 3102
+  }
+]
