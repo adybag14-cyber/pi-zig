@@ -1,0 +1,16 @@
+{
+  "name": "chord-websockets-debug-runtime-first-20261014-state",
+  "pid": 66160,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-chord-websockets-source -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-14T22:42:24.9792779Z",
+  "launched_utc": "2026-10-14T22:42:24.9775888+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-chord-v4-websocket-b45-20261014",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T22:42:31.0886286+00:00"
+}

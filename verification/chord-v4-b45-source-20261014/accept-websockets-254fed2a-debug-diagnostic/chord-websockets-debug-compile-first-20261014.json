@@ -1,0 +1,2039 @@
+{
+  "head": "254fed2abadaeeef3e2f5f7ddf11d24cc61157ee",
+  "name": "chord-websockets-debug-compile-first-20261014",
+  "pid": 13636,
+  "created_utc": "2026-10-14T22:36:15.2546168Z",
+  "executable": "C:/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-windows-0.16.0/zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-windows-0.16.0/zig.exe\" build build-native-chord-websockets-source -Doptimize=Debug -j1 --summary all",
+  "argv": [
+    "build",
+    "build-native-chord-websockets-source",
+    "-Doptimize=Debug",
+    "-j1",
+    "--summary",
+    "all"
+  ],
+  "working_directory": "C:/Users/adyba/pi-zig-chord-v4-websocket-b45-20261014",
+  "status": "passed",
+  "deadline_seconds": 1320,
+  "jobs": 1,
+  "phase": "compile_only",
+  "runtime_authorized": false,
+  "compiler_peak_calibrated": false,
+  "exit_code": 0,
+  "elapsed_seconds": 301.0951464,
+  "root_peak_working_set_bytes": null,
+  "sampled_process_peak_bytes": [
+    {
+      "pid": 13636,
+      "observed_peak_bytes": 465022976
+    },
+    {
+      "pid": 70732,
+      "observed_peak_bytes": 20811776
+    },
+    {
+      "pid": 64880,
+      "observed_peak_bytes": 33529856
+    },
+    {
+      "pid": 68180,
+      "observed_peak_bytes": 564547584
+    },
+    {
+      "pid": 51328,
+      "observed_peak_bytes": 33529856
+    },
+    {
+      "pid": 72272,
+      "observed_peak_bytes": 197140480
+    },
+    {
+      "pid": 56868,
+      "observed_peak_bytes": 34250752
+    },
+    {
+      "pid": 59288,
+      "observed_peak_bytes": 160079872
+    },
+    {
+      "pid": 73580,
+      "observed_peak_bytes": 33533952
+    },
+    {
+      "pid": 61368,
+      "observed_peak_bytes": 53796864
+    },
+    {
+      "pid": 45856,
+      "observed_peak_bytes": 171569152
+    },
+    {
+      "pid": 54340,
+      "observed_peak_bytes": 199745536
+    },
+    {
+      "pid": 54292,
+      "observed_peak_bytes": 34246656
+    },
+    {
+      "pid": 59092,
+      "observed_peak_bytes": 289837056
+    },
+    {
+      "pid": 48948,
+      "observed_peak_bytes": 33525760
+    },
+    {
+      "pid": 56368,
+      "observed_peak_bytes": 33525760
+    },
+    {
+      "pid": 46888,
+      "observed_peak_bytes": 228417536
+    },
+    {
+      "pid": 60036,
+      "observed_peak_bytes": 390717440
+    },
+    {
+      "pid": 59664,
+      "observed_peak_bytes": 33529856
+    },
+    {
+      "pid": 54824,
+      "observed_peak_bytes": 394784768
+    },
+    {
+      "pid": 68712,
+      "observed_peak_bytes": 33542144
+    },
+    {
+      "pid": 73680,
+      "observed_peak_bytes": 33533952
+    },
+    {
+      "pid": 42696,
+      "observed_peak_bytes": 285122560
+    },
+    {
+      "pid": 65960,
+      "observed_peak_bytes": 254701568
+    },
+    {
+      "pid": 72860,
+      "observed_peak_bytes": 43298816
+    },
+    {
+      "pid": 71888,
+      "observed_peak_bytes": 43307008
+    },
+    {
+      "pid": 25084,
+      "observed_peak_bytes": 42307584
+    },
+    {
+      "pid": 70348,
+      "observed_peak_bytes": 190148608
+    },
+    {
+      "pid": 44600,
+      "observed_peak_bytes": 43851776
+    },
+    {
+      "pid": 54412,
+      "observed_peak_bytes": 57724928
+    },
+    {
+      "pid": 11504,
+      "observed_peak_bytes": 33533952
+    },
+    {
+      "pid": 51220,
+      "observed_peak_bytes": 33533952
+    },
+    {
+      "pid": 24872,
+      "observed_peak_bytes": 289624064
+    },
+    {
+      "pid": 56484,
+      "observed_peak_bytes": 291962880
+    },
+    {
+      "pid": 36016,
+      "observed_peak_bytes": 33542144
+    },
+    {
+      "pid": 20900,
+      "observed_peak_bytes": 33525760
+    },
+    {
+      "pid": 46652,
+      "observed_peak_bytes": 226455552
+    },
+    {
+      "pid": 6440,
+      "observed_peak_bytes": 453799936
+    },
+    {
+      "pid": 20732,
+      "observed_peak_bytes": 33538048
+    },
+    {
+      "pid": 73704,
+      "observed_peak_bytes": 172146688
+    },
+    {
+      "pid": 19664,
+      "observed_peak_bytes": 33538048
+    },
+    {
+      "pid": 35032,
+      "observed_peak_bytes": 172982272
+    },
+    {
+      "pid": 63516,
+      "observed_peak_bytes": 54837248
+    },
+    {
+      "pid": 70660,
+      "observed_peak_bytes": 33533952
+    },
+    {
+      "pid": 51980,
+      "observed_peak_bytes": 154660864
+    },
+    {
+      "pid": 72804,
+      "observed_peak_bytes": 898363392
+    },
+    {
+      "pid": 53416,
+      "observed_peak_bytes": 34234368
+    },
+    {
+      "pid": 18896,
+      "observed_peak_bytes": 155783168
+    },
+    {
+      "pid": 12252,
+      "observed_peak_bytes": 33533952
+    },
+    {
+      "pid": 66516,
+      "observed_peak_bytes": 191823872
+    },
+    {
+      "pid": 73720,
+      "observed_peak_bytes": 65396736
+    },
+    {
+      "pid": 60580,
+      "observed_peak_bytes": 811880448
+    },
+    {
+      "pid": 19504,
+      "observed_peak_bytes": 33546240
+    },
+    {
+      "pid": 54284,
+      "observed_peak_bytes": 197931008
+    },
+    {
+      "pid": 52388,
+      "observed_peak_bytes": 33538048
+    },
+    {
+      "pid": 69164,
+      "observed_peak_bytes": 163201024
+    },
+    {
+      "pid": 45356,
+      "observed_peak_bytes": 33533952
+    },
+    {
+      "pid": 41088,
+      "observed_peak_bytes": 33533952
+    },
+    {
+      "pid": 59068,
+      "observed_peak_bytes": 200220672
+    },
+    {
+      "pid": 69676,
+      "observed_peak_bytes": 146452480
+    },
+    {
+      "pid": 45560,
+      "observed_peak_bytes": 33529856
+    },
+    {
+      "pid": 72812,
+      "observed_peak_bytes": 168198144
+    },
+    {
+      "pid": 67320,
+      "observed_peak_bytes": 33628160
+    },
+    {
+      "pid": 70376,
+      "observed_peak_bytes": 33542144
+    },
+    {
+      "pid": 64824,
+      "observed_peak_bytes": 136904704
+    },
+    {
+      "pid": 71508,
+      "observed_peak_bytes": 53776384
+    },
+    {
+      "pid": 30284,
+      "observed_peak_bytes": 302931968
+    },
+    {
+      "pid": 43988,
+      "observed_peak_bytes": 33533952
+    },
+    {
+      "pid": 68148,
+      "observed_peak_bytes": 33533952
+    },
+    {
+      "pid": 65076,
+      "observed_peak_bytes": 122343424
+    },
+    {
+      "pid": 71996,
+      "observed_peak_bytes": 261148672
+    },
+    {
+      "pid": 71232,
+      "observed_peak_bytes": 53800960
+    },
+    {
+      "pid": 73000,
+      "observed_peak_bytes": 128331776
+    },
+    {
+      "pid": 40872,
+      "observed_peak_bytes": 33533952
+    },
+    {
+      "pid": 56760,
+      "observed_peak_bytes": 67043328
+    },
+    {
+      "pid": 66936,
+      "observed_peak_bytes": 61456384
+    },
+    {
+      "pid": 51440,
+      "observed_peak_bytes": 33976320
+    },
+    {
+      "pid": 61152,
+      "observed_peak_bytes": 54476800
+    },
+    {
+      "pid": 36620,
+      "observed_peak_bytes": 34021376
+    },
+    {
+      "pid": 19668,
+      "observed_peak_bytes": 50094080
+    },
+    {
+      "pid": 17540,
+      "observed_peak_bytes": 52953088
+    },
+    {
+      "pid": 66804,
+      "observed_peak_bytes": 51576832
+    },
+    {
+      "pid": 61268,
+      "observed_peak_bytes": 48410624
+    },
+    {
+      "pid": 64932,
+      "observed_peak_bytes": 49303552
+    },
+    {
+      "pid": 20980,
+      "observed_peak_bytes": 33980416
+    },
+    {
+      "pid": 41468,
+      "observed_peak_bytes": 47337472
+    },
+    {
+      "pid": 63532,
+      "observed_peak_bytes": 47685632
+    },
+    {
+      "pid": 54400,
+      "observed_peak_bytes": 47816704
+    },
+    {
+      "pid": 59328,
+      "observed_peak_bytes": 46923776
+    },
+    {
+      "pid": 46532,
+      "observed_peak_bytes": 33972224
+    },
+    {
+      "pid": 62396,
+      "observed_peak_bytes": 46944256
+    },
+    {
+      "pid": 65348,
+      "observed_peak_bytes": 47321088
+    },
+    {
+      "pid": 16964,
+      "observed_peak_bytes": 47882240
+    },
+    {
+      "pid": 54868,
+      "observed_peak_bytes": 47144960
+    },
+    {
+      "pid": 10248,
+      "observed_peak_bytes": 33976320
+    },
+    {
+      "pid": 13996,
+      "observed_peak_bytes": 33980416
+    },
+    {
+      "pid": 50220,
+      "observed_peak_bytes": 46841856
+    },
+    {
+      "pid": 66328,
+      "observed_peak_bytes": 33984512
+    },
+    {
+      "pid": 1688,
+      "observed_peak_bytes": 53768192
+    },
+    {
+      "pid": 2916,
+      "observed_peak_bytes": 46505984
+    },
+    {
+      "pid": 49672,
+      "observed_peak_bytes": 53809152
+    },
+    {
+      "pid": 55256,
+      "observed_peak_bytes": 46727168
+    },
+    {
+      "pid": 73564,
+      "observed_peak_bytes": 53772288
+    },
+    {
+      "pid": 32100,
+      "observed_peak_bytes": 47026176
+    },
+    {
+      "pid": 59296,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 64808,
+      "observed_peak_bytes": 45719552
+    },
+    {
+      "pid": 53212,
+      "observed_peak_bytes": 47804416
+    },
+    {
+      "pid": 69856,
+      "observed_peak_bytes": 86622208
+    },
+    {
+      "pid": 54352,
+      "observed_peak_bytes": 66265088
+    },
+    {
+      "pid": 19784,
+      "observed_peak_bytes": 66977792
+    },
+    {
+      "pid": 63560,
+      "observed_peak_bytes": 47947776
+    },
+    {
+      "pid": 9748,
+      "observed_peak_bytes": 47001600
+    },
+    {
+      "pid": 44268,
+      "observed_peak_bytes": 46960640
+    },
+    {
+      "pid": 54500,
+      "observed_peak_bytes": 46952448
+    },
+    {
+      "pid": 45044,
+      "observed_peak_bytes": 46956544
+    },
+    {
+      "pid": 40948,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 39832,
+      "observed_peak_bytes": 109051904
+    },
+    {
+      "pid": 58284,
+      "observed_peak_bytes": 46952448
+    },
+    {
+      "pid": 54156,
+      "observed_peak_bytes": 46948352
+    },
+    {
+      "pid": 71424,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 57620,
+      "observed_peak_bytes": 46948352
+    },
+    {
+      "pid": 25848,
+      "observed_peak_bytes": 46952448
+    },
+    {
+      "pid": 69224,
+      "observed_peak_bytes": 46960640
+    },
+    {
+      "pid": 71388,
+      "observed_peak_bytes": 46964736
+    },
+    {
+      "pid": 26024,
+      "observed_peak_bytes": 47005696
+    },
+    {
+      "pid": 19808,
+      "observed_peak_bytes": 46948352
+    },
+    {
+      "pid": 62708,
+      "observed_peak_bytes": 46960640
+    },
+    {
+      "pid": 700,
+      "observed_peak_bytes": 46964736
+    },
+    {
+      "pid": 66164,
+      "observed_peak_bytes": 46952448
+    },
+    {
+      "pid": 24228,
+      "observed_peak_bytes": 46964736
+    },
+    {
+      "pid": 66160,
+      "observed_peak_bytes": 46948352
+    },
+    {
+      "pid": 56800,
+      "observed_peak_bytes": 104427520
+    },
+    {
+      "pid": 41224,
+      "observed_peak_bytes": 46952448
+    },
+    {
+      "pid": 67620,
+      "observed_peak_bytes": 46997504
+    },
+    {
+      "pid": 69140,
+      "observed_peak_bytes": 46960640
+    },
+    {
+      "pid": 48688,
+      "observed_peak_bytes": 46948352
+    },
+    {
+      "pid": 46844,
+      "observed_peak_bytes": 46972928
+    },
+    {
+      "pid": 60800,
+      "observed_peak_bytes": 46960640
+    },
+    {
+      "pid": 17984,
+      "observed_peak_bytes": 46968832
+    },
+    {
+      "pid": 72540,
+      "observed_peak_bytes": 46948352
+    },
+    {
+      "pid": 4160,
+      "observed_peak_bytes": 46952448
+    },
+    {
+      "pid": 71408,
+      "observed_peak_bytes": 48316416
+    },
+    {
+      "pid": 16580,
+      "observed_peak_bytes": 53776384
+    },
+    {
+      "pid": 70380,
+      "observed_peak_bytes": 48349184
+    },
+    {
+      "pid": 17076,
+      "observed_peak_bytes": 51253248
+    },
+    {
+      "pid": 15292,
+      "observed_peak_bytes": 47378432
+    },
+    {
+      "pid": 22492,
+      "observed_peak_bytes": 53833728
+    },
+    {
+      "pid": 70360,
+      "observed_peak_bytes": 77221888
+    },
+    {
+      "pid": 69444,
+      "observed_peak_bytes": 53833728
+    },
+    {
+      "pid": 13340,
+      "observed_peak_bytes": 47382528
+    },
+    {
+      "pid": 47532,
+      "observed_peak_bytes": 53846016
+    },
+    {
+      "pid": 64784,
+      "observed_peak_bytes": 47386624
+    },
+    {
+      "pid": 40932,
+      "observed_peak_bytes": 47386624
+    },
+    {
+      "pid": 71380,
+      "observed_peak_bytes": 47386624
+    },
+    {
+      "pid": 46728,
+      "observed_peak_bytes": 53837824
+    },
+    {
+      "pid": 66192,
+      "observed_peak_bytes": 47390720
+    },
+    {
+      "pid": 59248,
+      "observed_peak_bytes": 53821440
+    },
+    {
+      "pid": 61352,
+      "observed_peak_bytes": 53833728
+    },
+    {
+      "pid": 45516,
+      "observed_peak_bytes": 47398912
+    },
+    {
+      "pid": 71708,
+      "observed_peak_bytes": 47386624
+    },
+    {
+      "pid": 40696,
+      "observed_peak_bytes": 47386624
+    },
+    {
+      "pid": 19716,
+      "observed_peak_bytes": 47386624
+    },
+    {
+      "pid": 69320,
+      "observed_peak_bytes": 47390720
+    },
+    {
+      "pid": 57892,
+      "observed_peak_bytes": 53895168
+    },
+    {
+      "pid": 69328,
+      "observed_peak_bytes": 47382528
+    },
+    {
+      "pid": 66696,
+      "observed_peak_bytes": 47415296
+    },
+    {
+      "pid": 71128,
+      "observed_peak_bytes": 53841920
+    },
+    {
+      "pid": 14284,
+      "observed_peak_bytes": 53829632
+    },
+    {
+      "pid": 70996,
+      "observed_peak_bytes": 47378432
+    },
+    {
+      "pid": 20712,
+      "observed_peak_bytes": 47394816
+    },
+    {
+      "pid": 70444,
+      "observed_peak_bytes": 47415296
+    },
+    {
+      "pid": 55552,
+      "observed_peak_bytes": 47394816
+    },
+    {
+      "pid": 46356,
+      "observed_peak_bytes": 47382528
+    },
+    {
+      "pid": 15188,
+      "observed_peak_bytes": 53833728
+    },
+    {
+      "pid": 41128,
+      "observed_peak_bytes": 47394816
+    },
+    {
+      "pid": 69668,
+      "observed_peak_bytes": 53829632
+    },
+    {
+      "pid": 71048,
+      "observed_peak_bytes": 47374336
+    },
+    {
+      "pid": 21816,
+      "observed_peak_bytes": 48390144
+    },
+    {
+      "pid": 67804,
+      "observed_peak_bytes": 53825536
+    },
+    {
+      "pid": 67756,
+      "observed_peak_bytes": 84938752
+    },
+    {
+      "pid": 51064,
+      "observed_peak_bytes": 84750336
+    },
+    {
+      "pid": 16000,
+      "observed_peak_bytes": 85479424
+    },
+    {
+      "pid": 71776,
+      "observed_peak_bytes": 84508672
+    },
+    {
+      "pid": 67400,
+      "observed_peak_bytes": 48431104
+    },
+    {
+      "pid": 56080,
+      "observed_peak_bytes": 69591040
+    },
+    {
+      "pid": 73072,
+      "observed_peak_bytes": 58781696
+    },
+    {
+      "pid": 49332,
+      "observed_peak_bytes": 56971264
+    },
+    {
+      "pid": 58828,
+      "observed_peak_bytes": 57442304
+    },
+    {
+      "pid": 71428,
+      "observed_peak_bytes": 79683584
+    },
+    {
+      "pid": 59704,
+      "observed_peak_bytes": 47419392
+    },
+    {
+      "pid": 64364,
+      "observed_peak_bytes": 86560768
+    },
+    {
+      "pid": 45896,
+      "observed_peak_bytes": 86413312
+    },
+    {
+      "pid": 70264,
+      "observed_peak_bytes": 68988928
+    },
+    {
+      "pid": 53856,
+      "observed_peak_bytes": 84615168
+    },
+    {
+      "pid": 10988,
+      "observed_peak_bytes": 48435200
+    },
+    {
+      "pid": 20948,
+      "observed_peak_bytes": 156057600
+    },
+    {
+      "pid": 59368,
+      "observed_peak_bytes": 47607808
+    },
+    {
+      "pid": 57564,
+      "observed_peak_bytes": 47603712
+    },
+    {
+      "pid": 48624,
+      "observed_peak_bytes": 47595520
+    },
+    {
+      "pid": 20616,
+      "observed_peak_bytes": 47599616
+    },
+    {
+      "pid": 44904,
+      "observed_peak_bytes": 47595520
+    },
+    {
+      "pid": 61220,
+      "observed_peak_bytes": 47599616
+    },
+    {
+      "pid": 72720,
+      "observed_peak_bytes": 47607808
+    },
+    {
+      "pid": 59452,
+      "observed_peak_bytes": 47599616
+    },
+    {
+      "pid": 70976,
+      "observed_peak_bytes": 47591424
+    },
+    {
+      "pid": 65244,
+      "observed_peak_bytes": 47595520
+    },
+    {
+      "pid": 15048,
+      "observed_peak_bytes": 47616000
+    },
+    {
+      "pid": 57692,
+      "observed_peak_bytes": 47611904
+    },
+    {
+      "pid": 58348,
+      "observed_peak_bytes": 47603712
+    },
+    {
+      "pid": 63756,
+      "observed_peak_bytes": 47595520
+    },
+    {
+      "pid": 63124,
+      "observed_peak_bytes": 47591424
+    },
+    {
+      "pid": 72832,
+      "observed_peak_bytes": 47595520
+    },
+    {
+      "pid": 7780,
+      "observed_peak_bytes": 47591424
+    },
+    {
+      "pid": 69404,
+      "observed_peak_bytes": 47607808
+    },
+    {
+      "pid": 68424,
+      "observed_peak_bytes": 47607808
+    },
+    {
+      "pid": 52804,
+      "observed_peak_bytes": 47611904
+    },
+    {
+      "pid": 59824,
+      "observed_peak_bytes": 47595520
+    },
+    {
+      "pid": 10328,
+      "observed_peak_bytes": 47603712
+    },
+    {
+      "pid": 36060,
+      "observed_peak_bytes": 47607808
+    },
+    {
+      "pid": 71224,
+      "observed_peak_bytes": 47607808
+    },
+    {
+      "pid": 67916,
+      "observed_peak_bytes": 47599616
+    },
+    {
+      "pid": 72352,
+      "observed_peak_bytes": 47587328
+    },
+    {
+      "pid": 64992,
+      "observed_peak_bytes": 47611904
+    },
+    {
+      "pid": 54720,
+      "observed_peak_bytes": 47607808
+    },
+    {
+      "pid": 73396,
+      "observed_peak_bytes": 53637120
+    },
+    {
+      "pid": 68948,
+      "observed_peak_bytes": 53641216
+    },
+    {
+      "pid": 72296,
+      "observed_peak_bytes": 53645312
+    },
+    {
+      "pid": 52176,
+      "observed_peak_bytes": 53624832
+    },
+    {
+      "pid": 3764,
+      "observed_peak_bytes": 53633024
+    },
+    {
+      "pid": 70568,
+      "observed_peak_bytes": 53624832
+    },
+    {
+      "pid": 8564,
+      "observed_peak_bytes": 53633024
+    },
+    {
+      "pid": 41676,
+      "observed_peak_bytes": 53624832
+    },
+    {
+      "pid": 62652,
+      "observed_peak_bytes": 53702656
+    },
+    {
+      "pid": 69432,
+      "observed_peak_bytes": 84099072
+    },
+    {
+      "pid": 51916,
+      "observed_peak_bytes": 53698560
+    },
+    {
+      "pid": 52476,
+      "observed_peak_bytes": 77299712
+    },
+    {
+      "pid": 49984,
+      "observed_peak_bytes": 78057472
+    },
+    {
+      "pid": 42596,
+      "observed_peak_bytes": 53702656
+    },
+    {
+      "pid": 61084,
+      "observed_peak_bytes": 77504512
+    },
+    {
+      "pid": 22460,
+      "observed_peak_bytes": 70459392
+    },
+    {
+      "pid": 59508,
+      "observed_peak_bytes": 53698560
+    },
+    {
+      "pid": 72224,
+      "observed_peak_bytes": 74469376
+    },
+    {
+      "pid": 19856,
+      "observed_peak_bytes": 53698560
+    },
+    {
+      "pid": 63176,
+      "observed_peak_bytes": 75603968
+    },
+    {
+      "pid": 55576,
+      "observed_peak_bytes": 74952704
+    },
+    {
+      "pid": 58820,
+      "observed_peak_bytes": 78315520
+    },
+    {
+      "pid": 51568,
+      "observed_peak_bytes": 76992512
+    },
+    {
+      "pid": 32060,
+      "observed_peak_bytes": 75857920
+    },
+    {
+      "pid": 13660,
+      "observed_peak_bytes": 75296768
+    },
+    {
+      "pid": 60712,
+      "observed_peak_bytes": 75636736
+    },
+    {
+      "pid": 8072,
+      "observed_peak_bytes": 76025856
+    },
+    {
+      "pid": 61988,
+      "observed_peak_bytes": 75083776
+    },
+    {
+      "pid": 57796,
+      "observed_peak_bytes": 75620352
+    },
+    {
+      "pid": 64148,
+      "observed_peak_bytes": 74862592
+    },
+    {
+      "pid": 64908,
+      "observed_peak_bytes": 75423744
+    },
+    {
+      "pid": 13100,
+      "observed_peak_bytes": 76120064
+    },
+    {
+      "pid": 68944,
+      "observed_peak_bytes": 54693888
+    },
+    {
+      "pid": 59952,
+      "observed_peak_bytes": 68620288
+    },
+    {
+      "pid": 69620,
+      "observed_peak_bytes": 91701248
+    },
+    {
+      "pid": 61124,
+      "observed_peak_bytes": 54693888
+    },
+    {
+      "pid": 68292,
+      "observed_peak_bytes": 91029504
+    },
+    {
+      "pid": 60692,
+      "observed_peak_bytes": 82415616
+    },
+    {
+      "pid": 59048,
+      "observed_peak_bytes": 72978432
+    },
+    {
+      "pid": 55472,
+      "observed_peak_bytes": 68079616
+    },
+    {
+      "pid": 16200,
+      "observed_peak_bytes": 74022912
+    },
+    {
+      "pid": 71972,
+      "observed_peak_bytes": 70164480
+    },
+    {
+      "pid": 68396,
+      "observed_peak_bytes": 73056256
+    },
+    {
+      "pid": 24448,
+      "observed_peak_bytes": 69791744
+    },
+    {
+      "pid": 71032,
+      "observed_peak_bytes": 53710848
+    },
+    {
+      "pid": 67140,
+      "observed_peak_bytes": 53714944
+    },
+    {
+      "pid": 71700,
+      "observed_peak_bytes": 68100096
+    },
+    {
+      "pid": 66208,
+      "observed_peak_bytes": 65650688
+    },
+    {
+      "pid": 70916,
+      "observed_peak_bytes": 65888256
+    },
+    {
+      "pid": 59532,
+      "observed_peak_bytes": 65531904
+    },
+    {
+      "pid": 39164,
+      "observed_peak_bytes": 65314816
+    },
+    {
+      "pid": 73428,
+      "observed_peak_bytes": 53698560
+    },
+    {
+      "pid": 70296,
+      "observed_peak_bytes": 65015808
+    },
+    {
+      "pid": 44456,
+      "observed_peak_bytes": 53723136
+    },
+    {
+      "pid": 32656,
+      "observed_peak_bytes": 66109440
+    },
+    {
+      "pid": 72260,
+      "observed_peak_bytes": 53698560
+    },
+    {
+      "pid": 71080,
+      "observed_peak_bytes": 65138688
+    },
+    {
+      "pid": 19644,
+      "observed_peak_bytes": 53714944
+    },
+    {
+      "pid": 48460,
+      "observed_peak_bytes": 53702656
+    },
+    {
+      "pid": 51228,
+      "observed_peak_bytes": 53698560
+    },
+    {
+      "pid": 63816,
+      "observed_peak_bytes": 64548864
+    },
+    {
+      "pid": 52708,
+      "observed_peak_bytes": 53702656
+    },
+    {
+      "pid": 24292,
+      "observed_peak_bytes": 53698560
+    },
+    {
+      "pid": 46664,
+      "observed_peak_bytes": 53706752
+    },
+    {
+      "pid": 7620,
+      "observed_peak_bytes": 53702656
+    },
+    {
+      "pid": 71320,
+      "observed_peak_bytes": 62955520
+    },
+    {
+      "pid": 64692,
+      "observed_peak_bytes": 53698560
+    },
+    {
+      "pid": 63880,
+      "observed_peak_bytes": 54697984
+    },
+    {
+      "pid": 69332,
+      "observed_peak_bytes": 54697984
+    },
+    {
+      "pid": 71624,
+      "observed_peak_bytes": 57577472
+    },
+    {
+      "pid": 13908,
+      "observed_peak_bytes": 55762944
+    },
+    {
+      "pid": 68740,
+      "observed_peak_bytes": 55894016
+    },
+    {
+      "pid": 19832,
+      "observed_peak_bytes": 55517184
+    },
+    {
+      "pid": 8716,
+      "observed_peak_bytes": 55930880
+    },
+    {
+      "pid": 73180,
+      "observed_peak_bytes": 55689216
+    },
+    {
+      "pid": 71076,
+      "observed_peak_bytes": 54738944
+    },
+    {
+      "pid": 41824,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 63836,
+      "observed_peak_bytes": 53739520
+    },
+    {
+      "pid": 8000,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 32252,
+      "observed_peak_bytes": 53739520
+    },
+    {
+      "pid": 60344,
+      "observed_peak_bytes": 53739520
+    },
+    {
+      "pid": 73264,
+      "observed_peak_bytes": 53731328
+    },
+    {
+      "pid": 31120,
+      "observed_peak_bytes": 53731328
+    },
+    {
+      "pid": 60940,
+      "observed_peak_bytes": 53739520
+    },
+    {
+      "pid": 66232,
+      "observed_peak_bytes": 53731328
+    },
+    {
+      "pid": 68672,
+      "observed_peak_bytes": 53735424
+    },
+    {
+      "pid": 70196,
+      "observed_peak_bytes": 53805056
+    },
+    {
+      "pid": 69412,
+      "observed_peak_bytes": 53760000
+    },
+    {
+      "pid": 70608,
+      "observed_peak_bytes": 53747712
+    },
+    {
+      "pid": 8208,
+      "observed_peak_bytes": 53747712
+    },
+    {
+      "pid": 19540,
+      "observed_peak_bytes": 53739520
+    },
+    {
+      "pid": 73600,
+      "observed_peak_bytes": 53743616
+    },
+    {
+      "pid": 21164,
+      "observed_peak_bytes": 53739520
+    },
+    {
+      "pid": 24792,
+      "observed_peak_bytes": 53751808
+    },
+    {
+      "pid": 15936,
+      "observed_peak_bytes": 53731328
+    },
+    {
+      "pid": 73024,
+      "observed_peak_bytes": 53739520
+    },
+    {
+      "pid": 58232,
+      "observed_peak_bytes": 53743616
+    },
+    {
+      "pid": 55776,
+      "observed_peak_bytes": 53747712
+    },
+    {
+      "pid": 72392,
+      "observed_peak_bytes": 53788672
+    },
+    {
+      "pid": 62252,
+      "observed_peak_bytes": 53735424
+    },
+    {
+      "pid": 71288,
+      "observed_peak_bytes": 53743616
+    },
+    {
+      "pid": 72836,
+      "observed_peak_bytes": 53751808
+    },
+    {
+      "pid": 55036,
+      "observed_peak_bytes": 53772288
+    },
+    {
+      "pid": 60992,
+      "observed_peak_bytes": 53755904
+    },
+    {
+      "pid": 63872,
+      "observed_peak_bytes": 53768192
+    },
+    {
+      "pid": 47500,
+      "observed_peak_bytes": 53772288
+    },
+    {
+      "pid": 14524,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 59472,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 18960,
+      "observed_peak_bytes": 54763520
+    },
+    {
+      "pid": 64996,
+      "observed_peak_bytes": 53813248
+    },
+    {
+      "pid": 73356,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 51856,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 72924,
+      "observed_peak_bytes": 53755904
+    },
+    {
+      "pid": 51772,
+      "observed_peak_bytes": 53825536
+    },
+    {
+      "pid": 31508,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 11072,
+      "observed_peak_bytes": 53768192
+    },
+    {
+      "pid": 73340,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 40604,
+      "observed_peak_bytes": 53837824
+    },
+    {
+      "pid": 44100,
+      "observed_peak_bytes": 53776384
+    },
+    {
+      "pid": 60000,
+      "observed_peak_bytes": 53813248
+    },
+    {
+      "pid": 3584,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 60648,
+      "observed_peak_bytes": 53768192
+    },
+    {
+      "pid": 5580,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 64100,
+      "observed_peak_bytes": 53776384
+    },
+    {
+      "pid": 60732,
+      "observed_peak_bytes": 53825536
+    },
+    {
+      "pid": 47164,
+      "observed_peak_bytes": 53772288
+    },
+    {
+      "pid": 61320,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 40784,
+      "observed_peak_bytes": 53776384
+    },
+    {
+      "pid": 72892,
+      "observed_peak_bytes": 53760000
+    },
+    {
+      "pid": 51588,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 31500,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 3768,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 65068,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 9952,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 61472,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 57452,
+      "observed_peak_bytes": 53772288
+    },
+    {
+      "pid": 47956,
+      "observed_peak_bytes": 46952448
+    },
+    {
+      "pid": 50920,
+      "observed_peak_bytes": 53751808
+    },
+    {
+      "pid": 54544,
+      "observed_peak_bytes": 53817344
+    },
+    {
+      "pid": 24796,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 29768,
+      "observed_peak_bytes": 53760000
+    },
+    {
+      "pid": 57036,
+      "observed_peak_bytes": 53760000
+    },
+    {
+      "pid": 71548,
+      "observed_peak_bytes": 53772288
+    },
+    {
+      "pid": 4696,
+      "observed_peak_bytes": 53817344
+    },
+    {
+      "pid": 30660,
+      "observed_peak_bytes": 53768192
+    },
+    {
+      "pid": 37148,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 46484,
+      "observed_peak_bytes": 53813248
+    },
+    {
+      "pid": 71644,
+      "observed_peak_bytes": 53821440
+    },
+    {
+      "pid": 29528,
+      "observed_peak_bytes": 53768192
+    },
+    {
+      "pid": 54064,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 40976,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 31664,
+      "observed_peak_bytes": 53772288
+    },
+    {
+      "pid": 64344,
+      "observed_peak_bytes": 53768192
+    },
+    {
+      "pid": 39576,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 27632,
+      "observed_peak_bytes": 53768192
+    },
+    {
+      "pid": 14856,
+      "observed_peak_bytes": 53768192
+    },
+    {
+      "pid": 68416,
+      "observed_peak_bytes": 53772288
+    },
+    {
+      "pid": 73092,
+      "observed_peak_bytes": 53772288
+    },
+    {
+      "pid": 2712,
+      "observed_peak_bytes": 53768192
+    },
+    {
+      "pid": 64948,
+      "observed_peak_bytes": 53772288
+    },
+    {
+      "pid": 18552,
+      "observed_peak_bytes": 53760000
+    },
+    {
+      "pid": 70144,
+      "observed_peak_bytes": 54927360
+    },
+    {
+      "pid": 60364,
+      "observed_peak_bytes": 83906560
+    },
+    {
+      "pid": 70308,
+      "observed_peak_bytes": 53764096
+    },
+    {
+      "pid": 73116,
+      "observed_peak_bytes": 53768192
+    },
+    {
+      "pid": 72048,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 31276,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 71412,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 72980,
+      "observed_peak_bytes": 53800960
+    },
+    {
+      "pid": 64136,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 46452,
+      "observed_peak_bytes": 53788672
+    },
+    {
+      "pid": 45244,
+      "observed_peak_bytes": 53776384
+    },
+    {
+      "pid": 62212,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 31392,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 58928,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 15000,
+      "observed_peak_bytes": 53788672
+    },
+    {
+      "pid": 70848,
+      "observed_peak_bytes": 53776384
+    },
+    {
+      "pid": 64556,
+      "observed_peak_bytes": 53796864
+    },
+    {
+      "pid": 24776,
+      "observed_peak_bytes": 53788672
+    },
+    {
+      "pid": 64288,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 71104,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 2144,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 48160,
+      "observed_peak_bytes": 53776384
+    },
+    {
+      "pid": 17156,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 58872,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 13156,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 54656,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 57568,
+      "observed_peak_bytes": 53788672
+    },
+    {
+      "pid": 60672,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 71488,
+      "observed_peak_bytes": 53788672
+    },
+    {
+      "pid": 64928,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 22436,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 5352,
+      "observed_peak_bytes": 53796864
+    },
+    {
+      "pid": 68980,
+      "observed_peak_bytes": 53776384
+    },
+    {
+      "pid": 66980,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 48464,
+      "observed_peak_bytes": 53788672
+    },
+    {
+      "pid": 59212,
+      "observed_peak_bytes": 53796864
+    },
+    {
+      "pid": 48896,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 70128,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 66256,
+      "observed_peak_bytes": 98287616
+    },
+    {
+      "pid": 70584,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 50412,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 25324,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 64560,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 73144,
+      "observed_peak_bytes": 75677696
+    },
+    {
+      "pid": 69756,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 72796,
+      "observed_peak_bytes": 53792768
+    },
+    {
+      "pid": 68796,
+      "observed_peak_bytes": 53776384
+    },
+    {
+      "pid": 73056,
+      "observed_peak_bytes": 53796864
+    },
+    {
+      "pid": 70424,
+      "observed_peak_bytes": 53776384
+    },
+    {
+      "pid": 71836,
+      "observed_peak_bytes": 53796864
+    },
+    {
+      "pid": 56864,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 73372,
+      "observed_peak_bytes": 53784576
+    },
+    {
+      "pid": 58140,
+      "observed_peak_bytes": 53841920
+    },
+    {
+      "pid": 71704,
+      "observed_peak_bytes": 53780480
+    },
+    {
+      "pid": 51348,
+      "observed_peak_bytes": 54779904
+    },
+    {
+      "pid": 72480,
+      "observed_peak_bytes": 110415872
+    },
+    {
+      "pid": 57532,
+      "observed_peak_bytes": 53833728
+    },
+    {
+      "pid": 73492,
+      "observed_peak_bytes": 53837824
+    },
+    {
+      "pid": 59536,
+      "observed_peak_bytes": 53886976
+    },
+    {
+      "pid": 29712,
+      "observed_peak_bytes": 53841920
+    },
+    {
+      "pid": 71192,
+      "observed_peak_bytes": 53850112
+    },
+    {
+      "pid": 48596,
+      "observed_peak_bytes": 53825536
+    },
+    {
+      "pid": 70800,
+      "observed_peak_bytes": 53829632
+    },
+    {
+      "pid": 65108,
+      "observed_peak_bytes": 53833728
+    },
+    {
+      "pid": 73460,
+      "observed_peak_bytes": 53829632
+    },
+    {
+      "pid": 55728,
+      "observed_peak_bytes": 53907456
+    },
+    {
+      "pid": 53564,
+      "observed_peak_bytes": 53895168
+    },
+    {
+      "pid": 62248,
+      "observed_peak_bytes": 53829632
+    },
+    {
+      "pid": 54600,
+      "observed_peak_bytes": 53846016
+    },
+    {
+      "pid": 71392,
+      "observed_peak_bytes": 53846016
+    },
+    {
+      "pid": 72408,
+      "observed_peak_bytes": 53846016
+    },
+    {
+      "pid": 72716,
+      "observed_peak_bytes": 53833728
+    },
+    {
+      "pid": 57392,
+      "observed_peak_bytes": 53837824
+    },
+    {
+      "pid": 71112,
+      "observed_peak_bytes": 53907456
+    },
+    {
+      "pid": 27916,
+      "observed_peak_bytes": 85647360
+    },
+    {
+      "pid": 67876,
+      "observed_peak_bytes": 53829632
+    },
+    {
+      "pid": 54896,
+      "observed_peak_bytes": 83619840
+    },
+    {
+      "pid": 68440,
+      "observed_peak_bytes": 53886976
+    },
+    {
+      "pid": 72268,
+      "observed_peak_bytes": 75456512
+    },
+    {
+      "pid": 57460,
+      "observed_peak_bytes": 53841920
+    },
+    {
+      "pid": 40176,
+      "observed_peak_bytes": 53833728
+    },
+    {
+      "pid": 28652,
+      "observed_peak_bytes": 53833728
+    },
+    {
+      "pid": 13928,
+      "observed_peak_bytes": 53833728
+    },
+    {
+      "pid": 71436,
+      "observed_peak_bytes": 74641408
+    },
+    {
+      "pid": 29772,
+      "observed_peak_bytes": 77320192
+    },
+    {
+      "pid": 20412,
+      "observed_peak_bytes": 77463552
+    },
+    {
+      "pid": 68568,
+      "observed_peak_bytes": 75366400
+    },
+    {
+      "pid": 37324,
+      "observed_peak_bytes": 53825536
+    },
+    {
+      "pid": 73712,
+      "observed_peak_bytes": 75694080
+    },
+    {
+      "pid": 53104,
+      "observed_peak_bytes": 53829632
+    },
+    {
+      "pid": 11920,
+      "observed_peak_bytes": 75522048
+    },
+    {
+      "pid": 59972,
+      "observed_peak_bytes": 75472896
+    },
+    {
+      "pid": 62488,
+      "observed_peak_bytes": 54820864
+    },
+    {
+      "pid": 44304,
+      "observed_peak_bytes": 70340608
+    },
+    {
+      "pid": 68984,
+      "observed_peak_bytes": 96591872
+    },
+    {
+      "pid": 14104,
+      "observed_peak_bytes": 53903360
+    },
+    {
+      "pid": 28784,
+      "observed_peak_bytes": 53899264
+    },
+    {
+      "pid": 40700,
+      "observed_peak_bytes": 53886976
+    },
+    {
+      "pid": 41472,
+      "observed_peak_bytes": 53895168
+    },
+    {
+      "pid": 52868,
+      "observed_peak_bytes": 53899264
+    },
+    {
+      "pid": 46804,
+      "observed_peak_bytes": 53907456
+    },
+    {
+      "pid": 11928,
+      "observed_peak_bytes": 53886976
+    },
+    {
+      "pid": 64480,
+      "observed_peak_bytes": 53895168
+    },
+    {
+      "pid": 52716,
+      "observed_peak_bytes": 53882880
+    },
+    {
+      "pid": 59232,
+      "observed_peak_bytes": 53891072
+    },
+    {
+      "pid": 40760,
+      "observed_peak_bytes": 53886976
+    },
+    {
+      "pid": 53800,
+      "observed_peak_bytes": 53960704
+    },
+    {
+      "pid": 49944,
+      "observed_peak_bytes": 54878208
+    },
+    {
+      "pid": 57716,
+      "observed_peak_bytes": 110014464
+    },
+    {
+      "pid": 63616,
+      "observed_peak_bytes": 43290624
+    },
+    {
+      "pid": 26184,
+      "observed_peak_bytes": 55730176
+    },
+    {
+      "pid": 58748,
+      "observed_peak_bytes": 108265472
+    },
+    {
+      "pid": 69548,
+      "observed_peak_bytes": 59588608
+    },
+    {
+      "pid": 68828,
+      "observed_peak_bytes": 52416512
+    },
+    {
+      "pid": 44712,
+      "observed_peak_bytes": 1056272384
+    },
+    {
+      "pid": 19496,
+      "observed_peak_bytes": 917356544
+    },
+    {
+      "pid": 19600,
+      "observed_peak_bytes": 34111488
+    }
+  ],
+  "peak_scope": "One-second sampled exact descendant ancestry RSS is a lower bound; root kernel peak separate; compiler not calibrated",
+  "completed_utc": "2026-10-14T22:41:16.8801574+00:00"
+}
