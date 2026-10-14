@@ -14,6 +14,7 @@ const Callback = enum(c_int) { name, active, hook, callable, exposure, namespace
 
 pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
     try @import("native_sdk_prompt_render.zig").initialize(engine);
+    try @import("native_sdk_session_restore.zig").install(engine, prototype);
     inline for (std.meta.fields(Method)) |field| {
         const installed_function = try engine.checked(c.pi_js_function_magic(engine.context, methodCallback, field.name, switch (@as(Method, @enumFromInt(field.value))) {
             .getActiveToolNames, .getCallableToolNames, ._getCallableTools => 0,

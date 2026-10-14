@@ -47,7 +47,10 @@ fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, _: 
     try scope.put(options, "activeToolNames", try scope.get(session, "_initialActiveToolNames"));
     try scope.put(options, "includeAllExtensionTools", c.pi_js_bool(engine.context, 1));
     _ = try scope.call(builder, session, &.{options});
-    if (c.JS_IsUndefined(try scope.get(session, "_initialActiveToolNames"))) _ = try scope.invoke(session, "_restoreToolsFromTranscript", &.{});
+    if (scope.truthy(try scope.get(session, "_usesDefaultTools"))) {
+        const restore = try scope.get(session, "_restoreToolsFromTranscript");
+        _ = try scope.call(restore, session, &.{try scope.get(session, "_defaultToolModifiers")});
+    }
     return session;
 }
 pub fn prepareRuntime(engine: *em.Engine, session: c.JSValue) !void {

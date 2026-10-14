@@ -1,0 +1,20 @@
+// Caller inputs to the original method and native implementation, unchanged.
+const rows=[];
+const scenarios=['none','basic','add','remove','order','duplicates','empty-names','plain-ignored','star-exact','allowlist','custom-iterator','null-modifiers','iterator-throw','undefined-default','clear-error','context-error','messages-error','map-error','filter-error','allowed-error','active-error','method-metadata'];
+for(const scenario of scenarios){
+ const trace=[],marker={marker:scenario};
+ const old=new Set(['old']);
+ const messages=scenario==='none'?[]:[{role:'system',content:'',sections:{preamble:'restored'},toolsAdded:[{name:'beta'},{name:'missing'},...(scenario==='duplicates'?[{name:'beta'}]:[])],timestamp:1234}];
+ const session={_pendingToolNames:old,sessionManager:{buildSessionContext(){trace.push(['context',this===session.sessionManager]);if(scenario==='context-error')throw marker;return scenario==='messages-error'?{get messages(){throw marker;}}:{messages};}},_isAllowedTool(name){trace.push(['allowed',name,this===session]);if(scenario==='allowed-error')throw marker;return scenario!=='allowlist'||name==='alpha';},_setActiveTools(names){trace.push(['active',names.slice(),this===session]);if(scenario==='active-error')throw marker;}};
+ if(scenario==='clear-error')old.clear=function(){trace.push(['clear',this===old]);throw marker;};
+ const modifiers=scenario==='add'?['+alpha','+extension']:scenario==='remove'?['-beta','-missing']:scenario==='order'?['-beta','+alpha','+beta','-alpha','+alpha']:scenario==='duplicates'?['-beta','+beta']:scenario==='empty-names'?['+','-']:scenario==='plain-ignored'?['alpha',42,null,{},'+extension']:scenario==='star-exact'?['+a*','-m*']:scenario==='allowlist'?['+alpha','+blocked']:scenario==='custom-iterator'?{*[Symbol.iterator](){try{yield'-beta';yield'+alpha';}finally{trace.push(['iterator-close']);}}}:scenario==='null-modifiers'?null:scenario==='iterator-throw'?{*[Symbol.iterator](){try{yield'+alpha';throw marker;}finally{trace.push(['iterator-finally']);}}}:undefined;
+ const originalMap=Array.prototype.map,originalFilter=Array.prototype.filter;
+ if(scenario==='map-error')Array.prototype.map=function(){throw marker;};
+ if(scenario==='filter-error')Array.prototype.filter=function(){throw marker;};
+ let result,error;
+ try{if(scenario==='method-metadata'){const f=sessionRestoreMethod;result={name:f.name,length:f.length,prototype:Object.hasOwn(f,'prototype'),async:Object.getPrototypeOf(f)===Object.getPrototypeOf(async()=>{})};}else result=sessionRestoreMethod.call(session,modifiers);}
+ catch(value){if(value!==marker&&!(scenario==='null-modifiers'&&value instanceof TypeError))throw value;error=value===marker?{marker:true}:{name:value.name,message:value.message};}
+ finally{Array.prototype.map=originalMap;Array.prototype.filter=originalFilter;}
+ rows.push({scenario,result:result===undefined?{type:'undefined'}:result,error,trace,pending:[...session._pendingToolNames],samePending:session._pendingToolNames===old});
+}
+globalThis.sessionRestoreRows=rows;
