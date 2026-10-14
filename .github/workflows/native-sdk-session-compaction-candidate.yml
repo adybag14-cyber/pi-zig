@@ -1,0 +1,119 @@
+name: Native manual and automatic session compaction qualification
+
+on:
+  push:
+    branches: [work/native-sdk-compaction-b45-20261014]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-sdk-session-compaction-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        mode: [Debug, ReleaseSafe]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact candidate and full compiler
+        id: freeze
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskReceipt='verification/native-sdk-session-compaction-candidate'
+          New-Item -ItemType Directory -Path $taskReceipt|Out-Null
+          if((git rev-parse HEAD).Trim() -cne '${{ github.sha }}'){throw 'Checkout identity mismatch'}
+          if((& zig version).Trim() -cne '0.16.0'){throw 'Compiler version mismatch'}
+          $taskInfo=[IO.FileInfo]::new((Get-Command zig).Source)
+          $taskTarget=$taskInfo.ResolveLinkTarget($true)
+          $taskZig=if($taskTarget){$taskTarget.FullName}else{$taskInfo.FullName}
+          $taskToolRoot=Split-Path -Parent $taskZig
+          $taskInputs=@(git ls-files|Sort-Object|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}})
+          $taskTools=@(Get-ChildItem -LiteralPath $taskToolRoot -File -Recurse|Sort-Object FullName|ForEach-Object{[ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash}})
+          $taskInputs|ConvertTo-Json -Depth 4|Set-Content "$taskReceipt/inputs.json"
+          $taskTools|ConvertTo-Json -Depth 4|Set-Content "$taskReceipt/tools.json"
+          [ordered]@{head='${{ github.sha }}';tree=(git rev-parse 'HEAD^{tree}').Trim();platform='${{ matrix.os }}';mode='${{ matrix.mode }}';source_count=$taskInputs.Count;tool_count=$taskTools.Count;source_cases=84;manual_cases=44;automatic_cases=40;allocation_partitions=8;public_activation=$false;full_class_qualified=$false;full_factory_qualified=$false;scope='Actual manual/automatic bodies with native preparation/default summaries/secure UUID and pending GC; shared class still missing26 methods'}|ConvertTo-Json|Set-Content "$taskReceipt/source.json"
+      - name: Compile both native artifacts independently
+        shell: pwsh
+        timeout-minutes: 23
+        run: |
+          $ErrorActionPreference='Stop'
+          & .github/scripts/run-owned-native-candidate.ps1 -Executable (Get-Command zig).Source -WorkingDirectory (Get-Location).Path -Arguments @('build','build-native-sdk-session-compaction','build-native-sdk-session-auto-compaction','-Doptimize=${{ matrix.mode }}','-Duse-llvm=true','-j1','--summary','all') -ReceiptBase 'verification/native-sdk-session-compaction-candidate/compile' -TimeoutSeconds 1320
+      - name: Execute complete original comparisons and allocation universes
+        shell: pwsh
+        timeout-minutes: 42
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskReceipt='verification/native-sdk-session-compaction-candidate'
+          $taskFamilies=@('sdk-manual-compact44','sdk-auto-compact40')
+          $taskState=@{}
+          foreach($taskFamily in $taskFamilies){$taskState[$taskFamily]=@{total=$null;previous=0;indices=[Collections.Generic.List[int]]::new()}}
+          foreach($taskShard in 0..7){
+            $env:PI_EXHAUSTIVE_ALLOCATION_SHARD=[string]$taskShard
+            $env:PI_EXHAUSTIVE_ALLOCATION_SHARDS='8'
+            $taskBase="$taskReceipt/shard-$taskShard"
+            & .github/scripts/run-owned-native-candidate.ps1 -Executable (Get-Command zig).Source -WorkingDirectory (Get-Location).Path -Arguments @('build','test-native-sdk-session-compaction','test-native-sdk-session-auto-compaction','-Doptimize=${{ matrix.mode }}','-Duse-llvm=true','-j1','--test-timeout','120s','--summary','all') -ReceiptBase $taskBase -TimeoutSeconds 300
+            $taskLog=Get-Content -LiteralPath "$taskBase.stderr.log" -Raw
+            if($taskLog -notmatch '(?m)^Build Summary:.*\b10/10 tests passed'){throw 'All10 native tests must execute in every partition'}
+            foreach($taskTarget in @('test-native-sdk-session-compaction','test-native-sdk-session-auto-compaction')){
+              if([regex]::Matches($taskLog,'(?ms)^'+[regex]::Escape($taskTarget)+' success\r?\n[^\r\n]*run test 5 pass \(5 total\)').Count -ne 1){throw 'Native artifact inventory mismatch'}
+            }
+            foreach($taskFamily in $taskFamilies){
+              $taskPattern='(?m)^EXHAUSTIVE_ALLOCATION_RANGE '+[regex]::Escape($taskFamily)+' (\d+)/(\d+) range=\[(\d+),(\d+)\) total=(\d+)$'
+              $taskRanges=@([regex]::Matches($taskLog,$taskPattern))
+              if($taskRanges.Count -ne 1){throw 'Exact allocation range missing or repeated'}
+              $taskValues=@($taskRanges[0].Groups|Select-Object -Skip 1|ForEach-Object{[long]$_.Value})
+              $taskStart=$taskValues[2];$taskEnd=$taskValues[3];$taskTotal=$taskValues[4]
+              $taskCurrent=$taskState[$taskFamily]
+              if($null -eq $taskCurrent.total){$taskCurrent.total=$taskTotal}
+              if($taskValues[0] -ne $taskShard -or $taskValues[1] -ne 8 -or $taskTotal -ne $taskCurrent.total -or $taskStart -ne $taskCurrent.previous -or $taskStart -ne [math]::Floor($taskTotal*$taskShard/8) -or $taskEnd -ne [math]::Floor($taskTotal*($taskShard+1)/8)){throw 'Allocation universe changed or contains a gap/overlap'}
+              $taskBaseline=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_BASELINE '+[regex]::Escape($taskFamily)+' total=(\d+)$'))
+              if($taskBaseline.Count -ne 1 -or [long]$taskBaseline[0].Groups[1].Value -ne $taskTotal){throw 'Independent unlimited baseline missing'}
+              $taskBegun=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_INDEX_BEGIN '+[regex]::Escape($taskFamily)+' (\d+)$')|ForEach-Object{[int]$_.Groups[1].Value})
+              $taskDone=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE '+[regex]::Escape($taskFamily)+' (\d+)$')|ForEach-Object{[int]$_.Groups[1].Value})
+              if($taskBegun.Count -ne ($taskEnd-$taskStart) -or $taskDone.Count -ne $taskBegun.Count){throw 'Allocation positions did not complete'}
+              for($taskIndex=0;$taskIndex -lt $taskDone.Count;$taskIndex++){if($taskBegun[$taskIndex] -ne ($taskStart+$taskIndex) -or $taskDone[$taskIndex] -ne ($taskStart+$taskIndex)){throw 'Allocation position duplicated or skipped'};$taskCurrent.indices.Add($taskDone[$taskIndex])}
+              $taskComplete="EXHAUSTIVE_ALLOCATION_COMPLETE $taskFamily $taskShard/8 range=[$taskStart,$taskEnd) total=$taskTotal"
+              if([regex]::Matches($taskLog,[regex]::Escape($taskComplete)).Count -ne 1){throw 'Exact completed allocation partition absent'}
+              $taskCurrent.previous=$taskEnd
+            }
+          }
+          $taskCoverage=@()
+          foreach($taskFamily in $taskFamilies){
+            $taskCurrent=$taskState[$taskFamily]
+            if($taskCurrent.previous -ne $taskCurrent.total -or $taskCurrent.indices.Count -ne $taskCurrent.total -or @($taskCurrent.indices|Sort-Object -Unique).Count -ne $taskCurrent.total){throw 'Complete allocation universe did not pass'}
+            $taskCoverage+=@{family=$taskFamily;baseline=$taskCurrent.total;completed=$taskCurrent.indices.Count;missing=0;duplicates=0}
+          }
+          [ordered]@{head='${{ github.sha }}';platform='${{ matrix.os }}';mode='${{ matrix.mode }}';status='passed';tests_each=10;partitions=8;manual_cases=44;automatic_cases=40;source_cases=84;allocation_coverage=$taskCoverage;test_timeout_seconds=120;outer_timeout_seconds=300;host_await_timeout_ms=10000;public_activation=$false;full_class_qualified=$false;full_factory_qualified=$false;full_pi_qualified=$false;posix_original_run=38636729729;posix_original_head='5fb1b484942e028744c84d2228282c0314894adc';posix_original_audit_required=$true;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 7|Set-Content "$taskReceipt/result.json"
+      - name: Verify all frozen files after terminal execution
+        if: ${{ always() && steps.freeze.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskReceipt='verification/native-sdk-session-compaction-candidate'
+          foreach($taskKind in @('inputs','tools')){
+            $taskRows=@(Get-Content -LiteralPath "$taskReceipt/$taskKind.json" -Raw|ConvertFrom-Json)
+            $taskDrift=@($taskRows|Where-Object{!(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256}|ForEach-Object path)
+            [ordered]@{count=$taskRows.Count;drift=$taskDrift;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 4|Set-Content "$taskReceipt/$taskKind-posthash.json"
+            if($taskDrift.Count){throw 'Frozen candidate/tool bytes changed'}
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-sdk-session-compaction-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-sdk-session-compaction-candidate/
