@@ -1,0 +1,184 @@
+{
+  "reference_source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "head": "24419e00ee8b5af1ebfc96eeffb247e4bd63c257",
+  "posix_original_run": 38636729729,
+  "profiles": [
+    {
+      "compiler_files": 19546,
+      "tests_each": 10,
+      "partitions": 8,
+      "platform": "macos-latest",
+      "result_sha256": "C231A0E75E1D65138991827C438C03E60FFAC0B2DEEDFF16C2C8B41278FBB20E",
+      "coverage": [
+        {
+          "completed": 2256,
+          "family": "sdk-manual-compact44",
+          "gaps": 0,
+          "baseline": 2256,
+          "duplicates": 0
+        },
+        {
+          "completed": 2503,
+          "family": "sdk-auto-compact40",
+          "gaps": 0,
+          "baseline": 2503,
+          "duplicates": 0
+        }
+      ],
+      "mode": "Debug",
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_cases": 84,
+      "source_files": 5488
+    },
+    {
+      "compiler_files": 19546,
+      "tests_each": 10,
+      "partitions": 8,
+      "platform": "macos-latest",
+      "result_sha256": "48F9F9D89D1977FBB61744A5AECE80661CB862326996D44E90CD086515C732DF",
+      "coverage": [
+        {
+          "completed": 2256,
+          "family": "sdk-manual-compact44",
+          "gaps": 0,
+          "baseline": 2256,
+          "duplicates": 0
+        },
+        {
+          "completed": 2503,
+          "family": "sdk-auto-compact40",
+          "gaps": 0,
+          "baseline": 2503,
+          "duplicates": 0
+        }
+      ],
+      "mode": "ReleaseSafe",
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_cases": 84,
+      "source_files": 5488
+    },
+    {
+      "compiler_files": 19546,
+      "tests_each": 10,
+      "partitions": 8,
+      "platform": "ubuntu-latest",
+      "result_sha256": "34410612500CC9F98D477C3952E309021E41A28F697F71E37D21F547B8BC14F8",
+      "coverage": [
+        {
+          "completed": 2256,
+          "family": "sdk-manual-compact44",
+          "gaps": 0,
+          "baseline": 2256,
+          "duplicates": 0
+        },
+        {
+          "completed": 2503,
+          "family": "sdk-auto-compact40",
+          "gaps": 0,
+          "baseline": 2503,
+          "duplicates": 0
+        }
+      ],
+      "mode": "Debug",
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_cases": 84,
+      "source_files": 5488
+    },
+    {
+      "compiler_files": 19546,
+      "tests_each": 10,
+      "partitions": 8,
+      "platform": "ubuntu-latest",
+      "result_sha256": "65B0FB88E270C67D856832B62260106CDCC878722C5D7B029E6CCA703151930C",
+      "coverage": [
+        {
+          "completed": 2256,
+          "family": "sdk-manual-compact44",
+          "gaps": 0,
+          "baseline": 2256,
+          "duplicates": 0
+        },
+        {
+          "completed": 2503,
+          "family": "sdk-auto-compact40",
+          "gaps": 0,
+          "baseline": 2503,
+          "duplicates": 0
+        }
+      ],
+      "mode": "ReleaseSafe",
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_cases": 84,
+      "source_files": 5488
+    },
+    {
+      "compiler_files": 19546,
+      "tests_each": 10,
+      "partitions": 8,
+      "platform": "windows-latest",
+      "result_sha256": "B0E5CED2772962F2BFE6502C3F30F97490A779DB7AA6FAA01314A61E5147CF4A",
+      "coverage": [
+        {
+          "completed": 2256,
+          "family": "sdk-manual-compact44",
+          "gaps": 0,
+          "baseline": 2256,
+          "duplicates": 0
+        },
+        {
+          "completed": 2503,
+          "family": "sdk-auto-compact40",
+          "gaps": 0,
+          "baseline": 2503,
+          "duplicates": 0
+        }
+      ],
+      "mode": "Debug",
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_cases": 84,
+      "source_files": 5488
+    },
+    {
+      "compiler_files": 19546,
+      "tests_each": 10,
+      "partitions": 8,
+      "platform": "windows-latest",
+      "result_sha256": "C91AF618F8CCBEBBCA2A5732C0432BD9267EBA91F5C655684282DE7C03592CAC",
+      "coverage": [
+        {
+          "completed": 2256,
+          "family": "sdk-manual-compact44",
+          "gaps": 0,
+          "baseline": 2256,
+          "duplicates": 0
+        },
+        {
+          "completed": 2503,
+          "family": "sdk-auto-compact40",
+          "gaps": 0,
+          "baseline": 2503,
+          "duplicates": 0
+        }
+      ],
+      "mode": "ReleaseSafe",
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_cases": 84,
+      "source_files": 5488
+    }
+  ],
+  "cross_platform_source_bytes_identical": true,
+  "status": "all_six_native_profiles_independently_audited",
+  "observed_utc": "2026-10-14T21:48:00.5718173+00:00",
+  "full_pi_qualified": false,
+  "run": 38638026361,
+  "source_cases": 84,
+  "full_factory_qualified": false,
+  "full_class_qualified": false,
+  "public_activation": false
+}
