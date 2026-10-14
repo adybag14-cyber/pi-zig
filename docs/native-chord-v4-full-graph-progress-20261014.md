@@ -87,18 +87,28 @@ implementation body or missing-method fallback is introduced.
 
 ## Qualification boundary and remaining integration
 
-All changed Zig files have pinned Zig0.16 fmt/AST checks only. There has been
-no semantic compile, Source differential capture, GC run, or allocator sweep
-for this full graph branch. No native lane is requested for this incomplete
-assembly. The existing private factory still imports protocol2 and historical
-cells/contracts: it must not be used to claim protocol4 runtime parity.
+All changed Zig files have pinned Zig0.16 fmt/AST checks only. The actual b45
+Source21 full-factory caller was captured twice with identical output and full
+closure/candidate checks, saved at proof checkpoint73b9d298. There has been no
+semantic compile, native differential run, GC run, or allocator sweep for this
+full graph branch. The new private native_chord_full_v4 factory composes the
+v4 classes for that diagnostic. The separate existing historical factory still
+imports protocol2; neither is publicly activated.
 
-The next coherent integration includes provider/relay protocol4 state units and flow
-control, connection authorization/route principals, consumer linger ownership,
-and reload prepare hydration/init ordering. The remote routing function now
-constructs shared bindings and independent views; the existing protocol2
-channel cannot yet carry these protocol4 holds and must be replaced before
-factory assembly.
+The first Source21 native target contains exact compiled inventory, unchanged
+functional21 plus real GC/teardown, and a measured complete successful-run
+host allocation baseline. It deliberately does not claim a completed failure
+sweep. A coordinated compile-only request precedes its diagnostic runtime;
+after the baseline, full failure sweep granularity must preserve every index
+exactly once and the original120-second test/300-second outer deadlines.
+
+The authored connection/provider/relay, consumer linger, principal routing and
+reload hydration/init bodies now compose in the private diagnostic factory.
+Their first semantic compile and differential runtime may expose concrete
+implementation failures; those negatives must be retained and repaired before
+qualification. The package still lacks native replicatedState and
+acceptWebSockets integration, full Fork/IPC guest facade and bootstrap, and
+complete application parity. Full public activation remains false.
 Remaining observable getter/callback/error order must be audited against the
 actual Source, including rollback-finally behavior under overridden public
 methods, reentrant publication, and pending reference aborts.
