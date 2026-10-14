@@ -149,10 +149,13 @@ pub fn wait(comptime next: *const fn (*Engine, c.JSValue, c.JSValue, bool, c_int
     return engine.checked(c.JS_PromiseThen(engine.context, awaited, fulfilled, failed));
 }
 pub fn define(s: *Scope, prototype: c.JSValue, bindings: c.JSValue, name: [*:0]const u8, callback: RawCallback, operation: c_int, arity: c_int, getter: bool, async_function: bool) !void {
-    const function_name = if (getter) try std.fmt.allocPrintSentinel(s.engine.gpa, "get {s}", .{name}, 0) else try s.engine.gpa.dupeZ(u8, std.mem.span(name));
-    defer s.engine.gpa.free(function_name);
+    // JS_NewCFunctionData2 copies the supplied C string. Ordinary method names
+    // already have their required sentinel and need no temporary heap copy.
+    const getter_name = if (getter) try std.fmt.allocPrintSentinel(s.engine.gpa, "get {s}", .{name}, 0) else null;
+    defer if (getter_name) |owned_name| s.engine.gpa.free(owned_name);
+    const function_name: [*:0]const u8 = if (getter_name) |owned_name| owned_name.ptr else name;
     var data = [_]c.JSValue{bindings};
-    const function = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, callback, function_name.ptr, arity, operation, 1, &data)));
+    const function = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, callback, function_name, arity, operation, 1, &data)));
     if (async_function) {
         const async_prototype = try s.keep(try s.engine.checked(c.JS_GetAsyncFunctionPrototype(s.engine.context)));
         if (c.JS_SetPrototype(s.engine.context, function, async_prototype) < 0) return js.capture(s.engine);
