@@ -1,0 +1,288 @@
+[
+  {
+    "name": "posix-resolve-empty",
+    "value": "/fixture/base",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "posix-resolve-relative",
+    "value": "/fixture/base/child",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "posix-resolve-two-relative",
+    "value": "/fixture/base/two",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "posix-resolve-absolute",
+    "value": "/owned/file",
+    "log": []
+  },
+  {
+    "name": "posix-resolve-absolute-tail",
+    "value": "/owned/file/child",
+    "log": []
+  },
+  {
+    "name": "posix-resolve-relative-absolute",
+    "value": "/owned/file",
+    "log": []
+  },
+  {
+    "name": "posix-resolve-empty-absolute",
+    "value": "/owned/file",
+    "log": []
+  },
+  {
+    "name": "posix-relative-equal",
+    "value": "",
+    "log": []
+  },
+  {
+    "name": "posix-relative-relative",
+    "value": "../two",
+    "log": [
+      {
+        "receiver": true
+      },
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "posix-relative-absolute",
+    "value": "../next",
+    "log": []
+  },
+  {
+    "name": "posix-relative-mixed",
+    "value": "../../fixture/base/child",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "posix-namespace-absolute",
+    "value": "/owned/file",
+    "log": []
+  },
+  {
+    "name": "posix-throw-relative",
+    "value": null,
+    "identical": true,
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "posix-absolute-skips-throw",
+    "value": "/owned/file",
+    "identical": false,
+    "log": []
+  },
+  {
+    "name": "posix-absolute-pair-skips-throw",
+    "value": "../next",
+    "identical": false,
+    "log": []
+  },
+  {
+    "name": "posix-equal-skips-throw",
+    "value": "",
+    "identical": false,
+    "log": []
+  },
+  {
+    "name": "win32-resolve-empty",
+    "value": "C:\\fixture\\base",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "win32-resolve-relative",
+    "value": "C:\\fixture\\base\\child",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "win32-resolve-two-relative",
+    "value": "C:\\fixture\\base\\two",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "win32-resolve-absolute",
+    "value": "C:\\owned\\file",
+    "log": []
+  },
+  {
+    "name": "win32-resolve-absolute-tail",
+    "value": "C:\\owned\\file\\child",
+    "log": []
+  },
+  {
+    "name": "win32-resolve-relative-absolute",
+    "value": "C:\\owned\\file",
+    "log": []
+  },
+  {
+    "name": "win32-resolve-empty-absolute",
+    "value": "C:\\owned\\file",
+    "log": []
+  },
+  {
+    "name": "win32-relative-equal",
+    "value": "",
+    "log": []
+  },
+  {
+    "name": "win32-relative-relative",
+    "value": "..\\two",
+    "log": [
+      {
+        "receiver": true
+      },
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "win32-relative-absolute",
+    "value": "..\\next",
+    "log": []
+  },
+  {
+    "name": "win32-relative-mixed",
+    "value": "..\\..\\fixture\\base\\child",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "win32-namespace-absolute",
+    "value": "\\\\?\\C:\\owned\\file",
+    "log": []
+  },
+  {
+    "name": "win32-throw-relative",
+    "value": null,
+    "identical": true,
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "win32-absolute-skips-throw",
+    "value": "C:\\owned\\file",
+    "identical": false,
+    "log": []
+  },
+  {
+    "name": "win32-absolute-pair-skips-throw",
+    "value": "..\\next",
+    "identical": false,
+    "log": []
+  },
+  {
+    "name": "win32-equal-skips-throw",
+    "value": "",
+    "identical": false,
+    "log": []
+  },
+  {
+    "name": "utils-default-base",
+    "value": "/fixture/base/child",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "utils-explicit-relative-base",
+    "value": "/fixture/base/relative/child",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "utils-explicit-absolute-base",
+    "value": "/fixture/base/child",
+    "log": []
+  },
+  {
+    "name": "utils-absolute-input",
+    "value": "/fixture/base/owned",
+    "log": []
+  },
+  {
+    "name": "utils-cwd-relative-inside",
+    "value": "owned",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "utils-cwd-relative-outside",
+    "value": null,
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "utils-display-relative-inside",
+    "value": "owned",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  },
+  {
+    "name": "utils-display-relative-outside",
+    "value": "/outside/owned",
+    "log": [
+      {
+        "receiver": true
+      }
+    ]
+  }
+]

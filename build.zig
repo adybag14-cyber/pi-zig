@@ -1441,6 +1441,11 @@ pub fn build(b: *std.Build) void {
     highlight_tree_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-highlight-token-tree", "Compile actual highlight token tree and HTML emitter private algorithms").dependOn(&highlight_tree_tests.step);
     b.step("test-native-highlight-token-tree", "Compare genuine original24 tree aliasing escaped HTML callbacks GC and native allocation cleanup").dependOn(&b.addRunArtifact(highlight_tree_tests).step);
+    const source_paths_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_source_paths_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Source path cwd"}, .use_llvm = use_llvm });
+    linkQuickJs(b, source_paths_tests.root_module, quickjs, sqlite_lib_dir);
+    source_paths_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-source-path-cwd", "Compile actual Source path helpers and live Node cwd fallback semantics").dependOn(&source_paths_tests.step);
+    b.step("test-native-sdk-source-path-cwd", "Compare actual40 Node Source callbacks ordering exception identity display and native allocation cleanup").dependOn(&b.addRunArtifact(source_paths_tests).step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);
