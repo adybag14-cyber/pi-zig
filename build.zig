@@ -1441,6 +1441,11 @@ pub fn build(b: *std.Build) void {
     highlight_tree_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-highlight-token-tree", "Compile actual highlight token tree and HTML emitter private algorithms").dependOn(&highlight_tree_tests.step);
     b.step("test-native-highlight-token-tree", "Compare genuine original24 tree aliasing escaped HTML callbacks GC and native allocation cleanup").dependOn(&b.addRunArtifact(highlight_tree_tests).step);
+    const highlight_multi_regex_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_multi_regex_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native MultiRegex"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_multi_regex_tests.root_module, quickjs, sqlite_lib_dir);
+    highlight_multi_regex_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-multi-regex", "Compile actual highlight MultiRegex class and backreference compiler private algorithms").dependOn(&highlight_multi_regex_tests.step);
+    b.step("test-native-highlight-multi-regex", "Compare genuine original30 regex metadata coercion getters matching GC and native allocation cleanup").dependOn(&b.addRunArtifact(highlight_multi_regex_tests).step);
     const source_paths_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_source_paths_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Source path cwd"}, .use_llvm = use_llvm });
     linkQuickJs(b, source_paths_tests.root_module, quickjs, sqlite_lib_dir);
     source_paths_tests.root_module.addImport("catalog_tool", catalog_tool);
