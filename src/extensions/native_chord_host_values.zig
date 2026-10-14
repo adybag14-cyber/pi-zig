@@ -5,7 +5,7 @@ pub const Scope = scoped.Scope;
 pub const js = scoped.js;
 pub const c = js.c;
 pub const Engine = js.Engine;
-pub const Kind = enum(c_int) { HostImpl, CtxImpl, RecordImpl, HandleImpl, SelfImpl, MemberReadable, Cell, Derived, Source, Fanout, BaseLink, MemoryLink, IpcLink, WebSocketLink, RemoteHandle, RemoteReadable, RelayHold, RelayCall, Connection, Reload, ObjectSelf, ObjectCtx, ObjectImpl, RefImpl, RemoteRef, RelayRef };
+pub const Kind = enum(c_int) { HostImpl, CtxImpl, RecordImpl, HandleImpl, SelfImpl, MemberReadable, Cell, Derived, Source, Fanout, BaseLink, MemoryLink, IpcLink, WebSocketLink, RemoteHandle, RemoteReadable, RelayHold, RelayCall, Connection, Reload, ObjectSelf, ObjectCtx, ObjectImpl, RefImpl, RemoteRef, RelayRef, RemoteBinding, ViewReadable };
 pub const Actor = struct { engine: *Engine, bindings: c.JSValue, data: c.JSValue };
 pub const RawCallback = *const fn (?*c.JSContext, c.JSValue, c_int, [*c]c.JSValue, c_int, [*c]c.JSValue) callconv(.c) c.JSValue;
 extern "c" fn JS_GetIteratorSymbol(context: ?*c.JSContext) c.JSValue;

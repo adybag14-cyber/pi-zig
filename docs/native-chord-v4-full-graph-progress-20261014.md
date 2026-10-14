@@ -35,6 +35,11 @@ implementation body or missing-method fallback is introduced.
 - Caller placement is resolved from normalized contract input. Local providers
   check their own placement. Remote identity uses type/input/principal key and
   fingerprint, without a caller-selected host name or options.at.
+- The new RemoteBinding class owns shared views, one hold, state demand,
+  hydration waiters, per-member decoders, atomic pending shape/snapshot units,
+  retained values through reconnect, terminal and linger cleanup, and calls
+  waiting for a live hold. Its channel return uses actual async-return promise
+  adoption. Its installer is not yet called by the factory.
 
 ## Qualification boundary and remaining integration
 
@@ -44,8 +49,8 @@ for this full graph branch. No native lane is requested for this incomplete
 assembly. The existing private factory still imports protocol2 and historical
 cells/contracts: it must not be used to claim protocol4 runtime parity.
 
-The next coherent integration includes the actual shared RemoteBinding and
-RemoteRef/ViewReadable graph, provider/relay protocol4 state units and flow
+The next coherent integration includes RemoteRef/ViewReadable around the new
+shared RemoteBinding, provider/relay protocol4 state units and flow
 control, connection authorization/route principals, consumer linger ownership,
 and reload prepare hydration/init ordering. The remote routing function has
 only received its explicit resolved destination argument; it still constructs
