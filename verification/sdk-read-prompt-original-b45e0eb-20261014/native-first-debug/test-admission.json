@@ -1,0 +1,29 @@
+{
+  "minimum_free_gib": 16,
+  "free_kib": 26118148,
+  "existing_native_processes": [
+    {
+      "ProcessId": 7820,
+      "ParentProcessId": 12340,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-models-typed-services test-native-models-stream-regressions test-native-ai-transcript-context -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+      "CreationDate": "2026-10-14T19:23:39.747149+01:00"
+    },
+    {
+      "ProcessId": 54176,
+      "ParentProcessId": 7820,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\.zig-cache\\o\\6d4145d0ec8b3fa845035392fc01c17a\\build.exe",
+      "CommandLine": ".zig-cache\\o\\6d4145d0ec8b3fa845035392fc01c17a\\build.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013 .zig-cache C:\\Users\\adyba\\AppData\\Local\\zig --seed 0xa272ac0 -Z32a1450b22b809d4 test-native-models-typed-services test-native-models-stream-regressions test-native-ai-transcript-context -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+      "CreationDate": "2026-10-14T19:23:39.833905+01:00"
+    },
+    {
+      "ProcessId": 46452,
+      "ParentProcessId": 54176,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\.zig-cache\\o\\f34ec177b58b45856f22be9a99b60389\\test.exe",
+      "CommandLine": ".\\.zig-cache\\o\\f34ec177b58b45856f22be9a99b60389\\test.exe --cache-dir=.\\.zig-cache --seed=0xa272ac0 --listen=-",
+      "CreationDate": "2026-10-14T19:23:49.055691+01:00"
+    }
+  ],
+  "wrapper_sha256": "856306629BE9F4CC2F71CF16CC45559F667758CB7FB1AB25FA1FF404AF18B10C",
+  "checked_utc": "2026-10-14T18:23:50.4366117+00:00"
+}

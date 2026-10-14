@@ -1,0 +1,19 @@
+{
+  "head": "7c09f913aa29e766c2773f64e95c58dce55bfd14",
+  "os": "windows-latest",
+  "mode": "Debug",
+  "status": "passed",
+  "source_cases": 25,
+  "source_fixture_platform": "Windows",
+  "genuine_original_source_replay": "actual25_doublecaptures_Windows_f4d97964_Linux_macOS_original_capture_pending",
+  "public_class_metadata_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "tests_each": 3,
+  "shards": 8,
+  "baseline": 483,
+  "completed_indices": 483,
+  "missing": 0,
+  "duplicates": 0,
+  "public_activation": false,
+  "completed_utc": "2026-10-14T17:15:19.8624891+00:00"
+}

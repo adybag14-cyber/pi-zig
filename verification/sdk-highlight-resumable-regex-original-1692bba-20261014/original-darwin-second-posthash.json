@@ -1,0 +1,47 @@
+{
+  "before": [
+    {
+      "kind": "source",
+      "count": 1955,
+      "drift": []
+    },
+    {
+      "kind": "dependencies",
+      "count": 26275,
+      "drift": []
+    },
+    {
+      "kind": "node-tools",
+      "count": 4560,
+      "drift": []
+    },
+    {
+      "kind": "candidate",
+      "count": 4992,
+      "drift": []
+    }
+  ],
+  "after": [
+    {
+      "kind": "source",
+      "count": 1955,
+      "drift": []
+    },
+    {
+      "kind": "dependencies",
+      "count": 26275,
+      "drift": []
+    },
+    {
+      "kind": "node-tools",
+      "count": 4560,
+      "drift": []
+    },
+    {
+      "kind": "candidate",
+      "count": 4992,
+      "drift": []
+    }
+  ],
+  "completed_utc": "2026-10-14T17:47:36.9583530+00:00"
+}

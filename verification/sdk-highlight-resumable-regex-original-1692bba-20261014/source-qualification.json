@@ -1,0 +1,150 @@
+{
+  "windows_linux_macos_raw_rows_identical": true,
+  "status": "genuine_latest_original_ResumableMultiRegex25_actual_Linux_macOS_double_captures_qualified",
+  "run_id": 38600998648,
+  "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38600998648",
+  "head": "c7f73bc61dc7e74c95d505fdb533c7d1e74fa18c",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "input_sha256": "eae026dc49db7118e4689cece6e4eebd5f35afcd41b6ca80d8daed6bf4fb2861",
+  "cases": 25,
+  "linux_macos_raw_rows_identical": true,
+  "source_body_rewrites": 0,
+  "raw_normalizations": 0,
+  "catalog_scope": "Pinned official439c5347 typed metadata; latest generated model catalog gate remains separate",
+  "captures": [
+    {
+      "artifact": "original-sdk-highlight-resumable-regex-macos-latest-c7f73bc61dc7e74c95d505fdb533c7d1e74fa18c",
+      "platform": "darwin",
+      "arch": "arm64",
+      "cases": 25,
+      "source_files": 1955,
+      "source_matches_local_authority": 1955,
+      "dependency_files": 26275,
+      "node_tool_files": 4560,
+      "candidate_files": 4992,
+      "source_drift": 0,
+      "post_drift": 0,
+      "observed_modules_first": 3,
+      "observed_modules_second": 3,
+      "double_capture_identical": true,
+      "node_sha256": "20a18709f0154d668f1bd6f6ea8c2a7ae001447b4b2c339732f22e57a8767a55",
+      "first_capture_sha256": "4D8B31FC6C77DC8326FADEDD821CDF2A2A469A7EB1D615A06E9C7DC4E2FD4E5C",
+      "second_capture_sha256": "4D8B31FC6C77DC8326FADEDD821CDF2A2A469A7EB1D615A06E9C7DC4E2FD4E5C",
+      "owner_receipts": [
+        {
+          "path": "original-darwin-first.process.json",
+          "sha256": "5BC136BE268E1D0EBA19DF3EFBD412904BE6F93EAAB42FA9126FF85FB8E18C85",
+          "pid": 1939,
+          "status": "passed",
+          "outer_seconds": 300,
+          "created_utc": "2026-10-14T17:45:58.723764Z",
+          "completed_utc": "2026-10-14T18:46:16.382+01:00"
+        },
+        {
+          "path": "original-darwin-second.process.json",
+          "sha256": "637155B3226691A2EA80B922E44E72F30965641002E20510D52F56196C0DD93D",
+          "pid": 2442,
+          "status": "passed",
+          "outer_seconds": 300,
+          "created_utc": "2026-10-14T17:46:57.5671648Z",
+          "completed_utc": "2026-10-14T18:47:18.769547+01:00"
+        }
+      ],
+      "full_manifest_hashes": [
+        {
+          "kind": "source",
+          "count": 1955,
+          "artifact_file": "source-before.json",
+          "sha256": "1A41FDD02A0143B6244ED8C117C55F14CD42F426DAF224139DF41041CCCC89AC"
+        },
+        {
+          "kind": "dependencies",
+          "count": 26275,
+          "artifact_file": "dependencies-before.json",
+          "sha256": "B653F650C437638FA97C350C89902833A650D74614E1B74E4CC467B67B64770B"
+        },
+        {
+          "kind": "node-tools",
+          "count": 4560,
+          "artifact_file": "node-tools-before.json",
+          "sha256": "36CFF8EC57C8E83A47E103B984E0B7B53E053871B4F5FD0DFE89E5290D82CB7C"
+        },
+        {
+          "kind": "candidate",
+          "count": 4992,
+          "artifact_file": "candidate-before.json",
+          "sha256": "FD9FBAA978E92ADFD34B764ADF148D6CD28AED3B268952772CACC933D54A06B6"
+        }
+      ]
+    },
+    {
+      "artifact": "original-sdk-highlight-resumable-regex-ubuntu-latest-c7f73bc61dc7e74c95d505fdb533c7d1e74fa18c",
+      "platform": "linux",
+      "arch": "x64",
+      "cases": 25,
+      "source_files": 1955,
+      "source_matches_local_authority": 1955,
+      "dependency_files": 26280,
+      "node_tool_files": 4560,
+      "candidate_files": 4992,
+      "source_drift": 0,
+      "post_drift": 0,
+      "observed_modules_first": 3,
+      "observed_modules_second": 3,
+      "double_capture_identical": true,
+      "node_sha256": "e237a2839d0cbdc9a9a2adda1a184afc0f5b20306ffbe923af5686550472d8a8",
+      "first_capture_sha256": "9DA299A7CC9B697A60B6E0F062076BBD078C67DCDC4B9CC51251F91F3124E272",
+      "second_capture_sha256": "9DA299A7CC9B697A60B6E0F062076BBD078C67DCDC4B9CC51251F91F3124E272",
+      "owner_receipts": [
+        {
+          "path": "original-linux-first.process.json",
+          "sha256": "D0CA922EB7FB9C7AC8930917472940DCEBD0C52A62FEE980DBA199882BCAAE58",
+          "pid": 2485,
+          "status": "passed",
+          "outer_seconds": 300,
+          "created_utc": "2026-10-14T16:54:12.5956572Z",
+          "completed_utc": "2026-10-14T17:54:15.2037386+01:00"
+        },
+        {
+          "path": "original-linux-second.process.json",
+          "sha256": "083C4ECFB430C2DFE37241F233DDCC03D40AD427650D7EB6C429CA388B89CBA5",
+          "pid": 2493,
+          "status": "passed",
+          "outer_seconds": 300,
+          "created_utc": "2026-10-14T16:54:21.2056572Z",
+          "completed_utc": "2026-10-14T17:54:23.9098184+01:00"
+        }
+      ],
+      "full_manifest_hashes": [
+        {
+          "kind": "source",
+          "count": 1955,
+          "artifact_file": "source-before.json",
+          "sha256": "8EEB6F4944B04F7D10D966158AB329630125FC744B380E4DCF4CD62AEA9B1C1F"
+        },
+        {
+          "kind": "dependencies",
+          "count": 26280,
+          "artifact_file": "dependencies-before.json",
+          "sha256": "3EF7022DD9CA87CED00BB17DA8AADC5C8BBA2DA6A2C222C68A6AEBAE0789A100"
+        },
+        {
+          "kind": "node-tools",
+          "count": 4560,
+          "artifact_file": "node-tools-before.json",
+          "sha256": "1AA42F9A9B51A2CCD3E5ACD3D1DFC17D59EFC999DD19D3F47AC07A97C34A42D6"
+        },
+        {
+          "kind": "candidate",
+          "count": 4992,
+          "artifact_file": "candidate-before.json",
+          "sha256": "ECC17A21350C2F9C18D0E8A04CC0FDBEE84039B02786FFA4DF8B8B31A9C22973"
+        }
+      ]
+    }
+  ],
+  "native_qualification": "all-six private native ResumableMultiRegex25 run38602869293 independently audited; full grammar and public class metadata separate",
+  "root_worktree_edits": 0,
+  "public_activation": false,
+  "verified_utc": "2026-10-14T18:24:38.6645900+00:00"
+}

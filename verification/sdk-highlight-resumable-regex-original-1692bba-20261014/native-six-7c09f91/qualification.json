@@ -1,0 +1,634 @@
+{
+  "status": "actual_Source_ResumableMultiRegex25_helpers_all_six_profiles_and_complete_current_allocation_universes_qualified",
+  "run_id": 38602869293,
+  "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38602869293",
+  "head": "7c09f913aa29e766c2773f64e95c58dce55bfd14",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "original_source_run": 38600998648,
+  "cases": 25,
+  "native_methods": [
+    "Original ResumableMultiRegex native class with actual MultiRegex and regex dependencies"
+  ],
+  "profiles": [
+    {
+      "os": "macos-latest",
+      "mode": "Debug",
+      "baseline": 483,
+      "completed_indices": 483,
+      "missing": 0,
+      "duplicates": 0,
+      "cases": 25,
+      "tests_each": 3,
+      "partitions": 8,
+      "source_files": 5024,
+      "compiler_files": 19543,
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_manifest_sha256": "1E197750745DC2CE9E80F0A413FAB35C530A2BBA7EC3335209C2FC01FAA40F89",
+      "compiler_manifest_sha256": "2841ED63A334D4EC3A43FD6F3B12EA4C26699B342561B2B42E3ED36333E9A78E",
+      "artifact": "native-highlight-resumable-regex-macos-latest-Debug-7c09f913aa29e766c2773f64e95c58dce55bfd14",
+      "owners": [
+        {
+          "phase": "compile",
+          "pid": 1480,
+          "status": "passed",
+          "outer_seconds": 1320,
+          "seconds": 511.074766,
+          "sha256": "040AAA47F09C4A35541AE68B734E30531A222F72ABE99911E2AF922F68BFCD52",
+          "artifact_file": "compile.process.json"
+        },
+        {
+          "phase": "shard-0",
+          "pid": 12639,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 21.5614902,
+          "sha256": "BCF13C0C0F60C54F65D6D3A6CA02FA65D9CF8928713E85194B599EA9AD71B637",
+          "artifact_file": "shard-0.process.json"
+        },
+        {
+          "phase": "shard-1",
+          "pid": 13337,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 15.398846,
+          "sha256": "73C4ECA41189F3747AC580B86B00D099DAE8297BA1BFB781F994A5E89F1B528D",
+          "artifact_file": "shard-1.process.json"
+        },
+        {
+          "phase": "shard-2",
+          "pid": 13903,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 15.966351,
+          "sha256": "72A5DAF1E90D33DF6C9CA8AD0639058BE747B8D565F06C93B4C676720CC896FF",
+          "artifact_file": "shard-2.process.json"
+        },
+        {
+          "phase": "shard-3",
+          "pid": 14387,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 14.4096068,
+          "sha256": "36415C76313FE0160229DFB2613D05AAC9D9182C5FEB6EAD67F48E8E73F91B0A",
+          "artifact_file": "shard-3.process.json"
+        },
+        {
+          "phase": "shard-4",
+          "pid": 15083,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 14.419934,
+          "sha256": "BF1F5C43FF1B014DE0848CAAF23676F1986C73FE168D57AA4BEDD87C1CC62B2D",
+          "artifact_file": "shard-4.process.json"
+        },
+        {
+          "phase": "shard-5",
+          "pid": 15577,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 16.124109,
+          "sha256": "26A5599098836B358D786DAAC647D226EB12DEE51CC924C02AD3D29B776DC536",
+          "artifact_file": "shard-5.process.json"
+        },
+        {
+          "phase": "shard-6",
+          "pid": 16079,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 15.385692,
+          "sha256": "2C51DA7C563233104F2CCFEA493C4BC7D3EEEC29B76E9F908EE25ABFB342B719",
+          "artifact_file": "shard-6.process.json"
+        },
+        {
+          "phase": "shard-7",
+          "pid": 16877,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 15.244602,
+          "sha256": "195E7D8DE7C207DB2192A2B5E09655848EEFE8DE0729C8F077CEAB3CC4154F45",
+          "artifact_file": "shard-7.process.json"
+        }
+      ]
+    },
+    {
+      "os": "macos-latest",
+      "mode": "ReleaseSafe",
+      "baseline": 483,
+      "completed_indices": 483,
+      "missing": 0,
+      "duplicates": 0,
+      "cases": 25,
+      "tests_each": 3,
+      "partitions": 8,
+      "source_files": 5024,
+      "compiler_files": 19543,
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_manifest_sha256": "1E197750745DC2CE9E80F0A413FAB35C530A2BBA7EC3335209C2FC01FAA40F89",
+      "compiler_manifest_sha256": "CDF5F769563F0F86D49A3F9EE48EC5B9EC2E5CEB41CACEEDE5D0C8036AB7AD92",
+      "artifact": "native-highlight-resumable-regex-macos-latest-ReleaseSafe-7c09f913aa29e766c2773f64e95c58dce55bfd14",
+      "owners": [
+        {
+          "phase": "compile",
+          "pid": 1304,
+          "status": "passed",
+          "outer_seconds": 1320,
+          "seconds": 235.9816538,
+          "sha256": "2FB9EF0930B7B5012D58DCC22534D547FD5CC497CD8F05A7166EF626296A205B",
+          "artifact_file": "compile.process.json"
+        },
+        {
+          "phase": "shard-0",
+          "pid": 6236,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 5.996437,
+          "sha256": "66B136BE0A35FDD9B5F1F17C14FE738D1DD9370D7D526F39B08C05C903EEE9D6",
+          "artifact_file": "shard-0.process.json"
+        },
+        {
+          "phase": "shard-1",
+          "pid": 6505,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.780387,
+          "sha256": "479D20DA6A7C0212690A8033BD9B4172CA3EB74AD0BB2123FDDFDB3A04BF64E4",
+          "artifact_file": "shard-1.process.json"
+        },
+        {
+          "phase": "shard-2",
+          "pid": 6958,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 7.661854,
+          "sha256": "ACDB1A57125505CB932B9128ED5F625EC6E0B7C5F3279EFFCE2BBD9B8554C7EE",
+          "artifact_file": "shard-2.process.json"
+        },
+        {
+          "phase": "shard-3",
+          "pid": 7434,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.914803,
+          "sha256": "AAE2F4F6DFA7CF4A97380442162D4761A38297826E467A38AFA97D768D0DC260",
+          "artifact_file": "shard-3.process.json"
+        },
+        {
+          "phase": "shard-4",
+          "pid": 7739,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.632354,
+          "sha256": "632D7BA798769AD0583A3F5886DA5479212A3AFAFDE734F3C34BCF032BE0384A",
+          "artifact_file": "shard-4.process.json"
+        },
+        {
+          "phase": "shard-5",
+          "pid": 8205,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.475877,
+          "sha256": "381CABE47FC66BCD8858F9D2AF98D3FFC6BB3EFF4C22AEB63517AC8FF0BCD173",
+          "artifact_file": "shard-5.process.json"
+        },
+        {
+          "phase": "shard-6",
+          "pid": 8652,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.627646,
+          "sha256": "8E0E208F61CBA683BA55980CFF05CC68CF4B8F11390B3E6B098C854431723C65",
+          "artifact_file": "shard-6.process.json"
+        },
+        {
+          "phase": "shard-7",
+          "pid": 8906,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 7.1108472,
+          "sha256": "C19EA6A29D5A53064CC062092BCEBB830B58A102E09FB7B90789542F3C8B972C",
+          "artifact_file": "shard-7.process.json"
+        }
+      ]
+    },
+    {
+      "os": "ubuntu-latest",
+      "mode": "Debug",
+      "baseline": 483,
+      "completed_indices": 483,
+      "missing": 0,
+      "duplicates": 0,
+      "cases": 25,
+      "tests_each": 3,
+      "partitions": 8,
+      "source_files": 5024,
+      "compiler_files": 19543,
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_manifest_sha256": "1E197750745DC2CE9E80F0A413FAB35C530A2BBA7EC3335209C2FC01FAA40F89",
+      "compiler_manifest_sha256": "552B3920221A6D0F803E943B20C3B54FAA3055AA1FBF3C65998C0E41999A6D26",
+      "artifact": "native-highlight-resumable-regex-ubuntu-latest-Debug-7c09f913aa29e766c2773f64e95c58dce55bfd14",
+      "owners": [
+        {
+          "phase": "compile",
+          "pid": 2469,
+          "status": "passed",
+          "outer_seconds": 1320,
+          "seconds": 521.5857167,
+          "sha256": "7A65BD8D74D4933C7111C8BB9847949E6411154034F96ECD1294C1808DA92600",
+          "artifact_file": "compile.process.json"
+        },
+        {
+          "phase": "shard-0",
+          "pid": 4239,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 5.9089175,
+          "sha256": "ADE33E83166457CEEF0280662561E441DA19C95432941D555485182A81895DEE",
+          "artifact_file": "shard-0.process.json"
+        },
+        {
+          "phase": "shard-1",
+          "pid": 4555,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.0908321,
+          "sha256": "ADF389F68BAE46B44C145EF30A131179B72A8DEFB989CB348DA15B82186108A5",
+          "artifact_file": "shard-1.process.json"
+        },
+        {
+          "phase": "shard-2",
+          "pid": 4869,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.1385729,
+          "sha256": "94E314A738C1E9AE3E4AA7237D2FB719F78C6689C53650E956EB464470636DEF",
+          "artifact_file": "shard-2.process.json"
+        },
+        {
+          "phase": "shard-3",
+          "pid": 5183,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.210465,
+          "sha256": "D99C9ADE57BAE89054FDCEBBC275AB89024ABCEDC16D3754C6D339C7AF5D6374",
+          "artifact_file": "shard-3.process.json"
+        },
+        {
+          "phase": "shard-4",
+          "pid": 5502,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.3037589,
+          "sha256": "AAC0004A865EFD32DB92CB80CEA2B29AD837DCD5A12F2A6EE845CAE7D952D060",
+          "artifact_file": "shard-4.process.json"
+        },
+        {
+          "phase": "shard-5",
+          "pid": 5817,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.3514696,
+          "sha256": "41122F5AFB47BC174DDABD992236AF754B01A998AD5CE28A1A04B8362AA3E2A3",
+          "artifact_file": "shard-5.process.json"
+        },
+        {
+          "phase": "shard-6",
+          "pid": 6137,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.4265064,
+          "sha256": "3A2A493D0579057479880A754502D01F54C1B93812BCF205D69663382A3C7351",
+          "artifact_file": "shard-6.process.json"
+        },
+        {
+          "phase": "shard-7",
+          "pid": 6455,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 6.5127661,
+          "sha256": "C13B893C93BB0550BDA662C3A0078D0EEC4597DDEA23834F592D4DA3F11FF95A",
+          "artifact_file": "shard-7.process.json"
+        }
+      ]
+    },
+    {
+      "os": "ubuntu-latest",
+      "mode": "ReleaseSafe",
+      "baseline": 483,
+      "completed_indices": 483,
+      "missing": 0,
+      "duplicates": 0,
+      "cases": 25,
+      "tests_each": 3,
+      "partitions": 8,
+      "source_files": 5024,
+      "compiler_files": 19543,
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_manifest_sha256": "1E197750745DC2CE9E80F0A413FAB35C530A2BBA7EC3335209C2FC01FAA40F89",
+      "compiler_manifest_sha256": "6A2D8AE9EFC5678E0436C86FF880F09BD08176ED552A84B01BF42A29C8167916",
+      "artifact": "native-highlight-resumable-regex-ubuntu-latest-ReleaseSafe-7c09f913aa29e766c2773f64e95c58dce55bfd14",
+      "owners": [
+        {
+          "phase": "compile",
+          "pid": 2499,
+          "status": "passed",
+          "outer_seconds": 1320,
+          "seconds": 438.1554579,
+          "sha256": "D447F19774D78EC4E1210241AE042BD50812333FBDAD171A58110567BAF3A7E6",
+          "artifact_file": "compile.process.json"
+        },
+        {
+          "phase": "shard-0",
+          "pid": 4178,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.8388134,
+          "sha256": "3ECDB8DA069B9092A23FC1E45A535DF1E708628FC746BCF9B2A45BC92B30DA82",
+          "artifact_file": "shard-0.process.json"
+        },
+        {
+          "phase": "shard-1",
+          "pid": 4500,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.9333386,
+          "sha256": "7899696C517BA29DA53CE59A73AE712A8DC0E3637D5A62D52471AA871F09ED29",
+          "artifact_file": "shard-1.process.json"
+        },
+        {
+          "phase": "shard-2",
+          "pid": 4815,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.896458,
+          "sha256": "9607A0592DBCB60A3751C77BD88D31BD67000989C82A2A22BB55F5BAEBBBEA4B",
+          "artifact_file": "shard-2.process.json"
+        },
+        {
+          "phase": "shard-3",
+          "pid": 5130,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.8973177,
+          "sha256": "86D3F02CEB9851FE12C8F839F609BAC5FCDBE6FEB16EDDA2F24335D1BB0CA7A4",
+          "artifact_file": "shard-3.process.json"
+        },
+        {
+          "phase": "shard-4",
+          "pid": 5446,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.9212117,
+          "sha256": "A30503A767259A99FC675265BDEE65E2F734BF05137DAF2C68EAFE53DD734C39",
+          "artifact_file": "shard-4.process.json"
+        },
+        {
+          "phase": "shard-5",
+          "pid": 5761,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.9811346,
+          "sha256": "22B2C313505D08FD53FF9FC9B6E1481DB100A731C2754F478CE465D540D74B15",
+          "artifact_file": "shard-5.process.json"
+        },
+        {
+          "phase": "shard-6",
+          "pid": 6076,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.9423929,
+          "sha256": "2CC1C1AE0B7634FEDD550CF6EBFF51BA77C41137377BFFAFFE8A5C895E312759",
+          "artifact_file": "shard-6.process.json"
+        },
+        {
+          "phase": "shard-7",
+          "pid": 6393,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 5.0304944,
+          "sha256": "9859A11C14D77BFF529975FF69D0BB76DA92950F74317F033456FEBAEC7D7743",
+          "artifact_file": "shard-7.process.json"
+        }
+      ]
+    },
+    {
+      "os": "windows-latest",
+      "mode": "Debug",
+      "baseline": 483,
+      "completed_indices": 483,
+      "missing": 0,
+      "duplicates": 0,
+      "cases": 25,
+      "tests_each": 3,
+      "partitions": 8,
+      "source_files": 5024,
+      "compiler_files": 19543,
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_manifest_sha256": "1F1AE8D45020D31E59D374542BD660D5E8D3F886AD60EEE57AC3EB298A9958DE",
+      "compiler_manifest_sha256": "D6FAF3DC7E56CF0FEB9AB0312EDBD7ABD0947DDA20417F4717A3478985E3E6FE",
+      "artifact": "native-highlight-resumable-regex-windows-latest-Debug-7c09f913aa29e766c2773f64e95c58dce55bfd14",
+      "owners": [
+        {
+          "phase": "compile",
+          "pid": 3076,
+          "status": "passed",
+          "outer_seconds": 1320,
+          "seconds": 769.9267279,
+          "sha256": "281677B858A8A4BC4254CFAE7D00207E0C50AACE4FB418A1D38B1254BC5CA5C3",
+          "artifact_file": "compile.process.json"
+        },
+        {
+          "phase": "shard-0",
+          "pid": 7584,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 7.666133,
+          "sha256": "EC901886408489D65F04D9530AC2941F7BDEB29E93179BE0CF1910C4A96A1113",
+          "artifact_file": "shard-0.process.json"
+        },
+        {
+          "phase": "shard-1",
+          "pid": 6056,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 8.0947567,
+          "sha256": "A2BF13857FD526204604CFC3AA97E04AD28E680234813FE4527A1AA2ECC5B5D1",
+          "artifact_file": "shard-1.process.json"
+        },
+        {
+          "phase": "shard-2",
+          "pid": 5016,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 8.4048627,
+          "sha256": "927415568FE8E810CA1B58D5C1431A95C339BE00E6519D9777094CBD0C3CA516",
+          "artifact_file": "shard-2.process.json"
+        },
+        {
+          "phase": "shard-3",
+          "pid": 7988,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 8.2799242,
+          "sha256": "F25CE622CFC4BE4AB7388FC1127ABE1D8758AB31710A351CFBFA21DDEEFA7724",
+          "artifact_file": "shard-3.process.json"
+        },
+        {
+          "phase": "shard-4",
+          "pid": 1404,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 7.7468904,
+          "sha256": "6907826F0ED74C324E33EDB37612AC0FE59A044586463F68C5CC2BB52F528A0F",
+          "artifact_file": "shard-4.process.json"
+        },
+        {
+          "phase": "shard-5",
+          "pid": 1612,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 7.8779183,
+          "sha256": "F418AD038612DAAC84D100BFFFB3B57CFC5E02E5D20EE14CD2829DAA35DA79DD",
+          "artifact_file": "shard-5.process.json"
+        },
+        {
+          "phase": "shard-6",
+          "pid": 2404,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 8.4235822,
+          "sha256": "BF731CF97E473E26405C19A8BD0F3C4C1B7544EC6DFC5CAC479A9816476AD9E2",
+          "artifact_file": "shard-6.process.json"
+        },
+        {
+          "phase": "shard-7",
+          "pid": 1380,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 8.7073212,
+          "sha256": "F550F2650B8956CB979AA2DC054E0468644C11B76752349DD01462F352935B88",
+          "artifact_file": "shard-7.process.json"
+        }
+      ]
+    },
+    {
+      "os": "windows-latest",
+      "mode": "ReleaseSafe",
+      "baseline": 483,
+      "completed_indices": 483,
+      "missing": 0,
+      "duplicates": 0,
+      "cases": 25,
+      "tests_each": 3,
+      "partitions": 8,
+      "source_files": 5024,
+      "compiler_files": 19543,
+      "source_post_drift": 0,
+      "compiler_post_drift": 0,
+      "source_manifest_sha256": "1F1AE8D45020D31E59D374542BD660D5E8D3F886AD60EEE57AC3EB298A9958DE",
+      "compiler_manifest_sha256": "9180539A9C0CC7E42F5F299AA6AB9C0F76F5F69087C5F18FC7A1150F9C9CF9E4",
+      "artifact": "native-highlight-resumable-regex-windows-latest-ReleaseSafe-7c09f913aa29e766c2773f64e95c58dce55bfd14",
+      "owners": [
+        {
+          "phase": "compile",
+          "pid": 6396,
+          "status": "passed",
+          "outer_seconds": 1320,
+          "seconds": 433.893927,
+          "sha256": "E2A96DB58E5E3074E7F76522BFE58A0DE98E95E23CC10B171FA597727F4272A3",
+          "artifact_file": "compile.process.json"
+        },
+        {
+          "phase": "shard-0",
+          "pid": 8432,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.2076344,
+          "sha256": "DDD80C74846792F98C8E6A2A39D127039A9E22323E2BADD33E1E3C81CD051898",
+          "artifact_file": "shard-0.process.json"
+        },
+        {
+          "phase": "shard-1",
+          "pid": 380,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.3726697,
+          "sha256": "41F252737503E21FB1858890CC41E405CB39375852BB7C2BBF4C4636BE536B42",
+          "artifact_file": "shard-1.process.json"
+        },
+        {
+          "phase": "shard-2",
+          "pid": 5772,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.245716,
+          "sha256": "ED5E14195B6B4B2B14A8E5D6208F7BAA957B262191233B222659A0052A98721F",
+          "artifact_file": "shard-2.process.json"
+        },
+        {
+          "phase": "shard-3",
+          "pid": 4036,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.2387256,
+          "sha256": "F9D90A63E6332D78C84A7150A2EB8BE214438EA21BC5DDFAAA00C47334DEE349",
+          "artifact_file": "shard-3.process.json"
+        },
+        {
+          "phase": "shard-4",
+          "pid": 3792,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.3871519,
+          "sha256": "6A6230FE47764A01E009B5CEF5B97C7E041CE5ED527534B5AA0369D3C1E91D28",
+          "artifact_file": "shard-4.process.json"
+        },
+        {
+          "phase": "shard-5",
+          "pid": 3868,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.3136087,
+          "sha256": "CDC9F99FF5A9C822CB2E31E4EF8EC0D500CBEC92E510E53E493C488DB7D53B7F",
+          "artifact_file": "shard-5.process.json"
+        },
+        {
+          "phase": "shard-6",
+          "pid": 1664,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.4011682,
+          "sha256": "5F6BA4DAE166D1E13289CE4CECCCEAD0E71896C0B6DCE8CBBDE5EEC365F384C4",
+          "artifact_file": "shard-6.process.json"
+        },
+        {
+          "phase": "shard-7",
+          "pid": 4708,
+          "status": "passed",
+          "outer_seconds": 300,
+          "seconds": 4.2751407,
+          "sha256": "950F0FB3EAA7955E6FC22183A9ADF660988591073DEFC899A284DF4264B5F469",
+          "artifact_file": "shard-7.process.json"
+        }
+      ]
+    }
+  ],
+  "all_six_full_source_inventories_identical": true,
+  "source_body_rewrites": 0,
+  "original_expected_row_edits": 0,
+  "compile_outer_seconds": 1320,
+  "runtime_outer_seconds": 300,
+  "test_seconds": 120,
+  "host_await_ms": 10000,
+  "public_class_metadata_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "read_write_edit_renderers_qualified": false,
+  "full_factory_qualified": false,
+  "public_activation": false,
+  "artifacts": "C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-resumable25-native-six-7c09f91-20261014",
+  "verified_utc": "2026-10-14T18:24:35.2665780+00:00"
+}
