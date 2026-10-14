@@ -90,20 +90,24 @@ pub fn inVariant(s: *Scope, binding: c.JSValue, name: c.JSValue) !bool {
     return !h.nullish(member) and try s.equal(try s.get(member, "kind"), "state");
 }
 fn stateMembers(s: *Scope, binding: c.JSValue, shape: c.JSValue) !c.JSValue {
-    const result = try h.set(s);
     const variant = try s.get(shape, "variant");
-    if (c.JS_IsUndefined(variant)) return result;
-    const members = try s.key(try s.get(try s.get(try s.get(binding, "contract"), "description"), "variants"), variant);
-    if (c.JS_IsUndefined(members)) return result;
-    var iterator = try js.Iterator.init(s.engine, try s.get(shape, "members"), try h.iteratorSymbol(s));
-    defer iterator.deinit();
-    errdefer iterator.closePreserving();
-    while (try iterator.next()) |name| {
-        defer s.engine.freeValue(name);
-        const member = try s.key(members, name);
-        if (!h.nullish(member) and try s.equal(try s.get(member, "kind"), "state")) _ = try h.invoke(s, result, "add", &.{name});
-    }
-    return result;
+    if (c.JS_IsUndefined(variant)) return h.set(s);
+    const members = try s.key(try s.get(try s.get(try s.get(binding, "contract"), "description"), "variants"), try s.get(shape, "variant"));
+    if (c.JS_IsUndefined(members)) return h.set(s);
+    var captures = [_]c.JSValue{members};
+    const filter = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, stateMemberFilter, "", 1, 0, 1, &captures)));
+    const selected = try h.invoke(s, try s.get(shape, "members"), "filter", &.{filter});
+    return s.keep(try js.builtin(s.engine, "Set", &.{selected}));
+}
+fn stateMemberFilter(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = h.Engine.fromContext(ctx.?);
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    const name = if (argc > 0) argv[0] else c.pi_js_undefined();
+    const member = s.key(captures[0], name) catch |err| return @import("native_durable.zig").reject(engine, err);
+    if (h.nullish(member)) return c.pi_js_bool(engine.context, 0);
+    const kind = s.get(member, "kind") catch |err| return @import("native_durable.zig").reject(engine, err);
+    return c.pi_js_bool(engine.context, @intFromBool(s.equal(kind, "state") catch |err| return @import("native_durable.zig").reject(engine, err)));
 }
 fn settleHydration(s: *Scope, owned: c.JSValue, failure: c.JSValue) !void {
     const set = try s.get(owned, "hydrationWaiters");
@@ -133,11 +137,8 @@ fn apply(s: *Scope, binding: c.JSValue, owned: c.JSValue) !void {
         const name = try s.at(names, index);
         if (!try has(s, wanted, name)) _ = try h.invoke(s, members, "delete", &.{name});
     }
-    const values = try h.snapshot(s, try s.get(pending, "values"));
-    for (0..try h.length(s, values)) |index| {
-        const pair = try s.at(values, index);
-        if (try has(s, wanted, try s.at(pair, 0))) _ = try h.invoke(s, members, "set", &.{ try s.at(pair, 0), try s.at(pair, 1) });
-    }
+    const values = try s.get(pending, "values");
+    try applyValues(s, values, wanted, members);
     var hydrated = try h.flag(s, binding, "stateOn");
     const required = try h.snapshot(s, wanted);
     for (0..try h.length(s, required)) |index| {
@@ -150,12 +151,24 @@ fn apply(s: *Scope, binding: c.JSValue, owned: c.JSValue) !void {
     try h.field(s, owned, "applied", c.pi_js_bool(s.engine.context, 1));
     try settle(s, try s.get(owned, "live"), c.pi_js_undefined(), false);
     try each(s, try s.get(binding, "views"), "update", &.{}, false);
-    for (0..try h.length(s, values)) |index| {
-        const pair = try s.at(values, index);
+    var iterator = try js.Iterator.init(s.engine, values, try h.iteratorSymbol(s));
+    defer iterator.deinit();
+    errdefer iterator.closePreserving();
+    while (try iterator.next()) |pair| {
+        defer s.engine.freeValue(pair);
         const name = try s.at(pair, 0);
         if (try has(s, wanted, name)) try deliver(s, owned, name, try event(s, "reset", try s.get(try s.at(pair, 1), "value")));
     }
     try each(s, try s.get(binding, "views"), "shapeChanged", &.{}, true);
+}
+fn applyValues(s: *Scope, values: c.JSValue, wanted: c.JSValue, members: c.JSValue) !void {
+    var iterator = try js.Iterator.init(s.engine, values, try h.iteratorSymbol(s));
+    defer iterator.deinit();
+    errdefer iterator.closePreserving();
+    while (try iterator.next()) |pair| {
+        defer s.engine.freeValue(pair);
+        if (try has(s, wanted, try s.at(pair, 0))) _ = try h.invoke(s, members, "set", &.{ try s.at(pair, 0), try s.at(pair, 1) });
+    }
 }
 fn invoke(engine: *h.Engine, binding: c.JSValue, bindings: c.JSValue, args: []const c.JSValue, method: Method) anyerror!c.JSValue {
     var s: Scope = .{ .engine = engine };
