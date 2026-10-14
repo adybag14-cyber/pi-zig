@@ -1,0 +1,51 @@
+{
+  "head": "d6194527f23200f31923f87f8f52f00bcd1cdfbd",
+  "target": "test-native-chord-websockets-source",
+  "status": "passed",
+  "source_cases": 13,
+  "compiled_expected": 5,
+  "compiled_observed": 5,
+  "compiled_names": [
+    "native_chord_websockets_source_test.test.native Chordb45 accept WebSockets diagnostic compiled inventory",
+    "native_chord_websockets_source_test.test.native Chordb45 accept WebSockets actual Source13 authentication immediate wrapping live getters frames packing and close with GC",
+    "native_chord_websockets_source_test.test.native Chordb45 accept WebSockets measured complete Source13 host allocation baseline diagnostic only",
+    "native_chord_websockets_source_test.test.native Chordb45 accept WebSockets complete Source13 GC and teardown every host allocation failure",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "composed_gpa_coverage": {
+    "start": 0,
+    "end": 1585,
+    "baseline": 1585,
+    "completed": 1585,
+    "leaks": 0,
+    "unexpected_errors": 0
+  },
+  "failures": [],
+  "native_gc": "passed",
+  "c_malloc_exhaustive": false,
+  "allocation_scope": "host allocator",
+  "all_gpa_failures": "passed",
+  "owner": {
+    "name": "chord-websockets-gpa-debug-runtime-first-20261014-state",
+    "pid": 71212,
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-chord-websockets-source -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+    "command_line_source": "live Win32_Process",
+    "created_utc": "2026-10-14T22:47:40.6083145Z",
+    "launched_utc": "2026-10-14T23:47:40.6063976+01:00",
+    "identity_captured": true,
+    "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+    "working_directory": "C:/Users/adyba/pi-zig-chord-v4-websocket-b45-20261014",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-14T23:48:37.8573041+01:00"
+  },
+  "root_pid_absent": true,
+  "outer_seconds": 300,
+  "test_seconds": 120,
+  "host_seconds": 10,
+  "public_activation": false,
+  "fork_driver_implemented": false,
+  "full_pi_qualified": false
+}
