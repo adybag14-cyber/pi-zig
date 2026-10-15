@@ -21,6 +21,8 @@ The nine-flow OAuth graph at `341032147bcfe06edd3d5720612c3586e9d8885b` is also 
 
 The production SDK factory requires actual default ModelRuntime creation, ModelConfig/store classes, provider factories, authentication, resource-loader lifecycle and ordinary AgentSession collaborators. The existing synthetic builtin seeding path is insufficient for default-path parity. The new factory module remains unselected until these real inputs and their native comparisons are complete.
 
+`native_ai_model_operations.create(engine, actualModelsError)` supplies the eight actual public model-operation helpers as one namespace, using the assembler's shared error constructor. Its source preserves ordinary callable metadata, nullish legacy-chat narrowing, assertion getter/coercion order, classifier image checks, result field insertion order, live Error/String/Date behavior and raw exceptions. Only formatting and AST checks have run for this new module; genuine Source controls and native qualification remain required before reexport or activation.
+
 Whole-language highlighter registration, its legacy interpreter and cancellation regressions, writable/readable/transform streams, full Request/Response/fetch behavior, SDK producer timing and the provider families are being qualified independently before the complete application gate. The default WebSocket provider draft requires its own actual loopback integration checks. The JavaScript bridge remains present until the native application passes those gates.
 
 ## Build output retention
