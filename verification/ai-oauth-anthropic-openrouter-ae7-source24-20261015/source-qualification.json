@@ -12,7 +12,7 @@
   "source_cases": 24,
   "node_files": 1774,
   "source_head": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
-  "normalization": "Only ephemeral callback origin binding in comparison rows; rawRows retain complete strings",
+  "normalization": "Only ephemeral callback origin binding for URL/request comparisons; rawRows retain complete URL/request strings. Result errors already normalize stack/parser diagnostics in both row sets; full original Error diagnostics were not separately captured.",
   "native_control_head": "dda4b36f47440e9a3dde2cf9bcb91a37dc9e806b",
   "source_exit": 0,
   "source_capture_qualified": true,
