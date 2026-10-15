@@ -130,7 +130,7 @@ pub fn wire(scope: *Scope, params: c.JSValue) !c.JSValue {
     const config = try scope.get(params, "config");
     const generation = try v.spread(scope, config);
     inline for (.{ "abortSignal", "tools", "toolConfig", "systemInstruction" }) |key| try v.remove(scope, generation, key);
-    if (try v.length(scope, try scope.invoke(try scope.global("Object"), "keys", &.{generation})) > 0) try scope.put(result, "generationConfig", generation);
+    if (!v.nullish(config)) try scope.put(result, "generationConfig", generation);
     inline for (.{ "tools", "toolConfig" }) |key| {
         const value = try v.optional(scope, config, key);
         if (!c.JS_IsUndefined(value)) try scope.put(result, key, value);
