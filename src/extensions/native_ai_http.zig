@@ -288,7 +288,8 @@ pub fn pump(engine: *em.Engine) !bool {
         }
         if (job.worker.finished.load(.acquire) and job.worker.peek() == null) {
             const failure: ?anyerror = if (signal_aborted) error.ProviderRequestAborted else job.worker.failure;
-            const reason = if (failure == error.NativeHttpPreparedFailure and job.worker.modeled_failure != null) try modeledFailureValue(&scope, job.worker.modeled_failure.?) else if (failure) |err| try failureValue(&scope, err) else c.pi_js_undefined();
+            const prepared_failure = if (failure) |err| err == error.NativeHttpPreparedFailure else false;
+            const reason = if (prepared_failure and job.worker.modeled_failure != null) try modeledFailureValue(&scope, job.worker.modeled_failure.?) else if (failure) |err| try failureValue(&scope, err) else c.pi_js_undefined();
             if (!job.ready_settled) {
                 try call(&scope, job.ready_reject, if (failure != null) reason else try failureValue(&scope, error.NativeHttpNoResponse));
                 job.ready_settled = true;
