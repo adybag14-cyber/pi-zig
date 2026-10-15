@@ -136,7 +136,8 @@ function Read-AiTestMetadata {
   if($taskTag -eq 0){$taskVersion=[Text.Encoding]::UTF8.GetString($taskBytes,$taskOffset,$taskLength)}
   elseif($taskTag -eq 3){
    if($null -ne $taskNames){throw 'Duplicate native metadata array'}
-   $taskCount=[BitConverter]::ToUInt32($taskBytes,$taskOffset);$taskStrings=[BitConverter]::ToUInt32($taskBytes,$taskOffset+4)
+   # Zig0.16 Server.OutMessage.TestMetadata puts string_bytes_len before tests_len.
+   $taskStrings=[BitConverter]::ToUInt32($taskBytes,$taskOffset);$taskCount=[BitConverter]::ToUInt32($taskBytes,$taskOffset+4)
    if($taskCount -ne 6 -or $taskLength -ne 8+8*$taskCount+$taskStrings){throw 'Exactly six native tests required'}
    $taskStringStart=$taskOffset+8+8*$taskCount;$taskNames=@()
    for($taskIndex=0;$taskIndex -lt $taskCount;$taskIndex++){
