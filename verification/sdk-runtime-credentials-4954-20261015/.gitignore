@@ -1,0 +1,8 @@
+# Raw duplicates remain local; accepted golden and complete zipped freeze tracked.
+sdk-runtime-credentials-source20-first-7b52ce14-20261015-output.json
+sdk-runtime-credentials-source20-first-7b52ce14-20261015-prehash.json
+native-debug/
+sdk-runtime-credentials-compile-first-519573b7-20261015-prehash.json
+sdk-runtime-credentials-runtime-matching-519573b7-20261015-prehash.json
+sdk-runtime-credentials-compile-corrected-9ceb2236-20261015-prehash.json
+sdk-runtime-credentials-runtime-corrected-matching-9ceb2236-20261015-prehash.json

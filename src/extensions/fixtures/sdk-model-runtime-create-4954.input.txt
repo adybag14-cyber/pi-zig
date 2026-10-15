@@ -1,0 +1,18 @@
+const {ModelRuntime,fixtureCwd}=modelRuntimeCreateAPI;
+const modelCreateRows=[];globalThis.modelCreateRows=modelCreateRows;
+const raw={modelCreateRaw:true},credentials=()=>({read:async()=>undefined,list:async()=>[]});
+const shape=fn=>({name:fn.name,length:fn.length,async:Object.getPrototypeOf(fn)===Object.getPrototypeOf(async()=>{}),ownPrototype:Object.hasOwn(fn,'prototype')});
+async function observe(name,body){try{modelCreateRows.push({name,value:await body()})}catch(error){modelCreateRows.push({name,error:{name:error?.name,message:error?.message,raw:error===raw}})}}
+const snapshot=r=>({ordinary:Object.getPrototypeOf(r)===ModelRuntime.prototype,keys:Object.keys(r),providers:r.getProviders().map(p=>p.id),credentialClass:r.credentials.constructor.name,storeClass:r.credentials.store.constructor.name,network:r.modelNetworkEnabled,modelTypes:[...new Set(r.models.getAllModels().map(m=>m.type))].sort()});
+const hadOffline=Object.hasOwn(process.env,'PI_OFFLINE'),offline=process.env.PI_OFFLINE;delete process.env.PI_OFFLINE;
+try{
+ await observe('actual-static-create-shape',()=>shape(ModelRuntime.create));
+ await observe('actual-default-static-catalog',async()=>snapshot(await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:credentials()})));
+ await observe('actual-default-auth-storage',async()=>snapshot(await ModelRuntime.create({authPath:fixtureCwd+'/auth.json',modelsPath:null,refreshOnCreate:false})));
+ await observe('actual-caller-model-store',async()=>{const calls=[],modelsStore={read:async provider=>{calls.push(provider);return undefined},write:async()=>{},delete:async()=>{}},r=await ModelRuntime.create({modelsPath:null,modelsStore,credentials:credentials()});return{...snapshot(r),storeReads:calls}});
+ await observe('actual-option-getter-order',async()=>{const calls=[],values={credentials:credentials(),modelsPath:null,modelsStore:undefined,catalogBaseUrl:undefined,allowModelNetwork:false,signal:undefined,refreshOnCreate:false},options={};for(const name of Object.keys(values))Object.defineProperty(options,name,{get(){calls.push(name);return values[name]}});const r=await ModelRuntime.create(options);return{calls,ordinary:Object.getPrototypeOf(r)===ModelRuntime.prototype}});
+ await observe('actual-caller-abort-reason',async()=>{const controller=new AbortController();controller.abort(raw);return ModelRuntime.create({modelsPath:null,credentials:credentials(),signal:controller.signal})});
+ await observe('actual-timeout-finally-with-skipped-refresh',async()=>{const oldSet=globalThis.setTimeout,oldClear=globalThis.clearTimeout,events=[],signal=new AbortController().signal;try{globalThis.setTimeout=function(callback,delay,...rest){events.push(['set',delay,typeof callback]);return oldSet(callback,delay,...rest)};globalThis.clearTimeout=function(timer){events.push(['clear',Boolean(timer)]);return oldClear(timer)};const r=await ModelRuntime.create({modelsPath:null,credentials:credentials(),allowModelNetwork:true,modelRefreshTimeoutMs:5000,signal,refreshOnCreate:false});return{events,ordinary:Object.getPrototypeOf(r)===ModelRuntime.prototype}}finally{globalThis.setTimeout=oldSet;globalThis.clearTimeout=oldClear}});
+ await observe('actual-finally-clear-raw-replacement',async()=>{const oldClear=globalThis.clearTimeout;try{globalThis.clearTimeout=function(timer){oldClear(timer);throw raw};return await ModelRuntime.create({modelsPath:null,credentials:credentials(),allowModelNetwork:true,modelRefreshTimeoutMs:5000,refreshOnCreate:false})}finally{globalThis.clearTimeout=oldClear}});
+}finally{if(hadOffline)process.env.PI_OFFLINE=offline;else delete process.env.PI_OFFLINE}
+if(modelCreateRows.length!==8)throw Error('ModelRuntime.create Source8 inventory drift');

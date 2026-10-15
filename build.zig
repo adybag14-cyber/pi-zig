@@ -1863,6 +1863,12 @@ pub fn build(b: *std.Build) void {
     navigate_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-session-navigate", "Compile actual tree navigation and branch summary collaborators").dependOn(&b.addInstallArtifact(navigate_tests, .{}).step);
     b.step("test-native-sdk-session-navigate", "Compare latest Source tree navigation and real branch summarization").dependOn(&b.addRunArtifact(navigate_tests).step);
+    const runtime_credentials_production_tests = b.addTest(.{ .name = "sdk-runtime-credentials-production-test", .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_runtime_credentials_production_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual RuntimeCredentials"}, .use_llvm = use_llvm });
+    linkQuickJs(b, runtime_credentials_production_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(runtime_credentials_production_tests.root_module, sqlite_lib_dir, sqlite_library);
+    runtime_credentials_production_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-runtime-credentials-production", "Compile actual ordinary RuntimeCredentials before bounded Source20 agreement").dependOn(&b.addInstallArtifact(runtime_credentials_production_tests, .{}).step);
+    b.step("test-native-sdk-runtime-credentials-production", "Compare genuine latest credential Source20 and pending owner graph").dependOn(&b.addRunArtifact(runtime_credentials_production_tests).step);
     const exports_tests = b.addTest(.{ .name = "sdk-session-exports-test", .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_exports_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary session exports"}, .use_llvm = use_llvm });
     linkQuickJs(b, exports_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(exports_tests.root_module, sqlite_lib_dir, sqlite_library);

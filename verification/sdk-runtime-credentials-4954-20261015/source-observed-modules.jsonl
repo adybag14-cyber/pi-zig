@@ -1,0 +1,3 @@
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs","sha256":"020361966fea906d9aa07f380f705f1df6755852ccdc5f9a65bdb75580a7e8a3","externalControl":true}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\verification\\sdk-runtime-credentials-4954-20261015\\capture-source.mjs","sha256":"b5324948f54561512a3eca183712cf2e216421c5aaf7ea7252b9484686a2b370","externalControl":false}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\src\\core\\runtime-credentials.ts","sha256":"ddbedbe209da4314a873c9e435c2a80404a25bcf63406351888bd613068b7036","externalControl":false}
