@@ -78,7 +78,7 @@ fn builtin(scope: *Scope, owner: c.JSValue) !c.JSValue {
 }
 fn personalAll(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const models = try scope.get(owner, "models");
-    return if (try arithmetic.compare(scope.engine, .greater, try scope.get(models, "length"), c.JS_NewInt32(scope.engine.context, 0))) models else builtin(scope, owner);
+    return if (try arithmetic.compare(scope.engine, .greater, try scope.get(models, "length"), c.JS_NewInt32(scope.engine.context, 0))) scope.get(owner, "models") else builtin(scope, owner);
 }
 fn filter(scope: *Scope, receiver: c.JSValue, comptime operation: Op, roots: []const c.JSValue) !c.JSValue {
     const method = try scope.get(receiver, "filter");
@@ -169,7 +169,7 @@ fn parseCatalog(scope: *Scope, imports: c.JSValue, provider_id: c.JSValue, value
     var entries = c.pi_js_undefined();
     if (try v.array(scope, value)) {
         entries = value;
-    } else if (c.JS_IsObject(value) and !c.JS_IsFunction(scope.engine.context, value) and try v.js.hasKey(scope.engine, value, try scope.text("models")) and try v.array(scope, try scope.get(value, "models"))) {
+    } else if (c.JS_IsObject(value) and !c.JS_IsFunction(scope.engine.context, value) and try v.js.hasKey(scope.engine, value, try scope.text("models")) and try modelsIsArray(scope, value)) {
         entries = try scope.get(value, "models");
     } else if (c.JS_IsObject(value) and !c.JS_IsFunction(scope.engine.context, value)) {
         entries = try scope.invoke(try scope.global("Object"), "values", &.{value});
@@ -180,6 +180,12 @@ fn parseCatalog(scope: *Scope, imports: c.JSValue, provider_id: c.JSValue, value
     const supported_entries = try scope.call(supported_filter, valid, &.{try scope.get(imports, "supported")});
     const mapper = try scope.get(supported_entries, "map");
     return scope.call(mapper, supported_entries, &.{try arrow(scope, "", 1, .map_provider, &.{provider_id})});
+}
+fn modelsIsArray(scope: *Scope, value: c.JSValue) !bool {
+    // Array.isArray's receiver and callee precede the user-observable models getter.
+    const array = try scope.global("Array");
+    const method = try scope.get(array, "isArray");
+    return scope.truthy(try scope.call(method, array, &.{try scope.get(value, "models")}));
 }
 fn catalogError(scope: *Scope, provider_id: c.JSValue, status: ?c.JSValue) anyerror {
     const constructor = scope.global("Error") catch |err| return err;

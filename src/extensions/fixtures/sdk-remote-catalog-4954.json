@@ -1,0 +1,2920 @@
+{
+  "runtime": "v24.14.0",
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "version": "1.1.0",
+  "sourceRuntimeUserAgent": "pi/1.1.0 (win32; node/v24.14.0; x64)",
+  "nativeUserAgentPolicy": "Native capture must use actual Zig/QuickJS/OS identity; request rows compare the genuine supplied runtime UA rather than impersonating Node",
+  "clock": "controlled Date.now in caller; original management HTTP and AbortSignal attempt timeout run unchanged; owner deadline uses real wallclock",
+  "network": "caller-controlled global fetch; genuine source management fetchWithRetry executes, no network requests",
+  "count": 64,
+  "rows": [
+    {
+      "name": "metadata",
+      "value": {
+        "factory": [
+          "withRemoteCatalog",
+          1,
+          true,
+          "withPersonalizedCatalog",
+          2,
+          true
+        ],
+        "types": [
+          "chat",
+          "image",
+          "classifier"
+        ],
+        "interval": 14400000,
+        "remote": [
+          "id",
+          "auth",
+          "custom",
+          "getModels",
+          "getAllModels",
+          "refreshModels"
+        ],
+        "personal": [
+          "id",
+          "auth",
+          "custom",
+          "getModels",
+          "getAllModels",
+          "refreshModels"
+        ],
+        "functions": [
+          {
+            "name": "getModels",
+            "length": 0,
+            "prototype": false,
+            "tag": "[object Function]"
+          },
+          {
+            "name": "getAllModels",
+            "length": 0,
+            "prototype": false,
+            "tag": "[object Function]"
+          },
+          {
+            "name": "refreshModels",
+            "length": 1,
+            "prototype": false,
+            "tag": "[object AsyncFunction]"
+          },
+          {
+            "name": "getModels",
+            "length": 0,
+            "prototype": false,
+            "tag": "[object Function]"
+          },
+          {
+            "name": "getAllModels",
+            "length": 0,
+            "prototype": false,
+            "tag": "[object Function]"
+          },
+          {
+            "name": "refreshModels",
+            "length": 1,
+            "prototype": false,
+            "tag": "[object AsyncFunction]"
+          }
+        ],
+        "auth": true,
+        "custom": true
+      }
+    },
+    {
+      "name": "remote-offline-none",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-offline-newer",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          },
+          {
+            "id": "image",
+            "provider": "p",
+            "type": "image"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-offline-older",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-offline-equal",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-offline-missing-time",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-offline-none",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-offline-newer",
+      "value": {
+        "all": [
+          {
+            "id": "cached",
+            "provider": "p"
+          },
+          {
+            "id": "image",
+            "provider": "p",
+            "type": "image"
+          }
+        ],
+        "chat": [
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-offline-older",
+      "value": {
+        "all": [
+          {
+            "id": "cached",
+            "provider": "p"
+          },
+          {
+            "id": "image",
+            "provider": "p",
+            "type": "image"
+          }
+        ],
+        "chat": [
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-offline-equal",
+      "value": {
+        "all": [
+          {
+            "id": "cached",
+            "provider": "p"
+          },
+          {
+            "id": "image",
+            "provider": "p",
+            "type": "image"
+          }
+        ],
+        "chat": [
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-offline-missing-time",
+      "value": {
+        "all": [
+          {
+            "id": "cached",
+            "provider": "p"
+          },
+          {
+            "id": "image",
+            "provider": "p",
+            "type": "image"
+          }
+        ],
+        "chat": [
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-http-200",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json",
+              "validator": "\"cached\""
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-http-200",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "builtin",
+                  "id": "base",
+                  "provider": "p"
+                },
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "p"
+                }
+              ],
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": [
+          {
+            "models": [
+              {
+                "id": "base",
+                "provider": "p",
+                "tag": "builtin"
+              },
+              {
+                "id": "remote",
+                "provider": "p",
+                "tag": "remote"
+              }
+            ],
+            "same": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "remote-http-304",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json",
+              "validator": "\"cached\""
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist"
+            ],
+            "persist": {
+              "models": [
+                {
+                  "id": "cached",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"cached\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-http-304",
+      "value": {
+        "all": [
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "chat": [
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": [],
+        "failure": {
+          "name": "Error",
+          "message": "Model catalog request failed for p: 304"
+        }
+      }
+    },
+    {
+      "name": "remote-http-404",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json",
+              "validator": "\"cached\""
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist"
+            ],
+            "persist": {
+              "models": [
+                {
+                  "id": "cached",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 0,
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-http-404",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "builtin",
+                  "id": "base",
+                  "provider": "p"
+                }
+              ],
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": [
+          {
+            "models": [
+              {
+                "id": "base",
+                "provider": "p",
+                "tag": "builtin"
+              }
+            ],
+            "same": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "remote-http-501",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json",
+              "validator": "\"cached\""
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist"
+            ],
+            "persist": {
+              "models": [
+                {
+                  "id": "cached",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 0,
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-http-501",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "builtin",
+                  "id": "base",
+                  "provider": "p"
+                }
+              ],
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": [
+          {
+            "models": [
+              {
+                "id": "base",
+                "provider": "p",
+                "tag": "builtin"
+              }
+            ],
+            "same": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "remote-http-403",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json",
+              "validator": "\"cached\""
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist"
+            ],
+            "persist": {
+              "models": [
+                {
+                  "id": "cached",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"cached\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": [],
+        "failure": {
+          "name": "Error",
+          "message": "Model catalog request failed for p: 403"
+        }
+      }
+    },
+    {
+      "name": "personal-http-403",
+      "value": {
+        "all": [
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "chat": [
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": [],
+        "failure": {
+          "name": "Error",
+          "message": "Model catalog request failed for p: 403"
+        }
+      }
+    },
+    {
+      "name": "remote-http-500",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json",
+              "validator": "\"cached\""
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          },
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json",
+              "validator": "\"cached\""
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          },
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json",
+              "validator": "\"cached\""
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist"
+            ],
+            "persist": {
+              "models": [
+                {
+                  "id": "cached",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"cached\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": [],
+        "failure": {
+          "name": "Error",
+          "message": "Model catalog request failed for p: 500"
+        }
+      }
+    },
+    {
+      "name": "personal-http-500",
+      "value": {
+        "all": [
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "chat": [
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          },
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          },
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": [],
+        "failure": {
+          "name": "Error",
+          "message": "Model catalog request failed for p: 500"
+        }
+      }
+    },
+    {
+      "name": "remote-fresh",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-forced",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json",
+              "validator": "\"cached\""
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-missing-last-modified",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json",
+              "validator": "\"cached\""
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-empty-body-validator",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-rejected-publication",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-abort-before",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "parse-array",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "one",
+            "provider": "p"
+          },
+          {
+            "id": "img",
+            "provider": "p",
+            "type": "image"
+          },
+          {
+            "id": "classifier",
+            "provider": "p",
+            "type": "classifier"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "one",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "id": "one",
+                  "provider": "p"
+                },
+                {
+                  "id": "img",
+                  "provider": "p",
+                  "type": "image"
+                },
+                {
+                  "id": "classifier",
+                  "provider": "p",
+                  "type": "classifier"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "parse-models",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "one",
+            "provider": "p"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "one",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "id": "one",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "parse-dictionary",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "one",
+            "provider": "p"
+          },
+          {
+            "id": "two",
+            "provider": "p",
+            "type": "image"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "one",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "id": "one",
+                  "provider": "p"
+                },
+                {
+                  "id": "two",
+                  "provider": "p",
+                  "type": "image"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "parse-invalid",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": [],
+        "failure": {
+          "name": "Error",
+          "message": "Invalid model catalog for provider \"p\""
+        }
+      }
+    },
+    {
+      "name": "parse-null",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": [],
+        "failure": {
+          "name": "Error",
+          "message": "Invalid model catalog for provider \"p\""
+        }
+      }
+    },
+    {
+      "name": "parse-models-invalid",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "one",
+            "provider": "p"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "one",
+            "provider": "p"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "id": "one",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "parse-duplicates",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "last"
+          },
+          {
+            "id": "base",
+            "provider": "p",
+            "type": "image"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "last"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "replacement",
+                  "id": "base",
+                  "provider": "p"
+                },
+                {
+                  "id": "base",
+                  "provider": "p",
+                  "type": "image"
+                },
+                {
+                  "tag": "last",
+                  "id": "base",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-generated-undefined",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-generated-20000000",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-generated-20001000",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-generated-undefined",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "builtin",
+                  "id": "base",
+                  "provider": "p"
+                },
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "p"
+                }
+              ],
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": [
+          {
+            "models": [
+              {
+                "id": "base",
+                "provider": "p",
+                "tag": "builtin"
+              },
+              {
+                "id": "remote",
+                "provider": "p",
+                "tag": "remote"
+              }
+            ],
+            "same": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "personal-generated-20000000",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "builtin",
+                  "id": "base",
+                  "provider": "p"
+                }
+              ],
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": [
+          {
+            "models": [
+              {
+                "id": "base",
+                "provider": "p",
+                "tag": "builtin"
+              }
+            ],
+            "same": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "personal-generated-20001000",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "builtin",
+                  "id": "base",
+                  "provider": "p"
+                }
+              ],
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": [
+          {
+            "models": [
+              {
+                "id": "base",
+                "provider": "p",
+                "tag": "builtin"
+              }
+            ],
+            "same": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "remote-missing-modified-etag",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 0,
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-invalid-modified",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "p"
+                }
+              ],
+              "lastModified": 0,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "remote-abort-after-fetch",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-abort-after-fetch",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-abort-after-personalize",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "personal-empty-falls-back",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://pi.dev/api/models/providers/p?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [],
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": [
+          {
+            "models": [
+              {
+                "id": "base",
+                "provider": "p",
+                "tag": "builtin"
+              },
+              {
+                "id": "remote",
+                "provider": "p",
+                "tag": "remote"
+              }
+            ],
+            "same": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "personal-identity-cache",
+      "value": {
+        "same": true,
+        "repeated": true,
+        "persistSame": true,
+        "chatFresh": true
+      }
+    },
+    {
+      "name": "live-provider-methods",
+      "value": {
+        "remote": [
+          {
+            "id": "later",
+            "provider": "p"
+          }
+        ],
+        "personal": [
+          {
+            "id": "later",
+            "provider": "p"
+          }
+        ],
+        "wrapperCustomReceiver": true,
+        "originalAuth": true
+      }
+    },
+    {
+      "name": "spread-proxy-descriptors",
+      "value": {
+        "trace": [
+          "keys",
+          "descriptor:id",
+          "get:id",
+          "descriptor:auth",
+          "get:auth",
+          "descriptor:custom",
+          "get:custom",
+          "descriptor:getModels",
+          "get:getModels",
+          "descriptor:getAllModels",
+          "get:getAllModels",
+          "descriptor:live",
+          "get:live",
+          "live",
+          "descriptor:hidden",
+          "descriptor:Symbol(mark)",
+          "get:Symbol(mark)"
+        ],
+        "live": {
+          "value": 7,
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "hidden": false,
+        "symbolSame": true
+      }
+    },
+    {
+      "name": "deferred-update-authority",
+      "value": {
+        "before": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          }
+        ],
+        "after": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "cached",
+            "provider": "p"
+          }
+        ],
+        "updateName": "update",
+        "updateLength": 0
+      }
+    },
+    {
+      "name": "getter-error-stored",
+      "value": {
+        "sync": false,
+        "promise": true,
+        "same": true
+      }
+    },
+    {
+      "name": "getter-error-publish",
+      "value": {
+        "sync": false,
+        "promise": true,
+        "same": true
+      }
+    },
+    {
+      "name": "getter-error-allowNetwork",
+      "value": {
+        "sync": false,
+        "promise": true,
+        "same": true
+      }
+    },
+    {
+      "name": "getter-error-signal",
+      "value": {
+        "sync": false,
+        "promise": true,
+        "same": true
+      }
+    },
+    {
+      "name": "publish-rejection-identity",
+      "value": true
+    },
+    {
+      "name": "personalizer-rejection-identity",
+      "value": true
+    },
+    {
+      "name": "remote-transport-rejection-identity",
+      "value": {
+        "same": true,
+        "attempts": 3,
+        "publications": 1
+      }
+    },
+    {
+      "name": "personal-transport-rejection-identity",
+      "value": {
+        "same": true,
+        "attempts": 3,
+        "publications": 1
+      }
+    },
+    {
+      "name": "request-url-encoding",
+      "value": {
+        "all": [
+          {
+            "id": "base",
+            "provider": "a/b ?#",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "a/b ?#",
+            "tag": "remote"
+          }
+        ],
+        "chat": [
+          {
+            "id": "base",
+            "provider": "a/b ?#",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "a/b ?#",
+            "tag": "remote"
+          }
+        ],
+        "requests": [
+          {
+            "url": "https://example.invalid/api/models/providers/a%2Fb%20%3F%23?types=chat%2Cimage%2Cclassifier",
+            "headers": {
+              "accept": "application/json"
+            },
+            "uaMatchesRuntime": true,
+            "signalPresent": true
+          }
+        ],
+        "publications": [
+          {
+            "keys": [
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0
+          },
+          {
+            "keys": [
+              "persist",
+              "update"
+            ],
+            "updateName": "update",
+            "updateLength": 0,
+            "persist": {
+              "models": [
+                {
+                  "tag": "remote",
+                  "id": "remote",
+                  "provider": "a/b ?#"
+                }
+              ],
+              "lastModified": 20000000,
+              "etag": "\"fresh\"",
+              "checkedAt": 50000000
+            }
+          }
+        ],
+        "personalCalls": []
+      }
+    },
+    {
+      "name": "publish-before-stored-spread",
+      "value": [
+        "publish",
+        "publish",
+        "spread"
+      ]
+    },
+    {
+      "name": "refresh-context-getter-order",
+      "value": [
+        "context:stored",
+        "provider:id",
+        "context:publish",
+        "call-publish",
+        "context:allowNetwork",
+        "context:signal",
+        "context:force"
+      ]
+    },
+    {
+      "name": "sequential-cache-reset",
+      "value": {
+        "first": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "remote",
+            "provider": "p",
+            "tag": "remote"
+          }
+        ],
+        "second": [
+          {
+            "id": "base",
+            "provider": "p",
+            "tag": "builtin"
+          },
+          {
+            "id": "second",
+            "provider": "p"
+          }
+        ]
+      }
+    }
+  ]
+}

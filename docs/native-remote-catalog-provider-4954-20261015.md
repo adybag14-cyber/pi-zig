@@ -57,7 +57,26 @@ catalog shapes, duplicate precedence, cancellation, personalized cache identity,
 live methods, auth identity, proxy/descriptors, deferred updates, async getter/
 publication/personalizer failures, URL encoding and callee/getter ordering.
 
-ActualSource capture is pending Root's LIGHT grant. Expected JSON remains absent
-until genuine terminal success and complete immutable-input posthash zero.
+Source64 passed under Root's LIGHT5 grant at candidate
+`4336a4375d0f976faab2799f1f15f1c3be09f0d6`. Node PID78440 exited0; full posthash
+completed `2026-10-15T22:47:02.6701486Z` with zero drift across1970 source files,
+31064 dependency files,1774 Node files,19546 compiler files,7257 candidate files,
+controls, path inventories and84 absence records. Expected JSON was published
+after terminal success and full posthash only; its SHA256 is
+`7423CCD26F148A654A2C88BDBDAD38A40C1EBBD1B15E3D740E6DEFA169A7BBF5`.
+
+This is a functional capture of actual4954 code with the owner's explicit
+`PI_PACKAGE_DIR=C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/packages/coding-agent`
+override. Its genuine config.VERSION is `1.1.0` and raw UA is
+`pi/1.1.0 (win32; node/v24.14.0; x64)`. It does not qualify latest-default1.3.0
+package metadata. The package.json ordinary data read was independently frozen
+in the31064-file dependency inventory; see the exact path/hash audit and the
+separate latest-default control plan in verification/sdk-remote-catalog-source64-20261015.
+
+The current source-only successor also preserves the source's second live
+personalModels read after a reentrant length getter, and captures Array.isArray
+before reading a catalog's models getter. These are static source-order fixes;
+no native execution is claimed for either candidate.
+
 Native compilation, native runtime, ModelRuntime integration, full Pi and public
 activation remain unqualified. This is a source-only prerequisite checkpoint.

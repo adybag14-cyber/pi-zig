@@ -1,0 +1,127 @@
+[
+  {
+    "name": "actual4954-config.ts",
+    "bytes": 23328,
+    "sha256": "B3B77644910D3FAC28A06625E90F993A8C1BC6C9458F148C723E64E0C99EB23E"
+  },
+  {
+    "name": "actual4954-remote-catalog-provider.ts",
+    "bytes": 9035,
+    "sha256": "27788BC35663378BA33329C298128BAAA9C5913CD7C0D4FF88AF8D440B611C92"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015-admission.json",
+    "bytes": 354,
+    "sha256": "0302E00D9783AC7954E63C8BEF6EB9C5D6EA59DB92B4D1581329FEDA0BD905AB"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015-candidate-compiler-before.json",
+    "bytes": 6368457,
+    "sha256": "0EEC50AE98F41740C334D447C98EAACBDACCC3A0F9DD0D258891E9EA9F077421"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015-extra-before.json",
+    "bytes": 2310,
+    "sha256": "36603DDEF145470A3EAF5405F507D0062AD68188B2444EDBCC051F2B4C81773B"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015-output.json",
+    "bytes": 65806,
+    "sha256": "7423CCD26F148A654A2C88BDBDAD38A40C1EBBD1B15E3D740E6DEFA169A7BBF5"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015-posthash.json",
+    "bytes": 818,
+    "sha256": "AA4D7C6BD9E4D6D2A58C6D612A1E01B5CC33CBF72AEF15A74B7B4B5B14D86A8F"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015-syntax.json",
+    "bytes": 949,
+    "sha256": "CAF5F56033B25D427E9CD2ECA1EFB992B25D0AFAB77742F3DAE81ECD2A65F38B"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015-syntax.stderr.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015-syntax.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015-validation.json",
+    "bytes": 298,
+    "sha256": "1FC5368A8E0DBBBB4578E49B7BBB3C27416D9297ABB3E9F58158F95757DCA531"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015.json",
+    "bytes": 1289,
+    "sha256": "5682EEBFED707D8EE85E28EBCAD3A017DEB896E34E71F565E7F9DA6548DB8B16"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015.stderr.log",
+    "bytes": 178,
+    "sha256": "D98171410536E3D4D3295C9F8B89E0C57E77575EA3C7F73079FB803D39A2C3F3"
+  },
+  {
+    "name": "catalog-wrappers-4954-source64-first-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "name": "explicit-runtime-package.json",
+    "bytes": 3767,
+    "sha256": "B74D12F072FB468B99D3C05106AEE87F80ABCBD5437BB778DFC2B0A370465499"
+  },
+  {
+    "name": "Invoke-OwnedCatalogWrappersSource-20261015.ps1",
+    "bytes": 4005,
+    "sha256": "8F33C0FF3462B2C0EF3E1104D1DA841D5E4DFFA377FAFC7ED442342873018A22"
+  },
+  {
+    "name": "latest4954-package.json",
+    "bytes": 3762,
+    "sha256": "83C3BB7619F590C213CC96A24216EB29A819A3EF6DC548607CC037ED276E8DC5"
+  },
+  {
+    "name": "Run-CatalogWrappers4954Source64-20261015.ps1",
+    "bytes": 11113,
+    "sha256": "63588B596D38F2C6F1EE5CA13595E116C11458E173A98DE0F0CA6FC4A1FACE1B"
+  },
+  {
+    "name": "source4954-dependency-contract-audit-20261015.json",
+    "bytes": 211596,
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745"
+  },
+  {
+    "name": "source4954-full-manifest-20261015.json",
+    "bytes": 556967,
+    "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C"
+  },
+  {
+    "name": "source4954-modules-78440-0-20261015.jsonl",
+    "bytes": 180320,
+    "sha256": "471F5BCD40B271682E5AB0DA5DDAAA0CF57AD79652D8BD15216AE09527DD6492"
+  },
+  {
+    "name": "source4954-node-tools-before-20261015.json",
+    "bytes": 352993,
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "name": "source4954-observe-20261015.mjs",
+    "bytes": 4698,
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3"
+  },
+  {
+    "name": "source4954-preparation-readiness-20261015.json",
+    "bytes": 2788,
+    "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7"
+  },
+  {
+    "name": "source4954-runtime-manifest-20261015.json",
+    "bytes": 7153406,
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  }
+]
