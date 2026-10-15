@@ -344,7 +344,14 @@ test "ae7 extension overlays actual Manager frontend Application close middle lo
             try self.frontend.draw(.{ .columns = 80, .rows = 24 }, false);
         }
         fn evaluate(ui_engine: *engine_mod.Engine, source: [:0]const u8) !void {
-            const result = try ui_engine.eval(source, "ae7-overlay-caller.js", c.JS_EVAL_TYPE_GLOBAL);
+            const result = ui_engine.eval(source, "ae7-overlay-caller.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+                if (ui_engine.captured_exception) |exception| {
+                    const detail = try ui_engine.toString(exception);
+                    defer ui_engine.gpa.free(detail);
+                    std.debug.print("ae7 overlay caller failed: {s}\n", .{detail});
+                }
+                return err;
+            };
             ui_engine.freeValue(result);
         }
         fn compareOriginal(self: *@This(), ui_engine: *engine_mod.Engine, step: std.json.Value) !void {
@@ -370,6 +377,7 @@ test "ae7 extension overlays actual Manager frontend Application close middle lo
     // Retire the Manager before its test bridge/queues leave scope.
     defer manager.bridge = null;
     manager.bridge = .{ .context = &receiver, .request = Receiver.request, .action = Receiver.action, .cancel = Receiver.cancel, .component_scene = Receiver.scene, .component_close = Receiver.close };
+    try manager.ensureServiceFrontendOwner();
     const snapshot = try engine.eval("({hasUI:true,width:80,height:24})", "ae7-overlay-context.js", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(snapshot);
     try manager.begin(1, snapshot, null);
