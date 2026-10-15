@@ -180,6 +180,7 @@ test "native async generator functional cross realm callback and iterator result
 test "native async generator functional raw VM allocation failures reject and retire without dangling frame" {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
+    c.JS_SetDumpFlags(engine.runtime, c.JS_DUMP_LEAKS);
     const root = try sdk.object(engine);
     defer engine.freeValue(root);
     const saved_limit = engine.options.memory_limit;
