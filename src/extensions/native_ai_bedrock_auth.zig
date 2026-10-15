@@ -10,7 +10,7 @@ pub fn configure(s: *Scope, dependencies: c.JSValue, model: c.JSValue, options: 
     const scoped_env = try v.optional(s, options, "env");
     const env = try s.object();
     // Snapshot only credential-chain inputs, never arbitrary process state.
-    inline for (.{ "AWS_REGION", "AWS_DEFAULT_REGION", "AWS_PROFILE", "AWS_DEFAULT_PROFILE", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_CONFIG_FILE", "AWS_SHARED_CREDENTIALS_FILE", "AWS_ROLE_ARN", "AWS_WEB_IDENTITY_TOKEN_FILE", "AWS_ROLE_SESSION_NAME", "AWS_ENDPOINT_URL_STS", "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI", "AWS_CONTAINER_CREDENTIALS_FULL_URI", "AWS_CONTAINER_AUTHORIZATION_TOKEN", "AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE", "AWS_EC2_METADATA_DISABLED", "AWS_EC2_METADATA_SERVICE_ENDPOINT", "AWS_EC2_METADATA_SERVICE_ENDPOINT_MODE", "AWS_EC2_METADATA_V1_DISABLED", "HOME", "USERPROFILE" }) |key| {
+    inline for (.{ "AWS_REGION", "AWS_DEFAULT_REGION", "AWS_PROFILE", "AWS_DEFAULT_PROFILE", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_CONFIG_FILE", "AWS_SHARED_CREDENTIALS_FILE", "AWS_ROLE_ARN", "AWS_WEB_IDENTITY_TOKEN_FILE", "AWS_ROLE_SESSION_NAME", "AWS_ENDPOINT_URL_STS", "AWS_ENDPOINT_URL_SSO", "AWS_ENDPOINT_URL_SSO_OIDC", "AWS_ENDPOINT_URL_SIGNIN", "AWS_LOGIN_CACHE_DIRECTORY", "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI", "AWS_CONTAINER_CREDENTIALS_FULL_URI", "AWS_CONTAINER_AUTHORIZATION_TOKEN", "AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE", "AWS_EC2_METADATA_DISABLED", "AWS_EC2_METADATA_SERVICE_ENDPOINT", "AWS_EC2_METADATA_SERVICE_ENDPOINT_MODE", "AWS_EC2_METADATA_V1_DISABLED", "HOME", "USERPROFILE" }) |key| {
         const value = try s.invoke(env_module, "getProviderEnvValue", &.{try s.text(key)});
         if (!c.JS_IsUndefined(value)) try s.put(env, key, value);
     }
@@ -100,7 +100,17 @@ pub fn prepare(a: std.mem.Allocator, request: prep.View, data: []const u8, budge
         headers[0] = .{ .name = name, .value = try a.dupe(u8, value) };
         return .{ .headers = headers, .url = url };
     }
-    var credentials = if (skip) @import("native_ai_aws_credentials.zig").Credentials{ .access_key_id = try a.dupe(u8, "dummy-access-key"), .secret_access_key = try a.dupe(u8, "dummy-secret-key") } else try @import("native_ai_aws_credentials.zig").resolve(a, budget.io, &env, field(input, "profile"), region, now, budget);
+    var credentials = if (skip) @import("native_ai_aws_credentials.zig").Credentials{ .access_key_id = try a.dupe(u8, "dummy-access-key"), .secret_access_key = try a.dupe(u8, "dummy-secret-key") } else credentials: {
+        var result = try @import("native_ai_aws_credentials.zig").resolveResult(a, budget.io, &env, field(input, "profile"), region, now, budget);
+        switch (result) {
+            .credentials => |value| break :credentials value,
+            .failure => |value| {
+                errdefer result.deinit(a);
+                _ = try budget.remaining();
+                return .{ .url = url, .headers = try a.alloc(std.http.Header, 0), .failure = value };
+            },
+        }
+    };
     defer credentials.deinit(a);
     var signed = try @import("native_ai_aws_sigv4.zig").sign(a, @tagName(request.method), url, request.payload, request.headers, credentials.borrowed(), region, now);
     defer signed.deinit(a);

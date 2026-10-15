@@ -12,25 +12,9 @@ const Budget = @import("native_ai_http_prepare.zig").Budget;
 fn httpOptions(budget: Budget) !@import("../ai/bootstrap_http.zig").Options {
     return .{ .abort_flag = budget.abort_flag, .policy = .{ .max_retries = 0, .timeout_ms = (try budget.remaining()) orelse 15000 } };
 }
-pub const Credentials = struct {
-    access_key_id: []u8,
-    secret_access_key: []u8,
-    session_token: ?[]u8 = null,
-    expiration_unix: ?i64 = null,
-    pub fn deinit(self: *Credentials, a: std.mem.Allocator) void {
-        @memset(self.secret_access_key, 0);
-        a.free(self.access_key_id);
-        a.free(self.secret_access_key);
-        if (self.session_token) |token| {
-            @memset(token, 0);
-            a.free(token);
-        }
-        self.* = undefined;
-    }
-    pub fn borrowed(self: *const Credentials) bedrock.AwsCredentials {
-        return .{ .access_key_id = self.access_key_id, .secret_access_key = self.secret_access_key, .session_token = self.session_token };
-    }
-};
+const types = @import("native_ai_aws_types.zig");
+pub const Credentials = types.Credentials;
+pub const Result = types.Result;
 fn copy(a: std.mem.Allocator, input: bedrock.AwsCredentials, expiration: ?i64, now: i64) !Credentials {
     if (expiration) |expires| if (expires <= now) return error.AwsCredentialsExpired;
     const access = try a.dupe(u8, input.access_key_id);
@@ -47,13 +31,33 @@ fn envCredentials(env: *const std.process.Environ.Map) ?bedrock.AwsCredentials {
     return .{ .access_key_id = access, .secret_access_key = secret, .session_token = if (token != null and token.?.len > 0) token else null };
 }
 pub fn resolve(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ.Map, profile: ?[]const u8, region: []const u8, now: i64, budget: Budget) !Credentials {
+    var result = try resolveResult(a, io, env, profile, region, now, budget);
+    switch (result) {
+        .credentials => |credentials| return credentials,
+        .failure => {
+            result.deinit(a);
+            return error.AwsModeledCredentialFailure;
+        },
+    }
+}
+pub fn resolveResult(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ.Map, profile: ?[]const u8, region: []const u8, now: i64, budget: Budget) !Result {
+    var failure: ?types.Failure = null;
+    errdefer if (failure) |*value| value.deinit(a);
+    const credentials = resolveInner(a, io, env, profile, region, now, budget, &failure) catch |err| {
+        _ = try budget.remaining();
+        if (err == error.AwsModeledCredentialFailure) return .{ .failure = failure.? };
+        return err;
+    };
+    return .{ .credentials = credentials };
+}
+fn resolveInner(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ.Map, profile: ?[]const u8, region: []const u8, now: i64, budget: Budget, failure: *?types.Failure) !Credentials {
     _ = try budget.remaining();
     // An explicitly configured options.profile/scoped AWS_PROFILE wins over env keys.
     // Ambient AWS_PROFILE alone does not suppress the Source explicit env credentials.
     if (profile == null) if (envCredentials(env)) |credentials| return copy(a, credentials, null, now);
     var chain: [32]?[]const u8 = @splat(null);
     const name = profile orelse env.get("AWS_PROFILE") orelse "default";
-    if (try resolveProfile(a, io, env, name, region, now, &chain, 0, budget)) |credentials| return credentials;
+    if (try resolveProfile(a, io, env, name, region, now, &chain, 0, budget, failure)) |credentials| return credentials;
     if (web.resolveConfig(env, null)) |config| {
         var resolved = config;
         const generated = try std.fmt.allocPrint(a, "aws-sdk-js-session-{d}", .{std.Io.Clock.real.now(io).toMilliseconds()});
@@ -75,7 +79,7 @@ pub fn resolve(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ
     defer temporary.deinit(a);
     return copy(a, temporary.borrowed(), temporary.expiration_unix, now);
 }
-fn resolveProfile(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ.Map, name: []const u8, region: []const u8, now: i64, chain: *[32]?[]const u8, depth: usize, budget: Budget) anyerror!?Credentials {
+fn resolveProfile(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ.Map, name: []const u8, region: []const u8, now: i64, chain: *[32]?[]const u8, depth: usize, budget: Budget, failure: *?types.Failure) anyerror!?Credentials {
     _ = try budget.remaining();
     if (depth >= chain.len) return error.AwsProfileChainTooDeep;
     for (chain[0..depth]) |previous| if (std.mem.eql(u8, previous.?, name)) return error.AwsProfileCycle;
@@ -87,7 +91,7 @@ fn resolveProfile(a: std.mem.Allocator, io: std.Io, env: *const std.process.Envi
         if (profile.mfa_serial != null) return error.AwsProfileRequiresMfaCallback;
         var source: Credentials = undefined;
         if (profile.source_profile) |source_name| {
-            source = (try resolveProfile(a, io, env, source_name, region, now, chain, depth + 1, budget)) orelse return error.AwsSourceProfileMissing;
+            source = (try resolveProfile(a, io, env, source_name, region, now, chain, depth + 1, budget, failure)) orelse return error.AwsSourceProfileMissing;
         } else if (profile.credential_source) |kind| {
             if (std.mem.eql(u8, kind, "Environment")) {
                 source = try copy(a, envCredentials(env) orelse return error.MissingBedrockCredentials, null, now);
@@ -123,8 +127,26 @@ fn resolveProfile(a: std.mem.Allocator, io: std.Io, env: *const std.process.Envi
         defer temporary.deinit(a);
         return try copy(a, temporary.borrowed(), temporary.expiration_unix, now);
     }
-    if (profile.sso_session != null or profile.sso_start_url != null or profile.sso_account_id != null or profile.sso_role_name != null or profile.sso_region != null) return error.UnsupportedAwsSsoProfile;
-    if (profile.login_session != null) return error.UnsupportedAwsLoginProfile;
+    if (profile.sso_session != null or profile.sso_start_url != null or profile.sso_account_id != null or profile.sso_role_name != null or profile.sso_region != null) {
+        const result = try @import("native_ai_aws_sso.zig").resolve(a, env, &profile, now, budget);
+        switch (result) {
+            .credentials => |credentials| return credentials,
+            .failure => |value| {
+                failure.* = value;
+                return error.AwsModeledCredentialFailure;
+            },
+        }
+    }
+    if (profile.login_session != null) {
+        const result = try @import("native_ai_aws_login.zig").resolve(a, env, &profile, region, now, budget);
+        switch (result) {
+            .credentials => |credentials| return credentials,
+            .failure => |value| {
+                failure.* = value;
+                return error.AwsModeledCredentialFailure;
+            },
+        }
+    }
     return null;
 }
 fn assumeRole(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ.Map, source: bedrock.AwsCredentials, options: role.Options, now: i64, budget: Budget) !role.OwnedAssumedCredentials {
