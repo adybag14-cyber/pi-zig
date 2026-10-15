@@ -1,0 +1,34 @@
+{
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "native_baseline": "463bb45337b452b6dd6f7f62858ccfdfa21dbc47",
+  "source_capture_candidate": "6aff758f1d9cee66c743ee3bb3bc418f8b5315b8",
+  "source_cases": 28,
+  "source_status": "passed",
+  "source_posthash_drift": 0,
+  "source_owner_pid": 69064,
+  "source_owner_exit": 0,
+  "source_owner_absent": true,
+  "expected_sha256": "9BCF63FCE0E392451A75C8C825CDC5EAD2CDDEB0B68A39C7B3D5A98C3427BCB1",
+  "caller_input_sha256": "911186910AC9B417DEF9EDCBDD135D0A7359C15D8FEF6E48165C29D7E54E8365",
+  "composer_export_bodies": 6,
+  "config_value_export_bodies": 11,
+  "pinned_zig_format": "passed",
+  "pinned_zig_ast": "passed",
+  "native_compile": "unrun",
+  "native_runtime": "unrun",
+  "native_qualified": false,
+  "production_route_active": false,
+  "full_pi_qualified": false,
+  "post_source_native_static_corrections": [
+    "Preserve complete UTF8 literal spans before VM string creation",
+    "Preserve malformed present Provider missing required auth TypeError",
+    "Install composer exports in original namespace enumeration order"
+  ],
+  "unqualified_genuine_bindings": [
+    "native process object",
+    "native getShellConfig",
+    "native child_process.spawnSync",
+    "native child_process.execSync",
+    "actual public model/type/lazyStream/compat/model-operations exports"
+  ]
+}

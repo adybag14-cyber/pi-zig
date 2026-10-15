@@ -22,7 +22,12 @@ fn parse(gpa: std.mem.Allocator, raw: []const u8) !std.ArrayList(Part) {
     var i: usize = 0;
     while (i < raw.len) {
         const start = i;
-        if (raw[i] != '$' or i + 1 == raw.len) {
+        if (raw[i] != '$') {
+            while (i < raw.len and raw[i] != '$') i += 1;
+            try parts.append(gpa, .{ .literal = raw[start..i] });
+            continue;
+        }
+        if (i + 1 == raw.len) {
             i += 1;
             try parts.append(gpa, .{ .literal = raw[start..i] });
             continue;

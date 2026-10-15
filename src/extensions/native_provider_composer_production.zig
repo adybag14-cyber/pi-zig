@@ -386,11 +386,10 @@ fn authMethods(s: *Scope, state: c.JSValue) !c.JSValue {
     const base = try s.get(state, "base");
     const extension = try s.get(state, "extension");
     const config = try s.get(state, "config");
-    const auth = try get(s, base, "auth");
-    const inherited = try get(s, auth, "apiKey");
+    const inherited = if (sc.nullish(base)) u() else try s.get(try s.get(base, "auth"), "apiKey");
     const raw = try configuredKey(s, config, extension);
     const ext_oauth = try get(s, extension, "oauth");
-    const inherited_oauth = if (sc.nullish(ext_oauth)) try get(s, try get(s, base, "auth"), "oauth") else ext_oauth;
+    const inherited_oauth = if (sc.nullish(ext_oauth)) (if (sc.nullish(base)) u() else try s.get(try s.get(base, "auth"), "oauth")) else ext_oauth;
     const out = try s.object();
     if (s.truthy(inherited) or !c.JS_IsUndefined(raw) or !s.truthy(inherited_oauth)) {
         const api_state = try merge(s, &.{state});
@@ -407,7 +406,7 @@ fn authMethods(s: *Scope, state: c.JSValue) !c.JSValue {
         try s.put(out, "apiKey", method);
     }
     const extension_oauth = try get(s, extension, "oauth");
-    const oauth = if (s.truthy(extension_oauth)) try adaptOAuth(s, try get(s, extension, "oauth")) else try get(s, try get(s, base, "auth"), "oauth");
+    const oauth = if (s.truthy(extension_oauth)) try adaptOAuth(s, try get(s, extension, "oauth")) else (if (sc.nullish(base)) u() else try s.get(try s.get(base, "auth"), "oauth"));
     if (s.truthy(oauth)) {
         const oauth_state = try merge(s, &.{state});
         try s.put(oauth_state, "oauth", oauth);
@@ -870,5 +869,5 @@ pub fn install(engine: *em.Engine, namespace: c.JSValue, imports: Imports) !void
     inline for (std.meta.fieldNames(Imports)) |field| try s.put(captures, field, @field(imports, field));
     // Source exports this exact alias, including identity and ordinary function metadata.
     try s.put(namespace, "clearApiKeyCache", try s.get(imports.configValues, "clearConfigValueCache"));
-    inline for (.{ .{ "validateExtensionProvider", Op.validate, 4 }, .{ "composeModelProvider", Op.compose, 4 }, .{ "resolveConfiguredModelHeaders", Op.headers, 4 }, .{ "resolveCompatibilityRequestConfig", Op.compat, 3 }, .{ "configuredRequestAuthStatus", Op.status, 2 } }) |row| try s.put(namespace, row[0], try function(&s, row[0], row[2], row[1], captures, false));
+    inline for (.{ .{ "composeModelProvider", Op.compose, 4 }, .{ "configuredRequestAuthStatus", Op.status, 2 }, .{ "resolveCompatibilityRequestConfig", Op.compat, 3 }, .{ "resolveConfiguredModelHeaders", Op.headers, 4 }, .{ "validateExtensionProvider", Op.validate, 4 } }) |row| try s.put(namespace, row[0], try function(&s, row[0], row[2], row[1], captures, false));
 }

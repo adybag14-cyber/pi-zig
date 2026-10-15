@@ -1,0 +1,399 @@
+{
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "inputSha256": "911186910ac9b417def9edcbdd135d0a7359c15d8fef6e48165c29d7e54e8365",
+  "cases": 28,
+  "scope": "Original complete composer/config-value namespaces with actual ModelConfig, actual OpenAI factory/auth/context. Source-only. No provider network calls or native qualification.",
+  "rows": [
+    {
+      "name": "namespace-shapes",
+      "value": {
+        "clearApiKeyCache": {
+          "name": "clearConfigValueCache",
+          "length": 0,
+          "async": false,
+          "ownPrototype": true
+        },
+        "composeModelProvider": {
+          "name": "composeModelProvider",
+          "length": 4,
+          "async": false,
+          "ownPrototype": true
+        },
+        "configuredRequestAuthStatus": {
+          "name": "configuredRequestAuthStatus",
+          "length": 2,
+          "async": false,
+          "ownPrototype": true
+        },
+        "resolveCompatibilityRequestConfig": {
+          "name": "resolveCompatibilityRequestConfig",
+          "length": 3,
+          "async": false,
+          "ownPrototype": true
+        },
+        "resolveConfiguredModelHeaders": {
+          "name": "resolveConfiguredModelHeaders",
+          "length": 4,
+          "async": false,
+          "ownPrototype": true
+        },
+        "validateExtensionProvider": {
+          "name": "validateExtensionProvider",
+          "length": 4,
+          "async": false,
+          "ownPrototype": true
+        }
+      }
+    },
+    {
+      "name": "cache-alias-identity",
+      "value": true
+    },
+    {
+      "name": "names-and-escapes",
+      "value": [
+        {
+          "one": "PI_COMPOSER_A",
+          "names": [
+            "PI_COMPOSER_A"
+          ]
+        },
+        {
+          "names": [
+            "PI_COMPOSER_A",
+            "PI_COMPOSER_B"
+          ]
+        },
+        {
+          "names": [
+            "BAD"
+          ]
+        },
+        {
+          "names": []
+        }
+      ]
+    },
+    {
+      "name": "literal-and-escape-resolution",
+      "value": [
+        "literal",
+        "",
+        "$/!",
+        "${BAD-NAME}",
+        "$9"
+      ]
+    },
+    {
+      "name": "explicit-env-fallback",
+      "value": "source-A/explicit"
+    },
+    {
+      "name": "configured-missing-and-command",
+      "value": [
+        true,
+        false,
+        true,
+        [
+          "PI_COMPOSER_MISSING",
+          "PI_COMPOSER_OTHER"
+        ]
+      ]
+    },
+    {
+      "name": "or-throw-one-missing",
+      "error": {
+        "name": "Error",
+        "message": "Failed to resolve owned value from environment variable: PI_COMPOSER_MISSING"
+      }
+    },
+    {
+      "name": "or-throw-two-missing",
+      "error": {
+        "name": "Error",
+        "message": "Failed to resolve owned value from environment variables: PI_COMPOSER_MISSING, PI_COMPOSER_OTHER"
+      }
+    },
+    {
+      "name": "or-throw-command-failed",
+      "error": {
+        "name": "Error",
+        "message": "Failed to resolve owned value from shell command: false"
+      }
+    },
+    {
+      "name": "actual-shell-resolution",
+      "value": [
+        "native-cache",
+        "native-uncached"
+      ]
+    },
+    {
+      "name": "headers-filter-empty",
+      "value": {
+        "Resolved": "source-A"
+      }
+    },
+    {
+      "name": "headers-throw-retain-empty",
+      "value": {
+        "Empty": "",
+        "Resolved": "source-A"
+      }
+    },
+    {
+      "name": "headers-throw-missing",
+      "error": {
+        "name": "Error",
+        "message": "Failed to resolve owned provider header \"Missing\" from environment variable: PI_COMPOSER_MISSING"
+      }
+    },
+    {
+      "name": "actual-model-config-composition",
+      "value": {
+        "id": "openai",
+        "name": "Configured OpenAI",
+        "baseUrl": "https://configured.invalid/v1",
+        "model": {
+          "id": "owned-composer",
+          "name": "User override",
+          "api": "openai-responses",
+          "provider": "openai",
+          "baseUrl": "https://configured.invalid/v1",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "inputLimits": {
+            "images": {
+              "resize": {
+                "maxWidth": 200
+              }
+            }
+          },
+          "cost": {
+            "input": 0.25,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 1000,
+          "maxTokens": 200,
+          "samplingParamsByThinkingLevel": {
+            "high": {
+              "temperature": 0.2
+            }
+          },
+          "compat": {
+            "chatTemplateKwargs": {
+              "base": true,
+              "override": true
+            }
+          }
+        },
+        "chatOnly": true,
+        "allCount": 46,
+        "baseCount": 45
+      }
+    },
+    {
+      "name": "live-getter-recomposes",
+      "value": {
+        "different": true,
+        "modelsDifferent": true,
+        "stableData": true
+      }
+    },
+    {
+      "name": "configured-model-headers",
+      "value": {
+        "Override": "source-B",
+        "Shared": "definition",
+        "Definition": "source-A"
+      }
+    },
+    {
+      "name": "compatibility-headers",
+      "value": {
+        "headers": {
+          "Existing": "preserved",
+          "Shared": "definition",
+          "Provider": "source-B",
+          "Override": "source-B",
+          "Definition": "source-A"
+        },
+        "authHeader": true
+      }
+    },
+    {
+      "name": "configured-statuses",
+      "value": [
+        null,
+        {
+          "configured": true,
+          "source": "models_json_key"
+        },
+        {
+          "configured": true,
+          "source": "fallback"
+        },
+        {
+          "configured": true,
+          "source": "environment",
+          "label": "PI_COMPOSER_A"
+        },
+        {
+          "configured": false
+        },
+        {
+          "configured": true,
+          "source": "models_json_command"
+        }
+      ]
+    },
+    {
+      "name": "actual-inherited-check-configured",
+      "value": {
+        "type": "api_key",
+        "source": "configured API key"
+      }
+    },
+    {
+      "name": "actual-inherited-resolve-configured",
+      "value": {
+        "auth": {
+          "apiKey": "source-A",
+          "headers": {
+            "Provider": "source-B",
+            "Shared": "provider",
+            "Authorization": "Bearer source-A"
+          }
+        },
+        "source": "stored credential"
+      }
+    },
+    {
+      "name": "actual-inherited-resolve-credential",
+      "value": {
+        "auth": {
+          "apiKey": "stored-fixture",
+          "headers": {
+            "Provider": "source-B",
+            "Shared": "provider",
+            "Authorization": "Bearer stored-fixture"
+          }
+        },
+        "env": {
+          "PI_COMPOSER_A": "stored-env"
+        },
+        "source": "stored credential"
+      }
+    },
+    {
+      "name": "actual-filter-all-models",
+      "value": {
+        "all": 46,
+        "oauth": 45
+      }
+    },
+    {
+      "name": "extension-replacement-and-override",
+      "value": {
+        "models": [
+          {
+            "id": "owned-composer",
+            "name": "User override",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0.25,
+              "output": 2,
+              "cacheRead": 3,
+              "cacheWrite": 4
+            },
+            "contextWindow": 4000,
+            "maxTokens": 500,
+            "api": "openai-responses",
+            "provider": "openai",
+            "baseUrl": "https://extension.invalid/v1",
+            "inputLimits": {
+              "images": {
+                "resize": {
+                  "maxWidth": 200
+                }
+              }
+            },
+            "samplingParamsByThinkingLevel": {
+              "high": {
+                "temperature": 0.2
+              }
+            },
+            "compat": {
+              "chatTemplateKwargs": {
+                "override": true
+              }
+            }
+          }
+        ],
+        "headers": {
+          "Override": "source-B",
+          "Shared": "extension",
+          "Definition": "source-A",
+          "Extension": "source-B"
+        }
+      }
+    },
+    {
+      "name": "validate-stream-api-required",
+      "error": {
+        "name": "Error",
+        "message": "Provider openai: \"api\" is required when registering streamSimple."
+      }
+    },
+    {
+      "name": "validate-model-baseurl-required",
+      "error": {
+        "name": "Error",
+        "message": "Provider new-provider: \"baseUrl\" is required when defining custom models."
+      }
+    },
+    {
+      "name": "validate-model-api-required",
+      "error": {
+        "name": "Error",
+        "message": "Provider new-provider, model owned: no \"api\" specified. Set it at model level or provider level."
+      }
+    },
+    {
+      "name": "mixed-operation-models",
+      "value": {
+        "chats": 0,
+        "models": [
+          {
+            "type": "image",
+            "id": "same",
+            "headers": {
+              "Operation": "image"
+            }
+          },
+          {
+            "type": "classifier",
+            "id": "same",
+            "headers": {
+              "Operation": "classifier"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "structural-config-error",
+      "error": {
+        "name": "Error",
+        "message": "Provider openai: \"baseUrl\" is required when \"oauth\" is set."
+      }
+    }
+  ]
+}
