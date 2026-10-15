@@ -28,8 +28,10 @@ The prepared genuine Source24 corpus records full raw request URLs, methods,
 functional header entries, bodies, original Response method receivers, prompt
 and notification getter order, async callable metadata, synchronous versus
 async errors, issued credentials, and cancellation. OpenRouter loopback origin
-binding is normalized only in comparison rows; all original full strings remain
-in `rawRows`. Its actual Source driver imports original modules directly, with
+binding is normalized only in comparison rows; all original full URL/request
+strings remain in `rawRows`. Result errors pass a declared stack/parser-message
+normalizer before both row sets are built; full original Error diagnostics were
+not separately captured. Its actual Source driver imports original modules directly, with
 the ae7 observation preload and exact caller controls. The bounded owner requires
 successful termination, the full `1968/31064/1774` pre/post inventories, all 84
 historical absences, and zero control drift before publishing the expected JSON.
