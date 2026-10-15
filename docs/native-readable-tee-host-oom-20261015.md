@@ -19,7 +19,8 @@ if a cleanup allocation fails. Normal non-OOM tee behavior stays unchanged.
 No engine exception classification or test normalization was added.
 
 test-native-readable-host-oom arms a real permanent FailingAllocator from the
-actual native byte source pull after enqueue/close. It then awaits both actual
+actual native byte source pull in a queued microtask after enqueue/close but
+before the already-fulfilled source read's tee continuation. It awaits both actual
 tee readers and requires trusted OutOfMemory plus all host bytes freed. This
 target and the exact Response116 diagnostic still require matching native
 compile/runtime qualification; only Zig AST/fmt and diff checks have run.

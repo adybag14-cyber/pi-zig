@@ -32,7 +32,7 @@ test "native readable host OOM rejects actual tee consumers without another host
 }
 fn operation(engine: *js.Engine) !void {
     const value = try engine.evalModule(
-        \\const source=new ReadableStream({type:'bytes',pull(controller){controller.enqueue(new Uint8Array([65,66]));controller.close();armNativeHostFailure()}});
+        \\const source=new ReadableStream({type:'bytes',pull(controller){controller.enqueue(new Uint8Array([65,66]));controller.close();Promise.resolve().then(armNativeHostFailure)}});
         \\const branches=source.tee(),first=branches[0].getReader(),second=branches[1].getReader();
         \\await Promise.all([first.read(),second.read()]);throw Error('native host failure must reject the actual consumers');
     , "native-readable-tee-host-oom.mjs");
