@@ -1,0 +1,74 @@
+const rows=[];
+function record(name,run){try{rows.push({name,value:run()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}}
+function graph(root){
+  const seen=new Map();let next=0;
+  function encode(value){
+    if(value===undefined)return{$undefined:true};
+    if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+    if(typeof value==='number')return Number.isFinite(value)?value:{$number:String(value)};
+    if(typeof value==='function')return{$function:{name:value.name,length:value.length,keys:Reflect.ownKeys(value).map(String),prototype:Object.hasOwn(value,'prototype')}};
+    if(typeof value!=='object')return{$other:typeof value,value:String(value)};
+    if(seen.has(value))return{$ref:seen.get(value)};
+    const id=next++;seen.set(value,id);
+    if(value instanceof RegExp)return{$id:id,$regexp:value.source,flags:value.flags,lastIndex:value.lastIndex,frozen:Object.isFrozen(value)};
+    return{$id:id,kind:Array.isArray(value)?'array':'object',frozen:Object.isFrozen(value),properties:Reflect.ownKeys(value).map(key=>{
+      const d=Object.getOwnPropertyDescriptor(value,key);return{key:String(key),enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,value:encode(d.value)}:{get:encode(d.get),set:encode(d.set)})};
+    })};
+  }
+  return encode(root);
+}
+const names=['erb','python-repl','node-repl','mojolicious','parser3','php-template','jboss-cli','twig','gradle','scilab','nim','monkey','dns','properties','http','accesslog','gams','cmake','dts','r'];
+record('actual batch5 twenty factory metadata',()=>names.map(name=>{const fn=highlightLazyFactories[name];return{name,metadata:{name:fn.name,length:fn.length,keys:Reflect.ownKeys(fn).map(String),prototype:Object.hasOwn(fn,'prototype')}}}));
+for(const name of names)record(name+' complete raw grammar graph',()=>graph(highlightLazyFactories[name](highlightCoreAPI)));
+for(const name of names)record(name+' actual live helper getter order',()=>{const trace=[];const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){trace.push(String(key));return Reflect.get(target,key,receiver)}});return{graph:graph(highlightLazyFactories[name](api)),trace}});
+for(const name of names)record(name+' actual throwing helper or helper-free factory',()=>{const api=new Proxy(highlightCoreAPI,{get(){throw new TypeError('actual batch5 getter rejected '+name)}});return graph(highlightLazyFactories[name](api))});
+record('R actual compiler extension skips unqualified mode',()=>{const mode={begin:/x/,relevance:5};highlightLazyFactories.r(highlightCoreAPI).compilerExtensions[0](mode,{});return graph(mode)});
+record('R actual compiler extension expands qualifier and ends parent',()=>{const mode={className:'number',beforeMatch:/\s/,begin:/\d+/,relevance:2};highlightLazyFactories.r(highlightCoreAPI).compilerExtensions[0](mode,{});return graph(mode)});
+record('R actual compiler extension rejects starts conflict',()=>{highlightLazyFactories.r(highlightCoreAPI).compilerExtensions[0]({beforeMatch:/x/,starts:{}},{});return'not reached'});
+record('R actual compiler extension invokes live Object methods and callback',()=>{
+  const extension=highlightLazyFactories.r(highlightCoreAPI).compilerExtensions[0],trace=[],assign=Object.assign,keys=Object.keys,forEach=Array.prototype.forEach;const mode={beforeMatch:/a/,begin:/b/};
+  Object.assign=function(...args){trace.push(['assign',args.length]);return Reflect.apply(assign,this,args)};
+  Object.keys=function(...args){trace.push(['keys',args.length]);return Reflect.apply(keys,this,args)};
+  Array.prototype.forEach=function(callback,...rest){trace.push(['forEach',this.length,callback.length,Object.hasOwn(callback,'prototype')]);return Reflect.apply(forEach,this,[callback,...rest])};
+  try{extension(mode,{})}finally{Object.assign=assign;Object.keys=keys;Array.prototype.forEach=forEach}
+  return{trace,mode:graph(mode)};
+});
+record('R actual compiler extension retains proxy delete and set effects',()=>{
+  const trace=[],target={className:'number',beforeMatch:/x/,begin:/y/},mode=new Proxy(target,{deleteProperty(object,key){trace.push(['delete',String(key)]);return Reflect.deleteProperty(object,key)},set(object,key,value,receiver){trace.push(['set',String(key)]);return Reflect.set(object,key,value,receiver)}});highlightLazyFactories.r(highlightCoreAPI).compilerExtensions[0](mode,{});return{trace,mode:graph(target)};
+});
+record('Twig actual tag suffix callback retains legacy function shape',()=>{
+  const trace=[],map=Array.prototype.map;let grammar;Array.prototype.map=function(callback,...rest){trace.push({length:this.length,name:callback.name,arity:callback.length,keys:Reflect.apply(map,Reflect.ownKeys(callback),[String]),prototype:Object.hasOwn(callback,'prototype')});return Reflect.apply(map,this,[callback,...rest])};
+  try{grammar=highlightLazyFactories.twig(highlightCoreAPI)}finally{Array.prototype.map=map}
+  return{trace,tags:grammar.contains[1].contains[0].keywords};
+});
+record('properties actual normal and other key starts share value graph',()=>{const grammar=highlightLazyFactories.properties(highlightCoreAPI);return{shared:grammar.contains[1].starts===grammar.contains[2].starts,value:graph(grammar.contains[1].starts)}});
+record('HTTP actual request and response share header body graph',()=>{const grammar=highlightLazyFactories.http(highlightCoreAPI);return{shared:grammar.contains[0].starts.contains===grammar.contains[1].starts.contains,body:graph(grammar.contains[0].starts.contains)}});
+record('DTS actual root and outer grammar share modes',()=>{const grammar=highlightLazyFactories.dts(highlightCoreAPI),root=grammar.contains[0].contains;return{reference:root[0]===grammar.contains[1],keyword:root[1]===grammar.contains[2],label:root[2]===grammar.contains[3],node:root[3]===grammar.contains[4],cell:root[4]===grammar.contains[5],number:root[7]===grammar.contains[8],string:root[8]===grammar.contains[9]}});
+record('PHP template actual skipped inherited strings retain explicit nulls',()=>{const grammar=highlightLazyFactories['php-template'](highlightCoreAPI);return grammar.contains[0].contains.slice(3).map(mode=>({illegal:mode.illegal,className:mode.className,contains:mode.contains,skip:mode.skip}))});
+for(const name of names)highlightCoreAPI.registerLanguage(name,highlightLazyFactories[name]);
+const samples={
+  erb:['<h1><%= user.name %></h1>\n','<%# TODO: template %><% if enabled %><p>yes</p><% end %>\n'],
+  'python-repl':['>>> print("hello")\nhello\n','>>> def value():\n...     return 42\n...\n'],
+  'node-repl':['> const value = 42;\nundefined\n','> function demo() {\n... return "hello";\n... }\n'],
+  mojolicious:['<h1><%= $title %></h1>\n','% my $value = 42;\n<p><%== $value %></p>\n__DATA__\n'],
+  parser3:['@CLASS\nDemo\n@main[]\n<p>$value ^print[hello]</p>\n','^rem{ TODO: { nested } }\n@USE\nvalue.p\n'],
+  'php-template':['<p><?= htmlspecialchars($value) ?></p>\n','<?php /* ?> still comment */ echo "hello"; ?><div>done</div>\n'],
+  'jboss-cli':['connect localhost:9990\n/subsystem=logging:read-resource(recursive=true)\n','deploy demo.war --force\n# TODO: server\n'],
+  twig:['<p>{{ user.name|upper }}</p>\n','{% if enabled %}{{ range(1,3)|join(",") }}{% endif %}{# TODO #}\n'],
+  gradle:['plugins { id \'java\' }\nrepositories { mavenCentral() }\n','task demo { doLast { println "hello" } } // TODO: build\n'],
+  scilab:['function y = square(x)\ny = x*x;\nendfunction\n','values = [1,2,3]; disp(values); // TODO: math\n'],
+  nim:['proc greet(name: string) =\n  echo "Hello ", name\n','let value = 0xff\'u8\n{.inline.}\n# TODO: nim\n'],
+  monkey:['Strict\nFunction Main:Int()\n Print "hello"\n Return 0\nEnd\n','#rem TODO: block\n#end\nClass Item Extends Object\n Field value:Int = $ff\nEnd\n'],
+  dns:['$ORIGIN example.test.\n$TTL 1h\n@ IN A 192.0.2.1\n','www IN AAAA 2001:db8::1\n@ IN MX 10 mail.example.test. ; TODO\n'],
+  properties:['# TODO: config\nname=demo\npath: /tmp/value\n','escaped\\ key = first\\\n second\nurl=https://example.test/a\n'],
+  http:['GET /demo HTTP/1.1\nHost: example.test\nAccept: application/json\n','HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 5\n'],
+  accesslog:['192.0.2.1 - - [15/Oct/2026:12:30:00 +0000] "GET /demo HTTP/1.1" 200 42\n','203.0.113.4 - user [15/Oct/2026:12:31:00 +0000] "POST /api HTTP/1.1" 201 80 "-" "Mozilla/5.0 (demo)"\n'],
+  gams:['set i / a,b /;\nparameter value(i) / a 1,b 2 /;\ndisplay value;\n','$ontext\nTODO: model\n$offtext\nvariable x; equation e; e.. x =g= 42;\n'],
+  cmake:['cmake_minimum_required(VERSION 3.20)\nproject(demo)\nadd_executable(demo main.c)\n','if(DEFINED VALUE)\n message(STATUS "${VALUE}")\nendif() # TODO\n'],
+  dts:['/dts-v1/;\n/ { compatible = "demo"; node { reg = <0x1000 0x20>; }; };\n','#include <demo.h>\n/ { label: device { clocks = <&clock 1>; }; };\n'],
+  r:['value <- function(x) { sqrt(x) + 1.25 }\nprint(value(42))\n',"#' @param x input\n#' @examples\n#' value(1)\n#' @return result\nx <- r\"(raw text)\"\n"]
+};
+for(const[name,codes]of Object.entries(samples))for(const[index,code]of codes.entries())record(name+' actual scanner '+index,()=>{const result=highlightCoreAPI.highlight(code,{language:name,ignoreIllegals:false});return{language:result.language,relevance:result.relevance,illegal:result.illegal,value:result.value,code:result.code,tree:JSON.parse(result.emitter.toJSON()),errorRaised:result.errorRaised?{name:result.errorRaised.name,message:result.errorRaised.message}:undefined}});
+record('actual batch5 canonical registration and aliases',()=>({registry:highlightCoreAPI.listLanguages(),aliases:[['pycon','python-repl'],['wildfly-cli','jboss-cli'],['craftcms','twig'],['sci','scilab'],['bind','dns'],['zone','dns'],['https','http'],['gms','gams'],['cmake.in','cmake']].map(([alias,name])=>({alias,name,same:highlightCoreAPI.getLanguage(alias)===highlightCoreAPI.getLanguage(name)}))}));
+if(rows.length!==112)throw Error('Actual lazy batch5 corpus count '+rows.length);
+globalThis.sdkHighlightLazyBatch5Rows=rows;

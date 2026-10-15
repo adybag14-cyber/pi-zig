@@ -1,0 +1,54 @@
+[
+  {
+    "factory": "gams",
+    "scope": "Original static input strings transcribed lexically; no grammar execution, no expected result generated",
+    "fields": {
+      "built_in": {
+        "literal_fragments": 14,
+        "bytes": 883
+      },
+      "literal": {
+        "literal_fragments": 1,
+        "bytes": 10
+      },
+      "keyword": {
+        "literal_fragments": 5,
+        "bytes": 337
+      }
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\gams.js",
+    "source_sha256": "15B21AFE781A27309DD2F569041ED82C09D82238317E40D7AC9248B4067C599C"
+  },
+  {
+    "factory": "cmake",
+    "scope": "Original static input strings transcribed lexically; no grammar execution, no expected result generated",
+    "fields": {
+      "keyword": {
+        "literal_fragments": 29,
+        "bytes": 2180
+      }
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\cmake.js",
+    "source_sha256": "ABFF44AE3E06318E8B8E1952C77A628E0FF81888DA2D76038A71BE271DB7ED2A"
+  },
+  {
+    "factory": "r",
+    "scope": "Original static input strings transcribed lexically; no grammar execution, no expected result generated",
+    "fields": {
+      "built_in": {
+        "literal_fragments": 18,
+        "bytes": 1038
+      },
+      "literal": {
+        "literal_fragments": 2,
+        "bytes": 85
+      },
+      "keyword": {
+        "literal_fragments": 1,
+        "bytes": 47
+      }
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\r.js",
+    "source_sha256": "E7F01083BB5B997173C277110B53A3066C13918D8B35594E611A2153BCB3BF70"
+  }
+]

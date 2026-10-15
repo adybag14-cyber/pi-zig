@@ -1,0 +1,13 @@
+{
+  "scope": "Original input strings decoded lexically; no grammar execution or expected output generated",
+  "sha256": "5C2E7943677F9EB760F22C46B67B653A4DF380246F43B8005B1449457B961239",
+  "literal_inputs": {
+    "ws0": "[ \\t\\f]*",
+    "ws1": "[ \\t\\f]+",
+    "key_alphanum": "([^\\\\\\W:= \\t\\f\\n]|\\\\.)+",
+    "key_other": "([^\\\\:= \\t\\f\\n]|\\\\.)+",
+    "escaped_backslashes": "\\\\\\\\",
+    "continued_line": "\\\\\\n"
+  },
+  "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/properties.js"
+}

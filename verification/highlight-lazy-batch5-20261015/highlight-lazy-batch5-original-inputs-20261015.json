@@ -1,0 +1,102 @@
+[
+  {
+    "sha256": "E073947B54C808E8BEA1CAF6C1004882EE3590C49835D22DF1DFE408379535BE",
+    "factory": "erb",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\erb.js"
+  },
+  {
+    "sha256": "3F04EBFECBC4AF6868FC05C2EDB3ED7251E77AAC55664A33EA8F51F74A2AE064",
+    "factory": "python-repl",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\python-repl.js"
+  },
+  {
+    "sha256": "10642C81884306804874079E91DEBC4B1E36612155F05BC5C2AC7F12A3447D97",
+    "factory": "node-repl",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\node-repl.js"
+  },
+  {
+    "sha256": "E7A5BC74CB48CAB248AAF0F1C30B4C64C36F263EC9B872EF4E83A28C6FE729F0",
+    "factory": "mojolicious",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\mojolicious.js"
+  },
+  {
+    "sha256": "6A215B89EC921EAC25B071E62CB0CF9202A73CE548AD1C54833E1D15BB4F69AF",
+    "factory": "parser3",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\parser3.js"
+  },
+  {
+    "sha256": "25D6BE3FACD42CDFEC6B4B9785D61EDCCE5EC17BBCE706CBA3C131B10B3D4027",
+    "factory": "php-template",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\php-template.js"
+  },
+  {
+    "sha256": "F9807A2276EBED0FB5F6194203C8A0984F657DE9B94DCE3217B2D057E4A3EBAA",
+    "factory": "jboss-cli",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\jboss-cli.js"
+  },
+  {
+    "sha256": "0510A6E58EFA28E13FD870BC77C6ADADDB294FBD67DB731E37E4569968569AC4",
+    "factory": "twig",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\twig.js"
+  },
+  {
+    "sha256": "5D85B15B030A326A6388FB556A1C5E326D6EEBAE696BAF05306BF720F9AD61CA",
+    "factory": "gradle",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\gradle.js"
+  },
+  {
+    "sha256": "8981DE47E53B55560DEC69F9DECEAAB1148992E928FAEB926DB2A9F6D70A567F",
+    "factory": "scilab",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\scilab.js"
+  },
+  {
+    "sha256": "685CE590B1C1E0E4C37084AB8E8E57DA5D3DBE229A5D65AA0B503101C22959C9",
+    "factory": "nim",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\nim.js"
+  },
+  {
+    "sha256": "50E4C76B1FD69653936007DEE9A821AEB2A0D86803F254A00C0B2FD047999CFC",
+    "factory": "monkey",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\monkey.js"
+  },
+  {
+    "sha256": "E896663E2129386B95196FF518D9B9E570CFA3D012FCF9C23B1172DC2E3FCD9C",
+    "factory": "dns",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\dns.js"
+  },
+  {
+    "sha256": "5C2E7943677F9EB760F22C46B67B653A4DF380246F43B8005B1449457B961239",
+    "factory": "properties",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\properties.js"
+  },
+  {
+    "sha256": "3A6EA58E5E898224A6A684129073ACEC93E4DB013AF12E6DE6FAEF8BD19DE2F2",
+    "factory": "http",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\http.js"
+  },
+  {
+    "sha256": "AC41B47CAC95AD11260AA9DD2C4AE455C850A19BED16ADA4AEA51B0EDD2BEC01",
+    "factory": "accesslog",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\accesslog.js"
+  },
+  {
+    "sha256": "15B21AFE781A27309DD2F569041ED82C09D82238317E40D7AC9248B4067C599C",
+    "factory": "gams",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\gams.js"
+  },
+  {
+    "sha256": "ABFF44AE3E06318E8B8E1952C77A628E0FF81888DA2D76038A71BE271DB7ED2A",
+    "factory": "cmake",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\cmake.js"
+  },
+  {
+    "sha256": "95C1DBE8B014962DB01D0F1D8A21ED1E43F53FB43F250EC9DAB3F9D97051F83F",
+    "factory": "dts",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\dts.js"
+  },
+  {
+    "sha256": "E7F01083BB5B997173C277110B53A3066C13918D8B35594E611A2153BCB3BF70",
+    "factory": "r",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\r.js"
+  }
+]
