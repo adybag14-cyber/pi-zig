@@ -1,0 +1,34 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\verification\\web-fetch-node24-20261015\\run-native.ps1",
+    "sha256": "A8685914B8935C3EEBD5655A1DE1D540E3CFCC9D3AAA0009827C486EED0FB71C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\verification\\web-body-node24-20261015\\run-owner.ps1",
+    "sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\verification\\web-fetch-node24-20261015\\source-capture.mjs",
+    "sha256": "84CF27482CCD637107E28A5E7847D0F8B826493A43F7B92C25441D9456CE7772"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\verification\\web-fetch-node24-20261015\\run-source.ps1",
+    "sha256": "920067DD11D38868B1DF4AA98CFF04CBE472FC54662475454BA61F247B1F16CF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\verification\\web-body-node24-20261015\\builtin-inventory.mjs",
+    "sha256": "E5244F11E75A2A98AE29B593784FA57EB084FE47CF477B84B0CCDF87CA867FA6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\verification\\web-body-node24-20261015\\run-builtin-inventory.ps1",
+    "sha256": "A092FA18723F973FE9015FEBCC4DB3A2E4CEF8D34395E17DD501DC6333034703"
+  }
+]
