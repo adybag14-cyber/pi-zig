@@ -23,6 +23,8 @@ pub fn create(engine: *v.em.Engine, comptime kind: Kind) !c.JSValue {
     inline for (.{ "stream", "streamSimple" }, 0..) |name, index| {
         const Adapter = struct {
             fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+                host.native_exception_diagnostics_suppressed += 1;
+                defer host.native_exception_diagnostics_suppressed -= 1;
                 var input = [_]c.JSValue{c.pi_js_undefined()} ** 3;
                 for (args[0..@min(args.len, input.len)], 0..) |value, i| input[i] = value;
                 return stream(host, roots[0], &input, index == 1, kind);
