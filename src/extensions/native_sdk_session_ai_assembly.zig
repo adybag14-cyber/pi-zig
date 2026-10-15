@@ -18,12 +18,14 @@ pub fn create(engine: *em.Engine, compat: c.JSValue) !c.JSValue {
     const retry = try scope.own(try @import("native_ai_retry_call.zig").create(engine));
     const request = try scope.own(try @import("native_sdk_complete_summarization.zig").create(engine, uuid, complete_simple, retry));
     const generation = try scope.own(try @import("native_sdk_summary_generation.zig").exports(engine, request));
+    const branch = try scope.own(try @import("native_sdk_branch_summary.zig").exports(engine, request));
     const result = try scope.object();
     try scope.put(result, "completeSummarization", request);
     try scope.put(result, "compact", try scope.get(generation, "compact"));
     try scope.put(result, "generateSummary", try scope.get(generation, "generateSummary"));
     try scope.put(result, "generateSummaryWithUsage", try scope.get(generation, "generateSummaryWithUsage"));
     try scope.put(result, "resetApiProviders", reset);
+    try scope.put(result, "branchSummary", branch);
     return c.JS_DupValue(engine.context, result);
 }
 
@@ -32,8 +34,10 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue, shared: c.JSValue) !voi
     defer scope.deinit();
     const compact = try scope.get(shared, "compact");
     const reset = try scope.get(shared, "resetApiProviders");
+    const branch = try scope.get(shared, "branchSummary");
     if (!c.JS_IsFunction(engine.context, compact) or !c.JS_IsFunction(engine.context, reset))
         return error.RequiredSharedNativeSessionAiBindings;
     try @import("native_sdk_session_compaction.zig").install(engine, prototype, compact);
     try @import("native_sdk_session_reload.zig").install(engine, prototype, reset);
+    try @import("native_sdk_session_navigate.zig").install(engine, prototype, branch);
 }
