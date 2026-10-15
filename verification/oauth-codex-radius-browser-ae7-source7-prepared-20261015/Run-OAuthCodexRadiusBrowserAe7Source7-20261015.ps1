@@ -60,11 +60,12 @@ foreach($taskSpec in $taskSpecs){
 $taskInventories=@(
  @{name='source';paths=@(Scoped-Paths $taskSource)},
  @{name='dependencies';paths=@(Scoped-Paths $taskRuntime)},
- @{name='node_tools';paths=@($taskNode)+@(Scoped-Paths 'C:/Program Files/nodejs/node_modules/npm')}
+ @{name='node_tools';paths=@([IO.Path]::GetFullPath($taskNode))+@(Scoped-Paths 'C:/Program Files/nodejs/node_modules/npm')}
 )
 foreach($taskInventory in $taskInventories){
  $taskExpectedPaths=@(($taskFrozen|Where-Object name -ceq $taskInventory.name).rows.path|Sort-Object)
- if(@(Compare-Object $taskExpectedPaths @($taskInventory.paths|Sort-Object)).Count){throw "Full path inventory differs before Source: $($taskInventory.name)"}
+ $taskPathDrift=@(Compare-Object $taskExpectedPaths @($taskInventory.paths|Sort-Object))
+ if($taskPathDrift.Count){@{status='preparation_failed';inventory=$taskInventory.name;drift=$taskPathDrift;source_child_launched=$false;expected_absent=!(Test-Path -LiteralPath (Join-Path $taskNative 'src/extensions/fixtures/oauth-codex-radius-browser-ae7-source.json'))}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-preparation-failure.json") -Encoding utf8NoBOM;throw "Full path inventory differs before Source: $($taskInventory.name)"}
 }
 $taskInventoryManifest=Join-Path $taskEvidence "$taskName-inventories-before.json"
 $taskInventories|ConvertTo-Json -Depth 6|Set-Content -LiteralPath $taskInventoryManifest -Encoding utf8NoBOM
@@ -118,7 +119,7 @@ $taskAbsentChanged=@($taskAbsent|Where-Object {Test-Path -LiteralPath $_})
 $taskControlManifestChanged=(Get-FileHash -LiteralPath $taskControlManifest).Hash -cne $taskControlManifestHash
 $taskCandidateChanged=@(Check-Rows $taskCandidate)
 $taskCandidateInventoryChanged=@(Compare-Object $taskCandidatePaths @(Candidate-Paths))
-$taskCurrentInventories=@(@{name='source';paths=@(Scoped-Paths $taskSource)},@{name='dependencies';paths=@(Scoped-Paths $taskRuntime)},@{name='node_tools';paths=@($taskNode)+@(Scoped-Paths 'C:/Program Files/nodejs/node_modules/npm')})
+$taskCurrentInventories=@(@{name='source';paths=@(Scoped-Paths $taskSource)},@{name='dependencies';paths=@(Scoped-Paths $taskRuntime)},@{name='node_tools';paths=@([IO.Path]::GetFullPath($taskNode))+@(Scoped-Paths 'C:/Program Files/nodejs/node_modules/npm')})
 $taskInventoryPost=@(foreach($taskInventory in $taskInventories){$taskCurrent=($taskCurrentInventories|Where-Object name -ceq $taskInventory.name).paths;@{name=$taskInventory.name;count=$taskInventory.paths.Count;drift=@(Compare-Object @($taskInventory.paths|Sort-Object) @($taskCurrent|Sort-Object))}})
 $taskHeadChanged=(git -c gc.auto=0 -c maintenance.auto=false -C $taskNative rev-parse HEAD) -cne $CandidateHead
 $taskSourceHeadChanged=(git -c gc.auto=0 -c maintenance.auto=false -C $taskSource rev-parse HEAD) -cne 'ae7b16d43b7c78c5b6fa3213fdd1215bb339729d'
