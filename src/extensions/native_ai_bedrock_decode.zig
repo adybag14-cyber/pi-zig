@@ -43,23 +43,42 @@ fn find(s: *Scope, blocks: c.JSValue, index: c.JSValue) !?u32 {
 fn flush(s: *Scope, block: c.JSValue) !void {
     const chunks = try s.get(block, "redactedChunks");
     if (!try v.eq(s, try s.get(block, "type"), "thinking") or !s.truthy(chunks)) return;
-    var bytes: std.ArrayList(u8) = .empty;
-    defer bytes.deinit(s.engine.gpa);
-    const n = try v.length(s, chunks);
-    for (0..n) |i| {
+    var binary = try s.text("");
+    var rows = try v.iterator(s, chunks);
+    defer rows.deinit();
+    errdefer rows.closePreserving();
+    var steps: usize = 0;
+    while (try rows.next()) |chunk| {
+        defer s.engine.freeValue(chunk);
         var row: Scope = .{ .engine = s.engine };
         defer row.deinit();
-        const chunk = try v.at(&row, chunks, @intCast(i));
-        const count = try v.length(&row, chunk);
-        for (0..count) |j| {
-            var byte: u32 = 0;
-            if (c.JS_ToUint32(s.engine.context, &byte, try v.at(&row, chunk, @intCast(j))) < 0) return v.js.capture(s.engine);
-            try bytes.append(s.engine.gpa, @truncate(byte));
+        var index: u32 = 0;
+        while (try @import("native_image_arithmetic.zig").compare(s.engine, .less, c.JS_NewUint32(s.engine.context, index), try row.get(chunk, "length"))) : (index += 0x8000) {
+            try @import("native_ai_budget.zig").step(s.engine, &steps);
+            var window: Scope = .{ .engine = s.engine };
+            defer window.deinit();
+            const string = try window.global("String");
+            const from_char_code = try window.get(string, "fromCharCode");
+            const view = try window.invoke(chunk, "subarray", &.{ c.JS_NewUint32(s.engine.context, index), c.JS_NewUint32(s.engine.context, index + 0x8000) });
+            var values: std.ArrayList(c.JSValue) = .empty;
+            defer {
+                for (values.items) |value| s.engine.freeValue(value);
+                values.deinit(s.engine.gpa);
+            }
+            var spread = try v.iterator(&window, view);
+            defer spread.deinit();
+            errdefer spread.closePreserving();
+            while (try spread.next()) |value| {
+                try @import("native_ai_budget.zig").step(s.engine, &steps);
+                values.append(s.engine.gpa, value) catch |err| {
+                    s.engine.freeValue(value);
+                    return err;
+                };
+            }
+            binary = try s.concat(binary, try window.call(from_char_code, string, values.items));
         }
     }
-    const encoded = try s.engine.gpa.alloc(u8, std.base64.standard.Encoder.calcSize(bytes.items.len));
-    defer s.engine.gpa.free(encoded);
-    try s.set(block, "thinkingSignature", try s.text(std.base64.standard.Encoder.encode(encoded, bytes.items)));
+    try s.set(block, "thinkingSignature", try s.call(try s.global("btoa"), c.pi_js_undefined(), &.{binary}));
     try v.remove(s, block, "redactedChunks");
 }
 fn finalize(s: *Scope, output: c.JSValue) !void {
