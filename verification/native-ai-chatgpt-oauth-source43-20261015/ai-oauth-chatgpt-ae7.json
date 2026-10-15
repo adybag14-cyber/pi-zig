@@ -1,0 +1,817 @@
+{
+  "runtime": "v24.14.0",
+  "count": 43,
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "network": "controlled fake fetch; no token endpoint or browser launch",
+  "ownedListeners": [
+    {
+      "pid": 69972,
+      "address": "127.0.0.1",
+      "port": 1455,
+      "actualServer": true
+    },
+    {
+      "pid": 69972,
+      "address": "127.0.0.1",
+      "port": 1455,
+      "actualServer": true
+    },
+    {
+      "pid": 69972,
+      "address": "127.0.0.1",
+      "port": 1455,
+      "actualServer": true
+    },
+    {
+      "pid": 69972,
+      "address": "127.0.0.1",
+      "port": 1455,
+      "actualServer": true
+    },
+    {
+      "pid": 69972,
+      "address": "127.0.0.1",
+      "port": 1455,
+      "actualServer": true
+    },
+    {
+      "pid": 69972,
+      "address": "127.0.0.1",
+      "port": 1455,
+      "actualServer": true
+    }
+  ],
+  "clock": "controlled Date.now; owner deadline uses wall clock",
+  "rows": [
+    {
+      "name": "metadata",
+      "value": {
+        "keys": [
+          "name",
+          "isSubscription",
+          "loginLabel",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "name": "OpenAI (ChatGPT subscription)",
+        "isSubscription": true,
+        "loginLabel": "Sign in with ChatGPT",
+        "methods": [
+          {
+            "key": "login",
+            "name": "loginOpenAIChatGPT",
+            "length": 2,
+            "async": true,
+            "prototype": false
+          },
+          {
+            "key": "refresh",
+            "name": "refreshAccessToken",
+            "length": 2,
+            "async": true,
+            "prototype": false
+          },
+          {
+            "key": "toAuth",
+            "name": "toAuth",
+            "length": 1,
+            "async": true,
+            "prototype": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "refresh-success",
+      "value": {
+        "type": "oauth",
+        "access": " access ",
+        "refresh": " refresh ",
+        "expires": 1700003420123,
+        "clientId": " issued client ",
+        "scopes": [
+          "openid",
+          "chatgpt.tokens.use.direct",
+          "custom"
+        ]
+      }
+    },
+    {
+      "name": "refresh-getters",
+      "value": {
+        "type": "oauth",
+        "access": " access ",
+        "refresh": " refresh ",
+        "expires": 1700003420123,
+        "clientId": "client-rich",
+        "scopes": [
+          "openid",
+          "chatgpt.tokens.use.direct",
+          "custom"
+        ]
+      }
+    },
+    {
+      "name": "refresh-getter-order",
+      "value": [
+        "clientId",
+        "refresh",
+        "refresh.toString"
+      ]
+    },
+    {
+      "name": "invalid-client-undefined",
+      "error": {
+        "name": "Error",
+        "message": "Stored OpenAI OAuth credential does not contain an issued client ID; reconnect ChatGPT"
+      }
+    },
+    {
+      "name": "invalid-client-null",
+      "error": {
+        "name": "Error",
+        "message": "Stored OpenAI OAuth credential does not contain an issued client ID; reconnect ChatGPT"
+      }
+    },
+    {
+      "name": "invalid-client-",
+      "error": {
+        "name": "Error",
+        "message": "Stored OpenAI OAuth credential does not contain an issued client ID; reconnect ChatGPT"
+      }
+    },
+    {
+      "name": "invalid-client- \t ",
+      "error": {
+        "name": "Error",
+        "message": "Stored OpenAI OAuth credential does not contain an issued client ID; reconnect ChatGPT"
+      }
+    },
+    {
+      "name": "invalid-client-3",
+      "error": {
+        "name": "Error",
+        "message": "Stored OpenAI OAuth credential does not contain an issued client ID; reconnect ChatGPT"
+      }
+    },
+    {
+      "name": "invalid-client-[object Object]",
+      "error": {
+        "name": "Error",
+        "message": "Stored OpenAI OAuth credential does not contain an issued client ID; reconnect ChatGPT"
+      }
+    },
+    {
+      "name": "invalid-client-false",
+      "error": {
+        "name": "Error",
+        "message": "Stored OpenAI OAuth credential does not contain an issued client ID; reconnect ChatGPT"
+      }
+    },
+    {
+      "name": "toAuth-live",
+      "value": {
+        "promise": true,
+        "keys": [
+          "apiKey"
+        ],
+        "same": true,
+        "trace": [
+          "access",
+          "returned"
+        ]
+      }
+    },
+    {
+      "name": "toAuth-getter-error",
+      "value": {
+        "promise": true,
+        "same": true
+      }
+    },
+    {
+      "name": "toAuth-null",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of null (reading 'access')"
+      }
+    },
+    {
+      "name": "response-null",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response must be an object"
+      }
+    },
+    {
+      "name": "response-array",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response must be an object"
+      }
+    },
+    {
+      "name": "response-number",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response must be an object"
+      }
+    },
+    {
+      "name": "response-missing-access",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response has invalid access_token"
+      }
+    },
+    {
+      "name": "response-blank-access",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response has invalid access_token"
+      }
+    },
+    {
+      "name": "response-missing-refresh",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response has invalid refresh_token"
+      }
+    },
+    {
+      "name": "response-blank-scope",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response has invalid scope"
+      }
+    },
+    {
+      "name": "response-missing-direct-scope",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth grant did not include chatgpt.tokens.use.direct"
+      }
+    },
+    {
+      "name": "response-expires-zero",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response has invalid expires_in"
+      }
+    },
+    {
+      "name": "response-expires-string",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response has invalid expires_in"
+      }
+    },
+    {
+      "name": "response-expires-infinity",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response has invalid expires_in"
+      }
+    },
+    {
+      "name": "response-expires-negative",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response has invalid expires_in"
+      }
+    },
+    {
+      "name": "response-expires-fractional",
+      "value": {
+        "type": "oauth",
+        "access": " access ",
+        "refresh": " refresh ",
+        "expires": 1699999820623,
+        "clientId": "issued",
+        "scopes": [
+          "openid",
+          "chatgpt.tokens.use.direct",
+          "custom"
+        ]
+      }
+    },
+    {
+      "name": "http-body",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token request failed (401): fake denied"
+      }
+    },
+    {
+      "name": "http-empty",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token request failed (401): Unauthorized"
+      }
+    },
+    {
+      "name": "http-read-error",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token request failed (401): Unauthorized"
+      }
+    },
+    {
+      "name": "login-invalid-device",
+      "error": {
+        "name": "Error",
+        "message": "Sign in with ChatGPT requires a device ID (UUID) for this installation"
+      }
+    },
+    {
+      "name": "login-invalid-device",
+      "error": {
+        "name": "Error",
+        "message": "Sign in with ChatGPT requires a device ID (UUID) for this installation"
+      }
+    },
+    {
+      "name": "login-invalid-device",
+      "error": {
+        "name": "Error",
+        "message": "Sign in with ChatGPT requires a device ID (UUID) for this installation"
+      }
+    },
+    {
+      "name": "login-invalid-device",
+      "error": {
+        "name": "Error",
+        "message": "Sign in with ChatGPT requires a device ID (UUID) for this installation"
+      }
+    },
+    {
+      "name": "login-invalid-device",
+      "error": {
+        "name": "Error",
+        "message": "Sign in with ChatGPT requires a device ID (UUID) for this installation"
+      }
+    },
+    {
+      "name": "login-device-getter",
+      "value": {
+        "promise": true,
+        "same": true
+      }
+    },
+    {
+      "name": "login-success",
+      "value": {
+        "credential": {
+          "type": "oauth",
+          "access": " access ",
+          "refresh": " refresh ",
+          "expires": 1700003420123,
+          "clientId": "issued + client",
+          "scopes": [
+            "openid",
+            "chatgpt.tokens.use.direct",
+            "custom"
+          ]
+        },
+        "manualAborted": true
+      }
+    },
+    {
+      "name": "login-missing-id-token",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth token response did not contain an ID token"
+      }
+    },
+    {
+      "name": "login-wrong-state",
+      "error": {
+        "name": "Error",
+        "message": "OAuth state mismatch"
+      }
+    },
+    {
+      "name": "login-missing-issued-id",
+      "error": {
+        "name": "Error",
+        "message": "OpenAI OAuth registration callback did not contain an issued client ID"
+      }
+    },
+    {
+      "name": "login-authorization-error",
+      "error": {
+        "name": "Error",
+        "message": "ChatGPT authorization failed: access_denied"
+      }
+    },
+    {
+      "name": "login-cancelled",
+      "error": {
+        "name": "Error",
+        "message": "Login cancelled"
+      }
+    },
+    {
+      "name": "login-interactions",
+      "value": [
+        "success:auth_url",
+        {
+          "mode": "success",
+          "url": "https://auth.openai.com/api/accounts/authorize",
+          "fields": {
+            "client_id": "dynamic_agent_client",
+            "agent_name_hint": "Fixture Agent",
+            "ext_agent_host_id": "urn:uuid:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            "response_type": "code",
+            "redirect_uri": "http://127.0.0.1:1455/auth/callback",
+            "resource": "https://api.openai.com/v1",
+            "scope": "openid profile email offline_access resource.invoke chatgpt.tokens.use.direct",
+            "state": "<random32>",
+            "code_challenge": "<S256>",
+            "code_challenge_method": "S256",
+            "nonce": "<random32>"
+          },
+          "stateBytes": 43,
+          "nonceBytes": 43,
+          "challengeBytes": 43
+        },
+        {
+          "mode": "success",
+          "type": "manual_code",
+          "message": "Complete login in your browser, or paste the final redirect URL here:",
+          "placeholder": "http://127.0.0.1:1455/auth/callback",
+          "initialAborted": false
+        },
+        "success:progress",
+        {
+          "mode": "success",
+          "finallyAborted": true
+        },
+        "missing-id-token:auth_url",
+        {
+          "mode": "missing-id-token",
+          "url": "https://auth.openai.com/api/accounts/authorize",
+          "fields": {
+            "client_id": "dynamic_agent_client",
+            "agent_name_hint": "Fixture Agent",
+            "ext_agent_host_id": "urn:uuid:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            "response_type": "code",
+            "redirect_uri": "http://127.0.0.1:1455/auth/callback",
+            "resource": "https://api.openai.com/v1",
+            "scope": "openid profile email offline_access resource.invoke chatgpt.tokens.use.direct",
+            "state": "<random32>",
+            "code_challenge": "<S256>",
+            "code_challenge_method": "S256",
+            "nonce": "<random32>"
+          },
+          "stateBytes": 43,
+          "nonceBytes": 43,
+          "challengeBytes": 43
+        },
+        {
+          "mode": "missing-id-token",
+          "type": "manual_code",
+          "message": "Complete login in your browser, or paste the final redirect URL here:",
+          "placeholder": "http://127.0.0.1:1455/auth/callback",
+          "initialAborted": false
+        },
+        "missing-id-token:progress",
+        {
+          "mode": "missing-id-token",
+          "finallyAborted": true
+        },
+        "wrong-state:auth_url",
+        {
+          "mode": "wrong-state",
+          "url": "https://auth.openai.com/api/accounts/authorize",
+          "fields": {
+            "client_id": "dynamic_agent_client",
+            "agent_name_hint": "Fixture Agent",
+            "ext_agent_host_id": "urn:uuid:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            "response_type": "code",
+            "redirect_uri": "http://127.0.0.1:1455/auth/callback",
+            "resource": "https://api.openai.com/v1",
+            "scope": "openid profile email offline_access resource.invoke chatgpt.tokens.use.direct",
+            "state": "<random32>",
+            "code_challenge": "<S256>",
+            "code_challenge_method": "S256",
+            "nonce": "<random32>"
+          },
+          "stateBytes": 43,
+          "nonceBytes": 43,
+          "challengeBytes": 43
+        },
+        {
+          "mode": "wrong-state",
+          "type": "manual_code",
+          "message": "Complete login in your browser, or paste the final redirect URL here:",
+          "placeholder": "http://127.0.0.1:1455/auth/callback",
+          "initialAborted": false
+        },
+        {
+          "mode": "wrong-state",
+          "finallyAborted": true
+        },
+        "missing-issued-id:auth_url",
+        {
+          "mode": "missing-issued-id",
+          "url": "https://auth.openai.com/api/accounts/authorize",
+          "fields": {
+            "client_id": "dynamic_agent_client",
+            "agent_name_hint": "Fixture Agent",
+            "ext_agent_host_id": "urn:uuid:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            "response_type": "code",
+            "redirect_uri": "http://127.0.0.1:1455/auth/callback",
+            "resource": "https://api.openai.com/v1",
+            "scope": "openid profile email offline_access resource.invoke chatgpt.tokens.use.direct",
+            "state": "<random32>",
+            "code_challenge": "<S256>",
+            "code_challenge_method": "S256",
+            "nonce": "<random32>"
+          },
+          "stateBytes": 43,
+          "nonceBytes": 43,
+          "challengeBytes": 43
+        },
+        {
+          "mode": "missing-issued-id",
+          "type": "manual_code",
+          "message": "Complete login in your browser, or paste the final redirect URL here:",
+          "placeholder": "http://127.0.0.1:1455/auth/callback",
+          "initialAborted": false
+        },
+        {
+          "mode": "missing-issued-id",
+          "finallyAborted": true
+        },
+        "authorization-error:auth_url",
+        {
+          "mode": "authorization-error",
+          "url": "https://auth.openai.com/api/accounts/authorize",
+          "fields": {
+            "client_id": "dynamic_agent_client",
+            "agent_name_hint": "Fixture Agent",
+            "ext_agent_host_id": "urn:uuid:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            "response_type": "code",
+            "redirect_uri": "http://127.0.0.1:1455/auth/callback",
+            "resource": "https://api.openai.com/v1",
+            "scope": "openid profile email offline_access resource.invoke chatgpt.tokens.use.direct",
+            "state": "<random32>",
+            "code_challenge": "<S256>",
+            "code_challenge_method": "S256",
+            "nonce": "<random32>"
+          },
+          "stateBytes": 43,
+          "nonceBytes": 43,
+          "challengeBytes": 43
+        },
+        {
+          "mode": "authorization-error",
+          "type": "manual_code",
+          "message": "Complete login in your browser, or paste the final redirect URL here:",
+          "placeholder": "http://127.0.0.1:1455/auth/callback",
+          "initialAborted": false
+        },
+        {
+          "mode": "authorization-error",
+          "finallyAborted": true
+        },
+        "cancelled:auth_url",
+        {
+          "mode": "cancelled",
+          "url": "https://auth.openai.com/api/accounts/authorize",
+          "fields": {
+            "client_id": "dynamic_agent_client",
+            "agent_name_hint": "Fixture Agent",
+            "ext_agent_host_id": "urn:uuid:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            "response_type": "code",
+            "redirect_uri": "http://127.0.0.1:1455/auth/callback",
+            "resource": "https://api.openai.com/v1",
+            "scope": "openid profile email offline_access resource.invoke chatgpt.tokens.use.direct",
+            "state": "<random32>",
+            "code_challenge": "<S256>",
+            "code_challenge_method": "S256",
+            "nonce": "<random32>"
+          },
+          "stateBytes": 43,
+          "nonceBytes": 43,
+          "challengeBytes": 43
+        },
+        {
+          "mode": "cancelled",
+          "type": "manual_code",
+          "message": "Complete login in your browser, or paste the final redirect URL here:",
+          "placeholder": "http://127.0.0.1:1455/auth/callback",
+          "initialAborted": false
+        },
+        {
+          "mode": "cancelled",
+          "finallyAborted": true
+        }
+      ]
+    }
+  ],
+  "wire": [
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=+issued+client+&refresh_token=r+%2B%2F%3D&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=client-rich&refresh_token=rich+%2B&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=refresh_token&client_id=issued&refresh_token=r&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": true
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=authorization_code&client_id=issued+%2B+client&code=issued+code%2B%2F%3D&code_verifier=%3CPKCE%3E&redirect_uri=http%3A%2F%2F127.0.0.1%3A1455%2Fauth%2Fcallback&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": "interaction"
+    },
+    {
+      "url": "https://auth.openai.com/api/accounts/oauth/token",
+      "method": "POST",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "body": "grant_type=authorization_code&client_id=issued+%2B+client&code=issued+code%2B%2F%3D&code_verifier=%3CPKCE%3E&redirect_uri=http%3A%2F%2F127.0.0.1%3A1455%2Fauth%2Fcallback&resource=https%3A%2F%2Fapi.openai.com%2Fv1",
+      "signal": "interaction"
+    }
+  ]
+}
