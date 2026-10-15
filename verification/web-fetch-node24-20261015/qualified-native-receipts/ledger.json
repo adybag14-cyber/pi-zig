@@ -1,0 +1,132 @@
+[
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015-admission.json",
+    "sha256": "E9B27F45880CA890A2024A2EC729586F9B6C912014B85C23BC5254F50CD81E64",
+    "bytes": 25597
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015-after.json",
+    "sha256": "DA61B0F10CB8734FDFB47AFC2091967B6B261BB1D7455615ED5FFBC4EA8881D4",
+    "bytes": 1247
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015-authorities.json",
+    "sha256": "300F110DCA53B9EEAFAEC7A043D184C92E5C3B5E9514899004AC026DBEE5246A",
+    "bytes": 4080
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015-before.json",
+    "sha256": "DA61B0F10CB8734FDFB47AFC2091967B6B261BB1D7455615ED5FFBC4EA8881D4",
+    "bytes": 1247
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015-candidate.json",
+    "sha256": "0E9406D95CB9B2B647681165D79735278F7E46BC5CBBEEFB96202988C1C7BA61",
+    "bytes": 1408347
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015-controls.json",
+    "sha256": "1E033FEF86E154424C02B1361C8E78CA114757E99A6401F44C78A4DF0E893163",
+    "bytes": 1781
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015-frozen.json",
+    "sha256": "7786CE40223B0687EB371B1EF842C7766F806BF980F02249ABD1C42338D1010C",
+    "bytes": 2377
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015-launch-intent.json",
+    "sha256": "FDEA0A9ED4E465399F2BB284CA7FC0D3A7DD3059A129A054683507823B7984F0",
+    "bytes": 666
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015-tools.json",
+    "sha256": "CE7D170F3DDE340CB94AA29C228B83E2E9D3ABA2B62615474AF3BCE67C581018",
+    "bytes": 4508818
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015-vendor.json",
+    "sha256": "E47BA62F1E034CB957FDECCEC5501635E0F8935F161776A0A9ED064CD573E06D",
+    "bytes": 278178
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015.process.json",
+    "sha256": "3401D8C16134389E2F9C26C9A25237426F528C6356F606C0B91E0DA81C199441",
+    "bytes": 910
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015.stderr.log",
+    "sha256": "1D63EDBA15F1CBFF6AE6FF945E898353B07A5ED9B0CB4A392C57502039557CAF",
+    "bytes": 13203
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-build-third-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015-admission.json",
+    "sha256": "E29BE9DA2BE5FC1A02AC7D102BD2DB07FFEBFC8620669A54B8CD00868071CAE3",
+    "bytes": 12935
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015-after.json",
+    "sha256": "9D0495C99E1CC275F30D63635A01AC41F506784DC15AAE7E9CB5320D7FCF328D",
+    "bytes": 1242
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015-authorities.json",
+    "sha256": "300F110DCA53B9EEAFAEC7A043D184C92E5C3B5E9514899004AC026DBEE5246A",
+    "bytes": 4080
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015-before.json",
+    "sha256": "9D0495C99E1CC275F30D63635A01AC41F506784DC15AAE7E9CB5320D7FCF328D",
+    "bytes": 1242
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015-candidate.json",
+    "sha256": "0E9406D95CB9B2B647681165D79735278F7E46BC5CBBEEFB96202988C1C7BA61",
+    "bytes": 1408347
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015-controls.json",
+    "sha256": "1E033FEF86E154424C02B1361C8E78CA114757E99A6401F44C78A4DF0E893163",
+    "bytes": 1781
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015-frozen.json",
+    "sha256": "FADEB064690F9A2E2037636ADD48143C1F3ACED6733AE65CA72C375C07112710",
+    "bytes": 2367
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015-launch-intent.json",
+    "sha256": "3A9183D211ED92CC91B45D6EC437241CB4F95FAFFD5A898848EF1B18E34DCC92",
+    "bytes": 665
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015-tools.json",
+    "sha256": "CE7D170F3DDE340CB94AA29C228B83E2E9D3ABA2B62615474AF3BCE67C581018",
+    "bytes": 4508818
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015-vendor.json",
+    "sha256": "E47BA62F1E034CB957FDECCEC5501635E0F8935F161776A0A9ED064CD573E06D",
+    "bytes": 278178
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015.process.json",
+    "sha256": "B78DA01ACBFB63165EF1E451D219A67EE24B94B80ACBEBD8B13F397A71E32CDB",
+    "bytes": 907
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015.stderr.log",
+    "sha256": "EBBB55698818DF7335F1027C9E0DF44E54D9FFC91625EC959D887115DA9BE45C",
+    "bytes": 15820
+  },
+  {
+    "name": "web-default-native-web-fetch-debug-test-third-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  }
+]
