@@ -1,0 +1,8 @@
+{
+  "heap_mb": 256,
+  "observed_utc": "2026-10-15T21:56:48.5333104+00:00",
+  "required_kib": 2097152,
+  "coordinated_with": "Root explicit LIGHT Source slot5 Anthropic14 SDK-boundaries queued grant; no launch without grant",
+  "status": "admitted",
+  "free_kib": 21649208
+}

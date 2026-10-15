@@ -1,0 +1,46 @@
+[
+  {
+    "sha256": "80B7F881085420B883C3F34EB52FAB2B37BD2891EBFCB15792182BAC53BC9FE9",
+    "path": "ai-anthropic14-sdk-boundaries-5ab-source-capture-20261015.mjs"
+  },
+  {
+    "sha256": "F05171ED98464568DBC432EF6FA0A1AEB0899148D306F4299743334AA153F8E0",
+    "path": "Run-AiAnthropic14SdkBoundariesSource-20261015.ps1"
+  },
+  {
+    "sha256": "5AC7034F129DCD769F857B481967AE6B86DB63AB61CF12921E9F3C46A03E35C8",
+    "path": "Invoke-AiAnthropic14SourceCandidate-1b1ec5c1-20261015.ps1"
+  },
+  {
+    "sha256": "0BC3FAF1BB00E51A123195E77708E5E73C3BA7AC0FDF1A6757697C92540719F6",
+    "path": "ai-anthropic14-sdk-boundaries-5ab-source14-first-20261015.json"
+  },
+  {
+    "sha256": "E5E1EBD4FEBAF4675853B87E956CC55D1D7861A7B9FF3549C40AFD93FB2AEE23",
+    "path": "ai-anthropic14-sdk-boundaries-5ab-source14-first-20261015-posthash.json"
+  },
+  {
+    "sha256": "8A4252BEF28677F11929F2C85D23ED9238AC3B9D41BEE7E0C23A91E88F7DA666",
+    "path": "ai-anthropic14-sdk-boundaries-5ab-source14-first-20261015-candidate-caller-posthash.json"
+  },
+  {
+    "sha256": "63E9CBBCBF831B5A89B8A56BD3D234452D300003459E777D52C13E87D97378B4",
+    "path": "ai-anthropic14-sdk-boundaries-5ab-source14-first-20261015-extra-before.json"
+  },
+  {
+    "sha256": "1BA3C49560EC288DF8D4661D1E0643B5B7AFBCD66E177A13756B2EE83F0E1DB6",
+    "path": "ai-anthropic14-sdk-boundaries-5ab-source14-first-20261015-admission.json"
+  },
+  {
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "path": "ai-anthropic14-sdk-boundaries-5ab-source14-first-20261015.stdout.log"
+  },
+  {
+    "sha256": "44DE4E0FB13CD2AA4B530CBC875628F2B44E998D1DF7C72B9E2DF3999C4FD62A",
+    "path": "ai-anthropic14-sdk-boundaries-5ab-source14-first-20261015.stderr.log"
+  },
+  {
+    "sha256": "11DB0369FF96B0CBB0EBFBF69AF7BFE645160C541387B1EE8E0ECC3CDF074A0E",
+    "path": "../../../src/extensions/fixtures/ai-anthropic5ab-sdk-boundaries.json"
+  }
+]

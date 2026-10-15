@@ -1,0 +1,11 @@
+{
+  "candidate_and_caller_records": 6472,
+  "dirty": [],
+  "changed": [],
+  "inventory_changed": [],
+  "files": 6471,
+  "head_changed": false,
+  "candidate": "1b1ec5c1",
+  "completed_utc": "2026-10-15T21:57:38.0740795+00:00",
+  "manifest_changed": false
+}

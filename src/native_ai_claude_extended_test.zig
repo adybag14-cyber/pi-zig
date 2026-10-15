@@ -7,6 +7,7 @@ comptime {
     _ = @import("native_ai_sdk_headers_test.zig");
     _ = @import("native_node_function_exception_test.zig");
     _ = @import("native_ai_anthropic_api_error_test.zig");
+    _ = @import("native_ai_anthropic_sdk_boundary_test.zig");
 }
 
 fn putJson(scope: *v.Scope, global: c.JSValue, name: [*:0]const u8, bytes: []const u8) !void {

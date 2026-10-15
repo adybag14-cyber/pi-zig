@@ -1,0 +1,7 @@
+The genuine Source5ab public Anthropic provider and pinned SDK completed all 14 controlled SDK-boundary cases on Node 24.14.0. The capture used caller-supplied SDK protocols and custom fetch, genuine Node Headers, Response and AbortSignal objects, and no network or real credentials. Original SDK request diagnostics remain in the immutable fixture.
+
+The owned Node process 74384 exited 0. Complete posthash verification covered Source 1967 files, dependencies 31064 files, Node tools 1774 files, 84 historical dependency absences, every capture control, and the clean native candidate 1b1ec5c1's 6471 Git files plus its outer caller. All recorded drift was zero. The immutable capture SHA256 is 11DB0369FF96B0CBB0EBFBF69AF7BFE645160C541387B1EE8E0ECC3CDF074A0E.
+
+The native test guest replays all seven supplied-client rows with identical single-whole-byte reader input, callbacks, getter instrumentation, and cleanup errors. It compares every retained trace, request option, payload, response callback, assistant event and result. The native SDK custom-fetch wrapper and the remaining seven SDK fetch rows are separate pending work; no native pass is claimed by this Source evidence.
+
+The original Source25 and Source16 fixtures remain unchanged. The supplied-reader comparison adds a controlled-input timing surface alongside those actual loopback captures. The retained native negative from candidate 288dbf0a exposed a producer timing difference after installation of the live EventStream core; it is preserved independently.
