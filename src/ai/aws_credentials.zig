@@ -111,7 +111,7 @@ fn awsPath(
     leaf: []const u8,
 ) !?[]u8 {
     if (environ.get(override_name)) |path| {
-        if (std.mem.trim(u8, path, " \t\r\n").len != 0) return try gpa.dupe(u8, path);
+        if (path.len != 0) return try gpa.dupe(u8, path);
     }
     const home = environ.get("HOME") orelse environ.get("USERPROFILE") orelse return null;
     return try std.fs.path.join(gpa, &.{ home, ".aws", leaf });
@@ -159,10 +159,10 @@ pub fn mergeIni(
         if (!in_section) continue;
         const eq = std.mem.indexOfScalar(u8, line, '=') orelse continue;
         const key = std.mem.trim(u8, line[0..eq], " \t");
-        var value = std.mem.trim(u8, line[eq + 1 ..], " \t");
-        if (value.len >= 2 and ((value[0] == '"' and value[value.len - 1] == '"') or (value[0] == '\'' and value[value.len - 1] == '\''))) {
-            value = value[1 .. value.len - 1];
-        }
+        // SDK parseIni trims whitespace but preserves quotes in values. In
+        // particular the Source25 credential_process begins and ends with
+        // distinct argv quotes; removing them corrupts the actual command.
+        const value = std.mem.trim(u8, line[eq + 1 ..], " \t");
         if (std.ascii.eqlIgnoreCase(key, "aws_access_key_id")) {
             try replaceOwned(gpa, &out.access_key_id, value);
         } else if (std.ascii.eqlIgnoreCase(key, "aws_secret_access_key")) {
