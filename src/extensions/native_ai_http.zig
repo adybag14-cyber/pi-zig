@@ -158,10 +158,19 @@ fn operation(engine: *em.Engine, receiver: c.JSValue, method: Method, id_value: 
     attached = true;
     return promise;
 }
+fn httpText(scope: *Scope, bytes: []const u8, latin1: bool) !c.JSValue {
+    if (!latin1) return scope.text(bytes);
+    const units = try scope.engine.gpa.alloc(u16, bytes.len);
+    defer scope.engine.gpa.free(units);
+    for (bytes, units) |byte, *unit| unit.* = byte;
+    return scope.own(try scope.engine.checked(c.JS_NewStringUTF16(scope.engine.context, units.ptr, units.len)));
+}
 fn headValue(scope: *Scope, head: raw.Head, raw_header_pairs: bool) !c.JSValue {
     const value = try scope.object();
     const headers = try scope.object();
     try scope.put(value, "status", c.JS_NewInt32(scope.engine.context, head.status));
+    // Actual Node24 Fetch39 decodes reason bytes as UTF8 (with replacement),
+    // while Headers values below use isomorphic Latin1. They are distinct.
     try scope.put(value, "statusText", try scope.text(head.status_text));
     for (head.headers) |entry| {
         var row: Scope = .{ .engine = scope.engine };
@@ -170,10 +179,20 @@ fn headValue(scope: *Scope, head: raw.Head, raw_header_pairs: bool) !c.JSValue {
         defer scope.engine.gpa.free(name);
         for (name) |*byte| byte.* = std.ascii.toLower(byte.*);
         const key = try row.text(name);
-        const text = try row.text(entry.value);
-        const existing = try row.own(try js.getKey(scope.engine, headers, key));
+        const text = try httpText(&row, entry.value, raw_header_pairs);
+        const atom = try js.atom(scope.engine, key);
+        defer c.JS_FreeAtom(scope.engine.context, atom);
+        var descriptor: c.JSPropertyDescriptor = undefined;
+        const present = c.JS_GetOwnProperty(scope.engine.context, &descriptor, headers, atom);
+        if (present < 0) return js.capture(scope.engine);
+        defer if (present != 0) {
+            scope.engine.freeValue(descriptor.value);
+            scope.engine.freeValue(descriptor.getter);
+            scope.engine.freeValue(descriptor.setter);
+        };
+        const existing = if (present != 0) descriptor.value else c.pi_js_undefined();
         const combined = if (c.JS_IsUndefined(existing)) text else try row.concat(try row.concat(existing, try row.text(", ")), text);
-        try js.setKey(scope.engine, headers, key, combined);
+        if (c.JS_DefinePropertyValue(scope.engine.context, headers, atom, c.JS_DupValue(scope.engine.context, combined), c.JS_PROP_C_W_E) < 0) return js.capture(scope.engine);
     }
     try scope.put(value, "headers", headers);
     if (raw_header_pairs) {
@@ -182,8 +201,8 @@ fn headValue(scope: *Scope, head: raw.Head, raw_header_pairs: bool) !c.JSValue {
             var row: Scope = .{ .engine = scope.engine };
             defer row.deinit();
             const pair = try row.array();
-            try row.index(pair, 0, try row.text(entry.name));
-            try row.index(pair, 1, try row.text(entry.value));
+            try row.index(pair, 0, try httpText(&row, entry.name, true));
+            try row.index(pair, 1, try httpText(&row, entry.value, true));
             try scope.index(pairs, @intCast(index), pair);
         }
         try scope.put(value, "rawHeaders", pairs);
@@ -226,6 +245,16 @@ fn failureValue(scope: *Scope, failure: anyerror) !c.JSValue {
     try scope.put(value, "code", try scope.text(@errorName(failure)));
     return value;
 }
+fn modeledFailureValue(scope: *Scope, failure: @import("native_ai_http_failure.zig").Owned) !c.JSValue {
+    // Use the VM intrinsic directly: replacing guest Error must not strand a
+    // ready waiter or turn a typed worker failure into a constructor callback.
+    const value = try scope.own(try scope.engine.checked(c.JS_NewError(scope.engine.context)));
+    try scope.put(value, "name", try scope.text(failure.name));
+    const message = try scope.text(failure.message);
+    if (c.JS_DefinePropertyValueStr(scope.engine.context, value, "message", c.JS_DupValue(scope.engine.context, message), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(scope.engine);
+    if (failure.try_next_link) |next| try scope.put(value, "tryNextLink", c.pi_js_bool(scope.engine.context, @intFromBool(next)));
+    return value;
+}
 pub fn pump(engine: *em.Engine) !bool {
     const state: *State = @ptrCast(@alignCast(engine.native_ai_http_state orelse return false));
     if (state.pumping) return false;
@@ -237,7 +266,8 @@ pub fn pump(engine: *em.Engine) !bool {
         const job = state.jobs.items[index];
         var scope: Scope = .{ .engine = engine };
         defer scope.deinit();
-        if (!temp.nullish(job.signal) and scope.truthy(try scope.get(job.signal, "aborted"))) job.worker.cancel();
+        const signal_aborted = !temp.nullish(job.signal) and scope.truthy(try scope.get(job.signal, "aborted"));
+        if (signal_aborted) job.worker.cancel();
         while (job.worker.peek()) |kind| {
             if (kind != .head and job.waiters.items.len == 0 and !job.closed) break;
             const event = job.worker.pop() orelse break;
@@ -259,8 +289,9 @@ pub fn pump(engine: *em.Engine) !bool {
             }
         }
         if (job.worker.finished.load(.acquire) and job.worker.peek() == null) {
-            const failure = job.worker.failure;
-            const reason = if (failure) |err| try failureValue(&scope, err) else c.pi_js_undefined();
+            const failure: ?anyerror = if (signal_aborted) error.ProviderRequestAborted else job.worker.failure;
+            const prepared_failure = if (failure) |err| err == error.NativeHttpPreparedFailure else false;
+            const reason = if (prepared_failure and job.worker.modeled_failure != null) try modeledFailureValue(&scope, job.worker.modeled_failure.?) else if (failure) |err| try failureValue(&scope, err) else c.pi_js_undefined();
             if (!job.ready_settled) {
                 try call(&scope, job.ready_reject, if (failure != null) reason else try failureValue(&scope, error.NativeHttpNoResponse));
                 job.ready_settled = true;
@@ -277,4 +308,40 @@ pub fn pump(engine: *em.Engine) !bool {
         } else index += 1;
     }
     return progressed;
+}
+test "native AI HTTP typed preparation failure skips HTTP and preserves abort precedence" {
+    const Prepare = struct {
+        fn call(a: std.mem.Allocator, _: @import("native_ai_http_prepare.zig").View, _: []const u8, _: @import("native_ai_http_prepare.zig").Budget) !@import("native_ai_http_prepare.zig").Prepared {
+            const headers = try a.alloc(std.http.Header, 0);
+            errdefer a.free(headers);
+            return .{ .headers = headers, .failure = try @import("native_ai_http_failure.zig").Owned.init(a, "CredentialsProviderError", "fixture credentials failed", false) };
+        }
+    };
+    const signal_api = @import("abort_signal.zig");
+    for ([_]bool{ false, true }) |aborted| {
+        const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+        defer engine.deinit();
+        engine.native_io = std.testing.io;
+        try signal_api.install(engine);
+        const signal = try signal_api.create(engine);
+        defer engine.freeValue(signal);
+        const transport = try open(engine, .{ .url = "http://127.0.0.1:1/no-request-may-be-issued", .payload = "{}", .headers = &.{}, .timeout_ms = 2000, .prepare = Prepare.call }, signal);
+        defer engine.freeValue(transport);
+        const job = stateFor(engine) catch unreachable;
+        const worker = job.jobs.items[0].worker;
+        // A real worker terminal transition, without pumping owner promises,
+        // makes abort-before-consumption deterministic rather than timed.
+        const deadline = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() + 2000;
+        while (!worker.finished.load(.acquire)) {
+            if (std.Io.Clock.awake.now(std.testing.io).toMilliseconds() >= deadline) return error.PreparedWorkerDidNotFinish;
+            try std.testing.io.sleep(.fromMilliseconds(1), .awake);
+        }
+        if (aborted) try signal_api.abort(engine, signal, c.pi_js_undefined());
+        var scope: Scope = .{ .engine = engine };
+        defer scope.deinit();
+        const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+        try scope.put(global, "preparedRequest", transport);
+        const module = try engine.evalModule(if (aborted) "const error=await preparedRequest.ready.catch(error=>error);if(error.code!=='ProviderRequestAborted')throw Error('late abort lost to modeled failure');export const done=true;" else "const intrinsic=Error;globalThis.Error=function(){throw 'guest Error must not run'};const error=await preparedRequest.ready.catch(error=>error);globalThis.Error=intrinsic;if(!(error instanceof intrinsic)||error.name!=='CredentialsProviderError'||error.message!=='fixture credentials failed'||error.tryNextLink!==false)throw intrinsic('typed worker error changed');if(Object.getOwnPropertyDescriptor(error,'message').enumerable)throw intrinsic('message descriptor');export const done=true;", if (aborted) "prepared-abort.mjs" else "prepared-typed-error.mjs");
+        engine.freeValue(module);
+    }
 }

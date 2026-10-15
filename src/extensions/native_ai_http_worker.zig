@@ -62,6 +62,7 @@ pub const Input = struct {
     headers: []const std.http.Header,
     proxy_url: ?[]const u8 = null,
     timeout_ms: ?u64 = null,
+    headers_timeout_only: bool = false,
     method: std.http.Method = .POST,
     framing: Framing = .sse,
     /// Bytes-only opt-in for genuine fetch/SDK readers: preserve binary bodies
@@ -76,6 +77,7 @@ const OwnedInput = struct {
     headers: []std.http.Header,
     proxy_url: ?[]u8,
     timeout_ms: ?u64,
+    headers_timeout_only: bool,
     method: std.http.Method,
     framing: Framing,
     stream_error_bytes: bool,
@@ -101,7 +103,7 @@ const OwnedInput = struct {
             destination.* = .{ .name = name, .value = try a.dupe(u8, source.value) };
             count += 1;
         }
-        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms, .method = input.method, .framing = input.framing, .stream_error_bytes = input.stream_error_bytes and input.framing == .bytes, .prepare = input.prepare, .prepare_data = try a.dupe(u8, input.prepare_data) };
+        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms, .headers_timeout_only = input.headers_timeout_only, .method = input.method, .framing = input.framing, .stream_error_bytes = input.stream_error_bytes and input.framing == .bytes, .prepare = input.prepare, .prepare_data = try a.dupe(u8, input.prepare_data) };
     }
     fn deinit(self: OwnedInput) void {
         a.free(self.url);
@@ -125,6 +127,7 @@ pub const Worker = struct {
     finished: std.atomic.Value(bool) = .init(false),
     thread: ?std.Thread = null,
     failure: ?anyerror = null,
+    modeled_failure: ?@import("native_ai_http_failure.zig").Owned = null,
     writer_failure: ?anyerror = null,
     mutex: std.Io.Mutex = .init,
     changed: std.Io.Condition = .init,
@@ -167,6 +170,7 @@ pub const Worker = struct {
         self.data.deinit(a);
         self.error_body.deinit(a);
         if (self.event) |value| a.free(value);
+        if (self.modeled_failure) |*failure| failure.deinit(a);
         self.input.deinit();
         a.destroy(self);
     }
@@ -220,8 +224,14 @@ pub const Worker = struct {
         const prep = @import("native_ai_http_prepare.zig");
         const now_ms = std.Io.Clock.awake.now(self.io).toMilliseconds();
         const budget: prep.Budget = .{ .io = self.io, .abort_flag = &self.abort_flag, .deadline_ms = if (self.input.timeout_ms) |ms| now_ms +| @as(i64, @intCast(@min(ms, std.math.maxInt(i64)))) else null };
-        var prepared: ?prep.Prepared = if (self.input.prepare) |callback| try callback(a, .{ .method = self.input.method, .url = self.input.url, .payload = self.input.payload, .headers = self.input.headers }, self.input.prepare_data, budget) else null;
+        var prepared: ?prep.Prepared = if (self.input.prepare) |callback| try @import("native_ai_http_prepare_run.zig").run(a, callback, .{ .method = self.input.method, .url = self.input.url, .payload = self.input.payload, .headers = self.input.headers }, self.input.prepare_data, budget) else null;
         defer if (prepared) |*value| value.deinit(a);
+        _ = try budget.remaining();
+        if (prepared) |*value| if (value.failure) |failure| {
+            self.modeled_failure = failure;
+            value.failure = null;
+            return error.NativeHttpPreparedFailure;
+        };
         const url = if (prepared) |value| value.url orelse self.input.url else self.input.url;
         const headers = if (prepared) |value| merged: {
             var combined: std.ArrayList(std.http.Header) = .empty;
@@ -241,7 +251,9 @@ pub const Worker = struct {
         defer client.deinit();
         _ = try proxy.configureClient(&client, arena.allocator(), url, .{ .setting = self.input.proxy_url });
         const payload: ?[]const u8 = if ((self.input.method == .GET or self.input.method == .HEAD) and self.input.payload.len == 0) null else self.input.payload;
-        _ = try fetch.fetchControlledObserved(&client, .{ .location = .{ .url = url }, .method = self.input.method, .payload = payload, .extra_headers = headers, .keep_alive = false, .response_writer = &self.writer }, timeout_ms, &self.abort_flag, .{ .context = self, .callback = observeHead });
+        const fetch_options: std.http.Client.FetchOptions = .{ .location = .{ .url = url }, .method = self.input.method, .payload = payload, .extra_headers = headers, .keep_alive = false, .response_writer = &self.writer };
+        const observer: fetch.HeadObserver = .{ .context = self, .callback = observeHead };
+        _ = if (self.input.headers_timeout_only) try fetch.fetchHeadersControlledObserved(&client, fetch_options, timeout_ms, &self.abort_flag, observer) else try fetch.fetchControlledObserved(&client, fetch_options, timeout_ms, &self.abort_flag, observer);
         if (self.writer.end != 0) {
             try self.feed(self.writer.buffer[0..self.writer.end]);
             self.writer.end = 0;

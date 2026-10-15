@@ -1,0 +1,54 @@
+[
+  {
+    "file": "native-ai-http-shared-33bf9560-debug-fetch39-uaretry-20261015-admission.json",
+    "sha256": "F7A69EF640B41FF25260CFB23308D97875B62D45DE663F84954E3D7EA11C3F45"
+  },
+  {
+    "file": "native-ai-http-shared-33bf9560-debug-fetch39-uaretry-20261015-compile.json",
+    "sha256": "319C37CE9C3DDF0DFF9DBC4975A1C2390189EDDDA3CBFD9617F9496191728A30"
+  },
+  {
+    "file": "native-ai-http-shared-33bf9560-debug-fetch39-uaretry-20261015-compile.stderr.log",
+    "sha256": "7C282E4246937EE060347CE72A6710A50F5A7B72F699F288BF6EF30B9D811124"
+  },
+  {
+    "file": "native-ai-http-shared-33bf9560-debug-fetch39-uaretry-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-ai-http-shared-33bf9560-debug-fetch39-uaretry-20261015-controls-before.json",
+    "sha256": "BF18CBE8E74B81052C9648EE27DAC45F5E620AA2E442064273B6A45E1BF4EF4C"
+  },
+  {
+    "file": "native-ai-http-shared-33bf9560-debug-fetch39-uaretry-20261015-posthash.json",
+    "sha256": "4AC304B7C0189EE0B3EB51772267A91CA2AED96FF65A28DC78227036AF4C2F8C"
+  },
+  {
+    "file": "native-ai-http-shared-33bf9560-debug-fetch39-uaretry-20261015-reference-posthash.json",
+    "sha256": "A71DD179CDAA5840F6950321B1378447ABA588C80CC0591E82B7D20275A6DEC5"
+  },
+  {
+    "file": "native-ai-http-shared-33bf9560-debug-fetch39-uaretry-20261015-runtime.json",
+    "sha256": "1F85998F781A1935F57E2620299C0381E089BE225F28D09A2AF6C0932A40690F"
+  },
+  {
+    "file": "native-ai-http-shared-33bf9560-debug-fetch39-uaretry-20261015-runtime.stderr.log",
+    "sha256": "CE3BB28876979128FDF59B903F3DC624B6CF1D31D668732DC6B75750D1E1A895"
+  },
+  {
+    "file": "native-ai-http-shared-33bf9560-debug-fetch39-uaretry-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-ai-http-shared-33bf9560-debug-fetch39-uaretry-20261015-source-before.json",
+    "sha256": "B80A0464CA31842241BD08B06BDB150EB1A363244290C8023D4982B0FC4F1B5C"
+  },
+  {
+    "file": "README.md",
+    "sha256": "D9F1E0FB9B30A67B31A292D788C22FC9BF1008A61287F045A64E023BA7D331CA"
+  },
+  {
+    "file": "Run-NativeAIHttpFetch39UARetryPair-20261015.ps1",
+    "sha256": "D14BF7E85DA3B30F6C0E5F9AAA08C97744B251E93ED0CDFFBB7B41C4CD3F4AF7"
+  }
+]
