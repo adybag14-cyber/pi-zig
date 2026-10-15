@@ -11,10 +11,14 @@ fn zero(scope: *Scope, value: c.JSValue) c.JSValue {
     return if (scope.truthy(value)) value else c.JS_NewInt32(scope.engine.context, 0);
 }
 fn emit(scope: *Scope, owner: c.JSValue, kind: []const u8, block: ?c.JSValue, key: ?[*:0]const u8, value: c.JSValue) !void {
+    const index = if (block != null) try binary(scope, .subtract, try scope.get(try scope.get(owner, "blocks"), "length"), c.JS_NewInt32(scope.engine.context, 1)) else null;
+    try emitAt(scope, owner, kind, index, key, value);
+}
+fn emitAt(scope: *Scope, owner: c.JSValue, kind: []const u8, index: ?c.JSValue, key: ?[*:0]const u8, value: c.JSValue) !void {
     const event = try scope.object();
     const output = try scope.get(owner, "output");
     try scope.put(event, "type", try scope.text(kind));
-    if (block) |item| try scope.put(event, "contentIndex", try scope.invoke(try scope.get(output, "content"), "indexOf", &.{item}));
+    if (index) |position| try scope.put(event, "contentIndex", position);
     if (key) |name| try scope.put(event, name, value);
     try scope.put(event, if (@import("std").mem.eql(u8, kind, "done")) "message" else if (@import("std").mem.eql(u8, kind, "error")) "error" else "partial", output);
     _ = try scope.invoke(try scope.get(owner, "stream"), "push", &.{event});
@@ -32,7 +36,9 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
     try scope.put(owner, "counterOwner", counter_owner);
     const output = try scope.object();
     try scope.put(output, "role", try scope.text("assistant"));
-    try scope.put(output, "content", try scope.array());
+    const blocks = try scope.array();
+    try scope.put(output, "content", blocks);
+    try scope.put(owner, "blocks", blocks);
     try scope.put(output, "api", if (kind == .mistral) try scope.get(model, "api") else try scope.text(if (kind == .google) "google-generative-ai" else "google-vertex"));
     try scope.put(output, "provider", try scope.get(model, "provider"));
     try scope.put(output, "model", try scope.get(model, "id"));
@@ -270,33 +276,41 @@ fn mistral(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
         var row: Scope = .{ .engine = scope.engine };
         defer row.deinit();
         try close(&row, owner);
-        var id = try row.get(call, "id");
-        const index = try row.get(call, "index");
-        if (!row.truthy(id) or try v.eq(&row, id, "null")) {
-            const key = if (v.nullish(index)) c.JS_NewInt32(scope.engine.context, 0) else index;
-            id = try @import("native_ai_mistral_request.zig").derive(&row, try row.concat(try row.text("toolcall:"), try row.stringify(key)), 0);
+        var id = c.pi_js_undefined();
+        if (row.truthy(try row.get(call, "id")) and !try v.eq(&row, try row.get(call, "id"), "null")) id = try row.get(call, "id") else {
+            const index = try row.get(call, "index");
+            const fallback = if (v.nullish(index)) c.JS_NewInt32(scope.engine.context, 0) else index;
+            id = try @import("native_ai_mistral_request.zig").derive(&row, try row.concat(try row.text("toolcall:"), try row.stringify(fallback)), 0);
         }
+        const index = try row.get(call, "index");
         const key = if (v.nullish(index)) id else index;
         const tools = try row.get(owner, "tools");
-        var block = try row.invoke(tools, "get", &.{key});
-        const function = try row.get(call, "function");
+        const existing_index = try row.invoke(tools, "get", &.{key});
+        var block = c.pi_js_undefined();
+        if (!c.JS_IsUndefined(existing_index)) {
+            const existing = try row.own(try v.js.getKey(scope.engine, try row.get(output, "content"), existing_index));
+            if (try v.eq(&row, try v.optional(&row, existing, "type"), "toolCall")) block = existing;
+        }
         if (!row.truthy(block)) {
             block = try row.object();
             try row.put(block, "type", try row.text("toolCall"));
             try row.put(block, "id", id);
-            try row.put(block, "name", try row.get(function, "name"));
+            try row.put(block, "name", try row.get(try row.get(call, "function"), "name"));
             try row.put(block, "arguments", try row.object());
             try row.put(block, "partialArgs", try row.text(""));
             _ = try row.invoke(try row.get(output, "content"), "push", &.{block});
-            _ = try row.invoke(tools, "set", &.{ key, block });
-            try emit(&row, owner, "toolcall_start", block, null, c.pi_js_undefined());
+            const created_index = try binary(&row, .subtract, try row.get(try row.get(output, "content"), "length"), c.JS_NewInt32(scope.engine.context, 1));
+            _ = try row.invoke(tools, "set", &.{ key, created_index });
+            try emitAt(&row, owner, "toolcall_start", created_index, null, c.pi_js_undefined());
         }
-        const arguments = try row.get(function, "arguments");
-        const args = if (c.JS_IsString(arguments)) arguments else try row.invoke(try row.global("JSON"), "stringify", &.{if (row.truthy(arguments)) arguments else try row.object()});
-        const partial = try row.concat(try row.get(block, "partialArgs"), args);
+        const arguments = try row.get(try row.get(call, "function"), "arguments");
+        const supplied_args = try row.get(try row.get(call, "function"), "arguments");
+        const args = if (c.JS_IsString(arguments)) supplied_args else try row.invoke(try row.global("JSON"), "stringify", &.{if (row.truthy(supplied_args)) supplied_args else try row.object()});
+        const previous = try row.get(block, "partialArgs");
+        const partial = try row.concat(if (row.truthy(previous)) previous else try row.text(""), args);
         try row.set(block, "partialArgs", partial);
         try row.set(block, "arguments", try row.invoke(try row.get(owner, "json"), "parseStreamingJson", &.{partial}));
-        try emit(&row, owner, "toolcall_delta", block, "delta", args);
+        try emitAt(&row, owner, "toolcall_delta", try row.invoke(tools, "get", &.{key}), "delta", args);
     }
 }
 fn formatError(scope: *Scope, value: c.JSValue, kind: Kind) !c.JSValue {
@@ -338,14 +352,16 @@ fn finish(scope: *Scope, owner: c.JSValue, aborted: bool, kind: Kind) !void {
         var rows = try v.iterator(scope, try scope.invoke(try scope.get(owner, "tools"), "values", &.{}));
         defer rows.deinit();
         errdefer rows.closePreserving();
-        while (try rows.next()) |block| {
-            defer scope.engine.freeValue(block);
+        while (try rows.next()) |index| {
+            defer scope.engine.freeValue(index);
             var row: Scope = .{ .engine = scope.engine };
             defer row.deinit();
+            const block = try row.own(try v.js.getKey(scope.engine, try row.get(try row.get(owner, "output"), "content"), index));
+            if (!try v.eq(&row, try row.get(block, "type"), "toolCall")) continue;
             const parsed = try row.invoke(try row.get(owner, "json"), "parseToolCallArguments", &.{try row.get(block, "partialArgs")});
             _ = try row.invoke(try row.global("Object"), "assign", &.{ block, parsed });
             try v.remove(&row, block, "partialArgs");
-            try emit(&row, owner, "toolcall_end", block, "toolCall", block);
+            try emitAt(&row, owner, "toolcall_end", index, "toolCall", block);
         }
     }
     const output = try scope.get(owner, "output");
