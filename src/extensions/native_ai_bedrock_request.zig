@@ -56,7 +56,8 @@ pub fn configuredRegion(scope: *Scope, options: c.JSValue) !c.JSValue {
     if (scope.truthy(explicit)) return explicit;
     const region = try env(scope, "AWS_REGION", options);
     if (scope.truthy(region)) return region;
-    return env(scope, "AWS_DEFAULT_REGION", options);
+    const fallback = try env(scope, "AWS_DEFAULT_REGION", options);
+    return if (scope.truthy(fallback)) fallback else c.pi_js_undefined();
 }
 fn govCloud(scope: *Scope, model: c.JSValue, options: c.JSValue) !bool {
     const region = try configuredRegion(scope, options);
@@ -220,7 +221,7 @@ pub fn build(engine: *v.em.Engine, model: c.JSValue, context: c.JSValue, options
     try scope.put(result, "system", system);
     const inference = try scope.object();
     const max = try v.optional(&scope, options, "maxTokens");
-    const effective = if (v.nullish(max) and claude) try scope.get(model, "maxTokens") else max;
+    const effective = if (v.nullish(max)) if (claude) try scope.get(model, "maxTokens") else c.pi_js_undefined() else max;
     if (!c.JS_IsUndefined(effective)) try scope.put(inference, "maxTokens", effective);
     const temperature = try v.optional(&scope, options, "temperature");
     if (!c.JS_IsUndefined(temperature)) try scope.put(inference, "temperature", temperature);
