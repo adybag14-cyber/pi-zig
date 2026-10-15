@@ -12,6 +12,15 @@ fn putJson(scope: *v.Scope, global: c.JSValue, name: [*:0]const u8, bytes: []con
     defer scope.engine.gpa.free(terminated);
     try scope.put(global, name, try scope.own(try scope.engine.checked(c.JS_ParseJSON(scope.engine.context, terminated.ptr, bytes.len, name))));
 }
+fn functionalHeader(request: std.json.ObjectMap, name: []const u8) ?[]const u8 {
+    if (request.get("headers").?.object.get(name)) |value| return value.string;
+    const raw = request.get("rawHeaders").?.array.items;
+    var index: usize = 0;
+    while (index + 1 < raw.len) : (index += 2) {
+        if (std.ascii.eqlIgnoreCase(raw[index].string, name)) return raw[index + 1].string;
+    }
+    return null;
+}
 
 test "native Claude5ab extended public Source16 wire federation retry long result-only and callback ownership" {
     const gpa = std.testing.allocator;
@@ -32,13 +41,11 @@ test "native Claude5ab extended public Source16 wire federation retry long resul
             const reply = response.object;
             var request_headers: std.ArrayList(std.http.Header) = .empty;
             var absent_headers: std.ArrayList([]const u8) = .empty;
-            var fields = expected.get("headers").?.object.iterator();
-            while (fields.next()) |field| try request_headers.append(plan_gpa, .{ .name = field.key_ptr.*, .value = field.value_ptr.string });
-            for ([_][]const u8{ "authorization", "x-api-key", "content-type", "anthropic-beta", "anthropic-version", "x-session-id", "x-session-affinity", "anthropic-user-profile-id", "anthropic-workspace-id", "x-captured", "x-option" }) |name| {
-                if (!expected.get("headers").?.object.contains(name)) try absent_headers.append(plan_gpa, name);
+            for ([_][]const u8{ "authorization", "x-api-key", "content-type", "accept", "anthropic-beta", "anthropic-version", "anthropic-dangerous-direct-browser-access", "x-app", "x-session-id", "x-session-affinity", "anthropic-user-profile-id", "anthropic-workspace-id", "x-captured", "x-option" }) |name| {
+                if (functionalHeader(expected, name)) |value| try request_headers.append(plan_gpa, .{ .name = name, .value = value }) else try absent_headers.append(plan_gpa, name);
             }
             var response_headers: std.ArrayList(std.http.Header) = .empty;
-            fields = reply.get("headers").?.object.iterator();
+            var fields = reply.get("headers").?.object.iterator();
             while (fields.next()) |field| try response_headers.append(plan_gpa, .{ .name = field.key_ptr.*, .value = field.value_ptr.string });
             try replies.append(plan_gpa, .{
                 .path = expected.get("path").?.string,
