@@ -11,6 +11,7 @@ export async function run(api) {
   const controlledContext=log=>({async env(name){log.push(['env',name]);return {CLOUDFLARE_ACCOUNT_ID:'owned-account',CLOUDFLARE_GATEWAY_ID:'owned-gateway'}[name]},async fileExists(path){log.push(['fileExists',path]);return false}});
   try {
     await observe('actual export metadata',()=>({models:Object.keys(api.models),all:Object.keys(api.all),factories:Object.entries(api.factories).map(([key,fn])=>({key,...functionShape(fn)}))}));
+    for(const [name,constructor] of Object.entries(api.apis)) await observe('API constructor '+name,()=>{const one=constructor(),two=constructor();return {constructor:functionShape(constructor),keys:Object.keys(one),fresh:one!==two,methods:Object.fromEntries(Object.entries(one).filter(([,value])=>typeof value==='function').map(([key,fn])=>[key,functionShape(fn)])),freshMethods:Object.keys(one).every(key=>typeof one[key]!=='function'||one[key]!==two[key])};});
     for(const [exportName,constructor] of Object.entries(api.factories)) {
       await observe('factory '+exportName,()=>{
         const provider=constructor(),second=constructor();
