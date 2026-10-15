@@ -1,0 +1,20 @@
+{
+  "status": "admitted",
+  "candidate": "d04dbecd983c26d277215b7089a969867c49f9c1",
+  "slot": 4,
+  "free_kib": 18325328,
+  "threshold_kib": 16777216,
+  "max_native_roots": 4,
+  "other_native": [],
+  "source": 6323,
+  "tools": 19546,
+  "controls": 9,
+  "jobs": 1,
+  "llvm": true,
+  "compile_timeout_seconds": 1320,
+  "runtime_outer_timeout_seconds": 300,
+  "test_timeout_seconds": 120,
+  "host_await_timeout_seconds": 10,
+  "native_launched": false,
+  "observed_utc": "2026-10-15T20:11:30.3020823+00:00"
+}

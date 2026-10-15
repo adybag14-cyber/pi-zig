@@ -1,0 +1,16 @@
+{
+  "name": "ui-overlay-ae7-source12-first-20261015",
+  "pid": 55332,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\verification\\ui-overlay-ae7-20261015\\source-ui-overlay-ae7-capture-20261015.mjs",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T19:40:40.1937116Z",
+  "launched_utc": "2026-10-15T19:40:40.1913137+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-ae7b16d-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T19:41:01.9579888+00:00"
+}

@@ -1,0 +1,1465 @@
+{
+  "sourceCommit": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "authority": "actual InteractiveMode.prototype.showExtensionCustom; controlled caller collaborators",
+  "methodSha256": "e47f572a19acf40c8df3c6efaea9bc37ef09514dcfa430a1eba1dd9d399c874d",
+  "actualNode": {
+    "version": "v24.14.0",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "rows": [
+    {
+      "case": "close-order",
+      "order": [
+        "middle",
+        "lower",
+        "top"
+      ],
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ]
+          ],
+          "stack": [
+            "lower",
+            "middle",
+            "top"
+          ],
+          "state": {
+            "lower": "pending",
+            "middle": "pending",
+            "top": "pending"
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ],
+            [
+              "hide",
+              "middle"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "middle"
+            ]
+          ],
+          "stack": [
+            "lower",
+            "top"
+          ],
+          "state": {
+            "lower": "pending",
+            "middle": [
+              "resolved",
+              "middle-result"
+            ],
+            "top": "pending"
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ],
+            [
+              "hide",
+              "middle"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "middle"
+            ],
+            [
+              "hide",
+              "lower"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "lower"
+            ]
+          ],
+          "stack": [
+            "top"
+          ],
+          "state": {
+            "lower": [
+              "resolved",
+              "lower-result"
+            ],
+            "middle": [
+              "resolved",
+              "middle-result"
+            ],
+            "top": "pending"
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ],
+            [
+              "hide",
+              "middle"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "middle"
+            ],
+            [
+              "hide",
+              "lower"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "lower"
+            ],
+            [
+              "hide",
+              "top"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "top"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "lower": [
+              "resolved",
+              "lower-result"
+            ],
+            "middle": [
+              "resolved",
+              "middle-result"
+            ],
+            "top": [
+              "resolved",
+              "top-result"
+            ]
+          },
+          "editor": "saved draft"
+        }
+      ]
+    },
+    {
+      "case": "close-order",
+      "order": [
+        "lower",
+        "top",
+        "middle"
+      ],
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ]
+          ],
+          "stack": [
+            "lower",
+            "middle",
+            "top"
+          ],
+          "state": {
+            "lower": "pending",
+            "middle": "pending",
+            "top": "pending"
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ],
+            [
+              "hide",
+              "lower"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "lower"
+            ]
+          ],
+          "stack": [
+            "middle",
+            "top"
+          ],
+          "state": {
+            "lower": [
+              "resolved",
+              "lower-result"
+            ],
+            "middle": "pending",
+            "top": "pending"
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ],
+            [
+              "hide",
+              "lower"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "lower"
+            ],
+            [
+              "hide",
+              "top"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "top"
+            ]
+          ],
+          "stack": [
+            "middle"
+          ],
+          "state": {
+            "lower": [
+              "resolved",
+              "lower-result"
+            ],
+            "middle": "pending",
+            "top": [
+              "resolved",
+              "top-result"
+            ]
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ],
+            [
+              "hide",
+              "lower"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "lower"
+            ],
+            [
+              "hide",
+              "top"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "top"
+            ],
+            [
+              "hide",
+              "middle"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "middle"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "lower": [
+              "resolved",
+              "lower-result"
+            ],
+            "middle": [
+              "resolved",
+              "middle-result"
+            ],
+            "top": [
+              "resolved",
+              "top-result"
+            ]
+          },
+          "editor": "saved draft"
+        }
+      ]
+    },
+    {
+      "case": "close-order",
+      "order": [
+        "top",
+        "middle",
+        "lower"
+      ],
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ]
+          ],
+          "stack": [
+            "lower",
+            "middle",
+            "top"
+          ],
+          "state": {
+            "lower": "pending",
+            "middle": "pending",
+            "top": "pending"
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ],
+            [
+              "hide",
+              "top"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "top"
+            ]
+          ],
+          "stack": [
+            "lower",
+            "middle"
+          ],
+          "state": {
+            "lower": "pending",
+            "middle": "pending",
+            "top": [
+              "resolved",
+              "top-result"
+            ]
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ],
+            [
+              "hide",
+              "top"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "top"
+            ],
+            [
+              "hide",
+              "middle"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "middle"
+            ]
+          ],
+          "stack": [
+            "lower"
+          ],
+          "state": {
+            "lower": "pending",
+            "middle": [
+              "resolved",
+              "middle-result"
+            ],
+            "top": [
+              "resolved",
+              "top-result"
+            ]
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "lower"
+            ],
+            [
+              "factory",
+              "middle"
+            ],
+            [
+              "factory",
+              "top"
+            ],
+            [
+              "show",
+              "lower",
+              null
+            ],
+            [
+              "handle",
+              "lower"
+            ],
+            [
+              "show",
+              "middle",
+              null
+            ],
+            [
+              "handle",
+              "middle"
+            ],
+            [
+              "show",
+              "top",
+              null
+            ],
+            [
+              "handle",
+              "top"
+            ],
+            [
+              "hide",
+              "top"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "top"
+            ],
+            [
+              "hide",
+              "middle"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "middle"
+            ],
+            [
+              "hide",
+              "lower"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "lower"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "lower": [
+              "resolved",
+              "lower-result"
+            ],
+            "middle": [
+              "resolved",
+              "middle-result"
+            ],
+            "top": [
+              "resolved",
+              "top-result"
+            ]
+          },
+          "editor": "saved draft"
+        }
+      ]
+    },
+    {
+      "case": "async-factory",
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "slow"
+            ],
+            [
+              "factory",
+              "fast"
+            ],
+            [
+              "show",
+              "fast",
+              null
+            ],
+            [
+              "handle",
+              "fast"
+            ]
+          ],
+          "stack": [
+            "fast"
+          ],
+          "state": {
+            "slow": "pending",
+            "fast": "pending"
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "slow"
+            ],
+            [
+              "factory",
+              "fast"
+            ],
+            [
+              "show",
+              "fast",
+              null
+            ],
+            [
+              "handle",
+              "fast"
+            ],
+            [
+              "show",
+              "slow",
+              null
+            ],
+            [
+              "handle",
+              "slow"
+            ]
+          ],
+          "stack": [
+            "fast",
+            "slow"
+          ],
+          "state": {
+            "slow": "pending",
+            "fast": "pending"
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "slow"
+            ],
+            [
+              "factory",
+              "fast"
+            ],
+            [
+              "show",
+              "fast",
+              null
+            ],
+            [
+              "handle",
+              "fast"
+            ],
+            [
+              "show",
+              "slow",
+              null
+            ],
+            [
+              "handle",
+              "slow"
+            ],
+            [
+              "hide",
+              "fast"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "fast"
+            ]
+          ],
+          "stack": [
+            "slow"
+          ],
+          "state": {
+            "slow": "pending",
+            "fast": [
+              "resolved",
+              "fast-result"
+            ]
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "slow"
+            ],
+            [
+              "factory",
+              "fast"
+            ],
+            [
+              "show",
+              "fast",
+              null
+            ],
+            [
+              "handle",
+              "fast"
+            ],
+            [
+              "show",
+              "slow",
+              null
+            ],
+            [
+              "handle",
+              "slow"
+            ],
+            [
+              "hide",
+              "fast"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "fast"
+            ],
+            [
+              "hide",
+              "slow"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "slow"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "slow": [
+              "resolved",
+              "slow-result"
+            ],
+            "fast": [
+              "resolved",
+              "fast-result"
+            ]
+          },
+          "editor": "saved draft"
+        }
+      ]
+    },
+    {
+      "case": "early",
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "subject": [
+              "resolved",
+              "subject-early"
+            ]
+          },
+          "editor": "saved draft"
+        }
+      ]
+    },
+    {
+      "case": "early-async",
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "subject": [
+              "resolved",
+              "subject-early"
+            ]
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "subject": [
+              "resolved",
+              "subject-early"
+            ]
+          },
+          "editor": "saved draft"
+        }
+      ]
+    },
+    {
+      "case": "reject",
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "subject": [
+              "rejected",
+              "reject"
+            ]
+          },
+          "editor": "saved draft"
+        }
+      ]
+    },
+    {
+      "case": "throw",
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "subject": [
+              "rejected",
+              "throw"
+            ]
+          },
+          "editor": "saved draft"
+        }
+      ]
+    },
+    {
+      "case": "dispose-error",
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ],
+            [
+              "show",
+              "subject",
+              null
+            ],
+            [
+              "handle",
+              "subject"
+            ]
+          ],
+          "stack": [
+            "subject"
+          ],
+          "state": {
+            "subject": "pending"
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ],
+            [
+              "show",
+              "subject",
+              null
+            ],
+            [
+              "handle",
+              "subject"
+            ],
+            [
+              "hide",
+              "subject"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "subject"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "subject": [
+              "resolved",
+              "result"
+            ]
+          },
+          "editor": "edited while open"
+        }
+      ]
+    },
+    {
+      "case": "raw-hide-error",
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ],
+            [
+              "show",
+              "subject",
+              null
+            ],
+            [
+              "handle",
+              "subject"
+            ]
+          ],
+          "stack": [
+            "subject"
+          ],
+          "state": {
+            "subject": "pending"
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ],
+            [
+              "show",
+              "subject",
+              null
+            ],
+            [
+              "handle",
+              "subject"
+            ],
+            [
+              "hide",
+              "subject"
+            ],
+            [
+              "caller-caught",
+              "raw-hide-error",
+              true
+            ]
+          ],
+          "stack": [
+            "subject"
+          ],
+          "state": {
+            "subject": "pending"
+          },
+          "editor": "edited while open"
+        }
+      ]
+    },
+    {
+      "case": "normal-restore",
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ],
+            [
+              "selector"
+            ],
+            [
+              "clear"
+            ],
+            [
+              "add",
+              "subject"
+            ],
+            [
+              "focus",
+              "subject"
+            ],
+            [
+              "render"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "subject": "pending"
+          },
+          "editor": "saved draft"
+        },
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ],
+            [
+              "selector"
+            ],
+            [
+              "clear"
+            ],
+            [
+              "add",
+              "subject"
+            ],
+            [
+              "focus",
+              "subject"
+            ],
+            [
+              "render"
+            ],
+            [
+              "clear"
+            ],
+            [
+              "add",
+              "editor"
+            ],
+            [
+              "text",
+              "saved draft"
+            ],
+            [
+              "focus",
+              "editor"
+            ],
+            [
+              "render"
+            ],
+            [
+              "dispose",
+              "subject"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "subject": [
+              "resolved",
+              "result"
+            ]
+          },
+          "editor": "saved draft"
+        }
+      ]
+    },
+    {
+      "case": "normal-reject",
+      "steps": [
+        {
+          "log": [
+            [
+              "factory",
+              "subject"
+            ],
+            [
+              "clear"
+            ],
+            [
+              "add",
+              "editor"
+            ],
+            [
+              "text",
+              "saved draft"
+            ],
+            [
+              "focus",
+              "editor"
+            ],
+            [
+              "render"
+            ]
+          ],
+          "stack": [],
+          "state": {
+            "subject": [
+              "rejected",
+              "normal-reject"
+            ]
+          },
+          "editor": "saved draft"
+        }
+      ]
+    }
+  ]
+}

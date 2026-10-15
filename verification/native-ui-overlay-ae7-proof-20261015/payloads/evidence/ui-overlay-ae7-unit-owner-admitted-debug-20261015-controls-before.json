@@ -1,0 +1,38 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\verification\\ui-overlay-ae7-20261015\\Run-UiOverlayAe7NativePair-20261015.ps1",
+    "sha256": "F5EDA1B46B06354DC01D755C2115D265EDDF59520A10090B2FF4EE3ACF7DE21E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015-output.json",
+    "sha256": "CBC8607F5645ABB7B277F99C9D5A03C0AF46721700576213728CEDA280BDEF50"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015-posthash.json",
+    "sha256": "BD959729AF9E43005525965287C88F9EC7F73E2BF0393E5B337F9941CCE15DBF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015.json",
+    "sha256": "D3AC7D6E64E1FACBDFA81F29FABB2F2FD03270D8AED843595E9755571F44A728"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-full-manifest-20261015.json",
+    "sha256": "C4637B7060AAB20542C7FB41DE4450245D61E0268DFBEBB38860D03B4EA00144"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-runtime-manifest-20261015.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-node-tools-before-20261015.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  }
+]

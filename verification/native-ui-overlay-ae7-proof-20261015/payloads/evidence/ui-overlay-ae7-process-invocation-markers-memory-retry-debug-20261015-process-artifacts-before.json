@@ -1,0 +1,14 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\zig-out\\bin\\pi.exe",
+    "sha256": "DA5A8F91474A55B285E9160E1A4863737C36752FCBEC83C71B7DE500C8E29E47"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\zig-out\\bin\\pi-conpty-launcher.exe",
+    "sha256": "36AF729C926370CA68B2AF6B1223240529559A4DE457D95E34166CCFCFE4FF9F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\zig-out\\bin\\pi-terminal-probe.exe",
+    "sha256": "DB5D49DF346EB408E753376A04193C032DF26B2B0DC30286524B8362D04F17E9"
+  }
+]

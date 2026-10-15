@@ -1,0 +1,105 @@
+{
+  "scope": "ae7 InteractiveMode custom overlay saved-handle close; bounded native UI Source12 gate",
+  "head": "039f31088beaa1f42252bcd6f1df1ac67c5a53f8",
+  "tree": "fbf6ed507957c3b2addb223b833820bb40996605",
+  "base": "56d51c4f84867941e2966df98d11ac3af6795394",
+  "branch": "codex/ui-overlay-ae7-20261015",
+  "clean": true,
+  "source_original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015-output.json",
+  "source_original_sha256": "CBC8607F5645ABB7B277F99C9D5A03C0AF46721700576213728CEDA280BDEF50",
+  "source_method_sha256": "e47f572a19acf40c8df3c6efaea9bc37ef09514dcfa430a1eba1dd9d399c874d",
+  "unit_candidate": "d04dbecd983c26d277215b7089a969867c49f9c1",
+  "unit_tests": 31,
+  "unit_posthash": {
+    "candidate": "d04dbecd983c26d277215b7089a969867c49f9c1",
+    "source": 6323,
+    "source_after": 6323,
+    "source_drift": 0,
+    "tools": 19546,
+    "tool_drift": 0,
+    "controls": 9,
+    "control_drift": 0,
+    "latest_source_references": [
+      {
+        "files": 1968,
+        "drift": 0,
+        "name": "source"
+      },
+      {
+        "files": 31064,
+        "drift": 0,
+        "name": "dependencies"
+      },
+      {
+        "files": 1774,
+        "drift": 0,
+        "name": "node_tools"
+      }
+    ],
+    "process_artifacts": [],
+    "process_artifact_drift": 0,
+    "compile": "passed",
+    "runtime": "passed",
+    "completed_utc": "2026-10-15T21:13:33.6116744+01:00"
+  },
+  "final_process_posthash": {
+    "candidate": "039f31088beaa1f42252bcd6f1df1ac67c5a53f8",
+    "source": 6323,
+    "source_after": 6323,
+    "source_drift": 0,
+    "tools": 19546,
+    "tool_drift": 0,
+    "controls": 9,
+    "control_drift": 0,
+    "latest_source_references": [
+      {
+        "drift": 0,
+        "name": "source",
+        "files": 1968
+      },
+      {
+        "drift": 0,
+        "name": "dependencies",
+        "files": 31064
+      },
+      {
+        "drift": 0,
+        "name": "node_tools",
+        "files": 1774
+      }
+    ],
+    "process_artifacts": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\zig-out\\bin\\pi.exe",
+        "sha256": "DA5A8F91474A55B285E9160E1A4863737C36752FCBEC83C71B7DE500C8E29E47"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\zig-out\\bin\\pi-conpty-launcher.exe",
+        "sha256": "36AF729C926370CA68B2AF6B1223240529559A4DE457D95E34166CCFCFE4FF9F"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\zig-out\\bin\\pi-terminal-probe.exe",
+        "sha256": "DB5D49DF346EB408E753376A04193C032DF26B2B0DC30286524B8362D04F17E9"
+      }
+    ],
+    "process_artifact_drift": 0,
+    "compile": "passed",
+    "runtime": "passed",
+    "completed_utc": "2026-10-15T21:28:48.1143189+01:00"
+  },
+  "unit_to_final_changed_files": [
+    "src/fullscreen_frontend_process_test.zig"
+  ],
+  "normal_memory_floor_kib": 16777216,
+  "remaining_owned_pi_processes": [],
+  "preserved_negative_names": [
+    "ui-overlay-ae7-unit-first-debug-20261015",
+    "ui-overlay-ae7-process-first-debug-20261015",
+    "ui-overlay-ae7-process-controller-fences-debug-20261015",
+    "ui-overlay-ae7-process-invocation-markers-debug-20261015"
+  ],
+  "native_slot_4_released": true,
+  "public_activation": false,
+  "full_pi_qualified": false,
+  "completed_utc": "2026-10-15T20:30:58.9336416+00:00"
+}

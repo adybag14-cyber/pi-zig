@@ -1,0 +1,644 @@
+[
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-final-handoff-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-final-handoff-20261015.json",
+    "bytes": 3459,
+    "sha256": "22E776313AA36D1F4CAC2613AD5A40C73EBFB0A052E0E4AE87AC367A9B41EF89"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-controller-fences-debug-20261015-admission.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-controller-fences-debug-20261015-admission.json",
+    "bytes": 966,
+    "sha256": "A679DF4F3D9CA28C88D11E74D3AF3826A4A382B516BDE128AF12742BAADC4663"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-controller-fences-debug-20261015-compile.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-controller-fences-debug-20261015-compile.json",
+    "bytes": 979,
+    "sha256": "51280438437241373FD2D29408671DF34B99E22A9FA555847F62E7C63E40D02C"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-controller-fences-debug-20261015-compile.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-controller-fences-debug-20261015-compile.stderr.log",
+    "bytes": 15278,
+    "sha256": "84376692ED5E04B27D6C9CFB1EB1D80894FA8F18B3B81BFD55B3E1ED4CAAE4FB"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-controller-fences-debug-20261015-compile.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-controller-fences-debug-20261015-compile.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-controller-fences-debug-20261015-controls-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-controller-fences-debug-20261015-controls-before.json",
+    "bytes": 1891,
+    "sha256": "E33879FCCBC8B399B7F2B74C84F0D5E66A1117783E53679E83A770A78328D3AC"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-controller-fences-debug-20261015-posthash.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-controller-fences-debug-20261015-posthash.json",
+    "bytes": 1263,
+    "sha256": "17290F9B306BD9AD11668D75144E5470131B64A17B4731F38E4BA9927E5D15D0"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-controller-fences-debug-20261015-process-artifacts-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-controller-fences-debug-20261015-process-artifacts-before.json",
+    "bytes": 576,
+    "sha256": "BBDD727AFB20B522530D2FBFE2F3E032EA59DB380CD9BFDDD13AC38AF5C0A48C"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-controller-fences-debug-20261015-runtime.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-controller-fences-debug-20261015-runtime.json",
+    "bytes": 978,
+    "sha256": "7B98E1A3065730BCE326050B22291B928EBBF982BCEEF2E925AFA64478E53BAF"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-controller-fences-debug-20261015-runtime.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-controller-fences-debug-20261015-runtime.stderr.log",
+    "bytes": 38357,
+    "sha256": "EBFBDFA3625AEA6D0A78716DB1A847FA9CB733B35213F76F02CC4FB798913AA0"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-controller-fences-debug-20261015-runtime.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-controller-fences-debug-20261015-runtime.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-controller-fences-debug-20261015-source-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-controller-fences-debug-20261015-source-before.json",
+    "bytes": 1072362,
+    "sha256": "4140D8A0051FE88B5773E4B0AC51ED6ABECB72F12FEA11E4B292EB5FEE922E62"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-first-debug-20261015-admission.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-first-debug-20261015-admission.json",
+    "bytes": 13260,
+    "sha256": "27EA83A1ACF186CDAF82E1A403E8285DAA0468E806BCD514F747F3261A99D9B4"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-first-debug-20261015-compile.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-first-debug-20261015-compile.json",
+    "bytes": 967,
+    "sha256": "729EA5795E199DE39A24969581978570F05445E0D077928A0AE45FD5C4B7F9DC"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-first-debug-20261015-compile.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-first-debug-20261015-compile.stderr.log",
+    "bytes": 15285,
+    "sha256": "C4D7EA744A3E9DB255BE75B867589CF85D136FB42DA781AAE0A80B9F4E5D3235"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-first-debug-20261015-compile.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-first-debug-20261015-compile.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-first-debug-20261015-controls-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-first-debug-20261015-controls-before.json",
+    "bytes": 1891,
+    "sha256": "E33879FCCBC8B399B7F2B74C84F0D5E66A1117783E53679E83A770A78328D3AC"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-first-debug-20261015-posthash.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-first-debug-20261015-posthash.json",
+    "bytes": 1263,
+    "sha256": "E74078B70C2A9E217925C6CE77D4CB6AB8EC139D5064F75655BC7270652003A3"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-first-debug-20261015-process-artifacts-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-first-debug-20261015-process-artifacts-before.json",
+    "bytes": 576,
+    "sha256": "D948A88BC8731F77BBEB62DB323B7808A6CEA67A88071A1DF8D7644747E45908"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-first-debug-20261015-runtime.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-first-debug-20261015-runtime.json",
+    "bytes": 966,
+    "sha256": "D05B49016205FDC2B8F51FC723319ED0CF430070A27F1D110AB051E593117061"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-first-debug-20261015-runtime.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-first-debug-20261015-runtime.stderr.log",
+    "bytes": 26793,
+    "sha256": "E80296C078CC439C10C672E6568A4B603DB499261A2FD23E051B2FC6585AC10B"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-first-debug-20261015-runtime.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-first-debug-20261015-runtime.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-first-debug-20261015-source-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-first-debug-20261015-source-before.json",
+    "bytes": 1072362,
+    "sha256": "7E7F1007798EA5DE536ABE79D43D381DB8B8258953BDBEDD29C4FB4FE8F5A2B4"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-debug-20261015-admission.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-debug-20261015-admission.json",
+    "bytes": 974,
+    "sha256": "C5F0EB0FFCC98352F9DD146D55CD3B066E1CC526667CDDF889D4E8A18BC04B9D"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-debug-20261015-controls-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-debug-20261015-controls-before.json",
+    "bytes": 1891,
+    "sha256": "E33879FCCBC8B399B7F2B74C84F0D5E66A1117783E53679E83A770A78328D3AC"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-debug-20261015-source-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-debug-20261015-source-before.json",
+    "bytes": 1072362,
+    "sha256": "81A6110A3E88A453252D7C091ED4DF2F6436FDE5CBB0C75FB536862CB50F6F3A"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-admission.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-admission.json",
+    "bytes": 12304,
+    "sha256": "F8516832BBF638D768A8045DE1BB9AD554AB6FA2E3ED3D2037737EB94552F0A8"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-compile.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-compile.json",
+    "bytes": 993,
+    "sha256": "3B115D6EB0588B77483D3BFF1FF3EDA710635F9B4A57D9B817E903A1BFD7553C"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-compile.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-compile.stderr.log",
+    "bytes": 15279,
+    "sha256": "6EC88A085A13C1C994C0605011FA2875E50A8AAAE4D6539B92F0C9A8DBDF095B"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-compile.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-compile.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-controls-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-controls-before.json",
+    "bytes": 1891,
+    "sha256": "E33879FCCBC8B399B7F2B74C84F0D5E66A1117783E53679E83A770A78328D3AC"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-posthash.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-posthash.json",
+    "bytes": 1263,
+    "sha256": "6D445B1A73A905853B71EFFBB4B644C3DED84A732358130C3F1540AF92B75AC9"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-process-artifacts-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-process-artifacts-before.json",
+    "bytes": 576,
+    "sha256": "CE748286F8421B99F140C210DE27A82B6AEAE9656268E5E5B39F85583578FCE2"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-runtime.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-runtime.json",
+    "bytes": 992,
+    "sha256": "2256112050368A99BB83EAA894ACF7D4A54B23B8D1813CC415E422DAA0443A5C"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-runtime.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-runtime.stderr.log",
+    "bytes": 16070,
+    "sha256": "8426A8A344EEACA853993875B2119E4DECEB797E075E02040554055801EC8295"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-runtime.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-runtime.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-source-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-process-invocation-markers-memory-retry-debug-20261015-source-before.json",
+    "bytes": 1072362,
+    "sha256": "81A6110A3E88A453252D7C091ED4DF2F6436FDE5CBB0C75FB536862CB50F6F3A"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-source12-first-20261015-admission.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015-admission.json",
+    "bytes": 238,
+    "sha256": "0C631F6DD7E0144D847B26C5D36BFBE299B983F460ED3014283AC60498B1E7CC"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-source12-first-20261015-extra-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015-extra-before.json",
+    "bytes": 1679,
+    "sha256": "4EB4CD58AE456EA08E0EB4CD7432DE603628D2FB731308AE2A63A049750F647B"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-source12-first-20261015-output.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015-output.json",
+    "bytes": 27661,
+    "sha256": "CBC8607F5645ABB7B277F99C9D5A03C0AF46721700576213728CEDA280BDEF50"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-source12-first-20261015-posthash.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015-posthash.json",
+    "bytes": 627,
+    "sha256": "BD959729AF9E43005525965287C88F9EC7F73E2BF0393E5B337F9941CCE15DBF"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-source12-first-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015.json",
+    "bytes": 1068,
+    "sha256": "D3AC7D6E64E1FACBDFA81F29FABB2F2FD03270D8AED843595E9755571F44A728"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-source12-first-20261015.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015.stderr.log",
+    "bytes": 178,
+    "sha256": "B4B5C154E1B884D409AE9CB6C3C7B2DC054A431D88C9D26A47516C83AD58359B"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-source12-first-20261015.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-controller-fences-debug-20261015-admission.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-controller-fences-debug-20261015-admission.json",
+    "bytes": 526,
+    "sha256": "B5FA75BC617C4CB70C0E4397C6E039626313A46B5A96474F5E75763BD2F01776"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-controller-fences-debug-20261015-compile.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-controller-fences-debug-20261015-compile.json",
+    "bytes": 968,
+    "sha256": "125F7D6D0FF06ED85D30179728E6434561934249C2DE2D0DCA61CB8EF6C3AB72"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-controller-fences-debug-20261015-compile.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-controller-fences-debug-20261015-compile.stderr.log",
+    "bytes": 13484,
+    "sha256": "88236BA3429CF4AE61D8FDCB3842761007CA6AC3AB8E87BFB7B97B2AF8FE5FB4"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-controller-fences-debug-20261015-compile.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-controller-fences-debug-20261015-compile.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-controller-fences-debug-20261015-controls-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-controller-fences-debug-20261015-controls-before.json",
+    "bytes": 1891,
+    "sha256": "E33879FCCBC8B399B7F2B74C84F0D5E66A1117783E53679E83A770A78328D3AC"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-controller-fences-debug-20261015-posthash.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-controller-fences-debug-20261015-posthash.json",
+    "bytes": 665,
+    "sha256": "35FFEC788080EBBDF9A32623F9D9DB05099F763B4B21CE078B4B909111334496"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-controller-fences-debug-20261015-runtime.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-controller-fences-debug-20261015-runtime.json",
+    "bytes": 967,
+    "sha256": "7F9D0ABA2EF9567252111BA5E22F02F32FE507DC1CAE9BFDEEC0CF33F23623CC"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-controller-fences-debug-20261015-runtime.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-controller-fences-debug-20261015-runtime.stderr.log",
+    "bytes": 14260,
+    "sha256": "025B5DC96A00AD019B5D4225EF3809C70520E79AD074D812CEB37D1676DDC203"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-controller-fences-debug-20261015-runtime.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-controller-fences-debug-20261015-runtime.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-controller-fences-debug-20261015-source-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-controller-fences-debug-20261015-source-before.json",
+    "bytes": 1072362,
+    "sha256": "4140D8A0051FE88B5773E4B0AC51ED6ABECB72F12FEA11E4B292EB5FEE922E62"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-first-debug-20261015-admission.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-first-debug-20261015-admission.json",
+    "bytes": 966,
+    "sha256": "4CDBB29B004A49F0880BC97E5687D1692D33B095BE7CC653DF062D3A380F4703"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-first-debug-20261015-compile.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-first-debug-20261015-compile.json",
+    "bytes": 956,
+    "sha256": "FFBA931D446140760B67BA619B55E7B75450547AE97C65C1CA721BE919D447F2"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-first-debug-20261015-compile.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-first-debug-20261015-compile.stderr.log",
+    "bytes": 13493,
+    "sha256": "1B1C2C8A2E46B848679378F279197CB80C1CD3259A0AB56CDE7F69B8C3F3A8A0"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-first-debug-20261015-compile.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-first-debug-20261015-compile.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-first-debug-20261015-controls-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-first-debug-20261015-controls-before.json",
+    "bytes": 1891,
+    "sha256": "4472C346DC004064E627C679F86D9E718906E07CC15362182EABC6BD8872A85D"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-first-debug-20261015-posthash.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-first-debug-20261015-posthash.json",
+    "bytes": 605,
+    "sha256": "8FEC840995BCA6FF7E39982E0F8F75D9D53D679E66D1D34D6A05136334269360"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-first-debug-20261015-runtime.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-first-debug-20261015-runtime.json",
+    "bytes": 955,
+    "sha256": "F626D01BF12CE2D6C66229D56518BA37830DB2AA944A620A82FB133C9DF50F05"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-first-debug-20261015-runtime.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-first-debug-20261015-runtime.stderr.log",
+    "bytes": 16287,
+    "sha256": "3D65C2511728C1ED05FF30DD535C16866F29AB675B3662C3F3221FCF6B3DABCB"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-first-debug-20261015-runtime.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-first-debug-20261015-runtime.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-first-debug-20261015-source-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-first-debug-20261015-source-before.json",
+    "bytes": 1072362,
+    "sha256": "56E09CBA445D9459CCB0001BC3950012E3F7E40E8EE39C0FB22B23C823C6BC8B"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-owner-admitted-debug-20261015-admission.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-owner-admitted-debug-20261015-admission.json",
+    "bytes": 526,
+    "sha256": "94EC0781C6F35EED94AFA529285A7CA23737097796873E9E081C01E4B5CCA4EA"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-owner-admitted-debug-20261015-compile.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-owner-admitted-debug-20261015-compile.json",
+    "bytes": 965,
+    "sha256": "3E0E8A066B9056E2339BCCE4023E43683B9F39458DCED6ADD50FFA49F34F8713"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-owner-admitted-debug-20261015-compile.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-owner-admitted-debug-20261015-compile.stderr.log",
+    "bytes": 13486,
+    "sha256": "79F2EFC6E59D706584AA78C58AFCBDEB3130879DA392C67E94215D662DB21A2B"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-owner-admitted-debug-20261015-compile.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-owner-admitted-debug-20261015-compile.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-owner-admitted-debug-20261015-controls-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-owner-admitted-debug-20261015-controls-before.json",
+    "bytes": 1891,
+    "sha256": "4472C346DC004064E627C679F86D9E718906E07CC15362182EABC6BD8872A85D"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-owner-admitted-debug-20261015-posthash.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-owner-admitted-debug-20261015-posthash.json",
+    "bytes": 605,
+    "sha256": "C3C3549FEB428E5257D7B851ADDAFA86A3DDBC5624DA6BB3CF02E76CF0D06A1F"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-owner-admitted-debug-20261015-runtime.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-owner-admitted-debug-20261015-runtime.json",
+    "bytes": 964,
+    "sha256": "0BAE96B67C38134AA7C6ECCC785551972C660E185AF6DB7202E95BFF757FC4C9"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-owner-admitted-debug-20261015-runtime.stderr.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-owner-admitted-debug-20261015-runtime.stderr.log",
+    "bytes": 14260,
+    "sha256": "6CC67B27B3AA872B5C8C559948B746968CF4E1C5B9A9265403A24764F8152A9C"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-owner-admitted-debug-20261015-runtime.stdout.log",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-owner-admitted-debug-20261015-runtime.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "payloads/evidence/ui-overlay-ae7-unit-owner-admitted-debug-20261015-source-before.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-unit-owner-admitted-debug-20261015-source-before.json",
+    "bytes": 1072362,
+    "sha256": "0FAA638E9E0729336D4A5A74FC7E22C93C2066E7BD189333B6EE9A6D68F58B48"
+  },
+  {
+    "path": "payloads/references/sourceae7-modules-55332-0-20261015.jsonl",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-modules-55332-0-20261015.jsonl",
+    "bytes": 378384,
+    "sha256": "E9A233551560D3E1E6E5E53A28A357D0B9C6B576B4D2F44A4816E02978FFF678"
+  },
+  {
+    "path": "payloads/references/sourceae7-full-manifest-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-full-manifest-20261015.json",
+    "bytes": 556435,
+    "sha256": "C4637B7060AAB20542C7FB41DE4450245D61E0268DFBEBB38860D03B4EA00144"
+  },
+  {
+    "path": "payloads/references/sourceae7-runtime-manifest-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-runtime-manifest-20261015.json",
+    "bytes": 7153406,
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "payloads/references/sourceae7-node-tools-before-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-node-tools-before-20261015.json",
+    "bytes": 352993,
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "payloads/references/sourceae7-dependency-contract-audit-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-dependency-contract-audit-20261015.json",
+    "bytes": 211434,
+    "sha256": "B67885F76310D14C75505EC5EF8A61821BCF6D57136474419BB65C4AF7AF0035"
+  },
+  {
+    "path": "payloads/references/sourceae7-preparation-controls-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-preparation-controls-20261015.json",
+    "bytes": 1007,
+    "sha256": "3C84A2C828A906617A50E5C568BA9DA9CAEC7FD79D202C20CA7D6087DD02637C"
+  },
+  {
+    "path": "payloads/references/sourceae7-preparation-readiness-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-preparation-readiness-20261015.json",
+    "bytes": 3965,
+    "sha256": "BA4C270D341C7B8651573A2DE0B9478B1CEAE1D32D680A4EB26068D2DF08389E"
+  },
+  {
+    "path": "payloads/references/sourceae7-observe-20261015.mjs",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-observe-20261015.mjs",
+    "bytes": 4694,
+    "sha256": "1891342A814F6949D3DF384D83B738159D52851FD41DF240F9F160EB3E34D8C2"
+  },
+  {
+    "path": "payloads/references/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "bytes": 4665338,
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "payloads/references/Invoke-OwnedEeSourceJob-20261012.ps1",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "bytes": 3723,
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "payloads/original-source/LICENSE",
+    "origin": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\LICENSE",
+    "bytes": 1069,
+    "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+  },
+  {
+    "path": "payloads/original-source/package.json",
+    "origin": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\package.json",
+    "bytes": 4833,
+    "sha256": "8F4BD471DA2B70FCA21276B519CB74E9E769218B0F2387AF8C5B2007087EAFD9"
+  },
+  {
+    "path": "payloads/original-source/package-lock.json",
+    "origin": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\package-lock.json",
+    "bytes": 169614,
+    "sha256": "B686F30BC97E99AEE6BB63C78714535ADA1D307639DB7F4E8972144059FC501D"
+  },
+  {
+    "path": "payloads/original-source/packages/coding-agent/package.json",
+    "origin": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\coding-agent\\package.json",
+    "bytes": 3762,
+    "sha256": "83C3BB7619F590C213CC96A24216EB29A819A3EF6DC548607CC037ED276E8DC5"
+  },
+  {
+    "path": "payloads/original-source/packages/tui/package.json",
+    "origin": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\tui\\package.json",
+    "bytes": 1593,
+    "sha256": "A6A82AF81ED5B6069267EABFDCF047D0AF8013695B0E64D72F3C9F44F8E8124E"
+  },
+  {
+    "path": "payloads/original-source/packages/coding-agent/src/modes/interactive/interactive-mode.ts",
+    "origin": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\coding-agent\\src\\modes\\interactive\\interactive-mode.ts",
+    "bytes": 251569,
+    "sha256": "B1000CCC60AC715D8483F00AD6CB8E6CD56665418B3738EFA47A77EC4FCE5043"
+  },
+  {
+    "path": "payloads/original-source/packages/tui/src/tui.ts",
+    "origin": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\tui\\src\\tui.ts",
+    "bytes": 50855,
+    "sha256": "206519884C4CB27096D00048A2FC4E8A0C404714E548C8DD5B62C38060D3B240"
+  },
+  {
+    "path": "payloads/controls/e94f6243cb2ca11d682bfdc90ac2555c1f1b622532e598af20f243b6c8bd1844/Run-UiOverlayAe7NativePair-20261015.ps1",
+    "origin": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\verification\\ui-overlay-ae7-20261015\\Run-UiOverlayAe7NativePair-20261015.ps1",
+    "bytes": 8850,
+    "sha256": "E94F6243CB2CA11D682BFDC90AC2555C1F1B622532E598AF20F243B6C8BD1844"
+  },
+  {
+    "path": "payloads/controls/b553b9a183bd2fb4cfbc7852b98b47e788adb97ae32723f1e56ee04a8776b2f9/Invoke-OwnedEeSourceJob-20261012.ps1",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "bytes": 3723,
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "payloads/controls/dee259f171f720ab2c08e8dd473975e22c876417cd62e4f016c71a7c662794eb/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "bytes": 4665338,
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "payloads/controls/cbc8607f5645abb7b277f99c9d5a03c0af46721700576213728ceda280bdef50/ui-overlay-ae7-source12-first-20261015-output.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015-output.json",
+    "bytes": 27661,
+    "sha256": "CBC8607F5645ABB7B277F99C9D5A03C0AF46721700576213728CEDA280BDEF50"
+  },
+  {
+    "path": "payloads/controls/bd959729af9e43005525965287c88f9ec7f73e2bf0393e5b337f9941cce15dbf/ui-overlay-ae7-source12-first-20261015-posthash.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015-posthash.json",
+    "bytes": 627,
+    "sha256": "BD959729AF9E43005525965287C88F9EC7F73E2BF0393E5B337F9941CCE15DBF"
+  },
+  {
+    "path": "payloads/controls/d3ac7d6e64e1facbdfa81f29fabb2f2fd03270d8aed843595e9755571f44a728/ui-overlay-ae7-source12-first-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ui-overlay-ae7-source12-first-20261015.json",
+    "bytes": 1068,
+    "sha256": "D3AC7D6E64E1FACBDFA81F29FABB2F2FD03270D8AED843595E9755571F44A728"
+  },
+  {
+    "path": "payloads/controls/c4637b7060aab20542c7fb41de4450245d61e0268dfbebb38860d03b4ea00144/sourceae7-full-manifest-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-full-manifest-20261015.json",
+    "bytes": 556435,
+    "sha256": "C4637B7060AAB20542C7FB41DE4450245D61E0268DFBEBB38860D03B4EA00144"
+  },
+  {
+    "path": "payloads/controls/38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba/sourceae7-runtime-manifest-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-runtime-manifest-20261015.json",
+    "bytes": 7153406,
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "payloads/controls/f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd/sourceae7-node-tools-before-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-node-tools-before-20261015.json",
+    "bytes": 352993,
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "payloads/controls/f5eda1b46b06354dc01d755c2115d265eddf59520a10090b2ff4ee3acf7de21e/Run-UiOverlayAe7NativePair-20261015.ps1",
+    "origin": "git:0a9e72d1b669a54733893f308bf2bf8b2cf3ebf5:verification/ui-overlay-ae7-20261015/Run-UiOverlayAe7NativePair-20261015.ps1",
+    "bytes": 8212,
+    "sha256": "F5EDA1B46B06354DC01D755C2115D265EDDF59520A10090B2FF4EE3ACF7DE21E"
+  },
+  {
+    "path": "payloads/controls/95e39e77f3ad305a116ebec744cf4d52ba787ded9153680177d491adc5b990cf/source-ui-overlay-ae7-capture-20261015.mjs",
+    "origin": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\verification\\ui-overlay-ae7-20261015\\source-ui-overlay-ae7-capture-20261015.mjs",
+    "bytes": 5549,
+    "sha256": "95E39E77F3AD305A116EBEC744CF4D52BA787DED9153680177D491ADC5B990CF"
+  },
+  {
+    "path": "payloads/controls/1891342a814f6949d3df384d83b738159d52851fd41df240f9f160eb3e34d8c2/sourceae7-observe-20261015.mjs",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-observe-20261015.mjs",
+    "bytes": 4694,
+    "sha256": "1891342A814F6949D3DF384D83B738159D52851FD41DF240F9F160EB3E34D8C2"
+  },
+  {
+    "path": "payloads/controls/b67885f76310d14c75505ec5ef8a61821bcf6d57136474419bb65c4af7af0035/sourceae7-dependency-contract-audit-20261015.json",
+    "origin": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-dependency-contract-audit-20261015.json",
+    "bytes": 211434,
+    "sha256": "B67885F76310D14C75505EC5EF8A61821BCF6D57136474419BB65C4AF7AF0035"
+  },
+  {
+    "path": "payloads/controls/2bfd25675c055ceb03a4bd4a1f7f64677c24054d5a348ff484d13fd426d1b156/Run-UiOverlayAe7Source-20261015.ps1",
+    "origin": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\verification\\ui-overlay-ae7-20261015\\Run-UiOverlayAe7Source-20261015.ps1",
+    "bytes": 6247,
+    "sha256": "2BFD25675C055CEB03A4BD4A1F7F64677C24054D5A348FF484D13FD426D1B156"
+  },
+  {
+    "path": "payloads/qualified-code.patch",
+    "origin": "git diff 56d51c4f84867941e2966df98d11ac3af6795394..039f31088beaa1f42252bcd6f1df1ac67c5a53f8",
+    "bytes": 182863,
+    "sha256": "89A7BC90F312A6092013F7FF6C6D77147701588508A50CEA9C708AE9CCF413C5"
+  },
+  {
+    "path": "payloads/unit-to-final-paths.txt",
+    "origin": "git diff d04dbecd..039f3108 --name-only",
+    "bytes": 41,
+    "sha256": "29B65CB65670EC76AC4F433E7ED24F044D26A24B70CF170F581678ABD07A036A"
+  }
+]

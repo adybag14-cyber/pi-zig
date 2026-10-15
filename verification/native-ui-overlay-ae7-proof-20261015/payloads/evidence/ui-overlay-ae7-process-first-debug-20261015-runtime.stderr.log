@@ -1,0 +1,463 @@
+test-ui-overlay-ae7-process
++- run test 0 pass, 1 fail (1 total)
+error: 'fullscreen_frontend_process_test.test.ae7 overlay process real native worker preserves concurrent overlays and own fence closes in both terminal modes' failed:
+       Fullscreen cells missing AE7_TOP_READY; frames=7; cells:
+       pi (pi-zig) 1.1.0 · mock/mock
+       history-row-042
+       user
+       histAE7_LOWER_READY
+       user
+       history-row-044
+       user
+       history-row-045
+       user
+       history-row-046
+       user
+       history-row-047
+       user
+       history-row-048
+       user
+       history-row-049
+       user
+       history-row-050
+       user
+       history-row-051
+       user
+       history-row-052
+       user
+       history-row-053
+       user
+       history-row-054
+       user
+       history-row-055
+       user
+       history-row-056
+       user
+       history-row-057
+       user
+       history-row-058
+       user
+       history-row-059
+       notice
+       Type a prompt and press Enter. Commands: /help /quit /session
+       >
+       mock/mock · fullscreen-history
+       
+       Native frontend raw output tail (6830 total bytes):
+       [?9001h[?1004h[?1003;1006h[?2004h[?1000h[?1002h[?1006h[2J[m]0;C:\Users\adyba\pi-zig-ui-overlay-ae7-20261015\zig-out\bin\pi-conpty-launcher.exe[?25l]7501;?\]4;0;?]4;1;?]4;2;?]4;3;?]4;4;?]4;5;?]4;6;?]4;7;?]4;8;?]4;9;?]4;10;?]4;11;?]4;12;?]4;13;?]4;14;?]4;15;?[?2026h[2J[?2026l[Hpi (pi-zig) 1.1.0 · mock/mock[K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       > [7m [27m[K
+       idle                                                                                                [40;197H[?2026h[?2026l[2;1Hhistory-row-042                                                                                     [1muser[22m                                                                                                history-row-043                                                                                     [1muser[22m                                                                                                history-row-044                                                                                     [1muser[22m                                                                                                history-row-045                                                                                     [1muser[22m                                                                                                history-row-046                                                                                     [1muser[22m                                                                                                history-row-047                                                                                     [1muser[22m                                                                                                history-row-048                                                                                     [1muser[22m                                                                                                history-row-049                                                                                     [1muser[22m                                                                                                history-row-050                                                                                     [1muser[22m                                                                                                history-row-051                                                                                     [1muser[22m                                                                                                history-row-052                                                                                     [1muser[22m                                                                                                history-row-053                                                                                     [1muser[22m                                                                                                history-row-054                                                                                     [1muser[22m                                                                                                history-row-055                                                                                     [1muser[22m                                                                                                history-row-056                                                                                     [1muser[22m                                                                                                history-row-057                                                                                     [1muser[22m                                                                                                history-row-058                                                                                     [1muser[22m                                                                                                history-row-059                                                                                     [1mnotice[22m                                                                                              Type a prompt and press Enter. Commands: /help /quit /session                                       [40;1Hmock/mock · fullscreen-history                                                                      [40;171H[?2026h[?2026l[?2026h[?2026l[?2026h[?2026l[?1049h[2J[H[K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K
+       [K[100C[?2026h[2J[3J[?2026l[Hpi (pi-zig) 1.1.0 · mock/mock[K
+       history-row-042[K[1m
+       user[22m[K
+       histAE7_LOWER_READY[K[1m
+       user[22m[K
+       history-row-044[K[1m
+       user[22m[K
+       history-row-045[K[1m
+       user[22m[K
+       history-row-046[K[1m
+       user[22m[K
+       history-row-047[K[1m
+       user[22m[K
+       history-row-048[K[1m
+       user[22m[K
+       history-row-049[K[1m
+       user[22m[K
+       history-row-050[K[1m
+       user[22m[K
+       history-row-051[K[1m
+       user[22m[K
+       history-row-052[K[1m
+       user[22m[K
+       history-row-053[K[1m
+       user[22m[K
+       history-row-054[K[1m
+       user[22m[K
+       history-row-055[K[1m
+       user[22m[K
+       history-row-056[K[1m
+       user[22m[K
+       history-row-057[K[1m
+       user[22m[K
+       history-row-058[K[1m
+       user[22m[K
+       history-row-059[K[1m
+       notice[22m[K
+       Type a prompt and press Enter. Commands: /help /quit /session[K
+       > [7m [27m[K
+       mock/mock · fullscreen-history                                                                      [40;171H[?2026h[2J[3J[?2026l[Hpi (pi-zig) 1.1.0 · mock/mock[K
+       history-row-042[K[1m
+       user[22m[K
+       histAE7_LOWER_READY[K[1m
+       user[22m[K
+       history-row-044[K[1m
+       user[22m[K
+       history-row-045[K[1m
+       user[22m[K
+       history-row-046[K[1m
+       user[22m[K
+       history-row-047[K[1m
+       user[22m[K
+       history-row-048[K[1m
+       user[22m[K
+       history-row-049[K[1m
+       user[22m[K
+       history-row-050[K[1m
+       user[22m[K
+       history-row-051[K[1m
+       user[22m[K
+       history-row-052[K[1m
+       user[22m[K
+       history-row-053[K[1m
+       user[22m[K
+       history-row-054[K[1m
+       user[22m[K
+       history-row-055[K[1m
+       user[22m[K
+       history-row-056[K[1m
+       user[22m[K
+       history-row-057[K[1m
+       user[22m[K
+       history-row-058[K[1m
+       user[22m[K
+       history-row-059[K[1m
+       notice[22m[K
+       Type a prompt and press Enter. Commands: /help /quit /session[K
+       > [7m [27m[K
+       mock/mock · fullscreen-history                                                                      [40;171H
+       C:\Users\adyba\pi-zig-ui-overlay-ae7-20261015\src\fullscreen_frontend_process_test.zig:1397:9: 0x7ff67fd915ed in wait (test_zcu.obj)
+               return error.FullscreenCellAssertionFailed;
+               ^
+       C:\Users\adyba\pi-zig-ui-overlay-ae7-20261015\src\fullscreen_frontend_process_test.zig:1419:9: 0x7ff67fd9173d in send (test_zcu.obj)
+               try self.wait(child, marker, frame);
+               ^
+       C:\Users\adyba\pi-zig-ui-overlay-ae7-20261015\src\fullscreen_frontend_process_test.zig:431:9: 0x7ff67fd92c31 in test.ae7 overlay process real native worker preserves concurrent overlays and own fence closes in both terminal modes (test_zcu.obj)
+               try observed.send(&child, "/overlays\r", "AE7_TOP_READY");
+               ^
+failed command: PI_TEST_CONPTY_LAUNCHER="C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\zig-out\\bin\\pi-conpty-launcher.exe" PI_TEST_CONPTY_PROBE="C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\zig-out\\bin\\pi-terminal-probe.exe" ".\\.zig-cache\\o\\36aa16991e2de575c69b0842b6decaf4\\test.exe" "--cache-dir=.\\.zig-cache" --seed=0xa47f71e3 --listen=-
+
+Build Summary: 166/168 steps succeeded (1 failed); 0/1 tests passed (1 failed)
+test-ui-overlay-ae7-process transitive failure
++- run test 0 pass, 1 fail (1 total)
+   +- compile test Debug native cached 56ms MaxRSS:55M
+   +- install cached
+   |  +- install src/themes/fixtures/dark-original-6fb.json to theme/dark.json cached
+   |  +- install src/themes/fixtures/light-original-6fb.json to theme/light.json cached
+   |  +- install schemas/ cached
+   |  +- install pi cached
+   |     +- compile exe pi Debug native cached 97ms MaxRSS:56M
+   |        +- WriteFile cached
+   |        +- compile lib pi-quickjs Debug native cached 59ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile lib pi-icu78-i18n Debug native cached 74ms MaxRSS:56M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile lib pi-icu78-common Debug native cached 87ms MaxRSS:56M
+   |        |  |  |  +- WriteFile cached
+   |        |  |  |  +- compile lib pi-icu78-stubdata Debug native cached 39ms MaxRSS:55M
+   |        |  |  |  +- compile lib pi-icu78-stubdata Debug native (reused)
+   |        |  |  +- compile lib pi-icu78-common Debug native (+3 more reused dependencies)
+   |        |  +- WriteFile cached
+   |        |  +- compile lib pi-native-yaml Debug native cached 53ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-0 ReleaseSafe native cached 29ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-1 ReleaseSafe native cached 29ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-2 ReleaseSafe native cached 27ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-3 ReleaseSafe native cached 29ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-4 ReleaseSafe native cached 39ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-5 ReleaseSafe native cached 32ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-6 ReleaseSafe native cached 35ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-7 ReleaseSafe native cached 36ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-8 ReleaseSafe native cached 30ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-9 ReleaseSafe native cached 28ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-10 ReleaseSafe native cached 37ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-11 ReleaseSafe native cached 37ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-12 ReleaseSafe native cached 39ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-13 ReleaseSafe native cached 36ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-14 ReleaseSafe native cached 28ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-15 ReleaseSafe native cached 28ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-16 ReleaseSafe native cached 27ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-17 ReleaseSafe native cached 26ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-18 ReleaseSafe native cached 36ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-19 ReleaseSafe native cached 35ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-20 ReleaseSafe native cached 27ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-21 ReleaseSafe native cached 36ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-22 ReleaseSafe native cached 36ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-23 ReleaseSafe native cached 26ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-24 ReleaseSafe native cached 28ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-25 ReleaseSafe native cached 14ms MaxRSS:55M
+   |        |  |  +- WriteFile cached
+   |        |  |  +- compile obj pi-yaml-26 ReleaseSafe native cached 29ms MaxRSS:55M
+   |        |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)
+   |        |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)
+   |        |  +- WriteFile cached
+   |        |  +- compile lib pi-sqlite Debug native cached 34ms MaxRSS:55M
+   |        |  +- compile lib pi-icu78-i18n Debug native (+3 more reused dependencies)
+   |        |  +- compile lib pi-native-yaml Debug native (+81 more reused dependencies)
+   |        |  +- compile lib pi-sqlite Debug native (reused)
+   |        +- WriteFile cached
+   |        +- compile lib pi-typescript-parser Debug native cached 33ms MaxRSS:55M
+   |        +- compile lib pi-quickjs Debug native (+9 more reused dependencies)
+   |        +- compile lib pi-typescript-parser Debug native (reused)
+   |        +- WriteFile cached
+   |        +- compile lib pi-photon Debug native cached 17ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_0 Debug native cached 38ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_0 Debug native cached 40ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_1 Debug native cached 28ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_1 Debug native cached 39ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_2 Debug native cached 37ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_2 Debug native cached 28ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_3 Debug native cached 39ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_3 Debug native cached 38ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_4 Debug native cached 39ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_4 Debug native cached 36ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_5 Debug native cached 39ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_5 Debug native cached 33ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_6 Debug native cached 39ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_6 Debug native cached 29ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_7 Debug native cached 37ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_7 Debug native cached 36ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_8 Debug native cached 40ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_8 Debug native cached 28ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_9 Debug native cached 40ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_9 Debug native cached 39ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_10 Debug native cached 28ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_10 Debug native cached 37ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_11 Debug native cached 28ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_11 Debug native cached 37ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_12 Debug native cached 41ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_12 Debug native cached 37ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_13 Debug native cached 31ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_13 Debug native cached 27ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_14 Debug native cached 40ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_14 Debug native cached 40ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_15 Debug native cached 39ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_15 Debug native cached 37ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-codec_imports Debug native cached 35ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-browser_imports Debug native cached 35ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-codec_alloc_guard Debug native cached 35ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_native Debug native cached 29ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-photon_browser_native Debug native cached 35ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-session_api Debug native cached 35ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-session_browser_api Debug native cached 40ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-wasm-rt-impl Debug native cached 36ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native cached 37ms MaxRSS:55M
+   |        |  +- WriteFile cached
+   |        |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native cached 38ms MaxRSS:55M
+   |        |  +- compile obj pi-photon-photon_0 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_0 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_1 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_1 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_2 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_2 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_3 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_3 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_4 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_4 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_5 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_5 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_6 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_6 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_7 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_7 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_8 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_8 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_9 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_9 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_10 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_10 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_11 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_11 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_12 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_12 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_13 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_13 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_14 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_14 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_15 Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_15 Debug native (reused)
+   |        |  +- compile obj pi-photon-codec_imports Debug native (reused)
+   |        |  +- compile obj pi-photon-browser_imports Debug native (reused)
+   |        |  +- compile obj pi-photon-codec_alloc_guard Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_native Debug native (reused)
+   |        |  +- compile obj pi-photon-photon_browser_native Debug native (reused)
+   |        |  +- compile obj pi-photon-session_api Debug native (reused)
+   |        |  +- compile obj pi-photon-session_browser_api Debug native (reused)
+   |        |  +- compile obj pi-photon-wasm-rt-impl Debug native (reused)
+   |        |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native (reused)
+   |        |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native (reused)
+   |        +- compile lib pi-photon Debug native (+126 more reused dependencies)
+   |        +- options cached
+   +- install pi-conpty-launcher cached
+   |  +- compile exe pi-conpty-launcher Debug native cached 55ms MaxRSS:55M
+   +- install pi-terminal-probe cached
+      +- compile exe pi-terminal-probe Debug native cached 51ms MaxRSS:55M
+
+error: the following build command failed with exit code 1:
+.zig-cache\o\c91334fef51406857a982acb7d61c2e1\build.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\zig.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib C:\Users\adyba\pi-zig-ui-overlay-ae7-20261015 .zig-cache C:\Users\adyba\AppData\Local\zig --seed 0xa47f71e3 -Zf679f761e0525e90 test-ui-overlay-ae7-process -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all

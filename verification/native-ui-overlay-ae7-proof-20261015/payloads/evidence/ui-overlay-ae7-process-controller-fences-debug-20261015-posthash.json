@@ -1,0 +1,45 @@
+{
+  "candidate": "d04dbecd983c26d277215b7089a969867c49f9c1",
+  "source": 6323,
+  "source_after": 6323,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "controls": 9,
+  "control_drift": 0,
+  "latest_source_references": [
+    {
+      "drift": 0,
+      "name": "source",
+      "files": 1968
+    },
+    {
+      "drift": 0,
+      "name": "dependencies",
+      "files": 31064
+    },
+    {
+      "drift": 0,
+      "name": "node_tools",
+      "files": 1774
+    }
+  ],
+  "process_artifacts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\zig-out\\bin\\pi.exe",
+      "sha256": "43AE90CB387BE2EA0845D0D763C8C970A495F0F07173E01FF12A4A09832085ED"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\zig-out\\bin\\pi-conpty-launcher.exe",
+      "sha256": "36AF729C926370CA68B2AF6B1223240529559A4DE457D95E34166CCFCFE4FF9F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-ui-overlay-ae7-20261015\\zig-out\\bin\\pi-terminal-probe.exe",
+      "sha256": "DB5D49DF346EB408E753376A04193C032DF26B2B0DC30286524B8362D04F17E9"
+    }
+  ],
+  "process_artifact_drift": 0,
+  "compile": "passed",
+  "runtime": "failed",
+  "completed_utc": "2026-10-15T20:16:40.7642551+00:00"
+}

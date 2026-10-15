@@ -1,0 +1,8 @@
+{
+  "status": "admitted",
+  "heap_mb": 256,
+  "free_kib": 23940280,
+  "observed_utc": "2026-10-15T19:40:40.0802857+00:00",
+  "required_kib": 2097152,
+  "coordinated_with": "Root explicit LIGHT grant required before this runner"
+}
