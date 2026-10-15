@@ -2,15 +2,15 @@
   "component": "native Codex and Radius OAuth browser Source7",
   "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
   "caseCount": 7,
-  "status": "sealed for Root LIGHT6 capture, not yet run",
+  "status": "genuine Source7 qualified; native uncompiled/unrun",
   "ports": [
     1455,
     1456
   ],
   "actualSourceListenersRequired": 7,
-  "sourceExpected": "absent intentionally until terminal Source pass and fullpost0",
+  "sourceExpected": "published after terminal pass and full post0, SHA B94EFF93E5F1BF05F708C435EDD0A64629E82505411EA958250364531BF20B3F",
   "owner": "Run-OAuthCodexRadiusBrowserAe7Source7-20261015.ps1",
-  "rootReservation": "Root LIGHT6 granted; ports1455/1456 preflight required",
+  "rootReservation": "Root LIGHT6 and callback1455/1456 released after qualification",
   "nativeBuildTarget": "build-native-ai-oauth-codex-radius-browser",
   "nativeTestTarget": "test-native-ai-oauth-codex-radius-browser",
   "nativeStatus": "uncompiled, unrun",

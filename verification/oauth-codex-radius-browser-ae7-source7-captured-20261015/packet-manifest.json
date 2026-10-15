@@ -1,0 +1,207 @@
+{
+  "schema": 1,
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "testedCandidate": "c4a5eb027ceb71402aee5bdf88c5f01b99ef3460",
+  "entries": [
+    {
+      "relative": "Invoke-OwnedOAuthBrowserSourceJob-20261015.ps1",
+      "bytes": 3819,
+      "sha256": "96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5"
+    },
+    {
+      "relative": "native_ai_oauth_codex_radius_browser_test.zig",
+      "bytes": 2647,
+      "sha256": "9734D8C7670FB2749AB33A38B9C113458DBAAF5535E43A1B916D62DE344575B1"
+    },
+    {
+      "relative": "native_ai_oauth_codex.zig",
+      "bytes": 28785,
+      "sha256": "EF03D26981B651F00734F837D6E36F1988DFBE161F59E3F619C09043D938CFF0"
+    },
+    {
+      "relative": "native_ai_oauth_radius.zig",
+      "bytes": 24056,
+      "sha256": "566A21CE819EE81C1C267629B33F906A56E2BAD60958A19A9D66180F2DC29E34"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-cases-20261015.mjs",
+      "bytes": 5605,
+      "sha256": "2AC4F7C55A5404E7E1BC9ED32957AC4893119E45D16C242DEA931DDD45E5D301"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-cases.input.txt",
+      "bytes": 5605,
+      "sha256": "2AC4F7C55A5404E7E1BC9ED32957AC4893119E45D16C242DEA931DDD45E5D301"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source.json",
+      "bytes": 16156,
+      "sha256": "B94EFF93E5F1BF05F708C435EDD0A64629E82505411EA958250364531BF20B3F"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-first-20261015-candidate-before.json",
+      "bytes": 1547973,
+      "sha256": "49C36F21A0A2025C0E244CD6FFC49146E52C1E49859A48A4F630D98676DFE3F1"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-first-20261015-preparation-failure.json",
+      "bytes": 542,
+      "sha256": "A885A5E6561BBEEC5AEB7B72E814D9A28EDFD8F88964010328E78A3E43F84C3B"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-first-20261015-syntax-check-oauth-codex-radius-browser-ae7-cases-20261015.json",
+      "bytes": 1013,
+      "sha256": "0AA32AAC907E5BFE634623404267E0A13432B79A6DBFCD807C926619D276F48F"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-first-20261015-syntax-check-oauth-codex-radius-browser-ae7-cases-20261015.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-first-20261015-syntax-check-oauth-codex-radius-browser-ae7-cases-20261015.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-first-20261015-syntax-check-oauth-codex-radius-browser-source-owner-20261015.json",
+      "bytes": 1019,
+      "sha256": "9475AAF72483867FA560C2E04ECE1B48C73F35C1D226B5147427A9FD3077E720"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-first-20261015-syntax-check-oauth-codex-radius-browser-source-owner-20261015.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-first-20261015-syntax-check-oauth-codex-radius-browser-source-owner-20261015.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-admission.json",
+      "bytes": 324,
+      "sha256": "3E40206F84DAB519F4893816AB692995B68AAA677E9892B8DDF808EF49A83B74"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-callback-port-preflight.json",
+      "bytes": 211,
+      "sha256": "36D8FCFD27E6EC5BA59E60531B8E0DDFAF06B47339920E7769BDDC350B04D7CF"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-candidate-before.json",
+      "bytes": 1548302,
+      "sha256": "92994866EF6BB562546ACE7DD12CD432AF962B47EEF3ED8D05F7E4B89ED66E90"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-extra-before.json",
+      "bytes": 4487,
+      "sha256": "9B2025C97F3852E8A0032ABB8A042F07D2DC0323FF999F550C831B4E896808DE"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-independent-cleanup.json",
+      "bytes": 384,
+      "sha256": "6D70B0F3BF550C870166392B2DC5723D13537B104D75C439FDD1861E8F7D04D9"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-inventories-before.json",
+      "bytes": 4484222,
+      "sha256": "6FAD8C74ED4CE07BC7C96A76A77900F02DB060AF2AA486CB7C7807283612417A"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-output.json",
+      "bytes": 24028,
+      "sha256": "5839890091DF9922960A038017638C3A785BDA73E18293BBE71688B9ABBB89D1"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-posthash.json",
+      "bytes": 1126,
+      "sha256": "15F2EDCFA366F94326116FAD2EB4E41726EFDBF17236FB4290F03DD8A079B8B1"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-syntax-check-oauth-codex-radius-browser-ae7-cases-20261015.json",
+      "bytes": 1014,
+      "sha256": "A7965C3A74E2BAC432DCE84FDA240E7C9C106EDE07580B9149878C40CB1FBF45"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-syntax-check-oauth-codex-radius-browser-ae7-cases-20261015.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-syntax-check-oauth-codex-radius-browser-ae7-cases-20261015.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-syntax-check-oauth-codex-radius-browser-source-owner-20261015.json",
+      "bytes": 1020,
+      "sha256": "C24386E3E5C34CE741033E07ECE6B2316FD32BB79F17BD48F030A612057385CD"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-syntax-check-oauth-codex-radius-browser-source-owner-20261015.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-syntax-check-oauth-codex-radius-browser-source-owner-20261015.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015-validation.json",
+      "bytes": 212,
+      "sha256": "604090F784D8F63BAA6212D4CEFC13EF087FB101AA66067E7B37F765AF69383E"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015.json",
+      "bytes": 1205,
+      "sha256": "1F6C4948D448F83F120B9A36DC19697EFE39E8BAECC8754B837C96982F9AA283"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015.stderr.log",
+      "bytes": 178,
+      "sha256": "E7DD56A944136FC1D21777CA6BB41D8E384CBCC0D5FB2DCEC5A6550DB288EB1D"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-ae7-source7-resumed-second-20261015.stdout.log",
+      "bytes": 99,
+      "sha256": "6B9D6D5F56F097A17C5BEEBCD2DE0E5DF6EF2C2E42A5ADE6923B3365CA386722"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-source-owner-20261015.json",
+      "bytes": 929,
+      "sha256": "33C3BDB5141E66166376EF4B7A684DBCDD365A6C3958384CA79C58D664B7FAD9"
+    },
+    {
+      "relative": "oauth-codex-radius-browser-source-owner-20261015.mjs",
+      "bytes": 3502,
+      "sha256": "0D519BA9BC61B6477DC3B477584ADE278F6D302F50675212173C37709939CA71"
+    },
+    {
+      "relative": "qualification.json",
+      "bytes": 1441,
+      "sha256": "6FA8833C2EB6622590B0B1F269E5E87B1F56C25A55A214797382191DA7963A98"
+    },
+    {
+      "relative": "Run-OAuthCodexRadiusBrowserAe7Source7-20261015.ps1",
+      "bytes": 16394,
+      "sha256": "FB3DC3122F73E0E02EC66F68840CD7840ADA47EEE25AC187B1088DB107D44231"
+    },
+    {
+      "relative": "source35-preserved-expected.json",
+      "bytes": 28345,
+      "sha256": "085F6A4C5CC6AF456BC2FBBEB71365A527EE111CDE4794A837D3541B22E12495"
+    },
+    {
+      "relative": "sourceae7-modules-78484-0-20261015.jsonl",
+      "bytes": 2577,
+      "sha256": "F64E408A4EC054CC4B193321232B53C700A6A8AEB55A4269024A7C13C3B893FC"
+    },
+    {
+      "relative": "Verify-Browser7Packet.ps1",
+      "bytes": 4524,
+      "sha256": "081A0B33C3E83F521AF2979118C505E1FA96D7C03388BA143C72E708010D320A"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "sourcePid": 78484,
+  "sourcePidAbsent": true,
+  "callbackPorts": [
+    1455,
+    1456
+  ],
+  "listeningCount": 0,
+  "listeners": null,
+  "source35Sha256": "085F6A4C5CC6AF456BC2FBBEB71365A527EE111CDE4794A837D3541B22E12495",
+  "browser7Sha256": "B94EFF93E5F1BF05F708C435EDD0A64629E82505411EA958250364531BF20B3F",
+  "observedUtc": "2026-10-15T22:18:57.9388378+00:00"
+}

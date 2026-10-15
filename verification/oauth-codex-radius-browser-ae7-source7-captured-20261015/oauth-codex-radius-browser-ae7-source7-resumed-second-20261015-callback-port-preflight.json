@@ -1,0 +1,10 @@
+{
+  "probe_owner_pid": 70164,
+  "source_child_must_own_each_actual_listener": true,
+  "ports": [
+    1455,
+    1456
+  ],
+  "probes_bound": true,
+  "observed_utc": "2026-10-15T22:17:18.1155007+00:00"
+}

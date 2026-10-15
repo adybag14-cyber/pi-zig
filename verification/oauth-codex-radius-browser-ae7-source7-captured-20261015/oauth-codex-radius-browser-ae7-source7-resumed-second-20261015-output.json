@@ -1,0 +1,429 @@
+{
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "runtime": "v24.14.0",
+  "count": 7,
+  "caseIds": [
+    "codex-manual-code",
+    "codex-manual-query",
+    "codex-manual-url",
+    "codex-manual-state-mismatch",
+    "codex-manual-missing",
+    "radius-callback-success",
+    "radius-callback-exchange-failure"
+  ],
+  "listeners": [
+    {
+      "pid": 78484,
+      "address": "127.0.0.1",
+      "port": 1455,
+      "actualServer": true
+    },
+    {
+      "pid": 78484,
+      "address": "127.0.0.1",
+      "port": 1455,
+      "actualServer": true
+    },
+    {
+      "pid": 78484,
+      "address": "127.0.0.1",
+      "port": 1455,
+      "actualServer": true
+    },
+    {
+      "pid": 78484,
+      "address": "127.0.0.1",
+      "port": 1455,
+      "actualServer": true
+    },
+    {
+      "pid": 78484,
+      "address": "127.0.0.1",
+      "port": 1455,
+      "actualServer": true
+    },
+    {
+      "pid": 78484,
+      "address": "127.0.0.1",
+      "port": 1456,
+      "actualServer": true
+    },
+    {
+      "pid": 78484,
+      "address": "127.0.0.1",
+      "port": 1456,
+      "actualServer": true
+    }
+  ],
+  "ownedSockets": {
+    "accepted": 2,
+    "closed": 2,
+    "remaining": 0
+  },
+  "rawEvents": [
+    {
+      "type": "auth_url",
+      "url": "https://auth.openai.com/oauth/authorize?response_type=code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback&scope=openid+profile+email+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&state=d6d9c855c045401392cf221e9ecd7695&id_token_add_organizations=true&codex_cli_simplified_flow=true&originator=owned+fixture",
+      "instructions": "A browser window should open. Complete login to finish."
+    },
+    {
+      "type": "auth_url",
+      "url": "https://auth.openai.com/oauth/authorize?response_type=code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback&scope=openid+profile+email+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&state=c9b949ff5d9120d6a1215f7e972b350c&id_token_add_organizations=true&codex_cli_simplified_flow=true&originator=owned+fixture",
+      "instructions": "A browser window should open. Complete login to finish."
+    },
+    {
+      "type": "auth_url",
+      "url": "https://auth.openai.com/oauth/authorize?response_type=code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback&scope=openid+profile+email+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&state=2f4a23d818d82dfc8b08d84df4fa7be6&id_token_add_organizations=true&codex_cli_simplified_flow=true&originator=owned+fixture",
+      "instructions": "A browser window should open. Complete login to finish."
+    },
+    {
+      "type": "auth_url",
+      "url": "https://auth.openai.com/oauth/authorize?response_type=code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback&scope=openid+profile+email+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&state=9348f66302a045590a8b211ef14c1af0&id_token_add_organizations=true&codex_cli_simplified_flow=true&originator=owned+fixture",
+      "instructions": "A browser window should open. Complete login to finish."
+    },
+    {
+      "type": "auth_url",
+      "url": "https://auth.openai.com/oauth/authorize?response_type=code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback&scope=openid+profile+email+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&state=a2efec0334d9c31c2fa14f1dc3647f37&id_token_add_organizations=true&codex_cli_simplified_flow=true&originator=owned+fixture",
+      "instructions": "A browser window should open. Complete login to finish."
+    },
+    {
+      "type": "progress",
+      "message": "Listening for OAuth callback on http://127.0.0.1:1456/oauth/callback"
+    },
+    {
+      "type": "auth_url",
+      "url": "https://owned.example/authorize?response_type=code&client_id=pi-gateway&redirect_uri=http%3A%2F%2F127.0.0.1%3A1456%2Foauth%2Fcallback&scope=gateway+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&handoff=url&state=00112233-4455-4677-8899-aabbccddeeff#fragment",
+      "instructions": "Continue in your browser."
+    },
+    {
+      "type": "progress",
+      "message": "Listening for OAuth callback on http://127.0.0.1:1456/oauth/callback"
+    },
+    {
+      "type": "auth_url",
+      "url": "https://owned.example/authorize?response_type=code&client_id=pi-gateway&redirect_uri=http%3A%2F%2F127.0.0.1%3A1456%2Foauth%2Fcallback&scope=gateway+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&handoff=url&state=00112233-4455-4677-8899-aabbccddeeff#fragment",
+      "instructions": "Continue in your browser."
+    }
+  ],
+  "rawDiagnostics": [
+    {
+      "id": "codex-manual-state-mismatch",
+      "name": "Error",
+      "message": "State mismatch",
+      "stack": "Error: State mismatch\n    at loginOpenAICodex (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\openai-codex.ts:391:54)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async record (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/oauth-codex-radius-browser-ae7-cases-20261015.mjs:29:136)\n    at async runOAuthBrowserCases (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/oauth-codex-radius-browser-ae7-cases-20261015.mjs:47:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/oauth-codex-radius-browser-source-owner-20261015.mjs:25:16",
+      "constructor": "Error"
+    },
+    {
+      "id": "codex-manual-missing",
+      "name": "Error",
+      "message": "Missing authorization code",
+      "stack": "Error: Missing authorization code\n    at loginOpenAICodex (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\openai-codex.ts:395:20)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async record (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/oauth-codex-radius-browser-ae7-cases-20261015.mjs:29:136)\n    at async runOAuthBrowserCases (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/oauth-codex-radius-browser-ae7-cases-20261015.mjs:48:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/oauth-codex-radius-browser-source-owner-20261015.mjs:25:16",
+      "constructor": "Error"
+    },
+    {
+      "id": "radius-callback-400",
+      "name": "Error",
+      "message": "Radius OAuth token request failed: invalid_grant: expired code",
+      "stack": "Error: Radius OAuth token request failed: invalid_grant: expired code\n    at readOAuthResponseError (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\radius.ts:91:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async requestOAuthToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\radius.ts:115:9)\n    at async <anonymous> (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\callback-server.ts:107:19)",
+      "constructor": "OAuthResponseError",
+      "status": 400,
+      "oauthError": "invalid_grant"
+    }
+  ],
+  "rows": [
+    {
+      "id": "codex-manual-code",
+      "ok": true,
+      "value": {
+        "type": "oauth",
+        "access": "e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYnJvd3Nlci1hY2NvdW50In19.sig",
+        "refresh": "browser-refresh",
+        "expires": 1700000120000,
+        "accountId": "browser-account"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=authorization_code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&code=browser-code&code_verifier=AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": [
+        {
+          "type": "auth_url",
+          "url": "https://auth.openai.com/oauth/authorize?response_type=code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback&scope=openid+profile+email+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&state=%3CSTATE%3E&id_token_add_organizations=true&codex_cli_simplified_flow=true&originator=owned+fixture",
+          "instructions": "A browser window should open. Complete login to finish."
+        },
+        {
+          "type": "manual_code",
+          "message": "Complete login in your browser, or paste the authorization code / redirect URL here:",
+          "placeholder": "http://localhost:1455/auth/callback",
+          "signalAborted": false
+        }
+      ]
+    },
+    {
+      "id": "codex-manual-query",
+      "ok": true,
+      "value": {
+        "type": "oauth",
+        "access": "e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYnJvd3Nlci1hY2NvdW50In19.sig",
+        "refresh": "browser-refresh",
+        "expires": 1700000120000,
+        "accountId": "browser-account"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=authorization_code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&code=browser-code&code_verifier=AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": [
+        {
+          "type": "auth_url",
+          "url": "https://auth.openai.com/oauth/authorize?response_type=code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback&scope=openid+profile+email+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&state=%3CSTATE%3E&id_token_add_organizations=true&codex_cli_simplified_flow=true&originator=owned+fixture",
+          "instructions": "A browser window should open. Complete login to finish."
+        },
+        {
+          "type": "manual_code",
+          "message": "Complete login in your browser, or paste the authorization code / redirect URL here:",
+          "placeholder": "http://localhost:1455/auth/callback",
+          "signalAborted": false
+        }
+      ]
+    },
+    {
+      "id": "codex-manual-url",
+      "ok": true,
+      "value": {
+        "type": "oauth",
+        "access": "e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYnJvd3Nlci1hY2NvdW50In19.sig",
+        "refresh": "browser-refresh",
+        "expires": 1700000120000,
+        "accountId": "browser-account"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=authorization_code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&code=browser-code&code_verifier=AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": [
+        {
+          "type": "auth_url",
+          "url": "https://auth.openai.com/oauth/authorize?response_type=code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback&scope=openid+profile+email+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&state=%3CSTATE%3E&id_token_add_organizations=true&codex_cli_simplified_flow=true&originator=owned+fixture",
+          "instructions": "A browser window should open. Complete login to finish."
+        },
+        {
+          "type": "manual_code",
+          "message": "Complete login in your browser, or paste the authorization code / redirect URL here:",
+          "placeholder": "http://localhost:1455/auth/callback",
+          "signalAborted": false
+        }
+      ]
+    },
+    {
+      "id": "codex-manual-state-mismatch",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "State mismatch",
+        "constructor": "Error"
+      },
+      "requests": [],
+      "notices": [
+        {
+          "type": "auth_url",
+          "url": "https://auth.openai.com/oauth/authorize?response_type=code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback&scope=openid+profile+email+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&state=%3CSTATE%3E&id_token_add_organizations=true&codex_cli_simplified_flow=true&originator=owned+fixture",
+          "instructions": "A browser window should open. Complete login to finish."
+        },
+        {
+          "type": "manual_code",
+          "message": "Complete login in your browser, or paste the authorization code / redirect URL here:",
+          "placeholder": "http://localhost:1455/auth/callback",
+          "signalAborted": false
+        }
+      ]
+    },
+    {
+      "id": "codex-manual-missing",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Missing authorization code",
+        "constructor": "Error"
+      },
+      "requests": [],
+      "notices": [
+        {
+          "type": "auth_url",
+          "url": "https://auth.openai.com/oauth/authorize?response_type=code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback&scope=openid+profile+email+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&state=%3CSTATE%3E&id_token_add_organizations=true&codex_cli_simplified_flow=true&originator=owned+fixture",
+          "instructions": "A browser window should open. Complete login to finish."
+        },
+        {
+          "type": "manual_code",
+          "message": "Complete login in your browser, or paste the authorization code / redirect URL here:",
+          "placeholder": "http://localhost:1455/auth/callback",
+          "signalAborted": false
+        }
+      ]
+    },
+    {
+      "id": "radius-callback-success",
+      "ok": true,
+      "value": {
+        "credential": {
+          "type": "oauth",
+          "access": "e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYnJvd3Nlci1hY2NvdW50In19.sig",
+          "refresh": "browser-refresh",
+          "expires": 1700000060000,
+          "scope": "gateway offline_access"
+        },
+        "page": {
+          "status": 200,
+          "contentType": "text/html; charset=utf-8",
+          "cacheControl": "no-store",
+          "body": "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n  <title>Authentication successful</title>\n  <style>\n    :root {\n      --text: #fafafa;\n      --text-dim: #a1a1aa;\n      --page-bg: #09090b;\n      --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";\n      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace;\n    }\n    * { box-sizing: border-box; }\n    html { color-scheme: dark; }\n    body {\n      margin: 0;\n      min-height: 100vh;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      padding: 24px;\n      background: var(--page-bg);\n      color: var(--text);\n      font-family: var(--font-sans);\n      text-align: center;\n    }\n    main {\n      width: 100%;\n      max-width: 560px;\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n    }\n    .logo {\n      width: 72px;\n      height: 72px;\n      display: block;\n      margin-bottom: 24px;\n    }\n    h1 {\n      margin: 0 0 10px;\n      font-size: 28px;\n      line-height: 1.15;\n      font-weight: 650;\n      color: var(--text);\n    }\n    p {\n      margin: 0;\n      line-height: 1.7;\n      color: var(--text-dim);\n      font-size: 15px;\n    }\n    .details {\n      margin-top: 16px;\n      font-family: var(--font-mono);\n      font-size: 13px;\n      color: var(--text-dim);\n      white-space: pre-wrap;\n      word-break: break-word;\n    }\n  </style>\n</head>\n<body>\n  <main>\n    <div class=\"logo\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 800\" aria-hidden=\"true\"><path fill=\"#F09082\" d=\"M165.29 165.29H517.36V400H400V282.65H165.29Z\"/><path fill=\"#4D9ABF\" d=\"M165.29 282.65H282.65V400H400V517.36H282.65V634.72H165.29Z\"/><path fill=\"#F1BE58\" d=\"M517.36 400H634.72V634.72H517.36Z\"/></svg></div>\n    <h1>Authentication successful</h1>\n    <p>Signed in to Radius. You may now close this page.</p>\n    \n  </main>\n</body>\n</html>"
+        }
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth",
+          "inputKind": "URL",
+          "method": "GET",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ]
+          ],
+          "body": null,
+          "bodyKind": null,
+          "signalSame": true
+        },
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=authorization_code&client_id=pi-gateway&redirect_uri=http%3A%2F%2F127.0.0.1%3A1456%2Foauth%2Fcallback&code=browser-code&code_verifier=AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": [
+        {
+          "type": "progress",
+          "message": "Listening for OAuth callback on http://127.0.0.1:1456/oauth/callback"
+        },
+        {
+          "type": "auth_url",
+          "url": "https://owned.example/authorize?response_type=code&client_id=pi-gateway&redirect_uri=http%3A%2F%2F127.0.0.1%3A1456%2Foauth%2Fcallback&scope=gateway+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&handoff=url&state=%3CSTATE%3E#fragment",
+          "instructions": "Continue in your browser."
+        }
+      ]
+    },
+    {
+      "id": "radius-callback-exchange-failure",
+      "ok": true,
+      "value": {
+        "error": {
+          "name": "Error",
+          "message": "Radius OAuth token request failed: invalid_grant: expired code",
+          "constructor": "OAuthResponseError",
+          "status": 400,
+          "oauthError": "invalid_grant"
+        },
+        "page": {
+          "status": 502,
+          "contentType": "text/html; charset=utf-8",
+          "cacheControl": "no-store",
+          "body": "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n  <title>Authentication failed</title>\n  <style>\n    :root {\n      --text: #fafafa;\n      --text-dim: #a1a1aa;\n      --page-bg: #09090b;\n      --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";\n      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace;\n    }\n    * { box-sizing: border-box; }\n    html { color-scheme: dark; }\n    body {\n      margin: 0;\n      min-height: 100vh;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      padding: 24px;\n      background: var(--page-bg);\n      color: var(--text);\n      font-family: var(--font-sans);\n      text-align: center;\n    }\n    main {\n      width: 100%;\n      max-width: 560px;\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n    }\n    .logo {\n      width: 72px;\n      height: 72px;\n      display: block;\n      margin-bottom: 24px;\n    }\n    h1 {\n      margin: 0 0 10px;\n      font-size: 28px;\n      line-height: 1.15;\n      font-weight: 650;\n      color: var(--text);\n    }\n    p {\n      margin: 0;\n      line-height: 1.7;\n      color: var(--text-dim);\n      font-size: 15px;\n    }\n    .details {\n      margin-top: 16px;\n      font-family: var(--font-mono);\n      font-size: 13px;\n      color: var(--text-dim);\n      white-space: pre-wrap;\n      word-break: break-word;\n    }\n  </style>\n</head>\n<body>\n  <main>\n    <div class=\"logo\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 800\" aria-hidden=\"true\"><path fill=\"#F09082\" d=\"M165.29 165.29H517.36V400H400V282.65H165.29Z\"/><path fill=\"#4D9ABF\" d=\"M165.29 282.65H282.65V400H400V517.36H282.65V634.72H165.29Z\"/><path fill=\"#F1BE58\" d=\"M517.36 400H634.72V634.72H517.36Z\"/></svg></div>\n    <h1>Authentication failed</h1>\n    <p>Radius sign-in failed.</p>\n    <div class=\"details\">Radius OAuth token request failed: invalid_grant: expired code</div>\n  </main>\n</body>\n</html>"
+        }
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth",
+          "inputKind": "URL",
+          "method": "GET",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ]
+          ],
+          "body": null,
+          "bodyKind": null,
+          "signalSame": true
+        },
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=authorization_code&client_id=pi-gateway&redirect_uri=http%3A%2F%2F127.0.0.1%3A1456%2Foauth%2Fcallback&code=browser-code&code_verifier=AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": [
+        {
+          "type": "progress",
+          "message": "Listening for OAuth callback on http://127.0.0.1:1456/oauth/callback"
+        },
+        {
+          "type": "auth_url",
+          "url": "https://owned.example/authorize?response_type=code&client_id=pi-gateway&redirect_uri=http%3A%2F%2F127.0.0.1%3A1456%2Foauth%2Fcallback&scope=gateway+offline_access&code_challenge=6oZqdX5MOLq_qBJ8vppAnT4fk6AP8UiP9zX8-Rev_9A&code_challenge_method=S256&handoff=url&state=%3CSTATE%3E#fragment",
+          "instructions": "Continue in your browser."
+        }
+      ]
+    }
+  ]
+}

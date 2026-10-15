@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "manifest_sha256": "863812DBEDB90A2568DB9B64A5FCC0E9EC4A482002599CE672CB94918C27CA33",
+  "archive_sha256": "3DD3ADC161F1E8B8B76D5D022AB7707EEF57149AF37CD94D6669EF4A686351D9",
+  "archive_bytes": 833676,
+  "archive_entries": 41,
+  "independently_reopened_payloads": 40,
+  "source_cases": 7,
+  "native_qualified": false,
+  "full_pi_qualified": false
+}

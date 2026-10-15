@@ -1,6 +1,9 @@
 # Source inventories hash exact bytes, including captured verification records.
 # Keep checkout bytes identical on every runner; source files below use LF.
 * -text
+# Preserve captured Codex/Radius JSON CRLF bytes with ordinary space checks.
+src/extensions/fixtures/oauth-codex-radius-ae7-source.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+src/extensions/fixtures/oauth-codex-radius-browser-ae7-source.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 # Preserved evidence may use CRLF; keep its bytes and the normal space checks.
 verification/** whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 *.zig text eol=lf
