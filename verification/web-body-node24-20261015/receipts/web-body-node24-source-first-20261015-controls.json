@@ -1,0 +1,22 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-headers-20261015\\verification\\web-body-node24-20261015\\run-source.ps1",
+    "sha256": "40B75162D0F61103FCCE54E8A80417696BED67D0F0662F954A8E1712758A602B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-headers-20261015\\src\\extensions\\fixtures\\web-body-node24.input.txt",
+    "sha256": "B20ECA3D00631D8B7745C8769DE4790F5FC2E82CA0589CBE633F2C8901756CEA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-headers-20261015\\verification\\web-body-node24-20261015\\source-capture.mjs",
+    "sha256": "5405A5FE32AEAA3991AAE7D7396866D130DCF2E3F960D0BA715AFE2E7D48A599"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352"
+  }
+]

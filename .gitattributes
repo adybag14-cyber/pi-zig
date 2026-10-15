@@ -93,3 +93,5 @@ verification/native-ai-streaming-codec-20261015/native-ai-streaming-codec-6cb61b
 # Headers terminal receipts retain their original EOF and bundled-source bytes.
 verification/web-headers-node24-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/web-headers-node24-20261015/receipts/*-bundled-undici.js.txt -whitespace
+verification/web-body-node24-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/web-body-node24-20261015/receipts/*-bundled-undici.js.txt -whitespace
