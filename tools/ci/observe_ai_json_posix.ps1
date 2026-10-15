@@ -13,9 +13,13 @@ $taskTrackedInventory=Get-AiInventory $taskSource 'tracked'
 $taskSourceRows=$taskTrackedInventory.rows
 $taskHistorical=Get-Content -LiteralPath (Join-Path $taskRoot 'verification/ai-json-final-b06-20261014/sdk-source-b06-full-manifest-20261014.json') -Raw|ConvertFrom-Json
 $taskOriginal=[Collections.Generic.Dictionary[string,string]]::new([StringComparer]::Ordinal)
-if($taskHistorical.Count -ne 1922){throw 'Historical tracked Source inventory changed'}
-foreach($taskRow in $taskHistorical){$taskRelative=[string]$taskRow.relative;if(!$taskRelative -or $taskOriginal.ContainsKey($taskRelative)){throw 'Historical relative Source path missing or duplicated'};$taskOriginal[$taskRelative]=$taskRow.sha256}
+if($taskHistorical.Count -ne 1965){throw 'Historical full Source inventory changed'}
+foreach($taskRow in $taskHistorical){$taskRelative=[string]$taskRow.relative;if(!$taskRelative -or $taskOriginal.ContainsKey($taskRelative) -or $taskRow.sha256 -cnotmatch '^[0-9A-F]{64}$'){throw 'Historical relative Source path/hash missing or duplicated'};$taskOriginal[$taskRelative]=$taskRow.sha256}
 foreach($taskRow in $taskSourceRows){if(!$taskOriginal.ContainsKey($taskRow.relative) -or $taskOriginal[$taskRow.relative] -cne $taskRow.sha256){throw "Official tracked Source content differs: $($taskRow.relative)"}}
+$taskTrackedPaths=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+foreach($taskRow in $taskSourceRows){[void]$taskTrackedPaths.Add($taskRow.relative)}
+$taskGenerated=@($taskOriginal.Keys|Where-Object {!$taskTrackedPaths.Contains($_)})
+if($taskGenerated.Count -ne 43 -or @($taskGenerated|Where-Object {!$_.StartsWith('packages/ai/src/providers/data/',[StringComparison]::Ordinal)}).Count){throw 'Historical extras must be exactly43 generated provider data files'}
 $taskTemp=Join-Path $env:RUNNER_TEMP ('ai-json-reference-'+[Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $taskTemp > $null
 $taskVersion='v24.14.0';$taskArch=$env:RUNNER_ARCH.ToLowerInvariant()
