@@ -261,7 +261,11 @@ fn wireAdvance(scope: *Scope, pending: c.JSValue, owner: c.JSValue, value: c.JSV
     if (rejected) {
         const errors = try scope.get(try scope.get(owner, "agent"), "errors");
         const code = try v.optional(scope, value, "code");
-        const constructor = try scope.get(errors, if (try aborted(scope, owner)) "APIUserAbortError" else if (try v.eq(scope, code, "ProviderRequestTimeout")) "APIConnectionTimeoutError" else "APIConnectionError");
+        if (!try aborted(scope, owner) and !try v.eq(scope, code, "ProviderRequestTimeout")) {
+            const failure = try @import("native_ai_anthropic_api_error.zig").generateValue(scope, errors, c.pi_js_undefined(), value, c.pi_js_undefined(), c.pi_js_undefined());
+            return flow.settle(scope.engine, pending, true, failure);
+        }
+        const constructor = try scope.get(errors, if (try aborted(scope, owner)) "APIUserAbortError" else "APIConnectionTimeoutError");
         const options = try scope.object();
         try scope.put(options, "cause", value);
         var args = [_]c.JSValue{options};
