@@ -8,7 +8,8 @@ const flow = @import("native_agent_async.zig");
 const helpers = @import("native_ai_auth_helpers.zig");
 const http = @import("native_ai_oauth_http.zig");
 const callback = @import("native_ai_oauth_chatgpt_callback.zig");
-const pkce = @import("../auth/pkce.zig");
+const entropy_encoding = @import("../auth/pkce.zig");
+const pkce = @import("native_ai_oauth_pkce.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
 const resource = "https://api.openai.com/v1";
 const direct_scope = "chatgpt.tokens.use.direct";
@@ -137,7 +138,7 @@ fn validUuid(value: []const u8) bool {
 fn randomValue(engine: *v.em.Engine) ![]u8 {
     var bytes: [32]u8 = undefined;
     try (engine.native_io orelse return error.NativeHttpIoRequired).randomSecure(&bytes);
-    return pkce.base64UrlNoPadAlloc(engine.gpa, &bytes);
+    return entropy_encoding.base64UrlNoPadAlloc(engine.gpa, &bytes);
 }
 fn initializeLogin(engine: *v.em.Engine, owner: c.JSValue, args: []const c.JSValue, config: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
@@ -154,12 +155,8 @@ fn initializeLogin(engine: *v.em.Engine, owner: c.JSValue, args: []const c.JSVal
     try scope.put(owner, "options", options);
     try scope.put(owner, "config", config);
     try scope.put(owner, "login", c.pi_js_bool(engine.context, 1));
-    var pair = try pkce.generate(engine.gpa, engine.native_io orelse return error.NativeHttpIoRequired);
-    defer pair.deinit(engine.gpa);
-    try scope.put(owner, "verifier", try scope.text(pair.verifier));
-    try scope.put(owner, "challenge", try scope.text(pair.challenge));
-    // generatePKCE is awaited in Source, even though its entropy work is synchronous.
-    try flow.wait(continued, engine, owner, c.pi_js_undefined(), @intFromEnum(Stage.pkce_ready));
+    const generated = try scope.own(try pkce.generate(engine));
+    try flow.wait(continued, engine, owner, generated, @intFromEnum(Stage.pkce_ready));
 }
 fn afterPkce(scope: *Scope, owner: c.JSValue) !void {
     const engine = scope.engine;
@@ -293,7 +290,11 @@ fn emptyText(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, _: []cons
 fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
     const engine = scope.engine;
     switch (stage) {
-        .pkce_ready => try afterPkce(scope, owner),
+        .pkce_ready => {
+            try scope.put(owner, "verifier", try scope.get(value, "verifier"));
+            try scope.put(owner, "challenge", try scope.get(value, "challenge"));
+            try afterPkce(scope, owner);
+        },
         .callback_ready => try afterCallback(scope, owner),
         .raced => {
             const interaction = try scope.get(owner, "interaction");

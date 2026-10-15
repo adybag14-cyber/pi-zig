@@ -4,12 +4,41 @@ const sdk = @import("extensions/native_sdk.zig");
 const oauth = @import("extensions/native_ai_oauth_openai_chatgpt.zig");
 const callback = @import("extensions/native_ai_oauth_chatgpt_callback.zig");
 const c = em.c;
+const streams = @import("extensions/native_readable_stream.zig");
+const Scope = @import("extensions/native_models_stream_scope.zig").Scope;
+fn disturbed(scope: *Scope, _: c.JSValue, stream: c.JSValue) anyerror!bool {
+    return streams.isDisturbed(scope.engine, stream);
+}
+fn errored(scope: *Scope, _: c.JSValue, stream: c.JSValue) anyerror!bool {
+    return streams.isErrored(scope.engine, stream);
+}
+fn closeController(scope: *Scope, _: c.JSValue, controller: c.JSValue) anyerror!void {
+    return streams.closeController(scope.engine, controller);
+}
+fn fromBytes(engine: *em.Engine, _: c.JSValue, bytes: c.JSValue) anyerror!c.JSValue {
+    return streams.fromBytes(engine, bytes);
+}
+fn installTransportGraph(engine: *em.Engine) !void {
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/native_web_form_data.zig").install(engine);
+    try streams.install(engine);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const readable = try scope.global("ReadableStream");
+    try @import("extensions/native_web_body.zig").install(engine, .{ .bindings = readable, .constructor = readable, .is_disturbed = disturbed, .is_errored = errored, .close_controller = closeController });
+    try @import("extensions/native_web_blob.zig").bindStreams(engine, .{ .owner = readable, .create = fromBytes });
+    const instance = try scope.own(try @import("extensions/native_js_values.zig").getKey(engine, try scope.get(try scope.global("Function"), "prototype"), try scope.get(try scope.global("Symbol"), "hasInstance")));
+    try @import("extensions/native_web_response.zig").install(engine, .{ .has_instance = instance, .readable = readable, .blob = try scope.global("Blob"), .form_data = try scope.global("FormData"), .url_params = try scope.global("URLSearchParams"), .abort_signal = try scope.global("AbortSignal"), .request = c.pi_js_undefined() });
+}
 fn install(engine: *em.Engine, token_origin: ?[]const u8) !void {
     engine.native_io = std.testing.io;
     try @import("extensions/native_url.zig").install(engine);
     try @import("extensions/abort_signal.zig").install(engine);
+    try @import("extensions/text_encoding.zig").install(engine);
+    try @import("extensions/native_web_crypto.zig").install(engine);
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
+    try @import("extensions/node_base64.zig").install(engine, global);
     try sdk.put(engine, global, "openaiChatGPTOAuth", try oauth.createForTest(engine, .{ .token_origin = token_origin }));
 }
 test "native AI ChatGPT source input covers metadata live values error and getter order" {
@@ -21,6 +50,14 @@ test "native AI ChatGPT source input covers metadata live values error and gette
         return err;
     };
     engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const expected = @embedFile("extensions/fixtures/ai-oauth-chatgpt-ae7.json");
+    try sdk.put(engine, global, "chatGPTSource", try engine.checked(c.JS_ParseJSON(engine.context, expected.ptr, expected.len, "ai-oauth-chatgpt-ae7.json")));
+    const compared = try engine.evalModule(
+        \\if(chatGPTSource.sourceHead!=='ae7b16d43b7c78c5b6fa3213fdd1215bb339729d'||chatGPTSource.rows.length!==43||chatGPTOAuthObservation.rows.length!==43)throw Error('Source43 inventory');for(let i=0;i<43;i++)if(JSON.stringify(chatGPTSource.rows[i])!==JSON.stringify(chatGPTOAuthObservation.rows[i]))throw Error(JSON.stringify({case:i,expected:chatGPTSource.rows[i],actual:chatGPTOAuthObservation.rows[i]}));if(JSON.stringify(chatGPTSource.wire)!==JSON.stringify(chatGPTOAuthObservation.wire))throw Error(JSON.stringify({wireExpected:chatGPTSource.wire,wireActual:chatGPTOAuthObservation.wire}));export const pass=true;
+    , "chatgpt-source43-comparison.mjs");
+    engine.freeValue(compared);
     const checked = try engine.evalModule(
         \\const {rows,wire}=chatGPTOAuthObservation;const success=rows.find(r=>r.name==='refresh-success').value;if(!success||success.clientId!==' issued client '||success.expires!==1700003420123||success.access!==' access '||success.scopes.join('|')!=='openid|chatgpt.tokens.use.direct|custom')throw Error('issued client credential');if(wire[0].url!=='https://auth.openai.com/api/accounts/oauth/token'||wire[0].method!=='POST'||wire[0].body!=='grant_type=refresh_token&client_id=+issued+client+&refresh_token=r+%2B%2F%3D&resource=https%3A%2F%2Fapi.openai.com%2Fv1'||!wire.every(x=>x.signal))throw Error('exact source form');if(JSON.stringify(rows.find(r=>r.name==='refresh-getter-order').value)!==JSON.stringify(['clientId','refresh','refresh.toString']))throw Error('live getter order');if(!rows.find(r=>r.name==='toAuth-live').value.same||!rows.find(r=>r.name==='toAuth-getter-error').value.same)throw Error('credential identity');if(rows.some(r=>r.name==='login-invalid-device'&&r.error.message!=='Sign in with ChatGPT requires a device ID (UUID) for this installation'))throw Error('device validation');export const pass=true;
     , "chatgpt-live-checks.mjs");
@@ -38,6 +75,7 @@ test "native AI ChatGPT refresh real owned HTTP preserves path form status and i
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try install(engine, origin);
+    try installTransportGraph(engine);
     const result = engine.evalModule("const credential=await openaiChatGPTOAuth.refresh({clientId:'issued+fixture',refresh:'refresh +/'},new AbortController().signal);if(credential.clientId!=='issued+fixture'||credential.access!=='fixture-access'||credential.refresh!=='fixture-refresh')throw Error('real native HTTP refresh');export const pass=true;", "chatgpt-owned-http.mjs") catch |err| {
         std.debug.print("ChatGPT HTTP failed: {s}\n", .{engine.last_error orelse "unknown"});
         return err;
