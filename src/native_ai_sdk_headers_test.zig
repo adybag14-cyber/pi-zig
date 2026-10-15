@@ -28,7 +28,7 @@ test "native SDK nullable headers preserve real brands removals multiple values 
         \\try{sdkHeaders([[42,'value']]);throw Error('missing header name failure')}catch(error){if(!(error instanceof TypeError)||error.message!=='expected header name to be a string')throw error}
         \\let reads=0;const pair={0:'x-read',get 1(){reads++;return 'value'}};if(sdkHeaders([pair]).values.get('x-read')!=='value'||reads!==2)throw Error('header value getter must be read twice');
         \\const marker={},trace=[];const failingPair={0:'x-fail',get 1(){throw marker}};const sequence=[];sequence[Symbol.iterator]=()=>({next(){trace.push('next');return {value:failingPair,done:false}},return(){trace.push('return');return {done:true}}});try{sdkHeaders(sequence);throw Error('missing iterator failure')}catch(error){if(error!==marker)throw error}if(trace.join(',')!=='next,return')throw Error('guest iterator must close on failure');
-        \\let intercepted=0;Object.defineProperty(Object.prototype,brand,{set(){intercepted++},configurable:true});try{if(sdkHeaders({'x-own':'ok'})[brand]!==true||intercepted!==0)throw Error('SDK brand must be own data property')}finally{delete Object.prototype[brand]}
+        \\let intercepted=0;Object.defineProperty(Object.prototype,brand,{set(){intercepted++},configurable:true});try{if(sdkHeaders()[brand]!==true||intercepted!==0)throw Error('SDK brand must be own data property')}finally{delete Object.prototype[brand]}
         \\globalThis.retainedNullableHeaders=combined;export const headers=true;
     , "native-sdk-nullable-headers.mjs") catch |err| {
         std.debug.print("SDK nullable headers: {s}\n", .{engine.last_error orelse "no diagnostic"});
