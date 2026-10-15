@@ -18,6 +18,7 @@ pub fn create(engine: *v.em.Engine, comptime kind: Kind) !c.JSValue {
     const dependencies = try scope.own(try @import("native_ai_openai_dependencies.zig").create(engine));
     try scope.put(dependencies, "text", try scope.own(try @import("native_ai_text.zig").create(engine)));
     try scope.put(dependencies, "counter", c.JS_NewInt32(engine.context, 0));
+    if (kind != .mistral) try scope.put(dependencies, "googleResponse", try scope.own(try @import("native_ai_google_response.zig").create(engine)));
     const result = try scope.object();
     inline for (.{ "stream", "streamSimple" }, 0..) |name, index| {
         const Adapter = struct {
@@ -129,6 +130,7 @@ fn headers(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !c.JSValue {
         if (scope.truthy(key)) try scope.put(result, "x-goog-api-key", key);
     }
     var affinity_override = false;
+    const overrides = try scope.object();
     inline for (.{ "model", "options" }) |source_key| {
         const source = try v.optional(scope, try scope.get(owner, source_key), "headers");
         if (!v.nullish(source)) {
@@ -140,9 +142,18 @@ fn headers(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !c.JSValue {
                 const name = try scope.invoke(try v.at(scope, entry, 0), "toLowerCase", &.{});
                 const value = try v.at(scope, entry, 1);
                 if (try v.eq(scope, name, "x-affinity")) affinity_override = true;
-                try v.js.setKey(scope.engine, result, name, value);
+                try v.js.setKey(scope.engine, overrides, name, value);
             }
         }
+    }
+    var override_rows = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{overrides}));
+    defer override_rows.deinit();
+    errdefer override_rows.closePreserving();
+    while (try override_rows.next()) |entry| {
+        defer scope.engine.freeValue(entry);
+        const value = try v.at(scope, entry, 1);
+        if (kind != .mistral and c.JS_IsNull(value)) continue;
+        try v.js.setKey(scope.engine, result, try v.at(scope, entry, 0), value);
     }
     const options = try scope.get(owner, "options");
     if (kind == .mistral and !affinity_override and try mistral.cache(scope, options)) try scope.put(result, "x-affinity", try scope.get(options, "sessionId"));
@@ -262,7 +273,8 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
                 try scope.put(owner, "done", c.pi_js_bool(scope.engine.context, 1));
                 return next(scope, owner, kind);
             }
-            const chunk = try scope.invoke(try scope.global("JSON"), "parse", &.{data});
+            const raw = try scope.invoke(try scope.global("JSON"), "parse", &.{data});
+            const chunk = if (kind == .mistral) raw else try @import("native_ai_google_response.zig").wrap(scope, try scope.get(try scope.get(owner, "agent"), "googleResponse"), raw, try scope.get(try scope.get(owner, "response"), "headers"), kind == .vertex);
             try scope.put(owner, "chunk", chunk);
             try wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", chunk), .chunk, kind);
         },

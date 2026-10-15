@@ -1553,6 +1553,12 @@ pub fn build(b: *std.Build) void {
     google_mistral_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-ai-google-mistral", "Compile actual Google Vertex Mistral facades before runtime qualification").dependOn(&google_mistral_tests.step);
     b.step("test-native-ai-google-mistral", "Compare actual Source Google Vertex Mistral request events callbacks and native ownership").dependOn(&b.addRunArtifact(google_mistral_tests).step);
+    const google_mistral60_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_google_mistral_source60_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI Google Mistral"}, .use_llvm = use_llvm });
+    linkQuickJs(b, google_mistral60_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(google_mistral60_tests.root_module, sqlite_lib_dir, sqlite_library);
+    google_mistral60_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-ai-google-mistral60", "Compile broader actual Google Vertex Mistral replay and SDK callback algorithms").dependOn(&google_mistral60_tests.step);
+    b.step("test-native-ai-google-mistral60", "Compare genuine Source60 replay schema auth and SDK callback observations").dependOn(&b.addRunArtifact(google_mistral60_tests).step);
     const source_paths_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_source_paths_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Source path cwd"}, .use_llvm = use_llvm });
     linkQuickJs(b, source_paths_tests.root_module, quickjs, sqlite_lib_dir);
     source_paths_tests.root_module.addImport("catalog_tool", catalog_tool);

@@ -1,0 +1,4 @@
+(node:11604) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+there are non-data parts text in the response, returning concatenation of all data parts. Please refer to the non data parts for a full response from model.
+there are non-data parts text in the response, returning concatenation of all data parts. Please refer to the non data parts for a full response from model.

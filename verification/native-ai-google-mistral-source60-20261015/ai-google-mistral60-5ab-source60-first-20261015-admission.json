@@ -1,0 +1,8 @@
+{
+  "status": "admitted",
+  "coordinated_with": "Root explicit queued GoogleMistralSource60 grant; no launch without grant",
+  "free_kib": 17297424,
+  "heap_mb": 256,
+  "required_kib": 2097152,
+  "observed_utc": "2026-10-15T17:53:36.6205444+00:00"
+}
