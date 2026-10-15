@@ -46,6 +46,8 @@ export async function observe({ModelRuntime,CredentialSynchronizationError,opera
   rows.push({case:'committed-error',classIdentity:synchronization instanceof CredentialSynchronizationError,causeIdentity:synchronization?.cause===original,name:synchronization?.name,message:synchronization?.message,providerId:synchronization?.providerId,operation:synchronization?.operation,credential:synchronization?.credential,keys:Object.keys(synchronization),committed:runtimeKeys.get('caller')});
   let removed=0,listener;const fakeSignal={aborted:false,addEventListener(type,callback){listener=callback},removeEventListener(type,callback){if(callback===listener)removed++}};
   const result={retained:true};const raced=await raceWithAbortSignal(Promise.resolve(result),fakeSignal);listener();
-  rows.push({case:'abort-helper',resultIdentity:raced===result,removed,optionalSignal:operationSignal().aborted});
+  let reasonReads=0;const earlier={},later={},liveReason={aborted:true,get reason(){return ++reasonReads===1?earlier:later}};let rejection;
+  try{await raceWithAbortSignal(Promise.resolve(),liveReason)}catch(error){rejection=error}
+  rows.push({case:'abort-helper',resultIdentity:raced===result,removed,optionalSignal:operationSignal().aborted,reasonReads,liveReasonIdentity:rejection===later});
   return {sourceHead:'4954d760504c11df9b2cbdc040346107b6a8153d',rows};
 }

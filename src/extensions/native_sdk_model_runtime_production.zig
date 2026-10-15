@@ -1207,7 +1207,8 @@ fn operationSignal(scope: *Scope, value: c.JSValue) !c.JSValue {
 }
 fn abortReason(scope: *Scope, input: c.JSValue) !c.JSValue {
     const reason = try scope.get(input, "reason");
-    if (!c.JS_IsUndefined(reason)) return reason;
+    // Source tests presence and then performs a second live property read.
+    if (!c.JS_IsUndefined(reason)) return scope.get(input, "reason");
     const failure = try ordinaryError(scope, try scope.text("The operation was aborted"));
     try scope.set(failure, "name", try scope.text("AbortError"));
     return failure;

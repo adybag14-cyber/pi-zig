@@ -18,15 +18,15 @@
   "files": [
     {
       "path": "src/extensions/native_sdk_model_runtime_production.zig",
-      "sha256": "77A6EC9D08DFCCA7763B332B03AE0CFB87E24DC84C4CDB881B828A8145F8FBDF"
+      "sha256": "4AFE281F1AE92F4BF322F46A2F61C423D537B8DC6AC33FD25FC316F249341BDC"
     },
     {
       "path": "src/native_sdk_model_runtime_production_test.zig",
-      "sha256": "129F7C68DD6A90925BB644974D37B3B16EE4BA6296C2324B855928F5195DC454"
+      "sha256": "E682DEDAE1062CB2539DD70A06444F687E2336FDA76373246C05CF631F6D37EA"
     },
     {
       "path": "src/extensions/fixtures/model-runtime-ordinary-4954.input.mjs",
-      "sha256": "58D281A08033FBA860CC6EA08B87982907949AC525EF221AAB71BB991C17EBF6"
+      "sha256": "F5A927A8D13E33973AD119BA165A4ECFF504E5C89D174093242CBE4E6D4B7578"
     },
     {
       "path": "verification/model-runtime-ordinary-4954-20261015/source-model-runtime-ordinary-capture.mjs",

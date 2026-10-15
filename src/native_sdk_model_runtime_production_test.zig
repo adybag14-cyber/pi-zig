@@ -31,6 +31,9 @@ test "ordinary ModelRuntime actual abort helper preserves reason identity and ob
         \\const fulfilled=Promise.resolve({value:true});if(raceWithAbortSignal(fulfilled,undefined)!==fulfilled)throw Error('missing-signal identity');
         \\const fake={reason:undefined,aborted:true};let fallback;try{await raceWithAbortSignal(Promise.resolve(),fake)}catch(error){fallback=error}
         \\if(fallback?.name!=='AbortError'||fallback.message!=='The operation was aborted')throw Error('fallback reason');
+        \\let reads=0;const firstReason={},secondReason={},live={aborted:true,get reason(){return ++reads===1?firstReason:secondReason}};
+        \\let selected;try{await raceWithAbortSignal(Promise.resolve(),live)}catch(error){selected=error}
+        \\if(reads!==2||selected!==secondReason)throw Error('live reason getter');
         \\export const passed=true;
     , "model-runtime-abort-caller.mjs");
     defer engine.freeValue(module);
