@@ -13,7 +13,7 @@ fn install(engine: *v.em.Engine) !void {
             var scope: v.Scope = .{ .engine = host };
             defer scope.deinit();
             var reason = c.pi_js_undefined();
-            const value = @import("extensions/native_ai_constrained_sampling.zig").makeStrict(&scope, if (args.len > 0) args[0] else c.pi_js_undefined(), &reason, predicate) catch |err| {
+            const value = @import("extensions/native_ai_constrained_sampling.zig").makeStrict(&scope, if (args.len > 0) args[0] else c.pi_js_undefined(), &reason, if (args.len > 1 and scope.truthy(args[1])) predicate else null) catch |err| {
                 if (err != error.UnsupportedStrictJsonSchema) return err;
                 const result = try scope.object();
                 try scope.put(result, "unsupported", reason);
@@ -54,9 +54,9 @@ test "native constrained sampling keeps guest predicate and getter exceptions di
     const result = engine.evalModule(
         \\globalThis.structuredClone=x=>x;const marker={identity:'guest'};
         \\globalThis.strictPredicate=(key,value)=>{if(key==='explode')throw marker;return key==='minimum'};
-        \\try{strictSchema({type:'object',explode:true});throw Error('missing predicate exception')}catch(error){if(error!==marker)throw error}
-        \\const unsupported=strictSchema({type:'object',minimum:1});if(unsupported.unsupported!=='minimum: 1 is unsupported')throw Error('unsupported reason changed');
-        \\try{strictSchema({type:'object',get properties(){throw marker}});throw Error('missing getter exception')}catch(error){if(error!==marker)throw error}
+        \\try{strictSchema({type:'object',explode:true},true);throw Error('missing predicate exception')}catch(error){if(error!==marker)throw error}
+        \\const unsupported=strictSchema({type:'object',minimum:1},true);if(unsupported.unsupported!=='minimum: 1 is unsupported')throw Error('unsupported reason changed');
+        \\try{strictSchema({type:'object',get properties(){throw marker}},true);throw Error('missing getter exception')}catch(error){if(error!==marker)throw error}
         \\delete globalThis.strictPredicate;export const guestIdentity=true;
     , "native-strict-schema-errors.mjs") catch |err| {
         std.debug.print("Strict schema errors: {s}\n", .{engine.last_error orelse "no diagnostic"});
