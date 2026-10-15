@@ -25,10 +25,14 @@ pub fn format(gpa: std.mem.Allocator, info: fs.Stat) ![]u8 {
 /// file URL objects at runtime; it rejects ordinary objects without coercing
 /// their toString. The Source catch also suppresses URL getter exceptions.
 pub fn getFileRevision(engine: *em.Engine, path: c.JSValue) !c.JSValue {
+    const generation = engine.native_allocation_generation;
     const previous = if (engine.captured_exception) |value| c.JS_DupValue(engine.context, value) else null;
     defer if (previous) |value| engine.freeValue(value);
     return get(engine, path) catch |err| {
-        if (err == error.OutOfMemory) return err;
+        // Preserve the host's private allocator-failure boundary even when a
+        // URL getter transports that marked error through a JS callback. A
+        // user Error merely named OutOfMemory still follows Source's catch.
+        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
         if (c.JS_HasException(engine.context)) engine.freeValue(c.JS_GetException(engine.context));
         // A caught URL getter exception must not replace the host's retained
         // exception identity with a failure that Source has suppressed.
