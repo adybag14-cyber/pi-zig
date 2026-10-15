@@ -4,13 +4,13 @@
   "typebox_version": "1.3.27",
   "package_sha256": "c59ddfd977ce941f1e8ee8b0a0b14396c332fa27cc5fa6fa165227ffd5a3992f",
   "modules": 250,
-  "declarations": 878,
-  "exports": 153,
-  "generated_native_functions": 1667,
+  "declarations": 880,
+  "exports": 157,
+  "generated_native_functions": 1669,
   "native_files": [
     {
       "path": "src/extensions/native_typebox_operators_production.zig",
-      "sha256": "53BBD4C7DEF269DFEB58851DC63D203693444046E37DE08C702C79C4A8EA2AD9"
+      "sha256": "C22D72FACF8E9A6B39122A44FFF46F438EABF37D31BABC88EC4984B8A1790279"
     },
     {
       "path": "src/extensions/native_typebox_operators_runtime.zig",

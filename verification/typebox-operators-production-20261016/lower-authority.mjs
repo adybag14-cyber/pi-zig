@@ -67,6 +67,7 @@ for(const name of ['Parameter','IsParameter'])publicRoot(name,'type/types/parame
 for(const name of ['Identifier','IsIdentifier'])publicRoot(name,'type/types/identifier.mjs');
 for(const name of ['IsKind','IsSchema'])publicRoot(name,'type/types/schema.mjs');
 publicRoot('IsEnum','type/types/enum.mjs');
+for(const name of ['IsLiteralBigInt','IsLiteralBoolean','IsLiteralNumber','IsLiteralString'])publicRoot(name,'type/types/literal.mjs');
 for(const file of fs.readdirSync(path.join(root,'type/action')).filter(f=>f.endsWith('.mjs')&&f!=='index.mjs')){
  const relative=`type/action/${file}`,module=moduleOf(relative);
  for(const name of module.exports.keys())if(name!=='Partial')publicRoot(name,relative);
