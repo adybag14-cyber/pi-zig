@@ -234,7 +234,7 @@ pub fn createDefinitionWithOperations(engine: *Engine, name: []const u8, cwd: []
     if (std.mem.eql(u8, name, "edit")) {
         // Preserve the ordinary Source object literal's data and insertion
         // order: renderShell, prepareArguments, execute, then render callbacks.
-        try vm.put(engine, result, "renderShell", try vm.text(engine, "self"));
+        try vm.put(engine, result, "renderShell", try engine.checked(c.JS_NewString(engine.context, "self")));
         const state = try stateFor(engine);
         if (state.edit_prepare == null) state.edit_prepare = try @import("native_sdk_edit_arguments.zig").create(engine);
         try vm.put(engine, result, "prepareArguments", c.JS_DupValue(engine.context, state.edit_prepare.?));
