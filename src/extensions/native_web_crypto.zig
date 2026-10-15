@@ -54,6 +54,7 @@ fn make(scope: *Scope) !c.JSValue {
     const owner = try scope.object();
     try scope.put(owner, "typeError", try scope.global("TypeError"));
     try scope.put(owner, "rangeError", try scope.global("RangeError"));
+    try scope.put(owner, "upperCase", try scope.get(try scope.get(try scope.global("String"), "prototype"), "toUpperCase"));
     const crypto_prototype = try scope.object();
     const subtle_prototype = try scope.object();
     const crypto = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, crypto_prototype)));
@@ -228,12 +229,13 @@ fn digest(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const c.
     if (!c.JS_IsArrayBuffer(backing)) return codedError(scope, owner, if (view) prefix ++ ": 2nd argument is a view on a SharedArrayBuffer, which is not allowed." else prefix ++ ": 2nd argument is not instance of ArrayBuffer, Buffer, TypedArray, or DataView.", "ERR_INVALID_ARG_TYPE");
     const name_value = if (c.JS_IsString(algorithm)) algorithm else try scope.get(algorithm, "name");
     if (c.JS_IsUndefined(name_value)) return codedError(scope, owner, "Failed to normalize algorithm: passed algorithm can not be converted to 'Algorithm' because 'name' is required in 'Algorithm'.", "ERR_MISSING_OPTION");
-    const name = try engine.toString(try domString(scope, owner, name_value, true));
+    const name_string = try domString(scope, owner, name_value, true);
+    const name = try engine.toString(try scope.call(try scope.get(owner, "upperCase"), name_string, &.{}));
     defer engine.gpa.free(name);
     const Hash = enum { sha1, sha256, sha384, sha512 };
     var hash: ?Hash = null;
     inline for (.{ "SHA-1", "SHA-256", "SHA-384", "SHA-512" }, .{ Hash.sha1, Hash.sha256, Hash.sha384, Hash.sha512 }) |candidate, selected| {
-        if (std.ascii.eqlIgnoreCase(name, candidate)) hash = selected;
+        if (std.mem.eql(u8, name, candidate)) hash = selected;
     }
     if (hash == null) return domError(engine, "NotSupportedError", "Unrecognized algorithm name");
     // The Node asyncDigest body reads the guest's public byteLength before its
