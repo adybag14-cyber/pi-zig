@@ -1,20 +1,30 @@
 # pi-zig
 
-The Pi 1.x update is in progress on this branch, targeting upstream commit
-`42a3497d03ad17e308a2299fa824727894f2c0ec` (package version 1.1.0), newer than
-[the v1.1.0 release](https://github.com/earendil-works/pi/releases/tag/v1.1.0).
+The Pi 1.x update is in progress on this branch. The reviewed upstream target
+is `4954d760504c11df9b2cbdc040346107b6a8153d` (package version 1.3.0), newer
+than [the v1.3.0 release](https://github.com/earendil-works/pi/releases/tag/v1.3.0).
 Zig **0.16.0** remains pinned. Repository implementation work uses Zig and narrow
 linked C dependencies; user-authored JavaScript/TypeScript extension compatibility
 is part of the native runtime migration.
 
-The checked-in catalog contains 1,653 models across 42 providers. The CLI and
-extension API package version are 1.1.0. Full Pi 1.x parity and release
+The checked-in official FFA3 catalog contains 1,705 models across 42 providers:
+1,608 chat, 59 image and 38 classifier entries. Its source provenance remains
+the independently qualified ae7 catalog input; the later reviewed 4954 change
+leaves all package runtime bodies and the catalog pin unchanged. The checked-in
+CLI and extension API identity remain 1.1.0 pending the complete migration.
+Full Pi 1.x parity and release
 certification remain incomplete, and production extension discovery retains its
 legacy Node bridge while native parity and lifecycle work continues.
 
-Checkpoint 237 preserves the validated native generation, public submission,
+The selected provider/header/generator component suite at exact product head
+`c629f791976fa117aafd0cc449e2d13971d1bb1c` passed 43 tests in each Windows/Linux
+Debug, ReleaseSafe and ReleaseFast profile, 258 successful executions in total.
+This is a scoped component result, not qualification of later combined heads or
+the complete application. See the [current integration and qualification record](verification/provider-foundations-session-intake-20261015.md).
+
+Historical checkpoint 237 preserves the validated native generation, public submission,
 compaction, transaction query, scheduler environment, SDK capability and runtime
-changes. The latest scoped qualification runs nine affected test targets in
+changes. Its scoped qualification ran nine affected test targets in
 Windows and native Linux Debug and ReleaseSafe: Windows passes 403 tests with
 5 platform skips per mode, and Linux passes 404 with 2 skips per mode. All
 1,520 compiled source hashes were rechecked on both platforms. All 26 cached Windows
@@ -49,7 +59,7 @@ native code and language-neutral data; the reference source is not restored to
 this repository. `pi-zig` is an independent rewrite and is not an official Pi
 release.
 
-The current immutable typed catalog contains 1,653 models across 42 providers.
+The current immutable typed catalog contains 1,705 models across 42 providers.
 Its native Zig generator records
 the upstream package version/commit, source-archive digest and separate catalog
 revision/digest. Imported Git tar metadata and package version must match the

@@ -1,5 +1,41 @@
 # Active Pi upstream update
 
+## Integrated migration - 15 October 2026
+
+Status: active, incomplete migration. The reviewed target is Pi 1.3.0 main
+`4954d760504c11df9b2cbdc040346107b6a8153d`, newer than release v1.3.0.
+The original ae7 and historical 5ab component captures retain their exact Source
+heads. The official comparison verifies all 1783 package files unchanged
+between ae7 and 4954; the later change adds catalog publication compatibility
+checks. Those publication checks and the complete latest-version application
+remain separate gates.
+
+Zig 0.16.0 remains pinned. The official FFA3 native catalog has 1705 models:
+1608 chat, 59 image and 38 classifier entries, across 42 providers and ten chat
+APIs. The original native importer, generator and checker produced the catalog;
+generated files were not edited by hand. This does not certify every provider.
+
+The seven selected provider/header/generator artifacts at exact product head
+`c629f791976fa117aafd0cc449e2d13971d1bb1c` passed all six Windows/Linux build
+profiles (Debug, ReleaseSafe and ReleaseFast), 258/258 selected executions.
+Every profile completed the measured 226 request and 162 pending Anthropic
+allocation indices. Raw artifacts and independent online/offline audits are
+retained at proof `0d9f859b4a5252451900dad85aacc7b095c70a85`.
+
+Later integration includes separately validated ordinary session methods,
+native UI overlays, WebCrypto, callback ownership, image/classifier operations,
+and the actual installed live EventStream. Their component proofs do not
+automatically qualify the combined application. Full SDK factory, all provider
+SDK layers, complete public streams/HTTP, actual all191 grammar readiness,
+whole application and final artifact qualification remain open. Production
+extension discovery keeps the compatibility bridge until those real native
+gates pass. The checked-in CLI/API identity and historical certification marker
+have not been relabeled as a completed 1.3 release.
+
+See [the detailed integration record](verification/provider-foundations-session-intake-20261015.md)
+for source heads, exact validation scopes and unresolved gates. Earlier entries
+below are historical records and retain their original counts and identities.
+
 ## Checkpoint 237 - 10 October 2026
 
 Status: active migration; incomplete Pi 1.x parity. The reviewed upstream target
