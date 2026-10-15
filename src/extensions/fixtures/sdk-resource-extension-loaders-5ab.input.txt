@@ -43,7 +43,7 @@ await fail('builtin-map-getter-raw-failure',marker=>{const l=loader();l.builtinE
  const log=[],l=loader({extensionFactories:[{name:'bad',builtin:true,get factory(){log.push('factory');throw new Error('builtin getter failed')}}]}),result=await l.loadExtensionPaths(['builtin:bad'],l.extensionsResult.runtime);row('builtin-factory-getter-inside-catch',{result:view(result),log});
 }
 for(const includeInlineFactories of [false,true]){
- let calls=0;const l=loader({extensionFactories:[pi=>{calls++;pi.registerCommand('current-inline',{handler:async()=>{}})},{name:'excluded',builtin:true,factory:()=>{throw new Error('builtin must wait')}}]});l.settingsManager.setGlobalPackages([root+'/package-warning']);const result=await l.loadCurrentExtensionSet({includeInlineFactories});row('actual-current-packages-inline:'+includeInlineFactories,{result:view(result),calls,hasBuiltin:result.extensions.some(e=>e.path.startsWith('builtin:'))});
+ let calls=0;const l=loader({extensionFactories:[pi=>{calls++;pi.registerCommand('current-inline',{handler:async()=>{}})},{name:'excluded',builtin:true,factory:()=>{throw new Error('builtin must wait')}}]});l.settingsManager.setPackages([root+'/package-warning']);const result=await l.loadCurrentExtensionSet({includeInlineFactories});row('actual-current-packages-inline:'+includeInlineFactories,{result:view(result),calls,hasBuiltin:result.extensions.some(e=>e.path.startsWith('builtin:'))});
 }
 {
  const l=loader({noExtensions:true,additionalExtensionPaths:[agentDir+'/extensions/user.js'],extensionFactories:[pi=>pi.registerCommand('cli-inline',{handler:async()=>{}})]}),result=await l.loadCurrentExtensionSet({includeInlineFactories:true});row('actual-current-noextensions-cli-only',{result:view(result)});
