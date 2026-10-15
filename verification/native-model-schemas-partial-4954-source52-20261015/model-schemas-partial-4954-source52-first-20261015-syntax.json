@@ -1,0 +1,16 @@
+{
+  "name": "model-schemas-partial-4954-source52-first-20261015-syntax",
+  "pid": 60844,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "C:\\Program Files\\nodejs\\node.exe --max-old-space-size=256 --check C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-model-schemas-partial-capture-20261015.mjs",
+  "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+  "created_utc": "2026-10-15T23:23:18.2687610Z",
+  "launched_utc": "2026-10-15T23:23:18.2643009+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-4954d76-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T23:23:18.6579370+00:00"
+}

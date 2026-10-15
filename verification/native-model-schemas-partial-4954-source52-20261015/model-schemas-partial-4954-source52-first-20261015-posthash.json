@@ -1,0 +1,34 @@
+{
+  "compiler_inventory_drift": [],
+  "candidate_inventory_drift": [],
+  "compiler_drift": [],
+  "completed_utc": "2026-10-15T23:24:46.7313077+00:00",
+  "absent_dependency_drift": [],
+  "candidate_drift": [],
+  "control_manifest_drift": false,
+  "extra_control_drift": [],
+  "manifests": [
+    {
+      "files": 1970,
+      "changed": [],
+      "drift": 0,
+      "name": "source"
+    },
+    {
+      "files": 31064,
+      "changed": [],
+      "drift": 0,
+      "name": "dependencies"
+    },
+    {
+      "files": 1774,
+      "changed": [],
+      "drift": 0,
+      "name": "node_tools"
+    }
+  ],
+  "expected_still_absent": true,
+  "compiler_files": 19546,
+  "historical_absence_records": 84,
+  "candidate_files": 7686
+}
