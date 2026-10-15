@@ -9,10 +9,12 @@ $taskHead='b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6'
 if((git -C $taskSource rev-parse HEAD).Trim() -cne $taskHead){throw 'Official Source head mismatch'}
 $taskTracked=@(git -C $taskSource ls-files|Sort-Object)
 if($taskTracked.Count -ne 1922){throw 'Official tracked Source inventory changed'}
-$taskSourceRows=Get-AiRows $taskSource $taskTracked
+$taskTrackedInventory=Get-AiInventory $taskSource 'tracked'
+$taskSourceRows=$taskTrackedInventory.rows
 $taskHistorical=Get-Content -LiteralPath (Join-Path $taskRoot 'verification/ai-json-final-b06-20261014/sdk-source-b06-full-manifest-20261014.json') -Raw|ConvertFrom-Json
-$taskOriginal=@{}
-foreach($taskRow in $taskHistorical){$taskRelative=$taskRow.path.Replace('\','/').Replace('C:/Users/adyba/pi-upstream-source-b06c1f2-20261014/','');$taskOriginal[$taskRelative]=$taskRow.sha256}
+$taskOriginal=[Collections.Generic.Dictionary[string,string]]::new([StringComparer]::Ordinal)
+if($taskHistorical.Count -ne 1922){throw 'Historical tracked Source inventory changed'}
+foreach($taskRow in $taskHistorical){$taskRelative=[string]$taskRow.relative;if(!$taskRelative -or $taskOriginal.ContainsKey($taskRelative)){throw 'Historical relative Source path missing or duplicated'};$taskOriginal[$taskRelative]=$taskRow.sha256}
 foreach($taskRow in $taskSourceRows){if(!$taskOriginal.ContainsKey($taskRow.relative) -or $taskOriginal[$taskRow.relative] -cne $taskRow.sha256){throw "Official tracked Source content differs: $($taskRow.relative)"}}
 $taskTemp=Join-Path $env:RUNNER_TEMP ('ai-json-reference-'+[Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $taskTemp > $null
@@ -51,8 +53,10 @@ New-Item -ItemType Directory -Path $taskPackageRoot -Force > $null
 if($LASTEXITCODE -ne 0){throw 'Reference package extraction failed'}
 $taskPackage=Get-Content -LiteralPath (Join-Path $taskPackageRoot 'package.json') -Raw|ConvertFrom-Json
 if($taskPackage.name -cne 'partial-json' -or $taskPackage.version -cne '0.1.7' -or $taskPackage.dependencies){throw 'Reference runtime dependency contract mismatch'}
-$taskPackageRows=Get-AiRows $taskPackageRoot @(Get-ChildItem -LiteralPath $taskPackageRoot -File -Recurse|Sort-Object FullName|ForEach-Object {[IO.Path]::GetRelativePath($taskPackageRoot,$_.FullName)})
-$taskNodeRows=Get-AiRows $taskNodeRoot @(Get-ChildItem -LiteralPath $taskNodeRoot -File -Recurse|Sort-Object FullName|ForEach-Object {[IO.Path]::GetRelativePath($taskNodeRoot,$_.FullName)})
+$taskReferenceInventory=Get-AiInventory $taskSource 'tree' @('.git')
+$taskPackageInventory=Get-AiInventory $taskPackageRoot
+$taskNodeInventory=Get-AiInventory $taskNodeRoot
+$taskPackageRows=$taskPackageInventory.rows;$taskNodeRows=$taskNodeInventory.rows
 $taskDriver=Join-Path $taskTemp 'observe-original.mjs'
 $taskDriverText=@'
 import {readFileSync,writeFileSync} from 'node:fs';
@@ -61,6 +65,8 @@ import {pathToFileURL,fileURLToPath} from 'node:url';
 import {resolve,sep} from 'node:path';
 import {registerHooks,isBuiltin} from 'node:module';
 const [sourceRoot,packageRoot,callerPath,goldenPath,outputPath,countText]=process.argv.slice(2);
+// Launch gate lets the owner retain the handle and snapshot live argv before observation.
+readFileSync(0);
 const actualNode={execPath:process.execPath,version:process.version,v8:process.versions.v8,platform:process.platform,arch:process.arch,pid:process.pid};
 if(actualNode.version!=='v24.14.0'||actualNode.platform!=='linux')throw Error('Actual reference Node identity mismatch');
 const hash=x=>createHash('sha256').update(x).digest('hex');
@@ -74,29 +80,41 @@ registerHooks({resolve(specifier,context,next){const result=next(specifier,conte
 const parse=JSON.parse,stringify=JSON.stringify,golden=parse(readFileSync(goldenPath,'utf8'));
 const rows=(await import(callerURL)).default;
 if(rows.length!==Number(countText)||stringify(rows)!==stringify(golden.rows))throw Error('Genuine POSIX original observations differ from immutable golden');
-writeFileSync(outputPath,stringify({sourceHead:'b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6',actualNode,cases:rows.length,matchedOriginal:true,originalCallerSha256:hash(original),adaptedImportCallerSha256:hash(adapted),unchangedCallerBodySha256:hash(body),loaded,scope:'Actual unchanged official b06 utility and exact locked partial-json, fresh Node24.14 Linux process; caller import URL alone adapted, no Source replacement or exception normalization',rows},null,2));
+const raw=stringify(rows);
+writeFileSync(outputPath+'.rows.bin',raw);
+writeFileSync(outputPath,stringify({sourceHead:'b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6',actualNode,cases:rows.length,matchedOriginal:true,rawRowsSha256:hash(raw),originalCallerSha256:hash(original),adaptedImportCallerSha256:hash(adapted),unchangedCallerBodySha256:hash(body),loaded,scope:'Actual unchanged official b06 utility and exact locked partial-json, fresh Node24.14 Linux process; caller import URL alone adapted, no Source replacement or exception normalization',rows},null,2));
 '@
 [IO.File]::WriteAllText($taskDriver,$taskDriverText,[Text.UTF8Encoding]::new($false))
 $taskSourceRows|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'official-tracked-source.json') -Encoding utf8NoBOM
 $taskPackageRows|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'exact-runtime-dependency.json') -Encoding utf8NoBOM
 $taskNodeRows|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'actual-node-tools.json') -Encoding utf8NoBOM
-$taskControls=Get-AiRows $taskRoot @('tools/ci/native_ai_ci.ps1','tools/ci/observe_ai_json_posix.ps1','src/extensions/fixtures/ai-json-parse-b06.input.txt','src/extensions/fixtures/ai-json-parse-b06.json','src/extensions/fixtures/ai-json-delegate-b06.input.txt','src/extensions/fixtures/ai-json-delegate-b06.json')
-$taskControls+=Get-AiRows $taskTemp @('observe-original.mjs',$taskArchiveName,'node-SHASUMS256.txt','partial-json.tgz')
-$taskControls|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'controls.json') -Encoding utf8NoBOM
+$taskControls=Get-AiInventory $taskRoot 'tree' @('.git','.zig-cache','zig-out',[IO.Path]::GetRelativePath($taskRoot,$taskReceipt).Replace('\','/'),[IO.Path]::GetRelativePath($taskRoot,$taskSource).Replace('\','/'))
+$taskTempInventory=Get-AiInventory $taskTemp
+@{candidate=$taskControls;temporary_controls=$taskTempInventory;reference=$taskReferenceInventory;tracked_reference=$taskTrackedInventory}|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $taskReceipt 'controls.json') -Encoding utf8NoBOM
 try {
  foreach($taskSpec in @(@('parse',33),@('delegate',6))){
   $taskStem="ai-json-$($taskSpec[0])-b06"
   $taskCaller=Join-Path $taskRoot "src/extensions/fixtures/$taskStem.input.txt"
   $taskGolden=Join-Path $taskRoot "src/extensions/fixtures/$taskStem.json"
-  $taskOutput=Join-Path $taskReceipt "$($taskSpec[0])-original.json"
-  $taskOwner=Invoke-AiOwnedProcess $taskNode @('--max-old-space-size=256','--conditions=source','--experimental-transform-types',$taskDriver,$taskSource,$taskPackageRoot,$taskCaller,$taskGolden,$taskOutput,[string]$taskSpec[1]) $taskSource (Join-Path $taskReceipt "$($taskSpec[0])-owner") 300
-  $taskObserved=Get-Content -LiteralPath $taskOutput -Raw|ConvertFrom-Json
-  if(!$taskObserved.matchedOriginal -or $taskObserved.cases -ne $taskSpec[1] -or $taskObserved.actualNode.pid -ne $taskOwner.pid -or $taskObserved.actualNode.execPath -cne $taskNode){throw 'Genuine reference identity/cases mismatch'}
+  $taskCaptures=@()
+  foreach($taskCapture in 1..2){
+   $taskOutput=Join-Path $taskReceipt "$($taskSpec[0])-original-$taskCapture.json"
+   $taskOwner=Invoke-AiOwnedProcess $taskNode @('--max-old-space-size=256','--conditions=source','--experimental-transform-types',$taskDriver,$taskSource,$taskPackageRoot,$taskCaller,$taskGolden,$taskOutput,[string]$taskSpec[1]) $taskSource (Join-Path $taskReceipt "$($taskSpec[0])-owner-$taskCapture") 300
+   $taskObserved=Get-Content -LiteralPath $taskOutput -Raw|ConvertFrom-Json
+   if(!$taskObserved.matchedOriginal -or $taskObserved.cases -ne $taskSpec[1] -or $taskObserved.actualNode.pid -ne $taskOwner.pid -or $taskObserved.actualNode.execPath -cne $taskNode -or (Get-FileHash -LiteralPath "$taskOutput.rows.bin").Hash.ToLowerInvariant() -cne $taskObserved.rawRowsSha256){throw 'Genuine reference identity/cases/raw capture mismatch'}
+   $taskCaptures+=@{owner=$taskOwner;raw_sha256=$taskObserved.rawRowsSha256;path=$taskOutput}
+  }
+  $taskRawFirst=[Convert]::ToBase64String([IO.File]::ReadAllBytes($taskCaptures[0].path+'.rows.bin'))
+  $taskRawSecond=[Convert]::ToBase64String([IO.File]::ReadAllBytes($taskCaptures[1].path+'.rows.bin'))
+  if($taskRawFirst -cne $taskRawSecond -or $taskCaptures[0].raw_sha256 -cne $taskCaptures[1].raw_sha256 -or ($taskCaptures[0].owner.pid -eq $taskCaptures[1].owner.pid -and $taskCaptures[0].owner.created_utc -ceq $taskCaptures[1].owner.created_utc)){throw 'Double fresh reference raw captures differ or process identity reused'}
+  @{captures=$taskCaptures;raw_equal=$true;both_equal_original_windows_rows=$true;cases=$taskSpec[1]}|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $taskReceipt "$($taskSpec[0])-double-capture.json") -Encoding utf8NoBOM
  }
- @{status='passed';source_head=$taskHead;node_version='v24.14.0';node_executable_sha256=(Get-FileHash -LiteralPath $taskNode).Hash;node_archive_sha256=(Get-FileHash -LiteralPath $taskArchive).Hash;partial_json_version=$taskPin.version;partial_json_integrity=$taskIntegrity;original_rows=39;tracked_source_files=$taskSourceRows.Count;runtime_dependency_files=$taskPackageRows.Count;node_tool_files=$taskNodeRows.Count;historical_typed_catalog_files_used=0;latest_catalog_qualified=$false;global_activation=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'result.json') -Encoding utf8NoBOM
 }finally{
- Assert-AiRows $taskSourceRows (Join-Path $taskReceipt 'source-posthash.json')
- Assert-AiRows $taskPackageRows (Join-Path $taskReceipt 'dependency-posthash.json')
- Assert-AiRows $taskNodeRows (Join-Path $taskReceipt 'node-tools-posthash.json')
- Assert-AiRows $taskControls (Join-Path $taskReceipt 'controls-posthash.json')
+ Assert-AiInventory $taskTrackedInventory (Join-Path $taskReceipt 'source-posthash.json')
+ Assert-AiInventory $taskReferenceInventory (Join-Path $taskReceipt 'reference-tree-posthash.json')
+ Assert-AiInventory $taskPackageInventory (Join-Path $taskReceipt 'dependency-posthash.json')
+ Assert-AiInventory $taskNodeInventory (Join-Path $taskReceipt 'node-tools-posthash.json')
+ Assert-AiInventory $taskControls (Join-Path $taskReceipt 'controls-posthash.json')
+ Assert-AiInventory $taskTempInventory (Join-Path $taskReceipt 'temporary-controls-posthash.json')
 }
+@{status='passed';source_head=$taskHead;node_version='v24.14.0';node_executable_sha256=(Get-FileHash -LiteralPath $taskNode).Hash;node_archive_sha256=(Get-FileHash -LiteralPath $taskArchive).Hash;partial_json_version=$taskPin.version;partial_json_integrity=$taskIntegrity;original_rows=39;fresh_reference_processes=4;raw_double_capture_equal=$true;both_equal_original_windows_rows=$true;tracked_source_files=$taskSourceRows.Count;runtime_dependency_files=$taskPackageRows.Count;node_tool_files=$taskNodeRows.Count;historical_typed_catalog_files_used=0;latest_catalog_qualified=$false;global_activation=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'result.json') -Encoding utf8NoBOM
