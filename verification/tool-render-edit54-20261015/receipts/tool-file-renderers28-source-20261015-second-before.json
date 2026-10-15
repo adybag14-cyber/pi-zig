@@ -1,0 +1,27 @@
+[
+  {
+    "manifest": "sdk-source-b45-full-manifest-20261014.json",
+    "count": 1965,
+    "drift": 0
+  },
+  {
+    "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "count": 31064,
+    "drift": 0
+  },
+  {
+    "manifest": "root-current8a-npm-tools-before.json",
+    "count": 1774,
+    "drift": 0
+  },
+  {
+    "manifest": "tool-file-renderers28-source-20261015-second-candidate.json",
+    "count": 5616,
+    "drift": 0
+  },
+  {
+    "manifest": "tool-file-renderers28-source-20261015-second-controls.json",
+    "count": 8,
+    "drift": 0
+  }
+]

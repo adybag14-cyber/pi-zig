@@ -1,0 +1,14 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-tool-render-20261015\\verification\\tool-render-edit54-20261015\\run-native.ps1",
+    "sha256": "5B552BAA47EFFAED54E9070F108656CDFAC29216791B3038AD6E3E7F3CA8F204"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-tool-render-20261015\\verification\\tool-render-edit54-20261015\\run-owner.ps1",
+    "sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  }
+]
