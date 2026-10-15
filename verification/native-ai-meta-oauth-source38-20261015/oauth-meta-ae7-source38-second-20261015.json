@@ -1,0 +1,16 @@
+{
+  "name": "oauth-meta-ae7-source38-second-20261015",
+  "pid": 58484,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --expose-gc --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-oauth-meta-capture-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-meta-ae7-source38-second-20261015-output.json",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T19:59:48.0845330Z",
+  "launched_utc": "2026-10-15T19:59:48.0829553+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-ae7b16d-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T20:00:10.7974268+00:00"
+}

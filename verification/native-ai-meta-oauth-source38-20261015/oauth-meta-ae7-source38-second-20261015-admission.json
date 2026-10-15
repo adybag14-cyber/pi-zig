@@ -1,0 +1,8 @@
+{
+  "coordinated_with": "Root explicit LIGHT5 Meta Source38 grant; no native launch",
+  "required_kib": 2097152,
+  "status": "admitted",
+  "observed_utc": "2026-10-15T19:59:47.9642245+00:00",
+  "free_kib": 18620404,
+  "heap_mb": 256
+}
