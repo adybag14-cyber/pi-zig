@@ -1,0 +1,522 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "runtime": "v24.14.0",
+  "count": 20,
+  "rows": [
+    {
+      "name": "actual-generator-brand-and-method-metadata",
+      "trace": [
+        {
+          "brand": "[object AsyncGenerator]",
+          "functionBrand": "[object AsyncGeneratorFunction]",
+          "ownPrototype": true,
+          "ownPrototypeKeys": [],
+          "intrinsicKeys": [
+            "constructor",
+            "next",
+            "return",
+            "throw",
+            "Symbol(Symbol.toStringTag)"
+          ],
+          "nextName": "next",
+          "nextLength": 1,
+          "methodName": "[Symbol.asyncIterator]",
+          "methodLength": 0,
+          "methodOwnPrototype": true,
+          "self": true
+        },
+        {
+          "invalidBrand": true
+        }
+      ]
+    },
+    {
+      "name": "raw-yield-and-return-identity",
+      "trace": [
+        {
+          "yieldRaw": true,
+          "yieldDone": false,
+          "returnRaw": true,
+          "returnDone": true
+        }
+      ]
+    },
+    {
+      "name": "cross-realm-body-result-and-completed-result",
+      "trace": [
+        {
+          "promiseB": true,
+          "rawA": true,
+          "yieldResultA": true,
+          "returnResultA": true,
+          "completedResultB": true
+        }
+      ]
+    },
+    {
+      "name": "queued-next-yield-await",
+      "trace": [
+        "start",
+        "queued",
+        "released",
+        "producer-before-release",
+        "resumed",
+        [
+          "first",
+          {
+            "value": "root",
+            "done": false
+          }
+        ],
+        [
+          "second",
+          {
+            "value": "final",
+            "done": true
+          }
+        ]
+      ]
+    },
+    {
+      "name": "active-yield-queued-return-await",
+      "trace": [
+        "queued-return",
+        [
+          "first",
+          {
+            "value": "root",
+            "done": false
+          }
+        ],
+        "return-then",
+        "finally",
+        [
+          "returned",
+          {
+            "value": "final",
+            "done": true
+          }
+        ]
+      ]
+    },
+    {
+      "name": "completed-return-drains-queued-next-and-throw",
+      "trace": [
+        "queued",
+        [
+          "return",
+          {
+            "value": "final",
+            "done": true
+          }
+        ],
+        [
+          "next-one",
+          {
+            "done": true
+          }
+        ],
+        [
+          "next-two",
+          {
+            "done": true
+          }
+        ],
+        [
+          "throwRaw",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "suspended-start-abrupt-does-not-enter-body",
+      "trace": [
+        {
+          "calls": [],
+          "returned": true,
+          "done": true,
+          "throwRaw": true,
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "name": "yield-throwing-then-getter-caught-at-suspension",
+      "trace": [
+        "get-then",
+        [
+          "caughtRaw",
+          true
+        ],
+        [
+          "first",
+          {
+            "value": "caught",
+            "done": false
+          }
+        ],
+        "finally",
+        [
+          "second",
+          {
+            "done": true
+          }
+        ]
+      ]
+    },
+    {
+      "name": "explicit-await-throwing-then-getter",
+      "trace": [
+        "get-then",
+        [
+          "caughtRaw",
+          true
+        ],
+        [
+          "first",
+          {
+            "value": "caught",
+            "done": false
+          }
+        ],
+        [
+          "second",
+          {
+            "done": true
+          }
+        ]
+      ]
+    },
+    {
+      "name": "poisoned-promise-constructor-raw-rejection",
+      "trace": [
+        "get-constructor",
+        [
+          "raw",
+          true
+        ],
+        {
+          "done": true
+        }
+      ]
+    },
+    {
+      "name": "return-expression-await-precedes-finally",
+      "trace": [
+        [
+          "first",
+          {
+            "value": "first",
+            "done": false
+          }
+        ],
+        "return-pending",
+        "finally",
+        [
+          "second",
+          {
+            "value": "final",
+            "done": true
+          }
+        ]
+      ]
+    },
+    {
+      "name": "external-return-input-await-precedes-finally",
+      "trace": [
+        [
+          "first",
+          {
+            "value": "first",
+            "done": false
+          }
+        ],
+        "return-pending",
+        "finally",
+        [
+          "returned",
+          {
+            "value": "final",
+            "done": true
+          }
+        ]
+      ]
+    },
+    {
+      "name": "throw-after-yield-closes-raw",
+      "trace": [
+        [
+          "first",
+          {
+            "value": "first",
+            "done": false
+          }
+        ],
+        "finally",
+        [
+          "raw",
+          true
+        ],
+        [
+          "terminal",
+          {
+            "done": true
+          }
+        ]
+      ]
+    },
+    {
+      "name": "nested-async-generator-await-and-yield-boundaries",
+      "trace": [
+        "inner-start",
+        "producer-microtask",
+        [
+          "outer",
+          {
+            "stage": "producer-microtask"
+          }
+        ],
+        [
+          "consumer",
+          {
+            "value": {
+              "stage": "producer-microtask"
+            },
+            "done": false
+          }
+        ],
+        "outer-resume",
+        "inner-final",
+        [
+          "terminal",
+          {
+            "done": true
+          }
+        ]
+      ]
+    },
+    {
+      "name": "eventstream-queued-mutated-object-retains-identity",
+      "trace": [
+        "producer-microtask",
+        [
+          "consumer",
+          {
+            "value": {
+              "stage": "producer-microtask"
+            },
+            "done": false
+          },
+          true
+        ],
+        [
+          "terminal",
+          {
+            "done": true
+          }
+        ],
+        [
+          "result",
+          "final"
+        ]
+      ]
+    },
+    {
+      "name": "eventstream-waiter-mutated-object-retains-identity",
+      "trace": [
+        "producer-microtask",
+        [
+          "consumer",
+          {
+            "value": {
+              "stage": "producer-microtask"
+            },
+            "done": false
+          },
+          true
+        ],
+        [
+          "terminal",
+          {
+            "done": true
+          }
+        ]
+      ]
+    },
+    {
+      "name": "eventstream-pending-return-queues-until-producer-close",
+      "trace": [
+        "queued-return",
+        "producer-closed",
+        [
+          "next",
+          {
+            "done": true
+          }
+        ],
+        [
+          "return",
+          {
+            "value": "return-value",
+            "done": true
+          }
+        ],
+        [
+          "result",
+          "final"
+        ]
+      ]
+    },
+    {
+      "name": "eventstream-pending-throw-queues-until-producer-push",
+      "trace": [
+        "queued-throw",
+        [
+          "next",
+          {
+            "value": "value",
+            "done": false
+          }
+        ],
+        [
+          "throwRaw",
+          true
+        ],
+        [
+          "terminal",
+          {
+            "done": true
+          }
+        ]
+      ]
+    },
+    {
+      "name": "eventstream-two-iterators-compete-in-fifo-order",
+      "trace": [
+        [
+          "first",
+          {
+            "value": "a",
+            "done": false
+          }
+        ],
+        [
+          "second",
+          {
+            "value": "b",
+            "done": false
+          }
+        ],
+        [
+          "end-a",
+          {
+            "done": true
+          }
+        ],
+        [
+          "end-b",
+          {
+            "done": true
+          }
+        ]
+      ]
+    },
+    {
+      "name": "assistant-shared-partial-duration-and-callback-boundaries",
+      "trace": [
+        [
+          "after-push",
+          false
+        ],
+        [
+          "consumer",
+          {
+            "value": {
+              "type": "text_start",
+              "partial": {
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "one"
+                  }
+                ],
+                "timestamp": 5000000000000
+              }
+            },
+            "done": false
+          },
+          true
+        ],
+        [
+          "consumer",
+          {
+            "value": {
+              "type": "text_delta",
+              "delta": "one",
+              "partial": {
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "one"
+                  }
+                ],
+                "timestamp": 5000000000000,
+                "durationMs": "<measured>"
+              }
+            },
+            "done": false
+          },
+          true
+        ],
+        [
+          "consumer",
+          {
+            "value": {
+              "type": "text_end",
+              "partial": {
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "one"
+                  }
+                ],
+                "timestamp": 5000000000000,
+                "durationMs": "<measured>"
+              }
+            },
+            "done": false
+          },
+          true
+        ],
+        [
+          "consumer",
+          {
+            "value": {
+              "type": "done",
+              "message": {
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "one"
+                  }
+                ],
+                "timestamp": 5000000000000,
+                "durationMs": "<measured>"
+              }
+            },
+            "done": false
+          },
+          true
+        ],
+        [
+          "resultRaw",
+          true
+        ]
+      ]
+    }
+  ]
+}
