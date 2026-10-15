@@ -1,0 +1,17 @@
+{
+  "status": "genuine_original_static_create_source8_controls_prepared_unrun",
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "source_files": 1970,
+  "runtime_files": 31064,
+  "node_files": 1774,
+  "declared_absences": 84,
+  "cases": 8,
+  "original_full_class_models_auth_config_store_provider_wrappers": true,
+  "network_provider_calls": false,
+  "caller_timers_with_refresh_skipped_only": true,
+  "expected_exists": false,
+  "source_run": false,
+  "native_run": false,
+  "full_model_runtime_qualified": false,
+  "full_factory_qualified": false
+}
