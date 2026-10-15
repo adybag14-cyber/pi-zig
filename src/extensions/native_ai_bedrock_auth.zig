@@ -77,7 +77,7 @@ pub fn prepare(a: std.mem.Allocator, request: prep.View, data: []const u8, budge
     }
     var credentials = if (skip) @import("native_ai_aws_credentials.zig").Credentials{ .access_key_id = try a.dupe(u8, "dummy-access-key"), .secret_access_key = try a.dupe(u8, "dummy-secret-key") } else try @import("native_ai_aws_credentials.zig").resolve(a, budget.io, &env, field(input, "profile"), region, now, budget);
     defer credentials.deinit(a);
-    var signed = try @import("../ai/bedrock.zig").signAwsRequest(a, @tagName(request.method), url, request.payload, credentials.borrowed(), region, now);
+    var signed = try @import("native_ai_aws_sigv4.zig").sign(a, @tagName(request.method), url, request.payload, request.headers, credentials.borrowed(), region, now);
     defer signed.deinit(a);
     var headers: std.ArrayList(std.http.Header) = .empty;
     errdefer {
@@ -89,6 +89,7 @@ pub fn prepare(a: std.mem.Allocator, request: prep.View, data: []const u8, budge
     }
     try add(a, &headers, "authorization", signed.authorization);
     try add(a, &headers, "x-amz-date", &signed.amz_date);
+    try add(a, &headers, "x-amz-content-sha256", &signed.payload_hash);
     if (credentials.session_token) |token| try add(a, &headers, "x-amz-security-token", token);
     _ = try budget.remaining();
     return .{ .headers = try headers.toOwnedSlice(a), .url = url };

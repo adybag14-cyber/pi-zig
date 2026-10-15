@@ -5,16 +5,16 @@ const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
 const maximum_frame_bytes = 16 * 1024 * 1024;
-fn read32(bytes: []const u8) u32 {
-    return std.mem.readInt(u32, bytes[0..4], .big);
+fn read32(input: []const u8) u32 {
+    return std.mem.readInt(u32, input[0..4], .big);
 }
 pub fn bytes(s: *Scope, value: c.JSValue) ![]const u8 {
     var offset: usize = 0;
     var length: usize = 0;
     var element: usize = 0;
-    const buffer = try s.own(try s.engine.checked(c.JS_GetTypedArrayBuffer(s.engine.context, value, &offset, &length, &element)));
+    const backing = try s.own(try s.engine.checked(c.JS_GetTypedArrayBuffer(s.engine.context, value, &offset, &length, &element)));
     var total: usize = 0;
-    const pointer = c.JS_GetArrayBuffer(s.engine.context, &total, buffer);
+    const pointer = c.JS_GetArrayBuffer(s.engine.context, &total, backing);
     if (pointer == null or offset > total or length > total - offset) return error.InvalidBedrockBytes;
     return pointer[offset..][0..length];
 }
@@ -80,14 +80,57 @@ pub fn decode(s: *Scope, value: c.JSValue) !c.JSValue {
         _ = try s.engine.checked(c.JS_Throw(s.engine.context, c.JS_DupValue(s.engine.context, exception)));
         unreachable;
     }
+    if (std.mem.eql(u8, message_type, "exception")) {
+        const exception = try serviceError(s, typ, json);
+        _ = try s.engine.checked(c.JS_Throw(s.engine.context, c.JS_DupValue(s.engine.context, exception)));
+        unreachable;
+    }
+    // Smithy's runtime schema determines modeled property order and drops
+    // unknown JSON members before exposing events to provider callbacks.
+    const modeled = if (std.mem.eql(u8, typ, "contentBlockDelta")) blk: {
+        const output = try pick(s, json, &.{ "delta", "contentBlockIndex" });
+        const delta = try v.optional(s, output, "delta");
+        if (!v.nullish(delta)) {
+            const next = try pick(s, delta, &.{ "text", "toolUse", "toolResult", "reasoningContent", "citation", "image" });
+            const reasoning = try v.optional(s, next, "reasoningContent");
+            if (!v.nullish(reasoning)) try s.set(next, "reasoningContent", try pick(s, reasoning, &.{ "text", "redactedContent", "signature" }));
+            try s.set(output, "delta", next);
+        }
+        break :blk output;
+    } else if (std.mem.eql(u8, typ, "contentBlockStart")) try pick(s, json, &.{ "start", "contentBlockIndex" }) else if (std.mem.eql(u8, typ, "metadata")) blk: {
+        const output = try pick(s, json, &.{ "usage", "metrics", "trace", "performanceConfig", "serviceTier" });
+        const usage = try v.optional(s, output, "usage");
+        if (!v.nullish(usage)) try s.set(output, "usage", try pick(s, usage, &.{ "inputTokens", "outputTokens", "totalTokens", "cacheReadInputTokens", "cacheWriteInputTokens", "cacheDetails" }));
+        break :blk output;
+    } else json;
     // Smithy's blob decoder exposes Uint8Array to the provider event callback.
     if (std.mem.eql(u8, typ, "contentBlockDelta")) {
-        const reasoning = try v.optional(s, try s.get(json, "delta"), "reasoningContent");
+        const reasoning = try v.optional(s, try s.get(modeled, "delta"), "reasoningContent");
         const encoded = try v.optional(s, reasoning, "redactedContent");
         if (!v.nullish(encoded)) try s.set(reasoning, "redactedContent", try @import("native_ai_bedrock_messages.zig").bytes(s, encoded));
     }
-    try v.js.setKey(s.engine, item, key, json);
+    try v.js.setKey(s.engine, item, key, modeled);
     return item;
+}
+fn pick(s: *Scope, input: c.JSValue, keys: []const [*:0]const u8) !c.JSValue {
+    const output = try s.object();
+    for (keys) |key| {
+        const value = try v.optional(s, input, key);
+        if (!v.nullish(value)) try s.put(output, key, value);
+    }
+    return output;
+}
+pub fn serviceError(s: *Scope, typ: []const u8, json: c.JSValue) !c.JSValue {
+    var name = try s.engine.gpa.dupe(u8, typ);
+    defer s.engine.gpa.free(name);
+    if (name.len != 0) name[0] = std.ascii.toUpper(name[0]);
+    const lower = try v.optional(s, json, "message");
+    const upper = try v.optional(s, json, "Message");
+    const message = if (s.truthy(lower)) lower else if (s.truthy(upper)) upper else try s.text("UnknownError");
+    const exception = try s.own(try v.js.builtin(s.engine, "Error", &.{message}));
+    try s.set(exception, "name", try s.text(name));
+    try s.put(exception, "__bedrockServiceException", c.pi_js_bool(s.engine.context, 1));
+    return exception;
 }
 pub fn feed(s: *Scope, state: c.JSValue, chunk: c.JSValue) !c.JSValue {
     const old = try buffer(s, try s.get(state, "pendingBytes"));

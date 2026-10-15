@@ -5,6 +5,7 @@ pub const Reply = struct {
     body: []const u8,
     status: std.http.Status = .ok,
     headers: []const std.http.Header = &.{},
+    content_type: []const u8 = "application/json",
     delay_ms: u32 = 0,
     body_delay_ms: u32 = 0,
     payload_contains: ?[]const u8 = null,
@@ -93,7 +94,7 @@ pub const PlanServer = struct {
             if (reply.delay_ms > 0) try self.io.sleep(.fromMilliseconds(reply.delay_ms), .awake);
             var headers: std.ArrayList(std.http.Header) = .empty;
             defer headers.deinit(self.gpa);
-            try headers.append(self.gpa, .{ .name = "content-type", .value = "application/json" });
+            try headers.append(self.gpa, .{ .name = "content-type", .value = reply.content_type });
             try headers.appendSlice(self.gpa, reply.headers);
             if (reply.body_delay_ms > 0) {
                 var buffer: [256]u8 = undefined;

@@ -148,9 +148,6 @@ fn advance(s: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
             const headers = try s.get(value, "headers");
             try s.put(response, "headers", headers);
             try s.put(owner, "requestId", try decoder.diagnostic(s, try s.get(headers, "x-amzn-requestid")));
-            var status: u32 = 0;
-            if (c.JS_ToUint32(s.engine.context, &status, try s.get(value, "status")) < 0) return v.js.capture(s.engine);
-            if (status < 200 or status >= 300) return next(s, owner);
             try wait(s, owner, try hook(s, owner, "onResponse", response), .response);
         },
         .response => try next(s, owner),
@@ -174,9 +171,29 @@ fn advance(s: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
 }
 fn httpError(s: *Scope, owner: c.JSValue, body: c.JSValue) !c.JSValue {
     const response = try s.get(owner, "response");
-    const error_value = try s.own(try v.js.builtin(s.engine, "Error", &.{try s.text("UnknownError")}));
-    try s.set(error_value, "name", try s.text("Unknown"));
-    try s.put(error_value, "body", body);
+    var guard = @import("native_ai_json_scope.zig").Guard.enter(s.engine);
+    defer guard.deinit();
+    var parse_failure = false;
+    const parsed = s.invoke(try s.global("JSON"), "parse", &.{body}) catch |err| blk: {
+        parse_failure = true;
+        const reason = try s.own(flow.reason(s.engine, err));
+        if (s.engine.captured_exception) |captured| {
+            s.engine.captured_exception = null;
+            s.engine.freeValue(captured);
+        }
+        const message = try s.get(reason, "message");
+        try s.set(reason, "message", try s.concat(message, try s.text("\n  Deserialization error: to see the raw response, inspect the hidden field {error}.$response on this object.")));
+        break :blk reason;
+    };
+    const error_value = if (parse_failure) parsed else blk: {
+        var code = try v.optional(s, parsed, "code");
+        if (!s.truthy(code)) code = try v.optional(s, parsed, "__type");
+        if (!s.truthy(code)) code = try s.text("Unknown");
+        const raw = try s.engine.toString(code);
+        defer s.engine.gpa.free(raw);
+        const name = if (std.mem.lastIndexOfScalar(u8, raw, '#')) |i| raw[i + 1 ..] else raw;
+        break :blk try wire.serviceError(s, name, parsed);
+    };
     const metadata = try s.object();
     try s.put(metadata, "httpStatusCode", try s.get(response, "status"));
     try s.put(metadata, "requestId", try s.get(owner, "requestId"));
@@ -200,7 +217,6 @@ fn open(s: *Scope, owner: c.JSValue) !void {
     const options = try s.get(owner, "options");
     const headers = try s.object();
     try s.put(headers, "content-type", try s.text("application/json"));
-    try s.put(headers, "accept", try s.text("application/vnd.amazon.eventstream"));
     const custom = try v.optional(s, options, "headers");
     if (!v.nullish(custom)) {
         var rows = try v.iterator(s, try s.invoke(try s.global("Object"), "entries", &.{custom}));

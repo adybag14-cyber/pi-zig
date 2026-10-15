@@ -13,14 +13,14 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue) !c.JSVa
     try s.put(output, "api", try s.text("bedrock-converse-stream"));
     try s.put(output, "provider", try s.get(model, "provider"));
     try s.put(output, "model", try s.get(model, "id"));
-    try s.put(output, "stopReason", try s.text("pending"));
-    try s.put(output, "timestamp", try s.invoke(try s.global("Date"), "now", &.{}));
     const usage = try s.object();
     const cost = try s.object();
     inline for (.{ "input", "output", "cacheRead", "cacheWrite", "totalTokens" }) |key| try s.put(usage, key, c.JS_NewInt32(engine.context, 0));
     inline for (.{ "input", "output", "cacheRead", "cacheWrite", "total" }) |key| try s.put(cost, key, c.JS_NewInt32(engine.context, 0));
     try s.put(usage, "cost", cost);
     try s.put(output, "usage", usage);
+    try s.put(output, "stopReason", try s.text("pending"));
+    try s.put(output, "timestamp", try s.invoke(try s.global("Date"), "now", &.{}));
     try s.put(state, "output", output);
     try s.put(state, "model", model);
     try s.put(state, "stream", stream);
@@ -30,9 +30,9 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue) !c.JSVa
 fn emit(s: *Scope, state: c.JSValue, kind: []const u8, index: ?u32, key: ?[*:0]const u8, value: c.JSValue) !void {
     const event = try s.object();
     try s.put(event, "type", try s.text(kind));
-    try s.put(event, "partial", try s.get(state, "output"));
     if (index) |i| try s.put(event, "contentIndex", c.JS_NewUint32(s.engine.context, i));
     if (key) |name| try s.put(event, name, value);
+    try s.put(event, "partial", try s.get(state, "output"));
     _ = try s.invoke(try s.get(state, "stream"), "push", &.{event});
 }
 fn find(s: *Scope, blocks: c.JSValue, index: c.JSValue) !?u32 {
@@ -258,6 +258,14 @@ pub fn fail(s: *Scope, state: c.JSValue, reason: c.JSValue, aborted: bool, reque
     try finalize(s, output);
     try s.set(output, "stopReason", try s.text(if (aborted) "aborted" else "error"));
     var text = try @import("native_ai_provider_error.zig").format(s, try @import("native_ai_provider_error.zig").normalize(s, reason), c.pi_js_undefined());
+    if (s.truthy(try v.optional(s, reason, "__bedrockServiceException"))) {
+        const name = try s.get(reason, "name");
+        var prefix = name;
+        inline for (.{ .{ "InternalServerException", "Internal server error" }, .{ "ModelStreamErrorException", "Model stream error" }, .{ "ValidationException", "Validation error" }, .{ "ThrottlingException", "Throttling error" }, .{ "ServiceUnavailableException", "Service unavailable" } }) |pair| if (try v.eq(s, name, pair[0])) {
+            prefix = try s.text(pair[1]);
+        };
+        text = try s.concat(try s.concat(prefix, try s.text(": ")), text);
+    }
     const regex = try s.own(try v.js.builtin(s.engine, "RegExp", &.{ try s.text("data retention mode"), try s.text("i") }));
     if (s.truthy(try s.invoke(regex, "test", &.{text}))) text = try s.concat(text, try s.text(" See https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html for supported data retention modes."));
     try s.set(output, "errorMessage", text);
