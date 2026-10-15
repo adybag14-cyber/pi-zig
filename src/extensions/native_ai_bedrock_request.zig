@@ -21,7 +21,8 @@ fn candidates(scope: *Scope, model: c.JSValue) !c.JSValue {
     while (try rows.next()) |value| {
         defer scope.engine.freeValue(value);
         const lower = try scope.invoke(value, "toLowerCase", &.{});
-        const regex = try scope.own(try v.js.builtin(scope.engine, "RegExp", &.{ try scope.text("[\\s_.:]+"), try scope.text("g") }));
+        var regex_args = [_]c.JSValue{ try scope.text("[\\s_.:]+"), try scope.text("g") };
+        const regex = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, scope.engine.intrinsic_regexp_constructor, regex_args.len, &regex_args)));
         _ = try scope.invoke(result, "push", &.{ lower, try scope.invoke(lower, "replace", &.{ regex, try scope.text("-") }) });
     }
     return result;
