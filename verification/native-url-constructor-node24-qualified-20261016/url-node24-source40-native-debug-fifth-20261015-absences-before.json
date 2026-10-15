@@ -1,0 +1,338 @@
+[
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@biomejs\\cli-darwin-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@biomejs\\cli-darwin-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@biomejs\\cli-darwin-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@biomejs\\cli-darwin-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@biomejs\\cli-linux-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@biomejs\\cli-linux-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@biomejs\\cli-linux-arm64-musl",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@biomejs\\cli-linux-arm64-musl"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@biomejs\\cli-linux-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@biomejs\\cli-linux-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@biomejs\\cli-linux-x64-musl",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@biomejs\\cli-linux-x64-musl"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@biomejs\\cli-win32-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@biomejs\\cli-win32-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\gondolin-krun-runner-darwin-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@earendil-works\\gondolin-krun-runner-darwin-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\gondolin-krun-runner-linux-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@earendil-works\\gondolin-krun-runner-linux-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\aix-ppc64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\aix-ppc64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\android-arm",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\android-arm"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\android-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\android-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\android-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\android-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\darwin-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\darwin-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\darwin-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\darwin-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\freebsd-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\freebsd-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\freebsd-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\freebsd-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\linux-arm",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\linux-arm"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\linux-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\linux-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\linux-ia32",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\linux-ia32"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\linux-loong64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\linux-loong64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\linux-mips64el",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\linux-mips64el"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\linux-ppc64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\linux-ppc64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\linux-riscv64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\linux-riscv64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\linux-s390x",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\linux-s390x"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\linux-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\linux-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\netbsd-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\netbsd-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\netbsd-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\netbsd-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\openbsd-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\openbsd-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\openbsd-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\openbsd-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\openharmony-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\openharmony-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\sunos-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\sunos-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\win32-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\win32-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@esbuild\\win32-ia32",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@esbuild\\win32-ia32"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@napi-rs\\wasm-runtime",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@napi-rs\\wasm-runtime"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-android-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-android-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-darwin-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-darwin-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-darwin-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-darwin-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-freebsd-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-freebsd-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-linux-arm-gnueabihf",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-linux-arm-gnueabihf"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-linux-arm64-gnu",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-linux-arm64-gnu"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-linux-arm64-musl",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-linux-arm64-musl"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-linux-ppc64-gnu",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-linux-ppc64-gnu"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-linux-s390x-gnu",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-linux-s390x-gnu"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-linux-x64-gnu",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-linux-x64-gnu"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-linux-x64-musl",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-linux-x64-musl"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-openharmony-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-openharmony-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-wasm32-wasi",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-wasm32-wasi"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@rolldown\\binding-win32-arm64-msvc",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@rolldown\\binding-win32-arm64-msvc"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@tybys\\wasm-util",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@tybys\\wasm-util"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-aix-ppc64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-aix-ppc64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-darwin-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-darwin-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-darwin-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-darwin-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-freebsd-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-freebsd-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-freebsd-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-freebsd-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-linux-arm",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-linux-arm"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-linux-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-linux-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-linux-loong64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-linux-loong64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-linux-mips64el",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-linux-mips64el"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-linux-ppc64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-linux-ppc64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-linux-riscv64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-linux-riscv64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-linux-s390x",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-linux-s390x"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-linux-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-linux-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-netbsd-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-netbsd-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-netbsd-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-netbsd-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-openbsd-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-openbsd-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-openbsd-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-openbsd-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-sunos-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-sunos-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@typescript\\typescript-win32-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\@typescript\\typescript-win32-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\fsevents",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\fsevents"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\lightningcss-android-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\lightningcss-android-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\lightningcss-darwin-arm64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\lightningcss-darwin-arm64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\lightningcss-darwin-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\lightningcss-darwin-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\lightningcss-freebsd-x64",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\lightningcss-freebsd-x64"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\lightningcss-linux-arm-gnueabihf",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\lightningcss-linux-arm-gnueabihf"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\lightningcss-linux-arm64-gnu",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\lightningcss-linux-arm64-gnu"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\lightningcss-linux-arm64-musl",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\lightningcss-linux-arm64-musl"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\lightningcss-linux-x64-gnu",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\lightningcss-linux-x64-gnu"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\lightningcss-linux-x64-musl",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\lightningcss-linux-x64-musl"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\lightningcss-win32-arm64-msvc",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules\\lightningcss-win32-arm64-msvc"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\agent\\node_modules\\@earendil-works\\pi-ai\\node_modules\\typebox",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\agent\\node_modules\\@earendil-works\\pi-ai\\node_modules\\typebox"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\node_modules\\@earendil-works\\pi-agent-core\\node_modules\\typebox",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\coding-agent\\node_modules\\@earendil-works\\pi-agent-core\\node_modules\\typebox"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\node_modules\\@earendil-works\\pi-ai\\node_modules\\@anthropic-ai\\sdk",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\coding-agent\\node_modules\\@earendil-works\\pi-ai\\node_modules\\@anthropic-ai\\sdk"
+  },
+  {
+    "runtime": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\node_modules\\@earendil-works\\pi-ai\\node_modules\\typebox",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\coding-agent\\node_modules\\@earendil-works\\pi-ai\\node_modules\\typebox"
+  }
+]

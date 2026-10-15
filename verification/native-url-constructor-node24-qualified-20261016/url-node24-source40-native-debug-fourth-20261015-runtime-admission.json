@@ -1,0 +1,21 @@
+{
+  "phase": "runtime",
+  "root_slot": 3,
+  "free_bytes": 21749190656,
+  "required_bytes": 17179869184,
+  "other_native_roots": [
+    {
+      "ProcessId": 76144,
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-hosted-native-env-filehandle-webstream-source build-hosted-native-readable-byte-source build-hosted-native-readable-composition-source build-hosted-native-readable-host-oom -Doptimize=Debug -Duse-llvm=true -Ddiagnostic-tests=true -j1 --test-timeout 120s --summary all"
+    }
+  ],
+  "max_roots": 4,
+  "jobs": 1,
+  "compile_seconds": 1320,
+  "runtime_seconds": 300,
+  "test_seconds": 120,
+  "new_test_await_ms": 10000,
+  "settle_seconds": 10,
+  "candidate": "1c3d01e42328de7353c5102fd910da41cae336ae",
+  "observed_utc": "2026-10-15T22:54:44.3853449+00:00"
+}
