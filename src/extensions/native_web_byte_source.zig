@@ -5,13 +5,20 @@ const js = @import("native_js_values.zig");
 const Scope = @import("native_models_stream_scope.zig").Scope;
 const body = @import("native_web_body.zig");
 const c = em.c;
-pub const Options = struct { cancel: ?c.JSValue = null, signal: ?c.JSValue = null };
+pub const Options = struct {
+    cancel: ?c.JSValue = null,
+    signal: ?c.JSValue = null,
+    /// The fetch abort closure captures its actual Request even after resolving
+    /// response headers. Its dependent signal alone does not own the controller.
+    request: ?c.JSValue = null,
+};
 fn cleanup(scope: *Scope, state: c.JSValue) !void {
     const signal = try scope.get(state, "signal");
     const listener = try scope.get(state, "listener");
     if (!c.JS_IsUndefined(signal) and !c.JS_IsNull(signal) and !c.JS_IsUndefined(listener)) _ = try scope.invoke(signal, "removeEventListener", &.{ try scope.text("abort"), listener });
     try scope.set(state, "listener", c.pi_js_undefined());
     try scope.set(state, "signal", c.pi_js_undefined());
+    try scope.set(state, "request", c.pi_js_undefined());
 }
 fn invokeCancel(scope: *Scope, state: c.JSValue, reason: c.JSValue) !c.JSValue {
     const callback = try scope.get(state, "cancel");
@@ -119,6 +126,7 @@ pub fn fromEvents(engine: *em.Engine, iterator: c.JSValue, options: Options) !c.
     try scope.set(state, "iterator", iterator);
     try scope.set(state, "cancel", options.cancel orelse c.pi_js_undefined());
     try scope.set(state, "signal", options.signal orelse c.pi_js_undefined());
+    try scope.set(state, "request", options.request orelse c.pi_js_undefined());
     try scope.set(state, "listener", c.pi_js_undefined());
     try scope.set(state, "done", c.JS_NewBool(engine.context, false));
     const source = try scope.object();

@@ -217,7 +217,7 @@ fn continued(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: b
     if (try redirected(&scope, owner, value, status)) return;
     const transport = try scope.get(owner, "transport");
     const empty = status == 101 or status == 103 or status == 204 or status == 205 or status == 304 or scope.equal(try scope.get(owner, "current_method"), try scope.text("HEAD"));
-    const stream = if (empty) c.pi_js_null() else try scope.own(try @import("native_web_byte_source.zig").fromEvents(engine, try scope.get(transport, "events"), .{ .cancel = try scope.get(transport, "cancel"), .signal = view.signal }));
+    const stream = if (empty) c.pi_js_null() else try scope.own(try @import("native_web_byte_source.zig").fromEvents(engine, try scope.get(transport, "events"), .{ .cancel = try scope.get(transport, "cancel"), .signal = view.signal, .request = try scope.get(owner, "request") }));
     if (empty) cleanupTransport(&scope, owner);
     var redirects: u32 = 0;
     if (c.JS_ToUint32(engine.context, &redirects, try scope.get(owner, "redirect_count")) < 0) return js.capture(engine);

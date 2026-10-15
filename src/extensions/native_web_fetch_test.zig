@@ -123,6 +123,10 @@ const Peer = struct {
         if (std.mem.eql(u8, target, "/redirect")) return request.respond("", .{ .status = .found, .keep_alive = false, .extra_headers = &.{.{ .name = "Location", .value = "/json" }} });
         if (std.mem.eql(u8, target, "/null204")) return request.respond("", .{ .status = .no_content, .keep_alive = false });
         if (std.mem.eql(u8, target, "/empty")) return request.respond("", .{ .keep_alive = false });
+        if (std.mem.eql(u8, target, "/broken-body")) {
+            try writer.interface.writeAll("HTTP/1.1 200 OK\r\nContent-Length: 100\r\nConnection: close\r\n\r\nshort");
+            return writer.interface.flush();
+        }
         const index: usize = if (std.mem.eql(u8, target, "/gate?id=head200")) 0 else if (std.mem.eql(u8, target, "/gate?id=head403")) 1 else if (std.mem.eql(u8, target, "/abort-head?id=abort-head")) 2 else if (std.mem.eql(u8, target, "/abort-body?id=abort-body")) 3 else return error.UnexpectedFetch39PeerPath;
         self.gateResponse(&request, index) catch |err| {
             // The two abort fixtures deliberately close their real peer socket.
@@ -255,4 +259,57 @@ test "Web fetch Source39 complete unchanged observations real peer classes bytes
     try std.testing.expectEqual(@as(usize, 0), peer.failures.load(.acquire));
     std.debug.print("Fetch39 actual peer requests={d} all39-rows-compared=true\n", .{peer.requests.load(.acquire)});
     c.JS_RunGC(engine.runtime);
+}
+
+fn ownedHttpStream(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) anyerror!c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const request = if (args.len > 0) args[0] else c.pi_js_undefined();
+    const view = try @import("native_web_request.zig").view(&scope, request);
+    const url = try engine.toString(view.url);
+    defer engine.gpa.free(url);
+    const transport = try scope.own(try @import("native_ai_http.zig").openWithOptions(engine, .{ .url = url, .framing = .bytes, .stream_error_bytes = true, .redirect_behavior = .unhandled }, view.signal, .{ .raw_header_pairs = true }));
+    c.JS_PromiseMarkAsHandled(engine.context, try scope.get(transport, "ready"));
+    return @import("native_web_byte_source.zig").fromEvents(engine, try scope.get(transport, "events"), .{ .request = request, .signal = view.signal, .cancel = try scope.get(transport, "cancel") });
+}
+test "HTTP byte source retains actual Request across GC and releases on EOF error cancel and abort" {
+    const peer = try Peer.init(std.testing.allocator, std.testing.io);
+    defer peer.deinit();
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("timers.zig").install(engine, std.testing.io);
+    try @import("native_web_fetch.zig").install(engine);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    const origin = try std.fmt.allocPrint(engine.gpa, "http://127.0.0.1:{d}", .{peer.listener.socket.address.getPort()});
+    defer engine.gpa.free(origin);
+    try scope.set(global, "ownerOrigin", try scope.text(origin));
+    try scope.set(global, "nativeOwnedHttpStream", try scope.own(try @import("native_node_function.zig").create(engine, "nativeOwnedHttpStream", 1, ownedHttpStream, &.{})));
+    inline for (.{ "eof", "error", "cancel", "abort" }) |mode| {
+        const prepared = try engine.evalModule(
+            \\globalThis.ownerParent=new AbortController();
+            \\globalThis.ownerRequest=new Request(ownerOrigin+
+        ++ (if (std.mem.eql(u8, mode, "error")) "'/broken-body'" else "'/json'") ++
+            \\,{signal:ownerParent.signal});
+            \\globalThis.ownerWeak=new WeakRef(ownerRequest);
+            \\globalThis.ownerStream=nativeOwnedHttpStream(ownerRequest);
+            \\ownerRequest=null;
+        , "http-request-root-prepare-" ++ mode ++ ".mjs");
+        engine.freeValue(prepared);
+        // These are synchronous native VM operations, not a timer or a promise
+        // about when ECMAScript FinalizationRegistry callbacks will run.
+        c.JS_ClearKeptObjects(engine.runtime);
+        c.JS_RunGC(engine.runtime);
+        const retained = try engine.evalModule("if(ownerWeak.deref()===undefined)throw Error('Request retired before terminal body transition');", "http-request-root-retained-" ++ mode ++ ".mjs");
+        engine.freeValue(retained);
+        const terminal = try engine.evalModule(if (std.mem.eql(u8, mode, "eof")) "await new Response(ownerStream).text();" else if (std.mem.eql(u8, mode, "error")) "let failure;try{await new Response(ownerStream).text()}catch(e){failure=e}if(failure===undefined)throw Error('Expected actual truncated HTTP body rejection');" else if (std.mem.eql(u8, mode, "cancel")) "await ownerStream.cancel({owned:'cancel'});" else "const reason={owned:'abort'};ownerParent.abort(reason);let failure;try{await new Response(ownerStream).text()}catch(e){failure=e}if(failure!==reason)throw Error('Original abort reason not retained');", "http-request-root-terminal-" ++ mode ++ ".mjs");
+        engine.freeValue(terminal);
+        c.JS_ClearKeptObjects(engine.runtime);
+        c.JS_RunGC(engine.runtime);
+        const released = try engine.evalModule("if(ownerWeak.deref()!==undefined)throw Error('Request retained after terminal body cleanup');ownerStream=null;ownerParent=null;ownerWeak=null;", "http-request-root-released-" ++ mode ++ ".mjs");
+        engine.freeValue(released);
+    }
+    try std.testing.expectEqual(@as(usize, 0), peer.failures.load(.acquire));
 }
