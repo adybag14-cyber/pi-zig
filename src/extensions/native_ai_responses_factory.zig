@@ -138,8 +138,11 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     if (rejected) {
         const stage: Stage = @enumFromInt(raw);
         if (stage == .ready) {
-            retryOrFail(&scope, owner, try transportError(&scope, owner, value)) catch |err| try failError(&scope, owner, err);
-        } else fail(&scope, owner, if (stage == .next) try transportError(&scope, owner, value) else value) catch |err| try flow.rejectError(engine, owner, err);
+            // The SDK wraps request-establishment failures; Codex's direct
+            // fetch path and every entered response reader retain raw errors.
+            const mode = try getMode(&scope, try scope.get(owner, "agent"));
+            retryOrFail(&scope, owner, if (mode == .codex) value else try transportError(&scope, owner, value)) catch |err| try failError(&scope, owner, err);
+        } else fail(&scope, owner, value) catch |err| try flow.rejectError(engine, owner, err);
         return;
     }
     advance(&scope, owner, value, @enumFromInt(raw)) catch |err| try failError(&scope, owner, err);
