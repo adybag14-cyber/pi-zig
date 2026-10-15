@@ -158,11 +158,18 @@ fn operation(engine: *em.Engine, receiver: c.JSValue, method: Method, id_value: 
     attached = true;
     return promise;
 }
+fn httpText(scope: *Scope, bytes: []const u8, latin1: bool) !c.JSValue {
+    if (!latin1) return scope.text(bytes);
+    const units = try scope.engine.gpa.alloc(u16, bytes.len);
+    defer scope.engine.gpa.free(units);
+    for (bytes, units) |byte, *unit| unit.* = byte;
+    return scope.own(try scope.engine.checked(c.JS_NewStringUTF16(scope.engine.context, units.ptr, units.len)));
+}
 fn headValue(scope: *Scope, head: raw.Head, raw_header_pairs: bool) !c.JSValue {
     const value = try scope.object();
     const headers = try scope.object();
     try scope.put(value, "status", c.JS_NewInt32(scope.engine.context, head.status));
-    try scope.put(value, "statusText", try scope.text(head.status_text));
+    try scope.put(value, "statusText", try httpText(scope, head.status_text, raw_header_pairs));
     for (head.headers) |entry| {
         var row: Scope = .{ .engine = scope.engine };
         defer row.deinit();
@@ -170,10 +177,20 @@ fn headValue(scope: *Scope, head: raw.Head, raw_header_pairs: bool) !c.JSValue {
         defer scope.engine.gpa.free(name);
         for (name) |*byte| byte.* = std.ascii.toLower(byte.*);
         const key = try row.text(name);
-        const text = try row.text(entry.value);
-        const existing = try row.own(try js.getKey(scope.engine, headers, key));
+        const text = try httpText(&row, entry.value, raw_header_pairs);
+        const atom = try js.atom(scope.engine, key);
+        defer c.JS_FreeAtom(scope.engine.context, atom);
+        var descriptor: c.JSPropertyDescriptor = undefined;
+        const present = c.JS_GetOwnProperty(scope.engine.context, &descriptor, headers, atom);
+        if (present < 0) return js.capture(scope.engine);
+        defer if (present != 0) {
+            scope.engine.freeValue(descriptor.value);
+            scope.engine.freeValue(descriptor.getter);
+            scope.engine.freeValue(descriptor.setter);
+        };
+        const existing = if (present != 0) descriptor.value else c.pi_js_undefined();
         const combined = if (c.JS_IsUndefined(existing)) text else try row.concat(try row.concat(existing, try row.text(", ")), text);
-        try js.setKey(scope.engine, headers, key, combined);
+        if (c.JS_DefinePropertyValue(scope.engine.context, headers, atom, c.JS_DupValue(scope.engine.context, combined), c.JS_PROP_C_W_E) < 0) return js.capture(scope.engine);
     }
     try scope.put(value, "headers", headers);
     if (raw_header_pairs) {
@@ -182,8 +199,8 @@ fn headValue(scope: *Scope, head: raw.Head, raw_header_pairs: bool) !c.JSValue {
             var row: Scope = .{ .engine = scope.engine };
             defer row.deinit();
             const pair = try row.array();
-            try row.index(pair, 0, try row.text(entry.name));
-            try row.index(pair, 1, try row.text(entry.value));
+            try row.index(pair, 0, try httpText(&row, entry.name, true));
+            try row.index(pair, 1, try httpText(&row, entry.value, true));
             try scope.index(pairs, @intCast(index), pair);
         }
         try scope.put(value, "rawHeaders", pairs);
