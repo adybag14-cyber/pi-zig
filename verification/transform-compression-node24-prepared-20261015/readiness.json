@@ -1,0 +1,16 @@
+{
+  "status": "actual_native_candidate_and_genuine_source66_controls_prepared",
+  "base": "294d09b8",
+  "readable_dependency": "6f0b468d",
+  "writable_dependency": "55018c7877bd952bdc01a241efdccceca38f1474",
+  "response_dependency": "actual native_web_platform.prepare and native_web_response.install",
+  "codec_source": "zlib1.3.1 51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf",
+  "source_cases_prepared": 66,
+  "source_expected_present": false,
+  "source_capture_run": false,
+  "native_compile_run": false,
+  "native_runtime_run": false,
+  "native_allocation_sweep_run": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}

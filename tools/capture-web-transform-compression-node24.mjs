@@ -1,0 +1,18 @@
+import { readFileSync,writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { gzipSync,deflateSync,deflateRawSync } from 'node:zlib';
+import { TransformStream,TransformStreamDefaultController,CompressionStream,DecompressionStream,ReadableStream,WritableStream } from 'node:stream/web';
+const authorityPath=process.argv[4];
+const original=readFileSync(authorityPath);
+const expectedHash='0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263';
+if(createHash('sha256').update(original).digest('hex').toUpperCase()!==expectedHash)throw Error('Frozen Node24 builtin authority packet changed');
+const packet=JSON.parse(original),actual=process.binding('natives');
+const names=Object.keys(actual).filter(name=>name!=='configs');
+if(Object.keys(packet).length!==368||names.length!==368)throw Error('Actual368 builtin source bodies required');
+for(const name of names)if(actual[name]!==packet[name])throw Error('Actual builtin source mismatch '+name);
+Object.assign(globalThis,{TransformStream,TransformStreamDefaultController,CompressionStream,DecompressionStream,ReadableStream,WritableStream});
+const payload=Buffer.from('{"message":"streaming π","values":[1,2,3]}','utf8');
+globalThis.codecVectors={payload:Array.from(payload),gzip:Array.from(gzipSync(payload)),deflate:Array.from(deflateSync(payload)),'deflate-raw':Array.from(deflateRawSync(payload)),largeGzip:Array.from(gzipSync(Buffer.alloc(131072,97)))};
+await import('data:text/javascript;charset=utf-8,'+encodeURIComponent(readFileSync(process.argv[3],'utf8')));
+if(!Array.isArray(globalThis.webTransformCompressionRows)||webTransformCompressionRows.length!==66)throw Error('Actual Transform/compression corpus66 missing: '+globalThis.webTransformCompressionRows?.length);
+writeFileSync(process.argv[2],JSON.stringify({source:'actual Node24 WHATWG TransformStream and compression builtins',actualNode:{version:process.version,executable:process.execPath,executableSha256:createHash('sha256').update(readFileSync(process.execPath)).digest('hex'),versions:process.versions},builtinAuthoritySha256:expectedHash,builtinCount:368,cases:webTransformCompressionRows.length,vectors:codecVectors,rows:webTransformCompressionRows},null,2)+'\n');
