@@ -66,8 +66,9 @@ fn coercionError(engine: *em.Engine, message: [*:0]const u8) anyerror {
     defer engine.freeValue(value);
     return throwValue(engine, value);
 }
-/// Template interpolation applies ToPrimitive with the string hint. Keeping
-/// the primitive as a VM value retains lone surrogates in error.input/base.
+/// Template interpolation applies ToPrimitive with the string hint. JS-origin
+/// setter errors retain this primitive; native-binding parse errors use the
+/// same USV/UTF8 byte boundary as parsing before defining input/base.
 pub fn string(engine: *em.Engine, value: c.JSValue) !c.JSValue {
     if (!c.JS_IsObject(value)) {
         if (c.JS_IsSymbol(value)) return coercionError(engine, "Cannot convert a Symbol value to a string");
@@ -168,12 +169,12 @@ pub fn missing(engine: *em.Engine, family: c.JSValue) anyerror {
 pub fn setter(engine: *em.Engine, family: c.JSValue, input: c.JSValue) anyerror {
     return nodeError(engine, family, "setter", "ERR_INVALID_URL", "Invalid URL", input);
 }
-pub fn invalid(engine: *em.Engine, input: c.JSValue, base: c.JSValue) anyerror {
+pub fn invalid(engine: *em.Engine, input: []const u8, base: ?[]const u8) anyerror {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const value = scope.own(typeError(engine, "Invalid URL") catch |err| return err) catch |err| return err;
     define(engine, value, "code", scope.text("ERR_INVALID_URL") catch |err| return err, true) catch |err| return err;
-    define(engine, value, "input", input, true) catch |err| return err;
-    if (!c.JS_IsUndefined(base)) define(engine, value, "base", base, true) catch |err| return err;
+    define(engine, value, "input", scope.text(input) catch |err| return err, true) catch |err| return err;
+    if (base) |text| define(engine, value, "base", scope.text(text) catch |err| return err, true) catch |err| return err;
     return throwValue(engine, value);
 }

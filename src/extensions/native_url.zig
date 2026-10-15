@@ -160,19 +160,19 @@ fn parseValues(engine: *engine_mod.Engine, argc: c_int, argv: [*c]c.JSValue, fam
     defer engine.freeValue(base_value);
     const input = try params.usvString(engine, input_value);
     defer engine.gpa.free(input);
+    const base_text = if (!c.JS_IsUndefined(base_value)) try params.usvString(engine, base_value) else null;
+    defer if (base_text) |text| engine.gpa.free(text);
     var base: ?parser.Record = null;
     defer if (base) |*value| value.deinit(engine.gpa);
-    if (!c.JS_IsUndefined(base_value)) {
-        const text = try params.usvString(engine, base_value);
-        defer engine.gpa.free(text);
+    if (base_text) |text| {
         base = parser.parse(engine.gpa, text, null) catch |err| {
             if (err == error.OutOfMemory or err == error.UnsupportedIDNContext or !raise) return err;
-            return errors.invalid(engine, input_value, base_value);
+            return errors.invalid(engine, input, base_text);
         };
     }
     return parser.parse(engine.gpa, input, if (base) |*value| value else null) catch |err| {
         if (err == error.OutOfMemory or err == error.UnsupportedIDNContext or !raise) return err;
-        return errors.invalid(engine, input_value, base_value);
+        return errors.invalid(engine, input, base_text);
     };
 }
 fn constructValue(engine: *engine_mod.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -508,7 +508,7 @@ test "native URL actual Node24 constructor errors match focused forty Source obs
     const data = try engine.checked(c.JS_ParseJSON(engine.context, expected.ptr, expected.len, "url-errors-node24.json"));
     if (c.JS_DefinePropertyValueStr(engine.context, global, "urlErrorSource", data, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     const result = engine.eval(@embedFile("fixtures/url-errors-node24.input.txt") ++
-        "\nif(urlErrorSource.runtime!=='v24.14.0'||urlErrorRows.length!==40||urlErrorSource.count!==40)throw Error('Node24 URL error Source authority');for(let i=0;i<40;i++)if(JSON.stringify(urlErrorRows[i])!==JSON.stringify(urlErrorSource.rows[i]))throw Error(JSON.stringify({case:i,actual:urlErrorRows[i],expected:urlErrorSource.rows[i]}));", "native-url-constructor-node24-source40.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        "\nif(urlErrorSource.runtime!=='v24.14.0'||urlErrorRows.length!==40||urlErrorSource.count!==40)throw Error('Node24 URL error Source authority');const urlErrorMismatches=[];for(let i=0;i<40;i++)if(JSON.stringify(urlErrorRows[i])!==JSON.stringify(urlErrorSource.rows[i]))urlErrorMismatches.push({case:i,actual:urlErrorRows[i],expected:urlErrorSource.rows[i]});if(urlErrorMismatches.length)throw Error(JSON.stringify({mismatchCount:urlErrorMismatches.length,mismatches:urlErrorMismatches}));", "native-url-constructor-node24-source40.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
         std.debug.print("Native URL Node24 Source40: {s}\n", .{engine.last_error orelse @errorName(err)});
         return err;
     };
