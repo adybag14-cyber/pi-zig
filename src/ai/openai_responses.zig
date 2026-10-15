@@ -35,7 +35,7 @@ const HttpPostResult = struct {
 /// This is deliberately tiny/portable: the Codex backend only requires a
 /// decodable `Content-Encoding: zstd` request body, while a future encoder can
 /// replace the block strategy without changing the HTTP path.
-fn encodeZstdRequestBody(gpa: std.mem.Allocator, input: []const u8) ![]u8 {
+pub fn encodeZstdRequestBody(gpa: std.mem.Allocator, input: []const u8) ![]u8 {
     var out: std.ArrayList(u8) = .empty;
     errdefer out.deinit(gpa);
 

@@ -17,6 +17,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
 }
 pub fn createMode(engine: *v.em.Engine, mode: request.Mode) !c.JSValue {
     try @import("native_stream.zig").install(engine);
+    try @import("native_headers.zig").install(engine);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const dependencies = try scope.own(try @import("native_ai_openai_dependencies.zig").create(engine));
@@ -111,6 +112,7 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
 fn setup(scope: *Scope, owner: c.JSValue, properties: c.JSValue) !void {
     const options = try scope.get(owner, "options");
     const mode = try getMode(scope, try scope.get(owner, "agent"));
+    if (mode == .codex and !try v.eq(scope, try v.optional(scope, options, "transport"), "sse")) return v.errorText(scope, try scope.text("Native Codex WebSocket integration is not yet qualified"));
     try scope.put(owner, "apiKey", try apiKey(scope, try scope.get(owner, "model"), options, mode));
     const retention = if (mode == .codex) (if (try v.eq(scope, try v.optional(scope, options, "cacheRetention"), "none")) try scope.text("none") else try scope.text("short")) else try @import("native_ai_openai_request.zig").cacheRetention(scope, options);
     try scope.put(owner, "retention", retention);
@@ -138,8 +140,11 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     if (rejected) {
         const stage: Stage = @enumFromInt(raw);
         if (stage == .ready) {
-            retryOrFail(&scope, owner, try transportError(&scope, owner, value)) catch |err| try failError(&scope, owner, err);
-        } else fail(&scope, owner, if (stage == .next) try transportError(&scope, owner, value) else value) catch |err| try flow.rejectError(engine, owner, err);
+            // The SDK wraps request-establishment failures; Codex's direct
+            // fetch path and every entered response reader retain raw errors.
+            const mode = try getMode(&scope, try scope.get(owner, "agent"));
+            retryOrFail(&scope, owner, if (mode == .codex) value else try transportError(&scope, owner, value)) catch |err| try failError(&scope, owner, err);
+        } else fail(&scope, owner, value) catch |err| try flow.rejectError(engine, owner, err);
         return;
     }
     advance(&scope, owner, value, @enumFromInt(raw)) catch |err| try failError(&scope, owner, err);
@@ -173,16 +178,19 @@ fn mergeHeaders(scope: *Scope, target: c.JSValue, source: c.JSValue) !void {
     errdefer rows.closePreserving();
     while (try rows.next()) |entry| {
         defer scope.engine.freeValue(entry);
-        const name = try scope.invoke(try v.at(scope, entry, 0), "toLowerCase", &.{});
-        try v.js.setKey(scope.engine, target, name, try v.at(scope, entry, 1));
+        const name = try v.at(scope, entry, 0);
+        const value = try v.at(scope, entry, 1);
+        _ = try scope.invoke(target, if (c.JS_IsNull(value)) "delete" else "set", if (c.JS_IsNull(value)) &.{name} else &.{ name, value });
     }
 }
 fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const mode = try getMode(scope, try scope.get(owner, "agent"));
-    const result = try scope.object();
-    try scope.put(result, "accept", try scope.text(if (mode == .codex) "text/event-stream" else "application/json"));
-    try scope.put(result, "content-type", try scope.text("application/json"));
-    try scope.put(result, if (mode == .azure) "api-key" else "authorization", if (mode == .azure) try scope.get(owner, "apiKey") else try scope.concat(try scope.text("Bearer "), try scope.stringify(try scope.get(owner, "apiKey"))));
+    const initial = try scope.object();
+    try scope.put(initial, "accept", try scope.text(if (mode == .codex) "text/event-stream" else "application/json"));
+    try scope.put(initial, "content-type", try scope.text("application/json"));
+    try scope.put(initial, if (mode == .azure) "api-key" else "authorization", if (mode == .azure) try scope.get(owner, "apiKey") else try scope.concat(try scope.text("Bearer "), try scope.stringify(try scope.get(owner, "apiKey"))));
+    var header_args = [_]c.JSValue{initial};
+    const result = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("Headers"), header_args.len, &header_args)));
     const defaults = try scope.object();
     try scope.put(defaults, "User-Agent", try userAgent(scope, try scope.get(owner, "agent")));
     if (mode == .codex) try scope.put(defaults, "originator", try scope.text("pi"));
@@ -232,15 +240,15 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     try mergeHeaders(scope, result, defaults);
     if (mode == .codex) {
         // Codex reapplies identity headers after nullable caller overrides.
-        try scope.put(result, "authorization", try scope.concat(try scope.text("Bearer "), try scope.get(owner, "apiKey")));
-        try scope.put(result, "chatgpt-account-id", try scope.get(owner, "accountId"));
-        try scope.put(result, "openai-beta", try scope.text("responses=experimental"));
-        try scope.put(result, "accept", try scope.text("text/event-stream"));
-        try scope.put(result, "content-type", try scope.text("application/json"));
+        _ = try scope.invoke(result, "set", &.{ try scope.text("authorization"), try scope.concat(try scope.text("Bearer "), try scope.get(owner, "apiKey")) });
+        _ = try scope.invoke(result, "set", &.{ try scope.text("chatgpt-account-id"), try scope.get(owner, "accountId") });
+        _ = try scope.invoke(result, "set", &.{ try scope.text("openai-beta"), try scope.text("responses=experimental") });
+        _ = try scope.invoke(result, "set", &.{ try scope.text("accept"), try scope.text("text/event-stream") });
+        _ = try scope.invoke(result, "set", &.{ try scope.text("content-type"), try scope.text("application/json") });
         if (scope.truthy(session)) {
             const clamped = try request.cacheKey(scope, session);
-            try scope.put(result, "session-id", clamped);
-            try scope.put(result, "x-client-request-id", clamped);
+            _ = try scope.invoke(result, "set", &.{ try scope.text("session-id"), clamped });
+            _ = try scope.invoke(result, "set", &.{ try scope.text("x-client-request-id"), clamped });
         }
     }
     return result;
@@ -264,7 +272,9 @@ fn accountIdBody(scope: *Scope, token: c.JSValue) !c.JSValue {
 fn open(scope: *Scope, owner: c.JSValue) !void {
     const engine = scope.engine;
     const options = try scope.get(owner, "options");
+    const mode = try getMode(scope, try scope.get(owner, "agent"));
     const header_object = try buildHeaders(scope, owner);
+    if (mode == .codex) _ = try scope.invoke(header_object, "set", &.{ try scope.text("content-encoding"), try scope.text("zstd") });
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
         for (fields.items) |field| {
@@ -273,7 +283,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         }
         fields.deinit(engine.gpa);
     }
-    var rows = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{header_object}));
+    var rows = try v.iterator(scope, try scope.invoke(header_object, "entries", &.{}));
     defer rows.deinit();
     errdefer rows.closePreserving();
     while (try rows.next()) |entry| {
@@ -286,7 +296,6 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         errdefer engine.gpa.free(text);
         try fields.append(engine.gpa, .{ .name = name, .value = text });
     }
-    const mode = try getMode(scope, try scope.get(owner, "agent"));
     var base = try scope.get(try scope.get(owner, "model"), "baseUrl");
     if (mode == .codex and (!scope.truthy(base) or try v.length(scope, try scope.invoke(base, "trim", &.{})) == 0)) base = try scope.text("https://chatgpt.com/backend-api");
     const trimmed = if (scope.truthy(try scope.invoke(base, "endsWith", &.{try scope.text("/")}))) try scope.invoke(base, "slice", &.{ c.JS_NewInt32(engine.context, 0), c.JS_NewInt32(engine.context, -1) }) else base;
@@ -295,6 +304,9 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
     defer engine.gpa.free(url);
     const payload = try engine.toString(try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")}));
     defer engine.gpa.free(payload);
+    const compressed = if (mode == .codex) try @import("../ai/openai_responses.zig").encodeZstdRequestBody(engine.gpa, payload) else null;
+    defer if (compressed) |bytes| engine.gpa.free(bytes);
+    const body_bytes = compressed orelse payload;
     const timeout = try v.optional(scope, options, "timeoutMs");
     var milliseconds: i64 = 600000;
     if (!c.JS_IsUndefined(timeout) and c.JS_ToInt64(engine.context, &milliseconds, timeout) < 0) return v.js.capture(engine);
@@ -304,10 +316,15 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         const init = try scope.object();
         try scope.put(init, "method", try scope.text("POST"));
         try scope.put(init, "headers", header_object);
-        try scope.put(init, "body", try scope.text(payload));
+        const body = if (compressed) |bytes| encoded: {
+            const buffer = try scope.own(try engine.checked(c.JS_NewArrayBufferCopy(engine.context, bytes.ptr, bytes.len)));
+            var args = [_]c.JSValue{buffer};
+            break :encoded try scope.own(try engine.checked(c.JS_NewTypedArray(engine.context, args.len, &args, c.JS_TYPED_ARRAY_UINT8)));
+        } else try scope.text(payload);
+        try scope.put(init, "body", body);
         try scope.put(init, "signal", try v.optional(scope, options, "signal"));
         transport = try scope.own(try @import("native_ai_responses_fetch.zig").open(engine, fetch, url_value, init));
-    } else transport = try scope.own(try http.open(engine, .{ .url = url, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)) }, try v.optional(scope, options, "signal")));
+    } else transport = try scope.own(try http.open(engine, .{ .url = url, .payload = body_bytes, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)) }, try v.optional(scope, options, "signal")));
     try scope.put(owner, "http", transport);
     try scope.put(owner, "iterator", try scope.get(transport, "events"));
     try wait(scope, owner, try scope.get(transport, "ready"), .ready);

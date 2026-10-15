@@ -1,0 +1,8 @@
+{
+  "observed_utc": "2026-10-15T18:49:46.0669474+00:00",
+  "required_kib": 2097152,
+  "heap_mb": 256,
+  "status": "admitted",
+  "coordinated_with": "Root explicit queued LIGHT Source CodexSocket10 grant; no launch without grant",
+  "free_kib": 22738356
+}
