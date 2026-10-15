@@ -8,7 +8,6 @@ const Scope = @import("native_models_stream_scope.zig").Scope;
 const request_api = @import("native_web_request.zig");
 const response_api = @import("native_web_response.zig");
 const body = @import("native_web_body.zig");
-const raw = @import("native_ai_http_worker.zig");
 const http = @import("native_ai_http.zig");
 const flow = @import("native_agent_async.zig");
 const c = em.c;
@@ -75,6 +74,7 @@ fn open(scope: *Scope, owner: c.JSValue, upload: c.JSValue) !void {
     var size: usize = 0;
     const bytes = c.JS_GetUint8Array(scope.engine.context, &size, upload);
     if (bytes == null and c.JS_HasException(scope.engine.context)) return js.capture(scope.engine);
+    if (size != 0 and !native_method.requestHasBody()) return error.NativeWebMethodBodyTransportUnavailable;
     var timeout: i64 = -1;
     if (c.JS_ToInt64(scope.engine.context, &timeout, try scope.get(owner, "headers_timeout")) < 0) return js.capture(scope.engine);
     const transport = try scope.own(try http.openWithOptions(scope.engine, .{ .url = url, .payload = if (size == 0) &.{} else bytes[0..size], .headers = headers.items, .method = native_method, .framing = .bytes, .stream_error_bytes = true, .headers_timeout_only = true, .timeout_ms = if (timeout < 0) null else @intCast(timeout) }, view.signal, .{ .raw_header_pairs = true }));

@@ -8,7 +8,7 @@ const web = @import("native_headers_webidl.zig");
 const utf16 = @import("native_utf16.zig");
 const c = em.c;
 const cache_key = "\x00native-web-Headers";
-pub const Guard = enum { none, request, response, immutable };
+pub const Guard = enum { none, request, request_no_cors, response, immutable };
 const Entry = struct { lower: c.JSValue, name: c.JSValue, value: c.JSValue };
 const Root = struct {
     engine: *em.Engine,

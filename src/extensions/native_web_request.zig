@@ -63,6 +63,13 @@ fn stateOf(scope: *Scope, owner: c.JSValue, value: c.JSValue) !*State {
     if (!scope.truthy(try scope.call(root.interfaces.has_instance, root.constructor, &.{value}))) try web.typeError(scope, try scope.text("Illegal invocation"), "ERR_INVALID_THIS");
     return internal(scope, owner, value);
 }
+fn getterState(scope: *Scope, owner: c.JSValue, value: c.JSValue, kind: Kind) !*State {
+    const root = rootOf(owner);
+    if (!scope.truthy(try scope.call(root.interfaces.has_instance, root.constructor, &.{value}))) try web.typeError(scope, try scope.text("Illegal invocation"), "ERR_INVALID_THIS");
+    if (c.JS_GetOpaque(value, root.class)) |pointer| return @ptrCast(@alignCast(pointer));
+    const field = if (kind == .headers) "#headers" else if (kind == .signal) "#signal" else "#state";
+    try web.typeError(scope, try scope.concat(try scope.concat(try scope.text("Cannot read private member "), try scope.text(field)), try scope.text(" from an object whose class did not declare it")), null);
+}
 fn internal(scope: *Scope, owner: c.JSValue, value: c.JSValue) !*State {
     if (c.JS_GetOpaque(value, rootOf(owner).class)) |pointer| return @ptrCast(@alignCast(pointer));
     try web.typeError(scope, try scope.text("Cannot read private member #state from an object whose class did not declare it"), null);
@@ -197,7 +204,7 @@ fn create(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captur
     try web.arity(&scope, args.len, 1, "Request constructor");
     const input = try idl.requestInfo(&scope, root.interfaces, args[0]);
     const init = try idl.requestInit(&scope, root.interfaces, if (args.len > 1) args[1] else c.pi_js_undefined());
-    const result = try fresh(&scope, owner, if (c.JS_IsObject(prototype)) prototype else root.prototype);
+    const result = try fresh(&scope, owner, if (c.JS_IsObject(prototype)) prototype else try scope.get(try scope.global("Object"), "prototype"));
     const state = try internal(&scope, owner, result);
     var input_state: ?*State = null;
     var parent_signal = c.pi_js_null();
@@ -248,10 +255,13 @@ fn create(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captur
     const explicit_signal = try scope.get(init, "signal");
     if (!c.JS_IsUndefined(explicit_signal)) parent_signal = explicit_signal;
     replace(engine, &state.signal, try signalFor(&scope, owner, result, parent_signal, false));
-    if (scope.equal(try scope.get(state.metadata, "mode"), try scope.text("no-cors")) and !scope.equal(actual_method, try scope.text("GET")) and !scope.equal(actual_method, try scope.text("HEAD")) and !scope.equal(actual_method, try scope.text("POST"))) try web.typeError(&scope, try scope.concat(try scope.concat(try scope.text("'"), actual_method), try scope.text(" is unsupported in no-cors mode.")), null);
+    if (scope.equal(try scope.get(state.metadata, "mode"), try scope.text("no-cors"))) {
+        if (!scope.equal(actual_method, try scope.text("GET")) and !scope.equal(actual_method, try scope.text("HEAD")) and !scope.equal(actual_method, try scope.text("POST"))) try web.typeError(&scope, try scope.concat(try scope.concat(try scope.text("'"), actual_method), try scope.text(" is unsupported in no-cors mode.")), null);
+        state.guard = .request_no_cors;
+    }
     const header_init = try scope.get(init, "headers");
     if (!c.JS_IsUndefined(header_init)) replace(engine, &state.headers, try scope.own(try headers.fromRecord(engine, header_init)));
-    try headers.setGuard(engine, state.headers, .request);
+    try headers.setGuard(engine, state.headers, state.guard);
     const input_body: ?body.Body = if (input_state) |original| original.payload else null;
     const init_body = try scope.get(init, "body");
     const has_init_body = !c.JS_IsNull(init_body) and !c.JS_IsUndefined(init_body);
@@ -307,7 +317,7 @@ fn rejected(scope: *Scope, failure: anyerror) !c.JSValue {
     return promise;
 }
 fn operation(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const c.JSValue, kind: Kind) !c.JSValue {
-    const state = stateOf(scope, owner, receiver) catch |err| return if (consumer(kind)) rejected(scope, err) else err;
+    const state = getterState(scope, owner, receiver, kind) catch |err| return if (consumer(kind)) rejected(scope, err) else err;
     return switch (kind) {
         .headers => state.headers,
         .signal => state.signal,
