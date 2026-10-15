@@ -1,0 +1,539 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "inputSha256": "0f1dd564d9f7cf2e3eb83d2da022b5ceb46a1af5894b9192f7d3440d8b979cd1",
+  "cases": 28,
+  "actualNodeGcExecuted": true,
+  "scope": "Unchanged actual read/write text rendering (unsupported text-file extension; no highlighter substitution) and actual edit async filesystem preview/Box state. Genuine dark Theme and TUI components. Syntax language rendering remains a separate unqualified dependency.",
+  "accessConstants": {
+    "prototypeIsNull": true,
+    "flags": {
+      "F_OK": {
+        "value": 0,
+        "writable": false,
+        "enumerable": true,
+        "configurable": false
+      },
+      "R_OK": {
+        "value": 4,
+        "writable": false,
+        "enumerable": true,
+        "configurable": false
+      },
+      "W_OK": {
+        "value": 2,
+        "writable": false,
+        "enumerable": true,
+        "configurable": false
+      },
+      "X_OK": {
+        "value": 1,
+        "writable": false,
+        "enumerable": true,
+        "configurable": false
+      }
+    }
+  },
+  "languages": [
+    {
+      "path": "a.TS",
+      "value": "typescript"
+    },
+    {
+      "path": "a.jsx",
+      "value": "javascript"
+    },
+    {
+      "path": "a.mjs",
+      "value": "javascript"
+    },
+    {
+      "path": "a.py",
+      "value": "python"
+    },
+    {
+      "path": "a.kt",
+      "value": "kotlin"
+    },
+    {
+      "path": "a.hpp",
+      "value": "cpp"
+    },
+    {
+      "path": "a.ps1",
+      "value": "powershell"
+    },
+    {
+      "path": "a.yml",
+      "value": "yaml"
+    },
+    {
+      "path": "a.dockerfile",
+      "value": "dockerfile"
+    },
+    {
+      "path": "a.tf",
+      "value": "hcl"
+    },
+    {
+      "path": "a.graphql",
+      "value": "graphql"
+    },
+    {
+      "path": "README.MD",
+      "value": "markdown"
+    },
+    {
+      "path": "unknown.txt",
+      "value": {
+        "type": "undefined",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "file.",
+      "value": {
+        "type": "undefined",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "a.tar.gz",
+      "value": {
+        "type": "undefined",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "toString",
+      "value": {
+        "type": "undefined",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "constructor",
+      "value": {
+        "type": "function",
+        "name": "Object",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "__proto__",
+      "value": {
+        "type": "object",
+        "objectPrototype": true
+      }
+    },
+    {
+      "path": "hasOwnProperty",
+      "value": {
+        "type": "undefined",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "a.zsh",
+      "value": "bash"
+    },
+    {
+      "path": "a.proto",
+      "value": "protobuf"
+    }
+  ],
+  "previewMetadata": {
+    "name": "computeEditsDiff",
+    "length": 3,
+    "prototypeConstructor": "AsyncFunction",
+    "hasOwnPrototype": false,
+    "constructible": false
+  },
+  "rows": [
+    {
+      "name": "read call 0",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                    "
+        ]
+      }
+    },
+    {
+      "name": "read call 1",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/other.txt\u001b\\\u001b[38;2;167;152;215mother.txt\u001b[39m\u001b]8;;\u001b\\                                  "
+        ]
+      }
+    },
+    {
+      "name": "read call 2",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\\u001b[38;2;205;154;34m:3-4\u001b[39m                                "
+        ]
+      }
+    },
+    {
+      "name": "read call 3",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\\u001b[38;2;205;154;34m:2\u001b[39m                                  "
+        ]
+      }
+    },
+    {
+      "name": "read call 4",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b[38;2;234;127;129m[invalid arg]\u001b[39m                              "
+        ]
+      }
+    },
+    {
+      "name": "read call 5",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b[38;2;157;165;169m...\u001b[39m                                        "
+        ]
+      }
+    },
+    {
+      "name": "read call 6",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread resource\u001b[39m \u001b[38;2;167;152;215mAGENTS.md\u001b[39m\u001b[38;2;126;136;142m ( to expand)\u001b[39m            "
+        ]
+      }
+    },
+    {
+      "name": "read call 7",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\\u001b[38;2;205;154;34m:0--1\u001b[39m                               "
+        ]
+      }
+    },
+    {
+      "name": "read result 0",
+      "value": {
+        "constructor": "Text",
+        "lines": []
+      }
+    },
+    {
+      "name": "read result 1",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;157;165;169mfirst   second\u001b[39m                                  "
+        ]
+      }
+    },
+    {
+      "name": "read result 2",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;157;165;169mline 0\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 1\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 2\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 3\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 4\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 5\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 6\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 7\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 8\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 9\u001b[39m\u001b[38;2;157;165;169m                                          ",
+          "\u001b[38;2;157;165;169m... (2 more lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m                  "
+        ]
+      }
+    },
+    {
+      "name": "read result 3",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;157;165;169merror\u001b[39m                                           ",
+          "\u001b[38;2;157;165;169m[Image: [image/png]]\u001b[39m                            "
+        ]
+      }
+    },
+    {
+      "name": "read result 4",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;157;165;169mshown\u001b[39m                                           ",
+          "\u001b[38;2;205;154;34m[Truncated: showing 2 of 12 lines (2 line       ",
+          "\u001b[38;2;205;154;34mlimit)]\u001b[39m                                         "
+        ]
+      }
+    },
+    {
+      "name": "read result 5",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;157;165;169mshown\u001b[39m                                           ",
+          "\u001b[38;2;205;154;34m[First line exceeds 1000B limit]\u001b[39m                "
+        ]
+      }
+    },
+    {
+      "name": "write call 0",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   "
+        ]
+      }
+    },
+    {
+      "name": "write call 1",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   ",
+          "                                                ",
+          "\u001b[38;2;157;165;169ma   b\u001b[39m                                           ",
+          "\u001b[38;2;157;165;169mcD\u001b[39m                                              "
+        ]
+      }
+    },
+    {
+      "name": "write call 2",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   ",
+          "                                                ",
+          "\u001b[38;2;234;127;129m[invalid content arg - expected string]\u001b[39m         "
+        ]
+      }
+    },
+    {
+      "name": "write call 3",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b[38;2;157;165;169m...\u001b[39m                                       ",
+          "                                                ",
+          "\u001b[38;2;157;165;169mmissing path\u001b[39m                                    "
+        ]
+      }
+    },
+    {
+      "name": "write call 4",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   ",
+          "                                                ",
+          "\u001b[38;2;157;165;169mline 0\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 1\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 2\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 3\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 4\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 5\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 6\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 7\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 8\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 9\u001b[39m\u001b[38;2;157;165;169m                                          ",
+          "\u001b[38;2;157;165;169m... (2 more lines, 12 total,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m        "
+        ]
+      }
+    },
+    {
+      "name": "write call 5",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   ",
+          "                                                ",
+          "\u001b[38;2;157;165;169mone\u001b[31mred\u0000two\u001b[39m                                       "
+        ]
+      }
+    },
+    {
+      "name": "write result 0",
+      "value": {
+        "constructor": "Container",
+        "lines": []
+      }
+    },
+    {
+      "name": "write result 1",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;234;127;129mfailed\u001b[39m                                          "
+        ]
+      }
+    },
+    {
+      "name": "write result 2",
+      "value": {
+        "constructor": "Container",
+        "lines": []
+      }
+    },
+    {
+      "name": "write result 3",
+      "value": {
+        "constructor": "Container",
+        "lines": []
+      }
+    },
+    {
+      "name": "edit async preview 0",
+      "value": {
+        "pending": {
+          "pending": true,
+          "lines": [
+            "\u001b[48;2;52;56;58m                                                \u001b[49m",
+            "\u001b[48;2;52;56;58m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   \u001b[49m",
+            "\u001b[48;2;52;56;58m                                                \u001b[49m"
+          ]
+        },
+        "settled": {
+          "constructor": "Box",
+          "lines": [
+            "\u001b[48;2;37;65;49m                                                \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   \u001b[49m",
+            "\u001b[48;2;37;65;49m                                                \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;234;127;129m-1 old\u001b[39m                                         \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;104;183;141m+1 new\u001b[39m                                         \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;157;165;169m 2 keep\u001b[39m                                        \u001b[49m",
+            "\u001b[48;2;37;65;49m                                                \u001b[49m"
+          ]
+        },
+        "preview": {
+          "diff": "-1 old\n+1 new\n 2 keep",
+          "firstChangedLine": 1
+        },
+        "previewPending": false,
+        "invalidations": 1,
+        "result": {
+          "constructor": "Container",
+          "lines": []
+        }
+      }
+    },
+    {
+      "name": "edit async preview 1",
+      "value": {
+        "pending": {
+          "pending": true,
+          "lines": [
+            "\u001b[48;2;52;56;58m                                                \u001b[49m",
+            "\u001b[48;2;52;56;58m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/bom.txt\u001b\\\u001b[38;2;167;152;215mbom.txt\u001b[39m\u001b]8;;\u001b\\                                   \u001b[49m",
+            "\u001b[48;2;52;56;58m                                                \u001b[49m"
+          ]
+        },
+        "settled": {
+          "constructor": "Box",
+          "lines": [
+            "\u001b[48;2;37;65;49m                                                \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/bom.txt\u001b\\\u001b[38;2;167;152;215mbom.txt\u001b[39m\u001b]8;;\u001b\\                                   \u001b[49m",
+            "\u001b[48;2;37;65;49m                                                \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;234;127;129m-1 old\u001b[39m                                         \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;104;183;141m+1 new\u001b[39m                                         \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;157;165;169m 2 keep\u001b[39m                                        \u001b[49m",
+            "\u001b[48;2;37;65;49m                                                \u001b[49m"
+          ]
+        },
+        "preview": {
+          "diff": "-1 old\n+1 new\n 2 keep",
+          "firstChangedLine": 1
+        },
+        "previewPending": false,
+        "invalidations": 1,
+        "result": {
+          "constructor": "Container",
+          "lines": []
+        }
+      }
+    },
+    {
+      "name": "edit async preview 2",
+      "value": {
+        "pending": {
+          "pending": true,
+          "lines": [
+            "\u001b[48;2;52;56;58m                                                \u001b[49m",
+            "\u001b[48;2;52;56;58m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/missing.txt\u001b\\\u001b[38;2;167;152;215mmissing.txt\u001b[39m\u001b]8;;\u001b\\                               \u001b[49m",
+            "\u001b[48;2;52;56;58m                                                \u001b[49m"
+          ]
+        },
+        "settled": {
+          "constructor": "Box",
+          "lines": [
+            "\u001b[48;2;91;40;42m                                                \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/missing.txt\u001b\\\u001b[38;2;167;152;215mmissing.txt\u001b[39m\u001b]8;;\u001b\\                               \u001b[49m",
+            "\u001b[48;2;91;40;42m                                                \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;234;127;129mCould not edit file: missing.txt. Error code:  \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;234;127;129mENOENT.\u001b[39m                                        \u001b[49m",
+            "\u001b[48;2;91;40;42m                                                \u001b[49m"
+          ]
+        },
+        "preview": {
+          "error": "Could not edit file: missing.txt. Error code: ENOENT."
+        },
+        "previewPending": false,
+        "invalidations": 1,
+        "result": {
+          "constructor": "Container",
+          "lines": []
+        }
+      }
+    },
+    {
+      "name": "edit async preview 3",
+      "value": {
+        "pending": {
+          "pending": true,
+          "lines": [
+            "\u001b[48;2;52;56;58m                                                \u001b[49m",
+            "\u001b[48;2;52;56;58m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/duplicate.txt\u001b\\\u001b[38;2;167;152;215mduplicate.txt\u001b[39m\u001b]8;;\u001b\\                             \u001b[49m",
+            "\u001b[48;2;52;56;58m                                                \u001b[49m"
+          ]
+        },
+        "settled": {
+          "constructor": "Box",
+          "lines": [
+            "\u001b[48;2;91;40;42m                                                \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///PI_TEST_FIXTURE/duplicate.txt\u001b\\\u001b[38;2;167;152;215mduplicate.txt\u001b[39m\u001b]8;;\u001b\\                             \u001b[49m",
+            "\u001b[48;2;91;40;42m                                                \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;234;127;129mFound 2 occurrences of the text in             \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;234;127;129mduplicate.txt. The text must be unique. Please \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;234;127;129mprovide more context to make it unique.\u001b[39m        \u001b[49m",
+            "\u001b[48;2;91;40;42m                                                \u001b[49m"
+          ]
+        },
+        "preview": {
+          "error": "Found 2 occurrences of the text in duplicate.txt. The text must be unique. Please provide more context to make it unique."
+        },
+        "previewPending": false,
+        "invalidations": 1,
+        "result": {
+          "constructor": "Container",
+          "lines": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{pathToFileURL}from'node:url';import{join}from'node:path';
+const root='C:/Users/adyba/pi-upstream-source-b45e0eb-20261014';
+const [output,inputPath,frozenPath,fixtureRoot]=process.argv.slice(2);
+const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
+const frozenHash=hash(frozenPath);
+function verify(){if(hash(frozenPath)!==frozenHash)throw Error('Frozen manifest drift');return JSON.parse(readFileSync(frozenPath,'utf8')).map(manifest=>{if(hash(manifest.path)!==manifest.sha256.toLowerCase())throw Error('Manifest drift '+manifest.path);const rows=JSON.parse(readFileSync(manifest.path,'utf8'));for(const row of rows)if(hash(row.path)!==row.sha256.toLowerCase())throw Error('Frozen file drift '+row.path);return{manifest:manifest.name,count:rows.length,drift:0}})}
+const before=verify();
+const {constants}=await import('node:fs');
+const accessConstants={prototypeIsNull:Object.getPrototypeOf(constants)===null,flags:Object.fromEntries(['F_OK','R_OK','W_OK','X_OK'].map(name=>[name,Object.getOwnPropertyDescriptor(constants,name)]))};
+const imported=async leaf=>import(pathToFileURL(join(root,'packages/coding-agent/src',leaf)).href);
+const {readRenderers}=await imported('core/tools/renderers/read.ts');
+const {writeRenderers}=await imported('core/tools/renderers/write.ts');
+const {editRenderers}=await imported('core/tools/renderers/edit.ts');
+const {computeEditsDiff}=await imported('core/tools/edit-diff.ts');
+const {theme,initTheme,getLanguageFromPath}=await imported('modes/interactive/theme/theme.ts');
+initTheme('dark',false);
+globalThis.fileRenderAPI={readRenderers,writeRenderers,editRenderers,theme,language:getLanguageFromPath,preview:computeEditsDiff,fixtureUri:pathToFileURL(fixtureRoot+'/').href};
+globalThis.previewRoot=fixtureRoot;
+await import('data:text/javascript,'+encodeURIComponent(readFileSync(inputPath,'utf8')));
+if(fileRenderRows.length!==28)throw Error('Original28 inventory');
+if(typeof globalThis.gc!=='function')throw Error('Actual Node GC required');globalThis.gc();
+const modulePath=`C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-b45-modules-${process.pid}-0-20261014.jsonl`;
+const observedModules=readFileSync(modulePath,'utf8').trim().split('\n').map(JSON.parse);
+for(const row of observedModules.filter(row=>row.kind==='observed-module'))if(hash(row.path)!==row.sha256)throw Error('Observed module drift');
+writeFileSync(output,JSON.stringify({sourceHead:'b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb',inputSha256:hash(inputPath),cases:28,actualNodeGcExecuted:true,scope:'Unchanged actual read/write text rendering (unsupported text-file extension; no highlighter substitution) and actual edit async filesystem preview/Box state. Genuine dark Theme and TUI components. Syntax language rendering remains a separate unqualified dependency.',accessConstants,languages:fileLanguageRows,previewMetadata:filePreviewMetadata,rows:fileRenderRows,before,after:verify(),observedModules},null,2));

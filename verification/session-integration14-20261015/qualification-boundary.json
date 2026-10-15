@@ -1,0 +1,28 @@
+{
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "full_class_qualified": false,
+  "full_pi_qualified": false,
+  "prototype_entries": 166,
+  "selected_native_pass": 10,
+  "all_posthash_drift": 0,
+  "new_integrated_descriptors": 14,
+  "upstream_files": 1967,
+  "selected_native_fail": 1,
+  "mismatches": [
+    "reload-modifiers-default-delta",
+    "reload-explicit-tools-no-default-delta"
+  ],
+  "archive_sha256": "9515F8F1D9A3C7B5DA620B6DB76A9317C24F941942B56FB7072384005D83CF7A",
+  "diagnostic_matching_rows": 62,
+  "full_factory_qualified": false,
+  "candidate_files": 5859,
+  "selected_native_total": 11,
+  "imported_empty_test_declarations": 9,
+  "descriptor_gate": "passed",
+  "full_behavior_cases": 64,
+  "public_activation": false,
+  "dependency_node_files": 32838,
+  "compiler_files": 19546,
+  "full_behavior_gate": "failed",
+  "post_disposal_gc_qualified": false
+}

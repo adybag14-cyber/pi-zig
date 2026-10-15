@@ -1,0 +1,37 @@
+const rows=[];
+const record=async(name,run)=>{try{rows.push({name,value:await run()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}};
+const {readRenderers,writeRenderers,editRenderers,theme}=fileRenderAPI;
+let previewConstructible=true;try{Reflect.construct(Object,[],fileRenderAPI.preview)}catch{previewConstructible=false}
+globalThis.filePreviewMetadata={name:fileRenderAPI.preview.name,length:fileRenderAPI.preview.length,prototypeConstructor:Object.getPrototypeOf(fileRenderAPI.preview).constructor.name,hasOwnPrototype:Object.hasOwn(fileRenderAPI.preview,'prototype'),constructible:previewConstructible};
+globalThis.fileLanguageRows=['a.TS','a.jsx','a.mjs','a.py','a.kt','a.hpp','a.ps1','a.yml','a.dockerfile','a.tf','a.graphql','README.MD','unknown.txt','file.','a.tar.gz','toString','constructor','__proto__','hasOwnProperty','a.zsh','a.proto'].map(path=>{const value=fileRenderAPI.language(path);return{path,value:typeof value==='string'?value:{type:typeof value,name:value?.name,objectPrototype:value===Object.prototype}}});
+const context=(args={},extra={})=>({args,state:{},lastComponent:undefined,cwd:previewRoot,expanded:false,isPartial:false,argsComplete:false,isError:false,showImages:false,outputPad:1,invalidate(){},...extra});
+// Both genuine Source and native calls project only their private fixture URI
+// prefix so a fresh owned temporary directory can be used on every platform.
+const projectLines=lines=>lines.map(line=>line.replaceAll(fileRenderAPI.fixtureUri,'file:///PI_TEST_FIXTURE/'));
+const snapshot=component=>({constructor:component.constructor.name,lines:projectLines(component.render(48))});
+const textResult=text=>({content:[{type:'text',text}]});
+for(const [index,args]of [{path:'one.txt'},{file_path:'other.txt',path:'one.txt'},{path:'one.txt',offset:3,limit:2},{path:'one.txt',offset:2},{path:42},{},{path:'AGENTS.md'},{path:'one.txt',offset:0,limit:0}].entries())await record('read call '+index,()=>snapshot(readRenderers.renderCall(args,theme,context(args))));
+for(const[index,[result,options,extra]]of [
+ [textResult('first\nsecond\n'),{expanded:false},{}],
+ [textResult('first\tsecond\n\n'),{expanded:true},{}],
+ [textResult(Array.from({length:12},(_,i)=>'line '+i).join('\n')),{expanded:false},{isError:true}],
+ [{content:[{type:'text',text:'error'},{type:'image',data:'AA==',mimeType:'image/png'}]},{expanded:true},{}],
+ [{...textResult('shown'),details:{truncation:{truncated:true,truncatedBy:'lines',outputLines:2,totalLines:12,maxLines:2}}},{expanded:true},{}],
+ [{...textResult('shown'),details:{truncation:{truncated:true,firstLineExceedsLimit:true,maxBytes:1000}}},{expanded:true},{}]
+].entries())await record('read result '+index,()=>snapshot(readRenderers.renderResult(result,options,theme,context({path:'one.txt'},extra))));
+for(const[index,args]of [{path:'one.txt',content:''},{path:'one.txt',content:'a\tb\r\nc\rD\n'},{path:'one.txt',content:22},{content:'missing path'},{path:'one.txt',content:Array.from({length:12},(_,i)=>'line '+i).join('\n')},{path:'one.txt',content:'one\x1b[31mred\x00two\n'}].entries())await record('write call '+index,()=>snapshot(writeRenderers.renderCall(args,theme,context(args,{argsComplete:true}))));
+for(const[index,[result,extra]]of [[textResult('done'),{}],[textResult('failed'),{isError:true}],[{content:[{type:'image',data:'AA=='}]},{isError:true}],[textResult(''),{isError:true}]].entries())await record('write result '+index,()=>snapshot(writeRenderers.renderResult(result,{expanded:false},theme,context({},extra))));
+for(const[index,path]of ['one.txt','bom.txt','missing.txt','duplicate.txt'].entries())await record('edit async preview '+index,async()=>{
+ let invalidations=0,resolve;
+ const ready=new Promise(done=>resolve=done);
+ const args={path,oldText:path==='duplicate.txt'?'repeat':'old',newText:'new'};
+ const ctx=context(args,{argsComplete:true,invalidate(){invalidations++;resolve()}});
+ const first=editRenderers.renderCall(args,theme,ctx);
+ const pending={pending:first.previewPending,lines:projectLines(first.render(48))};
+ await ready;
+ const settled=editRenderers.renderCall(args,theme,{...ctx,lastComponent:first});
+ const result=editRenderers.renderResult(textResult('done'),{expanded:false},theme,{...ctx,lastComponent:undefined,isError:false});
+ return {pending,settled:snapshot(settled),preview:first.preview,previewPending:first.previewPending,invalidations,result:snapshot(result)};
+});
+if(rows.length!==28)throw Error('File renderer Original28 count '+rows.length);
+globalThis.fileRenderRows=rows;
