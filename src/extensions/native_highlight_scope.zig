@@ -43,10 +43,11 @@ pub const Scope = struct {
         return self.own(try sdk.array(self.engine));
     }
     pub fn call(self: *Scope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
-        return self.own(try js.call(self.engine, function, receiver, args));
+        return self.own(try self.engine.checked(c.JS_Call(self.engine.context, function, receiver, @intCast(args.len), @constCast(args.ptr))));
     }
     pub fn invoke(self: *Scope, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
-        return self.call(try self.get(receiver, name), receiver, args);
+        const function = try self.get(receiver, name);
+        return self.own(try self.engine.checked(c.JS_Call(self.engine.context, function, receiver, @intCast(args.len), @constCast(args.ptr))));
     }
     pub fn put(self: *Scope, object_value: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
         return sdk.put(self.engine, object_value, name, c.JS_DupValue(self.engine.context, value));
