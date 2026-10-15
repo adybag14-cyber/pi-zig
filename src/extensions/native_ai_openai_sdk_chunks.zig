@@ -9,7 +9,7 @@ const Scope = v.Scope;
 const c = v.c;
 pub fn codec(engine: *v.em.Engine) !c.JSValue {
     if (engine.native_ai_openai_sdk_codec) |value| return c.JS_DupValue(engine.context, value);
-    const result = try v.js.object(engine);
+    const result = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
     engine.native_ai_openai_sdk_codec = c.JS_DupValue(engine.context, result);
     return result;
 }
@@ -49,7 +49,7 @@ pub fn concat(scope: *Scope, first: c.JSValue, second: c.JSValue, explicit_first
 pub fn create(engine: *v.em.Engine, iterable: c.JSValue, shared_codec: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const owner = try scope.object();
+    const owner = try record.state(&scope);
     try scope.put(owner, "iterable", iterable);
     try scope.put(owner, "codec", shared_codec);
     try scope.put(owner, "phase", c.JS_NewInt32(engine.context, 0));
@@ -85,7 +85,7 @@ fn advance(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completion, i
     defer scope.deinit();
     if (try record.closed(&scope, owner, completion, input)) |action| return action;
     if (completion == .returned or completion == .thrown) return record.close(&scope, owner, input, completion == .thrown);
-    if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) };
+    if (completion == .rejected) return if (try phase(&scope, owner) == 1) .{ .thrown = c.JS_DupValue(engine.context, input) } else record.close(&scope, owner, input, true);
     return step(engine, owner, completion, input) catch |err| {
         if (err != error.JavaScriptException) return err;
         const reason = flow.reason(engine, err);

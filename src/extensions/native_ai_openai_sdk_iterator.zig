@@ -5,6 +5,9 @@ const gen = @import("native_async_generator.zig");
 const flow = @import("native_agent_async.zig");
 const Scope = v.Scope;
 const c = v.c;
+pub fn state(scope: *Scope) !c.JSValue {
+    return scope.own(try scope.engine.checked(c.JS_NewObjectProto(scope.engine.context, c.pi_js_null())));
+}
 pub fn begin(scope: *Scope, owner: c.JSValue, iterable: c.JSValue) !void {
     const symbol = try scope.own(try scope.engine.checked(c.JS_GetAsyncIteratorSymbol(scope.engine.context)));
     const method = try scope.own(try v.js.getKey(scope.engine, iterable, symbol));
@@ -17,6 +20,7 @@ pub fn begin(scope: *Scope, owner: c.JSValue, iterable: c.JSValue) !void {
     try scope.put(owner, "iteratorEntered", c.pi_js_bool(scope.engine.context, 1));
 }
 pub fn next(scope: *Scope, owner: c.JSValue) !gen.Action {
+    try scope.put(owner, "awaitingNext", c.pi_js_bool(scope.engine.context, 1));
     return .{ .awaited = c.JS_DupValue(scope.engine.context, try scope.call(try scope.get(owner, "nextMethod"), try scope.get(owner, "iterator"), &.{})) };
 }
 pub fn validate(scope: *Scope, result: c.JSValue) !void {

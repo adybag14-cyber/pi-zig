@@ -13,7 +13,7 @@ pub const Options = struct { codec: c.JSValue, controller: c.JSValue, error_fact
 pub fn fromBodyIterator(engine: *v.em.Engine, iterable: c.JSValue, options: Options) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const owner = try scope.object();
+    const owner = try record.state(&scope);
     try scope.put(owner, "body", iterable);
     try scope.put(owner, "codec", options.codec);
     try scope.put(owner, "controller", options.controller);
@@ -25,7 +25,7 @@ pub fn fromBodyIterator(engine: *v.em.Engine, iterable: c.JSValue, options: Opti
 fn messages(engine: *v.em.Engine, iterable: c.JSValue, codec: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const owner = try scope.object();
+    const owner = try record.state(&scope);
     try scope.put(owner, "body", iterable);
     try scope.put(owner, "codec", codec);
     return gen.create(engine, owner, messageAdvance, try scope.own(try gen.prototype(engine)));
@@ -69,7 +69,7 @@ fn messageAdvance(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Comple
     defer scope.deinit();
     if (try record.closed(&scope, owner, completion, input)) |action| return action;
     if (completion == .returned or completion == .thrown) return messageClose(&scope, owner, input, completion == .thrown);
-    if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) };
+    if (completion == .rejected) return if (scope.truthy(try scope.get(owner, "awaitingNext"))) .{ .thrown = c.JS_DupValue(engine.context, input) } else messageClose(&scope, owner, input, true);
     return messageStep(engine, owner, completion, input) catch |err| messageClose(&scope, owner, try captured(&scope, err), true);
 }
 fn messageStep(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completion, input: c.JSValue) !gen.Action {
@@ -78,9 +78,9 @@ fn messageStep(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completio
     if (completion == .start) {
         try scope.put(owner, "lineDecoder", try line.create(&scope));
         const sse = try scope.object();
-        try scope.put(sse, "event", c.pi_js_null());
-        try scope.put(sse, "data", try scope.array());
-        try scope.put(sse, "chunks", try scope.array());
+        try scope.set(sse, "event", c.pi_js_null());
+        try scope.set(sse, "data", try scope.array());
+        try scope.set(sse, "chunks", try scope.array());
         try scope.put(owner, "sseDecoder", sse);
         try record.begin(&scope, owner, try scope.own(try chunks.create(engine, try scope.get(owner, "body"), try scope.get(owner, "codec"))));
         return record.next(&scope, owner);
@@ -104,7 +104,10 @@ fn messageStep(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completio
             break;
         }
         const decoded = try line.sse(&row, try row.get(owner, "sseDecoder"), try row.get(step, "value"));
-        if (row.truthy(decoded)) return .{ .yielded = c.JS_DupValue(engine.context, decoded) };
+        if (row.truthy(decoded)) {
+            try row.put(owner, "awaitingNext", c.pi_js_bool(engine.context, 0));
+            return .{ .yielded = c.JS_DupValue(engine.context, decoded) };
+        }
     }
     if (scope.truthy(try scope.get(owner, "flushing"))) return .{ .complete = c.pi_js_undefined() };
     return record.next(&scope, owner);
@@ -138,10 +141,12 @@ fn itemAdvance(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completio
     defer scope.deinit();
     if (try record.closed(&scope, owner, completion, input)) |action| return finish(&scope, owner, action);
     if (completion == .returned or completion == .thrown) return itemClose(&scope, owner, input, completion == .thrown);
-    if (completion == .rejected) return finish(&scope, owner, .{ .thrown = c.JS_DupValue(engine.context, input) });
+    if (completion == .rejected) return if (scope.truthy(try scope.get(owner, "awaitingNext"))) finish(&scope, owner, .{ .thrown = c.JS_DupValue(engine.context, input) }) else itemClose(&scope, owner, input, true);
     return itemStep(engine, owner, completion, input) catch |err| itemClose(&scope, owner, try captured(&scope, err), true);
 }
 fn parse(scope: *Scope, owner: c.JSValue, sse: c.JSValue, thread: bool) !c.JSValue {
+    var diagnostics = @import("native_ai_json_scope.zig").Guard.enter(scope.engine);
+    defer diagnostics.deinit();
     return scope.invoke(try scope.global("JSON"), "parse", &.{try scope.get(sse, "data")}) catch |err| {
         const reason = try captured(scope, err);
         const logger = if (thread) try scope.global("console") else try scope.get(owner, "logger");
@@ -178,6 +183,7 @@ fn itemStep(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completion, 
             _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, error_value)));
             unreachable;
         }
+        try scope.put(owner, "awaitingNext", c.pi_js_bool(engine.context, 0));
         return .{ .yielded = c.JS_DupValue(engine.context, data) };
     }
     if (try v.eq(&scope, event, "error")) {
@@ -188,5 +194,6 @@ fn itemStep(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completion, 
     const wrapped = try scope.object();
     try scope.put(wrapped, "event", event);
     try scope.put(wrapped, "data", data);
+    try scope.put(owner, "awaitingNext", c.pi_js_bool(engine.context, 0));
     return .{ .yielded = c.JS_DupValue(engine.context, wrapped) };
 }

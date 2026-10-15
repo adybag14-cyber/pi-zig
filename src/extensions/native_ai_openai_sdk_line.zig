@@ -5,7 +5,7 @@ const chunks = @import("native_ai_openai_sdk_chunks.zig");
 const Scope = v.Scope;
 const c = v.c;
 pub fn create(scope: *Scope) !c.JSValue {
-    const decoder = try scope.object();
+    const decoder = try @import("native_ai_openai_sdk_iterator.zig").state(scope);
     try scope.put(decoder, "buffer", try scope.own(try v.js.builtin(scope.engine, "Uint8Array", &.{})));
     try scope.put(decoder, "carriageReturnIndex", c.pi_js_null());
     return decoder;
@@ -71,9 +71,9 @@ pub fn sse(scope: *Scope, state: c.JSValue, original: c.JSValue) !c.JSValue {
         try scope.put(result, "event", try scope.get(state, "event"));
         try scope.put(result, "data", try scope.invoke(try scope.get(state, "data"), "join", &.{try scope.text("\n")}));
         try scope.put(result, "raw", try scope.get(state, "chunks"));
-        try scope.put(state, "event", c.pi_js_null());
-        try scope.put(state, "data", try scope.array());
-        try scope.put(state, "chunks", try scope.array());
+        try scope.set(state, "event", c.pi_js_null());
+        try scope.set(state, "data", try scope.array());
+        try scope.set(state, "chunks", try scope.array());
         return result;
     }
     _ = try scope.invoke(try scope.get(state, "chunks"), "push", &.{line});
@@ -87,6 +87,6 @@ pub fn sse(scope: *Scope, state: c.JSValue, original: c.JSValue) !c.JSValue {
         value = try scope.invoke(line, "substring", &.{offset});
     }
     if (scope.truthy(try scope.invoke(value, "startsWith", &.{try scope.text(" ")}))) value = try scope.invoke(value, "substring", &.{c.JS_NewInt32(scope.engine.context, 1)});
-    if (try v.eq(scope, field, "event")) try scope.put(state, "event", value) else if (try v.eq(scope, field, "data")) _ = try scope.invoke(try scope.get(state, "data"), "push", &.{value});
+    if (try v.eq(scope, field, "event")) try scope.set(state, "event", value) else if (try v.eq(scope, field, "data")) _ = try scope.invoke(try scope.get(state, "data"), "push", &.{value});
     return c.pi_js_null();
 }
