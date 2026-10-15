@@ -160,6 +160,19 @@ fn sdkField(scope: *Scope, value: c.JSValue, key: [*:0]const u8) !c.JSValue {
         return c.pi_js_undefined();
     };
 }
+fn objectType(scope: *Scope, value: c.JSValue) bool {
+    return c.JS_IsNull(value) or (c.JS_IsObject(value) and !c.JS_IsFunction(scope.engine.context, value));
+}
+fn sdkSet(scope: *Scope, target: c.JSValue, key: [*:0]const u8, value: c.JSValue) !void {
+    const previous = try scope.get(target, key);
+    if (!c.JS_IsUndefined(previous)) {
+        if (!scope.truthy(value) or (objectType(scope, value) and scope.equal(try scope.get(try scope.invoke(try scope.global("Object"), "keys", &.{value}), "length"), c.JS_NewInt32(scope.engine.context, 0)))) return;
+        if (scope.equal(value, previous)) return;
+        if (objectType(scope, previous) and objectType(scope, value) and !c.JS_IsNull(previous) and !c.JS_IsNull(value)) {
+            _ = try scope.invoke(try scope.global("Object"), "assign", &.{ previous, value });
+        } else return v.errorText(scope, try scope.concat(try scope.text("Cannot set value for an existing key. Key: "), try scope.text(@import("std").mem.span(key))));
+    } else try scope.set(target, key, value);
+}
 fn candidate(scope: *Scope, value: c.JSValue) !c.JSValue {
     const output = try scope.object();
     inline for (.{ "content", "citationMetadata", "tokenCount", "finishReason", "groundingMetadata", "avgLogprobs", "index", "logprobsResult", "safetyRatings", "urlContextMetadata" }) |key| {
@@ -168,17 +181,19 @@ fn candidate(scope: *Scope, value: c.JSValue) !c.JSValue {
             if (@import("std").mem.eql(u8, key, "citationMetadata")) {
                 const citations = try scope.object();
                 const sources = try sdkField(scope, field, "citationSources");
-                if (!v.nullish(sources)) try scope.put(citations, "citations", try copyList(scope, sources));
-                try scope.put(output, key, citations);
+                if (!v.nullish(sources)) try sdkSet(scope, citations, "citations", try copyList(scope, sources));
+                try sdkSet(scope, output, key, citations);
             } else if (@import("std").mem.eql(u8, key, "safetyRatings")) {
-                try scope.put(output, key, try copyList(scope, field));
-            } else try scope.put(output, key, field);
+                try sdkSet(scope, output, key, try copyList(scope, field));
+            } else try sdkSet(scope, output, key, field);
         }
     }
     return output;
 }
 pub fn wrap(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_headers: c.JSValue, vertex: bool) !c.JSValue {
-    const result = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, 0, null)));
+    const converted_response = try scope.object();
+    const supplied_http = try sdkField(scope, raw, "sdkHttpResponse");
+    if (!v.nullish(supplied_http)) try sdkSet(scope, converted_response, "sdkHttpResponse", supplied_http);
     const candidates = try sdkField(scope, raw, "candidates");
     if (!v.nullish(candidates)) {
         var converted = candidates;
@@ -196,19 +211,19 @@ pub fn wrap(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_head
             };
             converted = try scope.invoke(candidates, "map", &.{try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Convert.call, &.{}))});
         }
-        try scope.put(result, "candidates", converted);
+        try sdkSet(scope, converted_response, "candidates", converted);
     }
     if (vertex) {
         const create_time = try sdkField(scope, raw, "createTime");
-        if (!v.nullish(create_time)) try scope.put(result, "createTime", create_time);
+        if (!v.nullish(create_time)) try sdkSet(scope, converted_response, "createTime", create_time);
     }
     inline for (.{ "modelVersion", "promptFeedback", "responseId", "usageMetadata" }) |key| {
         const value = try sdkField(scope, raw, key);
-        if (!v.nullish(value)) try scope.put(result, key, value);
+        if (!v.nullish(value)) try sdkSet(scope, converted_response, key, value);
     }
     if (!vertex) {
         const status = try sdkField(scope, raw, "modelStatus");
-        if (!v.nullish(status)) try scope.put(result, "modelStatus", status);
+        if (!v.nullish(status)) try sdkSet(scope, converted_response, "modelStatus", status);
     }
     const http = try scope.object();
     const headers = try scope.object();
@@ -221,6 +236,8 @@ pub fn wrap(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_head
         try v.js.setKey(scope.engine, headers, try v.at(scope, entry, 0), try v.at(scope, entry, 1));
     }
     try scope.put(http, "headers", headers);
-    try scope.put(result, "sdkHttpResponse", http);
+    try scope.set(converted_response, "sdkHttpResponse", http);
+    const result = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, 0, null)));
+    _ = try scope.invoke(try scope.global("Object"), "assign", &.{ result, converted_response });
     return result;
 }
