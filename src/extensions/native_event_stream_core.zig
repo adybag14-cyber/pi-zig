@@ -90,6 +90,21 @@ pub fn end(engine: *em.Engine, receiver: c.JSValue, value: c.JSValue) !c.JSValue
     }
     return c.pi_js_undefined();
 }
+/// Internal host-fatal bridge: use the live Source resolvers and real Promise
+/// rejection assimilation, without an additional strong private reject root.
+pub fn reject(engine: *em.Engine, receiver: c.JSValue, failure: c.JSValue) !void {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    try scope.set(receiver, "done", c.pi_js_bool(engine.context, 1));
+    const rejected = try scope.own(try engine.checked(c.JS_NewSettledPromise(engine.context, true, failure)));
+    _ = try scope.invoke(receiver, "resolveFinalResult", &.{rejected});
+    while (try waiting(engine, receiver)) {
+        var row: Scope = .{ .engine = engine };
+        defer row.deinit();
+        const waiter = try row.invoke(try row.get(receiver, "waiting"), "dequeue", &.{});
+        _ = try row.call(waiter, c.pi_js_undefined(), &.{rejected});
+    }
+}
 fn advance(engine: *em.Engine, owner: c.JSValue, completion: gen.Completion, input: c.JSValue) !gen.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();

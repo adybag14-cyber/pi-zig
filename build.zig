@@ -1630,6 +1630,12 @@ pub fn build(b: *std.Build) void {
     native_generator_gpa_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-async-generator-gpa", "Compile native async generator host allocation sweep separately").dependOn(&native_generator_gpa_tests.step);
     b.step("test-native-async-generator-gpa", "Measure complete host allocation failure coverage independently").dependOn(&b.addRunArtifact(native_generator_gpa_tests).step);
+    const live_event_stream_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_event_stream_live_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native live EventStream", "native node function preserves", "native node method retains", "native async generator functional" }, .use_llvm = use_llvm });
+    linkQuickJs(b, live_event_stream_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(live_event_stream_tests.root_module, sqlite_lib_dir, sqlite_library);
+    live_event_stream_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-event-stream-live", "Compile actual live-field EventStream Source27 and native generator integration").dependOn(&live_event_stream_tests.step);
+    b.step("test-native-event-stream-live", "Compare genuine Source27 fields queues metadata GC and tagged allocation boundaries").dependOn(&b.addRunArtifact(live_event_stream_tests).step);
     const native_generator_oom_diagnostic = b.addTest(.{ .name = "native-generator-oom-diagnostic", .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_generator_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native async generator functional raw VM allocation"}, .use_llvm = use_llvm });
     linkQuickJs(b, native_generator_oom_diagnostic.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(native_generator_oom_diagnostic.root_module, sqlite_lib_dir, sqlite_library);
