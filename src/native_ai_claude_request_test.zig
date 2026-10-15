@@ -48,6 +48,65 @@ test "native Claude5ab Anthropic request bodies match25 actual public Source obs
     engine.freeValue(result);
     c.JS_RunGC(engine.runtime);
 }
+test "native Claude5ab Anthropic real wire stream events callbacks and results match actual Source" {
+    const gpa = std.testing.allocator;
+    const fixture = @import("ai/http_fixture.zig");
+    const source = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("extensions/fixtures/ai-anthropic5ab.json"), .{});
+    defer source.deinit();
+    const default_chunks =
+        \\[{"type":"message_start","message":{"id":"m1","model":"claude-sonnet-4-6","usage":{"input_tokens":10,"output_tokens":0}}},{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}},{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"answer"}},{"type":"content_block_stop","index":0},{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"output_tokens":2}},{"type":"message_stop"}]
+    ;
+    const defaults = try std.json.parseFromSlice(std.json.Value, gpa, default_chunks, .{});
+    defer defaults.deinit();
+    var exercised: usize = 0;
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const input = row.object.get("input").?.object;
+        if (input.get("noRequest") != null or input.get("status") != null) continue;
+        const chunks = if (input.get("chunks")) |value| value.array.items else defaults.value.array.items;
+        var wire: std.ArrayList(u8) = .empty;
+        defer wire.deinit(gpa);
+        for (chunks) |chunk| {
+            const kind = chunk.object.get("type").?.string;
+            if (input.get("omitStop") != null and std.mem.eql(u8, kind, "message_stop")) continue;
+            const encoded = try std.json.Stringify.valueAlloc(gpa, chunk, .{});
+            defer gpa.free(encoded);
+            try wire.appendSlice(gpa, "event: ");
+            try wire.appendSlice(gpa, kind);
+            try wire.appendSlice(gpa, "\ndata: ");
+            try wire.appendSlice(gpa, encoded);
+            try wire.appendSlice(gpa, "\n\n");
+        }
+        const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{ .path = "/v1/messages", .body = wire.items, .headers = &.{ .{ .name = "content-type", .value = "text/event-stream" }, .{ .name = "x-fixture", .value = "source-only" } } }});
+        defer server.deinit();
+        const address = try server.url(gpa, "");
+        defer gpa.free(address);
+        const engine = try v.em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
+        defer engine.deinit();
+        engine.native_io = std.testing.io;
+        try install(engine);
+        var scope: v.Scope = .{ .engine = engine };
+        defer scope.deinit();
+        const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+        const encoded = try std.json.Stringify.valueAlloc(gpa, row, .{});
+        defer gpa.free(encoded);
+        const terminated = try gpa.dupeZ(u8, encoded);
+        defer gpa.free(terminated);
+        try scope.put(global, "sourceWire", try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, terminated.ptr, encoded.len, "anthropic-source-wire-row.json"))));
+        try scope.put(global, "sourceWireURL", try scope.text(address));
+        const result = engine.evalModule(
+            \\function snapshot(value){if(Array.isArray(value))return value.map(snapshot);if(value&&typeof value==='object'){const out={};for(const[key,item]of Object.entries(value)){if(value.role==='assistant'&&key==='timestamp')out[key]='$TIMESTAMP';else if(value.role==='assistant'&&key==='durationMs')out[key]='$DURATION';else out[key]=snapshot(item)}return out}return value}const row=sourceWire,item=row.input,model={...row.model,baseUrl:sourceWireURL};const callbacks=[],events=[],payloads=[];const options={apiKey:'fixture-placeholder-key',env:{},maxTokens:1000,maxRetries:0,sessionId:'fixture-session',...item.options,onPayload(payload){callbacks.push('payload');payloads.push(snapshot(payload));if(item.callback==='replace')return {...payload,temperature:.25};if(item.callback==='async')return Promise.resolve()},onResponse(response){callbacks.push('response:'+response.status+':'+response.headers['x-fixture']);if(item.callback==='throw')throw Error('caller response failed');if(item.callback==='async')return Promise.resolve()},onProviderStreamEvent(chunk){callbacks.push('chunk');if(item.callback==='async')return Promise.resolve()}};const stream=anthropicStreams[item.simple?'streamSimple':'stream'](model,row.context,options);for await(const event of stream)events.push(snapshot(event));const result=snapshot(await stream.result());for(const[key,actual]of Object.entries({payloads,callbacks,events,result})){if(JSON.stringify(actual)!==JSON.stringify(row[key]))throw Error(JSON.stringify({name:row.name,key,actual,expected:row[key]}));}export const wire=true;
+        , "native-claude5ab-source-wire.mjs") catch |err| {
+            std.debug.print("Anthropic wire {s}: {s}\n", .{ row.object.get("name").?.string, engine.last_error orelse "no diagnostic" });
+            return err;
+        };
+        engine.freeValue(result);
+        c.JS_RunGC(engine.runtime);
+        try std.testing.expect(!@import("extensions/native_ai_http.zig").pending(engine));
+        try server.finish();
+        exercised += 1;
+    }
+    try std.testing.expectEqual(@as(usize, 22), exercised);
+}
 const observations =
     \\const a={api:'anthropic-messages',provider:'anthropic',id:'claude-haiku-5-5',name:'Claude Haiku 5.5',baseUrl:'https://api.anthropic.com',input:['text','image'],reasoning:true,maxTokens:8192,cost:{input:1,output:1,cacheRead:1,cacheWrite:1},compat:{forceAdaptiveThinking:true,supportsMidConvoSystemMessages:true,supportsMidConvoToolChanges:true,supportsMidConvoEffort:true},thinkingLevelMap:{off:null,max:'max'}};
     \\const tools=[{name:'Read',description:'read file',parameters:{type:'object',properties:{path:{type:'string'}},required:['path']}}];
