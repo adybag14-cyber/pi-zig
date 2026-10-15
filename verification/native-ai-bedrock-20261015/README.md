@@ -56,7 +56,10 @@ The suite compares all 14 genuine request bodies, callback traces, event traces
 and terminal results through the actual facade and owned native loopback server.
 It also includes an independent cancellation check for a private credential
 subprocess. Zig 0.16 formatting and AST checks have run; native compilation and
-runtime validation are pending Root's heavy-job reservation.
+runtime were run on frozen cc3858c7: compile passed, runtime failed two of four
+tests, and terminal posthash drift was zero. The source-only repair fork requires
+a fresh native gate; the protocol timing negative awaits reviewed C-generator
+integration as detailed below.
 
 The credential chain currently includes static credentials, selected shared
 profiles, credential processes, STS role chaining, web identity, ECS/EKS and IMDS.
