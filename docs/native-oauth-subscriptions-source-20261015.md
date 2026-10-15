@@ -13,9 +13,12 @@ token polling, Copilot token exchange, credential-specific proxy routing,
 account model filtering, Individual-account policy fallback, bounded 429 retry,
 policy enabling, and the union of available/enabled IDs. `createWithCatalog`
 accepts the central assembler's actual provider chat catalog object, retaining
-its live identity through marked roots. Standalone `create` uses the unchanged
-actual Source declarative catalog data for component testing; this path does
-not establish identity with the central namespace's catalog.
+its live identity through marked roots. `create` now delegates to
+`native_ai_catalog_values.providerChatCatalog` from the central canonical
+catalog graph, then invokes `createWithCatalog`. It performs no duplicate
+catalog parsing. This source composition requires the actual `b20e4024`
+catalog accessor and canonical `83899965` data; native identity qualification
+remains pending.
 
 Kimi includes the actual shared provider environment lookup, form encoding,
 request timeout composition, trusted verification URI validation, finite
@@ -63,7 +66,11 @@ zero posthash drift, actual module observations, and the84 expected rows.
 Archive SHA256 is
 `0E4143DB3FA7D0228C2FFBDAFFBE1803CB4C348B6242D0268595B125870E2212`.
 
-The standalone Copilot data contains36 chat models. Its exact raw SHA256,
+The capture used the immutable original ae7 UI cohort, whose broader generated
+catalog retains its historical43-provider declaration. It was not retargeted
+to the separately qualified official42-provider cohort. Only the observed
+Copilot JSON subset is asserted equivalent here: it contains36 chat models,
+with exact raw SHA256
 `1C7D77A4C320081BB0A80B2C8E185B34F07B73D38E67D20F3DCABCF72F2F8FCD`,
 matches the independently qualified official FFA3 hydration checkout's Copilot
 file. This establishes narrow data equivalence, not shared namespace identity.
