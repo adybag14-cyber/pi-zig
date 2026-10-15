@@ -169,7 +169,9 @@ fn headValue(scope: *Scope, head: raw.Head, raw_header_pairs: bool) !c.JSValue {
     const value = try scope.object();
     const headers = try scope.object();
     try scope.put(value, "status", c.JS_NewInt32(scope.engine.context, head.status));
-    try scope.put(value, "statusText", try httpText(scope, head.status_text, raw_header_pairs));
+    // Actual Node24 Fetch39 decodes reason bytes as UTF8 (with replacement),
+    // while Headers values below use isomorphic Latin1. They are distinct.
+    try scope.put(value, "statusText", try scope.text(head.status_text));
     for (head.headers) |entry| {
         var row: Scope = .{ .engine = scope.engine };
         defer row.deinit();
@@ -287,8 +289,9 @@ pub fn pump(engine: *em.Engine) !bool {
             }
         }
         if (job.worker.finished.load(.acquire) and job.worker.peek() == null) {
-            const failure = if (signal_aborted) error.ProviderRequestAborted else job.worker.failure;
-            const reason = if (failure == error.NativeHttpPreparedFailure and job.worker.modeled_failure != null) try modeledFailureValue(&scope, job.worker.modeled_failure.?) else if (failure) |err| try failureValue(&scope, err) else c.pi_js_undefined();
+            const failure: ?anyerror = if (signal_aborted) error.ProviderRequestAborted else job.worker.failure;
+            const prepared_failure = if (failure) |err| err == error.NativeHttpPreparedFailure else false;
+            const reason = if (prepared_failure and job.worker.modeled_failure != null) try modeledFailureValue(&scope, job.worker.modeled_failure.?) else if (failure) |err| try failureValue(&scope, err) else c.pi_js_undefined();
             if (!job.ready_settled) {
                 try call(&scope, job.ready_reject, if (failure != null) reason else try failureValue(&scope, error.NativeHttpNoResponse));
                 job.ready_settled = true;
