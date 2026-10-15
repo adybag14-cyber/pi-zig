@@ -84,6 +84,8 @@ fn source30Http(full_snapshots: bool) !void {
         defer gpa.free(name);
         var wire: std.ArrayList(u8) = .empty;
         defer wire.deinit(gpa);
+        var chunk_ends: std.ArrayList(usize) = .empty;
+        defer chunk_ends.deinit(gpa);
         var raw_body = try scope.get(input, "body");
         if (c.JS_IsUndefined(raw_body)) raw_body = try scope.get(input, "rawSSE");
         if (!c.JS_IsUndefined(raw_body)) {
@@ -106,7 +108,15 @@ fn source30Http(full_snapshots: bool) !void {
                 try wire.appendSlice(gpa, "data: ");
                 try wire.appendSlice(gpa, bytes);
                 try wire.appendSlice(gpa, "\n\n");
+                try chunk_ends.append(gpa, wire.items.len);
             }
+        }
+        var response_chunks: std.ArrayList([]const u8) = .empty;
+        defer response_chunks.deinit(gpa);
+        var offset: usize = 0;
+        for (chunk_ends.items) |end| {
+            try response_chunks.append(gpa, wire.items[offset..end]);
+            offset = end;
         }
         const fixture = @import("ai/http_fixture.zig");
         const request = if (request_count > 0) try v.at(&scope, requests, 0) else c.pi_js_undefined();
@@ -134,7 +144,7 @@ fn source30Http(full_snapshots: bool) !void {
         var status: i32 = 200;
         const status_value = try scope.get(input, "status");
         if (!c.JS_IsUndefined(status_value) and c.JS_ToInt32(engine.context, &status, status_value) < 0) return v.js.capture(engine);
-        const plan = fixture.Reply{ .path = path, .status = @enumFromInt(status), .body = wire.items, .expected_request_headers = expected_headers.items, .headers = &.{.{ .name = "x-fixture", .value = "source-only" }} };
+        const plan = fixture.Reply{ .path = path, .status = @enumFromInt(status), .body = wire.items, .body_chunks = if (c.JS_IsUndefined(raw_body)) response_chunks.items else null, .expected_request_headers = expected_headers.items, .headers = &.{ .{ .name = "content-type", .value = if (c.JS_IsUndefined(status_value)) "text/event-stream" else "application/json" }, .{ .name = "x-fixture", .value = "source-only" } } };
         const server = try fixture.PlanServer.init(gpa, std.testing.io, if (request_count > 0) &.{plan} else &.{});
         defer server.deinit();
         const url = try server.url(gpa, "/v1");

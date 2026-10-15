@@ -38,11 +38,14 @@ fn controls(comptime bytes: []const u8, count: u32, full: bool) !void {
         const request = try v.at(&scope, try scope.get(expected, "requests"), 0);
         var wire: std.ArrayList(u8) = .empty;
         defer wire.deinit(gpa);
+        var chunk_ends: std.ArrayList(usize) = .empty;
+        defer chunk_ends.deinit(gpa);
         const raw = try scope.get(input, "rawSSE");
         if (!c.JS_IsUndefined(raw)) {
             const text = try engine.toString(raw);
             defer gpa.free(text);
             try wire.appendSlice(gpa, text);
+            try chunk_ends.append(gpa, wire.items.len);
         } else {
             var chunks = try scope.get(input, "chunks");
             if (c.JS_IsUndefined(chunks)) {
@@ -59,9 +62,17 @@ fn controls(comptime bytes: []const u8, count: u32, full: bool) !void {
                 try wire.appendSlice(gpa, "data: ");
                 try wire.appendSlice(gpa, text);
                 try wire.appendSlice(gpa, "\n\n");
+                try chunk_ends.append(gpa, wire.items.len);
             }
         }
-        const server = try peer.Server.init(gpa, std.testing.io, wire.items);
+        var response_chunks: std.ArrayList([]const u8) = .empty;
+        defer response_chunks.deinit(gpa);
+        var offset: usize = 0;
+        for (chunk_ends.items) |end| {
+            try response_chunks.append(gpa, wire.items[offset..end]);
+            offset = end;
+        }
+        const server = if (c.JS_IsUndefined(raw)) try peer.Server.initChunks(gpa, std.testing.io, response_chunks.items) else try peer.Server.init(gpa, std.testing.io, wire.items);
         defer server.deinit();
         const url = try server.url(gpa, "/v1");
         defer gpa.free(url);

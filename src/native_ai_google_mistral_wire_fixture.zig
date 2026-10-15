@@ -7,19 +7,26 @@ pub const Server = struct {
     io: std.Io,
     listener: std.Io.net.Server,
     response: []const u8,
+    response_chunks: ?[]const []const u8 = null,
     captured: ?Capture = null,
     future: ?std.Io.Future(anyerror!void) = null,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, response: []const u8) !*Server {
+        return initPlan(gpa, io, response, null);
+    }
+    fn initPlan(gpa: std.mem.Allocator, io: std.Io, response: []const u8, chunks: ?[]const []const u8) !*Server {
         const self = try gpa.create(Server);
         errdefer gpa.destroy(self);
         const address = try std.Io.net.IpAddress.parseLiteral("127.0.0.1:0");
-        self.* = .{ .gpa = gpa, .arena = .init(gpa), .io = io, .listener = try address.listen(io, .{ .reuse_address = true }), .response = response };
+        self.* = .{ .gpa = gpa, .arena = .init(gpa), .io = io, .listener = try address.listen(io, .{ .reuse_address = true }), .response = response, .response_chunks = chunks };
         errdefer self.listener.deinit(io);
         self.future = try io.concurrent(serve, .{self});
         return self;
     }
     pub fn url(self: *const Server, gpa: std.mem.Allocator, path: []const u8) ![]u8 {
         return std.fmt.allocPrint(gpa, "http://127.0.0.1:{d}{s}", .{ self.listener.socket.address.getPort(), path });
+    }
+    pub fn initChunks(gpa: std.mem.Allocator, io: std.Io, chunks: []const []const u8) !*Server {
+        return initPlan(gpa, io, "", chunks);
     }
     pub fn finish(self: *Server) !Capture {
         if (self.future) |*future| {
@@ -52,6 +59,15 @@ pub const Server = struct {
         const body_reader = request.readerExpectNone(&.{});
         const body = try body_reader.allocRemaining(a, .limited(4 * 1024 * 1024));
         self.captured = .{ .method = request.head.method, .target = target, .body = body, .headers = headers.items };
-        try request.respond(self.response, .{ .extra_headers = &.{ .{ .name = "content-type", .value = "text/event-stream" }, .{ .name = "x-fixture", .value = "source-only" } } });
+        const options: std.http.Server.Request.RespondOptions = .{ .extra_headers = &.{ .{ .name = "content-type", .value = "text/event-stream" }, .{ .name = "x-fixture", .value = "source-only" } } };
+        if (self.response_chunks) |chunks| {
+            var response = try request.respondStreaming(&.{}, .{ .respond_options = options });
+            for (chunks) |chunk| {
+                try response.writer.writeAll(chunk);
+                try response.writer.flush();
+                try response.flush();
+            }
+            try response.end();
+        } else try request.respond(self.response, options);
     }
 };
