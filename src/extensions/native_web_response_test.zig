@@ -117,6 +117,19 @@ test "Response native actual identity transport immutable headers and source own
     const settled = try engine.awaitValue(pending);
     engine.freeValue(settled);
 }
+test "Response native actual guest exceptions preserve identity without diagnostic coercion" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    const value = try engine.evalModule(
+        \\const trace=[];const marker={toString(){trace.push('diagnostic');return'guest marker'}};
+        \\for(const init of [{get status(){throw marker}},{get headers(){throw marker}}]){let caught;try{new Response(null,init)}catch(error){caught=error}if(caught!==marker)throw Error('Response constructor exception identity')}
+        \\const body={toString(){trace.push('body conversion');throw marker}};let caught;try{new Response(body)}catch(error){caught=error}if(caught!==marker||JSON.stringify(trace)!=='["body conversion"]')throw Error('Response premature diagnostic coercion '+JSON.stringify(trace));
+        \\trace.length=0;const original=TypeError.prototype.toString;try{TypeError.prototype.toString=function(){trace.push('type error diagnostic');return original.call(this)};let reason;try{await Response.prototype.json.call({})}catch(error){reason=error}if(!(reason instanceof TypeError)||reason.code!=='ERR_INVALID_THIS')throw Error('Response rejected original brand error')}finally{TypeError.prototype.toString=original}
+        \\if(trace.length!==0)throw Error('Response method coerced error before guest catch '+JSON.stringify(trace));
+    , "response-original-guest-exception.mjs");
+    engine.freeValue(value);
+    c.JS_RunGC(engine.runtime);
+}
 const HeaderGate = struct {
     io: std.Io,
     listener: std.Io.net.Server,
