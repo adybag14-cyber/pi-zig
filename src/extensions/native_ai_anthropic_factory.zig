@@ -164,7 +164,10 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     if (rejected) {
-        if (@as(Stage, @enumFromInt(raw)) == .rejected_body and !try nativeAllocationReason(engine, owner, value)) return failureBody(&scope, owner, try scope.text("")) catch |err| failError(&scope, owner, err);
+        if (@as(Stage, @enumFromInt(raw)) == .rejected_body and !try nativeAllocationReason(engine, owner, value)) {
+            const error_value = try @import("native_ai_anthropic_api_error.zig").castToError(&scope, value);
+            return failureBody(&scope, owner, try scope.get(error_value, "message")) catch |err| failError(&scope, owner, err);
+        }
         if (@as(Stage, @enumFromInt(raw)) == .ready) {
             const recovered = fallback(&scope, owner, value) catch |err| return failError(&scope, owner, err);
             if (recovered) return;

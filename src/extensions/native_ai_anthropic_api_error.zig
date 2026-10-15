@@ -135,7 +135,7 @@ fn crossRealm(scope: *Scope, value: c.JSValue) !c.JSValue {
     if (scope.truthy(try scope.get(value, "name"))) try scope.set(result, "name", try scope.get(value, "name"));
     return result;
 }
-fn castToError(scope: *Scope, value: c.JSValue) !c.JSValue {
+pub fn castToError(scope: *Scope, value: c.JSValue) !c.JSValue {
     const branded = c.JS_IsInstanceOf(scope.engine.context, value, try scope.global("Error"));
     if (branded < 0) return v.js.capture(scope.engine);
     if (branded == 1) return value;
