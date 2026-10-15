@@ -1,0 +1,23 @@
+{
+  "component": "native Codex and Radius OAuth public facades",
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "sourceCases": 35,
+  "sourceOwnerPid": 71624,
+  "sourceOwnerExitCode": 0,
+  "sourceExpectedSha256": "085F6A4C5CC6AF456BC2FBBEB71365A527EE111CDE4794A837D3541B22E12495",
+  "sourceManifests": {
+    "nodeTools": 1774,
+    "runtime": 31064,
+    "absences": 84,
+    "source": 1968
+  },
+  "sourcePostDrift": 0,
+  "sourceQualified": true,
+  "nativeSemanticCompilation": "not run - actual native Response and ReadableStream dependencies pending",
+  "nativeRuntime": "not run - Root native slot not granted",
+  "browserSourceCases": "7 prepared, not run - explicit LIGHT and callback port reservation pending",
+  "fullPiQualified": false,
+  "noRealUserLogin": true,
+  "checkpoint": "d0d83ce6",
+  "staticChecks": "pinned Zig0.16 fmt and ast-check passed"
+}

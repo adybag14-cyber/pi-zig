@@ -1,0 +1,6 @@
+{
+  "expected_sha256": "085F6A4C5CC6AF456BC2FBBEB71365A527EE111CDE4794A837D3541B22E12495",
+  "source_cases": 35,
+  "full_pi_qualified": false,
+  "expected_published_after_terminal_and_full_posthash": true
+}
