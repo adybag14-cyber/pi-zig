@@ -189,7 +189,7 @@ fn strictError(scope: *Scope, tool: c.JSValue, reason: c.JSValue) anyerror {
 pub fn build(engine: *v.em.Engine, model: c.JSValue, context: c.JSValue, options: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const retained = try @import("native_ai_anthropic_request.zig").retention(&scope, options);
+    const retained = try @import("native_ai_provider_request.zig").retention(&scope, options);
     const caching = try cacheSupported(&scope, model, options);
     const claude = try isClaude(&scope, model);
     const result = try scope.object();
