@@ -1,0 +1,374 @@
+{
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "workspaces": [
+    {
+      "specifier": "@earendil-works/chord",
+      "path": "packages/chord",
+      "packageName": "@earendil-works/chord",
+      "version": "1.2.0",
+      "exports": {
+        ".": {
+          "source": "./src/index.ts",
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js"
+        },
+        "./context": {
+          "source": "./src/context/index.ts",
+          "types": "./dist/context/index.d.ts",
+          "import": "./dist/context/index.js"
+        },
+        "./output": {
+          "source": "./src/output.ts",
+          "types": "./dist/output.d.ts",
+          "import": "./dist/output.js"
+        },
+        "./delta": {
+          "source": "./src/delta/index.ts",
+          "types": "./dist/delta/index.d.ts",
+          "import": "./dist/delta/index.js"
+        },
+        "./node": {
+          "source": "./src/node.ts",
+          "types": "./dist/node.d.ts",
+          "import": "./dist/node.js"
+        },
+        "./package.json": "./package.json"
+      },
+      "main": "./dist/index.js"
+    },
+    {
+      "specifier": "@earendil-works/pi-agent-core",
+      "path": "packages/agent",
+      "packageName": "@earendil-works/pi-agent-core",
+      "version": "1.2.0",
+      "exports": {
+        ".": {
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+      },
+      "main": "./dist/index.js"
+    },
+    {
+      "specifier": "@earendil-works/pi-ai",
+      "path": "packages/ai",
+      "packageName": "@earendil-works/pi-ai",
+      "version": "1.2.0",
+      "exports": {
+        ".": {
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js"
+        },
+        "./models": {
+          "types": "./dist/models.d.ts",
+          "import": "./dist/models.js"
+        },
+        "./compat": {
+          "types": "./dist/compat.d.ts",
+          "import": "./dist/compat.js"
+        },
+        "./providers/*": {
+          "types": "./dist/providers/*.d.ts",
+          "import": "./dist/providers/*.js"
+        },
+        "./api/*": {
+          "types": "./dist/api/*.d.ts",
+          "import": "./dist/api/*.js"
+        },
+        "./utils/*": {
+          "types": "./dist/utils/*.d.ts",
+          "import": "./dist/utils/*.js"
+        },
+        "./oauth": {
+          "types": "./dist/oauth.d.ts",
+          "import": "./dist/oauth.js"
+        },
+        "./bedrock-provider": {
+          "types": "./dist/bedrock-provider.d.ts",
+          "import": "./dist/bedrock-provider.js"
+        },
+        "./bun-oauth": {
+          "types": "./dist/bun-oauth.d.ts",
+          "import": "./dist/bun-oauth.js"
+        }
+      },
+      "main": "./dist/index.js"
+    },
+    {
+      "specifier": "@earendil-works/pi-codemode",
+      "path": "packages/codemode",
+      "packageName": "@earendil-works/pi-codemode",
+      "version": "1.2.0",
+      "exports": {
+        ".": {
+          "source": "./src/index.ts",
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js"
+        },
+        "./declarations": {
+          "source": "./src/declarations.ts",
+          "types": "./dist/declarations.d.ts",
+          "import": "./dist/declarations.js"
+        },
+        "./source": {
+          "source": "./src/source.ts",
+          "types": "./dist/source.d.ts",
+          "import": "./dist/source.js"
+        },
+        "./portable": {
+          "source": "./src/portable.ts",
+          "types": "./dist/portable.d.ts",
+          "import": "./dist/portable.js"
+        },
+        "./cloudflare": {
+          "source": "./src/cloudflare.ts",
+          "types": "./dist/cloudflare.d.ts",
+          "import": "./dist/cloudflare.js"
+        },
+        "./worker": {
+          "source": "./src/runtime/worker.ts",
+          "types": "./dist/runtime/worker.d.ts",
+          "import": "./dist/runtime/worker.js"
+        }
+      },
+      "main": "./dist/index.js"
+    },
+    {
+      "specifier": "@earendil-works/pi-coding-agent",
+      "path": "packages/coding-agent",
+      "packageName": "@earendil-works/pi-coding-agent",
+      "version": "1.2.0",
+      "exports": {
+        ".": {
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js"
+        },
+        "./rpc-entry": {
+          "import": "./dist/bundle/rpc-entry.js"
+        }
+      },
+      "main": "./dist/index.js"
+    },
+    {
+      "specifier": "@earendil-works/pi-durable",
+      "path": "packages/durable",
+      "packageName": "@earendil-works/pi-durable",
+      "version": "1.2.0",
+      "exports": {
+        ".": {
+          "source": "./src/index.ts",
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js",
+          "default": "./dist/index.js"
+        },
+        "./env": {
+          "source": "./src/env/index.ts",
+          "types": "./dist/env/index.d.ts",
+          "import": "./dist/env/index.js",
+          "default": "./dist/env/index.js"
+        },
+        "./env/node": {
+          "source": "./src/env/node.ts",
+          "types": "./dist/env/node.d.ts",
+          "import": "./dist/env/node.js",
+          "default": "./dist/env/node.js"
+        },
+        "./codemode": {
+          "source": "./src/codemode/index.ts",
+          "types": "./dist/codemode/index.d.ts",
+          "import": "./dist/codemode/index.js",
+          "default": "./dist/codemode/index.js"
+        },
+        "./tool-search": {
+          "source": "./src/tool-search/index.ts",
+          "types": "./dist/tool-search/index.d.ts",
+          "import": "./dist/tool-search/index.js",
+          "default": "./dist/tool-search/index.js"
+        },
+        "./tools": {
+          "source": "./src/tools/index.ts",
+          "types": "./dist/tools/index.d.ts",
+          "import": "./dist/tools/index.js",
+          "default": "./dist/tools/index.js"
+        },
+        "./images": {
+          "source": "./src/images/index.ts",
+          "types": "./dist/images/index.d.ts",
+          "import": "./dist/images/index.js",
+          "default": "./dist/images/index.js"
+        },
+        "./images/node": {
+          "source": "./src/images/node.ts",
+          "types": "./dist/images/node.d.ts",
+          "import": "./dist/images/node.js",
+          "default": "./dist/images/node.js"
+        },
+        "./images/cloudflare": {
+          "source": "./src/images/cloudflare.ts",
+          "types": "./dist/images/cloudflare.d.ts",
+          "import": "./dist/images/cloudflare.js",
+          "default": "./dist/images/cloudflare.js"
+        },
+        "./storage/memory": {
+          "source": "./src/storage/memory.ts",
+          "types": "./dist/storage/memory.d.ts",
+          "import": "./dist/storage/memory.js",
+          "default": "./dist/storage/memory.js"
+        },
+        "./storage/jsonl": {
+          "source": "./src/storage/jsonl/index.ts",
+          "types": "./dist/storage/jsonl/index.d.ts",
+          "import": "./dist/storage/jsonl/index.js",
+          "default": "./dist/storage/jsonl/index.js"
+        },
+        "./storage/jsonl/node": {
+          "source": "./src/storage/jsonl/node.ts",
+          "types": "./dist/storage/jsonl/node.d.ts",
+          "import": "./dist/storage/jsonl/node.js",
+          "default": "./dist/storage/jsonl/node.js"
+        },
+        "./storage/sqlite": {
+          "source": "./src/storage/sqlite/index.ts",
+          "types": "./dist/storage/sqlite/index.d.ts",
+          "import": "./dist/storage/sqlite/index.js",
+          "default": "./dist/storage/sqlite/index.js"
+        },
+        "./storage/sqlite/cloudflare": {
+          "source": "./src/storage/sqlite/cloudflare.ts",
+          "types": "./dist/storage/sqlite/cloudflare.d.ts",
+          "import": "./dist/storage/sqlite/cloudflare.js",
+          "default": "./dist/storage/sqlite/cloudflare.js"
+        },
+        "./storage/sqlite/node": {
+          "source": "./src/storage/sqlite/node.ts",
+          "types": "./dist/storage/sqlite/node.d.ts",
+          "import": "./dist/storage/sqlite/node.js",
+          "default": "./dist/storage/sqlite/node.js"
+        },
+        "./testing": {
+          "source": "./src/testing/index.ts",
+          "types": "./dist/testing/index.d.ts",
+          "import": "./dist/testing/index.js",
+          "default": "./dist/testing/index.js"
+        },
+        "./package.json": "./package.json"
+      },
+      "main": "./dist/index.js"
+    },
+    {
+      "specifier": "@earendil-works/pi-env",
+      "path": "packages/env",
+      "packageName": "@earendil-works/pi-env",
+      "version": "1.2.0",
+      "exports": {
+        ".": {
+          "source": "./src/index.ts",
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js",
+          "default": "./dist/index.js"
+        }
+      },
+      "main": "./dist/index.js"
+    },
+    {
+      "specifier": "@earendil-works/pi-evals",
+      "path": "packages/evals",
+      "packageName": "@earendil-works/pi-evals",
+      "version": "1.2.0",
+      "exports": null,
+      "main": null
+    },
+    {
+      "specifier": "@earendil-works/pi-mcp",
+      "path": "packages/mcp",
+      "packageName": "@earendil-works/pi-mcp",
+      "version": "1.2.0",
+      "exports": {
+        ".": {
+          "source": "./src/index.ts",
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js"
+        },
+        "./oauth": {
+          "source": "./src/oauth/index.ts",
+          "types": "./dist/oauth/index.d.ts",
+          "import": "./dist/oauth/index.js"
+        },
+        "./testing": {
+          "source": "./src/testing/index.ts",
+          "types": "./dist/testing/index.d.ts",
+          "import": "./dist/testing/index.js"
+        }
+      },
+      "main": "./dist/index.js"
+    },
+    {
+      "specifier": "@earendil-works/pi-telemetry",
+      "path": "packages/telemetry",
+      "packageName": "@earendil-works/pi-telemetry",
+      "version": "1.2.0",
+      "exports": {
+        ".": {
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js"
+        },
+        "./testing": {
+          "types": "./dist/testing/index.d.ts",
+          "import": "./dist/testing/index.js"
+        }
+      },
+      "main": "./dist/index.js"
+    },
+    {
+      "specifier": "@earendil-works/pi-tui",
+      "path": "packages/tui",
+      "packageName": "@earendil-works/pi-tui",
+      "version": "1.2.0",
+      "main": "dist/index.js",
+      "exports": null
+    },
+    {
+      "specifier": "pi-extension-custom-provider-anthropic",
+      "path": "packages/coding-agent/examples/extensions/custom-provider-anthropic",
+      "packageName": "pi-extension-custom-provider-anthropic",
+      "version": "1.2.0",
+      "exports": null,
+      "main": null
+    },
+    {
+      "specifier": "pi-extension-custom-provider-gitlab-duo",
+      "path": "packages/coding-agent/examples/extensions/custom-provider-gitlab-duo",
+      "packageName": "pi-extension-custom-provider-gitlab-duo",
+      "version": "1.2.0",
+      "exports": null,
+      "main": null
+    },
+    {
+      "specifier": "pi-extension-gondolin",
+      "path": "packages/coding-agent/examples/extensions/gondolin",
+      "packageName": "pi-extension-gondolin",
+      "version": "1.2.0",
+      "exports": null,
+      "main": null
+    },
+    {
+      "specifier": "pi-extension-sandbox",
+      "path": "packages/coding-agent/examples/extensions/sandbox",
+      "packageName": "pi-extension-sandbox",
+      "version": "1.2.0",
+      "exports": null,
+      "main": null
+    },
+    {
+      "specifier": "pi-extension-with-deps",
+      "path": "packages/coding-agent/examples/extensions/with-deps",
+      "packageName": "pi-extension-with-deps",
+      "version": "1.2.0",
+      "exports": null,
+      "main": null
+    }
+  ],
+  "lock_sha256": "E56F77E5F423D2D2CD052DC90622D4C223CD81209A3B996CD4D43587A6A05DEB",
+  "generated_catalog_scope": "Frozen typed fixture metadata only; latest catalog qualification remains false"
+}
