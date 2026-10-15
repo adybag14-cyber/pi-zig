@@ -822,6 +822,56 @@ test "native durable VM ended invocation errors and cancellation reason preserve
     try std.testing.expectEqualStrings("{\"aborted\":true,\"error\":{\"name\":\"Error\",\"error\":true,\"message\":true},\"reason\":{\"name\":\"Error\",\"error\":true,\"message\":true},\"distinct\":true}", text);
 }
 
+test "native durable VM public SQLite prefix options isolate namespaces and reject invalid identifiers" {
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try tmp.dir.realPath(std.testing.io, &buffer);
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const global = engine_module.c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "testRoot", try sdk.text(engine, buffer[0..length]));
+    try sdk.put(engine, global, "sourcePrefixCapture", try sdk.text(engine, @embedFile("durable/backend/fixtures/sqlite-prefix-source5ab.json")));
+    errdefer std.debug.print("SQLite prefix VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {openNodeSqliteStorage} from '@earendil-works/pi-durable/storage/sqlite/node';
+        \\const path=testRoot+'/prefix-vm.sqlite',plain=await openNodeSqliteStorage(path),alpha=await openNodeSqliteStorage(path,{prefix:'alpha_'}),beta=await openNodeSqliteStorage(path,{prefix:'beta_'});
+        \\await alpha.commit([{type:'conversation',value:{id:1}}],{});await beta.commit([{type:'conversation',value:{id:3}}],{});
+        \\const isolated=(await plain.conversation(1,{}))===undefined&&(await alpha.conversation(3,{}))===undefined&&(await beta.conversation(1,{}))===undefined;
+        \\await plain.close({});await alpha.close({});await beta.close({});const again=await openNodeSqliteStorage(path,{prefix:'alpha_'}),reopened=(await again.conversation(1,{})).id;await again.close({});
+        \\const rejected=[];for(const prefix of ['', '1bad', 'a-b', 'sqlite_', 'SqLiTe_private', 'x;DROP']){try{const unexpected=await openNodeSqliteStorage(path,{prefix});await unexpected.close({});rejected.push({prefix,rejected:false})}catch(error){rejected.push({prefix,rejected:true,name:error.name,message:error.message})}}
+        \\if(JSON.stringify(rejected)!==JSON.stringify(JSON.parse(sourcePrefixCapture).rejected))throw Error('SQLite prefix errors differ from genuine Source');
+        \\globalThis.result=JSON.stringify({isolated,reopened,rejected:rejected.filter(row=>row.rejected).length});
+    , "native-durable-sqlite-prefix");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"isolated\":true,\"reopened\":1,\"rejected\":6}", text);
+}
+
+test "native durable VM public SQLite prefix replays genuine Source coercion getters and raw failures" {
+    const gpa = std.testing.allocator;
+    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("durable/backend/fixtures/sqlite-prefix-coercion-source5ab.json"), .{});
+    defer fixture.deinit();
+    const engine = try engine_module.Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("SQLite prefix coercion VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(fixture.value.object.get("input").?.string, "native-durable-sqlite-prefix-coercion");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer gpa.free(text);
+    try std.testing.expectEqualStrings(fixture.value.object.get("expected_json").?.string, text);
+}
+
 test "native durable VM public SQLite allocation persists only at commit and ignores storage caller cancellation" {
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();

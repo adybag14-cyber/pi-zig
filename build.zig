@@ -60,6 +60,13 @@ pub fn build(b: *std.Build) void {
         });
         break :blk library;
     } else null;
+    const sqlite_prefix_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_sqlite_prefix_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "SQLite prefix", "SQLite explicit prefix" },
+        .use_llvm = use_llvm,
+    });
+    linkSqlite(sqlite_prefix_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-durable-sqlite-prefix", "Verify native durable SQLite namespace isolation, validation and ownership").dependOn(&b.addRunArtifact(sqlite_prefix_tests).step);
     const diagnostic_tests = b.option(bool, "diagnostic-tests", "Stream individual environment lifecycle tests to diagnose blocked teardown") orelse false;
     const lifecycle_test_runner: ?std.Build.Step.Compile.TestRunner = if (diagnostic_tests) .{
         .path = .{ .cwd_relative = b.graph.zig_lib_directory.join(b.allocator, &.{ "compiler", "test_runner.zig" }) catch @panic("OOM") },
@@ -359,6 +366,8 @@ pub fn build(b: *std.Build) void {
     linkSqlite(sqlite_exe.root_module, sqlite_lib_dir, sqlite_library);
     if (optimize != .Debug) sqlite_exe.root_module.strip = true;
     const install_sqlite = b.addInstallArtifact(sqlite_exe, .{});
+    const sqlite_admin_step = b.step("sqlite-admin", "Build and install only the SQLite administration companion");
+    sqlite_admin_step.dependOn(&install_sqlite.step);
 
     // A second build of the same complete CLI root enables SQLite-backed live
     // protocol serving without making the ordinary `pi` executable depend on
@@ -675,6 +684,9 @@ pub fn build(b: *std.Build) void {
     const run_native_durable_tests = b.addRunArtifact(native_durable_tests);
     const native_durable_step = b.step("test-native-durable-vm", "Exercise native public durable VM storage and Session objects");
     native_durable_step.dependOn(&run_native_durable_tests.step);
+    const sqlite_prefix_vm_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .filters = &.{"native durable VM public SQLite prefix"}, .use_llvm = use_llvm });
+    b.step("build-native-durable-sqlite-prefix", "Compile the public SQLite namespace option regression").dependOn(&sqlite_prefix_vm_tests.step);
+    b.step("test-native-durable-sqlite-prefix", "Replay public SQLite namespace isolation and validation through the native VM").dependOn(&b.addRunArtifact(sqlite_prefix_vm_tests).step);
     const chord_context_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_context_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord Context", "native durable VM actual Storage context" } });
     linkQuickJs(b, chord_context_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_context_tests.root_module, sqlite_lib_dir, sqlite_library);

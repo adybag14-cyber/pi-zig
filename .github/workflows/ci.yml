@@ -67,6 +67,35 @@ jobs:
       - name: Build
         run: zig build -Doptimize=ReleaseSafe
 
+      - name: Verify standalone Windows SQLite administration
+        if: runner.os == 'Windows'
+        shell: pwsh
+        timeout-minutes: 10
+        run: |
+          zig build sqlite-admin -Doptimize=ReleaseSafe -j1 --summary all
+          if ($LASTEXITCODE -ne 0) { throw 'SQLite administration build failed' }
+          # Copy only the executable and run outside the checkout. This catches
+          # accidental SQLite DLL imports hidden by the development PATH.
+          $smokeDirectory = Join-Path $env:RUNNER_TEMP ('pi-sqlite-standalone-' + [guid]::NewGuid().ToString('N'))
+          New-Item -ItemType Directory -Path $smokeDirectory | Out-Null
+          $smokeExecutable = Join-Path $smokeDirectory 'pi-sqlite.exe'
+          Copy-Item -LiteralPath 'zig-out/bin/pi-sqlite.exe' -Destination $smokeExecutable
+          $originalPath = $env:PATH
+          try {
+            $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"
+            Push-Location -LiteralPath $smokeDirectory
+            try {
+              $initialized = & $smokeExecutable --db standalone.sqlite init --json
+              if ($LASTEXITCODE -ne 0) { throw 'Standalone SQLite init failed' }
+              $initialized
+              if (($initialized | ConvertFrom-Json).ok -ne $true) { throw 'Standalone SQLite init reported failure' }
+              $doctor = & $smokeExecutable --db standalone.sqlite doctor --json
+              if ($LASTEXITCODE -ne 0) { throw 'Standalone SQLite doctor failed' }
+              $doctor
+              if (($doctor | ConvertFrom-Json).ok -ne $true) { throw 'Standalone SQLite doctor reported unhealthy storage' }
+            } finally { Pop-Location }
+          } finally { $env:PATH = $originalPath }
+
       - name: Test
         shell: bash
         # This gate cold-compiles the complete test graph. Bound individual

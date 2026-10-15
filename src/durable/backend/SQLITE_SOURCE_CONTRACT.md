@@ -1,8 +1,11 @@
 # Original durable SQLite format
 
 Source authority is the SQLite migrations/storage/Node adapter at
-7fb59f995b0a1db552001a8577b234e4105d7179. `sqlite_source_schema.sql` contains
-the exact version-one Source DDL and indexes. Public `openNodeSqliteStorage`
+7fb59f995b0a1db552001a8577b234e4105d7179, with namespace options from
+5ab7fe7. `sqlite_source_schema.sql` contains the version-one Source DDL and
+indexes as explicit identifier templates. The immutable names in
+`sqlite_source_names.zig` render the historical default names when the prefix
+is omitted. Public `openNodeSqliteStorage`
 now uses this backend through the direct SQLite C ABI. The private fenced
 numeric backend remains available to its existing native callers.
 
@@ -13,6 +16,15 @@ version/kind columns. Indexed strings use JSON encoding so lone UTF16 surrogates
 remain lossless. Original SQLite request lookup retains its lowest-matching-ID
 policy. WAL, NORMAL synchronous mode, auto-checkpoint and busy timeout follow
 the original Node adapter options.
+
+`Options.prefix` and the public Node SQLite factory's `prefix` option prepend
+the supplied identifier to every table, index, migration and runtime query.
+Explicit prefixes must match `[A-Za-z_][A-Za-z0-9_]*` and must not begin with
+`sqlite_` in any letter case; explicit empty prefixes are rejected. Prefix
+storage is owned by the backend. Different prefixes select independent schemas
+in the same database without copying data between them, subject to SQLite's
+identifier comparison rules. Explicit namespaces
+also leave the earlier private backend and its writer fence untouched.
 
 ID allocation is local to an open storage object. A minted ID alone does not
 persist; committing stores the maximum allocated/written next ID as TEXT.

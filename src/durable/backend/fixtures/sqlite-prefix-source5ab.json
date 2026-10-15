@@ -1,0 +1,132 @@
+{
+  "source": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "bridge": {
+    "isolated": true,
+    "reopened": 1,
+    "rejected": 6
+  },
+  "counts": {
+    "plain": 0,
+    "alpha": 1,
+    "beta": 1,
+    "alpha_version": 1,
+    "beta_version": 1
+  },
+  "tables": [
+    "alpha_conversations",
+    "alpha_document_revisions",
+    "alpha_documents",
+    "alpha_durable_metadata",
+    "alpha_durable_schema",
+    "alpha_entries",
+    "alpha_record_ids",
+    "alpha_submissions",
+    "alpha_tasks",
+    "beta_conversations",
+    "beta_document_revisions",
+    "beta_documents",
+    "beta_durable_metadata",
+    "beta_durable_schema",
+    "beta_entries",
+    "beta_record_ids",
+    "beta_submissions",
+    "beta_tasks",
+    "conversations",
+    "document_revisions",
+    "documents",
+    "durable_metadata",
+    "durable_schema",
+    "entries",
+    "record_ids",
+    "submissions",
+    "tasks"
+  ],
+  "indexes": [
+    "alpha_conversations_by_owner_conversation",
+    "alpha_conversations_by_owner_task",
+    "alpha_document_revisions_by_kind",
+    "alpha_documents_by_address",
+    "alpha_documents_by_scope",
+    "alpha_documents_by_scope_kind",
+    "alpha_entries_by_conversation",
+    "alpha_entry_heads_by_conversation",
+    "alpha_submissions_by_conversation",
+    "alpha_submissions_by_request",
+    "alpha_submissions_by_status",
+    "alpha_tasks_by_abort_requested",
+    "alpha_tasks_by_background",
+    "alpha_tasks_by_conversation",
+    "alpha_tasks_by_kind",
+    "alpha_tasks_by_status",
+    "beta_conversations_by_owner_conversation",
+    "beta_conversations_by_owner_task",
+    "beta_document_revisions_by_kind",
+    "beta_documents_by_address",
+    "beta_documents_by_scope",
+    "beta_documents_by_scope_kind",
+    "beta_entries_by_conversation",
+    "beta_entry_heads_by_conversation",
+    "beta_submissions_by_conversation",
+    "beta_submissions_by_request",
+    "beta_submissions_by_status",
+    "beta_tasks_by_abort_requested",
+    "beta_tasks_by_background",
+    "beta_tasks_by_conversation",
+    "beta_tasks_by_kind",
+    "beta_tasks_by_status",
+    "conversations_by_owner_conversation",
+    "conversations_by_owner_task",
+    "document_revisions_by_kind",
+    "documents_by_address",
+    "documents_by_scope",
+    "documents_by_scope_kind",
+    "entries_by_conversation",
+    "entry_heads_by_conversation",
+    "submissions_by_conversation",
+    "submissions_by_request",
+    "submissions_by_status",
+    "tasks_by_abort_requested",
+    "tasks_by_background",
+    "tasks_by_conversation",
+    "tasks_by_kind",
+    "tasks_by_status"
+  ],
+  "rejected": [
+    {
+      "prefix": "",
+      "rejected": true,
+      "name": "Error",
+      "message": "Invalid SQLite schema prefix \"\""
+    },
+    {
+      "prefix": "1bad",
+      "rejected": true,
+      "name": "Error",
+      "message": "Invalid SQLite schema prefix \"1bad\""
+    },
+    {
+      "prefix": "a-b",
+      "rejected": true,
+      "name": "Error",
+      "message": "Invalid SQLite schema prefix \"a-b\""
+    },
+    {
+      "prefix": "sqlite_",
+      "rejected": true,
+      "name": "Error",
+      "message": "SQLite schema prefix \"sqlite_\" is reserved"
+    },
+    {
+      "prefix": "SqLiTe_private",
+      "rejected": true,
+      "name": "Error",
+      "message": "SQLite schema prefix \"SqLiTe_private\" is reserved"
+    },
+    {
+      "prefix": "x;DROP",
+      "rejected": true,
+      "name": "Error",
+      "message": "Invalid SQLite schema prefix \"x;DROP\""
+    }
+  ]
+}

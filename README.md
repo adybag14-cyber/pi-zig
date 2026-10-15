@@ -95,9 +95,14 @@ Build the optional SQLite administration and live-server binaries with:
 zig build sqlite -Doptimize=ReleaseSafe
 ```
 
-On Windows, pass the directory containing `sqlite3.lib` when it is not already
-in the compiler's library search path, and ensure the matching `sqlite3.dll` is
-on `PATH` when running the linked binaries:
+To build only the administration companion, without compiling the live-agent
+companion, use `zig build sqlite-admin -Doptimize=ReleaseSafe`.
+
+The default Windows build also uses the bundled static SQLite source; no
+external SQLite installation or `PATH` entry is needed. To deliberately use an
+external library instead, pass its directory with `-Dsqlite-lib-dir`. If
+`sqlite3.lib` is an import library, the matching `sqlite3.dll` must be deployed
+beside each executable or made available on `PATH`:
 
 ```powershell
 zig build sqlite -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\path\to\sqlite

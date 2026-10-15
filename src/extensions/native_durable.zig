@@ -435,6 +435,90 @@ fn openStorage(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JS
     defer engine.freeValue(object);
     return sdk.promise(engine, object) catch |err| rejectedPromise(engine, err);
 }
+fn sqlitePrefixError(engine: *Engine, value: c.JSValue, reserved: bool) !void {
+    const quoted = try engine.stringify(value);
+    defer engine.gpa.free(quoted);
+    const message = if (reserved)
+        try std.fmt.allocPrint(engine.gpa, "SQLite schema prefix {s} is reserved", .{quoted})
+    else
+        try std.fmt.allocPrint(engine.gpa, "Invalid SQLite schema prefix {s}", .{quoted});
+    defer engine.gpa.free(message);
+    try @import("native_durable_errors.zig").throwMessage(engine, message);
+}
+fn validateSqlitePrefix(engine: *Engine, value: c.JSValue) !void {
+    const text = try engine.toString(value);
+    defer engine.gpa.free(text);
+    backend.sqlite_source.schema_names.validatePrefix(text) catch |err| {
+        if (err != error.ReservedSqliteSchemaPrefix) {
+            try sqlitePrefixError(engine, value, false);
+            return error.JavaScriptException;
+        }
+    };
+    if (c.JS_IsNull(value)) {
+        _ = try engine.checked(c.JS_ThrowTypeError(engine.context, "Cannot read properties of null (reading 'toLowerCase')"));
+        return error.JavaScriptException;
+    }
+    const lower = try sdk.get(engine, value, "toLowerCase");
+    defer engine.freeValue(lower);
+    if (!c.JS_IsFunction(engine.context, lower)) {
+        _ = try engine.checked(c.JS_ThrowTypeError(engine.context, "prefix.toLowerCase is not a function"));
+        return error.JavaScriptException;
+    }
+    const lowered = try engine.checked(c.JS_Call(engine.context, lower, value, 0, null));
+    defer engine.freeValue(lowered);
+    const starts_with = try sdk.get(engine, lowered, "startsWith");
+    defer engine.freeValue(starts_with);
+    const reserved_prefix = try sdk.text(engine, "sqlite_");
+    defer engine.freeValue(reserved_prefix);
+    var args = [_]c.JSValue{reserved_prefix};
+    const reserved = try engine.checked(c.JS_Call(engine.context, starts_with, lowered, 1, &args));
+    defer engine.freeValue(reserved);
+    if (c.JS_ToBool(engine.context, reserved) > 0) {
+        try sqlitePrefixError(engine, value, true);
+        return error.JavaScriptException;
+    }
+}
+fn sqliteMappedNames(engine: *Engine, prefix: c.JSValue) !backend.sqlite_source.schema_names.Names {
+    try validateSqlitePrefix(engine, prefix);
+    const identifiers = backend.sqlite_source.schema_names.identifiers;
+    var mapped: [identifiers.len][]const u8 = undefined;
+    var owned_count: usize = 0;
+    errdefer for (mapped[0..owned_count]) |value| engine.gpa.free(value);
+    for (identifiers, 0..) |name, index| {
+        const text = try engine.toString(prefix);
+        defer engine.gpa.free(text);
+        mapped[index] = try std.fmt.allocPrint(engine.gpa, "{s}{s}", .{ text, name });
+        owned_count += 1;
+    }
+    return .{ .gpa = engine.gpa, .prefix = null, .mapped = mapped };
+}
+fn sqliteDatabaseOptions(engine: *Engine, source: c.JSValue) !c.JSValue {
+    const rest = try sdk.object(engine);
+    errdefer engine.freeValue(rest);
+    const boxed = try engine.checked(c.JS_ToObject(engine.context, source));
+    defer engine.freeValue(boxed);
+    const prefix_atom = c.JS_NewAtom(engine.context, "prefix");
+    if (prefix_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+    defer c.JS_FreeAtom(engine.context, prefix_atom);
+    var properties: [*c]c.JSPropertyEnum = null;
+    var count: u32 = 0;
+    if (c.JS_GetOwnPropertyNames(engine.context, &properties, &count, boxed, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK) < 0) return @import("native_js_values.zig").capture(engine);
+    defer c.JS_FreePropertyEnum(engine.context, properties, count);
+    for (properties[0..count]) |property| {
+        if (property.atom == prefix_atom) continue;
+        var descriptor: c.JSPropertyDescriptor = undefined;
+        const present = c.JS_GetOwnProperty(engine.context, &descriptor, boxed, property.atom);
+        if (present < 0) return @import("native_js_values.zig").capture(engine);
+        if (present == 0) continue;
+        defer engine.freeValue(descriptor.value);
+        defer engine.freeValue(descriptor.getter);
+        defer engine.freeValue(descriptor.setter);
+        if (descriptor.flags & c.JS_PROP_ENUMERABLE == 0) continue;
+        const value = try engine.checked(c.JS_GetProperty(engine.context, boxed, property.atom));
+        if (c.JS_DefinePropertyValue(engine.context, rest, property.atom, value, c.JS_PROP_C_W_E) < 0) return @import("native_js_values.zig").capture(engine);
+    }
+    return rest;
+}
 fn persistentObject(engine: *Engine, is_jsonl: bool, args: []const c.JSValue) !c.JSValue {
     const io = engine.native_io orelse return error.DurableIOUnavailable;
     const path = try engine.toString(argument(args, 0));
@@ -465,17 +549,25 @@ fn persistentObject(engine: *Engine, is_jsonl: bool, args: []const c.JSValue) !c
     } else {
         var busy_timeout: u64 = 5000;
         var checkpoint_pages: u64 = 1000;
-        if (!c.JS_IsUndefined(argument(args, 1))) {
-            const option = try sdk.get(engine, args[1], "busyTimeoutMs");
+        const options = argument(args, 1);
+        const prefix = if (c.JS_IsUndefined(options)) c.pi_js_undefined() else try sdk.get(engine, options, "prefix");
+        defer engine.freeValue(prefix);
+        const database_options = if (c.JS_IsUndefined(options)) try sdk.object(engine) else try sqliteDatabaseOptions(engine, options);
+        defer engine.freeValue(database_options);
+        if (!c.JS_IsUndefined(prefix)) try validateSqlitePrefix(engine, prefix);
+        {
+            const option = try sdk.get(engine, database_options, "busyTimeoutMs");
             defer engine.freeValue(option);
-            if (!c.JS_IsUndefined(option)) busy_timeout = try number(engine, option);
-            const checkpoint = try sdk.get(engine, args[1], "walAutoCheckpointPages");
+            if (!c.JS_IsUndefined(option) and !c.JS_IsNull(option)) busy_timeout = try number(engine, option);
+            const checkpoint = try sdk.get(engine, database_options, "walAutoCheckpointPages");
             defer engine.freeValue(checkpoint);
-            if (!c.JS_IsUndefined(checkpoint)) checkpoint_pages = try number(engine, checkpoint);
+            if (!c.JS_IsUndefined(checkpoint) and !c.JS_IsNull(checkpoint)) checkpoint_pages = try number(engine, checkpoint);
         }
         if (busy_timeout > std.math.maxInt(c_int)) return error.InvalidBusyTimeout;
         if (checkpoint_pages > std.math.maxInt(c_int)) return error.InvalidWalAutoCheckpoint;
-        const native = try backend.sqlite_source.Sqlite.open(engine.gpa, io, path, .{ .busy_timeout_ms = @intCast(busy_timeout), .wal_auto_checkpoint_pages = @intCast(checkpoint_pages) });
+        var mapped_names: ?backend.sqlite_source.schema_names.Names = if (!c.JS_IsUndefined(prefix)) try sqliteMappedNames(engine, prefix) else null;
+        defer if (mapped_names) |*names| names.deinit();
+        const native = try backend.sqlite_source.Sqlite.open(engine.gpa, io, path, .{ .busy_timeout_ms = @intCast(busy_timeout), .wal_auto_checkpoint_pages = @intCast(checkpoint_pages), .resolved_names = if (mapped_names) |*names| names else null });
         errdefer native.deinit();
         try native.db.busyTimeout(@intCast(busy_timeout));
         self.sqlite_source = native;

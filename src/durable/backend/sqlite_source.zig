@@ -3,60 +3,58 @@ const std = @import("std");
 const ffi = @import("../../storage/sqlite/ffi.zig");
 const memory = @import("memory.zig");
 const query = @import("query.zig");
+pub const schema_names = @import("sqlite_source_names.zig");
 const json = memory.json;
 extern fn sqlite3_exec(db: ?*anyopaque, sql: [*:0]const u8, callback: ?*const anyopaque, context: ?*anyopaque, message: ?*?[*:0]u8) c_int;
 fn rollback(db: *ffi.Database) void {
     _ = sqlite3_exec(@ptrCast(db.handle), "ROLLBACK", null, null, null);
 }
-fn run(db: *ffi.Database, sql: []const u8, values: []const ffi.Value) !void {
-    var statement = try db.prepare(sql);
-    defer statement.deinit();
-    try statement.bindAll(values);
-    _ = try statement.run();
-}
-pub const Options = struct { busy_timeout_ms: u31 = 5000, wal_auto_checkpoint_pages: u31 = 1000 };
+pub const Options = struct { busy_timeout_ms: u31 = 5000, wal_auto_checkpoint_pages: u31 = 1000, prefix: ?[]const u8 = null, resolved_names: ?*const schema_names.Names = null };
 pub const Sqlite = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
     db: ffi.Database,
+    names: schema_names.Names,
     model: memory.Memory,
     next_id: u64,
     mutex: std.Io.Mutex = .init,
     pub fn open(gpa: std.mem.Allocator, io: std.Io, path: []const u8, options: Options) !*Sqlite {
+        var names = if (options.resolved_names) |resolved| try resolved.clone(gpa) else try schema_names.Names.init(gpa, options.prefix);
+        errdefer names.deinit();
         if (!std.mem.eql(u8, path, ":memory:")) if (std.fs.path.dirname(path)) |parent| try std.Io.Dir.cwd().createDirPath(io, parent);
         const self = try gpa.create(Sqlite);
         errdefer gpa.destroy(self);
-        self.* = .{ .gpa = gpa, .io = io, .db = try ffi.Database.open(gpa, path), .model = undefined, .next_id = 2 };
+        self.* = .{ .gpa = gpa, .io = io, .db = try ffi.Database.open(gpa, path), .names = names, .model = undefined, .next_id = 2 };
         errdefer self.db.close();
         try self.db.busyTimeout(options.busy_timeout_ms);
-        try self.db.exec("PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL");
+        try self.exec("PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL");
         const checkpoint = try std.fmt.allocPrint(gpa, "PRAGMA wal_autocheckpoint={d}", .{options.wal_auto_checkpoint_pages});
         defer gpa.free(checkpoint);
-        try self.db.exec(checkpoint);
+        try self.exec(checkpoint);
         try self.db.beginImmediate();
         var active = true;
         defer if (active) rollback(&self.db);
-        try self.db.exec("CREATE TABLE IF NOT EXISTS durable_schema(singleton INTEGER PRIMARY KEY CHECK(singleton=1),version INTEGER NOT NULL CHECK(version>=0)) STRICT; INSERT OR IGNORE INTO durable_schema VALUES(1,0)");
-        var schema = try self.db.prepare("SELECT version FROM durable_schema WHERE singleton=1");
+        try self.exec("CREATE TABLE IF NOT EXISTS {durable_schema}(singleton INTEGER PRIMARY KEY CHECK(singleton=1),version INTEGER NOT NULL CHECK(version>=0)) STRICT; INSERT OR IGNORE INTO {durable_schema} VALUES(1,0)");
+        var schema = try self.prepare("SELECT version FROM {durable_schema} WHERE singleton=1");
         defer schema.deinit();
         if (try schema.step() != .row) return error.MissingSourceSqliteSchema;
         const version = try schema.columnInt(0);
         if (try schema.step() != .done or version < 0 or version > 1) return error.UnsupportedSourceSqliteSchema;
         if (version == 0) {
             // Do not reinterpret a previous private backend as an empty database.
-            var legacy = try self.db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='pi_durable_metadata'");
+            var legacy = try self.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='pi_durable_metadata'");
             defer legacy.deinit();
             if (try legacy.step() != .row) return error.InvalidSourceSqliteSchema;
-            const import_private = try legacy.columnInt(0) != 0;
+            const import_private = options.prefix == null and options.resolved_names == null and try legacy.columnInt(0) != 0;
             const private_state = if (import_private) try self.loadPrivateState() else null;
             defer if (private_state) |value| value.destroy(gpa);
-            try self.db.exec(@embedFile("sqlite_source_schema.sql"));
+            try self.exec(@embedFile("sqlite_source_schema.sql"));
             if (private_state) |value| {
                 try self.persist(value);
                 // The prior private writer's next mutation must observe lost ownership.
-                try self.db.exec("UPDATE pi_durable_metadata SET writer_fence=writer_fence+1 WHERE singleton=1");
+                try self.exec("UPDATE pi_durable_metadata SET writer_fence=writer_fence+1 WHERE singleton=1");
             }
-            try self.db.exec("UPDATE durable_schema SET version=1 WHERE singleton=1");
+            try self.exec("UPDATE {durable_schema} SET version=1 WHERE singleton=1");
         }
         self.model = try memory.Memory.init(gpa);
         errdefer self.model.deinit();
@@ -72,13 +70,30 @@ pub const Sqlite = struct {
         _ = sqlite3_exec(@ptrCast(self.db.handle), "PRAGMA wal_checkpoint(TRUNCATE)", null, null, null);
         self.model.deinit();
         self.db.close();
+        self.names.deinit();
         self.gpa.destroy(self);
+    }
+    fn exec(self: *Sqlite, template: []const u8) !void {
+        const sql = try self.names.render(template);
+        defer self.gpa.free(sql);
+        try self.db.exec(sql);
+    }
+    fn prepare(self: *Sqlite, template: []const u8) !ffi.Statement {
+        const sql = try self.names.render(template);
+        defer self.gpa.free(sql);
+        return self.db.prepare(sql);
+    }
+    fn run(self: *Sqlite, template: []const u8, values: []const ffi.Value) !void {
+        var statement = try self.prepare(template);
+        defer statement.deinit();
+        try statement.bindAll(values);
+        _ = try statement.run();
     }
     fn loadState(self: *Sqlite) !*memory.State {
         const state = try memory.State.create(self.gpa);
         errdefer state.destroy(self.gpa);
         const a = state.arena.allocator();
-        var metadata = try self.db.prepare("SELECT next_id,next_seq FROM durable_metadata WHERE singleton=1");
+        var metadata = try self.prepare("SELECT next_id,next_seq FROM {durable_metadata} WHERE singleton=1");
         defer metadata.deinit();
         if (try metadata.step() != .row) return error.InvalidSourceSqliteMetadata;
         state.nextId = try std.fmt.parseInt(u64, (try metadata.columnText(0)).?, 10);
@@ -88,13 +103,13 @@ pub const Sqlite = struct {
         state.nextSeq = @intCast(seq);
         inline for ([_]memory.Table{ .conversation, .entry, .task, .submission, .document }) |table| {
             const sql = switch (table) {
-                .conversation => "SELECT id,record,0 FROM conversations ORDER BY id",
-                .entry => "SELECT id,record,commit_seq FROM entries ORDER BY id",
-                .task => "SELECT id,record,0 FROM tasks ORDER BY id",
-                .submission => "SELECT id,record,0 FROM submissions ORDER BY id",
-                .document => "SELECT id,record,created_at FROM documents ORDER BY id",
+                .conversation => "SELECT id,record,0 FROM {conversations} ORDER BY id",
+                .entry => "SELECT id,record,commit_seq FROM {entries} ORDER BY id",
+                .task => "SELECT id,record,0 FROM {tasks} ORDER BY id",
+                .submission => "SELECT id,record,0 FROM {submissions} ORDER BY id",
+                .document => "SELECT id,record,created_at FROM {documents} ORDER BY id",
             };
-            var rows = try self.db.prepare(sql);
+            var rows = try self.prepare(sql);
             defer rows.deinit();
             while (try rows.step() == .row) {
                 const id: u64 = @intCast(try rows.columnInt(0));
@@ -104,7 +119,7 @@ pub const Sqlite = struct {
                 if (table == .document) try state.documents.put(id, .{ .record = record, .revisions = .init(a) });
             }
         }
-        var revisions = try self.db.prepare("SELECT document_id,seq,kind,version,content FROM document_revisions ORDER BY document_id,seq");
+        var revisions = try self.prepare("SELECT document_id,seq,kind,version,content FROM {document_revisions} ORDER BY document_id,seq");
         defer revisions.deinit();
         while (try revisions.step() == .row) {
             const id: u64 = @intCast(try revisions.columnInt(0));
@@ -118,7 +133,7 @@ pub const Sqlite = struct {
             try content.object.put(a, if (base) "value" else "ops", try json.parseLeaky(a, (try revisions.columnText(4)).?));
             try doc.revisions.append(.{ .seq = @intCast(try revisions.columnInt(1)), .content = content });
         }
-        var ids = try self.db.prepare("SELECT id,record_type FROM record_ids ORDER BY id");
+        var ids = try self.prepare("SELECT id,record_type FROM {record_ids} ORDER BY id");
         defer ids.deinit();
         var count: usize = 0;
         while (try ids.step() == .row) {
@@ -133,7 +148,7 @@ pub const Sqlite = struct {
         const state = try memory.State.create(self.gpa);
         errdefer state.destroy(self.gpa);
         const a = state.arena.allocator();
-        var metadata = try self.db.prepare("SELECT schema_version,next_id,next_seq FROM pi_durable_metadata WHERE singleton=1");
+        var metadata = try self.prepare("SELECT schema_version,next_id,next_seq FROM pi_durable_metadata WHERE singleton=1");
         defer metadata.deinit();
         if (try metadata.step() != .row or try metadata.columnInt(0) != 1) return error.UnsupportedPrivateDurableSchema;
         const next_id = try metadata.columnInt(1);
@@ -141,7 +156,7 @@ pub const Sqlite = struct {
         if (next_id < 2 or next_id > memory.max_integer + 1 or next_seq < 1 or next_seq > memory.max_integer) return error.InvalidPrivateDurableMetadata;
         state.nextId = @intCast(next_id);
         state.nextSeq = @intCast(next_seq);
-        var rows = try self.db.prepare("SELECT id,record_type,commit_seq,record FROM pi_durable_records ORDER BY id");
+        var rows = try self.prepare("SELECT id,record_type,commit_seq,record FROM pi_durable_records ORDER BY id");
         defer rows.deinit();
         while (try rows.step() == .row) {
             const id: u64 = @intCast(try rows.columnInt(0));
@@ -150,7 +165,7 @@ pub const Sqlite = struct {
             if (try memory.idOf(record) != id) return error.InvalidPrivateDurableRecord;
             try state.rows.put(id, .{ .table = table, .record = record, .commitSeq = @intCast(try rows.columnInt(2)) });
         }
-        var docs = try self.db.prepare("SELECT id,record FROM pi_durable_documents ORDER BY id");
+        var docs = try self.prepare("SELECT id,record FROM pi_durable_documents ORDER BY id");
         defer docs.deinit();
         while (try docs.step() == .row) {
             const id: u64 = @intCast(try docs.columnInt(0));
@@ -159,7 +174,7 @@ pub const Sqlite = struct {
             if (row.table != .document or !json.equal(row.record, record)) return error.InvalidPrivateDurableDocument;
             try state.documents.put(id, .{ .record = record, .revisions = .init(a) });
         }
-        var revisions = try self.db.prepare("SELECT document_id,seq,content FROM pi_durable_revisions ORDER BY document_id,seq");
+        var revisions = try self.prepare("SELECT document_id,seq,content FROM pi_durable_revisions ORDER BY document_id,seq");
         defer revisions.deinit();
         while (try revisions.step() == .row) {
             const doc = state.documents.getPtr(@intCast(try revisions.columnInt(0))) orelse return error.InvalidPrivateDurableRevision;
@@ -179,7 +194,7 @@ pub const Sqlite = struct {
         return .{ .integer = @intCast(try json.asInteger(value)) };
     }
     fn persist(self: *Sqlite, state: *const memory.State) !void {
-        try self.db.exec("DELETE FROM document_revisions; DELETE FROM documents; DELETE FROM conversations; DELETE FROM entries; DELETE FROM tasks; DELETE FROM submissions; DELETE FROM record_ids");
+        try self.exec("DELETE FROM {document_revisions}; DELETE FROM {documents}; DELETE FROM {conversations}; DELETE FROM {entries}; DELETE FROM {tasks}; DELETE FROM {submissions}; DELETE FROM {record_ids}");
         var rows = state.rows.iterator();
         while (rows.next()) |item| {
             const id: ffi.Value = .{ .integer = @intCast(item.key_ptr.*) };
@@ -187,23 +202,23 @@ pub const Sqlite = struct {
             const record = row.record;
             const encoded = try json.stringify(self.gpa, record);
             defer self.gpa.free(encoded);
-            try run(&self.db, "INSERT INTO record_ids(id,record_type) VALUES(?,?)", &.{ id, .{ .text = @tagName(row.table) } });
+            try self.run("INSERT INTO {record_ids}(id,record_type) VALUES(?,?)", &.{ id, .{ .text = @tagName(row.table) } });
             switch (row.table) {
                 .conversation => {
                     const owner = json.get(record, "owner");
-                    try run(&self.db, "INSERT INTO conversations(id,owner_conversation_id,owner_task_id,record) VALUES(?,?,?,?)", &.{ id, if (owner) |value| try optionalNumber(value, "conversationId") else .null, if (owner) |value| try optionalNumber(value, "taskId") else .null, .{ .text = encoded } });
+                    try self.run("INSERT INTO {conversations}(id,owner_conversation_id,owner_task_id,record) VALUES(?,?,?,?)", &.{ id, if (owner) |value| try optionalNumber(value, "conversationId") else .null, if (owner) |value| try optionalNumber(value, "taskId") else .null, .{ .text = encoded } });
                 },
-                .entry => try run(&self.db, "INSERT INTO entries(id,conversation_id,head,commit_seq,record) VALUES(?,?,?,?,?)", &.{ id, try optionalNumber(record, "conversationId"), try optionalNumber(record, "head"), .{ .integer = @intCast(row.commitSeq) }, .{ .text = encoded } }),
+                .entry => try self.run("INSERT INTO {entries}(id,conversation_id,head,commit_seq,record) VALUES(?,?,?,?,?)", &.{ id, try optionalNumber(record, "conversationId"), try optionalNumber(record, "head"), .{ .integer = @intCast(row.commitSeq) }, .{ .text = encoded } }),
                 .task => {
                     const kind = try json.stringify(self.gpa, try json.required(record, "kind"));
                     defer self.gpa.free(kind);
                     const task_state = try json.required(record, "state");
-                    try run(&self.db, "INSERT INTO tasks(id,conversation_id,kind,status,abort_requested,background,record) VALUES(?,?,?,?,?,?,?)", &.{ id, try optionalNumber(record, "conversationId"), .{ .text = kind }, .{ .text = try json.asString(try json.required(task_state, "status")) }, .{ .integer = @intFromBool((try json.required(record, "abortRequested")).bool) }, .{ .integer = @intFromBool((try json.required(record, "background")).bool) }, .{ .text = encoded } });
+                    try self.run("INSERT INTO {tasks}(id,conversation_id,kind,status,abort_requested,background,record) VALUES(?,?,?,?,?,?,?)", &.{ id, try optionalNumber(record, "conversationId"), .{ .text = kind }, .{ .text = try json.asString(try json.required(task_state, "status")) }, .{ .integer = @intFromBool((try json.required(record, "abortRequested")).bool) }, .{ .integer = @intFromBool((try json.required(record, "background")).bool) }, .{ .text = encoded } });
                 },
                 .submission => {
                     const request = if (json.get(record, "requestId")) |value| try json.stringify(self.gpa, value) else null;
                     defer if (request) |value| self.gpa.free(value);
-                    try run(&self.db, "INSERT INTO submissions(id,conversation_id,request_id,status,record) VALUES(?,?,?,?,?)", &.{ id, try optionalNumber(record, "conversationId"), if (request) |value| .{ .text = value } else .null, .{ .text = try json.asString(try json.required(record, "status")) }, .{ .text = encoded } });
+                    try self.run("INSERT INTO {submissions}(id,conversation_id,request_id,status,record) VALUES(?,?,?,?,?)", &.{ id, try optionalNumber(record, "conversationId"), if (request) |value| .{ .text = value } else .null, .{ .text = try json.asString(try json.required(record, "status")) }, .{ .text = encoded } });
                 },
                 .document => {
                     const scope = try json.required(record, "scope");
@@ -213,7 +228,7 @@ pub const Sqlite = struct {
                     const key = if (json.get(record, "key")) |value| try json.stringify(self.gpa, value) else null;
                     defer if (key) |value| self.gpa.free(value);
                     const owner: ffi.Value = if (std.mem.eql(u8, scope_kind, "session")) .{ .integer = 0 } else try optionalNumber(scope, if (std.mem.eql(u8, scope_kind, "conversation")) "conversationId" else "taskId");
-                    try run(&self.db, "INSERT INTO documents(id,kind,family,key_value,scope_kind,owner_id,created_at,retired_at,record) VALUES(?,?,?,?,?,?,?,?,?)", &.{ id, .{ .text = kind }, .{ .integer = @intFromBool(key != null) }, .{ .text = key orelse "" }, .{ .text = scope_kind }, owner, try optionalNumber(record, "createdAt"), try optionalNumber(record, "retiredAt"), .{ .text = encoded } });
+                    try self.run("INSERT INTO {documents}(id,kind,family,key_value,scope_kind,owner_id,created_at,retired_at,record) VALUES(?,?,?,?,?,?,?,?,?)", &.{ id, .{ .text = kind }, .{ .integer = @intFromBool(key != null) }, .{ .text = key orelse "" }, .{ .text = scope_kind }, owner, try optionalNumber(record, "createdAt"), try optionalNumber(record, "retiredAt"), .{ .text = encoded } });
                 },
             }
         }
@@ -222,11 +237,11 @@ pub const Sqlite = struct {
             const kind = try json.asString(try json.required(revision.content, "kind"));
             const value = try json.stringify(self.gpa, try json.required(revision.content, if (std.mem.eql(u8, kind, "base")) "value" else "ops"));
             defer self.gpa.free(value);
-            try run(&self.db, "INSERT INTO document_revisions(document_id,seq,kind,version,content) VALUES(?,?,?,?,?)", &.{ .{ .integer = @intCast(item.key_ptr.*) }, .{ .integer = @intCast(revision.seq) }, .{ .text = kind }, .{ .integer = @intCast(try json.asInteger(try json.required(revision.content, "version"))) }, .{ .text = value } });
+            try self.run("INSERT INTO {document_revisions}(document_id,seq,kind,version,content) VALUES(?,?,?,?,?)", &.{ .{ .integer = @intCast(item.key_ptr.*) }, .{ .integer = @intCast(revision.seq) }, .{ .text = kind }, .{ .integer = @intCast(try json.asInteger(try json.required(revision.content, "version"))) }, .{ .text = value } });
         };
         const next_id = try std.fmt.allocPrint(self.gpa, "{d}", .{state.nextId});
         defer self.gpa.free(next_id);
-        try run(&self.db, "UPDATE durable_metadata SET next_id=?,next_seq=? WHERE singleton=1", &.{ .{ .text = next_id }, .{ .integer = @intCast(state.nextSeq) } });
+        try self.run("UPDATE {durable_metadata} SET next_id=?,next_seq=? WHERE singleton=1", &.{ .{ .text = next_id }, .{ .integer = @intCast(state.nextSeq) } });
     }
     pub fn commitAt(self: *Sqlite, writes: json.Value, sequence: ?u64) !u64 {
         try self.mutex.lock(self.io);
@@ -407,6 +422,90 @@ test "native durable VM source SQLite failed publication rolls back SQL effects 
         }
     }
     try std.testing.expect(reached_success and failed > 0);
+}
+
+test "native durable VM source SQLite prefix isolates migrations indexes runtime queries and reopen" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const count = try tmp.dir.realPath(io, &buffer);
+    const path = try std.fs.path.join(gpa, &.{ buffer[0..count], "prefix.sqlite" });
+    defer gpa.free(path);
+    const plain = try Sqlite.open(gpa, io, path, .{});
+    defer plain.deinit();
+    var mutable_prefix = "alpha_".*;
+    var alpha = try Sqlite.open(gpa, io, path, .{ .prefix = &mutable_prefix });
+    defer alpha.deinit();
+    @memset(&mutable_prefix, 'x');
+    var beta = try Sqlite.open(gpa, io, path, .{ .prefix = "beta_" });
+    defer beta.deinit();
+    var first = try json.Owned.parse(gpa, "[{\"type\":\"conversation\",\"value\":{\"id\":1}}]");
+    defer first.deinit();
+    var second = try json.Owned.parse(gpa, "[{\"type\":\"conversation\",\"value\":{\"id\":3}}]");
+    defer second.deinit();
+    _ = try alpha.commitAt(first.value, null);
+    _ = try beta.commitAt(second.value, null);
+    try std.testing.expect((try plain.readTableRecord(gpa, .conversation, 1)) == null);
+    try std.testing.expect((try alpha.readTableRecord(gpa, .conversation, 3)) == null);
+    try std.testing.expect((try beta.readTableRecord(gpa, .conversation, 1)) == null);
+    const reopened_alpha = try Sqlite.open(gpa, io, path, .{ .prefix = "alpha_" });
+    alpha.deinit();
+    alpha = reopened_alpha;
+    const reopened_beta = try Sqlite.open(gpa, io, path, .{ .prefix = "beta_" });
+    beta.deinit();
+    beta = reopened_beta;
+    var record = (try alpha.readTableRecord(gpa, .conversation, 1)).?;
+    defer record.deinit();
+    var other = (try beta.readTableRecord(gpa, .conversation, 3)).?;
+    defer other.deinit();
+    var counts = try plain.db.prepare("SELECT (SELECT count(*) FROM conversations),(SELECT count(*) FROM alpha_conversations),(SELECT count(*) FROM beta_conversations),(SELECT count(*) FROM sqlite_master WHERE type='index' AND name LIKE 'alpha_%'),(SELECT version FROM alpha_durable_schema WHERE singleton=1),(SELECT version FROM beta_durable_schema WHERE singleton=1)");
+    defer counts.deinit();
+    try std.testing.expect(try counts.step() == .row);
+    try std.testing.expectEqual(@as(i64, 0), try counts.columnInt(0));
+    try std.testing.expectEqual(@as(i64, 1), try counts.columnInt(1));
+    try std.testing.expectEqual(@as(i64, 1), try counts.columnInt(2));
+    try std.testing.expectEqual(@as(i64, 16), try counts.columnInt(3));
+    try std.testing.expectEqual(@as(i64, 1), try counts.columnInt(4));
+    try std.testing.expectEqual(@as(i64, 1), try counts.columnInt(5));
+    try std.testing.expectError(error.InvalidSqliteSchemaPrefix, Sqlite.open(gpa, io, path, .{ .prefix = "" }));
+    try std.testing.expectError(error.ReservedSqliteSchemaPrefix, Sqlite.open(gpa, io, path, .{ .prefix = "SqLiTe_private" }));
+}
+
+fn allocationPrefixExercise(gpa: std.mem.Allocator) !void {
+    const store = try Sqlite.open(gpa, std.testing.io, ":memory:", .{ .prefix = "owned_" });
+    defer store.deinit();
+    var writes = try json.Owned.parse(gpa, "[{\"type\":\"conversation\",\"value\":{\"id\":1}}]");
+    defer writes.deinit();
+    _ = try store.commitAt(writes.value, null);
+    var record = (try store.readTableRecord(gpa, .conversation, 1)).?;
+    defer record.deinit();
+}
+test "native durable VM source SQLite prefix ownership schema rendering and writes unwind every GPA failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationPrefixExercise, .{});
+}
+
+test "native durable VM source SQLite explicit prefix never imports or fences private namespace" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const count = try tmp.dir.realPath(io, &buffer);
+    const path = try std.fs.path.join(gpa, &.{ buffer[0..count], "private-prefix.sqlite" });
+    defer gpa.free(path);
+    const private = try @import("sqlite.zig").Sqlite.open(gpa, io, path, .{});
+    defer private.deinit();
+    var writes = try json.Owned.parse(gpa, "[{\"type\":\"conversation\",\"value\":{\"id\":1}}]");
+    defer writes.deinit();
+    _ = try private.commitAt(writes.value, null);
+    const scoped = try Sqlite.open(gpa, io, path, .{ .prefix = "new_" });
+    defer scoped.deinit();
+    try std.testing.expect((try scoped.readTableRecord(gpa, .conversation, 1)) == null);
+    var empty = try json.Owned.parse(gpa, "[]");
+    defer empty.deinit();
+    try std.testing.expectEqual(@as(u64, 2), try private.commitAt(empty.value, null));
 }
 
 test "native durable VM source SQLite imports private data atomically retains original tables and fences prior writer" {
