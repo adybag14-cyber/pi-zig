@@ -77,7 +77,7 @@ fn close(scope: *Scope, owner: c.JSValue) !void {
     try emit(scope, owner, if (thinking) "thinking_end" else "text_end", current, "content", try scope.get(current, if (thinking) "thinking" else "text"));
     try scope.put(owner, "current", c.pi_js_null());
 }
-fn append(scope: *Scope, owner: c.JSValue, value: c.JSValue, thinking: bool, signature: c.JSValue, skip_empty: bool) !void {
+fn append(scope: *Scope, owner: c.JSValue, value: c.JSValue, thinking: bool, source_part: c.JSValue, skip_empty: bool) !void {
     const text = if (skip_empty) try v.sanitize(scope, value) else value;
     if (skip_empty and try v.length(scope, text) == 0) return;
     var current = try scope.get(owner, "current");
@@ -92,13 +92,14 @@ fn append(scope: *Scope, owner: c.JSValue, value: c.JSValue, thinking: bool, sig
         try scope.put(owner, "current", current);
         try emit(scope, owner, if (thinking) "thinking_start" else "text_start", current, null, c.pi_js_undefined());
     }
-    try scope.set(current, key, try scope.concat(try scope.get(current, key), text));
+    try scope.set(current, key, try scope.concat(try scope.get(current, key), if (skip_empty) text else try scope.get(source_part, "text")));
     if (!skip_empty) {
         const signature_key: [*:0]const u8 = if (thinking) "thinkingSignature" else "textSignature";
         const previous = try scope.get(current, signature_key);
+        const signature = try scope.get(source_part, "thoughtSignature");
         try scope.set(current, signature_key, if (c.JS_IsString(signature) and try v.length(scope, signature) > 0) signature else previous);
     }
-    try emit(scope, owner, if (thinking) "thinking_delta" else "text_delta", current, "delta", text);
+    try emit(scope, owner, if (thinking) "thinking_delta" else "text_delta", current, "delta", if (skip_empty) text else try scope.get(source_part, "text"));
 }
 fn google(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
     const output = try scope.get(owner, "output");
@@ -115,7 +116,7 @@ fn google(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
             var row: Scope = .{ .engine = scope.engine };
             defer row.deinit();
             const text = try row.get(part, "text");
-            if (!c.JS_IsUndefined(text)) try append(&row, owner, text, row.equal(try row.get(part, "thought"), c.pi_js_bool(scope.engine.context, 1)), try row.get(part, "thoughtSignature"), false);
+            if (!c.JS_IsUndefined(text)) try append(&row, owner, text, row.equal(try row.get(part, "thought"), c.pi_js_bool(scope.engine.context, 1)), part, false);
             const function = try row.get(part, "functionCall");
             if (!row.truthy(function)) continue;
             try close(&row, owner);
