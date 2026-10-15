@@ -11,17 +11,20 @@ extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 
 pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
     const method = try engine.checked(c.JS_NewCFunction(engine.context, send, "sendCustomMessage", 2));
-    errdefer engine.freeValue(method);
+    defer engine.freeValue(method);
     const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
     defer engine.freeValue(parent);
     if (c.JS_SetPrototype(engine.context, method, parent) < 0) return js.capture(engine);
-    try sdk.put(engine, exports, "sendCustomMessage", method);
+    if (c.JS_DefinePropertyValueStr(engine.context, exports, "sendCustomMessage", c.JS_DupValue(engine.context, method), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     inline for (.{ "_appendCustomMessage", "_flushPendingCustomMessages", "_refreshFinalizedContext" }, 0..) |name, index| {
-        try sdk.put(engine, exports, name, try engine.checked(c.pi_js_function_magic(engine.context, synchronous, name, if (index == 0) 1 else 0, @intCast(index))));
+        const function = try engine.checked(c.pi_js_function_magic(engine.context, synchronous, name, if (index == 0) 1 else 0, @intCast(index)));
+        if (c.JS_DefinePropertyValueStr(engine.context, exports, name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     }
 }
 fn send(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     return begin(engine, receiver, if (argc > 0) argv[0] else c.pi_js_undefined(), if (argc > 1) argv[1] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
 }
 fn begin(engine: *em.Engine, receiver: c.JSValue, message: c.JSValue, options: c.JSValue) !c.JSValue {
@@ -80,6 +83,8 @@ fn finishValue(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
 }
 fn deferred(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     return deferredStart(engine, roots) catch |err| sdk.fail(engine, err);
 }
 fn deferredStart(engine: *em.Engine, roots: [*c]c.JSValue) !c.JSValue {
@@ -96,6 +101,8 @@ fn deferredStart(engine: *em.Engine, roots: [*c]c.JSValue) !c.JSValue {
 }
 fn synchronous(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     syncBody(engine, receiver, if (argc > 0) argv[0] else c.pi_js_undefined(), magic) catch |err| return sdk.fail(engine, err);
     return c.pi_js_undefined();
 }

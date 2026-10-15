@@ -1,0 +1,44 @@
+const customRows=[];
+const originalNow=Date.now;
+const sendLabels=['idle','array','null','undefined','string','zero','false','nextTurn','nextTurn-stream','nextTurn-trigger','stream-default','stream-followUp','stream-triggerFalse','trigger','trigger-reject','trigger-sync-throw','settled','raw-customType','raw-content','raw-display','raw-details','raw-date','raw-deliverAs','raw-triggerTurn','raw-isStreaming','raw-push','raw-append','options-null','options-undefined','trigger-thenable'];
+for(const label of sendLabels){
+  const events=[];let coercions=0;
+  const raw={owned:label,toString(){coercions++;return'owned error';}};
+  Date.now=()=>{events.push('now');if(label==='raw-date')throw raw;return 1234;};
+  const message={};
+  for(const key of ['customType','content','display','details'])Object.defineProperty(message,key,{get(){events.push('message:'+key);if(label==='raw-'+key)throw raw;return key==='customType'?'notice':key==='display'?true:key==='details'?{detail:1}:label==='null'?null:label==='undefined'?undefined:label==='zero'?0:label==='false'?false:label==='string'?'text':[{type:'text',text:'hello'}];}});
+  let options={};
+  Object.defineProperty(options,'deliverAs',{get(){events.push('deliverAs');if(label==='raw-deliverAs')throw raw;return label.startsWith('nextTurn')||label==='raw-push'?'nextTurn':label==='stream-followUp'?'followUp':undefined;}});
+  Object.defineProperty(options,'triggerTurn',{get(){events.push('triggerTurn');if(label==='raw-triggerTurn')throw raw;return label==='stream-triggerFalse'?false:label.startsWith('trigger')||label==='settled'||label==='nextTurn-trigger';}});
+  if(label==='options-null')options=null;if(label==='options-undefined')options=undefined;
+  const pending=[],next=[],actions=[];
+  if(label==='raw-push')next.push=function(){events.push('push');throw raw;};
+  const session={_pendingCustomMessages:pending,_pendingNextTurnMessages:next,_deferredSettledActions:actions,
+    get isStreaming(){events.push('streaming');if(label==='raw-isStreaming')throw raw;return label.startsWith('stream')||label==='nextTurn-stream';},
+    get _isEmittingAgentSettled(){events.push('settling');return label==='settled';},
+    agent:{steer(value){events.push(['steer',value]);},followUp(value){events.push(['followUp',value]);}},
+    _appendCustomMessage(value){events.push(['append',value]);if(label==='raw-append')throw raw;},
+    _startRun(value){events.push(['run',value]);if(label==='trigger-sync-throw')throw raw;if(label==='trigger-reject')return Promise.reject(raw);if(label==='trigger-thenable')return{then(resolve){events.push('then');resolve('ignored');}};return Promise.resolve('ignored');},
+  };
+  try{
+    const result=await customAPI.send.call(session,message,options);
+    if(label==='settled'){
+      const marker={returned:true};session.sendCustomMessage=function(m,o){events.push(['deferred',this===session,m===message,o===options]);return marker;};
+      events.push(['deferred-result',(await actions[0].call({}))===marker]);
+    }
+    customRows.push({label,events,resultUndefined:result===undefined,pending,next,actions:actions.length,coercions});
+  }catch(error){customRows.push({label,events,error:error===raw?'owned':{name:error.name,message:error.message},pending,next,actions:actions.length,coercions});}
+  finally{Date.now=originalNow;}
+}
+for(const label of ['append-normal','append-manager-throws','append-refresh-throws','append-start-throws','append-end-throws']){
+  const events=[];let coercions=0;const raw={toString(){coercions++;return'owned';}},message={customType:'notice',content:[],display:false,details:{detail:2}};
+  const session={sessionManager:{appendCustomMessageEntry(...args){events.push(['persist',args]);if(label==='append-manager-throws')throw raw;}},_refreshFinalizedContext(){events.push('refresh');if(label==='append-refresh-throws')throw raw;},_emit(event){events.push([event.type,event.message===message]);if(label==='append-start-throws'&&event.type==='message_start'||label==='append-end-throws'&&event.type==='message_end')throw raw;}};
+  try{customRows.push({label,events,resultUndefined:customAPI.append.call(session,message)===undefined,coercions});}catch(error){customRows.push({label,events,error:error===raw?'owned':{name:error.name,message:error.message},coercions});}
+}
+for(const label of ['flush-empty','flush-two','flush-reentrant','flush-first-throws','flush-second-throws']){
+  const events=[];let coercions=0;const raw={toString(){coercions++;return'owned';}},old=label==='flush-empty'?[]:[{id:1},{id:2}];
+  const session={_pendingCustomMessages:old,_appendCustomMessage(message){events.push([message.id,this._pendingCustomMessages===old,this._pendingCustomMessages.length]);if(label==='flush-reentrant')this._pendingCustomMessages.push({id:3});if(label==='flush-first-throws'&&message.id===1||label==='flush-second-throws'&&message.id===2)throw raw;}};
+  try{const result=customAPI.flush.call(session);customRows.push({label,events,resultUndefined:result===undefined,same:session._pendingCustomMessages===old,remaining:session._pendingCustomMessages,coercions});}catch(error){customRows.push({label,events,error:error===raw?'owned':{name:error.name,message:error.message},same:session._pendingCustomMessages===old,remaining:session._pendingCustomMessages,coercions});}
+}
+if(customRows.length!==40)throw Error('All40 genuine custom message cases required');
+globalThis.customMessageRows=customRows;

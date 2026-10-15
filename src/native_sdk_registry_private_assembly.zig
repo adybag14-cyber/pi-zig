@@ -26,6 +26,7 @@ pub fn constructor(engine: *em.Engine, dependencies: c.JSValue, reference: c.JSV
         @import("extensions/native_sdk_send_user.zig"),               @import("extensions/native_sdk_session_registry.zig"),
         @import("extensions/native_sdk_session_loadout.zig"),         @import("extensions/native_sdk_session_restore.zig"),
         @import("extensions/native_sdk_session_bindings.zig"),
+        @import("extensions/native_sdk_custom_message.zig"),
     }) |module| try module.install(engine, staging);
     try @import("extensions/native_sdk_session_compaction.zig").installHelpers(engine, staging);
     try @import("extensions/native_sdk_session_auto_compaction.zig").install(engine, staging);

@@ -1,0 +1,23 @@
+{
+  "dependency_node_files": 32838,
+  "pending_gc": "passed",
+  "full_factory_qualified": false,
+  "public_activation": false,
+  "native_tests": 4,
+  "raw_error_identity_coercions": 0,
+  "reference_drift": 0,
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "native_profile": "Windows Debug Zig0.16.0",
+  "host_allocation_gaps": 0,
+  "first_gc_negative": "Test retained module lexical session reference; corrected caller-owned temporary root release only; product unchanged",
+  "archive_sha256": "4DB18BA965D5B8D798E9C7B903DC72112B3D393AEA45C6CCBF2762D525EF7022",
+  "host_allocation_completed": 87,
+  "source_files": 1967,
+  "compiler_drift": 0,
+  "compiler_files": 19546,
+  "substantive_native_tests": 3,
+  "source_drift": 0,
+  "source_cases": 40,
+  "full_pi_qualified": false,
+  "host_allocation_baseline": 87
+}
