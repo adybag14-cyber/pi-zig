@@ -1,0 +1,1308 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "inputSha256": "47bbb2c18b25dbd3452460fb652861a9942b1967132d46db0f30714ff97c9ecf",
+  "cases": 28,
+  "actualNodeGcExecuted": true,
+  "scope": "Unchanged actual read/write text rendering (unsupported text-file extension; no highlighter substitution) and actual edit async filesystem preview/Box state. Genuine dark Theme and TUI components. Syntax language rendering remains a separate unqualified dependency.",
+  "accessConstants": {
+    "prototypeIsNull": true,
+    "flags": {
+      "F_OK": {
+        "value": 0,
+        "writable": false,
+        "enumerable": true,
+        "configurable": false
+      },
+      "R_OK": {
+        "value": 4,
+        "writable": false,
+        "enumerable": true,
+        "configurable": false
+      },
+      "W_OK": {
+        "value": 2,
+        "writable": false,
+        "enumerable": true,
+        "configurable": false
+      },
+      "X_OK": {
+        "value": 1,
+        "writable": false,
+        "enumerable": true,
+        "configurable": false
+      }
+    }
+  },
+  "languages": [
+    {
+      "path": "a.TS",
+      "value": "typescript"
+    },
+    {
+      "path": "a.jsx",
+      "value": "javascript"
+    },
+    {
+      "path": "a.mjs",
+      "value": "javascript"
+    },
+    {
+      "path": "a.py",
+      "value": "python"
+    },
+    {
+      "path": "a.kt",
+      "value": "kotlin"
+    },
+    {
+      "path": "a.hpp",
+      "value": "cpp"
+    },
+    {
+      "path": "a.ps1",
+      "value": "powershell"
+    },
+    {
+      "path": "a.yml",
+      "value": "yaml"
+    },
+    {
+      "path": "a.dockerfile",
+      "value": "dockerfile"
+    },
+    {
+      "path": "a.tf",
+      "value": "hcl"
+    },
+    {
+      "path": "a.graphql",
+      "value": "graphql"
+    },
+    {
+      "path": "README.MD",
+      "value": "markdown"
+    },
+    {
+      "path": "unknown.txt",
+      "value": {
+        "type": "undefined",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "file.",
+      "value": {
+        "type": "undefined",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "a.tar.gz",
+      "value": {
+        "type": "undefined",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "toString",
+      "value": {
+        "type": "undefined",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "constructor",
+      "value": {
+        "type": "function",
+        "name": "Object",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "__proto__",
+      "value": {
+        "type": "object",
+        "objectPrototype": true
+      }
+    },
+    {
+      "path": "hasOwnProperty",
+      "value": {
+        "type": "undefined",
+        "objectPrototype": false
+      }
+    },
+    {
+      "path": "a.zsh",
+      "value": "bash"
+    },
+    {
+      "path": "a.proto",
+      "value": "protobuf"
+    }
+  ],
+  "previewMetadata": {
+    "name": "computeEditsDiff",
+    "length": 3,
+    "prototypeConstructor": "AsyncFunction",
+    "hasOwnPrototype": false,
+    "constructible": false
+  },
+  "rows": [
+    {
+      "name": "read call 0",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                    "
+        ]
+      }
+    },
+    {
+      "name": "read call 1",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/other.txt\u001b\\\u001b[38;2;167;152;215mother.txt\u001b[39m\u001b]8;;\u001b\\                                  "
+        ]
+      }
+    },
+    {
+      "name": "read call 2",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\\u001b[38;2;205;154;34m:3-4\u001b[39m                                "
+        ]
+      }
+    },
+    {
+      "name": "read call 3",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\\u001b[38;2;205;154;34m:2\u001b[39m                                  "
+        ]
+      }
+    },
+    {
+      "name": "read call 4",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b[38;2;234;127;129m[invalid arg]\u001b[39m                              "
+        ]
+      }
+    },
+    {
+      "name": "read call 5",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b[38;2;157;165;169m...\u001b[39m                                        "
+        ]
+      }
+    },
+    {
+      "name": "read call 6",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread resource\u001b[39m \u001b[38;2;167;152;215mAGENTS.md\u001b[39m\u001b[38;2;126;136;142m ( to expand)\u001b[39m            "
+        ]
+      }
+    },
+    {
+      "name": "read call 7",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "\u001b[38;2;222;224;225mread\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\\u001b[38;2;205;154;34m:0--1\u001b[39m                               "
+        ]
+      }
+    },
+    {
+      "name": "read result 0",
+      "value": {
+        "constructor": "Text",
+        "lines": []
+      }
+    },
+    {
+      "name": "read result 1",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;157;165;169mfirst   second\u001b[39m                                  "
+        ]
+      }
+    },
+    {
+      "name": "read result 2",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;157;165;169mline 0\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 1\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 2\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 3\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 4\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 5\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 6\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 7\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 8\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 9\u001b[39m\u001b[38;2;157;165;169m                                          ",
+          "\u001b[38;2;157;165;169m... (2 more lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m                  "
+        ]
+      }
+    },
+    {
+      "name": "read result 3",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;157;165;169merror\u001b[39m                                           ",
+          "\u001b[38;2;157;165;169m[Image: [image/png]]\u001b[39m                            "
+        ]
+      }
+    },
+    {
+      "name": "read result 4",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;157;165;169mshown\u001b[39m                                           ",
+          "\u001b[38;2;205;154;34m[Truncated: showing 2 of 12 lines (2 line       ",
+          "\u001b[38;2;205;154;34mlimit)]\u001b[39m                                         "
+        ]
+      }
+    },
+    {
+      "name": "read result 5",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;157;165;169mshown\u001b[39m                                           ",
+          "\u001b[38;2;205;154;34m[First line exceeds 1000B limit]\u001b[39m                "
+        ]
+      }
+    },
+    {
+      "name": "write call 0",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   "
+        ]
+      }
+    },
+    {
+      "name": "write call 1",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   ",
+          "                                                ",
+          "\u001b[38;2;157;165;169ma   b\u001b[39m                                           ",
+          "\u001b[38;2;157;165;169mcD\u001b[39m                                              "
+        ]
+      }
+    },
+    {
+      "name": "write call 2",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   ",
+          "                                                ",
+          "\u001b[38;2;234;127;129m[invalid content arg - expected string]\u001b[39m         "
+        ]
+      }
+    },
+    {
+      "name": "write call 3",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b[38;2;157;165;169m...\u001b[39m                                       ",
+          "                                                ",
+          "\u001b[38;2;157;165;169mmissing path\u001b[39m                                    "
+        ]
+      }
+    },
+    {
+      "name": "write call 4",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   ",
+          "                                                ",
+          "\u001b[38;2;157;165;169mline 0\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 1\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 2\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 3\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 4\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 5\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 6\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 7\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 8\u001b[39m                                          ",
+          "\u001b[38;2;157;165;169mline 9\u001b[39m\u001b[38;2;157;165;169m                                          ",
+          "\u001b[38;2;157;165;169m... (2 more lines, 12 total,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m        "
+        ]
+      }
+    },
+    {
+      "name": "write call 5",
+      "value": {
+        "constructor": "WriteCallRenderComponent",
+        "lines": [
+          "\u001b[38;2;222;224;225mwrite\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   ",
+          "                                                ",
+          "\u001b[38;2;157;165;169mone\u001b[31mred\u0000two\u001b[39m                                       "
+        ]
+      }
+    },
+    {
+      "name": "write result 0",
+      "value": {
+        "constructor": "Container",
+        "lines": []
+      }
+    },
+    {
+      "name": "write result 1",
+      "value": {
+        "constructor": "Text",
+        "lines": [
+          "                                                ",
+          "\u001b[38;2;234;127;129mfailed\u001b[39m                                          "
+        ]
+      }
+    },
+    {
+      "name": "write result 2",
+      "value": {
+        "constructor": "Container",
+        "lines": []
+      }
+    },
+    {
+      "name": "write result 3",
+      "value": {
+        "constructor": "Container",
+        "lines": []
+      }
+    },
+    {
+      "name": "edit async preview 0",
+      "value": {
+        "pending": {
+          "pending": true,
+          "lines": [
+            "\u001b[48;2;52;56;58m                                                \u001b[49m",
+            "\u001b[48;2;52;56;58m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   \u001b[49m",
+            "\u001b[48;2;52;56;58m                                                \u001b[49m"
+          ]
+        },
+        "settled": {
+          "constructor": "Box",
+          "lines": [
+            "\u001b[48;2;37;65;49m                                                \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/one.txt\u001b\\\u001b[38;2;167;152;215mone.txt\u001b[39m\u001b]8;;\u001b\\                                   \u001b[49m",
+            "\u001b[48;2;37;65;49m                                                \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;234;127;129m-1 old\u001b[39m                                         \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;104;183;141m+1 new\u001b[39m                                         \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;157;165;169m 2 keep\u001b[39m                                        \u001b[49m",
+            "\u001b[48;2;37;65;49m                                                \u001b[49m"
+          ]
+        },
+        "preview": {
+          "diff": "-1 old\n+1 new\n 2 keep",
+          "firstChangedLine": 1
+        },
+        "previewPending": false,
+        "invalidations": 1,
+        "result": {
+          "constructor": "Container",
+          "lines": []
+        }
+      }
+    },
+    {
+      "name": "edit async preview 1",
+      "value": {
+        "pending": {
+          "pending": true,
+          "lines": [
+            "\u001b[48;2;52;56;58m                                                \u001b[49m",
+            "\u001b[48;2;52;56;58m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/bom.txt\u001b\\\u001b[38;2;167;152;215mbom.txt\u001b[39m\u001b]8;;\u001b\\                                   \u001b[49m",
+            "\u001b[48;2;52;56;58m                                                \u001b[49m"
+          ]
+        },
+        "settled": {
+          "constructor": "Box",
+          "lines": [
+            "\u001b[48;2;37;65;49m                                                \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/bom.txt\u001b\\\u001b[38;2;167;152;215mbom.txt\u001b[39m\u001b]8;;\u001b\\                                   \u001b[49m",
+            "\u001b[48;2;37;65;49m                                                \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;234;127;129m-1 old\u001b[39m                                         \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;104;183;141m+1 new\u001b[39m                                         \u001b[49m",
+            "\u001b[48;2;37;65;49m \u001b[38;2;157;165;169m 2 keep\u001b[39m                                        \u001b[49m",
+            "\u001b[48;2;37;65;49m                                                \u001b[49m"
+          ]
+        },
+        "preview": {
+          "diff": "-1 old\n+1 new\n 2 keep",
+          "firstChangedLine": 1
+        },
+        "previewPending": false,
+        "invalidations": 1,
+        "result": {
+          "constructor": "Container",
+          "lines": []
+        }
+      }
+    },
+    {
+      "name": "edit async preview 2",
+      "value": {
+        "pending": {
+          "pending": true,
+          "lines": [
+            "\u001b[48;2;52;56;58m                                                \u001b[49m",
+            "\u001b[48;2;52;56;58m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/missing.txt\u001b\\\u001b[38;2;167;152;215mmissing.txt\u001b[39m\u001b]8;;\u001b\\                               \u001b[49m",
+            "\u001b[48;2;52;56;58m                                                \u001b[49m"
+          ]
+        },
+        "settled": {
+          "constructor": "Box",
+          "lines": [
+            "\u001b[48;2;91;40;42m                                                \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/missing.txt\u001b\\\u001b[38;2;167;152;215mmissing.txt\u001b[39m\u001b]8;;\u001b\\                               \u001b[49m",
+            "\u001b[48;2;91;40;42m                                                \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;234;127;129mCould not edit file: missing.txt. Error code:  \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;234;127;129mENOENT.\u001b[39m                                        \u001b[49m",
+            "\u001b[48;2;91;40;42m                                                \u001b[49m"
+          ]
+        },
+        "preview": {
+          "error": "Could not edit file: missing.txt. Error code: ENOENT."
+        },
+        "previewPending": false,
+        "invalidations": 1,
+        "result": {
+          "constructor": "Container",
+          "lines": []
+        }
+      }
+    },
+    {
+      "name": "edit async preview 3",
+      "value": {
+        "pending": {
+          "pending": true,
+          "lines": [
+            "\u001b[48;2;52;56;58m                                                \u001b[49m",
+            "\u001b[48;2;52;56;58m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/duplicate.txt\u001b\\\u001b[38;2;167;152;215mduplicate.txt\u001b[39m\u001b]8;;\u001b\\                             \u001b[49m",
+            "\u001b[48;2;52;56;58m                                                \u001b[49m"
+          ]
+        },
+        "settled": {
+          "constructor": "Box",
+          "lines": [
+            "\u001b[48;2;91;40;42m                                                \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;222;224;225medit\u001b[39m \u001b]8;;file:///C:/Users/adyba/pi-zig-update-evidence-20261003/tool-file-renderers28-real-fs-20261015/duplicate.txt\u001b\\\u001b[38;2;167;152;215mduplicate.txt\u001b[39m\u001b]8;;\u001b\\                             \u001b[49m",
+            "\u001b[48;2;91;40;42m                                                \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;234;127;129mFound 2 occurrences of the text in             \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;234;127;129mduplicate.txt. The text must be unique. Please \u001b[49m",
+            "\u001b[48;2;91;40;42m \u001b[38;2;234;127;129mprovide more context to make it unique.\u001b[39m        \u001b[49m",
+            "\u001b[48;2;91;40;42m                                                \u001b[49m"
+          ]
+        },
+        "preview": {
+          "error": "Found 2 occurrences of the text in duplicate.txt. The text must be unique. Please provide more context to make it unique."
+        },
+        "previewPending": false,
+        "invalidations": 1,
+        "result": {
+          "constructor": "Container",
+          "lines": []
+        }
+      }
+    }
+  ],
+  "before": [
+    {
+      "manifest": "sdk-source-b45-full-manifest-20261014.json",
+      "count": 1965,
+      "drift": 0
+    },
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "manifest": "tool-file-renderers28-source-20261015-first-candidate.json",
+      "count": 5616,
+      "drift": 0
+    },
+    {
+      "manifest": "tool-file-renderers28-source-20261015-first-controls.json",
+      "count": 8,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "manifest": "sdk-source-b45-full-manifest-20261014.json",
+      "count": 1965,
+      "drift": 0
+    },
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "manifest": "tool-file-renderers28-source-20261015-first-candidate.json",
+      "count": 5616,
+      "drift": 0
+    },
+    {
+      "manifest": "tool-file-renderers28-source-20261015-first-controls.json",
+      "count": 8,
+      "drift": 0
+    }
+  ],
+  "observedModules": [
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b45-observe-20261014.mjs",
+      "sha256": "277c6ccc272a30c512c9bc18cc1adafe9a3f2a99403704020d9c4ff17d2b8d82"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-file-renderers28-source-capture-20261015.mjs",
+      "sha256": "30dccd26bdda6f5e2ceee45a564b3d4888afeec6454cf30a80a45b80696c4659"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\core\\tools\\renderers\\read.ts",
+      "sha256": "34ce43fcfb7fff6d2b230c4d8c2034ec00f91bcf06dcb2a157a4679c350a236e"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\index.ts",
+      "sha256": "1a4ad10ce2da3e6664078771352dbd40b02920a9a07f7f6d25f699c72e22ff3e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\marked\\lib\\marked.esm.js",
+      "sha256": "05e41134d075ad3a009a748d6c779c3d83cea9b942be911c2d9abade36d1dd31"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\autocomplete.ts",
+      "sha256": "7391902f35b60c3467ceb5eccc86e0954a388ea1012455c1a7ea8f7325de773b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\fuzzy.ts",
+      "sha256": "0ae2bedc6a4f043d875ec415202a6e3d9e45405741359d7d2dc2855240dff633"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\utils.ts",
+      "sha256": "6e22ed5385c08965a46f01d6ec9686cb0eada95e34b9dc0f9a5e85d28f8f512a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\get-east-asian-width\\index.js",
+      "sha256": "d7b1ba05914c0fc311c20e5618bf8d0893c9c74078a07975e2df981445e64887"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\get-east-asian-width\\lookup.js",
+      "sha256": "c80ecc22b120b27ef5ea9facb7000b8fd4ec037a84d9231d215f1c44bc9c21d0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\get-east-asian-width\\lookup-data.js",
+      "sha256": "f6b40f86c9a2a6808ec808fa8ddcb8da261254cc6121d37ffaeb2bf35dad1d5b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\get-east-asian-width\\utilities.js",
+      "sha256": "4b08a7e9e3ffacbcf198a6abceb2338d52ac671899e52ccc2851c898bfccac42"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\colors.ts",
+      "sha256": "d4fe729c424d2c07bc64cf0c3edfdbf5642865cba395dfb37234c6c88d65f468"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\oklab.ts",
+      "sha256": "45b067e6e3605b385f595adecd7c0216f1c6b6686680d5c73f661286de736be6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\box.ts",
+      "sha256": "f9dc623ba06ab407ac3edd71eb8ff32525609d3b2cf5013a599c9a1d10273f2d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\tui.ts",
+      "sha256": "206519884c4cb27096d00048a2fc4e8a0c404714e548c8dd5b62c38060d3b240"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\keys.ts",
+      "sha256": "40cd0229bbc36cdcac24f3bdd2fce53f060ff4fe6f8522e239135212033d37f2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\terminal-colors.ts",
+      "sha256": "72d1ef298837bfe520bd8a060cb93ea27547dcbff04a167ace0f55b5183e550d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\terminal-image.ts",
+      "sha256": "fa09e7725f1158e1bb3b53c3d0539cc6c066a7c058bee33142ad2f33e8ac5736"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\cancellable-loader.ts",
+      "sha256": "5f0ae0a56f299e5f6c9585c79bbe16c38a845f038a7254f8dffe7a44f6082e16"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\keybindings.ts",
+      "sha256": "475760dd4e3d02eca46bb5ee8704cd387c397b40d7a1f8967bdac3c481f5f702"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\loader.ts",
+      "sha256": "614b39cd2f493e289a12ee4f42404f779cc3a5784735066760c1d9f13bf5d287"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\text.ts",
+      "sha256": "e46790ea0b4a3db105306e057664b4246983c189218346dacd8ea6f0c9ee7152"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\editor.ts",
+      "sha256": "48c6a498527df4f645f66574904bdc82c1a4021b29ff81674132219043d4d016"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\kill-ring.ts",
+      "sha256": "d829ae816560b12d2800a38db9f7278f76d9ef43d0e53e004a86add9b56c559a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\undo-stack.ts",
+      "sha256": "1373c1e0a1e2c58ac90c93d32a9e5c1226d7f53314c77dd3d0f8ec349d2b3627"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\word-navigation.ts",
+      "sha256": "b73e915a524926ac8881731e89026b0bc7b5b0bd465de67257af81a420465c7f"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\select-list.ts",
+      "sha256": "0fc369801e745eff15567d72829bf67887f5efec8bc6816aaf1ee65338618373"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\h-stack.ts",
+      "sha256": "6622e1e2605e500a420c3cdf3ffcae0548b2d86ec496a0f6bf1dd5c95aeb0b6b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\stack.ts",
+      "sha256": "93208d326fa43431b930eaa3250a1e19747063d696e97ec2f002f5feaa54fc18"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\layout-node.ts",
+      "sha256": "31dd68c9edafdc4f882bbb6c16f8deb1c514111020b647f0037b34d6b8c70a85"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\image.ts",
+      "sha256": "e92c3f66f36eb579ff1eabd9dc3b9f34bd8a07997bd62ffe3fb63a21f97a7462"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\input.ts",
+      "sha256": "0ad90bf7464e4da90e75596007b365edc45fcb371c4dbee563d4122b13247a11"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\markdown.ts",
+      "sha256": "04ef2f5aad6b9706e9f02568814283021b6151a18ae2b08fcf145890aeac7dfa"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\latex.ts",
+      "sha256": "c4ef99bef1d3a54c73006912c9a7fa67ef99412b4f6cd28d608cf0e07b38cece"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\mouse-region.ts",
+      "sha256": "9dbcac616e8f8271b522b374bae29ab0b829d3771ce0ed228d6ae3da1c2be759"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\scroll-view.ts",
+      "sha256": "76dfd9f8a88cabc064f0652b83f16a945fbc988c9fe7c0423a4cd796907ef77d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\settings-list.ts",
+      "sha256": "8d6b91d3c4aaaf11225854847d42ae6da852ef2646d54542c5b51a97dde15605"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\spacer.ts",
+      "sha256": "b511acec1d33885dad23e7ab2108b2d04dff0589b3bfda53b1f7458be4381e66"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\truncated-text.ts",
+      "sha256": "c383487099d1864b51493a5838dd28a1bd3e5e440a675ec1dbcaf0177534fad0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\v-stack.ts",
+      "sha256": "0f36c9417bfffe5f6b9cc5fd40d420390cf9bebae70a073a409ac5f931f1f813"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\native-platform.ts",
+      "sha256": "693d33898358804541d36aff089db74e1eb3be8f1a1722ffe6d821036b925959"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\native-module-path.ts",
+      "sha256": "e0955c6d733085d89cc81ef4d991e2a04368a54b52007273c0a688b23abba28b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\program-status.ts",
+      "sha256": "4b05e7cc38b902559738b13b08ffb367fb188426823be90f341cc626d5d013f0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\stdin-buffer.ts",
+      "sha256": "82da9ff728e77269bbfa24c28eda81f26f744efef9e05113c2401ed52c823054"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\terminal.ts",
+      "sha256": "7a75ac820dff409781f1ca59a0354d97282044f444a38322eb4e1886cb7fe247"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\native-modifiers.ts",
+      "sha256": "8bfe66389dee2e6e962cb82f54050f8fe10df0d0b26d56186a581a00f70d6d8e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\tui-alt-screen.ts",
+      "sha256": "dd978db4f24a07e58a6e63819388a07700cb6237bbc0c8e9994bfc5f5d656800"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\alt-screen-search.ts",
+      "sha256": "7d339e83cf0f160847335dc9be0d1f1db2a0945c463c3d636c7b84ceb9665d40"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\components\\alt-screen-flash.ts",
+      "sha256": "6d341546b59958e93e4d33fdc1766b10d13c98a779031e2c01b827f0a4c6e30c"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\layout.ts",
+      "sha256": "7530a8eaa30f44fef82e8b7020b5068ba89d34884463c6cb526073b20fcdeef0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\wheel-scroll.ts",
+      "sha256": "a969a50d0a3627fde0052f766443e3668a6355b3ecf312ea078025080d303f82"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\tui-main-screen.ts",
+      "sha256": "643661182cbeb1d5c5fbee195e0ec03a4f1045f629c8666c4d175518ce5939e1"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\config.ts",
+      "sha256": "b3b77644910d3fac28a06625e90f993a8c1bc6c9458f148c723e64e0c99eb23e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\child-process.ts",
+      "sha256": "cd324f5b9a1abadd85ab5a331750d475c8bd51ec65cae091ad9b416245ec85d4"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\cross-spawn\\index.js",
+      "sha256": "b8e01cb18ba87ee1b0e5eb2eb1ce6cbb25a2bdd229f9e08671f8a10ed7e3ad35"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\paths.ts",
+      "sha256": "64c3ebef724fa21ed0042e127908b4323a5d2f1b8aaa91eee550442332fe8502"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\text.ts",
+      "sha256": "bb323f9607c499115b532021f4f0163c6df04d834aee9c32c3c77b273bd2d7c6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\modes\\interactive\\components\\keybinding-hints.ts",
+      "sha256": "76b13ee8bfc6e49d5b2b5496eac13523bd9aad95770cbfa4a239336131f94aae"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\modes\\interactive\\theme\\theme.ts",
+      "sha256": "07ff17a690749afa8b3b1724efd271859ff889255fd494606230fec99ec1c1ba"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\chalk\\source\\index.js",
+      "sha256": "08e92f2330a34d232f8aa987da4d953893094be5b2aa8cc39ddb4313743f206e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\chalk\\source\\utilities.js",
+      "sha256": "a58d81494366211509ea2c373328cf68a6365a94be8645f33c1ed49f1288650a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\chalk\\source\\vendor\\ansi-styles\\index.js",
+      "sha256": "f28f1ede59be327626e4ae5f9f05387ab8072f298ba1ab7f9c9262d39923a25d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\chalk\\source\\vendor\\supports-color\\index.js",
+      "sha256": "57f56bb90a586a6c7a65fc831cae47f0773b8f42edf11abb7c4f2273b82fb63e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\fs-watch.ts",
+      "sha256": "f40e22497371b59286e516eeff70495b20a099daef160c82cc1c196cf637df41"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\syntax-highlight.ts",
+      "sha256": "6849a5ead44fb9e76d5e93047641bf34f21483c67400b7056c97f0028c8c4612"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\core.js",
+      "sha256": "c4d10bcc7cb543c36198d34d2ecfcee9f8fbdd82ec1531daa3962c86a6c95468"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\bash.js",
+      "sha256": "760337399a01bba07ca386b26d67b4979cef2cd8619c4c012f3e2d3696513805"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\c.js",
+      "sha256": "9465ff9b3b7f72057acc56509dd3184f4742cd90c907ac8a9162a22ae4081dcc"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\cpp.js",
+      "sha256": "d75213a6d84131f2951481c65ce72996e2af98ffa02f72fc088b8ef6032fa619"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\csharp.js",
+      "sha256": "ebcc1a0eb1cfc68bccf4691ba86661da6773e22003062c95b0163d29640da048"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\dart.js",
+      "sha256": "d803a195fdc1e233d573e7b57852a88ecd5674f425d7ccbb398df7868d73a4c7"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\go.js",
+      "sha256": "2f7e722c1261a41636561e8857075264109a11c86c0de73cefe50db39396ba59"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\groovy.js",
+      "sha256": "469a021e26a94093fbcb5491f41db234889a7cf0183e1bf0c2f49a10cdefde4b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\java.js",
+      "sha256": "3e19b818d4a4d48a0710f9d9965d3ae6fee86bdfd2314aa8f9aec89c47cf6908"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\javascript.js",
+      "sha256": "f0edc556ff97da57eede63732b476927da43da502b999186a4d9dac28f688fcd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\json.js",
+      "sha256": "ebb4ccb8af5c7b49f01af8b81b75e0a0bbb0aed5b3074b4f5c44f023e246fd2a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\kotlin.js",
+      "sha256": "c7e0b63200229f1c2b311cf810044dd999b5e8b92f27266c06a999dd374ae31c"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\lua.js",
+      "sha256": "88a0ff413042cf4085e1c64c14ee9368ea66516f5b816548a51a9169b6e66ebd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\nix.js",
+      "sha256": "988d14d6bbe8d40609f13b8d76f55e096c64e9745740a70002ff1bf2de122757"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\perl.js",
+      "sha256": "6080515bade18921d32207f656f558857d976b195accbef86204c00c0beb3e2d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\php.js",
+      "sha256": "6106a3585adc0ef5d8d52449bac71c14e1fdfc7e5a6257b8bd03a7964b58bfbd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\python.js",
+      "sha256": "a7145981d1c4fbe9979021d16f34728408e95e72374173c878e24babd378bbc3"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\ruby.js",
+      "sha256": "ac7d96bd0483aeb712efbd60dfb675b04de0375293a4f3bd046353591e2bff86"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\rust.js",
+      "sha256": "bdc8e553ec27818f6679efd1ab30a5aa71cdf915b2205d51b4ce575d9898ad47"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\scala.js",
+      "sha256": "f00bc0c4c74ebcf0fdf4d16ed770d8391c9ef59ebf46876379887ad29dfd42fb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\swift.js",
+      "sha256": "68de29ed46414356e02d838b848ff2e4590b69fe1bd6286cf3a57e7ba156d6c2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\typescript.js",
+      "sha256": "8deb81f57cdad5fbb3d3afe1af393924d5ed17c81951d72459e03f141a6589cb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\html.ts",
+      "sha256": "d3abd075ab64807a1facae1511ec0b9b22f63153c7808eb63e7560fb00b1d48b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\modes\\interactive\\theme\\system-theme.ts",
+      "sha256": "877a3dc24fd194f2dc5ee9efe8f1699acdcdac6defa197009bc7b39920bbb729"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\modes\\interactive\\theme\\theme-tokens.ts",
+      "sha256": "6c38a169da4f85ee04bc31980a13ef6a498b6be68e63faceda4f5a1e5c632ecf"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\core\\tools\\path-utils.ts",
+      "sha256": "ab6f420d2388a41366113c17a25e356867820b87b02a169d044cfcf83e1997d3"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\core\\tools\\render-utils.ts",
+      "sha256": "03233de3db6921e16715778da055821414a57f6161abdf06be13dbf8ea8242cc"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\ansi.ts",
+      "sha256": "47b4f605f05b42edc63fb9dcc6f2eccc810ba14306fb76bde715f027d3dae111"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\shell.ts",
+      "sha256": "c93b05fef8d75072adeff45cdec2abfa2e03eb2910d9755c1edb45ce237e614a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\core\\tools\\truncate.ts",
+      "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\cross-spawn\\lib\\parse.js",
+      "sha256": "0a67601365a3ae413653c8c9d3c6bff2202861e1eb8b5d28bf46d4812a4465ea"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\cross-spawn\\lib\\util\\resolveCommand.js",
+      "sha256": "e525fe739aba01cf5eee6473df449cdda93df6266effa8eae0fcfb9a4e6c5de6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\which\\which.js",
+      "sha256": "76845e1fe7851267fb7ee72b18f2d916996d330150e31e48f4657a79e9b46b5b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\isexe\\index.js",
+      "sha256": "7af7a68708317ab2b8743b44591d98ca6f5ca787e89e7c289154471fd2f67331"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\isexe\\windows.js",
+      "sha256": "b422b8fbb7815542dfbd1b3adaec5700249a1934c44a1d994654329c06fc1018"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\path-key\\index.js",
+      "sha256": "fdbafdc163f668fe325333d62387365c9b074e01253e32824a4dbf5cc552705d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\cross-spawn\\lib\\util\\escape.js",
+      "sha256": "5d61b2829e0e7912874e1e664146554d0cd02fd5524abf4ea59a879f0fc30675"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\cross-spawn\\lib\\util\\readShebang.js",
+      "sha256": "b05ba732e167fcf9a4fd67ebb4a5c28cca4712a36376c0b0f2e4e1d37e7f18d2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\shebang-command\\index.js",
+      "sha256": "d98c3aa373c72016e990a723e919af495423bc4ac1daa0736c5f45fac0418d7f"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\shebang-regex\\index.js",
+      "sha256": "e91e547bad596a389841fd7938bfcbd22af82f44a01f794e86878e4ff0274250"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\cross-spawn\\lib\\enoent.js",
+      "sha256": "0f9aab5c708991cf01d3fda557318c4600a46071138742ee8596244f7fd73ef5"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\core\\tools\\renderers\\write.ts",
+      "sha256": "84d715671a72c77821ab81aef79b39f5022082c78568683ab643d38ee735d07f"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\core\\tools\\renderers\\edit.ts",
+      "sha256": "9f3f6d87ed42ab9a587e751c1299a42af12e6c76848110e8fa7dcbf6852367a8"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\tui\\src\\index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\modes\\interactive\\components\\diff.ts",
+      "sha256": "b43f8d91ba9f19088dc9dc86126091c3fdfca25eac6461f5510f5e1e9ddd6491"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\index.js",
+      "sha256": "b1f400fd24da44377867ede7ab847a34940423f8bbf3fc5475d8c7647759a2aa"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\diff\\base.js",
+      "sha256": "faa81734df6ea7f8034efc5572ad1bbf19c50b300fdd183baf0d7813c5eec3b2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\diff\\character.js",
+      "sha256": "75677c2b3c5990099675493b415ce59f92f5de4709de59fa481b9fb563168deb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\diff\\word.js",
+      "sha256": "c1d6a6c52ef517e4ea9df6d71465fa520ce677d1b4e127425e3c2d8cf14f7a22"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\util\\string.js",
+      "sha256": "0836eacdebdb30c8aba0e898f9c7a45e236d036848ccfb058f56745f5ff020d3"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\diff\\line.js",
+      "sha256": "e3ef2d8c8c3a56f6b9fb04609f545b2aae2f84a02c31c5de3201aef1b0545f90"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\util\\params.js",
+      "sha256": "bb76a1c299071b6f8314bb7195ad701af06f092c629aed8b4fef4a7474ab3759"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\diff\\sentence.js",
+      "sha256": "dad3b5952b2d8f29d8a01618580661c1757ed0bcce5e2af969b17eff613ca93b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\diff\\css.js",
+      "sha256": "db85fa43d4e4d4bbe3707d9e575de338589deb9a4cc8243c7f15fa5e2c87724d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\diff\\json.js",
+      "sha256": "c97ec8c04a7c4fc37a605d5863018ead1cac1c19128a7333bcb19d33fa6771b7"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\diff\\array.js",
+      "sha256": "5bcc1320c7ee74e565421a556d81ed3fdd82ff2f366e6151beebac6b425f528f"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\patch\\apply.js",
+      "sha256": "f8096efdfda914e9b85a8cb270dfb1a57f0d483656368327c89b80098955589e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\patch\\line-endings.js",
+      "sha256": "65af590b9426800782d692a7b1923ad1d6d6bbc1c74e9863053c6cfe1d97f3f4"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\patch\\parse.js",
+      "sha256": "ace28c724776288617444bc9a2111b4b954e5bcae3be7ddb74b926a39b507c90"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\util\\distance-iterator.js",
+      "sha256": "41e12ebbedb76278e3bd37ede510e009a5952897a3e748e9673b4e5c8ae660e5"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\patch\\reverse.js",
+      "sha256": "3de415ad62332e04fc860a775303e989988306a1eb8587801b9db69d49c861d8"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\patch\\create.js",
+      "sha256": "c71772a9d9ce5933ed5848a33a2f8afaac1eff24430deb6d39cd34d676d80a84"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\convert\\dmp.js",
+      "sha256": "05bad2211249703a43f2d4250fb0e0831511a32aed763cd21890c1b5ee7032c4"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\diff\\libesm\\convert\\xml.js",
+      "sha256": "c9dfceeb2ab8248f6dee37f0ce253317939fe1302ffb4483ccf777400a3ac552"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\core\\tools\\edit-diff.ts",
+      "sha256": "f85a9809eb44b9828236050cf38a8e45933e5cfd583a186e9a0e55a664dd3e8d"
+    }
+  ]
+}
