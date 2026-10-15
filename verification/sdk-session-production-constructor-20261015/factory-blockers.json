@@ -1,0 +1,35 @@
+{
+  "status": "authority-traced-next-factory-blockers-no-runtime-claim",
+  "source_default_factory": "packages/coding-agent/src/core/sdk.ts createAgentSession: defaults ModelRuntime.create, SettingsManager/SessionManager, DefaultResourceLoader.reload, model/thinking/tool selection, cache warmer/provider callbacks, Agent creation, transcript metadata and ordinary new AgentSession",
+  "next_true_blockers": [
+    {
+      "item": "Actual central configurable Models42 and compat all10 namespace",
+      "authority": "ai_codecs_15 coordination: native_models.install and native_ai_compat.create exist, but real central assembly and42provider/auth wrappers remain pending; envApiKeyAuth/lazyOAuth/nativeOAuth loader JSValue bindings incomplete",
+      "impact": "This branch deliberately creates no fake Models, builtin stream callbacks or empty-registry positive proof. Actual positive namespace/constructor qualification waits for real central assembly."
+    },
+    {
+      "item": "Actual platform five-method component intake and native bootstrap",
+      "authority": "platform_cleanup_15 code671e2285: native session Bash/export installers now scoped qualified; their files are not part of base77effe0a",
+      "impact": "Intake qualified sibling component/proofs and initialize genuine native IO Hub, memory-owner C APIs, shell lifecycle/control hooks, native encoding/Buffer/FS/path/TUI/theme before platform use."
+    },
+    {
+      "item": "Default SDK factory still constructs the legacy session facade",
+      "authority": "src/extensions/native_sdk.zig factory line1743 uses new(engine,.agent_session,data); createSession/services/fromServices at2401+ call that factory",
+      "impact": "Wire the actual exported ordinary constructor into the genuine factory path, preserving Source defaults/options/live reads and async ownership. Do not call the old facade a full ordinary AgentSession factory pass."
+    },
+    {
+      "item": "Real default services and initial selection must be qualified together",
+      "authority": "Native initModelRuntime requires engine.native_module_values pi-ai; resource/setting/session native components exist, while native_sdk_factory_model explicitly implements a findInitialModel subset",
+      "impact": "Run genuine latest factory observations using actual ModelRuntime/providers/auth/catalog, real resource reload/extension runtime, model/thinking restoration, tool modifiers/exclusions, cache warmer and Agent callbacks. Caller-supplied fixture model/resources are not evidence for default factory parity."
+    },
+    {
+      "item": "Integrated ordinary constructor166/instance66 and lifecycle ownership",
+      "authority": "New production test entrypoints prepared; component qualifiers exist separately for ordinary methods, but this composition has not been compiled or run",
+      "impact": "After complete actual dependencies arrive, run constructor/default and supplied-option Source differential, full own descriptor/order, subscription/hook/runtime/restore ordering, cancellation/raw-error/GC and complete allocator gates under reserved ownership."
+    }
+  ],
+  "first_next_action": "Intake qualified platform component and actual central AI namespace interface, register a focused test target without altering Root's frozen tree, then request bounded Source/native qualification for the complete composition. No Source/native launch is authorized or performed by this preparation.",
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}
