@@ -1,0 +1,21 @@
+{
+  "component": "oauth-codex-radius-browser",
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "preparedBaseHead": "7dc46897850f9b837c0c9eddf023711ee084e74c",
+  "candidateHeadPolicy": "mandatory exact clean successor supplied at launch",
+  "caseCount": 7,
+  "internalDeadlineMs": 30000,
+  "externalDeadlineSeconds": 300,
+  "settleSeconds": 10,
+  "callbackPorts": [
+    1455,
+    1456
+  ],
+  "callbackOrigin": "127.0.0.1",
+  "rootReservation": "Root LIGHT6 explicit resume",
+  "network": "fake token/config fetch plus explicit owned loopback callbacks only",
+  "entropy": "fixed getRandomValues input, real WebCrypto SHA256; original raw URLs retained separately, only expected-row state masked",
+  "expectedPolicy": "immutable Source emits first, publish only after natural terminal and full candidate/reference/control post0",
+  "status": "sealed-ready-not-run",
+  "source35Preserved": true
+}

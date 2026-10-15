@@ -1,0 +1,10 @@
+{
+  "native_head": "c4a5eb027ceb71402aee5bdf88c5f01b99ef3460",
+  "free_kib": 21733884,
+  "heap_mb": 256,
+  "coordinated_with": "Root LIGHT6 and callback1455/1456 explicit resume",
+  "candidate_files": 6602,
+  "status": "admitted",
+  "required_kib": 2097152,
+  "observed_utc": "2026-10-15T22:17:16.0451575+00:00"
+}

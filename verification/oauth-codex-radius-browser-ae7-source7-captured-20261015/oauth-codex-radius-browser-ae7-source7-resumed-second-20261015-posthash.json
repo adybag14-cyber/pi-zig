@@ -1,0 +1,52 @@
+{
+  "historical_absence_records": 84,
+  "control_manifest_drift": false,
+  "driver_sha256": "0D519BA9BC61B6477DC3B477584ADE278F6D302F50675212173C37709939CA71",
+  "owner_failure": null,
+  "completed_utc": "2026-10-15T22:18:10.6343651+00:00",
+  "extra_control_drift": [],
+  "source_head_drift": false,
+  "expected_still_absent": true,
+  "candidate_files": 6602,
+  "manifests": [
+    {
+      "drift": 0,
+      "files": 1968,
+      "changed": [],
+      "name": "source"
+    },
+    {
+      "drift": 0,
+      "files": 31064,
+      "changed": [],
+      "name": "dependencies"
+    },
+    {
+      "drift": 0,
+      "files": 1774,
+      "changed": [],
+      "name": "node_tools"
+    }
+  ],
+  "candidate_drift": [],
+  "path_inventories": [
+    {
+      "drift": [],
+      "name": "source",
+      "count": 1968
+    },
+    {
+      "drift": [],
+      "name": "dependencies",
+      "count": 31064
+    },
+    {
+      "drift": [],
+      "name": "node_tools",
+      "count": 1774
+    }
+  ],
+  "candidate_head_drift": false,
+  "candidate_inventory_drift": [],
+  "absent_dependency_drift": []
+}
