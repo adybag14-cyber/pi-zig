@@ -11,6 +11,7 @@ const web = @import("native_headers_webidl.zig");
 const blob = @import("native_web_blob.zig");
 const form = @import("native_web_form_data.zig");
 const mime_parser = @import("native_web_mime.zig");
+const multipart = @import("native_web_multipart.zig");
 const c = em.c;
 const cache_key = "\x00native-web-Body";
 pub const Streams = struct {
@@ -192,6 +193,7 @@ pub fn extract(scope: *Scope, interfaces: *const idl.Interfaces, converted: c.JS
     var source = c.pi_js_null();
     var length = c.pi_js_null();
     var content_type = c.pi_js_null();
+    var multipart_parts: ?c.JSValue = null;
     const readable = try interfaces.is(scope, interfaces.readable, converted);
     const is_blob = !readable and try interfaces.is(scope, interfaces.blob, converted);
     var controller = c.pi_js_undefined();
@@ -209,7 +211,11 @@ pub fn extract(scope: *Scope, interfaces: *const idl.Interfaces, converted: c.JS
     } else if (c.JS_IsArrayBuffer(converted) or c.JS_IsDataView(converted) or c.JS_GetTypedArrayType(converted) >= 0) {
         source = try copiedBytes(scope, converted);
     } else if (try interfaces.is(scope, interfaces.form_data, converted)) {
-        return error.NativeWebMultipartEncodingUnavailable;
+        const encoded = try multipart.encode(scope, converted, root.encoder);
+        source = converted;
+        length = encoded.length;
+        content_type = encoded.content_type;
+        multipart_parts = encoded.parts;
     } else if (is_blob) {
         source = converted;
         length = try scope.get(converted, "size");
@@ -233,7 +239,7 @@ pub fn extract(scope: *Scope, interfaces: *const idl.Interfaces, converted: c.JS
         }
         var captures = [_]c.JSValue{ owner, controller };
         if (c.JS_EnqueueJob(scope.engine.context, closeJob, captures.len, &captures) < 0) return js.capture(scope.engine);
-    }
+    } else if (multipart_parts) |parts| try multipart.start(scope, parts, stream, controller);
     return .{ .stream = try scope.own(c.JS_DupValue(scope.engine.context, stream)), .source = try scope.own(c.JS_DupValue(scope.engine.context, source)), .length = try scope.own(c.JS_DupValue(scope.engine.context, length)), .content_type = try scope.own(c.JS_DupValue(scope.engine.context, content_type)) };
 }
 pub fn clone(scope: *Scope, body: Body) !Clone {
@@ -261,7 +267,7 @@ fn convert(scope: *Scope, bytes: c.JSValue, mode: Mode, mime: c.JSValue) !c.JSVa
         for (pairs.items) |pair| try form.appendEntry(scope, result, try scope.text(pair.name), try scope.text(pair.value));
         return result;
     }
-    if (scope.equal(essence, try scope.text("multipart/form-data"))) return error.NativeWebMultipartParsingUnavailable;
+    if (scope.equal(essence, try scope.text("multipart/form-data"))) return multipart.parse(scope, if (size == 0) &.{} else raw[0..size], parsed_mime.?);
     try web.typeError(scope, try scope.text("Content-Type was not one of \"multipart/form-data\" or \"application/x-www-form-urlencoded\"."), null);
 }
 fn complete(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {

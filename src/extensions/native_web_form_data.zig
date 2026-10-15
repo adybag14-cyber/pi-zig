@@ -313,3 +313,10 @@ pub fn appendEntry(scope: *Scope, target: c.JSValue, name: c.JSValue, value: c.J
     try state.entries.ensureUnusedCapacity(scope.engine.gpa, 1);
     state.entries.appendAssumeCapacity(.{ .name = c.JS_DupValue(scope.engine.context, name), .value = c.JS_DupValue(scope.engine.context, value) });
 }
+/// Bundled multipart parser's makeEntry(name,value,filename), including the
+/// captured File constructor's second wrapping when filename is supplied.
+pub fn appendParsedEntry(scope: *Scope, target: c.JSValue, name: c.JSValue, value: c.JSValue, filename: c.JSValue) !void {
+    const owner = scope.engine.native_module_values.get(cache_key) orelse return error.NativeWebFormDataUnavailable;
+    const entry_value = try makeEntry(scope, owner, value, filename);
+    try appendEntry(scope, target, name, entry_value);
+}
