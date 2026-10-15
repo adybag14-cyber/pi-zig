@@ -1,0 +1,16 @@
+{
+  "name": "native-async-generator-2e8e6dbe-debug-raw-oom-diagnostic-20261015-runtime",
+  "pid": 44976,
+  "executable": "C:\\Users\\adyba\\pi-zig-ai-native-async-generator-20261015\\zig-out\\bin\\native-generator-oom-diagnostic.exe",
+  "executable_sha256": "31EF46708559BC0B0A68B5D93333AF7C28E55EA3CE14946B5AF9CDEC0E3C94AD",
+  "command_line": "C:\\Users\\adyba\\pi-zig-ai-native-async-generator-20261015\\zig-out\\bin\\native-generator-oom-diagnostic.exe --seed 0",
+  "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+  "created_utc": "2026-10-15T18:49:18.0735108Z",
+  "launched_utc": "2026-10-15T18:49:18.0663413+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-ai-native-async-generator-20261015",
+  "status": "failed",
+  "exit_code": 3,
+  "completed_utc": "2026-10-15T18:49:18.3684623+00:00"
+}

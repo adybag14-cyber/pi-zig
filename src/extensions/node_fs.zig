@@ -204,7 +204,7 @@ fn filesystemCode(err: anyerror) ?[:0]const u8 {
 }
 
 fn filesystemError(engine: *engine_mod.Engine, err: anyerror, method: Method, args: []c.JSValue) c.JSValue {
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     if (native_url.isFilePathError(err)) return native_url.filePathErrorValue(engine, err);
     const failure = c.JS_NewError(engine.context);
     if (c.JS_IsException(failure)) return failure;
@@ -228,12 +228,12 @@ fn filesystemError(engine: *engine_mod.Engine, err: anyerror, method: Method, ar
             // string path; never repeat a user-authored path coercion.
             const path = engine.toString(args[0]) catch {
                 engine.freeValue(failure);
-                return c.JS_ThrowOutOfMemory(engine.context);
+                return engine.throwNativeOutOfMemory();
             };
             defer engine.gpa.free(path);
             const detail = std.fmt.allocPrint(engine.gpa, "ENOENT: no such file or directory, {s} '{s}'", .{ syscall, path }) catch {
                 engine.freeValue(failure);
-                return c.JS_ThrowOutOfMemory(engine.context);
+                return engine.throwNativeOutOfMemory();
             };
             defer engine.gpa.free(detail);
             const detail_value = c.JS_NewStringLen(engine.context, detail.ptr, detail.len);
@@ -297,9 +297,12 @@ test "native filesystem missing paths expose Node error codes and syscall fields
 test "native filesystem error construction preserves native memory failures" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
+    const generation = engine.native_allocation_generation;
     const failure = filesystemError(engine, error.OutOfMemory, .readFileSync, &.{});
     try std.testing.expect(c.JS_IsException(failure));
-    const exception = c.JS_GetException(engine.context);
+    try std.testing.expectError(error.JavaScriptException, engine.checked(failure));
+    try std.testing.expectEqual(error.OutOfMemory, engine.nativeAllocationError(error.JavaScriptException, generation));
+    const exception = c.JS_DupValue(engine.context, engine.captured_exception.?);
     defer engine.freeValue(exception);
     const name = try engine.checked(c.JS_GetPropertyStr(engine.context, exception, "name"));
     defer engine.freeValue(name);

@@ -1,0 +1,177 @@
+{
+  "status": "independent_custom_message40_six_profile_audit_passed",
+  "run_id": 38780046188,
+  "head": "0c5dad6539d42617afe0035348c8e3b852069387",
+  "product_base": "d0da323437529a19fbb05bb3d3de7855be7f0b93",
+  "genuine_linux_source40_qualified": true,
+  "linux_source_audit": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\custom-message-ci-qualification-20261015\\38780046188-independent-posix-audit.json",
+  "profiles": [
+    {
+      "artifact_id": 11996965908,
+      "artifact": "native-sdk-custom-message-ubuntu-latest-ReleaseSafe-0c5dad6539d42617afe0035348c8e3b852069387",
+      "zip_digest": "sha256:e46ab7611270a5b67087e5349ced0257dc38236c858d54cf13355c68a43be6b3",
+      "os": "Ubuntu 24.04.5 LTS",
+      "mode": "ReleaseSafe",
+      "tests": 4,
+      "substantive_tests": 3,
+      "source_cases": 40,
+      "actual_allocation_baseline": 87,
+      "completed_allocations": 87,
+      "missing": 0,
+      "duplicates": 0,
+      "historical_windows_baseline_informational_only": 87,
+      "candidate_exact_git_files": 5611,
+      "compiler_frozen_files": 19546,
+      "post_inventory_hash_drift": 0,
+      "metadata_only_protocol_tags": [
+        0,
+        3
+      ],
+      "exact_four_selected_names": true,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ]
+    },
+    {
+      "artifact_id": 11996571378,
+      "artifact": "native-sdk-custom-message-ubuntu-latest-Debug-0c5dad6539d42617afe0035348c8e3b852069387",
+      "zip_digest": "sha256:ebf3ef3f27adf54533c4b18077f81b592fe7be35976019832f088989417fe33f",
+      "os": "Ubuntu 24.04.5 LTS",
+      "mode": "Debug",
+      "tests": 4,
+      "substantive_tests": 3,
+      "source_cases": 40,
+      "actual_allocation_baseline": 87,
+      "completed_allocations": 87,
+      "missing": 0,
+      "duplicates": 0,
+      "historical_windows_baseline_informational_only": 87,
+      "candidate_exact_git_files": 5611,
+      "compiler_frozen_files": 19546,
+      "post_inventory_hash_drift": 0,
+      "metadata_only_protocol_tags": [
+        0,
+        3
+      ],
+      "exact_four_selected_names": true,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ]
+    },
+    {
+      "artifact_id": 11996471766,
+      "artifact": "native-sdk-custom-message-macos-latest-Debug-0c5dad6539d42617afe0035348c8e3b852069387",
+      "zip_digest": "sha256:fa924ca2b4f489776f12fd1f4ac2f41e02b85cb64452769091d43caef9aa1df5",
+      "os": "macOS 26.6.2",
+      "mode": "Debug",
+      "tests": 4,
+      "substantive_tests": 3,
+      "source_cases": 40,
+      "actual_allocation_baseline": 87,
+      "completed_allocations": 87,
+      "missing": 0,
+      "duplicates": 0,
+      "historical_windows_baseline_informational_only": 87,
+      "candidate_exact_git_files": 5611,
+      "compiler_frozen_files": 19546,
+      "post_inventory_hash_drift": 0,
+      "metadata_only_protocol_tags": [
+        0,
+        3
+      ],
+      "exact_four_selected_names": true,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ]
+    },
+    {
+      "artifact_id": 11995833273,
+      "artifact": "native-sdk-custom-message-macos-latest-ReleaseSafe-0c5dad6539d42617afe0035348c8e3b852069387",
+      "zip_digest": "sha256:b74a8e567015043a8b3dc3feaf5bcbb6800db87fdeae1f46b9ad84f838281a5e",
+      "os": "macOS 26.6.2",
+      "mode": "ReleaseSafe",
+      "tests": 4,
+      "substantive_tests": 3,
+      "source_cases": 40,
+      "actual_allocation_baseline": 87,
+      "completed_allocations": 87,
+      "missing": 0,
+      "duplicates": 0,
+      "historical_windows_baseline_informational_only": 87,
+      "candidate_exact_git_files": 5611,
+      "compiler_frozen_files": 19546,
+      "post_inventory_hash_drift": 0,
+      "metadata_only_protocol_tags": [
+        0,
+        3
+      ],
+      "exact_four_selected_names": true,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ]
+    },
+    {
+      "artifact_id": 11995483636,
+      "artifact": "native-sdk-custom-message-windows-latest-ReleaseSafe-0c5dad6539d42617afe0035348c8e3b852069387",
+      "zip_digest": "sha256:9a3c70e043c03041c2dabfa2434a8f9891a8cbdb4050b2f1d7ef8c1ab918e6ba",
+      "os": "Microsoft Windows 10.0.26100",
+      "mode": "ReleaseSafe",
+      "tests": 4,
+      "substantive_tests": 3,
+      "source_cases": 40,
+      "actual_allocation_baseline": 87,
+      "completed_allocations": 87,
+      "missing": 0,
+      "duplicates": 0,
+      "historical_windows_baseline_informational_only": 87,
+      "candidate_exact_git_files": 5611,
+      "compiler_frozen_files": 19546,
+      "post_inventory_hash_drift": 0,
+      "metadata_only_protocol_tags": [
+        0,
+        3
+      ],
+      "exact_four_selected_names": true,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ]
+    },
+    {
+      "artifact_id": 11995313076,
+      "artifact": "native-sdk-custom-message-windows-latest-Debug-0c5dad6539d42617afe0035348c8e3b852069387",
+      "zip_digest": "sha256:26681563c7a2ed9306efb866640eedf2ec4b5266db7b665c8f57a4732cde8914",
+      "os": "Microsoft Windows 10.0.26100",
+      "mode": "Debug",
+      "tests": 4,
+      "substantive_tests": 3,
+      "source_cases": 40,
+      "actual_allocation_baseline": 87,
+      "completed_allocations": 87,
+      "missing": 0,
+      "duplicates": 0,
+      "historical_windows_baseline_informational_only": 87,
+      "candidate_exact_git_files": 5611,
+      "compiler_frozen_files": 19546,
+      "post_inventory_hash_drift": 0,
+      "metadata_only_protocol_tags": [
+        0,
+        3
+      ],
+      "exact_four_selected_names": true,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ]
+    }
+  ],
+  "allocation_scope": "Complete measured native allocator universe per profile; no exhaustive C malloc claim",
+  "latest_catalog_qualified": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}

@@ -549,6 +549,30 @@ JS_EXTERN JSValue JS_GetFunctionProto(JSContext *ctx);
 JS_EXTERN JSValue JS_GetAsyncIteratorPrototype(JSContext *ctx);
 /* Owned reference to the current context's intrinsic AsyncFunction prototype. */
 JS_EXTERN JSValue JS_GetAsyncFunctionPrototype(JSContext *ctx);
+/* Private native-body async generators use the real intrinsic brand, request
+   queue and Promise machinery. Inputs/owner/prototype are borrowed; resume
+   returns an owned value or JS_EXCEPTION. The owner and creation realm stay
+   GC-visible until body completion or finalization. */
+typedef enum JSPiAsyncGeneratorCompletion {
+    JS_PI_AG_START, JS_PI_AG_NEXT, JS_PI_AG_RETURN_INPUT, JS_PI_AG_THROW_INPUT,
+    JS_PI_AG_AWAIT_FULFILLED, JS_PI_AG_AWAIT_REJECTED,
+} JSPiAsyncGeneratorCompletion;
+typedef enum JSPiAsyncGeneratorAction {
+    JS_PI_AG_AWAIT,       /* await expression; deliver fulfillment/rejection */
+    JS_PI_AG_YIELD,       /* mandatory Await(value), then suspend at yield */
+    JS_PI_AG_RETURN,      /* return expression: mandatory Await(value) */
+    JS_PI_AG_COMPLETE,    /* implicit/bare return or already-awaited completion */
+    JS_PI_AG_THROW,       /* raw abrupt completion, no string coercion */
+} JSPiAsyncGeneratorAction;
+typedef JSValue JSPiAsyncGeneratorResume(JSContext *ctx, JSValueConst owner,
+                                       int completion, JSValueConst value,
+                                       int *action);
+JS_EXTERN JSValue JS_PiNewNativeAsyncGenerator(JSContext *ctx, JSValueConst owner,
+                                              JSPiAsyncGeneratorResume *resume,
+                                              JSValueConst prototype);
+/* Both prototype getters return an owned reference from this context. */
+JS_EXTERN JSValue JS_PiGetAsyncGeneratorPrototype(JSContext *ctx);
+JS_EXTERN JSValue JS_PiGetAsyncGeneratorFunctionPrototype(JSContext *ctx);
 /* Owned well-known identities, independent of mutable guest global Symbol. */
 JS_EXTERN JSValue JS_GetIteratorSymbol(JSContext *ctx);
 JS_EXTERN JSValue JS_GetAsyncIteratorSymbol(JSContext *ctx);

@@ -21978,7 +21978,30 @@ typedef struct JSAsyncGeneratorData {
     JSAsyncGeneratorStateEnum state;
     JSAsyncFunctionState func_state;
     struct list_head queue; /* list of JSAsyncGeneratorRequest.link */
+    /* NULL native_resume means the unchanged bytecode/frame implementation. */
+    JSPiAsyncGeneratorResume *native_resume;
+    JSContext *native_ctx;
+    JSValue native_owner;
+    int native_phase;
 } JSAsyncGeneratorData;
+
+enum {
+    PI_AG_PHASE_NONE, PI_AG_PHASE_AWAIT, PI_AG_PHASE_YIELD,
+    PI_AG_PHASE_RETURN, PI_AG_PHASE_RETURN_INPUT,
+};
+
+static void js_native_async_generator_retire(JSRuntime *rt,
+                                             JSAsyncGeneratorData *s)
+{
+    JSContext *ctx = s->native_ctx;
+    JSValue owner = s->native_owner;
+    s->native_ctx = NULL;
+    s->native_owner = JS_UNDEFINED;
+    s->native_phase = PI_AG_PHASE_NONE;
+    JS_FreeValueRT(rt, owner);
+    if (ctx)
+        JS_FreeContext(ctx);
+}
 
 static void js_async_generator_free(JSRuntime *rt,
                                     JSAsyncGeneratorData *s)
@@ -21994,7 +22017,9 @@ static void js_async_generator_free(JSRuntime *rt,
         JS_FreeValueRT(rt, req->resolving_funcs[1]);
         js_free_rt(rt, req);
     }
-    if (s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED &&
+    if (s->native_resume) {
+        js_native_async_generator_retire(rt, s);
+    } else if (s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED &&
         s->state != JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN) {
         async_func_free(rt, &s->func_state);
     }
@@ -22024,7 +22049,11 @@ static void js_async_generator_mark(JSRuntime *rt, JSValueConst val,
             JS_MarkValue(rt, req->resolving_funcs[0], mark_func);
             JS_MarkValue(rt, req->resolving_funcs[1], mark_func);
         }
-        if (s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED &&
+        if (s->native_resume) {
+            JS_MarkValue(rt, s->native_owner, mark_func);
+            if (s->native_ctx)
+                mark_func(rt, &s->native_ctx->header);
+        } else if (s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED &&
             s->state != JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN) {
             async_func_mark(rt, &s->func_state, mark_func);
         }
@@ -22138,7 +22167,29 @@ static void js_async_generator_complete(JSContext *ctx,
 {
     if (s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED) {
         s->state = JS_ASYNC_GENERATOR_STATE_COMPLETED;
-        async_func_free(ctx->rt, &s->func_state);
+        if (s->native_resume)
+            js_native_async_generator_retire(ctx->rt, s);
+        else
+            async_func_free(ctx->rt, &s->func_state);
+    }
+}
+
+/* The inherited bytecode path has an XXX for iterator-result OOM. Native
+   bodies must reject the current request with that raw exception, rather
+   than pass JS_EXCEPTION to a resolving function or strand a waiter. */
+static void js_native_async_generator_resolve(JSContext *ctx,
+                                              JSAsyncGeneratorData *s,
+                                              JSValueConst value, bool done)
+{
+    JSValue result = js_create_iterator_result(ctx, js_dup(value), done);
+    if (JS_IsException(result)) {
+        JSValue exception = JS_GetException(ctx);
+        js_async_generator_complete(ctx, s);
+        js_async_generator_reject(ctx, s, exception);
+        JS_FreeValue(ctx, exception);
+    } else {
+        js_async_generator_resolve_or_reject(ctx, s, result, 0);
+        JS_FreeValue(ctx, result);
     }
 }
 
@@ -22180,6 +22231,77 @@ static int js_async_generator_completed_return(JSContext *ctx,
     return res;
 }
 
+static void js_native_async_generator_drive(JSAsyncGeneratorData *s,
+                                             int completion,
+                                             JSValueConst input)
+{
+    JSContext *ctx = JS_DupContext(s->native_ctx);
+    JSValue value = js_dup(input);
+    int action, phase;
+
+    for (;;) {
+        JSValue output;
+        if (js_poll_interrupts(ctx)) {
+            output = JS_EXCEPTION;
+        } else if (js_check_stack_overflow(ctx->rt, 0)) {
+            output = JS_ThrowStackOverflow(ctx);
+        } else {
+            action = -1;
+            output = s->native_resume(ctx, s->native_owner, completion,
+                                       value, &action);
+        }
+        JS_FreeValue(ctx, value);
+        if (JS_IsException(output)) {
+            JSValue exception = JS_GetException(ctx);
+            js_async_generator_complete(ctx, s);
+            js_async_generator_reject(ctx, s, exception);
+            JS_FreeValue(ctx, exception);
+            JS_FreeContext(ctx);
+            return;
+        }
+        switch (action) {
+        case JS_PI_AG_AWAIT: phase = PI_AG_PHASE_AWAIT; break;
+        case JS_PI_AG_YIELD: phase = PI_AG_PHASE_YIELD; break;
+        case JS_PI_AG_RETURN: phase = PI_AG_PHASE_RETURN; break;
+        case JS_PI_AG_COMPLETE:
+            js_async_generator_complete(ctx, s);
+            js_native_async_generator_resolve(ctx, s, output, true);
+            JS_FreeValue(ctx, output);
+            JS_FreeContext(ctx);
+            return;
+        case JS_PI_AG_THROW:
+            js_async_generator_complete(ctx, s);
+            js_async_generator_reject(ctx, s, output);
+            JS_FreeValue(ctx, output);
+            JS_FreeContext(ctx);
+            return;
+        default:
+            JS_FreeValue(ctx, output);
+            JS_ThrowTypeError(ctx, "invalid native async generator action");
+            value = JS_GetException(ctx);
+            js_async_generator_complete(ctx, s);
+            js_async_generator_reject(ctx, s, value);
+            JS_FreeValue(ctx, value);
+            JS_FreeContext(ctx);
+            return;
+        }
+        s->native_phase = phase;
+        s->state = JS_ASYNC_GENERATOR_STATE_EXECUTING;
+        if (js_async_generator_await(ctx, s, output) == 0) {
+            JS_FreeValue(ctx, output);
+            JS_FreeContext(ctx);
+            return;
+        }
+        JS_FreeValue(ctx, output);
+        /* PromiseResolve's poisoned constructor can fail synchronously.
+           Feed the raw exception back at the actual await/yield boundary. */
+        value = JS_GetException(ctx);
+        s->native_phase = PI_AG_PHASE_NONE;
+        completion = phase == PI_AG_PHASE_AWAIT ? JS_PI_AG_AWAIT_REJECTED
+                                                 : JS_PI_AG_THROW_INPUT;
+    }
+}
+
 static void js_async_generator_resume_next(JSContext *ctx,
                                            JSAsyncGeneratorData *s)
 {
@@ -22193,11 +22315,20 @@ static void js_async_generator_resume_next(JSContext *ctx,
         switch(s->state) {
         case JS_ASYNC_GENERATOR_STATE_EXECUTING:
             /* only happens when restarting execution after await() */
+            assert(!s->native_resume);
             goto resume_exec;
         case JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN:
             goto done;
         case JS_ASYNC_GENERATOR_STATE_SUSPENDED_START:
             if (next->completion_type == GEN_MAGIC_NEXT) {
+                if (s->native_resume) {
+                    s->state = JS_ASYNC_GENERATOR_STATE_EXECUTING;
+                    js_native_async_generator_drive(s, JS_PI_AG_START,
+                                                     JS_UNDEFINED);
+                    if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING)
+                        goto done;
+                    break;
+                }
                 goto exec_no_arg;
             } else {
                 js_async_generator_complete(ctx, s);
@@ -22205,16 +22336,50 @@ static void js_async_generator_resume_next(JSContext *ctx,
             break;
         case JS_ASYNC_GENERATOR_STATE_COMPLETED:
             if (next->completion_type == GEN_MAGIC_NEXT) {
-                js_async_generator_resolve(ctx, s, JS_UNDEFINED, true);
+                if (s->native_resume)
+                    js_native_async_generator_resolve(ctx, s, JS_UNDEFINED, true);
+                else
+                    js_async_generator_resolve(ctx, s, JS_UNDEFINED, true);
             } else if (next->completion_type == GEN_MAGIC_RETURN) {
                 s->state = JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN;
-                js_async_generator_completed_return(ctx, s, next->result);
+                if (js_async_generator_completed_return(ctx, s, next->result) < 0 &&
+                    s->native_resume) {
+                    JSValue exception = JS_GetException(ctx);
+                    s->state = JS_ASYNC_GENERATOR_STATE_COMPLETED;
+                    js_async_generator_reject(ctx, s, exception);
+                    JS_FreeValue(ctx, exception);
+                }
             } else {
                 js_async_generator_reject(ctx, s, next->result);
             }
+            if (s->native_resume && s->state == JS_ASYNC_GENERATOR_STATE_COMPLETED)
+                break; /* drain native requests queued behind completed return */
             goto done;
         case JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD:
         case JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD_STAR:
+            if (s->native_resume) {
+                s->state = JS_ASYNC_GENERATOR_STATE_EXECUTING;
+                if (next->completion_type == GEN_MAGIC_RETURN) {
+                    JSContext *realm = JS_DupContext(s->native_ctx);
+                    s->native_phase = PI_AG_PHASE_RETURN_INPUT;
+                    if (js_async_generator_await(realm, s, next->result) < 0) {
+                        JSValue exception = JS_GetException(realm);
+                        s->native_phase = PI_AG_PHASE_NONE;
+                        js_native_async_generator_drive(s, JS_PI_AG_THROW_INPUT,
+                                                         exception);
+                        JS_FreeValue(realm, exception);
+                    }
+                    JS_FreeContext(realm);
+                } else {
+                    js_native_async_generator_drive(s,
+                        next->completion_type == GEN_MAGIC_THROW ?
+                            JS_PI_AG_THROW_INPUT : JS_PI_AG_NEXT,
+                        next->result);
+                }
+                if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING)
+                    goto done;
+                break;
+            }
             value = js_dup(next->result);
             if (next->completion_type == GEN_MAGIC_THROW &&
                 s->state == JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD) {
@@ -22301,8 +22466,32 @@ static JSValue js_async_generator_resolve_function(JSContext *ctx,
         if (is_reject) {
             js_async_generator_reject(ctx, s, arg);
         } else {
-            js_async_generator_resolve(ctx, s, arg, true);
+            if (s->native_resume)
+                js_native_async_generator_resolve(ctx, s, arg, true);
+            else
+                js_async_generator_resolve(ctx, s, arg, true);
         }
+        if (s->native_resume)
+            js_async_generator_resume_next(ctx, s);
+    } else if (s->native_resume && s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING) {
+        JSContext *realm = JS_DupContext(s->native_ctx);
+        int phase = s->native_phase;
+        s->native_phase = PI_AG_PHASE_NONE;
+        if (phase == PI_AG_PHASE_YIELD && !is_reject) {
+            s->state = JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD;
+            js_native_async_generator_resolve(realm, s, arg, false);
+        } else if (phase == PI_AG_PHASE_RETURN && !is_reject) {
+            js_async_generator_complete(realm, s);
+            js_native_async_generator_resolve(realm, s, arg, true);
+        } else {
+            int completion = phase == PI_AG_PHASE_AWAIT ?
+                (is_reject ? JS_PI_AG_AWAIT_REJECTED : JS_PI_AG_AWAIT_FULFILLED) :
+                (is_reject ? JS_PI_AG_THROW_INPUT : JS_PI_AG_RETURN_INPUT);
+            js_native_async_generator_drive(s, completion, arg);
+        }
+        JS_FreeContext(realm);
+        if (s->state != JS_ASYNC_GENERATOR_STATE_EXECUTING)
+            js_async_generator_resume_next(ctx, s);
     } else if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING) {
         /* restart function execution after await() */
         s->func_state.throw_flag = is_reject;
@@ -22399,6 +22588,44 @@ static JSValue js_async_generator_function_call(JSContext *ctx,
  fail:
     js_async_generator_free(ctx->rt, s);
     return JS_EXCEPTION;
+}
+
+JSValue JS_PiGetAsyncGeneratorPrototype(JSContext *ctx)
+{
+    return js_dup(ctx->class_proto[JS_CLASS_ASYNC_GENERATOR]);
+}
+
+JSValue JS_PiGetAsyncGeneratorFunctionPrototype(JSContext *ctx)
+{
+    return js_dup(ctx->class_proto[JS_CLASS_ASYNC_GENERATOR_FUNCTION]);
+}
+
+JSValue JS_PiNewNativeAsyncGenerator(JSContext *ctx, JSValueConst owner,
+                                    JSPiAsyncGeneratorResume *resume,
+                                    JSValueConst prototype)
+{
+    JSAsyncGeneratorData *s;
+    JSValue object;
+    if (!resume)
+        return JS_ThrowTypeError(ctx, "native async generator requires a resume callback");
+    s = js_mallocz(ctx, sizeof(*s));
+    if (!s)
+        return JS_EXCEPTION;
+    init_list_head(&s->queue);
+    s->state = JS_ASYNC_GENERATOR_STATE_SUSPENDED_START;
+    s->native_resume = resume;
+    s->native_ctx = JS_DupContext(ctx);
+    s->native_owner = js_dup(owner);
+    object = JS_NewObjectProtoClass(ctx,
+        JS_IsUndefined(prototype) ? ctx->class_proto[JS_CLASS_ASYNC_GENERATOR] : prototype,
+        JS_CLASS_ASYNC_GENERATOR);
+    if (JS_IsException(object)) {
+        js_async_generator_free(ctx->rt, s);
+        return object;
+    }
+    s->generator = JS_VALUE_GET_OBJ(object);
+    JS_SetOpaqueInternal(object, s);
+    return object;
 }
 
 /* JS parser */

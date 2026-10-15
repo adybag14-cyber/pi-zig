@@ -1,0 +1,9 @@
+{
+  "minimum_free_bytes": 2147483648,
+  "available_bytes": 20584710144,
+  "heap_mb": 256,
+  "outer_seconds": 300,
+  "light_lane": 6,
+  "root_grant": "Actual Headers Source capture, standalone actual Node bundled authority",
+  "checked_utc": "2026-10-15T18:07:00.6505214+00:00"
+}

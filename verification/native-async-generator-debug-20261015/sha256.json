@@ -1,0 +1,346 @@
+[
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-cli-repair-20261015-admission.json",
+    "sha256": "21A7C499AECFD60438F23D8D24793754C20D53F3803533663D4AB22EEF2A9A33"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-cli-repair-20261015-compile.json",
+    "sha256": "EE954AF094B2CB0C314952560C2C35056DBB90152D7AE8FCC101F6671C449C9C"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-cli-repair-20261015-compile.stderr.log",
+    "sha256": "86A4E74AFDCE86C78470461369CB6446B2AE93C1E7B60474B802EF44C3095309"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-cli-repair-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-cli-repair-20261015-controls-before.json",
+    "sha256": "C6744FF62973FA07DFE4AC6E45BB941E3EB3400B7DDBAA52B1FA28218DDCDF99"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-cli-repair-20261015-posthash.json",
+    "sha256": "5F994A9E278B358C8B811444233AC9EEDADE44FEB22160EED90DB6323FB10894"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-cli-repair-20261015-runtime.json",
+    "sha256": "F0FAA06B55BB2A07A20A4FF11F4E5169A47CDE66F91CDE1A24E75F087DBB03FC"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-cli-repair-20261015-runtime.stderr.log",
+    "sha256": "764A8F074988D188C87FEE189C2B9B4ED216C1BF3159B56104A84647B6D460E1"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-cli-repair-20261015-runtime.stdout.log",
+    "sha256": "7BAB1A2FADD2491C87984674207E67DCFCB035EBA6BE8B109FD45D82174786C3"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-cli-repair-20261015-source-before.json",
+    "sha256": "32609949E63BA8F4782D454684FEE8BAF7229FB6C74EF6FB79A852D6A919694C"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-oom-diagnostic-20261015-admission.json",
+    "sha256": "8722CBD22117A48E9B539E3E39F0B4706CBAC07B1B65B0417A343DCBED3810DB"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-oom-diagnostic-20261015-compile.json",
+    "sha256": "8C52916651EA3D794D6BF4AEBBAC746151A6181D58F523E70A1986E9BD452428"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-oom-diagnostic-20261015-compile.stderr.log",
+    "sha256": "1D0A6EB4FA50E1EA77E744B4C4A5BD8DCDBF1D6101A1714F26034BB1766C65D7"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-oom-diagnostic-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-oom-diagnostic-20261015-controls-before.json",
+    "sha256": "37E6A38CA3441D402DC22FE8AE34076A3DC13433644CDD7AD5C2020D734F3464"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-oom-diagnostic-20261015-posthash.json",
+    "sha256": "E8703B95C2DF0D40BD962C209B3F9EF4F474DA3E232D12E2A7F2C58437E6FF61"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-oom-diagnostic-20261015-runtime.json",
+    "sha256": "CF21D613EEF8ABB869FBD0FC3A2E78F83B293FCC7E0E11DF019849B582387FFF"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-oom-diagnostic-20261015-runtime.stderr.log",
+    "sha256": "AD0172F2B52868351ABFE3443DA13FE54754BEA10CB9EA9E4B609A72295090F9"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-oom-diagnostic-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-2e8e6dbe-debug-raw-oom-diagnostic-20261015-source-before.json",
+    "sha256": "32609949E63BA8F4782D454684FEE8BAF7229FB6C74EF6FB79A852D6A919694C"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-completed-return-oom-20261015-admission.json",
+    "sha256": "717400075C4D1443848B920BED6B55287E6C8FBAF9ACC805A42103B6DA15BBEE"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-completed-return-oom-20261015-compile.json",
+    "sha256": "ACBC1A2052CEA08F69F0C8425451380FEB448F78769CFE051D973AB9DDDCFCFB"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-completed-return-oom-20261015-compile.stderr.log",
+    "sha256": "80609D3F7E2DBEF025A5A0CA40AFC11F9CDEDA483CE10A787BA40C08B687BE30"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-completed-return-oom-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-completed-return-oom-20261015-controls-before.json",
+    "sha256": "CF0F1CE6D5C811646EB8B05D6B12A1DF06D967B52FED86FF8FB799C7AA82097B"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-completed-return-oom-20261015-posthash.json",
+    "sha256": "199B007467B1838432EC1D8DD890BEE59FC76484B7ACADD93A207CB63787C4D4"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-completed-return-oom-20261015-runtime.json",
+    "sha256": "AD693F553151F3B0D8FABB7DC7D5E778A70758E1319EB9D708141324E38C0292"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-completed-return-oom-20261015-runtime.stderr.log",
+    "sha256": "A8596E99DE93CDC6701D668BA7AB7C0681317D18D1592DEF508B9AFA52F57B30"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-completed-return-oom-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-completed-return-oom-20261015-source-before.json",
+    "sha256": "D34D54B10B90AA5F67B48BBA9A1A530197D95698F7E129ED8D640B7093A7D6D4"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-host-gpa-20261015-admission.json",
+    "sha256": "6BB2CEE1CA34D585EA505ECDB8AEE10CFCFD1765A988816BF8C4348AB0C2F0EF"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-host-gpa-20261015-compile.json",
+    "sha256": "F352A23BCC8562F5B2CB156AE6C961B503BA27D28F2CE909A1673475B3D3E6BD"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-host-gpa-20261015-compile.stderr.log",
+    "sha256": "B626BB749CBF1EE517F90499B2304DB4AC2F9930697813EF363AFB5F6778D69C"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-host-gpa-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-host-gpa-20261015-controls-before.json",
+    "sha256": "188F12E7574AA51DA6E284CAC8C2C66385E508EBD89A805E7FD72EC50B4712AA"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-host-gpa-20261015-posthash.json",
+    "sha256": "9323C39D352B65BAC7DFB6CED297F78B18B54DC48214533F3E715304D9B2BCC5"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-host-gpa-20261015-runtime.json",
+    "sha256": "A6B2606DC91F7C46971E42110557FEBD1C415384AB351F56074BD99F6C21C5A3"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-host-gpa-20261015-runtime.stderr.log",
+    "sha256": "86CBCE780891504CB54FEC2FAF2C5E30E36E17D982D4F2FF059FCEF92B42BA52"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-host-gpa-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-4be7eea2-debug-host-gpa-20261015-source-before.json",
+    "sha256": "D34D54B10B90AA5F67B48BBA9A1A530197D95698F7E129ED8D640B7093A7D6D4"
+  },
+  {
+    "file": "native-async-generator-53556dd9-debug-sentinel-retry-20261015-admission.json",
+    "sha256": "562CF8158E6DC2D5D3C7D9E228D912BA2C329C4B7F5907DDF9E1C68B6F5303F7"
+  },
+  {
+    "file": "native-async-generator-53556dd9-debug-sentinel-retry-20261015-compile.json",
+    "sha256": "9433A66F38C105E015CD3DC14FE837CC90DD7FCF8E8197584ED0DCA7DB7968F6"
+  },
+  {
+    "file": "native-async-generator-53556dd9-debug-sentinel-retry-20261015-compile.stderr.log",
+    "sha256": "5BF061EEDA63A7B4635D0062F7CEB89F1BB95985C23AE5D6699BF5343A172C34"
+  },
+  {
+    "file": "native-async-generator-53556dd9-debug-sentinel-retry-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-53556dd9-debug-sentinel-retry-20261015-controls-before.json",
+    "sha256": "5E096D2C30AE1C662AADF5214BB6C52DC92BEC12F5A10CAA16090220451C8B19"
+  },
+  {
+    "file": "native-async-generator-53556dd9-debug-sentinel-retry-20261015-posthash.json",
+    "sha256": "0C93083FA186A8ECFBC3156A6B5116C3B13218225FDB6B5F0CA1AB5F0CBDD51F"
+  },
+  {
+    "file": "native-async-generator-53556dd9-debug-sentinel-retry-20261015-runtime.json",
+    "sha256": "265558C3039E84D512FB449B9C2518D3E2E955B0AA62815E34DA61D20A6D0B25"
+  },
+  {
+    "file": "native-async-generator-53556dd9-debug-sentinel-retry-20261015-runtime.stderr.log",
+    "sha256": "E4DCED04A8E96406ACBAC9AE014313F9E15031B60DCD4FA6224736E0AF384B30"
+  },
+  {
+    "file": "native-async-generator-53556dd9-debug-sentinel-retry-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-53556dd9-debug-sentinel-retry-20261015-source-before.json",
+    "sha256": "347ADF50FAD858C7D0943DC99A5BD6A97AADD7A220028ACFA76D6A0E9341377D"
+  },
+  {
+    "file": "native-async-generator-8c0501e8-debug-functional-20261015-admission.json",
+    "sha256": "4A5614995A761AFC5CF7E5AE4DBCD065208C477B1EF13DB995B87C61A84FE6B4"
+  },
+  {
+    "file": "native-async-generator-8c0501e8-debug-functional-20261015-compile.json",
+    "sha256": "CF5926E936B32A22178FBD69AAD8A705817A0FC959CC080DCABB207F69BB8655"
+  },
+  {
+    "file": "native-async-generator-8c0501e8-debug-functional-20261015-compile.stderr.log",
+    "sha256": "E303A14CE26B8CC0609B459C494EE0C0A03E213366C702788408FB8F578CC326"
+  },
+  {
+    "file": "native-async-generator-8c0501e8-debug-functional-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-8c0501e8-debug-functional-20261015-controls-before.json",
+    "sha256": "C7CC4434B3D2F7A02FAA81EA7A5F01E6BCAAD9BEE9BA3C2A5C54A0AA20B3660F"
+  },
+  {
+    "file": "native-async-generator-8c0501e8-debug-functional-20261015-posthash.json",
+    "sha256": "960FE64EFD42E462D34336B990F4A072E40AACC5C910156B7B1BF8EF8FA288CD"
+  },
+  {
+    "file": "native-async-generator-8c0501e8-debug-functional-20261015-source-before.json",
+    "sha256": "05278AD92E1229B4F549370EFECAD84C39CF303DA967A656F9F41B93E8BCF644"
+  },
+  {
+    "file": "native-async-generator-a7245c9a-debug-real-vm-oom-20261015-admission.json",
+    "sha256": "09481BC29F7A1A3D6B65CE678A58363BBF6DF2F584F88F3E92F85D04E7F748C4"
+  },
+  {
+    "file": "native-async-generator-a7245c9a-debug-real-vm-oom-20261015-compile.json",
+    "sha256": "EACE74E4AF6AEF9DF1FBF6BB20D5933D99BFAD6F820A4CB9C4A5F3635115CA6E"
+  },
+  {
+    "file": "native-async-generator-a7245c9a-debug-real-vm-oom-20261015-compile.stderr.log",
+    "sha256": "08EDB7D9F74F547B515BD648A9DA513856E7286F7193117C2D12FE34477DA9D8"
+  },
+  {
+    "file": "native-async-generator-a7245c9a-debug-real-vm-oom-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-a7245c9a-debug-real-vm-oom-20261015-controls-before.json",
+    "sha256": "DF2D93E4D204A7A9F76A94C9A125321A3333D5BFA2FC8BF3D62A57D3A6ACC288"
+  },
+  {
+    "file": "native-async-generator-a7245c9a-debug-real-vm-oom-20261015-posthash.json",
+    "sha256": "8ECCF55076939D1BB4ABFD5281C85BC839507D0993DE0A3C0D00187CC3019594"
+  },
+  {
+    "file": "native-async-generator-a7245c9a-debug-real-vm-oom-20261015-runtime.json",
+    "sha256": "378B7BFC3BB6FD5766AECF2E8CD505308F7F47F4E1043809230CC02E7DBD4162"
+  },
+  {
+    "file": "native-async-generator-a7245c9a-debug-real-vm-oom-20261015-runtime.stderr.log",
+    "sha256": "763010D77D404A72D11079B06595B9ECE7536BBBC5E6BAA0AC99C07DBA6899C9"
+  },
+  {
+    "file": "native-async-generator-a7245c9a-debug-real-vm-oom-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-a7245c9a-debug-real-vm-oom-20261015-source-before.json",
+    "sha256": "CC88286816B1FA2B5E63C4432FB8748598F77098A9BB5EB3D6036AA8F9307B6E"
+  },
+  {
+    "file": "native-async-generator-b8ceb619-debug-oom-diagnostic-20261015-admission.json",
+    "sha256": "F46CC09A92ADDF87D5B1E7ADBB5BBC3F2A3195B7BC1E85CE8F96E9F1D526B280"
+  },
+  {
+    "file": "native-async-generator-b8ceb619-debug-oom-diagnostic-20261015-compile.json",
+    "sha256": "3B4DDEA4CEF595708462FE9573276F81F8D840C87767BF76BA4F21CE52EE73EE"
+  },
+  {
+    "file": "native-async-generator-b8ceb619-debug-oom-diagnostic-20261015-compile.stderr.log",
+    "sha256": "3A46952852070B14087ECD31774CAA95163A3E2056F3AF92D7314B99E4629C0B"
+  },
+  {
+    "file": "native-async-generator-b8ceb619-debug-oom-diagnostic-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-b8ceb619-debug-oom-diagnostic-20261015-controls-before.json",
+    "sha256": "DC686CB656D30A12DF5C55FA7ABF0DB11749F090309FF83F1410D0213E06EA08"
+  },
+  {
+    "file": "native-async-generator-b8ceb619-debug-oom-diagnostic-20261015-posthash.json",
+    "sha256": "F58AB5806729E640095AAB3DEF55D4C988A507A003F8A5A6CDDFA5FE8F092CE2"
+  },
+  {
+    "file": "native-async-generator-b8ceb619-debug-oom-diagnostic-20261015-runtime.json",
+    "sha256": "8F74E74A95AF730FB1733A1B6DF476C036C0380E4797854CA56750B637A3EB2F"
+  },
+  {
+    "file": "native-async-generator-b8ceb619-debug-oom-diagnostic-20261015-runtime.stderr.log",
+    "sha256": "F4B35DFE4CC88AA0A0DDBA46075272985A606339F063F6820A49232C2F00C1DE"
+  },
+  {
+    "file": "native-async-generator-b8ceb619-debug-oom-diagnostic-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-async-generator-b8ceb619-debug-oom-diagnostic-20261015-source-before.json",
+    "sha256": "0AB6C95BB6B5450FC8A694835B3A2DD96475AAE9106FC9A0CE2481A71660B9AA"
+  },
+  {
+    "file": "qualified-code.patch",
+    "sha256": "B375A0485325DB4AB734BC24910C1970263B53CB8D7A91BD13063BB44149D20B"
+  },
+  {
+    "file": "Run-NativeAsyncGenerator2e8eRawCliRepairPair-20261015.ps1",
+    "sha256": "D05C369350B9AEFC2B649CD876631984BFC3552CE7ACC6A71AF586934C40253A"
+  },
+  {
+    "file": "Run-NativeAsyncGenerator2e8eRawOomDiagnosticPair-20261015.ps1",
+    "sha256": "BCF87A9C149C4CB2017CA98CDD662E740A7D97688AEE388A6F7EF736882EDAE2"
+  },
+  {
+    "file": "Run-NativeAsyncGenerator4be7CompletedReturnOomPair-20261015.ps1",
+    "sha256": "4429C2999B9B3B97CEBF674B0AA8544BDADC0EEBF18F558B299A63238DB2E32A"
+  },
+  {
+    "file": "Run-NativeAsyncGenerator4be7HostGpaPair-20261015.ps1",
+    "sha256": "FB4C7D3AC104A7200D780D4A7D20F5D4ADBAD0ADED8861C42C497DD66281D4F5"
+  },
+  {
+    "file": "Run-NativeAsyncGenerator53556FunctionalRetryPair-20261015.ps1",
+    "sha256": "E5C0FD4B946B5A6F0A8894C399129769B28FEF1296FE36E598FF4A0B6155CB12"
+  },
+  {
+    "file": "Run-NativeAsyncGenerator8c0501FunctionalPair-20261015.ps1",
+    "sha256": "D06E8B66C3DCC47418672CD864E0B7B6D3E62B14E9BDD52CD377BC56BB04D919"
+  },
+  {
+    "file": "Run-NativeAsyncGeneratorA724RealVmOomPair-20261015.ps1",
+    "sha256": "65887984031E074681BDB375FF1E37EBAACD01C147745EFE3A31190A626808AF"
+  },
+  {
+    "file": "Run-NativeAsyncGeneratorB8cebOomDiagnosticPair-20261015.ps1",
+    "sha256": "E3563A58EF805DD8F10D5928B44C405FD21C510D21E0332828F744CE3558DF6C"
+  }
+]

@@ -1,0 +1,54 @@
+[
+  {
+    "file": "native-event-stream-production-2e1fd2e7-debug-source27-20261015-admission.json",
+    "sha256": "543ABE16E1E78DAF159CBA67D16FA6A5ED68C774786E0B86C8EA8F2673BB65F7"
+  },
+  {
+    "file": "native-event-stream-production-2e1fd2e7-debug-source27-20261015-compile.json",
+    "sha256": "0677495AA2E9D046294419DC1438A76E3C225F402BF18A9A4345F05F65EF2DD5"
+  },
+  {
+    "file": "native-event-stream-production-2e1fd2e7-debug-source27-20261015-compile.stderr.log",
+    "sha256": "3430AC09E0070CF7C0AA2CC1BB2DC80AE412909550F910EBC8DD243B566B5E1A"
+  },
+  {
+    "file": "native-event-stream-production-2e1fd2e7-debug-source27-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-event-stream-production-2e1fd2e7-debug-source27-20261015-controls-before.json",
+    "sha256": "8B3BDC1396DA47B72AD9450387BBFA21118F74C12BD95BEEE8F35BE09F718E39"
+  },
+  {
+    "file": "native-event-stream-production-2e1fd2e7-debug-source27-20261015-posthash.json",
+    "sha256": "62895163EE6EA0299FF18158B3DF328D77A7CB47016407069A2D647128B55DAB"
+  },
+  {
+    "file": "native-event-stream-production-2e1fd2e7-debug-source27-20261015-reference-posthash.json",
+    "sha256": "6932FEFE3A499B387F82ACB94BDB9B734492247FFE107A5296560F1E512DD605"
+  },
+  {
+    "file": "native-event-stream-production-2e1fd2e7-debug-source27-20261015-runtime.json",
+    "sha256": "E5116F36BC9ED384CED4CB3135B469004DAF59E7EDF92AF8B7D8DEC74AB46890"
+  },
+  {
+    "file": "native-event-stream-production-2e1fd2e7-debug-source27-20261015-runtime.stderr.log",
+    "sha256": "A19AF2F38D0097FFB1D0192CB2DB1A8E7D8580801E944590F766E03A38C8DD0E"
+  },
+  {
+    "file": "native-event-stream-production-2e1fd2e7-debug-source27-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-event-stream-production-2e1fd2e7-debug-source27-20261015-source-before.json",
+    "sha256": "8DC78971EE399B0965A4D2AA7680EE354BB8E00336508FC56D81BF7413CE5EFF"
+  },
+  {
+    "file": "README.md",
+    "sha256": "60F4771A23A5163FC258AB655741880993B4EC1A4F89156D9D49368A5237CDBC"
+  },
+  {
+    "file": "Run-NativeEventStreamProduction2e1fSource27Pair-20261015.ps1",
+    "sha256": "993FCA42602C1E6E327DE693B0B9EDFF45E896D7495D7522ABC115D1E2B310E8"
+  }
+]

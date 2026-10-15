@@ -1,0 +1,63 @@
+const rows=[];
+const describeValue=value=>typeof value==='function'?{type:'function',name:value.name,length:value.length}:typeof value==='symbol'?String(value):value;
+const descriptor=(object,key)=>{const d=Object.getOwnPropertyDescriptor(object,key);return d?{key:typeof key==='symbol'?String(key):key,enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,value:describeValue(d.value)}:{get:describeValue(d.get),set:describeValue(d.set)})}:null};
+const descriptors=object=>Reflect.ownKeys(object).map(key=>descriptor(object,key));
+const errorShape=error=>({name:error?.name,message:error?.message,code:error?.code,typeError:error instanceof TypeError});
+const record=async(name,run)=>{try{rows.push({name,value:await run()})}catch(error){rows.push({name,error:errorShape(error)})}};
+await record('global before first Headers read',()=>descriptor(globalThis,'Headers'));
+const H=Headers;
+const state=h=>({entries:[...h],cookies:h.getSetCookie(),keys:[...h.keys()],values:[...h.values()],tag:Object.prototype.toString.call(h),instanceofHeaders:h instanceof H});
+await record('constructor descriptors',()=>descriptors(H));
+await record('prototype descriptors',()=>descriptors(H.prototype));
+await record('instance and global descriptors',()=>({instance:descriptors(new H()),global:descriptor(globalThis,'Headers'),entriesAlias:H.prototype.entries===H.prototype[Symbol.iterator],protoObject:Object.getPrototypeOf(H.prototype)===Object.prototype}));
+await record('iterator descriptors',()=>{const i=new H([['x','y']]).entries(),p=Object.getPrototypeOf(i),ap=Object.getPrototypeOf(Object.getPrototypeOf([][Symbol.iterator]()));return{own:descriptors(i),prototype:descriptors(p),baseMatches:Object.getPrototypeOf(p)===ap,tag:Object.prototype.toString.call(i),self:i[Symbol.iterator]()===i,next:i.next(),done:i.next()}});
+const nonenum=Object.defineProperty({a:'v'},'hidden',{value:'secret',enumerable:false});
+const ctorInputs=[undefined,null,0,false,true,'x',Symbol('input'),1n,{}, {X:1,x:2,Cookie:'a=1'},[['X','one'],['x','two']],new Map([['A','one'],['B','two']]),new Set([['A','one'],['B','two']]),Object.assign(Object.create({inherited:'ignored'}),{own:'value'}),nonenum,function named(){},new String('ab'),new Uint8Array([1,2]),[]];
+for(const[index,input]of ctorInputs.entries())await record('constructor input '+index,()=>state(new H(input)));
+await record('normal append set delete and get',()=>{const h=new H();h.append('X-A',' one ');h.append('x-a','two');h.set('B',null);const before=state(h),got=h.get('X-A'),has=h.has('b');h.delete('x-A');return{before,got,has,missing:h.get('missing'),after:state(h)}});
+await record('cookies sorting and cookie delimiter',()=>{const h=new H([['z','Z'],['Set-Cookie','a=1'],['Cookie','a=1'],['A','A'],['set-cookie','b=2'],['cookie','b=2']]);const before=state(h),combined=h.get('set-cookie'),copy=h.getSetCookie();copy.push('caller');h.set('SET-COOKIE','c=3');const replaced=state(h);h.delete('set-cookie');return{before,combined,copy,replaced,after:state(h)}});
+await record('clone subclass and freeze',()=>{class Child extends H{}const a=new Child([['X','one']]),b=new H(a);a.append('X','two');Object.freeze(b);b.set('Y','three');return{child:a instanceof Child,a:state(a),b:state(b),own:Reflect.ownKeys(b).map(String)}});
+await record('constructor custom iterator and cloned independence',()=>{const a=new H([['X','one']]);a[Symbol.iterator]=function*(){yield['Z','two']};const b=new H(a);return{a:state(a),b:state(b)}});
+const names=['','bad name','bad:','x\0','x\t','é','Ā','😀',Symbol('name'),null,undefined,0,{toString(){return'X'}}];
+for(const[index,name]of names.entries())for(const method of ['get','has','delete','append'])await record('name '+index+'/'+method,()=>{const h=new H([['x','initial']]);const value=Reflect.apply(H.prototype[method],h,method==='append'?[name,'v']:[name]);return{value,state:state(h)}});
+const values=['plain',' \r\n\t value \t\r\n','a\nb','a\rb','a\0b','\r\n','\t','ÿ','Ā','😀',Symbol('value'),null];
+for(const[index,value]of values.entries())for(const method of ['append','set'])await record('value '+index+'/'+method,()=>{const h=new H([['x','old']]);h[method]('X',value);return state(h)});
+const methods=['append','set','get','has','delete','forEach','getSetCookie','keys','values','entries',Symbol.iterator];
+for(const[index,method]of methods.entries())await record('arity '+index,()=>{const h=new H(),value=Reflect.apply(H.prototype[method],h,[]);return value&&typeof value.next==='function'?[...value]:value});
+const receivers=[{},Object.create(H.prototype),new Proxy(new H(),{}),null];
+for(const[index,receiver]of receivers.entries())for(const[methodIndex,method]of methods.entries())await record('brand '+index+'/'+methodIndex,()=>Reflect.apply(H.prototype[method],receiver,method==='forEach'?[()=>{}]:['x','v']));
+const sequenceInputs=[
+ [['a']], [['a','b','c']], ['ab'], [1], [null], [[Symbol('name'),'v']],
+ {[Symbol.iterator](){return{next(){return 1}}}},
+ {[Symbol.iterator](){return null}},
+ Object.defineProperty({a:'v'},Symbol.iterator,{value:1,enumerable:false}),
+ Object.defineProperty({a:'v'},Symbol('hidden'),{value:'v',enumerable:false})
+];
+for(const[index,input]of sequenceInputs.entries())await record('sequence '+index,()=>state(new H(input)));
+await record('coercion append reentry order',()=>{const trace=[],h=new H();h.append({toString(){trace.push('name');h.set('inner','I');return'X'}},{toString(){trace.push('value');return' V '}});return{trace,state:state(h)}});
+await record('coercion invalid name before value error',()=>{const marker={},trace=[],h=new H();let caught;try{h.append('bad name',{toString(){trace.push('value');throw marker}})}catch(e){caught=e}return{same:caught===marker,trace,state:state(h)}});
+await record('constructor conversion before validation and iterator close',()=>{const marker={},trace=[];function* source(){try{yield['bad name','value'];yield['x',{toString(){trace.push('value');throw marker}}]}finally{trace.push('closed')}}let caught;try{new H(source())}catch(e){caught=e}return{same:caught===marker,error:caught===marker?undefined:errorShape(caught),trace}});
+await record('ByteString primitive coercion hints',()=>{const trace=[],h=new H();h.set({[Symbol.toPrimitive](hint){trace.push('name:'+hint);return'X'}},{[Symbol.toPrimitive](hint){trace.push('value:'+hint);return 123}});return{trace,state:state(h)}});
+await record('record proxy ownkeys descriptors getters',()=>{const trace=[],target={a:'A'};Object.defineProperty(target,'hidden',{value:'H',enumerable:false});const p=new Proxy(target,{get(t,k,r){trace.push('get:'+String(k));return Reflect.get(t,k,r)},ownKeys(t){trace.push('keys');return Reflect.ownKeys(t)},getOwnPropertyDescriptor(t,k){trace.push('desc:'+String(k));return Reflect.getOwnPropertyDescriptor(t,k)}});const h=new H(p);return{trace,state:state(h)}});
+await record('subclass newtarget prototype before initialization',()=>{const trace=[],target=new Proxy(function Target(){},{get(t,k,r){if(k==='prototype')trace.push('prototype');return Reflect.get(t,k,r)}}),h=Reflect.construct(H,[{x:{toString(){trace.push('value');return'V'}}}],target);return{trace,instanceofHeaders:h instanceof H,value:H.prototype.get.call(h,'x')}});
+await record('iterator append earlier and later keys',()=>{const h=new H([['b','B'],['d','D']]),i=h.entries(),out=[i.next()];h.append('a','A');h.append('z','Z');out.push(i.next(),i.next(),i.next(),i.next());return{out,state:state(h)}});
+await record('iterator delete current and set future',()=>{const h=new H([['a','A'],['b','B'],['c','C']]),i=h.entries(),out=[i.next()];h.delete('a');h.set('c','CHANGED');out.push(i.next(),i.next());return{out,state:state(h)}});
+await record('iterator after completion then append',()=>{const h=new H(),i=h.entries(),first=i.next();h.append('x','X');return{first,second:i.next(),third:i.next()}});
+await record('iterator cookie expansion and copied result pairs',()=>{const h=new H([['Set-Cookie','a=1'],['set-cookie','b=2']]),i=h.entries(),first=i.next();first.value[1]='caller';return{first,rest:[...i],state:state(h)}});
+await record('iterator next brand',()=>Reflect.apply(Object.getPrototypeOf(new H().entries()).next,{},[]));
+await record('iterator owner and result descriptors',()=>{const i=new H([['a','A']]).values(),value=i.next(),done=i.next();return{value:descriptors(value),done:descriptors(done),iterator:descriptors(i)}});
+await record('forEach sorted and default strict this',()=>{const h=new H([['b','B'],['a','A']]),out=[];h.forEach(function(value,key,self){'use strict';out.push({value,key,same:self===h,global:this===globalThis,undefined:this===undefined})});return out});
+await record('forEach explicit null and object this',()=>{const h=new H([['a','A']]),object={},out=[];for(const thisArg of [null,object,undefined])h.forEach(function(){'use strict';out.push({null:this===null,object:this===object,global:this===globalThis,undefined:this===undefined})},thisArg);return out});
+await record('forEach live mutation',()=>{const h=new H([['b','B'],['d','D']]),out=[];let changed=false;h.forEach((value,key)=>{out.push([key,value]);if(!changed){changed=true;h.append('a','A');h.append('z','Z');h.delete('d')}});return{out,state:state(h)}});
+await record('forEach callback thrown identity',()=>{const marker={},h=new H([['a','A']]);let caught;try{h.forEach(()=>{h.append('b','B');throw marker})}catch(e){caught=e}return{same:caught===marker,state:state(h)}});
+await record('forEach callback call property',()=>{const trace=[],cb=()=>trace.push('body');cb.call=function(thisArg,value,key,self){trace.push(['call',thisArg===globalThis,value,key,self instanceof H])};new H([['a','A']]).forEach(cb);return trace});
+await record('forEach bad callback',()=>new H().forEach({call(){}}));
+let weak,iterator;
+(()=>{let h=new H([['alive','value']]);weak=new WeakRef(h);iterator=h.entries();h=null})();
+await collectHeadersGarbage();
+await record('actual GC iterator retains Headers',()=>({alive:weak.deref()!==undefined,next:iterator.next()}));
+iterator=null;
+await collectHeadersGarbage();
+await record('actual GC released Headers',()=>({alive:weak.deref()!==undefined}));
+if(new Set(rows.map(row=>row.name)).size!==rows.length||rows.length<180)throw Error('Headers contract inventory invalid '+rows.length);
+globalThis.webHeadersRows=rows;
