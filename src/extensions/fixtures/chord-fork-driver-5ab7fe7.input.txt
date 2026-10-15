@@ -1,0 +1,23 @@
+// Shared actual facade caller, pending Source capture and native execution.
+const cases=[];
+for(const ownLock of [false,true]){
+ const previous=process.env.CHORD2_LOCK;
+ process.env.CHORD2_LOCK='fixture-inherited-lock';
+ const expectedLock=ownLock?'fixture-own-lock-'+process.pid:null;
+ const output={stdout:'',stderr:''},metadata=[],controlTypes=[],exits=[];
+ const options={entry:guestPath,args:['first','é'],env:{CHORD_GUEST_NODE_API:guestNodeSpecifier},init:{payload:{hello:'native guest'},expectedLock},onOutput(stream,chunk){output[stream]+=new TextDecoder().decode(chunk)},onMessage(message){if(message?.meta)metadata.push(message.meta);if(message?.final)metadata.push({final:true});if(message?.chord2control)controlTypes.push(message.chord2control.type)}};
+ if(ownLock)options.lock=expectedLock;
+ const manager=api.createHostManager({driver:api.forkDriver(options),readyTimeout:3000,grace:1000,checkInterval:1000,onExit:value=>exits.push(value)});
+ try{
+  const instance=await manager.start(),liveness=manager.liveness;
+  const started={pidPositive:Number.isInteger(instance.pid)&&instance.pid>0,status:manager.status,linkClosed:instance.link.closed,activeCalls:liveness.activeCalls,viewers:liveness.viewers,durableTasks:liveness.durableTasks};
+  await manager.stop();
+  const exited=await instance.exited;
+  for(let i=0;i<10;i++)await new Promise(resolve=>setTimeout(resolve,0));
+  cases.push({name:ownLock?'owned lock native guest':'inherited lock removed native guest',value:{started,status:manager.status,metadata,controlTypes,output,exited,exits}});
+ }finally{
+  await manager.stop();
+  if(previous===undefined)delete process.env.CHORD2_LOCK;else process.env.CHORD2_LOCK=previous;
+ }
+}
+globalThis.chordForkDriverCases=cases;

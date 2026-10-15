@@ -31,6 +31,14 @@ fn createKey(engine: *Engine, description: c.JSValue) !c.JSValue {
     return key;
 }
 pub fn install(engine: *Engine) !void {
+    return installWithRoot(engine, true);
+}
+/// The private complete package bootstrap installs its real root factory after
+/// creating this exact shared context, without first registering a partial root.
+pub fn installContextOnly(engine: *Engine) !void {
+    return installWithRoot(engine, false);
+}
+fn installWithRoot(engine: *Engine, compatibility_root: bool) !void {
     if (engine.native_module_names.contains("@earendil-works/chord/context")) return;
     if (!engine.abort_signals_ready) try @import("abort_signal.zig").install(engine);
     const exports = try sdk.object(engine);
@@ -55,6 +63,7 @@ pub fn install(engine: *Engine) !void {
         try sdk.put(engine, exports, name, try @import("native_node_function.zig").create(engine, name, length, exported, &.{ bindings, c.JS_NewInt32(engine.context, @intCast(operation)) }));
     }
     try engine.registerValueModule("@earendil-works/chord/context", exports);
+    if (!compatibility_root) return;
     const root = try sdk.object(engine);
     defer engine.freeValue(root);
     try @import("native_sdk_models.zig").copy(engine, root, exports);

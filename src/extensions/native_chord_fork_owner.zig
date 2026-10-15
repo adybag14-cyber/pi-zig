@@ -52,6 +52,8 @@ pub const Owner = struct {
     monitor: ?Io.Future(anyerror!void) = null,
     stdout_reader: ?Io.Future(anyerror!void) = null,
     stderr_reader: ?Io.Future(anyerror!void) = null,
+    stdout_finished: std.atomic.Value(bool) = .init(true),
+    stderr_finished: std.atomic.Value(bool) = .init(true),
     stopping: std.atomic.Value(bool) = .init(false),
     pub fn start(gpa: std.mem.Allocator, io: Io, config: Config) !*Owner {
         if (config.argv.len == 0) return error.NativeChordChildCommandMissing;
@@ -84,8 +86,14 @@ pub const Owner = struct {
         self.control = try ownership.Control.initWithFlags(&self.child.?, if (builtin.os.tag == .windows) 0x2000 else 0);
         self.acceptor = try io.concurrent(accept, .{self});
         self.monitor = try io.concurrent(watch, .{self});
-        if (self.stdout) |file| self.stdout_reader = try io.concurrent(readOutput, .{ self, file, Output.Stream.stdout });
-        if (self.stderr) |file| self.stderr_reader = try io.concurrent(readOutput, .{ self, file, Output.Stream.stderr });
+        if (self.stdout) |file| {
+            self.stdout_finished.store(false, .release);
+            self.stdout_reader = try io.concurrent(readOutput, .{ self, file, Output.Stream.stdout });
+        }
+        if (self.stderr) |file| {
+            self.stderr_finished.store(false, .release);
+            self.stderr_reader = try io.concurrent(readOutput, .{ self, file, Output.Stream.stderr });
+        }
         return self;
     }
     fn fail(self: *Owner, err: anyerror) void {
@@ -159,6 +167,10 @@ pub const Owner = struct {
         }
     }
     fn readOutput(self: *Owner, file: Io.File, stream: Output.Stream) anyerror!void {
+        defer {
+            (if (stream == .stdout) &self.stdout_finished else &self.stderr_finished).store(true, .release);
+            self.wake.signal();
+        }
         var buffer: [8192]u8 = undefined;
         while (!self.stopping.load(.acquire)) {
             const size = file.readStreaming(self.io, &.{&buffer}) catch |err| {
@@ -205,6 +217,9 @@ pub const Owner = struct {
         self.process_mutex.lockUncancelable(self.io);
         defer self.process_mutex.unlock(self.io);
         return self.exit;
+    }
+    pub fn outputFinished(self: *Owner) bool {
+        return self.stdout_finished.load(.acquire) and self.stderr_finished.load(.acquire);
     }
     pub fn killTree(self: *Owner) void {
         self.process_mutex.lockUncancelable(self.io);

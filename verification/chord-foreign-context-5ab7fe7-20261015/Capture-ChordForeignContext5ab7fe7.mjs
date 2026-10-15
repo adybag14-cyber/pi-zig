@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {createRequire} from 'node:module';
+const sourceRoot=process.argv[2],callerPath=process.argv[3];
+if(!sourceRoot||!callerPath)throw Error('Source root and unchanged caller are required');
+const chord=await import(pathToFileURL(path.join(sourceRoot,'packages/chord/src/index.ts')).href);
+const sourceRequire=createRequire(pathToFileURL(path.join(sourceRoot,'packages/chord/src/contract.ts')).href);
+const {Type}=await import(pathToFileURL(sourceRequire.resolve('typebox')).href);
+const caller=fs.readFileSync(callerPath,'utf8');
+const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;
+await new AsyncFunction('api',caller)({...chord,Type});
+if(!Array.isArray(globalThis.chordForeignContextCases)||globalThis.chordForeignContextCases.length!==5)throw Error('Foreign5 caller inventory changed');
+process.stdout.write(JSON.stringify({source_scope:'actual latest Chord package foreign-context review caller',cases:globalThis.chordForeignContextCases})+'\n');

@@ -1,0 +1,110 @@
+{
+  "completed_utc": "2026-10-15T17:37:49.8068876+00:00",
+  "scope": "selected source-only actual module/facade/guest and oracle preparation",
+  "candidate_base": "d6f63fd72512d9cabf13e7607abf1499fec93990",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "source_manifest_sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE",
+  "source_file_count": 1967,
+  "selected_candidate_files": [
+    {
+      "path": "build.zig",
+      "sha256": "2380A8F2AA46CF8C7159821D78FB725378717E6C30FF842ABDD14EE4C766C67E"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "DAB8910694227D571CB511C1B770EB417671004EA4380437F78427F2618632C3"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-foreign-context-review-5ab7fe7.input.txt",
+      "sha256": "7FDD206B08BD0D7C1ED7E2F5DE763C40B1FBB859C088B7F35201BAAF6A088B5C"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-fork-driver-5ab7fe7.input.txt",
+      "sha256": "24BA8021705ABCEF51BD5E8E842C07028653741C5EDF823EF8717EFF445B5414"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-native-guest-control-5ab7fe7.mjs",
+      "sha256": "5D0732A89C4BB7D172CC5FED0DDE1400C54F6912CA08F7FE73DC1D120ED45D44"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-output-5ab7fe7.input.txt",
+      "sha256": "C6BD224BE8539AD0F343510B545E0CBD8DC2614D1298F79DDCFFC0F9A089C24D"
+    },
+    {
+      "path": "src/extensions/native_chord_fork_owner.zig",
+      "sha256": "D9F8884604110F823C90F932A74EABC8E558EBF243EF24CD924F93A1C86D5895"
+    },
+    {
+      "path": "src/extensions/native_chord_node_api.zig",
+      "sha256": "C74C665082887D996DBC6B578B21787F1547E6C439A432DD2E9F6DD52E7AD076"
+    },
+    {
+      "path": "src/extensions/native_chord_node_loader.zig",
+      "sha256": "47F7E61C4EDA58C142BBB5070D79155DAA7FD047591F67EE77A7F80844CACF5F"
+    },
+    {
+      "path": "src/extensions/native_chord_output.zig",
+      "sha256": "E20EC3206178EF8B60D96A53ABB6E2602EEDBE7D2CA4340AAFB64526FDCFF904"
+    },
+    {
+      "path": "src/extensions/native_chord_process_runtime.zig",
+      "sha256": "20FEBDC8158BE8DFAEC31AF8DB79A694410427AAA9A08A4B3407D6A270FB868D"
+    },
+    {
+      "path": "src/extensions/native_durable_context.zig",
+      "sha256": "8D8C92AAFA76A4C6109BDDD9903C801B7436281756BC7419557A58F94A6A5C2F"
+    },
+    {
+      "path": "src/extensions/native_durable_output_buffer.zig",
+      "sha256": "9FBF73E2B4F44E0BCAD3187564F260764B6969F2789567BAAA42D10531E3786E"
+    },
+    {
+      "path": "src/native_chord_foreign_context_review_test.zig",
+      "sha256": "727ADC987B0DD357985ECE0476821E590020B2955AB03F9FEA60E4B0AB740699"
+    },
+    {
+      "path": "src/native_chord_fork_source_test.zig",
+      "sha256": "0D06069399741D256768A4FA4A8C6571AE44405AD44FD5EED66C16D534016CC9"
+    },
+    {
+      "path": "src/native_chord_guest_private.zig",
+      "sha256": "79A99DBD2282838DD6694CE0AA17B34D27C3401E5F72F0E12FBA73F8DF092237"
+    },
+    {
+      "path": "src/native_chord_output_source_test.zig",
+      "sha256": "0D9EC10B998B80C840E26D137BB885ECA099A38F1852447B154999C64595F170"
+    },
+    {
+      "path": "verification/chord-foreign-context-5ab7fe7-20261015/Capture-ChordForeignContext5ab7fe7.mjs",
+      "sha256": "C1CCB1A714AFB897A6C8E75295918B0C8D825896AF8FB5412C1CFB890661A94E"
+    },
+    {
+      "path": "verification/chord-foreign-context-5ab7fe7-20261015/Capture-ChordFork5ab7fe7.mjs",
+      "sha256": "DC30324983C6F8500E95E529B7952DE60212B7E6098B4CA941B7A0140B9999B9"
+    },
+    {
+      "path": "verification/chord-foreign-context-5ab7fe7-20261015/Capture-ChordOutput5ab7fe7.mjs",
+      "sha256": "BD1682C817095E5356240B4C81161AD2A5B224F13BC0F99BC35B1F5642A9BC76"
+    }
+  ],
+  "static_zig_fmt_parse": "passed",
+  "static_javascript_syntax": "passed",
+  "git_diff_check": "passed",
+  "planned_source_callers": {
+    "output_cases": 14,
+    "foreign_context_cases": 5,
+    "fork_guest_cases": 2
+  },
+  "fork_runtime_backend": "actual owned native child and authenticated IPC; owner-thread VM pump",
+  "fork_execArgv_nonempty": "explicitly unsupported",
+  "original_source_captured": false,
+  "full_frozen_inputs_verified": false,
+  "native_compiled": false,
+  "native_runtime_executed": false,
+  "host_baselines": null,
+  "complete_host_failure_coverage": false,
+  "full_node_qualified": false,
+  "full_chord_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}

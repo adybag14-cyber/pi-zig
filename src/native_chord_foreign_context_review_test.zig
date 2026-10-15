@@ -6,7 +6,7 @@ const h = @import("extensions/native_chord_host_values.zig");
 const js = h.js;
 const c = h.c;
 const Probe = struct {
-    fn run(gpa: std.mem.Allocator) !void {
+    fn run(gpa: std.mem.Allocator, emit: bool) !void {
         const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
         defer engine.deinit();
         defer c.JS_RunGC(engine.runtime);
@@ -24,8 +24,13 @@ const Probe = struct {
         defer engine.freeValue(global);
         try js.define(engine, global, "nativeChordForeignContextApi", c.JS_DupValue(engine.context, api));
         const generation = engine.native_allocation_generation;
-        const result = engine.evalModule("const api=nativeChordForeignContextApi;await(async()=>{\n" ++ @embedFile("extensions/fixtures/chord-foreign-context-review-5ab7fe7.input.txt") ++ "\n})();", "chord-foreign-context-review-5ab7fe7.mjs") catch |err| return engine.nativeAllocationError(err, generation);
-        engine.freeValue(result);
+        const result = engine.evalModule("const api=nativeChordForeignContextApi;await(async()=>{\n" ++ @embedFile("extensions/fixtures/chord-foreign-context-review-5ab7fe7.input.txt") ++ "\n})();if(chordForeignContextCases.length!==5)throw Error('Foreign5 count');globalThis.chordForeignContextObserved=JSON.stringify(chordForeignContextCases);", "chord-foreign-context-review-5ab7fe7.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+        defer engine.freeValue(result);
+        if (emit) {
+            const json = try engine.toString(try s.get(global, "chordForeignContextObserved"));
+            defer engine.gpa.free(json);
+            std.debug.print("CHORD_FOREIGN_CONTEXT_OBSERVED_CASES={s}\n", .{json});
+        }
     }
 };
 test "native Chord5ab7fe7 foreign context review compiled inventory" {
@@ -38,11 +43,11 @@ test "native Chord5ab7fe7 foreign context review compiled inventory" {
     std.debug.print("CHORD_FOREIGN_CONTEXT_REVIEW_COMPILED_INVENTORY={s}\n", .{encoded});
 }
 test "native Chord5ab7fe7 foreign forged and null contexts reject before remote call while valid context calls with GC" {
-    try Probe.run(std.testing.allocator);
+    try Probe.run(std.testing.allocator, true);
 }
 test "native Chord5ab7fe7 foreign context review measured host allocation baseline diagnostic only" {
     var failing: std.testing.FailingAllocator = .init(std.testing.allocator, .{});
-    try Probe.run(failing.allocator());
+    try Probe.run(failing.allocator(), false);
     try std.testing.expect(!failing.has_induced_failure);
     try std.testing.expectEqual(failing.allocated_bytes, failing.freed_bytes);
     std.debug.print("CHORD_FOREIGN_CONTEXT_REVIEW_HOST_BASELINE_ALLOCATIONS={d}\n", .{failing.alloc_index});

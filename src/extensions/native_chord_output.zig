@@ -124,6 +124,8 @@ fn propertyAtom(engine: *h.Engine, index: f64) !c.JSAtom {
     return atom;
 }
 pub fn exports(engine: *h.Engine) !c.JSValue {
+    if (engine.text_encoder_class == 0) try @import("text_encoding.zig").install(engine);
+    if (engine.text_decoder_class == 0) try @import("text_decoder.zig").install(engine);
     var s: h.Scope = .{ .engine = engine };
     defer s.deinit();
     const bindings = try s.record();

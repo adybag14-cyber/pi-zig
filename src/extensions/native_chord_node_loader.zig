@@ -170,10 +170,7 @@ fn load(engine: *em.Engine, state: c.JSValue, modules: c.JSValue) anyerror!c.JSV
     defer s.deinit();
     if (!try h.flag(&s, state, "hooked")) {
         try h.field(&s, state, "hooked", c.pi_js_bool(engine.context, 1));
-        if (engine.source_loader == null) {
-            try @import("commonjs.zig").install(engine);
-            engine.setSourceLoader(.{ .context = engine, .normalize = normalizeFs, .normalize_require = normalizeRequireFs, .load = loadFs, .input = inputFs });
-        }
+        try installFilesystem(engine);
         engine.setChordModuleHooks(normalizeHook, inputHook);
     }
     const generation = try s.keep(try engine.checked(c.JS_PiIncrement(engine.context, try s.get(state, "generation"))));
@@ -195,6 +192,13 @@ fn load(engine: *em.Engine, state: c.JSValue, modules: c.JSValue) anyerror!c.JSV
     try h.field(&s, task, "facets", try s.list());
     try h.field(&s, task, "version", version);
     return next(engine, task, c.pi_js_undefined(), false, 0);
+}
+/// The actual private guest entry uses the same native filesystem, package,
+/// CommonJS and TypeScript pipeline as nodeLoader, before facet reload hooks.
+pub fn installFilesystem(engine: *em.Engine) !void {
+    if (engine.source_loader != null) return;
+    try @import("commonjs.zig").install(engine);
+    engine.setSourceLoader(.{ .context = engine, .normalize = normalizeFs, .normalize_require = normalizeRequireFs, .load = loadFs, .input = inputFs });
 }
 fn next(engine: *em.Engine, task: c.JSValue, loaded: c.JSValue, rejected: bool, phase: c_int) anyerror!c.JSValue {
     var s: Scope = .{ .engine = engine };
