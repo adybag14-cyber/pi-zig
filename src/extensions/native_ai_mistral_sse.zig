@@ -56,7 +56,7 @@ pub fn pop(scope: *Scope, owner: c.JSValue) !Event {
         if (!scope.truthy(data)) continue;
         if (try v.eq(scope, data, "[DONE]")) return .done;
         const parsed = try scope.invoke(try scope.global("JSON"), "parse", &.{data});
-        if (!c.JS_IsObject(parsed) or c.JS_IsNull(parsed) or try v.array(scope, parsed) or !try v.array(scope, try scope.get(parsed, "choices"))) return v.errorText(scope, try scope.text("Invalid Mistral streaming event"));
+        if (!c.JS_IsObject(parsed) or c.JS_IsFunction(scope.engine.context, parsed) or c.JS_IsNull(parsed) or try v.array(scope, parsed) or !try v.array(scope, try scope.get(parsed, "choices"))) return v.errorText(scope, try scope.text("Invalid Mistral streaming event"));
         return .{ .data = parsed };
     }
 }
