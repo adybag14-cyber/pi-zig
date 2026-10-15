@@ -120,13 +120,58 @@ fn runProcess(a: std.mem.Allocator, io: std.Io, command: []const u8, budget: Bud
     defer process.freeArgv(a, owned);
     const argv: []const []const u8 = owned;
     const milliseconds = @min((try budget.remaining()) orelse 15000, 15000);
-    const result = try std.process.run(a, io, .{ .argv = argv, .stdout_limit = .limited(64 * 1024), .stderr_limit = .limited(8 * 1024), .create_no_window = true, .timeout = .{ .duration = .{ .raw = .fromMilliseconds(@intCast(milliseconds)), .clock = .awake } } });
-    defer a.free(result.stdout);
-    defer a.free(result.stderr);
+    const Completion = union(enum) { child: anyerror!std.process.RunResult, canceled: anyerror!void };
+    var results: [2]Completion = undefined;
+    var selected = std.Io.Select(Completion).init(io, &results);
+    // Canceling process.run reaches its pipe/wait cancellation point and then
+    // kills and reaps only the Child handle created inside that invocation.
+    // Drain racing successful results too: their stdout can contain secrets.
+    defer while (selected.cancel()) |completion| switch (completion) {
+        .child => |finished| if (finished) |value| freeProcessOutput(a, value) else |_| {},
+        .canceled => {},
+    };
+    try selected.concurrent(.child, std.process.run, .{ a, io, std.process.RunOptions{ .argv = argv, .stdout_limit = .limited(64 * 1024), .stderr_limit = .limited(8 * 1024), .create_no_window = true, .timeout = .{ .duration = .{ .raw = .fromMilliseconds(@intCast(milliseconds)), .clock = .awake } } } });
+    try selected.concurrent(.canceled, watchBudget, .{budget});
+    const result = switch (try selected.await()) {
+        .child => |finished| try finished,
+        .canceled => |finished| {
+            try finished;
+            unreachable;
+        },
+    };
+    defer freeProcessOutput(a, result);
     _ = try budget.remaining();
     switch (result.term) {
         .exited => |code| if (code != 0) return error.CredentialProcessFailed,
         else => return error.CredentialProcessFailed,
     }
     return process.parseCredentialProcessJson(a, result.stdout);
+}
+fn watchBudget(budget: Budget) !void {
+    while (true) {
+        _ = try budget.remaining();
+        try budget.io.sleep(.fromMilliseconds(20), .awake);
+    }
+}
+fn freeProcessOutput(a: std.mem.Allocator, output: std.process.RunResult) void {
+    @memset(output.stdout, 0);
+    @memset(output.stderr, 0);
+    a.free(output.stdout);
+    a.free(output.stderr);
+}
+test "native AI Bedrock credential process cancellation joins and reaps only its owned subprocess" {
+    const io = std.testing.io;
+    var aborted = false;
+    const Cancel = struct {
+        fn later(task_io: std.Io, flag: *bool) !void {
+            try task_io.sleep(.fromMilliseconds(100), .awake);
+            @atomicStore(bool, flag, true, .release);
+        }
+    };
+    var cancellation = try io.concurrent(Cancel.later, .{ io, &aborted });
+    defer cancellation.await(io) catch {};
+    const start = std.Io.Clock.awake.now(io).toMilliseconds();
+    const command = if (@import("builtin").os.tag == .windows) "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoProfile -NonInteractive -Command \"Start-Sleep -Seconds 30\"" else "/bin/sleep 30";
+    try std.testing.expectError(error.ProviderRequestAborted, runProcess(std.testing.allocator, io, command, .{ .io = io, .abort_flag = &aborted, .deadline_ms = start + 5000 }));
+    try std.testing.expect(std.Io.Clock.awake.now(io).toMilliseconds() - start < 3000);
 }
