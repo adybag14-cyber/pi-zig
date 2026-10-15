@@ -327,6 +327,13 @@ fn evaluate(s: *Scope, graph: c.JSValue, nodes: c.JSValue, env: c.JSValue, code:
         },
         .Every, .Some, .SomeAll, .Counted => {
             const array = (try evaluate(s, graph, nodes, env, a)).value;
+            const method = try s.get(array, switch (op) {
+                .Every => "every",
+                .Some => "some",
+                .SomeAll => "forEach",
+                .Counted => "reduce",
+                else => unreachable,
+            });
             const params = try at(s, args, if (op == .Every) 2 else 1);
             const body = try at(s, args, if (op == .Every) 3 else 2);
             const offset = if (op == .Every) try at(s, args, 1) else c.pi_js_undefined();
@@ -334,16 +341,53 @@ fn evaluate(s: *Scope, graph: c.JSValue, nodes: c.JSValue, env: c.JSValue, code:
             try set(s, state, "result", o.boolean(s, false));
             var roots = [_]c.JSValue{ graph, nodes, env, params, body, offset, state };
             const fn_value = try s.own(try e.checked(c.JS_NewCFunctionData2(e.context, arrayCallback, "", if (op == .Counted) 3 else 2, @intFromEnum(op), 7, &roots)));
-            const result = try s.invoke(array, switch (op) {
-                .Every => "every",
-                .Some => "some",
-                .SomeAll => "forEach",
-                .Counted => "reduce",
-                else => unreachable,
-            }, if (op == .Counted) &.{ fn_value, c.JS_NewInt32(e.context, 0) } else &.{fn_value});
+            const result = try s.call(method, array, if (op == .Counted) &.{ fn_value, c.JS_NewInt32(e.context, 0) } else &.{fn_value});
             return .{ .value = if (op == .SomeAll) try field(s, state, "result") else result };
         },
         else => {},
+    }
+    if (op == .IsArray or op == .IsInteger or op == .IsNumber or op == .Keys or op == .Entries) {
+        const receiver = try s.global(if (op == .IsArray) "Array" else if (op == .IsInteger or op == .IsNumber) "Number" else "Object");
+        const method = try s.get(receiver, switch (op) {
+            .IsArray => "isArray",
+            .IsInteger => "isInteger",
+            .IsNumber => "isFinite",
+            .Keys => "getOwnPropertyNames",
+            .Entries => "entries",
+            else => unreachable,
+        });
+        const value = (try evaluate(s, graph, nodes, env, a)).value;
+        return .{ .value = try s.call(method, receiver, &.{value}) };
+    }
+    if (op == .HasPropertyKey) {
+        const raw_key = try at(s, args, 1);
+        if ((try isText(s, raw_key, "\"__proto__\"")) or (try isText(s, raw_key, "\"constructor\""))) {
+            const object = try s.global("Object");
+            const prototype = try field(s, object, "prototype");
+            const has = try field(s, prototype, "hasOwnProperty");
+            const call = try field(s, has, "call");
+            const value = (try evaluate(s, graph, nodes, env, a)).value;
+            const key = (try evaluate(s, graph, nodes, env, raw_key)).value;
+            return .{ .value = try s.call(call, has, &.{ value, key }) };
+        }
+        const key = (try evaluate(s, graph, nodes, env, raw_key)).value;
+        const value = (try evaluate(s, graph, nodes, env, a)).value;
+        return .{ .value = o.boolean(s, try js.hasKey(e, value, key)) };
+    }
+    if (op == .IsConstructor or op == .IsMinLength or op == .IsMaxLength or op == .IsDeepEqual or op == .MultipleOf) {
+        const receiver = try namespace(s, graph, "guard/guard.mjs");
+        const method = try s.get(receiver, switch (op) {
+            .IsConstructor => "IsConstructor",
+            .IsMinLength => "IsMinLength",
+            .IsMaxLength => "IsMaxLength",
+            .IsDeepEqual => "IsDeepEqual",
+            .MultipleOf => "IsMultipleOf",
+            else => unreachable,
+        });
+        const value = (try evaluate(s, graph, nodes, env, a)).value;
+        if (op == .IsConstructor) return .{ .value = try s.call(method, receiver, &.{value}) };
+        const right = (try evaluate(s, graph, nodes, env, try at(s, args, 1))).value;
+        return .{ .value = try s.call(method, receiver, &.{ value, right }) };
     }
     const left = (try evaluate(s, graph, nodes, env, a)).value;
     if (op == .IsBigInt or op == .IsBoolean or op == .IsObject or op == .IsString or op == .IsSymbol or op == .IsFunction) {
@@ -357,13 +401,14 @@ fn evaluate(s: *Scope, graph: c.JSValue, nodes: c.JSValue, env: c.JSValue, code:
             .IsFunction => "function",
             else => unreachable,
         };
-        return .{ .value = o.boolean(s, (try isText(s, kind, expected)) and (op != .IsObject or !c.JS_IsNull(left))) };
+        const same = try isText(s, kind, expected);
+        if (op == .IsObject and same) {
+            const second = (try evaluate(s, graph, nodes, env, a)).value;
+            return .{ .value = o.boolean(s, !c.JS_IsNull(second)) };
+        }
+        return .{ .value = o.boolean(s, same) };
     }
     if (op == .IsNull or op == .IsUndefined) return .{ .value = o.boolean(s, if (op == .IsNull) c.JS_IsNull(left) else c.JS_IsUndefined(left)) };
-    if (op == .IsArray) return .{ .value = try s.invoke(try s.global("Array"), "isArray", &.{left}) };
-    if (op == .IsInteger or op == .IsNumber) return .{ .value = try s.invoke(try s.global("Number"), if (op == .IsInteger) "isInteger" else "isFinite", &.{left}) };
-    if (op == .Keys or op == .Entries) return .{ .value = try s.invoke(try s.global("Object"), if (op == .Keys) "getOwnPropertyNames" else "entries", &.{left}) };
-    if (op == .IsConstructor) return .{ .value = try invokeNamespace(s, graph, "guard/guard.mjs", "IsConstructor", &.{left}) };
     const right = (try evaluate(s, graph, nodes, env, try at(s, args, 1))).value;
     if (op == .IsEqual) return .{ .value = o.boolean(s, s.equal(left, right)) };
     if (op == .IsGreaterThan or op == .IsLessThan or op == .IsLessEqualThan or op == .IsGreaterEqualThan) return .{ .value = try s.own(try e.checked(c.JS_PiBinaryOperator(e.context, switch (op) {
@@ -373,23 +418,7 @@ fn evaluate(s: *Scope, graph: c.JSValue, nodes: c.JSValue, env: c.JSValue, code:
         .IsGreaterEqualThan => 7,
         else => unreachable,
     }, left, right))) };
-    if (op == .HasPropertyKey) {
-        const raw_key = try at(s, args, 1);
-        if ((try isText(s, raw_key, "\"__proto__\"")) or (try isText(s, raw_key, "\"constructor\""))) {
-            const object = try s.global("Object");
-            const prototype = try field(s, object, "prototype");
-            const has = try field(s, prototype, "hasOwnProperty");
-            return .{ .value = try s.invoke(has, "call", &.{ left, right }) };
-        }
-        return .{ .value = o.boolean(s, try js.hasKey(e, left, right)) };
-    }
-    return .{ .value = try invokeNamespace(s, graph, "guard/guard.mjs", switch (op) {
-        .IsMinLength => "IsMinLength",
-        .IsMaxLength => "IsMaxLength",
-        .IsDeepEqual => "IsDeepEqual",
-        .MultipleOf => "IsMultipleOf",
-        else => return error.NativeTypeBoxUnknownIrOperation,
-    }, &.{ left, right }) };
+    return error.NativeTypeBoxUnknownIrOperation;
 }
 fn compiledCheck(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const e = Engine.fromContext(ctx.?);

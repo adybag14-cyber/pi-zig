@@ -1,6 +1,6 @@
 # TypeBox Compile/Validator native production candidate
 
-This checkpoint is **source-only and unqualified**. Source74 has not been run,
+This checkpoint is **source-only and unqualified**. Source80 has not been run,
 native compilation has not been run, and expected output is absent.
 
 The authority is the actual `typebox@1.3.27` package in the immutable fullruntime
@@ -37,7 +37,7 @@ settings/schema values. Per-build native maps follow reentrant builds, and a
 detached native checker retains its IR and actual external callbacks through
 GC.
 
-The 74 prepared genuine controls include public metadata and class identity,
+The 80 prepared genuine controls include public metadata and class identity,
 borrowed methods, subclass setters, prototype descriptors, constructor/context
 identity, parse cause descriptors, value transformations, full keyword
 examples, accelerated-versus-dynamic schema/settings/ref/const/enum mutations,

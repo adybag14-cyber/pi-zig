@@ -20,7 +20,7 @@ const fixture=new URL('../../src/extensions/fixtures/typebox-compile-production.
 const input=fs.readFileSync(fixture,'utf8');
 vm.runInThisContext(input,{filename:'actual-typebox-compile-production-controls.mjs',timeout:120000});
 const rows=globalThis.typeboxCompileProductionObservation.rows;
-if(rows.length!==74)throw Error('Complete actual Source74 scope required');
+if(rows.length!==80)throw Error('Complete actual Source80 scope required');
 const result={sourceHead:'4954d760504c11df9b2cbdc040346107b6a8153d',runtime:process.version,executable:process.execPath,argv:process.execArgv,authority,version:metadata.version,count:rows.length,packageSha256:crypto.createHash('sha256').update(packageBytes).digest('hex'),inputSha256:crypto.createHash('sha256').update(input).digest('hex'),actualNodeGC:true,rows};
 fs.writeFileSync(output,JSON.stringify(result,null,2)+'\n',{flag:'wx'});
-console.log(JSON.stringify({status:'actual_source74_capture_complete',count:rows.length,output}));
+console.log(JSON.stringify({status:'actual_source80_capture_complete',count:rows.length,output}));
