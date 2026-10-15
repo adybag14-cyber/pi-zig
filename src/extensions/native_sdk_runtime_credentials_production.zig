@@ -26,13 +26,14 @@ pub fn constructor(engine: *em.Engine) !c.JSValue {
     }
     return c.JS_DupValue(engine.context, ctor);
 }
-fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+fn construct(engine: *em.Engine, new_target: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    try scope.put(target, "store", c.pi_js_undefined());
-    try scope.put(target, "overrides", try scope.own(try js.builtin(engine, "Map", &.{})));
-    try scope.set(target, "store", if (args.len > 0) args[0] else c.pi_js_undefined());
-    return c.pi_js_undefined();
+    const instance = try scope.own(try @import("native_class.zig").object(engine, new_target));
+    try scope.put(instance, "store", c.pi_js_undefined());
+    try scope.put(instance, "overrides", try scope.own(try js.builtin(engine, "Map", &.{})));
+    try scope.set(instance, "store", if (args.len > 0) args[0] else c.pi_js_undefined());
+    return c.JS_DupValue(engine.context, instance);
 }
 fn asynchronous(method: Method) bool {
     return method == .read or method == .list or method == .delete;
