@@ -14,9 +14,16 @@ const exports = .{ "anthropicOAuth", "openaiCodexOAuth", "openaiChatGPTOAuth", "
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    const catalog = try scope.own(try @import("native_ai_catalog_values.zig").providerChatCatalog(engine, try scope.text("github-copilot")));
+    return createWithCatalog(engine, catalog);
+}
+pub fn createWithCatalog(engine: *v.em.Engine, github_models: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
     const state = try scope.object();
     try scope.put(state, "bundledLoaders", c.pi_js_undefined());
     try scope.put(state, "modules", try scope.object());
+    try scope.put(state, "githubModels", github_models);
     const namespace = try scope.object();
     const Register = struct {
         fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -60,7 +67,7 @@ fn startLoad(scope: *Scope, owner: c.JSValue, kind: Kind, options: c.JSValue) !v
     const modules = try scope.get(state, "modules");
     var promise = try scope.get(modules, @tagName(kind));
     if (c.JS_IsUndefined(promise)) {
-        const module = try flow.create(scope.engine, c.pi_js_undefined());
+        const module = try flow.create(scope.engine, state);
         defer scope.engine.freeValue(module.owner);
         promise = try scope.own(module.promise);
         try scope.put(module.owner, "kind", c.JS_NewInt32(scope.engine.context, @intCast(@intFromEnum(kind))));
@@ -88,7 +95,7 @@ fn initialize(scope: *Scope, owner: c.JSValue) !void {
         .anthropic => try @import("native_ai_oauth_anthropic.zig").create(scope.engine),
         .openaiCodex => try @import("native_ai_oauth_codex.zig").create(scope.engine),
         .openaiChatGPT => try @import("native_ai_oauth_openai_chatgpt.zig").create(scope.engine),
-        .githubCopilot => try @import("native_ai_oauth_copilot.zig").create(scope.engine),
+        .githubCopilot => try @import("native_ai_oauth_copilot.zig").createWithCatalog(scope.engine, try scope.get(try scope.get(owner, "agent"), "githubModels")),
         .openrouter => try @import("native_ai_oauth_openrouter.zig").create(scope.engine),
         .kimiCoding => try @import("native_ai_oauth_kimi.zig").create(scope.engine),
         .meta => try @import("native_ai_oauth_meta.zig").create(scope.engine),
