@@ -316,6 +316,11 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const betas = try scope.get(try scope.get(owner, "payload"), "betas");
     if (!v.nullish(betas) and try v.length(scope, betas) > 0) try scope.put(headers, "anthropic-beta", try scope.invoke(betas, "join", &.{try scope.text(",")}));
     try merge(scope, headers, try scope.get(model, "headers"));
+    if (try v.eq(scope, try scope.get(model, "provider"), "github-copilot")) {
+        const transcript = try scope.get(try scope.get(owner, "context"), "messages");
+        const helper = @import("native_ai_copilot_headers.zig");
+        try merge(scope, headers, try helper.build(scope, transcript, try helper.hasVision(scope, transcript)));
+    }
     try merge(scope, headers, try v.optional(scope, options, "headers"));
     return headers;
 }
