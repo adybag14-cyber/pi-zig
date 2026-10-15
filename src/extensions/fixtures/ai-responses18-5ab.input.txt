@@ -1,0 +1,38 @@
+// Differential test controls. No provider algorithm is implemented here.
+if(responsesSource.sourceHead!=='5ab7fe74c400097b386662205cd93900695b8a71'||responsesSource.rows.length!==18||responsesInput.cases.length!==18)throw Error('genuine Source18 fixture required');
+Date.now=()=>responsesSource.fixedTime;
+const snapshot=value=>JSON.parse(JSON.stringify(value,(key,value)=>key==='durationMs'&&typeof value==='number'?0:value));
+const originalPush=AssistantMessageEventStream.prototype.push;
+let liveEvents;
+AssistantMessageEventStream.prototype.push=function(event){liveEvents?.push(snapshot(event));return originalPush.call(this,event)};
+globalThis.responsesNativeRows=[];
+for(let index=0;index<responsesInput.cases.length;index++){
+ const input=responsesInput.cases[index],selected={...responsesInput.model,...input.model,compat:{...responsesInput.model.compat,...input.compat}};
+ if(input.mode==='azure'){selected.api='azure-openai-responses';selected.provider='azure';selected.baseUrl=input.model?.baseUrl??''}
+ if(input.mode==='codex'){selected.api='openai-codex-responses';selected.provider='openai-codex';selected.baseUrl='https://chatgpt.com/backend-api'}
+ const trace=[],requests=[],events=[],consumerEvents=[],consumerAliases=[];let providerIndex=0,firstOutput;
+ const options={apiKey:'sk-fixture',sessionId:'fixture-session',headers:{'user-agent':'pi-fixture','x-fixture':'caller'},maxRetries:0,...input.options,
+  onPayload:async(payload,m)=>{trace.push(['payload-enter',m===selected]);await Promise.resolve();trace.push(['payload-leave',m===selected]);return input.replacePayload?{...payload,metadata:{fixture:'replacement'}}:undefined},
+  onResponse:async(response,m)=>{trace.push(['response-enter',m===selected,snapshot(response)]);await Promise.resolve();trace.push(['response-leave',m===selected])},
+  onProviderStreamEvent:async(event,m)=>{trace.push(['provider-enter',providerIndex,m===selected,snapshot(event)]);await Promise.resolve();trace.push(['provider-leave',providerIndex,m===selected]);if(providerIndex++===input.rejectProviderAt)throw {fixture:'callback-reject'}},
+  fetch:async(url,init)=>{requests.push({url:String(url),method:init.method,headers:init.headers,body:JSON.parse(init.body)});const bytes=new TextEncoder().encode(input.events.map(e=>'data: '+JSON.stringify(e)+'\n\n').join(''));let offset=0;return {status:200,statusText:'',ok:true,headers:{entries(){return Object.entries({'content-type':'text/event-stream','x-fixture-response':'source'})[Symbol.iterator]()}},body:{getReader(){return {async read(){if(offset===bytes.length)return {done:true,value:undefined};const n=Math.min(bytes.length,offset+17),value=bytes.slice(offset,n);offset=n;return {done:false,value}},async cancel(){offset=bytes.length},releaseLock(){}}}}}}
+ };
+ liveEvents=events;
+ const api=input.mode==='azure'?azureResponsesAPI:input.mode==='codex'?codexResponsesAPI:responsesAPI;
+ let result,thrown;
+ try{const stream=api.stream(selected,input.context??responsesInput.context,options);for await(const event of stream){const output=event.partial??event.message??event.error;firstOutput??=output;consumerAliases.push([event.type,output===firstOutput]);consumerEvents.push(snapshot(event))}result=await stream.result();consumerAliases.push(['result',result===firstOutput])}catch(error){thrown=String(error)}
+ liveEvents=undefined;
+ const actual={name:input.name,requests,trace,events,consumerEvents,consumerAliases,result:result?snapshot(result):null,...(thrown?{thrown}:{})};responsesNativeRows.push(actual);
+ const expected=responsesSource.rows[index];
+ function equal(key,a,b){if(JSON.stringify(a)!==JSON.stringify(b))throw Error(JSON.stringify({case:input.name,key,actual:a,expected:b}))}
+ equal('request-count',actual.requests.length,expected.requests.length);
+ for(let i=0;i<actual.requests.length;i++){
+  equal('request-url',actual.requests[i].url,expected.requests[i].url);equal('request-method',actual.requests[i].method,expected.requests[i].method);equal('request-body',actual.requests[i].body,expected.requests[i].body);
+  // Source fixture retains all actual SDK headers. Runtime metadata belongs to
+  // the native runtime, and is explicitly outside this request-codec test.
+  for(const key of ['accept','authorization','api-key','content-type','session_id','session-id','x-client-request-id','user-agent','originator','openai-beta','chatgpt-account-id','x-fixture'])equal('request-header:'+key,actual.requests[i].headers[key],expected.requests[i].headers[key]);
+ }
+ for(const key of ['trace','events','consumerEvents','consumerAliases','result','thrown'])equal(key,actual[key],expected[key]);
+}
+AssistantMessageEventStream.prototype.push=originalPush;
+export const proof=true;

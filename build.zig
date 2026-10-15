@@ -1618,6 +1618,12 @@ pub fn build(b: *std.Build) void {
     ai_http_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-http", "Validate owned raw HTTP/SSE transport cancellation teardown and original wire fidelity").dependOn(&b.addRunArtifact(ai_http_tests).step);
     b.step("build-native-ai-http", "Compile native raw transport and narrow owner hooks before runtime").dependOn(&ai_http_tests.step);
+    const ai_responses_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_responses_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Responses"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ai_responses_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(ai_responses_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_responses_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-ai-responses", "Compare actual Responses API factories with Source18 request and stream observations").dependOn(&b.addRunArtifact(ai_responses_tests).step);
+    b.step("build-native-ai-responses", "Compile ordered Responses factories before bounded runtime checks").dependOn(&ai_responses_tests.step);
     const ai_json_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_json_parse_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI JSON"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_json_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_json_tests.root_module, sqlite_lib_dir, sqlite_library);
