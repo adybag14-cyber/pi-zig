@@ -1,0 +1,25 @@
+{
+  "candidate": "1c22a18117dcd1047e9c1fa8a6e8c94ef66362fb",
+  "source_drift": 0,
+  "compiler_drift": 0,
+  "control_drift": 0,
+  "references": [
+    {
+      "count": 1967,
+      "drift": 0,
+      "name": "source"
+    },
+    {
+      "count": 31064,
+      "drift": 0,
+      "name": "dependencies"
+    },
+    {
+      "count": 1774,
+      "drift": 0,
+      "name": "node_tools"
+    }
+  ],
+  "absence_drift": 0,
+  "observed_utc": "2026-10-15T19:56:23.2785228+00:00"
+}

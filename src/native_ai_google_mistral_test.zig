@@ -5,6 +5,7 @@ const facade = @import("extensions/native_ai_google_mistral_factory.zig");
 const c = em.c;
 fn install(engine: *em.Engine) !void {
     try @import("extensions/native_stream.zig").install(engine);
+    try @import("extensions/node_url.zig").install(engine);
     const imported = try engine.evalModule("import 'pi-ai';export const loaded=true;", "native-google-mistral-stream-install.mjs");
     engine.freeValue(imported);
     const global = c.JS_GetGlobalObject(engine.context);
@@ -60,7 +61,7 @@ test "native AI Google Mistral Source30 request component retains actual payload
     engine.freeValue(checked);
     c.JS_RunGC(engine.runtime);
 }
-test "native AI Google Mistral actual Source30 request event callback error semantics" {
+fn source30Http(full_snapshots: bool) !void {
     const gpa = std.testing.allocator;
     const v = @import("extensions/native_ai_provider_values.zig");
     for (0..30) |case_index| {
@@ -141,11 +142,12 @@ test "native AI Google Mistral actual Source30 request event callback error sema
         const global = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(global);
         try sdk.put(engine, global, "expected", c.JS_DupValue(engine.context, observation));
+        try sdk.put(engine, global, "fullSnapshots", c.pi_js_bool(engine.context, @intFromBool(full_snapshots)));
         try sdk.put(engine, global, "fixtureBase", try sdk.text(engine, url));
         const checked = engine.evalModule(
             \\function snapshot(value){if(Array.isArray(value))return value.map(snapshot);if(value&&typeof value==='object'){const out={};for(const[key,item]of Object.entries(value)){if(value.role==='assistant'&&key==='timestamp')out[key]='$TIMESTAMP';else if(value.role==='assistant'&&key==='durationMs')out[key]='$DURATION';else out[key]=snapshot(item)}return out}return value}
             \\function canonical(value){if(Array.isArray(value))return value.map(canonical);if(value&&typeof value==='object'){const result={};for(const key of Object.keys(value).sort())if(value[key]!==undefined)result[key]=canonical(value[key]);return result}return value}
-            \\const item=expected.input,apiName=item.kind==='google'?'google-generative-ai':item.kind==='vertex'?'google-vertex':'mistral-conversations',model={id:item.kind==='mistral'?'mistral-fixture':'gemini-3.1-pro-preview',name:'fixture',provider:item.kind==='vertex'?'google-vertex':item.kind,api:apiName,baseUrl:fixtureBase,reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192,...item.model},context=item.context??{messages:[{role:'system',content:'system',timestamp:0},{role:'user',content:'hello',timestamp:1}]},callbacks=[],events=[],payloads=[],options={apiKey:'fixture-placeholder-key',env:{GOOGLE_CLOUD_PROJECT:'',GCLOUD_PROJECT:'',GOOGLE_CLOUD_LOCATION:'',GOOGLE_APPLICATION_CREDENTIALS:''},maxTokens:1000,maxRetries:0,sessionId:'fixture-session',...item.options,onPayload(payload){callbacks.push('payload');payloads.push(snapshot(payload));if(item.callback==='replace')return {...payload,...(item.kind==='mistral'?{temperature:.25}:{config:{...payload.config,temperature:.25}})};if(item.callback==='async')return Promise.resolve()},onResponse(response){callbacks.push('response:'+response.status+':'+response.headers['x-fixture']);if(item.callback==='throw')throw Error('caller response failed');if(item.callback==='async')return Promise.resolve()},onProviderStreamEvent(chunk){callbacks.push('chunk');if(item.callback==='async')return Promise.resolve()}};let result,syncError;try{const stream=globalThis[item.kind].streamSimple(model,context,options);for await(const event of stream)events.push(snapshot(event));result=snapshot(await stream.result())}catch(error){syncError={name:error.name,message:error.message}}for(const key of ['payloads','callbacks','events','result','syncError']){const actual={payloads,callbacks,events,result,syncError}[key];if(JSON.stringify(canonical(actual))!==JSON.stringify(canonical(expected[key])))throw Error(JSON.stringify({case:item.name,key,actual,expected:expected[key]}))}export const done=true;
+            \\const item=expected.input,apiName=item.kind==='google'?'google-generative-ai':item.kind==='vertex'?'google-vertex':'mistral-conversations',model={id:item.kind==='mistral'?'mistral-fixture':'gemini-3.1-pro-preview',name:'fixture',provider:item.kind==='vertex'?'google-vertex':item.kind,api:apiName,baseUrl:fixtureBase,reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192,...item.model},context=item.context??{messages:[{role:'system',content:'system',timestamp:0},{role:'user',content:'hello',timestamp:1}]},callbacks=[],events=[],payloads=[],options={apiKey:'fixture-placeholder-key',env:{GOOGLE_CLOUD_PROJECT:'',GCLOUD_PROJECT:'',GOOGLE_CLOUD_LOCATION:'',GOOGLE_APPLICATION_CREDENTIALS:''},maxTokens:1000,maxRetries:0,sessionId:'fixture-session',...item.options,onPayload(payload){callbacks.push('payload');payloads.push(snapshot(payload));if(item.callback==='replace')return {...payload,...(item.kind==='mistral'?{temperature:.25}:{config:{...payload.config,temperature:.25}})};if(item.callback==='async')return Promise.resolve()},onResponse(response){callbacks.push('response:'+response.status+':'+response.headers['x-fixture']);if(item.callback==='throw')throw Error('caller response failed');if(item.callback==='async')return Promise.resolve()},onProviderStreamEvent(chunk){callbacks.push('chunk');if(item.callback==='async')return Promise.resolve()}};let result,syncError;try{const stream=globalThis[item.kind].streamSimple(model,context,options);for await(const event of stream)events.push(snapshot(event));result=snapshot(await stream.result())}catch(error){syncError={name:error.name,message:error.message}}for(const key of ['payloads','callbacks','result','syncError',...(fullSnapshots?['events']:[])]){const actual={payloads,callbacks,events,result,syncError}[key];if(JSON.stringify(canonical(actual))!==JSON.stringify(canonical(expected[key])))throw Error(JSON.stringify({case:item.name,key,actual,expected:expected[key]}))}if(!fullSnapshots){const shape=event=>{const out={...event};delete out.partial;delete out.message;delete out.error;return out};if(JSON.stringify(canonical(events.map(shape)))!==JSON.stringify(canonical(expected.events.map(shape))))throw Error(JSON.stringify({case:item.name,eventShapes:events.map(shape),expected:expected.events.map(shape)}))}export const done=true;
         , "native-google-mistral-actual-source30.mjs") catch |err| {
             std.debug.print("Google/Mistral {s}: {s}\n", .{ name, engine.last_error orelse "no diagnostic" });
             return err;
@@ -166,6 +168,25 @@ test "native AI Google Mistral actual Source30 request event callback error sema
         }
         c.JS_RunGC(engine.runtime);
     }
+}
+
+test "native AI Google Mistral actual Source30 full intermediate snapshots remain strict" {
+    try source30Http(true);
+}
+
+test "native AI Google Mistral Source30 terminal callback auth wire and event shape components" {
+    try source30Http(false);
+}
+
+test "native AI Google Mistral preflight preserves thrown guest identity without eager ToString" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    const checked = try engine.evalModule(
+        \\let conversions=0;const marker={toString(){conversions++;throw Error('unexpected conversion')}};for(const f of [google.streamSimple,mistral.streamSimple]){try{f({provider:'fixture'},{messages:[]},{get apiKey(){throw marker}});throw Error('getter failure lost')}catch(error){if(error!==marker)throw error}}if(conversions!==0)throw Error('eager guest exception conversion');export const checked=true;
+    , "native-google-mistral-exception-identity.mjs");
+    engine.freeValue(checked);
+    c.JS_RunGC(engine.runtime);
 }
 test "native AI Google Mistral retained facade roots survive collection" {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
@@ -190,6 +211,8 @@ test "native AI Google Mistral complete native facade allocation graph" {
             const checked = engine.evalModule("for(const f of [google.streamSimple,mistral.streamSimple]){try{f({provider:'fixture'},{messages:[]},{});throw Error('missing key accepted')}catch(error){if(error.message!=='No API key for provider: fixture')throw error}}export const checked=true;", "native-google-mistral-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
             engine.freeValue(checked);
             c.JS_RunGC(engine.runtime);
+            const failure: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+            if (failure.has_induced_failure) std.debug.print("Google/Mistral swallowed allocation {d}: {f}\n", .{ failure.fail_index, std.debug.FormatStackTrace{ .stack_trace = failure.getStackTrace() } });
         }
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});

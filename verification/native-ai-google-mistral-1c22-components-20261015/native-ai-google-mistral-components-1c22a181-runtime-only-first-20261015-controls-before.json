@@ -1,0 +1,54 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiGoogleMistralComponentsPair-20261015.ps1",
+    "sha256": "675C3B201A9D7533764E60EA7BD8CBB55DDB2B16448B68FE184F74EB6EF0710B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiGoogleMistralComponentsRuntimeOnly-20261015.ps1",
+    "sha256": "ED8DF4208F9E2B76976D3691755ABAE5E922C100CB4712252DFB22DE819D4AA5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-google-mistral-20261015\\.zig-cache\\o\\1635524a1e24730f35977181387a205b\\test.exe",
+    "sha256": "0214E2F94BD706194F8D2B43546959AA2107992D0E5A0C9BB9183F508B73A85D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-google-mistral-components-1c22a181-debug-first-20261015-compile.json",
+    "sha256": "2E9986E7E32E4F6EF7F3D5A4D6CAE8CF32068E630B4C55FDC82BF6C0CECE51C2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-google-mistral-components-1c22a181-debug-first-20261015-posthash.json",
+    "sha256": "BAAAA4FE1EFB903DD5064D8D960CB3286268E81721AEC4D5BB61A1AC23BA264A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-google-mistral-components-1c22a181-debug-first-20261015-source-before.json",
+    "sha256": "B023A2AD7E66AE8AC7E2729A3DE69261692E3B846910F97C3EB4D3F2DFE92B2F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-google-mistral-components-1c22a181-debug-first-20261015-controls-before.json",
+    "sha256": "E8C214DA07FB34F79BB610E982F8F6998D8454D45703CDCC450281FE51D18447"
+  }
+]

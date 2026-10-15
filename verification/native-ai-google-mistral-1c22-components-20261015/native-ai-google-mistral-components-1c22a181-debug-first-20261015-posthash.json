@@ -1,0 +1,33 @@
+{
+  "candidate": "1c22a18117dcd1047e9c1fa8a6e8c94ef66362fb",
+  "scope": "functional30/request27/retainedGC/fullhostOOM component; strict full-snapshot negative preserved separately",
+  "source": 6132,
+  "source_drift": 0,
+  "compiler": 19546,
+  "compiler_drift": 0,
+  "controls": 7,
+  "control_drift": 0,
+  "references": [
+    {
+      "count": 1967,
+      "drift": 0,
+      "name": "source"
+    },
+    {
+      "count": 31064,
+      "drift": 0,
+      "name": "dependencies"
+    },
+    {
+      "count": 1774,
+      "drift": 0,
+      "name": "node_tools"
+    }
+  ],
+  "absence_records": 84,
+  "absence_drift": 0,
+  "compile": "passed",
+  "runtime": "not_run",
+  "failure": "Fresh runtime admission denied",
+  "completed_utc": "2026-10-15T19:56:55.5845308+00:00"
+}
