@@ -21,6 +21,7 @@ const Into = struct {
     backing: c.JSValue,
     offset: usize,
     capacity: usize,
+    backing_length: usize = 0,
     filled: usize = 0,
     minimum: usize,
     width: usize,
@@ -416,6 +417,25 @@ pub fn readNative(scope: *Scope, bindings: c.JSValue, object: c.JSValue, args: [
 pub fn closedNative(scope: *Scope, bindings: c.JSValue, object: c.JSValue) !c.JSValue {
     return (try nativeReader(scope, bindings, object)).closed.promise;
 }
+pub fn releaseReaderNative(scope: *Scope, bindings: c.JSValue, object: c.JSValue) !void {
+    const owned = try nativeReader(scope, bindings, object);
+    var roots = [_]c.JSValue{ owned.stream, object };
+    _ = try operate(scope, object, &roots, .releaseLock, &.{});
+}
+pub fn byobViewNative(scope: *Scope, bindings: c.JSValue, controller: c.JSValue) !c.JSValue {
+    const object = (try controllerNative(scope, bindings, controller)).stream_value;
+    const self = try nativeState(scope, bindings, object);
+    if (!self.byte_source) return c.pi_js_null();
+    _ = try getRequest(scope, object, self);
+    return if (c.JS_IsUndefined(self.request)) c.pi_js_null() else self.request_view;
+}
+pub fn respondWithNewViewNative(scope: *Scope, bindings: c.JSValue, controller: c.JSValue, chunk: c.JSValue) !void {
+    const object = (try controllerNative(scope, bindings, controller)).stream_value;
+    const self = try nativeState(scope, bindings, object);
+    const request = try getRequest(scope, object, self);
+    var roots = [_]c.JSValue{ object, c.pi_js_undefined() };
+    _ = try operate(scope, request, &roots, .respondWithNewView, &.{chunk});
+}
 pub fn cancelNative(scope: *Scope, bindings: c.JSValue, object: c.JSValue, reason: c.JSValue) !c.JSValue {
     return cancel(scope, object, try nativeState(scope, bindings, object), reason);
 }
@@ -489,8 +509,10 @@ fn read(scope: *Scope, object: c.JSValue, self: *State, owned: *Reader, args: []
         into.minimum = minimum * width;
         into.width = width;
         into.array_type = c.JS_GetTypedArrayType(h.arg(args, 0));
+        _ = c.JS_GetArrayBuffer(scope.engine.context, &into.backing_length, original);
         into.backing = c.JS_DupValue(scope.engine.context, try transferred(scope, self, original));
     } else if (self.auto_allocate != 0) {
+        into.backing_length = self.auto_allocate;
         into.backing = try js.builtin(scope.engine, "ArrayBuffer", &.{numberValue(scope, self.auto_allocate)});
     }
     try self.pending.append(scope.engine.gpa, into);
@@ -647,11 +669,12 @@ fn operate(scope: *Scope, receiver: c.JSValue, roots: [*c]c.JSValue, method: Met
                 var width: usize = undefined;
                 const backing = try scope.own(try scope.engine.checked(c.JS_PiGetArrayBufferViewBuffer(scope.engine.context, first, &offset, &length, &width)));
                 const into = self.pending.items[0];
-                var old_length: usize = undefined;
                 var new_length: usize = undefined;
-                _ = c.JS_GetArrayBuffer(scope.engine.context, &old_length, into.backing);
                 _ = c.JS_GetArrayBuffer(scope.engine.context, &new_length, backing);
-                if (offset != into.offset + into.filled or length > into.capacity - into.filled or old_length != new_length) return typeError(scope, "Invalid replacement BYOB view");
+                // The original destination may have been transferred into an
+                // upstream BYOB reader. Validate against the retained original
+                // full backing length, rather than its now-detached storage.
+                if (offset != into.offset + into.filled or length > into.capacity - into.filled or into.backing_length != new_length) return typeError(scope, "Invalid replacement BYOB view");
                 scope.engine.freeValue(self.pending.items[0].backing);
                 self.pending.items[0].backing = c.JS_DupValue(scope.engine.context, backing);
                 count = length;

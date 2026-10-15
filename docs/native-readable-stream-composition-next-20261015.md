@@ -30,8 +30,14 @@ before either branch enqueue transfers storage,
 closes/errors the actual branch controllers and combines both cancellation
 reasons before canceling the real source. Its callback state is a rooted native
 record, and error propagation uses the actual source promises. This first byte
-tee still uses a default reader; the Source byte tee's dynamic BYOB-reader
-switching and detached replacement-buffer ownership remain outstanding.
+tee now switches between actual default and BYOB source readers according to
+the pulling branch's live request. It passes that branch's destination to the
+source, clones the other branch before transfer, returns the replacement view
+to the original request, and forwards only the current reader's close failure.
+The pull-into descriptor retains its original full backing length so detached
+destination validation uses the original ownership boundary. EOF closes real
+branches and commits retained zero-length BYOB results. This new path is
+source-only and needs a genuine tee probe and native regression gate.
 
 The core intrinsic helpers inspect native stream/reader/controller classes and
 invoke real state operations without consulting mutable public methods. Public
@@ -52,7 +58,7 @@ Genuine public graph Source9 subsequently captured all9 cases with full post0;
 batch SHA256 DB0777CAD8CB59E957F51C0BFD79DDB95EC19392D9F95A0BBC59A426A385DEF7.
 
 The complete source-compatible graph metadata and constructor validation,
-byte tee BYOB switching, public async iteration, pipe behavior and
+byte tee qualification, public async iteration, pipe behavior and
 allocation sweeps still need implementation and genuine native gates. Current
 install supports genuine byte and default queues; it must not be presented as complete
 public or Body/Response qualification. The next phase must retain the existing
