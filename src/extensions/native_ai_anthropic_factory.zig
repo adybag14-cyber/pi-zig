@@ -126,8 +126,11 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     if (rejected) {
-        if (@as(Stage, @enumFromInt(raw)) == .ready and try fallback(&scope, owner, value)) return;
-        return fail(&scope, owner, value);
+        if (@as(Stage, @enumFromInt(raw)) == .ready) {
+            const recovered = fallback(&scope, owner, value) catch |err| return failError(&scope, owner, err);
+            if (recovered) return;
+        }
+        return fail(&scope, owner, value) catch |err| failError(&scope, owner, err);
     }
     advance(&scope, owner, value, @enumFromInt(raw)) catch |err| try failError(&scope, owner, err);
 }
@@ -152,7 +155,12 @@ fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
     const reason = flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (err == error.OutOfMemory or try nativeAllocationReason(scope.engine, owner, reason)) return retireNativeAllocation(scope.engine, owner, reason);
-    return fail(scope, owner, reason);
+    return fail(scope, owner, reason) catch |secondary| {
+        const secondary_reason = flow.reason(scope.engine, secondary);
+        defer scope.engine.freeValue(secondary_reason);
+        if (secondary == error.OutOfMemory or try nativeAllocationReason(scope.engine, owner, secondary_reason)) return retireNativeAllocation(scope.engine, owner, secondary_reason);
+        return secondary;
+    };
 }
 fn nativeAllocationReason(engine: *v.em.Engine, owner: c.JSValue, reason: c.JSValue) !bool {
     const tagged = c.pi_js_native_allocation_error_generation(reason);
