@@ -20,7 +20,7 @@ fn emit(scope: *Scope, owner: c.JSValue, kind: []const u8, block: ?c.JSValue, ke
     const event = try scope.object();
     try scope.put(event, "type", try scope.text(kind));
     const output = try scope.get(owner, "output");
-    if (block) |b| try scope.put(event, "contentIndex", try scope.invoke(try scope.get(output, "content"), "indexOf", &.{b}));
+    if (block) |b| try scope.put(event, "contentIndex", try scope.invoke(try scope.get(owner, "indices"), "get", &.{b}));
     if (key) |k| try scope.put(event, k, value);
     try scope.put(event, if (@import("std").mem.eql(u8, kind, "done")) "message" else if (@import("std").mem.eql(u8, kind, "error")) "error" else "partial", output);
     _ = try scope.invoke(try scope.get(owner, "stream"), "push", &.{event});
@@ -30,7 +30,7 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
     defer scope.deinit();
     const owner = try scope.object();
     inline for (.{ "model", "stream", "json", "grammar", "options" }, .{ model, stream, json, grammar, options }) |key, value| try scope.put(owner, key, value);
-    inline for (.{ "slots", "reasoning" }) |key| try scope.put(owner, key, try scope.own(try v.js.builtin(engine, "Map", &.{})));
+    inline for (.{ "slots", "reasoning", "indices" }) |key| try scope.put(owner, key, try scope.own(try v.js.builtin(engine, "Map", &.{})));
     inline for (.{ "terminal", "finished" }) |key| try scope.put(owner, key, c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "codex", c.pi_js_bool(engine.context, @intFromBool(codex)));
     const output = try scope.object();
@@ -130,7 +130,9 @@ fn createSlot(scope: *Scope, owner: c.JSValue, index: c.JSValue, item: c.JSValue
             try scope.put(block, "customInput", scratch);
         }
     }
-    try push(scope, try scope.get(try scope.get(owner, "output"), "content"), block);
+    const content = try scope.get(try scope.get(owner, "output"), "content");
+    _ = try scope.invoke(try scope.get(owner, "indices"), "set", &.{ block, try scope.get(content, "length") });
+    try push(scope, content, block);
     _ = try scope.invoke(try scope.get(owner, "slots"), "set", &.{ index, block });
     try emit(scope, owner, if (thinking) "thinking_start" else if (text) "text_start" else "toolcall_start", block, null, c.pi_js_undefined());
     return block;

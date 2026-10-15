@@ -355,7 +355,6 @@ pub fn build(engine: *v.em.Engine, model: c.JSValue, context: c.JSValue, options
     try scope.put(params, "model", try scope.get(model, "id"));
     try scope.put(params, "input", try messages(&scope, model, context, config, grammar, effort, mode));
     try scope.put(params, "stream", c.pi_js_bool(engine.context, 1));
-    try scope.put(params, "store", c.pi_js_bool(engine.context, 0));
     const session = try v.optional(&scope, options, "sessionId");
     try scope.put(params, "prompt_cache_key", if (mode != .azure and try v.eq(&scope, retention, "none")) c.pi_js_undefined() else try cacheKey(&scope, session));
     if (mode == .standard) {
@@ -373,6 +372,7 @@ pub fn build(engine: *v.em.Engine, model: c.JSValue, context: c.JSValue, options
             try scope.put(params, "prompt_cache_options", cache);
         }
     }
+    try scope.put(params, "store", c.pi_js_bool(engine.context, 0));
     const max = try v.optional(&scope, options, "maxTokens");
     if (mode != .codex and !omit and scope.truthy(max) and (mode == .azure or scope.truthy(try scope.get(config, "supportsMaxOutputTokens")))) try scope.put(params, "max_output_tokens", try scope.invoke(try scope.global("Math"), "max", &.{ max, c.JS_NewInt32(engine.context, 16) }));
     const temperature = try v.optional(&scope, options, "temperature");
@@ -439,12 +439,13 @@ pub fn build(engine: *v.em.Engine, model: c.JSValue, context: c.JSValue, options
         const sampling = try scope.invoke(simple, "resolveSamplingParams", &.{ model, if (v.nullish(reasoning_effort)) try scope.text("off") else reasoning_effort, try v.optional(&scope, options, "samplingParams") });
         if (scope.truthy(sampling)) try v.js.spreadInto(engine, params, sampling);
     }
-    // Source object construction order is observable to onPayload and on wire.
+    // Standard/Azure construction preserves insertion positions when sampling
+    // overwrites an existing field; a sampling-only field stays at the end.
+    if (mode != .codex) return c.JS_DupValue(engine.context, params);
+    // Codex has a separate literal layout and does not use sampling overlays.
     const ordered = try scope.object();
     if (mode == .codex) {
         inline for (.{ "model", "store", "stream", "instructions", "input", "text", "include", "prompt_cache_key", "tool_choice", "parallel_tool_calls", "temperature", "service_tier", "tools", "reasoning" }) |key| if (try v.js.hasKey(engine, params, try scope.text(key))) try scope.put(ordered, key, try scope.get(params, key));
-    } else {
-        inline for (.{ "model", "input", "stream", "prompt_cache_key", "prompt_cache_retention", "prompt_cache_options", "store", "max_output_tokens", "temperature", "service_tier", "tools", "tool_choice", "reasoning", "include" }) |key| if (try v.js.hasKey(engine, params, try scope.text(key))) try scope.put(ordered, key, try scope.get(params, key));
     }
     var keys = try v.iterator(&scope, try scope.invoke(try scope.global("Object"), "keys", &.{params}));
     defer keys.deinit();
