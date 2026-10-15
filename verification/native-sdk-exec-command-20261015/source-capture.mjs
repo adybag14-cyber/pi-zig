@@ -55,7 +55,9 @@ await run('missing-executable',()=>execCommand(path.join(root,'fixture-not-an-ex
 await run('missing-cwd',()=>execCommand(process.execPath,[],path.join(root,'missing-cwd')));
 await run('nonstring-command',()=>execCommand(1,[],root));
 await run('empty-command',()=>execCommand('',[],root));
-await run('nonarray-args',()=>execCommand(process.execPath,{},root));
+// Node's actual args-object overload replaces the third spawn-options object.
+// Select ignored stdin explicitly so this real Node child exits naturally.
+await run('object-args-overload',()=>execCommand(process.execPath,{cwd:root,stdio:['ignore','pipe','pipe']},root));
 await run('null-byte-command',()=>execCommand('fixture\0invalid',[],root));
 await run('null-byte-argument',()=>execCommand(process.execPath,['fixture\0invalid'],root));
 await run('argument-coercion',()=>execCommand(process.execPath,args('argument-coercion','argv',1,null,undefined,{toString(){return 'object-arg';}}),root));
