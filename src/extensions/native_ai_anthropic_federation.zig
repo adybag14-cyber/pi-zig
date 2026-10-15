@@ -80,7 +80,8 @@ pub fn client(engine: *v.em.Engine, slot: c.JSValue, model: c.JSValue, config: c
     const base = if (scope.truthy(configured_base)) configured_base else try scope.get(model, "baseUrl");
     // A literal suffix regex is created below rather than interpreting URL path
     // components: SDK strips every trailing slash from the supplied base URL.
-    const suffix = try scope.own(try v.js.builtin(engine, "RegExp", &.{ try scope.text("/+$"), try scope.text("") }));
+    var suffix_args = [_]c.JSValue{ try scope.text("/+$"), try scope.text("") };
+    const suffix = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, engine.intrinsic_regexp_constructor, suffix_args.len, &suffix_args)));
     try scope.put(result, "baseURL", try scope.invoke(base, "replace", &.{ suffix, try scope.text("") }));
     try scope.put(result, "cached", c.pi_js_null());
     try scope.put(result, "pendingRefresh", c.pi_js_null());
