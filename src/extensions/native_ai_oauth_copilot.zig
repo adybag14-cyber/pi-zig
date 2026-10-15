@@ -1,6 +1,5 @@
 //! GitHub Copilot's actual public device/token/catalog/policy OAuth bodies.
 //! All rich values and observable coercions remain in the owner QuickJS realm.
-const std = @import("std");
 const h = @import("native_ai_oauth_subscription_values.zig");
 const v = h.v;
 const Scope = h.Scope;
@@ -12,29 +11,7 @@ const Stage = enum(c_int) { prompt, response, json, text, polled, cancel, sleep 
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    const raw = @embedFile("fixtures/ai-oauth-copilot-catalog-ae7.json");
-    const groups = try s.own(try engine.checked(c.JS_ParseJSON(engine.context, raw.ptr, raw.len, "github-copilot.json")));
-    const catalog = try s.object();
-    const objects = try s.invoke(try s.global("Object"), "values", &.{groups});
-    var outer = try v.iterator(&s, objects);
-    defer outer.deinit();
-    errdefer outer.closePreserving();
-    while (try outer.next()) |group| {
-        defer engine.freeValue(group);
-        var inner = try v.iterator(&s, try s.invoke(try s.global("Object"), "values", &.{group}));
-        defer inner.deinit();
-        errdefer inner.closePreserving();
-        while (try inner.next()) |model| {
-            defer engine.freeValue(model);
-            if (try v.eq(&s, try s.get(model, "type"), "chat")) {
-                const key = try s.get(model, "id");
-                const atom = c.JS_ValueToAtom(engine.context, key);
-                if (atom == c.JS_ATOM_NULL) return v.js.capture(engine);
-                defer c.JS_FreeAtom(engine.context, atom);
-                if (c.JS_DefinePropertyValue(engine.context, catalog, atom, c.JS_DupValue(engine.context, model), c.JS_PROP_C_W_E) < 0) return v.js.capture(engine);
-            }
-        }
-    }
+    const catalog = try s.own(try @import("native_ai_catalog_values.zig").providerChatCatalog(engine, try s.text("github-copilot")));
     return createWithCatalog(engine, catalog);
 }
 /// Central assembly supplies its one actual provider catalog object. It remains
