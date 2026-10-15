@@ -1,0 +1,37 @@
+{
+  "highlighter_drift": [],
+  "root_common_paths": [
+    "src/extensions/engine.zig",
+    "src/extensions/native_node_function.zig",
+    "src/extensions/native_immediates.zig",
+    "src/extensions/timers.zig",
+    "src/extensions/native_stdio_frontend.zig",
+    "src/extensions/native_sdk.zig",
+    "src/extensions/native_js_values.zig",
+    "src/extensions/native_ai_json_parse.zig",
+    "src/extensions/native_stream.zig"
+  ],
+  "owner_sha256": "7B2C7464E43C3D63D1EFA021757257F79E527B2F7887A1922F23B5C361B2193F",
+  "whole_host_qualified": false,
+  "recorded_utc": "2026-10-15T22:35:57.4718398+00:00",
+  "complete191_ready": false,
+  "header_sha256": "286E31A5965C727788D96F3BCBB05615EFCFA02BD7EE925519F5DBA8752B8350",
+  "actual_highlighter_support_files": 215,
+  "c_sha256": "4DD2E0829E52C4385B677261E833442F12A94F04CB2127BFEB4C4CE4C481579D",
+  "checks": [
+    "new Zig files fmt",
+    "new Zig files ast-check",
+    "scoped git diff check",
+    "Root common exactdiff0",
+    "highlighter previous8685 narrowhashdiff0",
+    "Source445 three hashes unchanged"
+  ],
+  "root_base": "463bb45337b452b6dd6f7f62858ccfdfa21dbc47",
+  "execution": "NOT LAUNCHED; Root resource grant required",
+  "full_pi_qualified": false,
+  "negative_packet": "5da41c531461f52ff4bf321369a85c3a938bdfab",
+  "core_qualified": false,
+  "implementation_head": "5af0dbab902d26e1fd83d97d8b8bac2558aa9139",
+  "previous_tested": "8685fd09298955e1f2fbae41e7677141b07e7b14",
+  "root_common_diff": []
+}
