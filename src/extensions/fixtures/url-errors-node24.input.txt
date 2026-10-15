@@ -1,0 +1,28 @@
+globalThis.urlErrorRows = [];
+const rows = urlErrorRows;
+function snapshot(error) {
+  const names = Object.getOwnPropertyNames(error);
+  const descriptors = Object.fromEntries(names.filter(k => k !== 'stack').map(key => { const d = Object.getOwnPropertyDescriptor(error, key); return [key, { value: d.value, writable: d.writable, enumerable: d.enumerable, configurable: d.configurable }]; }));
+  return { name: error.name, message: error.message, code: error.code, ownNames: names, keys: Object.keys(error), descriptors, string: String(error), typeError: error instanceof TypeError, constructorIsTypeError: error.constructor === TypeError };
+}
+function record(name, fn) { let value; try { value = { value: fn() }; } catch(error) { value = { error: snapshot(error) }; } rows.push({ name, ...value }); }
+const invalids = [undefined, null, 0, 7, true, false, '', 'relative', '/relative', 'http://', 'http://[bad]', 'https://x:99999', '\ud800', { toString() { return '/object'; } }];
+for (let i = 0; i < invalids.length; i++) record('constructor-invalid-' + i, () => new URL(invalids[i]));
+record('constructor-missing', () => new URL());
+for (const [name, input, base] of [['relative-invalid-base','/relative','bad-base'], ['absolute-invalid-base','https://example.com','bad-base'], ['relative-null-base','/relative',null], ['absolute-null-base','https://example.com',null], ['relative-empty-base','/relative',''], ['relative-undefined-base','/relative',undefined], ['relative-valid-base','/relative','https://example.com/path']]) record(name, () => String(new URL(input, base)));
+record('constructor-input-string-hint-and-base-order', () => { const order=[]; try { new URL({ [Symbol.toPrimitive](hint) { order.push('input:'+hint); return '/input'; } }, { [Symbol.toPrimitive](hint) { order.push('base:'+hint); return 'invalid-base'; } }); } catch(error) { return { order, error: snapshot(error) }; } });
+record('constructor-input-throw-preserved', () => { const marker={},order=[]; try { new URL({ toString() { order.push('input'); throw marker; } }, { toString() { order.push('base'); return 'https://example.com'; } }); } catch(error) { return { same: error===marker, order }; } });
+record('constructor-base-throw-preserved', () => { const marker={},order=[]; try { new URL({ toString() { order.push('input'); return 'https://example.com'; } }, { toString() { order.push('base'); throw marker; } }); } catch(error) { return { same: error===marker, order }; } });
+record('constructor-valid-absolute-still-coerces-base', () => { const order=[]; const u = new URL({ toString() { order.push('input'); return 'https://example.com'; } }, { toString() { order.push('base'); return 'https://base.example'; } }); return { href: u.href, order }; });
+record('constructor-symbol-input', () => new URL(Symbol('input')));
+record('constructor-symbol-base', () => new URL('https://example.com', Symbol('base')));
+record('constructor-symbol-from-coercion', () => new URL({ [Symbol.toPrimitive]() { return Symbol('input'); } }));
+record('constructor-toString-fallback-valueOf', () => { const order=[]; try { new URL({ toString() { order.push('toString'); return {}; }, valueOf() { order.push('valueOf'); return 42; } }); } catch(error) { return { order, error:snapshot(error) }; } });
+record('constructor-nonprimitive-coercion', () => new URL({ toString() { return {}; }, valueOf() { return {}; } }));
+for(const method of ['parse','canParse']) {
+  record(method+'-missing',()=>URL[method]());
+  record(method+'-invalid',()=>URL[method]('/relative'));
+  record(method+'-bad-base',()=>URL[method]('https://example.com','bad-base'));
+  record(method+'-coercion-throw-preserved',()=>{const marker={};try{URL[method]({toString(){throw marker}})}catch(error){return error===marker}});
+}
+record('href-setter-invalid',()=>{const u=new URL('https://example.com');try{u.href='/relative'}catch(error){return{href:u.href,error:snapshot(error)}}});
