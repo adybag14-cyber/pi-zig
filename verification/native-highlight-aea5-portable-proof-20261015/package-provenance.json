@@ -1,0 +1,22 @@
+{
+  "candidate": "aea5f178efdd3105d903553c8f5ff82bfbb25ea3",
+  "proof_worktree": "C:\\Users\\adyba\\pi-zig-highlight-aea5-portable-proof-20261015",
+  "branch": "checkpoint/native-highlight-aea5-portable-proof-20261015",
+  "public_origin": "https://github.com/adybag14-cyber/pi-zig.git",
+  "package_owner": {
+    "pid": 70256,
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoProfile -File C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight15-dispatch-audit-20261015\\Build-PortableProof-aea5-20261015.ps1",
+    "created_utc": "2026-10-15T22:48:11.293997Z",
+    "status": "passed",
+    "operation": "portable-proof-package-no-native-jobs",
+    "exit_code": 0,
+    "completed_utc": "2026-10-15T22:50:44.9003680+00:00"
+  },
+  "packager_sha256": "D72E2B3EE5EC0B77C0AC1F506CCB233EC7A2C591962548C5A1A889F65D03A7D5",
+  "offline_verification_status": "qualified_portable_offline",
+  "native_reruns": 0,
+  "source_edits": 0,
+  "cache_retirement": false,
+  "scope": "AEA5 computational closure / eager21 / Core74 host GPA only"
+}

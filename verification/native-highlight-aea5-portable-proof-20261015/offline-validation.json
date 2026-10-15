@@ -1,0 +1,17 @@
+{
+  "status": "qualified_portable_offline",
+  "candidate": "aea5f178efdd3105d903553c8f5ff82bfbb25ea3",
+  "c_sha256": "47996DFE76080EEA68B13214B3D2EC351B8B0C4BDF759CD06084ABA9920F81EF",
+  "archive_sha256": "58E15B1707241D7B3A220B20C71AABEA43C9352AC3985BA16585AA8AF0459103",
+  "original_files": 3588,
+  "distinct_objects": 2038,
+  "ranges": 250,
+  "indices": 22272,
+  "BEGIN_exactly_once": true,
+  "COMPLETE_exactly_once": true,
+  "source_controls": "Deep7/Core74/Legacy32",
+  "all_objects_reopened_hashed": true,
+  "C_VM_exhaustive_malloc_qualified": false,
+  "all191_qualified": false,
+  "public_activation": false
+}

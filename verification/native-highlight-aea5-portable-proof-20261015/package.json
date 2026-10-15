@@ -1,0 +1,21 @@
+{
+  "format": "native-highlight-aea5-portable-proof-v1",
+  "candidate": "aea5f178efdd3105d903553c8f5ff82bfbb25ea3",
+  "c_sha256": "47996DFE76080EEA68B13214B3D2EC351B8B0C4BDF759CD06084ABA9920F81EF",
+  "source_authority": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "archive": "evidence.objects.zip",
+  "archive_sha256": "58E15B1707241D7B3A220B20C71AABEA43C9352AC3985BA16585AA8AF0459103",
+  "index_sha256": "6FC6071D1D401A0B627D1E2FFBDBD45DFA179A82752B0F576F5EDF95E9E8BFA1",
+  "verifier": "Verify-PortableProof.ps1",
+  "verifier_sha256": "10537CCB1DDE77576E1835BE639DA106AD32186290CE978B5A35FCB4F50ECB1A",
+  "original_files": 3588,
+  "distinct_objects": 2038,
+  "original_bytes": 520246328,
+  "archive_bytes": 11549830,
+  "range_count": 250,
+  "allocation_indices": 22272,
+  "full_core_host_GPA": true,
+  "C_VM_exhaustive_malloc_qualified": false,
+  "all191_qualified": false,
+  "public_activation": false
+}
