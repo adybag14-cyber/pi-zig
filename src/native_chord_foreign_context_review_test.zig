@@ -1,5 +1,5 @@
-//! Authored latest-Source review regression; actual Source capture and native
-//! qualification remain pending. No historical b45 golden is relabeled.
+//! Actual latest-Source review caller/golden, captured twice without relabeling
+//! any historical b45 proof. Native qualification remains separately required.
 const std = @import("std");
 const em = @import("extensions/engine.zig");
 const h = @import("extensions/native_chord_host_values.zig");
@@ -23,8 +23,10 @@ const Probe = struct {
         const global = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(global);
         try js.define(engine, global, "nativeChordForeignContextApi", c.JS_DupValue(engine.context, api));
+        const golden = @embedFile("extensions/fixtures/chord-foreign-context-original-5ab7fe7.json");
+        try js.define(engine, global, "chordForeignContextExpected", try engine.checked(c.JS_ParseJSON(engine.context, golden.ptr, golden.len, "chord-foreign-context-original-5ab7fe7.json")));
         const generation = engine.native_allocation_generation;
-        const result = engine.evalModule("const api=nativeChordForeignContextApi;await(async()=>{\n" ++ @embedFile("extensions/fixtures/chord-foreign-context-review-5ab7fe7.input.txt") ++ "\n})();if(chordForeignContextCases.length!==5)throw Error('Foreign5 count');globalThis.chordForeignContextObserved=JSON.stringify(chordForeignContextCases);", "chord-foreign-context-review-5ab7fe7.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+        const result = engine.evalModule("const api=nativeChordForeignContextApi;await(async()=>{\n" ++ @embedFile("extensions/fixtures/chord-foreign-context-review-5ab7fe7.input.txt") ++ "\n})();if(chordForeignContextCases.length!==5||chordForeignContextExpected.cases.length!==5)throw Error('Foreign5 count');for(let i=0;i<5;i++)if(JSON.stringify(chordForeignContextCases[i])!==JSON.stringify(chordForeignContextExpected.cases[i]))throw Error(JSON.stringify({case:i,actual:chordForeignContextCases[i],expected:chordForeignContextExpected.cases[i]}));globalThis.chordForeignContextObserved=JSON.stringify(chordForeignContextCases);", "chord-foreign-context-review-5ab7fe7.mjs") catch |err| return engine.nativeAllocationError(err, generation);
         defer engine.freeValue(result);
         if (emit) {
             const json = try engine.toString(try s.get(global, "chordForeignContextObserved"));

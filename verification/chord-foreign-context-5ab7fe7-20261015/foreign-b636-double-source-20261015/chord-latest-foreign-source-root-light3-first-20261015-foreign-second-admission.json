@@ -1,0 +1,16 @@
+{
+  "observed_utc": "2026-10-15T18:12:39.9941085+00:00",
+  "root_authority": "Root explicitly authorized fresh Foreign5 twice only after exact Source prefix assertion repair; reuse unchanged genuine Output14 double proof at e66; LIGHT3 normal2GiB 256MiB heap 120s; release to platform_cleanup_15 after terminal post; no native Chord grant",
+  "free_bytes": 20479111168,
+  "required_bytes": 2147483648,
+  "heap_mib": 256,
+  "timeout_seconds": 120,
+  "max_total_local_jobs": 4,
+  "candidate": 5683,
+  "source": 1967,
+  "dependencies": 31064,
+  "node": 1774,
+  "compiler": 19546,
+  "native_runtime_authorized": false,
+  "public_activation": false
+}

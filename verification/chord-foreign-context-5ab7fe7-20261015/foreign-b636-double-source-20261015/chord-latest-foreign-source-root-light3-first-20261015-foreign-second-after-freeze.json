@@ -1,0 +1,42 @@
+{
+  "completed_utc": "2026-10-15T18:13:55.1795678+00:00",
+  "head": "b636bbb88da7e1bb21330c6e237c2a9a243fd4f0",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "candidate": 5683,
+  "candidate_drift": 0,
+  "candidate_inventory_drift": 0,
+  "sets": [
+    {
+      "name": "source",
+      "count": 1967,
+      "drift": 0,
+      "inventory_drift": 0,
+      "inventory_scope": "C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015"
+    },
+    {
+      "name": "dependencies",
+      "count": 31064,
+      "drift": 0,
+      "inventory_drift": 0,
+      "inventory_scope": "C:/Users/adyba/pi-upstream-runtime-19cb534-20261012"
+    },
+    {
+      "name": "node",
+      "count": 1774,
+      "drift": 0,
+      "inventory_drift": 0,
+      "inventory_scope": "exact original node.exe plus complete npm subtree"
+    },
+    {
+      "name": "compiler",
+      "count": 19546,
+      "drift": 0,
+      "inventory_drift": 0,
+      "inventory_scope": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0"
+    }
+  ],
+  "controls": 20,
+  "control_drift": 0,
+  "control_manifest_sha256": "AC7F18204F96F360EB2881F60D78B1F94BE4330D9C6F895082FBDA6CC09C082B",
+  "public_activation": false
+}

@@ -1,0 +1,124 @@
+{
+  "completed_utc": "2026-10-15T18:21:00.8761283+00:00",
+  "capture_candidate_head": "b636bbb88da7e1bb21330c6e237c2a9a243fd4f0",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "foreign_cases": 5,
+  "foreign_double_capture": "passed",
+  "foreign_sha256": "6967BB3C8A7497D2BD63B2CE922BC22272C26D792E8FFC58C530C8E5E787E419",
+  "owner_pids": [
+    64128,
+    62528
+  ],
+  "all_owner_pids_absent": true,
+  "candidate_files": 5683,
+  "source_files": 1967,
+  "dependencies": 31064,
+  "node_files": 1774,
+  "compiler_files": 19546,
+  "controls": 20,
+  "all_frozen_hash_and_inventory_drift": 0,
+  "final_post_utc": "2026-10-15T18:14:46.7955632Z",
+  "retained_output_capture_head": "e66b0b3f90f4a4a8f6c997f1924a3e3c332963e1",
+  "retained_output_sha256": "EE67E4E925EE0784D863A3BC10D668C88EC5D229E4F34C3810CB0CF8340BF1BC",
+  "retained_output_original_caller_and_wrapper_unchanged": true,
+  "source_assertion_correction": "actual invalid/foreign_ctx message prefix retained exactly",
+  "native_output_correction": "push prototype length2 matches actual Source",
+  "copied_artifacts": [
+    {
+      "path": "Run-ChordLatestForeignSourcePair-20261015.ps1",
+      "sha256": "2D88B83EE3F279AA44D9B0981185363DC3BC1351B0B0F5DD16A6F35DBA157995"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-controls.json",
+      "sha256": "AC7F18204F96F360EB2881F60D78B1F94BE4330D9C6F895082FBDA6CC09C082B"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-pair-result.json",
+      "sha256": "61F7882646946432C70441C12A01174B6CCB9EA3FB71A5A00E0683DC416721AB"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-final-freeze.json",
+      "sha256": "BD0436383CFE7C9A584E41B8607B29253AF98ACEE8974B01A011DC6414BA33C2"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-first.json",
+      "sha256": "22FA902B24B28231B11069B0245035576ACD19E73C7A2CDD6F1584E5CCF8A1DE"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-first-result.json",
+      "sha256": "02D777D2926D419D0EBE0DD6A7FA5439D1F7E30EB9FC3DFD9A1E1A990D5C7FB0"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-first-before-freeze.json",
+      "sha256": "94E07FF209B3FF349B141AA41CFF6BBF6A2C88BBDD660044B35C1F1CF2033E09"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-first-after-freeze.json",
+      "sha256": "ECF8A252967725590F54F2D23853A5EBDC267590929B5C5A592D2D6D8FC1F304"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-first-admission.json",
+      "sha256": "3E620A349BD14935F3711B53E4BB730DE72A616396AB6EBF53D221351B436483"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-first.stdout.log",
+      "sha256": "6967BB3C8A7497D2BD63B2CE922BC22272C26D792E8FFC58C530C8E5E787E419"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-first.stderr.log",
+      "sha256": "E3D69F36F10F5D25E7B77ADD7E8D45C2AB6A31BBB93F9AF17D4EB3261AD21EBC"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-first-output.json",
+      "sha256": "6967BB3C8A7497D2BD63B2CE922BC22272C26D792E8FFC58C530C8E5E787E419"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-second.json",
+      "sha256": "6CDE9A070B760711FA99C5F70C27E0369557AB6C55B0BD44A0099A1534D0208A"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-second-result.json",
+      "sha256": "F401F6F78EE4B3D0ACE8BD65C9DECFBCDD3CDA7918889457ACC64634C65FE61E"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-second-before-freeze.json",
+      "sha256": "08D0B197A79ECCA3647B7473FEB31D77EDB4AA78B398FE53DF352E6F1ED54622"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-second-after-freeze.json",
+      "sha256": "D199EA68CAE386E3962465F2C1A5273A3E6693B3E361441C68F673C72A5A0E56"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-second-admission.json",
+      "sha256": "C1C7880DFE2203F29B70E29B10949C17A27671EE1022A503A58FD800AF0FCFAF"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-second.stdout.log",
+      "sha256": "6967BB3C8A7497D2BD63B2CE922BC22272C26D792E8FFC58C530C8E5E787E419"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-second.stderr.log",
+      "sha256": "3873CE0115F656DDAC4D94761682383C1A0F1F8A71D9E2A197C373A01C7EFEFD"
+    },
+    {
+      "path": "chord-latest-foreign-source-root-light3-first-20261015-foreign-second-output.json",
+      "sha256": "6967BB3C8A7497D2BD63B2CE922BC22272C26D792E8FFC58C530C8E5E787E419"
+    },
+    {
+      "path": "source5ab-modules-62528-0-20261015.jsonl",
+      "sha256": "8DD3F8DDD7F1EF87B215028AC9B5761BF6E075CAFC5E36910ED28F623E752DF0"
+    },
+    {
+      "path": "source5ab-modules-64128-0-20261015.jsonl",
+      "sha256": "8DD3F8DDD7F1EF87B215028AC9B5761BF6E075CAFC5E36910ED28F623E752DF0"
+    }
+  ],
+  "native_compiled": false,
+  "native_runtime_executed": false,
+  "fresh_native_host_baselines": null,
+  "complete_native_host_failure_coverage": false,
+  "full_node_qualified": false,
+  "full_chord_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}
