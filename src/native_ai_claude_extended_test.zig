@@ -4,6 +4,7 @@ const c = v.c;
 const fixture = @import("ai/http_fixture.zig");
 comptime {
     _ = @import("native_ai_constrained_sampling_test.zig");
+    _ = @import("native_ai_sdk_headers_test.zig");
 }
 
 fn putJson(scope: *v.Scope, global: c.JSValue, name: [*:0]const u8, bytes: []const u8) !void {
