@@ -11,4 +11,3 @@ try{const output=(input.simple?bedrockAPI.streamSimple:bedrockAPI.stream)(model,
 const actual=normalize({callbacks,events,result,thrown}),expected=normalize({callbacks:bedrockSourceRow.callbacks,events:bedrockSourceRow.events,result:bedrockSourceRow.result,thrown:bedrockSourceRow.thrown});
 if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({case:input.name,actual,expected}));
 export const qualified=true;
-

@@ -129,4 +129,3 @@ Source18 compilation/runtime have not run and need Root's native reservation;
 the reviewed C-generator/item-iterator integration remains necessary for the
 retained protocol timing negative. No expected Source observation is synthesized
 or rewritten to accommodate that negative.
-

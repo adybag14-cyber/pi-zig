@@ -35,6 +35,11 @@
     "bytes": 0
   },
   {
+    "path": "qualification-boundary.json",
+    "sha256": "CDCFAC63DAA74E065442597225E87B3771525E1E5524F2B6E40E3EAA579D38D6",
+    "bytes": 614
+  },
+  {
     "path": "Run-AiBedrock18Source-20261015.ps1",
     "sha256": "732FA211DEABC14924E587811E105B01273E4996B95D2EF75387B9FB25381792",
     "bytes": 7192
