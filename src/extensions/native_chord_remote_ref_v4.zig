@@ -232,8 +232,15 @@ fn call(engine: *h.Engine, receiver: c.JSValue, bindings: c.JSValue, name: c.JSV
     if (depth > 0) return h.throwValue(&s, try h.errorValue(&s, bindings, "not_ready", &.{ try s.get(receiver, "address"), try s.text("."), name, try s.text(" called inside a factory") }, c.pi_js_undefined()));
     const native_ctx = c.JS_IsInstanceOf(engine.context, ctx, try s.get(bindings, "CtxImpl"));
     if (native_ctx < 0) return js.capture(engine);
+    if (!c.JS_IsUndefined(ctx) and native_ctx == 0) {
+        const detail = try s.record();
+        try h.field(&s, detail, "reason", try s.text("foreign_ctx"));
+        const failure = try h.errorValue(&s, bindings, "invalid", &.{try s.text("ctx must come from a Chord host")}, detail);
+        const promise = try s.keep(try js.global(engine, "Promise"));
+        return js.invoke(engine, promise, "reject", &.{failure});
+    }
     if (native_ctx != 0) {
-        _ = h.invoke(&s, ctx, "check", &.{try s.get(ctx, "host")}) catch |err| return @import("native_durable.zig").rejectedPromise(engine, err);
+        _ = h.invoke(&s, ctx, "check", &.{host}) catch |err| return @import("native_durable.zig").rejectedPromise(engine, err);
     }
     if (c.JS_IsUndefined(ctx) or (native_ctx != 0 and try h.flag(&s, ctx, "holder"))) {
         const options = try s.record();

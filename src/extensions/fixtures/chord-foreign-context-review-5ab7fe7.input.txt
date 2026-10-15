@@ -1,0 +1,32 @@
+// Derived from upstream review.test.ts at commit 9a3ca68bda4db67efc506ec114bffe64635e8569.
+// This is an authored regression caller, pending actual Source capture.
+const {createHost,remote,hostNamed,method,memoryLinkPair,isChordError,Type}=api;
+const Target=remote('t.remote-target',{version:1,input:Type.Object({}),host:hostNamed('server'),variants:{main:{state:{},methods:{hit:method()}}}});
+let hits=0;
+const server=createHost({self:{kind:'host'},name:'server',onError:()=>{}});
+const worker=createHost({self:{kind:'host'},name:'worker',onError:()=>{}});
+const other=createHost({self:{kind:'host'},name:'other',onError:()=>{}});
+try{
+ server.serve(Target,()=>({variant:'main',hit:()=>{hits++}}));
+ const [down,up]=memoryLinkPair(),sent=[];
+ const link={get closed(){return up.closed},send(frame){sent.push(frame);return up.send(frame)},receive(handler){up.receive(handler)},onClose(handler){up.onClose(handler)},close(reason){up.close(reason)}};
+ server.accept(down,{kind:'host',name:'worker',principal:{worker:true}});
+ worker.connect(link,{principal:{kind:'server'}});
+ const target=worker.hold(Target,{});
+ try{
+  await target.ready;
+  const foreign=await other.root(ctx=>target.hit(ctx).catch(error=>error));
+  if(!isChordError(foreign,'invalid')||foreign.reason!=='foreign_ctx'||foreign.message!=='ctx belongs to another host')throw Error('foreign context accepted or wrong error');
+  const forged={rootId:'forged',codeVersion:1,signal:new AbortController().signal};
+  for(const ctx of [forged,null]){
+   const result=target.hit(ctx);
+   if(!result||typeof result.then!=='function')throw Error('invalid context did not return a Promise');
+   const error=await result.then(()=>{throw Error('forged context accepted')},failure=>failure);
+   if(!isChordError(error,'invalid')||error.reason!=='foreign_ctx'||error.message!=='ctx must come from a Chord host')throw Error('forged context wrong error');
+  }
+  for(let i=0;i<10;i++)await new Promise(resolve=>setTimeout(resolve,0));
+  if(hits!==0||sent.filter(frame=>frame.t==='call').length!==0)throw Error('invalid context crossed link');
+  await worker.root(ctx=>target.hit(ctx));
+  if(hits!==1||sent.filter(frame=>frame.t==='call').length!==1)throw Error('valid worker context failed');
+ }finally{target.release()}
+}finally{await other.close();await worker.close();await server.close()}

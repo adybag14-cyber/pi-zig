@@ -1,0 +1,72 @@
+{
+  "completed_utc": "2026-10-15T16:17:32.3444524+00:00",
+  "scope": "selected source-only implementation and syntax checks; not a full frozen identity pair",
+  "candidate_base": "36f3fa95e1c66fb7a65ce5a32732a90a51aa4dce",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "source_behavior_commit": "9a3ca68bda4db67efc506ec114bffe64635e8569",
+  "selected_authoritative_source_files": [
+    {
+      "path": "packages/chord/src/remote.ts",
+      "sha256": "C6799F769D02C7D0243804D79B4C19FDAF21F3CE941DBB884FB029C71650CA7E"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "sha256": "5045F7AE2DD1E41280F2A8FEFD4A7501DAF4A7747C8DAA7276027ECCFE6EB7CD"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "sha256": "B83C33F3DDA420770A57374981C0A7C16661D6886DA7875A19FC4D868B5DD855"
+    }
+  ],
+  "selected_candidate_files": [
+    {
+      "path": "build.zig",
+      "sha256": "2FF6F63E314D229657A7E09BD7BFFB5B9EB592508B870612CDEFE5BD873BB0A2"
+    },
+    {
+      "path": "src/extensions/native_chord_remote_ref_v4.zig",
+      "sha256": "0E80EBBDFE192D248E9740E7904E19F8F6D623365F18EEA8A88A0DF97C01B17E"
+    },
+    {
+      "path": "src/native_chord_foreign_context_review_test.zig",
+      "sha256": "70D04AF7E31692F2D38DD29635C67720EFD95E136FDF8B553E2AEB1B3602C7C8"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-foreign-context-review-5ab7fe7.input.txt",
+      "sha256": "4EE8F469A2DCAE033A82E26645CCCD0800475448990F6992240D8CC75E900AF8"
+    }
+  ],
+  "checks": [
+    {
+      "check": "Zig 0.16.0 fmt --check",
+      "status": "passed",
+      "files": [
+        "build.zig",
+        "src/extensions/native_chord_remote_ref_v4.zig",
+        "src/native_chord_foreign_context_review_test.zig"
+      ]
+    },
+    {
+      "check": "Node stdin --input-type=module --check",
+      "status": "passed",
+      "file": "src/extensions/fixtures/chord-foreign-context-review-5ab7fe7.input.txt",
+      "source_executed": false
+    },
+    {
+      "check": "git diff --check",
+      "status": "passed"
+    }
+  ],
+  "expected_selected_test_executions": 4,
+  "compiled_inventory_observed": false,
+  "original_source_captured": false,
+  "source_hydration_verified": false,
+  "full_frozen_inputs_verified": false,
+  "native_compiled": false,
+  "native_runtime_executed": false,
+  "measured_host_baseline": null,
+  "complete_host_failure_coverage": false,
+  "full_v4_graph_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}
