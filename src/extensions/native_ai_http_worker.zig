@@ -64,6 +64,8 @@ pub const Input = struct {
     timeout_ms: ?u64 = null,
     method: std.http.Method = .POST,
     framing: Framing = .sse,
+    /// Central e3b8a89 opt-in, backported without unrelated preparation hooks.
+    stream_error_bytes: bool = false,
 };
 const OwnedInput = struct {
     url: []u8,
@@ -73,6 +75,7 @@ const OwnedInput = struct {
     timeout_ms: ?u64,
     method: std.http.Method,
     framing: Framing,
+    stream_error_bytes: bool,
     fn copy(input: Input) !OwnedInput {
         const url = try a.dupe(u8, input.url);
         errdefer a.free(url);
@@ -93,7 +96,7 @@ const OwnedInput = struct {
             destination.* = .{ .name = name, .value = try a.dupe(u8, source.value) };
             count += 1;
         }
-        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms, .method = input.method, .framing = input.framing };
+        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms, .method = input.method, .framing = input.framing, .stream_error_bytes = input.stream_error_bytes and input.framing == .bytes };
     }
     fn deinit(self: OwnedInput) void {
         a.free(self.url);
@@ -216,7 +219,7 @@ pub const Worker = struct {
             try self.feed(self.writer.buffer[0..self.writer.end]);
             self.writer.end = 0;
         }
-        if (self.status < 200 or self.status >= 300) {
+        if ((self.status < 200 or self.status >= 300) and !self.input.stream_error_bytes) {
             const body = try self.error_body.toOwnedSlice(a);
             try self.push(.{ .error_body = body });
         } else if (self.input.framing == .body) {
@@ -282,7 +285,7 @@ pub const Worker = struct {
     }
     fn feed(self: *Worker, bytes: []const u8) !void {
         if (@atomicLoad(bool, &self.abort_flag, .acquire)) return error.NativeHttpAborted;
-        if (self.status < 200 or self.status >= 300 or self.input.framing == .body) {
+        if (((self.status < 200 or self.status >= 300) and !self.input.stream_error_bytes) or self.input.framing == .body) {
             if (bytes.len > maximum_frame_bytes - self.error_body.items.len) return error.NativeHttpErrorBodyLimit;
             return self.error_body.appendSlice(a, bytes);
         }
