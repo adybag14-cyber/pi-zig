@@ -68,8 +68,9 @@ fn defineFrom(scope: *Scope, target: c.JSValue, key: c.JSValue, fields: c.JSValu
     const define_fn = try scope.get(object, "defineProperty");
     const descriptor = try scope.object();
     try scope.put(descriptor, "configurable", c.pi_js_bool(scope.engine.context, 1));
-    try scope.put(descriptor, "writable", c.pi_js_bool(scope.engine.context, 1));
+    if (!(visible and c.JS_IsUndefined(settings))) try scope.put(descriptor, "writable", c.pi_js_bool(scope.engine.context, 1));
     try scope.put(descriptor, "enumerable", if (c.JS_IsUndefined(settings)) c.pi_js_bool(scope.engine.context, @intFromBool(visible)) else try scope.get(settings, "enumerableKind"));
+    if (visible and c.JS_IsUndefined(settings)) try scope.put(descriptor, "writable", c.pi_js_bool(scope.engine.context, 1));
     try scope.put(descriptor, "value", try scope.own(try v.js.getKey(scope.engine, fields, key)));
     _ = try scope.call(define_fn, object, &.{ target, key, descriptor });
 }
