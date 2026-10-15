@@ -1,0 +1,31 @@
+import { transformMessages } from 'file:///C:/Users/adyba/pi-upstream-source-ae7b16d-20261015/packages/ai/src/api/transform-messages.ts';
+const rows=[];
+const cases=[
+ ['cross-provider',{provider:'other'},{thinking:'private readable'}],
+ ['cross-api',{api:'other-api'},{thinking:'private readable'}],
+ ['cross-model',{model:'other-model'},{thinking:'private readable'}],
+ ['cross-redacted',{provider:'other'},{redacted:true,thinking:'',thinkingSignature:'opaque'}],
+ ['cross-live-getters',{model:'other-model'},'getters'],
+ ['same-readable',{}, {thinking:'visible internally'}],
+ ['same-empty',{}, {thinking:''}],
+ ['same-whitespace',{}, {thinking:' \t\n'}],
+ ['same-redacted',{}, {redacted:true,thinking:''}],
+ ['same-signed',{}, {thinkingSignature:'signed',thinking:''}],
+ ['same-live-getters',{}, 'getters'],
+ ['cross-visible-text-and-thinking',{model:'other-model'}, {thinking:'drop me'}],
+];
+for(const [name,change,fields] of cases){
+ const trace=[],marker={name};
+ const block={type:'thinking'};
+ if(fields==='getters')for(const key of ['redacted','thinkingSignature','thinking'])Object.defineProperty(block,key,{enumerable:true,get(){trace.push(key);if(name==='cross-live-getters')throw marker;return key==='thinking'?'reasoning':''}});
+ else Object.assign(block,fields);
+ const text={type:'text',text:'answer',textSignature:'signed-text'};
+ const message={role:'assistant',provider:'p',api:'openai-completions',model:'m',content:name==='cross-visible-text-and-thinking'?[block,text]:[block],stopReason:'stop',timestamp:123,...change};
+ const model={provider:'p',api:'openai-completions',id:'m',input:['text','image']};
+ try{
+  const result=transformMessages([message],model);
+  rows.push({name,trace,result:result.map(value=>({role:value.role,content:value.content.map(value=>({type:value.type,sameThinking:value===block,sameText:value===text,...(value.type==='text'?{text:value.text,hasTextSignature:Object.hasOwn(value,'textSignature')}:{})}))})),sameMessage:result[0]===message});
+ }catch(error){rows.push({name,trace,error:{sameMarker:error===marker,name:error?.name,message:error?.message}})}
+}
+if(rows.length!==12)throw Error('All12 targeted genuine transform callers required');
+export default rows;

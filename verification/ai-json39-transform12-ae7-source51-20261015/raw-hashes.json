@@ -1,0 +1,66 @@
+[
+  {
+    "file": "ai-json-delegate-ae7-caller-20261015.mjs",
+    "sha256": "962C7D6E6ECF56B698E2811940118FAC67679BD130F0030E5E9698D6C9333B4F"
+  },
+  {
+    "file": "ai-json-parse-ae7-caller-20261015.mjs",
+    "sha256": "117D23B450377AF10A9CED5B22671CA0CF983F9983B6A2CC8DD7F94265E908AB"
+  },
+  {
+    "file": "ai-json39-transform12-ae7-source51-first-20261015-admission.json",
+    "sha256": "157AECE197CBECCB0422011776D7B265D7C890338C797CB292A3171A5671DCC3"
+  },
+  {
+    "file": "ai-json39-transform12-ae7-source51-first-20261015-extra-before.json",
+    "sha256": "21E72C21331AD56CBEB76886BB0EB949183FEC85C876BC4CB07B7091BE899A67"
+  },
+  {
+    "file": "ai-json39-transform12-ae7-source51-first-20261015-output.json",
+    "sha256": "CB1DDF4DFAD2EE1A3376A6D519B7A9FF73BC2541B5626A3701AEB55CEDED24EC"
+  },
+  {
+    "file": "ai-json39-transform12-ae7-source51-first-20261015-posthash.json",
+    "sha256": "8E64D019D068E3D37921DD89A24DE7049F6C31417B692EF5DD65E048CAAC7F79"
+  },
+  {
+    "file": "ai-json39-transform12-ae7-source51-first-20261015-syntax-check.json",
+    "sha256": "6CFC0564582A3C5D64C3436AD6C86FC63B9F9B2338351291DB7F5BDED881BF02"
+  },
+  {
+    "file": "ai-json39-transform12-ae7-source51-first-20261015-syntax-check.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "ai-json39-transform12-ae7-source51-first-20261015-syntax-check.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "ai-json39-transform12-ae7-source51-first-20261015.json",
+    "sha256": "AE5D2A129A5358EE4A01CF65937E3119B834A233E21DC40432F840B23D2BFABB"
+  },
+  {
+    "file": "ai-json39-transform12-ae7-source51-first-20261015.stderr.log",
+    "sha256": "80ABBF12480E1198ABCC0F732367DA6CB471C8759E25FFCA61D10525A1CB8713"
+  },
+  {
+    "file": "ai-json39-transform12-ae7-source51-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "ai-json39-transform12-ae7-source51-observe-20261015.mjs",
+    "sha256": "82EE625190C9C18713EB63D23AEBE04FFD20227BCBB206DCAB5D6373706FA3F6"
+  },
+  {
+    "file": "ai-transform-thinking-ae7-caller12-20261015.mjs",
+    "sha256": "778D9A288DD68DB28174C87D2E7D0E0A53ED431A3C8906F33E7C0AE6ACE68AAF"
+  },
+  {
+    "file": "README.md",
+    "sha256": "1B1E3D3EDB8B0E4C20D5A44F0D38EF8C7D259137667CF510FC1C0B9FE50BA187"
+  },
+  {
+    "file": "Run-AIJson39Transform12Ae7Source51-20261015.ps1",
+    "sha256": "06968D067D877A3918801F8B04AE03E183ED91D6F8CBB0C1BD78200093226697"
+  }
+]
