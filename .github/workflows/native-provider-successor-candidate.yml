@@ -1,0 +1,39 @@
+name: Checkpoint repaired integrated provider components six profiles
+on:
+  push:
+    branches: [work/native-provider-hosted-successor-20261015]
+permissions:
+  contents: read
+concurrency:
+  group: native-provider-successor-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native-profiles:
+    if: github.ref == 'refs/heads/work/native-provider-hosted-successor-20261015'
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        mode: [Debug, ReleaseSafe, ReleaseFast]
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Exact component inventories runtime allocation and source compiler hashes
+        shell: pwsh
+        timeout-minutes: 95
+        run: |
+          & ./tools/ci/qualify_native_provider_successor.ps1 -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-provider-successor-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-provider-successor/
