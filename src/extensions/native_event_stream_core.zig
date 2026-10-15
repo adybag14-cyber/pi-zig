@@ -93,18 +93,23 @@ pub fn end(engine: *em.Engine, receiver: c.JSValue, value: c.JSValue) !c.JSValue
     }
     return c.pi_js_undefined();
 }
-fn advance(engine: *em.Engine, receiver: c.JSValue, completion: gen.Completion, input: c.JSValue) !gen.Action {
+fn advance(engine: *em.Engine, owner: c.JSValue, completion: gen.Completion, input: c.JSValue) !gen.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    const receiver = try scope.get(owner, "receiver");
     switch (completion) {
         .returned => return .{ .complete = c.JS_DupValue(engine.context, input) },
         .thrown, .rejected => return .{ .thrown = c.JS_DupValue(engine.context, input) },
         .fulfilled => {
+            // The Source const result remains live across `yield result.value`.
+            // Preserve that local, including a caller-supplied result object.
+            try scope.set(owner, "result", input);
             if (scope.truthy(try scope.get(input, "done"))) return .{ .complete = c.pi_js_undefined() };
             return .{ .yielded = c.JS_DupValue(engine.context, try scope.get(input, "value")) };
         },
         .start, .next => {},
     }
+    try scope.set(owner, "result", c.pi_js_undefined());
     if (try scope.positive(try scope.get(try scope.get(receiver, "queue"), "length"))) {
         // Reload queue exactly as the Source member expression does.
         return .{ .yielded = c.JS_DupValue(engine.context, try scope.invoke(try scope.get(receiver, "queue"), "dequeue", &.{})) };
@@ -115,7 +120,13 @@ fn advance(engine: *em.Engine, receiver: c.JSValue, completion: gen.Completion, 
 pub fn iterator(engine: *em.Engine, receiver: c.JSValue, prototype: c.JSValue) !c.JSValue {
     // Calling an async-generator method captures any receiver without entering
     // the body. Property access and receiver failures occur on first next.
-    return gen.create(engine, receiver, advance, prototype);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const owner = try scope.object();
+    try scope.put(owner, "receiver", receiver);
+    try scope.put(owner, "result", c.pi_js_undefined());
+    const selected = if (c.JS_IsObject(prototype)) prototype else try scope.own(try gen.prototype(engine));
+    return gen.create(engine, owner, advance, selected);
 }
 fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
@@ -128,7 +139,13 @@ fn dispatch(engine: *em.Engine, receiver: c.JSValue, operation: Method, value: c
         .push => push(engine, receiver, value),
         .end => end(engine, receiver, value),
         .result => js.get(engine, receiver, "finalResultPromise"),
-        .iterate => iterator(engine, receiver, roots[0]),
+        .iterate => actual: {
+            var scope: Scope = .{ .engine = engine };
+            defer scope.deinit();
+            // AsyncGeneratorFunction creation reads its live own prototype on
+            // each invocation, even after a caller replaces that property.
+            break :actual iterator(engine, receiver, try scope.get(try scope.get(roots[0], "function"), "prototype"));
+        },
     };
 }
 fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -150,10 +167,12 @@ pub fn constructor(engine: *em.Engine) !c.JSValue {
     }
     const generator_parent = try scope.own(try gen.prototype(engine));
     const generator_prototype = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, generator_parent)));
-    var roots = [_]c.JSValue{generator_prototype};
+    const function_owner = try scope.object();
+    var roots = [_]c.JSValue{function_owner};
     const iterate = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, method, "[Symbol.asyncIterator]", 0, @intFromEnum(Method.iterate), roots.len, &roots)));
     if (c.JS_SetPrototype(engine.context, iterate, try scope.own(try gen.functionPrototype(engine))) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, iterate, "prototype", c.JS_DupValue(engine.context, generator_prototype), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    try scope.put(function_owner, "function", iterate);
     const symbol = try scope.own(try engine.checked(c.JS_GetAsyncIteratorSymbol(engine.context)));
     const atom = c.JS_ValueToAtom(engine.context, symbol);
     if (atom == c.JS_ATOM_NULL) return js.capture(engine);
