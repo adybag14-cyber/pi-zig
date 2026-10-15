@@ -1,0 +1,9 @@
+This archive preserves two genuine failed native parser gates. It contains no native parser qualification.
+
+Source33 was captured at caller15a2ed33 against pinned5ab, with input58A76B5A and byte-exact expected319A558B. Both remain unchanged. Candidate dad5af61 compiled successfully, then failed the unchanged caller assertion requiring distinct declared and loose YAML failure diagnostics. Candidate6993b3ec changed only error reporting to retain actual rows; it compiled successfully and reproduced the same failure.
+
+The diagnostic rows show that valid, declared-invalid and loose-invalid skill files all receive a warning `not a function`. Inventory then confirmed that the baseline native node_fs exports do not include statSync or realpathSync; the parser had captured undefined imports. This is a missing genuine filesystem dependency. It is not evidence that Source YAML behavior should be changed. No stats/realpath fake, assertion removal or expected normalization was used.
+
+All four compile/probe phases reached owned terminal states. Their complete posthash checks retained5,709 candidate files,19,546 compiler files,34,805 Source/runtime/Node reference files,12 controls,84 historical absences,6 native ambient absences and exact candidate/seal/inventory/clean status with zero drift. The two probe exits are1. NATIVE3 was released after the final post-check at2026-10-15 23:37:50.499 UTC. No allocation measurement succeeded and no failure-allocation index was tested.
+
+The manifest binds24 compressed raw receipts to their original and archived SHA256 values, including both shared seals, all admission/owner/post/log records and the actual owner helpers. Every receipt was independently decompressed and hashed before publication. The next replay requires real stat/Stats and realpath behavior, a newly sealed candidate and fresh Root admission. Complete loader, initializer, async brand and default-agent-directory behavior remain outside this record.
