@@ -130,11 +130,6 @@ pub fn wire(scope: *Scope, params: c.JSValue) !c.JSValue {
     const config = try scope.get(params, "config");
     const generation = try v.spread(scope, config);
     inline for (.{ "abortSignal", "tools", "toolConfig", "systemInstruction" }) |key| try v.remove(scope, generation, key);
-    if (!v.nullish(config)) try scope.put(result, "generationConfig", generation);
-    inline for (.{ "tools", "toolConfig" }) |key| {
-        const value = try v.optional(scope, config, key);
-        if (!c.JS_IsUndefined(value)) try scope.put(result, key, value);
-    }
     const instruction = try v.optional(scope, config, "systemInstruction");
     if (c.JS_IsString(instruction)) {
         const system = try scope.object();
@@ -146,5 +141,11 @@ pub fn wire(scope: *Scope, params: c.JSValue) !c.JSValue {
         try scope.put(system, "role", try scope.text("user"));
         try scope.put(result, "systemInstruction", system);
     } else if (!c.JS_IsUndefined(instruction)) try scope.put(result, "systemInstruction", instruction);
+    inline for (.{ "tools", "toolConfig" }) |key| {
+        const value = try v.optional(scope, config, key);
+        if (!c.JS_IsUndefined(value)) try scope.put(result, key, value);
+    }
+    // SDK config conversion writes parent fields before the returned config.
+    if (!v.nullish(config)) try scope.put(result, "generationConfig", generation);
     return result;
 }
