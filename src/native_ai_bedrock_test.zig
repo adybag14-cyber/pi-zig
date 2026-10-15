@@ -47,6 +47,43 @@ fn parse(engine: *v.em.Engine, value: std.json.Value) !c.JSValue {
     defer engine.gpa.free(terminated);
     return engine.checked(c.JS_ParseJSON(engine.context, terminated.ptr, bytes.len, "bedrock-source-fixture.json"));
 }
+test "native AI Bedrock wire keeps seven-byte frame fragments and rejects altered message CRC" {
+    const a = std.testing.allocator;
+    const input = try std.json.parseFromSlice(std.json.Value, a, @embedFile("extensions/fixtures/ai-bedrock14-5ab.input.json"), .{});
+    defer input.deinit();
+    const events = input.value.array.items[0].object.get("events").?;
+    const body = try frames(a, events);
+    defer a.free(body);
+    const engine = try v.em.Engine.init(a, .{});
+    defer engine.deinit();
+    var s: v.Scope = .{ .engine = engine };
+    defer s.deinit();
+    const owner = try s.object();
+    var decoded: usize = 0;
+    var offset: usize = 0;
+    const wire = @import("extensions/native_ai_bedrock_wire.zig");
+    while (offset < body.len) : (offset += @min(7, body.len - offset)) {
+        var row: v.Scope = .{ .engine = engine };
+        defer row.deinit();
+        const bytes = body[offset..][0..@min(7, body.len - offset)];
+        const backing = try row.own(try engine.checked(c.JS_NewArrayBufferCopy(engine.context, bytes.ptr, bytes.len)));
+        const chunk = try row.own(try v.js.builtin(engine, "Uint8Array", &.{backing}));
+        const queue = try wire.feed(&row, owner, chunk);
+        const n = try v.length(&row, queue);
+        for (0..n) |i| {
+            _ = try wire.decode(&row, try v.at(&row, queue, @intCast(i)));
+            decoded += 1;
+        }
+    }
+    try wire.finish(&s, owner);
+    try std.testing.expectEqual(events.array.items.len, decoded);
+    body[body.len - 1] ^= 1;
+    const backing = try s.own(try engine.checked(c.JS_NewArrayBufferCopy(engine.context, body.ptr, body.len)));
+    const chunk = try s.own(try v.js.builtin(engine, "Uint8Array", &.{backing}));
+    const queue = try wire.feed(&s, owner, chunk);
+    const last = try v.at(&s, queue, (try v.length(&s, queue)) - 1);
+    try std.testing.expectError(error.BedrockMessageCrcMismatch, wire.decode(&s, last));
+}
 test "native AI Bedrock actual facade matches14 genuine Source5ab SDK request callback event and result traces" {
     const a = std.testing.allocator;
     const input = try std.json.parseFromSlice(std.json.Value, a, @embedFile("extensions/fixtures/ai-bedrock14-5ab.input.json"), .{});
