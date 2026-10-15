@@ -313,7 +313,11 @@ pub fn install(engine: *em.Engine, interfaces: idl.Interfaces) !void {
     root.class = try classId(engine, "Response", freeState, markState);
     root.prototype = try js.object(engine);
     root.object_prototype = try js.get(engine, try scope.global("Object"), "prototype");
-    root.constructor = try @import("native_class.zig").constructor(engine, "Response", 0, root.prototype, create, &.{owner});
+    // Bundled Undici declares `class _Response` and then names the exported
+    // function Response. The lexical class name remains observable when called
+    // without new, independently of the public function's name descriptor.
+    root.constructor = try @import("native_class.zig").constructor(engine, "_Response", 0, root.prototype, create, &.{owner});
+    if (c.JS_DefinePropertyValueStr(engine.context, root.constructor, "name", c.JS_DupValue(engine.context, try scope.text("Response")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     inline for (.{ .{ "type", "get type", Kind.type }, .{ "url", "get url", Kind.url }, .{ "redirected", "get redirected", Kind.redirected }, .{ "status", "get status", Kind.status }, .{ "ok", "get ok", Kind.ok }, .{ "statusText", "get statusText", Kind.statusText }, .{ "headers", "get headers", Kind.headers }, .{ "body", "get body", Kind.body }, .{ "bodyUsed", "get bodyUsed", Kind.bodyUsed } }) |spec| try getter(&scope, owner, spec[0], spec[1], spec[2]);
     try scope.set(root.prototype, "clone", try function(&scope, owner, "clone", 0, .clone));
     const symbols = try scope.global("Symbol");

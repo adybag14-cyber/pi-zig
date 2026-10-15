@@ -28,6 +28,7 @@ fn collect(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) cal
 pub fn setup(gpa: std.mem.Allocator) !*em.Engine {
     const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10_000 });
     errdefer engine.deinit();
+    engine.native_io = std.testing.io;
     try @import("timers.zig").install(engine, std.testing.io);
     try @import("native_url.zig").install(engine);
     try @import("abort_signal.zig").install(engine);
@@ -192,6 +193,7 @@ test "Response native actual OAuth HTTP returns genuine headers before gated bod
 test "Response native selected operation OOM preserves ownership" {
     var measured = std.testing.FailingAllocator.init(std.testing.allocator, .{});
     const measured_engine = try setup(measured.allocator());
+    errdefer measured_engine.deinit();
     const beginning = measured.alloc_index;
     try ownershipOperation(measured_engine);
     const allocations = measured.alloc_index - beginning;
