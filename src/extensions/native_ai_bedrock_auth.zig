@@ -92,7 +92,7 @@ fn prepareRequest(a: std.mem.Allocator, request: prep.View, data: []const u8, bu
         var entries = values.object.iterator();
         while (entries.next()) |entry| if (entry.value_ptr.* == .string) try env.put(entry.key_ptr.*, entry.value_ptr.string);
     };
-    var profile_config = if (field(input, "region") == null) try @import("../ai/aws_credentials.zig").loadProfileByName(a, budget.io, &env, field(input, "profile") orelse @import("../ai/aws_credentials.zig").selectedProfileName(&env)) else null;
+    var profile_config = if (field(input, "region") == null) try @import("../ai/aws_credentials.zig").loadProfileByName(a, budget.io, &env, field(input, "profile") orelse env.get("AWS_PROFILE") orelse "default") else null;
     defer if (profile_config) |*profile| profile.deinit(a);
     const region = field(input, "region") orelse (if (profile_config) |profile| profile.region else null) orelse return error.MissingBedrockRegion;
     const base = if (field(input, "baseUrl")) |url| try a.dupe(u8, url) else try std.fmt.allocPrint(a, "https://bedrock-runtime.{s}.{s}", .{ region, if (std.mem.startsWith(u8, region, "cn-")) "amazonaws.com.cn" else "amazonaws.com" });

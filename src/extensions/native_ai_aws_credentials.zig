@@ -52,10 +52,14 @@ pub fn resolve(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ
     // Ambient AWS_PROFILE alone does not suppress the Source explicit env credentials.
     if (profile == null) if (envCredentials(env)) |credentials| return copy(a, credentials, null, now);
     var chain: [32]?[]const u8 = @splat(null);
-    const name = profile orelse shared.selectedProfileName(env);
+    const name = profile orelse env.get("AWS_PROFILE") orelse "default";
     if (try resolveProfile(a, io, env, name, region, now, &chain, 0, budget)) |credentials| return credentials;
     if (web.resolveConfig(env, null)) |config| {
-        var temporary = try web.assumeRoleWithOptions(a, io, config, try httpOptions(budget));
+        var resolved = config;
+        const generated = try std.fmt.allocPrint(a, "aws-sdk-js-session-{d}", .{std.Io.Clock.real.now(io).toMilliseconds()});
+        defer a.free(generated);
+        if (env.get("AWS_ROLE_SESSION_NAME") == null) resolved.session_name = generated;
+        var temporary = try web.assumeRoleWithOptions(a, io, resolved, try httpOptions(budget));
         defer temporary.deinit(a);
         return copy(a, temporary.borrowed(), temporary.expiration_unix, now);
     }
@@ -78,42 +82,66 @@ fn resolveProfile(a: std.mem.Allocator, io: std.Io, env: *const std.process.Envi
     chain[depth] = name;
     var profile = (try shared.loadProfileByName(a, io, env, name)) orelse return null;
     defer profile.deinit(a);
-    if (profile.role_arn != null and profile.web_identity_token_file == null) {
+    if (depth > 0) if (profile.staticCredentials()) |credentials| return try copy(a, credentials, null, now);
+    if (profile.role_arn != null and profile.web_identity_token_file == null and ((profile.source_profile != null) != (profile.credential_source != null))) {
+        if (profile.mfa_serial != null) return error.AwsProfileRequiresMfaCallback;
         var source: Credentials = undefined;
         if (profile.source_profile) |source_name| {
             source = (try resolveProfile(a, io, env, source_name, region, now, chain, depth + 1, budget)) orelse return error.AwsSourceProfileMissing;
         } else if (profile.credential_source) |kind| {
-            if (std.ascii.eqlIgnoreCase(kind, "Environment")) {
+            if (std.mem.eql(u8, kind, "Environment")) {
                 source = try copy(a, envCredentials(env) orelse return error.MissingBedrockCredentials, null, now);
-            } else if (std.ascii.eqlIgnoreCase(kind, "EcsContainer")) {
+            } else if (std.mem.eql(u8, kind, "EcsContainer")) {
                 var config = (try container.resolveConfig(a, io, env)) orelse return error.MissingContainerCredentials;
                 defer config.deinit(a);
                 var temporary = try container.fetchCredentialsWithOptions(a, io, config, try httpOptions(budget));
                 defer temporary.deinit(a);
                 source = try copy(a, temporary.borrowed(), temporary.expiration_unix, now);
-            } else if (std.ascii.eqlIgnoreCase(kind, "Ec2InstanceMetadata")) {
+            } else if (std.mem.eql(u8, kind, "Ec2InstanceMetadata")) {
                 var temporary = try imds.fetchCredentialsWithOptions(a, io, try imds.resolveConfig(env, &profile), try httpOptions(budget));
                 defer temporary.deinit(a);
                 source = try copy(a, temporary.borrowed(), temporary.expiration_unix, now);
             } else return error.UnsupportedAwsCredentialSource;
         } else return error.AwsRoleSourceMissing;
         defer source.deinit(a);
-        var temporary = try role.assumeRoleWithHttpOptions(a, io, source.borrowed(), .{ .role_arn = profile.role_arn.?, .role_session_name = profile.role_session_name orelse "pi-zig", .external_id = profile.external_id, .duration_seconds = profile.duration_seconds, .region = region }, now, try httpOptions(budget));
+        const generated = try std.fmt.allocPrint(a, "aws-sdk-js-{d}", .{std.Io.Clock.real.now(io).toMilliseconds()});
+        defer a.free(generated);
+        var temporary = try assumeRole(a, io, env, source.borrowed(), .{ .role_arn = profile.role_arn.?, .role_session_name = profile.role_session_name orelse generated, .external_id = profile.external_id, .duration_seconds = profile.duration_seconds orelse 3600, .region = profile.region orelse region }, now, budget);
         defer temporary.deinit(a);
         return try copy(a, temporary.borrowed(), temporary.expiration_unix, now);
     }
     if (profile.staticCredentials()) |credentials| return try copy(a, credentials, null, now);
+    if (profile.hasWebIdentity()) {
+        const generated = try std.fmt.allocPrint(a, "aws-sdk-js-session-{d}", .{std.Io.Clock.real.now(io).toMilliseconds()});
+        defer a.free(generated);
+        var temporary = try web.assumeRoleWithOptions(a, io, .{ .role_arn = profile.role_arn.?, .token_file = profile.web_identity_token_file.?, .session_name = profile.role_session_name orelse env.get("AWS_ROLE_SESSION_NAME") orelse generated, .endpoint = env.get("AWS_ENDPOINT_URL_STS") orelse "https://sts.amazonaws.com" }, try httpOptions(budget));
+        defer temporary.deinit(a);
+        return try copy(a, temporary.borrowed(), temporary.expiration_unix, now);
+    }
     if (profile.credential_process) |command| {
         var temporary = try runProcess(a, io, command, budget);
         defer temporary.deinit(a);
         return try copy(a, temporary.borrowed(), temporary.expiration_unix, now);
     }
-    if (web.resolveConfig(env, &profile)) |config| {
-        var temporary = try web.assumeRoleWithOptions(a, io, config, try httpOptions(budget));
-        defer temporary.deinit(a);
-        return try copy(a, temporary.borrowed(), temporary.expiration_unix, now);
-    }
+    if (profile.sso_session != null or profile.sso_start_url != null or profile.sso_account_id != null or profile.sso_role_name != null or profile.sso_region != null) return error.UnsupportedAwsSsoProfile;
+    if (profile.login_session != null) return error.UnsupportedAwsLoginProfile;
     return null;
+}
+fn assumeRole(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ.Map, source: bedrock.AwsCredentials, options: role.Options, now: i64, budget: Budget) !role.OwnedAssumedCredentials {
+    const endpoint = if (env.get("AWS_ENDPOINT_URL_STS")) |url| try a.dupe(u8, url) else try role.endpointForRegion(a, options.region);
+    defer a.free(endpoint);
+    const body = try role.buildAssumeRoleBody(a, options);
+    defer a.free(body);
+    const content_type = "application/x-www-form-urlencoded; charset=utf-8";
+    var signed = try bedrock.signAwsRequestForService(a, "POST", endpoint, body, source, options.region, "sts", content_type, now);
+    defer signed.deinit(a);
+    var headers: std.ArrayList(std.http.Header) = .empty;
+    defer headers.deinit(a);
+    try headers.appendSlice(a, &.{ .{ .name = "content-type", .value = content_type }, .{ .name = "authorization", .value = signed.authorization }, .{ .name = "x-amz-date", .value = &signed.amz_date } });
+    if (source.session_token) |token| try headers.append(a, .{ .name = "x-amz-security-token", .value = token });
+    var response = try @import("../ai/bootstrap_http.zig").request(a, io, .{ .url = endpoint, .method = .POST, .payload = body, .headers = headers.items, .options = try httpOptions(budget) });
+    defer response.deinit(a);
+    return role.parseAssumeRoleResponse(a, response.body);
 }
 fn runProcess(a: std.mem.Allocator, io: std.Io, command: []const u8, budget: Budget) !process.OwnedProcessCredentials {
     const owned = try process.splitCommand(a, command);
