@@ -1,0 +1,13 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+if(process.version!=='v24.14.0')throw Error('Pinned genuine Node24.14.0 required');
+const realFetch=globalThis.fetch;
+globalThis.fetch=()=>{throw Error('Unexpected uncontrolled fetch in Source capture')};
+const wrappers=await import('file:///C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/coding-agent/src/core/remote-catalog-provider.ts');
+const {getPiUserAgent}=await import('file:///C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/coding-agent/src/utils/pi-user-agent.ts');
+const {VERSION}=await import('file:///C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/coding-agent/src/config.ts');
+globalThis.catalogWrappers=wrappers;
+globalThis.catalogRuntimeUA=getPiUserAgent(VERSION);
+const [input,output]=process.argv.slice(2);
+await(new Function('return(async()=>{'+readFileSync(input,'utf8')+'\n})()'))();
+writeFileSync(output,JSON.stringify({runtime:process.version,sourceHead:'4954d760504c11df9b2cbdc040346107b6a8153d',version:VERSION,sourceRuntimeUserAgent:catalogRuntimeUA,nativeUserAgentPolicy:'Native capture must use actual Zig/QuickJS/OS identity; request rows compare the genuine supplied runtime UA rather than impersonating Node',clock:'controlled Date.now in caller; original management HTTP and AbortSignal attempt timeout run unchanged; owner deadline uses real wallclock',network:'caller-controlled global fetch; genuine source management fetchWithRetry executes, no network requests',count:catalogWrapperRows.length,rows:catalogWrapperRows},null,2)+'\n');
+globalThis.fetch=realFetch;
