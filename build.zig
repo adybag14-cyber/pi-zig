@@ -1676,6 +1676,12 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-ai-auth-helpers", "Validate actual native auth helper async identity and owned inputs").dependOn(&b.addRunArtifact(ai_auth_helpers_tests).step);
     b.step("build-native-ai-auth-helpers", "Compile public native auth helpers independently of OAuth network flows").dependOn(&ai_auth_helpers_tests.step);
     const ai_http_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_http_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI HTTP"}, .use_llvm = use_llvm });
+    const ai_oauth_chatgpt_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_oauth_chatgpt_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI ChatGPT"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ai_oauth_chatgpt_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(ai_oauth_chatgpt_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_oauth_chatgpt_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-ai-oauth-chatgpt", "Compare ChatGPT dynamic client OAuth facade and owned callback/HTTP behavior").dependOn(&b.addRunArtifact(ai_oauth_chatgpt_tests).step);
+    b.step("build-native-ai-oauth-chatgpt", "Compile ChatGPT native OAuth facade independently").dependOn(&ai_oauth_chatgpt_tests.step);
     linkQuickJs(b, ai_http_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_http_tests.root_module, sqlite_lib_dir, sqlite_library);
     ai_http_tests.root_module.addImport("catalog_tool", catalog_tool);
