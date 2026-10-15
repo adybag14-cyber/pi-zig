@@ -255,6 +255,9 @@ fn exchange(scope: *Scope, owner: c.JSValue, contents: c.JSValue) !void {
     defer scope.engine.gpa.free(user_agent_bytes);
     const fields: []const std.http.Header = &.{
         .{ .name = "Content-Type", .value = "application/json" },
+        // The SDK leaves Accept to fetch; native raw HTTP reproduces its
+        // actual default wire value without changing custom-fetch init.
+        .{ .name = "Accept", .value = "*/*" },
         .{ .name = "anthropic-beta", .value = "oauth-2025-04-20,oidc-federation-2026-04-01" },
         .{ .name = "User-Agent", .value = user_agent_bytes },
     };
