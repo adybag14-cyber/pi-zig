@@ -1,0 +1,13 @@
+import { createRequire } from 'node:module';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
+const require=createRequire(import.meta.url);
+const installed='C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/';
+globalThis.highlightCoreAPI=require(installed+'core.js');
+const eager=['python','java','go','javascript','json','cpp','typescript','php','ruby','c','csharp','nix','bash','rust','scala','kotlin','swift','dart','groovy','perl','lua'];
+for(const name of eager)highlightCoreAPI.registerLanguage(name,require(installed+'languages/'+name+'.js'));
+globalThis.highlightLazyFactories=Object.fromEntries(['dockerfile','makefile','protobuf','ini'].map(name=>[name,require(installed+'languages/'+name+'.js')]));
+const input=readFileSync(process.argv[3],'utf8');
+await import('data:text/javascript;charset=utf-8,'+encodeURIComponent(input));
+if(!Array.isArray(globalThis.sdkHighlightLazyBatch1Rows)||sdkHighlightLazyBatch1Rows.length!==29)throw Error('Genuine Source29 rows absent');
+writeFileSync(process.argv[2],JSON.stringify({source:'highlight.js@10.7.3 actual installed modules',input:pathToFileURL(process.argv[3]).href,cases:29,rows:sdkHighlightLazyBatch1Rows},null,2)+'\n');

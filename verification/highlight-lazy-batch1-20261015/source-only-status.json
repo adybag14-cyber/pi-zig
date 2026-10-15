@@ -1,0 +1,15 @@
+{
+  "prepared_source_cases": 29,
+  "genuine_source_captured": false,
+  "native_runtime_qualified": false,
+  "native_compiled": false,
+  "lazy_loader_activated": false,
+  "full_pi_qualified": false,
+  "factories": [
+    "dockerfile",
+    "makefile",
+    "protobuf",
+    "ini"
+  ],
+  "base": "733800b8b872d86c5766dc4a30cf44ae8d373254"
+}

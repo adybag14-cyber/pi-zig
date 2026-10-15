@@ -1,0 +1,68 @@
+const rows=[];
+function record(name,run){try{rows.push({name,value:run()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}}
+function metadata(fn){return{name:fn.name,length:fn.length,keys:Reflect.ownKeys(fn).map(String),prototype:Object.hasOwn(fn,'prototype')}}
+function graph(root){
+  const seen=new Map();let next=0;
+  function encode(value){
+    if(value===undefined)return{$undefined:true};
+    if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+    if(typeof value==='number')return Number.isFinite(value)?value:{$number:String(value)};
+    if(typeof value==='function')return{$function:metadata(value)};
+    if(typeof value!=='object')return{$other:typeof value,value:String(value)};
+    if(seen.has(value))return{$ref:seen.get(value)};
+    const id=next++;seen.set(value,id);
+    if(value instanceof RegExp)return{$id:id,$regexp:value.source,flags:value.flags,lastIndex:value.lastIndex,frozen:Object.isFrozen(value)};
+    return{$id:id,kind:Array.isArray(value)?'array':'object',frozen:Object.isFrozen(value),properties:Reflect.ownKeys(value).map(key=>{
+      const descriptor=Object.getOwnPropertyDescriptor(value,key);
+      return{key:String(key),enumerable:descriptor.enumerable,configurable:descriptor.configurable,...('value'in descriptor?{writable:descriptor.writable,value:encode(descriptor.value)}:{get:encode(descriptor.get),set:encode(descriptor.set)})};
+    })};
+  }
+  return encode(root);
+}
+const names=['dockerfile','makefile','protobuf','ini'];
+record('actual batch1 factory metadata',()=>names.map(name=>({name,metadata:metadata(highlightLazyFactories[name])})));
+for(const name of names)record(name+' complete raw grammar graph',()=>graph(highlightLazyFactories[name](highlightCoreAPI)));
+for(const name of names)record(name+' live helper getter order',()=>{
+  const trace=[];const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){trace.push(String(key));return Reflect.get(target,key,receiver)}});
+  return{grammar:graph(highlightLazyFactories[name](api)),trace};
+});
+const firstGet={dockerfile:'HASH_COMMENT_MODE',makefile:'UNDERSCORE_IDENT_RE',protobuf:'QUOTE_STRING_MODE',ini:'NUMBER_RE'};
+for(const name of names)record(name+' live helper getter rejection',()=>{
+  const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){if(key===firstGet[name])throw new TypeError('actual getter rejected '+name);return Reflect.get(target,key,receiver)}});
+  return graph(highlightLazyFactories[name](api));
+});
+record('makefile identifier uses actual addition coercion',()=>{
+  const trace=[];const identifier={[Symbol.toPrimitive](hint){trace.push(['coerce',hint]);return'CUSTOM_IDENT'}};
+  const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){trace.push(['get',String(key)]);return key==='UNDERSCORE_IDENT_RE'?identifier:Reflect.get(target,key,receiver)}});
+  const grammar=highlightLazyFactories.makefile(api);
+  return{trace,variableBegin:grammar.contains[1].variants[0].begin,assignmentBegin:grammar.contains[4].begin};
+});
+record('ini COMMENT return receives an ordinary assignment',()=>{
+  const trace=[];let returned;
+  const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){
+    if(key!=='COMMENT')return Reflect.get(target,key,receiver);
+    return function(...args){trace.push(['COMMENT',this===api,args.length]);returned=new Proxy({className:'comment',contains:[]},{set(target,key,value,receiver){trace.push(['set',String(key),receiver===returned]);return Reflect.set(target,key,value,receiver)}});return returned};
+  }});
+  const grammar=highlightLazyFactories.ini(api);
+  return{trace,sameComment:grammar.contains[0]===returned,sameNestedComment:grammar.contains[2].starts.contains[0]===returned,variants:graph(returned.variants)};
+});
+for(const name of names)highlightCoreAPI.registerLanguage(name,highlightLazyFactories[name]);
+const samples={
+  dockerfile:['FROM alpine:3.20\nRUN printf "%s\\n" "$HOME" && echo done\n','COPY ["a", "b"]\nENV VALUE=42\n# TODO: cache\n','RUN echo first \\\n && echo second\nENTRYPOINT ["sh", "-c", "echo <>&"]\n'],
+  makefile:['.PHONY: all clean\nCC := gcc\nall: $(OBJECTS)\n\t$(CC) -o $@ $^\n','ifeq ($(MODE),debug)\nFLAGS += -g\nelse\nFLAGS := $(strip $(FLAGS))\nendif\n','target: dependency\n\t@echo "<>& $(value)" # NOTE: make\n'],
+  protobuf:['syntax = "proto3";\npackage demo;\nmessage Person { string name = 1; repeated int32 tags = 2; }\n','service Greeter { rpc Hello (Person) returns (Person); }\nenum State {\n  READY = 0;\n}\n','// TODO: protocol\noption enabled = true;\nmessage Café { bytes raw = 15; }\n'],
+  ini:['[package]\nname = "example"\nversion = "1.0.0" # NOTE: version\n','[values]\n"a.b".key = [true, false, 1_000, "text", [42]]\npath = "$HOME/${USER}"\n','[multiline]\ntext = """<>&\nsecond line"""\nenabled = yes\n; TODO: config\n']
+};
+for(const[name,codes]of Object.entries(samples))for(const[index,code]of codes.entries())record(name+' actual scanner '+index,()=>{
+  const result=highlightCoreAPI.highlight(code,{language:name,ignoreIllegals:false});
+  return{language:result.language,relevance:result.relevance,illegal:result.illegal,value:result.value,code:result.code,tree:JSON.parse(result.emitter.toJSON()),errorRaised:result.errorRaised?{name:result.errorRaised.name,message:result.errorRaised.message}:undefined};
+});
+record('actual ini TOML and other batch1 aliases share registered grammar',()=>({
+  toml:highlightCoreAPI.getLanguage('toml')===highlightCoreAPI.getLanguage('ini'),
+  docker:highlightCoreAPI.getLanguage('docker')===highlightCoreAPI.getLanguage('dockerfile'),
+  make:['mk','mak','make'].map(name=>highlightCoreAPI.getLanguage(name)===highlightCoreAPI.getLanguage('makefile')),
+  registry:highlightCoreAPI.listLanguages()
+}));
+record('actual batch1 does not fabricate absent GraphQL or HCL factories',()=>({graphql:highlightCoreAPI.getLanguage('graphql')===undefined,hcl:highlightCoreAPI.getLanguage('hcl')===undefined}));
+if(rows.length!==29)throw Error('Actual lazy batch1 corpus count '+rows.length);
+globalThis.sdkHighlightLazyBatch1Rows=rows;

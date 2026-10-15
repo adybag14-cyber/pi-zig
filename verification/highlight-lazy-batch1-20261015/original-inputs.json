@@ -1,0 +1,22 @@
+[
+  {
+    "sha256": "5D8F20046647FD17D450C817279074CAF409CB59E12045807F88975FE1CDEFDB",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\dockerfile.js",
+    "factory": "dockerfile"
+  },
+  {
+    "sha256": "BA57EBE559FDBCB6379041C973FB545F882ED7014D30DC74B660D6EB247D86E9",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\makefile.js",
+    "factory": "makefile"
+  },
+  {
+    "sha256": "3B2D5AC1176B3841BB9C4ED00A497AF5CFADDAAE5450C96C977E9A2E039FB450",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\protobuf.js",
+    "factory": "protobuf"
+  },
+  {
+    "sha256": "0FF2AE3DF15D3D53CB36972CC2464EA28B25B21B9284DD35F4836C6D57C4BCAF",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\ini.js",
+    "factory": "ini"
+  }
+]
