@@ -1,0 +1,50 @@
+{
+  "status": "source-only-authored-not-qualified",
+  "base_commit": "89c4ce0b35589251ee1075a3a6c5dac1ffd58388",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "implemented_actual_method": "AgentSession.navigateTree",
+  "implemented_actual_collaborators": [
+    "collectEntriesForBranchSummary",
+    "prepareBranchEntries",
+    "generateBranchSummary",
+    "branch-specific getMessageFromEntry over original message/custom/branch/compaction factories"
+  ],
+  "new_modules": [
+    "src/extensions/native_sdk_session_navigate.zig",
+    "src/extensions/native_sdk_branch_summary.zig"
+  ],
+  "shared_actual_native_modules_reused": [
+    "native_sdk_complete_summarization: same captured completeSummarization binding used by ordinary compaction",
+    "native_sdk_compaction_estimate: estimateTokens",
+    "native_sdk_compaction_files: create/extract/lists/format",
+    "native_sdk_compaction_text: serializeConversation/getSummarizationFailure",
+    "native_sdk_messages: convertToLlm",
+    "native_sdk_transcript_replay: contentText/contentTextWithSeparator",
+    "native_ai_transcript_context: normalizeContext",
+    "native_agent_async: intrinsic awaits and VM-owned continuation roots",
+    "native_sdk manager/mutations/projection and ordinary finalized-context refresh"
+  ],
+  "system_prompt_static_check": "Latest original utils.ts SUMMARIZATION_SYSTEM_PROMPT exactly equals existing compaction_system_prompt_b45.txt (310 characters). Branch prompt/preamble text was extracted from actual latest Source constants. The preamble's exact final two newlines are supplied by the native literal, avoiding a blank-line artifact at EOF while preserving Source string bytes.",
+  "integration": "Construct branch_bindings = native_sdk_branch_summary.exports(engine, actual_shared_completeSummarization), then native_sdk_session_navigate.install(engine, staging, branch_bindings). The module validates real callable collect/generate bindings. Root must provide its actual shared completion binding; the test-only controlled default provider is not a production integration binding.",
+  "source_fixture_cases": 56,
+  "source_fixture": "src/extensions/fixtures/sdk-session-navigate-5ab.input.txt",
+  "source_capture_driver": "capture-source.mjs",
+  "expected_source_json": "src/extensions/fixtures/sdk-session-navigate-5ab.json",
+  "expected_source_json_status": "Intentionally absent until admitted genuine Source56 capture and full posthash0 acceptance.",
+  "native_gc_tests_authored": [
+    "Pending session_before_tree emission retains session, then completes and releases graph.",
+    "Pending summarization auth raw rejection preserves identity, runs finally once and releases session."
+  ],
+  "source_fixture_scope": "Actual original class method and all branch-summary helpers with real in-memory manager/refresh/completeSummarization/retry and caller-provided stream. Includes preflight/noop, parent/root/custom/assistant navigation, labels, extension override/cancel/summary, generated summaries/errors/aborts/tool attempts, getter/callee/iterator order, file tracking and budgets, raw await failures and finally replacement. Full factory/application remains separate.",
+  "next_bounded_target": "After Root reserves a slot, run run-qualified.ps1 -Phase Source -Attempt <unique> -Slot <reserved>, then Compile and matching Runtime serially. Uses full candidate/1967Source/31064deps/1774Node/19546compiler/controls freeze, Source2GiB/256MiB/300s; native16GiB/-j1/1320s compile/120s test/10s await with exact matching compiled executable/PDB manifest.",
+  "native_build_target": "build-native-sdk-session-navigate",
+  "native_runtime_executable": "sdk-session-navigate-test.exe",
+  "formatter_parser": "Pinned Zig0.16 fmt passed for new modules, tests and build.zig; PowerShell owner syntax parsed without execution.",
+  "heavy_source_launches": 0,
+  "native_compiles": 0,
+  "native_runtime_launches": 0,
+  "shared_modules_modified": false,
+  "root_assembler_modified": false,
+  "full_factory_qualified": false,
+  "public_activation": false
+}

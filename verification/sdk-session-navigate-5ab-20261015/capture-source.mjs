@@ -1,0 +1,15 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+const root='C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/coding-agent/src/core/';
+const {AgentSession}=await import(pathToFileURL(root+'agent-session.ts'));
+const {SessionManager}=await import(pathToFileURL(root+'session-manager.ts'));
+const helpers=await import(pathToFileURL(root+'compaction/branch-summarization.ts'));
+const prototype={};Object.defineProperty(prototype,'navigateTree',Object.getOwnPropertyDescriptor(AgentSession.prototype,'navigateTree'));
+globalThis.navigationAPI={...helpers,prototype,SessionManager,refresh:AgentSession.prototype._refreshFinalizedContext};
+const input=readFileSync(process.argv[3]);await import('data:text/javascript,'+encodeURIComponent(input.toString('utf8')));
+if(navigationRows.length!==56)throw Error('Expected56 Source cases, got '+navigationRows.length);
+for(const row of navigationRows)if(row.error)throw Error('Unexpected fixture failure '+JSON.stringify(row));
+const generated=navigationRows.find(row=>row.name==='navigate-generated').value;
+if(generated.result.cancelled||!generated.result.summaryEntry?.summary?.includes('generated summary'))throw Error('Actual native-independent Source default summarizer did not execute');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'5ab7fe74c400097b386662205cd93900695b8a71',inputSha256:createHash('sha256').update(input).digest('hex'),cases:navigationRows.length,scope:'Actual navigateTree and collectEntriesForBranchSummary/prepareBranchEntries/generateBranchSummary with real Source manager, refresh, completion/retry and caller-controlled stream. Raw identities/callee order/finally behavior; generated IDs, timestamps and random session IDs normalized. Full class/factory and public activation remain separate.',rows:navigationRows},null,2));

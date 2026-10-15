@@ -1598,6 +1598,13 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-sdk-boundaries", "Compile actual session boundary and nested tool bodies").dependOn(&b.addInstallArtifact(boundary_tests, .{}).step);
     b.step("test-native-sdk-boundaries", "Compare latest Source session boundary and nested pipeline behavior").dependOn(&b.addRunArtifact(boundary_tests).step);
 
+    const navigate_tests = b.addTest(.{ .name = "sdk-session-navigate-test", .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_navigate_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK navigate"}, .use_llvm = use_llvm });
+    linkQuickJs(b, navigate_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(navigate_tests.root_module, sqlite_lib_dir, sqlite_library);
+    navigate_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-session-navigate", "Compile actual tree navigation and branch summary collaborators").dependOn(&b.addInstallArtifact(navigate_tests, .{}).step);
+    b.step("test-native-sdk-session-navigate", "Compare latest Source tree navigation and real branch summarization").dependOn(&b.addRunArtifact(navigate_tests).step);
+
     const manual_compaction_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_compaction_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary compaction"}, .use_llvm = use_llvm });
     linkQuickJs(b, manual_compaction_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(manual_compaction_tests.root_module, sqlite_lib_dir, sqlite_library);
