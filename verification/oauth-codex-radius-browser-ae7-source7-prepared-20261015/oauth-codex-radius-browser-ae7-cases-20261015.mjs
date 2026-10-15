@@ -26,10 +26,10 @@ export async function runOAuthBrowserCases(codex,createRadius,ownedCallbackFetch
     return{...event,url:String(url)};
   }
   function error(e){return{name:e.name,message:e.message,constructor:e.constructor.name,...(Object.hasOwn(e,'status')?{status:e.status}:{}),...(Object.hasOwn(e,'oauthError')?{oauthError:e.oauthError??null}:{})}}
-  async function record(id,fn){const requestStart=requests.length,eventStart=notifications.length;let result;try{result={ok:true,value:await fn()}}catch(e){result={ok:false,error:error(e)}}output.push({id,...result,requests:requests.slice(requestStart),notices:notifications.slice(eventStart)})}
+  async function record(id,fn){const requestStart=requests.length,eventStart=notifications.length;let result;try{result={ok:true,value:await fn()}}catch(e){globalThis.__observeOAuthError?.(id,e);result={ok:false,error:error(e)}}output.push({id,...result,requests:requests.slice(requestStart),notices:notifications.slice(eventStart)})}
   async function manual(mode){
     let auth;
-    return codex.login({signal:controller.signal,notify(event){if(event.type==='auth_url'){globalThis.__observeOAuthListener?.(1455);auth=new URL(event.url)}notifications.push(eventSnapshot(event))},async prompt(prompt){
+    return codex.login({signal:controller.signal,notify(event){globalThis.__observeOAuthEvent?.(event);if(event.type==='auth_url'){globalThis.__observeOAuthListener?.(1455);auth=new URL(event.url)}notifications.push(eventSnapshot(event))},async prompt(prompt){
       if(prompt.type==='select')return'browser';
       notifications.push({type:prompt.type,message:prompt.message,placeholder:prompt.placeholder,signalAborted:prompt.signal.aborted});
       const state=auth.searchParams.get('state');
@@ -51,14 +51,14 @@ export async function runOAuthBrowserCases(codex,createRadius,ownedCallbackFetch
       const auth=createRadius({name:'Owned Radius',gateway:'https://gateway.example/base/'});
       let credential,failure;
       try{credential=await auth.login({signal:controller.signal,async prompt(){return'browser'},notify(event){
-        notifications.push(eventSnapshot(event));
+        globalThis.__observeOAuthEvent?.(event);notifications.push(eventSnapshot(event));
         if(event.type==='auth_url'){
           globalThis.__observeOAuthListener?.(1456);
           const authorize=new URL(event.url),target=new URL(authorize.searchParams.get('redirect_uri'));
           target.searchParams.set('state',authorize.searchParams.get('state'));target.searchParams.set('code','browser-code');
           callbackResponse=ownedCallbackFetch(String(target)).then(async response=>({status:response.status,contentType:response.headers.get('content-type'),cacheControl:response.headers.get('cache-control'),body:await response.text()}));
         }
-      }})}catch(e){failure=e}
+      }})}catch(e){globalThis.__observeOAuthError?.('radius-callback-'+status,e);failure=e}
       const page=await callbackResponse;
       return{...(failure?{error:error(failure)}:{credential}),page};
     }
