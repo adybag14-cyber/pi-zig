@@ -175,7 +175,7 @@ pub fn unionValue(scope: *Scope, graph: c.JSValue, values: c.JSValue) anyerror!c
 pub fn fastUnion(scope: *Scope, graph: c.JSValue, values: c.JSValue) anyerror!c.JSValue {
     const length = try scope.get(values, "length");
     if (scope.equal(length, c.JS_NewInt32(scope.engine.context, 1))) return head(scope, values);
-    if (scope.equal(length, c.JS_NewInt32(scope.engine.context, 0))) return core.never(scope, graph);
+    if (scope.equal(try scope.get(values, "length"), c.JS_NewInt32(scope.engine.context, 0))) return core.never(scope, graph);
     return core.unionType(scope, graph, values);
 }
 pub fn intersection(scope: *Scope, graph: c.JSValue, values: c.JSValue) anyerror!c.JSValue {
