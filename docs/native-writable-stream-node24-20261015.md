@@ -1,0 +1,38 @@
+# Native WritableStream state machine
+
+This source checkpoint starts from Root `294d09b8`. It owns `native_writable_stream.zig`, a narrow Engine binding root and destructor hook, its dedicated test/build steps, and external Node24 differential controls. It does not modify ReadableStream, TransformStream, compression, the completed grammar checkpoint, main, releases, or the active installation.
+
+The algorithm authority is the actual `internal/webstreams/writablestream` body and its `internal/webstreams/util`, `internal/validators`, and `internal/errors` dependencies from the pinned Node v24.14.0 builtin source artifact. The artifact SHA-256 is `0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263`; its JSON contains 368 actual string bodies. Relevant raw original bodies are retained as reference text under this checkpoint's provenance directory. The implementation is Zig with direct QuickJS C calls; no Node or JavaScript implementation is evaluated.
+
+The three public classes have genuine native opaque state with class brand checks, native constructors, shared public prototypes, real methods and accessors, and `Symbol.toStringTag` descriptors. Instance state retains the underlying sink and algorithms, controller and AbortSignal, writer, stored error, queue chunks and sizes, queued write capabilities, in-flight write/close operations, abort requests, and stream closure capability. Writer state retains its stream and stable `ready` and `closed` capabilities. Every retained VM edge is marked and freed by the class lifecycle hooks.
+
+The implementation follows the writable/erroring/errored/closed transitions, start gating, serial sink writes, close ordering, size callback and numeric coercion ordering, queue-size backpressure, readiness promise replacement, writer release and lock reacquisition, stored-error identity, abort promise reuse, signal delivery, and successful/failed in-flight close races. Sink callbacks run with the real sink as receiver. Their returns use fresh intrinsic async promises; owner-thread VM reactions advance the queue. Internal failure retirement settles retained capabilities directly and does not allocate temporary Scope roots after permanent host allocator failure.
+
+The composition APIs return owned JSValues and accept borrowed inputs:
+
+| API | Result |
+| --- | --- |
+| `install(engine)` | Installs the three real global classes once per Engine |
+| `exports(engine)` | Owned object containing only the three real constructors |
+| `createNative(engine, sink, strategy)` | Owned stream without consulting a mutable guest global constructor |
+| `isWritableStream(engine, stream)` | Genuine native brand boolean |
+| `isWritableStreamLocked(engine, stream)` | Actual writer lock boolean |
+| `isErrored(engine, stream)` | Actual terminal errored-state boolean |
+| `streamStoredErrorNative(engine, stream)` | Owned stored error |
+| `acquireWriterNative(engine, stream)` | Owned genuine writer |
+| `writerWriteNative(engine, writer, chunk)` | Owned write Promise |
+| `writerCloseNative(engine, writer)` | Owned close Promise |
+| `writerAbortNative(engine, writer, reason)` | Owned abort Promise |
+| `writerReadyNative(engine, writer)` | Owned reference to the stable readiness Promise |
+| `writerClosedNative(engine, writer)` | Owned reference to the stable closed Promise |
+| `writerDesiredSizeNative(engine, writer)` | Owned JS number or null during erroring/errored |
+| `releaseWriterNative(engine, writer)` | Releases the real lock and rejects writer capabilities as required |
+| `closeWithErrorPropagationNative(engine, writer)` | Owned Promise using the Node pipe-close algorithm |
+| `controllerErrorNative(engine, controller, reason)` | Errors an actual writable controller if still writable |
+| `controllerErrorIfNeededNative(engine, controller, reason)` | Same terminal-safe controller operation |
+
+The readable owner can merge the three constructors into its `node:stream/web` export graph and use these APIs for actual pipe operations. The transform owner can provide real sink callbacks to `createNative` and retain the controller received by `sink.start`. Each stream implementation owns its own queue and promises. This checkpoint adds no MessagePort transfer protocol or synthetic Node private transfer symbols; the current Pi application use requires the public standard stream composition path.
+
+The prepared Source56 corpus covers public constructor/prototype descriptors, getters and receivers, parameter validation, start throws/rejection/gating, serial writes, readiness identity and backpressure, size conversion and reentrancy, release and reacquisition, queued failures, close and abort races, exact reason identity, default AbortSignal reasons, borrowed-method brand checks, subclass construction, thenable assimilation, mutated global Promise, and retained state across real GC. The expected fixture is absent until an admitted genuine Node24 source run passes its terminal and complete posthash controls. Native compilation and differential replay are separate later gates.
+
+Pinned Zig 0.16.0 formatting and AST checks pass for the implementation and test harness. Node syntax checks pass for the external input and capture driver. These static checks do not establish runtime equivalence. `public_activation=false`, `full_factory_qualified=false`, and `full_pi_qualified=false` remain in effect.

@@ -1,0 +1,50 @@
+{
+  "native_runtime_run": false,
+  "expected_present": false,
+  "source_run": false,
+  "checks": [
+    "zig0.16 fmt",
+    "zig0.16 ast-check implementation and harness",
+    "Node --check external input and driver"
+  ],
+  "node": "C:/Program Files/nodejs/node.exe",
+  "node_version": "v24.14.0",
+  "base": "294d09b8",
+  "driver_sha256": "35190D16B9184A459ABDCA1F9537FA5C7AD86B7650299BD869F63AE821C7D846",
+  "authority": "C:/Users/adyba/pi-zig-update-evidence-20261003/web-body-node24-source-first-20261015-node-builtin-authorities.json",
+  "cases": 56,
+  "full_pi_qualified": false,
+  "node_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "zig": "0.16.0",
+  "bodies": [
+    {
+      "characters": 40199,
+      "path": "C:/Users/adyba/pi-zig-native-writable-stream-20261015/verification/writable-stream-node24-prepared-20261015/provenance/internal_webstreams_writablestream.js.txt",
+      "sha256": "7C4774CD8B1E608D6C2FF4A8A861D60185E559544BA001F1987A6D1058821B23",
+      "key": "internal/webstreams/writablestream"
+    },
+    {
+      "characters": 8129,
+      "path": "C:/Users/adyba/pi-zig-native-writable-stream-20261015/verification/writable-stream-node24-prepared-20261015/provenance/internal_webstreams_util.js.txt",
+      "sha256": "44F261AF2EAE1CA2FEF87D82F03CD11A15B47D01FCAE569FF2CA967EC8650F51",
+      "key": "internal/webstreams/util"
+    },
+    {
+      "characters": 19778,
+      "path": "C:/Users/adyba/pi-zig-native-writable-stream-20261015/verification/writable-stream-node24-prepared-20261015/provenance/internal_validators.js.txt",
+      "sha256": "66F780F147EAAD7C0C9293B02BAEB2BBEEB380A458B6A3B554DBDCC4C5E65390",
+      "key": "internal/validators"
+    },
+    {
+      "characters": 71331,
+      "path": "C:/Users/adyba/pi-zig-native-writable-stream-20261015/verification/writable-stream-node24-prepared-20261015/provenance/internal_errors.js.txt",
+      "sha256": "2CDA1AE333267DFBE6BF20DA6357111D1C680AA6A5E1A0D4F10117742B6C4231",
+      "key": "internal/errors"
+    }
+  ],
+  "public_activation": false,
+  "authority_sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+  "authority_string_bodies": 368,
+  "native_compile_run": false,
+  "input_sha256": "76BB569994E200107D49123C70C44BFB0706DE5A70A9EF2AC154E988501474D3"
+}
