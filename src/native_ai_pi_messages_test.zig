@@ -6,6 +6,7 @@ const c = em.c;
 fn install(engine: *em.Engine) !void {
     try @import("extensions/native_url.zig").install(engine);
     try @import("extensions/text_encoding.zig").install(engine);
+    try @import("extensions/text_decoder.zig").install(engine);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
