@@ -28,6 +28,9 @@ original reason; cancellation failures cannot replace a published result.
 The independent native target prepares large (>512 KiB) success, UTF-8/BOM/EOF,
 binary ownership, chunk mutation, shared HTTP byte framing, pending-GC roots,
 wrong brands, read-error identity, budget rejection and abort/cancel controls.
+An exhaustive host-GPA probe covers Engine/AbortSignal/function setup, retained
+chunks, async read continuations, final concatenation, UTF-8 decoding and GC.
+It does not inject the worker's separate page allocator.
 This checkpoint is source-only: no compilation, runtime or allocation-failure
 qualification is claimed. HTTP image integration requires the shared worker's
 opt-in byte streaming for error bodies; standard worker framing is unchanged.

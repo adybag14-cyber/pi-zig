@@ -68,3 +68,19 @@ test "native body collector pending chunk graph survives GC without reader lock 
     , "native-body-collect-gc-after.mjs");
     c.JS_RunGC(engine.runtime);
 }
+test "native body collector every host allocation releases decoder chunks and async callback roots" {
+    const Probe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
+            defer engine.deinit();
+            const generation = engine.native_allocation_generation;
+            install(engine) catch |err| return engine.nativeAllocationError(err, generation);
+            const result = engine.evalModule(
+                \\const chunks=[new Uint8Array([239,187]),new Uint8Array([191,65,226,40,161])],reader={async read(){await Promise.resolve();return chunks.length?{value:chunks.shift(),done:false}:{done:true}}},text=await collectBody(reader,'text');if(text!=='A�(�')throw Error('collector allocation probe');
+            , "native-body-collect-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+            engine.freeValue(result);
+            c.JS_RunGC(engine.runtime);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}
