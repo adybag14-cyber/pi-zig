@@ -1591,6 +1591,13 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-sdk-session-reload", "Compile ordinary reload with actual shared provider registry reset").dependOn(&reload_tests.step);
     b.step("test-native-sdk-session-reload", "Compare actual upstream reload ordering and failure boundaries").dependOn(&b.addRunArtifact(reload_tests).step);
 
+    const bindings_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_bindings_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary extension bindings"}, .use_llvm = use_llvm });
+    linkQuickJs(b, bindings_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(bindings_tests.root_module, sqlite_lib_dir, sqlite_library);
+    bindings_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-session-bindings", "Compile ordinary session extension binding and resource discovery bodies").dependOn(&bindings_tests.step);
+    b.step("test-native-sdk-session-bindings", "Compare actual upstream extension binding and discovered resource ordering").dependOn(&b.addRunArtifact(bindings_tests).step);
+
     const manual_compaction_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_compaction_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary compaction"}, .use_llvm = use_llvm });
     linkQuickJs(b, manual_compaction_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(manual_compaction_tests.root_module, sqlite_lib_dir, sqlite_library);

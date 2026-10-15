@@ -1,0 +1,81 @@
+const p=bindingsAPI;const rows=[];globalThis.bindingsRows=rows;
+const names=['bindExtensions','extendResourcesFromExtensions','buildExtensionResourcePaths','getExtensionSourceLabel'];
+rows.push({case:'metadata',methods:names.map(name=>{const f=p[name],d=Object.getOwnPropertyDescriptor(p,name);return{name:f.name,length:f.length,async:Object.getPrototypeOf(f)===(async()=>{}).__proto__,ownPrototype:Object.hasOwn(f,'prototype'),enumerable:d.enumerable,configurable:d.configurable,writable:d.writable}})});
+for(const path of ['<inline:fixture>','<nested<name>>','<unterminated','builtin:mcp','builtin:<>name','/extensions/fun.ts','/extensions/fun.js','/extensions/fun.TS','/extensions/fun.ts.js','.ts',''])rows.push({case:'label',path,value:p.getExtensionSourceLabel.call({},path)});
+{
+ const s=Object.create(p),entries=[{path:'skills/a',extensionPath:'/extensions/a.ts'},{path:'prompt.md',extensionPath:'<inline:b>'},{path:'theme.json',extensionPath:'builtin:mcp'}];
+ const actual=s.buildExtensionResourcePaths(entries);rows.push({case:'paths',actual,keys:actual.map(x=>Object.keys(x.metadata)),fresh:actual!==entries&&actual.every((x,i)=>x!==entries[i])});
+}
+{
+ const log=[],s=Object.create(p);Object.defineProperty(s,'getExtensionSourceLabel',{get(){log.push('get label');return function(x){log.push('label:'+x);return 'custom-source'}}});
+ let i=0;const e={get extensionPath(){log.push('extensionPath:'+ ++i);return i===2?'<synthetic>':'/extensions/a.ts'},get path(){log.push('path');return 'x'}};
+ const actual=s.buildExtensionResourcePaths([e]);rows.push({case:'entry-getter-order',log,actual,keys:Object.keys(actual[0].metadata)});
+}
+{
+ const marker={},log=[],s=Object.create(p),entries={get map(){log.push('get map');return function(fn){log.push('call map');return fn({path:'x',extensionPath:'<custom>'})}}};
+ rows.push({case:'custom-map',log,actual:s.buildExtensionResourcePaths(entries)});
+ s.getExtensionSourceLabel=()=>{throw marker};let same=false;try{s.buildExtensionResourcePaths([{extensionPath:'<x>'}])}catch(e){same=e===marker}rows.push({case:'map-marker',same});
+}
+function make(reason='startup',has=true,result={skillPaths:[],promptPaths:[],themePaths:[]}){
+ const log=[],s=Object.create(p);s._cwd='/working';s._sessionStartEvent={type:'session_start',reason};
+ s._extensionRunner={hasHandlers(name){log.push('has:'+name);return has},emit(e){log.push('emit:'+e.reason);return Promise.resolve()},reportUnhandledMcpServers(){log.push('report')},emitResourcesDiscover(cwd,r){log.push('discover:'+cwd+':'+r);return Promise.resolve(result)}};
+ s._applyExtensionBindings=function(r){log.push('apply:'+String(r===s._extensionRunner))};s._resourceLoader={extendResources(paths){log.push(['extend',paths])}};
+ s.getActiveToolNames=()=>{log.push('active');return ['read']};s._rebuildSystemPrompt=names=>log.push(['rebuild',names]);return{s,log};
+}
+for(const reason of ['startup','reload','switch']){
+ const{s,log}=make(reason);const ret=s.bindExtensions({});log.push('returned:'+String(ret instanceof Promise));const value=await ret;rows.push({case:'bind-empty:'+reason,log,undefined:value===undefined});
+}
+{
+ const{s,log}=make();const bindings={};for(const [key,value]of Object.entries({uiContext:null,mode:'rpc',commandContextActions:false,abortHandler:0,shutdownHandler:'stop',onError:null}))Object.defineProperty(bindings,key,{get(){log.push('get:'+key);return value}});
+ await s.bindExtensions(bindings);rows.push({case:'binding-getters',log,values:['_extensionUIContext','_extensionMode','_extensionCommandContextActions','_extensionAbortHandler','_extensionShutdownHandler','_extensionErrorListener'].map(k=>s[k])});
+ s._extensionMode='retained';await s.bindExtensions({mode:undefined});rows.push({case:'undefined-retains',value:s._extensionMode});
+}
+{
+ const{s,log}=make();let reads=0;await s.bindExtensions({get uiContext(){return ++reads===1?'checked':'assigned'}});rows.push({case:'binding-second-read-value',reads,value:s._extensionUIContext});
+}
+{
+ const s=Object.create(p),log=[];let reads=0;const values=['/extensions/one.ts','/extensions/two.ts','/different/three.ts'];
+ const actual=s.buildExtensionResourcePaths([{get extensionPath(){log.push(++reads);return values[reads-1]},path:'x'}]);rows.push({case:'path-third-read-value',log,actual});
+}
+{
+ const{s,log}=make('startup',false);await s.extendResourcesFromExtensions('reload');rows.push({case:'no-discovery-handler',log});
+}
+{
+ const result={skillPaths:[{path:'skills',extensionPath:'/extensions/pack.ts'}],promptPaths:[{path:'prompt',extensionPath:'<inline:fixture>'}],themePaths:[{path:'theme',extensionPath:'builtin:mcp'}]};
+ const{s,log}=make('reload',true,result);await s.bindExtensions({});rows.push({case:'all-discovered-resources',log});
+}
+{
+ const log=[],result={get skillPaths(){log.push('skillPaths');return{get length(){log.push('skill length');return 0}}},get promptPaths(){log.push('promptPaths');return{get length(){log.push('prompt length');return 0}}},get themePaths(){log.push('themePaths');return{get length(){log.push('theme length');return 0}}}};
+ const{s}=make('startup',true,result);await s.extendResourcesFromExtensions('startup');rows.push({case:'discover-destructure-and-length-order',log});
+}
+{
+ const log=[],result={skillPaths:{get length(){log.push('skill length');return 1}},promptPaths:{get length(){log.push('prompt length');return 0}},themePaths:{get length(){log.push('theme length');return 0}}};
+ const{s}=make('startup',true,result);s.buildExtensionResourcePaths=function(x){log.push('map:'+String(x===result.skillPaths?'skill':x===result.promptPaths?'prompt':'theme'));return []};await s.extendResourcesFromExtensions('startup');rows.push({case:'length-short-circuit',log});
+}
+{
+ const{s,log}=make();s._extensionRunner.emit=async()=>{log.push('old emit');s._extensionRunner={reportUnhandledMcpServers(){log.push('new report')},hasHandlers(){log.push('new has');return false}};s._sessionStartEvent={reason:'reload'}};await s.bindExtensions({});rows.push({case:'live-runner-after-await',log});
+}
+for(const boundary of ['binding-getter','apply','emit','report','has','discover','map','loader','rebuild']){
+ const marker={},result={skillPaths:[{path:'x',extensionPath:'<inline:x>'}],promptPaths:[],themePaths:[]};const{s,log}=make('startup',true,result);let bindings={};
+ if(boundary==='binding-getter')bindings={get uiContext(){throw marker}};
+ if(boundary==='apply')s._applyExtensionBindings=()=>{throw marker};
+ if(boundary==='emit')s._extensionRunner.emit=()=>Promise.reject(marker);
+ if(boundary==='report')s._extensionRunner.reportUnhandledMcpServers=()=>{throw marker};
+ if(boundary==='has')s._extensionRunner.hasHandlers=()=>{throw marker};
+ if(boundary==='discover')s._extensionRunner.emitResourcesDiscover=()=>Promise.reject(marker);
+ if(boundary==='map')s.buildExtensionResourcePaths=()=>{throw marker};
+ if(boundary==='loader')s._resourceLoader.extendResources=()=>{throw marker};
+ if(boundary==='rebuild')s._rebuildSystemPrompt=()=>{throw marker};
+ let same=false,sync=false,ret;try{ret=s.bindExtensions(bindings)}catch(e){sync=true;same=e===marker}if(ret)try{await ret}catch(e){same=e===marker}rows.push({case:'failure:'+boundary,same,sync,log});
+}
+{
+ const{s,log}=make();Object.defineProperty(s,'extendResourcesFromExtensions',{get(){log.push('get extend');return p.extendResourcesFromExtensions}});Object.defineProperty(s._sessionStartEvent,'reason',{get(){log.push('get reason');return 'reload'}});await s.bindExtensions({});rows.push({case:'extend-callee-before-reason',log});
+}
+{
+ const result={skillPaths:[{path:'new-skill',extensionPath:'<inline:reloaded>'}],promptPaths:[],themePaths:[]};const{s,log}=make('startup',true,result),next=s._extensionRunner;
+ s._extensionRunner={getFlagValues(){log.push('old flags');return new Map([['enabled',true]])},hasHandlers(){log.push('old shutdown handler');return false},invalidate(){log.push('old invalidate')}};
+ s.settingsManager={reload(){log.push('settings reload');return Promise.resolve()}};s.syncQueueModesFromSettings=()=>log.push('queue modes');s._usesDefaultTools=false;s._pendingToolNames=new Set();s._extensionUIContext={};
+ s._resourceLoader.reload=()=>{log.push('loader reload');return Promise.resolve()};s._buildRuntime=o=>{log.push(['build runtime',{activeToolNames:o.activeToolNames,flags:[...o.flagValues],includeAllExtensionTools:o.includeAllExtensionTools}]);s._extensionRunner=next};
+ await p.reload.call(s,{beforeSessionStart(){log.push('before session start')}});rows.push({case:'ordinary-reload-resource-composition',log,pending:[...s._pendingToolNames]});
+}
+export const proof=true;
