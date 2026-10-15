@@ -412,8 +412,9 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const result = try scope.own(try v.js.builtin(scope.engine, "Headers", &.{filtered}));
     const federated_client = try scope.get(owner, "federationClient");
     if (!c.JS_IsUndefined(federated_client)) {
-        const workspace = try scope.get(try scope.get(federated_client, "config"), "workspace_id");
-        if (scope.truthy(workspace) and !scope.truthy(try scope.invoke(result, "has", &.{try scope.text("anthropic-workspace-id")}))) _ = try scope.invoke(result, "set", &.{ try scope.text("anthropic-workspace-id"), workspace });
+        // SDK credential-chain emits the workspace extra header only for
+        // user_oauth. Pi's explicit OIDC federation sends workspace_id in the
+        // token exchange, not again on Messages requests.
         const current = try scope.invoke(result, "get", &.{try scope.text("anthropic-beta")});
         const values = if (v.nullish(current)) try scope.array() else try scope.invoke(current, "split", &.{try scope.text(",")});
         const trimmed = try scope.array();
