@@ -311,7 +311,9 @@ fn objectInput(scope: *Scope, owner: c.JSValue, value: c.JSValue, name: []const 
     if (c.JS_IsUndefined(value)) return nullObject(scope);
     if (allow_null and c.JS_IsNull(value)) return value;
     if (!c.JS_IsObject(value) or c.JS_IsFunction(scope.engine.context, value)) {
-        const message = try std.fmt.allocPrint(scope.engine.gpa, "The \"{s}\" argument must be of type object. Received {s}", .{ name, if (c.JS_IsNull(value)) "null" else "an invalid value" });
+        const received = try receivedDescription(scope.engine, value);
+        defer scope.engine.gpa.free(received);
+        const message = try std.fmt.allocPrint(scope.engine.gpa, "The \"{s}\" argument must be of type object. Received {s}", .{ name, received });
         defer scope.engine.gpa.free(message);
         return throwError(scope.engine, owner, "TypeError", message, "ERR_INVALID_ARG_TYPE");
     }
@@ -324,15 +326,42 @@ fn highWaterMark(scope: *Scope, owner: c.JSValue, raw: c.JSValue, default: f64) 
     if (c.JS_IsUndefined(raw)) return c.JS_NewFloat64(scope.engine.context, default);
     var value: f64 = 0;
     if (c.JS_ToFloat64(scope.engine.context, &value, raw) < 0) return js.capture(scope.engine);
-    if (std.math.isNan(value) or value < 0) return throwError(scope.engine, owner, "RangeError", "The property 'strategy.highWaterMark' is invalid", "ERR_INVALID_ARG_VALUE");
+    if (std.math.isNan(value) or value < 0) return invalidValue(scope, owner, "strategy.highWaterMark", c.JS_NewFloat64(scope.engine.context, value));
     return c.JS_NewFloat64(scope.engine.context, value);
 }
 fn validateCallback(scope: *Scope, owner: c.JSValue, value: c.JSValue, name: []const u8) !void {
     if (!c.JS_IsFunction(scope.engine.context, value)) {
-        const message = try std.fmt.allocPrint(scope.engine.gpa, "The \"{s}\" property must be of type function. Received an invalid value", .{name});
+        const received = try receivedDescription(scope.engine, value);
+        defer scope.engine.gpa.free(received);
+        const message = try std.fmt.allocPrint(scope.engine.gpa, "The \"{s}\" property must be of type function. Received {s}", .{ name, received });
         defer scope.engine.gpa.free(message);
         return throwError(scope.engine, owner, "TypeError", message, "ERR_INVALID_ARG_TYPE");
     }
+}
+pub fn receivedDescription(engine: *em.Engine, value: c.JSValue) ![]u8 {
+    if (c.JS_IsUndefined(value)) return engine.gpa.dupe(u8, "undefined");
+    if (c.JS_IsNull(value)) return engine.gpa.dupe(u8, "null");
+    if (c.JS_IsString(value) or c.JS_IsNumber(value) or c.JS_IsBool(value) or c.JS_IsBigInt(value) or c.JS_IsSymbol(value)) {
+        const inspected = try @import("node_event_inspect.zig").inspect(engine, value, 0);
+        defer engine.gpa.free(inspected);
+        const kind: []const u8 = if (c.JS_IsString(value)) "string" else if (c.JS_IsNumber(value)) "number" else if (c.JS_IsBool(value)) "boolean" else if (c.JS_IsBigInt(value)) "bigint" else "symbol";
+        return std.fmt.allocPrint(engine.gpa, "type {s} ({s})", .{ kind, inspected });
+    }
+    if (c.JS_IsFunction(engine.context, value)) {
+        const name = try js.get(engine, value, "name");
+        defer engine.freeValue(name);
+        const text = try engine.toString(name);
+        defer engine.gpa.free(text);
+        return std.fmt.allocPrint(engine.gpa, "function {s}", .{text});
+    }
+    return engine.gpa.dupe(u8, if (c.JS_IsArray(value)) "an instance of Array" else "an instance of Object");
+}
+fn invalidValue(scope: *Scope, owner: c.JSValue, name: []const u8, value: c.JSValue) anyerror {
+    const inspected = try @import("node_event_inspect.zig").inspect(scope.engine, value, 2);
+    defer scope.engine.gpa.free(inspected);
+    const message = try std.fmt.allocPrint(scope.engine.gpa, "The property '{s}' is invalid. Received {s}", .{ name, inspected });
+    defer scope.engine.gpa.free(message);
+    return throwError(scope.engine, owner, "RangeError", message, "ERR_INVALID_ARG_VALUE");
 }
 fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
@@ -344,8 +373,8 @@ fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, roo
     const readable_type = try scope.get(transformer, "readableType");
     const writable_type = try scope.get(transformer, "writableType");
     const start = try scope.get(transformer, "start");
-    if (!c.JS_IsUndefined(readable_type)) return throwError(engine, owner, "RangeError", "The property 'transformer.readableType' is invalid", "ERR_INVALID_ARG_VALUE");
-    if (!c.JS_IsUndefined(writable_type)) return throwError(engine, owner, "RangeError", "The property 'transformer.writableType' is invalid", "ERR_INVALID_ARG_VALUE");
+    if (!c.JS_IsUndefined(readable_type)) return invalidValue(&scope, owner, "transformer.readableType", readable_type);
+    if (!c.JS_IsUndefined(writable_type)) return invalidValue(&scope, owner, "transformer.writableType", writable_type);
     const rh = try optionalGet(&scope, readable_strategy, "highWaterMark");
     const rs = try optionalGet(&scope, readable_strategy, "size");
     const wh = try optionalGet(&scope, writable_strategy, "highWaterMark");

@@ -25,7 +25,6 @@ const State = struct {
     decompress: bool,
     initialized: bool = false,
     ended: bool = false,
-    padding: bool = false,
     fn end(self: *State) void {
         if (!self.initialized) return;
         _ = if (self.decompress) z.inflateEnd(&self.stream) else z.deflateEnd(&self.stream);
@@ -90,7 +89,18 @@ fn codecError(scope: *Scope, self: *State, result: c_int) !c.JSValue {
         else => "Z_STREAM_ERROR",
     };
     const message: []const u8 = if (self.stream.msg != null) std.mem.span(self.stream.msg) else if (result == z.Z_BUF_ERROR) "unexpected end of file" else if (result == z.Z_NEED_DICT) "Missing dictionary" else "zlib stream error";
-    return nativeError(scope, self.owner, message, code, result, false);
+    var cause_args = [_]c.JSValue{try scope.text(message)};
+    const cause = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.get(self.owner, "Error"), 1, &cause_args)));
+    try scope.put(cause, "errno", c.JS_NewInt32(scope.engine.context, result));
+    try scope.put(cause, "code", try scope.text(code));
+    // Actual Node duplex web adapters wrap every zlib failure in TypeError
+    // with a non-enumerable cause and retain the original codec code.
+    const options = try scope.object();
+    try scope.put(options, "cause", cause);
+    var args = [_]c.JSValue{ c.pi_js_undefined(), options };
+    const wrapped = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.get(self.owner, "TypeError"), args.len, &args)));
+    try scope.put(wrapped, "code", try scope.text(code));
+    return scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, wrapped)));
 }
 fn output(scope: *Scope, controller: c.JSValue, bytes: []const u8) !void {
     if (bytes.len == 0) return;
@@ -124,19 +134,11 @@ fn process(scope: *Scope, self: *State, controller: c.JSValue, input: []const u8
             if (self.format == .raw) return; // Actual Node InflateRaw ignores bytes after its first end marker.
             if (position < copied.len) {
                 if (self.format == .deflate) {
-                    _ = try nativeError(scope, self.owner, "Trailing junk found after the end of the compressed stream", "ERR_TRAILING_JUNK_AFTER_STREAM_END", null, false);
+                    _ = try nativeError(scope, self.owner, "Trailing junk found after the end of the compressed stream", "ERR_TRAILING_JUNK_AFTER_STREAM_END", null, true);
                     unreachable;
                 }
                 if (copied[position] == 0) {
-                    if (!std.mem.allEqual(u8, copied[position..], 0)) {
-                        _ = try codecError(scope, self, z.Z_DATA_ERROR);
-                        unreachable;
-                    }
-                    self.padding = true;
-                    return;
-                }
-                if (self.padding) {
-                    _ = try codecError(scope, self, z.Z_DATA_ERROR);
+                    _ = try nativeError(scope, self.owner, "Trailing junk found after the end of the compressed stream", "ERR_TRAILING_JUNK_AFTER_STREAM_END", null, true);
                     unreachable;
                 }
                 const reset = z.inflateReset2(&self.stream, windowBits(self.format));
@@ -187,26 +189,38 @@ fn inputBytes(scope: *Scope, owner: c.JSValue, value: c.JSValue) !Input {
         const text = try scope.engine.toString(value);
         return .{ .backing = c.pi_js_undefined(), .bytes = text, .string = text };
     }
+    if (!scope.truthy(try scope.call(try scope.get(owner, "isView"), c.pi_js_undefined(), &.{value}))) {
+        const received = try transform.receivedDescription(scope.engine, value);
+        defer scope.engine.gpa.free(received);
+        const message = try std.fmt.allocPrint(scope.engine.gpa, "The \"chunk\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received {s}", .{received});
+        defer scope.engine.gpa.free(message);
+        return nativeError(scope, owner, message, "ERR_INVALID_ARG_TYPE", null, true);
+    }
+    var actual_view = value;
+    var buffer_instance = false;
+    if (scope.engine.buffer_prototype) |buffer_prototype| {
+        var prototype = try scope.own(try scope.engine.checked(c.JS_GetPrototype(scope.engine.context, value)));
+        while (c.JS_IsObject(prototype)) {
+            if (scope.equal(prototype, buffer_prototype)) {
+                buffer_instance = true;
+                break;
+            }
+            prototype = try scope.own(try scope.engine.checked(c.JS_GetPrototype(scope.engine.context, prototype)));
+        }
+    }
+    if (!buffer_instance) {
+        // Node Stream._uint8ArrayToBuffer proves the intrinsic view brand, then
+        // reads these three public properties in order to create FastBuffer.
+        const public_buffer = try scope.get(value, "buffer");
+        const public_offset = try scope.get(value, "byteOffset");
+        const public_length = try scope.get(value, "byteLength");
+        var args = [_]c.JSValue{ public_buffer, public_offset, public_length };
+        actual_view = try scope.own(try scope.engine.checked(c.JS_NewTypedArray(scope.engine.context, args.len, &args, c.JS_TYPED_ARRAY_UINT8)));
+    }
     var offset: usize = 0;
     var length: usize = 0;
-    var backing: c.JSValue = undefined;
-    if (c.JS_GetTypedArrayType(value) >= 0) {
-        var element: usize = 0;
-        backing = try scope.own(try scope.engine.checked(c.JS_GetTypedArrayBuffer(scope.engine.context, value, &offset, &length, &element)));
-    } else {
-        // The captured DataView getters perform an intrinsic brand check. Public
-        // byteOffset/buffer/byteLength properties are never used for conversion.
-        backing = scope.call(try scope.get(owner, "dataBuffer"), value, &.{}) catch |err| {
-            if (err != error.JavaScriptException) return err;
-            _ = try nativeError(scope, owner, "The \"chunk\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an invalid value", "ERR_INVALID_ARG_TYPE", null, true);
-            unreachable;
-        };
-        var numeric_offset: i64 = 0;
-        var numeric_length: i64 = 0;
-        if (c.JS_ToInt64(scope.engine.context, &numeric_offset, try scope.call(try scope.get(owner, "dataOffset"), value, &.{})) < 0 or c.JS_ToInt64(scope.engine.context, &numeric_length, try scope.call(try scope.get(owner, "dataLength"), value, &.{})) < 0) return js.capture(scope.engine);
-        offset = @intCast(numeric_offset);
-        length = @intCast(numeric_length);
-    }
+    var element: usize = 0;
+    const backing = try scope.own(try scope.engine.checked(c.JS_GetTypedArrayBuffer(scope.engine.context, actual_view, &offset, &length, &element)));
     var total: usize = 0;
     const pointer = c.JS_GetArrayBuffer(scope.engine.context, &total, backing);
     if (pointer == null and c.JS_HasException(scope.engine.context)) return js.capture(scope.engine);
@@ -296,16 +310,6 @@ fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, roo
     self.writable = try transform.writableNative(engine, pair);
     return c.JS_DupValue(engine.context, instance);
 }
-fn accessor(scope: *Scope, object: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    const atom = c.JS_NewAtom(scope.engine.context, name);
-    if (atom == c.JS_ATOM_NULL) return js.capture(scope.engine);
-    defer c.JS_FreeAtom(scope.engine.context, atom);
-    var descriptor: c.JSPropertyDescriptor = undefined;
-    if (c.JS_GetOwnProperty(scope.engine.context, &descriptor, object, atom) != 1) return js.capture(scope.engine);
-    defer scope.engine.freeValue(descriptor.value);
-    defer scope.engine.freeValue(descriptor.setter);
-    return scope.own(descriptor.getter);
-}
 pub fn install(engine: *em.Engine) !void {
     if (engine.native_module_values.contains(module_key)) return;
     try transform.install(engine);
@@ -313,8 +317,7 @@ pub fn install(engine: *em.Engine) !void {
     defer scope.deinit();
     const owner = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
     inline for (.{ "String", "Error", "TypeError" }) |name| try scope.put(owner, name, try scope.global(name));
-    const data_prototype = try scope.get(try scope.global("DataView"), "prototype");
-    inline for (.{ "buffer", "byteOffset", "byteLength" }, .{ "dataBuffer", "dataOffset", "dataLength" }) |name, key| try scope.put(owner, key, try accessor(&scope, data_prototype, name));
+    try scope.put(owner, "isView", try scope.get(try scope.global("ArrayBuffer"), "isView"));
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
     inline for (.{ false, true }, .{ "CompressionStream", "DecompressionStream" }, .{ "compressClass", "decompressClass" }, .{ "compressPrototype", "decompressPrototype" }) |decompress, name, class_key, prototype_key| {
         var class_id: c.JSClassID = 0;
