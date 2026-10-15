@@ -1,0 +1,16 @@
+{
+  "name": "native-ai-one-shot-body-compile-debug-second-20261015",
+  "pid": 66576,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-ai-one-shot build-native-body-collect -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T20:12:33.6746508Z",
+  "launched_utc": "2026-10-15T20:12:33.6726025+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-ai-images-classifiers-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T20:12:55.2105488+00:00"
+}

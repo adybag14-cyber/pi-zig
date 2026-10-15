@@ -1,0 +1,19 @@
+{
+  "status": "admitted",
+  "free_kib": 18665940,
+  "threshold_kib": 16777216,
+  "single_job_threshold_kib": 16777216,
+  "concurrent_job_threshold_kib": 16777216,
+  "policy_authority": "Root normal16GiB admission; maximum four coordinated native reservations",
+  "calibration": "Normal16GiB floor; no calibrated8GiB fallback",
+  "calibration_evidence": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-rs-install-compile-20261013.stderr.log",
+  "other_native": [],
+  "source": 6147,
+  "tools": 19546,
+  "native_launched": false,
+  "llvm": "true",
+  "jobs": 1,
+  "test_timeout_seconds": 120,
+  "outer_timeout_seconds": 1320,
+  "observed_utc": "2026-10-15T20:04:26.3934130+00:00"
+}
