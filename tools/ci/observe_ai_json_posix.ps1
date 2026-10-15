@@ -41,8 +41,8 @@ if($LASTEXITCODE -ne 0 -or @($taskNodeEntries|Where-Object {!$_.StartsWith($task
 if($LASTEXITCODE -ne 0){throw 'Node extraction failed'}
 $taskNodeRoot=Join-Path $taskTemp $taskNodePrefix.TrimEnd('/')
 $taskNode=Join-Path $taskNodeRoot 'bin/node'
-$taskLock=Get-Content -LiteralPath (Join-Path $taskSource 'package-lock.json') -Raw|ConvertFrom-Json
-$taskPin=$taskLock.packages.PSObject.Properties['node_modules/partial-json'].Value
+$taskLock=Get-Content -LiteralPath (Join-Path $taskSource 'package-lock.json') -Raw|ConvertFrom-Json -AsHashtable
+$taskPin=$taskLock['packages']['node_modules/partial-json']
 if($taskPin.version -cne '0.1.7' -or $taskPin.resolved -cne 'https://registry.npmjs.org/partial-json/-/partial-json-0.1.7.tgz'){throw 'Pinned partial-json contract changed'}
 $taskPackageArchive=Join-Path $taskTemp 'partial-json.tgz'
 Invoke-WebRequest $taskPin.resolved -OutFile $taskPackageArchive -TimeoutSec 120
