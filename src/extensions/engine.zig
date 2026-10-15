@@ -191,6 +191,10 @@ pub const Engine = struct {
     native_sdk_builtin_execution_cleanup: ?*const fn (*Engine) void = null,
     native_sdk_builtin_execution_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_sdk_builtin_execution_pending: ?*const fn (*Engine) bool = null,
+    native_ai_oauth_callback_state: ?*anyopaque = null,
+    native_ai_oauth_callback_cleanup: ?*const fn (*Engine) void = null,
+    native_ai_oauth_callback_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_ai_oauth_callback_pending: ?*const fn (*Engine) bool = null,
     native_ai_http_state: ?*anyopaque = null,
     native_ai_http_cleanup: ?*const fn (*Engine) void = null,
     native_ai_http_pump: ?*const fn (*Engine) anyerror!bool = null,
@@ -276,6 +280,7 @@ pub const Engine = struct {
     pub fn deinit(self: *Engine) void {
         _ = c.JS_PiSetJSONParseErrorHook(self.context, null);
         self.native_json_diagnostic_depth = 0;
+        if (self.native_ai_oauth_callback_cleanup) |cleanup| cleanup(self);
         if (self.native_ai_http_cleanup) |cleanup| cleanup(self);
         if (self.native_ai_codex_socket_cleanup) |cleanup| cleanup(self);
         if (self.native_env_deinit) |cleanup| cleanup(self);
@@ -774,12 +779,13 @@ pub const Engine = struct {
         const durable_worked = if (self.native_durable_control_pump) |pump| try pump(self) else false;
         const sdk_retired = if (self.native_sdk_resource_owner_pump) |pump| try pump(self) else false;
         const tools_worked = if (self.native_sdk_builtin_execution_pump) |pump| try pump(self) else false;
+        const oauth_callback_worked = if (self.native_ai_oauth_callback_pump) |pump| try pump(self) else false;
         const ai_http_worked = if (self.native_ai_http_pump) |pump| try pump(self) else false;
         const codex_socket_worked = if (self.native_ai_codex_socket_pump) |pump| try pump(self) else false;
         const commands_worked = if (self.native_command_metadata_pump) |pump| try pump(self) else false;
         const codemode_worked = if (self.native_codemode_pump) |pump| try pump(self) else false;
         const env_worked = if (self.native_env_pump) |pump| try pump(self) else false;
-        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or ai_http_worked or codex_socket_worked or commands_worked or codemode_worked or env_worked;
+        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or oauth_callback_worked or ai_http_worked or codex_socket_worked or commands_worked or codemode_worked or env_worked;
     }
     /// Native leases notify through this Engine-owned signal. External worker
     /// transports keep their existing wakeup while standalone VMs wake too.
@@ -800,11 +806,12 @@ pub const Engine = struct {
     /// host scheduler. Used by the persistent owner's idle event loop.
     pub fn drainReadyJobs(self: *Engine) !bool {
         defer self.finishJob();
+        const oauth_callback_worked = if (self.native_ai_oauth_callback_pump) |pump| try pump(self) else false;
         const ai_http_worked = if (self.native_ai_http_pump) |pump| try pump(self) else false;
         const codex_socket_worked = if (self.native_ai_codex_socket_pump) |pump| try pump(self) else false;
         const jobs = try self.runReadyJobs(self.options.job_budget);
         if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
-        return ai_http_worked or codex_socket_worked or jobs != 0;
+        return oauth_callback_worked or ai_http_worked or codex_socket_worked or jobs != 0;
     }
 
     /// Run part of a microtask checkpoint. The caller must finish the checkpoint
@@ -876,7 +883,7 @@ pub const Engine = struct {
                 }
                 // A native transport can settle a promise through an incoming
                 // abort or UI response even when no timer or JS job is pending.
-                if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or self.native_codemode_pump != null or self.native_env_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_http_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_codex_socket_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
+                if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or self.native_codemode_pump != null or self.native_env_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_oauth_callback_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_http_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_codex_socket_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
                     _ = try self.native_owner_signal.waitAfter(self.native_io.?, owner_epoch, .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } });
                     continue;
                 }

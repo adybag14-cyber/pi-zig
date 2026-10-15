@@ -1,0 +1,4 @@
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-observe-20261015.mjs","sha256":"1891342a814f6949d3df384d83b738159d52851fd41df240f9f160eb3e34d8c2","externalControl":true}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-oauth-callback-source-20261015.mjs","sha256":"5192a391b72c4b504e3a766e9d5c2ba3acc5b772bf12d17519533557fa0e84bd","externalControl":true}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\callback-server.ts","sha256":"d842605c90726f56f2b779af8176e111e5f3dcbea839bc5f27e488e710b27d8e","externalControl":false}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\utils\\oauth-page.ts","sha256":"a5c0f7ddd7a1a803c8fbaf65adaffb6a7710a70a75b5559a749ba811942fab40","externalControl":false}

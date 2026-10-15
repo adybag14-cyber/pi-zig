@@ -1,0 +1,40 @@
+{
+  "phase": "compile",
+  "candidate": "e13b31a55c532c288330627665777f96e33b3d1a",
+  "candidate_after": "e13b31a55c532c288330627665777f96e33b3d1a",
+  "native": 6534,
+  "native_drift": 0,
+  "native_inventory_drift": 0,
+  "vendor": 1316,
+  "vendor_drift": 0,
+  "vendor_inventory_drift": 0,
+  "compiler": 19546,
+  "compiler_drift": 0,
+  "controls": 23,
+  "control_drift": 0,
+  "references": [
+    {
+      "name": "source",
+      "drift": 0,
+      "count": 1968
+    },
+    {
+      "name": "dependencies",
+      "drift": 0,
+      "count": 31064
+    },
+    {
+      "name": "node",
+      "drift": 0,
+      "count": 1774
+    }
+  ],
+  "absences": 84,
+  "absence_drift": 0,
+  "source_inventory_drift": 0,
+  "compile": "passed",
+  "runtime": "not_run",
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "completed_utc": "2026-10-15T20:30:23.0283266+00:00"
+}

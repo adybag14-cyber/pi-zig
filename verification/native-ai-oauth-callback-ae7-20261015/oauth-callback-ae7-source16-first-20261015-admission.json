@@ -1,0 +1,9 @@
+{
+  "heap_mb": 256,
+  "observed_utc": "2026-10-15T20:16:08.8569458+00:00",
+  "required_kib": 2097152,
+  "free_kib": 19064016,
+  "status": "admitted",
+  "root_slot": 6,
+  "coordinated_with": "Root explicit LIGHT6 Source16 granted; no native launch"
+}

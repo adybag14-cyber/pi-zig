@@ -1,0 +1,21 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import http from 'node:http';
+import {syncBuiltinESMExports} from 'node:module';
+const ownedListeners=[],sockets=new Set(),requestSockets=new Set();let requestsStarted=0,requestsClosed=0;
+const originalCreateServer=http.createServer;
+http.createServer=function(...args){const server=originalCreateServer.apply(this,args);const row={pid:process.pid,actualNodeServer:true,listening:false,closed:false,address:null,port:null,connections:0};ownedListeners.push(row);server.on('listening',()=>{const addr=server.address();if(!addr||addr.address!=='127.0.0.1'||addr.port<=0)throw Error('Unexpected callback ownership address');Object.assign(row,{listening:true,address:addr.address,port:addr.port})});server.on('close',()=>{row.closed=true;row.listening=false});server.on('connection',socket=>{row.connections++;sockets.add(socket);socket.on('close',()=>sockets.delete(socket))});return server};
+syncBuiltinESMExports();
+const A=await import('file:///C:/Users/adyba/pi-upstream-source-ae7b16d-20261015/packages/ai/src/auth/oauth/callback-server.ts');
+const request=(url,method='GET')=>new Promise((resolve,reject)=>{
+ const target=new URL(url);if(target.hostname!=='127.0.0.1'||!ownedListeners.some(row=>row.listening&&row.port===+target.port))throw Error('Request escaped owned callback listener');requestsStarted++;
+ const req=http.request(target,{method,headers:{Connection:'close'}},res=>{let body='';res.setEncoding('utf8');res.on('data',data=>body+=data);res.on('end',()=>resolve({status:res.statusCode,contentType:res.headers['content-type'],cacheControl:res.headers['cache-control'],body}))});req.on('socket',socket=>{requestSockets.add(socket);socket.on('close',()=>requestSockets.delete(socket))});req.on('close',()=>requestsClosed++);req.on('error',reject);req.end();
+});
+const input=readFileSync('C:/Users/adyba/pi-zig-native-oauth-callback-20261015/src/extensions/fixtures/ai-oauth-callback-ae7.input.txt','utf8');
+await new (Object.getPrototypeOf(async function(){}).constructor)('A','request',input)(A,request);
+http.createServer=originalCreateServer;syncBuiltinESMExports();
+const deadline=Date.now()+10000;
+while((ownedListeners.some(row=>!row.closed)||sockets.size||requestSockets.size||requestsStarted!==requestsClosed)&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,5));
+const activeOwnedHandles=process._getActiveHandles().filter(handle=>handle.constructor?.name==='Server'&&handle.listening).length;
+if(ownedListeners.length!==9||ownedListeners.some(row=>!row.closed)||sockets.size||requestSockets.size||requestsStarted!==requestsClosed||activeOwnedHandles)throw Error('Owned callback listener/connection lifecycle did not settle');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'ae7b16d43b7c78c5b6fa3213fdd1215bb339729d',runtime:process.version,count:globalThis.callbackRows.length,ownedListeners,lifecycle:{requestsStarted,requestsClosed,acceptedSocketsRemaining:sockets.size,requestSocketsRemaining:requestSockets.size,activeOwnedHandles,forest:{pid:process.pid,parentPid:process.ppid,spawnedChildren:0}},rows:globalThis.callbackRows},null,2));
+console.log(JSON.stringify({count:globalThis.callbackRows.length,listeners:ownedListeners.length,requestsStarted,requestsClosed}));

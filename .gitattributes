@@ -105,3 +105,9 @@ verification/native-ai-google-mistral-source30-20261015/ai-google-mistral30-5ab-
 verification/native-ai-google-mistral-acb9-first-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-ai-google-mistral-e554-retry-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-ai-google-mistral-1c22-components-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+# Retain raw terminal EOF and diagnostic context bytes from callback qualification.
+verification/native-ai-oauth-callback-ae7-20261015/oauth-callback-native-d43f3cf8-first-debug-20261015-compile.stderr.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-ai-oauth-callback-ae7-20261015/oauth-callback-native-d43f3cf8-first-debug-20261015-runtime.stderr.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-ai-oauth-callback-ae7-20261015/oauth-callback-native-e13b31a5-first-debug-20261015-compile.stderr.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-ai-oauth-callback-ae7-20261015/oauth-callback-native-e13b31a5-first-debug-20261015-runtime.stderr.log whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+src/extensions/fixtures/ai-oauth-callback-ae7.input.txt whitespace=cr-at-eol
