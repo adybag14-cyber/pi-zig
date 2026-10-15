@@ -9,10 +9,12 @@ pub const Reply = struct {
     body_delay_ms: u32 = 0,
     payload_contains: ?[]const u8 = null,
     expected_request_headers: []const std.http.Header = &.{},
+    absent_request_headers: []const []const u8 = &.{},
+    expected_request_method: ?std.http.Method = null,
     request_observed: ?*std.Io.Event = null,
     response_release: ?*std.Io.Event = null,
 };
-pub const Captured = struct { path: []u8, payload: []u8 };
+pub const Captured = struct { path: []u8, payload: []u8, method: std.http.Method };
 pub const PlanServer = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
@@ -65,6 +67,7 @@ pub const PlanServer = struct {
             var writer = connection.writer(self.io, &write_buffer);
             var server = std.http.Server.init(&reader.interface, &writer.interface);
             var request = try server.receiveHead();
+            if (reply.expected_request_method) |expected| if (request.head.method != expected) return error.UnexpectedFixtureMethod;
             for (reply.expected_request_headers) |expected| {
                 var iterator = request.iterateHeaders();
                 var found = false;
@@ -78,13 +81,17 @@ pub const PlanServer = struct {
                 }
                 if (!found) return error.MissingFixtureHeader;
             }
+            for (reply.absent_request_headers) |absent| {
+                var iterator = request.iterateHeaders();
+                while (iterator.next()) |header| if (std.ascii.eqlIgnoreCase(header.name, absent)) return error.UnexpectedFixtureHeader;
+            }
             const path = try self.gpa.dupe(u8, request.head.target);
             var captured = false;
             errdefer if (!captured) self.gpa.free(path);
             const body_reader = request.readerExpectNone(&.{});
             const payload = try body_reader.allocRemaining(self.gpa, .limited(4 * 1024 * 1024));
             errdefer if (!captured) self.gpa.free(payload);
-            try self.captured.append(self.gpa, .{ .path = path, .payload = payload });
+            try self.captured.append(self.gpa, .{ .path = path, .payload = payload, .method = request.head.method });
             captured = true;
             if (!std.mem.eql(u8, path, reply.path)) return error.UnexpectedFixturePath;
             if (reply.payload_contains) |marker| if (std.mem.indexOf(u8, payload, marker) == null) return error.UnexpectedFixturePayload;

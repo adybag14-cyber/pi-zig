@@ -1580,6 +1580,12 @@ pub fn build(b: *std.Build) void {
     claude5ab_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-ai-claude5ab", "Compile actual Anthropic and Converse request codecs").dependOn(&claude5ab_tests.step);
     b.step("test-native-ai-claude5ab", "Compare actual Source Claude requests streams callbacks and retained owner graphs").dependOn(&b.addRunArtifact(claude5ab_tests).step);
+    const claude5ab_extended = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_claude_extended_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Claude5ab extended", "native constrained sampling" } });
+    linkQuickJs(b, claude5ab_extended.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(claude5ab_extended.root_module, sqlite_lib_dir, sqlite_library);
+    claude5ab_extended.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-ai-claude5ab-extended", "Compile genuine Source16 Anthropic SDK wire federation retry and result-only replay").dependOn(&claude5ab_extended.step);
+    b.step("test-native-ai-claude5ab-extended", "Compare genuine Source16 wire callbacks events results and configured strict-schema recursion guards").dependOn(&b.addRunArtifact(claude5ab_extended).step);
     const claude5ab_allocations = b.addTest(.{ .root_module = claude5ab_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native Claude5ab every host allocation"} });
     b.step("build-native-ai-claude5ab-allocation", "Compile exhaustive Claude request allocation cleanup separately").dependOn(&claude5ab_allocations.step);
     b.step("test-native-ai-claude5ab-allocation", "Exercise every native host allocation failure in Claude request owner graphs").dependOn(&b.addRunArtifact(claude5ab_allocations).step);
