@@ -83,6 +83,7 @@ pub const Engine = struct {
     native_agent_complete_cache: ?c.JSValue = null,
     native_ai_session_resources: ?c.JSValue = null,
     native_ai_model_values: ?c.JSValue = null,
+    native_ai_lazy_api: ?c.JSValue = null,
     native_ai_catalog_values: ?c.JSValue = null,
     native_ai_oauth_loader_namespace: ?c.JSValue = null,
     native_ai_models_namespace: ?c.JSValue = null,
@@ -310,6 +311,7 @@ pub const Engine = struct {
         if (self.native_agent_complete_cache) |value| self.freeValue(value);
         if (self.native_ai_session_resources) |value| self.freeValue(value);
         if (self.native_ai_model_values) |value| self.freeValue(value);
+        if (self.native_ai_lazy_api) |value| self.freeValue(value);
         if (self.native_ai_catalog_values) |value| self.freeValue(value);
         if (self.native_ai_oauth_loader_namespace) |value| self.freeValue(value);
         if (self.native_ai_models_namespace) |value| self.freeValue(value);
