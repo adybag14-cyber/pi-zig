@@ -1,6 +1,8 @@
 param([string]$Attempt='first')
 $ErrorActionPreference='Stop'
 $taskRoot='C:/Users/adyba/pi-zig-web-body-integration-20261015'
+$taskHead=(git -C $taskRoot rev-parse HEAD).Trim()
+if(@(git -C $taskRoot status --porcelain).Count){throw 'Source capture requires a sealed clean candidate'}
 $taskEvidence='C:/Users/adyba/pi-zig-update-evidence-20261003'
 $taskName="web-fetch-node24-source-$Attempt-20261015"
 $taskBase=Join-Path $taskEvidence $taskName
@@ -46,7 +48,7 @@ function Verify-Frozen {
 $taskBefore=Verify-Frozen
 $taskBefore|ConvertTo-Json -Depth 5|Set-Content -LiteralPath "$taskBase-before.json" -Encoding utf8NoBOM
 $taskFree=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory*1024
-[ordered]@{minimum_free_bytes=2GB;available_bytes=$taskFree;heap_mb=256;outer_seconds=300;light_lane=6;root_grant='PENDING actual fetch Source39 LIGHT grant';checked_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content -LiteralPath "$taskBase-admission.json" -Encoding utf8NoBOM
+[ordered]@{candidate_head=$taskHead;minimum_free_bytes=2GB;available_bytes=$taskFree;heap_mb=256;outer_seconds=300;light_lane=5;root_grant='Root LIGHT5 genuine actual fetch Source39 grant';checked_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content -LiteralPath "$taskBase-admission.json" -Encoding utf8NoBOM
 if($taskFree-lt2GB){throw 'Source2GiB admission rejected'}
 $taskFailure=$null
 try{& $taskOwner -Name $taskName -Executable $taskNode -WorkingDirectory $taskRoot -Arguments @('--expose-gc','--max-old-space-size=256',$taskDriver,"$taskBase-output.json",$taskInput,"$taskBase-bundled-undici.js.txt",$taskFrozen) -TimeoutSeconds 300 -EnvironmentOverrides @{NODE_OPTIONS='';NODE_PATH='';NODE_USE_ENV_PROXY='';HTTP_PROXY='';HTTPS_PROXY='';ALL_PROXY='';NO_PROXY='127.0.0.1,localhost'}}catch{$taskFailure=$_}
