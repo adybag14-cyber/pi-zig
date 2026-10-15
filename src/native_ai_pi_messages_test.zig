@@ -96,7 +96,14 @@ test "native AI pi messages every allocation releases request codec converter ro
             install(engine) catch |err| return engine.nativeAllocationError(err, generation);
             const result = engine.evalModule(
                 \\const usage={input:0,output:0,cacheRead:0,cacheWrite:0,totalTokens:0,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}},wire=new TextEncoder().encode('data: {"type":"start"}\n\ndata: '+JSON.stringify({type:'done',reason:'stop',usage})+'\n\n');let read=false,release=0;const stream=piMessagesAPI.stream({id:'m',api:'pi-messages',provider:'p',baseUrl:'https://example.invalid'},{messages:[]},{apiKey:'fixture',async onPayload(payload){await Promise.resolve();return payload},fetch:async()=>({status:200,statusText:'OK',ok:true,headers:{entries:()=>[][Symbol.iterator]()},body:{getReader:()=>({read:async()=>read?{done:true}:(read=true,{done:false,value:wire}),releaseLock(){release++}})}})});const result=await stream.result();if(result.stopReason!=='stop'||release!==1)throw Error(result.errorMessage||'stream did not finish');
-            , "native-ai-pi-messages-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+            , "native-ai-pi-messages-allocation.mjs") catch |err| {
+                const classified = engine.nativeAllocationError(err, generation);
+                if (classified != error.OutOfMemory) {
+                    const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+                    std.debug.print("Pi allocation index {d}, induced {any}: {s}\n", .{ failing.fail_index, failing.has_induced_failure, engine.last_error orelse @errorName(classified) });
+                }
+                return classified;
+            };
             engine.freeValue(result);
             c.JS_RunGC(engine.runtime);
         }
