@@ -539,7 +539,8 @@ fn websocketChunk(scope: *Scope, owner: c.JSValue) !void {
     _ = try scope.invoke(try scope.get(owner, "decoder"), "finish", &.{c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner)))});
     try flow.settle(scope.engine, owner, false, c.pi_js_undefined());
 }
-fn websocketRejected(scope: *Scope, owner: c.JSValue, reason: c.JSValue, _: Stage) !void {
+fn websocketRejected(scope: *Scope, owner: c.JSValue, original_reason: c.JSValue, _: Stage) !void {
+    const reason = if (try aborted(scope, owner) and try v.eq(scope, try v.optional(scope, original_reason, "name"), "NativeWebSocketError") and try v.eq(scope, try v.optional(scope, original_reason, "code"), "WebSocketAborted")) try codex_http.abortReason(scope) else original_reason;
     const state = try codexState(scope, owner);
     const classes = try scope.get(state, "errors");
     const entry = try v.optional(scope, owner, "websocketEntry");
