@@ -1,0 +1,18 @@
+thread 50624 panic: unrecognized command line argument: --seed
+C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\compiler\test_runner.zig:61:18: 0x7ff6027b3363 in main (native-generator-oom-diagnostic_zcu.obj)
+            panic("unrecognized command line argument: {s}", .{arg});
+                 ^
+C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\start.zig:699: 0x7ff6027b1151 in callMain (native-generator-oom-diagnostic_zcu.obj)
+    if (fn_info.params[0].type.? == std.process.Init.Minimal) return wrapMain(root.main(.{
+
+C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\start.zig:658:28: 0x7ff6027b1151 in main (native-generator-oom-diagnostic_zcu.obj)
+            return callMain(std.os.windows.peb().ProcessParameters.CommandLine.slice(), .global);
+                           ^
+C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\libc\mingw\crt\crtexe.c:259: 0x7ff602b8709b in __tmainCRTStartup (crt2.obj)
+    mainret = _tmain (argc, argv, envp);
+
+C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\libc\mingw\crt\crtexe.c:179: 0x7ff602b870fb in mainCRTStartup (crt2.obj)
+  ret = __tmainCRTStartup ();
+
+???:?:?: 0x7ffa7125dda6 in ??? (KERNEL32.DLL)
+???:?:?: 0x7ffa724dee4b in ??? (ntdll.dll)

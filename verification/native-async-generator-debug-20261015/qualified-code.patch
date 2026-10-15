@@ -1,0 +1,840 @@
+diff --git a/build.zig b/build.zig
+index c4e90818..2d2cebe1 100644
+--- a/build.zig
++++ b/build.zig
+@@ -1600,6 +1600,23 @@ pub fn build(b: *std.Build) void {
+     ai_json_tests.root_module.addImport("catalog_tool", catalog_tool);
+     b.step("test-native-ai-json-parse", "Compare original b06 final JSON helpers and intrinsic delegate error origin").dependOn(&b.addRunArtifact(ai_json_tests).step);
+     b.step("build-native-ai-json-parse", "Compile native final JSON helpers and scoped C parser diagnostics").dependOn(&ai_json_tests.step);
++    const native_generator_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_generator_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native async generator functional", "native AI JSON actual OpenAI request builder", "native AI JSON OpenAI decoder", "native AI JSON helpers and native partial fallback", "native AI JSON genuine b06 delegates", "native AI JSON private hooks", "native AI JSON ordinary no-hook", "native pi-ai EventStream exports", "native AssistantMessageEventStream producer queue overflow", "native provider validation", "native provider cancellation" }, .use_llvm = use_llvm });
++    linkQuickJs(b, native_generator_tests.root_module, quickjs, sqlite_lib_dir);
++    linkSqlite(native_generator_tests.root_module, sqlite_lib_dir, sqlite_library);
++    native_generator_tests.root_module.addImport("catalog_tool", catalog_tool);
++    b.step("build-native-async-generator", "Compile private native-body QuickJS AsyncGenerator hook review tests").dependOn(&native_generator_tests.step);
++    b.step("test-native-async-generator", "Verify intrinsic generator queue Await raw identity realms and targeted ownership failures").dependOn(&b.addRunArtifact(native_generator_tests).step);
++    const native_generator_gpa_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_generator_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native async generator host GPA"}, .use_llvm = use_llvm });
++    linkQuickJs(b, native_generator_gpa_tests.root_module, quickjs, sqlite_lib_dir);
++    linkSqlite(native_generator_gpa_tests.root_module, sqlite_lib_dir, sqlite_library);
++    native_generator_gpa_tests.root_module.addImport("catalog_tool", catalog_tool);
++    b.step("build-native-async-generator-gpa", "Compile native async generator host allocation sweep separately").dependOn(&native_generator_gpa_tests.step);
++    b.step("test-native-async-generator-gpa", "Measure complete host allocation failure coverage independently").dependOn(&b.addRunArtifact(native_generator_gpa_tests).step);
++    const native_generator_oom_diagnostic = b.addTest(.{ .name = "native-generator-oom-diagnostic", .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_generator_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native async generator functional raw VM allocation"}, .use_llvm = use_llvm });
++    linkQuickJs(b, native_generator_oom_diagnostic.root_module, quickjs, sqlite_lib_dir);
++    linkSqlite(native_generator_oom_diagnostic.root_module, sqlite_lib_dir, sqlite_library);
++    native_generator_oom_diagnostic.root_module.addImport("catalog_tool", catalog_tool);
++    b.step("build-native-async-generator-oom-diagnostic", "Install targeted VM OOM artifact for owned direct-run leak diagnostics").dependOn(&b.addInstallArtifact(native_generator_oom_diagnostic, .{}).step);
+     const ai_uuid_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_uuid_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI UUID"}, .use_llvm = use_llvm });
+     linkQuickJs(b, ai_uuid_tests.root_module, quickjs, sqlite_lib_dir);
+     linkSqlite(ai_uuid_tests.root_module, sqlite_lib_dir, sqlite_library);
+diff --git a/docs/native-async-generator-review-20261015.md b/docs/native-async-generator-review-20261015.md
+new file mode 100644
+index 00000000..84b09f93
+--- /dev/null
++++ b/docs/native-async-generator-review-20261015.md
+@@ -0,0 +1,60 @@
++# Private native async-generator review candidate
++
++This isolated candidate starts at reviewed foundation `3f0cce9ad90ee9618d4216d9889f088f6a28f6de`. It adds a native resume callback to the existing QuickJS AsyncGenerator implementation. It does not yet change `native_stream.zig`, OpenAI production scheduling, the private JSON hook, the configured 1 MiB stack guard, or another worktree. Source-only review is complete; compilation and runtime qualification are separate evidence.
++
++## Private C API and ownership
++
++`JS_PiNewNativeAsyncGenerator(ctx, owner, resume, prototype)` returns an owned real `JS_CLASS_ASYNC_GENERATOR` instance, or `JS_EXCEPTION`. The owner and prototype arguments are borrowed. Undefined prototype selects the creation context's intrinsic AsyncGenerator prototype; callers may supply the provider method's own prototype object. The callback pointer is compiled native code and must outlive the instance. The API is private to this runtime; callers supply an object/null/undefined prototype.
++
++`JS_PiGetAsyncGeneratorPrototype(ctx)` and `JS_PiGetAsyncGeneratorFunctionPrototype(ctx)` each return an owned reference to that context's intrinsic prototype. They do not compile guest source or depend on mutable globals.
++
++The resume callback receives the retained creation context, borrowed owner, borrowed input, and a completion discriminator. It returns an owned JSValue and writes an action, or returns `JS_EXCEPTION` with the original pending exception. It must not retain borrowed inputs without duplicating them. All guest state crossing a suspension belongs in the GC-visible owner graph. Native state machines, rather than guest JavaScript fragments, implement body control flow.
++
++Completion discriminators are START, NEXT, RETURN_INPUT, THROW_INPUT, AWAIT_FULFILLED, and AWAIT_REJECTED. Actions are:
++
++- AWAIT: suspend through QuickJS's existing PromiseResolve and promise reaction path, then resume with fulfillment or raw rejection.
++- YIELD: perform mandatory Await of the yielded value before resolving the current request and suspending at yield. Rejection enters the body as THROW_INPUT.
++- RETURN: perform mandatory Await of the return expression. Rejection enters the body as THROW_INPUT; fulfillment completes the body.
++- COMPLETE: finish a bare/implicit return, or finish an expression the body already awaited explicitly. A native implementation with a `finally` clause must explicitly AWAIT its return expression before running that clause; it must not run finally before choosing RETURN.
++- THROW: complete abruptly with the raw value, without error-message coercion.
++
++The minimal Zig wrapper translates these actions, preserves raw guest exceptions, and retains existing tagged native allocation failures. It has no promise scheduler of its own.
++
++## Data lifecycle and modified branches
++
++`JSAsyncGeneratorData` gains the callback, retained context, retained owner, and native suspension phase. `native_resume == NULL` selects the existing bytecode implementation, including its existing frame lifetime and allocation behavior. Existing bytecode state allocation is zero initialized.
++
++The complete lifecycle touchpoints are:
++
++1. `JS_PiNewNativeAsyncGenerator`: allocates zeroed data, initializes the request queue and suspended-start state, duplicates context/owner, creates the actual branded object, attaches data, and cleans up if object creation fails.
++2. `js_async_generator_mark`: marks native owner and creation context instead of the absent bytecode frame. Existing request result, promise, and resolving functions remain marked.
++3. `js_native_async_generator_retire`: clears context/owner/phase before releasing them. It is safe when called again by finalization after completion.
++4. `js_async_generator_free` and the existing finalizer: free all pending request roots, retire a native body without touching `func_state`, and free the data. Bytecode frame cleanup keeps its original branch.
++5. `js_async_generator_complete`: retires a native body instead of freeing a bytecode frame.
++6. `js_native_async_generator_drive`: retains a local creation-context reference across retirement, observes existing interrupt/stack checks, invokes the callback, consumes each owned output, and delivers abrupt completion or a real Await phase. A synchronous poisoned Promise constructor exception resumes the body at the corresponding await/yield boundary.
++7. `js_async_generator_resume_next`: native start/next/return/throw dispatch bypasses the absent frame. Suspended-start return/throw never enters the body. Suspended-yield return awaits its input before native body handling. Completed native requests drain in FIFO order.
++8. `js_async_generator_resolve_function`: native await/yield/return reactions resume the proper phase in the creation realm. Repeated Await leaves execution suspended without reentering the bytecode-frame path. Completed-return reactions drain requests queued behind that return.
++9. `js_native_async_generator_resolve`: checked iterator-result allocation rejects the current native request with the raw allocation exception and retires the body. The inherited unchecked bytecode helper remains unchanged.
++10. Completed native return handles failure from `js_async_generator_completed_return`: captures the raw exception, restores completed state, rejects/removes the head, and continues draining. This is the independently reviewed correction for otherwise stranded requests on PromiseResolve/handler allocation failure.
++
++Active body iterator results use the creation realm; promises and later completed-state results use the borrowed intrinsic method's realm. No owner/context reference is released while a native callback still needs it.
++
++## Qualification plan and exact test scope
++
++`build-native-async-generator` / `test-native-async-generator` compile and run eight new functional tests plus selected unchanged JSON and stream regressions. The new tests cover actual intrinsic brand/prototype/borrowed next, raw identity, explicit Await, queued next/return/throw, return-input thenables, draining behind a completed return, suspended-start abrupt completion, throwing then getters, poisoned Promise constructors, invalid receiver, pending owner GC, cross-realm promise/result ownership, targeted raw VM allocation failure, owner retirement, and unreachable owner-cycle finalization exactly once.
++
++The completed-return handler-allocation test uses an actual Promise constructor getter to queue a trailing next request before arming the one-byte VM limit. Both request capabilities therefore exist, and PromiseResolve reuses the original input Promise before handler creation fails. It verifies the current and trailing requests reject, the VM exception is consumed, and later next succeeds after restoring the memory limit. This directly exercises the native completed-return negative-result correction identified during review.
++
++The VM allocation test uses a valid compiled callback while memory limit is one byte for constructor data allocation, and sets that limit immediately before native COMPLETE to exercise checked iterator-result failure. One byte is below the initialized VM's usage; this pinned QuickJS interprets zero as unlimited. It restores the configured memory limit and verifies terminal next remains usable. It is targeted coverage, not an exhaustive C allocator sweep. The original zero-limit test negative is preserved separately: its unexpectedly successful constructor result was not released on the failed assertion, producing an external AsyncGenerator leak; the successor releases that owned return on every outcome.
++
++`build-native-async-generator-gpa` / `test-native-async-generator-gpa` run the complete host allocator failure sweep separately. The body performs an actual host allocation so callback OOM traverses the C request queue with the original tagged failure. This target is measured separately under the same runtime deadline.
++
++The selected old regressions cover genuine OpenAI HTTP20 request bodies and terminal decoder shapes, 33 JSON/partial observations, existing JSON hook/delegate/error roots, ordinary unhooked parsing, EventStream exports/queue/result/receiver cleanup, overflow, provider validation, and cancellation. The known full OpenAI intermediate-snapshot negative remains preserved and is not claimed fixed by this hook alone. Existing host allocator and all ordinary bytecode generator tests are not silently included in this selected run.
++
++Fresh Node/Source async-generator observations, actual EventStream integration, nested SDK iterator layers, callback/drain/chunk timing, and the full OpenAI snapshot retry are still required. Inline ECMAScript checks in this candidate are native tests; they are not presented as a new captured Source differential.
++
++## Reviewed limitations
++
++Independent CI read-only review and Root reviewed C SHA256 `ED1F3A59AD13DE57B32CCA164FC42D347C463632F0B8A1921DC79621E79DE69E`. The only subsequent header change explicitly states getter ownership; the implementation is unchanged. Both reviewers accepted the completed-return negative-result correction for experimental qualification, with no remaining control-flow blocker identified.
++
++The inherited general `js_promise_resolve_function_call` ignores `JS_EnqueueJob` failure. Targeted native allocation handling therefore does not establish exhaustive malloc/OOM behavior of all existing Promise machinery. The candidate remains private and unintegrated until its frozen native gates and subsequent actual Source parity gates pass.
+diff --git a/src/extensions/native_async_generator.zig b/src/extensions/native_async_generator.zig
+new file mode 100644
+index 00000000..4792f948
+--- /dev/null
++++ b/src/extensions/native_async_generator.zig
+@@ -0,0 +1,51 @@
++//! Native bodies on QuickJS's real AsyncGenerator queue, brand and Await path.
++//! Review-only C ABI candidate; production integration waits for qualification.
++const em = @import("engine.zig");
++const c = em.c;
++pub const Completion = enum(c_int) {
++    start = c.JS_PI_AG_START,
++    next = c.JS_PI_AG_NEXT,
++    returned = c.JS_PI_AG_RETURN_INPUT,
++    thrown = c.JS_PI_AG_THROW_INPUT,
++    fulfilled = c.JS_PI_AG_AWAIT_FULFILLED,
++    rejected = c.JS_PI_AG_AWAIT_REJECTED,
++};
++/// Every payload is owned. Await/yield/return are real suspensions; complete
++/// means a bare/implicit return or a completion whose expression was awaited
++/// explicitly by the native body (e.g. before executing a finally clause).
++pub const Action = union(enum) {
++    awaited: c.JSValue,
++    yielded: c.JSValue,
++    returned: c.JSValue,
++    complete: c.JSValue,
++    thrown: c.JSValue,
++};
++pub const Resume = *const fn (*em.Engine, c.JSValue, Completion, c.JSValue) anyerror!Action;
++pub fn create(engine: *em.Engine, owner: c.JSValue, comptime body: Resume, instance_prototype: c.JSValue) !c.JSValue {
++    const Adapter = struct {
++        fn call(context: ?*c.JSContext, state: c.JSValue, raw: c_int, input: c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
++            const host = em.Engine.fromContext(context.?);
++            host.native_exception_diagnostics_suppressed += 1;
++            defer host.native_exception_diagnostics_suppressed -= 1;
++            const step = body(host, state, @enumFromInt(raw), input) catch |err| return @import("native_sdk.zig").fail(host, err);
++            return switch (step) {
++                .awaited => |value| result(action, c.JS_PI_AG_AWAIT, value),
++                .yielded => |value| result(action, c.JS_PI_AG_YIELD, value),
++                .returned => |value| result(action, c.JS_PI_AG_RETURN, value),
++                .complete => |value| result(action, c.JS_PI_AG_COMPLETE, value),
++                .thrown => |value| result(action, c.JS_PI_AG_THROW, value),
++            };
++        }
++        fn result(action: [*c]c_int, kind: c_int, value: c.JSValue) c.JSValue {
++            action[0] = kind;
++            return value;
++        }
++    };
++    return engine.checked(c.JS_PiNewNativeAsyncGenerator(engine.context, owner, Adapter.call, instance_prototype));
++}
++pub fn prototype(engine: *em.Engine) !c.JSValue {
++    return engine.checked(c.JS_PiGetAsyncGeneratorPrototype(engine.context));
++}
++pub fn functionPrototype(engine: *em.Engine) !c.JSValue {
++    return engine.checked(c.JS_PiGetAsyncGeneratorFunctionPrototype(engine.context));
++}
+diff --git a/src/native_async_generator_test.zig b/src/native_async_generator_test.zig
+new file mode 100644
+index 00000000..efa01c28
+--- /dev/null
++++ b/src/native_async_generator_test.zig
+@@ -0,0 +1,325 @@
++const std = @import("std");
++const em = @import("extensions/engine.zig");
++const js = @import("extensions/native_js_values.zig");
++const sdk = @import("extensions/native_sdk.zig");
++const Scope = @import("extensions/native_models_stream_scope.zig").Scope;
++const gen = @import("extensions/native_async_generator.zig");
++const c = em.c;
++fn completeBody(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
++    action[0] = c.JS_PI_AG_COMPLETE;
++    return c.pi_js_undefined();
++}
++fn armCompletedReturnOom(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const ctx = context.?;
++    const iterator = c.JS_GetPropertyStr(ctx, roots[0], "iterator");
++    if (c.JS_IsException(iterator)) return iterator;
++    defer c.JS_FreeValue(ctx, iterator);
++    const next = c.JS_GetPropertyStr(ctx, iterator, "next");
++    if (c.JS_IsException(next)) return next;
++    defer c.JS_FreeValue(ctx, next);
++    const trailing = c.JS_Call(ctx, next, iterator, 0, null);
++    if (c.JS_IsException(trailing)) return trailing;
++    if (c.JS_SetPropertyStr(ctx, roots[0], "trailing", trailing) < 0) return c.JS_Throw(ctx, c.JS_GetException(ctx));
++    const constructor = c.JS_GetPropertyStr(ctx, roots[0], "constructor");
++    if (c.JS_IsException(constructor)) return constructor;
++    // The return request and reentrantly queued next already have their
++    // capabilities. PromiseResolve reuses the input Promise; handler creation
++    // is the first subsequent VM allocation and must take the reviewed path.
++    c.JS_SetMemoryLimit(c.JS_GetRuntime(ctx), 1);
++    return constructor;
++}
++fn equal(scope: *Scope, value: c.JSValue, text: []const u8) !bool {
++    return scope.equal(value, try scope.text(text));
++}
++fn advance(engine: *em.Engine, owner: c.JSValue, completion: gen.Completion, value: c.JSValue) !gen.Action {
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    // Real host-allocation failure inside a resume must traverse the C queue
++    // as the original tagged native OOM, not as an unrelated Error message.
++    const probe = try engine.gpa.alloc(u8, 1);
++    defer engine.gpa.free(probe);
++    _ = try scope.invoke(try scope.get(owner, "calls"), "push", &.{try scope.text(@tagName(completion))});
++    const mode = try scope.get(owner, "mode");
++    if (try equal(&scope, mode, "vm-oom")) {
++        const payload = c.JS_DupValue(engine.context, try scope.get(owner, "input"));
++        c.JS_SetMemoryLimit(engine.runtime, 1);
++        return .{ .complete = payload };
++    }
++    switch (completion) {
++        .start => {
++            if (try equal(&scope, mode, "await")) return .{ .awaited = c.JS_DupValue(engine.context, try scope.get(owner, "input")) };
++            return .{ .yielded = c.JS_DupValue(engine.context, try scope.get(owner, "input")) };
++        },
++        .fulfilled => return .{ .yielded = c.JS_DupValue(engine.context, value) },
++        .rejected => return .{ .thrown = c.JS_DupValue(engine.context, value) },
++        .next => return .{ .returned = c.JS_DupValue(engine.context, try scope.get(owner, "final")) },
++        .returned => {
++            try scope.put(owner, "closed", c.pi_js_bool(engine.context, 1));
++            return .{ .complete = c.JS_DupValue(engine.context, value) };
++        },
++        .thrown => {
++            if (try equal(&scope, mode, "catch")) {
++                try scope.put(owner, "mode", try scope.text("yield"));
++                return .{ .yielded = c.JS_DupValue(engine.context, value) };
++            }
++            try scope.put(owner, "closed", c.pi_js_bool(engine.context, 1));
++            return .{ .thrown = c.JS_DupValue(engine.context, value) };
++        },
++    }
++}
++fn make(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const engine = em.Engine.fromContext(context.?);
++    return makeBody(engine, if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(engine, err);
++}
++fn makeBody(engine: *em.Engine, args: []const c.JSValue) !c.JSValue {
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const owner = try scope.object();
++    inline for (.{ "mode", "input", "final" }, 0..) |key, index| try scope.put(owner, key, if (args.len > index) args[index] else c.pi_js_undefined());
++    try scope.put(owner, "calls", if (args.len > 3) args[3] else try scope.array());
++    try scope.put(owner, "closed", c.pi_js_bool(engine.context, 0));
++    return gen.create(engine, owner, advance, c.pi_js_undefined());
++}
++fn install(engine: *em.Engine) !void {
++    try engine.bindFunction("makeNativeGenerator", make, 4);
++}
++fn run(engine: *em.Engine, code: []const u8, filename: [:0]const u8) !void {
++    const result = engine.evalModule(code, filename) catch |err| {
++        std.debug.print("native generator: {s}\n", .{engine.last_error orelse "no diagnostic"});
++        return err;
++    };
++    engine.freeValue(result);
++}
++test "native async generator functional real intrinsic brand prototype raw yield and explicit await" {
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    try install(engine);
++    try run(engine,
++        \\const root={},final={},calls=[],native=makeNativeGenerator('yield',root,Promise.resolve(final),calls),real=(async function*(){yield root;return final})();const proto=Object.getPrototypeOf(Object.getPrototypeOf(real));if(Object.getPrototypeOf(native)!==proto||Object.prototype.toString.call(native)!=='[object AsyncGenerator]'||native[Symbol.asyncIterator]()!==native)throw Error('actual intrinsic brand/prototype');const first=await proto.next.call(native,'ignored');if(first.done||first.value!==root)throw Error('raw yield identity');const last=await proto.next.call(native);if(!last.done||last.value!==final)throw Error('return Await');const awaited=makeNativeGenerator('await',Promise.resolve(root),final);if((await awaited.next()).value!==root||(await awaited.next()).value!==final)throw Error('body await');export const done=true;
++    , "native-generator-brand.mjs");
++}
++test "native async generator functional queued next return throw retain ownership and assimilate thenables" {
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    try install(engine);
++    try run(engine,
++        \\const root={},final={},reason={},calls=[];let release;const deferred=new Promise(resolve=>release=resolve),iterator=makeNativeGenerator('yield',deferred,final,calls),first=iterator.next(),second=iterator.next();let early=false;first.then(()=>early=true);await Promise.resolve();if(early)throw Error('yield thenable not awaited');release(root);const a=await first,b=await second;if(a.value!==root||a.done||b.value!==final||!b.done)throw Error('serialized next requests');
++        \\let open;const waiting=makeNativeGenerator('yield',new Promise(resolve=>open=resolve),final),active=waiting.next(),returned=waiting.return({then(resolve){resolve(final)}});let closedEarly=false;returned.then(()=>closedEarly=true);await Promise.resolve();if(closedEarly)throw Error('return bypassed active yield');open(root);if((await active).value!==root)throw Error('active value lost');const r=await returned;if(!r.done||r.value!==final)throw Error('return input thenable');
++        \\let unblock;const completed=makeNativeGenerator('yield',root,final),completion=completed.return(new Promise(resolve=>unblock=resolve)),q1=completed.next(),q2=completed.next(),q3=completed.throw(reason).then(()=>{throw Error('throw unexpectedly resolved')},error=>error);unblock(root);const out=await Promise.all([completion,q1,q2,q3]);if(out[0].value!==root||!out[0].done||!out[1].done||!out[2].done||out[3]!==reason)throw Error('drain after awaiting completed return');export const done=true;
++    , "native-generator-queue.mjs");
++}
++test "native async generator functional rejection getters start return and abrupt close preserve raw errors" {
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    try install(engine);
++    try run(engine,
++        \\const reason={},calls=[],root={},before=makeNativeGenerator('yield',root,root,calls);if((await before.return(root)).value!==root||calls.length!==0)throw Error('return entered suspended start');const thrown=makeNativeGenerator('yield',root,root,calls);let seen;try{await thrown.throw(reason)}catch(error){seen=error}if(seen!==reason||calls.length!==0)throw Error('throw entered suspended start');
++        \\const poison={get then(){throw reason}},catching=makeNativeGenerator('catch',poison,root);if((await catching.next()).value!==reason)throw Error('yield rejection not injected at suspension');const failing=makeNativeGenerator('yield',poison,root);try{await failing.next()}catch(error){seen=error}if(seen!==reason||!(await failing.next()).done)throw Error('rejected yield not completed');
++        \\const promise=Promise.resolve(root);Object.defineProperty(promise,'constructor',{get(){throw reason}});const awaited=makeNativeGenerator('await',promise,root);try{await awaited.next()}catch(error){seen=error}if(seen!==reason)throw Error('raw poisoned constructor');const closing=makeNativeGenerator('yield',root,root);await closing.next();try{await closing.throw(reason)}catch(error){seen=error}if(seen!==reason||!(await closing.next()).done)throw Error('abrupt close');let invalid;try{await Object.getPrototypeOf(closing).next.call({})}catch(error){invalid=error}if(!(invalid instanceof TypeError))throw Error('real brand guard');export const done=true;
++    , "native-generator-rejections.mjs");
++}
++test "native async generator functional pending owner survives GC" {
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    try install(engine);
++    try run(engine,
++        \\globalThis.generatorRoot={};globalThis.generatorFinal={};let release;const pending=new Promise(resolve=>release=resolve);globalThis.nativeHeld=makeNativeGenerator('yield',pending,generatorFinal);globalThis.nativeNext=nativeHeld.next();globalThis.releaseNative=release;export const ready=true;
++    , "native-generator-gc-prepare.mjs");
++    c.JS_RunGC(engine.runtime);
++    try run(engine, "releaseNative(generatorRoot);if((await nativeNext).value!==generatorRoot||(await nativeHeld.next()).value!==generatorFinal)throw Error('GC lost native owner');delete globalThis.nativeHeld;delete globalThis.nativeNext;delete globalThis.releaseNative;export const done=true;", "native-generator-gc-check.mjs");
++    c.JS_RunGC(engine.runtime);
++}
++test "native async generator host GPA allocation sweep retains tagged OOM" {
++    const Probe = struct {
++        fn check(gpa: std.mem.Allocator) !void {
++            const subject = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
++            defer subject.deinit();
++            const generation = subject.native_allocation_generation;
++            install(subject) catch |err| return subject.nativeAllocationError(err, generation);
++            run(subject, "const root={},it=makeNativeGenerator('yield',root,root);if((await it.next()).value!==root||(await it.next()).value!==root)throw Error('native generator allocations');export const done=true;", "native-generator-host-oom.mjs") catch |err| return subject.nativeAllocationError(err, generation);
++            c.JS_RunGC(subject.runtime);
++        }
++    };
++    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.check, .{});
++}
++test "native async generator functional cross realm callback and iterator result ownership" {
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    const other = c.JS_NewContext(engine.runtime) orelse return error.OutOfMemory;
++    defer c.JS_FreeContext(other);
++    const args = [_]c.JSValue{ try sdk.text(engine, "yield"), try sdk.object(engine), c.pi_js_undefined() };
++    defer for (args) |value| engine.freeValue(value);
++    const native = try makeBody(engine, &args);
++    defer engine.freeValue(native);
++    const foreign_proto = try engine.checked(c.JS_PiGetAsyncGeneratorPrototype(other));
++    defer engine.freeValue(foreign_proto);
++    const foreign_next = try engine.checked(c.JS_GetPropertyStr(other, foreign_proto, "next"));
++    defer engine.freeValue(foreign_next);
++    const promise = try engine.checked(c.JS_Call(other, foreign_next, native, 0, null));
++    defer engine.freeValue(promise);
++    const global_b = c.JS_GetGlobalObject(other);
++    defer engine.freeValue(global_b);
++    const promise_b = try engine.checked(c.JS_GetPropertyStr(other, global_b, "Promise"));
++    defer engine.freeValue(promise_b);
++    const promise_proto_b = try engine.checked(c.JS_GetPropertyStr(other, promise_b, "prototype"));
++    defer engine.freeValue(promise_proto_b);
++    const actual_promise_proto = try engine.checked(c.JS_GetPrototype(other, promise));
++    defer engine.freeValue(actual_promise_proto);
++    try std.testing.expect(c.JS_IsStrictEqual(other, actual_promise_proto, promise_proto_b));
++    const first = try engine.awaitValue(promise);
++    defer engine.freeValue(first);
++    const first_value = try js.get(engine, first, "value");
++    defer engine.freeValue(first_value);
++    try std.testing.expect(c.JS_IsStrictEqual(engine.context, first_value, args[1]));
++    const global_a = c.JS_GetGlobalObject(engine.context);
++    defer engine.freeValue(global_a);
++    const object_a = try js.get(engine, global_a, "Object");
++    defer engine.freeValue(object_a);
++    const object_proto_a = try js.get(engine, object_a, "prototype");
++    defer engine.freeValue(object_proto_a);
++    const result_proto = try engine.checked(c.JS_GetPrototype(engine.context, first));
++    defer engine.freeValue(result_proto);
++    try std.testing.expect(c.JS_IsStrictEqual(engine.context, result_proto, object_proto_a));
++    const returned_promise = try engine.checked(c.JS_Call(other, foreign_next, native, 0, null));
++    defer engine.freeValue(returned_promise);
++    const returned = try engine.awaitValue(returned_promise);
++    defer engine.freeValue(returned);
++    const completed_promise = try engine.checked(c.JS_Call(other, foreign_next, native, 0, null));
++    defer engine.freeValue(completed_promise);
++    const completed = try engine.awaitValue(completed_promise);
++    defer engine.freeValue(completed);
++    const object_b = try engine.checked(c.JS_GetPropertyStr(other, global_b, "Object"));
++    defer engine.freeValue(object_b);
++    const object_proto_b = try engine.checked(c.JS_GetPropertyStr(other, object_b, "prototype"));
++    defer engine.freeValue(object_proto_b);
++    const completed_proto = try engine.checked(c.JS_GetPrototype(other, completed));
++    defer engine.freeValue(completed_proto);
++    try std.testing.expect(c.JS_IsStrictEqual(other, completed_proto, object_proto_b));
++}
++test "native async generator functional raw VM allocation failures reject and retire without dangling frame" {
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    c.JS_SetDumpFlags(engine.runtime, c.JS_DUMP_LEAKS);
++    const output = if (@import("builtin").os.tag == .windows) c.__acrt_iob_func(1) else c.stdout;
++    _ = c.setvbuf(output, null, c._IONBF, 0);
++    const root = try sdk.object(engine);
++    defer engine.freeValue(root);
++    const saved_limit = engine.options.memory_limit;
++    // This pinned QuickJS uses zero for unlimited. One byte is below the
++    // already initialized VM's usage and forces the next VM allocation to fail.
++    c.JS_SetMemoryLimit(engine.runtime, 1);
++    const failed_constructor = c.JS_PiNewNativeAsyncGenerator(engine.context, root, completeBody, c.pi_js_undefined());
++    defer engine.freeValue(failed_constructor);
++    const constructor_exception = c.JS_GetException(engine.context);
++    c.JS_SetMemoryLimit(engine.runtime, saved_limit);
++    defer engine.freeValue(constructor_exception);
++    try std.testing.expect(c.JS_IsException(failed_constructor));
++    try std.testing.expect(!c.JS_IsUndefined(constructor_exception));
++    const mode = try sdk.text(engine, "vm-oom");
++    defer engine.freeValue(mode);
++    const native = try makeBody(engine, &.{ mode, root });
++    defer engine.freeValue(native);
++    const next = try js.get(engine, native, "next");
++    defer engine.freeValue(next);
++    const promise = c.JS_Call(engine.context, next, native, 0, null);
++    c.JS_SetMemoryLimit(engine.runtime, saved_limit);
++    defer engine.freeValue(promise);
++    try std.testing.expect(!c.JS_IsException(promise));
++    try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(engine.context, promise));
++    const raw = c.JS_PromiseResult(engine.context, promise);
++    defer engine.freeValue(raw);
++    try std.testing.expect(!c.JS_IsUndefined(raw));
++    try std.testing.expect(!c.JS_HasException(engine.context));
++    const later = try js.invoke(engine, native, "next", &.{});
++    defer engine.freeValue(later);
++    const terminal = try engine.awaitValue(later);
++    defer engine.freeValue(terminal);
++    const done = try js.get(engine, terminal, "done");
++    defer engine.freeValue(done);
++    try std.testing.expect(c.JS_ToBool(engine.context, done) == 1);
++    c.JS_RunGC(engine.runtime);
++}
++test "native async generator functional owner retirement and unreachable owner cycles finalize exactly once" {
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    var retired: usize = 0;
++    var class: c.JSClassID = 0;
++    _ = c.JS_NewClassID(engine.runtime, &class);
++    const Owner = struct {
++        fn finalize(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
++            const counter: *usize = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
++            counter.* += 1;
++        }
++    };
++    const definition: c.JSClassDef = .{ .class_name = "Native Generator Test Owner", .finalizer = Owner.finalize };
++    if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
++    const owner = try engine.checked(c.JS_NewObjectClass(engine.context, @intCast(class)));
++    _ = c.JS_SetOpaque(owner, &retired);
++    const native = try engine.checked(c.JS_PiNewNativeAsyncGenerator(engine.context, owner, completeBody, c.pi_js_undefined()));
++    engine.freeValue(owner);
++    c.JS_RunGC(engine.runtime);
++    try std.testing.expectEqual(@as(usize, 0), retired);
++    const pending = try js.invoke(engine, native, "next", &.{});
++    defer engine.freeValue(pending);
++    const result = try engine.awaitValue(pending);
++    defer engine.freeValue(result);
++    c.JS_RunGC(engine.runtime);
++    try std.testing.expectEqual(@as(usize, 1), retired);
++    engine.freeValue(native);
++    const cyclic_owner = try engine.checked(c.JS_NewObjectClass(engine.context, @intCast(class)));
++    _ = c.JS_SetOpaque(cyclic_owner, &retired);
++    const cyclic_native = try engine.checked(c.JS_PiNewNativeAsyncGenerator(engine.context, cyclic_owner, completeBody, c.pi_js_undefined()));
++    if (c.JS_DefinePropertyValueStr(engine.context, cyclic_owner, "iterator", c.JS_DupValue(engine.context, cyclic_native), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
++    engine.freeValue(cyclic_native);
++    engine.freeValue(cyclic_owner);
++    c.JS_RunGC(engine.runtime);
++    try std.testing.expectEqual(@as(usize, 2), retired);
++    c.JS_RunGC(engine.runtime);
++    try std.testing.expectEqual(@as(usize, 2), retired);
++}
++test "native async generator functional completed return handler OOM drains reentrant trailing request" {
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    const native = try engine.checked(c.JS_PiNewNativeAsyncGenerator(engine.context, c.pi_js_undefined(), completeBody, c.pi_js_undefined()));
++    defer engine.freeValue(native);
++    const global = c.JS_GetGlobalObject(engine.context);
++    defer engine.freeValue(global);
++    const constructor = try js.get(engine, global, "Promise");
++    defer engine.freeValue(constructor);
++    const state = try sdk.object(engine);
++    defer engine.freeValue(state);
++    try sdk.put(engine, state, "iterator", c.JS_DupValue(engine.context, native));
++    try sdk.put(engine, state, "constructor", c.JS_DupValue(engine.context, constructor));
++    try sdk.put(engine, state, "trailing", c.pi_js_undefined());
++    const input = try engine.checked(c.JS_NewSettledPromise(engine.context, false, c.pi_js_undefined()));
++    defer engine.freeValue(input);
++    var roots = [_]c.JSValue{state};
++    const getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, armCompletedReturnOom, "get constructor", 0, 0, roots.len, &roots));
++    const atom = c.JS_NewAtom(engine.context, "constructor");
++    defer c.JS_FreeAtom(engine.context, atom);
++    if (c.JS_DefinePropertyGetSet(engine.context, input, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
++    const returned = try js.get(engine, native, "return");
++    defer engine.freeValue(returned);
++    var args = [_]c.JSValue{input};
++    const pending = c.JS_Call(engine.context, returned, native, args.len, &args);
++    c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
++    defer engine.freeValue(pending);
++    try std.testing.expect(!c.JS_IsException(pending));
++    try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(engine.context, pending));
++    const trailing = try js.get(engine, state, "trailing");
++    defer engine.freeValue(trailing);
++    try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(engine.context, trailing));
++    try std.testing.expect(!c.JS_HasException(engine.context));
++    const later = try js.invoke(engine, native, "next", &.{});
++    defer engine.freeValue(later);
++    const terminal = try engine.awaitValue(later);
++    defer engine.freeValue(terminal);
++    const done = try js.get(engine, terminal, "done");
++    defer engine.freeValue(done);
++    try std.testing.expect(c.JS_ToBool(engine.context, done) == 1);
++    c.JS_RunGC(engine.runtime);
++}
++comptime {
++    _ = @import("native_ai_json_parse_test.zig");
++    _ = @import("native_models_stream_regression_test.zig");
++}
+diff --git a/vendor/quickjs/quickjs.c b/vendor/quickjs/quickjs.c
+index a5d6791b..94f71399 100644
+--- a/vendor/quickjs/quickjs.c
++++ b/vendor/quickjs/quickjs.c
+@@ -21978,8 +21978,31 @@ typedef struct JSAsyncGeneratorData {
+     JSAsyncGeneratorStateEnum state;
+     JSAsyncFunctionState func_state;
+     struct list_head queue; /* list of JSAsyncGeneratorRequest.link */
++    /* NULL native_resume means the unchanged bytecode/frame implementation. */
++    JSPiAsyncGeneratorResume *native_resume;
++    JSContext *native_ctx;
++    JSValue native_owner;
++    int native_phase;
+ } JSAsyncGeneratorData;
+ 
++enum {
++    PI_AG_PHASE_NONE, PI_AG_PHASE_AWAIT, PI_AG_PHASE_YIELD,
++    PI_AG_PHASE_RETURN, PI_AG_PHASE_RETURN_INPUT,
++};
++
++static void js_native_async_generator_retire(JSRuntime *rt,
++                                             JSAsyncGeneratorData *s)
++{
++    JSContext *ctx = s->native_ctx;
++    JSValue owner = s->native_owner;
++    s->native_ctx = NULL;
++    s->native_owner = JS_UNDEFINED;
++    s->native_phase = PI_AG_PHASE_NONE;
++    JS_FreeValueRT(rt, owner);
++    if (ctx)
++        JS_FreeContext(ctx);
++}
++
+ static void js_async_generator_free(JSRuntime *rt,
+                                     JSAsyncGeneratorData *s)
+ {
+@@ -21994,7 +22017,9 @@ static void js_async_generator_free(JSRuntime *rt,
+         JS_FreeValueRT(rt, req->resolving_funcs[1]);
+         js_free_rt(rt, req);
+     }
+-    if (s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED &&
++    if (s->native_resume) {
++        js_native_async_generator_retire(rt, s);
++    } else if (s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED &&
+         s->state != JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN) {
+         async_func_free(rt, &s->func_state);
+     }
+@@ -22024,7 +22049,11 @@ static void js_async_generator_mark(JSRuntime *rt, JSValueConst val,
+             JS_MarkValue(rt, req->resolving_funcs[0], mark_func);
+             JS_MarkValue(rt, req->resolving_funcs[1], mark_func);
+         }
+-        if (s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED &&
++        if (s->native_resume) {
++            JS_MarkValue(rt, s->native_owner, mark_func);
++            if (s->native_ctx)
++                mark_func(rt, &s->native_ctx->header);
++        } else if (s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED &&
+             s->state != JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN) {
+             async_func_mark(rt, &s->func_state, mark_func);
+         }
+@@ -22138,7 +22167,29 @@ static void js_async_generator_complete(JSContext *ctx,
+ {
+     if (s->state != JS_ASYNC_GENERATOR_STATE_COMPLETED) {
+         s->state = JS_ASYNC_GENERATOR_STATE_COMPLETED;
+-        async_func_free(ctx->rt, &s->func_state);
++        if (s->native_resume)
++            js_native_async_generator_retire(ctx->rt, s);
++        else
++            async_func_free(ctx->rt, &s->func_state);
++    }
++}
++
++/* The inherited bytecode path has an XXX for iterator-result OOM. Native
++   bodies must reject the current request with that raw exception, rather
++   than pass JS_EXCEPTION to a resolving function or strand a waiter. */
++static void js_native_async_generator_resolve(JSContext *ctx,
++                                              JSAsyncGeneratorData *s,
++                                              JSValueConst value, bool done)
++{
++    JSValue result = js_create_iterator_result(ctx, js_dup(value), done);
++    if (JS_IsException(result)) {
++        JSValue exception = JS_GetException(ctx);
++        js_async_generator_complete(ctx, s);
++        js_async_generator_reject(ctx, s, exception);
++        JS_FreeValue(ctx, exception);
++    } else {
++        js_async_generator_resolve_or_reject(ctx, s, result, 0);
++        JS_FreeValue(ctx, result);
+     }
+ }
+ 
+@@ -22180,6 +22231,77 @@ static int js_async_generator_completed_return(JSContext *ctx,
+     return res;
+ }
+ 
++static void js_native_async_generator_drive(JSAsyncGeneratorData *s,
++                                             int completion,
++                                             JSValueConst input)
++{
++    JSContext *ctx = JS_DupContext(s->native_ctx);
++    JSValue value = js_dup(input);
++    int action, phase;
++
++    for (;;) {
++        JSValue output;
++        if (js_poll_interrupts(ctx)) {
++            output = JS_EXCEPTION;
++        } else if (js_check_stack_overflow(ctx->rt, 0)) {
++            output = JS_ThrowStackOverflow(ctx);
++        } else {
++            action = -1;
++            output = s->native_resume(ctx, s->native_owner, completion,
++                                       value, &action);
++        }
++        JS_FreeValue(ctx, value);
++        if (JS_IsException(output)) {
++            JSValue exception = JS_GetException(ctx);
++            js_async_generator_complete(ctx, s);
++            js_async_generator_reject(ctx, s, exception);
++            JS_FreeValue(ctx, exception);
++            JS_FreeContext(ctx);
++            return;
++        }
++        switch (action) {
++        case JS_PI_AG_AWAIT: phase = PI_AG_PHASE_AWAIT; break;
++        case JS_PI_AG_YIELD: phase = PI_AG_PHASE_YIELD; break;
++        case JS_PI_AG_RETURN: phase = PI_AG_PHASE_RETURN; break;
++        case JS_PI_AG_COMPLETE:
++            js_async_generator_complete(ctx, s);
++            js_native_async_generator_resolve(ctx, s, output, true);
++            JS_FreeValue(ctx, output);
++            JS_FreeContext(ctx);
++            return;
++        case JS_PI_AG_THROW:
++            js_async_generator_complete(ctx, s);
++            js_async_generator_reject(ctx, s, output);
++            JS_FreeValue(ctx, output);
++            JS_FreeContext(ctx);
++            return;
++        default:
++            JS_FreeValue(ctx, output);
++            JS_ThrowTypeError(ctx, "invalid native async generator action");
++            value = JS_GetException(ctx);
++            js_async_generator_complete(ctx, s);
++            js_async_generator_reject(ctx, s, value);
++            JS_FreeValue(ctx, value);
++            JS_FreeContext(ctx);
++            return;
++        }
++        s->native_phase = phase;
++        s->state = JS_ASYNC_GENERATOR_STATE_EXECUTING;
++        if (js_async_generator_await(ctx, s, output) == 0) {
++            JS_FreeValue(ctx, output);
++            JS_FreeContext(ctx);
++            return;
++        }
++        JS_FreeValue(ctx, output);
++        /* PromiseResolve's poisoned constructor can fail synchronously.
++           Feed the raw exception back at the actual await/yield boundary. */
++        value = JS_GetException(ctx);
++        s->native_phase = PI_AG_PHASE_NONE;
++        completion = phase == PI_AG_PHASE_AWAIT ? JS_PI_AG_AWAIT_REJECTED
++                                                 : JS_PI_AG_THROW_INPUT;
++    }
++}
++
+ static void js_async_generator_resume_next(JSContext *ctx,
+                                            JSAsyncGeneratorData *s)
+ {
+@@ -22193,11 +22315,20 @@ static void js_async_generator_resume_next(JSContext *ctx,
+         switch(s->state) {
+         case JS_ASYNC_GENERATOR_STATE_EXECUTING:
+             /* only happens when restarting execution after await() */
++            assert(!s->native_resume);
+             goto resume_exec;
+         case JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN:
+             goto done;
+         case JS_ASYNC_GENERATOR_STATE_SUSPENDED_START:
+             if (next->completion_type == GEN_MAGIC_NEXT) {
++                if (s->native_resume) {
++                    s->state = JS_ASYNC_GENERATOR_STATE_EXECUTING;
++                    js_native_async_generator_drive(s, JS_PI_AG_START,
++                                                     JS_UNDEFINED);
++                    if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING)
++                        goto done;
++                    break;
++                }
+                 goto exec_no_arg;
+             } else {
+                 js_async_generator_complete(ctx, s);
+@@ -22205,16 +22336,50 @@ static void js_async_generator_resume_next(JSContext *ctx,
+             break;
+         case JS_ASYNC_GENERATOR_STATE_COMPLETED:
+             if (next->completion_type == GEN_MAGIC_NEXT) {
+-                js_async_generator_resolve(ctx, s, JS_UNDEFINED, true);
++                if (s->native_resume)
++                    js_native_async_generator_resolve(ctx, s, JS_UNDEFINED, true);
++                else
++                    js_async_generator_resolve(ctx, s, JS_UNDEFINED, true);
+             } else if (next->completion_type == GEN_MAGIC_RETURN) {
+                 s->state = JS_ASYNC_GENERATOR_STATE_AWAITING_RETURN;
+-                js_async_generator_completed_return(ctx, s, next->result);
++                if (js_async_generator_completed_return(ctx, s, next->result) < 0 &&
++                    s->native_resume) {
++                    JSValue exception = JS_GetException(ctx);
++                    s->state = JS_ASYNC_GENERATOR_STATE_COMPLETED;
++                    js_async_generator_reject(ctx, s, exception);
++                    JS_FreeValue(ctx, exception);
++                }
+             } else {
+                 js_async_generator_reject(ctx, s, next->result);
+             }
++            if (s->native_resume && s->state == JS_ASYNC_GENERATOR_STATE_COMPLETED)
++                break; /* drain native requests queued behind completed return */
+             goto done;
+         case JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD:
+         case JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD_STAR:
++            if (s->native_resume) {
++                s->state = JS_ASYNC_GENERATOR_STATE_EXECUTING;
++                if (next->completion_type == GEN_MAGIC_RETURN) {
++                    JSContext *realm = JS_DupContext(s->native_ctx);
++                    s->native_phase = PI_AG_PHASE_RETURN_INPUT;
++                    if (js_async_generator_await(realm, s, next->result) < 0) {
++                        JSValue exception = JS_GetException(realm);
++                        s->native_phase = PI_AG_PHASE_NONE;
++                        js_native_async_generator_drive(s, JS_PI_AG_THROW_INPUT,
++                                                         exception);
++                        JS_FreeValue(realm, exception);
++                    }
++                    JS_FreeContext(realm);
++                } else {
++                    js_native_async_generator_drive(s,
++                        next->completion_type == GEN_MAGIC_THROW ?
++                            JS_PI_AG_THROW_INPUT : JS_PI_AG_NEXT,
++                        next->result);
++                }
++                if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING)
++                    goto done;
++                break;
++            }
+             value = js_dup(next->result);
+             if (next->completion_type == GEN_MAGIC_THROW &&
+                 s->state == JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD) {
+@@ -22301,8 +22466,32 @@ static JSValue js_async_generator_resolve_function(JSContext *ctx,
+         if (is_reject) {
+             js_async_generator_reject(ctx, s, arg);
+         } else {
+-            js_async_generator_resolve(ctx, s, arg, true);
+-        }
++            if (s->native_resume)
++                js_native_async_generator_resolve(ctx, s, arg, true);
++            else
++                js_async_generator_resolve(ctx, s, arg, true);
++        }
++        if (s->native_resume)
++            js_async_generator_resume_next(ctx, s);
++    } else if (s->native_resume && s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING) {
++        JSContext *realm = JS_DupContext(s->native_ctx);
++        int phase = s->native_phase;
++        s->native_phase = PI_AG_PHASE_NONE;
++        if (phase == PI_AG_PHASE_YIELD && !is_reject) {
++            s->state = JS_ASYNC_GENERATOR_STATE_SUSPENDED_YIELD;
++            js_native_async_generator_resolve(realm, s, arg, false);
++        } else if (phase == PI_AG_PHASE_RETURN && !is_reject) {
++            js_async_generator_complete(realm, s);
++            js_native_async_generator_resolve(realm, s, arg, true);
++        } else {
++            int completion = phase == PI_AG_PHASE_AWAIT ?
++                (is_reject ? JS_PI_AG_AWAIT_REJECTED : JS_PI_AG_AWAIT_FULFILLED) :
++                (is_reject ? JS_PI_AG_THROW_INPUT : JS_PI_AG_RETURN_INPUT);
++            js_native_async_generator_drive(s, completion, arg);
++        }
++        JS_FreeContext(realm);
++        if (s->state != JS_ASYNC_GENERATOR_STATE_EXECUTING)
++            js_async_generator_resume_next(ctx, s);
+     } else if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING) {
+         /* restart function execution after await() */
+         s->func_state.throw_flag = is_reject;
+@@ -22401,6 +22590,44 @@ static JSValue js_async_generator_function_call(JSContext *ctx,
+     return JS_EXCEPTION;
+ }
+ 
++JSValue JS_PiGetAsyncGeneratorPrototype(JSContext *ctx)
++{
++    return js_dup(ctx->class_proto[JS_CLASS_ASYNC_GENERATOR]);
++}
++
++JSValue JS_PiGetAsyncGeneratorFunctionPrototype(JSContext *ctx)
++{
++    return js_dup(ctx->class_proto[JS_CLASS_ASYNC_GENERATOR_FUNCTION]);
++}
++
++JSValue JS_PiNewNativeAsyncGenerator(JSContext *ctx, JSValueConst owner,
++                                    JSPiAsyncGeneratorResume *resume,
++                                    JSValueConst prototype)
++{
++    JSAsyncGeneratorData *s;
++    JSValue object;
++    if (!resume)
++        return JS_ThrowTypeError(ctx, "native async generator requires a resume callback");
++    s = js_mallocz(ctx, sizeof(*s));
++    if (!s)
++        return JS_EXCEPTION;
++    init_list_head(&s->queue);
++    s->state = JS_ASYNC_GENERATOR_STATE_SUSPENDED_START;
++    s->native_resume = resume;
++    s->native_ctx = JS_DupContext(ctx);
++    s->native_owner = js_dup(owner);
++    object = JS_NewObjectProtoClass(ctx,
++        JS_IsUndefined(prototype) ? ctx->class_proto[JS_CLASS_ASYNC_GENERATOR] : prototype,
++        JS_CLASS_ASYNC_GENERATOR);
++    if (JS_IsException(object)) {
++        js_async_generator_free(ctx->rt, s);
++        return object;
++    }
++    s->generator = JS_VALUE_GET_OBJ(object);
++    JS_SetOpaqueInternal(object, s);
++    return object;
++}
++
+ /* JS parser */
+ 
+ enum {
+diff --git a/vendor/quickjs/quickjs.h b/vendor/quickjs/quickjs.h
+index 55e6c30c..576feb8d 100644
+--- a/vendor/quickjs/quickjs.h
++++ b/vendor/quickjs/quickjs.h
+@@ -549,6 +549,30 @@ JS_EXTERN JSValue JS_GetFunctionProto(JSContext *ctx);
+ JS_EXTERN JSValue JS_GetAsyncIteratorPrototype(JSContext *ctx);
+ /* Owned reference to the current context's intrinsic AsyncFunction prototype. */
+ JS_EXTERN JSValue JS_GetAsyncFunctionPrototype(JSContext *ctx);
++/* Private native-body async generators use the real intrinsic brand, request
++   queue and Promise machinery. Inputs/owner/prototype are borrowed; resume
++   returns an owned value or JS_EXCEPTION. The owner and creation realm stay
++   GC-visible until body completion or finalization. */
++typedef enum JSPiAsyncGeneratorCompletion {
++    JS_PI_AG_START, JS_PI_AG_NEXT, JS_PI_AG_RETURN_INPUT, JS_PI_AG_THROW_INPUT,
++    JS_PI_AG_AWAIT_FULFILLED, JS_PI_AG_AWAIT_REJECTED,
++} JSPiAsyncGeneratorCompletion;
++typedef enum JSPiAsyncGeneratorAction {
++    JS_PI_AG_AWAIT,       /* await expression; deliver fulfillment/rejection */
++    JS_PI_AG_YIELD,       /* mandatory Await(value), then suspend at yield */
++    JS_PI_AG_RETURN,      /* return expression: mandatory Await(value) */
++    JS_PI_AG_COMPLETE,    /* implicit/bare return or already-awaited completion */
++    JS_PI_AG_THROW,       /* raw abrupt completion, no string coercion */
++} JSPiAsyncGeneratorAction;
++typedef JSValue JSPiAsyncGeneratorResume(JSContext *ctx, JSValueConst owner,
++                                       int completion, JSValueConst value,
++                                       int *action);
++JS_EXTERN JSValue JS_PiNewNativeAsyncGenerator(JSContext *ctx, JSValueConst owner,
++                                              JSPiAsyncGeneratorResume *resume,
++                                              JSValueConst prototype);
++/* Both prototype getters return an owned reference from this context. */
++JS_EXTERN JSValue JS_PiGetAsyncGeneratorPrototype(JSContext *ctx);
++JS_EXTERN JSValue JS_PiGetAsyncGeneratorFunctionPrototype(JSContext *ctx);
+ /* Owned well-known identities, independent of mutable guest global Symbol. */
+ JS_EXTERN JSValue JS_GetIteratorSymbol(JSContext *ctx);
+ JS_EXTERN JSValue JS_GetAsyncIteratorSymbol(JSContext *ctx);
