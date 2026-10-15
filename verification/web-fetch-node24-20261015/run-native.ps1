@@ -5,6 +5,7 @@ if(@(git -C $taskRoot status --porcelain).Count){throw 'Native qualification req
 $taskEvidence='C:/Users/adyba/pi-zig-update-evidence-20261003'
 $taskName="web-default-$Step-debug-$Phase-$Attempt-20261015"
 $taskBase=Join-Path $taskEvidence $taskName
+if(@(Get-ChildItem -LiteralPath $taskEvidence -Filter "$taskName*" -File).Count){throw 'Refuse native owner/receipt overwrite'}
 $taskBodyPhase=Join-Path $taskRoot 'verification/web-body-node24-20261015'
 $taskOwner=Join-Path $taskBodyPhase 'run-owner.ps1'
 $taskAudit=Join-Path $taskEvidence 'source5ab-dependency-contract-audit-20261015.json'
@@ -28,6 +29,7 @@ $taskFetchInput=Join-Path $taskRoot 'verification/web-fetch-node24-20261015/inpu
 $taskFetchOutput=Join-Path $taskEvidence 'web-fetch-node24-source-first-20261015-output.json'
 $taskAuthorityFiles+=@($taskHeaderExpected,$taskHeaderInput,(Join-Path $taskEvidence 'web-headers-node24-source-first-20261015-output.json'),$taskFetchExpected,$taskFetchInput,$taskFetchOutput,(Join-Path $PSScriptRoot 'receipts/web-fetch-node24-source-first-20261015-node-builtin-authorities.json'),(Join-Path $PSScriptRoot 'receipts/web-fetch-node24-source-first-20261015-bundled-undici.js.txt'))
 function Verify-Authority {
+ if((Get-FileHash -LiteralPath $taskExpected).Hash-ine'7518fdcd2401e2c6d8111e3327b6a6d01b85d06f9e95128bd4c62a04cf295ed5'){throw 'Immutable genuine Body176 expected bytes drift'}
  if((Get-FileHash -LiteralPath $taskHeaderExpected).Hash-ine'93b7096f3eb61bd778948e84b091ee2f2de39bd0a9a4fc371ae204977ca96149'-or(Get-FileHash -LiteralPath $taskHeaderInput).Hash-ine'8f3be8d9c250eec0048331c461490704207b6e9375fb45c4d4e47ede9bc0b83b'){throw 'Immutable genuine Headers189 drift'}
  if((Get-FileHash -LiteralPath $taskHeaderExpected).Hash-cne(Get-FileHash -LiteralPath (Join-Path $taskEvidence 'web-headers-node24-source-first-20261015-output.json')).Hash){throw 'Actual Headers189 copy drift'}
  if((Get-FileHash -LiteralPath $taskFetchExpected).Hash-ine'54d5057edcd4da5e0556dcf8746b1f12de4103c9bc108a11cf813b73189a09e2'-or(Get-FileHash -LiteralPath $taskFetchExpected).Hash-cne(Get-FileHash -LiteralPath $taskFetchOutput).Hash){throw 'Genuine Fetch39 expected bytes drift'}
