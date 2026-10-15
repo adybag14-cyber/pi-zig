@@ -244,7 +244,10 @@ fn invoke(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, op: 
         self.end();
         return c.pi_js_undefined();
     }
-    const input = try inputBytes(&scope, self.owner, if (args.len > 0) args[0] else c.pi_js_undefined());
+    const input = inputBytes(&scope, self.owner, if (args.len > 0) args[0] else c.pi_js_undefined()) catch |err| {
+        self.end();
+        return err;
+    };
     defer if (input.string) |memory| engine.gpa.free(memory);
     process(&scope, self, if (args.len > 1) args[1] else c.pi_js_undefined(), input.bytes, false) catch |err| {
         self.end();

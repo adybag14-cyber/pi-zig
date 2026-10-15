@@ -163,7 +163,11 @@ pub fn errorNative(engine: *em.Engine, controller: c.JSValue, reason: c.JSValue)
     try errorBoth(streamState(try branded(engine, owner, controller, true)), reason);
 }
 fn promiseCall(scope: *Scope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
-    const result = js.call(scope.engine, function, receiver, args) catch |err| {
+    // A transformer may call controller.error/terminate and collect while its
+    // own callback is executing. Algorithm retirement must not free this frame.
+    const kept_function = try scope.own(c.JS_DupValue(scope.engine.context, function));
+    const kept_receiver = try scope.own(c.JS_DupValue(scope.engine.context, receiver));
+    const result = js.call(scope.engine, kept_function, kept_receiver, args) catch |err| {
         if (err == error.JavaScriptException) return scope.own(try rejectedValue(scope.engine, scope.engine.captured_exception.?));
         return err;
     };
