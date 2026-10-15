@@ -1600,6 +1600,18 @@ pub fn build(b: *std.Build) void {
     ai_json_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-json-parse", "Compare original b06 final JSON helpers and intrinsic delegate error origin").dependOn(&b.addRunArtifact(ai_json_tests).step);
     b.step("build-native-ai-json-parse", "Compile native final JSON helpers and scoped C parser diagnostics").dependOn(&ai_json_tests.step);
+    const native_generator_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_generator_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native async generator functional", "native AI JSON actual OpenAI request builder", "native AI JSON OpenAI decoder", "native AI JSON helpers and native partial fallback", "native AI JSON genuine b06 delegates", "native AI JSON private hooks", "native AI JSON ordinary no-hook", "native pi-ai EventStream exports", "native AssistantMessageEventStream producer queue overflow", "native provider validation", "native provider cancellation" }, .use_llvm = use_llvm });
+    linkQuickJs(b, native_generator_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(native_generator_tests.root_module, sqlite_lib_dir, sqlite_library);
+    native_generator_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-async-generator", "Compile private native-body QuickJS AsyncGenerator hook review tests").dependOn(&native_generator_tests.step);
+    b.step("test-native-async-generator", "Verify intrinsic generator queue Await raw identity realms and targeted ownership failures").dependOn(&b.addRunArtifact(native_generator_tests).step);
+    const native_generator_gpa_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_generator_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native async generator host GPA"}, .use_llvm = use_llvm });
+    linkQuickJs(b, native_generator_gpa_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(native_generator_gpa_tests.root_module, sqlite_lib_dir, sqlite_library);
+    native_generator_gpa_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-async-generator-gpa", "Compile native async generator host allocation sweep separately").dependOn(&native_generator_gpa_tests.step);
+    b.step("test-native-async-generator-gpa", "Measure complete host allocation failure coverage independently").dependOn(&b.addRunArtifact(native_generator_gpa_tests).step);
     const ai_uuid_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_uuid_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI UUID"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_uuid_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_uuid_tests.root_module, sqlite_lib_dir, sqlite_library);
