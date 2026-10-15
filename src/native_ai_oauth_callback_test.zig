@@ -15,6 +15,8 @@ test "native OAuth callback replays exact original Source pages errors lifecycle
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
+    try @import("extensions/native_url.zig").install(engine);
+    try @import("extensions/abort_signal.zig").install(engine);
     var scope: v.Scope = .{ .engine = engine };
     defer scope.deinit();
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
