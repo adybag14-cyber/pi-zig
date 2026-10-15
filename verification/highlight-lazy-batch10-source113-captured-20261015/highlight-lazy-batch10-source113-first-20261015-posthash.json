@@ -1,0 +1,35 @@
+{
+  "native_after": 5771,
+  "manifests": [
+    {
+      "files": 1967,
+      "name": "source",
+      "drift": 0
+    },
+    {
+      "files": 31064,
+      "name": "dependencies",
+      "drift": 0
+    },
+    {
+      "files": 1774,
+      "name": "node_tools",
+      "drift": 0
+    }
+  ],
+  "absence_records": 84,
+  "native_head_before": "0dd56802aef9db7436a6679bf91a8c0f6dcde38e",
+  "native_head_after": "0dd56802aef9db7436a6679bf91a8c0f6dcde38e",
+  "source_paths_after": 1968,
+  "control_drift": 0,
+  "native_before": 5771,
+  "source_paths_before": 1968,
+  "control_files": 12,
+  "native_drift": 0,
+  "elapsed_seconds": 65.0877713,
+  "completed_utc": "2026-10-15T20:36:00.7098430+00:00",
+  "source_head_after": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "source_head_before": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "absence_drift": 0,
+  "source_path_drift": 0
+}

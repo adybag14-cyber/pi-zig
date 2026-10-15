@@ -1,0 +1,19 @@
+{
+  "node_tool_files": 1774,
+  "heap_mb": 128,
+  "dependency_files": 31064,
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "owner_deadline_seconds": 600,
+  "slot": "LIGHT6",
+  "absence_records": 84,
+  "control_files": 12,
+  "required_kib": 2097152,
+  "cases": 113,
+  "source_files": 1967,
+  "timeout_seconds": 300,
+  "native_candidate_files": 5771,
+  "status": "admitted",
+  "observed_utc": "2026-10-15T20:35:19.7451459+00:00",
+  "candidate_head": "0dd56802aef9db7436a6679bf91a8c0f6dcde38e",
+  "free_kib": 16640224
+}
