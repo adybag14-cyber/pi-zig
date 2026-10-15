@@ -1,0 +1,247 @@
+[
+  {
+    "bytes": 3992,
+    "sha256": "15EBDDEAB5AA2A6E22423554CCEACB11974ECA6CC1EA4B1F36666CB50C08ABF3",
+    "path": "ai-b45-b06-provider-delta-audit-20261014.md"
+  },
+  {
+    "bytes": 5221,
+    "sha256": "7B0FB88497B179928D408E6408298133FA919EBBC81CAE07912393A2D87DC540",
+    "path": "ai-http-owner-hooks-unqualified-20261014.patch"
+  },
+  {
+    "bytes": 40056,
+    "sha256": "A2A204564432415EF469A81A78F08B8302AEA36AD92475041470C5CA8A2F74EC",
+    "path": "ai-openai-completions-b45-http12-source12-first-20261014-output.json"
+  },
+  {
+    "bytes": 606,
+    "sha256": "CD35BE1A414EAF35CA81E688E43CC3BA1532FF8D6C8F35E372CF79AB3B377E1E",
+    "path": "ai-openai-completions-b45-http12-source12-first-20261014-posthash.json"
+  },
+  {
+    "bytes": 1289,
+    "sha256": "CA7D9CEBFD7313B66B7C67D41D8E7087935BD19EF1BD8ECBB6F96CC5F71DFF0D",
+    "path": "ai-openai-completions-b45-http12-source12-first-20261014.json"
+  },
+  {
+    "bytes": 6314,
+    "sha256": "2ABBC00B83460A9A60C7EBBF166CF039430EFF531B2444B0B9B31106A4A81407",
+    "path": "ai-openai-completions-b45-http12.input.json"
+  },
+  {
+    "bytes": 4111,
+    "sha256": "2F2102604DDE353CEC42A41FE13EA21BC54F71648FEFFDBD6FF05DC9ED6AC533",
+    "path": "checkpoint-proof.json"
+  },
+  {
+    "bytes": 4840,
+    "sha256": "870A3B850B35607AB38C30CFC36E485ADE17C4C1FAFE3E975564318D4642B1D4",
+    "path": "Inspect-AiHttpTestInventory-20261014.ps1"
+  },
+  {
+    "bytes": 706,
+    "sha256": "42F986B99DB23149A49A27A6309549FA98F40954B8137C2CC243849DC4A35A12",
+    "path": "native-ai-http-compile-debug-first-20261014-admission.json"
+  },
+  {
+    "bytes": 296,
+    "sha256": "188B17309F7CF54F4093209FFB189C8CF1B631F4B12F4AD7C510C2687A7D3250",
+    "path": "native-ai-http-compile-debug-first-20261014-owned-wrapper-gc.json"
+  },
+  {
+    "bytes": 318,
+    "sha256": "ACF9948B90E12F34B97DEF01476CBC829B8CDC1039ACBA2D237030109841A872",
+    "path": "native-ai-http-compile-debug-first-20261014-posthash.json"
+  },
+  {
+    "bytes": 866816,
+    "sha256": "914405CE35C197EB261087E1180A42E0E54E09E79ECA0707F58848D351DAB893",
+    "path": "native-ai-http-compile-debug-first-20261014-source-before.json"
+  },
+  {
+    "bytes": 950,
+    "sha256": "01D070BDAFCDC6F3E33C6F57820CCBA06967763FB1B0CD723E8519873866C34C",
+    "path": "native-ai-http-compile-debug-first-20261014.json"
+  },
+  {
+    "bytes": 16356,
+    "sha256": "AD7B9C2F63160E8F7C5D39CE37CF48E63BAE90FE65F8CA7E7C4E216BA13072FC",
+    "path": "native-ai-http-compile-debug-first-20261014.stderr.log"
+  },
+  {
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "path": "native-ai-http-compile-debug-first-20261014.stdout.log"
+  },
+  {
+    "bytes": 706,
+    "sha256": "B79C9BFFB59A05033E6B9664DEA43FAB30BB2A249CF8EFDC2DB26F23F5B3D42A",
+    "path": "native-ai-http-compile-debug-second-20261014-admission.json"
+  },
+  {
+    "bytes": 296,
+    "sha256": "1AEAF0705262A194AB5487AA4BBF2CD10ADE5781A8ED40F08EEBE51BDE504CD2",
+    "path": "native-ai-http-compile-debug-second-20261014-owned-wrapper-gc.json"
+  },
+  {
+    "bytes": 318,
+    "sha256": "FBBFD747E24082BD5A286856F8BBB058A32A016DB834649E3D68F02530F92C0F",
+    "path": "native-ai-http-compile-debug-second-20261014-posthash.json"
+  },
+  {
+    "bytes": 866816,
+    "sha256": "18519F4A166BDFB7EE92F4134D577061EA07B4F094F49F0ABE6168C68704207D",
+    "path": "native-ai-http-compile-debug-second-20261014-source-before.json"
+  },
+  {
+    "bytes": 951,
+    "sha256": "B7BB708483D11B64FDD512AB0E563B08A9C4802DEE5E2F36EE812CEA474F2ECD",
+    "path": "native-ai-http-compile-debug-second-20261014.json"
+  },
+  {
+    "bytes": 13327,
+    "sha256": "A78F038146E687D517CDC44BFE2929A5F19B0CF018096FD7CCE7C00FA8E9FB50",
+    "path": "native-ai-http-compile-debug-second-20261014.stderr.log"
+  },
+  {
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "path": "native-ai-http-compile-debug-second-20261014.stdout.log"
+  },
+  {
+    "bytes": 706,
+    "sha256": "394EEA2181BD7CA8093EF7CAA8D6940342801BDCF8BEC18F03F7F1BC809E2D04",
+    "path": "native-ai-http-compile-debug-third-20261014-admission.json"
+  },
+  {
+    "bytes": 296,
+    "sha256": "32AE51DB520BC75E66C24EB3C69A0A827747FA11C5230AB55A7E11E9C3DEA617",
+    "path": "native-ai-http-compile-debug-third-20261014-owned-wrapper-gc.json"
+  },
+  {
+    "bytes": 318,
+    "sha256": "DE98E57EBC1B6B251FBE4F2C494EE93E5EF3C55DEE5F4C112DC1F791F904CE06",
+    "path": "native-ai-http-compile-debug-third-20261014-posthash.json"
+  },
+  {
+    "bytes": 866816,
+    "sha256": "557C26ECCB1DD8D0257F050137DD8CBEC59CE18432889827802DAE978C7A201E",
+    "path": "native-ai-http-compile-debug-third-20261014-source-before.json"
+  },
+  {
+    "bytes": 950,
+    "sha256": "B89024F0057A06AFBFED267D3DB6884829DDF4EF8CC65490D003B33163FE2843",
+    "path": "native-ai-http-compile-debug-third-20261014.json"
+  },
+  {
+    "bytes": 13330,
+    "sha256": "E98A6D214DAE6AB81EB3A4ACD41D825AD43E5BDDE3635E0207BAEEDB240A9651",
+    "path": "native-ai-http-compile-debug-third-20261014.stderr.log"
+  },
+  {
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "path": "native-ai-http-compile-debug-third-20261014.stdout.log"
+  },
+  {
+    "bytes": 2256,
+    "sha256": "BCE02851FA53A30C4C113D2894DD93FC79B8C122A3C6463A5334EBB77675552C",
+    "path": "native-ai-http-debug-compiled-test-inventory-20261014.json"
+  },
+  {
+    "bytes": 705,
+    "sha256": "E861184942D0777EBAEBC3C0443A8CEAF0DDC418B91988CCEB5BA03A6E870B42",
+    "path": "native-ai-http-runtime-debug-first-20261014-admission.json"
+  },
+  {
+    "bytes": 296,
+    "sha256": "A03994AD7614B47CAF03F4167883C4B357695E2408B6C14D412E11C3D7691F74",
+    "path": "native-ai-http-runtime-debug-first-20261014-owned-wrapper-gc.json"
+  },
+  {
+    "bytes": 318,
+    "sha256": "7083B165D1B9BE630B64AB75CA12AC0FF8B20EB157812EEE21848B30AEF733E1",
+    "path": "native-ai-http-runtime-debug-first-20261014-posthash.json"
+  },
+  {
+    "bytes": 866816,
+    "sha256": "18519F4A166BDFB7EE92F4134D577061EA07B4F094F49F0ABE6168C68704207D",
+    "path": "native-ai-http-runtime-debug-first-20261014-source-before.json"
+  },
+  {
+    "bytes": 949,
+    "sha256": "56FA1755D762B015D6A0B6DC74D4790EF23DF98B044887C688F6B3FA984AFB2D",
+    "path": "native-ai-http-runtime-debug-first-20261014.json"
+  },
+  {
+    "bytes": 15625,
+    "sha256": "6DA60B19993B0C2D0BAA8CF1FD3D89AA3DB5454DA5269442D99F37E83F600FBB",
+    "path": "native-ai-http-runtime-debug-first-20261014.stderr.log"
+  },
+  {
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "path": "native-ai-http-runtime-debug-first-20261014.stdout.log"
+  },
+  {
+    "bytes": 705,
+    "sha256": "F293DF2A67FCF96A5E9C78DC0554349B1B86FDD203C85D4AC8E4B51C93B276A7",
+    "path": "native-ai-http-runtime-debug-second-20261014-admission.json"
+  },
+  {
+    "bytes": 296,
+    "sha256": "A78EEBF1F0A67F36CB34BDAA9A6DD436530DF55DD2021EC8BEA57538A14DBBE6",
+    "path": "native-ai-http-runtime-debug-second-20261014-owned-wrapper-gc.json"
+  },
+  {
+    "bytes": 318,
+    "sha256": "7A1E057FE0368C9AA4B286512E3A765EA5D3DCCA99A473BC1E477FA968200EB1",
+    "path": "native-ai-http-runtime-debug-second-20261014-posthash.json"
+  },
+  {
+    "bytes": 866816,
+    "sha256": "557C26ECCB1DD8D0257F050137DD8CBEC59CE18432889827802DAE978C7A201E",
+    "path": "native-ai-http-runtime-debug-second-20261014-source-before.json"
+  },
+  {
+    "bytes": 950,
+    "sha256": "861760E4396F1C1F2C9610C0DBEB1C60141F347EC6D8EEE7EE4135D69EE68176",
+    "path": "native-ai-http-runtime-debug-second-20261014.json"
+  },
+  {
+    "bytes": 14087,
+    "sha256": "283271401C4A2288E2A31FACF05278D19CC72B348C286E0A89FBF866BAE08195",
+    "path": "native-ai-http-runtime-debug-second-20261014.stderr.log"
+  },
+  {
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "path": "native-ai-http-runtime-debug-second-20261014.stdout.log"
+  },
+  {
+    "bytes": 11379,
+    "sha256": "31F49621B4369E5469EED3E33BE19897C24D8279D622AFC81F78753221866854",
+    "path": "negative-wire-caller-before-nul.zig.txt"
+  },
+  {
+    "bytes": 5993,
+    "sha256": "0F6F80C8C3EC10FCF07BFA3F2850B3E69B3CCA5A93BD87B722B1C11B6E9424A3",
+    "path": "Pack-AiHttpPrivateCheckpoint-20261014.ps1"
+  },
+  {
+    "bytes": 3220,
+    "sha256": "0B9CDE42DF4C3CDE5E3E2CD1E30DB49747C15E95A75C6E52D2EBF76D5EECC6D5",
+    "path": "README.md"
+  },
+  {
+    "bytes": 5192,
+    "sha256": "34E66009ACED9D4BF56F68ED64A2F6BC32CD2177B934F616BB306E5CD0757023",
+    "path": "Run-AiHttpCompile-20261014.ps1"
+  },
+  {
+    "bytes": 5191,
+    "sha256": "C641EB648A2D366324F8F6A1E7AE2F619FBD582B03E77F4F426F6E6A63097C1E",
+    "path": "Run-AiHttpRuntime-20261014.ps1"
+  }
+]

@@ -1,0 +1,56 @@
+{
+  "recorded_utc": "2026-10-14T22:06:24.9905289+00:00",
+  "runtime_count": 6,
+  "binary": "C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\.zig-cache\\o\\bf105aeb6899365e09124cf6e151fe72\\test.exe",
+  "imported_unnamed_tests": 1,
+  "method": "Read-only PE32+ TestFn metadata: six contiguous24-byte entries, exact UTF8 names/lengths, every function pointer within executable section; no binary execution",
+  "authored_tests": 5,
+  "bytes": 45170688,
+  "binary_sha256": "B10FFB7855AC9DCE4E38C1E957FD8496829EBF232465BEA1B19F722FBA9655C7",
+  "inventory": {
+    "word_permutation": [
+      0,
+      1,
+      2
+    ],
+    "tests": [
+      {
+        "bytes": 128,
+        "name": "native_ai_json_parse_test.test.native AI JSON final helpers match33 genuine b06 observations excluding separate streaming parser",
+        "name_virtual_address": 5410189392,
+        "function_virtual_address": 5370707232
+      },
+      {
+        "bytes": 144,
+        "name": "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+        "name_virtual_address": 5410189520,
+        "function_virtual_address": 5370686400
+      },
+      {
+        "bytes": 135,
+        "name": "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+        "name_virtual_address": 5410189664,
+        "function_virtual_address": 5370683424
+      },
+      {
+        "bytes": 135,
+        "name": "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity",
+        "name_virtual_address": 5410189799,
+        "function_virtual_address": 5370681280
+      },
+      {
+        "bytes": 132,
+        "name": "native_ai_json_parse_test.test.native AI JSON every host allocation preserves intrinsic parser hook ownership and trusted OOM origin",
+        "name_virtual_address": 5410189934,
+        "function_virtual_address": 5370252288
+      },
+      {
+        "bytes": 40,
+        "name": "extensions.native_durable_storage.test_0",
+        "name_virtual_address": 5410190066,
+        "function_virtual_address": 5370680896
+      }
+    ],
+    "file_offset": 41476544
+  }
+}

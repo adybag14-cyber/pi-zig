@@ -1,0 +1,19 @@
+# Native AI streaming JSON and OpenAI decoder candidate
+
+Baseline: `62d1e22e83a3484d4bfb00a7e8422bcb5a5ecbcd`. The handed-off worktree was clean when resumed; no dirty source-only WIP was present to reconcile or reset.
+
+Authority: actual official `b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6` sources and retained genuine HTTP20/JSON33 observations. The catalog audit owner verified that `packages/ai/src/api/openai-completions.ts`, `packages/ai/src/utils/json-parse.ts`, and the partial-json dependency/lock are unchanged at latest `5ab7fe74c400097b386662205cd93900695b8a71`. `transform-messages.ts` has a latest image-only error-tool-result change; a future request converter must use latest authority for that dependency.
+
+`native_ai_partial_json.zig` ports the actual partial-json 0.1.7 default Allow.ALL algorithm using owner-thread QuickJS values. It preserves UTF-16 substring boundaries, partial literals, ordinary property assignment, permissive object/array prefixes, incomplete string/backslash/unicode recovery, numeric exponent fallback, live JSON.parse calls and failure String coercions. It carries the existing cancellation/compute budget and propagates trusted native allocation failures. The implementation bounds recursive native parser depth to 256; full unbounded dependency equivalence is not claimed.
+
+`native_ai_json_parse.zig` adds native parseStreamingJson with the original sequence: final repaired JSON parser, partial parser over original text, then partial parser over repaired text, with nullish partial results becoming a fresh object. Its existing final helpers and private scoped C diagnostic hook are retained. No C changes are part of this candidate.
+
+`native_ai_openai_decode.zig` implements the actual OpenAI-completions chunk body and block finalization as native owner-thread callbacks, with GC-visible state retained through the existing native function roots. It tracks response id/model and first choice, usage/cache/cost, finish reason, ordered reasoning/text blocks, validated and merged reasoning_details, indexed/id-associated tool calls, custom grammar input buffers, final parsed arguments/argumentsError, scratch removal, missing-finish behavior, and terminal stream events. It feeds the actual native AssistantMessageEventStream supplied by its caller. It does not bind generic OpenAI aliases as other provider bodies.
+
+This private decoder does not yet implement asynchronous onProviderStreamEvent sequencing, payload/response hooks, request construction, authentication/headers, retry/error normalization, arbitrary mid-stream transport exceptions, or public builtin factory/module activation. Those remain required for a complete provider. No paid endpoint or credentials are involved.
+
+The existing native AI JSON test binary now checks all four JSON helpers against the original 28 JSON inputs retained in genuine b06 JSON33. It additionally feeds all genuine HTTP20 chunk sequences through the native decoder and compares terminal results and event fields excluding mutable partial/message/error snapshots. This narrower synchronous decoder check does not qualify live loopback timing, full intermediate snapshots, request construction, Kimi factory composition, or complete HTTP transport/provider behavior. The previously retained SourceHTTP20 oracle itself retains full snapshots and actual Kimi factory observations.
+
+Validation at this source checkpoint: pinned Zig 0.16.0 `fmt --check` and `git diff --check` passed. No compiler, VM run, heavy prehash, Source launch, release, public activation, or main-tree edit has been performed. Native compile/runtime qualification needs a coordinated Root slot and immutable candidate/compiler/vendor/controls throughout the pair. The existing `build-native-ai-json-parse` / `test-native-ai-json-parse` targets contain the new test; raw HTTP regression targets remain separate.
+
+Full provider parity, full factory/Pi parity and public activation remain false.

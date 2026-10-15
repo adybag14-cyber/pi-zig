@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "source_head": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "candidate_base": "758ee55c",
+  "toolchain": "Zig0.16.0/directC/linkedQuickJS-NG",
+  "scope": "Private component checkpoint; no public activation or complete builtin provider/application claim",
+  "genuine_source_cases": {
+    "compat": 36,
+    "global_webcrypto": 33,
+    "env_keys": 72,
+    "total": 141
+  },
+  "native": {
+    "strict_compat_inventory": [
+      "native_ai_compat_test.test.native AI compat matches original b45 registry custom dispatch normalization and async observations",
+      "native_ai_compat_test.test.native AI compat controlled builtin dependency routing preserves identity auth and cloudflare fallback",
+      "native_ai_compat_test.test.native AI compat retained registry wrappers survive garbage collection",
+      "native_ai_compat_test.test.native AI compat UUID uses actual secure native Crypto byte views and retained host roots",
+      "native_ai_compat_test.test.native AI compat every host allocation releases registry wrappers env dispatch async completion and secure host roots",
+      "native_ai_compat_test.test.native AI compat emitted test inventory is explicit",
+      "extensions.native_durable_storage.test_0"
+    ],
+    "gc_and_secure_uuid": true,
+    "tool_drift": 0,
+    "tool_files": 19546,
+    "optimize": "Debug",
+    "tests": 14,
+    "source_drift": 0,
+    "imported_unnamed_storage_tests": 3,
+    "authored_tests": 11,
+    "allocation_failure_exercises": 3,
+    "source_files": 5259,
+    "strict_compat_inventory_passed": true
+  },
+  "code": [
+    {
+      "path": "src/extensions/native_ai_compat.zig",
+      "sha256": "099DBD3406810636205904672455B8FDC445576639D00DE585B19CE1D2B3160C"
+    },
+    {
+      "path": "src/extensions/native_ai_env_keys.zig",
+      "sha256": "D2AB3B4246B00774D2126EB5AC2DF5DD20A0BD85864B488C18A18FD8E8C0D035"
+    },
+    {
+      "path": "src/extensions/native_crypto_random.zig",
+      "sha256": "EFBA9CC34F4FCC32A610BF97AEEFE54627738123660D5F49F49FD172967E283B"
+    },
+    {
+      "path": "src/extensions/node_directory.zig",
+      "sha256": "11B9DCBC05990B5C2A2710D60A079C934678713D22EF635A31E2B9E9D71180B6"
+    },
+    {
+      "path": "src/native_ai_compat_test.zig",
+      "sha256": "AC22B6145DD78B524C5F4B4B43641FCB1D5677E50C4E3B63DCA40E9B8ED4C8C7"
+    },
+    {
+      "path": "src/native_ai_env_keys_test.zig",
+      "sha256": "0D4640A60A3E2E1EF763AFFFF9C649B1606E9C45C4C53A0E8781D47E2F19DF47"
+    },
+    {
+      "path": "src/native_crypto_random_test.zig",
+      "sha256": "672C382CF3C592DB325421F1A2D1A8D9D9CD8235FF7E24F84A5598190DA4980C"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-compat-b45.input.txt",
+      "sha256": "A79DC80377AD2288A4B7D13EFC56CBD1C59C65A5868415051D6CA06BDB35E5CA"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-compat-b45.json",
+      "sha256": "10DE487FA6286B03CE905C408B79935007CA7B43C6E6E9E3411EBBFE2E0ECF02"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-env-keys-b45.input.txt",
+      "sha256": "D98989C71ECE1DB1AAB6DC72A7683EB450E551BFCEBC3EDB128BA7C2F0FEC724"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-env-keys-b45.json",
+      "sha256": "61416F4CB2165A9F98352FF18D7D85584FDDDE7D1D469AA3CDAD8C6DFC7BA7BA"
+    },
+    {
+      "path": "src/extensions/fixtures/crypto-random-node24.input.txt",
+      "sha256": "329ECFDED6384C7DB60D341DBC04080D20F63E102F30F52DAA61153B96E5AA63"
+    },
+    {
+      "path": "src/extensions/fixtures/crypto-random-node24.json",
+      "sha256": "9CF090C4C4F679E16E2770F327A536624D7F91FD5213EAB29BABCB9B18A7F147"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "7C92D14563DC92D140029B819F68C234F7B016EDFE0EEC7200DEF299402BC711"
+    }
+  ],
+  "frozen_external_manifests": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b45-full-manifest-20261014.json",
+      "files": 1965,
+      "sha256": "5FE14C9790D7874032CA6440C45FA11102F4D1EE9219E511593C63635E652276"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+      "files": 31064,
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+      "files": 1774,
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "files": 19546,
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+    }
+  ],
+  "negative": {
+    "corrected_caller_sha256": "329ECFDED6384C7DB60D341DBC04080D20F63E102F30F52DAA61153B96E5AA63",
+    "native_first": "Existing node_directory obsolete error.WriteFailed catch; fixed by direct propagation of actual allocator.Error",
+    "original_negative_caller_sha256": "AFE376D29DF074F0ED000DB3607DCE73F46667051337E8F00E2A9D4239D8AA3B",
+    "crypto_first": "Uncaught original own-byteLength getter proved caller assumption wrong; fullpost0 preserved"
+  },
+  "crypto_namespace": "globalThis.crypto.getRandomValues; not node:crypto wrapper",
+  "crypto_reference": "Exact builtin reference text remains outside repository/runtime; reference2 metadata records hashes",
+  "limitations": [
+    "ReleaseSafe not yet gated",
+    "Additional public-accessor/coercion edges unqualified",
+    "Default cached ADC and lazy import readiness unqualified",
+    "Real builtinModels and latest catalog unqualified",
+    "Builtin API transports/faux/image reexports unimplemented here",
+    "Summary default completeSimple full builtin dependency graph unqualified",
+    "Production global Crypto installation and other Crypto methods unimplemented here",
+    "structuredClone transfer lists remain a separate missing host contract"
+  ],
+  "recorded_utc": "2026-10-14T20:05:49.7629449+00:00"
+}

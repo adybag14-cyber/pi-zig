@@ -1173,6 +1173,13 @@ typedef enum JSPromiseStateEnum {
 JS_EXTERN JSValue JS_NewPromiseCapability(JSContext *ctx, JSValue *resolving_funcs);
 /* Borrowed input, owned intrinsic PromiseResolve result as used by await. */
 JS_EXTERN JSValue JS_PiPromiseResolve(JSContext *ctx, JSValueConst value);
+/* Scoped native JSON utility diagnostics. Source/error are borrowed; the hook
+   returns an owned replacement error or JS_EXCEPTION with a pending error.
+   Only actual intrinsic parser SyntaxErrors reach this hook, before revivers. */
+typedef JSValue JSJSONParseErrorHook(JSContext *ctx, JSValueConst source,
+                                   JSValueConst error);
+JS_EXTERN JSJSONParseErrorHook *JS_PiSetJSONParseErrorHook(JSContext *ctx,
+                                                        JSJSONParseErrorHook *hook);
 JS_EXTERN JSValue JS_PromiseThen(JSContext *ctx, JSValueConst promise,
                                 JSValueConst on_fulfilled,
                                 JSValueConst on_rejected);
