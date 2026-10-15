@@ -13,9 +13,8 @@ pub const builtin_api_ids = [_][]const u8{ "anthropic-messages", "openai-complet
 pub const BuiltinApi = struct {
     api: []const u8,
     streams: ?c.JSValue = null,
-    /// Production uses the actual no-argument API constructor so resets create
-    /// fresh Source lazy wrappers. Legacy scoped component inputs may retain
-    /// an explicitly supplied stream object instead.
+    /// Production calls the actual API constructor once while creating the
+    /// module's BUILTIN_APIS table. Resets retain those same lazy wrappers.
     factory: ?c.JSValue = null,
 };
 pub const Dependencies = struct {
@@ -33,15 +32,13 @@ pub fn create(engine: *em.Engine, dependencies: Dependencies) !c.JSValue {
     try scope.put(owner, "models", dependencies.compat_models);
     try scope.put(owner, "env", dependencies.get_env_api_key);
     const builtins = try scope.array();
-    const factories = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
-    try scope.put(owner, "builtinFactories", factories);
     for (dependencies.builtin_apis, 0..) |entry, i| {
         if (entry.streams == null and entry.factory == null) return error.NativeBuiltinApiImplementationUnavailable;
         const pair = try scope.array();
         const api = try scope.text(entry.api);
         try scope.index(pair, 0, api);
-        try scope.index(pair, 1, entry.streams orelse c.pi_js_undefined());
-        if (entry.factory) |factory| try js.setKey(engine, factories, api, factory);
+        const streams = if (entry.factory) |factory| try scope.call(factory, c.pi_js_undefined(), &.{}) else entry.streams.?;
+        try scope.index(pair, 1, streams);
         try scope.index(builtins, @intCast(i), pair);
     }
     try scope.put(owner, "builtins", builtins);
@@ -139,8 +136,7 @@ fn registerBuiltins(scope: *Scope, owner: c.JSValue) !void {
         defer for (fields) |field| scope.engine.freeValue(field);
         const api = fields[0];
         if (!row.truthy(try lookup(&row, owner, api))) {
-            const factory = try row.own(try js.getKey(scope.engine, try row.get(owner, "builtinFactories"), api));
-            const streams = if (c.JS_IsUndefined(factory)) fields[1] else try row.call(factory, c.pi_js_undefined(), &.{});
+            const streams = fields[1];
             const provider = try row.object();
             try row.put(provider, "api", api);
             try row.put(provider, "stream", try row.get(streams, "stream"));
