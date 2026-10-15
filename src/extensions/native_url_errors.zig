@@ -4,12 +4,49 @@ const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
 const c = em.c;
 const Scope = @import("native_models_stream_scope.zig").Scope;
+fn freeDescriptor(engine: *em.Engine, descriptor: c.JSPropertyDescriptor) void {
+    engine.freeValue(descriptor.value);
+    engine.freeValue(descriptor.getter);
+    engine.freeValue(descriptor.setter);
+}
+fn ownStack(engine: *em.Engine, value: c.JSValue) !void {
+    const atom = c.JS_NewAtom(engine.context, "stack");
+    if (atom == c.JS_ATOM_NULL) return js.capture(engine);
+    defer c.JS_FreeAtom(engine.context, atom);
+    var descriptor: c.JSPropertyDescriptor = undefined;
+    const present = c.JS_GetOwnProperty(engine.context, &descriptor, value, atom);
+    if (present < 0) return js.capture(engine);
+    if (present != 0) {
+        freeDescriptor(engine, descriptor);
+        return;
+    }
+    // Bare QuickJS stores genuine captured frames in [[ErrorData]] and exposes
+    // them through Error.prototype.stack. Retain that exact native accessor as
+    // an own property; do not read, format or synthesize a diagnostic value.
+    var prototype = try engine.checked(c.JS_GetPrototype(engine.context, value));
+    defer engine.freeValue(prototype);
+    while (c.JS_IsObject(prototype)) {
+        const found = c.JS_GetOwnProperty(engine.context, &descriptor, prototype, atom);
+        if (found < 0) return js.capture(engine);
+        if (found != 0) {
+            defer freeDescriptor(engine, descriptor);
+            if (descriptor.flags & c.JS_PROP_GETSET == 0) return error.NativeURLStackAccessorUnavailable;
+            if (c.JS_DefinePropertyGetSet(engine.context, value, atom, c.JS_DupValue(engine.context, descriptor.getter), c.JS_DupValue(engine.context, descriptor.setter), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+            return;
+        }
+        const next = try engine.checked(c.JS_GetPrototype(engine.context, prototype));
+        engine.freeValue(prototype);
+        prototype = next;
+    }
+    return error.NativeURLStackAccessorUnavailable;
+}
 fn typeError(engine: *em.Engine, message: [*:0]const u8) !c.JSValue {
     // ThrowTypeError may defer frame capture when called underneath bytecode.
     // NewTypeError captures an actual native stack before this private error
     // is returned or caught inside another native callback.
     const value = try engine.checked(c.JS_NewTypeError(engine.context, "%s", message));
     errdefer engine.freeValue(value);
+    try ownStack(engine, value);
     // Without the Node stack installer QuickJS captures stack after message;
     // retain that genuine stack, but match Node's stack-before-message shape.
     const atom = c.JS_NewAtom(engine.context, "message");
