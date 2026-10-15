@@ -1,0 +1,237 @@
+[
+  {
+    "sha256": "39D7F7F7186C130449DFC7C64A6AE827AC00367DE4DB1BD457C3A30F1A341D51",
+    "path": "ai-pi-messages-arrow-5ab-source-capture-20261015.mjs",
+    "bytes": 4207
+  },
+  {
+    "sha256": "03AF4C14D27D3E6CF3844EF0F05B18B9DE64C1A426E73D5EB4D1BDA6E4CF72E5",
+    "path": "ai-pi-messages-arrow-wire6-5ab-source6-first-20261015-admission.json",
+    "bytes": 263
+  },
+  {
+    "sha256": "9E31BDACF88B9C9E1564621FE3010FA26C70AB3B2767B15849D2F6FC1E669028",
+    "path": "ai-pi-messages-arrow-wire6-5ab-source6-first-20261015-extra-before.json",
+    "bytes": 1838
+  },
+  {
+    "sha256": "B0BD244BFEF92B5725EEEFCA04779B077D876C24CC5D007A731DD0630B22732E",
+    "path": "ai-pi-messages-arrow-wire6-5ab-source6-first-20261015-output.json",
+    "bytes": 20589
+  },
+  {
+    "sha256": "65C34254581FFC55891DC41062276FFA817EF92A135B41728247BF7766F6217C",
+    "path": "ai-pi-messages-arrow-wire6-5ab-source6-first-20261015-posthash.json",
+    "bytes": 627
+  },
+  {
+    "sha256": "C407B4417AD0C14C33B6782C341A57AD285A7D79ED781E046BBEF855E2AE2B21",
+    "path": "ai-pi-messages-arrow-wire6-5ab-source6-first-20261015.json",
+    "bytes": 1172
+  },
+  {
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+    "path": "compiler-inputs-19546.json",
+    "bytes": 4665338
+  },
+  {
+    "sha256": "5E06FCC050FCF52FF27281D8800800655F5DCCD72A0F43998871F053D6F8C956",
+    "path": "native-ai-pi-messages-compile-debug-first-20261015-posthash.json",
+    "bytes": 537
+  },
+  {
+    "sha256": "1D2705D97AB3A55F35F05AD96DAE119654BB6AEED9391F53EFB5B4A2344F3ECD",
+    "path": "native-ai-pi-messages-compile-debug-first-20261015.json",
+    "bytes": 965
+  },
+  {
+    "sha256": "9DCBD3A1B8AE6CC8FE363E1743BDA4557965DD0FB4687E4108EB70B63F6477E7",
+    "path": "native-ai-pi-messages-compile-debug-first-20261015.stderr.log",
+    "bytes": 16753
+  },
+  {
+    "sha256": "BD7895A1B9981ACEF1C92E9ED5369F857CDC0429DA575A58D570FE12D60F7BAA",
+    "path": "native-ai-pi-messages-compile-debug-sixth-20261015-admission.json",
+    "bytes": 13407
+  },
+  {
+    "sha256": "8219983F81C10DC587A003AE96848748F3B119EB8BE5BE41648F9554A6C0CE00",
+    "path": "native-ai-pi-messages-compile-debug-sixth-20261015-controls-before.json",
+    "bytes": 802
+  },
+  {
+    "sha256": "6F885E9F4CCB66F388F5F15EC518713E23D1FCA04F235ECB3B11532669E8EA89",
+    "path": "native-ai-pi-messages-compile-debug-sixth-20261015-owned-wrapper-gc.json",
+    "bytes": 296
+  },
+  {
+    "sha256": "93AD550BD34D36BD8EFA6536A89A85D66061B41C026C54C352BFD4E3226CCA39",
+    "path": "native-ai-pi-messages-compile-debug-sixth-20261015-posthash.json",
+    "bytes": 537
+  },
+  {
+    "sha256": "75618301EB90B4631986F92C844B17DD580C3826B860DE3BB2D843F055B96C66",
+    "path": "native-ai-pi-messages-compile-debug-sixth-20261015-source-before.json",
+    "bytes": 1027678
+  },
+  {
+    "sha256": "F72971B76B01A96400B87E4A3EB9F813B210966DE441E24AE76C760398CC7166",
+    "path": "native-ai-pi-messages-compile-debug-sixth-20261015-vendor-before.json",
+    "bytes": 199150
+  },
+  {
+    "sha256": "DD51BADE219BD2F49C6E8649650351C097128B2A6A6DA0A2BB8072B7DBF3C3C8",
+    "path": "native-ai-pi-messages-compile-debug-sixth-20261015.json",
+    "bytes": 965
+  },
+  {
+    "sha256": "10638C543742E02DC2E0A6032A42F975B568BFA1F18F572CDA71F2338D51305C",
+    "path": "native-ai-pi-messages-compile-debug-sixth-20261015.stderr.log",
+    "bytes": 13332
+  },
+  {
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "path": "native-ai-pi-messages-compile-debug-sixth-20261015.stdout.log",
+    "bytes": 0
+  },
+  {
+    "sha256": "0A1AB7939FFDBC130DBAF9F76B39500F0643EA2053FCCBE8F9BB2CA72717337B",
+    "path": "native-ai-pi-messages-runtime-debug-fifth-20261015-admission.json",
+    "bytes": 1784
+  },
+  {
+    "sha256": "8219983F81C10DC587A003AE96848748F3B119EB8BE5BE41648F9554A6C0CE00",
+    "path": "native-ai-pi-messages-runtime-debug-fifth-20261015-controls-before.json",
+    "bytes": 802
+  },
+  {
+    "sha256": "55D3581F5A3098AB7BD96C83BFCA6200F0F068D2227BFA8CD56595E562EBE408",
+    "path": "native-ai-pi-messages-runtime-debug-fifth-20261015-owned-wrapper-gc.json",
+    "bytes": 296
+  },
+  {
+    "sha256": "131245BF24B3D34703AD76E56D4D364FCB5FEB8ADEE818005A49FC934E930C50",
+    "path": "native-ai-pi-messages-runtime-debug-fifth-20261015-posthash.json",
+    "bytes": 537
+  },
+  {
+    "sha256": "75618301EB90B4631986F92C844B17DD580C3826B860DE3BB2D843F055B96C66",
+    "path": "native-ai-pi-messages-runtime-debug-fifth-20261015-source-before.json",
+    "bytes": 1027678
+  },
+  {
+    "sha256": "F72971B76B01A96400B87E4A3EB9F813B210966DE441E24AE76C760398CC7166",
+    "path": "native-ai-pi-messages-runtime-debug-fifth-20261015-vendor-before.json",
+    "bytes": 199150
+  },
+  {
+    "sha256": "B92D50983643D3B2B378D7DAAB04A577458B9378D7B4DEC6376FAA5AD285352C",
+    "path": "native-ai-pi-messages-runtime-debug-fifth-20261015.json",
+    "bytes": 964
+  },
+  {
+    "sha256": "895BB173678E7C1A48557976267A00421F6E5B8F1AC01B36E66260D653837783",
+    "path": "native-ai-pi-messages-runtime-debug-fifth-20261015.stderr.log",
+    "bytes": 14093
+  },
+  {
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "path": "native-ai-pi-messages-runtime-debug-fifth-20261015.stdout.log",
+    "bytes": 0
+  },
+  {
+    "sha256": "5D669A8A2B421A46C8718CBDA0C5C56110268BE39365B88A1150F0F8627892AF",
+    "path": "native-ai-pi-messages-runtime-debug-first-20261015-posthash.json",
+    "bytes": 537
+  },
+  {
+    "sha256": "F40133A4739AD66FB77EF46320974E364B2D9165F5A38C8A2E0913BA8D643228",
+    "path": "native-ai-pi-messages-runtime-debug-first-20261015.json",
+    "bytes": 964
+  },
+  {
+    "sha256": "92996B927525C5D47BF16A4B736C89F62622092EC15EDBF23007D6268B398C3B",
+    "path": "native-ai-pi-messages-runtime-debug-first-20261015.stderr.log",
+    "bytes": 32063
+  },
+  {
+    "sha256": "BC89B048BBBF73E097986D1BA5AF50E7DC6F463D38C4F91F180DE44C3505C357",
+    "path": "native-ai-pi-messages-runtime-debug-fourth-20261015-posthash.json",
+    "bytes": 537
+  },
+  {
+    "sha256": "4CFEDE3B692F4A04AEFFDC97553E72CC052F9CF11865288DE670592A2DDD3A7F",
+    "path": "native-ai-pi-messages-runtime-debug-fourth-20261015.json",
+    "bytes": 965
+  },
+  {
+    "sha256": "0972F6657225D3B3F5E0C02FBE904A06DD546AFA265079D19A1DD50815F2707C",
+    "path": "native-ai-pi-messages-runtime-debug-fourth-20261015.stderr.log",
+    "bytes": 20692
+  },
+  {
+    "sha256": "37C750DB5F7E03A52C6244BDED8D8DA8EF9BD96E67118D3C281D490656862CDD",
+    "path": "native-ai-pi-messages-runtime-debug-second-20261015-posthash.json",
+    "bytes": 537
+  },
+  {
+    "sha256": "AE11E256CB163B42A0A46C392370B71138B6908B53E733EE7470C701A6EBD3AC",
+    "path": "native-ai-pi-messages-runtime-debug-second-20261015.json",
+    "bytes": 965
+  },
+  {
+    "sha256": "656B75FEBA35A9F99A477BA63C92030795197C944712EBB3D604CB9833480E46",
+    "path": "native-ai-pi-messages-runtime-debug-second-20261015.stderr.log",
+    "bytes": 26789
+  },
+  {
+    "sha256": "608BB820695228D6C8C99538B3BD3931A62D528F88262AAD8C8FC0B8B8B9915B",
+    "path": "native-ai-pi-messages-runtime-debug-third-20261015-posthash.json",
+    "bytes": 537
+  },
+  {
+    "sha256": "3C52DE8BFE0FC50E9AA588B69349FB615187DBA0DAA0D898DE3F57F73AAFF407",
+    "path": "native-ai-pi-messages-runtime-debug-third-20261015.json",
+    "bytes": 964
+  },
+  {
+    "sha256": "196A63EF6D3E06DFB25C8F13241C439936B56BC0A59450BC2793375CEF83DC50",
+    "path": "native-ai-pi-messages-runtime-debug-third-20261015.stderr.log",
+    "bytes": 16651
+  },
+  {
+    "sha256": "15A753D26AA2A4048E15FF018B15AA647E4C9D3F6732B487CC7A1A2F2D3D58D5",
+    "path": "qualification.json",
+    "bytes": 1637
+  },
+  {
+    "sha256": "16A957A8AF14C391663A33DBA90CA5063C8203F76BB67B7A8340404519FC0493",
+    "path": "README.md",
+    "bytes": 2041
+  },
+  {
+    "sha256": "2D729ABAB2C6E81C599A636F3A35EBD89FB4DBAA29132642CA6832F03357A418",
+    "path": "Run-AiPiMessagesArrowSource-20261015.ps1",
+    "bytes": 6341
+  },
+  {
+    "sha256": "179597B8D6FECA04C43747E0B498FE268CCB2EB14AA6E488AEA52EE3CCDF46BE",
+    "path": "Run-AiPiMessagesCompile-20261015.ps1",
+    "bytes": 6534
+  },
+  {
+    "sha256": "934F4ED4E33FBB405241462104D52AC8E50ADBDE4A78DE7F4CBB5F38FA2B0E0B",
+    "path": "Run-AiPiMessagesRuntime-20261015.ps1",
+    "bytes": 6533
+  },
+  {
+    "sha256": "810F61BCD4746AE0100E3E659C3FF088A6A448FBD4BEE09731B5127BCCE82962",
+    "path": "source5ab-modules-62828-0-20261015.jsonl",
+    "bytes": 2315
+  },
+  {
+    "sha256": "979D02C43C42985FC88BC779183D722308037A05BDD2F4773633A2E2A0E955C3",
+    "path": "tested-code-match.json",
+    "bytes": 381
+  }
+]
