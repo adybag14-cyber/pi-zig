@@ -122,6 +122,11 @@ pub fn fetchControlledObserved(
 pub fn fetchHeadersControlled(client: *std.http.Client, options: std.http.Client.FetchOptions, timeout_ms: ?u64, abort_flag: ?*bool) !Result {
     return fetchControlledScoped(client, options, timeout_ms, abort_flag, null, true);
 }
+/// The observed form retains the actual header boundary for streaming owners.
+/// Only the deadline retires at headers; cancellation still covers the body.
+pub fn fetchHeadersControlledObserved(client: *std.http.Client, options: std.http.Client.FetchOptions, timeout_ms: ?u64, abort_flag: ?*bool, observer: ?HeadObserver) !Result {
+    return fetchControlledScoped(client, options, timeout_ms, abort_flag, observer, true);
+}
 const HeaderState = struct {
     ready: std.atomic.Value(bool) = .init(false),
     observer: ?HeadObserver,

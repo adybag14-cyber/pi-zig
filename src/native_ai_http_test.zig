@@ -10,7 +10,7 @@ test "native AI HTTP fetch opt-ins preserve non-2xx binary bodies and repeated r
     const body = "denied\x00\xff";
     const first = "first=one; Expires=Thu, 01 Jan 2037 00:00:00 GMT";
     const second = "second=two; Path=/";
-    const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, &.{.{ .path = "/binary-error?original=query", .status = .forbidden, .body = body, .headers = &.{ .{ .name = "Set-Cookie", .value = first }, .{ .name = "Set-Cookie", .value = second } } }});
+    const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, &.{.{ .path = "/binary-error?original=query", .status = .forbidden, .body = body, .headers = &.{ .{ .name = "Set-Cookie", .value = first }, .{ .name = "Set-Cookie", .value = second }, .{ .name = "constructor", .value = "literal" }, .{ .name = "__proto__", .value = "literal-proto" }, .{ .name = "x-latin", .value = "latin-\x80\xff" } } }});
     defer server.deinit();
     const url = try server.url(std.testing.allocator, "/binary-error?original=query");
     defer std.testing.allocator.free(url);
@@ -21,12 +21,28 @@ test "native AI HTTP fetch opt-ins preserve non-2xx binary bodies and repeated r
     defer engine.freeValue(global);
     try sdk.put(engine, global, "rawRequest", try http.openWithOptions(engine, .{ .url = url, .payload = "{}", .headers = &.{}, .timeout_ms = 2000, .framing = .bytes, .stream_error_bytes = true }, c.pi_js_undefined(), .{ .raw_header_pairs = true }));
     const checked = try engine.evalModule(
-        \\const head=await rawRequest.ready;if(head.status!==403||head.statusText!=='Forbidden')throw Error('unsuccessful head');const pairs=head.rawHeaders.filter(([name])=>name.toLowerCase()==='set-cookie');if(pairs.length!==2||pairs[0][1]!=='first=one; Expires=Thu, 01 Jan 2037 00:00:00 GMT'||pairs[1][1]!=='second=two; Path=/')throw Error('cookie boundaries');const bytes=[];for await(const event of rawRequest.events){if(event.type!=='bytes')throw Error('binary error incorrectly decoded');bytes.push(...event.data)}if(JSON.stringify(bytes)!==JSON.stringify([100,101,110,105,101,100,0,255]))throw Error('non-2xx raw bytes changed');export const done=true;
+        \\const head=await rawRequest.ready;if(head.status!==403||head.statusText!=='Forbidden')throw Error('unsuccessful head');const pairs=head.rawHeaders.filter(([name])=>name.toLowerCase()==='set-cookie');if(pairs.length!==2||pairs[0][1]!=='first=one; Expires=Thu, 01 Jan 2037 00:00:00 GMT'||pairs[1][1]!=='second=two; Path=/')throw Error('cookie boundaries');if(!Object.hasOwn(head.headers,'constructor')||head.headers.constructor!=='literal'||!Object.hasOwn(head.headers,'__proto__')||head.headers.__proto__!=='literal-proto'||Object.getPrototypeOf(head.headers)!==Object.prototype)throw Error('internal own header record');if(head.headers['x-latin']!=='latin-\x80\xff'||head.rawHeaders.find(([name])=>name==='x-latin')[1]!=='latin-\x80\xff')throw Error('lossless Latin1');const bytes=[];for await(const event of rawRequest.events){if(event.type!=='bytes')throw Error('binary error incorrectly decoded');bytes.push(...event.data)}if(JSON.stringify(bytes)!==JSON.stringify([100,101,110,105,101,100,0,255]))throw Error('non-2xx raw bytes changed');export const done=true;
     , "native-ai-http-fetch-opt-ins.mjs");
     engine.freeValue(checked);
     c.JS_RunGC(engine.runtime);
     try std.testing.expect(!http.pending(engine));
     try server.finish();
+}
+test "native AI HTTP observed header-only deadline permits long body and rejects late headers" {
+    const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, &.{ .{ .path = "/body", .body = "long-body", .body_delay_ms = 200 }, .{ .path = "/headers", .body = "late", .delay_ms = 200 } });
+    defer server.deinit();
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    for (.{ "/body", "/headers" }, 0..) |path, index| {
+        const url = try server.url(std.testing.allocator, path);
+        defer std.testing.allocator.free(url);
+        try sdk.put(engine, global, if (index == 0) "longBody" else "lateHeaders", try http.open(engine, .{ .url = url, .payload = "{}", .headers = &.{}, .timeout_ms = if (index == 0) 100 else 30, .headers_timeout_only = true, .framing = .body }, c.pi_js_undefined()));
+        const module = try engine.evalModule(if (index == 0) "const head=await longBody.ready;if(head.status!==200)throw Error('ready');let body='';for await(const event of longBody.events)body+=event.body;if(body!=='long-body')throw Error('body deadline was not retired at headers');export const done=true;" else "const error=await lateHeaders.ready.catch(error=>error);if(error.code!=='ProviderRequestTimeout')throw Error('late headers accepted');export const done=true;", if (index == 0) "http-header-deadline-long.mjs" else "http-header-deadline-late.mjs");
+        engine.freeValue(module);
+    }
 }
 test "native AI HTTP opt-in byte and JSON body framing preserves exact bytes and real status text" {
     const byte_body = "data: first\r\ndata: second\r\n\r\nunterminated\x00\xff";
