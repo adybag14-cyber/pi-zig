@@ -165,8 +165,7 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     defer scope.deinit();
     if (rejected) {
         if (@as(Stage, @enumFromInt(raw)) == .rejected_body and !try nativeAllocationReason(engine, owner, value)) {
-            const error_value = try @import("native_ai_anthropic_api_error.zig").castToError(&scope, value);
-            return failureBody(&scope, owner, try scope.get(error_value, "message")) catch |err| failError(&scope, owner, err);
+            return rejectedBody(&scope, owner, value) catch |err| failError(&scope, owner, err);
         }
         if (@as(Stage, @enumFromInt(raw)) == .ready) {
             const recovered = fallback(&scope, owner, value) catch |err| return failError(&scope, owner, err);
@@ -175,6 +174,10 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
         return fail(&scope, owner, value) catch |err| failError(&scope, owner, err);
     }
     advance(&scope, owner, value, @enumFromInt(raw)) catch |err| try failError(&scope, owner, err);
+}
+fn rejectedBody(scope: *Scope, owner: c.JSValue, failure: c.JSValue) !void {
+    const error_value = try @import("native_ai_anthropic_api_error.zig").castToError(scope, failure);
+    return failureBody(scope, owner, try scope.get(error_value, "message"));
 }
 fn fallback(scope: *Scope, owner: c.JSValue, failure: c.JSValue) !bool {
     const api_error = try scope.get(try scope.get(try scope.get(owner, "agent"), "errors"), "APIError");
