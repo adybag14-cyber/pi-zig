@@ -1,0 +1,566 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "inputSha256": "7fa8f910ac17ddc5b0de141a8454d2b1b995b087b74a7f66d44534fc6c1c2f61",
+  "cases": 21,
+  "scope": "Genuine ordinary inline, file/builtin and current/pre-trust loading through the actual extension initializer/cache/runtime/event bus and live package settings; callback evaluation, rollback, runtime identity and raw failures. Native agreement is a separate qualification.",
+  "rows": [
+    {
+      "case": "actual-inline-registration-await",
+      "result": {
+        "extensions": [
+          {
+            "path": "<inline:1>",
+            "resolvedPath": "<inline:1>",
+            "hidden": false,
+            "replaceable": false,
+            "commands": [
+              "inline-command"
+            ],
+            "tools": [
+              "inline-tool"
+            ],
+            "flags": [
+              "inline-flag"
+            ],
+            "sourceInfo": {
+              "path": "<inline:1>",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ],
+        "errors": []
+      },
+      "log": [
+        "factory",
+        "returned",
+        "after-await",
+        [
+          "event",
+          7
+        ]
+      ],
+      "toolDefinitionName": "inline-tool",
+      "toolSourceSame": true,
+      "flag": "first",
+      "providers": [
+        {
+          "name": "inline-provider",
+          "extensionPath": "<inline:1>"
+        }
+      ]
+    },
+    {
+      "case": "inline-named-getter-order",
+      "result": {
+        "extensions": [
+          {
+            "path": "<inline:named>",
+            "resolvedPath": "<inline:named>",
+            "hidden": "hidden-value",
+            "replaceable": true,
+            "commands": [
+              "named-command"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<inline:named>",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ],
+        "errors": []
+      },
+      "log": [
+        "factory",
+        "name",
+        "execute",
+        "hidden",
+        "replaceable"
+      ]
+    },
+    {
+      "case": "inline-errors-continue",
+      "result": {
+        "extensions": [
+          {
+            "path": "<inline:3>",
+            "resolvedPath": "<inline:3>",
+            "hidden": false,
+            "replaceable": false,
+            "commands": [
+              "survivor"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<inline:3>",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ],
+        "errors": [
+          {
+            "path": "<inline:1>",
+            "error": "inline error"
+          },
+          {
+            "path": "<inline:2>",
+            "error": "failed to load extension"
+          }
+        ]
+      }
+    },
+    {
+      "case": "inline-discard-flag-provider-event-rollback",
+      "result": {
+        "extensions": [],
+        "errors": [
+          {
+            "path": "<inline:1>",
+            "error": "rollback"
+          }
+        ]
+      },
+      "events": [],
+      "flagPresent": false,
+      "providerNames": [],
+      "inactive": "Extension \"<inline:1>\" failed to load and its API is no longer active."
+    },
+    {
+      "case": "inline-commit-flag-first-value",
+      "result": {
+        "extensions": [
+          {
+            "path": "<inline:1>",
+            "resolvedPath": "<inline:1>",
+            "hidden": false,
+            "replaceable": false,
+            "commands": [],
+            "tools": [],
+            "flags": [
+              "same"
+            ],
+            "sourceInfo": {
+              "path": "<inline:1>",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          },
+          {
+            "path": "<inline:2>",
+            "resolvedPath": "<inline:2>",
+            "hidden": false,
+            "replaceable": false,
+            "commands": [],
+            "tools": [],
+            "flags": [
+              "same"
+            ],
+            "sourceInfo": {
+              "path": "<inline:2>",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ],
+        "errors": []
+      },
+      "value": "first"
+    },
+    {
+      "case": "inline-raw-factory-getter",
+      "same": true,
+      "promise": true
+    },
+    {
+      "case": "inline-raw-name-getter",
+      "same": true,
+      "promise": true
+    },
+    {
+      "case": "inline-for-of-close-preserves-raw-failure",
+      "same": true,
+      "log": [
+        "next",
+        "factory",
+        "return"
+      ]
+    },
+    {
+      "case": "inline-post-await-hidden-error-caught",
+      "result": {
+        "extensions": [
+          {
+            "path": "<inline:after-hidden>",
+            "resolvedPath": "<inline:after-hidden>",
+            "hidden": false,
+            "replaceable": false,
+            "commands": [],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<inline:after-hidden>",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ],
+        "errors": [
+          {
+            "path": "<inline:bad-hidden>",
+            "error": "hidden failed"
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-disk-builtin-and-unknown",
+      "result": {
+        "extensions": [
+          {
+            "path": "<fixture>/agent/extensions/user.js",
+            "resolvedPath": "<fixture>/agent/extensions/user.js",
+            "commands": [
+              "fixture-user-command"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<fixture>/agent/extensions/user.js",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/agent/extensions"
+            }
+          },
+          {
+            "path": "builtin:fixture",
+            "resolvedPath": "builtin:fixture",
+            "hidden": true,
+            "replaceable": true,
+            "commands": [
+              "builtin-command"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "builtin:fixture",
+              "source": "builtin",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ],
+        "errors": [
+          {
+            "path": "builtin:missing",
+            "error": "Unknown built-in extension: builtin:missing"
+          }
+        ],
+        "warnings": []
+      },
+      "runtimeSame": true
+    },
+    {
+      "case": "actual-disk-and-builtin-factory-errors",
+      "result": {
+        "extensions": [],
+        "errors": [
+          {
+            "path": "<fixture>/invalid-factory.js",
+            "error": "Extension does not export a valid factory function: <fixture>/invalid-factory.js"
+          },
+          {
+            "path": "<fixture>/failed-factory.js",
+            "error": "Failed to load extension: disk factory failed"
+          },
+          {
+            "path": "builtin:failure",
+            "error": "failed to load extension"
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "case": "load-paths-filter-callback-metadata",
+      "result": {
+        "extensions": [],
+        "errors": [],
+        "warnings": []
+      },
+      "log": [
+        {
+          "name": "",
+          "length": 1,
+          "ownPrototype": false,
+          "sample": false
+        },
+        {
+          "name": "isBuiltinPath",
+          "length": 1,
+          "ownPrototype": false,
+          "sample": true
+        }
+      ]
+    },
+    {
+      "case": "load-paths-second-filter-raw-failure",
+      "same": true,
+      "promise": true
+    },
+    {
+      "case": "builtin-map-getter-raw-failure",
+      "same": true,
+      "promise": true
+    },
+    {
+      "case": "builtin-factory-getter-inside-catch",
+      "result": {
+        "extensions": [],
+        "errors": [
+          {
+            "path": "builtin:bad",
+            "error": "builtin getter failed"
+          }
+        ],
+        "warnings": []
+      },
+      "log": [
+        "factory"
+      ]
+    },
+    {
+      "case": "actual-current-packages-inline:false",
+      "result": {
+        "extensions": [
+          {
+            "path": "<fixture>/project/.pi/extensions/project.js",
+            "resolvedPath": "<fixture>/project/.pi/extensions/project.js",
+            "commands": [
+              "fixture-project-command"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<fixture>/project/.pi/extensions/project.js",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/project/.pi/extensions"
+            }
+          },
+          {
+            "path": "<fixture>/agent/extensions/user.js",
+            "resolvedPath": "<fixture>/agent/extensions/user.js",
+            "commands": [
+              "fixture-user-command"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<fixture>/agent/extensions/user.js",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/agent/extensions"
+            }
+          },
+          {
+            "path": "<fixture>/package-warning/extension.js",
+            "resolvedPath": "<fixture>/package-warning/extension.js",
+            "commands": [
+              "fixture-warning-command"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<fixture>/package-warning/extension.js",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/package-warning"
+            }
+          }
+        ],
+        "errors": [],
+        "warnings": [
+          {
+            "path": "<fixture>/package-warning/package.json",
+            "warning": "Host-provided extension packages must be declared in peerDependencies with a \"*\" range, not dependencies: @earendil-works/pi-ai, typebox. Installed copies can bypass the extension loader and create duplicate runtime modules."
+          }
+        ]
+      },
+      "calls": 0,
+      "hasBuiltin": false
+    },
+    {
+      "case": "actual-current-packages-inline:true",
+      "result": {
+        "extensions": [
+          {
+            "path": "<fixture>/project/.pi/extensions/project.js",
+            "resolvedPath": "<fixture>/project/.pi/extensions/project.js",
+            "commands": [
+              "fixture-project-command"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<fixture>/project/.pi/extensions/project.js",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/project/.pi/extensions"
+            }
+          },
+          {
+            "path": "<fixture>/agent/extensions/user.js",
+            "resolvedPath": "<fixture>/agent/extensions/user.js",
+            "commands": [
+              "fixture-user-command"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<fixture>/agent/extensions/user.js",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/agent/extensions"
+            }
+          },
+          {
+            "path": "<fixture>/package-warning/extension.js",
+            "resolvedPath": "<fixture>/package-warning/extension.js",
+            "commands": [
+              "fixture-warning-command"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<fixture>/package-warning/extension.js",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/package-warning"
+            }
+          },
+          {
+            "path": "<inline:1>",
+            "resolvedPath": "<inline:1>",
+            "hidden": false,
+            "replaceable": false,
+            "commands": [
+              "current-inline"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<inline:1>",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ],
+        "errors": [],
+        "warnings": [
+          {
+            "path": "<fixture>/package-warning/package.json",
+            "warning": "Host-provided extension packages must be declared in peerDependencies with a \"*\" range, not dependencies: @earendil-works/pi-ai, typebox. Installed copies can bypass the extension loader and create duplicate runtime modules."
+          }
+        ]
+      },
+      "calls": 1,
+      "hasBuiltin": false
+    },
+    {
+      "case": "actual-current-noextensions-cli-only",
+      "result": {
+        "extensions": [
+          {
+            "path": "<fixture>/agent/extensions/user.js",
+            "resolvedPath": "<fixture>/agent/extensions/user.js",
+            "commands": [
+              "fixture-user-command"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<fixture>/agent/extensions/user.js",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/agent/extensions"
+            }
+          },
+          {
+            "path": "<inline:1>",
+            "resolvedPath": "<inline:1>",
+            "hidden": false,
+            "replaceable": false,
+            "commands": [
+              "cli-inline"
+            ],
+            "tools": [],
+            "flags": [],
+            "sourceInfo": {
+              "path": "<inline:1>",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ],
+        "errors": [],
+        "warnings": []
+      }
+    },
+    {
+      "case": "current-package-resolve-raw-rejection",
+      "same": true,
+      "promise": true
+    },
+    {
+      "case": "current-options-getter-after-load",
+      "same": true,
+      "promise": true
+    },
+    {
+      "case": "current-genuine-package-await-receiver-order",
+      "result": {
+        "extensions": [],
+        "errors": [],
+        "warnings": []
+      },
+      "log": [
+        [
+          "resolve",
+          true,
+          0
+        ],
+        "returned",
+        [
+          "extension-sources",
+          true,
+          true,
+          {
+            "temporary": true
+          }
+        ],
+        "options"
+      ]
+    }
+  ]
+}

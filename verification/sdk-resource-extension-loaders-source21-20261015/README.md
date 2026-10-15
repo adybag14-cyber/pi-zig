@@ -1,0 +1,11 @@
+This archive preserves a genuine Source21 observation. Native agreement and complete resource-loader assembly remain unqualified.
+
+The captured caller is `24178131955e3e1d61e1e443438568a7d360ff45`, a one-line setup correction from9a7bd338 to the actual `SettingsManager.setPackages` API. Both commits remain immutable. No Source capture ran before that correction, and no expected output existed. The actual Source authority is `5ab7fe74c400097b386662205cd93900695b8a71`.
+
+The 21 callers exercise actual inline registration and async completion, named getter order, caught versus raw factory failures, iterator close precedence, failed API invalidation, provider/flag/event rollback, flag commit precedence, file and builtin loading with shared runtime identity, unknown builtin and invalid file factories, callback metadata, current/pre-trust package discovery, inline inclusion, CLI-only extension selection, package warnings and receiver/await order. All module/package resources are real files, and every factory executes through the actual Source initializer and cache.
+
+Node PID58740 exited0 at 2026-10-15 22:18:19.157 UTC. The strict posthash completed22:18:40.769 UTC; the outer complete candidate pair completed22:18:44.936 UTC. The complete5,702 tracked candidate files,1,967 Source files,31,064 dependencies,1,774 Node tools,44 controls including32 owned fixture files,four outer controls,84 historical absences and39 ambient absences remained unchanged. Candidate head, tracked inventory and clean status also remained unchanged.
+
+After both posthash checks passed, the exact output was copied to `src/extensions/fixtures/sdk-resource-extension-loaders-5ab.json`. SHA256 is `8DE9C4A9A06DA6F5A1F50BBF61FE4F2DB3C3EF2242B4FE09AB56B40599ED6ED0`. The caller's frozen serialization labels its temporary root as `<fixture>`; no expected value was edited or normalized after capture.
+
+The manifest binds12 compressed raw receipts to their original and archived SHA256 values, including the full candidate and Source control manifests. `source-observation.json` explicitly records `source_observed_native_unqualified`. This record does not establish native compilation, native behavior, allocation safety, complete class/cache/package dependency closure, provider transport, hosted CI, activation or an ae7 Source capture.
