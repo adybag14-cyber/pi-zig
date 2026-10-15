@@ -1621,6 +1621,12 @@ pub fn build(b: *std.Build) void {
     ai_provider_helpers_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-provider-helpers", "Compare actual AI provider text estimates thinking and simple options with shared native dependencies").dependOn(&b.addRunArtifact(ai_provider_helpers_tests).step);
     b.step("build-native-ai-provider-helpers", "Compile original provider prerequisites before bounded runtime checks").dependOn(&ai_provider_helpers_tests.step);
+    const subscription_oauth_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_oauth_subscriptions_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native subscription OAuth"}, .use_llvm = use_llvm });
+    linkQuickJs(b, subscription_oauth_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(subscription_oauth_tests.root_module, sqlite_lib_dir, sqlite_library);
+    subscription_oauth_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-ai-oauth-subscriptions", "Compare genuine Source Copilot Kimi and xAI OAuth public flows and owner roots").dependOn(&b.addRunArtifact(subscription_oauth_tests).step);
+    b.step("build-native-ai-oauth-subscriptions", "Compile actual native subscription OAuth facades separately from runtime").dependOn(&subscription_oauth_tests.step);
     const ai_http_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_http_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI HTTP"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_http_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_http_tests.root_module, sqlite_lib_dir, sqlite_library);

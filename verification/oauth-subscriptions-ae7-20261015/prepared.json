@@ -1,0 +1,30 @@
+{
+  "source_head": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "controls": [
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs",
+      "sha256": "9ED686A35C9345449189596DCA7034E5CDCEC907BAFF18FF1941C5F13FEFEC2D"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Run-OAuthSubscriptionsAe7Source84-20261015.ps1",
+      "sha256": "D1D7933A685C628A4C0A0F40239BE457EE88CB053C5DB5ECB71FA234FF7EF956"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-oauth-copilot-kimi-xai-20261015\\src\\extensions\\fixtures\\ai-oauth-subscriptions-ae7.input.txt",
+      "sha256": "75CB137CAF477044D5A97B17D631CAFEE4147BFE855F5A85D439C640E9EC4F2A"
+    }
+  ],
+  "authored_cases": 84,
+  "source_inventories": {
+    "runtime": 31064,
+    "source": 1968,
+    "absences": 84,
+    "node": 1774
+  },
+  "native_executed": false,
+  "clock": "fake only inside Source test; owner uses real wall time",
+  "expected_exists": false,
+  "public_activation": false,
+  "native_compiled": false,
+  "source_executed": false
+}
