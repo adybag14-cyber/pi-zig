@@ -154,7 +154,14 @@ fn advance(s: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
         },
         .json => {
             const body = if (h.record(s, value) and !try v.array(s, value)) value else try s.object();
-            const response = try s.get(owner, "response");
+            // postForm snapshots both getters after JSON consumption, even on
+            // success; subsequent helpers read the ordinary wrapper fields.
+            const raw_response = try s.get(owner, "response");
+            const response = try s.object();
+            try s.put(response, "ok", try s.get(raw_response, "ok"));
+            try s.put(response, "status", try s.get(raw_response, "status"));
+            try s.put(response, "body", body);
+            try s.put(owner, "response", response);
             const mode = try s.get(owner, "mode");
             if (try v.eq(s, mode, "poll")) {
                 if (s.truthy(try s.get(response, "ok"))) return flow.settle(s.engine, owner, false, try h.pollResult(s, "complete", "value", try credentials(s, body, c.pi_js_undefined())));
