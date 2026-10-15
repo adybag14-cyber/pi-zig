@@ -23,7 +23,7 @@ fn advance(engine: *em.Engine, owner: c.JSValue, completion: gen.Completion, val
     const mode = try scope.get(owner, "mode");
     if (try equal(&scope, mode, "vm-oom")) {
         const payload = c.JS_DupValue(engine.context, try scope.get(owner, "input"));
-        c.JS_SetMemoryLimit(engine.runtime, 0);
+        c.JS_SetMemoryLimit(engine.runtime, 1);
         return .{ .complete = payload };
     }
     switch (completion) {
@@ -186,8 +186,11 @@ test "native async generator functional raw VM allocation failures reject and re
     const root = try sdk.object(engine);
     defer engine.freeValue(root);
     const saved_limit = engine.options.memory_limit;
-    c.JS_SetMemoryLimit(engine.runtime, 0);
+    // This pinned QuickJS uses zero for unlimited. One byte is below the
+    // already initialized VM's usage and forces the next VM allocation to fail.
+    c.JS_SetMemoryLimit(engine.runtime, 1);
     const failed_constructor = c.JS_PiNewNativeAsyncGenerator(engine.context, root, completeBody, c.pi_js_undefined());
+    defer engine.freeValue(failed_constructor);
     const constructor_exception = c.JS_GetException(engine.context);
     c.JS_SetMemoryLimit(engine.runtime, saved_limit);
     defer engine.freeValue(constructor_exception);
