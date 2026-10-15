@@ -5,9 +5,19 @@ const js = @import("native_js_values.zig");
 const c = em.c;
 const Scope = @import("native_models_stream_scope.zig").Scope;
 fn typeError(engine: *em.Engine, message: [*:0]const u8) !c.JSValue {
-    _ = c.JS_ThrowTypeError(engine.context, "%s", message);
-    const value = c.JS_GetException(engine.context);
-    if (!c.JS_IsError(value)) return engine.checked(c.JS_Throw(engine.context, value));
+    // ThrowTypeError may defer frame capture when called underneath bytecode.
+    // NewTypeError captures an actual native stack before this private error
+    // is returned or caught inside another native callback.
+    const value = try engine.checked(c.JS_NewTypeError(engine.context, "%s", message));
+    errdefer engine.freeValue(value);
+    // Without the Node stack installer QuickJS captures stack after message;
+    // retain that genuine stack, but match Node's stack-before-message shape.
+    const atom = c.JS_NewAtom(engine.context, "message");
+    if (atom == c.JS_ATOM_NULL) return js.capture(engine);
+    defer c.JS_FreeAtom(engine.context, atom);
+    if (c.JS_DeleteProperty(engine.context, value, atom, c.JS_PROP_THROW) < 0) return js.capture(engine);
+    const text = try engine.checked(c.JS_NewString(engine.context, message));
+    if (c.JS_DefinePropertyValueStr(engine.context, value, "message", text, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     return value;
 }
 fn throwValue(engine: *em.Engine, value: c.JSValue) anyerror {
