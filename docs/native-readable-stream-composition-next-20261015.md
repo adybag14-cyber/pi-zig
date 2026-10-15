@@ -58,7 +58,7 @@ Genuine public graph Source9 subsequently captured all9 cases with full post0;
 batch SHA256 DB0777CAD8CB59E957F51C0BFD79DDB95EC19392D9F95A0BBC59A426A385DEF7.
 
 The complete source-compatible graph metadata and constructor validation,
-byte tee qualification, public async iteration, pipe behavior and
+byte tee/iteration qualification, pipe behavior and
 allocation sweeps still need implementation and genuine native gates. Current
 install supports genuine byte and default queues; it must not be presented as complete
 public or Body/Response qualification. The next phase must retain the existing
@@ -72,3 +72,13 @@ fixture SHA256 C1A253AFA6F495E8E309EAD4D6E3B4B3D95D306E277170661E25AB3D054F60D9.
 No metadata is removed from those packets. Missing Node-private state views,
 inspection/transfer symbols, iteration and pipe methods remain explicit gaps;
 this strict target has not run and is expected to expose those gaps.
+
+values()/Symbol.asyncIterator now use a real custom Web iterator over the native
+reader, matching Node's distinct iterator implementation rather than an async
+generator. Each next/return operation queues after either outcome of the prior
+promise; the first next is delayed by a microtask. EOF/error release the genuine
+reader lock. Return cancels with the original reason and releases before waiting
+for cancellation, while preventCancel only releases. Chunk thenables remain
+inside the result value rather than being awaited. The iterator inherits the
+actual QuickJS AsyncIteratorPrototype and roots all continuation state. This
+new implementation has only static checks and still needs genuine Source cases.

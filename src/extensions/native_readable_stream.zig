@@ -6,7 +6,7 @@ const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const core = @import("native_readable_byte_stream.zig");
 const async_value = @import("native_agent_async.zig");
 const c = js.c;
-const Operation = enum(c_int) { pullBytes, pullIterator, cancelSource, teePull, teeCancel1, teeCancel2, getReader, cancel, locked, tee };
+const Operation = enum(c_int) { pullBytes, pullIterator, cancelSource, teePull, teeCancel1, teeCancel2, getReader, cancel, locked, tee, values };
 const Stage = enum(c_int) { iteratorNext, eof, iteratorReturn, teeRead, teeCancelled };
 fn bindings(engine: *js.Engine) !c.JSValue {
     return engine.native_readable_stream_bindings orelse error.NativeWebReadableStreamUnavailable;
@@ -304,7 +304,7 @@ fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]
     const operation: Operation = @enumFromInt(raw);
     const args = if (argc > 0) argv[0..@intCast(argc)] else &.{};
     const returned = dispatchValue(&scope, receiver, roots[0], args, operation) catch |err| {
-        if (operation == .getReader or operation == .locked or operation == .tee) return @import("native_durable.zig").reject(engine, err);
+        if (operation == .getReader or operation == .locked or operation == .tee or operation == .values) return @import("native_durable.zig").reject(engine, err);
         return @import("native_durable.zig").rejectedPromise(engine, err);
     };
     return c.JS_DupValue(context, returned);
@@ -318,6 +318,10 @@ fn dispatchValue(scope: *Scope, receiver: c.JSValue, data: c.JSValue, args: []co
             return core.cancelNative(scope, data, receiver, argument(args, 0));
         },
         .tee => return scope.own(try tee(scope.engine, receiver)),
+        .values => {
+            _ = try core.lockedNative(scope, data, receiver);
+            return @import("native_readable_stream_iterator.zig").create(scope, data, receiver, argument(args, 0));
+        },
         .teePull => {
             try teeRead(scope, data, scope.equal(argument(args, 0), try scope.get(data, "controller2")));
             return scope.own(try @import("native_durable.zig").resolvedPromise(scope.engine, c.pi_js_undefined()));
@@ -335,7 +339,7 @@ pub fn install(engine: *js.Engine) !void {
     try core.preparePublicGraph(&scope, retained);
     const constructor = try scope.get(retained, "fileHandleReadableStream");
     const prototype = try scope.get(constructor, "prototype");
-    inline for (.{ .{ "getReader", Operation.getReader }, .{ "cancel", Operation.cancel }, .{ "tee", Operation.tee } }) |entry| {
+    inline for (.{ .{ "getReader", Operation.getReader }, .{ "cancel", Operation.cancel }, .{ "tee", Operation.tee }, .{ "values", Operation.values } }) |entry| {
         const function = try callback(&scope, retained, entry[0], entry[1], 0);
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, entry[0], c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(engine);
     }
@@ -343,6 +347,10 @@ pub fn install(engine: *js.Engine) !void {
     const atom = c.JS_NewAtom(engine.context, "locked");
     defer c.JS_FreeAtom(engine.context, atom);
     if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, locked), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(engine);
+    const async_symbol = try scope.own(try engine.checked(c.JS_GetAsyncIteratorSymbol(engine.context)));
+    const async_atom = c.JS_ValueToAtom(engine.context, async_symbol);
+    defer c.JS_FreeAtom(engine.context, async_atom);
+    if (c.JS_DefinePropertyValue(engine.context, prototype, async_atom, c.JS_DupValue(engine.context, try scope.get(prototype, "values")), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     const tag = c.JS_ValueToAtom(engine.context, try scope.get(try scope.global("Symbol"), "toStringTag"));
     defer c.JS_FreeAtom(engine.context, tag);
     if (c.JS_DefinePropertyValue(engine.context, prototype, tag, c.JS_DupValue(engine.context, try scope.text("ReadableStream")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
