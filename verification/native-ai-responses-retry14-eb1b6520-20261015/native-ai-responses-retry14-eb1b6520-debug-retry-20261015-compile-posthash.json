@@ -1,0 +1,42 @@
+{
+  "slot": 3,
+  "candidate": "eb1b6520a6306dc3dc199b50fb0374ad6f35ab5d",
+  "compile": "passed",
+  "source": 6197,
+  "source_after": 6197,
+  "source_drift": 0,
+  "compiler": 19546,
+  "compiler_drift": 0,
+  "references": [
+    {
+      "group": "original_source",
+      "drift": 0,
+      "count": 1967,
+      "changed": []
+    },
+    {
+      "group": "dependencies",
+      "drift": 0,
+      "count": 31064,
+      "changed": []
+    },
+    {
+      "group": "node_tools",
+      "drift": 0,
+      "count": 1774,
+      "changed": []
+    },
+    {
+      "group": "vendor",
+      "drift": 0,
+      "count": 1316,
+      "changed": []
+    }
+  ],
+  "absences": 84,
+  "absence_drift": 0,
+  "controls": 39,
+  "control_drift": 0,
+  "total_drift": 0,
+  "completed_utc": "2026-10-15T21:26:18.4107897+00:00"
+}

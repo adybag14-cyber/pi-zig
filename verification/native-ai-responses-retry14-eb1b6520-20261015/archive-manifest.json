@@ -1,0 +1,87 @@
+[
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-absences-before.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-absences-before.json",
+    "sha256": "DADD765AA9AB83157D6F39BAADB16C1D630E7017141361E6521E376122EE6E85"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-admission.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-admission.json",
+    "sha256": "15046FA410CC6908434F30FC2CB42ADF44A74DD073D642EBA596E12D5BFA2F45"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-compile-posthash.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-compile-posthash.json",
+    "sha256": "4BCE6CE0BFA0F62DF16266F75AA6791B9A6D49E7E1DF82B4C8DC55B0FB9894F2"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-compile.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-compile.json",
+    "sha256": "B05874B1A28DE967B8F7E2FA192C5C4087F9C7EEF8EE546467BF190D550CA9C9"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-compile.stderr.log",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-compile.stderr.log",
+    "sha256": "81C345281F750AEF6FEC6FBDC506193706729BE1272B19FE8E9D5123717184D7"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-compile.stdout.log",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-controls-before.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-controls-before.json",
+    "sha256": "1386678E56B4A66FD79241280FFF97CEF3AE715A30A016131C0C2173CF75BF5B"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-owner-absence-parsed-dates.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-owner-absence-parsed-dates.json",
+    "sha256": "441CD5FBC44920069E53E6699EFD00AE95DE731DE26A8D947C00C981AC4F033A"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-owner-absence.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-owner-absence.json",
+    "sha256": "F17F5B70B9EC80D64E7B0C53E81A8E6077E6D58DEE490F0AB2CC78BD8A590C0F"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-posthash.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-posthash.json",
+    "sha256": "D5F8B09540A2E0A6466AA5227D046A5D10A4F6F2B241759DA88D621E1A057CB6"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-references-before.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-references-before.json",
+    "sha256": "2EEB10EA09D0E43A1DC6CC893D25130DE2D6D816EB82470FF67368D6149756FB"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-runtime-admission.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-runtime-admission.json",
+    "sha256": "2B703EB50071A686C4C35FBD8D183264DA768C8BAA7174A79FD78057AB411A48"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-runtime.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-runtime.json",
+    "sha256": "29DA2387664F30367E6D7DFF1A9F42B4B4C74CD4E685892F071680686411F10E"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-runtime.stderr.log",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-runtime.stderr.log",
+    "sha256": "C2BC9B5D2C47C378F781BDE8B5F5EB377E4965A16691064AC31636CD16DBED66"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-runtime.stdout.log",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-ai-responses-retry14-eb1b6520-debug-retry-20261015-source-before.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-retry14-eb1b6520-debug-retry-20261015-source-before.json",
+    "sha256": "DBCBC64B1A1570C7BA595585F83C5D8005F993ABFD6613B6F2513F5BEF043421"
+  },
+  {
+    "file": "Run-AiResponsesRetry14NativeEb1Pair-20261015.ps1",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiResponsesRetry14NativeEb1Pair-20261015.ps1",
+    "sha256": "96694C1DC7AACDDB13B19C3EB44348343E41C7A24EB5BBE7AB64915462260332"
+  }
+]
