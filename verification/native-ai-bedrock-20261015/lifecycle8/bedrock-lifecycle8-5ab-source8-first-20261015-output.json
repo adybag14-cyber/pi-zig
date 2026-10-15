@@ -1,0 +1,2341 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "cases": 8,
+  "blocked": [],
+  "credentialReads": [
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-profile-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-profile-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-profile-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-profile-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-profile-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-profile-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-static-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-static-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-static-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-static-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-static-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-static-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/ambient-profile-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/ambient-profile-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/ambient-profile-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/ambient-profile-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/ambient-profile-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/ambient-profile-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-env-after-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-env-after-payload/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-env-after-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-env-after-payload/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-env-after-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-env-after-payload/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-bearer-after-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-bearer-after-payload/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-bearer-after-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-bearer-after-payload/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-bearer-after-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-bearer-after-payload/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-region-after-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-region-after-payload/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-region-after-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-region-after-payload/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-region-after-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/lazy-region-after-payload/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-bearer-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-bearer-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-bearer-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-bearer-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-bearer-pinned/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/explicit-bearer-pinned/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/headers-before-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/headers-before-payload/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/headers-before-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/headers-before-payload/credentials",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/headers-before-payload/config",
+    "c:/users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015/bedrock-auth-59472/headers-before-payload/credentials"
+  ],
+  "workspace": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472",
+  "rows": [
+    {
+      "name": "explicit-profile-pinned",
+      "kind": "facade_lifecycle_explicit_profile",
+      "now": 1893456000000,
+      "home": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-profile-pinned",
+      "endpoint": "http://127.0.0.1:10944",
+      "beforeFiles": {
+        "config": "[profile fixture]\nregion=eu-west-2\n",
+        "credentials": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n"
+      },
+      "beforeOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-profile-pinned\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-profile-pinned\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "afterOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-profile-pinned\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-profile-pinned\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:10944/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host": "127.0.0.1:10944",
+            "amz-sdk-invocation-id": "d8bed14b-0d0a-4c6e-84c2-0b154227e386",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-security-token": "fake-profile-session",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=d569deacf6b9861839488799977ed8b567ceb01c0973c34a8f31e6a2d7812c41",
+            "connection": "keep-alive"
+          },
+          "rawHeaders": [
+            "content-type",
+            "application/json",
+            "content-length",
+            "137",
+            "x-amz-user-agent",
+            "aws-sdk-js/3.1126.0",
+            "user-agent",
+            "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host",
+            "127.0.0.1:10944",
+            "amz-sdk-invocation-id",
+            "d8bed14b-0d0a-4c6e-84c2-0b154227e386",
+            "amz-sdk-request",
+            "attempt=1; max=1",
+            "x-amz-date",
+            "20300101T000000Z",
+            "x-amz-security-token",
+            "fake-profile-session",
+            "x-amz-content-sha256",
+            "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization",
+            "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=d569deacf6b9861839488799977ed8b567ceb01c0973c34a8f31e6a2d7812c41",
+            "Connection",
+            "keep-alive"
+          ],
+          "rawBody": "{\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"auth fixture\"},{\"cachePoint\":{\"type\":\"default\"}}]}],\"inferenceConfig\":{\"maxTokens\":8192}}",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "auth fixture"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "sdkRequestOptions": {
+            "method": "POST",
+            "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+            "hostname": "127.0.0.1",
+            "port": 10944,
+            "headers": {
+              "content-type": "application/json",
+              "content-length": "137",
+              "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+              "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+              "host": "127.0.0.1:10944",
+              "amz-sdk-invocation-id": "d8bed14b-0d0a-4c6e-84c2-0b154227e386",
+              "amz-sdk-request": "attempt=1; max=1",
+              "x-amz-date": "20300101T000000Z",
+              "x-amz-security-token": "fake-profile-session",
+              "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+              "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=d569deacf6b9861839488799977ed8b567ceb01c0973c34a8f31e6a2d7812c41"
+            }
+          },
+          "sigv4Wire": {
+            "accessKeyId": "FAKE_PROFILE_ACCESS",
+            "region": "eu-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-security-token",
+              "x-amz-user-agent"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:d8bed14b-0d0a-4c6e-84c2-0b154227e386\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10944\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-security-token:fake-profile-session\nx-amz-user-agent:aws-sdk-js/3.1126.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/eu-west-2/bedrock/aws4_request\n23ae98480191d4b342ddba99d9386d10993a780dbe601b893f43744a2cbfcb31",
+            "computedSignature": "d569deacf6b9861839488799977ed8b567ceb01c0973c34a8f31e6a2d7812c41",
+            "actualSignature": "d569deacf6b9861839488799977ed8b567ceb01c0973c34a8f31e6a2d7812c41",
+            "signatureValid": true
+          },
+          "sigv4SdkHeaderBag": {
+            "accessKeyId": "FAKE_PROFILE_ACCESS",
+            "region": "eu-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-security-token",
+              "x-amz-user-agent"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:d8bed14b-0d0a-4c6e-84c2-0b154227e386\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10944\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-security-token:fake-profile-session\nx-amz-user-agent:aws-sdk-js/3.1126.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/eu-west-2/bedrock/aws4_request\n23ae98480191d4b342ddba99d9386d10993a780dbe601b893f43744a2cbfcb31",
+            "computedSignature": "d569deacf6b9861839488799977ed8b567ceb01c0973c34a8f31e6a2d7812c41",
+            "actualSignature": "d569deacf6b9861839488799977ed8b567ceb01c0973c34a8f31e6a2d7812c41",
+            "signatureValid": true
+          }
+        }
+      ],
+      "sdkRequestOptions": [
+        {
+          "method": "POST",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "hostname": "127.0.0.1",
+          "port": 10944,
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host": "127.0.0.1:10944",
+            "amz-sdk-invocation-id": "d8bed14b-0d0a-4c6e-84c2-0b154227e386",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-security-token": "fake-profile-session",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=d569deacf6b9861839488799977ed8b567ceb01c0973c34a8f31e6a2d7812c41"
+          }
+        }
+      ],
+      "sdkClient": {
+        "profile": "fixture",
+        "regionKind": "function",
+        "credentialsKind": "function",
+        "tokenKind": "undefined",
+        "authSchemePreferenceKind": "function",
+        "raw": "<ref *1> {\n  apiVersion: '2023-09-30',\n  base64Decoder: [Function: fromBase64],\n  base64Encoder: [Function: toBase64$1],\n  disableHostPrefix: false,\n  endpointProvider: [Function: defaultEndpointResolver],\n  extensions: [],\n  httpAuthSchemeProvider: [Function: defaultBedrockRuntimeHttpAuthSchemeProvider],\n  httpAuthSchemes: [ [Object], [Object] ],\n  logger: NoOpLogger {},\n  protocol: AwsRestJsonProtocol {\n    serdeContext: [Circular *1],\n    options: [Object],\n    compositeErrorRegistry: [TypeRegistry],\n    serializer: [HttpInterceptingShapeSerializer],\n    deserializer: [HttpInterceptingShapeDeserializer],\n    codec: [JsonCodec2],\n    mixin: [ProtocolLib]\n  },\n  protocolSettings: {\n    defaultNamespace: 'com.amazonaws.bedrockruntime',\n    errorTypeRegistries: [Array],\n    version: '2023-09-30',\n    serviceTarget: 'AmazonBedrockFrontendService'\n  },\n  serviceId: 'Bedrock Runtime',\n  sha256: [class Sha256Node],\n  urlParser: [Function: parseUrl],\n  utf8Decoder: [Function: fromUtf8$1],\n  utf8Encoder: [Function: toUtf8$1],\n  profile: 'fixture',\n  endpoint: [AsyncFunction (anonymous)],\n  region: [AsyncFunction: region],\n  requestHandler: NodeHttpHandler {\n    config: undefined,\n    configProvider: [Promise],\n    socketWarningTimestamp: 0,\n    externalAgent: false,\n    metadata: [Object]\n  },\n  runtime: 'node',\n  defaultsMode: [AsyncFunction (anonymous)],\n  authSchemePreference: [AsyncFunction (anonymous)],\n  bodyLengthChecker: [Function: calculateBodyLength],\n  credentialDefaultProvider: [Function: defaultProvider],\n  defaultUserAgentProvider: [AsyncFunction (anonymous)],\n  eventStreamPayloadHandlerProvider: [Function: eventStreamPayloadHandlerProvider],\n  eventStreamSerdeProvider: [Function: eventStreamSerdeProvider],\n  maxAttempts: [AsyncFunction (anonymous)],\n  retryMode: [AsyncFunction (anonymous)],\n  streamCollector: [Function: streamCollector],\n  useDualstackEndpoint: [AsyncFunction (anonymous)],\n  useFipsEndpoint: [AsyncFunction: useFipsEndpoint],\n  userAgentAppId: [AsyncFunction: userAgentAppId],\n  defaultSigningName: 'bedrock',\n  customUserAgent: undefined,\n  retryStrategy: [Function: retryStrategy],\n  tls: true,\n  isCustomEndpoint: true,\n  ignoreConfiguredEndpointUrls: false,\n  serviceConfiguredEndpoint: [AsyncFunction (anonymous)],\n  eventStreamMarshaller: EventStreamMarshaller {\n    universalMarshaller: [EventStreamMarshaller]\n  },\n  credentials: [Getter/Setter],\n  systemClockOffset: 0,\n  signingEscapePath: true,\n  signer: [AsyncFunction: signer],\n  disableClockSkewCorrection: [AsyncFunction (anonymous)],\n  token: undefined,\n  eventSigner: [AsyncFunction: signer],\n  messageSigner: [AsyncFunction: signer],\n  eventStreamPayloadHandler: EventStreamPayloadHandler {\n    messageSigner: [AsyncFunction: signer],\n    eventStreamCodec: [EventStreamCodec],\n    systemClockOffsetProvider: [AsyncFunction (anonymous)],\n    credentials: [AsyncFunction]\n  }\n}"
+      },
+      "callbackState": {
+        "beforeAmbient": {
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10944",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10944",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10944"
+        },
+        "beforeScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        },
+        "afterAmbient": {
+          "AWS_PROFILE": "other",
+          "AWS_ACCESS_KEY_ID": "FAKE_MUTATED_ACCESS",
+          "AWS_SECRET_ACCESS_KEY": "fake-mutated-secret",
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10944",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10944",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10944"
+        },
+        "afterScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        }
+      },
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 0
+      },
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 0
+          }
+        }
+      ],
+      "cacheFiles": []
+    },
+    {
+      "name": "explicit-static-pinned",
+      "kind": "facade_lifecycle_static_config",
+      "now": 1893456000000,
+      "home": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-static-pinned",
+      "endpoint": "http://127.0.0.1:10946",
+      "beforeFiles": {
+        "config": "[profile fixture]\nregion=eu-west-2\n",
+        "credentials": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n"
+      },
+      "beforeOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-static-pinned\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-static-pinned\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "afterOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-static-pinned\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-static-pinned\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:10946/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,e",
+            "host": "127.0.0.1:10946",
+            "amz-sdk-invocation-id": "e9af9274-cc18-42c5-acb8-488a018abc51",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_SCOPED_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent, Signature=e687ff65c9843d243e7182ebb45fa2f7df7f011996e45eaa517be1f80682cb9d",
+            "connection": "keep-alive"
+          },
+          "rawHeaders": [
+            "content-type",
+            "application/json",
+            "content-length",
+            "137",
+            "x-amz-user-agent",
+            "aws-sdk-js/3.1126.0",
+            "user-agent",
+            "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,e",
+            "host",
+            "127.0.0.1:10946",
+            "amz-sdk-invocation-id",
+            "e9af9274-cc18-42c5-acb8-488a018abc51",
+            "amz-sdk-request",
+            "attempt=1; max=1",
+            "x-amz-date",
+            "20300101T000000Z",
+            "x-amz-content-sha256",
+            "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization",
+            "AWS4-HMAC-SHA256 Credential=FAKE_SCOPED_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent, Signature=e687ff65c9843d243e7182ebb45fa2f7df7f011996e45eaa517be1f80682cb9d",
+            "Connection",
+            "keep-alive"
+          ],
+          "rawBody": "{\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"auth fixture\"},{\"cachePoint\":{\"type\":\"default\"}}]}],\"inferenceConfig\":{\"maxTokens\":8192}}",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "auth fixture"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "sdkRequestOptions": {
+            "method": "POST",
+            "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+            "hostname": "127.0.0.1",
+            "port": 10946,
+            "headers": {
+              "content-type": "application/json",
+              "content-length": "137",
+              "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+              "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,e",
+              "host": "127.0.0.1:10946",
+              "amz-sdk-invocation-id": "e9af9274-cc18-42c5-acb8-488a018abc51",
+              "amz-sdk-request": "attempt=1; max=1",
+              "x-amz-date": "20300101T000000Z",
+              "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+              "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_SCOPED_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent, Signature=e687ff65c9843d243e7182ebb45fa2f7df7f011996e45eaa517be1f80682cb9d"
+            }
+          },
+          "sigv4Wire": {
+            "accessKeyId": "FAKE_SCOPED_ACCESS",
+            "region": "eu-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-user-agent"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:e9af9274-cc18-42c5-acb8-488a018abc51\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10946\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-user-agent:aws-sdk-js/3.1126.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/eu-west-2/bedrock/aws4_request\n95cfeec7ef8745fe48dba099892f77c310c796b6890cb603d11b4f67a58b10d2",
+            "computedSignature": "e687ff65c9843d243e7182ebb45fa2f7df7f011996e45eaa517be1f80682cb9d",
+            "actualSignature": "e687ff65c9843d243e7182ebb45fa2f7df7f011996e45eaa517be1f80682cb9d",
+            "signatureValid": true
+          },
+          "sigv4SdkHeaderBag": {
+            "accessKeyId": "FAKE_SCOPED_ACCESS",
+            "region": "eu-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-user-agent"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:e9af9274-cc18-42c5-acb8-488a018abc51\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10946\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-user-agent:aws-sdk-js/3.1126.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/eu-west-2/bedrock/aws4_request\n95cfeec7ef8745fe48dba099892f77c310c796b6890cb603d11b4f67a58b10d2",
+            "computedSignature": "e687ff65c9843d243e7182ebb45fa2f7df7f011996e45eaa517be1f80682cb9d",
+            "actualSignature": "e687ff65c9843d243e7182ebb45fa2f7df7f011996e45eaa517be1f80682cb9d",
+            "signatureValid": true
+          }
+        }
+      ],
+      "sdkRequestOptions": [
+        {
+          "method": "POST",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "hostname": "127.0.0.1",
+          "port": 10946,
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,e",
+            "host": "127.0.0.1:10946",
+            "amz-sdk-invocation-id": "e9af9274-cc18-42c5-acb8-488a018abc51",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_SCOPED_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent, Signature=e687ff65c9843d243e7182ebb45fa2f7df7f011996e45eaa517be1f80682cb9d"
+          }
+        }
+      ],
+      "sdkClient": {
+        "regionKind": "function",
+        "credentialsKind": "function",
+        "tokenKind": "undefined",
+        "authSchemePreferenceKind": "function",
+        "raw": "<ref *1> {\n  apiVersion: '2023-09-30',\n  base64Decoder: [Function: fromBase64],\n  base64Encoder: [Function: toBase64$1],\n  disableHostPrefix: false,\n  endpointProvider: [Function: defaultEndpointResolver],\n  extensions: [],\n  httpAuthSchemeProvider: [Function: defaultBedrockRuntimeHttpAuthSchemeProvider],\n  httpAuthSchemes: [ [Object], [Object] ],\n  logger: NoOpLogger {},\n  protocol: AwsRestJsonProtocol {\n    serdeContext: [Circular *1],\n    options: [Object],\n    compositeErrorRegistry: [TypeRegistry],\n    serializer: [HttpInterceptingShapeSerializer],\n    deserializer: [HttpInterceptingShapeDeserializer],\n    codec: [JsonCodec2],\n    mixin: [ProtocolLib]\n  },\n  protocolSettings: {\n    defaultNamespace: 'com.amazonaws.bedrockruntime',\n    errorTypeRegistries: [Array],\n    version: '2023-09-30',\n    serviceTarget: 'AmazonBedrockFrontendService'\n  },\n  serviceId: 'Bedrock Runtime',\n  sha256: [class Sha256Node],\n  urlParser: [Function: parseUrl],\n  utf8Decoder: [Function: fromUtf8$1],\n  utf8Encoder: [Function: toUtf8$1],\n  profile: undefined,\n  endpoint: [AsyncFunction (anonymous)],\n  region: [AsyncFunction: region],\n  credentials: [Getter/Setter],\n  requestHandler: NodeHttpHandler {\n    config: undefined,\n    configProvider: [Promise],\n    socketWarningTimestamp: 0,\n    externalAgent: false,\n    metadata: [Object]\n  },\n  runtime: 'node',\n  defaultsMode: [AsyncFunction (anonymous)],\n  authSchemePreference: [AsyncFunction (anonymous)],\n  bodyLengthChecker: [Function: calculateBodyLength],\n  credentialDefaultProvider: [Function: defaultProvider],\n  defaultUserAgentProvider: [AsyncFunction (anonymous)],\n  eventStreamPayloadHandlerProvider: [Function: eventStreamPayloadHandlerProvider],\n  eventStreamSerdeProvider: [Function: eventStreamSerdeProvider],\n  maxAttempts: [AsyncFunction (anonymous)],\n  retryMode: [AsyncFunction (anonymous)],\n  streamCollector: [Function: streamCollector],\n  useDualstackEndpoint: [AsyncFunction (anonymous)],\n  useFipsEndpoint: [AsyncFunction: useFipsEndpoint],\n  userAgentAppId: [AsyncFunction: userAgentAppId],\n  defaultSigningName: 'bedrock',\n  customUserAgent: undefined,\n  retryStrategy: [Function: retryStrategy],\n  tls: true,\n  isCustomEndpoint: true,\n  ignoreConfiguredEndpointUrls: false,\n  serviceConfiguredEndpoint: [AsyncFunction (anonymous)],\n  eventStreamMarshaller: EventStreamMarshaller {\n    universalMarshaller: [EventStreamMarshaller]\n  },\n  systemClockOffset: 0,\n  signingEscapePath: true,\n  signer: [AsyncFunction: signer],\n  disableClockSkewCorrection: [AsyncFunction (anonymous)],\n  token: undefined,\n  eventSigner: [AsyncFunction: signer],\n  messageSigner: [AsyncFunction: signer],\n  eventStreamPayloadHandler: EventStreamPayloadHandler {\n    messageSigner: [AsyncFunction: signer],\n    eventStreamCodec: [EventStreamCodec],\n    systemClockOffsetProvider: [AsyncFunction (anonymous)],\n    credentials: [AsyncFunction]\n  }\n}"
+      },
+      "callbackState": {
+        "beforeAmbient": {
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10946",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10946",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10946"
+        },
+        "beforeScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true",
+          "AWS_ACCESS_KEY_ID": "FAKE_SCOPED_ACCESS",
+          "AWS_SECRET_ACCESS_KEY": "fake-scoped-secret"
+        },
+        "afterAmbient": {
+          "AWS_ACCESS_KEY_ID": "FAKE_MUTATED_ACCESS",
+          "AWS_SECRET_ACCESS_KEY": "fake-mutated-secret",
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10946",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10946",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10946"
+        },
+        "afterScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true",
+          "AWS_ACCESS_KEY_ID": "FAKE_CHANGED_SCOPED_ACCESS",
+          "AWS_SECRET_ACCESS_KEY": "fake-changed-scoped-secret"
+        }
+      },
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 0
+      },
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 0
+          }
+        }
+      ],
+      "cacheFiles": []
+    },
+    {
+      "name": "ambient-profile-pinned",
+      "kind": "facade_lifecycle_lazy_profile",
+      "now": 1893456000000,
+      "home": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\ambient-profile-pinned",
+      "endpoint": "http://127.0.0.1:10948",
+      "beforeFiles": {
+        "config": "[profile fixture]\nregion=eu-west-2\n",
+        "credentials": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n"
+      },
+      "beforeOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\ambient-profile-pinned\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\ambient-profile-pinned\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "afterOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\ambient-profile-pinned\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\ambient-profile-pinned\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:10948/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host": "127.0.0.1:10948",
+            "amz-sdk-invocation-id": "78138c3e-29d1-4626-8d9f-6c4bf3be3927",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-security-token": "fake-profile-session",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=20203b7c05271e1066776ba3d7847db22ce63c07bd2c64af389935a6a30aafad",
+            "connection": "keep-alive"
+          },
+          "rawHeaders": [
+            "content-type",
+            "application/json",
+            "content-length",
+            "137",
+            "x-amz-user-agent",
+            "aws-sdk-js/3.1126.0",
+            "user-agent",
+            "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host",
+            "127.0.0.1:10948",
+            "amz-sdk-invocation-id",
+            "78138c3e-29d1-4626-8d9f-6c4bf3be3927",
+            "amz-sdk-request",
+            "attempt=1; max=1",
+            "x-amz-date",
+            "20300101T000000Z",
+            "x-amz-security-token",
+            "fake-profile-session",
+            "x-amz-content-sha256",
+            "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization",
+            "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=20203b7c05271e1066776ba3d7847db22ce63c07bd2c64af389935a6a30aafad",
+            "Connection",
+            "keep-alive"
+          ],
+          "rawBody": "{\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"auth fixture\"},{\"cachePoint\":{\"type\":\"default\"}}]}],\"inferenceConfig\":{\"maxTokens\":8192}}",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "auth fixture"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "sdkRequestOptions": {
+            "method": "POST",
+            "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+            "hostname": "127.0.0.1",
+            "port": 10948,
+            "headers": {
+              "content-type": "application/json",
+              "content-length": "137",
+              "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+              "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+              "host": "127.0.0.1:10948",
+              "amz-sdk-invocation-id": "78138c3e-29d1-4626-8d9f-6c4bf3be3927",
+              "amz-sdk-request": "attempt=1; max=1",
+              "x-amz-date": "20300101T000000Z",
+              "x-amz-security-token": "fake-profile-session",
+              "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+              "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=20203b7c05271e1066776ba3d7847db22ce63c07bd2c64af389935a6a30aafad"
+            }
+          },
+          "sigv4Wire": {
+            "accessKeyId": "FAKE_PROFILE_ACCESS",
+            "region": "eu-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-security-token",
+              "x-amz-user-agent"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:78138c3e-29d1-4626-8d9f-6c4bf3be3927\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10948\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-security-token:fake-profile-session\nx-amz-user-agent:aws-sdk-js/3.1126.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/eu-west-2/bedrock/aws4_request\n26df1363acf2d7e83c40cd1fb0b32ab4c38078b0c934a4491e5974e9351a4e76",
+            "computedSignature": "20203b7c05271e1066776ba3d7847db22ce63c07bd2c64af389935a6a30aafad",
+            "actualSignature": "20203b7c05271e1066776ba3d7847db22ce63c07bd2c64af389935a6a30aafad",
+            "signatureValid": true
+          },
+          "sigv4SdkHeaderBag": {
+            "accessKeyId": "FAKE_PROFILE_ACCESS",
+            "region": "eu-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-security-token",
+              "x-amz-user-agent"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:78138c3e-29d1-4626-8d9f-6c4bf3be3927\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10948\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-security-token:fake-profile-session\nx-amz-user-agent:aws-sdk-js/3.1126.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/eu-west-2/bedrock/aws4_request\n26df1363acf2d7e83c40cd1fb0b32ab4c38078b0c934a4491e5974e9351a4e76",
+            "computedSignature": "20203b7c05271e1066776ba3d7847db22ce63c07bd2c64af389935a6a30aafad",
+            "actualSignature": "20203b7c05271e1066776ba3d7847db22ce63c07bd2c64af389935a6a30aafad",
+            "signatureValid": true
+          }
+        }
+      ],
+      "sdkRequestOptions": [
+        {
+          "method": "POST",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "hostname": "127.0.0.1",
+          "port": 10948,
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host": "127.0.0.1:10948",
+            "amz-sdk-invocation-id": "78138c3e-29d1-4626-8d9f-6c4bf3be3927",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-security-token": "fake-profile-session",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=20203b7c05271e1066776ba3d7847db22ce63c07bd2c64af389935a6a30aafad"
+          }
+        }
+      ],
+      "sdkClient": {
+        "profile": "fixture",
+        "regionKind": "function",
+        "credentialsKind": "function",
+        "tokenKind": "undefined",
+        "authSchemePreferenceKind": "function",
+        "raw": "<ref *1> {\n  apiVersion: '2023-09-30',\n  base64Decoder: [Function: fromBase64],\n  base64Encoder: [Function: toBase64$1],\n  disableHostPrefix: false,\n  endpointProvider: [Function: defaultEndpointResolver],\n  extensions: [],\n  httpAuthSchemeProvider: [Function: defaultBedrockRuntimeHttpAuthSchemeProvider],\n  httpAuthSchemes: [ [Object], [Object] ],\n  logger: NoOpLogger {},\n  protocol: AwsRestJsonProtocol {\n    serdeContext: [Circular *1],\n    options: [Object],\n    compositeErrorRegistry: [TypeRegistry],\n    serializer: [HttpInterceptingShapeSerializer],\n    deserializer: [HttpInterceptingShapeDeserializer],\n    codec: [JsonCodec2],\n    mixin: [ProtocolLib]\n  },\n  protocolSettings: {\n    defaultNamespace: 'com.amazonaws.bedrockruntime',\n    errorTypeRegistries: [Array],\n    version: '2023-09-30',\n    serviceTarget: 'AmazonBedrockFrontendService'\n  },\n  serviceId: 'Bedrock Runtime',\n  sha256: [class Sha256Node],\n  urlParser: [Function: parseUrl],\n  utf8Decoder: [Function: fromUtf8$1],\n  utf8Encoder: [Function: toUtf8$1],\n  profile: 'fixture',\n  endpoint: [AsyncFunction (anonymous)],\n  region: [AsyncFunction: region],\n  requestHandler: NodeHttpHandler {\n    config: undefined,\n    configProvider: [Promise],\n    socketWarningTimestamp: 0,\n    externalAgent: false,\n    metadata: [Object]\n  },\n  runtime: 'node',\n  defaultsMode: [AsyncFunction (anonymous)],\n  authSchemePreference: [AsyncFunction (anonymous)],\n  bodyLengthChecker: [Function: calculateBodyLength],\n  credentialDefaultProvider: [Function: defaultProvider],\n  defaultUserAgentProvider: [AsyncFunction (anonymous)],\n  eventStreamPayloadHandlerProvider: [Function: eventStreamPayloadHandlerProvider],\n  eventStreamSerdeProvider: [Function: eventStreamSerdeProvider],\n  maxAttempts: [AsyncFunction (anonymous)],\n  retryMode: [AsyncFunction (anonymous)],\n  streamCollector: [Function: streamCollector],\n  useDualstackEndpoint: [AsyncFunction (anonymous)],\n  useFipsEndpoint: [AsyncFunction: useFipsEndpoint],\n  userAgentAppId: [AsyncFunction: userAgentAppId],\n  defaultSigningName: 'bedrock',\n  customUserAgent: undefined,\n  retryStrategy: [Function: retryStrategy],\n  tls: true,\n  isCustomEndpoint: true,\n  ignoreConfiguredEndpointUrls: false,\n  serviceConfiguredEndpoint: [AsyncFunction (anonymous)],\n  eventStreamMarshaller: EventStreamMarshaller {\n    universalMarshaller: [EventStreamMarshaller]\n  },\n  credentials: [Getter/Setter],\n  systemClockOffset: 0,\n  signingEscapePath: true,\n  signer: [AsyncFunction: signer],\n  disableClockSkewCorrection: [AsyncFunction (anonymous)],\n  token: undefined,\n  eventSigner: [AsyncFunction: signer],\n  messageSigner: [AsyncFunction: signer],\n  eventStreamPayloadHandler: EventStreamPayloadHandler {\n    messageSigner: [AsyncFunction: signer],\n    eventStreamCodec: [EventStreamCodec],\n    systemClockOffsetProvider: [AsyncFunction (anonymous)],\n    credentials: [AsyncFunction]\n  }\n}"
+      },
+      "callbackState": {
+        "beforeAmbient": {
+          "AWS_PROFILE": "fixture",
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10948",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10948",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10948"
+        },
+        "beforeScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        },
+        "afterAmbient": {
+          "AWS_PROFILE": "other",
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10948",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10948",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10948"
+        },
+        "afterScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        }
+      },
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 0
+      },
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 0
+          }
+        }
+      ],
+      "cacheFiles": []
+    },
+    {
+      "name": "lazy-env-after-payload",
+      "kind": "facade_lifecycle_lazy_env",
+      "now": 1893456000000,
+      "home": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-env-after-payload",
+      "endpoint": "http://127.0.0.1:10950",
+      "beforeFiles": {
+        "config": "[profile fixture]\nregion=eu-west-2\n",
+        "credentials": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n"
+      },
+      "beforeOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-env-after-payload\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-env-after-payload\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "afterOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-env-after-payload\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-env-after-payload\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:10950/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,g",
+            "host": "127.0.0.1:10950",
+            "amz-sdk-invocation-id": "0330ba7c-121a-425d-962a-f3eaf3ffa10a",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_MUTATED_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent, Signature=9c3e5a90a168a194fefce68d2bc33c85f7bcee1bd093b0a06ad421fab6c9a0c2",
+            "connection": "keep-alive"
+          },
+          "rawHeaders": [
+            "content-type",
+            "application/json",
+            "content-length",
+            "137",
+            "x-amz-user-agent",
+            "aws-sdk-js/3.1126.0",
+            "user-agent",
+            "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,g",
+            "host",
+            "127.0.0.1:10950",
+            "amz-sdk-invocation-id",
+            "0330ba7c-121a-425d-962a-f3eaf3ffa10a",
+            "amz-sdk-request",
+            "attempt=1; max=1",
+            "x-amz-date",
+            "20300101T000000Z",
+            "x-amz-content-sha256",
+            "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization",
+            "AWS4-HMAC-SHA256 Credential=FAKE_MUTATED_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent, Signature=9c3e5a90a168a194fefce68d2bc33c85f7bcee1bd093b0a06ad421fab6c9a0c2",
+            "Connection",
+            "keep-alive"
+          ],
+          "rawBody": "{\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"auth fixture\"},{\"cachePoint\":{\"type\":\"default\"}}]}],\"inferenceConfig\":{\"maxTokens\":8192}}",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "auth fixture"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "sdkRequestOptions": {
+            "method": "POST",
+            "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+            "hostname": "127.0.0.1",
+            "port": 10950,
+            "headers": {
+              "content-type": "application/json",
+              "content-length": "137",
+              "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+              "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,g",
+              "host": "127.0.0.1:10950",
+              "amz-sdk-invocation-id": "0330ba7c-121a-425d-962a-f3eaf3ffa10a",
+              "amz-sdk-request": "attempt=1; max=1",
+              "x-amz-date": "20300101T000000Z",
+              "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+              "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_MUTATED_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent, Signature=9c3e5a90a168a194fefce68d2bc33c85f7bcee1bd093b0a06ad421fab6c9a0c2"
+            }
+          },
+          "sigv4Wire": {
+            "accessKeyId": "FAKE_MUTATED_ACCESS",
+            "region": "eu-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-user-agent"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:0330ba7c-121a-425d-962a-f3eaf3ffa10a\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10950\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-user-agent:aws-sdk-js/3.1126.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/eu-west-2/bedrock/aws4_request\n8cfecd822f870cd4a546f1f90a872b2a275c103ef081447ff91556c200e68ee8",
+            "computedSignature": "9c3e5a90a168a194fefce68d2bc33c85f7bcee1bd093b0a06ad421fab6c9a0c2",
+            "actualSignature": "9c3e5a90a168a194fefce68d2bc33c85f7bcee1bd093b0a06ad421fab6c9a0c2",
+            "signatureValid": true
+          },
+          "sigv4SdkHeaderBag": {
+            "accessKeyId": "FAKE_MUTATED_ACCESS",
+            "region": "eu-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-user-agent"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:0330ba7c-121a-425d-962a-f3eaf3ffa10a\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10950\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-user-agent:aws-sdk-js/3.1126.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/eu-west-2/bedrock/aws4_request\n8cfecd822f870cd4a546f1f90a872b2a275c103ef081447ff91556c200e68ee8",
+            "computedSignature": "9c3e5a90a168a194fefce68d2bc33c85f7bcee1bd093b0a06ad421fab6c9a0c2",
+            "actualSignature": "9c3e5a90a168a194fefce68d2bc33c85f7bcee1bd093b0a06ad421fab6c9a0c2",
+            "signatureValid": true
+          }
+        }
+      ],
+      "sdkRequestOptions": [
+        {
+          "method": "POST",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "hostname": "127.0.0.1",
+          "port": 10950,
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,g",
+            "host": "127.0.0.1:10950",
+            "amz-sdk-invocation-id": "0330ba7c-121a-425d-962a-f3eaf3ffa10a",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_MUTATED_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-user-agent, Signature=9c3e5a90a168a194fefce68d2bc33c85f7bcee1bd093b0a06ad421fab6c9a0c2"
+          }
+        }
+      ],
+      "sdkClient": {
+        "regionKind": "function",
+        "credentialsKind": "function",
+        "tokenKind": "undefined",
+        "authSchemePreferenceKind": "function",
+        "raw": "<ref *1> {\n  apiVersion: '2023-09-30',\n  base64Decoder: [Function: fromBase64],\n  base64Encoder: [Function: toBase64$1],\n  disableHostPrefix: false,\n  endpointProvider: [Function: defaultEndpointResolver],\n  extensions: [],\n  httpAuthSchemeProvider: [Function: defaultBedrockRuntimeHttpAuthSchemeProvider],\n  httpAuthSchemes: [ [Object], [Object] ],\n  logger: NoOpLogger {},\n  protocol: AwsRestJsonProtocol {\n    serdeContext: [Circular *1],\n    options: [Object],\n    compositeErrorRegistry: [TypeRegistry],\n    serializer: [HttpInterceptingShapeSerializer],\n    deserializer: [HttpInterceptingShapeDeserializer],\n    codec: [JsonCodec2],\n    mixin: [ProtocolLib]\n  },\n  protocolSettings: {\n    defaultNamespace: 'com.amazonaws.bedrockruntime',\n    errorTypeRegistries: [Array],\n    version: '2023-09-30',\n    serviceTarget: 'AmazonBedrockFrontendService'\n  },\n  serviceId: 'Bedrock Runtime',\n  sha256: [class Sha256Node],\n  urlParser: [Function: parseUrl],\n  utf8Decoder: [Function: fromUtf8$1],\n  utf8Encoder: [Function: toUtf8$1],\n  profile: undefined,\n  endpoint: [AsyncFunction (anonymous)],\n  region: [AsyncFunction: region],\n  requestHandler: NodeHttpHandler {\n    config: undefined,\n    configProvider: [Promise],\n    socketWarningTimestamp: 0,\n    externalAgent: false,\n    metadata: [Object]\n  },\n  runtime: 'node',\n  defaultsMode: [AsyncFunction (anonymous)],\n  authSchemePreference: [AsyncFunction (anonymous)],\n  bodyLengthChecker: [Function: calculateBodyLength],\n  credentialDefaultProvider: [Function: defaultProvider],\n  defaultUserAgentProvider: [AsyncFunction (anonymous)],\n  eventStreamPayloadHandlerProvider: [Function: eventStreamPayloadHandlerProvider],\n  eventStreamSerdeProvider: [Function: eventStreamSerdeProvider],\n  maxAttempts: [AsyncFunction (anonymous)],\n  retryMode: [AsyncFunction (anonymous)],\n  streamCollector: [Function: streamCollector],\n  useDualstackEndpoint: [AsyncFunction (anonymous)],\n  useFipsEndpoint: [AsyncFunction: useFipsEndpoint],\n  userAgentAppId: [AsyncFunction: userAgentAppId],\n  defaultSigningName: 'bedrock',\n  customUserAgent: undefined,\n  retryStrategy: [Function: retryStrategy],\n  tls: true,\n  isCustomEndpoint: true,\n  ignoreConfiguredEndpointUrls: false,\n  serviceConfiguredEndpoint: [AsyncFunction (anonymous)],\n  eventStreamMarshaller: EventStreamMarshaller {\n    universalMarshaller: [EventStreamMarshaller]\n  },\n  credentials: [Getter/Setter],\n  systemClockOffset: 0,\n  signingEscapePath: true,\n  signer: [AsyncFunction: signer],\n  disableClockSkewCorrection: [AsyncFunction (anonymous)],\n  token: undefined,\n  eventSigner: [AsyncFunction: signer],\n  messageSigner: [AsyncFunction: signer],\n  eventStreamPayloadHandler: EventStreamPayloadHandler {\n    messageSigner: [AsyncFunction: signer],\n    eventStreamCodec: [EventStreamCodec],\n    systemClockOffsetProvider: [AsyncFunction (anonymous)],\n    credentials: [AsyncFunction]\n  }\n}"
+      },
+      "callbackState": {
+        "beforeAmbient": {
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10950",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10950",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10950"
+        },
+        "beforeScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        },
+        "afterAmbient": {
+          "AWS_ACCESS_KEY_ID": "FAKE_MUTATED_ACCESS",
+          "AWS_SECRET_ACCESS_KEY": "fake-mutated-secret",
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10950",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10950",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10950"
+        },
+        "afterScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        }
+      },
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 0
+      },
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 0
+          }
+        }
+      ],
+      "cacheFiles": []
+    },
+    {
+      "name": "lazy-bearer-after-payload",
+      "kind": "facade_lifecycle_bearer_env",
+      "now": 1893456000000,
+      "home": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-bearer-after-payload",
+      "endpoint": "http://127.0.0.1:10953",
+      "beforeFiles": {
+        "config": "[profile fixture]\nregion=eu-west-2\n",
+        "credentials": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n"
+      },
+      "beforeOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-bearer-after-payload\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-bearer-after-payload\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "afterOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-bearer-after-payload\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-bearer-after-payload\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:10953/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,3",
+            "host": "127.0.0.1:10953",
+            "amz-sdk-invocation-id": "238e16b7-3b6a-4dbe-acc7-9a4354e617a7",
+            "amz-sdk-request": "attempt=1; max=1",
+            "authorization": "Bearer fixture-mutated-bearer",
+            "connection": "keep-alive"
+          },
+          "rawHeaders": [
+            "content-type",
+            "application/json",
+            "content-length",
+            "137",
+            "x-amz-user-agent",
+            "aws-sdk-js/3.1126.0",
+            "user-agent",
+            "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,3",
+            "host",
+            "127.0.0.1:10953",
+            "amz-sdk-invocation-id",
+            "238e16b7-3b6a-4dbe-acc7-9a4354e617a7",
+            "amz-sdk-request",
+            "attempt=1; max=1",
+            "Authorization",
+            "Bearer fixture-mutated-bearer",
+            "Connection",
+            "keep-alive"
+          ],
+          "rawBody": "{\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"auth fixture\"},{\"cachePoint\":{\"type\":\"default\"}}]}],\"inferenceConfig\":{\"maxTokens\":8192}}",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "auth fixture"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "sdkRequestOptions": {
+            "method": "POST",
+            "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+            "hostname": "127.0.0.1",
+            "port": 10953,
+            "headers": {
+              "content-type": "application/json",
+              "content-length": "137",
+              "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+              "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,3",
+              "host": "127.0.0.1:10953",
+              "amz-sdk-invocation-id": "238e16b7-3b6a-4dbe-acc7-9a4354e617a7",
+              "amz-sdk-request": "attempt=1; max=1",
+              "Authorization": "Bearer fixture-mutated-bearer"
+            }
+          }
+        }
+      ],
+      "sdkRequestOptions": [
+        {
+          "method": "POST",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "hostname": "127.0.0.1",
+          "port": 10953,
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,3",
+            "host": "127.0.0.1:10953",
+            "amz-sdk-invocation-id": "238e16b7-3b6a-4dbe-acc7-9a4354e617a7",
+            "amz-sdk-request": "attempt=1; max=1",
+            "Authorization": "Bearer fixture-mutated-bearer"
+          }
+        }
+      ],
+      "sdkClient": {
+        "regionKind": "function",
+        "credentialsKind": "function",
+        "tokenKind": "undefined",
+        "authSchemePreferenceKind": "function",
+        "raw": "<ref *1> {\n  apiVersion: '2023-09-30',\n  base64Decoder: [Function: fromBase64],\n  base64Encoder: [Function: toBase64$1],\n  disableHostPrefix: false,\n  endpointProvider: [Function: defaultEndpointResolver],\n  extensions: [],\n  httpAuthSchemeProvider: [Function: defaultBedrockRuntimeHttpAuthSchemeProvider],\n  httpAuthSchemes: [ [Object], [Object] ],\n  logger: NoOpLogger {},\n  protocol: AwsRestJsonProtocol {\n    serdeContext: [Circular *1],\n    options: [Object],\n    compositeErrorRegistry: [TypeRegistry],\n    serializer: [HttpInterceptingShapeSerializer],\n    deserializer: [HttpInterceptingShapeDeserializer],\n    codec: [JsonCodec2],\n    mixin: [ProtocolLib]\n  },\n  protocolSettings: {\n    defaultNamespace: 'com.amazonaws.bedrockruntime',\n    errorTypeRegistries: [Array],\n    version: '2023-09-30',\n    serviceTarget: 'AmazonBedrockFrontendService'\n  },\n  serviceId: 'Bedrock Runtime',\n  sha256: [class Sha256Node],\n  urlParser: [Function: parseUrl],\n  utf8Decoder: [Function: fromUtf8$1],\n  utf8Encoder: [Function: toUtf8$1],\n  profile: undefined,\n  endpoint: [AsyncFunction (anonymous)],\n  region: [AsyncFunction: region],\n  requestHandler: NodeHttpHandler {\n    config: undefined,\n    configProvider: [Promise],\n    socketWarningTimestamp: 0,\n    externalAgent: false,\n    metadata: [Object]\n  },\n  runtime: 'node',\n  defaultsMode: [AsyncFunction (anonymous)],\n  authSchemePreference: [AsyncFunction (anonymous)],\n  bodyLengthChecker: [Function: calculateBodyLength],\n  credentialDefaultProvider: [Function: defaultProvider],\n  defaultUserAgentProvider: [AsyncFunction (anonymous)],\n  eventStreamPayloadHandlerProvider: [Function: eventStreamPayloadHandlerProvider],\n  eventStreamSerdeProvider: [Function: eventStreamSerdeProvider],\n  maxAttempts: [AsyncFunction (anonymous)],\n  retryMode: [AsyncFunction (anonymous)],\n  streamCollector: [Function: streamCollector],\n  useDualstackEndpoint: [AsyncFunction (anonymous)],\n  useFipsEndpoint: [AsyncFunction: useFipsEndpoint],\n  userAgentAppId: [AsyncFunction: userAgentAppId],\n  defaultSigningName: 'bedrock',\n  customUserAgent: undefined,\n  retryStrategy: [Function: retryStrategy],\n  tls: true,\n  isCustomEndpoint: true,\n  ignoreConfiguredEndpointUrls: false,\n  serviceConfiguredEndpoint: [AsyncFunction (anonymous)],\n  eventStreamMarshaller: EventStreamMarshaller {\n    universalMarshaller: [EventStreamMarshaller]\n  },\n  credentials: [Getter/Setter],\n  systemClockOffset: 0,\n  signingEscapePath: true,\n  signer: [AsyncFunction: signer],\n  disableClockSkewCorrection: [AsyncFunction (anonymous)],\n  token: undefined,\n  eventSigner: [AsyncFunction: signer],\n  messageSigner: [AsyncFunction: signer],\n  eventStreamPayloadHandler: EventStreamPayloadHandler {\n    messageSigner: [AsyncFunction: signer],\n    eventStreamCodec: [EventStreamCodec],\n    systemClockOffsetProvider: [AsyncFunction (anonymous)],\n    credentials: [AsyncFunction]\n  }\n}"
+      },
+      "callbackState": {
+        "beforeAmbient": {
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10953",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10953",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10953"
+        },
+        "beforeScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        },
+        "afterAmbient": {
+          "AWS_BEARER_TOKEN_BEDROCK": "fixture-mutated-bearer",
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10953",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10953",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10953"
+        },
+        "afterScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        }
+      },
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 0
+      },
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 0
+          }
+        }
+      ],
+      "cacheFiles": []
+    },
+    {
+      "name": "lazy-region-after-payload",
+      "kind": "facade_lifecycle_lazy_region",
+      "now": 1893456000000,
+      "home": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-region-after-payload",
+      "endpoint": "http://127.0.0.1:10955",
+      "beforeFiles": {
+        "config": "[profile fixture]\nregion=eu-west-2\n",
+        "credentials": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n"
+      },
+      "beforeOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-region-after-payload\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-region-after-payload\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "afterOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-region-after-payload\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\lazy-region-after-payload\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:10955/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host": "127.0.0.1:10955",
+            "amz-sdk-invocation-id": "61507e6f-eb09-43e4-8739-5d2e2495ed0c",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-security-token": "fake-profile-session",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/us-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=d40a26f6c5bab9a039db140e1c351cb9eb07ac896f91cad23e0c422d71a33a7a",
+            "connection": "keep-alive"
+          },
+          "rawHeaders": [
+            "content-type",
+            "application/json",
+            "content-length",
+            "137",
+            "x-amz-user-agent",
+            "aws-sdk-js/3.1126.0",
+            "user-agent",
+            "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host",
+            "127.0.0.1:10955",
+            "amz-sdk-invocation-id",
+            "61507e6f-eb09-43e4-8739-5d2e2495ed0c",
+            "amz-sdk-request",
+            "attempt=1; max=1",
+            "x-amz-date",
+            "20300101T000000Z",
+            "x-amz-security-token",
+            "fake-profile-session",
+            "x-amz-content-sha256",
+            "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization",
+            "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/us-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=d40a26f6c5bab9a039db140e1c351cb9eb07ac896f91cad23e0c422d71a33a7a",
+            "Connection",
+            "keep-alive"
+          ],
+          "rawBody": "{\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"auth fixture\"},{\"cachePoint\":{\"type\":\"default\"}}]}],\"inferenceConfig\":{\"maxTokens\":8192}}",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "auth fixture"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "sdkRequestOptions": {
+            "method": "POST",
+            "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+            "hostname": "127.0.0.1",
+            "port": 10955,
+            "headers": {
+              "content-type": "application/json",
+              "content-length": "137",
+              "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+              "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+              "host": "127.0.0.1:10955",
+              "amz-sdk-invocation-id": "61507e6f-eb09-43e4-8739-5d2e2495ed0c",
+              "amz-sdk-request": "attempt=1; max=1",
+              "x-amz-date": "20300101T000000Z",
+              "x-amz-security-token": "fake-profile-session",
+              "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+              "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/us-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=d40a26f6c5bab9a039db140e1c351cb9eb07ac896f91cad23e0c422d71a33a7a"
+            }
+          },
+          "sigv4Wire": {
+            "accessKeyId": "FAKE_PROFILE_ACCESS",
+            "region": "us-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-security-token",
+              "x-amz-user-agent"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:61507e6f-eb09-43e4-8739-5d2e2495ed0c\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10955\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-security-token:fake-profile-session\nx-amz-user-agent:aws-sdk-js/3.1126.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/us-west-2/bedrock/aws4_request\na76952bc3d2b52c71c8cb3b07f7cdf5ed99a5cfb1703aefd1a9935c07c06df2d",
+            "computedSignature": "d40a26f6c5bab9a039db140e1c351cb9eb07ac896f91cad23e0c422d71a33a7a",
+            "actualSignature": "d40a26f6c5bab9a039db140e1c351cb9eb07ac896f91cad23e0c422d71a33a7a",
+            "signatureValid": true
+          },
+          "sigv4SdkHeaderBag": {
+            "accessKeyId": "FAKE_PROFILE_ACCESS",
+            "region": "us-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-security-token",
+              "x-amz-user-agent"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:61507e6f-eb09-43e4-8739-5d2e2495ed0c\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10955\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-security-token:fake-profile-session\nx-amz-user-agent:aws-sdk-js/3.1126.0\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/us-west-2/bedrock/aws4_request\na76952bc3d2b52c71c8cb3b07f7cdf5ed99a5cfb1703aefd1a9935c07c06df2d",
+            "computedSignature": "d40a26f6c5bab9a039db140e1c351cb9eb07ac896f91cad23e0c422d71a33a7a",
+            "actualSignature": "d40a26f6c5bab9a039db140e1c351cb9eb07ac896f91cad23e0c422d71a33a7a",
+            "signatureValid": true
+          }
+        }
+      ],
+      "sdkRequestOptions": [
+        {
+          "method": "POST",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "hostname": "127.0.0.1",
+          "port": 10955,
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host": "127.0.0.1:10955",
+            "amz-sdk-invocation-id": "61507e6f-eb09-43e4-8739-5d2e2495ed0c",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-security-token": "fake-profile-session",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/us-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent, Signature=d40a26f6c5bab9a039db140e1c351cb9eb07ac896f91cad23e0c422d71a33a7a"
+          }
+        }
+      ],
+      "sdkClient": {
+        "profile": "fixture",
+        "regionKind": "function",
+        "credentialsKind": "function",
+        "tokenKind": "undefined",
+        "authSchemePreferenceKind": "function",
+        "raw": "<ref *1> {\n  apiVersion: '2023-09-30',\n  base64Decoder: [Function: fromBase64],\n  base64Encoder: [Function: toBase64$1],\n  disableHostPrefix: false,\n  endpointProvider: [Function: defaultEndpointResolver],\n  extensions: [],\n  httpAuthSchemeProvider: [Function: defaultBedrockRuntimeHttpAuthSchemeProvider],\n  httpAuthSchemes: [ [Object], [Object] ],\n  logger: NoOpLogger {},\n  protocol: AwsRestJsonProtocol {\n    serdeContext: [Circular *1],\n    options: [Object],\n    compositeErrorRegistry: [TypeRegistry],\n    serializer: [HttpInterceptingShapeSerializer],\n    deserializer: [HttpInterceptingShapeDeserializer],\n    codec: [JsonCodec2],\n    mixin: [ProtocolLib]\n  },\n  protocolSettings: {\n    defaultNamespace: 'com.amazonaws.bedrockruntime',\n    errorTypeRegistries: [Array],\n    version: '2023-09-30',\n    serviceTarget: 'AmazonBedrockFrontendService'\n  },\n  serviceId: 'Bedrock Runtime',\n  sha256: [class Sha256Node],\n  urlParser: [Function: parseUrl],\n  utf8Decoder: [Function: fromUtf8$1],\n  utf8Encoder: [Function: toUtf8$1],\n  profile: 'fixture',\n  endpoint: [AsyncFunction (anonymous)],\n  requestHandler: NodeHttpHandler {\n    config: undefined,\n    configProvider: [Promise],\n    socketWarningTimestamp: 0,\n    externalAgent: false,\n    metadata: [Object]\n  },\n  runtime: 'node',\n  defaultsMode: [AsyncFunction (anonymous)],\n  authSchemePreference: [AsyncFunction (anonymous)],\n  bodyLengthChecker: [Function: calculateBodyLength],\n  credentialDefaultProvider: [Function: defaultProvider],\n  defaultUserAgentProvider: [AsyncFunction (anonymous)],\n  eventStreamPayloadHandlerProvider: [Function: eventStreamPayloadHandlerProvider],\n  eventStreamSerdeProvider: [Function: eventStreamSerdeProvider],\n  maxAttempts: [AsyncFunction (anonymous)],\n  region: [AsyncFunction: region],\n  retryMode: [AsyncFunction (anonymous)],\n  streamCollector: [Function: streamCollector],\n  useDualstackEndpoint: [AsyncFunction (anonymous)],\n  useFipsEndpoint: [AsyncFunction: useFipsEndpoint],\n  userAgentAppId: [AsyncFunction: userAgentAppId],\n  defaultSigningName: 'bedrock',\n  customUserAgent: undefined,\n  retryStrategy: [Function: retryStrategy],\n  tls: true,\n  isCustomEndpoint: true,\n  ignoreConfiguredEndpointUrls: false,\n  serviceConfiguredEndpoint: [AsyncFunction (anonymous)],\n  eventStreamMarshaller: EventStreamMarshaller {\n    universalMarshaller: [EventStreamMarshaller]\n  },\n  credentials: [Getter/Setter],\n  systemClockOffset: 0,\n  signingEscapePath: true,\n  signer: [AsyncFunction: signer],\n  disableClockSkewCorrection: [AsyncFunction (anonymous)],\n  token: undefined,\n  eventSigner: [AsyncFunction: signer],\n  messageSigner: [AsyncFunction: signer],\n  eventStreamPayloadHandler: EventStreamPayloadHandler {\n    messageSigner: [AsyncFunction: signer],\n    eventStreamCodec: [EventStreamCodec],\n    systemClockOffsetProvider: [AsyncFunction (anonymous)],\n    credentials: [AsyncFunction]\n  }\n}"
+      },
+      "callbackState": {
+        "beforeAmbient": {
+          "AWS_PROFILE": "fixture",
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10955",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10955",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10955"
+        },
+        "beforeScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        },
+        "afterAmbient": {
+          "AWS_PROFILE": "fixture",
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10955",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10955",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10955",
+          "AWS_REGION": "us-west-2"
+        },
+        "afterScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        }
+      },
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 0
+      },
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 0
+          }
+        }
+      ],
+      "cacheFiles": []
+    },
+    {
+      "name": "explicit-bearer-pinned",
+      "kind": "facade_lifecycle_explicit_bearer",
+      "now": 1893456000000,
+      "home": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-bearer-pinned",
+      "endpoint": "http://127.0.0.1:10957",
+      "beforeFiles": {
+        "config": "[profile fixture]\nregion=eu-west-2\n",
+        "credentials": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n"
+      },
+      "beforeOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-bearer-pinned\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-bearer-pinned\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "afterOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-bearer-pinned\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\explicit-bearer-pinned\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:10957/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E",
+            "host": "127.0.0.1:10957",
+            "amz-sdk-invocation-id": "c67cab09-05ff-4457-81ba-d6147e0110c8",
+            "amz-sdk-request": "attempt=1; max=1",
+            "authorization": "Bearer fixture-explicit-bearer",
+            "connection": "keep-alive"
+          },
+          "rawHeaders": [
+            "content-type",
+            "application/json",
+            "content-length",
+            "137",
+            "x-amz-user-agent",
+            "aws-sdk-js/3.1126.0",
+            "user-agent",
+            "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E",
+            "host",
+            "127.0.0.1:10957",
+            "amz-sdk-invocation-id",
+            "c67cab09-05ff-4457-81ba-d6147e0110c8",
+            "amz-sdk-request",
+            "attempt=1; max=1",
+            "Authorization",
+            "Bearer fixture-explicit-bearer",
+            "Connection",
+            "keep-alive"
+          ],
+          "rawBody": "{\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"auth fixture\"},{\"cachePoint\":{\"type\":\"default\"}}]}],\"inferenceConfig\":{\"maxTokens\":8192}}",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "auth fixture"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "sdkRequestOptions": {
+            "method": "POST",
+            "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+            "hostname": "127.0.0.1",
+            "port": 10957,
+            "headers": {
+              "content-type": "application/json",
+              "content-length": "137",
+              "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+              "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E",
+              "host": "127.0.0.1:10957",
+              "amz-sdk-invocation-id": "c67cab09-05ff-4457-81ba-d6147e0110c8",
+              "amz-sdk-request": "attempt=1; max=1",
+              "Authorization": "Bearer fixture-explicit-bearer"
+            }
+          }
+        }
+      ],
+      "sdkRequestOptions": [
+        {
+          "method": "POST",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "hostname": "127.0.0.1",
+          "port": 10957,
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E",
+            "host": "127.0.0.1:10957",
+            "amz-sdk-invocation-id": "c67cab09-05ff-4457-81ba-d6147e0110c8",
+            "amz-sdk-request": "attempt=1; max=1",
+            "Authorization": "Bearer fixture-explicit-bearer"
+          }
+        }
+      ],
+      "sdkClient": {
+        "regionKind": "function",
+        "credentialsKind": "function",
+        "tokenKind": "function",
+        "authSchemePreferenceKind": "function",
+        "raw": "<ref *1> {\n  apiVersion: '2023-09-30',\n  base64Decoder: [Function: fromBase64],\n  base64Encoder: [Function: toBase64$1],\n  disableHostPrefix: false,\n  endpointProvider: [Function: defaultEndpointResolver],\n  extensions: [],\n  httpAuthSchemeProvider: [Function: defaultBedrockRuntimeHttpAuthSchemeProvider],\n  httpAuthSchemes: [ [Object], [Object] ],\n  logger: NoOpLogger {},\n  protocol: AwsRestJsonProtocol {\n    serdeContext: [Circular *1],\n    options: [Object],\n    compositeErrorRegistry: [TypeRegistry],\n    serializer: [HttpInterceptingShapeSerializer],\n    deserializer: [HttpInterceptingShapeDeserializer],\n    codec: [JsonCodec2],\n    mixin: [ProtocolLib]\n  },\n  protocolSettings: {\n    defaultNamespace: 'com.amazonaws.bedrockruntime',\n    errorTypeRegistries: [Array],\n    version: '2023-09-30',\n    serviceTarget: 'AmazonBedrockFrontendService'\n  },\n  serviceId: 'Bedrock Runtime',\n  sha256: [class Sha256Node],\n  urlParser: [Function: parseUrl],\n  utf8Decoder: [Function: fromUtf8$1],\n  utf8Encoder: [Function: toUtf8$1],\n  profile: undefined,\n  endpoint: [AsyncFunction (anonymous)],\n  region: [AsyncFunction: region],\n  requestHandler: NodeHttpHandler {\n    config: undefined,\n    configProvider: [Promise],\n    socketWarningTimestamp: 0,\n    externalAgent: false,\n    metadata: [Object]\n  },\n  token: [AsyncFunction (anonymous)],\n  authSchemePreference: [Function (anonymous)],\n  runtime: 'node',\n  defaultsMode: [AsyncFunction (anonymous)],\n  bodyLengthChecker: [Function: calculateBodyLength],\n  credentialDefaultProvider: [Function: defaultProvider],\n  defaultUserAgentProvider: [AsyncFunction (anonymous)],\n  eventStreamPayloadHandlerProvider: [Function: eventStreamPayloadHandlerProvider],\n  eventStreamSerdeProvider: [Function: eventStreamSerdeProvider],\n  maxAttempts: [AsyncFunction (anonymous)],\n  retryMode: [AsyncFunction (anonymous)],\n  streamCollector: [Function: streamCollector],\n  useDualstackEndpoint: [AsyncFunction (anonymous)],\n  useFipsEndpoint: [AsyncFunction: useFipsEndpoint],\n  userAgentAppId: [AsyncFunction: userAgentAppId],\n  defaultSigningName: 'bedrock',\n  customUserAgent: undefined,\n  retryStrategy: [Function: retryStrategy],\n  tls: true,\n  isCustomEndpoint: true,\n  ignoreConfiguredEndpointUrls: false,\n  serviceConfiguredEndpoint: [AsyncFunction (anonymous)],\n  eventStreamMarshaller: EventStreamMarshaller {\n    universalMarshaller: [EventStreamMarshaller]\n  },\n  credentials: [Getter/Setter],\n  systemClockOffset: 0,\n  signingEscapePath: true,\n  signer: [AsyncFunction: signer],\n  disableClockSkewCorrection: [AsyncFunction (anonymous)],\n  eventSigner: [AsyncFunction: signer],\n  messageSigner: [AsyncFunction: signer],\n  eventStreamPayloadHandler: EventStreamPayloadHandler {\n    messageSigner: [AsyncFunction: signer],\n    eventStreamCodec: [EventStreamCodec],\n    systemClockOffsetProvider: [AsyncFunction (anonymous)],\n    credentials: [AsyncFunction]\n  }\n}"
+      },
+      "callbackState": {
+        "beforeAmbient": {
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10957",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10957",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10957"
+        },
+        "beforeScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        },
+        "afterAmbient": {
+          "AWS_BEARER_TOKEN_BEDROCK": "fixture-mutated-bearer",
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10957",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10957",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10957"
+        },
+        "afterScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        }
+      },
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 0
+      },
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 0
+          }
+        }
+      ],
+      "cacheFiles": []
+    },
+    {
+      "name": "headers-before-payload",
+      "kind": "facade_lifecycle_headers",
+      "now": 1893456000000,
+      "home": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\headers-before-payload",
+      "endpoint": "http://127.0.0.1:10959",
+      "beforeFiles": {
+        "config": "[profile fixture]\nregion=eu-west-2\n",
+        "credentials": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n"
+      },
+      "beforeOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\headers-before-payload\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\headers-before-payload\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "afterOwnedFiles": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\headers-before-payload\\config",
+          "contents": "[profile fixture]\nregion=eu-west-2\n",
+          "sha256": "d04b17ab7b65ffbdde227383abbe29e1f1a1a8d374e4bfe611db7c22a249bb8e"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-credential-owned-work-20261015\\bedrock-auth-59472\\headers-before-payload\\credentials",
+          "contents": "[fixture]\naws_access_key_id=FAKE_PROFILE_ACCESS\naws_secret_access_key=fake-profile-secret\naws_session_token=fake-profile-session\n[other]\naws_access_key_id=FAKE_OTHER_PROFILE_ACCESS\naws_secret_access_key=fake-other-profile-secret\n",
+          "sha256": "36c606d9475a9f118f10268921c983821034a017015839e8ba7afc3926708389"
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:10959/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host": "127.0.0.1:10959",
+            "x-before": "fixture-before",
+            "amz-sdk-invocation-id": "05bdcca9-8035-44c5-b62b-1cd54a0c6918",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-security-token": "fake-profile-session",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent;x-before, Signature=9c3cd371911cd7a0d98f4847e6ad58a47e8520bb88f3b612029ba40c7534ff89",
+            "connection": "keep-alive"
+          },
+          "rawHeaders": [
+            "content-type",
+            "application/json",
+            "content-length",
+            "137",
+            "x-amz-user-agent",
+            "aws-sdk-js/3.1126.0",
+            "user-agent",
+            "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host",
+            "127.0.0.1:10959",
+            "x-before",
+            "fixture-before",
+            "amz-sdk-invocation-id",
+            "05bdcca9-8035-44c5-b62b-1cd54a0c6918",
+            "amz-sdk-request",
+            "attempt=1; max=1",
+            "x-amz-date",
+            "20300101T000000Z",
+            "x-amz-security-token",
+            "fake-profile-session",
+            "x-amz-content-sha256",
+            "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization",
+            "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent;x-before, Signature=9c3cd371911cd7a0d98f4847e6ad58a47e8520bb88f3b612029ba40c7534ff89",
+            "Connection",
+            "keep-alive"
+          ],
+          "rawBody": "{\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"auth fixture\"},{\"cachePoint\":{\"type\":\"default\"}}]}],\"inferenceConfig\":{\"maxTokens\":8192}}",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "auth fixture"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "sdkRequestOptions": {
+            "method": "POST",
+            "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+            "hostname": "127.0.0.1",
+            "port": 10959,
+            "headers": {
+              "content-type": "application/json",
+              "content-length": "137",
+              "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+              "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+              "host": "127.0.0.1:10959",
+              "x-before": "fixture-before",
+              "amz-sdk-invocation-id": "05bdcca9-8035-44c5-b62b-1cd54a0c6918",
+              "amz-sdk-request": "attempt=1; max=1",
+              "x-amz-date": "20300101T000000Z",
+              "x-amz-security-token": "fake-profile-session",
+              "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+              "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent;x-before, Signature=9c3cd371911cd7a0d98f4847e6ad58a47e8520bb88f3b612029ba40c7534ff89"
+            }
+          },
+          "sigv4Wire": {
+            "accessKeyId": "FAKE_PROFILE_ACCESS",
+            "region": "eu-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-security-token",
+              "x-amz-user-agent",
+              "x-before"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:05bdcca9-8035-44c5-b62b-1cd54a0c6918\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10959\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-security-token:fake-profile-session\nx-amz-user-agent:aws-sdk-js/3.1126.0\nx-before:fixture-before\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent;x-before\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/eu-west-2/bedrock/aws4_request\nd626ce75a01014c01f8560fa983db4c19c453ac31a9f2b962cb179753fe4c288",
+            "computedSignature": "9c3cd371911cd7a0d98f4847e6ad58a47e8520bb88f3b612029ba40c7534ff89",
+            "actualSignature": "9c3cd371911cd7a0d98f4847e6ad58a47e8520bb88f3b612029ba40c7534ff89",
+            "signatureValid": true
+          },
+          "sigv4SdkHeaderBag": {
+            "accessKeyId": "FAKE_PROFILE_ACCESS",
+            "region": "eu-west-2",
+            "service": "bedrock",
+            "signedHeaders": [
+              "amz-sdk-invocation-id",
+              "amz-sdk-request",
+              "content-length",
+              "content-type",
+              "host",
+              "x-amz-content-sha256",
+              "x-amz-date",
+              "x-amz-security-token",
+              "x-amz-user-agent",
+              "x-before"
+            ],
+            "payloadHash": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "canonicalRequest": "POST\n/model/anthropic.claude-sonnet-4-6/converse-stream\n\namz-sdk-invocation-id:05bdcca9-8035-44c5-b62b-1cd54a0c6918\namz-sdk-request:attempt=1; max=1\ncontent-length:137\ncontent-type:application/json\nhost:127.0.0.1:10959\nx-amz-content-sha256:bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1\nx-amz-date:20300101T000000Z\nx-amz-security-token:fake-profile-session\nx-amz-user-agent:aws-sdk-js/3.1126.0\nx-before:fixture-before\n\namz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent;x-before\nbcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "stringToSign": "AWS4-HMAC-SHA256\n20300101T000000Z\n20300101/eu-west-2/bedrock/aws4_request\nd626ce75a01014c01f8560fa983db4c19c453ac31a9f2b962cb179753fe4c288",
+            "computedSignature": "9c3cd371911cd7a0d98f4847e6ad58a47e8520bb88f3b612029ba40c7534ff89",
+            "actualSignature": "9c3cd371911cd7a0d98f4847e6ad58a47e8520bb88f3b612029ba40c7534ff89",
+            "signatureValid": true
+          }
+        }
+      ],
+      "sdkRequestOptions": [
+        {
+          "method": "POST",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "hostname": "127.0.0.1",
+          "port": 10959,
+          "headers": {
+            "content-type": "application/json",
+            "content-length": "137",
+            "x-amz-user-agent": "aws-sdk-js/3.1126.0",
+            "user-agent": "aws-sdk-js/3.1126.0 ua/2.1 os/win32#10.0.26200 lang/js md/nodejs#24.14.0 api/bedrock-runtime#3.1126.0 m/N,E,n",
+            "host": "127.0.0.1:10959",
+            "x-before": "fixture-before",
+            "amz-sdk-invocation-id": "05bdcca9-8035-44c5-b62b-1cd54a0c6918",
+            "amz-sdk-request": "attempt=1; max=1",
+            "x-amz-date": "20300101T000000Z",
+            "x-amz-security-token": "fake-profile-session",
+            "x-amz-content-sha256": "bcbf150b1dd8713b7c1066ca336d5830c8a641ecd26570441dcd51d59de07df1",
+            "authorization": "AWS4-HMAC-SHA256 Credential=FAKE_PROFILE_ACCESS/20300101/eu-west-2/bedrock/aws4_request, SignedHeaders=amz-sdk-invocation-id;amz-sdk-request;content-length;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-user-agent;x-before, Signature=9c3cd371911cd7a0d98f4847e6ad58a47e8520bb88f3b612029ba40c7534ff89"
+          }
+        }
+      ],
+      "sdkClient": {
+        "profile": "fixture",
+        "regionKind": "function",
+        "credentialsKind": "function",
+        "tokenKind": "undefined",
+        "authSchemePreferenceKind": "function",
+        "raw": "<ref *1> {\n  apiVersion: '2023-09-30',\n  base64Decoder: [Function: fromBase64],\n  base64Encoder: [Function: toBase64$1],\n  disableHostPrefix: false,\n  endpointProvider: [Function: defaultEndpointResolver],\n  extensions: [],\n  httpAuthSchemeProvider: [Function: defaultBedrockRuntimeHttpAuthSchemeProvider],\n  httpAuthSchemes: [ [Object], [Object] ],\n  logger: NoOpLogger {},\n  protocol: AwsRestJsonProtocol {\n    serdeContext: [Circular *1],\n    options: [Object],\n    compositeErrorRegistry: [TypeRegistry],\n    serializer: [HttpInterceptingShapeSerializer],\n    deserializer: [HttpInterceptingShapeDeserializer],\n    codec: [JsonCodec2],\n    mixin: [ProtocolLib]\n  },\n  protocolSettings: {\n    defaultNamespace: 'com.amazonaws.bedrockruntime',\n    errorTypeRegistries: [Array],\n    version: '2023-09-30',\n    serviceTarget: 'AmazonBedrockFrontendService'\n  },\n  serviceId: 'Bedrock Runtime',\n  sha256: [class Sha256Node],\n  urlParser: [Function: parseUrl],\n  utf8Decoder: [Function: fromUtf8$1],\n  utf8Encoder: [Function: toUtf8$1],\n  profile: 'fixture',\n  endpoint: [AsyncFunction (anonymous)],\n  region: [AsyncFunction: region],\n  requestHandler: NodeHttpHandler {\n    config: undefined,\n    configProvider: [Promise],\n    socketWarningTimestamp: 0,\n    externalAgent: false,\n    metadata: [Object]\n  },\n  runtime: 'node',\n  defaultsMode: [AsyncFunction (anonymous)],\n  authSchemePreference: [AsyncFunction (anonymous)],\n  bodyLengthChecker: [Function: calculateBodyLength],\n  credentialDefaultProvider: [Function: defaultProvider],\n  defaultUserAgentProvider: [AsyncFunction (anonymous)],\n  eventStreamPayloadHandlerProvider: [Function: eventStreamPayloadHandlerProvider],\n  eventStreamSerdeProvider: [Function: eventStreamSerdeProvider],\n  maxAttempts: [AsyncFunction (anonymous)],\n  retryMode: [AsyncFunction (anonymous)],\n  streamCollector: [Function: streamCollector],\n  useDualstackEndpoint: [AsyncFunction (anonymous)],\n  useFipsEndpoint: [AsyncFunction: useFipsEndpoint],\n  userAgentAppId: [AsyncFunction: userAgentAppId],\n  defaultSigningName: 'bedrock',\n  customUserAgent: undefined,\n  retryStrategy: [Function: retryStrategy],\n  tls: true,\n  isCustomEndpoint: true,\n  ignoreConfiguredEndpointUrls: false,\n  serviceConfiguredEndpoint: [AsyncFunction (anonymous)],\n  eventStreamMarshaller: EventStreamMarshaller {\n    universalMarshaller: [EventStreamMarshaller]\n  },\n  credentials: [Getter/Setter],\n  systemClockOffset: 0,\n  signingEscapePath: true,\n  signer: [AsyncFunction: signer],\n  disableClockSkewCorrection: [AsyncFunction (anonymous)],\n  token: undefined,\n  eventSigner: [AsyncFunction: signer],\n  messageSigner: [AsyncFunction: signer],\n  eventStreamPayloadHandler: EventStreamPayloadHandler {\n    messageSigner: [AsyncFunction: signer],\n    eventStreamCodec: [EventStreamCodec],\n    systemClockOffsetProvider: [AsyncFunction (anonymous)],\n    credentials: [AsyncFunction]\n  }\n}"
+      },
+      "callbackState": {
+        "beforeAmbient": {
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10959",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10959",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10959"
+        },
+        "beforeScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        },
+        "beforeHeaders": {
+          "x-before": "fixture-before"
+        },
+        "afterAmbient": {
+          "AWS_ENDPOINT_URL_SSO": "http://127.0.0.1:10959",
+          "AWS_ENDPOINT_URL_SSO_OIDC": "http://127.0.0.1:10959",
+          "AWS_ENDPOINT_URL_SIGNIN": "http://127.0.0.1:10959"
+        },
+        "afterScoped": {
+          "AWS_BEDROCK_FORCE_HTTP1": "1",
+          "AWS_EC2_METADATA_DISABLED": "true"
+        },
+        "afterHeaders": {
+          "x-after": "fixture-after"
+        }
+      },
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 0
+      },
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 0
+          }
+        }
+      ],
+      "cacheFiles": []
+    }
+  ]
+}

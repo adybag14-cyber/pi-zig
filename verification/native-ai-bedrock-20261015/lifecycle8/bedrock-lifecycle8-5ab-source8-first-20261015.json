@@ -1,0 +1,16 @@
+{
+  "name": "bedrock-lifecycle8-5ab-source8-first-20261015",
+  "pid": 59472,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source5ab-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-lifecycle-source8-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-lifecycle8-5ab-source8-first-20261015-output.json C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\bedrock-lifecycle-input8-20261015.json C:/Users/adyba/pi-zig-update-evidence-20261003/bedrock-credential-owned-work-20261015",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T21:35:13.4692723Z",
+  "launched_utc": "2026-10-15T21:35:13.4662443+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T21:35:42.4391069+00:00"
+}
