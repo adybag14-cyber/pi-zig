@@ -1,0 +1,91 @@
+{
+  "status": "independent_two_host_anthropic_negative_diagnostics_audited",
+  "head": "f9ada04e5e9fca034824a996c5df17cea776b31b",
+  "product_base": "4b6d46d4226c8f49fec120132847c0904786ebbc",
+  "run_id": 38800086916,
+  "run_url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38800086916",
+  "hosted_components_qualified": false,
+  "public_activation": false,
+  "profiles": [
+    {
+      "artifact_id": 12003968912,
+      "name": "native-anthropic-oom-diagnostic-ubuntu-latest-f9ada04e5e9fca034824a996c5df17cea776b31b",
+      "zip_sha256": "sha256:cec2ac77b49410241ca32df9c6cd93534568126d17b4cbfe77d74c5a1b3e1f90",
+      "zip_bytes": 2570612,
+      "selected_tests": 3,
+      "tests_passed": 1,
+      "tests_failed": 2,
+      "binary_sha256": "D435020E2AF08D55A040638E08D755E8D625BA9C577BADB0F45D0D00DC40E314",
+      "source_files": 6530,
+      "compiler_files": 19546,
+      "source_tool_drift": 0,
+      "metadata_tags": [
+        0,
+        3
+      ],
+      "sweeps": [
+        {
+          "label": "anthropic-request",
+          "baseline": 227,
+          "first_failing_index": 226,
+          "outcome": "success_after_failure",
+          "allocated_bytes": 255298,
+          "freed_bytes": 255298,
+          "completed_indices_before_failure": 226,
+          "complete_universe_passed": false
+        },
+        {
+          "label": "anthropic-pending",
+          "baseline": 161,
+          "first_failing_index": 153,
+          "outcome": "JavaScriptException",
+          "allocated_bytes": 221219,
+          "freed_bytes": 221219,
+          "completed_indices_before_failure": 153,
+          "complete_universe_passed": false
+        }
+      ],
+      "runtime_log_sha256": "3fbf538c32401b911b257145f71e76e1db3d56475b0c01879ad5994333170cef"
+    },
+    {
+      "artifact_id": 12003544920,
+      "name": "native-anthropic-oom-diagnostic-windows-latest-f9ada04e5e9fca034824a996c5df17cea776b31b",
+      "zip_sha256": "sha256:180ea971f8ee3888b03c3f110545171d0a86a460b8e56f4385ecc311a00df848",
+      "zip_bytes": 2604297,
+      "selected_tests": 3,
+      "tests_passed": 1,
+      "tests_failed": 2,
+      "binary_sha256": "803625D5D6DA4A98BEBCE4AD98878D432DB51D97989A582EB326D378664865F6",
+      "source_files": 6530,
+      "compiler_files": 19546,
+      "source_tool_drift": 0,
+      "metadata_tags": [
+        0,
+        3
+      ],
+      "sweeps": [
+        {
+          "label": "anthropic-request",
+          "baseline": 227,
+          "first_failing_index": 226,
+          "outcome": "success_after_failure",
+          "allocated_bytes": 221814,
+          "freed_bytes": 221814,
+          "completed_indices_before_failure": 226,
+          "complete_universe_passed": false
+        },
+        {
+          "label": "anthropic-pending",
+          "baseline": 161,
+          "first_failing_index": 153,
+          "outcome": "JavaScriptException",
+          "allocated_bytes": 187735,
+          "freed_bytes": 187735,
+          "completed_indices_before_failure": 153,
+          "complete_universe_passed": false
+        }
+      ],
+      "runtime_log_sha256": "39e28645a4317db7c736237008da784241bc6acd50dfc74644ea586e6a354f6f"
+    }
+  ]
+}

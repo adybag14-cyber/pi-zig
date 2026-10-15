@@ -1,0 +1,158 @@
+{
+  "conclusion": "failure",
+  "headSha": "f9ada04e5e9fca034824a996c5df17cea776b31b",
+  "jobs": [
+    {
+      "completedAt": "2026-10-15T20:27:21Z",
+      "conclusion": "failure",
+      "databaseId": 116646538414,
+      "name": "diagnostic (windows-latest)",
+      "startedAt": "2026-10-15T20:12:41Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T20:12:48Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T20:12:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:13:02Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 2,
+          "startedAt": "2026-10-15T20:12:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:13:17Z",
+          "conclusion": "success",
+          "name": "Run mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29",
+          "number": 3,
+          "startedAt": "2026-10-15T20:13:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:27:12Z",
+          "conclusion": "failure",
+          "name": "Complete unchanged allocation universe with exact failing indices",
+          "number": 4,
+          "startedAt": "2026-10-15T20:13:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:27:15Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "number": 5,
+          "startedAt": "2026-10-15T20:27:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:27:15Z",
+          "conclusion": "success",
+          "name": "Post Run mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29",
+          "number": 9,
+          "startedAt": "2026-10-15T20:27:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:27:17Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 10,
+          "startedAt": "2026-10-15T20:27:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:27:17Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-10-15T20:27:17Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38800086916/job/116646538414"
+    },
+    {
+      "completedAt": "2026-10-15T20:22:00Z",
+      "conclusion": "failure",
+      "databaseId": 116646539023,
+      "name": "diagnostic (ubuntu-latest)",
+      "startedAt": "2026-10-15T20:12:41Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T20:12:43Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T20:12:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:12:49Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 2,
+          "startedAt": "2026-10-15T20:12:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:12:58Z",
+          "conclusion": "success",
+          "name": "Run mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29",
+          "number": 3,
+          "startedAt": "2026-10-15T20:12:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:21:56Z",
+          "conclusion": "failure",
+          "name": "Complete unchanged allocation universe with exact failing indices",
+          "number": 4,
+          "startedAt": "2026-10-15T20:12:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:21:57Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "number": 5,
+          "startedAt": "2026-10-15T20:21:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:21:57Z",
+          "conclusion": "success",
+          "name": "Post Run mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29",
+          "number": 9,
+          "startedAt": "2026-10-15T20:21:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:21:58Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 10,
+          "startedAt": "2026-10-15T20:21:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:21:58Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-10-15T20:21:58Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38800086916/job/116646539023"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38800086916"
+}
