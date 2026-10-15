@@ -89,3 +89,6 @@ verification/ai-openai-http-b06-20261014/** whitespace=blank-at-eol,-blank-at-eo
 # is exempt, and all other source/evidence whitespace checks remain enabled.
 verification/native-ai-streaming-codec-20261015/native-ai-streaming-codec-6cb61bcb-debug-repaired-20261015-compile.stderr.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-ai-streaming-codec-20261015/native-ai-streaming-codec-6cb61bcb-debug-repaired-20261015-runtime.stderr.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+# These Source controls retain their exact frozen trailing newline bytes.
+verification/native-ai-google-mistral-source30-20261015/Run-AiGoogleMistral30Source-20261015.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-ai-google-mistral-source30-20261015/ai-google-mistral30-5ab-source-capture-20261015.mjs whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
