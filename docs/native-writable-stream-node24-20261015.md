@@ -17,6 +17,9 @@ The composition APIs return owned JSValues and accept borrowed inputs:
 | `createNative(engine, sink, strategy)` | Owned stream without consulting a mutable guest global constructor |
 | `isWritableStream(engine, stream)` | Genuine native brand boolean |
 | `isWritableStreamLocked(engine, stream)` | Actual writer lock boolean |
+| `isWritableNative(engine, stream)` | Actual writable-state boolean, distinct from the stream brand |
+| `isClosedNative(engine, stream)` | Actual terminal closed-state boolean |
+| `closeQueuedOrInFlightNative(engine, stream)` | Actual pending/in-flight close state for pipe shutdown ordering |
 | `isErrored(engine, stream)` | Actual terminal errored-state boolean |
 | `isErroringNative(engine, stream)` | Actual transitional erroring-state boolean |
 | `isErroringOrErroredNative(engine, stream)` | Actual combined error-state boolean for transform backpressure continuations |

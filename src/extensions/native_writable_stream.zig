@@ -438,6 +438,19 @@ pub fn isWritableStreamLocked(e: *Engine, value: c.JSValue) !bool {
     if (!try isWritableStream(e, value)) return invalidThis(e, .stream);
     return !c.JS_IsUndefined(streamState(value).writer);
 }
+/// Node's kIsWritable state predicate, distinct from the class brand predicate.
+pub fn isWritableNative(e: *Engine, value: c.JSValue) !bool {
+    if (!try isWritableStream(e, value)) return invalidThis(e, .stream);
+    return streamState(value).status == .writable;
+}
+pub fn isClosedNative(e: *Engine, value: c.JSValue) !bool {
+    if (!try isWritableStream(e, value)) return invalidThis(e, .stream);
+    return streamState(value).status == .closed;
+}
+pub fn closeQueuedOrInFlightNative(e: *Engine, value: c.JSValue) !bool {
+    if (!try isWritableStream(e, value)) return invalidThis(e, .stream);
+    return closeQueued(streamState(value));
+}
 pub fn isErrored(e: *Engine, value: c.JSValue) !bool {
     if (!try isWritableStream(e, value)) return invalidThis(e, .stream);
     return streamState(value).status == .errored;
