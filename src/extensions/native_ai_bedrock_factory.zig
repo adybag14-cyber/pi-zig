@@ -9,7 +9,7 @@ const request = @import("native_ai_bedrock_request.zig");
 const auth = @import("native_ai_bedrock_auth.zig");
 const wire = @import("native_ai_bedrock_wire.zig");
 const decoder = @import("native_ai_bedrock_decode.zig");
-const Stage = enum(c_int) { payload, ready, response, next, chunk };
+const Stage = enum(c_int) { payload, ready, response, prepared, next, chunk };
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     try @import("native_stream.zig").install(engine);
     var s: Scope = .{ .engine = engine };
@@ -142,7 +142,10 @@ fn advance(s: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
         },
         .response => {
             try s.put(owner, "requestId", try s.get(owner, "pendingRequestId"));
-            try s.put(owner, "iterator", try s.own(try @import("native_ai_bedrock_items.zig").create(s.engine, try s.get(owner, "http"), try s.get(owner, "response"), try s.get(owner, "requestId"))));
+            try wait(s, owner, try s.own(try @import("native_ai_bedrock_items.zig").create(s.engine, try s.get(owner, "http"), try s.get(owner, "response"), try s.get(owner, "requestId"))), .prepared);
+        },
+        .prepared => {
+            try s.put(owner, "iterator", value);
             try next(s, owner);
         },
         .next => {
