@@ -60,7 +60,13 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
                 switch (index) {
                     0 => {
                         try emit(&row, roots[0], "start", null, null, c.pi_js_undefined());
-                        if (kind == .mistral) try row.put(roots[0], "tools", try row.own(try v.js.builtin(host, "Map", &.{})));
+                        if (kind == .mistral) {
+                            // Source evaluates the consumeChatStream callback
+                            // argument after start, before the consumer's Map.
+                            const callback = try v.optional(&row, if (args.len > 0) args[0] else c.pi_js_undefined(), "onProviderStreamEvent");
+                            try row.put(roots[0], "tools", try row.own(try v.js.builtin(host, "Map", &.{})));
+                            return c.JS_DupValue(host.context, callback);
+                        }
                     },
                     1 => if (kind != .mistral) try google(&row, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined()) else try mistral(&row, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined()),
                     2 => try finish(&row, roots[0], args.len > 0 and row.truthy(args[0]), kind),

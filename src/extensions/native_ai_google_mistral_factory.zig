@@ -253,7 +253,9 @@ fn next(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
             },
             .data => |chunk| {
                 try scope.put(owner, "chunk", chunk);
-                return wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", chunk), .chunk, kind);
+                const callback = try scope.get(owner, "mistralProviderCallback");
+                const result = if (v.nullish(callback)) c.pi_js_undefined() else try scope.call(callback, c.pi_js_undefined(), &.{ chunk, try scope.get(owner, "model") });
+                return wait(scope, owner, result, .chunk, kind);
             },
         }
     }
@@ -276,7 +278,9 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
             const arithmetic = @import("native_image_arithmetic.zig");
             const bad = try arithmetic.compare(scope.engine, .less, status, c.JS_NewInt32(scope.engine.context, 200)) or try arithmetic.compare(scope.engine, .greater_equal, status, c.JS_NewInt32(scope.engine.context, 300));
             if (!bad) {
-                _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
+                if (kind == .mistral) {
+                    try scope.put(owner, "mistralProviderCallback", try scope.invoke(try scope.get(owner, "decoder"), "start", &.{try scope.get(owner, "options")}));
+                } else _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
                 if (kind == .mistral) try @import("native_ai_mistral_sse.zig").start(scope, owner);
             }
             try next(scope, owner, kind);
