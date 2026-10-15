@@ -9,15 +9,19 @@ const Scope = @import("native_highlight_scope.zig").Scope;
 const c = em.c;
 const Callback = enum(c_int) { compile, dependency, expand, variant, contains, child, begin_rule };
 
-fn function(scope: *Scope, state: c.JSValue, mode: c.JSValue, kind: Callback) !c.JSValue {
+fn function(scope: *Scope, state: c.JSValue, mode: c.JSValue, comptime kind: Callback) !c.JSValue {
     var roots = [_]c.JSValue{ state, mode };
-    return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, callback, if (kind == .compile) "compileMode" else "", if (kind == .compile) 2 else 1, @intFromEnum(kind), roots.len, &roots)));
+    return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, CallbackBody(kind).call, if (kind == .compile) "compileMode" else "", if (kind == .compile) 2 else 1, @intFromEnum(kind), roots.len, &roots)));
 }
-fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    const first = if (argc > 0) args[0] else c.pi_js_undefined();
-    const second = if (argc > 1) args[1] else c.pi_js_undefined();
-    return invoke(engine, roots[0], roots[1], @enumFromInt(magic), first, second) catch |err| sdk.fail(engine, err);
+fn CallbackBody(comptime kind: Callback) type {
+    return struct {
+        fn call(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const engine = em.Engine.fromContext(context.?);
+            const first = if (argc > 0) args[0] else c.pi_js_undefined();
+            const second = if (argc > 1) args[1] else c.pi_js_undefined();
+            return invokeKind(engine, roots[0], roots[1], kind, first, second) catch |err| sdk.fail(engine, err);
+        }
+    };
 }
 fn inherit(scope: *Scope, state: c.JSValue, args: []const c.JSValue) !c.JSValue {
     return scope.call(try scope.get(state, "inherit"), c.pi_js_undefined(), args);
@@ -46,11 +50,6 @@ fn expand(scope: *Scope, state: c.JSValue, mode: c.JSValue) !c.JSValue {
     const object = try scope.global("Object");
     if (scope.truthy(try scope.invoke(object, "isFrozen", &.{mode}))) return inherit(scope, state, &.{mode});
     return mode;
-}
-fn invoke(engine: *em.Engine, state: c.JSValue, owner: c.JSValue, kind: Callback, first: c.JSValue, second: c.JSValue) !c.JSValue {
-    return switch (kind) {
-        inline else => |selected| invokeKind(engine, state, owner, selected, first, second),
-    };
 }
 fn invokeKind(engine: *em.Engine, state: c.JSValue, owner: c.JSValue, comptime kind: Callback, first: c.JSValue, second: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };

@@ -10,18 +10,22 @@ const Kind = enum(c_int) { response_ignore, top, root, add, open, close, close_a
 fn arg(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
 }
-fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return invoke(engine, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, @enumFromInt(magic), roots[0]) catch |err| sdk.fail(engine, err);
+fn CallbackBody(comptime kind: Kind) type {
+    return struct {
+        fn call(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const engine = em.Engine.fromContext(context.?);
+            return invokeKind(engine, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, kind, roots[0]) catch |err| sdk.fail(engine, err);
+        }
+    };
 }
-fn function(scope: *Scope, name: [*:0]const u8, arity: c_int, kind: Kind, captured: c.JSValue) !c.JSValue {
+fn function(scope: *Scope, name: [*:0]const u8, arity: c_int, comptime kind: Kind, captured: c.JSValue) !c.JSValue {
     var roots = [_]c.JSValue{captured};
-    return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, callback, name, arity, @intFromEnum(kind), roots.len, &roots)));
+    return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, CallbackBody(kind).call, name, arity, @intFromEnum(kind), roots.len, &roots)));
 }
-fn method(scope: *Scope, prototype: c.JSValue, name: [*:0]const u8, arity: c_int, kind: Kind, captured: c.JSValue) !void {
+fn method(scope: *Scope, prototype: c.JSValue, name: [*:0]const u8, arity: c_int, comptime kind: Kind, captured: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(scope.engine.context, prototype, name, c.JS_DupValue(scope.engine.context, try function(scope, name, arity, kind, captured)), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(scope.engine);
 }
-fn getter(scope: *Scope, prototype: c.JSValue, name: [*:0]const u8, function_name: [*:0]const u8, kind: Kind) !void {
+fn getter(scope: *Scope, prototype: c.JSValue, name: [*:0]const u8, function_name: [*:0]const u8, comptime kind: Kind) !void {
     const atom = c.JS_NewAtom(scope.engine.context, name);
     if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
     defer c.JS_FreeAtom(scope.engine.context, atom);
@@ -35,11 +39,6 @@ pub fn escapeHtml(scope: *Scope, value: c.JSValue) !c.JSValue {
     var result = value;
     inline for (.{ .{ "&", "&amp;" }, .{ "<", "&lt;" }, .{ ">", "&gt;" }, .{ "\"", "&quot;" }, .{ "'", "&#x27;" } }) |rule| result = try scope.invoke(result, "replace", &.{ try expression(scope, rule[0]), try scope.text(rule[1]) });
     return result;
-}
-fn invoke(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, kind: Kind, captured: c.JSValue) !c.JSValue {
-    return switch (kind) {
-        inline else => |selected| invokeKind(engine, receiver, args, selected, captured),
-    };
 }
 fn invokeKind(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, comptime kind: Kind, captured: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
