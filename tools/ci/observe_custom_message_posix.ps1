@@ -63,7 +63,7 @@ $taskCaptures=@()
 try {
  foreach($taskCapture in 1..2){
   $taskOutput=Join-Path $taskReceipt "original-$taskCapture.json";$taskClosure=Join-Path $taskReceipt "closure-$taskCapture.json"
-  $taskOwner=Invoke-CiOwnedProcess $taskNode @('--max-old-space-size=256','--conditions=source','--experimental-transform-types','--import',([Uri]$taskObserver).AbsoluteUri,$taskDriver,$taskSource,$taskModuleManifest,$taskContract,$taskClosure,$taskInput,$taskGolden,$taskOutput) $taskSource (Join-Path $taskReceipt "owner-$taskCapture") 300
+  $taskOwner=Invoke-CiOwnedProcess $taskNode @('--max-old-space-size=256','--conditions=source','--experimental-transform-types','--import',$taskObserver,$taskDriver,$taskSource,$taskModuleManifest,$taskContract,$taskClosure,$taskInput,$taskGolden,$taskOutput) $taskSource (Join-Path $taskReceipt "owner-$taskCapture") 300
   $taskObserved=Get-Content -LiteralPath $taskOutput -Raw|ConvertFrom-Json;$taskLoaded=Get-Content -LiteralPath $taskClosure -Raw|ConvertFrom-Json
   if(!$taskObserved.matchedOriginal -or $taskObserved.cases -ne 40 -or $taskObserved.actualNode.pid -ne $taskOwner.pid -or $taskObserved.actualNode.executable -cne $taskNode -or $taskLoaded.node.pid -ne $taskOwner.pid -or $taskLoaded.exit_code -ne 0 -or !$taskLoaded.unchanged_default_loader -or $taskLoaded.post_drift.Count){throw 'Actual latest Linux Source40 identity/closure mismatch'}
   $taskSessionPath=Join-Path $taskSource 'packages/coding-agent/src/core/agent-session.ts'
