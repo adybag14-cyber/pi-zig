@@ -1,0 +1,88 @@
+// Caller-controlled WebSocket/fetch transport. All provider/pool algorithms are Source.
+import {writeFileSync} from 'node:fs';
+import {pathToFileURL} from 'node:url';
+import {zstdDecompressSync} from 'node:zlib';
+const source='C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/ai/src/';
+let current;
+const originalSetTimeout=globalThis.setTimeout;
+const originalClearTimeout=globalThis.clearTimeout;
+const ownedTimers=[];
+const ownedSockets=new Map();
+// Preserve exact arguments, callback, receiver, return and timer duration.
+// The observer only keeps the actual handles created in this owned Node job.
+globalThis.setTimeout=function setTimeout(callback,after){const handle=Reflect.apply(originalSetTimeout,this,arguments);ownedTimers.push({handle,scenario:current?.spec.name??'source-import',requestedDelay:arguments[1]});return handle};
+const api=await import(pathToFileURL(source+'api/openai-codex-responses.ts'));
+const {cleanupSessionResources}=await import(pathToFileURL(source+'session-resources.ts'));
+const {AssistantMessageEventStream}=await import(pathToFileURL(source+'utils/event-stream.ts'));
+const model={id:'gpt-5.5',api:'openai-codex-responses',provider:'openai-codex',baseUrl:'https://chatgpt.com/backend-api',reasoning:true,input:['text','image'],contextWindow:32000,maxTokens:8192,cost:{input:2,output:8,cacheRead:0.5,cacheWrite:1}};
+const context={messages:[{role:'system',content:'system',timestamp:0},{role:'user',content:'hello',timestamp:1}]};
+const token='e30.'+Buffer.from(JSON.stringify({'https://api.openai.com/auth':{chatgpt_account_id:'account-fixture'}})).toString('base64')+'.sig';
+const message=(text)=>({type:'message',id:'msg_fixture',role:'assistant',status:'completed',phase:'final_answer',content:[{type:'output_text',text,annotations:[]}]});
+const events=(id='resp_fixture')=>[{type:'response.created',response:{id}},{type:'response.output_item.added',output_index:0,item:message('')},{type:'response.output_text.delta',output_index:0,delta:'answer'},{type:'response.output_item.done',output_index:0,item:message('answer')},{type:'response.done',response:{id,status:'completed',end_turn:true,output:[message('answer')],usage:{input_tokens:8,output_tokens:2,total_tokens:10},service_tier:'default'}}];
+const specifications=[
+ {name:'cached-continuation',turns:2},
+ {name:'request-shape-change',turns:2,changeShape:true},
+ {name:'busy-session',parallel:true,turns:2},
+ {name:'connection-limit-retry',turns:1,connectionLimit:true},
+ {name:'missing-previous-retry',turns:2,missingPrevious:true},
+ {name:'provider-callback-rejection',turns:1,rejectProvider:true},
+ {name:'pre-start-transport-fallback-affinity',turns:2,failOpen:true},
+ {name:'post-start-transport-failure',turns:1,failAfterPartial:true},
+ {name:'expired-session-connection',turns:2,expire:true},
+ {name:'explicit-session-cleanup',turns:2,cleanupBetween:true},
+];
+let time=1792080000123;
+Date.now=()=>time;
+const snapshot=value=>JSON.parse(JSON.stringify(value,(key,value)=>key==='durationMs'&&typeof value==='number'?0:value));
+class ControlledSocket extends EventTarget {
+ constructor(url,options){super();this.readyState=0;this.id=current.connections.length;this.ordinal=0;current.connections.push({id:this.id,url:String(url),headers:snapshot(options.headers),sends:[],closes:[]});this.record=current.connections[this.id];ownedSockets.set(this,{scenario:current.spec.name,id:this.id});queueMicrotask(()=>{if(current.spec.failOpen){this.dispatchEvent(Object.assign(new Event('error'),{message:'fixture socket unavailable'}));return}this.readyState=1;this.dispatchEvent(new Event('open'))})}
+ send(text){const body=JSON.parse(text);this.record.sends.push(snapshot(body));const ordinal=++current.sends;let incoming=events('resp_'+ordinal);
+  if(current.spec.connectionLimit&&ordinal===1)incoming=[{type:'error',code:'websocket_connection_limit_reached',message:'fixture connection limit'}];
+  if(current.spec.missingPrevious&&body.previous_response_id&&!current.missingSent){current.missingSent=true;incoming=[{type:'error',code:'previous_response_not_found',message:'fixture previous missing'}]}
+  if(current.spec.failAfterPartial)incoming=incoming.slice(0,3);
+  for(const event of incoming)queueMicrotask(()=>this.dispatchEvent(new MessageEvent('message',{data:JSON.stringify(event)})));
+  if(current.spec.failAfterPartial)queueMicrotask(()=>queueMicrotask(()=>this.dispatchEvent(Object.assign(new Event('error'),{message:'fixture socket interrupted'}))));
+ }
+ close(code=1000,reason=''){if(this.readyState===3)return;this.record.closes.push({code,reason});this.readyState=3;queueMicrotask(()=>this.dispatchEvent(Object.assign(new Event('close'),{code,reason,wasClean:true})))}
+}
+const originalSocket=globalThis.WebSocket;
+globalThis.WebSocket=ControlledSocket;
+const originalPush=AssistantMessageEventStream.prototype.push;
+const capturedStreams=new WeakMap();
+AssistantMessageEventStream.prototype.push=function(event){capturedStreams.get(this)?.push(snapshot(event));return originalPush.call(this,event)};
+const rows=[];
+for(const spec of specifications){
+ cleanupSessionResources();api.resetOpenAICodexWebSocketDebugStats();time=1792080000123;
+ current={spec,connections:[],sends:0,fetches:[],missingSent:false};
+ const sessionId='socket-fixture-'+spec.name;
+ const state=current;const turns=[];
+ async function turn(ctx,turnIndex){const trace=[],pushEvents=[],consumerEvents=[],aliases=[];let first,providerIndex=0;
+  const options={apiKey:token,sessionId,transport:'websocket-cached',headers:{'User-Agent':'pi-fixture'},timeoutMs:1000,websocketConnectTimeoutMs:1000,reasoningEffort:'high',maxRetries:0,...(spec.changeShape&&turnIndex===1?{temperature:0.8}:{}),
+   onPayload:async(payload,m)=>{trace.push(['payload-enter',m===model,snapshot(payload)]);await Promise.resolve();trace.push(['payload-leave',m===model])},
+   onProviderStreamEvent:async(event,m)=>{trace.push(['provider-enter',providerIndex,m===model,snapshot(event)]);await Promise.resolve();trace.push(['provider-leave',providerIndex,m===model]);if(spec.rejectProvider&&providerIndex===0)throw {fixture:'socket-callback-rejection'};providerIndex++},
+   onResponse:async(response,m)=>{trace.push(['response-enter',m===model,snapshot(response)]);await Promise.resolve();trace.push(['response-leave',m===model])},
+   fetch:async(url,init)=>{let body=init.body;const headers=new Headers(init.headers);if(headers.get('content-encoding')==='zstd')body=zstdDecompressSync(body).toString();state.fetches.push({url:String(url),headers:Object.fromEntries(headers),body:JSON.parse(body)});return new Response(events('resp_sse').map(event=>'data: '+JSON.stringify(event)+'\n\n').join(''),{status:200,headers:{'content-type':'text/event-stream','x-fixture-response':'source'}})}
+  };
+  let result,thrown;try{const stream=api.stream(model,ctx,options);capturedStreams.set(stream,pushEvents);for await(const event of stream){const output=event.partial??event.message??event.error;first??=output;aliases.push([event.type,output===first]);consumerEvents.push(snapshot(event))}result=await stream.result();aliases.push(['result',result===first]);capturedStreams.delete(stream)}catch(error){thrown=String(error)}
+  const row={turnIndex,trace,pushEvents,consumerEvents,aliases,result:result?snapshot(result):null,...(thrown?{thrown}:{})};turns.push(row);return result;
+ }
+ if(spec.parallel){await Promise.all([turn(context,0),turn(context,1)])}else{
+  let result=await turn(context,0);
+  if(spec.turns===2){if(spec.expire)time+=55*60*1000+1;if(spec.cleanupBetween)cleanupSessionResources(sessionId);const ctx={messages:[...context.messages,...(result?[result]:[]),{role:'user',content:'next',timestamp:time}]};await turn(ctx,1)}
+ }
+ const rawStats=api.getOpenAICodexWebSocketDebugStats(sessionId);const stats=rawStats===undefined?undefined:snapshot(rawStats);cleanupSessionResources(sessionId);
+ rows.push({name:spec.name,connections:snapshot(state.connections),fetches:snapshot(state.fetches),turns,stats});
+}
+cleanupSessionResources();
+// Source lifecycle observations are complete before controller teardown.
+const sourceLifecycle={unclosedSockets:[...ownedSockets].filter(([socket])=>socket.readyState!==3).map(([socket,record])=>({...record,readyState:socket.readyState})),retainedTimers:ownedTimers.map((record,index)=>({index,scenario:record.scenario,requestedDelay:record.requestedDelay,destroyed:record.handle._destroyed,refed:record.handle.hasRef()})).filter(record=>!record.destroyed)};
+const sourceLifecycleQualified=sourceLifecycle.unclosedSockets.length===0&&sourceLifecycle.retainedTimers.length===0;
+// Clear only actual handles recorded by this job, after recording the leak.
+// No Source callback/body/duration is replaced and no process.exit is used.
+for(const record of ownedTimers)Reflect.apply(originalClearTimeout,globalThis,[record.handle]);
+for(const [socket] of ownedSockets)if(socket.readyState!==3)socket.close(1000,'owned_test_teardown');
+const testTeardown={ownedTimers:ownedTimers.length,remainingTimers:ownedTimers.filter(record=>!record.handle._destroyed).length,ownedSockets:ownedSockets.size,remainingSockets:[...ownedSockets.keys()].filter(socket=>socket.readyState!==3).length};
+globalThis.setTimeout=originalSetTimeout;globalThis.WebSocket=originalSocket;AssistantMessageEventStream.prototype.push=originalPush;
+if(testTeardown.remainingTimers!==0||testTeardown.remainingSockets!==0)throw Error('Owned test teardown incomplete');
+const result={sourceHead:'5ab7fe74c400097b386662205cd93900695b8a71',actualNode:{version:process.version,executable:process.execPath},cases:specifications.length,model,context,specifications,rows,protocolSourceCompleted:true,sourceLifecycleQualified,sourceLifecycle,testTeardown};
+writeFileSync(process.argv[2],JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({cases:rows.length,connections:rows.reduce((n,row)=>n+row.connections.length,0),fetches:rows.reduce((n,row)=>n+row.fetches.length,0),turns:rows.reduce((n,row)=>n+row.turns.length,0)}));
