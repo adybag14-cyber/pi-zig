@@ -87,7 +87,13 @@ test "native AI Google Mistral actual Source30 request event callback error sema
         }
         const fixture = @import("ai/http_fixture.zig");
         const path = if (requests.len > 0) requests[0].object.get("path").?.string else "/no-request";
-        const plan = fixture.Reply{ .path = path, .status = if (input.object.get("status")) |status| @enumFromInt(status.integer) else .ok, .body = wire.items, .headers = &.{.{ .name = "x-fixture", .value = "source-only" }} };
+        var expected_headers: std.ArrayList(std.http.Header) = .empty;
+        defer expected_headers.deinit(gpa);
+        if (requests.len > 0) {
+            var fields = requests[0].object.get("headers").?.object.iterator();
+            while (fields.next()) |field| try expected_headers.append(gpa, .{ .name = field.key_ptr.*, .value = field.value_ptr.string });
+        }
+        const plan = fixture.Reply{ .path = path, .status = if (input.object.get("status")) |status| @enumFromInt(status.integer) else .ok, .body = wire.items, .expected_request_headers = expected_headers.items, .headers = &.{.{ .name = "x-fixture", .value = "source-only" }} };
         const server = try fixture.PlanServer.init(gpa, std.testing.io, if (requests.len > 0) &.{plan} else &.{});
         defer server.deinit();
         const url = try server.url(gpa, "/v1");
