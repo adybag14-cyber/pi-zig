@@ -18,7 +18,7 @@ fn install(engine: *v.em.Engine) !void {
     try engine.registerValueModule("native:auth-helper-fixture", helpers);
 }
 test "native AI auth helpers preserve credential identity iterator close async loader and owned file behavior" {
-    const engine = try v.em.Engine.init(std.testing.allocator, .{});
+    const engine = try v.em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try install(engine);
     var tmp = std.testing.tmpDir(.{});
@@ -29,6 +29,14 @@ test "native AI auth helpers preserve credential identity iterator close async l
     defer std.testing.allocator.free(path);
     var source: std.Io.Writer.Allocating = .init(std.testing.allocator);
     defer source.deinit();
+    const actual_source = @embedFile("extensions/fixtures/ai-auth-helpers-ae7-source16.json");
+    const terminated_source = try std.testing.allocator.dupeZ(u8, actual_source);
+    defer std.testing.allocator.free(terminated_source);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const global = try scope.own(try engine.checked(c.JS_GetGlobalObject(engine.context)));
+    const expected = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, terminated_source.ptr, actual_source.len, "actual-ae7-auth-helpers-source16.json")));
+    try scope.put(global, "ownedAuthSource", expected);
     try source.writer.writeAll(@embedFile("extensions/native_ai_auth_helpers_fixture.mjs"));
     try source.writer.writeAll("\nimport * as api from 'native:auth-helper-fixture';import fs from 'node:fs';const path=");
     try std.json.Stringify.value(path, .{}, &source.writer);
@@ -36,6 +44,8 @@ test "native AI auth helpers preserve credential identity iterator close async l
         \\;fs.writeFileSync(path,'owned fixture only');export const rows=await run(api,path);
         \\const byCase=Object.fromEntries(rows.map(row=>[row.case,row]));
         \\if(rows.length!==16)throw Error('all helper cases required');
+        \\if(ownedAuthSource.cases!==16||ownedAuthSource.rows.length!==16)throw Error('actual Source16 fixture required');
+        \\for(let index=0;index<rows.length;index++)if(JSON.stringify(rows[index])!==JSON.stringify(ownedAuthSource.rows[index]))throw Error(JSON.stringify({case:rows[index].case,actual:rows[index],source:ownedAuthSource.rows[index]}));
         \\if(!byCase['stored-getters'].sameEnv||byCase['stored-getters'].result.auth.apiKey!=='owned-stored-key')throw Error('stored identity');
         \\if(!byCase['abort-closes-preserving'].sameReason||byCase['abort-closes-preserving'].log.join(',')!=='return')throw Error('abort close identity');
         \\if(byCase['login-sync-failure-is-async'].syncThrow||!byCase['login-sync-failure-is-async'].sameReason)throw Error('async rejection');
@@ -52,7 +62,7 @@ test "native AI auth helpers preserve credential identity iterator close async l
     c.JS_RunGC(engine.runtime);
 }
 test "native AI auth helpers retain captured guest values and promises through real collection" {
-    const engine = try v.em.Engine.init(std.testing.allocator, .{});
+    const engine = try v.em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try install(engine);
     const first = try engine.evalModule(

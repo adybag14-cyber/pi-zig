@@ -1,0 +1,228 @@
+{
+  "authority": "actual auth/helpers.ts, auth/context.ts and auth/oauth/device-code.ts from immutable ae7 Source",
+  "sourceRoot": "C:/Users/adyba/pi-upstream-source-ae7b16d-20261015",
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "cases": 16,
+  "rows": [
+    {
+      "case": "metadata",
+      "factory": {
+        "name": "envApiKeyAuth",
+        "length": 2,
+        "ownPrototype": true,
+        "asyncPrototype": false
+      },
+      "lazyFactory": {
+        "name": "lazyOAuth",
+        "length": 1,
+        "ownPrototype": true,
+        "asyncPrototype": false
+      },
+      "login": {
+        "name": "login",
+        "length": 1,
+        "ownPrototype": false,
+        "asyncPrototype": true
+      },
+      "resolve": {
+        "name": "resolve",
+        "length": 1,
+        "ownPrototype": false,
+        "asyncPrototype": true
+      },
+      "keys": [
+        "name",
+        "login",
+        "resolve"
+      ]
+    },
+    {
+      "case": "stored-getters",
+      "log": [
+        "input.ctx",
+        "input.credential",
+        "input.signal",
+        "signal.check",
+        "credential.key",
+        "credential.key",
+        "credential.env"
+      ],
+      "result": {
+        "auth": {
+          "apiKey": "owned-stored-key"
+        },
+        "env": {
+          "OWNED_CONFIG": "owned-config"
+        },
+        "source": "stored credential"
+      },
+      "sameEnv": true
+    },
+    {
+      "case": "env-iterator",
+      "log": [
+        "check",
+        "iterator",
+        "next:0",
+        "env:ONE:true",
+        "check",
+        "next:1",
+        "env:TWO:true",
+        "check",
+        "return"
+      ],
+      "result": {
+        "auth": {
+          "apiKey": "owned-env-key"
+        },
+        "source": "TWO"
+      }
+    },
+    {
+      "case": "abort-closes-preserving",
+      "log": [
+        "return"
+      ],
+      "sameReason": true
+    },
+    {
+      "case": "prompt-input",
+      "prompt": {
+        "type": "secret",
+        "message": "Enter Owned key"
+      }
+    },
+    {
+      "case": "login-getter-order",
+      "log": [
+        "signal",
+        "check",
+        "prompt-get",
+        "name:string",
+        "prompt-call:true",
+        "signal",
+        "check"
+      ],
+      "result": {
+        "type": "api_key",
+        "key": "owned-entered-key"
+      }
+    },
+    {
+      "case": "login-sync-failure-is-async",
+      "syncThrow": false,
+      "sameReason": true
+    },
+    {
+      "case": "lazy-load-delegation",
+      "initialLog": [
+        "name",
+        "isSubscription",
+        "loginLabel"
+      ],
+      "log": [
+        "name",
+        "isSubscription",
+        "loginLabel",
+        "load:true",
+        "login-get",
+        "login:true:true:true:2",
+        "refresh:true:true:true:2",
+        "toAuth:true:true:1"
+      ],
+      "loads": 1,
+      "identity": true,
+      "request": {
+        "apiKey": "owned-access"
+      },
+      "metadata": [
+        {
+          "name": "login",
+          "length": 2,
+          "ownPrototype": false,
+          "asyncPrototype": true
+        },
+        {
+          "name": "refresh",
+          "length": 2,
+          "ownPrototype": false,
+          "asyncPrototype": true
+        },
+        {
+          "name": "toAuth",
+          "length": 1,
+          "ownPrototype": false,
+          "asyncPrototype": true
+        }
+      ],
+      "keys": [
+        "name",
+        "isSubscription",
+        "loginLabel",
+        "login",
+        "refresh",
+        "toAuth"
+      ]
+    },
+    {
+      "case": "lazy-rejection-cached",
+      "loads": 1,
+      "matches": 2
+    },
+    {
+      "case": "lazy-sync-throw-retries",
+      "loads": 2,
+      "matches": 2
+    },
+    {
+      "case": "lazy-nullish-retries",
+      "loads": 2,
+      "errors": 2
+    },
+    {
+      "case": "default-context-env",
+      "value": "  owned value  ",
+      "empty": true,
+      "number": true,
+      "missing": true
+    },
+    {
+      "case": "default-context-owned-file",
+      "exists": true,
+      "missing": false,
+      "invalid": false
+    },
+    {
+      "case": "device-poll-intervals",
+      "durations": [
+        1000,
+        1000,
+        2000
+      ],
+      "subscriptions": [
+        "add:abort:true",
+        "remove:abort",
+        "poll:true",
+        "add:abort:true",
+        "remove:abort",
+        "poll:true",
+        "add:abort:true",
+        "remove:abort",
+        "poll:true"
+      ],
+      "value": "owned-device-result",
+      "clock": 14000
+    },
+    {
+      "case": "device-sleep-preabort",
+      "message": "Owned cancel"
+    },
+    {
+      "case": "device-expired-no-poll",
+      "message": "Device flow timed out"
+    }
+  ]
+}

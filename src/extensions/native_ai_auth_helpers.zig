@@ -5,7 +5,7 @@ const Scope = v.Scope;
 const c = v.c;
 const flow = @import("native_agent_async.zig");
 const functions = @import("native_node_function.zig");
-const Stage = enum(c_int) { login, env, lazy, delegated, file_module, file_os, file_access };
+const Stage = enum(c_int) { login, env, lazy, file_module, file_os, file_access };
 
 pub fn asyncArrow(engine: *v.em.Engine, name: [*:0]const u8, length: c_int, callback: functions.Callback, roots: []const c.JSValue) !c.JSValue {
     const value = try functions.createArrow(engine, name, length, callback, roots);
@@ -268,9 +268,10 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             const arguments = try scope.get(owner, "arguments");
             const first = try v.at(scope, arguments, 0);
             const returned = if (try v.length(scope, arguments) == 1) try scope.call(method, value, &.{first}) else try scope.call(method, value, &.{ first, try v.at(scope, arguments, 1) });
-            return flow.wait(continued, scope.engine, owner, returned, @intFromEnum(Stage.delegated));
+            // Source tail-returns the delegated value after awaiting the load;
+            // resolve adopts it directly rather than adding another await job.
+            return flow.settle(scope.engine, owner, false, returned);
         },
-        .delegated => return flow.settle(scope.engine, owner, false, value),
         .file_module => {
             try scope.put(owner, "fs", value);
             const path = try scope.get(owner, "path");
