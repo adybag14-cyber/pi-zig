@@ -9,6 +9,25 @@ fn completeBody(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: c.JSValue, action: 
     action[0] = c.JS_PI_AG_COMPLETE;
     return c.pi_js_undefined();
 }
+fn armCompletedReturnOom(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const ctx = context.?;
+    const iterator = c.JS_GetPropertyStr(ctx, roots[0], "iterator");
+    if (c.JS_IsException(iterator)) return iterator;
+    defer c.JS_FreeValue(ctx, iterator);
+    const next = c.JS_GetPropertyStr(ctx, iterator, "next");
+    if (c.JS_IsException(next)) return next;
+    defer c.JS_FreeValue(ctx, next);
+    const trailing = c.JS_Call(ctx, next, iterator, 0, null);
+    if (c.JS_IsException(trailing)) return trailing;
+    if (c.JS_SetPropertyStr(ctx, roots[0], "trailing", trailing) < 0) return c.JS_Throw(ctx, c.JS_GetException(ctx));
+    const constructor = c.JS_GetPropertyStr(ctx, roots[0], "constructor");
+    if (c.JS_IsException(constructor)) return constructor;
+    // The return request and reentrantly queued next already have their
+    // capabilities. PromiseResolve reuses the input Promise; handler creation
+    // is the first subsequent VM allocation and must take the reviewed path.
+    c.JS_SetMemoryLimit(c.JS_GetRuntime(ctx), 1);
+    return constructor;
+}
 fn equal(scope: *Scope, value: c.JSValue, text: []const u8) !bool {
     return scope.equal(value, try scope.text(text));
 }
@@ -257,6 +276,48 @@ test "native async generator functional owner retirement and unreachable owner c
     try std.testing.expectEqual(@as(usize, 2), retired);
     c.JS_RunGC(engine.runtime);
     try std.testing.expectEqual(@as(usize, 2), retired);
+}
+test "native async generator functional completed return handler OOM drains reentrant trailing request" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    const native = try engine.checked(c.JS_PiNewNativeAsyncGenerator(engine.context, c.pi_js_undefined(), completeBody, c.pi_js_undefined()));
+    defer engine.freeValue(native);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const constructor = try js.get(engine, global, "Promise");
+    defer engine.freeValue(constructor);
+    const state = try sdk.object(engine);
+    defer engine.freeValue(state);
+    try sdk.put(engine, state, "iterator", c.JS_DupValue(engine.context, native));
+    try sdk.put(engine, state, "constructor", c.JS_DupValue(engine.context, constructor));
+    try sdk.put(engine, state, "trailing", c.pi_js_undefined());
+    const input = try engine.checked(c.JS_NewSettledPromise(engine.context, false, c.pi_js_undefined()));
+    defer engine.freeValue(input);
+    var roots = [_]c.JSValue{state};
+    const getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, armCompletedReturnOom, "get constructor", 0, 0, roots.len, &roots));
+    const atom = c.JS_NewAtom(engine.context, "constructor");
+    defer c.JS_FreeAtom(engine.context, atom);
+    if (c.JS_DefinePropertyGetSet(engine.context, input, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+    const returned = try js.get(engine, native, "return");
+    defer engine.freeValue(returned);
+    var args = [_]c.JSValue{input};
+    const pending = c.JS_Call(engine.context, returned, native, args.len, &args);
+    c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+    defer engine.freeValue(pending);
+    try std.testing.expect(!c.JS_IsException(pending));
+    try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(engine.context, pending));
+    const trailing = try js.get(engine, state, "trailing");
+    defer engine.freeValue(trailing);
+    try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(engine.context, trailing));
+    try std.testing.expect(!c.JS_HasException(engine.context));
+    const later = try js.invoke(engine, native, "next", &.{});
+    defer engine.freeValue(later);
+    const terminal = try engine.awaitValue(later);
+    defer engine.freeValue(terminal);
+    const done = try js.get(engine, terminal, "done");
+    defer engine.freeValue(done);
+    try std.testing.expect(c.JS_ToBool(engine.context, done) == 1);
+    c.JS_RunGC(engine.runtime);
 }
 comptime {
     _ = @import("native_ai_json_parse_test.zig");
