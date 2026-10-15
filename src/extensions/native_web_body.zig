@@ -197,7 +197,7 @@ pub fn extract(scope: *Scope, interfaces: *const idl.Interfaces, converted: c.JS
     const readable = try interfaces.is(scope, interfaces.readable, converted);
     const is_blob = !readable and try interfaces.is(scope, interfaces.blob, converted);
     var controller = c.pi_js_undefined();
-    const stream = if (readable) converted else if (is_blob) try scope.invoke(converted, "stream", &.{}) else built: {
+    var stream = if (readable) converted else if (is_blob) try scope.invoke(converted, "stream", &.{}) else built: {
         const pair = try byteStream(scope);
         controller = pair.controller;
         break :built pair.stream;
@@ -227,7 +227,7 @@ pub fn extract(scope: *Scope, interfaces: *const idl.Interfaces, converted: c.JS
         if (c.JS_IsFunction(scope.engine.context, iterator)) {
             if (keepalive) try web.typeError(scope, try scope.text("keepalive"), null);
             if (try disturbed(scope, converted) or scope.truthy(try scope.get(converted, "locked"))) try web.typeError(scope, try scope.text("Response body object should not be disturbed or locked"), null);
-            if (!readable) return error.NativeWebAsyncIterableBodyUnavailable;
+            if (!readable) stream = try scope.own(try @import("native_web_iterable_source.zig").fromIterable(scope.engine, converted));
         } else if (!readable) return error.NativeWebBodyInitUnconverted;
     }
     if (c.JS_IsString(source) or c.JS_GetTypedArrayType(source) == c.JS_TYPED_ARRAY_UINT8) {
