@@ -142,7 +142,7 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
         const stage: Stage = @enumFromInt(raw);
         const mode = try getMode(&scope, try scope.get(owner, "agent"));
         if (mode == .codex and (stage == .ready or stage == .response or (stage == .next and scope.truthy(try v.optional(&scope, owner, "httpError"))))) {
-            codexCaught(&scope, owner, value) catch |err| try failError(&scope, owner, err);
+            handleCodexRejection(&scope, owner, value, stage) catch |err| try failError(&scope, owner, err);
             return;
         }
         if (stage == .ready) {
@@ -365,7 +365,12 @@ fn openCodex(scope: *Scope, owner: c.JSValue) !void {
     const headers = try scope.get(owner, "codexHeaders");
     const body = try scope.get(owner, "codexBody");
     const fetch = try v.optional(scope, options, "fetch");
-    const signal = try v.optional(scope, options, "signal");
+    const configured_timeout = try scope.get(owner, "codexTimeout");
+    const header_timeout = if (!c.JS_IsUndefined(configured_timeout) and try @import("native_image_arithmetic.zig").compare(engine, .greater, configured_timeout, c.JS_NewInt32(engine.context, 0))) try scope.invoke(try scope.global("AbortSignal"), "timeout", &.{configured_timeout}) else c.pi_js_undefined();
+    const combined = try @import("native_ai_responses_abort.zig").combine(scope, &.{ try v.optional(scope, options, "signal"), header_timeout });
+    try scope.put(owner, "codexHeaderTimeoutSignal", header_timeout);
+    try scope.put(owner, "codexAttemptSignal", combined);
+    const signal = try v.optional(scope, combined, "signal");
     const transport = if (!v.nullish(fetch)) supplied: {
         const init = try scope.object();
         try scope.put(init, "method", try scope.text("POST"));
@@ -411,6 +416,24 @@ fn openCodex(scope: *Scope, owner: c.JSValue) !void {
     try scope.put(owner, "iterator", try scope.get(transport, "events"));
     try wait(scope, owner, try scope.get(transport, "ready"), .ready);
 }
+fn cleanupCodexAttempt(scope: *Scope, owner: c.JSValue) !void {
+    const combined = try v.optional(scope, owner, "codexAttemptSignal");
+    if (!v.nullish(combined)) _ = try scope.invoke(combined, "cleanup", &.{});
+}
+fn handleCodexRejection(scope: *Scope, owner: c.JSValue, reason: c.JSValue, stage: Stage) !void {
+    var caught = reason;
+    if (stage == .ready) {
+        // Source's fetch finally removes composition listeners before invoking
+        // onResponse or entering its outer HTTP catch.
+        try cleanupCodexAttempt(scope, owner);
+        const timed = try v.optional(scope, owner, "codexHeaderTimeoutSignal");
+        if (scope.truthy(try v.optional(scope, timed, "aborted")) and !try aborted(scope, owner)) {
+            const message = try scope.concat(try scope.concat(try scope.text("Codex SSE response headers timed out after "), try scope.stringify(try scope.get(owner, "codexTimeout"))), try scope.text("ms"));
+            caught = try scope.own(try v.js.builtin(scope.engine, "Error", &.{message}));
+        }
+    }
+    return codexCaught(scope, owner, caught);
+}
 fn next(scope: *Scope, owner: c.JSValue) !void {
     try wait(scope, owner, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), .next);
 }
@@ -421,6 +444,7 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             try open(scope, owner);
         },
         .ready => {
+            if (try getMode(scope, try scope.get(owner, "agent")) == .codex) try cleanupCodexAttempt(scope, owner);
             try scope.put(owner, "response", value);
             const status = try scope.get(value, "status");
             const arithmetic = @import("native_image_arithmetic.zig");
@@ -648,10 +672,10 @@ fn sleep(scope: *Scope, delay: c.JSValue, signal: c.JSValue, codex: bool) !c.JSV
             return c.pi_js_undefined();
         }
     };
-    const on_abort = try scope.own(try @import("native_node_function.zig").create(engine, "onAbort", 0, Adapter.abort, &.{pending.owner}));
+    const on_abort = try scope.own(try @import("native_node_function.zig").create(engine, if (codex) "" else "onAbort", 0, Adapter.abort, &.{pending.owner}));
     try scope.put(pending.owner, "onAbort", on_abort);
-    const timer = try scope.own(try @import("native_node_function.zig").create(engine, "", 0, Adapter.timer, &.{pending.owner}));
-    const timeout = try scope.call(try scope.global("setTimeout"), c.pi_js_undefined(), &.{ timer, try scope.invoke(try scope.global("Math"), "max", &.{ c.JS_NewInt32(engine.context, 0), delay }) });
+    const timer = if (codex) try scope.get(pending.owner, "resolve") else try scope.own(try @import("native_node_function.zig").create(engine, "", 0, Adapter.timer, &.{pending.owner}));
+    const timeout = try scope.call(try scope.global("setTimeout"), c.pi_js_undefined(), &.{ timer, if (codex) delay else try scope.invoke(try scope.global("Math"), "max", &.{ c.JS_NewInt32(engine.context, 0), delay }) });
     try scope.put(pending.owner, "timeout", timeout);
     if (!v.nullish(signal)) {
         const once = try scope.object();
