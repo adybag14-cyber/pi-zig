@@ -11,7 +11,7 @@ fn install(engine: *em.Engine) !void {
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
     try scope.put(global, "piMessagesAPI", try scope.own(try @import("extensions/native_ai_pi_messages_factory.zig").create(engine)));
 }
-fn evaluate(engine: *em.Engine, input: []const u8, name: []const u8) !void {
+fn evaluate(engine: *em.Engine, input: []const u8, name: [:0]const u8) !void {
     const result = engine.evalModule(input, name) catch |err| {
         std.debug.print("Pi messages: {s}\n", .{engine.last_error orelse @errorName(err)});
         return err;
