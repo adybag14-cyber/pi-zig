@@ -98,7 +98,7 @@ fn continued(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: b
     if (c.JS_ToUint32(engine.context, &status, try scope.get(value, "status")) < 0) return js.capture(engine);
     if (status > 65535) return error.NativeWebTransportStatusInvalid;
     const transport = try scope.get(owner, "transport");
-    const empty = status == 101 or status == 204 or status == 205 or status == 304 or scope.equal(view.method, try scope.text("HEAD"));
+    const empty = status == 101 or status == 103 or status == 204 or status == 205 or status == 304 or scope.equal(view.method, try scope.text("HEAD"));
     const stream = if (empty) c.pi_js_null() else try scope.own(try @import("native_web_byte_source.zig").fromEvents(engine, try scope.get(transport, "events"), .{ .cancel = try scope.get(transport, "cancel"), .signal = view.signal }));
     if (empty) cleanupTransport(&scope, owner);
     const response = response_api.fromTransport(engine, .{ .body = stream, .status = @intCast(status), .status_text = try scope.get(value, "statusText"), .headers = try scope.get(value, "rawHeaders"), .url = view.url }) catch |err| {
@@ -150,7 +150,7 @@ pub fn fetch(engine: *em.Engine, input: c.JSValue, init: c.JSValue, options: Opt
             try scope.index(pair, 1, decoded.mime_type);
             const headers = try scope.array();
             try scope.index(headers, 0, pair);
-            const response = response_api.fromTransport(engine, .{ .body = decoded.bytes, .status = 200, .status_text = try scope.text("OK"), .headers = headers, .url = view.url }) catch |err| {
+            const response = response_api.fromTransport(engine, .{ .body = if (scope.equal(view.method, try scope.text("HEAD"))) c.pi_js_null() else decoded.bytes, .status = 200, .status_text = try scope.text("OK"), .headers = headers, .url = view.url }) catch |err| {
                 try flow.rejectError(engine, pending.owner, err);
                 return pending.promise;
             };
