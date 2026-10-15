@@ -11,6 +11,9 @@ const body = @import("native_web_body.zig");
 const platform = @import("native_web_platform.zig");
 const c = em.c;
 const key = "\x00native-web-Request";
+/// The shared Transform owner supplies the captured actual constructor graph.
+/// Callback returns an owned genuine identity TransformStream; no tee adapter.
+pub const TransferProvider = struct { owner: c.JSValue, create: *const fn (*em.Engine, c.JSValue) anyerror!c.JSValue };
 const Root = struct {
     engine: *em.Engine,
     class: c.JSClassID = 0,
@@ -23,6 +26,7 @@ const Root = struct {
     abort_symbol: c.JSValue,
     interfaces: idl.Interfaces,
     patch_warning: bool = false,
+    transfer: ?TransferProvider = null,
 };
 const State = struct { engine: *em.Engine, owner: c.JSValue, metadata: c.JSValue, headers: c.JSValue, signal: c.JSValue, dispatcher: c.JSValue, payload: ?body.Body = null, guard: headers.Guard = .request };
 const Kind = enum(c_int) { method, url, headers, destination, referrer, referrerPolicy, mode, credentials, cache, redirect, integrity, keepalive, isReloadNavigation, isHistoryNavigation, signal, body, bodyUsed, duplex, clone, inspect, blob, arrayBuffer, text, json, formData, bytes };
@@ -33,12 +37,14 @@ fn freeRoot(runtime: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
     const root: *Root = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
     for ([_]c.JSValue{ root.constructor, root.prototype, root.url_constructor, root.controller_constructor, root.registry, root.dependent_controllers, root.abort_symbol }) |value| c.JS_FreeValueRT(runtime, value);
     inline for (std.meta.fields(idl.Interfaces)) |field| c.JS_FreeValueRT(runtime, @field(root.interfaces, field.name));
+    if (root.transfer) |provider| c.JS_FreeValueRT(runtime, provider.owner);
     root.engine.gpa.destroy(root);
 }
 fn markRoot(runtime: ?*c.JSRuntime, owner: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
     const root: *Root = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
     for ([_]c.JSValue{ root.constructor, root.prototype, root.url_constructor, root.controller_constructor, root.registry, root.dependent_controllers, root.abort_symbol }) |value| c.JS_MarkValue(runtime, value, marker);
     inline for (std.meta.fields(idl.Interfaces)) |field| c.JS_MarkValue(runtime, @field(root.interfaces, field.name), marker);
+    if (root.transfer) |provider| c.JS_MarkValue(runtime, provider.owner, marker);
 }
 fn freeState(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
@@ -302,9 +308,14 @@ fn create(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captur
         }
         if (!has_init_body) {
             if (try body.unusable(&scope, input_body)) try web.typeError(&scope, try scope.text("Cannot construct a Request with a Request object that has already been used."), null);
-            return error.NativeWebTransformStreamUnavailable;
+            const provider = root.transfer orelse return error.NativeWebTransformStreamUnavailable;
+            const identity = try scope.own(try provider.create(engine, provider.owner));
+            var transferred = payload;
+            transferred.stream = try scope.invoke(payload.stream, "pipeThrough", &.{identity});
+            state.payload = ownBody(engine, transferred);
+        } else {
+            state.payload = ownBody(engine, payload);
         }
-        state.payload = ownBody(engine, payload);
     }
     return c.JS_DupValue(engine.context, result);
 }
@@ -438,6 +449,15 @@ pub fn install(engine: *em.Engine) !void {
 pub fn isRequest(engine: *em.Engine, value: c.JSValue) bool {
     const owner = engine.native_module_values.get(key) orelse return false;
     return c.JS_GetOpaque(value, rootOf(owner).class) != null;
+}
+/// Bind only after the actual shared Transform constructor and Env pipe graph
+/// exist. The native owner edge is duplicated/marked until Engine teardown.
+pub fn bindTransfer(engine: *em.Engine, provider: TransferProvider) !void {
+    const owner = engine.native_module_values.get(key) orelse return error.NativeWebRequestUnavailable;
+    const root = rootOf(owner);
+    const retained = c.JS_DupValue(engine.context, provider.owner);
+    if (root.transfer) |old| engine.freeValue(old.owner);
+    root.transfer = .{ .owner = retained, .create = provider.create };
 }
 /// Internal fetch handoff borrows the actual privately owned Request state.
 pub const View = struct { url: c.JSValue, method: c.JSValue, headers: c.JSValue, signal: c.JSValue, dispatcher: c.JSValue, payload: ?body.Body };
