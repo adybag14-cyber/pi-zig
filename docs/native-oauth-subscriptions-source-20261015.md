@@ -44,10 +44,35 @@ all 84 historical absences, preparation controls, and its own frozen controls
 before publishing an expected fixture after a terminal pass and posthash.
 
 Pinned Zig 0.16 formatting/AST and Node24 parser checks passed. The Source
-runner is prepared outside the repository at
+runner is retained outside the repository at
 `C:/Users/adyba/pi-zig-update-evidence-20261003/Run-OAuthSubscriptionsAe7Source84-20261015.ps1`.
-No Source execution/prehash, native compile, or native runtime has run at this
-checkpoint. The expected fixture is intentionally absent. Shared
+Under Root's LIGHT3 grant, the original Source84 capture passed on Node24.14.0
+at PID60028, created `2026-10-15T20:25:30.6067916Z`, exit0. Full posthash finished
+at `20:26:05.6841787Z`: Source1968/runtime31064/Node1774 and controls had zero
+digest drift, and all84 historical absences were preserved. The expected
+fixture was published only after that terminal pass and posthash, at SHA256
+`7C15D350A44649E990B1F82401C9427B2B5FC9BDE307987609BF30123E2C6818`.
+The actual observed module log includes all three original OAuth modules,
+device-code, sleep, provider-env, model-catalog, and the original Copilot data.
+The packet also retains43 raw Source diagnostics. All84 rows were checked for
+unexpected URL/queue-exhaustion failures; none occurred. LIGHT3 is released.
+The portable `source84-qualified-packet.zip` contains24 hashed payloads and an
+internal manifest. `Verify-Source84Packet.ps1` independently reopened every
+payload and passed, including terminal ownership, all frozen inventory counts,
+zero posthash drift, actual module observations, and the84 expected rows.
+Archive SHA256 is
+`0E4143DB3FA7D0228C2FFBDAFFBE1803CB4C348B6242D0268595B125870E2212`.
+
+The standalone Copilot data contains36 chat models. Its exact raw SHA256,
+`1C7D77A4C320081BB0A80B2C8E185B34F07B73D38E67D20F3DCABCF72F2F8FCD`,
+matches the independently qualified official FFA3 hydration checkout's Copilot
+file. This establishes narrow data equivalence, not shared namespace identity.
+The retained case named `copilot-refresh-enterprise-no-fallback` actually
+exercises token-proxy precedence over an enterprise fallback because its token
+contains an Individual proxy endpoint; it does not qualify the no-proxy
+enterprise catalog branch.
+
+No native compile or native runtime has run. Shared
 `native_provider_env` and the actual Response/Body/ReadableStream graph must be
 intaken before semantic compilation. Raw native HTTP origin qualification,
 exhaustive allocation coverage, full Pi qualification, and public activation
