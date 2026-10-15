@@ -1984,6 +1984,13 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-web-multipart", "Compile original Source176 multipart observations and selected native ownership").dependOn(&multipart_tests.step);
     const multipart_run = b.addRunArtifact(multipart_tests);
     b.step("test-native-web-multipart", "Replay original multipart Source3 observations and measured operation OOM").dependOn(&multipart_run.step);
+    const fetch_source_module = b.createModule(.{ .root_source_file = b.path("src/native_web_fetch_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, fetch_source_module, quickjs, sqlite_lib_dir);
+    fetch_source_module.addImport("catalog_tool", catalog_tool);
+    const fetch_source_tests = b.addTest(.{ .root_module = fetch_source_module, .use_llvm = use_llvm, .filters = &.{"Web fetch Source39 "} });
+    b.step("build-native-web-fetch", "Compile complete genuine Fetch39 real peer comparison").dependOn(&fetch_source_tests.step);
+    const fetch_source_run = b.addRunArtifact(fetch_source_tests);
+    b.step("test-native-web-fetch", "Replay all39 unchanged fetch rows against real native Request Response stream and HTTP").dependOn(&fetch_source_run.step);
     const body_collect_module = b.createModule(.{ .root_source_file = b.path("src/native_body_collect_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, body_collect_module, quickjs, sqlite_lib_dir);
     body_collect_module.addImport("catalog_tool", catalog_tool);
