@@ -124,12 +124,71 @@ fn jsonRead(engine: *v.em.Engine, body: c.JSValue, typ: c.JSValue) !c.JSValue {
     const pending = try flow.create(engine, body);
     defer engine.freeValue(pending.owner);
     errdefer engine.freeValue(pending.promise);
-    const text = try engine.toString(typ);
-    defer engine.gpa.free(text);
-    const result = wire.readBody(&s, text, body) catch |err| {
-        try reject(engine, pending.owner, err);
-        return pending.promise;
-    };
-    try flow.settle(engine, pending.owner, false, result);
+    try s.put(pending.owner, "type", typ);
+    const parsed = try s.own(try parseJsonBody(engine, body));
+    try flow.wait(shapeRead, engine, pending.owner, parsed, 0);
     return pending.promise;
+}
+fn shapeRead(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
+    if (rejected) return flow.settle(engine, owner, true, value);
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    const typ = try engine.toString(try s.get(owner, "type"));
+    defer engine.gpa.free(typ);
+    return flow.settle(engine, owner, false, try wire.modelJson(&s, typ, value));
+}
+fn collectBody(engine: *v.em.Engine, body: c.JSValue) !c.JSValue {
+    const pending = try flow.create(engine, body);
+    defer engine.freeValue(pending.owner);
+    errdefer engine.freeValue(pending.promise);
+    // Codec bodies are actual Uint8Arrays. This is the SDK's immediate byte
+    // branch; resolving this async function still performs real assimilation.
+    try flow.settle(engine, pending.owner, false, body);
+    return pending.promise;
+}
+fn collectBodyString(engine: *v.em.Engine, body: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    const promise = try s.own(try collectBody(engine, body));
+    const utf8 = try s.own(try @import("native_node_function.zig").createArrow(engine, "", 1, toUtf8, &.{}));
+    // Source explicitly calls .then here; preserve that actual method call.
+    return c.JS_DupValue(engine.context, try s.invoke(promise, "then", &.{utf8}));
+}
+fn toUtf8(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    const body = try wire.bytes(&s, if (args.len == 0) c.pi_js_undefined() else args[0]);
+    return c.JS_DupValue(engine.context, try s.text(body));
+}
+fn parseJsonBody(engine: *v.em.Engine, body: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    const pending = try flow.create(engine, body);
+    defer engine.freeValue(pending.owner);
+    errdefer engine.freeValue(pending.promise);
+    const input = try s.own(try collectBodyString(engine, body));
+    try flow.wait(bodyParsed, engine, pending.owner, input, 0);
+    return pending.promise;
+}
+fn bodyParsed(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
+    if (rejected) return flow.settle(engine, owner, true, value);
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    if (s.equal(try s.get(value, "length"), c.JS_NewInt32(engine.context, 0))) return flow.settle(engine, owner, false, try s.object());
+    var guard = @import("native_ai_json_scope.zig").Guard.enter(engine);
+    defer guard.deinit();
+    const parsed = s.invoke(try s.global("JSON"), "parse", &.{value}) catch |err| {
+        const reason = try s.own(flow.reason(engine, err));
+        if (engine.captured_exception) |captured| {
+            engine.captured_exception = null;
+            engine.freeValue(captured);
+        }
+        if (try v.eq(&s, try v.optional(&s, reason, "name"), "SyntaxError")) {
+            const descriptor = try s.object();
+            try s.put(descriptor, "value", value);
+            _ = try s.invoke(try s.global("Object"), "defineProperty", &.{ reason, try s.text("$responseBodyText"), descriptor });
+        }
+        return flow.settle(engine, owner, true, reason);
+    };
+    return flow.settle(engine, owner, false, parsed);
 }

@@ -3,7 +3,7 @@
   "fakeDpopPem": "-----BEGIN EC PRIVATE KEY-----\nMDECAQEEIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABoAoGCCqGSM49AwEH\n-----END EC PRIVATE KEY-----\n",
   "cases": [
     {"name":"sigv4-basic","kind":"facade_absent_bearer_sigv4"},
-    {"name":"sigv4-custom-headers","kind":"facade_absent_bearer_sigv4","headers":{"X-Signed-Context":"fixture-context","x-SIGNED-context":"replacement","x-amz-meta-custom":"fixture-amz","authorization":"Bearer forbidden-fixture-override","Host":"ignored.fake.invalid","Content-Type":"application/x-fixture-json"}},
+    {"name":"sigv4-custom-headers","kind":"facade_absent_bearer_sigv4","headers":{"X-Signed-Context":"fixture-context","x-SIGNED-context":"replacement","X-Delete":"earlier","x-delete":null,"x-amz-meta-custom":"fixture-amz","authorization":"Bearer forbidden-fixture-override","Host":"ignored.fake.invalid","Content-Type":"application/x-fixture-json"}},
     {"name":"sigv4-arn-proxy-path","kind":"facade_absent_bearer_sigv4","basePath":"/proxy/v2","baseQuery":"?route=owned&route=last","modelId":"arn:aws:bedrock:eu-west-2:123456789012:inference-profile/us.anthropic.claude-sonnet-4-6"}
   ]
 }

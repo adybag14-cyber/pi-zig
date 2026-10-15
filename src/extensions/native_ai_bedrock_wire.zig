@@ -110,7 +110,7 @@ pub fn modeledType(typ: []const u8) bool {
     inline for (.{ "messageStart", "contentBlockStart", "contentBlockDelta", "contentBlockStop", "messageStop", "metadata", "internalServerException", "modelStreamErrorException", "validationException", "throttlingException", "serviceUnavailableException" }) |name| if (std.mem.eql(u8, typ, name)) return true;
     return false;
 }
-fn modelJson(s: *Scope, typ: []const u8, json: c.JSValue) !c.JSValue {
+pub fn modelJson(s: *Scope, typ: []const u8, json: c.JSValue) !c.JSValue {
     // Smithy's runtime schema determines modeled property order and drops
     // unknown JSON members before exposing events to provider callbacks.
     const modeled = if (std.mem.eql(u8, typ, "contentBlockDelta")) blk: {
