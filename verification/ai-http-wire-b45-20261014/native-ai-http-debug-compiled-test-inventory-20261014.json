@@ -1,0 +1,56 @@
+{
+  "inventory": {
+    "tests": [
+      {
+        "name": "native_ai_http_test.test.native AI HTTP raw transport replays12 genuine Source wire payloads and exact SSE data without provider substitution",
+        "bytes": 141,
+        "name_virtual_address": 5413925944,
+        "function_virtual_address": 5374081184
+      },
+      {
+        "name": "native_ai_http_test.test.native AI HTTP preserves CR LF BOM multiline event fields and non-success response body",
+        "bytes": 112,
+        "name_virtual_address": 5413926085,
+        "function_virtual_address": 5374077792
+      },
+      {
+        "name": "native_ai_http_test.test.native AI HTTP real abort signal cancels owned body work and retires reader roots",
+        "bytes": 106,
+        "name_virtual_address": 5413926197,
+        "function_virtual_address": 5373938048
+      },
+      {
+        "name": "native_ai_http_test.test.native AI HTTP full-queue timeout and VM teardown cancel join and release owned responses",
+        "bytes": 114,
+        "name_virtual_address": 5413926303,
+        "function_virtual_address": 5373855568
+      },
+      {
+        "name": "native_ai_http_test.test.native AI HTTP every host allocation unwinds pre-aborted preparation without starting a worker",
+        "bytes": 119,
+        "name_virtual_address": 5413926417,
+        "function_virtual_address": 5370247280
+      },
+      {
+        "name": "extensions.native_durable_storage.test_0",
+        "bytes": 40,
+        "name_virtual_address": 5413926536,
+        "function_virtual_address": 5373853408
+      }
+    ],
+    "file_offset": 45210024,
+    "word_permutation": [
+      0,
+      1,
+      2
+    ]
+  },
+  "runtime_count": 6,
+  "binary": "C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\.zig-cache\\o\\3a71ecb73e7e7458d867fbf0ade8ab3c\\test.exe",
+  "imported_unnamed_tests": 1,
+  "bytes": 48961536,
+  "authored_tests": 5,
+  "binary_sha256": "275770A1272190E8FD0BEFA45AC27B04A77E5506CDB3C817D1FF8C6F587AB9E5",
+  "recorded_utc": "2026-10-14T21:34:19.5080730+00:00",
+  "method": "Read-only PE32+ TestFn metadata: six contiguous24-byte entries, exact UTF8 names/lengths, every function pointer within executable section; no binary execution"
+}

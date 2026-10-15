@@ -1,0 +1,94 @@
+[
+  {
+    "file": "ai-openai-completions-b45-http12-source12-first-20261014-output.json",
+    "sha256": "A2A204564432415EF469A81A78F08B8302AEA36AD92475041470C5CA8A2F74EC"
+  },
+  {
+    "file": "ai-openai-completions-b45-http12-source12-first-20261014-posthash.json",
+    "sha256": "CD35BE1A414EAF35CA81E688E43CC3BA1532FF8D6C8F35E372CF79AB3B377E1E"
+  },
+  {
+    "file": "ai-openai-completions-b45-http12-source12-first-20261014.json",
+    "sha256": "CA7D9CEBFD7313B66B7C67D41D8E7087935BD19EF1BD8ECBB6F96CC5F71DFF0D"
+  },
+  {
+    "file": "ai-openai-completions-b45-http12.input.json",
+    "sha256": "2ABBC00B83460A9A60C7EBBF166CF039430EFF531B2444B0B9B31106A4A81407"
+  },
+  {
+    "file": "ai-provider-helpers-b45-first-negative.input.txt",
+    "sha256": "8064ABB7A17E8A4AFFFDFB1568ECECA3F5FD1CB30A0033EDE889129099492506"
+  },
+  {
+    "file": "ai-provider-helpers-b45-source112-first-20261014-posthash.json",
+    "sha256": "DFB2492C12A22DA6FFAE6652019A29F43C6D97239D444A57CFFBEE4849DED341"
+  },
+  {
+    "file": "ai-provider-helpers-b45-source112-first-20261014.json",
+    "sha256": "F55FC38B56124A1634B4E93D5FD35D53A0690A29E7749EA7657799372943D2A1"
+  },
+  {
+    "file": "ai-provider-helpers-b45-source112-first-20261014.stderr.log",
+    "sha256": "4475183CBC3BD09C8E75C58DB55BD74F5CD34533054A890ADD990C86D6106916"
+  },
+  {
+    "file": "ai-provider-helpers-b45-source112-second-20261014-posthash.json",
+    "sha256": "446350F5832A5CBDDFDF9F0BED733A70FE877EBA7A36B0DD566F6EC8E5FFC5FD"
+  },
+  {
+    "file": "ai-provider-helpers-b45-source112-second-20261014.json",
+    "sha256": "76294C39EDCB57E794107F185DD314B747A6CDAC2B638B654FED7FD3375210F8"
+  },
+  {
+    "file": "checkpoint-proof.json",
+    "sha256": "849E5DE03CD5882BDFBEEB119F548469E54010599BCD4EC59192C9E6794E1354"
+  },
+  {
+    "file": "native-ai-provider-helpers-compile-debug-second-20261014-posthash.json",
+    "sha256": "2ECCF6B84784C490EA58CE7607A308018F674EB55C2968C6615CE6EA3F53A977"
+  },
+  {
+    "file": "native-ai-provider-helpers-compile-debug-second-20261014-source-before.json",
+    "sha256": "258D5310D7BFB960368BFB233A19C0CB5BD8B76DA3D39B3348215399B98947EE"
+  },
+  {
+    "file": "native-ai-provider-helpers-compile-debug-second-20261014.json",
+    "sha256": "CD02A130B38C0D621F61492D899183EFB31301578D96C8B71E104EB045D83393"
+  },
+  {
+    "file": "native-ai-provider-helpers-runtime-debug-first-20261014-posthash.json",
+    "sha256": "959D98CD36523C9247CACC24D3E9E94B16C9153123D82C310C9321C298102B83"
+  },
+  {
+    "file": "native-ai-provider-helpers-runtime-debug-first-20261014.json",
+    "sha256": "D1B08478E0CBCF42F1AA15171224C069315E4C141AECFB2AFF342E2567AFC219"
+  },
+  {
+    "file": "native-ai-provider-helpers-runtime-debug-first-20261014.stderr.log",
+    "sha256": "D4834377431A866C3C3609EB0AF26C115D45DAF64162063FF7F8AD977656A024"
+  },
+  {
+    "file": "native-ai-provider-helpers-runtime-debug-second-20261014-posthash.json",
+    "sha256": "2B3CFBE9C0FCD3ABD4381B135824DC98A742E2C42EB0075A4F6B5669BADC07B7"
+  },
+  {
+    "file": "native-ai-provider-helpers-runtime-debug-second-20261014-source-before.json",
+    "sha256": "258D5310D7BFB960368BFB233A19C0CB5BD8B76DA3D39B3348215399B98947EE"
+  },
+  {
+    "file": "native-ai-provider-helpers-runtime-debug-second-20261014.json",
+    "sha256": "6ED9DA13132E198D5F584AE1AF031D0BC1321ACAD3B7E659EF5563CB81CB9E76"
+  },
+  {
+    "file": "native-ai-provider-helpers-runtime-debug-second-20261014.stderr.log",
+    "sha256": "688CFA7D4B1E13CE60FB32C8FD85A204B3807B61BEFF5888A4FC1D93716ADA2D"
+  },
+  {
+    "file": "sdk-source-b45-modules-30912-0-20261014.jsonl",
+    "sha256": "55DA2B29AC9EB92F51E266023268621FFDC3A7E730F4CA5E6F447911EAAB3F40"
+  },
+  {
+    "file": "sdk-source-b45-modules-58124-0-20261014.jsonl",
+    "sha256": "3B6AB42C3594EDE317C64D32C5D79F98A843364CA00CBD8F3E80D75FCDA7CA24"
+  }
+]

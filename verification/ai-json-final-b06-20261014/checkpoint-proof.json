@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "candidate_base": "e8442d709840aac6e26ad2d26f90443df301555e",
+  "source_head": "b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+  "genuine_helper_rows": 33,
+  "genuine_delegate_rows": 6,
+  "native": {
+    "json_imported_unnamed_tests": 1,
+    "json_tests": 6,
+    "json_authored_tests": 5,
+    "source_drift": 0,
+    "tests": 12,
+    "tool_drift": 0,
+    "host_gpa_scope": "Full engine/helper construction, JSON repair, final malformed JSON diagnostics, delegated intrinsic errors, owner hook restoration and collection",
+    "optimize": "Debug",
+    "strict_inventory": "Read-only actual PE TestFn arrays; six exact selected names per binary, UTF8 lengths and executable function pointers",
+    "worker_gpa_scope": "Prior raw HTTP regression retains its explicit pre-aborted preparation-only GPA scope",
+    "source_files": 5388,
+    "raw_http_regression_tests": 6,
+    "tool_files": 19546
+  },
+  "source": {
+    "dependencies": 31064,
+    "tracked_files": 1922,
+    "installed_dependency_metadata": 281,
+    "node_tools": 1774,
+    "optional_absent": 80,
+    "control_files": 9,
+    "latest_catalog_qualification": false,
+    "historical_required_absent": 4,
+    "files": 1965,
+    "historical_absences": 84,
+    "all_posthash_drift": 0,
+    "historical_derived_typed_metadata_files": 43
+  },
+  "code": [
+    {
+      "sha256": "4516E7F8DB30FAB38CE192B166C2F55174D1E70EC95DDB0FB0B8F8CD8D42BB85",
+      "path": "vendor/quickjs/quickjs.c"
+    },
+    {
+      "sha256": "1CB4AD321004E65B00E113601E93CA7CE4C8373D2E074DDABAB9F73C1C5E0847",
+      "path": "vendor/quickjs/quickjs.h"
+    },
+    {
+      "sha256": "06768931FB37F7F200C9DE39C0AF7CBACA7753EE7A4883132660F4888031EFF1",
+      "path": "src/extensions/engine.zig"
+    },
+    {
+      "sha256": "50DFCF13F61D781FF3CFA20ED39076CA77CBB3997B9342CEC5D735F78C36A887",
+      "path": "src/extensions/native_ai_json_parse.zig"
+    },
+    {
+      "sha256": "B443CB009612C9F97EF762590A04E89825D1AE5B7EA873391DDEBCB7005497DE",
+      "path": "src/extensions/native_ai_json_diagnostics.zig"
+    },
+    {
+      "sha256": "A3794CECF7B9D7F526E2BD259ACA72DE40EC6B1109DC1A28581AEAE020C5BDB8",
+      "path": "src/extensions/native_ai_json_scope.zig"
+    },
+    {
+      "sha256": "290DBE61627A4BF9DB4D46CCB28518DF27F793DF624D437AD53D5065D22E3CAD",
+      "path": "src/native_ai_json_parse_test.zig"
+    },
+    {
+      "sha256": "E4CCD326A6EF5B7D932D7596A360DD2CAAC3F4F1A4209D3732CB3B67F9BA8D32",
+      "path": "build.zig"
+    },
+    {
+      "sha256": "CE059A7D2CCB1673828797F6C05876970E7AC180A6AC87495F9D06A5059F1936",
+      "path": "src/extensions/fixtures/ai-json-parse-b06.input.txt"
+    },
+    {
+      "sha256": "D34B9D3FFB6B70F8427EF72FC9AE4FCD70F5D258ABEFF48ED928D97980AF8B06",
+      "path": "src/extensions/fixtures/ai-json-parse-b06.json"
+    },
+    {
+      "sha256": "CE2E79B7714ECA7206EDE9FB193310369EB660AFFA4A0C7A5A655BD4B6334FCE",
+      "path": "src/extensions/fixtures/ai-json-delegate-b06.input.txt"
+    },
+    {
+      "sha256": "39C894AE5F66C60E2BC66D9C53D2689A668A246B863C3B8136EE8EFFB730F95A",
+      "path": "src/extensions/fixtures/ai-json-delegate-b06.json"
+    }
+  ],
+  "behavior": {
+    "exports": [
+      "repairJson",
+      "parseJsonWithRepair",
+      "parseToolCallArguments"
+    ],
+    "global": "No JSON.parse replacement or persistent diagnostic activation",
+    "no_hook": "Original conversion and direct parser path unchanged; source JS string retained only when scoped callback installed",
+    "error_origin": "Only fresh actual intrinsic SyntaxErrors reach the private C callback before reviver execution; caller-created SyntaxError/sentinel and reviver errors retain identity",
+    "final_arguments": "Blank input yields empty arguments; valid repaired objects are retained; nonobjects and final malformed/cutoff input yield empty arguments plus exact error text and original received input",
+    "streaming": "parseStreamingJson/partial-json are not implemented or exported here; Source33 streaming fields retained as future oracle only",
+    "hook": "Borrowed per-context callback, previous pointer restored across nested scopes and exceptions, Engine teardown clears callback; native callback allocation failures carry fresh trusted tags"
+  },
+  "review": {
+    "first_diff": "Original unconditional coercion retention was source-audited and corrected before any compile; both exact review diffs retained",
+    "intake": "Isolated vendor/Engine diff requires narrow parent review; no whole-C intake authorized by checkpoint"
+  },
+  "limitations": [
+    "ReleaseSafe has not run",
+    "No complete global Node JSON.parse/reviver/realm/stack diagnostic parity claim",
+    "No partial-json streaming implementation yet",
+    "Native full OpenAI provider builder/decoder/retry and builtin factories remain incomplete",
+    "No latest generated catalog qualification",
+    "No production completeSimple/public alias activation, whole application parity, bridge removal or release"
+  ],
+  "recorded_utc": "2026-10-14T22:09:12.3913206+00:00"
+}

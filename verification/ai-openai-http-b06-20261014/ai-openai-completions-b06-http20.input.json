@@ -1,0 +1,518 @@
+[
+  {
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "content": "hello "
+            }
+          }
+        ],
+        "id": "response",
+        "model": "served"
+      },
+      {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "delta": {
+              "content": "world"
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 3,
+          "prompt_tokens_details": {
+            "cache_write_tokens": 2,
+            "cached_tokens": 5
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1
+          },
+          "prompt_tokens": 20
+        }
+      }
+    ],
+    "name": "text-stop"
+  },
+  {
+    "name": "reasoning-precedes-text",
+    "chunks": [
+      {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "delta": {
+              "content": "answer",
+              "reasoning_content": "think",
+              "reasoning": "duplicate"
+            }
+          }
+        ]
+      }
+    ],
+    "reasoning": true
+  },
+  {
+    "name": "tool-split-arguments",
+    "tools": true,
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"path\":",
+                    "name": "read"
+                  },
+                  "id": "call",
+                  "index": 0
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "\"file\"}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "multi-tool-index-id",
+    "tools": true,
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{}",
+                    "name": "read"
+                  },
+                  "id": "a",
+                  "index": 0
+                },
+                {
+                  "function": {
+                    "arguments": "{\"path\":\"b\"}",
+                    "name": "read"
+                  },
+                  "id": "b",
+                  "index": 1
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "delta": {
+              "tool_calls": [
+                {
+                  "id": "a",
+                  "function": {
+                    "arguments": ""
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "reasoning_details": [
+                {
+                  "text": "one",
+                  "type": "reasoning.text",
+                  "id": "id"
+                },
+                {
+                  "text": "two",
+                  "type": "reasoning.text",
+                  "format": "fmt"
+                },
+                {
+                  "type": "reasoning.summary",
+                  "summary": "summary"
+                },
+                {
+                  "type": "reasoning.encrypted",
+                  "data": "opaque",
+                  "index": 1
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "delta": {
+              "content": "answer"
+            }
+          }
+        ]
+      }
+    ],
+    "name": "reasoning-replay-details"
+  },
+  {
+    "chunks": [
+      {
+        "choices": [
+          {
+            "finish_reason": "length",
+            "delta": {
+              "content": "partial"
+            }
+          }
+        ]
+      }
+    ],
+    "name": "length-stop"
+  },
+  {
+    "chunks": [
+      {
+        "choices": [
+          {
+            "finish_reason": "new_reason",
+            "delta": {
+              "content": "answer"
+            }
+          }
+        ]
+      }
+    ],
+    "name": "unknown-finish"
+  },
+  {
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "content": "unfinished"
+            }
+          }
+        ]
+      }
+    ],
+    "name": "missing-finish"
+  },
+  {
+    "name": "optional-finish",
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "content": "finished"
+            }
+          }
+        ]
+      }
+    ],
+    "compat": {
+      "supportsFinishReason": false
+    }
+  },
+  {
+    "chunks": [
+      {
+        "choices": [
+          {
+            "usage": {
+              "completion_tokens": 4,
+              "cached_tokens": 3,
+              "prompt_tokens": 12
+            },
+            "delta": {
+              "content": "answer"
+            },
+            "finish_reason": "end"
+          }
+        ]
+      }
+    ],
+    "name": "choice-usage-fallback"
+  },
+  {
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "role": "assistant"
+            }
+          }
+        ]
+      },
+      {
+        "choices": []
+      },
+      {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "delta": {}
+          }
+        ]
+      }
+    ],
+    "name": "role-only-empty-choice"
+  },
+  {
+    "name": "alternate-reasoning-opencode-go",
+    "provider": "opencode-go",
+    "chunks": [
+      {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "delta": {
+              "content": "answer",
+              "reasoning": "think"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "final-malformed-cutoff",
+    "tools": true,
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "call-fixture",
+                  "function": {
+                    "arguments": "{\"path\":\"ok\",\"cutoff\":",
+                    "name": "read"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "choices": [
+          {
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "final-nonobject-array",
+    "tools": true,
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "call-fixture",
+                  "function": {
+                    "arguments": "[1,2]",
+                    "name": "read"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "choices": [
+          {
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "final-repaired-escape",
+    "tools": true,
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "call-fixture",
+                  "function": {
+                    "arguments": "{\"path\":\"C:\\Users\\file\"}",
+                    "name": "read"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "choices": [
+          {
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "final-cutoff-backslash",
+    "tools": true,
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "call-fixture",
+                  "function": {
+                    "arguments": "{\"path\":\"unfinished\\",
+                    "name": "read"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "choices": [
+          {
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "kimi-factory-late-tools-k3",
+    "kimiModel": "k3",
+    "tools": true,
+    "reasoning": true,
+    "provider": "kimi-coding",
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "content": "done"
+            },
+            "finish_reason": "stop"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "kimi-factory-late-tools-k3-256k",
+    "kimiModel": "k3-256k",
+    "tools": true,
+    "reasoning": true,
+    "provider": "kimi-coding",
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "content": "done"
+            },
+            "finish_reason": "stop"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "kimi-factory-late-tools-kimi-for-coding",
+    "kimiModel": "kimi-for-coding",
+    "tools": true,
+    "reasoning": true,
+    "provider": "kimi-coding",
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "content": "done"
+            },
+            "finish_reason": "stop"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "kimi-factory-late-tools-kimi-for-coding-highspeed",
+    "kimiModel": "kimi-for-coding-highspeed",
+    "tools": true,
+    "reasoning": true,
+    "provider": "kimi-coding",
+    "chunks": [
+      {
+        "choices": [
+          {
+            "delta": {
+              "content": "done"
+            },
+            "finish_reason": "stop"
+          }
+        ]
+      }
+    ]
+  }
+]

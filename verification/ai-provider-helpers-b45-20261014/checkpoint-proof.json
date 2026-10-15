@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "source_head": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "candidate_base": "fc97a56e1739010260b827acb20fa3c0aaab1aa2",
+  "genuine_helper_observations": 112,
+  "genuine_http_source_observations": 12,
+  "native": {
+    "authored_tests": 4,
+    "tests": 5,
+    "optimize": "Debug",
+    "tool_drift": 0,
+    "retained_binding_gc": true,
+    "tool_files": 19546,
+    "source_drift": 0,
+    "imported_unnamed_storage_tests": 1,
+    "source_files": 5300,
+    "allocation_failure_exercises": 1
+  },
+  "code": [
+    {
+      "path": "src/extensions/native_ai_budget.zig",
+      "sha256": "527FD1B127FADC2746B0CDB322281D2A9239B9E1A56A0E6C04FCF0B8828ABACC"
+    },
+    {
+      "path": "src/extensions/native_ai_text.zig",
+      "sha256": "B1255BEB85025D6B810CFE23B0744333A2D288A2168A18FB52317C07A55CD1DA"
+    },
+    {
+      "path": "src/extensions/native_ai_estimate.zig",
+      "sha256": "59D94D08403A0AB647464611A7A0BE079C3986AACC5F8C13271E7FABF722C124"
+    },
+    {
+      "path": "src/extensions/native_ai_thinking.zig",
+      "sha256": "0C9B3C1BF670764050CDF8BD68B633A5AB655C269C3C27CC77C7973EFF3A5366"
+    },
+    {
+      "path": "src/extensions/native_ai_simple_options.zig",
+      "sha256": "51AB7C904327FBF266247286525DADE52CC6FF45AAEF92EA76888755B788CA1E"
+    },
+    {
+      "path": "src/extensions/native_ai_openai_compat_options.zig",
+      "sha256": "BF496D9B2242B64A3F66A39162B41BFDA12846D7589D4341B5515C626BD2F41F"
+    },
+    {
+      "path": "src/native_ai_provider_helpers_test.zig",
+      "sha256": "02D330702689013EB0DFDD45FD56764E6DF9D9C0B06B3DDFCC3388E9345EFB14"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-provider-helpers-b45.input.txt",
+      "sha256": "D4E684E1E3F43670FF568EA6EDDA9EC2ECA9268F37C761213CDAEBEF7D7939CE"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-provider-helpers-b45.json",
+      "sha256": "01EF539513907893D56269DA04F6C2EB20A474CD39B7C769D6890CD13A47AED7"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "7172F7DBB3B60A861EADE092E0FD76300E5D35E90AA8BB303180B4F4A211682D"
+    }
+  ],
+  "negative": {
+    "native_first": "Original112 and GC passed; unchanged GPA found swallowed diagnostic allocation while catching expected cyclic JSON error",
+    "fix": "Use existing native diagnostic suppression at public helper boundary; preserve Source catch and original thrown identity; keep NativeOOM classification and full GPA",
+    "source_first": "Caller SyntaxError; original caller8064... and unchanged fullpost preserved"
+  },
+  "qualification": {
+    "simple_options": "Actual native thinking+estimate lexical bindings",
+    "thinking": "Actual AI levels/clamping; separate from AgentSession null-model behavior",
+    "http": "Original SDK real loopback request/event observations only; native worker/provider not qualified",
+    "private_openai_compat": "Source-audited body and controlled flags only, not original private-function/network qualification",
+    "ai_estimate": "Actual3.5chars and timestamp/usage validity; separate from SDK4char estimate",
+    "text": "112-case combined genuine Source suite"
+  },
+  "limitations": [
+    "ReleaseSafe not yet gated",
+    "Raw HTTP worker under development is not part of this qualified checkpoint",
+    "Native provider payload/event/retry integration still required",
+    "Actual builtin models/catalog/factories still required",
+    "No public alias or complete application parity"
+  ],
+  "recorded_utc": "2026-10-14T20:52:18.2709592+00:00"
+}

@@ -1,0 +1,126 @@
+[
+  {
+    "file": "ai-compat-b45-source36-first-20261014-posthash.json",
+    "sha256": "DC4B07128AFA02101E81E1792FD802ED47D6D13B1DDC12079E6B74FAC187B439"
+  },
+  {
+    "file": "ai-compat-b45-source36-first-20261014.json",
+    "sha256": "1F29962E81A6E265E29C09486EB68A83576005038979492DA85C69501C8577B0"
+  },
+  {
+    "file": "ai-env-keys-b45-source72-first-20261014-posthash.json",
+    "sha256": "105CDDA2E57A86CED6BAA041FA021237D6912F62418E4B17EFAD6D383CD6DC4E"
+  },
+  {
+    "file": "ai-env-keys-b45-source72-first-20261014.json",
+    "sha256": "06A1920E25EB6B60C6B295B0A610EBE5AC7EF39E98BC5A0EB66949FBD7B8ADF9"
+  },
+  {
+    "file": "checkpoint-proof.json",
+    "sha256": "A56873518EAC64EFA8C76299D8EA1001C415A8CCA1467A4447A4C589742CC655"
+  },
+  {
+    "file": "crypto-random-node24-first-negative.input.txt",
+    "sha256": "AFE376D29DF074F0ED000DB3607DCE73F46667051337E8F00E2A9D4239D8AA3B"
+  },
+  {
+    "file": "crypto-random-node24-reference2-source2-first-20261014-output.json",
+    "sha256": "8EF27E62D6EDF0E489EAB2BE47371E67CB790ED0A295C2D673394B5D26819C92"
+  },
+  {
+    "file": "crypto-random-node24-reference2-source2-first-20261014-posthash.json",
+    "sha256": "4EF4677C8EE8FE82F188FC1BAB509E8E6D24F320720E49FE81F48E96D970643F"
+  },
+  {
+    "file": "crypto-random-node24-reference2-source2-first-20261014.json",
+    "sha256": "0873FEF75EAEF4397B3CB165E1EC3AAD7C9BB09E88ABC6B35E1ACB937262AD8D"
+  },
+  {
+    "file": "crypto-random-node24-source33-first-20261014-posthash.json",
+    "sha256": "C047810ADD960F434A0ED3586BB41C4BB95C4D14C02DD0FA296743470BA19C1E"
+  },
+  {
+    "file": "crypto-random-node24-source33-first-20261014.json",
+    "sha256": "F272FD1778866B74844B57BE5FA20937D69FECE6969A113B2DBCE2711574ECB6"
+  },
+  {
+    "file": "crypto-random-node24-source33-first-20261014.stderr.log",
+    "sha256": "53839319559AF6983A8A462C1DECB0C721A8F8D0E94DDE65680883A638ED948E"
+  },
+  {
+    "file": "crypto-random-node24-source33-second-20261014-posthash.json",
+    "sha256": "C15E34B50BB2407EEFDB5AE97BA904F1D7C320FDCF14F0752B140AA4147D3C8C"
+  },
+  {
+    "file": "crypto-random-node24-source33-second-20261014.json",
+    "sha256": "57B6FAED9BE8279C072D87F4836D91ED736209E9FA7CC495D53C277B42FEBA0D"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-compile-debug-first-20261014-posthash.json",
+    "sha256": "B362B0B84A249AE4F5E238401F986FC27F2C60DD11BF8625BCCD73A2B279140B"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-compile-debug-first-20261014.json",
+    "sha256": "668E5C87D2679F00CB8B699E8C6BD0465FFB460F7504E7883B6180C6160837F8"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-compile-debug-first-20261014.stderr.log",
+    "sha256": "D3E061A16732548EBC1A7D58B7459252C4F5147124BB64DC40703C38636E0B02"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-compile-debug-second-20261014-admission.json",
+    "sha256": "6D0C119439D27BF0DBB09322A6D0BD00CB9E8038E986D73C8028863C80716B4B"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-compile-debug-second-20261014-posthash.json",
+    "sha256": "A8A1AB100BC701575514110ABFD4FC4711A41B1A292F737205CA3BD60994C8CF"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-compile-debug-second-20261014-source-before.json",
+    "sha256": "58D74064BEAD08621E0D8039AB77CD303A5498BC79DEBD61C4AD4E34DB412D0F"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-compile-debug-second-20261014.json",
+    "sha256": "59C7A11F1C143783F0D1E17F181D4A5DE71A26DC088FCB3EAB2BE31315A7BEE5"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-runtime-debug-first-20261014-admission.json",
+    "sha256": "16333722A0E6FC262FD390D7B7F761F1357FBAE9DCCAF2228AB88A9A8C5F56B2"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-runtime-debug-first-20261014-posthash.json",
+    "sha256": "EE8ABC2210925C020C9D3661B07FF8FBF895D9C8887D3210E38C233DF2753E83"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-runtime-debug-first-20261014-source-before.json",
+    "sha256": "58D74064BEAD08621E0D8039AB77CD303A5498BC79DEBD61C4AD4E34DB412D0F"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-runtime-debug-first-20261014.json",
+    "sha256": "332AA9DB9B1A0AEA9A6B72567C0BDE5E8CBE4546AFA7D78DA561D1BE1C37A426"
+  },
+  {
+    "file": "native-ai-compat-env-crypto-runtime-debug-first-20261014.stderr.log",
+    "sha256": "3E72A1993D718E9B47144F33A44AFAEDEECBB5A8A982F755A3C709384127736D"
+  },
+  {
+    "file": "retained-native-binaries.json",
+    "sha256": "1EE866D542EBCD375641458BE924ECA41DE709816127DADA94CF54716CF6B4C8"
+  },
+  {
+    "file": "sdk-source-b45-modules-32156-0-20261014.jsonl",
+    "sha256": "ABD0170C31F830D6ABC041F1FDA3CA1205B853646C1219A718346546BA3A1CD7"
+  },
+  {
+    "file": "sdk-source-b45-modules-58464-0-20261014.jsonl",
+    "sha256": "B441BA505F6A1297E288272BBD639AC955A181C4938F57CF201AD33CA96FB6F5"
+  },
+  {
+    "file": "sdk-source-b45-modules-58616-0-20261014.jsonl",
+    "sha256": "CC320B1D1860A795860DCF6749F7065128BC1F801FD1EA252373D0A6A9C50F50"
+  },
+  {
+    "file": "sdk-source-b45-modules-69968-0-20261014.jsonl",
+    "sha256": "C3500B0F96CE53ADF5A7460D3CB19AC039D006180A56D999E7DDD7A2DB4EF2C3"
+  }
+]

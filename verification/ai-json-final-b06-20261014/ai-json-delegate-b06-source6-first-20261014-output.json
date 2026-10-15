@@ -1,0 +1,263 @@
+{
+  "sourceHead": "b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+  "callerSha256": "ce2e79b7714eca7206ede9fb193310369eb660affa4a0c7a5a655bd4b6334fce",
+  "actualNode": {
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.14.0",
+    "pid": 72896
+  },
+  "scope": "Actual official b06 utils/json-parse.ts; caller wrapper/Proxy delegating to captured intrinsic JSON.parse, caller-created SyntaxError/sentinel identity, and reviver error-origin preservation. Original helper receives the original caller replacement; no normalized errors or Source body replacement.",
+  "cases": 6,
+  "rows": [
+    {
+      "name": "wrapper-rethrow",
+      "input": "{\"bad\":.5}",
+      "observed": {
+        "parseJsonWithRepair": {
+          "caughtIdentity": true,
+          "callerSyntaxIdentity": false,
+          "sentinelIdentity": false,
+          "error": {
+            "name": "SyntaxError",
+            "message": "Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON"
+          }
+        },
+        "parseToolCallArguments": {
+          "value": {
+            "arguments": {},
+            "argumentsError": "Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON\n\nReceived arguments:\n{\"bad\":.5}"
+          }
+        }
+      },
+      "events": [
+        [
+          "method",
+          "parseJsonWithRepair"
+        ],
+        [
+          "delegate",
+          true,
+          "{\"bad\":.5}"
+        ],
+        [
+          "intrinsic.error",
+          "SyntaxError",
+          "Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON"
+        ],
+        [
+          "method",
+          "parseToolCallArguments"
+        ],
+        [
+          "delegate",
+          true,
+          "{\"bad\":.5}"
+        ],
+        [
+          "intrinsic.error",
+          "SyntaxError",
+          "Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON"
+        ]
+      ]
+    },
+    {
+      "name": "proxy-rethrow",
+      "input": "{\"bad\":.5}",
+      "observed": {
+        "parseJsonWithRepair": {
+          "caughtIdentity": true,
+          "callerSyntaxIdentity": false,
+          "sentinelIdentity": false,
+          "error": {
+            "name": "SyntaxError",
+            "message": "Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON"
+          }
+        },
+        "parseToolCallArguments": {
+          "value": {
+            "arguments": {},
+            "argumentsError": "Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON\n\nReceived arguments:\n{\"bad\":.5}"
+          }
+        }
+      },
+      "events": [
+        [
+          "method",
+          "parseJsonWithRepair"
+        ],
+        [
+          "proxy",
+          true,
+          1,
+          "{\"bad\":.5}"
+        ],
+        [
+          "intrinsic.error",
+          "SyntaxError",
+          "Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON"
+        ],
+        [
+          "method",
+          "parseToolCallArguments"
+        ],
+        [
+          "proxy",
+          true,
+          1,
+          "{\"bad\":.5}"
+        ],
+        [
+          "intrinsic.error",
+          "SyntaxError",
+          "Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON"
+        ]
+      ]
+    },
+    {
+      "name": "caller-syntax",
+      "input": "{\"bad\":.5}",
+      "observed": {
+        "parseJsonWithRepair": {
+          "caughtIdentity": true,
+          "callerSyntaxIdentity": true,
+          "sentinelIdentity": false,
+          "error": {
+            "name": "SyntaxError",
+            "message": "caller syntax"
+          }
+        },
+        "parseToolCallArguments": {
+          "value": {
+            "arguments": {},
+            "argumentsError": "caller syntax\n\nReceived arguments:\n{\"bad\":.5}"
+          }
+        }
+      },
+      "events": [
+        [
+          "method",
+          "parseJsonWithRepair"
+        ],
+        [
+          "method",
+          "parseToolCallArguments"
+        ]
+      ]
+    },
+    {
+      "name": "caller-sentinel",
+      "input": "{\"bad\":.5}",
+      "observed": {
+        "parseJsonWithRepair": {
+          "caughtIdentity": true,
+          "callerSyntaxIdentity": false,
+          "sentinelIdentity": true
+        },
+        "parseToolCallArguments": {
+          "value": {
+            "arguments": {},
+            "argumentsError": "caller sentinel\n\nReceived arguments:\n{\"bad\":.5}"
+          }
+        }
+      },
+      "events": [
+        [
+          "method",
+          "parseJsonWithRepair"
+        ],
+        [
+          "method",
+          "parseToolCallArguments"
+        ],
+        "sentinel.string"
+      ]
+    },
+    {
+      "name": "wrapper-replace-syntax",
+      "input": "{\"bad\":.5}",
+      "observed": {
+        "parseJsonWithRepair": {
+          "caughtIdentity": true,
+          "callerSyntaxIdentity": false,
+          "sentinelIdentity": false,
+          "error": {
+            "name": "SyntaxError",
+            "message": "caller replaced: Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON"
+          }
+        },
+        "parseToolCallArguments": {
+          "value": {
+            "arguments": {},
+            "argumentsError": "caller replaced: Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON\n\nReceived arguments:\n{\"bad\":.5}"
+          }
+        }
+      },
+      "events": [
+        [
+          "method",
+          "parseJsonWithRepair"
+        ],
+        [
+          "delegate",
+          true,
+          "{\"bad\":.5}"
+        ],
+        [
+          "intrinsic.error",
+          "SyntaxError",
+          "Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON"
+        ],
+        [
+          "method",
+          "parseToolCallArguments"
+        ],
+        [
+          "delegate",
+          true,
+          "{\"bad\":.5}"
+        ],
+        [
+          "intrinsic.error",
+          "SyntaxError",
+          "Unexpected token '.', \"{\"bad\":.5}\" is not valid JSON"
+        ]
+      ]
+    },
+    {
+      "name": "reviver-sentinel",
+      "input": "{}",
+      "observed": {
+        "parseJsonWithRepair": {
+          "caughtIdentity": true,
+          "callerSyntaxIdentity": false,
+          "sentinelIdentity": true
+        },
+        "parseToolCallArguments": {
+          "value": {
+            "arguments": {},
+            "argumentsError": "caller sentinel\n\nReceived arguments:\n{}"
+          }
+        }
+      },
+      "events": [
+        [
+          "method",
+          "parseJsonWithRepair"
+        ],
+        [
+          "reviver",
+          ""
+        ],
+        [
+          "method",
+          "parseToolCallArguments"
+        ],
+        [
+          "reviver",
+          ""
+        ],
+        "sentinel.string"
+      ]
+    }
+  ]
+}
