@@ -28,7 +28,7 @@ pub fn open(engine: *v.em.Engine, fetch: c.JSValue, url: c.JSValue, init: c.JSVa
                 return operation(host, roots[0], method);
             }
         };
-        const function = try scope.own(try @import("native_node_function.zig").createArrow(engine, field.name, 0, Adapter.call, &.{owner}));
+        const function = try scope.own(try @import("native_node_function.zig").createArrow(engine, if (method == .abort_reader) "onAbort" else field.name, 0, Adapter.call, &.{owner}));
         switch (method) {
             .begin, .close => try scope.put(output, field.name, function),
             .next => try scope.put(events, "next", function),
