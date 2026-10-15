@@ -1,0 +1,62 @@
+//! Actual highlight.js10.7.3 AutoHotkey factory; unqualified source.
+const b = @import("native_highlight_lazy_batch3_values.zig");
+pub fn create(e: *b.Engine) !b.c.JSValue {
+    return b.factory(e, "autohotkey", build);
+}
+pub fn build(e: *b.Engine, hljs: b.c.JSValue) !b.c.JSValue {
+    var s: b.Scope = .{ .engine = e };
+    defer s.deinit();
+    const escape = try s.object();
+    try s.put(escape, "begin", try s.text("`[\\s\\S]"));
+    const language = try s.object();
+    try s.put(language, "name", try s.text("AutoHotkey"));
+    try s.put(language, "case_insensitive", b.boolean(&s, true));
+    try s.put(language, "aliases", try b.list(&s, &.{try s.text("ahk")}));
+    const keywords = try s.object();
+    try s.put(keywords, "keyword", try s.text("Break Continue Critical Exit ExitApp Gosub Goto New OnExit Pause return SetBatchLines SetTimer Suspend Thread Throw Until ahk_id ahk_class ahk_pid ahk_exe ahk_group"));
+    try s.put(keywords, "literal", try s.text("true false NOT AND OR"));
+    try s.put(keywords, "built_in", try s.text("ComSpec Clipboard ClipboardAll ErrorLevel"));
+    try s.put(language, "keywords", keywords);
+    const contains = try b.list(&s, &.{escape});
+    const inherit = try s.get(hljs, "inherit");
+    const quote = try s.get(hljs, "QUOTE_STRING_MODE");
+    const changes = try s.object();
+    try s.put(changes, "contains", try b.list(&s, &.{escape}));
+    try s.index(contains, 1, try s.call(inherit, hljs, &.{ quote, changes }));
+    const comment = try s.get(hljs, "COMMENT");
+    const options = try s.object();
+    try s.put(options, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.index(contains, 2, try s.call(comment, hljs, &.{ try s.text(";"), try s.text("$"), options }));
+    try s.index(contains, 3, try s.get(hljs, "C_BLOCK_COMMENT_MODE"));
+    const number = try b.mode(&s, "number");
+    try s.put(number, "begin", try s.get(hljs, "NUMBER_RE"));
+    try s.put(number, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.index(contains, 4, number);
+    const variable = try b.mode(&s, "variable");
+    try s.put(variable, "begin", try s.text("%[a-zA-Z0-9#_$@]+%"));
+    try s.index(contains, 5, variable);
+    const command = try b.mode(&s, "built_in");
+    try s.put(command, "begin", try s.text("^\\s*\\w+\\s*(,|%)"));
+    try s.index(contains, 6, command);
+    const title = try b.mode(&s, "title");
+    const hotkey = try s.object();
+    try s.put(hotkey, "begin", try s.text("^[^\\n\";]+::(?!=)"));
+    const label = try s.object();
+    try s.put(label, "begin", try s.text("^[^\\n\";]+:(?!=)"));
+    try s.put(label, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.put(title, "variants", try b.list(&s, &.{ hotkey, label }));
+    try s.index(contains, 7, title);
+    const meta = try b.mode(&s, "meta");
+    try s.put(meta, "begin", try s.text("^\\s*#\\w+"));
+    try s.put(meta, "end", try s.text("$"));
+    try s.put(meta, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.index(contains, 8, meta);
+    const builtin = try b.mode(&s, "built_in");
+    try s.put(builtin, "begin", try s.text("A_[a-zA-Z0-9]+"));
+    try s.index(contains, 9, builtin);
+    const comma = try s.object();
+    try s.put(comma, "begin", try s.text(",\\s*,"));
+    try s.index(contains, 10, comma);
+    try s.put(language, "contains", contains);
+    return b.c.JS_DupValue(e.context, language);
+}

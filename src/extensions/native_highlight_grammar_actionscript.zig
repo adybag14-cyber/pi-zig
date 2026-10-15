@@ -1,0 +1,65 @@
+//! Actual highlight.js 10.7.3 ActionScript factory; source-only, unqualified.
+const b = @import("native_highlight_lazy_batch3_values.zig");
+const re = @import("native_highlight_regex.zig");
+pub fn create(e: *b.Engine) !b.c.JSValue {
+    return b.factory(e, "actionscript", build);
+}
+pub fn build(e: *b.Engine, h: b.c.JSValue) !b.c.JSValue {
+    var s: b.Scope = .{ .engine = e };
+    defer s.deinit();
+    const ident = try b.rx(&s, "[a-zA-Z_$][a-zA-Z0-9_$]*");
+    const ret = try b.rx(&s, "([*]|[a-zA-Z_$][a-zA-Z0-9_$]*)");
+    const rest = try b.mode(&s, "rest_arg");
+    try s.put(rest, "begin", try b.rx(&s, "[.]{3}"));
+    try s.put(rest, "end", ident);
+    try s.put(rest, "relevance", b.c.JS_NewInt32(e.context, 10));
+    const l = try s.object();
+    try s.put(l, "name", try s.text("ActionScript"));
+    try s.put(l, "aliases", try b.list(&s, &.{try s.text("as")}));
+    const kw = try s.object();
+    try s.put(kw, "keyword", try s.text("as break case catch class const continue default delete do dynamic each else extends final finally for function get if implements import in include instanceof interface internal is namespace native new override package private protected public return set static super switch this throw try typeof use var void while with"));
+    try s.put(kw, "literal", try s.text("true false null undefined"));
+    try s.put(l, "keywords", kw);
+    const a = try b.list(&s, &.{ try s.get(h, "APOS_STRING_MODE"), try s.get(h, "QUOTE_STRING_MODE"), try s.get(h, "C_LINE_COMMENT_MODE"), try s.get(h, "C_BLOCK_COMMENT_MODE"), try s.get(h, "C_NUMBER_MODE") });
+    const pkg = try b.mode(&s, "class");
+    try s.put(pkg, "beginKeywords", try s.text("package"));
+    try s.put(pkg, "end", try b.rx(&s, "\\{"));
+    try s.put(pkg, "contains", try b.list(&s, &.{try s.get(h, "TITLE_MODE")}));
+    try s.index(a, 5, pkg);
+    const cls = try b.mode(&s, "class");
+    try s.put(cls, "beginKeywords", try s.text("class interface"));
+    try s.put(cls, "end", try b.rx(&s, "\\{"));
+    try s.put(cls, "excludeEnd", b.boolean(&s, true));
+    const ext = try s.object();
+    try s.put(ext, "beginKeywords", try s.text("extends implements"));
+    try s.put(cls, "contains", try b.list(&s, &.{ ext, try s.get(h, "TITLE_MODE") }));
+    try s.index(a, 6, cls);
+    const meta = try b.mode(&s, "meta");
+    try s.put(meta, "beginKeywords", try s.text("import include"));
+    try s.put(meta, "end", try b.rx(&s, ";"));
+    const mk = try s.object();
+    try s.put(mk, "meta-keyword", try s.text("import include"));
+    try s.put(meta, "keywords", mk);
+    try s.index(a, 7, meta);
+    const fun = try b.mode(&s, "function");
+    try s.put(fun, "beginKeywords", try s.text("function"));
+    try s.put(fun, "end", try b.rx(&s, "[{;]"));
+    try s.put(fun, "excludeEnd", b.boolean(&s, true));
+    try s.put(fun, "illegal", try b.rx(&s, "\\S"));
+    const fc = try b.list(&s, &.{try s.get(h, "TITLE_MODE")});
+    const params = try b.mode(&s, "params");
+    try s.put(params, "begin", try b.rx(&s, "\\("));
+    try s.put(params, "end", try b.rx(&s, "\\)"));
+    try s.put(params, "contains", try b.list(&s, &.{ try s.get(h, "APOS_STRING_MODE"), try s.get(h, "QUOTE_STRING_MODE"), try s.get(h, "C_LINE_COMMENT_MODE"), try s.get(h, "C_BLOCK_COMMENT_MODE"), rest }));
+    try s.index(fc, 1, params);
+    const rt = try s.object();
+    const colon = try b.rx(&s, ":\\s*");
+    try s.put(rt, "begin", try s.own(try re.concat(e, try b.list(&s, &.{ colon, ret }))));
+    try s.index(fc, 2, rt);
+    try s.put(fun, "contains", fc);
+    try s.index(a, 8, fun);
+    try s.index(a, 9, try s.get(h, "METHOD_GUARD"));
+    try s.put(l, "contains", a);
+    try s.put(l, "illegal", try b.rx(&s, "#"));
+    return b.c.JS_DupValue(e.context, l);
+}

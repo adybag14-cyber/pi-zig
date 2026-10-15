@@ -1,0 +1,9 @@
+{
+  "required_kib": 2097152,
+  "max_coordinated_jobs": 4,
+  "status": "admitted",
+  "free_kib": 18325316,
+  "observed_utc": "2026-10-15T20:32:33.9843645+00:00",
+  "cases": 106,
+  "heap_mb": 128
+}

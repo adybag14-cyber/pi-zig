@@ -1,0 +1,62 @@
+//! Actual highlight.js10.7.3 F# factory; unqualified source.
+const b = @import("native_highlight_lazy_batch3_values.zig");
+pub fn create(e: *b.Engine) !b.c.JSValue {
+    return b.factory(e, "fsharp", build);
+}
+pub fn build(e: *b.Engine, hljs: b.c.JSValue) !b.c.JSValue {
+    var s: b.Scope = .{ .engine = e };
+    defer s.deinit();
+    const typeparam = try s.object();
+    try s.put(typeparam, "begin", try s.text("<"));
+    try s.put(typeparam, "end", try s.text(">"));
+    const inherit_type = try s.get(hljs, "inherit");
+    const title = try s.get(hljs, "TITLE_MODE");
+    const changes = try s.object();
+    try s.put(changes, "begin", try b.rx(&s, "'[a-zA-Z0-9_]+"));
+    try s.put(typeparam, "contains", try b.list(&s, &.{try s.call(inherit_type, hljs, &.{ title, changes })}));
+    const language = try s.object();
+    try s.put(language, "name", try s.text("F#"));
+    try s.put(language, "aliases", try b.list(&s, &.{try s.text("fs")}));
+    try s.put(language, "keywords", try s.text("abstract and as assert base begin class default delegate do done downcast downto elif else end exception extern false finally for fun function global if in inherit inline interface internal lazy let match member module mutable namespace new null of open or override private public rec return sig static struct then to true try type upcast use val void when while with yield"));
+    try s.put(language, "illegal", try b.rx(&s, "\\/\\*"));
+    const keyword = try b.mode(&s, "keyword");
+    try s.put(keyword, "begin", try b.rx(&s, "\\b(yield|return|let|do)!"));
+    const verbatim = try b.mode(&s, "string");
+    try s.put(verbatim, "begin", try s.text("@\""));
+    try s.put(verbatim, "end", try s.text("\""));
+    const double = try s.object();
+    try s.put(double, "begin", try s.text("\"\""));
+    try s.put(verbatim, "contains", try b.list(&s, &.{double}));
+    const triple = try b.mode(&s, "string");
+    try s.put(triple, "begin", try s.text("\"\"\""));
+    try s.put(triple, "end", try s.text("\"\"\""));
+    const contains = try b.list(&s, &.{ keyword, verbatim, triple });
+    const comment_function = try s.get(hljs, "COMMENT");
+    const options = try s.object();
+    try s.put(options, "contains", try b.list(&s, &.{try s.text("self")}));
+    try s.index(contains, 3, try s.call(comment_function, hljs, &.{ try s.text("\\(\\*(\\s)"), try s.text("\\*\\)"), options }));
+    const class = try b.mode(&s, "class");
+    try s.put(class, "beginKeywords", try s.text("type"));
+    try s.put(class, "end", try s.text("\\(|=|$"));
+    try s.put(class, "excludeEnd", b.boolean(&s, true));
+    try s.put(class, "contains", try b.list(&s, &.{ try s.get(hljs, "UNDERSCORE_TITLE_MODE"), typeparam }));
+    try s.index(contains, 4, class);
+    const meta = try b.mode(&s, "meta");
+    try s.put(meta, "begin", try s.text("\\[<"));
+    try s.put(meta, "end", try s.text(">\\]"));
+    try s.put(meta, "relevance", b.c.JS_NewInt32(e.context, 10));
+    try s.index(contains, 5, meta);
+    const symbol = try b.mode(&s, "symbol");
+    try s.put(symbol, "begin", try s.text("\\B('[A-Za-z])\\b"));
+    try s.put(symbol, "contains", try b.list(&s, &.{try s.get(hljs, "BACKSLASH_ESCAPE")}));
+    try s.index(contains, 6, symbol);
+    try s.index(contains, 7, try s.get(hljs, "C_LINE_COMMENT_MODE"));
+    const inherit_string = try s.get(hljs, "inherit");
+    const base = try s.get(hljs, "QUOTE_STRING_MODE");
+    const string_changes = try s.object();
+    try s.put(string_changes, "illegal", b.c.pi_js_null());
+    try s.index(contains, 8, try s.call(inherit_string, hljs, &.{ base, string_changes }));
+    try s.index(contains, 9, try s.get(hljs, "C_NUMBER_MODE"));
+    try s.put(language, "contains", contains);
+    return b.c.JS_DupValue(e.context, language);
+}

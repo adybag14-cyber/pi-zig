@@ -1,0 +1,52 @@
+{
+  "status": "static_review_passed_no_concrete_blocker_found",
+  "target_base": "55cfa068bdaa48fda816c866fb652d0dec7b7667",
+  "patch_sha256": "8B525B55CB088B4491F7C8693CADD8BC3B36276D6504AD564822E0FDDC65F4C4",
+  "declared_hunks": 9,
+  "in_memory_exact_patch_reproduction": true,
+  "actual_applied_hashes_match": {
+    "vendor/quickjs/quickjs.c": {
+      "baseline": "ED1F3A59AD13DE57B32CCA164FC42D347C463632F0B8A1921DC79621E79DE69E",
+      "proposal_and_applied": "8239A6841DE1F59CCC39E61CD912B9F4439F3E2F059104A9802E3D23380231F5"
+    },
+    "vendor/quickjs/quickjs.h": {
+      "baseline": "91A39801056D4B4DA6A1B357AD09A20BA61AD3C669D3EEE219F781B4A56ACA28",
+      "proposal_and_applied": "EC16662550F3F254928AC6B77028518D59371B90CA3EDAD08DBA277A2144E639"
+    }
+  },
+  "bytecode_body_normalization": "Exact equality after function rename/no_inline annotation, entry poll removal, and relocated native dispatch/invalid-target branch only",
+  "normalized_bytecode_body_sha256": "93425193E9B5FBE45BF0A5BC321C2FC83A14A2DD379ECCC7709732668E09A93C",
+  "normalized_bytecode_body_bytes": 104471,
+  "preserved_function_body_sha256": {
+    "js_build_arguments": "9BF4AE8035BD99EFA1043D3555F3F156C32F750B1F58E1D83ED2B4739B76FC9A",
+    "js_call_c_function": "A1393F1672E167F550A68DCF53AECED939C3F1DB73FD430BF9470F31948D968C",
+    "js_call_bound_function": "E2D26E2B90D1A9C98C5A6B82AAA4F7949FFA31AFAF09BD00776593210ECCE69C",
+    "JS_CallConstructorInternal": "66611BEC3E81559A87FBE6F82FDC709DB4ADF9B985092EA1217B2820C93E3486",
+    "js_function_apply": "A598170E137D33590587EF657F83D910F19B76B868A594ABE1F0011F25801580",
+    "js_function_call": "A6DE823D82CC613D9AC65627699DADA1FE445A8A05400FF8875B4EB8E7294084",
+    "js_reflect_apply": "F1473AFED466ACD7F4FAC11BE3BC28D6289C907BD3B53F5BFE60C2BD5A536A60",
+    "js_reflect_construct": "E4CCCDD4490093EB159625B3A462D174A2E1CE523EE61F4CE6D0D40C96FF78C5",
+    "js_c_function_finalizer": "6A4C5D2091846CEB69F883B4783F6438A4C7C113C431F1557696ACCF42ACDAD4",
+    "js_c_function_mark": "8D097BAA742927928D5262CEAD80FC8AB66A0C5B8654EA106B35207BF35D7801"
+  },
+  "legacy_helper_exact_aea5_match": true,
+  "newer_interpreter_generator_json_operator_bodies_preserved": true,
+  "manual_review": {
+    "poison_cache": "Context-owned initial reference is published only after descriptor hardening succeeds; initial raw-context field is undefined; context mark/free edges added; C-function realm mark/free edges remain unchanged.",
+    "arguments_refs": "Existing builder duplicates argv and both original poison accessor references; replacement releases those two and installs two owned references to cached poison, leaving one context-owned cache reference.",
+    "failure_cleanup": "Builder/create/descriptor/preventExtensions failures free all temporary owned values before returning the pending exception; cache remains unpublished on initialization failure.",
+    "caller": "Frame/function are borrowed during inspection; return JS_DupValue is owned. Only exact call/apply/Reflect.apply/Reflect.construct C implementation pointers are skipped; strict, absent and native-boundary observations return null. Opaque frame identity cannot outlive active call.",
+    "native_dispatch": "Callback, func_obj, this_obj, argc, borrowed argv and flags are unchanged; constructor new_target remains explicit for bytecode and encoded in this_obj/flags for native handlers as before.",
+    "interrupt_stack": "One original entry poll precedes target inspection; native class dispatch avoids the large interpreter frame; all original C/bytecode/bound-function stack checks and stack-frame publication/restoration remain untouched."
+  },
+  "runtime_qualification_performed": false,
+  "build_performed": false,
+  "root_or_active_gpa_edited": false,
+  "qualification_requirements": [
+    "Preserved newer async-generator/JSON/error/operator regression suite",
+    "Actual legacy caller/Arguments descriptors, realm cache/GC and OOM probes",
+    "Interrupt-once and constructor/new_target behavior",
+    "Native self/distinct nested calls plus bytecode stack-overflow bounds",
+    "All191 real grammar/factory/loader corpus"
+  ]
+}
