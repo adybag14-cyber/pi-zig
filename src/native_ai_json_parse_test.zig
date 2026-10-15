@@ -17,7 +17,37 @@ fn identity(input: []const u8, expected: []const u8) !void {
     std.crypto.hash.sha2.Sha256.hash(input, &digest, .{});
     try std.testing.expectEqualStrings(expected, &std.fmt.bytesToHex(digest, .lower));
 }
-test "native AI JSON final helpers match33 genuine b06 observations excluding separate streaming parser" {
+test "native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    try install(engine);
+    try @import("extensions/native_stream.zig").install(engine);
+    try source(engine, "openAIInput", @embedFile("extensions/fixtures/ai-openai-http-b06.input.json"));
+    try source(engine, "openAISource", @embedFile("extensions/fixtures/ai-openai-http-b06.json"));
+    const Adapter = struct {
+        fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            if (args.len != 4) return error.OpenAIDecoderTestArguments;
+            const compat = try @import("extensions/native_ai_openai_compat_options.zig").resolve(host, args[0]);
+            defer host.freeValue(compat);
+            return @import("extensions/native_ai_openai_decode.zig").create(host, args[0], compat, args[1], args[2], args[3]);
+        }
+    };
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "createOpenAIDecoder", try @import("extensions/native_node_function.zig").create(engine, "createOpenAIDecoder", 4, Adapter.call, &.{}));
+    const checked = engine.evalModule(
+        \\import {AssistantMessageEventStream} from 'pi-ai';
+        \\if(openAISource.sourceHead!=='b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6'||openAISource.rows.length!==20)throw Error('genuine HTTP20 required');
+        \\function snapshot(value){if(Array.isArray(value))return value.map(snapshot);if(value&&typeof value==='object'){const out={};for(const [key,item]of Object.entries(value)){if(value.role==='assistant'&&key==='timestamp')out[key]='$TIMESTAMP';else if(value.role==='assistant'&&key==='durationMs')out[key]='$DURATION';else out[key]=snapshot(item)}return out}return value}
+        \\for(let i=0;i<openAIInput.length;i++){const item=openAIInput[i],expected=openAISource.rows[i],model={id:item.kimiModel??'fixture-model',api:'openai-completions',provider:item.provider??'openai',baseUrl:'http://127.0.0.1/v1',reasoning:item.reasoning??false,cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},compat:item.compat};const stream=new AssistantMessageEventStream(),decoder=createOpenAIDecoder(model,stream,aiJSONAPI,new Map());decoder.start();for(const chunk of item.chunks)decoder.push(chunk);decoder.finish();const events=[];for await(const event of stream)events.push(event);const actual=snapshot(await stream.result());if(JSON.stringify(actual)!==JSON.stringify(expected.result))throw Error(JSON.stringify({case:item.name,actual,expected:expected.result}));const shape=e=>{const out={...e};delete out.partial;delete out.message;delete out.error;return snapshot(out)};if(JSON.stringify(events.map(shape))!==JSON.stringify(expected.events.map(shape)))throw Error(JSON.stringify({case:item.name,events:events.map(shape),expected:expected.events.map(shape)}));}export const done=true;
+    , "native-ai-openai-decoder-source20.mjs") catch |err| {
+        std.debug.print("OpenAI decoder: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(checked);
+    c.JS_RunGC(engine.runtime);
+}
+test "native AI JSON helpers and native partial fallback match33 genuine b06 observations" {
     const input = @embedFile("extensions/fixtures/ai-json-parse-b06.input.txt");
     try identity(input, "ce059a7d2ccb1673828797f6c05876970e7ac180a6ac87495f9d06a5059f1936");
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
@@ -26,7 +56,7 @@ test "native AI JSON final helpers match33 genuine b06 observations excluding se
     try source(engine, "jsonSource", @embedFile("extensions/fixtures/ai-json-parse-b06.json"));
     const checked = engine.evalModule(
         \\if(jsonSource.sourceHead!=='b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6'||jsonSource.rows.length!==33)throw Error('all original33 required');
-        \\for(const row of jsonSource.rows.slice(0,28))for(const method of ['repairJson','parseJsonWithRepair','parseToolCallArguments']){let actual;try{actual={value:aiJSONAPI[method](row.input)}}catch(error){actual={error:{name:error.name,message:error.message}}}if(JSON.stringify(actual)!==JSON.stringify(row[method]))throw Error(JSON.stringify({case:row.name,method,actual,expected:row[method]}));}export const checked=true;
+        \\for(const row of jsonSource.rows.slice(0,28))for(const method of ['repairJson','parseJsonWithRepair','parseToolCallArguments','parseStreamingJson']){let actual;try{actual={value:aiJSONAPI[method](row.input)}}catch(error){actual={error:{name:error.name,message:error.message}}}if(JSON.stringify(actual)!==JSON.stringify(row[method]))throw Error(JSON.stringify({case:row.name,method,actual,expected:row[method]}));}export const checked=true;
     , "native-ai-json-b06-original28.mjs") catch |err| {
         std.debug.print("JSON b06: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;

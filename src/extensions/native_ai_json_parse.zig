@@ -1,13 +1,13 @@
 //! Original b06 JSON string repair and final complete tool-arguments helpers.
 //! Scoped intrinsic syntax diagnostics preserve caller/delegate error origin.
-//! Partial-json streaming is a separate algorithm, not exported by this module.
+//! Streaming fallback uses the native default partial-json dependency port.
 const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_models_stream_scope.zig");
 const Scope = temp.Scope;
 const arithmetic = @import("native_image_arithmetic.zig");
 const c = em.c;
-const Method = enum { repairJson, parseJsonWithRepair, parseToolCallArguments };
+const Method = enum { repairJson, parseJsonWithRepair, parseToolCallArguments, parseStreamingJson };
 pub fn create(engine: *em.Engine) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -26,6 +26,7 @@ pub fn create(engine: *em.Engine) !c.JSValue {
                     .repairJson => repair(host, input, roots[0]),
                     .parseJsonWithRepair => parseWithRepair(host, input, roots[0]),
                     .parseToolCallArguments => parseFinal(host, input, roots[0]),
+                    .parseStreamingJson => parseStreaming(host, input, roots[0]),
                 };
             }
         };
@@ -174,4 +175,39 @@ fn parseObject(scope: *Scope, input: c.JSValue, valid: c.JSValue) !c.JSValue {
         return throwValue(scope.engine, reason);
     }
     return c.JS_DupValue(scope.engine.context, parsed);
+}
+pub fn parseStreaming(engine: *em.Engine, input: c.JSValue, valid: c.JSValue) !c.JSValue {
+    var diagnostics = @import("native_ai_json_scope.zig").Guard.enter(engine);
+    defer diagnostics.deinit();
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    if (!scope.truthy(input) or scope.equal(try scope.invoke(input, "trim", &.{}), try scope.text(""))) return js.object(engine);
+    const partial = @import("native_ai_partial_json.zig");
+    const generation = engine.native_allocation_generation;
+    return parseWithRepair(engine, input, valid) catch |first| {
+        try partial.discard(engine, first, generation);
+        const result = partial.parse(engine, input) catch |second| {
+            try partial.discard(engine, second, generation);
+            // repairJson is inside the third source try block too.
+            const repaired = repair(engine, input, valid) catch |third| {
+                try partial.discard(engine, third, generation);
+                return js.object(engine);
+            };
+            defer engine.freeValue(repaired);
+            const repaired_result = partial.parse(engine, repaired) catch |third| {
+                try partial.discard(engine, third, generation);
+                return js.object(engine);
+            };
+            if (temp.nullish(repaired_result)) {
+                engine.freeValue(repaired_result);
+                return js.object(engine);
+            }
+            return repaired_result;
+        };
+        if (temp.nullish(result)) {
+            engine.freeValue(result);
+            return js.object(engine);
+        }
+        return result;
+    };
 }
