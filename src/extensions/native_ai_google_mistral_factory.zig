@@ -28,7 +28,7 @@ pub fn create(engine: *v.em.Engine, comptime kind: Kind) !c.JSValue {
                 return stream(host, roots[0], &input, index == 1, kind);
             }
         };
-        try scope.put(result, name, try scope.own(try @import("native_node_function.zig").create(engine, name, 3, Adapter.call, &.{dependencies})));
+        try scope.put(result, name, try scope.own(try @import("native_node_function.zig").createArrow(engine, name, 3, Adapter.call, &.{dependencies})));
     }
     return c.JS_DupValue(engine.context, result);
 }

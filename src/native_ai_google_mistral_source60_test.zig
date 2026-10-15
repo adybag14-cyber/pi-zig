@@ -7,6 +7,7 @@ comptime {
     _ = @import("ai/mistral.zig");
 }
 fn install(engine: *em.Engine) !void {
+    try @import("extensions/native_stream.zig").install(engine);
     const imported = try engine.evalModule("import 'pi-ai';export const loaded=true;", "native-google-mistral-stream-install.mjs");
     engine.freeValue(imported);
     const global = c.JS_GetGlobalObject(engine.context);
@@ -64,24 +65,45 @@ test "native AI Google Mistral Source60 request component retains actual payload
 }
 test "native AI Google Mistral actual Source60 request event callback error semantics" {
     const gpa = std.testing.allocator;
-    const original = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("extensions/fixtures/ai-google-mistral60-5ab.json"), .{});
-    defer original.deinit();
-    try std.testing.expectEqualStrings("5ab7fe74c400097b386662205cd93900695b8a71", original.value.object.get("sourceHead").?.string);
-    const rows = original.value.object.get("rows").?.array.items;
-    try std.testing.expectEqual(@as(usize, 60), rows.len);
-    for (rows) |observation| {
-        const input = observation.object.get("input").?;
-        const requests = observation.object.get("requests").?.array.items;
+    const v = @import("extensions/native_ai_provider_values.zig");
+    for (0..60) |case_index| {
+        const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
+        defer engine.deinit();
+        engine.native_io = std.testing.io;
+        try install(engine);
+        var scope: v.Scope = .{ .engine = engine };
+        defer scope.deinit();
+        const original_bytes = @embedFile("extensions/fixtures/ai-google-mistral60-5ab.json");
+        const original = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, original_bytes.ptr, original_bytes.len, "actual-source5ab-google-mistral.json")));
+        try std.testing.expect(try v.eq(&scope, try scope.get(original, "sourceHead"), "5ab7fe74c400097b386662205cd93900695b8a71"));
+        const rows = try scope.get(original, "rows");
+        try std.testing.expectEqual(@as(u32, 60), try v.length(&scope, rows));
+        const observation = try v.at(&scope, rows, @intCast(case_index));
+        const input = try scope.get(observation, "input");
+        const requests = try scope.get(observation, "requests");
+        const request_count = try v.length(&scope, requests);
+        const name = try engine.toString(try scope.get(input, "name"));
+        defer gpa.free(name);
         var wire: std.ArrayList(u8) = .empty;
         defer wire.deinit(gpa);
-        const kind = input.object.get("kind").?.string;
-        if (input.object.get("body")) |value| try wire.appendSlice(gpa, value.string) else {
-            const encoded = if (input.object.get("chunks")) |chunks| try std.json.Stringify.valueAlloc(gpa, chunks, .{}) else try gpa.dupe(u8, if (std.mem.eql(u8, kind, "mistral")) "[{\"id\":\"response-1\",\"choices\":[{\"delta\":{\"content\":\"answer\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":4,\"total_tokens\":16}}]" else "[{\"responseId\":\"response-1\",\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"answer\"}]},\"finishReason\":\"STOP\"}],\"usageMetadata\":{\"promptTokenCount\":12,\"candidatesTokenCount\":4,\"totalTokenCount\":16}}]");
-            defer gpa.free(encoded);
-            const parsed = try std.json.parseFromSlice(std.json.Value, gpa, encoded, .{});
-            defer parsed.deinit();
-            for (parsed.value.array.items) |chunk| {
-                const bytes = try std.json.Stringify.valueAlloc(gpa, chunk, .{});
+        var raw_body = try scope.get(input, "body");
+        if (c.JS_IsUndefined(raw_body)) raw_body = try scope.get(input, "rawSSE");
+        if (!c.JS_IsUndefined(raw_body)) {
+            const bytes = try engine.toString(raw_body);
+            defer gpa.free(bytes);
+            try wire.appendSlice(gpa, bytes);
+        } else {
+            var chunks = try scope.get(input, "chunks");
+            if (c.JS_IsUndefined(chunks)) {
+                const encoded = if (try v.eq(&scope, try scope.get(input, "kind"), "mistral")) "[{\"id\":\"response-1\",\"choices\":[{\"delta\":{\"content\":\"answer\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":4,\"total_tokens\":16}}]" else "[{\"responseId\":\"response-1\",\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"answer\"}]},\"finishReason\":\"STOP\"}],\"usageMetadata\":{\"promptTokenCount\":12,\"candidatesTokenCount\":4,\"totalTokenCount\":16}}]";
+                chunks = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, encoded.ptr, encoded.len, "source-response-input.json")));
+            }
+            var chunk_rows = try v.iterator(&scope, chunks);
+            defer chunk_rows.deinit();
+            errdefer chunk_rows.closePreserving();
+            while (try chunk_rows.next()) |chunk| {
+                defer engine.freeValue(chunk);
+                const bytes = try engine.toString(try scope.invoke(try scope.global("JSON"), "stringify", &.{chunk}));
                 defer gpa.free(bytes);
                 try wire.appendSlice(gpa, "data: ");
                 try wire.appendSlice(gpa, bytes);
@@ -89,45 +111,58 @@ test "native AI Google Mistral actual Source60 request event callback error sema
             }
         }
         const fixture = @import("ai/http_fixture.zig");
-        const path = if (requests.len > 0) requests[0].object.get("path").?.string else "/no-request";
+        const request = if (request_count > 0) try v.at(&scope, requests, 0) else c.pi_js_undefined();
+        const path = if (request_count > 0) try engine.toString(try scope.get(request, "path")) else try gpa.dupe(u8, "/no-request");
+        defer gpa.free(path);
         var expected_headers: std.ArrayList(std.http.Header) = .empty;
         defer expected_headers.deinit(gpa);
-        if (requests.len > 0) {
-            var fields = requests[0].object.get("headers").?.object.iterator();
-            while (fields.next()) |field| try expected_headers.append(gpa, .{ .name = field.key_ptr.*, .value = field.value_ptr.string });
+        defer for (expected_headers.items) |header| {
+            gpa.free(header.name);
+            gpa.free(header.value);
+        };
+        if (request_count > 0) {
+            var fields = try v.iterator(&scope, try scope.invoke(try scope.global("Object"), "entries", &.{try scope.get(request, "headers")}));
+            defer fields.deinit();
+            errdefer fields.closePreserving();
+            while (try fields.next()) |field| {
+                defer engine.freeValue(field);
+                const key = try engine.toString(try v.at(&scope, field, 0));
+                errdefer gpa.free(key);
+                const value = try engine.toString(try v.at(&scope, field, 1));
+                errdefer gpa.free(value);
+                try expected_headers.append(gpa, .{ .name = key, .value = value });
+            }
         }
-        const plan = fixture.Reply{ .path = path, .status = if (input.object.get("status")) |status| @enumFromInt(status.integer) else .ok, .body = wire.items, .expected_request_headers = expected_headers.items, .headers = &.{.{ .name = "x-fixture", .value = "source-only" }} };
-        const server = try fixture.PlanServer.init(gpa, std.testing.io, if (requests.len > 0) &.{plan} else &.{});
+        var status: i32 = 200;
+        const status_value = try scope.get(input, "status");
+        if (!c.JS_IsUndefined(status_value) and c.JS_ToInt32(engine.context, &status, status_value) < 0) return v.js.capture(engine);
+        const plan = fixture.Reply{ .path = path, .status = @enumFromInt(status), .body = wire.items, .expected_request_headers = expected_headers.items, .headers = &.{.{ .name = "x-fixture", .value = "source-only" }} };
+        const server = try fixture.PlanServer.init(gpa, std.testing.io, if (request_count > 0) &.{plan} else &.{});
         defer server.deinit();
         const url = try server.url(gpa, "/v1");
         defer gpa.free(url);
-        const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
-        defer engine.deinit();
-        engine.native_io = std.testing.io;
-        try install(engine);
-        try source(engine, "expected", observation);
         const global = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(global);
+        try sdk.put(engine, global, "expected", c.JS_DupValue(engine.context, observation));
         try sdk.put(engine, global, "fixtureBase", try sdk.text(engine, url));
         const checked = engine.evalModule(
             \\function snapshot(value){if(Array.isArray(value))return value.map(snapshot);if(value&&typeof value==='object'){const out={};for(const[key,item]of Object.entries(value)){if(value.role==='assistant'&&key==='timestamp')out[key]='$TIMESTAMP';else if(value.role==='assistant'&&key==='durationMs')out[key]='$DURATION';else out[key]=snapshot(item)}return out}return value}
             \\function canonical(value){if(Array.isArray(value))return value.map(canonical);if(value&&typeof value==='object'){const result={};for(const key of Object.keys(value).sort())if(value[key]!==undefined)result[key]=canonical(value[key]);return result}return value}
             \\const item=expected.input,apiName=item.kind==='google'?'google-generative-ai':item.kind==='vertex'?'google-vertex':'mistral-conversations',model={id:item.kind==='mistral'?'mistral-fixture':'gemini-3.1-pro-preview',name:'fixture',provider:item.kind==='vertex'?'google-vertex':item.kind,api:apiName,baseUrl:fixtureBase,reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192,...item.model},context=item.context??{messages:[{role:'system',content:'system',timestamp:0},{role:'user',content:'hello',timestamp:1}]},callbacks=[],events=[],payloads=[],options={apiKey:'fixture-placeholder-key',env:{GOOGLE_CLOUD_PROJECT:'',GCLOUD_PROJECT:'',GOOGLE_CLOUD_LOCATION:'',GOOGLE_APPLICATION_CREDENTIALS:''},maxTokens:1000,maxRetries:0,sessionId:'fixture-session',...item.options,onPayload(payload){callbacks.push('payload');payloads.push(snapshot(payload));if(item.callback==='replace')return {...payload,...(item.kind==='mistral'?{temperature:.25}:{config:{...payload.config,temperature:.25}})};if(item.callback==='async')return Promise.resolve()},onResponse(response){callbacks.push('response:'+response.status+':'+response.headers['x-fixture']);if(item.callback==='throw')throw Error('caller response failed');if(item.callback==='async')return Promise.resolve()},onProviderStreamEvent(chunk){callbacks.push('chunk');if(item.callback==='metadata')callbacks.push({constructor:chunk.constructor.name,keys:Object.keys(chunk),text:chunk.text,data:chunk.data,functionCalls:chunk.functionCalls,executableCode:chunk.executableCode,codeExecutionResult:chunk.codeExecutionResult,httpKeys:Object.keys(chunk.sdkHttpResponse?.headers??{}).filter(key=>key==='content-type'||key==='x-fixture')});if(item.callback==='async')return Promise.resolve()}};let result,syncError;try{const stream=globalThis[item.kind].streamSimple(model,context,options);for await(const event of stream)events.push(snapshot(event));result=snapshot(await stream.result())}catch(error){syncError={name:error.name,message:error.message}}for(const key of ['payloads','callbacks','events','result','syncError']){const actual={payloads,callbacks,events,result,syncError}[key];if(JSON.stringify(canonical(actual))!==JSON.stringify(canonical(expected[key])))throw Error(JSON.stringify({case:item.name,key,actual,expected:expected[key]}))}export const done=true;
         , "native-google-mistral-actual-source60.mjs") catch |err| {
-            std.debug.print("Google/Mistral {s}: {s}\n", .{ input.object.get("name").?.string, engine.last_error orelse "no diagnostic" });
+            std.debug.print("Google/Mistral {s}: {s}\n", .{ name, engine.last_error orelse "no diagnostic" });
             return err;
         };
         engine.freeValue(checked);
         try server.finish();
-        try std.testing.expectEqual(requests.len, server.captured.items.len);
-        if (requests.len > 0) {
-            const actual = try std.json.parseFromSlice(std.json.Value, gpa, server.captured.items[0].payload, .{});
-            defer actual.deinit();
-            try source(engine, "actualWire", actual.value);
+        try std.testing.expectEqual(@as(usize, request_count), server.captured.items.len);
+        if (request_count > 0) {
+            const actual = server.captured.items[0].payload;
+            try sdk.put(engine, global, "actualWire", try engine.checked(c.JS_ParseJSON(engine.context, actual.ptr, actual.len, "native-wire.json")));
             const validated = engine.evalModule(
                 \\function canonical(v){if(Array.isArray(v))return v.map(canonical);if(v&&typeof v==='object'){const out={};for(const key of Object.keys(v).sort())out[key]=canonical(v[key]);return out}return v}if(JSON.stringify(canonical(actualWire))!==JSON.stringify(canonical(expected.requests[0].body)))throw Error(JSON.stringify({name:expected.name,actual:actualWire,expected:expected.requests[0].body}));export const wire=true;
             , "native-google-mistral-source-wire.mjs") catch |err| {
-                std.debug.print("Google/Mistral wire {s}: {s}\n", .{ input.object.get("name").?.string, engine.last_error orelse "no diagnostic" });
+                std.debug.print("Google/Mistral wire {s}: {s}\n", .{ name, engine.last_error orelse "no diagnostic" });
                 return err;
             };
             engine.freeValue(validated);

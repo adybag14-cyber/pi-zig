@@ -45,7 +45,7 @@ pub fn convert(engine: *v.em.Engine, model: c.JSValue, context: c.JSValue) !c.JS
     defer scope.deinit();
     const normalized = try scope.own(try @import("native_ai_provider_transcript.zig").resolve(engine, context, false));
     const conversation = try scope.own(try @import("native_sdk_transcript_replay.zig").conversation(engine, try scope.get(normalized, "messages")));
-    const normalizer = try scope.own(try @import("native_node_function.zig").create(engine, "", 1, normalize, &.{model}));
+    const normalizer = try scope.own(try @import("native_node_function.zig").createArrow(engine, "", 1, normalize, &.{model}));
     const messages = try scope.own(try @import("native_ai_transform_messages.zig").transform(engine, conversation, model, normalizer));
     const result = try scope.array();
     const features = try family(&scope, model);
