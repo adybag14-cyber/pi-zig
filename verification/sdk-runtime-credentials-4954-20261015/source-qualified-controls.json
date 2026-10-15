@@ -1,0 +1,58 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\src\\extensions\\fixtures\\sdk-runtime-credentials-4954.input.txt",
+    "sha256": "375FD8515BD2C8ED2547D0C2AF602F5884616F229036E3FD9FA44BD671297FA8"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\verification\\sdk-runtime-credentials-4954-20261015\\capture-source.mjs",
+    "sha256": "B5324948F54561512A3ECA183712CF2E216421C5AAF7EA7252B9484686A2B370"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\verification\\sdk-runtime-credentials-4954-20261015\\run-source-qualified.ps1",
+    "sha256": "3A574576F5921CCCCF023C953972927F4DBE0248F5DDB9E4435E41BE7CB28D97"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json",
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-full-manifest-20261015.json",
+    "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs",
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-runtime-manifest-20261015.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\src\\extensions\\fixtures\\sdk-runtime-credentials-4954.input.txt",
+    "sha256": "375FD8515BD2C8ED2547D0C2AF602F5884616F229036E3FD9FA44BD671297FA8"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\src\\extensions\\native_sdk_model_runtime_create_production.zig",
+    "sha256": "23356144D3FE31F083E0D19CE1ED6D6DE446A509A463591505FDE96A7D6D9CEB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\src\\extensions\\native_sdk_runtime_credentials_production.zig",
+    "sha256": "3BB980EAF687D2BD12E1536AB3BA08145839EA8530951598D0D6D25ACD99DF60"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\src\\native_sdk_model_runtime_create_production_test.zig",
+    "sha256": "6B0D878CA000F8D3674CE25B361B2A5AB921503CB2432ECC51DF59BDA82DCA62"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\src\\native_sdk_runtime_credentials_production_test.zig",
+    "sha256": "1815E52EF929696F55E187B83569FD653C52EB0D57D2C0D71E4B2AF1C154FC8B"
+  }
+]
