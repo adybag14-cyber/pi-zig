@@ -1,0 +1,30 @@
+{
+  "phase": "before",
+  "scopes": [
+    {
+      "name": "source_ae7",
+      "files": 1968,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "name": "runtime",
+      "files": 31064,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "name": "node_tools",
+      "files": 1774,
+      "drift": 0,
+      "changed": []
+    }
+  ],
+  "preparation_controls": 5,
+  "preparation_drift": [],
+  "absence_records": 84,
+  "absence_drift": [],
+  "source_head": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "actual_source16_sha256": "F875997C4477DB71DFD2B49B59CF4871DB7656E1B609F24915D9A4F9FBF33C9B",
+  "completed_utc": "2026-10-15T20:49:35.4303304+00:00"
+}

@@ -1,0 +1,19 @@
+{
+  "status": "admitted",
+  "candidate": "95e4ba746780a9b8bfaa7c708646299ffb6dd986",
+  "free_kib": 18056936,
+  "required_kib": 16777216,
+  "root_grant": true,
+  "source_files": 6550,
+  "compiler_files": 19546,
+  "controls": 8,
+  "optimize": "Debug",
+  "jobs": 1,
+  "llvm": true,
+  "compile_timeout_seconds": 1320,
+  "runtime_outer_timeout_seconds": 300,
+  "test_timeout_seconds": 10,
+  "host_await_timeout_seconds": 10,
+  "native_launched": false,
+  "observed_utc": "2026-10-15T20:49:48.8156105+00:00"
+}
