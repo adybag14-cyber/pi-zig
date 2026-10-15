@@ -89,9 +89,9 @@ test "native Codex socket replays genuine captured Source path headers and two c
     try server.finish();
 }
 
-fn installOwnerFixture(engine: *em.Engine, url: []const u8, headers: std.json.Value, turns: []const fixture.Turn) !void {
+fn installOwnerFixture(engine: *em.Engine, url: []const u8, headers: std.json.Value, turns: []const fixture.Turn, comptime acquire_name: [:0]const u8) !void {
     engine.native_io = std.testing.io;
-    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    if (engine.host_scheduler == null) try @import("extensions/timers.zig").install(engine, std.testing.io);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
@@ -133,7 +133,7 @@ fn installOwnerFixture(engine: *em.Engine, url: []const u8, headers: std.json.Va
         }
     };
     const session = try scope.text("owned-native-session");
-    try scope.put(global, "acquireOwnedSocket", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "acquireOwnedSocket", 0, Adapter.acquire, &.{ try scope.text(url), values, session, try scope.text("fake-account") })));
+    try scope.put(global, acquire_name, try scope.own(try @import("extensions/native_node_function.zig").create(engine, acquire_name, 0, Adapter.acquire, &.{ try scope.text(url), values, session, try scope.text("fake-account") })));
     try scope.put(global, "closeOwnedSocketSession", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "closeOwnedSocketSession", 0, Adapter.close, &.{session})));
     const array = try scope.array();
     const counts = try scope.array();
@@ -178,7 +178,7 @@ test "native Codex socket owner reuses the real connection retains guest metadat
     defer peer.deinit();
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
-    try installOwnerFixture(engine, try peer.url(a), object(connection, "headers"), turns);
+    try installOwnerFixture(engine, try peer.url(a), object(connection, "headers"), turns, "acquireOwnedSocket");
     const result = engine.evalModule(
         \\const first=acquireOwnedSocket();await first.ready;if(first.reused||!first.cached)throw Error('first acquisition');await first.send(sourceSocketFrames[0]);for(let i=0;i<sourceSocketReplyCounts[0];i++){const event=await first.events.next();if(event.done||!JSON.parse(event.value).type)throw Error('real first message')};first.release(true);const next=acquireOwnedSocket();await next.ready;if(!next.reused||next.meta!==first.meta)throw Error('retained connection metadata');await next.send(sourceSocketFrames[1]);for(let i=0;i<sourceSocketReplyCounts[1];i++){const event=await next.events.next();if(event.done||!JSON.parse(event.value).type)throw Error('real second message')};next.release(true);closeOwnedSocketSession();export const proof=true;
     , "native-owned-codex-pool-loopback.mjs") catch |err| {
@@ -189,4 +189,50 @@ test "native Codex socket owner reuses the real connection retains guest metadat
     c.JS_RunGC(engine.runtime);
     try std.testing.expect(!owner.pending(engine));
     try peer.finish();
+}
+
+test "native Codex socket session cleanup disconnects both busy cached and uncached owned connections" {
+    var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer arena.deinit();
+    const a = arena.allocator();
+    const source = try std.json.parseFromSlice(std.json.Value, a, @embedFile("extensions/fixtures/ai-codex-socket10-5ab.protocol.json"), .{});
+    const rows = object(source.value, "rows").array.items;
+    var captured: ?std.json.Value = null;
+    for (rows) |row| if (std.mem.eql(u8, object(row, "name").string, "busy-session")) {
+        captured = row;
+        break;
+    };
+    const connections = object(captured orelse return error.MissingSourceBusySession, "connections").array.items;
+    try std.testing.expectEqual(@as(usize, 2), connections.len);
+    const original = try std.Uri.parse(object(connections[0], "url").string);
+    const path = switch (original.path) {
+        .raw, .percent_encoded => |value| value,
+    };
+    const route = if (original.query) |query| try std.fmt.allocPrint(a, "{s}?{s}", .{ path, switch (query) {
+        .raw, .percent_encoded => |value| value,
+    } }) else path;
+    var headers: std.ArrayList(std.http.Header) = .empty;
+    var fields = object(connections[0], "headers").object.iterator();
+    while (fields.next()) |entry| try headers.append(a, .{ .name = entry.key_ptr.*, .value = entry.value_ptr.string });
+    const first = try fixture.Peer.initDisconnect(std.testing.allocator, std.testing.io, route, headers.items);
+    defer first.deinit();
+    const second = try fixture.Peer.initDisconnect(std.testing.allocator, std.testing.io, route, headers.items);
+    defer second.deinit();
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    try installOwnerFixture(engine, try first.url(a), object(connections[0], "headers"), &.{}, "acquireOwnedSocket");
+    try installOwnerFixture(engine, try second.url(a), object(connections[0], "headers"), &.{}, "acquireConcurrentOwnedSocket");
+    const result = engine.evalModule(
+        \\const first=acquireOwnedSocket();const second=acquireConcurrentOwnedSocket();await Promise.all([first.ready,second.ready]);if(!first.cached||second.cached||first.reused||second.reused)throw Error('busy ownership');closeOwnedSocketSession();export const proof=true;
+    , "native-owned-codex-concurrent-cleanup.mjs") catch |err| {
+        std.debug.print("Codex concurrent cleanup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+    // Join the canceled workers before verifying EOF at both independent peers.
+    // This explicitly improves the Source overwritten-cache-entry leak.
+    owner.deinit(engine);
+    try std.testing.expect(engine.native_ai_codex_socket_state == null);
+    try first.finish();
+    try second.finish();
 }

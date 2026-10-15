@@ -9,12 +9,19 @@ pub const Peer = struct {
     path: []const u8,
     headers: []const std.http.Header,
     turns: []const Turn,
+    wait_for_disconnect: bool = false,
     future: ?std.Io.Future(anyerror!void) = null,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, path: []const u8, headers: []const std.http.Header, turns: []const Turn) !*Peer {
+        return initMode(gpa, io, path, headers, turns, false);
+    }
+    pub fn initDisconnect(gpa: std.mem.Allocator, io: std.Io, path: []const u8, headers: []const std.http.Header) !*Peer {
+        return initMode(gpa, io, path, headers, &.{}, true);
+    }
+    fn initMode(gpa: std.mem.Allocator, io: std.Io, path: []const u8, headers: []const std.http.Header, turns: []const Turn, wait_for_disconnect: bool) !*Peer {
         const self = try gpa.create(Peer);
         errdefer gpa.destroy(self);
         const address = try std.Io.net.IpAddress.parseLiteral("127.0.0.1:0");
-        self.* = .{ .gpa = gpa, .io = io, .listener = try address.listen(io, .{ .reuse_address = true }), .path = path, .headers = headers, .turns = turns };
+        self.* = .{ .gpa = gpa, .io = io, .listener = try address.listen(io, .{ .reuse_address = true }), .path = path, .headers = headers, .turns = turns, .wait_for_disconnect = wait_for_disconnect };
         errdefer self.listener.deinit(io);
         self.future = try io.concurrent(serve, .{self});
         return self;
@@ -43,6 +50,7 @@ pub const Peer = struct {
         var writer = peer.writer(self.io, &write_buffer);
         var http = std.http.Server.init(&reader.interface, &writer.interface);
         const request = try http.receiveHead();
+        if (request.head.method != .GET) return error.SourceWebSocketMethodMismatch;
         if (!std.mem.eql(u8, request.head.target, self.path)) return error.SourceWebSocketPathMismatch;
         var key: ?[]const u8 = null;
         for (self.headers) |expected| {
@@ -70,6 +78,13 @@ pub const Peer = struct {
                 try writeServerText(&writer.interface, reply);
                 try writer.interface.flush();
             }
+        }
+        if (self.wait_for_disconnect) {
+            _ = reader.interface.takeByte() catch |err| switch (err) {
+                error.EndOfStream => return,
+                else => return err,
+            };
+            return error.ExpectedOwnedSocketDisconnect;
         }
     }
 };
