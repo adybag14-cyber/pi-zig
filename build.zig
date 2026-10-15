@@ -1973,6 +1973,16 @@ pub fn build(b: *std.Build) void {
     const headers_oom_tests = b.addTest(.{ .root_module = headers_source_module, .use_llvm = use_llvm, .filters = &.{"Headers full-engine exhaustive"} });
     const headers_oom_run = b.addRunArtifact(headers_oom_tests);
     b.step("test-native-headers-oom", "Exhaust native Headers full-engine allocation failures").dependOn(&headers_oom_run.step);
+    const response_source_module = b.createModule(.{ .root_source_file = b.path("src/native_web_response_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, response_source_module, quickjs, sqlite_lib_dir);
+    response_source_module.addImport("catalog_tool", catalog_tool);
+    const response_source_tests = b.addTest(.{ .root_module = response_source_module, .use_llvm = use_llvm, .filters = &.{ "Response Source176", "Response native actual" } });
+    b.step("build-native-web-response-source", "Compile actual Response Source176 projection and native ownership").dependOn(&response_source_tests.step);
+    const response_source_run = b.addRunArtifact(response_source_tests);
+    b.step("test-native-web-response-source", "Replay 114 genuine Node24 Response rows from Body176 and actual transport ownership").dependOn(&response_source_run.step);
+    const response_oom_tests = b.addTest(.{ .root_module = response_source_module, .use_llvm = use_llvm, .filters = &.{"Response native selected operation OOM"} });
+    const response_oom_run = b.addRunArtifact(response_oom_tests);
+    b.step("test-native-web-response-oom", "Verify selected actual Response operation allocation failure ownership").dependOn(&response_oom_run.step);
     const tui_base_source_module = b.createModule(.{ .root_source_file = b.path("src/native_tui_base_source_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, tui_base_source_module, quickjs, sqlite_lib_dir);
     tui_base_source_module.addImport("catalog_tool", catalog_tool);
