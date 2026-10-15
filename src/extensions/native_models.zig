@@ -401,7 +401,7 @@ fn continueJob(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: 
         defer engine.freeValue(pending);
         var previous: i32 = -1;
         if (!c.JS_IsUndefined(pending) and c.JS_ToInt32(engine.context, &previous, pending) < 0) return error.JavaScriptException;
-        if (previous == @intFromEnum(Stage.credential) or previous == @intFromEnum(Stage.auth) or previous == @intFromEnum(Stage.resolution)) {
+        if (previous == @intFromEnum(Stage.credential) or previous == @intFromEnum(Stage.auth)) {
             const provider_value = try get(engine, job, "provider");
             defer engine.freeValue(provider_value);
             const provider_id = try get(engine, provider_value, "id");
@@ -413,33 +413,10 @@ fn continueJob(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: 
             else
                 try std.fmt.allocPrint(engine.gpa, "API key auth check failed for provider {s}", .{id});
             defer engine.gpa.free(message);
-            const wrapped = try engine.checked(c.JS_NewError(engine.context));
-            defer engine.freeValue(wrapped);
             const store = try get(engine, job, "store");
             defer engine.freeValue(store);
-            const cache = try get(engine, store, "cache");
-            defer engine.freeValue(cache);
-            const prototype = try get(engine, cache, "models_error_prototype");
-            defer engine.freeValue(prototype);
-            if (c.JS_SetPrototype(engine.context, wrapped, prototype) < 0) return error.JavaScriptException;
-            try put(engine, wrapped, "name", try engine.checked(c.JS_NewString(engine.context, "ModelsError")));
-            const detail_value = if (c.JS_IsError(value)) detail: {
-                const error_message = try get(engine, value, "message");
-                if (c.JS_ToBool(engine.context, error_message) == 1) break :detail error_message;
-                engine.freeValue(error_message);
-                break :detail try get(engine, value, "name");
-            } else c.JS_DupValue(engine.context, value);
-            defer engine.freeValue(detail_value);
-            const detail_text = try engine.toString(detail_value);
-            defer engine.gpa.free(detail_text);
-            const formatted = if (detail_text.len > 0 and std.mem.indexOf(u8, message, detail_text) == null)
-                try std.fmt.allocPrint(engine.gpa, "{s}: {s}", .{ message, detail_text })
-            else
-                try engine.gpa.dupe(u8, message);
-            defer engine.gpa.free(formatted);
-            try errorProperty(engine, wrapped, "message", try engine.checked(c.JS_NewStringLen(engine.context, formatted.ptr, formatted.len)));
-            try put(engine, wrapped, "code", try engine.checked(c.JS_NewString(engine.context, "auth")));
-            try errorProperty(engine, wrapped, "cause", c.JS_DupValue(engine.context, value));
+            const wrapped = try fromCause(engine, store, "auth", message, value);
+            defer engine.freeValue(wrapped);
             return finish(engine, job, wrapped, false);
         }
         return finish(engine, job, value, false);
@@ -509,15 +486,23 @@ fn continueJob(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: 
         try put(engine, options, "signal", try get(engine, job, "signal"));
         const check = try get(engine, api_key, "check");
         defer engine.freeValue(check);
-        try put(engine, job, "pendingStage", c.JS_NewInt32(engine.context, @intFromEnum(if (!c.JS_IsUndefined(check)) Stage.auth else Stage.resolution)));
-        const pending = if (!c.JS_IsUndefined(check)) try call(engine, api_key, check, &.{options}) else try invoke(engine, api_key, "resolve", &.{options});
+        try put(engine, job, "pendingStage", c.JS_NewInt32(engine.context, @intFromEnum(if (c.JS_ToBool(engine.context, check) == 1) Stage.auth else Stage.resolution)));
+        const pending = if (c.JS_ToBool(engine.context, check) == 1) try invoke(engine, api_key, "check", &.{options}) else resolve: {
+            const overrides = try newObject(engine);
+            defer engine.freeValue(overrides);
+            try put(engine, overrides, "signal", try get(engine, job, "signal"));
+            break :resolve try @import("native_models_typed.zig").resolveProviderAuth(engine, store, provider, overrides);
+        };
         defer engine.freeValue(pending);
-        return then(engine, job, pending, if (!c.JS_IsUndefined(check)) .auth else .resolution);
+        return then(engine, job, pending, if (c.JS_ToBool(engine.context, check) == 1) .auth else .resolution);
     }
     if (stage == .resolution) {
         const check = if (c.JS_ToBool(engine.context, value) == 1) try newObject(engine) else c.pi_js_undefined();
         defer engine.freeValue(check);
-        if (!c.JS_IsUndefined(check)) try put(engine, check, "type", try engine.checked(c.JS_NewString(engine.context, "api_key")));
+        if (!c.JS_IsUndefined(check)) {
+            try put(engine, check, "source", try get(engine, value, "source"));
+            try put(engine, check, "type", try engine.checked(c.JS_NewString(engine.context, "api_key")));
+        }
         return continueJob(engine, job, .auth, check);
     }
     const only_check = try get(engine, job, "onlyCheck");
@@ -614,7 +599,7 @@ fn available(engine: *engine_mod.Engine, store: c.JSValue, method: Method, args:
     const aggregate_result = try newPromise(engine, aggregate);
     errdefer engine.freeValue(aggregate_result);
     if (try checkAborted(engine, aggregate)) return aggregate_result;
-    const providers = try providerList(engine, store, id);
+    const providers = try providerList(engine, store, if (method == .checkAuth or c.JS_ToBool(engine.context, id) == 1) id else c.pi_js_undefined());
     defer engine.freeValue(providers);
     const pending = try engine.checked(c.JS_NewArray(engine.context));
     defer engine.freeValue(pending);
