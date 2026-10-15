@@ -81,6 +81,7 @@ pub fn createWithDependencies(engine: *v.em.Engine, dependencies: Dependencies) 
     try s.put(module_exports, "builtinProviders", try s.own(try functions.create(engine, "builtinProviders", 0, Builtins.providers, &.{module_exports})));
     try s.put(module_exports, "builtinModels", try s.own(try functions.create(engine, "builtinModels", 1, Builtins.models, &.{ module_exports, try s.get(state, "createModels") })));
     const queries = try s.own(try catalog.namespace(engine));
+    try s.put(module_exports, "personalizeOpenRouterCatalog", try s.own(try @import("native_ai_provider_openrouter.zig").create(engine)));
     inline for (.{ "getBuiltinModel", "getBuiltinImageModel", "getBuiltinClassifierModel", "getBuiltinProviders", "getBuiltinModelDataGeneratedAt", "getBuiltinModels", "getBuiltinImageModels", "getBuiltinClassifierModels", "getAllBuiltinModels" }) |name| try s.put(module_exports, name, try s.get(queries, name));
     return c.JS_DupValue(engine.context, module_exports);
 }
