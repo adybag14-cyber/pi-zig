@@ -68,14 +68,14 @@ fn checkDpop(expected: std.json.Value, actual: fixture.Captured, source_origin: 
 fn project(result: *const types.Credentials) ![]u8 {
     const expiration = if (result.expiration_unix) |unix| try cache.iso(a, unix) else null;
     defer if (expiration) |owned| a.free(owned);
-    var object: std.json.ObjectMap = .init(a);
-    defer object.deinit();
-    try object.put("accessKeyId", .{ .string = result.access_key_id });
-    try object.put("secretAccessKey", .{ .string = result.secret_access_key });
-    if (result.session_token) |value| try object.put("sessionToken", .{ .string = value });
-    if (expiration) |value| try object.put("expiration", .{ .string = value });
-    if (result.account_id) |value| try object.put("accountId", .{ .string = value });
-    if (result.credential_scope) |value| try object.put("credentialScope", .{ .string = value });
+    var object: std.json.ObjectMap = .empty;
+    defer object.deinit(a);
+    try object.put(a, "accessKeyId", .{ .string = result.access_key_id });
+    try object.put(a, "secretAccessKey", .{ .string = result.secret_access_key });
+    if (result.session_token) |value| try object.put(a, "sessionToken", .{ .string = value });
+    if (expiration) |value| try object.put(a, "expiration", .{ .string = value });
+    if (result.account_id) |value| try object.put(a, "accountId", .{ .string = value });
+    if (result.credential_scope) |value| try object.put(a, "credentialScope", .{ .string = value });
     return std.json.Stringify.valueAlloc(a, std.json.Value{ .object = object }, .{});
 }
 fn bodyFor(kind: []const u8, path: []const u8) []const u8 {
