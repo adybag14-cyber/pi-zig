@@ -5,6 +5,7 @@ const fixture = @import("ai/http_fixture.zig");
 comptime {
     _ = @import("native_ai_constrained_sampling_test.zig");
     _ = @import("native_ai_sdk_headers_test.zig");
+    _ = @import("native_node_function_exception_test.zig");
 }
 
 fn putJson(scope: *v.Scope, global: c.JSValue, name: [*:0]const u8, bytes: []const u8) !void {
@@ -117,5 +118,34 @@ test "native Claude5ab extended public Source16 wire federation retry long resul
         return err;
     };
     engine.freeValue(checked);
+    c.JS_RunGC(engine.runtime);
+}
+
+test "native Claude5ab extended fresh native allocation identity survives stream delivery while stale and user errors remain caller failures" {
+    const engine = try v.em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    try @import("extensions/native_headers.zig").install(engine);
+    var scope: v.Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "allocationStreams", try scope.own(try @import("extensions/native_ai_anthropic_factory.zig").create(engine)));
+    const Fault = struct {
+        fn call(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+            return v.em.Engine.fromContext(context.?).throwNativeOutOfMemory();
+        }
+    };
+    // This tests private allocation-tag delivery, not an exhaustive allocator
+    // sweep. The separate unchanged full-index suites exercise real failures.
+    try engine.bindFunction("nativeHostAllocationFault", Fault.call, 0);
+    const result = engine.evalModule(
+        \\const model={api:'anthropic-messages',provider:'anthropic',id:'claude-sonnet-4-6',name:'Claude',baseUrl:'https://fixture.invalid',input:['text'],reasoning:true,maxTokens:1024,cost:{input:1,output:1,cacheRead:1,cacheWrite:1}},context={messages:[{role:'user',content:'hello'}]};
+        \\let original;const fresh=allocationStreams.stream(model,context,{apiKey:'fixture-placeholder-key',onPayload(){try{nativeHostAllocationFault()}catch(error){original=error;throw error}}});let delivered;try{await fresh.result();throw Error('fresh native allocation unexpectedly became an assistant message')}catch(error){delivered=error}if(!original||delivered!==original)throw Error('fresh allocation identity lost');
+        \\const stale=allocationStreams.stream(model,context,{apiKey:'fixture-placeholder-key',onPayload(){throw original}}),staleResult=await stale.result();if(staleResult.stopReason!=='error'||staleResult.errorMessage!==original.message)throw Error('old caught allocation error must remain caller failure');let terminal;for await(const event of stale)terminal=event;if(terminal.error!==staleResult)throw Error('stale caller error terminal identity lost');
+        \\const user=new Error('out of memory');user.name='InternalError';const ordinary=allocationStreams.stream(model,context,{apiKey:'fixture-placeholder-key',onPayload(){throw user}}),ordinaryResult=await ordinary.result();if(ordinaryResult.stopReason!=='error'||ordinaryResult.errorMessage!=='out of memory')throw Error('user error was classified by name');export const taggedDelivery=true;
+    , "native-claude5ab-allocation-delivery.mjs") catch |err| {
+        std.debug.print("Anthropic allocation delivery: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
     c.JS_RunGC(engine.runtime);
 }
