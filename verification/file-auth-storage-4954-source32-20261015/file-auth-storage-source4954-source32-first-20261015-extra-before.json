@@ -1,0 +1,74 @@
+[
+  {
+    "path": "C:/Users/adyba/pi-zig-native-file-auth-storage-backend-20261015/src/extensions/fixtures/sdk-file-auth-storage-4954.input.txt",
+    "sha256": "3A32CDF3E68F3C850C7BEE5AD3AEB75342624755DE640659E310A1F3FF11748C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-auth-storage-source4954-capture-20261015.mjs",
+    "sha256": "0CD9DD5DECB4210D06B8BE58598AFFCCCA6823FF6F0AAD049BDE6B56314CA0B1"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs",
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json",
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-FileAuthStorageSource4954Source32-20261015.ps1",
+    "sha256": "2CBCD52EC62C0535F47719C142C3F8FD342171B5C01EBF9356A6B72243AE43DC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-reference-controls-20261015.json",
+    "sha256": "A11A87511B15B6AEDF4FFC94EA541DE986FCCC4334BA9A47C2BED3ED0A5094D0"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-preparation-readiness-20261015.json",
+    "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\one-shot-native-proof-stage-20261015\\pinned-compiler19546-reference.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-auth-storage-source4954-source32-first-20261015-candidate-compiler-before.json",
+    "sha256": "C38CC2D63D45FB0742BD0F3203E8CED82679501C70D9B2FEDD9825C4A4BA6DE2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-file-auth-storage-backend-20261015\\src\\extensions\\native_auth_file_storage_backend.zig",
+    "sha256": "264E0FC4CB63F83C252EEC94EB7AC7B8BD7AF0B438A419E9E91D63474061DBD6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-file-auth-storage-backend-20261015\\src\\extensions\\native_auth_directory_lock.zig",
+    "sha256": "34B9BE1B5BEF22386AAE6ECDE41D5F48531EF79058CE4AE5EC0D8416D973A869"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-file-auth-storage-backend-20261015\\src\\extensions\\native_auth_storage_fs.zig",
+    "sha256": "E74BBF33DF3465E6EF870CC256B5B0FFE914C14B51EC60E112F7FD217BAE45CC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-file-auth-storage-backend-20261015\\src\\extensions\\native_sdk_agent_directory.zig",
+    "sha256": "8A5810EE87528E63BBDBB82205507FEF93342B1DB2BB1B0A5F0E33ECC6B431B4"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-file-auth-storage-backend-20261015\\src\\native_file_auth_storage_backend_test.zig",
+    "sha256": "5EC5C86D509379BE64357445B95C8739F0F7386243AAF04C662E842B776E1278"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-full-manifest-20261015.json",
+    "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-runtime-manifest-20261015.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  }
+]
