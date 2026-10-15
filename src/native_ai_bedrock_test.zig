@@ -99,7 +99,18 @@ test "native AI Bedrock actual facade matches14 genuine Source5ab SDK request ca
         const body = if (http_error) |value| try a.dupe(u8, value.object.get("body").?.string) else try frames(a, case.object.get("events").?);
         defer a.free(body);
         const path = row.object.get("request").?.object.get("path").?.string;
-        const server = try fixture.PlanServer.init(a, std.testing.io, &.{.{ .path = path, .body = body, .content_type = if (http_error != null) "application/json" else "application/vnd.amazon.eventstream", .status = if (http_error) |value| @enumFromInt(value.object.get("status").?.integer) else .ok, .headers = &.{ .{ .name = "x-amzn-requestid", .value = "fixture-request-id" }, .{ .name = "x-fixture-response", .value = "raw-gateway" } }, .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer fixture-placeholder-bearer" }} }});
+        var expected_headers: std.ArrayList(std.http.Header) = .empty;
+        defer expected_headers.deinit(a);
+        var observed_headers = row.object.get("request").?.object.get("headers").?.object.iterator();
+        while (observed_headers.next()) |entry| {
+            if (std.ascii.eqlIgnoreCase(entry.key_ptr.*, "authorization")) {
+                // Source14 retained auth presence only. Preserve that scope and
+                // independently assert the fake fixture's actual native token.
+                try std.testing.expectEqualStrings("[fixture auth]", entry.value_ptr.string);
+                try expected_headers.append(a, .{ .name = "authorization", .value = "Bearer fixture-placeholder-bearer" });
+            } else try expected_headers.append(a, .{ .name = entry.key_ptr.*, .value = entry.value_ptr.string });
+        }
+        const server = try fixture.PlanServer.init(a, std.testing.io, &.{.{ .path = path, .body = body, .content_type = if (http_error != null) "application/json" else "application/vnd.amazon.eventstream", .status = if (http_error) |value| @enumFromInt(value.object.get("status").?.integer) else .ok, .headers = &.{ .{ .name = "x-amzn-requestid", .value = "fixture-request-id" }, .{ .name = "x-fixture-response", .value = "raw-gateway" } }, .expected_request_headers = expected_headers.items }});
         defer server.deinit();
         const endpoint = try server.url(a, "");
         defer a.free(endpoint);

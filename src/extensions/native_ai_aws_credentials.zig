@@ -147,26 +147,8 @@ fn runProcess(a: std.mem.Allocator, io: std.Io, command: []const u8, budget: Bud
     const owned = try process.splitCommand(a, command);
     defer process.freeArgv(a, owned);
     const argv: []const []const u8 = owned;
-    const milliseconds = @min((try budget.remaining()) orelse 15000, 15000);
-    const Completion = union(enum) { child: anyerror!std.process.RunResult, canceled: anyerror!void };
-    var results: [2]Completion = undefined;
-    var selected = std.Io.Select(Completion).init(io, &results);
-    // Canceling process.run reaches its pipe/wait cancellation point and then
-    // kills and reaps only the Child handle created inside that invocation.
-    // Drain racing successful results too: their stdout can contain secrets.
-    defer while (selected.cancel()) |completion| switch (completion) {
-        .child => |finished| if (finished) |value| freeProcessOutput(a, value) else |_| {},
-        .canceled => {},
-    };
-    try selected.concurrent(.child, std.process.run, .{ a, io, std.process.RunOptions{ .argv = argv, .stdout_limit = .limited(64 * 1024), .stderr_limit = .limited(8 * 1024), .create_no_window = true, .timeout = .{ .duration = .{ .raw = .fromMilliseconds(@intCast(milliseconds)), .clock = .awake } } } });
-    try selected.concurrent(.canceled, watchBudget, .{budget});
-    const result = switch (try selected.await()) {
-        .child => |finished| try finished,
-        .canceled => |finished| {
-            try finished;
-            unreachable;
-        },
-    };
+    _ = io;
+    const result = try @import("native_ai_aws_process.zig").run(a, argv, budget);
     defer freeProcessOutput(a, result);
     _ = try budget.remaining();
     switch (result.term) {
@@ -174,12 +156,6 @@ fn runProcess(a: std.mem.Allocator, io: std.Io, command: []const u8, budget: Bud
         else => return error.CredentialProcessFailed,
     }
     return process.parseCredentialProcessJson(a, result.stdout);
-}
-fn watchBudget(budget: Budget) !void {
-    while (true) {
-        _ = try budget.remaining();
-        try budget.io.sleep(.fromMilliseconds(20), .awake);
-    }
 }
 fn freeProcessOutput(a: std.mem.Allocator, output: std.process.RunResult) void {
     @memset(output.stdout, 0);
