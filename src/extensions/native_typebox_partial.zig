@@ -36,8 +36,14 @@ fn invokeEnum(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots
     return c.JS_DupValue(engine.context, try core.enumeration(&scope, roots[0], arg(args, 0), arg(args, 1)));
 }
 pub fn partial(scope: *Scope, graph: c.JSValue, value: c.JSValue, options: c.JSValue) anyerror!c.JSValue {
-    if (try core.kind(scope, value, "Ref")) return core.deferred(scope, graph, "Partial", try core.list(scope, &.{value}), options);
+    if (!try canInstantiate(scope, try core.list(scope, &.{value}))) return core.deferred(scope, graph, "Partial", try core.list(scope, &.{value}), options);
     return memory.invoke(scope, graph, "Update", &.{ try fromType(scope, graph, value), try scope.object(), options });
+}
+fn canInstantiate(scope: *Scope, values: c.JSValue) anyerror!bool {
+    if (scope.equal(try scope.get(values, "length"), c.JS_NewInt32(scope.engine.context, 0))) return true;
+    const first = try v.at(scope, values, 0);
+    const rest = try scope.invoke(values, "slice", &.{c.JS_NewInt32(scope.engine.context, 1)});
+    return if (try core.kind(scope, first, "Ref")) false else canInstantiate(scope, rest);
 }
 fn propertyReduce(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
