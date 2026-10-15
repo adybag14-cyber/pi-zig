@@ -4,10 +4,11 @@ $taskPrivate=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskEvidence=Join-Path 'C:/Users/adyba/pi-zig-update-evidence-20261003' "writable-stream-node24-source56-$Attempt-20261015"
 $taskName="writable-stream-node24-source56-$Attempt-20261015"
 $taskNode='C:/Program Files/nodejs/node.exe'
-$taskGit=(Get-Command git.exe -CommandType Application).Source
+$taskGit=(Get-Command git.exe -CommandType Application | Select-Object -First 1).Source
 $taskInput=Join-Path $taskPrivate 'src/extensions/fixtures/writable-stream-node24.input.txt'
 $taskExpected=Join-Path $taskPrivate 'src/extensions/fixtures/writable-stream-node24.json'
 $taskDriver=Join-Path $taskPrivate 'tools/capture-writable-stream-node24.mjs'
+$taskObserver=Join-Path $PSScriptRoot 'observe-builtin-authority.mjs'
 $taskAuthority='C:/Users/adyba/pi-zig-update-evidence-20261003/web-body-node24-source-first-20261015-node-builtin-authorities.json'
 $taskToolsManifest='C:/Users/adyba/pi-zig-update-evidence-20261003/root-current8a-npm-tools-before.json'
 $taskOwner=Join-Path $PSScriptRoot 'Invoke-OwnedEeSourceJob-20261012.ps1'
@@ -24,7 +25,7 @@ $taskTools=@(Get-Content -LiteralPath $taskToolsManifest -Raw|ConvertFrom-Json)
 if($taskTools.Count -ne 1774 -or @(ChangedRows $taskTools).Count){throw 'Strict1774 Node/tool prehash mismatch'}
 $taskNamesBefore=@(CandidateGit @('ls-files'))
 $taskCandidate=FreezePaths @($taskNamesBefore|ForEach-Object{Join-Path $taskPrivate $_}) (Join-Path $taskEvidence 'whole-candidate-before.json')
-$taskControls=FreezePaths @($PSCommandPath,$taskOwner,$taskInput,$taskDriver,$taskAuthority,$taskToolsManifest,$taskNode,$taskGit,(Join-Path $taskEvidence 'whole-candidate-before.json')) (Join-Path $taskEvidence 'controls-before.json')
+$taskControls=FreezePaths @($PSCommandPath,$taskOwner,$taskInput,$taskDriver,$taskObserver,$taskAuthority,$taskToolsManifest,$taskNode,$taskGit,(Join-Path $taskEvidence 'whole-candidate-before.json')) (Join-Path $taskEvidence 'controls-before.json')
 $taskFree=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory
 if($taskFree -lt 2MB){throw 'Normal Source2GiB admission denied'}
 @{status='admitted';candidate_head=$CandidateHead;candidate_files=$taskCandidate.Count;node_tool_files=1774;free_kib=$taskFree;required_kib=2MB;heap_mb=256;timeout_seconds=300;cases=56;expected_absent=$true;caller_sha256=(Get-FileHash -LiteralPath $PSCommandPath).Hash;owner_sha256=(Get-FileHash -LiteralPath $taskOwner).Hash;input_sha256=(Get-FileHash -LiteralPath $taskInput).Hash;driver_sha256=(Get-FileHash -LiteralPath $taskDriver).Hash;authority_sha256=(Get-FileHash -LiteralPath $taskAuthority).Hash;utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $taskEvidence 'admission.json') -Encoding utf8NoBOM
@@ -35,7 +36,7 @@ $taskOwnedCopy=Join-Path $taskEvidence 'Invoke-OwnedEeSourceJob-20261012.ps1'
 Copy-Item -LiteralPath $taskOwner -Destination $taskOwnedCopy
 $taskOwnerHash=(Get-FileHash -LiteralPath $taskOwnedCopy).Hash
 try {
- & $taskOwnedCopy -Name $taskName -Executable $taskNode -WorkingDirectory $taskPrivate -Arguments @('--max-old-space-size=256','--expose-gc',$taskDriver,$taskInput,$taskOutput,$taskAuthority) -TimeoutSeconds 300 -EnvironmentOverrides @{NODE_OPTIONS='';NODE_PATH=''}
+ & $taskOwnedCopy -Name $taskName -Executable $taskNode -WorkingDirectory $taskPrivate -Arguments @('--max-old-space-size=256','--expose-gc','--import',([Uri]$taskObserver).AbsoluteUri,$taskDriver,$taskInput,$taskOutput,$taskAuthority) -TimeoutSeconds 300 -EnvironmentOverrides @{NODE_OPTIONS='';NODE_PATH='';WRITABLE_BUILTIN_OBSERVATION=(Join-Path $taskEvidence 'actual-builtin-authority.json')}
 } finally {
  $taskToolsChanged=@(ChangedRows $taskTools)
  $taskCandidateChanged=@(ChangedRows $taskCandidate)
@@ -51,6 +52,8 @@ $taskTerminal=Get-Content -LiteralPath (Join-Path $taskEvidence "$taskName.json"
 if($taskTerminal.status -cne 'passed' -or $taskTerminal.exit_code -ne 0){throw 'Genuine WritableStream Source56 process failed'}
 $taskResult=Get-Content -LiteralPath $taskOutput -Raw|ConvertFrom-Json -Depth 1024
 if($taskResult.nodeVersion -cne 'v24.14.0' -or $taskResult.cases -ne 56 -or @($taskResult.rows).Count -ne 56 -or @($taskResult.rows|Where-Object unexpected).Count){throw 'Actual Node24 WritableStream Source56 rows incomplete'}
+$taskBuiltin=Get-Content -Raw (Join-Path $taskEvidence 'actual-builtin-authority.json')|ConvertFrom-Json
+if($taskBuiltin.pid -ne $taskTerminal.pid -or $taskBuiltin.nodeVersion -cne 'v24.14.0' -or $taskBuiltin.keys -ne 369 -or $taskBuiltin.stringBodies -ne 368 -or !$taskBuiltin.configsOwn -or !$taskBuiltin.configsUndefined -or $taskBuiltin.actualBodiesSha256 -cne '0cd86676bb2a46a4e772d1fd8bb3d00fca658383bc388846dcc796547dc79263'){throw 'Actual369 builtin/368body/configsundefined authority missing'}
 Copy-Item -LiteralPath $taskOutput -Destination $taskExpected
 @{source_cases=56;expected_sha256=(Get-FileHash -LiteralPath $taskExpected).Hash;accepted_after_terminal_and_fullpost0=$true;candidate_head=$CandidateHead;native_compile_run=$false;native_runtime_run=$false;full_pi_qualified=$false}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $taskEvidence 'validation.json') -Encoding utf8NoBOM
 Write-Output 'GENUINE_WRITABLE_SOURCE56_TERMINAL_FULLPOST0'

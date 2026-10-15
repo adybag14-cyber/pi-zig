@@ -1,0 +1,21 @@
+{
+  "fullpost0": true,
+  "builtin_string_bodies": 368,
+  "candidate_head": "55018c7877bd952bdc01a241efdccceca38f1474",
+  "candidate_files": 7044,
+  "public_activation": false,
+  "expected_sha256": "1325C1A9B672A3F206E7711C2A3AAC4A43DDC8E4B2B169F7461AA3F8CBEA8EE5",
+  "full_pi_qualified": false,
+  "native_runtime_run": false,
+  "actual_builtin_bodies_sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+  "native_compile_run": false,
+  "unexpected": 0,
+  "owner_pid": 47088,
+  "source_exit_code": 0,
+  "expected_accepted_after_terminal_and_posthash": true,
+  "source_cases": 56,
+  "builtin_keys": 369,
+  "configs_own_undefined": true,
+  "node_tool_files": 1774,
+  "source_status": "passed"
+}

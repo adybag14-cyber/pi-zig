@@ -37,7 +37,7 @@ if(!$taskFinished){
         $taskLive.ExecutablePath -match 'codex'){throw 'Fast Source timeout ownership mismatch; refusing termination'}
     if($taskIdentity -and $taskLive.CommandLine -cne $taskIdentity.CommandLine){throw 'Fast Source command identity changed; refusing termination'}
     $taskProcess.Kill($true)
-    $taskProcess.WaitForExit()
+    if(!$taskProcess.WaitForExit(10000)){throw 'Owned Source process failed to settle within10s after verified timeout kill'}
 }
 [IO.File]::WriteAllText((Join-Path $PSScriptRoot "$Name.stdout.log"),$taskOut.GetAwaiter().GetResult())
 [IO.File]::WriteAllText((Join-Path $PSScriptRoot "$Name.stderr.log"),$taskErr.GetAwaiter().GetResult())

@@ -1,0 +1,12 @@
+{
+  "pid": 47088,
+  "nodeVersion": "v24.14.0",
+  "keys": 369,
+  "stringBodies": 368,
+  "configsOwn": true,
+  "configsUndefined": true,
+  "undefinedKeys": [
+    "configs"
+  ],
+  "actualBodiesSha256": "0cd86676bb2a46a4e772d1fd8bb3d00fca658383bc388846dcc796547dc79263"
+}

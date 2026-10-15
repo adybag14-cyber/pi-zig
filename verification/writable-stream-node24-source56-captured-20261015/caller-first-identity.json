@@ -1,0 +1,9 @@
+{
+  "created_utc": "2026-10-15T21:49:35.0321097Z",
+  "caller_sha256": "9B42C044B1AE03EB5F08E1384BAABD7A76C82F722E05E0268A7D54FB19CFD471",
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "pid": 71424,
+  "parent_pid": 51708,
+  "external_deadline_utc": "2026-10-15T21:59:35.5339074+00:00",
+  "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoProfile -File C:/Users/adyba/pi-zig-update-evidence-20261003/writable-stream-source56-controls-20261015/Run-WritableStreamNode24Source.ps1 -CandidateHead 55018c7877bd952bdc01a241efdccceca38f1474 -Attempt first"
+}

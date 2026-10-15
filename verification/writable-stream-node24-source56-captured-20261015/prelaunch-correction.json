@@ -1,0 +1,9 @@
+{
+  "candidate_head": "55018c7877bd952bdc01a241efdccceca38f1474",
+  "error": "Get-Command returned both Git cmd and bin applications; array was invoked as one executable name",
+  "failed_caller_pid": 71424,
+  "correction": "Select exact first native git.exe Application",
+  "candidate_edits": false,
+  "utc": "2026-10-15T21:50:12.1202576+00:00",
+  "stage": "before-prehash-before-Node"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "writable-stream-node24-source56-first-20261015",
+  "pid": 47088,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "C:\\Program Files\\nodejs\\node.exe --max-old-space-size=256 --expose-gc --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/writable-stream-source56-controls-20261015/observe-builtin-authority.mjs C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\tools\\capture-writable-stream-node24.mjs C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\src\\extensions\\fixtures\\writable-stream-node24.input.txt C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\writable-stream-node24-source56-first-20261015\\writable-stream-node24-source56-first-20261015-output.json C:/Users/adyba/pi-zig-update-evidence-20261003/web-body-node24-source-first-20261015-node-builtin-authorities.json",
+  "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+  "created_utc": "2026-10-15T21:50:17.0247026Z",
+  "launched_utc": "2026-10-15T21:50:17.0222535+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-native-writable-stream-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T21:50:17.4785874+00:00"
+}
