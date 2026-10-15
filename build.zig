@@ -1980,7 +1980,12 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-web-response-source", "Compile actual Response Source176 projection and native ownership").dependOn(&response_source_tests.step);
     const response_source_run = b.addRunArtifact(response_source_tests);
     b.step("test-native-web-response-source", "Replay 114 genuine Node24 Response rows from Body176 and actual transport ownership").dependOn(&response_source_run.step);
+    const response_transport_tests = b.addTest(.{ .root_module = response_source_module, .use_llvm = use_llvm, .filters = &.{"Response native actual"} });
+    b.step("build-native-web-response-transport", "Compile genuine Response transport and ownership gates").dependOn(&response_transport_tests.step);
+    const response_transport_run = b.addRunArtifact(response_transport_tests);
+    b.step("test-native-web-response-transport", "Verify genuine Response at HTTP headers before body EOF and native ownership").dependOn(&response_transport_run.step);
     const response_oom_tests = b.addTest(.{ .root_module = response_source_module, .use_llvm = use_llvm, .filters = &.{"Response native selected operation OOM"} });
+    b.step("build-native-web-response-oom", "Compile selected Response allocation failure ownership gates").dependOn(&response_oom_tests.step);
     const response_oom_run = b.addRunArtifact(response_oom_tests);
     b.step("test-native-web-response-oom", "Verify selected actual Response operation allocation failure ownership").dependOn(&response_oom_run.step);
     const tui_base_source_module = b.createModule(.{ .root_source_file = b.path("src/native_tui_base_source_test.zig"), .target = target, .optimize = optimize });

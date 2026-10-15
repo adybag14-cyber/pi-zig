@@ -56,7 +56,8 @@ pub fn replay(engine: *em.Engine) !void {
         \\
         \\const expectedResponseRows=responseSourcePacket.rows.filter(row=>row.name.startsWith('Response ')||row.name==='global descriptor Response'||row.name==='actual GC retained body independent Response lifetime'||row.name==='actual GC released Response body graph');
         \\if(expectedResponseRows.length!==114||webResponseRows.length!==114||new Set(webResponseRows.map(row=>row.name)).size!==114)throw Error('Response Source176 projection inventory mismatch');
-        \\for(let i=0;i<webResponseRows.length;i++){const actual=webResponseRows[i],expected=expectedResponseRows[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}))}
+        \\const responseMismatches=[];for(let i=0;i<webResponseRows.length;i++){const actual=webResponseRows[i],expected=expectedResponseRows[i];if(JSON.stringify(actual)!==JSON.stringify(expected))responseMismatches.push({index:i,actual,expected})}
+        \\if(responseMismatches.length)throw Error(JSON.stringify({mapped:114,mismatches:responseMismatches}));
     , "actual-node24-response-Source176-projection.mjs");
     defer engine.freeValue(pending);
     const settled = try engine.awaitValue(pending);
@@ -114,6 +115,79 @@ test "Response native actual identity transport immutable headers and source own
     defer engine.freeValue(pending);
     const settled = try engine.awaitValue(pending);
     engine.freeValue(settled);
+}
+const HeaderGate = struct {
+    io: std.Io,
+    listener: std.Io.net.Server,
+    release_body: std.Io.Event = .unset,
+    future: ?std.Io.Future(anyerror!void) = null,
+    fn serve(self: *HeaderGate) !void {
+        const connection = try self.listener.accept(self.io);
+        defer connection.close(self.io);
+        var read_buffer: [4096]u8 = undefined;
+        var write_buffer: [4096]u8 = undefined;
+        var reader = connection.reader(self.io, &read_buffer);
+        var writer = connection.writer(self.io, &write_buffer);
+        var server = std.http.Server.init(&reader.interface, &writer.interface);
+        var request = try server.receiveHead();
+        if (!std.mem.eql(u8, request.head.target, "/oauth-response")) return error.UnexpectedResponseWirePath;
+        const received = try request.readerExpectNone(&.{}).allocRemaining(std.testing.allocator, .limited(4096));
+        defer std.testing.allocator.free(received);
+        const payload = "{\"error\":\"denied\",\"native\":true}";
+        var response_buffer: [256]u8 = undefined;
+        var outgoing = try request.respondStreaming(&response_buffer, .{ .content_length = payload.len, .respond_options = .{ .status = .forbidden, .keep_alive = false, .extra_headers = &.{ .{ .name = "Content-Type", .value = "application/json" }, .{ .name = "Set-Cookie", .value = "first=one; Expires=Thu, 01 Jan 2037 00:00:00 GMT" }, .{ .name = "Set-Cookie", .value = "second=two; Path=/" } } } });
+        try request.server.out.flush();
+        // The test releases this event only after the actual OAuth boundary
+        // resolves its Response. Buffering to EOF would fail deterministically.
+        try self.release_body.waitTimeout(self.io, .{ .duration = .{ .raw = .fromSeconds(10), .clock = .awake } });
+        try outgoing.writer.writeAll(payload);
+        try outgoing.end();
+        try request.server.out.flush();
+    }
+    fn release(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
+        var address: u64 = 0;
+        if (c.JS_ToIndex(context, &address, captures[0]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+        const self: *HeaderGate = @ptrFromInt(@as(usize, @intCast(address)));
+        self.release_body.set(self.io);
+        return c.pi_js_undefined();
+    }
+};
+test "Response native actual OAuth HTTP returns genuine headers before gated body EOF" {
+    const io = std.testing.io;
+    const address = try std.Io.net.IpAddress.parseLiteral("127.0.0.1:0");
+    var gate: HeaderGate = .{ .io = io, .listener = try address.listen(io, .{ .reuse_address = true }) };
+    defer gate.listener.deinit(io);
+    gate.future = try io.concurrent(HeaderGate.serve, .{&gate});
+    defer if (gate.future) |*future| future.cancel(io) catch {};
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    engine.native_io = io;
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const url = try std.fmt.allocPrint(engine.gpa, "http://127.0.0.1:{d}/oauth-response#fragment", .{gate.listener.socket.address.getPort()});
+    defer engine.gpa.free(url);
+    const oauth = @import("native_ai_oauth_http.zig");
+    const pending = try scope.own(try oauth.request(engine, try scope.text(url), try scope.object()));
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.set(global, "nativeOAuthResponsePending", pending);
+    var captures = [_]c.JSValue{c.JS_NewFloat64(engine.context, @floatFromInt(@intFromPtr(&gate)))};
+    const release_body = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, HeaderGate.release, "releaseNativeResponseBody", 0, 0, captures.len, &captures)));
+    try scope.set(global, "releaseNativeResponseBody", release_body);
+    const checked = try scope.own(try engine.evalModule(
+        \\const response=await nativeOAuthResponsePending;
+        \\if(!(response instanceof Response)||!(response.headers instanceof Headers)||!(response.body instanceof ReadableStream))throw Error('actual OAuth Response graph');
+        \\if(response.status!==403||response.ok||response.statusText!=='Forbidden'||response.bodyUsed||!response.url.endsWith('/oauth-response'))throw Error('actual OAuth header readiness');
+        \\const cookies=response.headers.getSetCookie();if(cookies.length!==2||cookies[0]!=='first=one; Expires=Thu, 01 Jan 2037 00:00:00 GMT'||cookies[1]!=='second=two; Path=/')throw Error('actual OAuth duplicate raw headers');
+        \\let immutable=false;try{response.headers.set('x','bad')}catch(e){immutable=e instanceof TypeError&&e.message==='immutable'}if(!immutable)throw Error('actual OAuth immutable headers');
+        \\releaseNativeResponseBody();const result=await response.json();if(result.error!=='denied'||result.native!==true||!response.bodyUsed)throw Error('actual OAuth shared body JSON');
+    , "actual-response-oauth-gated-wire.mjs"));
+    const settled = try engine.awaitValue(checked);
+    engine.freeValue(settled);
+    try std.testing.expect(!@import("native_ai_http.zig").pending(engine));
+    try gate.future.?.await(io);
+    gate.future = null;
+    // No JS function carrying this borrowed native gate pointer survives it.
+    try scope.set(global, "releaseNativeResponseBody", c.pi_js_undefined());
 }
 test "Response native selected operation OOM preserves ownership" {
     var measured = std.testing.FailingAllocator.init(std.testing.allocator, .{});

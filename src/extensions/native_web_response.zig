@@ -36,7 +36,7 @@ fn rootOf(owner: c.JSValue) *Root {
     return @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)).?));
 }
 fn freeRoot(runtime: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
-    const root = rootOf(owner);
+    const root: *Root = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
     c.JS_FreeValueRT(runtime, root.constructor);
     c.JS_FreeValueRT(runtime, root.prototype);
     c.JS_FreeValueRT(runtime, root.object_prototype);
@@ -44,7 +44,7 @@ fn freeRoot(runtime: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
     root.engine.gpa.destroy(root);
 }
 fn markRoot(runtime: ?*c.JSRuntime, owner: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
-    const root = rootOf(owner);
+    const root: *Root = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
     c.JS_MarkValue(runtime, root.constructor, marker);
     c.JS_MarkValue(runtime, root.prototype, marker);
     c.JS_MarkValue(runtime, root.object_prototype, marker);
@@ -152,7 +152,7 @@ fn reject(scope: *Scope, failure: anyerror) !c.JSValue {
     _ = try scope.call(caps[1], c.pi_js_undefined(), &.{reason});
     return promise;
 }
-fn clone(scope: *Scope, owner: c.JSValue, state: *State) !c.JSValue {
+fn clone(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, state: *State) !c.JSValue {
     if (try body.unusable(scope, state.payload)) try web.typeError(scope, try scope.text("Response.clone: Body has already been consumed."), null);
     const result = try fresh(scope, owner, rootOf(owner).prototype);
     const copy = try privateState(scope, owner, result, false);
@@ -173,6 +173,10 @@ fn clone(scope: *Scope, owner: c.JSValue, state: *State) !c.JSValue {
         copy.payload = ownBody(scope.engine, split.copy);
         scope.engine.freeValue(state.payload.?.stream);
         state.payload.?.stream = c.JS_DupValue(scope.engine.context, split.original_stream);
+        if (scope.truthy(state.url)) {
+            try body.registerResponse(scope.engine, receiver, state.payload.?.stream);
+            try body.registerResponse(scope.engine, result, copy.payload.?.stream);
+        }
     }
     return result;
 }
@@ -196,7 +200,7 @@ fn operation(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const
         .headers => state.headers,
         .body => if (state.payload) |payload| payload.stream else c.pi_js_null(),
         .bodyUsed => c.JS_NewBool(engine.context, if (state.payload) |payload| try body.disturbed(scope, payload.stream) else false),
-        .clone => clone(scope, owner, state),
+        .clone => clone(scope, owner, receiver, state),
         .blob, .arrayBuffer, .text, .json, .formData, .bytes => scope.own(try body.consume(engine, state.payload, switch (kind) {
             .blob => .blob,
             .arrayBuffer => .array_buffer,
@@ -349,5 +353,6 @@ pub fn fromTransport(engine: *em.Engine, input: Transport) !c.JSValue {
     state.redirected = input.redirected;
     state.guard = .immutable;
     try headers.setGuard(engine, state.headers, .immutable);
+    if (state.payload) |payload| try body.registerResponse(engine, result, payload.stream);
     return c.JS_DupValue(engine.context, result);
 }
