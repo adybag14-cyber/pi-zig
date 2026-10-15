@@ -1,0 +1,18 @@
+{
+  "observed_canonical_grammar_modules": 191,
+  "output_sha256": "D6D410D29A79FCCC24D2C4690F40D66A34A879E6C3B662C102B4B9B7F9AD17F6",
+  "node_pid": 68164,
+  "post0_utc": "2026-10-15T21:32:54.7401634+00:00",
+  "bytes": 11145926,
+  "cases": 419,
+  "all_post_drift": 0,
+  "mode": "success",
+  "node_terminal_utc": "2026-10-15T21:32:28.2514904+00:00",
+  "observed_modules": 197,
+  "logs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-modules-68164-0-20261015.jsonl",
+      "sha256": "7A6F6529158C502C2DA9886E9C59AF36B82F7427FA2529353A0D44DBCDF7730B"
+    }
+  ]
+}

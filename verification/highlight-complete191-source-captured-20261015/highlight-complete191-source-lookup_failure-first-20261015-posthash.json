@@ -1,0 +1,32 @@
+{
+  "absence_drift": 0,
+  "completed_utc": "2026-10-15T21:34:16.3634826+00:00",
+  "native_drift": 0,
+  "absence_records": 84,
+  "manifests": [
+    {
+      "name": "source",
+      "files": 1967,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "files": 31064,
+      "drift": 0
+    },
+    {
+      "name": "node_tools",
+      "files": 1774,
+      "drift": 0
+    },
+    {
+      "name": "canonical_hljs",
+      "files": 195,
+      "drift": 0
+    }
+  ],
+  "control_drift": 0,
+  "native_after": 6932,
+  "source_path_drift": 0,
+  "native_before": 6932
+}

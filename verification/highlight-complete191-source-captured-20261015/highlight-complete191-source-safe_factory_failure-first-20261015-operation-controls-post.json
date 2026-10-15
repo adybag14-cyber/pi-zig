@@ -1,0 +1,7 @@
+{
+  "inner_node_timeout_seconds": 300,
+  "mode": "safe_factory_failure",
+  "external_operation_timeout_seconds": 600,
+  "control_drift": 0,
+  "completed_utc": "2026-10-15T21:35:41.2659368+00:00"
+}

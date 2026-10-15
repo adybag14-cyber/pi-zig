@@ -1,0 +1,16 @@
+{
+  "name": "highlight-complete191-source-lookup_failure-first-20261015-operation",
+  "pid": 16288,
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+  "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -File C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-HighlightComplete191Source-20261015.ps1 -Mode lookup_failure -CandidateHead 9d493b6fc3a0a316e285d96978af4931126ab47c",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T21:32:55.2330987Z",
+  "launched_utc": "2026-10-15T21:32:55.2322518+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T21:34:16.5502565+00:00"
+}
