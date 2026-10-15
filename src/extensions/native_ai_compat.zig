@@ -78,12 +78,6 @@ pub fn create(engine: *em.Engine, dependencies: Dependencies) !c.JSValue {
                 defer host.native_exception_diagnostics_suppressed -= 1;
                 return dispatch(host, roots[0], method, args);
             }
-            fn asyncCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-                const host = em.Engine.fromContext(context.?);
-                host.native_exception_diagnostics_suppressed += 1;
-                defer host.native_exception_diagnostics_suppressed -= 1;
-                return dispatch(host, roots[0], method, if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(host, err);
-            }
         };
         const length = switch (method) {
             .registerApiProvider => 2,
@@ -92,8 +86,7 @@ pub fn create(engine: *em.Engine, dependencies: Dependencies) !c.JSValue {
             else => 0,
         };
         const function = if (method == .complete or method == .completeSimple) async_function: {
-            var data = [_]c.JSValue{owner};
-            const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, Adapter.asyncCall, field.name, length, 0, data.len, &data)));
+            const function = try scope.own(try @import("native_node_function.zig").createArrow(engine, field.name, length, Adapter.call, &.{owner}));
             const prototype = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
             if (c.JS_SetPrototype(engine.context, function, prototype) < 0) return js.capture(engine);
             break :async_function function;
@@ -115,11 +108,8 @@ fn lookup(scope: *Scope, owner: c.JSValue, api: c.JSValue) !c.JSValue {
 fn iterator(scope: *Scope, iterable: c.JSValue) !js.Iterator {
     return js.Iterator.init(scope.engine, iterable, try scope.own(try scope.engine.checked(JS_GetIteratorSymbol(scope.engine.context))));
 }
-fn wrapped(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    return wrapper(engine, roots[0], roots[1], if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(engine, err);
+fn wrapped(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return wrapper(engine, roots[0], roots[1], args);
 }
 fn errorMessage(scope: *Scope, prefix: []const u8, first: c.JSValue, middle: []const u8, second: ?c.JSValue) !c.JSValue {
     var text = try scope.concat(try scope.text(prefix), try scope.stringify(first));
@@ -134,8 +124,7 @@ fn wrapper(engine: *em.Engine, api: c.JSValue, function: c.JSValue, args: []cons
     return js.call(engine, function, c.pi_js_undefined(), &.{ argument(args, 0), argument(args, 1), argument(args, 2) });
 }
 fn wrap(scope: *Scope, api: c.JSValue, function: c.JSValue) !c.JSValue {
-    var data = [_]c.JSValue{ api, function };
-    return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, wrapped, "", 3, 0, data.len, &data)));
+    return scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 3, wrapped, &.{ api, function }));
 }
 fn register(scope: *Scope, owner: c.JSValue, provider: c.JSValue, source_id: c.JSValue) !void {
     const registry = try scope.get(owner, "registry");
