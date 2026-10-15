@@ -1,0 +1,10 @@
+{
+  "source_before": 5627,
+  "completed_utc": "2026-10-15T16:40:59.0551179+00:00",
+  "source_after": 5627,
+  "allowed_mutations": null,
+  "zig_tool_drift": 0,
+  "source_drift_outside_allowed": 0,
+  "zig_tools": 19546,
+  "control_drift": 0
+}

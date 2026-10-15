@@ -1,0 +1,5 @@
+Build Summary: 3/3 steps succeeded; 8/8 tests passed
+test-latest-catalog-data success
++- run test 8 pass (8 total) 892ms MaxRSS:51M
+   +- compile test Debug native cached 67ms MaxRSS:19M
+

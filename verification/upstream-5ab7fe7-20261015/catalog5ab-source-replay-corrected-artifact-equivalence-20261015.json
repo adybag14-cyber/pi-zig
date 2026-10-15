@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "original_generator_files": 87,
+  "replayed_generator_files": 87,
+  "byte_mismatches": 0,
+  "replay_inventory_drift": 0,
+  "offline": true,
+  "official_publication_descriptor_separate": "publication.json",
+  "prior_wrapper_failure": "Compared full current directory after publication dry-run added publication.json;87 generator artifacts were unchanged",
+  "original_artifact_manifest_sha256": "6D3ABA79307114720123B6AEF930D08938D85766C53D16F319B6430F89887140",
+  "validator_sha256": "1223B38D37A2D0BCEFA778BB8033BBEC88448131BCEF168DE777A7E6CA808D89",
+  "validated_utc": "2026-10-15T16:44:00.9297395+00:00"
+}

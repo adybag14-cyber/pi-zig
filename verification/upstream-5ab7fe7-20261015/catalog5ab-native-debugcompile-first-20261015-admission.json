@@ -1,0 +1,10 @@
+{
+  "max_coordinated_jobs": 4,
+  "free_kib": 23462656,
+  "jobs": 1,
+  "required_kib": 16777216,
+  "phase": "DebugCompile",
+  "status": "admitted",
+  "observed_utc": "2026-10-15T16:40:00.2048691+00:00",
+  "test_timeout_seconds": 120
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-Catalog5abNative-20261015.ps1",
+    "sha256": "768310A2A736C41D93C96C98FF5E41A41F2474399C34E47AC902843EE26D7A08"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\pi-upstream-5ab7fe7-immutable-20261015.tar",
+    "sha256": "BB1B83D360C004472059628EA7594FEE16232EB3931A58A1F07E2ABA67C3DF72"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\models.all.json",
+    "sha256": "4334227667568186DF17628973E890A2582A44C4EF67F16621704387AE73C8C9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  }
+]

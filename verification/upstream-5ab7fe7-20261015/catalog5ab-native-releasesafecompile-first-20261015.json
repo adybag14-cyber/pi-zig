@@ -1,0 +1,16 @@
+{
+  "name": "catalog5ab-native-releasesafecompile-first-20261015",
+  "pid": 41564,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-latest-catalog-data -Doptimize=ReleaseSafe -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T16:41:14.9907138Z",
+  "launched_utc": "2026-10-15T16:41:14.9890765+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-upstream-catalog-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T16:41:33.8118341+00:00"
+}

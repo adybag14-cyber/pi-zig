@@ -1,0 +1,10 @@
+{
+  "max_coordinated_jobs": 4,
+  "free_kib": 24201144,
+  "test_timeout_seconds": 120,
+  "phase": "ReleaseSafeCompile",
+  "status": "admitted",
+  "jobs": 1,
+  "observed_utc": "2026-10-15T16:41:14.8076108+00:00",
+  "required_kib": 16777216
+}

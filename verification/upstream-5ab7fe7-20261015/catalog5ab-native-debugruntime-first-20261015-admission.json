@@ -1,0 +1,10 @@
+{
+  "status": "admitted",
+  "test_timeout_seconds": 120,
+  "jobs": 1,
+  "free_kib": 23653236,
+  "observed_utc": "2026-10-15T16:40:42.1393895+00:00",
+  "max_coordinated_jobs": 4,
+  "phase": "DebugRuntime",
+  "required_kib": 16777216
+}

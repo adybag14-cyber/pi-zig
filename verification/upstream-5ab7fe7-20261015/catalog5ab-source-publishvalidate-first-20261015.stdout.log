@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "minimumPiVersion": "1.2.1",
+  "revision": "sha256-4334227667568186df17628973e890a2582a44c4ef67f16621704387ae73c8c9",
+  "sourceCommit": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "providerCount": 42,
+  "modelCount": 1608,
+  "chatModelCount": 1608,
+  "imageModelCount": 59,
+  "classifierModelCount": 40,
+  "totalModelCount": 1707,
+  "modelTypes": [
+    "chat",
+    "image",
+    "classifier"
+  ]
+}
+Validated model catalog at C:\Users\adyba\pi-zig-update-evidence-20261003\catalog5ab-official-first-20261015; no objects uploaded.

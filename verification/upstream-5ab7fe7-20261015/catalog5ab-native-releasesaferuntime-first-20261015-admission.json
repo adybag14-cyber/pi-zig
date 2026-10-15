@@ -1,0 +1,10 @@
+{
+  "observed_utc": "2026-10-15T16:42:01.6229513+00:00",
+  "jobs": 1,
+  "free_kib": 24417064,
+  "max_coordinated_jobs": 4,
+  "phase": "ReleaseSafeRuntime",
+  "status": "admitted",
+  "required_kib": 16777216,
+  "test_timeout_seconds": 120
+}
