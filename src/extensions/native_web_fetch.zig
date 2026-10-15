@@ -137,6 +137,31 @@ pub fn fetch(engine: *em.Engine, input: c.JSValue, init: c.JSValue, options: Opt
         try reject(&scope, pending.owner, reason, false);
         return pending.promise;
     }
+    const url_text = try engine.toString(view.url);
+    defer engine.gpa.free(url_text);
+    if (std.mem.startsWith(u8, url_text, "data:")) {
+        const data = @import("native_web_data_url.zig").process(&scope, view.url) catch |err| {
+            try flow.rejectError(engine, pending.owner, err);
+            return pending.promise;
+        };
+        if (data) |decoded| {
+            const pair = try scope.array();
+            try scope.index(pair, 0, try scope.text("content-type"));
+            try scope.index(pair, 1, decoded.mime_type);
+            const headers = try scope.array();
+            try scope.index(headers, 0, pair);
+            const response = response_api.fromTransport(engine, .{ .body = decoded.bytes, .status = 200, .status_text = try scope.text("OK"), .headers = headers, .url = view.url }) catch |err| {
+                try flow.rejectError(engine, pending.owner, err);
+                return pending.promise;
+            };
+            defer engine.freeValue(response);
+            try flow.settle(engine, pending.owner, false, response);
+        } else {
+            const reason = try scope.own(try js.builtin(engine, "Error", &.{try scope.text("failed to fetch the data URL")}));
+            try reject(&scope, pending.owner, reason, true);
+        }
+        return pending.promise;
+    }
     if (view.payload) |payload| {
         if (c.JS_IsNull(payload.source)) {
             try flow.rejectError(engine, pending.owner, error.NativeWebStreamingUploadUnavailable);
