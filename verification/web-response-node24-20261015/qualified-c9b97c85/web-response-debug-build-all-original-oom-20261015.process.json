@@ -1,0 +1,31 @@
+{
+  "pid": 64128,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "argv": [
+    "build",
+    "build-native-web-response-source",
+    "build-native-web-response-transport",
+    "build-native-web-response-oom",
+    "build-hosted-native-readable-byte-source",
+    "build-hosted-native-readable-host-oom",
+    "build-native-headers-source",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-web-response-source build-native-web-response-transport build-native-web-response-oom build-hosted-native-readable-byte-source build-hosted-native-readable-host-oom build-native-headers-source -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+  "created_utc": "2026-10-15T22:37:00.3979090Z",
+  "launched_utc": "2026-10-15T22:37:00.3957520+00:00",
+  "working_directory": "C:/Users/adyba/pi-zig-web-response-qualification-20261015",
+  "outer_seconds": 1320,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T22:37:49.5287942+00:00",
+  "owned_identity_absent": true
+}

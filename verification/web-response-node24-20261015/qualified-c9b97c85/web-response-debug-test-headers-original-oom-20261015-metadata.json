@@ -1,0 +1,22 @@
+{
+  "candidate_head": "c9b97c857fb5b1724bc9c5c55a0d0be052739b83",
+  "scope": "headers",
+  "phase": "test",
+  "case_scope": "Strict unchanged Body176 Response114 and Headers189, genuine OAuth header-gated wire, transport clone/GC/guest exception identity, selected5 strict OOM, unchanged SourceByte12 and deterministic permanent host OOM tee retirement; actual native stream graph incomplete shared prototypes/BYOB tee; no full Body qualification",
+  "source_authority": "Node24.14.0 bundledUndici7.21.0 Body176 and Headers189 immutable",
+  "compile_targets": [
+    "source",
+    "transport",
+    "oom",
+    "byte",
+    "stream-oom",
+    "headers"
+  ],
+  "build_attempt": "original-oom",
+  "max_native_roots": 4,
+  "minimum_free_gib": 16,
+  "slot": "NATIVE1",
+  "host_await_seconds": 10,
+  "test_timeout_seconds": 120,
+  "owner_settle_seconds": 10
+}

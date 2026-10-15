@@ -1,0 +1,503 @@
+test-native-web-response-oom
++- run test 2 pass, 1 fail (3 total)
+error: 'extensions.native_web_response_test.test.Response native selected operation OOM preserves ownership' failed:
+       Response operation allocation offset=0/233 induced=true all-bytes-freed=true
+       Response operation allocation offset=58/233 induced=true all-bytes-freed=true
+       Response operation allocation offset=116/233 induced=true all-bytes-freed=true
+       Response operation allocation offset=174/233 induced=true all-bytes-freed=true
+       Response OOM diagnostic offset=232/233 result=success generation=0 native_tag=0 last_error=<none>
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:454:40: 0x7ff74587761c in dupe__anon_35649 (test_zcu.obj)
+           const new_buf = try allocator.alloc(T, m.len);
+                                              ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:914:77: 0x7ff7459d61b0 in captureValue (test_zcu.obj)
+               const diagnostic_message = if (text == null) null else self.gpa.dupe(u8, std.mem.span(text)) catch null;
+                                                                                   ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:898:26: 0x7ff745b2f11d in captureException (test_zcu.obj)
+               self.captureValue(context, exception);
+                                ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:638:34: 0x7ff745996fd7 in checked (test_zcu.obj)
+                   self.captureException(self.context);
+                                        ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\native_headers_webidl.zig:12:33: 0x7ff745a20763 in typeError (test_zcu.obj)
+           _ = try scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, value)));
+                                       ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\native_headers.zig:166:53: 0x7ff745a28caa in append (test_zcu.obj)
+           if (state.guard == .immutable) try web.typeError(scope, try scope.text("immutable"), null);
+                                                           ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\native_headers.zig:289:19: 0x7ff745a2b702 in operate (test_zcu.obj)
+               try append(scope, owner, receiver, name, value, kind == .set);
+                         ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\native_headers.zig:315:27: 0x7ff745a2411f in callback (test_zcu.obj)
+           const result = operate(&scope, captures[0], receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, @enumFromInt(magic)) catch |err| {
+                                 ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\vendor\quickjs\quickjs.c:6757: 0x7ff745b398e0 in js_call_c_function_data (pi-quickjs.lib)
+           ret = s->func(ctx, this_val, argc, arg_buf, s->magic, vc(s->data));
+       
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\vendor\quickjs\quickjs.c:18433: 0x7ff745b86424 in JS_CallInternal (pi-quickjs.lib)
+               return call_func(caller_ctx, func_obj, this_obj, argc,
+       
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\vendor\quickjs\quickjs.c:18894: 0x7ff745b9570c in JS_CallInternal (pi-quickjs.lib)
+                       ret_val = JS_CallInternal(ctx, call_argv[-1], call_argv[-2],
+       
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\vendor\quickjs\quickjs.c:21564: 0x7ff745c55c08 in async_func_resume (pi-quickjs.lib)
+           return JS_CallInternal(ctx, func_obj, s->this_val, JS_UNDEFINED,
+       
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\vendor\quickjs\quickjs.c:21825: 0x7ff745ca6186 in js_async_function_resume (pi-quickjs.lib)
+           func_ret = async_func_resume(ctx, &s->func_state);
+       
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\vendor\quickjs\quickjs.c:21911: 0x7ff745bf9483 in js_async_function_resolve_call (pi-quickjs.lib)
+           if (!js_async_function_resume(ctx, s))
+       
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\vendor\quickjs\quickjs.c:18433: 0x7ff745b86424 in JS_CallInternal (pi-quickjs.lib)
+               return call_func(caller_ctx, func_obj, this_obj, argc,
+       
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\vendor\quickjs\quickjs.c:21295: 0x7ff745ca36b7 in JS_Call (pi-quickjs.lib)
+           return JS_CallInternal(ctx, func_obj, this_obj, JS_UNDEFINED,
+       
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\vendor\quickjs\quickjs.c:56160: 0x7ff745ca36b7 in promise_reaction_job (pi-quickjs.lib)
+               res = JS_Call(ctx, handler, JS_UNDEFINED, 1, &arg);
+       
+       (additional stack frames may have been skipped...)
+       expected error.OutOfMemory, found void
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:300:82: 0x7ff74587793d in allocBytesWithAlignment__anon_35692 (test_zcu.obj)
+           const byte_ptr = self.rawAlloc(byte_count, alignment, return_address) orelse return error.OutOfMemory;
+                                                                                        ^
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:286:5: 0x7ff74587759a in allocWithSizeAndAlignment__anon_35683 (test_zcu.obj)
+           return self.allocBytesWithAlignment(alignment, byte_count, return_address);
+           ^
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:274: 0x7ff7458773b8 in allocAdvancedWithRetAddr (test_zcu.obj)
+           const ptr: [*]align(a.toByteUnits()) T = @ptrCast(try self.allocWithSizeAndAlignment(@sizeOf(T), a, n, return_address));
+       
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:198:5: 0x7ff74587742d in alloc__anon_35652 (test_zcu.obj)
+           return self.allocAdvancedWithRetAddr(T, null, n, @returnAddress());
+           ^
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:472:21: 0x7ff745b2ecf8 in dupeSentinel__anon_82379 (test_zcu.obj)
+           const new_buf = try allocator.alloc(T, m.len + 1);
+                           ^
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\mem\Allocator.zig:462:5: 0x7ff745b2e7c2 in dupeZ__anon_66994 (test_zcu.obj)
+           return allocator.dupeSentinel(T, m, 0);
+           ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:631:28: 0x7ff7459ce048 in eval (test_zcu.obj)
+               const terminated = try self.gpa.dupeZ(u8, source);
+                                  ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:544:26: 0x7ff7459d2d28 in evalModule (test_zcu.obj)
+               const compiled = try self.eval(source, filename, c.JS_EVAL_TYPE_MODULE | c.JS_EVAL_FLAG_COMPILE_ONLY);
+                                ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:676:9: 0x7ff7459d5a81 in nativeAllocationError (test_zcu.obj)
+               return err;
+               ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\native_web_response_test.zig:91:101: 0x7ff7459d325d in ownershipOperation (test_zcu.obj)
+           const pending = engine.evalModule(ownership_script, "response-owned-operation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+                                                                                                           ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:857:17: 0x7ff7459d22ea in awaitValueImpl (test_zcu.obj)
+                       return error.JavaScriptException;
+                       ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:824:9: 0x7ff7459d2bb9 in awaitValue (test_zcu.obj)
+               return self.awaitValueImpl(value, true);
+               ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:556:25: 0x7ff7459d30da in evalModule (test_zcu.obj)
+               const settled = try self.awaitValue(evaluated);
+                               ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:672:21: 0x7ff7459d5bcc in nativeAllocationError (test_zcu.obj)
+                           return error.OutOfMemory;
+                           ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\native_web_response_test.zig:91:101: 0x7ff7459d325d in ownershipOperation (test_zcu.obj)
+           const pending = engine.evalModule(ownership_script, "response-owned-operation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+                                                                                                           ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:877:9: 0x7ff7459d2b0e in awaitValueImpl (test_zcu.obj)
+               return switch (c.JS_PromiseState(self.context, value)) {
+               ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:824:9: 0x7ff7459d2bb9 in awaitValue (test_zcu.obj)
+               return self.awaitValueImpl(value, true);
+               ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:556:25: 0x7ff7459d30da in evalModule (test_zcu.obj)
+               const settled = try self.awaitValue(evaluated);
+                               ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:672:21: 0x7ff7459d5bcc in nativeAllocationError (test_zcu.obj)
+                           return error.OutOfMemory;
+                           ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\native_web_response_test.zig:91:101: 0x7ff7459d325d in ownershipOperation (test_zcu.obj)
+           const pending = engine.evalModule(ownership_script, "response-owned-operation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+                                                                                                           ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:857:17: 0x7ff7459d22ea in awaitValueImpl (test_zcu.obj)
+                       return error.JavaScriptException;
+                       ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:824:9: 0x7ff7459d2bb9 in awaitValue (test_zcu.obj)
+               return self.awaitValueImpl(value, true);
+               ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:556:25: 0x7ff7459d30da in evalModule (test_zcu.obj)
+               const settled = try self.awaitValue(evaluated);
+                               ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\engine.zig:672:21: 0x7ff7459d5bcc in nativeAllocationError (test_zcu.obj)
+                           return error.OutOfMemory;
+                           ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\native_web_response_test.zig:91:101: 0x7ff7459d325d in ownershipOperation (test_zcu.obj)
+           const pending = engine.evalModule(ownership_script, "response-owned-operation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+                                                                                                           ^
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\testing.zig:65:9: 0x7ff7459d350a in expectError__anon_70764 (test_zcu.obj)
+               return error.TestExpectedError;
+               ^
+       C:\Users\adyba\pi-zig-web-response-qualification-20261015\src\extensions\native_web_response_test.zig:225:9: 0x7ff7459d4013 in test.Response native selected operation OOM preserves ownership (test_zcu.obj)
+               try std.testing.expectError(error.OutOfMemory, result);
+               ^
+failed command: ".\\.zig-cache\\o\\a568b335a00bd7b48545521ea18413b7\\test.exe" "--cache-dir=.\\.zig-cache" --seed=0x78801c0b --listen=-
+
+Build Summary: 154/156 steps succeeded (1 failed); 2/3 tests passed (1 failed)
+test-native-web-response-oom transitive failure
++- run test 2 pass, 1 fail (3 total)
+   +- compile test Debug native cached 114ms MaxRSS:19M
+      +- WriteFile cached
+      +- compile lib pi-quickjs Debug native cached 46ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile lib pi-icu78-i18n Debug native cached 93ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile lib pi-icu78-common Debug native cached 118ms MaxRSS:19M
+      |  |  |  +- WriteFile cached
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native cached 47ms MaxRSS:19M
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native (reused)
+      |  |  +- compile lib pi-icu78-common Debug native (+3 more reused dependencies)
+      |  +- WriteFile cached
+      |  +- compile lib pi-native-yaml Debug native cached 38ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native cached 38ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native cached 42ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native cached 37ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native cached 38ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native cached 46ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native cached 34ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native cached 47ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native cached 38ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native cached 36ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native cached 36ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native cached 36ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native cached 45ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native cached 42ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native cached 40ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native cached 47ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native cached 46ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native cached 45ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native cached 45ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native cached 42ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native cached 33ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native cached 42ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native cached 40ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native cached 16ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native cached 37ms MaxRSS:19M
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)
+      |  +- WriteFile cached
+      |  +- compile lib pi-sqlite Debug native cached 38ms MaxRSS:19M
+      |  +- compile lib pi-icu78-i18n Debug native (+3 more reused dependencies)
+      |  +- compile lib pi-native-yaml Debug native (+81 more reused dependencies)
+      |  +- compile lib pi-sqlite Debug native (reused)
+      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)
+      +- WriteFile cached
+      +- compile lib pi-photon Debug native cached 34ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_0 Debug native cached 47ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_0 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_1 Debug native cached 41ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_1 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_2 Debug native cached 50ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_2 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_3 Debug native cached 45ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_3 Debug native cached 38ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_4 Debug native cached 56ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_4 Debug native cached 47ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_5 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_5 Debug native cached 50ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_6 Debug native cached 44ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_6 Debug native cached 41ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_7 Debug native cached 34ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_7 Debug native cached 47ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_8 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_8 Debug native cached 35ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_9 Debug native cached 45ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_9 Debug native cached 47ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_10 Debug native cached 45ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_10 Debug native cached 34ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_11 Debug native cached 50ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_11 Debug native cached 44ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_12 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_12 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_13 Debug native cached 56ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_13 Debug native cached 39ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_14 Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_14 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_15 Debug native cached 47ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_15 Debug native cached 46ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_imports Debug native cached 35ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-browser_imports Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native cached 45ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_native Debug native cached 48ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_native Debug native cached 45ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_api Debug native cached 50ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_browser_api Debug native cached 34ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native cached 45ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native cached 47ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native cached 34ms MaxRSS:19M
+      |  +- compile obj pi-photon-photon_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_15 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_15 Debug native (reused)
+      |  +- compile obj pi-photon-codec_imports Debug native (reused)
+      |  +- compile obj pi-photon-browser_imports Debug native (reused)
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native (reused)
+      |  +- compile obj pi-photon-photon_native Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_native Debug native (reused)
+      |  +- compile obj pi-photon-session_api Debug native (reused)
+      |  +- compile obj pi-photon-session_browser_api Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native (reused)
+      +- compile lib pi-photon Debug native (+126 more reused dependencies)
+      +- options cached
+
+error: the following build command failed with exit code 1:
+.zig-cache\o\8a3cc2b61e28c6a6b4a8beb17064e769\build.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\zig.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib C:\Users\adyba\pi-zig-web-response-qualification-20261015 .zig-cache C:\Users\adyba\AppData\Local\zig --seed 0x78801c0b -Zccba9fe46d726be8 test-native-web-response-oom -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all

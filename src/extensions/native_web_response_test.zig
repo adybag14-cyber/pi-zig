@@ -28,6 +28,7 @@ fn collect(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) cal
 pub fn setup(gpa: std.mem.Allocator) !*em.Engine {
     const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10_000 });
     errdefer engine.deinit();
+    engine.native_io = std.testing.io;
     try @import("timers.zig").install(engine, std.testing.io);
     try @import("native_url.zig").install(engine);
     try @import("abort_signal.zig").install(engine);
@@ -74,7 +75,7 @@ test "Response Source176 actual 114 row projection descriptors WebIDL Body and G
 const ownership_script =
     \\const target=function Target(){};target.prototype=null;const constructed=Reflect.construct(Response,[null],target);if(Object.getPrototypeOf(constructed)!==Object.prototype)throw Error('Response newTarget intrinsic fallback');
     \\class DerivedResponse extends Response{};const derived=new DerivedResponse(null,{status:203});if(!(derived instanceof Response)||derived.status!==203)throw Error('Response subclass brand');
-    \\for(const field of ['status','headers']){let failure;try{Object.getOwnPropertyDescriptor(Response.prototype,field).get.call(Object.create(Response.prototype))}catch(e){failure=e}if(!(failure instanceof TypeError)||!failure.message.includes(field==='headers'?'#headers':'#state'))throw Error('Response private field '+field)}
+    \\for(const field of ['status','headers']){let failure;try{Object.getOwnPropertyDescriptor(Response.prototype,field).get.call(Object.create(Response.prototype))}catch(e){if(!(e instanceof TypeError)||!e.message.includes(field==='headers'?'#headers':'#state'))throw e;failure=e}if(!failure)throw Error('Response private field '+field)}
     \\const response=new Response('{"owned":true}',{status:201,statusText:'Created',headers:[['X','one'],['Set-Cookie','a=1'],['Set-Cookie','b=2']]});
     \\const copy=response.clone();copy.headers.set('X','copy');
     \\if(response.headers.get('x')!=='one'||copy.status!==201||copy.statusText!=='Created'||copy.headers.getSetCookie().length!==2)throw Error('Response clone owned fields');
@@ -83,7 +84,7 @@ const ownership_script =
     \\const locked=new Response('locked'),reader=locked.body.getReader();if(locked.bodyUsed)throw Error('lock alone disturbed body');reader.releaseLock();if(await locked.text()!=='locked')throw Error('release lock');
     \\const json=Response.json({value:'native'});if(json.headers.get('content-type')!=='application/json'||(await json.json()).value!=='native')throw Error('Response static JSON');
     \\const networkError=Response.error();if(networkError.status!==0||networkError.ok||networkError.type!=='error'||networkError.body!==null)throw Error('Response network error');
-    \\let immutable=false;try{networkError.headers.set('x','bad')}catch(e){immutable=e instanceof TypeError&&e.message==='immutable'}if(!immutable)throw Error('Response immutable headers');
+    \\let immutable=false;try{networkError.headers.set('x','bad')}catch(e){if(!(e instanceof TypeError)||e.message!=='immutable')throw e;immutable=true}if(!immutable)throw Error('Response immutable headers');
 ;
 fn ownershipOperation(engine: *em.Engine) !void {
     const generation = engine.native_allocation_generation;
@@ -115,6 +116,19 @@ test "Response native actual identity transport immutable headers and source own
     defer engine.freeValue(pending);
     const settled = try engine.awaitValue(pending);
     engine.freeValue(settled);
+}
+test "Response native actual guest exceptions preserve identity without diagnostic coercion" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    const value = try engine.evalModule(
+        \\const trace=[];const marker={toString(){trace.push('diagnostic');return'guest marker'}};
+        \\for(const init of [{get status(){throw marker}},{get headers(){throw marker}}]){let caught;try{new Response(null,init)}catch(error){caught=error}if(caught!==marker)throw Error('Response constructor exception identity')}
+        \\const body={toString(){trace.push('body conversion');throw marker}};let caught;try{new Response(body)}catch(error){caught=error}if(caught!==marker||JSON.stringify(trace)!=='["body conversion"]')throw Error('Response premature diagnostic coercion '+JSON.stringify(trace));
+        \\trace.length=0;const original=TypeError.prototype.toString;try{TypeError.prototype.toString=function(){trace.push('type error diagnostic');return original.call(this)};let reason;try{await Response.prototype.json.call({})}catch(error){reason=error}if(!(reason instanceof TypeError)||reason.code!=='ERR_INVALID_THIS')throw Error('Response rejected original brand error')}finally{TypeError.prototype.toString=original}
+        \\if(trace.length!==0)throw Error('Response method coerced error before guest catch '+JSON.stringify(trace));
+    , "response-original-guest-exception.mjs");
+    engine.freeValue(value);
+    c.JS_RunGC(engine.runtime);
 }
 const HeaderGate = struct {
     io: std.Io,
@@ -191,11 +205,13 @@ test "Response native actual OAuth HTTP returns genuine headers before gated bod
 }
 test "Response native selected operation OOM preserves ownership" {
     var measured = std.testing.FailingAllocator.init(std.testing.allocator, .{});
-    const measured_engine = try setup(measured.allocator());
-    const beginning = measured.alloc_index;
-    try ownershipOperation(measured_engine);
-    const allocations = measured.alloc_index - beginning;
-    measured_engine.deinit();
+    const allocations = measurement: {
+        const measured_engine = try setup(measured.allocator());
+        defer measured_engine.deinit();
+        const beginning = measured.alloc_index;
+        try ownershipOperation(measured_engine);
+        break :measurement measured.alloc_index - beginning;
+    };
     try std.testing.expect(allocations > 0);
     try std.testing.expectEqual(measured.allocated_bytes, measured.freed_bytes);
     for ([_]usize{ 0, allocations / 4, allocations / 2, allocations * 3 / 4, allocations - 1 }) |offset| {
@@ -203,10 +219,23 @@ test "Response native selected operation OOM preserves ownership" {
         const engine = try setup(failing.allocator());
         failing.fail_index = failing.alloc_index + offset;
         const result = ownershipOperation(engine);
+        var unexpected_result: ?[]const u8 = null;
+        if (result) {
+            unexpected_result = "success";
+        } else |err| {
+            if (err != error.OutOfMemory) unexpected_result = @errorName(err);
+        }
+        if (unexpected_result) |label| {
+            if (failing.has_induced_failure) {
+                std.debug.print("Response OOM diagnostic offset={d}/{d} result={s} generation={d} native_tag={d} last_error={s}\n", .{ offset, allocations, label, engine.native_allocation_generation, if (engine.native_allocation_exception) |exception| c.pi_js_native_allocation_error_generation(exception) else 0, engine.last_error orelse "<none>" });
+                const trace = failing.getStackTrace();
+                std.debug.dumpStackTrace(&trace);
+            }
+        }
         engine.deinit();
         try std.testing.expect(failing.has_induced_failure);
-        try std.testing.expectError(error.OutOfMemory, result);
         try std.testing.expectEqual(failing.allocated_bytes, failing.freed_bytes);
+        try std.testing.expectError(error.OutOfMemory, result);
         std.debug.print("Response operation allocation offset={d}/{d} induced=true all-bytes-freed=true\n", .{ offset, allocations });
     }
 }
