@@ -20,3 +20,20 @@ The private registry fixture does not yet supply the complete native AI
 namespace, so its missing methods remain explicitly absent. This intake does
 not qualify the complete factory, application, provider set, full upstream
 contract, or public activation. Default application bridge behavior is unchanged.
+
+## Provider component intake
+
+The combined tree also retains the separately tested local Debug components
+for Pi messages (`d9617f8c`), Responses (`106a401a`) and Anthropic (`12fe2157`).
+Their original request/event fixtures and success and failure receipts are
+preserved. The Pi component includes the tested TextEncoder trusted host OOM
+propagation fix. The existing live stream implementation remains a known
+shared integration gap; the reviewed C native-generator primitive does not
+itself establish provider producer/consumer timing compatibility.
+
+The Responses proof covers its supplied-fetch SSE cases, not the subsequent
+Codex WebSocket implementation. The Anthropic proof does not establish the
+latest beta query and complete HTTP wire contract; its later genuine wire
+captures and implementation follow-up are separate. Actual Zig/QuickJS runtime
+diagnostic headers remain distinct from upstream's Node SDK diagnostics.
+The combined head has not yet run its own compilation/runtime or hosted matrix.
