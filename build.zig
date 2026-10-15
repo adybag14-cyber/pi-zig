@@ -530,6 +530,16 @@ pub fn build(b: *std.Build) void {
     highlight_root55_foundation.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-highlight-root55-foundation", "Compile actual Legacy32 Original74 Deep7 and trusted-OOM functional gates on additive Root55 VM").dependOn(&highlight_root55_foundation.step);
     b.step("test-native-highlight-root55-foundation", "Compare unchanged genuine computational and legacy function probes before full191 qualification").dependOn(&b.addRunArtifact(highlight_root55_foundation).step);
+    const highlight_root463_recovery = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_root463_engine_recovery_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "extensions.engine.", "restores inactive frames after actual native enumeration cancellation", "targeted C VM heap budgets", "native Root463 dispatch" }, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_root463_recovery.root_module, quickjs, sqlite_lib_dir);
+    highlight_root463_recovery.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-root463-engine-recovery", "Compile preserved ordinary VM interrupt and legacy cancellation budget recovery gates").dependOn(&highlight_root463_recovery.step);
+    b.step("test-native-highlight-root463-engine-recovery", "Require ordinary VM constructor stack GC interrupt and selected legacy recovery before complete191").dependOn(&b.addRunArtifact(highlight_root463_recovery).step);
+    const highlight_complete191_host = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_complete191_host_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual complete191 host unchanged"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_complete191_host.root_module, quickjs, sqlite_lib_dir);
+    highlight_complete191_host.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-complete191-host", "Compile unchanged genuine Source445 caller against actual native Immediate and whole191 loader").dependOn(&highlight_complete191_host.step);
+    b.step("test-native-highlight-complete191-host", "Compare419 successful and26 failure Source observations with independent private readiness").dependOn(&b.addRunArtifact(highlight_complete191_host).step);
     const program_status_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/program_status_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
@@ -1278,6 +1288,7 @@ pub fn build(b: *std.Build) void {
     const run_engine_tests = b.addRunArtifact(engine_tests);
     const engine_test_step = b.step("test-extension-engine", "Test the directly linked extension-language engine");
     engine_test_step.dependOn(&run_engine_tests.step);
+    b.step("build-extension-engine", "Compile unchanged ordinary engine tests separately for metadata and matching runtime qualification").dependOn(&engine_tests.step);
     const original_oom_tests = b.addTest(.{ .root_module = engine_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native allocation original identity"} });
     b.step("test-native-allocation-original-identity", "Preserve original native OOM identity across cleanup without accepting user or stale causes").dependOn(&b.addRunArtifact(original_oom_tests).step);
     test_step.dependOn(&run_engine_tests.step);
