@@ -206,9 +206,15 @@ test "Response native selected operation OOM preserves ownership" {
         const engine = try setup(failing.allocator());
         failing.fail_index = failing.alloc_index + offset;
         const result = ownershipOperation(engine);
-        if (result) {} else |err| {
-            if (err != error.OutOfMemory and failing.has_induced_failure) {
-                std.debug.print("Response OOM diagnostic offset={d}/{d} result={s} generation={d} native_tag={d} last_error={s}\n", .{ offset, allocations, @errorName(err), engine.native_allocation_generation, if (engine.native_allocation_exception) |exception| c.pi_js_native_allocation_error_generation(exception) else 0, engine.last_error orelse "<none>" });
+        var unexpected_result: ?[]const u8 = null;
+        if (result) {
+            unexpected_result = "success";
+        } else |err| {
+            if (err != error.OutOfMemory) unexpected_result = @errorName(err);
+        }
+        if (unexpected_result) |label| {
+            if (failing.has_induced_failure) {
+                std.debug.print("Response OOM diagnostic offset={d}/{d} result={s} generation={d} native_tag={d} last_error={s}\n", .{ offset, allocations, label, engine.native_allocation_generation, if (engine.native_allocation_exception) |exception| c.pi_js_native_allocation_error_generation(exception) else 0, engine.last_error orelse "<none>" });
                 const trace = failing.getStackTrace();
                 std.debug.dumpStackTrace(&trace);
             }
