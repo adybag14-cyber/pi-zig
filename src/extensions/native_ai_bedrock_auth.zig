@@ -11,6 +11,12 @@ pub fn configure(s: *Scope, dependencies: c.JSValue, model: c.JSValue, options: 
     const env = try s.object();
     // Snapshot only credential-chain inputs, never arbitrary process state.
     inline for (.{ "AWS_REGION", "AWS_DEFAULT_REGION", "AWS_PROFILE", "AWS_DEFAULT_PROFILE", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_CONFIG_FILE", "AWS_SHARED_CREDENTIALS_FILE", "AWS_ROLE_ARN", "AWS_WEB_IDENTITY_TOKEN_FILE", "AWS_ROLE_SESSION_NAME", "AWS_ENDPOINT_URL_STS", "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI", "AWS_CONTAINER_CREDENTIALS_FULL_URI", "AWS_CONTAINER_AUTHORIZATION_TOKEN", "AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE", "AWS_EC2_METADATA_DISABLED", "AWS_EC2_METADATA_SERVICE_ENDPOINT", "AWS_EC2_METADATA_SERVICE_ENDPOINT_MODE", "AWS_EC2_METADATA_V1_DISABLED", "HOME", "USERPROFILE" }) |key| {
+        const value = try s.invoke(env_module, "getProviderEnvValue", &.{try s.text(key)});
+        if (!c.JS_IsUndefined(value)) try s.put(env, key, value);
+    }
+    // Source passes scoped static keys explicitly to the SDK; the SDK's
+    // remaining default chain reads ambient environment, not options.env.
+    inline for (.{ "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN" }) |key| {
         const value = try s.invoke(env_module, "getProviderEnvValue", &.{ try s.text(key), scoped_env });
         if (!c.JS_IsUndefined(value)) try s.put(env, key, value);
     }

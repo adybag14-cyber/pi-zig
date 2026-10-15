@@ -147,10 +147,13 @@ fn advance(s: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
             try s.put(response, "status", try s.get(value, "status"));
             const headers = try s.get(value, "headers");
             try s.put(response, "headers", headers);
-            try s.put(owner, "requestId", try decoder.diagnostic(s, try s.get(headers, "x-amzn-requestid")));
+            try s.put(owner, "pendingRequestId", try decoder.diagnostic(s, try s.get(headers, "x-amzn-requestid")));
             try wait(s, owner, try hook(s, owner, "onResponse", response), .response);
         },
-        .response => try next(s, owner),
+        .response => {
+            try s.put(owner, "requestId", try s.get(owner, "pendingRequestId"));
+            try next(s, owner);
+        },
         .next => {
             if (s.truthy(try s.get(value, "done"))) {
                 try wire.finish(s, owner);
