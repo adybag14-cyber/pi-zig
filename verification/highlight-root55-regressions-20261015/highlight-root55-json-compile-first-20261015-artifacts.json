@@ -1,0 +1,14 @@
+[
+  {
+    "sha256": "42CD5F9F3E3E18B736A9471AA5F250587615B44751381208B6603D757715DF30",
+    "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\.zig-cache\\o\\5ef4d8d9d038e8cbbd2ed6a19a7394c2\\test_zcu.obj"
+  },
+  {
+    "sha256": "FB42FC5A10DFE251C79E107122640F6C42955E91C87BF282E92BFD2B7DB1DBD2",
+    "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\.zig-cache\\o\\5ef4d8d9d038e8cbbd2ed6a19a7394c2\\test.exe"
+  },
+  {
+    "sha256": "B9547734E335EB4FA3B7F669E93449E82F05891000294BA3DCBA0CBAA0F4F98A",
+    "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\.zig-cache\\o\\5ef4d8d9d038e8cbbd2ed6a19a7394c2\\test.pdb"
+  }
+]

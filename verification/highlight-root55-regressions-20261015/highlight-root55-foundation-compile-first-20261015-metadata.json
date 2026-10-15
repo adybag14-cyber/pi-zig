@@ -1,0 +1,22 @@
+{
+  "validator": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Validate-HighlightFoundationMetadata6-20261015.ps1",
+  "original_owner_negative_preserved": true,
+  "method": "Offline exact bounds and six-name validation of original successful Zig0.16 metadata-only probe; no process launched",
+  "validator_sha256": "DF9964A16991E0B83EBC506AF2A110CF7388895714CD33B8A82C52EA5B358B20",
+  "binary_sha256": "478E3AB09CB4B89C96C15D52C0B91019684C442CE14CBCB03CDBDD6EB5FD24A2",
+  "candidate": "8685fd09298955e1f2fbae41e7677141b07e7b14",
+  "binary": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\.zig-cache\\o\\47160207d69eac9b58d473fe437d3b50\\test.exe",
+  "raw_sha256": "699E561DCA394C4FBA9ED8761CEC7C12E2AD7F6FCDF8BF61B95B5D02F9024C19",
+  "version": "0.16.0",
+  "tests": [
+    "native_highlight_legacy32_function_test.test.native legacy32 CJS function matches actual Original32 callers arguments poison descriptors freeze and GC",
+    "native_highlight_core_b45_test.test.native full eager21 highlight core matches genuine Original74 factories scanner output token trees classes and frontend",
+    "native_highlight_scope_test.test.native highlight inline roots nested actual grammar scanner completes128 levels and recovers",
+    "native_highlight_scope_test.test.native highlight inline roots match genuine Original deep7 exact caller self and distinct nested grammar results",
+    "native_highlight_core_profile_test.test.native highlight inline profile registration preserves proven host OOM and ordinary guest lookalikes",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "count": 6,
+  "raw_metadata": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root55-foundation-compile-first-20261015-metadata-probe.stdout.bin",
+  "completed_utc": "2026-10-15T22:10:29.9759859+00:00"
+}

@@ -1,0 +1,62 @@
+{
+  "head": "8685fd09298955e1f2fbae41e7677141b07e7b14",
+  "target": "json",
+  "candidate_before": 6979,
+  "candidate_drift": [],
+  "manifests": [
+    {
+      "count": 1967,
+      "name": "source",
+      "drift": []
+    },
+    {
+      "count": 31064,
+      "name": "dependencies",
+      "drift": []
+    },
+    {
+      "count": 1774,
+      "name": "node",
+      "drift": []
+    },
+    {
+      "count": 195,
+      "name": "canonical",
+      "drift": []
+    },
+    {
+      "count": 19546,
+      "name": "compiler",
+      "drift": []
+    }
+  ],
+  "phase": "compile",
+  "controls": 35,
+  "control_drift": [],
+  "candidate_after": 6979,
+  "inventories": [
+    {
+      "count": 1968,
+      "name": "source",
+      "drift": []
+    },
+    {
+      "count": 31064,
+      "name": "dependencies",
+      "drift": []
+    },
+    {
+      "count": 19546,
+      "name": "compiler",
+      "drift": []
+    },
+    {
+      "count": 1774,
+      "name": "node",
+      "drift": []
+    }
+  ],
+  "absence_drift": [],
+  "absences": 84,
+  "completed_utc": "2026-10-15T22:21:09.4295282+00:00"
+}

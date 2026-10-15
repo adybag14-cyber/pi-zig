@@ -1,0 +1,23 @@
+{
+  "executable": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\.zig-cache\\o\\0e8a5f2a8e85e2d6fa83815010668fd7\\test.exe",
+  "executable_sha256": "99FC96D0D5DD3AB2C52857002445E8D03E89F6CEDAEFB01EA1AD44554EAB692E",
+  "arguments": [
+    "--listen=-"
+  ],
+  "working_directory": "C:/Users/adyba/pi-zig-highlight-complete191-root55-20261015",
+  "pid": 67920,
+  "retained_handle": 2300,
+  "created_utc": "2026-10-15T22:16:44.8623277Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 30,
+  "status": "passed",
+  "live_identity": {
+    "created_utc": "2026-10-15T22:16:44.8623277Z",
+    "command_line_method": "Win32_Process.CommandLine",
+    "pid": 67920,
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\.zig-cache\\o\\0e8a5f2a8e85e2d6fa83815010668fd7\\test.exe\" --listen=-",
+    "executable": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\.zig-cache\\o\\0e8a5f2a8e85e2d6fa83815010668fd7\\test.exe"
+  },
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T22:16:45.3418596+00:00"
+}

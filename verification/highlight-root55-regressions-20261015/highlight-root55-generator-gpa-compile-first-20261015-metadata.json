@@ -1,0 +1,13 @@
+{
+  "version": "0.16.0",
+  "completed_utc": "2026-10-15T22:16:45.3638548+00:00",
+  "method": "Actual Zig0.16 metadata-only query4 and clean exit0; no run command",
+  "binary": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\.zig-cache\\o\\0e8a5f2a8e85e2d6fa83815010668fd7\\test.exe",
+  "tests": [
+    "native_async_generator_test.test.native async generator host GPA allocation sweep retains tagged OOM",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "candidate": "8685fd09298955e1f2fbae41e7677141b07e7b14",
+  "binary_sha256": "99FC96D0D5DD3AB2C52857002445E8D03E89F6CEDAEFB01EA1AD44554EAB692E",
+  "count": 2
+}
