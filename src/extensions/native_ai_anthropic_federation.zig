@@ -191,7 +191,9 @@ fn start(scope: *Scope, owner: c.JSValue) !void {
     const path = try scope.get(identity, "path");
     if (!scope.truthy(path)) return fail(scope, owner, try scope.text("identity_token.source \"file\" requires a non-empty path"));
     try scope.put(owner, "identityPath", path);
-    const fs = try scope.call(try scope.global("require"), c.pi_js_undefined(), &.{try scope.text("node:fs")});
+    // SDK identity-token imports its Node builtin namespace. An ESM caller
+    // has no global require; retain the actual installed native namespace.
+    const fs = scope.engine.native_module_values.get("node:fs") orelse return error.NativeFederationFilesystemUnavailable;
     return flow.wait(continued, scope.engine, owner, try scope.invoke(try scope.get(fs, "promises"), "readFile", &.{ path, try scope.text("utf-8") }), @intFromEnum(Stage.identity));
 }
 fn exchange(scope: *Scope, owner: c.JSValue, contents: c.JSValue) !void {
