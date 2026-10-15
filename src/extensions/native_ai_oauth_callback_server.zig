@@ -31,13 +31,27 @@ const Worker = struct {
     future: ?std.Io.Future(void) = null,
     failure: ?[]u8 = null,
     active: std.atomic.Value(usize) = .init(0),
+    closing: std.atomic.Value(bool) = .init(false),
+    listener_owned: std.atomic.Value(bool) = .init(true),
     fn destroy(self: *Worker) void {
         if (self.future) |*future| future.cancel(self.io);
-        self.listener.deinit(self.io);
+        self.closeListener();
         for (self.queue.items) |request| request.release();
         self.queue.deinit(a);
         if (self.failure) |message| a.free(message);
         a.destroy(self);
+    }
+    fn closeListener(self: *Worker) void {
+        if (self.listener_owned.swap(false, .acq_rel)) self.listener.deinit(self.io);
+    }
+    fn stopAccept(self: *Worker) void {
+        if (self.closing.swap(true, .acq_rel)) return;
+        if (!self.listener_owned.load(.acquire)) return;
+        const wake = self.listener.socket.address.connect(self.io, .{ .mode = .stream, .protocol = .tcp }) catch {
+            if (self.future) |*future| future.cancel(self.io);
+            return;
+        };
+        wake.close(self.io);
     }
     fn fail(self: *Worker, err: anyerror) void {
         if (err == error.Canceled) return;
@@ -47,6 +61,7 @@ const Worker = struct {
         v.em.Engine.notifyOwner(self.engine);
     }
     fn serve(self: *Worker) void {
+        defer self.closeListener();
         var handlers: std.Io.Group = .init;
         defer handlers.cancel(self.io);
         while (true) {
@@ -54,6 +69,14 @@ const Worker = struct {
                 self.fail(err);
                 return;
             };
+            if (self.closing.load(.acquire)) {
+                stream.close(self.io);
+                self.closeListener();
+                // Source server.close stops accepting while an already claimed
+                // async complete may still send its final browser response.
+                handlers.await(self.io) catch {};
+                return;
+            }
             if (self.active.fetchAdd(1, .acq_rel) >= 32) {
                 _ = self.active.fetchSub(1, .acq_rel);
                 stream.close(self.io);
@@ -127,7 +150,7 @@ fn entryFor(engine: *v.em.Engine, owner: c.JSValue) ?*Entry {
 }
 pub fn pending(engine: *v.em.Engine) bool {
     const state: *State = @ptrCast(@alignCast(engine.native_ai_oauth_callback_state orelse return false));
-    for (state.entries.items) |entry| if (entry.worker != null) return true;
+    for (state.entries.items) |entry| if (entry.worker) |worker| if (!worker.closing.load(.acquire) or worker.active.load(.acquire) != 0) return true;
     return false;
 }
 pub fn cleanup(engine: *v.em.Engine) void {
@@ -150,7 +173,7 @@ fn errorValue(scope: *v.Scope, message: c.JSValue) !c.JSValue {
 fn normalizeError(scope: *v.Scope, value: c.JSValue) !c.JSValue {
     const is_error = c.JS_IsInstanceOf(scope.engine.context, value, try scope.global("Error"));
     if (is_error < 0) return v.js.capture(scope.engine);
-    return if (is_error != 0) value else errorValue(scope, try scope.stringify(value));
+    return if (is_error != 0) value else errorValue(scope, try scope.call(try scope.global("String"), c.pi_js_undefined(), &.{value}));
 }
 fn finish(scope: *v.Scope, owner: c.JSValue, rejected: bool, value: c.JSValue) !void {
     if (scope.truthy(try scope.get(owner, "settled"))) return;
@@ -177,8 +200,7 @@ fn closeMethod(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: 
     defer scope.deinit();
     try finish(&scope, roots[0], true, try errorValue(&scope, try scope.text("OAuth callback server closed")));
     if (entryFor(engine, roots[0])) |entry| if (entry.worker) |worker| {
-        entry.worker = null;
-        worker.destroy();
+        worker.stopAccept();
     };
     return c.pi_js_undefined();
 }
