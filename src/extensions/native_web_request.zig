@@ -253,7 +253,7 @@ fn create(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captur
         try copyMetadata(&scope, state.metadata, original.metadata);
         const explicit_dispatcher = try scope.get(init, "dispatcher");
         replace(engine, &state.dispatcher, if (scope.truthy(explicit_dispatcher)) explicit_dispatcher else original.dispatcher);
-        const copied = try scope.own(try headers.fromRecord(engine, original.headers));
+        const copied = try scope.own(try headers.clone(engine, original.headers, .request));
         replace(engine, &state.headers, copied);
     }
     const window = try scope.get(init, "window");
@@ -326,7 +326,7 @@ fn clone(scope: *Scope, owner: c.JSValue, state: *State, receiver: c.JSValue) !c
     const result = try fresh(scope, owner, rootOf(owner).prototype);
     const copy = try internal(scope, owner, result);
     try copyMetadata(scope, copy.metadata, state.metadata);
-    replace(scope.engine, &copy.headers, try scope.own(try headers.fromRecord(scope.engine, state.headers)));
+    replace(scope.engine, &copy.headers, try scope.own(try headers.clone(scope.engine, state.headers, state.guard)));
     copy.guard = state.guard;
     try headers.setGuard(scope.engine, copy.headers, copy.guard);
     replace(scope.engine, &copy.dispatcher, state.dispatcher);
@@ -462,9 +462,9 @@ pub fn bindTransfer(engine: *em.Engine, provider: TransferProvider) !void {
     root.transfer = .{ .owner = retained, .create = provider.create };
 }
 /// Internal fetch handoff borrows the actual privately owned Request state.
-pub const View = struct { url: c.JSValue, method: c.JSValue, headers: c.JSValue, signal: c.JSValue, dispatcher: c.JSValue, payload: ?body.Body };
+pub const View = struct { url: c.JSValue, method: c.JSValue, headers: c.JSValue, signal: c.JSValue, dispatcher: c.JSValue, redirect: c.JSValue, mode: c.JSValue, cache: c.JSValue, integrity: c.JSValue, payload: ?body.Body };
 pub fn view(scope: *Scope, request: c.JSValue) !View {
     const owner = scope.engine.native_module_values.get(key) orelse return error.NativeWebRequestUnavailable;
     const state = try stateOf(scope, owner, request);
-    return .{ .url = try scope.get(state.metadata, "url"), .method = try scope.get(state.metadata, "method"), .headers = state.headers, .signal = state.signal, .dispatcher = state.dispatcher, .payload = state.payload };
+    return .{ .url = try scope.get(state.metadata, "url"), .method = try scope.get(state.metadata, "method"), .headers = state.headers, .signal = state.signal, .dispatcher = state.dispatcher, .redirect = try scope.get(state.metadata, "redirect"), .mode = try scope.get(state.metadata, "mode"), .cache = try scope.get(state.metadata, "cache"), .integrity = try scope.get(state.metadata, "integrity"), .payload = state.payload };
 }
