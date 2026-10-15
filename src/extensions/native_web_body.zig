@@ -24,18 +24,18 @@ pub const Streams = struct {
 pub const Body = struct { stream: c.JSValue, source: c.JSValue, length: c.JSValue, content_type: c.JSValue };
 pub const Clone = struct { original_stream: c.JSValue, copy: Body };
 pub const Mode = enum(c_int) { bytes, array_buffer, text, json, blob, form_data };
-const Root = struct { engine: *em.Engine, streams: Streams, encoder: c.JSValue };
+const Root = struct { engine: *em.Engine, streams: Streams, encoder: c.JSValue, response_registry: c.JSValue };
 fn rootOf(owner: c.JSValue) *Root {
     return @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)).?));
 }
 fn freeRoot(runtime: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
     const root: *Root = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
-    for ([_]c.JSValue{ root.streams.bindings, root.streams.constructor, root.encoder }) |value| c.JS_FreeValueRT(runtime, value);
+    for ([_]c.JSValue{ root.streams.bindings, root.streams.constructor, root.encoder, root.response_registry }) |value| c.JS_FreeValueRT(runtime, value);
     root.engine.gpa.destroy(root);
 }
 fn markRoot(runtime: ?*c.JSRuntime, owner: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
     const root: *Root = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
-    for ([_]c.JSValue{ root.streams.bindings, root.streams.constructor, root.encoder }) |value| c.JS_MarkValue(runtime, value, visit);
+    for ([_]c.JSValue{ root.streams.bindings, root.streams.constructor, root.encoder, root.response_registry }) |value| c.JS_MarkValue(runtime, value, visit);
 }
 fn ownerOf(engine: *em.Engine) !c.JSValue {
     return engine.native_module_values.get(cache_key) orelse error.NativeWebReadableStreamUnavailable;
@@ -59,17 +59,49 @@ pub fn install(engine: *em.Engine, streams: Streams) !void {
     var attached = false;
     errdefer if (!attached) engine.freeValue(encoder);
     const root = try engine.gpa.create(Root);
-    root.* = .{ .engine = engine, .streams = streams, .encoder = encoder };
+    root.* = .{ .engine = engine, .streams = streams, .encoder = encoder, .response_registry = c.pi_js_undefined() };
     root.streams.bindings = c.JS_DupValue(engine.context, streams.bindings);
     root.streams.constructor = c.JS_DupValue(engine.context, streams.constructor);
     _ = c.JS_SetOpaque(owner, root);
     attached = true;
+    const cleanup = try scope.own(try @import("native_node_function.zig").createArrow(engine, "", 1, responseCollected, &.{owner}));
+    var registry_args = [_]c.JSValue{cleanup};
+    root.response_registry = try engine.checked(c.JS_CallConstructor(engine.context, try scope.global("FinalizationRegistry"), 1, &registry_args));
     try engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1);
     engine.native_module_values.putAssumeCapacity(cache_key, c.JS_DupValue(engine.context, owner));
 }
 pub fn disturbed(scope: *Scope, stream: c.JSValue) !bool {
     const root = rootOf(try ownerOf(scope.engine));
     return root.streams.is_disturbed(scope, root.streams.bindings, stream);
+}
+pub fn errored(scope: *Scope, stream: c.JSValue) !bool {
+    const root = rootOf(try ownerOf(scope.engine));
+    return root.streams.is_errored(scope, root.streams.bindings, stream);
+}
+fn responseCollected(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    if (args.len == 0) return c.pi_js_undefined();
+    const stream = try scope.invoke(args[0], "deref", &.{});
+    if (scope.truthy(stream) and !scope.truthy(try scope.get(stream, "locked"))) {
+        const root = rootOf(captures[0]);
+        if (!try root.streams.is_disturbed(&scope, root.streams.bindings, stream) and !try root.streams.is_errored(&scope, root.streams.bindings, stream)) {
+            const canceled = try scope.invoke(stream, "cancel", &.{try scope.text("Response object has been garbage collected")});
+            const ignore = try scope.own(try @import("native_node_function.zig").createArrow(engine, "noop", 0, idle, &.{}));
+            _ = try scope.invoke(canceled, "catch", &.{ignore});
+        }
+    }
+    return c.pi_js_undefined();
+}
+/// Actual bundled streamRegistry: only network/URL-present facade paths call
+/// this. Weak registration retains neither the Response nor its stream target.
+pub fn registerResponse(engine: *em.Engine, response: c.JSValue, stream: c.JSValue) !void {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const root = rootOf(try ownerOf(engine));
+    var args = [_]c.JSValue{stream};
+    const weak = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, try scope.global("WeakRef"), 1, &args)));
+    _ = try scope.invoke(root.response_registry, "register", &.{ response, weak });
 }
 pub fn unusable(scope: *Scope, body: ?Body) !bool {
     const value = body orelse return false;
