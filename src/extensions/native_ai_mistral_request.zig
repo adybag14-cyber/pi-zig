@@ -73,6 +73,41 @@ fn image(scope: *Scope, block: c.JSValue) !c.JSValue {
     try scope.put(result, "imageUrl", try scope.concat(url, try scope.stringify(try scope.get(block, "data"))));
     return result;
 }
+fn stripSymbols(scope: *Scope, value: c.JSValue, state: c.JSValue) anyerror!c.JSValue {
+    var depth: u32 = 0;
+    var count: i64 = 0;
+    if (c.JS_ToUint32(scope.engine.context, &depth, try v.at(scope, state, 0)) < 0 or c.JS_ToInt64(scope.engine.context, &count, try v.at(scope, state, 1)) < 0) return v.js.capture(scope.engine);
+    if (depth >= 512) {
+        _ = try scope.engine.checked(c.JS_ThrowRangeError(scope.engine.context, "Maximum call stack size exceeded"));
+        unreachable;
+    }
+    var steps: usize = @intCast(count);
+    try @import("native_ai_budget.zig").step(scope.engine, &steps);
+    try scope.index(state, 0, c.JS_NewUint32(scope.engine.context, depth + 1));
+    try scope.index(state, 1, c.JS_NewInt64(scope.engine.context, @intCast(steps)));
+    defer _ = c.JS_SetPropertyUint32(scope.engine.context, state, 0, c.JS_NewUint32(scope.engine.context, depth));
+    if (try v.array(scope, value)) {
+        const Adapter = struct {
+            fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+                var row: Scope = .{ .engine = engine };
+                defer row.deinit();
+                return c.JS_DupValue(engine.context, try stripSymbols(&row, if (args.len > 0) args[0] else c.pi_js_undefined(), roots[0]));
+            }
+        };
+        const callback = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Adapter.call, &.{state}));
+        return scope.invoke(value, "map", &.{callback});
+    }
+    if (!c.JS_IsObject(value) or c.JS_IsFunction(scope.engine.context, value)) return value;
+    const result = try scope.object();
+    var rows = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{value}));
+    defer rows.deinit();
+    errdefer rows.closePreserving();
+    while (try rows.next()) |entry| {
+        defer scope.engine.freeValue(entry);
+        try v.js.setKey(scope.engine, result, try v.at(scope, entry, 0), try stripSymbols(scope, try v.at(scope, entry, 1), state));
+    }
+    return result;
+}
 pub fn cache(scope: *Scope, options: c.JSValue) !bool {
     return !try v.eq(scope, try v.optional(scope, options, "cacheRetention"), "none") and scope.truthy(try v.optional(scope, options, "sessionId"));
 }
@@ -192,7 +227,21 @@ pub fn build(engine: *v.em.Engine, dependencies: c.JSValue, model: c.JSValue, co
         _ = try row.invoke(messages, "push", &.{outgoing});
     }
     const tools = try scope.own(try @import("native_agent_tool_changes.zig").currentTools(engine, try scope.get(context, "messages")));
-    if (try v.length(&scope, tools) > 0) try scope.put(result, "tools", try scope.own(try @import("native_ai_openai_tools.zig").convert(engine, tools, try scope.object())));
+    if (try v.length(&scope, tools) > 0) {
+        const converted = try scope.own(try @import("native_ai_openai_tools.zig").convert(engine, tools, try scope.object()));
+        var tool_rows = try v.iterator(&scope, converted);
+        defer tool_rows.deinit();
+        errdefer tool_rows.closePreserving();
+        while (try tool_rows.next()) |tool| {
+            defer engine.freeValue(tool);
+            const function = try scope.get(tool, "function");
+            const state = try scope.array();
+            try scope.index(state, 0, c.JS_NewUint32(engine.context, 0));
+            try scope.index(state, 1, c.JS_NewInt64(engine.context, 0));
+            try scope.put(function, "parameters", try stripSymbols(&scope, try scope.get(function, "parameters"), state));
+        }
+        try scope.put(result, "tools", converted);
+    }
     inline for (.{ "temperature", "maxTokens", "promptMode", "reasoningEffort" }) |key| {
         const value = try v.optional(&scope, options, key);
         if (!c.JS_IsUndefined(value)) try scope.put(result, key, value);
