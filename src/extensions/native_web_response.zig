@@ -238,7 +238,7 @@ fn staticOperation(scope: *Scope, owner: c.JSValue, args: []const c.JSValue, kin
         try web.arity(scope, args.len, 1, "Response.redirect");
         const input = try idl.usvString(scope, args[0]);
         const converted = try idl.unsignedShort(scope, if (args.len < 2 or c.JS_IsUndefined(args[1])) c.JS_NewInt32(scope.engine.context, 302) else args[1]);
-        const parsed = scope.own(try js.builtin(scope.engine, "URL", &.{input})) catch |err| {
+        const parsed_owned = js.builtin(scope.engine, "URL", &.{input}) catch |err| {
             if (err != error.JavaScriptException) return err;
             _ = scope.engine.throwCaptured();
             const cause = try scope.own(c.JS_GetException(scope.engine.context));
@@ -248,6 +248,7 @@ fn staticOperation(scope: *Scope, owner: c.JSValue, args: []const c.JSValue, kin
             _ = try scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, failure)));
             unreachable;
         };
+        const parsed = try scope.own(parsed_owned);
         var status: i32 = 0;
         if (c.JS_ToInt32(scope.engine.context, &status, converted) < 0) return js.capture(scope.engine);
         if (status != 301 and status != 302 and status != 303 and status != 307 and status != 308) try rangeError(scope, try scope.concat(try scope.text("Invalid status code "), converted));
