@@ -22,6 +22,32 @@ pub const Dependencies = struct {
     compat_models: c.JSValue,
     get_env_api_key: c.JSValue,
 };
+/// Assemble the actual compat dispatch module from all ten native API
+/// constructors and the real providers/all builtinModels export. The latter
+/// is supplied by the provider/Models module owner; no empty registry fallback
+/// is accepted here. This exports the dispatch surface, not all index.ts APIs.
+pub fn namespace(engine: *em.Engine, builtin_models: c.JSValue) !c.JSValue {
+    if (engine.native_ai_compat_exports) |cached| return c.JS_DupValue(engine.context, cached);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const apis = try scope.own(try @import("native_ai_builtin_apis.zig").create(engine));
+    const env = try scope.own(try @import("native_ai_env_keys.zig").namespace(engine));
+    var entries: [builtin_api_ids.len]BuiltinApi = undefined;
+    const constructors = .{ "anthropicMessagesApi", "openAICompletionsApi", "openAIResponsesApi", "openAICodexResponsesApi", "azureOpenAIResponsesApi", "googleGenerativeAIApi", "googleVertexApi", "mistralConversationsApi", "bedrockConverseStreamApi", "piMessagesApi" };
+    // Source's constant BUILTIN_APIS is evaluated before builtinModels().
+    inline for (constructors, 0..) |name, i| entries[i] = .{
+        .api = builtin_api_ids[i],
+        .streams = try scope.call(try scope.get(apis, name), c.pi_js_undefined(), &.{}),
+    };
+    const models = try scope.call(builtin_models, c.pi_js_undefined(), &.{});
+    const output = try scope.own(try create(engine, .{
+        .builtin_apis = &entries,
+        .compat_models = models,
+        .get_env_api_key = try scope.get(env, "getEnvApiKey"),
+    }));
+    engine.native_ai_compat_exports = c.JS_DupValue(engine.context, output);
+    return c.JS_DupValue(engine.context, output);
+}
 const Method = enum { registerApiProvider, getApiProvider, getApiProviders, unregisterApiProviders, registerBuiltInApiProviders, resetApiProviders, stream, streamSimple, complete, completeSimple };
 pub fn create(engine: *em.Engine, dependencies: Dependencies) !c.JSValue {
     var scope: Scope = .{ .engine = engine };

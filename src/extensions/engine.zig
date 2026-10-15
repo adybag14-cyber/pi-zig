@@ -87,6 +87,7 @@ pub const Engine = struct {
     native_ai_builtin_modules: ?c.JSValue = null,
     native_ai_builtin_apis: ?c.JSValue = null,
     native_ai_env_keys: ?c.JSValue = null,
+    native_ai_compat_exports: ?c.JSValue = null,
     native_ai_catalog_values: ?c.JSValue = null,
     native_ai_oauth_loader_namespace: ?c.JSValue = null,
     native_provider_env_lookup: ?c.JSValue = null,
@@ -324,6 +325,7 @@ pub const Engine = struct {
         if (self.native_ai_builtin_modules) |value| self.freeValue(value);
         if (self.native_ai_builtin_apis) |value| self.freeValue(value);
         if (self.native_ai_env_keys) |value| self.freeValue(value);
+        if (self.native_ai_compat_exports) |value| self.freeValue(value);
         if (self.native_ai_catalog_values) |value| self.freeValue(value);
         if (self.native_ai_oauth_loader_namespace) |value| self.freeValue(value);
         if (self.native_provider_env_lookup) |value| self.freeValue(value);
