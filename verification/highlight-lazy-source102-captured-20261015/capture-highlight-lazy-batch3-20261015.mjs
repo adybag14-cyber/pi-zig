@@ -1,0 +1,13 @@
+import { createRequire } from 'node:module';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
+const require=createRequire(import.meta.url);
+const installed='C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/';
+globalThis.highlightCoreAPI=require(installed+'core.js');
+const baseline=['python','java','go','javascript','json','cpp','typescript','php','ruby','c','csharp','nix','bash','rust','scala','kotlin','swift','dart','groovy','perl','lua','xml','css','markdown','dockerfile','ini','makefile','powershell','protobuf','sql','yaml'];
+for(const name of baseline)highlightCoreAPI.registerLanguage(name,require(installed+'languages/'+name+'.js'));
+const names=['bnf','fix','shell','ldif','csp','golo','profile','clean','taggerscript','subunit','ebnf','flix','leaf','mizar','tap','gherkin','thrift','dsconfig','awk','step21'];
+globalThis.highlightLazyFactories=Object.fromEntries(names.map(name=>[name,require(installed+'languages/'+name+'.js')]));
+await import('data:text/javascript;charset=utf-8,'+encodeURIComponent(readFileSync(process.argv[3],'utf8')));
+if(!Array.isArray(globalThis.sdkHighlightLazyBatch3Rows)||sdkHighlightLazyBatch3Rows.length!==102)throw Error('Genuine Source102 rows absent');
+writeFileSync(process.argv[2],JSON.stringify({source:'highlight.js@10.7.3 actual installed modules',input:pathToFileURL(process.argv[3]).href,cases:102,rows:sdkHighlightLazyBatch3Rows},null,2)+'\n');
