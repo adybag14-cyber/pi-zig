@@ -1,0 +1,346 @@
+{
+  "status": "selected_private_debug_qualified",
+  "candidate_head": "f23231231a057e9a1f0c2194371b5f6039cfbb55",
+  "candidate_files": 5519,
+  "candidate_current_drift": 0,
+  "latest_source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "successful_compile_runtime_frozen_sha256": "42936DD7770F4BA6FDC02B5AF33CB473BF0152626F4F6C40C03268F2CB11071A",
+  "phases": [
+    {
+      "phase": "source-first",
+      "status": "passed",
+      "pid": 45832,
+      "created_utc": "2026-10-15T16:21:28.5961201Z",
+      "exit_code": 0,
+      "owned_identity_absent": true,
+      "pid_currently_reused": false,
+      "owner_sha256": "961A7F7273131F4A201E036141A5D9A014593E2FFFDFF172F0BA30EA1BBDC4B8",
+      "post_sha256": "261D05057EA739086384E29241F3565234BC6715D76708CAD936F4493CFE2A0E",
+      "frozen_sha256": "CDEB177A622872B661A2790010A66259CB94DA67948711FE369E66A1BA0DEAAE",
+      "post_checks": [
+        {
+          "group": "candidate",
+          "count": 5517,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "original",
+          "count": 1924,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "compiler",
+          "count": 19546,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "node_tools",
+          "count": 1774,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "libuv",
+          "count": 416,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "references",
+          "count": 9,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "controls",
+          "count": 5,
+          "drift": 0,
+          "first_drift": null
+        }
+      ]
+    },
+    {
+      "phase": "compile-first",
+      "status": "failed",
+      "pid": 45112,
+      "created_utc": "2026-10-15T16:23:21.4758278Z",
+      "exit_code": 1,
+      "owned_identity_absent": true,
+      "pid_currently_reused": false,
+      "owner_sha256": "D9FDC44C7594B32182A94A0BE51AE09BC131CD1803F74E2513D3565509F34FAE",
+      "post_sha256": "4013829029D9C546B74A3A7CB5283756F9722EA7EB54A9B5EF0106F6EE995A96",
+      "frozen_sha256": "140D380B629F9D05B0A89496A4473FCF314E28D29173D455EF63287E425A9B3A",
+      "post_checks": [
+        {
+          "group": "candidate",
+          "count": 5519,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "original",
+          "count": 1924,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "compiler",
+          "count": 19546,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "node_tools",
+          "count": 1774,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "libuv",
+          "count": 416,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "references",
+          "count": 9,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "controls",
+          "count": 5,
+          "drift": 0,
+          "first_drift": null
+        }
+      ]
+    },
+    {
+      "phase": "compile-second",
+      "status": "failed",
+      "pid": 40488,
+      "created_utc": "2026-10-15T16:29:34.9238965Z",
+      "exit_code": 1,
+      "owned_identity_absent": true,
+      "pid_currently_reused": false,
+      "owner_sha256": "2C471A63A23DCA2AEB171B767CF572FFAFE9E0A30060C3C5A25837C141EE1B06",
+      "post_sha256": "8A3547C91DDB0383173607024809142F36B16E96CA67F42AAA24E08F9E557A36",
+      "frozen_sha256": "8819B5D0924AD84BF162C07308C106B128AA9E7E853E3B6FF7D2CB69AAB69F47",
+      "post_checks": [
+        {
+          "group": "candidate",
+          "count": 5519,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "original",
+          "count": 1924,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "compiler",
+          "count": 19546,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "node_tools",
+          "count": 1774,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "libuv",
+          "count": 416,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "references",
+          "count": 9,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "controls",
+          "count": 5,
+          "drift": 0,
+          "first_drift": null
+        }
+      ]
+    },
+    {
+      "phase": "compile-third",
+      "status": "passed",
+      "pid": 21376,
+      "created_utc": "2026-10-15T16:30:39.5802476Z",
+      "exit_code": 0,
+      "owned_identity_absent": true,
+      "pid_currently_reused": false,
+      "owner_sha256": "5D053D0E19DF411BC9616BBBD9B783DCD2E251E42B54CF6FF38BEE3B427FC058",
+      "post_sha256": "E060A59A988BCD17313855A59EF55126F7CBD07AFFACE5C059FE1719BF5FAD88",
+      "frozen_sha256": "42936DD7770F4BA6FDC02B5AF33CB473BF0152626F4F6C40C03268F2CB11071A",
+      "post_checks": [
+        {
+          "group": "candidate",
+          "count": 5519,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "original",
+          "count": 1924,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "compiler",
+          "count": 19546,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "node_tools",
+          "count": 1774,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "libuv",
+          "count": 416,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "references",
+          "count": 9,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "controls",
+          "count": 5,
+          "drift": 0,
+          "first_drift": null
+        }
+      ]
+    },
+    {
+      "phase": "runtime-first",
+      "status": "passed",
+      "pid": 44824,
+      "created_utc": "2026-10-15T16:31:47.2483431Z",
+      "exit_code": 0,
+      "owned_identity_absent": true,
+      "pid_currently_reused": false,
+      "owner_sha256": "8B5D6C6C022C29E532FF7BEF9B34F6CBB38C0D4EA1AA1089FC83F264048619B8",
+      "post_sha256": "9884E2971EEDA1441ED3DB74D528DC42143B85A5C68F99CEE30F7C7C450A1383",
+      "frozen_sha256": "42936DD7770F4BA6FDC02B5AF33CB473BF0152626F4F6C40C03268F2CB11071A",
+      "post_checks": [
+        {
+          "group": "candidate",
+          "count": 5519,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "original",
+          "count": 1924,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "compiler",
+          "count": 19546,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "node_tools",
+          "count": 1774,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "libuv",
+          "count": 416,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "references",
+          "count": 9,
+          "drift": 0,
+          "first_drift": null
+        },
+        {
+          "group": "controls",
+          "count": 5,
+          "drift": 0,
+          "first_drift": null
+        }
+      ]
+    }
+  ],
+  "lease_actual_inventory": [
+    "native_env_io_lease_transition_test.test.native Env IO lease transition compiled inventory",
+    "native_env_io_lease_transition_test.test.native Env IO lease transition same length resizable transfer retires original storage",
+    "native_env_io_lease_transition_test.test.native Env IO lease transition same length resizable fixed transfer retires original storage",
+    "native_env_io_lease_transition_test.test.native Env IO lease transition same length fixed transfer preserves actual storage",
+    "native_env_io_lease_transition_test.test.native Env IO lease transition Windows allocation unit preserves admitted span after logical shrink",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "source_actual_inventory": [
+    "native_env_filehandle_transfer_source_test.test.native Env FileHandle transfer source actual compiled inventory",
+    "native_env_filehandle_transfer_source_test.test.native Env FileHandle transfer source equal length resizable read and write match genuine Node packet with real worker barrier and GC",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "compiled_tests_passed": 9,
+  "selected_tests_passed": 7,
+  "imported_discovery_tests_passed": 2,
+  "skipped": 0,
+  "source_packet_sha256": "E0509273F3B532E9C5F6B973623F3FFF4380FAFB1315FCA8C460C27987620911",
+  "source_input_sha256": "BDA426CEFB1C491C6278F6557C5B1937E1302876BB6E376D3BC871E94852A68E",
+  "leaves": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-env-node-ownership-f232312-20261014\\vendor\\quickjs\\pi-io-lease.inc",
+      "sha256": "8BA9301BB4B39C28F46BCC6F2A462FCE92D06AD6BCE20AF631720165FCA7E55D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-env-node-ownership-f232312-20261014\\src\\extensions\\native_env_io_lease.zig",
+      "sha256": "EE19DDFF33A063F77556ED2F1D473523E91809E5C36E1FC155A53E349F493C5F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-env-node-ownership-f232312-20261014\\src\\native_env_io_lease_transition_test.zig",
+      "sha256": "D2427445A8E587116A2F75EB9991207A0ED0C69631D5CF5D02B0DFEC87B4F8D8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-env-node-ownership-f232312-20261014\\src\\native_env_filehandle_transfer_source_test.zig",
+      "sha256": "F25D071539465ED882394FA364A5430C9722112103A2769917A315D34A5B0788"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-env-node-ownership-f232312-20261014\\src\\extensions\\fixtures\\env-node-rab-same-transfer-source-24.input.txt",
+      "sha256": "BDA426CEFB1C491C6278F6557C5B1937E1302876BB6E376D3BC871E94852A68E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-env-node-ownership-f232312-20261014\\src\\extensions\\fixtures\\env-node-rab-same-transfer-source-24.json",
+      "sha256": "E0509273F3B532E9C5F6B973623F3FFF4380FAFB1315FCA8C460C27987620911"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-env-node-ownership-f232312-20261014\\build.zig",
+      "sha256": "7B28905A05FF7ED42863B9EBACC94C609DF2250000B249A56BC540FD52FA29C3"
+    }
+  ],
+  "public_activation": false,
+  "full_env_qualified": false,
+  "full_filehandle_qualified": false,
+  "releasesafe_qualified": false,
+  "posix_qualified": false,
+  "allocation_sweep_qualified": false,
+  "completed_utc": "2026-10-15T16:34:39.1534728+00:00"
+}

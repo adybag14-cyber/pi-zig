@@ -360,6 +360,11 @@ struct JSRuntime {
     /* list of JSGCObjectHeader.link. List of allocated GC objects (used
        by the garbage collector) */
     struct list_head gc_obj_list;
+    struct PiIOSABGeneration *pi_io_sab_generations;
+    int pi_io_sab_enabled;
+    size_t pi_io_owned_generations;
+    size_t pi_io_mapping_charge;
+    size_t pi_io_transfer_cleanups;
     /* list of JSGCObjectHeader.link. Used during JS_FreeValueRT() */
     struct list_head gc_zero_ref_count_list;
     struct list_head tmp_obj_list; /* used during GC */
@@ -963,6 +968,7 @@ typedef struct JSArrayBuffer {
     struct list_head array_list;
     void *opaque;
     JSReallocArrayBufferDataFunc *realloc_func;
+    struct PiIOSABGeneration *pi_io_sab;
 } JSArrayBuffer;
 
 typedef struct JSTypedArray {
@@ -1461,6 +1467,8 @@ static JSValue js_array_buffer_constructor3(JSContext *ctx,
 static void *js_array_buffer_realloc(JSRuntime *rt, void *opaque, void *ptr,
                                      size_t size);
 static JSArrayBuffer *js_get_array_buffer(JSContext *ctx, JSValueConst obj);
+static int pi_io_sab_attach(JSContext *, JSArrayBuffer *);
+static void pi_io_sab_detach(JSRuntime *, JSArrayBuffer *);
 static bool array_buffer_is_resizable(const JSArrayBuffer *abuf);
 static JSValue js_typed_array_constructor(JSContext *ctx,
                                           JSValueConst this_val,
@@ -59650,6 +59658,7 @@ static JSValue js_array_buffer_constructor3(JSContext *ctx,
     abuf = js_malloc(ctx, sizeof(*abuf));
     if (!abuf)
         goto fail;
+    abuf->pi_io_sab = NULL;
     abuf->byte_length = len;
     abuf->max_byte_length = max_len ? *max_len : -1;
     if (alloc_flag) {
@@ -59682,6 +59691,17 @@ static JSValue js_array_buffer_constructor3(JSContext *ctx,
                 goto fail;
             realloc_func = js_array_buffer_realloc;
         }
+    }
+    if (class_id == JS_CLASS_SHARED_ARRAY_BUFFER && rt->pi_io_sab_enabled &&
+        pi_io_sab_attach(ctx, abuf)) {
+        /* No object owns this backing yet. Undo the allocation/dup performed
+         * by this constructor; leave externally supplied ownership intact. */
+        if (rt->sab_funcs.sab_free && (alloc_flag || rt->sab_funcs.sab_dup))
+            rt->sab_funcs.sab_free(rt->sab_funcs.sab_opaque, abuf->data);
+        else if (alloc_flag)
+            js_free_rt(rt, abuf->data);
+        abuf->data = NULL;
+        goto fail;
     }
     init_list_head(&abuf->array_list);
     abuf->detached = false;
@@ -59832,6 +59852,7 @@ static void js_array_buffer_finalizer(JSRuntime *rt, JSValueConst val)
                 p1->u.array.u.ptr = NULL;
             }
         }
+        pi_io_sab_detach(rt, abuf);
         if (abuf->shared && rt->sab_funcs.sab_free) {
             rt->sab_funcs.sab_free(rt->sab_funcs.sab_opaque, abuf->data);
         } else {
@@ -60061,6 +60082,8 @@ enum {
     JS_ARRAY_BUFFER_TRANSFER_TO_FIXED_LENGTH,
 };
 
+#include "pi-io-lease.inc"
+
 // ES #sec-arraybuffer.prototype.transfer
 static JSValue js_array_buffer_transfer(JSContext *ctx, JSValueConst this_val,
                                         int argc, JSValueConst *argv, int magic)
@@ -60096,6 +60119,11 @@ static JSValue js_array_buffer_transfer(JSContext *ctx, JSValueConst this_val,
                 return JS_ThrowTypeError(ctx, "invalid array buffer length");
             pmax_len = &max_len;
         }
+    }
+    if (abuf->realloc_func == pi_io_realloc) {
+        if (new_len > INT32_MAX)
+            return JS_ThrowRangeError(ctx, "invalid array buffer length");
+        return pi_io_transfer(ctx, abuf, new_len, pmax_len, magic);
     }
     /* create an empty AB */
     if (new_len == 0) {
@@ -60186,6 +60214,11 @@ static JSValue js_array_buffer_resize(JSContext *ctx, JSValueConst this_val,
         // the ArrayBuffer cannot be resizable without a way to resize it,
         // js_array_buffer_constructor3 rejects that combination
         assert(abuf->realloc_func);
+        if (abuf->realloc_func == pi_io_realloc) {
+            if (pi_io_resize(ctx, abuf, len)) return JS_ThrowOutOfMemory(ctx);
+            js_array_buffer_update_typed_arrays(abuf);
+            return JS_UNDEFINED;
+        }
         data = abuf->realloc_func(ctx->rt, abuf->opaque, abuf->data,
                                   max_int(len, 1));
         if (!data)

@@ -7,6 +7,7 @@ const errors = @import("native_env_node_errors.zig");
 const owner = @import("native_env_io.zig");
 const c = js.c;
 const uv = @import("native_uv_api").c;
+const leases = @import("native_env_io_lease.zig");
 const Method = enum(c_int) { read, write, stat, truncate, sync, close, datasync, chmod, chown, utimes, readv, writev };
 const Native = struct {
     extern "c" fn _open_osfhandle(isize, c_int) c_int;
@@ -20,6 +21,7 @@ const State = struct {
     // Existing descriptor owners retain their original typed-array accessor.
     // Only explicit private byte-view owners opt in before frontend parity.
     array_buffer_views: bool = false,
+    lease_policy: ?leases.Policy = null,
     bindings: c.JSValue,
     close_promise: c.JSValue,
     closing: bool = false,
@@ -105,6 +107,7 @@ const Job = struct {
     target: c.JSValue,
     views: c.JSValue,
     vectors: []uv.uv_buf_t = &.{},
+    pinned: ?leases.Set = null,
     method: Method,
     bytes: []u8 = &.{},
     count: usize = 0,
@@ -152,6 +155,22 @@ const Job = struct {
         // The public writev fast path never enters libuv for an empty array.
         // No request exists in that path, so there is nothing to clean up.
         if (self.method == .writev and self.vectors.len == 0) return;
+        if (self.pinned) |pins| {
+            const operation: c.JSPiIOOperation = switch (self.method) {
+                .read => c.JS_PI_IO_READ,
+                .write => c.JS_PI_IO_WRITE,
+                .readv => c.JS_PI_IO_READV,
+                .writev => c.JS_PI_IO_WRITEV,
+                else => unreachable,
+            };
+            for (pins.slots, 0..) |slot, index| if (slot) |lease| {
+                const status = try leases.Lease.nativeStatus(lease.status(operation, index));
+                if (status < 0) {
+                    self.native_status = status;
+                    return;
+                }
+            };
+        }
         var request: uv.uv_fs_t = undefined;
         defer uv.uv_fs_req_cleanup(&request);
         const fd: uv.uv_file = @intCast(self.self.fd);
@@ -168,7 +187,7 @@ const Job = struct {
             .chown => uv.uv_fs_fchown(null, &request, fd, self.uid, self.gid, null),
             .utimes => uv.uv_fs_futime(null, &request, fd, self.atime, self.mtime, null),
             .read, .write => operation: {
-                var buffer = uv.uv_buf_init(self.bytes.ptr, @intCast(self.bytes.len));
+                var buffer = if (self.pinned) |pins| pins.slots[0].?.buffer() else uv.uv_buf_init(self.bytes.ptr, @intCast(self.bytes.len));
                 break :operation if (self.method == .read) uv.uv_fs_read(null, &request, fd, &buffer, 1, if (self.position) |at| @intCast(at) else -1, null) else uv.uv_fs_write(null, &request, fd, &buffer, 1, if (self.position) |at| @intCast(at) else -1, null);
             },
             .readv, .writev => operation: {
@@ -201,21 +220,23 @@ const Job = struct {
         const result = switch (self.method) {
             .stat => try statsValue(&scope, self.stat.?, self.self.bindings, self.bigint),
             .read, .write => read: {
-                var offset: usize = undefined;
-                var length: usize = undefined;
-                var element: usize = undefined;
-                const backing = try scope.own(try engine.checked(viewBacking(self.self, self.target, &offset, &length, &element)));
-                var total: usize = undefined;
-                const data = c.JS_GetArrayBuffer(engine.context, &total, backing);
-                if ((data == null and self.count != 0) or offset > total or length > total - offset or self.from > length or self.count > length - self.from) return error.NativeReadDestinationDetached;
-                if (self.method == .read and self.count != 0) @memcpy(data[offset + self.from ..][0..self.count], self.bytes[0..self.count]);
+                if (self.pinned == null) {
+                    var offset: usize = undefined;
+                    var length: usize = undefined;
+                    var element: usize = undefined;
+                    const backing = try scope.own(try engine.checked(viewBacking(self.self, self.target, &offset, &length, &element)));
+                    var total: usize = undefined;
+                    const data = c.JS_GetArrayBuffer(engine.context, &total, backing);
+                    if ((data == null and self.count != 0) or offset > total or length > total - offset or self.from > length or self.count > length - self.from) return error.NativeReadDestinationDetached;
+                    if (self.method == .read and self.count != 0) @memcpy(data[offset + self.from ..][0..self.count], self.bytes[0..self.count]);
+                }
                 const object = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
                 try scope.put(object, if (self.method == .read) "bytesRead" else "bytesWritten", c.JS_NewFloat64(engine.context, @floatFromInt(self.count)));
                 try scope.put(object, "buffer", self.target);
                 break :read object;
             },
             .readv, .writev => vector: {
-                if (self.method == .readv) {
+                if (self.method == .readv and self.pinned == null) {
                     var consumed: usize = 0;
                     for (self.vectors, 0..) |buffer, index| {
                         const count = @min(@as(usize, @intCast(buffer.len)), self.count - consumed);
@@ -247,6 +268,9 @@ const Job = struct {
         const self: *Job = @alignCast(@fieldParentPtr("task", task));
         const engine = self.self.engine;
         self.releaseReference();
+        // Hub.group.cancel joins before abandoned tasks are destroyed. Normal
+        // task.finish publishes worker completion before pump destroys the Job.
+        if (self.pinned) |*pins| pins.deinit();
         engine.gpa.free(self.bytes);
         engine.gpa.free(self.vectors);
         engine.freeValue(self.views);
@@ -302,16 +326,29 @@ fn invoke(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, meth
         const count = try number(engine, h.arg(args, 2));
         if (!std.math.isFinite(from) or from < 0 or from > @as(f64, @floatFromInt(length)) or @trunc(from) != from or !std.math.isFinite(count) or count < 0 or count > @as(f64, @floatFromInt(length)) - from or @trunc(count) != count) return error.InvalidNativeReadRange;
         job.from = @intFromFloat(from);
-        job.bytes = try engine.gpa.alloc(u8, @intFromFloat(count));
+        if (self.lease_policy) |*policy| {
+            job.pinned = try leases.Set.init(engine, 1);
+            job.pinned.?.slots[0] = try leases.Lease.acquire(policy, backing, offset + job.from, @intFromFloat(count), method == .read);
+        } else job.bytes = try engine.gpa.alloc(u8, @intFromFloat(count));
         job.target = c.JS_DupValue(engine.context, target);
-        if (method == .write) {
+        if (method == .write and self.lease_policy == null) {
             var total: usize = undefined;
             const data = c.JS_GetArrayBuffer(engine.context, &total, backing);
             if ((data == null and job.bytes.len != 0) or offset > total or length > total - offset) return error.InvalidNativeNodeContent;
             if (job.bytes.len != 0) @memcpy(job.bytes, data[offset + job.from ..][0..job.bytes.len]);
         }
         const position = h.arg(args, 3);
-        if (!h.nullish(position)) {
+        if (self.array_buffer_views and c.JS_IsBigInt(position)) {
+            // The private Node frontend validates the full signed-64-bit
+            // BigInt range before admission. Preserve it through C libuv;
+            // existing typed-only owners keep their original numeric route.
+            const minimum = try scope.own(try engine.checked(c.JS_NewBigInt64(engine.context, -1)));
+            const maximum = try scope.own(try engine.checked(c.JS_NewBigInt64(engine.context, std.math.maxInt(i64))));
+            if (scope.truthy(try scope.own(try engine.checked(c.JS_PiBinaryOperator(engine.context, 4, position, minimum)))) or scope.truthy(try scope.own(try engine.checked(c.JS_PiBinaryOperator(engine.context, 6, position, maximum))))) return error.InvalidNativeFilePosition;
+            var at: i64 = undefined;
+            if (c.JS_ToBigInt64(engine.context, &at, position) < 0) return js.capture(engine);
+            if (at >= 0) job.position = @intCast(at);
+        } else if (!h.nullish(position)) {
             const at = try number(engine, position);
             if (std.math.isFinite(at) and at >= 0 and at <= 9007199254740991 and @trunc(at) == at) job.position = @intFromFloat(at);
         }
@@ -323,35 +360,42 @@ fn invoke(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, meth
         job.views = c.JS_DupValue(engine.context, views);
         job.target = c.JS_DupValue(engine.context, buffers);
         job.vectors = try engine.gpa.alloc(uv.uv_buf_t, count);
+        if (self.lease_policy != null) job.pinned = try leases.Set.init(engine, count);
         var total: usize = 0;
         for (job.vectors, 0..) |*buffer, index| {
             const view = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, buffers, @intCast(index))));
             var offset: usize = undefined;
             var length: usize = undefined;
             var element: usize = undefined;
-            _ = try scope.own(try engine.checked(viewBacking(self, view, &offset, &length, &element)));
+            const backing = try scope.own(try engine.checked(viewBacking(self, view, &offset, &length, &element)));
             if (length > std.math.maxInt(c_uint)) return error.InvalidNativeFileVectorLength;
-            buffer.* = uv.uv_buf_init(null, @intCast(length));
+            if (self.lease_policy) |*policy| {
+                const lease = try leases.Lease.acquire(policy, backing, offset, length, method == .readv);
+                job.pinned.?.slots[index] = lease;
+                buffer.* = lease.buffer();
+            } else buffer.* = uv.uv_buf_init(null, @intCast(length));
             total = try std.math.add(usize, total, length);
             try scope.index(views, @intCast(index), view);
         }
-        job.bytes = try engine.gpa.alloc(u8, total);
-        var cursor: usize = 0;
-        for (job.vectors, 0..) |*buffer, index| {
-            const length: usize = @intCast(buffer.len);
-            buffer.base = job.bytes.ptr + cursor;
-            if (method == .writev and length != 0) {
-                const view = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, views, @intCast(index))));
-                var offset: usize = undefined;
-                var view_length: usize = undefined;
-                var element: usize = undefined;
-                const backing = try scope.own(try engine.checked(viewBacking(self, view, &offset, &view_length, &element)));
-                var backing_length: usize = undefined;
-                const data = c.JS_GetArrayBuffer(engine.context, &backing_length, backing);
-                if (data == null or offset > backing_length or view_length > backing_length - offset or length > view_length) return error.InvalidNativeNodeContent;
-                @memcpy(job.bytes[cursor..][0..length], data[offset..][0..length]);
+        if (self.lease_policy == null) {
+            job.bytes = try engine.gpa.alloc(u8, total);
+            var cursor: usize = 0;
+            for (job.vectors, 0..) |*buffer, index| {
+                const length: usize = @intCast(buffer.len);
+                buffer.base = job.bytes.ptr + cursor;
+                if (method == .writev and length != 0) {
+                    const view = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, views, @intCast(index))));
+                    var offset: usize = undefined;
+                    var view_length: usize = undefined;
+                    var element: usize = undefined;
+                    const backing = try scope.own(try engine.checked(viewBacking(self, view, &offset, &view_length, &element)));
+                    var backing_length: usize = undefined;
+                    const data = c.JS_GetArrayBuffer(engine.context, &backing_length, backing);
+                    if (data == null or offset > backing_length or view_length > backing_length - offset or length > view_length) return error.InvalidNativeNodeContent;
+                    @memcpy(job.bytes[cursor..][0..length], data[offset..][0..length]);
+                }
+                cursor += length;
             }
-            cursor += length;
         }
         const position = h.arg(args, 1);
         if (c.JS_IsNumber(position)) {
@@ -467,4 +511,31 @@ pub fn createDescriptor(scope: *h.Scope, fd: uv.uv_file, writable: bool, binding
 pub fn createArrayBufferViewDescriptor(scope: *h.Scope, fd: uv.uv_file, writable: bool, bindings: c.JSValue) !c.JSValue {
     const native_file: std.Io.File = .{ .handle = if (builtin.os.tag == .windows) @ptrCast(uv.uv_get_osfhandle(fd).?) else fd, .flags = .{ .nonblocking = false } };
     return createWithDescriptor(scope, native_file, fd, writable, bindings, true);
+}
+
+// Genuine worker barrier for source-bound pending-I/O tests. These operations
+// are not compiled into application callers and do not change buffer ownership.
+pub fn holdForPendingOwnershipTest(engine: *js.Engine, receiver: c.JSValue) !void {
+    if (!builtin.is_test) @compileError("Pending I/O barrier is test-only");
+    const self = try state(engine, receiver);
+    try self.mutex.lock(engine.native_io.?);
+}
+pub fn releaseForPendingOwnershipTest(engine: *js.Engine, receiver: c.JSValue) void {
+    if (!builtin.is_test) @compileError("Pending I/O barrier is test-only");
+    const raw = c.JS_GetOpaque(receiver, engine.native_env_node_file_class) orelse unreachable;
+    const self: *State = @ptrCast(@alignCast(raw));
+    self.mutex.unlock(engine.native_io.?);
+}
+
+// REVIEW ONLY: existing constructors and the default frontend never select it.
+// The caller supplies an explicit aggregate virtual-address reservation cap.
+pub fn createLeasedArrayBufferViewFile(scope: *h.Scope, file: std.Io.File, writable: bool, bindings: c.JSValue, virtual_limit: usize) !c.JSValue {
+    const policy = leases.Policy.init(scope.engine, virtual_limit) catch |err| {
+        file.close(scope.engine.native_io.?);
+        return err;
+    };
+    const value = try createFile(scope, file, writable, bindings, true);
+    errdefer scope.engine.freeValue(value);
+    (try state(scope.engine, value)).lease_policy = policy;
+    return value;
 }

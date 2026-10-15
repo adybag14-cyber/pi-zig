@@ -1,0 +1,116 @@
+{
+  "read": {
+    "result": {
+      "error": {
+        "name": "Error",
+        "code": "EFAULT",
+        "message": "EFAULT: bad address in system call argument, read"
+      }
+    },
+    "detached": true,
+    "recipient": {
+      "length": 16,
+      "resizable": true,
+      "maxByteLength": 32,
+      "bytes": [
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99
+      ]
+    },
+    "cursor": {
+      "count": 4,
+      "bytes": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    "disk": {
+      "count": 10,
+      "bytes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  },
+  "write": {
+    "result": {
+      "error": {
+        "name": "Error",
+        "code": "UNKNOWN",
+        "message": "UNKNOWN: unknown error, write"
+      }
+    },
+    "detached": true,
+    "recipient": {
+      "length": 16,
+      "resizable": true,
+      "maxByteLength": 32,
+      "bytes": [
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99,
+        99
+      ]
+    },
+    "cursor": {
+      "count": 4,
+      "bytes": [
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "disk": {
+      "count": 10,
+      "bytes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  }
+}

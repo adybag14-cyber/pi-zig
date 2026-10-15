@@ -1,0 +1,17 @@
+const packet={};
+for(const method of ['read','write']){
+ const backing=new ArrayBuffer(16,{maxByteLength:32});new Uint8Array(backing).fill(73);
+ const view=new Uint8Array(backing,2,4);let recipient,pending;
+ const blocker=queueBlocker();
+ try{
+  pending=file[method](view,0,4,null);
+  recipient=backing.transfer();
+  new Uint8Array(recipient).fill(99);
+  nativeCollect();
+ }finally{await releaseBlocker(blocker)}
+ let result;try{const value=await pending;result={count:value.bytesRead??value.bytesWritten,same:value.buffer===view}}catch(error){result={error:{name:error.name,code:error.code??null,message:error.message}}}
+ const cursor=new Uint8Array(4),cursorResult=await file.read(cursor,0,4,null);
+ const disk=new Uint8Array(10),diskResult=await file.read(disk,0,10,0);
+ packet[method]={result,detached:backing.detached,recipient:{length:recipient.byteLength,resizable:recipient.resizable,maxByteLength:recipient.maxByteLength,bytes:Array.from(new Uint8Array(recipient))},cursor:{count:cursorResult.bytesRead,bytes:Array.from(cursor)},disk:{count:diskResult.bytesRead,bytes:Array.from(disk)}};
+}
+await file.close();

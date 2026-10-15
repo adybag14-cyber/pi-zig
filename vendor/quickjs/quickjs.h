@@ -1148,6 +1148,7 @@ JS_EXTERN JSValue JS_GetTypedArrayBuffer(JSContext *ctx, JSValueConst obj,
 /* Pi embedding accessor for normalized ArrayBufferView I/O. Returns an owned
    backing reference, accepts genuine DataViews, and invokes no JS properties.
    This does not replace a Node frontend's observable argument validation. */
+#include "pi-io-lease-api.h"
 JS_EXTERN JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,
                                                 size_t *pbyte_offset,
                                                 size_t *pbyte_length,

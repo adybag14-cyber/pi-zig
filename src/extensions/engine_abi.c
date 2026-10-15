@@ -9,6 +9,8 @@ typedef struct {
     _Atomic size_t references;
     _Atomic size_t used;
     size_t limit;
+    _Atomic size_t virtual_used;
+    size_t virtual_limit;
 } PiMemoryOwner;
 static _Atomic size_t pi_memory_owners;
 typedef struct {
@@ -23,6 +25,7 @@ static int pi_reserve(PiMemoryOwner *owner, size_t size) {
                 memory_order_relaxed, memory_order_relaxed));
     return 1;
 }
+#include "engine_io_mapping.inc"
 void pi_js_release_memory_owner(void *opaque) {
     PiMemoryOwner *owner = opaque;
     if (atomic_fetch_sub_explicit(&owner->references, 1, memory_order_acq_rel) == 1) {
@@ -125,6 +128,8 @@ JSRuntime *pi_js_new_runtime(size_t memory_limit, void **memory_owner) {
     atomic_init(&owner->references, 1);
     atomic_init(&owner->used, 0);
     owner->limit = memory_limit;
+    atomic_init(&owner->virtual_used, 0);
+    owner->virtual_limit = 0;
     atomic_fetch_add_explicit(&pi_memory_owners, 1, memory_order_relaxed);
     const JSMallocFunctions allocator = {
         .js_calloc = pi_calloc, .js_malloc = pi_malloc, .js_free = pi_free,

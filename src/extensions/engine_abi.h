@@ -22,4 +22,6 @@ void pi_js_retain_shared_buffer(void *buffer);
 void pi_js_release_shared_buffer(void *buffer);
 size_t pi_js_native_memory_owners(void);
 size_t pi_js_native_memory_used(void *memory_owner);
+int pi_js_io_map_hooks(void *memory_owner, size_t virtual_limit, JSPiIOMapHooks *out);
+size_t pi_js_native_virtual_reserved(void *memory_owner);
 #endif

@@ -1,0 +1,68 @@
+{
+  "source_files": [
+    {
+      "relative": "src/extensions/engine_abi.c",
+      "sha256": "CBBFD03DA472358C563370FB530E6FF0CC39B79994E4CAAD0331C896E40CA1E7"
+    },
+    {
+      "relative": "src/extensions/engine_abi.h",
+      "sha256": "786F76B7C2A29729EE84A1BD834925B48A33199226BBC25458770CF254BF5382"
+    },
+    {
+      "relative": "src/extensions/engine_io_mapping.inc",
+      "sha256": "400A02C9FDB7CF110EA7D88496299538FAAA10036F3DF357C1FE11EF1B54ADB2"
+    },
+    {
+      "relative": "src/extensions/native_env_io_lease.zig",
+      "sha256": "EE19DDFF33A063F77556ED2F1D473523E91809E5C36E1FC155A53E349F493C5F"
+    },
+    {
+      "relative": "src/extensions/native_env_node_file_io.zig",
+      "sha256": "BE1E890573F7452AFE6616F72047A96CBC2FE52F4793020F548E8AC5A2F48648"
+    },
+    {
+      "relative": "src/extensions/native_env_node_file_frontend.zig",
+      "sha256": "68648EEE0761F1C609E8EDF2BCD4B4EB348FB4650AB074285FB4E1B032E4AFB2"
+    },
+    {
+      "relative": "src/extensions/native_env_node_file_validation.zig",
+      "sha256": "9A73A2374FA77DE3239224253CD62EDBF421B509082932BB41F7BB72AD2D4E7C"
+    },
+    {
+      "relative": "vendor/quickjs/quickjs.c",
+      "sha256": "556038212F8C3E8D1BB5006C0EBC3A703B405CE665B225CF48C1C41EF9C43BF2"
+    },
+    {
+      "relative": "vendor/quickjs/quickjs.h",
+      "sha256": "44F37562373C3907AA8C8E7F46296B3AB6F7DB2D2870BD0E87508334248A8E28"
+    },
+    {
+      "relative": "vendor/quickjs/pi-io-lease-api.h",
+      "sha256": "AA65AD4C2ADFF20F32818CB369017706D98E413D27EB882FC09E6A95C1A834FB"
+    },
+    {
+      "relative": "vendor/quickjs/pi-io-lease.inc",
+      "sha256": "8BA9301BB4B39C28F46BCC6F2A462FCE92D06AD6BCE20AF631720165FCA7E55D"
+    },
+    {
+      "relative": "src/native_env_io_lease_transition_test.zig",
+      "sha256": "D2427445A8E587116A2F75EB9991207A0ED0C69631D5CF5D02B0DFEC87B4F8D8"
+    },
+    {
+      "relative": "src/native_env_filehandle_transfer_source_test.zig",
+      "sha256": "F25D071539465ED882394FA364A5430C9722112103A2769917A315D34A5B0788"
+    },
+    {
+      "relative": "src/extensions/fixtures/env-node-rab-same-transfer-source-24.input.txt",
+      "sha256": "BDA426CEFB1C491C6278F6557C5B1937E1302876BB6E376D3BC871E94852A68E"
+    },
+    {
+      "relative": "src/extensions/fixtures/env-node-rab-same-transfer-source-24.json",
+      "sha256": "E0509273F3B532E9C5F6B973623F3FFF4380FAFB1315FCA8C460C27987620911"
+    }
+  ],
+  "build_target_slice_sha256": "4B5D54312B87DFCDE2FB0CE590774EA87342026FF82057A6D4DB2BD9259FF187",
+  "qualification_source_tree": "C:/Users/adyba/pi-zig-env-node-ownership-f232312-20261014",
+  "publication_tree": "C:/Users/adyba/pi-zig-env-rab-transfer-publish-f232312-20261015",
+  "publication_exact_head_runtime_tested": false
+}
