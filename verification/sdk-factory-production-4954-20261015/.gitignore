@@ -1,0 +1,5 @@
+# Retained raw duplicates and caller-owned sandbox from the accepted Source27
+# owner. Public golden, full-prehash archive, caller pins and posthash are tracked.
+sandbox/
+sdk-factory-source27-first-c65ead97-20261015-output.json
+sdk-factory-source27-first-c65ead97-20261015-prehash.json
