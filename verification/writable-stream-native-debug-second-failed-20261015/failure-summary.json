@@ -1,0 +1,20 @@
+{
+  "correction": "Use explicit [_]Group typed array in installation iteration",
+  "compiler_files": 19546,
+  "owned_root_absent": true,
+  "candidate": "3e64314f4c7dfcce13a26d95d9868a1901c9cdbd",
+  "diagnostic": "else prong required when switching on @EnumLiteral from heterogeneous Group tuple",
+  "compile_pid": 78700,
+  "full_pi_qualified": false,
+  "candidate_files": 7082,
+  "node_files": 1774,
+  "runtime_launched": false,
+  "allocation_coverage": "std.testing.allocator leak checks and real GC; no fault injection target",
+  "static_audit": "Every switch and enum conversion inspected; no other heterogeneous enum iteration remains; direct native import paths verified",
+  "public_activation": false,
+  "compile_exit_code": 1,
+  "source56_unchanged": true,
+  "vendor_files": 1316,
+  "compile_status": "failed",
+  "fullpost0": true
+}

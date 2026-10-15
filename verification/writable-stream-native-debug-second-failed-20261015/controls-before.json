@@ -1,0 +1,62 @@
+[
+  {
+    "sha256": "3BF2337A23AA0918A2AFB6C4DF0A4FB1A02B0EDA5A5A04FBF90F536B55FCC597",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\writable-stream-native-debug-second-20261015\\Run-WritableNativePair.ps1"
+  },
+  {
+    "sha256": "29E1CE752523A182EFED5B06F3FA16A15379BEDC19CF2A4022A1321F30F84FC6",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\writable-stream-native-debug-second-20261015\\Invoke-OwnedNativeJob.ps1"
+  },
+  {
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json"
+  },
+  {
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json"
+  },
+  {
+    "sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-node-builtin-authorities.json"
+  },
+  {
+    "sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+    "path": "C:\\Program Files\\Git\\cmd\\git.exe"
+  },
+  {
+    "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+    "path": "C:/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-windows-0.16.0/zig.exe"
+  },
+  {
+    "sha256": "F4A522CD9964047A74D105B7D319BE08D8A552EE7968D64191543B0DF594113A",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\verification\\writable-stream-node24-source56-captured-20261015\\validation.json"
+  },
+  {
+    "sha256": "3D5AC9FBB3E6F776EFB3D8DC53D875EBA80A67C8F9DD9D03DF55E65B286C7C13",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\verification\\writable-stream-node24-source56-captured-20261015\\full-posthash.json"
+  },
+  {
+    "sha256": "7A75DABC08AADBD18D48FBB3435F94EDDC5D8ABEAF22EC8F9B35346F17EA587D",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\verification\\writable-stream-node24-source56-captured-20261015\\actual-builtin-authority.json"
+  },
+  {
+    "sha256": "3FEA863402BAF87B29D34AC43DB6D32B295BE0E558DC9036B9D50A7E4C24F278",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\verification\\writable-stream-node24-source56-captured-20261015\\Run-WritableStreamNode24Source.ps1"
+  },
+  {
+    "sha256": "C38BAE6AD467FD8B52A368692A350DE4B2244DFC74E1AFA4FD01F33B104352EA",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\verification\\writable-stream-node24-source56-captured-20261015\\Invoke-OwnedEeSourceJob-20261012.ps1"
+  },
+  {
+    "sha256": "C0CC1020E1E1A39454F178B374FC4ED9635169EAD067E27179F9C033C62D9B3B",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\verification\\writable-stream-node24-source56-captured-20261015\\controls-before.json"
+  },
+  {
+    "sha256": "05E4F14AA788CCB6605DB9B167A1CCFBCB708708A64E8EF6E835BE7C03C8839F",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\writable-stream-native-debug-second-20261015\\whole-candidate-before.json"
+  },
+  {
+    "sha256": "5276771F92839CC0289C59EB6CF66F5B4FF9E217223CB3F5343FD96BE2E4C0E4",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\writable-stream-native-debug-second-20261015\\whole-vendor-before.json"
+  }
+]

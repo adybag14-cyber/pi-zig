@@ -800,7 +800,7 @@ pub fn install(e: *Engine) !void {
     const symbol = try s.get(try s.global("Symbol"), "toStringTag");
     const tag = c.JS_ValueToAtom(e.context, symbol);
     defer c.JS_FreeAtom(e.context, tag);
-    inline for (.{ Group.stream, .writer, .controller }) |group| {
+    inline for ([_]Group{ .stream, .writer, .controller }) |group| {
         var id: c.JSClassID = 0;
         _ = c.JS_NewClassID(e.runtime, &id);
         const definition: c.JSClassDef = .{ .class_name = groupName(group).ptr, .finalizer = switch (group) {

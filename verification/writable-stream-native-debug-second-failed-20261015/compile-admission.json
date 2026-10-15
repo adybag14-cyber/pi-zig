@@ -1,0 +1,21 @@
+{
+  "slot": 3,
+  "candidate": "3e64314f4c7dfcce13a26d95d9868a1901c9cdbd",
+  "jobs": 1,
+  "other_native_roots": [
+    {
+      "ProcessId": 73796,
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-highlight-core-b45 -Doptimize=Debug -j1 --test-timeout 120s --summary all"
+    }
+  ],
+  "phase": "compile",
+  "free_kib": 21897516,
+  "test_timeout_seconds": 120,
+  "status": "admitted",
+  "maximum_native_roots": 4,
+  "compile_outer_seconds": 1320,
+  "required_kib": 16777216,
+  "host_await_seconds": 10,
+  "runtime_outer_seconds": 300,
+  "observed_utc": "2026-10-15T22:10:04.0233123+00:00"
+}
