@@ -1,0 +1,165 @@
+//! Source EventStream's ordinary live fields and native AsyncGenerator body.
+//! This successor is source-only until its surface/queue/provider gates run.
+const em = @import("engine.zig");
+const js = @import("native_js_values.zig");
+const sdk = @import("native_sdk.zig");
+const Scope = @import("native_models_stream_scope.zig").Scope;
+const fifo = @import("native_event_stream_fifo.zig");
+const gen = @import("native_async_generator.zig");
+const c = em.c;
+const Method = enum(c_int) { push, end, result, iterate };
+const PromisePurpose = enum(c_int) { final, waiting };
+fn argument(args: []const c.JSValue, index: usize) c.JSValue {
+    return if (args.len > index) args[index] else c.pi_js_undefined();
+}
+fn executor(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    return executePromise(engine, roots[0], @enumFromInt(magic), if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
+}
+fn executePromise(engine: *em.Engine, receiver: c.JSValue, purpose: PromisePurpose, resolve: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    switch (purpose) {
+        .final => try scope.set(receiver, "resolveFinalResult", resolve),
+        .waiting => _ = try scope.invoke(try scope.get(receiver, "waiting"), "enqueue", &.{resolve}),
+    }
+    return c.pi_js_undefined();
+}
+fn promise(engine: *em.Engine, receiver: c.JSValue, comptime purpose: PromisePurpose) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    // Source's `new Promise` is a live global lookup; Await itself subsequently
+    // uses QuickJS's intrinsic PromiseResolve inside the actual generator.
+    const promise_constructor = try scope.global("Promise");
+    var roots = [_]c.JSValue{receiver};
+    const callback = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, executor, "", 1, @intFromEnum(purpose), roots.len, &roots)));
+    var args = [_]c.JSValue{callback};
+    return engine.checked(c.JS_CallConstructor(engine.context, promise_constructor, args.len, &args));
+}
+pub fn initialize(engine: *em.Engine, receiver: c.JSValue, queue_constructor: c.JSValue, args: []const c.JSValue) !void {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    try scope.put(receiver, "queue", try scope.own(try fifo.create(engine, queue_constructor)));
+    try scope.put(receiver, "waiting", try scope.own(try fifo.create(engine, queue_constructor)));
+    try scope.put(receiver, "done", c.pi_js_bool(engine.context, 0));
+    // Type-only class fields are initialized before the constructor body.
+    inline for (.{ "finalResultPromise", "resolveFinalResult", "isComplete", "extractResult" }) |name| try scope.put(receiver, name, c.pi_js_undefined());
+    try scope.set(receiver, "isComplete", argument(args, 0));
+    try scope.set(receiver, "extractResult", argument(args, 1));
+    try scope.set(receiver, "finalResultPromise", try scope.own(try promise(engine, receiver, .final)));
+}
+fn iterationResult(scope: *Scope, value: c.JSValue, done: bool) !c.JSValue {
+    const result = try scope.object();
+    try scope.put(result, "value", value);
+    try scope.put(result, "done", c.pi_js_bool(scope.engine.context, @intFromBool(done)));
+    return result;
+}
+pub fn push(engine: *em.Engine, receiver: c.JSValue, value: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    if (scope.truthy(try scope.get(receiver, "done"))) return c.pi_js_undefined();
+    if (scope.truthy(try scope.invoke(receiver, "isComplete", &.{value}))) {
+        try scope.set(receiver, "done", c.pi_js_bool(engine.context, 1));
+        // The resolver member is evaluated before the extractResult argument.
+        const resolve = try scope.get(receiver, "resolveFinalResult");
+        const final = try scope.invoke(receiver, "extractResult", &.{value});
+        _ = try scope.call(resolve, receiver, &.{final});
+    }
+    const waiter = try scope.invoke(try scope.get(receiver, "waiting"), "dequeue", &.{});
+    if (scope.truthy(waiter)) {
+        _ = try scope.call(waiter, c.pi_js_undefined(), &.{try iterationResult(&scope, value, false)});
+    } else {
+        _ = try scope.invoke(try scope.get(receiver, "queue"), "enqueue", &.{value});
+    }
+    return c.pi_js_undefined();
+}
+fn waiting(engine: *em.Engine, receiver: c.JSValue) !bool {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    return scope.positive(try scope.get(try scope.get(receiver, "waiting"), "length"));
+}
+pub fn end(engine: *em.Engine, receiver: c.JSValue, value: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    try scope.set(receiver, "done", c.pi_js_bool(engine.context, 1));
+    if (!c.JS_IsUndefined(value)) _ = try scope.invoke(receiver, "resolveFinalResult", &.{value});
+    while (try waiting(engine, receiver)) {
+        var row: Scope = .{ .engine = engine };
+        defer row.deinit();
+        const waiter = try row.invoke(try row.get(receiver, "waiting"), "dequeue", &.{});
+        _ = try row.call(waiter, c.pi_js_undefined(), &.{try iterationResult(&row, c.pi_js_undefined(), true)});
+    }
+    return c.pi_js_undefined();
+}
+fn advance(engine: *em.Engine, receiver: c.JSValue, completion: gen.Completion, input: c.JSValue) !gen.Action {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    switch (completion) {
+        .returned => return .{ .complete = c.JS_DupValue(engine.context, input) },
+        .thrown, .rejected => return .{ .thrown = c.JS_DupValue(engine.context, input) },
+        .fulfilled => {
+            if (scope.truthy(try scope.get(input, "done"))) return .{ .complete = c.pi_js_undefined() };
+            return .{ .yielded = c.JS_DupValue(engine.context, try scope.get(input, "value")) };
+        },
+        .start, .next => {},
+    }
+    if (try scope.positive(try scope.get(try scope.get(receiver, "queue"), "length"))) {
+        // Reload queue exactly as the Source member expression does.
+        return .{ .yielded = c.JS_DupValue(engine.context, try scope.invoke(try scope.get(receiver, "queue"), "dequeue", &.{})) };
+    }
+    if (scope.truthy(try scope.get(receiver, "done"))) return .{ .complete = c.pi_js_undefined() };
+    return .{ .awaited = try promise(engine, receiver, .waiting) };
+}
+pub fn iterator(engine: *em.Engine, receiver: c.JSValue, prototype: c.JSValue) !c.JSValue {
+    // Calling an async-generator method captures any receiver without entering
+    // the body. Property access and receiver failures occur on first next.
+    return gen.create(engine, receiver, advance, prototype);
+}
+fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    return dispatch(engine, receiver, @enumFromInt(magic), if (argc > 0) argv[0] else c.pi_js_undefined(), roots) catch |err| sdk.fail(engine, err);
+}
+fn dispatch(engine: *em.Engine, receiver: c.JSValue, operation: Method, value: c.JSValue, roots: [*c]c.JSValue) !c.JSValue {
+    return switch (operation) {
+        .push => push(engine, receiver, value),
+        .end => end(engine, receiver, value),
+        .result => js.get(engine, receiver, "finalResultPromise"),
+        .iterate => iterator(engine, receiver, roots[0]),
+    };
+}
+fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    const instance = try @import("native_class.zig").object(engine, target);
+    errdefer engine.freeValue(instance);
+    try initialize(engine, instance, roots[0], args);
+    return instance;
+}
+pub fn constructor(engine: *em.Engine) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const prototype = try scope.object();
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    inline for (.{ Method.push, Method.end }) |operation| {
+        const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, method, @tagName(operation), 1, @intFromEnum(operation), 0, null));
+        if (c.JS_DefinePropertyValueStr(engine.context, prototype, @tagName(operation), function, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    }
+    const generator_parent = try scope.own(try gen.prototype(engine));
+    const generator_prototype = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, generator_parent)));
+    var roots = [_]c.JSValue{generator_prototype};
+    const iterate = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, method, "[Symbol.asyncIterator]", 0, @intFromEnum(Method.iterate), roots.len, &roots)));
+    if (c.JS_SetPrototype(engine.context, iterate, try scope.own(try gen.functionPrototype(engine))) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, iterate, "prototype", c.JS_DupValue(engine.context, generator_prototype), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    const symbol = try scope.own(try engine.checked(c.JS_GetAsyncIteratorSymbol(engine.context)));
+    const atom = c.JS_ValueToAtom(engine.context, symbol);
+    if (atom == c.JS_ATOM_NULL) return js.capture(engine);
+    defer c.JS_FreeAtom(engine.context, atom);
+    if (c.JS_DefinePropertyValue(engine.context, prototype, atom, c.JS_DupValue(engine.context, iterate), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    const result = try engine.checked(c.JS_NewCFunctionData2(engine.context, method, "result", 0, @intFromEnum(Method.result), 0, null));
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "result", result, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    return @import("native_class.zig").constructor(engine, "EventStream", 2, prototype, construct, &.{try scope.own(try fifo.constructor(engine))});
+}
