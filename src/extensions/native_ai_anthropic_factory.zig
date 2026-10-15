@@ -95,7 +95,7 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, model: c.JSValue, input
     try scope.put(owner, "sawStop", c.pi_js_bool(engine.context, 0));
     const key = try v.optional(&scope, effective, "apiKey");
     const client = try v.optional(&scope, effective, "client");
-    const oauth = !scope.truthy(client) and scope.truthy(key) and scope.truthy(try scope.invoke(key, "includes", &.{try scope.text("sk-ant-oat")}));
+    const oauth = !scope.truthy(client) and !try v.eq(&scope, try scope.get(model, "provider"), "github-copilot") and scope.truthy(key) and scope.truthy(try scope.invoke(key, "includes", &.{try scope.text("sk-ant-oat")}));
     try scope.put(owner, "oauth", c.pi_js_bool(engine.context, @intFromBool(oauth)));
     const tools = try scope.own(try @import("native_agent_tool_changes.zig").currentTools(engine, try scope.get(context, "messages")));
     const decoder = try scope.own(try @import("native_ai_anthropic_decode.zig").create(engine, model, outer, try scope.get(dependencies, "json"), oauth, tools));
