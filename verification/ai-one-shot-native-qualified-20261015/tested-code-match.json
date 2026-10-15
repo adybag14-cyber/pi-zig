@@ -1,0 +1,7 @@
+{
+  "changed_original_files": 0,
+  "new_files_scope": "Proof only; all original tested files unchanged",
+  "original_files": 6147,
+  "preserved_negative_proof": "verification/ai-one-shot-native-20261015",
+  "tested_head": "b0b97b2dea55700aca6746c074aa37d0ae5095c8"
+}
