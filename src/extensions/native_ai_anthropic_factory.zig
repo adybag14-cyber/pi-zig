@@ -26,7 +26,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
                 return stream(host, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined(), if (args.len > 2) args[2] else c.pi_js_undefined(), index == 1);
             }
         };
-        try scope.put(result, name, try scope.own(try @import("native_node_function.zig").create(engine, name, 3, Adapter.call, &.{dependencies})));
+        try scope.put(result, name, try scope.own(try @import("native_node_function.zig").createArrow(engine, name, 3, Adapter.call, &.{dependencies})));
     }
     return c.JS_DupValue(engine.context, result);
 }
@@ -176,7 +176,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
             return c.JS_DupValue(host.context, try perform(&row, roots[0]));
         }
     };
-    const callback = try scope.own(try @import("native_node_function.zig").create(scope.engine, "", 0, Adapter.call, &.{owner}));
+    const callback = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 0, Adapter.call, &.{owner}));
     const retry = try scope.own(try @import("native_ai_provider_retry_request.zig").create(scope.engine));
     const options = try scope.get(owner, "options");
     const retry_options = try scope.object();

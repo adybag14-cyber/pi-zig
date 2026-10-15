@@ -23,8 +23,8 @@ pub fn hasVision(scope: *Scope, messages: c.JSValue) !c.JSValue {
             return c.pi_js_bool(engine.context, 0);
         }
     };
-    const block = try scope.own(try @import("native_node_function.zig").create(scope.engine, "", 1, Adapter.block, &.{}));
-    const predicate = try scope.own(try @import("native_node_function.zig").create(scope.engine, "", 1, Adapter.message, &.{block}));
+    const block = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Adapter.block, &.{}));
+    const predicate = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Adapter.message, &.{block}));
     return scope.invoke(messages, "some", &.{predicate});
 }
 pub fn build(scope: *Scope, messages: c.JSValue, has_images: c.JSValue) !c.JSValue {

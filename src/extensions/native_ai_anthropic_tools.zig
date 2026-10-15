@@ -19,7 +19,7 @@ pub fn converter(engine: *v.em.Engine, oauth: bool, compatibility: c.JSValue, ca
             return convert(host, if (args.len > 0) args[0] else c.pi_js_undefined(), c.JS_ToBool(host.context, roots[0]) == 1, roots[1], roots[2], c.JS_ToBool(host.context, roots[3]) == 1);
         }
     };
-    return @import("native_node_function.zig").create(engine, "convertToolDefinitions", 1, Adapter.call, &.{ c.pi_js_bool(engine.context, @intFromBool(oauth)), compatibility, cache, c.pi_js_bool(engine.context, @intFromBool(disabled)) });
+    return @import("native_node_function.zig").createArrow(engine, "convertToolDefinitions", 1, Adapter.call, &.{ c.pi_js_bool(engine.context, @intFromBool(oauth)), compatibility, cache, c.pi_js_bool(engine.context, @intFromBool(disabled)) });
 }
 fn strict(scope: *Scope, tool: c.JSValue, supported: bool, disabled: bool) !bool {
     const config = try scope.get(tool, "constrainedSampling");
