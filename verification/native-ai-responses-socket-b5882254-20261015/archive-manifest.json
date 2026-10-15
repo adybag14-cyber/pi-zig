@@ -1,0 +1,77 @@
+[
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-absences-before.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-absences-before.json",
+    "sha256": "DADD765AA9AB83157D6F39BAADB16C1D630E7017141361E6521E376122EE6E85"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-admission.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-admission.json",
+    "sha256": "E0FF0A0E32BF898A3301E083C18DF7E56F0056B9A3BDB8B923C7E0071566B71A"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-compile.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-compile.json",
+    "sha256": "26CCCA512D14CCA8965076EB7BED6F65C7EC68B2C4C86D0653E4D93B4366A034"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-compile.stderr.log",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-compile.stderr.log",
+    "sha256": "EA47B846F09F1F4CCCB8AE8B9E4BB43DE1A7C83525F98F93CD09CE079A9F8B81"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-compile.stdout.log",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-controls-before.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-controls-before.json",
+    "sha256": "10D06064066FEC0DA81D2226AF18A4BB04646A18F0CB1061ED5DAC6DDFB8BB10"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-owner-absence.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-owner-absence.json",
+    "sha256": "723AEEBC86612697024BF5E90DD896036D50FEDE32C325BE545570FC892290AC"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-posthash.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-posthash.json",
+    "sha256": "829DB6E451B6C787B09975498BFB538842006F0FEACC7066F579AB842D5783C4"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-references-before.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-references-before.json",
+    "sha256": "1784CFD2D1C60DAA140974838B7EA2181DDF34B073FA60E7CAD58FD82707B0E6"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-runtime-admission.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-runtime-admission.json",
+    "sha256": "424A3DBBCD07771F9B5E3EB493A09637CDABE33EE70132B3D959F13195160F6E"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-runtime.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-runtime.json",
+    "sha256": "608BE816429E6D2C3E8D5D6A857D0419D89619AA5108B367859240B33B991A57"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-runtime.stderr.log",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-runtime.stderr.log",
+    "sha256": "10D62DB7E99D940B9058F64ADA82E0ED2602424343620E499D224246FABE88DE"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-runtime.stdout.log",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-ai-responses-socket-b5882254-debug-first-20261015-source-before.json",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-responses-socket-b5882254-debug-first-20261015-source-before.json",
+    "sha256": "DA3A07837EDF7494699AEF5430B00B668E4B6648D77B3F41D4631C878EE974E3"
+  },
+  {
+    "file": "Run-AiResponsesSocketB588FullPair-20261015.ps1",
+    "source_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiResponsesSocketB588FullPair-20261015.ps1",
+    "sha256": "3D01BE22D0D75FF2F6C072B78D5BC3057062EF7DCA153E67F931E6128481C1CE"
+  }
+]

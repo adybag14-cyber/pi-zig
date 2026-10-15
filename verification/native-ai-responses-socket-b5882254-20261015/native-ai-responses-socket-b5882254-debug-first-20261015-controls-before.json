@@ -1,0 +1,90 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-admission.json",
+    "sha256": "5D481C1FA50B265DF3B027A218FD6E743F0DB4FACA14B053A778E0BDB16BC006"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-extra-before.json",
+    "sha256": "781A7F99A8604910E1BA1611A790A4AEFE12580C8A9E92D559993512C45C5B5F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-output.json",
+    "sha256": "ED00FFEF9641555184F3244E68138DF6EDCA4449FC35814E6E0E31E7A61CE1DE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-posthash.json",
+    "sha256": "32CF8766C0BD6AC229145975E9C3ADAEA045C8E54432806FDD44DAF8A8927DAE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015.json",
+    "sha256": "DCF3A9410282A0C8810DABE9D4EAFF7F32E70171562A7EF1D7AFB80B229BA896"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015.stderr.log",
+    "sha256": "E472C2B79E56188E3B8BF4C3B70BD33E1100298F70A538092D6A49D97DB92D97"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015.stdout.log",
+    "sha256": "0862FFD6D8CA77072E837229FA4A5917BA068100A4CBDE60D1DC169497DD5AE2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-source-row-identity-20261015.json",
+    "sha256": "341446C06A4EB3D5B459231C3A0934F785ECB670DF200C3AD75822FF7132E00A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-successor-raw-differences-20261015.json",
+    "sha256": "949A05FCDFBDC885FF80D5FACBA0D00B0C1F9C5C2824F0E88E07792A68CA25FC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015\\verification\\native-codex-socket10-source-20261015\\Run-AiCodexSocket10OwnedTimersSource-20261015.ps1",
+    "sha256": "8AF906DEB371D88D2C7A3C947349A9D8F6BE0F1F82388D5F8C78D899B09CB0B2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015\\verification\\native-codex-socket10-source-20261015\\source-driver-owned-timers.mjs.txt",
+    "sha256": "3488E3B6345A8B8692F0470F86E337EAB89824F016FC51CE67C4F774C2146E47"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-output.json",
+    "sha256": "ED00FFEF9641555184F3244E68138DF6EDCA4449FC35814E6E0E31E7A61CE1DE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-posthash.json",
+    "sha256": "32CF8766C0BD6AC229145975E9C3ADAEA045C8E54432806FDD44DAF8A8927DAE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiCodexSocket10OwnedTimersSource-20261015.ps1",
+    "sha256": "8AF906DEB371D88D2C7A3C947349A9D8F6BE0F1F82388D5F8C78D899B09CB0B2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiResponsesSocketB588FullPair-20261015.ps1",
+    "sha256": "3D01BE22D0D75FF2F6C072B78D5BC3057062EF7DCA153E67F931E6128481C1CE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-codex-socket-owned-timers-capture-20261015.mjs",
+    "sha256": "3488E3B6345A8B8692F0470F86E337EAB89824F016FC51CE67C4F774C2146E47"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE"
+  }
+]

@@ -1,0 +1,43 @@
+{
+  "candidate": "b58822549ce99645cfe137f0b48148cfd2ea57da",
+  "slot": 1,
+  "source": 6145,
+  "source_after": 6145,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "references": [
+    {
+      "group": "original_source",
+      "changed": [],
+      "drift": 0,
+      "count": 1967
+    },
+    {
+      "group": "dependencies",
+      "changed": [],
+      "drift": 0,
+      "count": 31064
+    },
+    {
+      "group": "node_tools",
+      "changed": [],
+      "drift": 0,
+      "count": 1774
+    },
+    {
+      "group": "vendor",
+      "changed": [],
+      "drift": 0,
+      "count": 1316
+    }
+  ],
+  "absences": 84,
+  "absence_drift": 0,
+  "controls": 22,
+  "control_drift": 0,
+  "compile": "passed",
+  "runtime": "passed",
+  "source_lifecycle_qualified": false,
+  "completed_utc": "2026-10-15T20:12:22.1136724+00:00"
+}

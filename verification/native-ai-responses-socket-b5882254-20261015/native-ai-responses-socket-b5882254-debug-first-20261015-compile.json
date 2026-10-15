@@ -1,0 +1,16 @@
+{
+  "name": "native-ai-responses-socket-b5882254-debug-first-20261015-compile",
+  "pid": 7936,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-ai-responses build-native-ai-codex-socket-wire -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T20:06:41.9480873Z",
+  "launched_utc": "2026-10-15T20:06:41.9446123+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-native-responses-ws-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T20:11:17.2112478+00:00"
+}

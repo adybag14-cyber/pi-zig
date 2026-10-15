@@ -1,0 +1,25 @@
+{
+  "checked_utc": "2026-10-15T20:13:23.2934959+00:00",
+  "owners": [
+    {
+      "phase": "compile",
+      "owner_pid": 7936,
+      "owner_created_utc": "2026-10-15T20:06:41.9480873Z",
+      "owner_executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "owner_status": "passed",
+      "original_owner_live": false,
+      "current": null,
+      "process_action": "none"
+    },
+    {
+      "phase": "runtime",
+      "owner_pid": 50620,
+      "owner_created_utc": "2026-10-15T20:11:47.0874838Z",
+      "owner_executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "owner_status": "passed",
+      "original_owner_live": false,
+      "current": null,
+      "process_action": "none"
+    }
+  ]
+}
