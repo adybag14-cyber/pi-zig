@@ -232,12 +232,16 @@ fn fail(engine: *em.Engine, err: anyerror) c.JSValue {
 }
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, kind: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const result = operation(&scope, captures[0], receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, @enumFromInt(kind)) catch |err| return fail(engine, err);
     return c.JS_DupValue(context, result);
 }
 fn ordinary(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     var kind: i32 = 0;
@@ -250,6 +254,8 @@ fn function(scope: *Scope, owner: c.JSValue, name: [*:0]const u8, length: c_int,
     return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, callback, name, length, @intFromEnum(kind), 1, &captures)));
 }
 fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const prototype = try scope.get(target, "prototype");

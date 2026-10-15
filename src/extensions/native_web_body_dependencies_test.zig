@@ -60,6 +60,14 @@ test "Web Body dependency genuine private brands immutable data and explicit mis
         \\const b=new Blob(['bytes']),f=new File([b],'name.txt',{lastModified:123,type:'TEXT/PLAIN'});if(!(b instanceof Blob)||!(f instanceof Blob)||!(f instanceof File)||f.name!=='name.txt'||f.lastModified!==123||f.type!=='text/plain')throw Error('actual Blob/File hierarchy');let missing;try{b.stream()}catch(e){missing=e}if(!missing?.message.includes('NativeWebReadableStreamUnavailable'))throw Error('stream dependency must fail explicitly');
     , "native-body-dependency-brands.mjs");
 }
+test "Web Body dependency thrown Blob File FormData values reach guest catch without diagnostic coercion" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    try evaluate(engine,
+        \\let calls=0;const marker={toString(){calls++;throw 'unexpected diagnostic'}};const data=new FormData();data.append('a','one');
+        \\for(const operation of [()=>new Blob({[Symbol.iterator](){throw marker}}),()=>new File([],{toString(){throw marker}}),()=>data.append({toString(){throw marker}},'value'),()=>data.forEach(()=>{throw marker})]){let caught;try{operation()}catch(e){caught=e}if(caught!==marker||calls!==0)throw Error('Body dependency changed guest exception identity/coercion')}
+    , "web-body-dependency-caught-identity.mjs");
+}
 const ownership_program =
     \\const b=new Blob(['bytes',new Uint8Array([65,66])],{type:'TEXT/PLAIN'}),f=new File([b],'name',{lastModified:123}),fd=new FormData();fd.append('file',f);fd.append('same','one');fd.append('same','two');fd.set('same','replacement');const i=fd.entries();i.next();fd.delete('same');i.next();await b.text();await b.arrayBuffer();await f.bytes();await b.slice(1,4).text();
 ;
