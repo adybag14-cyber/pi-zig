@@ -62,3 +62,29 @@ The official comparison records all 1783 package files unchanged from ae7 and
 five catalog publication-tool changes. Retained component proofs keep their
 original Source heads. The new upstream publication compatibility check and
 the combined complete application remain unqualified.
+
+## Installed stream and further component integration
+
+The combined source now retains the qualified UI overlay proof `3b35447b`,
+WebCrypto proof `5c4a89e0`, shared OAuth callback proof `d3194551`, and
+image/classifier plus body collector proof `99b9b075`. The retry sleep promise
+is retained in its caller Scope, preserving the clean teardown demonstrated
+by the complete Source100 native replay. These separately qualified components
+do not by themselves qualify their combined application lifecycle.
+
+The actual installed EventStream replacement and its preserved production
+Source27/AgentLoop636/639 and 29-test proof come from `f5bab0c2`. Source arrays
+and live values replace the former opaque queue, including result-only queues
+larger than 64 events. The central native method helper retains the tested
+creation realm and suppresses inner exception diagnostics until guest catch
+handling. No C generator or interpreter bytes were replaced during this intake.
+
+The fresh ae7 Source51 packet and strict native replay target are retained from
+`9ae8c621`. Its expected thinking DROP semantics are captured from the actual
+new upstream source; historical JSON39 proofs retain their original heads.
+The new Source51 target is not yet qualified. The generator target selects the
+renamed genuine long-queue test explicitly, preserving its selected coverage.
+
+Provider SDK producer generators still require their own layered timing gates.
+The application factory, the complete public stream/HTTP surface, all providers
+together, latest full-version qualification and public activation remain open.
