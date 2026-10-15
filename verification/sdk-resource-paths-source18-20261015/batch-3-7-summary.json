@@ -1,0 +1,216 @@
+{
+  "controls": 9,
+  "completed_utc": "2026-10-15T18:11:41.8085056+00:00",
+  "candidate_drift": 0,
+  "control_drift": 0,
+  "failure": null,
+  "tool_drift": 0,
+  "status": "passed",
+  "end_shard": 7,
+  "candidate": 5604,
+  "loader_total": 6246,
+  "completed_shards": 5,
+  "tools": 19546,
+  "reference_drift": 0,
+  "start_shard": 3,
+  "results": [
+    {
+      "ranges": [
+        {
+          "start": 2342,
+          "total": 6246,
+          "shards": 8,
+          "shard": 3,
+          "complete": true,
+          "end": 3123,
+          "label": "sdk-resourcepaths5ab"
+        },
+        {
+          "start": 100,
+          "total": 267,
+          "shards": 8,
+          "shard": 3,
+          "complete": true,
+          "end": 133,
+          "label": "sdk-bindings5ab"
+        }
+      ],
+      "name": "sdk-resource-paths-runtime-shardedresume-debug-second-20261015-shard-3-of-8",
+      "owner": {
+        "name": "sdk-resource-paths-runtime-shardedresume-debug-second-20261015-shard-3-of-8",
+        "pid": 64200,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-resource-paths test-native-sdk-session-bindings -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+        "command_line_source": "live Win32_Process",
+        "created_utc": "2026-10-15T18:03:42.1041564Z",
+        "launched_utc": "2026-10-15T19:03:42.1003376+01:00",
+        "identity_captured": true,
+        "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+        "working_directory": "C:/Users/adyba/pi-zig-sdk-bindings-20261015",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-15T19:04:44.9722352+01:00"
+      }
+    },
+    {
+      "ranges": [
+        {
+          "start": 3123,
+          "total": 6246,
+          "shards": 8,
+          "shard": 4,
+          "complete": true,
+          "end": 3903,
+          "label": "sdk-resourcepaths5ab"
+        },
+        {
+          "start": 133,
+          "total": 267,
+          "shards": 8,
+          "shard": 4,
+          "complete": true,
+          "end": 166,
+          "label": "sdk-bindings5ab"
+        }
+      ],
+      "name": "sdk-resource-paths-runtime-shardedresume-debug-second-20261015-shard-4-of-8",
+      "owner": {
+        "name": "sdk-resource-paths-runtime-shardedresume-debug-second-20261015-shard-4-of-8",
+        "pid": 61984,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-resource-paths test-native-sdk-session-bindings -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+        "command_line_source": "live Win32_Process",
+        "created_utc": "2026-10-15T18:04:45.9460941Z",
+        "launched_utc": "2026-10-15T19:04:45.9434383+01:00",
+        "identity_captured": true,
+        "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+        "working_directory": "C:/Users/adyba/pi-zig-sdk-bindings-20261015",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-15T19:05:56.5897266+01:00"
+      }
+    },
+    {
+      "ranges": [
+        {
+          "start": 3903,
+          "total": 6246,
+          "shards": 8,
+          "shard": 5,
+          "complete": true,
+          "end": 4684,
+          "label": "sdk-resourcepaths5ab"
+        },
+        {
+          "start": 166,
+          "total": 267,
+          "shards": 8,
+          "shard": 5,
+          "complete": true,
+          "end": 200,
+          "label": "sdk-bindings5ab"
+        }
+      ],
+      "name": "sdk-resource-paths-runtime-shardedresume-debug-second-20261015-shard-5-of-8",
+      "owner": {
+        "name": "sdk-resource-paths-runtime-shardedresume-debug-second-20261015-shard-5-of-8",
+        "pid": 41284,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-resource-paths test-native-sdk-session-bindings -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+        "command_line_source": "live Win32_Process",
+        "created_utc": "2026-10-15T18:05:57.4674929Z",
+        "launched_utc": "2026-10-15T19:05:57.46479+01:00",
+        "identity_captured": true,
+        "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+        "working_directory": "C:/Users/adyba/pi-zig-sdk-bindings-20261015",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-15T19:07:25.9673772+01:00"
+      }
+    },
+    {
+      "ranges": [
+        {
+          "start": 4684,
+          "total": 6246,
+          "shards": 8,
+          "shard": 6,
+          "complete": true,
+          "end": 5465,
+          "label": "sdk-resourcepaths5ab"
+        },
+        {
+          "start": 200,
+          "total": 267,
+          "shards": 8,
+          "shard": 6,
+          "complete": true,
+          "end": 233,
+          "label": "sdk-bindings5ab"
+        }
+      ],
+      "name": "sdk-resource-paths-runtime-shardedresume-debug-second-20261015-shard-6-of-8",
+      "owner": {
+        "name": "sdk-resource-paths-runtime-shardedresume-debug-second-20261015-shard-6-of-8",
+        "pid": 46580,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-resource-paths test-native-sdk-session-bindings -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+        "command_line_source": "live Win32_Process",
+        "created_utc": "2026-10-15T18:07:26.8914202Z",
+        "launched_utc": "2026-10-15T19:07:26.8888258+01:00",
+        "identity_captured": true,
+        "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+        "working_directory": "C:/Users/adyba/pi-zig-sdk-bindings-20261015",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-15T19:09:01.4176419+01:00"
+      }
+    },
+    {
+      "ranges": [
+        {
+          "start": 5465,
+          "total": 6246,
+          "shards": 8,
+          "shard": 7,
+          "complete": true,
+          "end": 6246,
+          "label": "sdk-resourcepaths5ab"
+        },
+        {
+          "start": 233,
+          "total": 267,
+          "shards": 8,
+          "shard": 7,
+          "complete": true,
+          "end": 267,
+          "label": "sdk-bindings5ab"
+        }
+      ],
+      "name": "sdk-resource-paths-runtime-shardedresume-debug-second-20261015-shard-7-of-8",
+      "owner": {
+        "name": "sdk-resource-paths-runtime-shardedresume-debug-second-20261015-shard-7-of-8",
+        "pid": 64620,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-resource-paths test-native-sdk-session-bindings -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+        "command_line_source": "live Win32_Process",
+        "created_utc": "2026-10-15T18:09:02.3575173Z",
+        "launched_utc": "2026-10-15T19:09:02.3545379+01:00",
+        "identity_captured": true,
+        "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+        "working_directory": "C:/Users/adyba/pi-zig-sdk-bindings-20261015",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-15T19:11:05.5653937+01:00"
+      }
+    }
+  ],
+  "bindings_total": 267,
+  "references": 34805,
+  "shards": 8
+}

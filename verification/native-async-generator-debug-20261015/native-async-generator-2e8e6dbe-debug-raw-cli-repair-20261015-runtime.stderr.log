@@ -1,0 +1,1 @@
+1/2 native_async_generator_test.test.native async generator functional raw VM allocation failures reject and retire without dangling frame...Assertion failed: list_empty(&rt->gc_obj_list), file C:\Users\adyba\pi-zig-ai-native-async-generator-20261015\vendor\quickjs\quickjs.c, line 2781

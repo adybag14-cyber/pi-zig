@@ -1630,6 +1630,23 @@ pub fn build(b: *std.Build) void {
     ai_json_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-json-parse", "Compare original b06 final JSON helpers and intrinsic delegate error origin").dependOn(&b.addRunArtifact(ai_json_tests).step);
     b.step("build-native-ai-json-parse", "Compile native final JSON helpers and scoped C parser diagnostics").dependOn(&ai_json_tests.step);
+    const native_generator_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_generator_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native async generator functional", "native AI JSON actual OpenAI request builder", "native AI JSON OpenAI decoder", "native AI JSON helpers and native partial fallback", "native AI JSON genuine b06 delegates", "native AI JSON private hooks", "native AI JSON ordinary no-hook", "native pi-ai EventStream exports", "native AssistantMessageEventStream producer queue overflow", "native provider validation", "native provider cancellation" }, .use_llvm = use_llvm });
+    linkQuickJs(b, native_generator_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(native_generator_tests.root_module, sqlite_lib_dir, sqlite_library);
+    native_generator_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-async-generator", "Compile private native-body QuickJS AsyncGenerator hook review tests").dependOn(&native_generator_tests.step);
+    b.step("test-native-async-generator", "Verify intrinsic generator queue Await raw identity realms and targeted ownership failures").dependOn(&b.addRunArtifact(native_generator_tests).step);
+    const native_generator_gpa_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_generator_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native async generator host GPA"}, .use_llvm = use_llvm });
+    linkQuickJs(b, native_generator_gpa_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(native_generator_gpa_tests.root_module, sqlite_lib_dir, sqlite_library);
+    native_generator_gpa_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-async-generator-gpa", "Compile native async generator host allocation sweep separately").dependOn(&native_generator_gpa_tests.step);
+    b.step("test-native-async-generator-gpa", "Measure complete host allocation failure coverage independently").dependOn(&b.addRunArtifact(native_generator_gpa_tests).step);
+    const native_generator_oom_diagnostic = b.addTest(.{ .name = "native-generator-oom-diagnostic", .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_generator_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native async generator functional raw VM allocation"}, .use_llvm = use_llvm });
+    linkQuickJs(b, native_generator_oom_diagnostic.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(native_generator_oom_diagnostic.root_module, sqlite_lib_dir, sqlite_library);
+    native_generator_oom_diagnostic.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-async-generator-oom-diagnostic", "Install targeted VM OOM artifact for owned direct-run leak diagnostics").dependOn(&b.addInstallArtifact(native_generator_oom_diagnostic, .{}).step);
     const ai_uuid_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_uuid_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI UUID"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_uuid_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_uuid_tests.root_module, sqlite_lib_dir, sqlite_library);
@@ -1680,6 +1697,13 @@ pub fn build(b: *std.Build) void {
     boundary_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-boundaries", "Compile actual session boundary and nested tool bodies").dependOn(&b.addInstallArtifact(boundary_tests, .{}).step);
     b.step("test-native-sdk-boundaries", "Compare latest Source session boundary and nested pipeline behavior").dependOn(&b.addRunArtifact(boundary_tests).step);
+
+    const resource_paths_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_resource_paths_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native real resource paths"}, .use_llvm = use_llvm });
+    linkQuickJs(b, resource_paths_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(resource_paths_tests.root_module, sqlite_lib_dir, sqlite_library);
+    resource_paths_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-resource-paths", "Compile real discovered skill prompt and theme path loading").dependOn(&resource_paths_tests.step);
+    b.step("test-native-sdk-resource-paths", "Compare actual upstream loader path merging overrides and filesystem resources").dependOn(&b.addRunArtifact(resource_paths_tests).step);
 
     const manual_compaction_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_compaction_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary compaction"}, .use_llvm = use_llvm });
     linkQuickJs(b, manual_compaction_tests.root_module, quickjs, sqlite_lib_dir);
@@ -1993,6 +2017,16 @@ pub fn build(b: *std.Build) void {
     const tui_public_slice_run = b.addRunArtifact(tui_public_slice_tests);
     b.step("test-native-tui-public-source", "Replay implemented Source public TUI behavior slices").dependOn(&tui_public_slice_run.step);
     test_step.dependOn(&tui_public_slice_run.step);
+    const headers_source_module = b.createModule(.{ .root_source_file = b.path("src/native_headers_source_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, headers_source_module, quickjs, sqlite_lib_dir);
+    headers_source_module.addImport("catalog_tool", catalog_tool);
+    const headers_source_tests = b.addTest(.{ .root_module = headers_source_module, .use_llvm = use_llvm, .filters = &.{ "Headers Source189", "Headers native helper" } });
+    b.step("build-native-headers-source", "Compile native actual Node24 Headers contract replay").dependOn(&headers_source_tests.step);
+    const headers_source_run = b.addRunArtifact(headers_source_tests);
+    b.step("test-native-headers-source", "Replay actual Node24 Headers contracts and ownership").dependOn(&headers_source_run.step);
+    const headers_oom_tests = b.addTest(.{ .root_module = headers_source_module, .use_llvm = use_llvm, .filters = &.{"Headers full-engine exhaustive"} });
+    const headers_oom_run = b.addRunArtifact(headers_oom_tests);
+    b.step("test-native-headers-oom", "Exhaust native Headers full-engine allocation failures").dependOn(&headers_oom_run.step);
     const tui_base_source_module = b.createModule(.{ .root_source_file = b.path("src/native_tui_base_source_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, tui_base_source_module, quickjs, sqlite_lib_dir);
     tui_base_source_module.addImport("catalog_tool", catalog_tool);

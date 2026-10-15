@@ -1,0 +1,66 @@
+name: Private latest5ab custom-message40 and complete native allocation qualification
+on:
+  push:
+    branches: [checkpoint/native-sdk-custom-message-5ab-ci-20261015]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-sdk-custom-message-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  genuine-linux-source:
+    if: github.ref == 'refs/heads/checkpoint/native-sdk-custom-message-5ab-ci-20261015'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: earendil-works/pi
+          ref: 5ab7fe74c400097b386662205cd93900695b8a71
+          path: reference-source
+          persist-credentials: false
+      - name: Unchanged latest AgentSession Source40 with frozen source dependencies and official Node
+        shell: pwsh
+        timeout-minutes: 18
+        run: |
+          & ./tools/ci/observe_custom_message_posix.ps1 -SourceDir (Join-Path $PWD 'reference-source')
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-sdk-custom-message-posix-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-sdk-custom-message-posix-reference/
+  native-profiles:
+    needs: genuine-linux-source
+    if: github.ref == 'refs/heads/checkpoint/native-sdk-custom-message-5ab-ci-20261015'
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        mode: [Debug, ReleaseSafe]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Exact d0da product metadata4 Source40 and full measured native allocation universe
+        shell: pwsh
+        timeout-minutes: 32
+        run: |
+          & ./tools/ci/qualify_native_custom_message.ps1 -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-sdk-custom-message-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-sdk-custom-message-candidate/
