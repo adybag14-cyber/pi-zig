@@ -1,0 +1,2494 @@
+{
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "runtime": "v24.14.0",
+  "count": 24,
+  "sourceIdentity": [
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\anthropic.ts",
+      "sha256": "f72cd3bdb5d4fc8cc647487a69ed38464548c397062fbc2acfcef6431c9c0b0c"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\openrouter.ts",
+      "sha256": "3d90d1955672b64e3039e760c41b4ff1c43f5b3fc6fcbe7f80fa6f552997893a"
+    }
+  ],
+  "inputSha256": "4f13115f865b5587b0649dbadb80737e2b4fbb5bec3aae10c256b83111a09014",
+  "rows": [
+    {
+      "name": "metadata",
+      "result": {
+        "anthropic": {
+          "keys": [
+            "name",
+            "isSubscription",
+            "login",
+            "refresh",
+            "toAuth"
+          ],
+          "name": "Anthropic (Claude Pro/Max)",
+          "label": null,
+          "subscription": true,
+          "methods": [
+            {
+              "key": "login",
+              "name": "login",
+              "length": 1,
+              "prototype": false,
+              "async": true
+            },
+            {
+              "key": "refresh",
+              "name": "refresh",
+              "length": 2,
+              "prototype": false,
+              "async": false
+            },
+            {
+              "key": "toAuth",
+              "name": "toAuth",
+              "length": 1,
+              "prototype": false,
+              "async": true
+            }
+          ]
+        },
+        "openrouter": {
+          "keys": [
+            "name",
+            "loginLabel",
+            "login",
+            "refresh",
+            "toAuth"
+          ],
+          "name": "OpenRouter OAuth",
+          "label": "Sign in with OpenRouter",
+          "subscription": null,
+          "methods": [
+            {
+              "key": "login",
+              "name": "loginOpenRouter",
+              "length": 1,
+              "prototype": false,
+              "async": true
+            },
+            {
+              "key": "refresh",
+              "name": "refresh",
+              "length": 2,
+              "prototype": false,
+              "async": true
+            },
+            {
+              "key": "toAuth",
+              "name": "toAuth",
+              "length": 1,
+              "prototype": false,
+              "async": true
+            }
+          ]
+        }
+      },
+      "trace": []
+    },
+    {
+      "name": "anthropic toAuth access getter",
+      "result": {
+        "promise": true,
+        "key": true
+      },
+      "trace": [
+        [
+          "access"
+        ]
+      ]
+    },
+    {
+      "name": "anthropic toAuth rejection identity",
+      "result": {
+        "async": {
+          "marker": true
+        }
+      },
+      "trace": []
+    },
+    {
+      "name": "openrouter toAuth access getter",
+      "result": {
+        "promise": true,
+        "key": true
+      },
+      "trace": [
+        [
+          "access"
+        ]
+      ]
+    },
+    {
+      "name": "openrouter toAuth rejection identity",
+      "result": {
+        "async": {
+          "marker": true
+        }
+      },
+      "trace": []
+    },
+    {
+      "name": "openrouter refresh original credential",
+      "result": {
+        "same": true,
+        "unknown": true
+      },
+      "trace": []
+    },
+    {
+      "name": "anthropic refresh synchronous credential getter",
+      "result": {
+        "sync": {
+          "marker": true
+        }
+      },
+      "trace": []
+    },
+    {
+      "name": "anthropic refresh success",
+      "result": {
+        "type": "oauth",
+        "refresh": "owned-refresh",
+        "access": "owned-access",
+        "expires": 1700003300000
+      },
+      "trace": [
+        [
+          "refresh"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"refresh_token\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"refresh_token\":\"owned-old-refresh\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic refresh http-error",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Anthropic token refresh request failed. url=https://platform.claude.com/v1/oauth/token; details=Error: HTTP request failed. status=403; url=https://platform.claude.com/v1/oauth/token; body={\"message\":\"message\",\"error_description\":\"description\",\"error\":{\"message\":\"nested\"}}; stack=[owned diagnostic]"
+        }
+      },
+      "trace": [
+        [
+          "refresh"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"refresh_token\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"refresh_token\":\"owned-old-refresh\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic refresh invalid-json",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Anthropic token refresh returned invalid JSON. url=https://platform.claude.com/v1/oauth/token; body=not JSON; details=[parser diagnostic]"
+        }
+      },
+      "trace": [
+        [
+          "refresh"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"refresh_token\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"refresh_token\":\"owned-old-refresh\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic refresh diagnostic detail",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Anthropic token refresh request failed. url=https://platform.claude.com/v1/oauth/token; details=Error: outer; code=E_OWNED; errno=17; cause=Error: inner; stack=[owned diagnostic]"
+        }
+      },
+      "trace": [
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"refresh_token\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"refresh_token\":\"old\"}",
+          true,
+          false
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code owned-code",
+      "result": {
+        "type": "oauth",
+        "refresh": "owned-refresh",
+        "access": "owned-access",
+        "expires": 1700003300000
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for tokens..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"authorization_code\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"code\":\"owned-code\",\"state\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"redirect_uri\":\"https://platform.claude.com/oauth/code/callback\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code match-state",
+      "result": {
+        "type": "oauth",
+        "refresh": "owned-refresh",
+        "access": "owned-access",
+        "expires": 1700003300000
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for tokens..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"authorization_code\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"code\":\"owned-code\",\"state\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"redirect_uri\":\"https://platform.claude.com/oauth/code/callback\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code https://owned.invalid/callback?code=url%2Bcode",
+      "result": {
+        "type": "oauth",
+        "refresh": "owned-refresh",
+        "access": "owned-access",
+        "expires": 1700003300000
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for tokens..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"authorization_code\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"code\":\"url+code\",\"state\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"redirect_uri\":\"https://platform.claude.com/oauth/code/callback\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code foo=1&code=query%2Fcode",
+      "result": {
+        "type": "oauth",
+        "refresh": "owned-refresh",
+        "access": "owned-access",
+        "expires": 1700003300000
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for tokens..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"authorization_code\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"code\":\"query/code\",\"state\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"redirect_uri\":\"https://platform.claude.com/oauth/code/callback\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code owned-code#wrong-state",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "OAuth state mismatch"
+        }
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code ",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Missing authorization code"
+        }
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login unknown owned-code",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Unknown Anthropic login method: unknown"
+        }
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ]
+      ]
+    },
+    {
+      "name": "openrouter manual login success",
+      "result": {
+        "type": "oauth",
+        "access": "sk-owned-router",
+        "refresh": "",
+        "expires": 9007199254740991
+      },
+      "trace": [
+        [
+          "get-signal"
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Listening for OpenRouter OAuth callback on http://owned-callback.invalid/oauth/callback/11111111-2222-4333-8444-555555555555"
+          }
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://openrouter.ai/auth?callback_url=http%3A%2F%2Fowned-callback.invalid%2Foauth%2Fcallback%2F11111111-2222-4333-8444-555555555555&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256",
+            "instructions": "Complete sign-in in your browser. If the browser is on another machine, paste the final redirect URL here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Complete sign-in in your browser, or paste the authorization code / redirect URL here:",
+          "http://owned-callback.invalid/oauth/callback/11111111-2222-4333-8444-555555555555",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for an API key..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://openrouter.ai/api/v1/auth/keys",
+          "POST",
+          [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "{\"code\":\"router+code\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"code_challenge_method\":\"S256\"}",
+          true,
+          false
+        ],
+        [
+          "json",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "openrouter manual login http-error",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "OpenRouter OAuth key exchange failed (HTTP 403): description"
+        }
+      },
+      "trace": [
+        [
+          "get-signal"
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Listening for OpenRouter OAuth callback on http://owned-callback.invalid/oauth/callback/11111111-2222-4333-8444-555555555555"
+          }
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://openrouter.ai/auth?callback_url=http%3A%2F%2Fowned-callback.invalid%2Foauth%2Fcallback%2F11111111-2222-4333-8444-555555555555&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256",
+            "instructions": "Complete sign-in in your browser. If the browser is on another machine, paste the final redirect URL here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Complete sign-in in your browser, or paste the authorization code / redirect URL here:",
+          "http://owned-callback.invalid/oauth/callback/11111111-2222-4333-8444-555555555555",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for an API key..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://openrouter.ai/api/v1/auth/keys",
+          "POST",
+          [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "{\"code\":\"router+code\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"code_challenge_method\":\"S256\"}",
+          true,
+          false
+        ],
+        [
+          "json",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "openrouter manual login invalid-json",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "OpenRouter OAuth returned invalid JSON"
+        }
+      },
+      "trace": [
+        [
+          "get-signal"
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Listening for OpenRouter OAuth callback on http://owned-callback.invalid/oauth/callback/11111111-2222-4333-8444-555555555555"
+          }
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://openrouter.ai/auth?callback_url=http%3A%2F%2Fowned-callback.invalid%2Foauth%2Fcallback%2F11111111-2222-4333-8444-555555555555&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256",
+            "instructions": "Complete sign-in in your browser. If the browser is on another machine, paste the final redirect URL here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Complete sign-in in your browser, or paste the authorization code / redirect URL here:",
+          "http://owned-callback.invalid/oauth/callback/11111111-2222-4333-8444-555555555555",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for an API key..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://openrouter.ai/api/v1/auth/keys",
+          "POST",
+          [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "{\"code\":\"router+code\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"code_challenge_method\":\"S256\"}",
+          true,
+          false
+        ],
+        [
+          "json",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "openrouter manual login missing-key",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "OpenRouter OAuth response carries no \"key\""
+        }
+      },
+      "trace": [
+        [
+          "get-signal"
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Listening for OpenRouter OAuth callback on http://owned-callback.invalid/oauth/callback/11111111-2222-4333-8444-555555555555"
+          }
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://openrouter.ai/auth?callback_url=http%3A%2F%2Fowned-callback.invalid%2Foauth%2Fcallback%2F11111111-2222-4333-8444-555555555555&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256",
+            "instructions": "Complete sign-in in your browser. If the browser is on another machine, paste the final redirect URL here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Complete sign-in in your browser, or paste the authorization code / redirect URL here:",
+          "http://owned-callback.invalid/oauth/callback/11111111-2222-4333-8444-555555555555",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for an API key..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://openrouter.ai/api/v1/auth/keys",
+          "POST",
+          [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "{\"code\":\"router+code\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"code_challenge_method\":\"S256\"}",
+          true,
+          false
+        ],
+        [
+          "json",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "openrouter manual login array",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "OpenRouter OAuth response carries no \"key\""
+        }
+      },
+      "trace": [
+        [
+          "get-signal"
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Listening for OpenRouter OAuth callback on http://owned-callback.invalid/oauth/callback/11111111-2222-4333-8444-555555555555"
+          }
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://openrouter.ai/auth?callback_url=http%3A%2F%2Fowned-callback.invalid%2Foauth%2Fcallback%2F11111111-2222-4333-8444-555555555555&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256",
+            "instructions": "Complete sign-in in your browser. If the browser is on another machine, paste the final redirect URL here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Complete sign-in in your browser, or paste the authorization code / redirect URL here:",
+          "http://owned-callback.invalid/oauth/callback/11111111-2222-4333-8444-555555555555",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for an API key..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://openrouter.ai/api/v1/auth/keys",
+          "POST",
+          [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "{\"code\":\"router+code\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"code_challenge_method\":\"S256\"}",
+          true,
+          false
+        ],
+        [
+          "json",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "openrouter cancelled exchange",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Login cancelled"
+        }
+      },
+      "trace": []
+    }
+  ],
+  "rawRows": [
+    {
+      "name": "metadata",
+      "result": {
+        "anthropic": {
+          "keys": [
+            "name",
+            "isSubscription",
+            "login",
+            "refresh",
+            "toAuth"
+          ],
+          "name": "Anthropic (Claude Pro/Max)",
+          "label": null,
+          "subscription": true,
+          "methods": [
+            {
+              "key": "login",
+              "name": "login",
+              "length": 1,
+              "prototype": false,
+              "async": true
+            },
+            {
+              "key": "refresh",
+              "name": "refresh",
+              "length": 2,
+              "prototype": false,
+              "async": false
+            },
+            {
+              "key": "toAuth",
+              "name": "toAuth",
+              "length": 1,
+              "prototype": false,
+              "async": true
+            }
+          ]
+        },
+        "openrouter": {
+          "keys": [
+            "name",
+            "loginLabel",
+            "login",
+            "refresh",
+            "toAuth"
+          ],
+          "name": "OpenRouter OAuth",
+          "label": "Sign in with OpenRouter",
+          "subscription": null,
+          "methods": [
+            {
+              "key": "login",
+              "name": "loginOpenRouter",
+              "length": 1,
+              "prototype": false,
+              "async": true
+            },
+            {
+              "key": "refresh",
+              "name": "refresh",
+              "length": 2,
+              "prototype": false,
+              "async": true
+            },
+            {
+              "key": "toAuth",
+              "name": "toAuth",
+              "length": 1,
+              "prototype": false,
+              "async": true
+            }
+          ]
+        }
+      },
+      "trace": []
+    },
+    {
+      "name": "anthropic toAuth access getter",
+      "result": {
+        "promise": true,
+        "key": true
+      },
+      "trace": [
+        [
+          "access"
+        ]
+      ]
+    },
+    {
+      "name": "anthropic toAuth rejection identity",
+      "result": {
+        "async": {
+          "marker": true
+        }
+      },
+      "trace": []
+    },
+    {
+      "name": "openrouter toAuth access getter",
+      "result": {
+        "promise": true,
+        "key": true
+      },
+      "trace": [
+        [
+          "access"
+        ]
+      ]
+    },
+    {
+      "name": "openrouter toAuth rejection identity",
+      "result": {
+        "async": {
+          "marker": true
+        }
+      },
+      "trace": []
+    },
+    {
+      "name": "openrouter refresh original credential",
+      "result": {
+        "same": true,
+        "unknown": true
+      },
+      "trace": []
+    },
+    {
+      "name": "anthropic refresh synchronous credential getter",
+      "result": {
+        "sync": {
+          "marker": true
+        }
+      },
+      "trace": []
+    },
+    {
+      "name": "anthropic refresh success",
+      "result": {
+        "type": "oauth",
+        "refresh": "owned-refresh",
+        "access": "owned-access",
+        "expires": 1700003300000
+      },
+      "trace": [
+        [
+          "refresh"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"refresh_token\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"refresh_token\":\"owned-old-refresh\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic refresh http-error",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Anthropic token refresh request failed. url=https://platform.claude.com/v1/oauth/token; details=Error: HTTP request failed. status=403; url=https://platform.claude.com/v1/oauth/token; body={\"message\":\"message\",\"error_description\":\"description\",\"error\":{\"message\":\"nested\"}}; stack=[owned diagnostic]"
+        }
+      },
+      "trace": [
+        [
+          "refresh"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"refresh_token\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"refresh_token\":\"owned-old-refresh\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic refresh invalid-json",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Anthropic token refresh returned invalid JSON. url=https://platform.claude.com/v1/oauth/token; body=not JSON; details=[parser diagnostic]"
+        }
+      },
+      "trace": [
+        [
+          "refresh"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"refresh_token\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"refresh_token\":\"owned-old-refresh\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic refresh diagnostic detail",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Anthropic token refresh request failed. url=https://platform.claude.com/v1/oauth/token; details=Error: outer; code=E_OWNED; errno=17; cause=Error: inner; stack=[owned diagnostic]"
+        }
+      },
+      "trace": [
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"refresh_token\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"refresh_token\":\"old\"}",
+          true,
+          false
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code owned-code",
+      "result": {
+        "type": "oauth",
+        "refresh": "owned-refresh",
+        "access": "owned-access",
+        "expires": 1700003300000
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for tokens..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"authorization_code\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"code\":\"owned-code\",\"state\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"redirect_uri\":\"https://platform.claude.com/oauth/code/callback\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code match-state",
+      "result": {
+        "type": "oauth",
+        "refresh": "owned-refresh",
+        "access": "owned-access",
+        "expires": 1700003300000
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for tokens..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"authorization_code\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"code\":\"owned-code\",\"state\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"redirect_uri\":\"https://platform.claude.com/oauth/code/callback\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code https://owned.invalid/callback?code=url%2Bcode",
+      "result": {
+        "type": "oauth",
+        "refresh": "owned-refresh",
+        "access": "owned-access",
+        "expires": 1700003300000
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for tokens..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"authorization_code\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"code\":\"url+code\",\"state\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"redirect_uri\":\"https://platform.claude.com/oauth/code/callback\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code foo=1&code=query%2Fcode",
+      "result": {
+        "type": "oauth",
+        "refresh": "owned-refresh",
+        "access": "owned-access",
+        "expires": 1700003300000
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for tokens..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://platform.claude.com/v1/oauth/token",
+          "POST",
+          [
+            [
+              "Content-Type",
+              "application/json"
+            ],
+            [
+              "Accept",
+              "application/json"
+            ]
+          ],
+          "{\"grant_type\":\"authorization_code\",\"client_id\":\"9d1c250a-e61b-44d9-88ed-5944d1962f5e\",\"code\":\"query/code\",\"state\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"redirect_uri\":\"https://platform.claude.com/oauth/code/callback\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\"}",
+          true,
+          false
+        ],
+        [
+          "text",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code owned-code#wrong-state",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "OAuth state mismatch"
+        }
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login copy_code ",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Missing authorization code"
+        }
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://claude.ai/oauth/authorize?code=true&client_id=9d1c250a-e61b-44d9-88ed-5944d1962f5e&response_type=code&redirect_uri=https%3A%2F%2Fplatform.claude.com%2Foauth%2Fcode%2Fcallback&scope=org%3Acreate_api_key+user%3Aprofile+user%3Ainference+user%3Asessions%3Aclaude_code+user%3Amcp_servers+user%3Afile_upload&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256&state=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+            "instructions": "Complete login in your browser, then copy the code Anthropic shows and paste it here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Paste the code Anthropic shows after you sign in:",
+          "code#state",
+          null,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "anthropic login unknown owned-code",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Unknown Anthropic login method: unknown"
+        }
+      },
+      "trace": [
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "select",
+          "Select Anthropic login method:",
+          null,
+          [
+            {
+              "id": "browser",
+              "label": "Browser login (default)"
+            },
+            {
+              "id": "copy_code",
+              "label": "Copy code login (headless)"
+            }
+          ],
+          null
+        ]
+      ]
+    },
+    {
+      "name": "openrouter manual login success",
+      "result": {
+        "type": "oauth",
+        "access": "sk-owned-router",
+        "refresh": "",
+        "expires": 9007199254740991
+      },
+      "trace": [
+        [
+          "get-signal"
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Listening for OpenRouter OAuth callback on http://127.0.0.1:8678/oauth/callback/11111111-2222-4333-8444-555555555555"
+          }
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://openrouter.ai/auth?callback_url=http%3A%2F%2F127.0.0.1%3A8678%2Foauth%2Fcallback%2F11111111-2222-4333-8444-555555555555&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256",
+            "instructions": "Complete sign-in in your browser. If the browser is on another machine, paste the final redirect URL here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Complete sign-in in your browser, or paste the authorization code / redirect URL here:",
+          "http://127.0.0.1:8678/oauth/callback/11111111-2222-4333-8444-555555555555",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for an API key..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://openrouter.ai/api/v1/auth/keys",
+          "POST",
+          [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "{\"code\":\"router+code\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"code_challenge_method\":\"S256\"}",
+          true,
+          false
+        ],
+        [
+          "json",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "openrouter manual login http-error",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "OpenRouter OAuth key exchange failed (HTTP 403): description"
+        }
+      },
+      "trace": [
+        [
+          "get-signal"
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Listening for OpenRouter OAuth callback on http://127.0.0.1:8679/oauth/callback/11111111-2222-4333-8444-555555555555"
+          }
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://openrouter.ai/auth?callback_url=http%3A%2F%2F127.0.0.1%3A8679%2Foauth%2Fcallback%2F11111111-2222-4333-8444-555555555555&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256",
+            "instructions": "Complete sign-in in your browser. If the browser is on another machine, paste the final redirect URL here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Complete sign-in in your browser, or paste the authorization code / redirect URL here:",
+          "http://127.0.0.1:8679/oauth/callback/11111111-2222-4333-8444-555555555555",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for an API key..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://openrouter.ai/api/v1/auth/keys",
+          "POST",
+          [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "{\"code\":\"router+code\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"code_challenge_method\":\"S256\"}",
+          true,
+          false
+        ],
+        [
+          "json",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "openrouter manual login invalid-json",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "OpenRouter OAuth returned invalid JSON"
+        }
+      },
+      "trace": [
+        [
+          "get-signal"
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Listening for OpenRouter OAuth callback on http://127.0.0.1:8680/oauth/callback/11111111-2222-4333-8444-555555555555"
+          }
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://openrouter.ai/auth?callback_url=http%3A%2F%2F127.0.0.1%3A8680%2Foauth%2Fcallback%2F11111111-2222-4333-8444-555555555555&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256",
+            "instructions": "Complete sign-in in your browser. If the browser is on another machine, paste the final redirect URL here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Complete sign-in in your browser, or paste the authorization code / redirect URL here:",
+          "http://127.0.0.1:8680/oauth/callback/11111111-2222-4333-8444-555555555555",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for an API key..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://openrouter.ai/api/v1/auth/keys",
+          "POST",
+          [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "{\"code\":\"router+code\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"code_challenge_method\":\"S256\"}",
+          true,
+          false
+        ],
+        [
+          "json",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "openrouter manual login missing-key",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "OpenRouter OAuth response carries no \"key\""
+        }
+      },
+      "trace": [
+        [
+          "get-signal"
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Listening for OpenRouter OAuth callback on http://127.0.0.1:8681/oauth/callback/11111111-2222-4333-8444-555555555555"
+          }
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://openrouter.ai/auth?callback_url=http%3A%2F%2F127.0.0.1%3A8681%2Foauth%2Fcallback%2F11111111-2222-4333-8444-555555555555&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256",
+            "instructions": "Complete sign-in in your browser. If the browser is on another machine, paste the final redirect URL here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Complete sign-in in your browser, or paste the authorization code / redirect URL here:",
+          "http://127.0.0.1:8681/oauth/callback/11111111-2222-4333-8444-555555555555",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for an API key..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://openrouter.ai/api/v1/auth/keys",
+          "POST",
+          [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "{\"code\":\"router+code\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"code_challenge_method\":\"S256\"}",
+          true,
+          false
+        ],
+        [
+          "json",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "openrouter manual login array",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "OpenRouter OAuth response carries no \"key\""
+        }
+      },
+      "trace": [
+        [
+          "get-signal"
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Listening for OpenRouter OAuth callback on http://127.0.0.1:8682/oauth/callback/11111111-2222-4333-8444-555555555555"
+          }
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "auth_url",
+            "url": "https://openrouter.ai/auth?callback_url=http%3A%2F%2F127.0.0.1%3A8682%2Foauth%2Fcallback%2F11111111-2222-4333-8444-555555555555&code_challenge=CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk&code_challenge_method=S256",
+            "instructions": "Complete sign-in in your browser. If the browser is on another machine, paste the final redirect URL here."
+          }
+        ],
+        [
+          "get-prompt"
+        ],
+        [
+          "prompt",
+          true,
+          "manual_code",
+          "Complete sign-in in your browser, or paste the authorization code / redirect URL here:",
+          "http://127.0.0.1:8682/oauth/callback/11111111-2222-4333-8444-555555555555",
+          null,
+          true
+        ],
+        [
+          "get-notify"
+        ],
+        [
+          "notify",
+          true,
+          {
+            "type": "progress",
+            "message": "Exchanging authorization code for an API key..."
+          }
+        ],
+        [
+          "get-signal"
+        ],
+        [
+          "fetch",
+          "https://openrouter.ai/api/v1/auth/keys",
+          "POST",
+          [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "{\"code\":\"router+code\",\"code_verifier\":\"BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc\",\"code_challenge_method\":\"S256\"}",
+          true,
+          false
+        ],
+        [
+          "json",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "openrouter cancelled exchange",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Login cancelled"
+        }
+      },
+      "trace": []
+    }
+  ]
+}
