@@ -1970,6 +1970,13 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-web-body-dependencies", "Compile genuine Source176 shared dependency observations plus Headers189 regression").dependOn(&body_dependency_tests.step);
     const body_dependency_run = b.addRunArtifact(body_dependency_tests);
     b.step("test-native-web-body-dependencies", "Replay shared Blob File FormData WebIDL Source176 observations and Headers189 regression").dependOn(&body_dependency_run.step);
+    const request_source_module = b.createModule(.{ .root_source_file = b.path("src/native_web_request_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, request_source_module, quickjs, sqlite_lib_dir);
+    request_source_module.addImport("catalog_tool", catalog_tool);
+    const request_source_tests = b.addTest(.{ .root_module = request_source_module, .use_llvm = use_llvm, .filters = &.{"Request "} });
+    b.step("build-native-web-request", "Compile genuine Request Source176 projection and selected ownership probes").dependOn(&request_source_tests.step);
+    const request_source_run = b.addRunArtifact(request_source_tests);
+    b.step("test-native-web-request", "Replay immutable genuine Node24 Request55 and selected operation OOM").dependOn(&request_source_run.step);
     const body_collect_module = b.createModule(.{ .root_source_file = b.path("src/native_body_collect_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, body_collect_module, quickjs, sqlite_lib_dir);
     body_collect_module.addImport("catalog_tool", catalog_tool);
