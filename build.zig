@@ -1559,6 +1559,12 @@ pub fn build(b: *std.Build) void {
     compaction_text_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-compaction-text", "Compare original summary serialization and failure text with complete native owner graphs").dependOn(&b.addRunArtifact(compaction_text_tests).step);
     b.step("build-native-sdk-compaction-text", "Compile original summary serialization independently of runtime deadlines").dependOn(&compaction_text_tests.step);
+    const body_collect_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_body_collect_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native body collector"}, .use_llvm = use_llvm });
+    linkQuickJs(b, body_collect_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(body_collect_tests.root_module, sqlite_lib_dir, sqlite_library);
+    body_collect_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-body-collect", "Verify retained response bytes large bodies decoding and cancellation ownership").dependOn(&b.addRunArtifact(body_collect_tests).step);
+    b.step("build-native-body-collect", "Compile the shared response body collector independently").dependOn(&body_collect_tests.step);
     const ai_one_shot_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_one_shot_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI one shot"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_one_shot_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_one_shot_tests.root_module, sqlite_lib_dir, sqlite_library);
