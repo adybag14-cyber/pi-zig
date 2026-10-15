@@ -67,6 +67,19 @@ test "Headers native helper authentic brand idempotent install and immutable gua
     , "headers-native-helper.js", c.JS_EVAL_TYPE_GLOBAL);
     engine.freeValue(result);
 }
+test "Headers native helper preserves thrown identity without diagnostic ToString before guest catch" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    const result = try engine.eval(
+        \\let diagnosticCalls=0;const marker={toString(){diagnosticCalls++;nativeCollectHeadersFixture();throw 'diagnostic must not run'}};
+        \\const headers=new Headers({x:'one'});const operations=[()=>new Headers({[Symbol.iterator](){throw marker}}),()=>headers.get({toString(){throw marker}}),()=>headers.forEach(()=>{throw marker})];
+        \\for(const operation of operations){let caught;try{operation()}catch(error){caught=error}if(caught!==marker)throw Error('Headers replaced original guest throw');if(diagnosticCalls!==0)throw Error('Headers converted original throw before guest catch')}
+        \\const original=TypeError.prototype.toString;TypeError.prototype.toString=function(){diagnosticCalls++;nativeCollectHeadersFixture();throw marker};
+        \\try{let caught;try{headers.append('bad name','value')}catch(error){caught=error}if(!(caught instanceof TypeError)||!caught.message.includes('invalid header name'))throw Error('Headers replaced its original TypeError');if(diagnosticCalls!==0)throw Error('Headers formatted own TypeError before guest catch')}finally{TypeError.prototype.toString=original}
+    , "headers-caught-error-identity.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}
 fn allocationCase(gpa: std.mem.Allocator) !void {
     const engine = try setup(gpa);
     defer engine.deinit();
