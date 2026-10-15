@@ -111,3 +111,5 @@ verification/native-ai-oauth-callback-ae7-20261015/oauth-callback-native-d43f3cf
 verification/native-ai-oauth-callback-ae7-20261015/oauth-callback-native-e13b31a5-first-debug-20261015-compile.stderr.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-ai-oauth-callback-ae7-20261015/oauth-callback-native-e13b31a5-first-debug-20261015-runtime.stderr.log whitespace=-blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 src/extensions/fixtures/ai-oauth-callback-ae7.input.txt whitespace=cr-at-eol
+verification/native-event-stream-live-7940-debug-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-event-stream-production-2e1f-debug-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

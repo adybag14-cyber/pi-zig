@@ -19,3 +19,37 @@ test "native node function preserves caught getter exception without diagnostic 
     engine.freeValue(result);
     c.JS_RunGC(engine.runtime);
 }
+fn methodResult(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    const result = try sdk.object(engine);
+    errdefer engine.freeValue(result);
+    try sdk.put(engine, result, "receiver", c.JS_DupValue(engine.context, receiver));
+    return result;
+}
+test "native node method retains receiver metadata and creation realm across foreign calls" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const other = c.JS_NewContext(engine.runtime) orelse return error.OutOfMemory;
+    defer c.JS_FreeContext(other);
+    const method = try native.createMethod(engine, "method", 0, methodResult, &.{});
+    defer engine.freeValue(method);
+    const receiver = try sdk.object(engine);
+    defer engine.freeValue(receiver);
+    const result = try engine.checked(c.JS_Call(other, method, receiver, 0, null));
+    defer engine.freeValue(result);
+    const actual_receiver = try js.get(engine, result, "receiver");
+    defer engine.freeValue(actual_receiver);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, receiver, actual_receiver));
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const object = try js.get(engine, global, "Object");
+    defer engine.freeValue(object);
+    const expected = try js.get(engine, object, "prototype");
+    defer engine.freeValue(expected);
+    const actual = try engine.checked(c.JS_GetPrototype(other, result));
+    defer engine.freeValue(actual);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual, expected));
+    try sdk.put(engine, global, "nativeMethod", c.JS_DupValue(engine.context, method));
+    const checked = try engine.evalModule("if(nativeMethod.name!=='method'||nativeMethod.length!==0||Object.hasOwn(nativeMethod,'prototype'))throw Error('method metadata');let caught;try{Reflect.construct(nativeMethod,[])}catch(error){caught=error}if(!(caught instanceof TypeError))throw Error('method constructible');export const done=true;", "native-method-metadata.mjs");
+    engine.freeValue(checked);
+    c.JS_RunGC(engine.runtime);
+}
