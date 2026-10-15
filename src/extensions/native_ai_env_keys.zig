@@ -7,6 +7,33 @@ const Scope = @import("native_models_stream_scope.zig").Scope;
 const temp = @import("native_models_stream_scope.zig");
 const c = em.c;
 pub const NodeDependencies = struct { exists_sync: ?c.JSValue = null, homedir: ?c.JSValue = null, join: ?c.JSValue = null };
+/// Bind the original environment algorithm to the installed native platform.
+/// This is the native module-loading boundary; create() remains available for
+/// explicit pre-load/browser dependencies and their original ADC semantics.
+pub fn namespace(engine: *em.Engine) !c.JSValue {
+    if (engine.native_ai_env_keys) |cached| return c.JS_DupValue(engine.context, cached);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const fs = engine.native_module_values.get("node:fs") orelse return error.NativeAIEnvFilesystemUnavailable;
+    const path = engine.native_module_values.get("node:path") orelse return error.NativeAIEnvPathUnavailable;
+    const exists_sync = try scope.get(fs, "existsSync");
+    const join = try scope.get(path, "join");
+    if (!c.JS_IsFunction(engine.context, exists_sync)) return error.NativeAIEnvFilesystemUnavailable;
+    if (!c.JS_IsFunction(engine.context, join)) return error.NativeAIEnvPathUnavailable;
+    const os = engine.native_module_values.get("node:os");
+    const installed_home = if (os) |module| try scope.get(module, "homedir") else c.pi_js_undefined();
+    const Home = struct {
+        fn call(host: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            var home_scope: @import("native_sdk_prompt_scope.zig").Scope = .{ .engine = host };
+            defer home_scope.deinit();
+            return c.JS_DupValue(host.context, try @import("native_env_node_path.zig").home(&home_scope));
+        }
+    };
+    const homedir = if (c.JS_IsFunction(engine.context, installed_home)) installed_home else try scope.own(try @import("native_node_function.zig").create(engine, "homedir", 0, Home.call, &.{}));
+    const output = try scope.own(try create(engine, .{ .exists_sync = exists_sync, .homedir = homedir, .join = join }));
+    engine.native_ai_env_keys = c.JS_DupValue(engine.context, output);
+    return c.JS_DupValue(engine.context, output);
+}
 const env_map = .{
     .{ "ant-ling", "ANT_LING_API_KEY" },                           .{ "qwen-token-plan", "QWEN_TOKEN_PLAN_API_KEY" },             .{ "qwen-token-plan-cn", "QWEN_TOKEN_PLAN_CN_API_KEY" }, .{ "qwen-token-plan-individual", "QWEN_TOKEN_PLAN_API_KEY" },
     .{ "openai", "OPENAI_API_KEY" },                               .{ "azure", "AZURE_OPENAI_API_KEY" },                          .{ "nvidia", "NVIDIA_API_KEY" },                         .{ "deepseek", "DEEPSEEK_API_KEY" },

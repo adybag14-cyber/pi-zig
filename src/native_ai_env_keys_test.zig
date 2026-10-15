@@ -9,6 +9,45 @@ fn install(engine: *em.Engine, exists: ?c.JSValue) !void {
     defer engine.freeValue(global);
     try sdk.put(engine, global, "envKeysAPI", try env_keys.create(engine, .{ .exists_sync = exists }));
 }
+
+test "native AI env keys production namespace captures actual platform functions and retains one ADC module per engine" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    try std.testing.expectError(error.NativeAIEnvFilesystemUnavailable, env_keys.namespace(engine));
+    try @import("extensions/node_fs.zig").install(engine, std.testing.io);
+    try std.testing.expectError(error.NativeAIEnvPathUnavailable, env_keys.namespace(engine));
+    try @import("extensions/node_path.zig").install(engine, std.testing.io);
+    const namespace = try env_keys.namespace(engine);
+    defer engine.freeValue(namespace);
+    const again = try env_keys.namespace(engine);
+    defer engine.freeValue(again);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, namespace, again));
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    try temporary.dir.writeFile(std.testing.io, .{ .sub_path = "adc.fixture", .data = "caller-owned path fixture only, no credentials" });
+    const path = try temporary.dir.realPathFileAlloc(std.testing.io, "adc.fixture", std.testing.allocator);
+    defer std.testing.allocator.free(path);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "nativeEnvKeys", c.JS_DupValue(engine.context, namespace));
+    try sdk.put(engine, global, "nativeADCFixture", try sdk.text(engine, path));
+    const result = try engine.evalModule(
+        \\const env={GOOGLE_APPLICATION_CREDENTIALS:nativeADCFixture,GOOGLE_CLOUD_PROJECT:'fixture',GOOGLE_CLOUD_LOCATION:'test'};
+        \\if(nativeEnvKeys.getEnvApiKey('google-vertex',env)!=='<authenticated>')throw Error('actual fs ADC');
+        \\if(nativeEnvKeys.getEnvApiKey('openai',{OPENAI_API_KEY:'fixture'})!=='fixture')throw Error('real env namespace');
+        \\const marker={toString(){throw Error('must not format raw guest error')}};
+        \\try{nativeEnvKeys.getEnvApiKey('openai',{get OPENAI_API_KEY(){throw marker}});throw Error('getter accepted')}catch(e){if(e!==marker)throw e}
+        \\export const proof=true;
+    , "native-env-keys-production.mjs");
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+    const after_gc = try env_keys.namespace(engine);
+    defer engine.freeValue(after_gc);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, namespace, after_gc));
+    const other = try em.Engine.init(std.testing.allocator, .{});
+    defer other.deinit();
+    try std.testing.expectError(error.NativeAIEnvFilesystemUnavailable, env_keys.namespace(other));
+}
 test "native AI env keys matches72 original provider mappings env getters ambient credentials explicit ADC and Bun observations" {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
