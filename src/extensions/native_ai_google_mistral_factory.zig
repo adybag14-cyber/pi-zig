@@ -61,6 +61,7 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
     try scope.put(owner, "http", c.pi_js_undefined());
     try scope.put(owner, "done", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "attempt", c.JS_NewInt32(engine.context, 0));
+    if (kind == .mistral) try @import("native_ai_mistral_sse.zig").init(&scope, owner);
     const decoded = try scope.own(try decoder.create(engine, args[0], outer, try scope.get(dependencies, "json"), dependencies, if (kind == .mistral) .mistral else if (kind == .vertex) .vertex else .google));
     try scope.put(owner, "decoder", decoded);
     setup(&scope, owner, kind) catch |err| try failError(&scope, owner, err);
@@ -224,12 +225,26 @@ fn open(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
     const timeout = try v.optional(scope, options, "timeoutMs");
     var milliseconds: i64 = if (kind == .mistral) 60000 else 600000;
     if (!v.nullish(timeout) and c.JS_ToInt64(engine.context, &milliseconds, timeout) < 0) return v.js.capture(engine);
-    const transport = try scope.own(try @import("native_ai_http.zig").open(engine, .{ .url = target, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)) }, try v.optional(scope, options, "signal")));
+    const transport = try scope.own(try @import("native_ai_http.zig").open(engine, .{ .url = target, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)), .framing = if (kind == .mistral) .bytes else .sse }, try v.optional(scope, options, "signal")));
     try scope.put(owner, "http", transport);
     try scope.put(owner, "iterator", try scope.get(transport, "events"));
     try wait(scope, owner, try scope.get(transport, "ready"), .ready, kind);
 }
 fn next(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
+    if (kind == .mistral) {
+        switch (try @import("native_ai_mistral_sse.zig").pop(scope, owner)) {
+            .need_bytes => {},
+            .done, .eof => {
+                _ = try scope.invoke(try scope.get(owner, "http"), "cancel", &.{});
+                _ = try scope.invoke(try scope.get(owner, "decoder"), "finish", &.{c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner)))});
+                return flow.settle(scope.engine, owner, false, c.pi_js_undefined());
+            },
+            .data => |chunk| {
+                try scope.put(owner, "chunk", chunk);
+                return wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", chunk), .chunk, kind);
+            },
+        }
+    }
     try wait(scope, owner, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), .next, kind);
 }
 fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comptime kind: Kind) !void {
@@ -253,6 +268,10 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
         },
         .next => {
             if (scope.truthy(try scope.get(value, "done"))) {
+                if (kind == .mistral) {
+                    try @import("native_ai_mistral_sse.zig").feed(scope, owner, c.pi_js_undefined(), true);
+                    return next(scope, owner, kind);
+                }
                 _ = try scope.invoke(try scope.get(owner, "decoder"), "finish", &.{c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner)))});
                 return flow.settle(scope.engine, owner, false, c.pi_js_undefined());
             }
@@ -266,6 +285,11 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
                 try scope.put(reason, "headers", if (kind == .mistral) try scope.get(response, "headers") else c.pi_js_undefined());
                 if (kind == .mistral) try scope.put(reason, "body", try scope.get(frame, "body")) else try scope.put(reason, "message", try scope.get(frame, "body"));
                 return if (kind == .mistral) fail(scope, owner, reason) else retryOrFail(scope, owner, reason, kind);
+            }
+            if (kind == .mistral) {
+                if (!try v.eq(scope, try scope.get(frame, "type"), "bytes")) return error.NativeMistralExpectedByteFrame;
+                try @import("native_ai_mistral_sse.zig").feed(scope, owner, try scope.get(frame, "data"), false);
+                return next(scope, owner, kind);
             }
             if (scope.truthy(try scope.get(owner, "done"))) return next(scope, owner, kind);
             const data = try scope.get(frame, "data");
