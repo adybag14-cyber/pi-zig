@@ -1,0 +1,7 @@
+This isolated source-proof candidate is based on Root3b479da0a86a20c5fd1baf15969777733ded95c9. Existing native module and shared class/engine/build files remain unchanged.
+
+The new focused corpus observes all eight actual4954 model-operation functions: callable descriptors/construction, nullish chat typing, strict identity, assertion template coercion and getter order, classifier includes receiver, canonical ModelsError ownership, live Error/String/Date behavior, result field order and raw abrupt completion identity. The Source caller uses the actual strict4954 observer with full1970 Source,31064 runtime,1774 Node and84 declared absence contracts. Complete compiler19546 and candidate/control inventories are frozen as well.
+
+Source execution is pending until the clean candidate and exact controls are committed and sent to Root under the LIGHT3 grant. Expected output is absent until terminal success and full posthash pass. Full raw VM diagnostics are a separate retained artifact; class-only comparison of explicitly identified implicit VM errors is documented in static-review.md.
+
+The authored native comparison and retained-class/GC entry reference the actual shared ModelsError factory from federation3e46e0af. That real dependency is absent from base3b479 and needs owner intake before compilation; no class substitute is present. Native compilation/replay, allocator qualification, full Pi and public activation are unrun/unqualified. No build target was added to Root's shared build.zig.
