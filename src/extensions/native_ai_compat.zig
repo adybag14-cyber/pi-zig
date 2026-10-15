@@ -20,6 +20,7 @@ pub const BuiltinApi = struct {
 pub const Dependencies = struct {
     builtin_apis: []const BuiltinApi,
     compat_models: c.JSValue,
+    compat_models_factory: ?c.JSValue = null,
     get_env_api_key: c.JSValue,
 };
 /// Assemble the actual compat dispatch module from all ten native API
@@ -39,10 +40,10 @@ pub fn namespace(engine: *em.Engine, builtin_models: c.JSValue) !c.JSValue {
         .api = builtin_api_ids[i],
         .streams = try scope.call(try scope.get(apis, name), c.pi_js_undefined(), &.{}),
     };
-    const models = try scope.call(builtin_models, c.pi_js_undefined(), &.{});
     const output = try scope.own(try create(engine, .{
         .builtin_apis = &entries,
-        .compat_models = models,
+        .compat_models = c.pi_js_undefined(),
+        .compat_models_factory = builtin_models,
         .get_env_api_key = try scope.get(env, "getEnvApiKey"),
     }));
     engine.native_ai_compat_exports = c.JS_DupValue(engine.context, output);
@@ -69,6 +70,8 @@ pub fn create(engine: *em.Engine, dependencies: Dependencies) !c.JSValue {
     }
     try scope.put(owner, "builtins", builtins);
     try registerBuiltins(&scope, owner);
+    // compat.ts registers its API table before evaluating builtinModels().
+    if (dependencies.compat_models_factory) |factory| try scope.put(owner, "models", try scope.call(factory, c.pi_js_undefined(), &.{}));
     const exports = try scope.object();
     inline for (@typeInfo(Method).@"enum".fields) |field| {
         const method: Method = @enumFromInt(field.value);
