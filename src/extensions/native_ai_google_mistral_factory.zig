@@ -10,7 +10,7 @@ const google = @import("native_ai_google_request.zig");
 const mistral = @import("native_ai_mistral_request.zig");
 const auth = @import("native_ai_google_auth.zig");
 pub const Kind = enum { google, vertex, mistral };
-const Stage = enum(c_int) { payload, ready, response, next, chunk, retried, custom_response, custom_closed, custom_failure };
+const Stage = enum(c_int) { payload, ready, response, next, chunk, retried, custom_response, custom_closed, custom_failure, google_failure };
 pub fn create(engine: *v.em.Engine, comptime kind: Kind) !c.JSValue {
     try @import("native_stream.zig").install(engine);
     try @import("native_headers.zig").install(engine);
@@ -20,6 +20,10 @@ pub fn create(engine: *v.em.Engine, comptime kind: Kind) !c.JSValue {
     }
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    if (kind != .mistral) {
+        const interfaces = try @import("native_web_platform.zig").prepare(&scope);
+        try @import("native_web_response.zig").install(engine, interfaces);
+    }
     const dependencies = try scope.own(try @import("native_ai_openai_dependencies.zig").create(engine));
     try scope.put(dependencies, "text", try scope.own(try @import("native_ai_text.zig").create(engine)));
     try scope.put(dependencies, "counter", c.JS_NewInt32(engine.context, 0));
@@ -68,10 +72,11 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
     try scope.put(owner, "http", c.pi_js_undefined());
     try scope.put(owner, "done", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "attempt", c.JS_NewInt32(engine.context, 0));
-    inline for (.{ "mistralCustom", "mistralEvents", "mistralClosing", "mistralHeadersRetired" }) |key| try scope.put(owner, key, c.pi_js_bool(engine.context, 0));
+    inline for (.{ "mistralCustom", "mistralEvents", "mistralClosing", "mistralHeadersRetired", "googleEvents", "googleClosing" }) |key| try scope.put(owner, key, c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "mistralPrepared", c.pi_js_undefined());
     try scope.put(owner, "mistralBodySignal", c.pi_js_undefined());
     try scope.put(owner, "googleHeaders", c.pi_js_undefined());
+    try scope.put(owner, "requestUrl", c.pi_js_undefined());
     if (kind == .mistral) try @import("native_ai_mistral_sse.zig").init(&scope, owner);
     const decoded = try scope.own(try decoder.create(engine, args[0], outer, try scope.get(dependencies, "json"), dependencies, if (kind == .mistral) .mistral else if (kind == .vertex) .vertex else .google));
     try scope.put(owner, "decoder", decoded);
@@ -106,8 +111,10 @@ fn wait(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comptim
             defer row.deinit();
             if (rejected) {
                 var reason = result;
+                if (@as(Stage, @enumFromInt(raw)) == .google_failure) reason = try row.get(state, "googleFailure");
                 if (kind == .mistral and @as(Stage, @enumFromInt(raw)) == .ready) reason = try retireMistralHeaders(&row, state, result);
                 if (kind == .mistral and @as(Stage, @enumFromInt(raw)) == .next and row.truthy(try row.get(state, "mistralEvents"))) try row.put(state, "mistralClosing", c.pi_js_bool(engine.context, 1));
+                if (kind != .mistral and @as(Stage, @enumFromInt(raw)) == .next and row.truthy(try row.get(state, "googleEvents"))) try row.put(state, "googleClosing", c.pi_js_bool(engine.context, 1));
                 return fail(&row, state, reason);
             }
             advance(&row, state, result, @enumFromInt(raw), kind) catch |err| try failError(&row, state, err);
@@ -129,6 +136,11 @@ fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
 }
 fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     const transport = try scope.get(owner, "http");
+    if (scope.truthy(try scope.get(owner, "googleEvents")) and !scope.truthy(try scope.get(owner, "googleClosing"))) {
+        try scope.put(owner, "googleClosing", c.pi_js_bool(scope.engine.context, 1));
+        try scope.put(owner, "googleFailure", reason);
+        return wait(scope, owner, try scope.invoke(try scope.get(owner, "iterator"), "return", &.{}), .google_failure, .google);
+    }
     if (scope.truthy(try scope.get(owner, "mistralEvents")) and !scope.truthy(try scope.get(owner, "mistralClosing"))) {
         try scope.put(owner, "mistralClosing", c.pi_js_bool(scope.engine.context, 1));
         try scope.put(owner, "mistralFailure", reason);
@@ -285,6 +297,7 @@ fn open(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
     }
     const target = try engine.toString(if (kind == .mistral) try scope.get(try scope.get(prepared, "url"), "href") else try url(scope, owner, kind));
     defer engine.gpa.free(target);
+    try scope.put(owner, "requestUrl", try scope.text(target));
     const payload = try engine.toString(if (kind == .mistral) try scope.get(try scope.get(prepared, "init"), "body") else try scope.invoke(try scope.global("JSON"), "stringify", &.{try google.wire(scope, try scope.get(owner, "payload"))}));
     defer engine.gpa.free(payload);
     const timeout = if (kind == .mistral) try scope.get(prepared, "timeoutMs") else try v.optional(scope, options, "timeoutMs");
@@ -293,12 +306,13 @@ fn open(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
     const use_adc = kind == .vertex and scope.truthy(try scope.get(try scope.get(owner, "auth"), "adc"));
     const adc_data = if (use_adc) try @import("native_ai_google_adc_prepare.zig").data(scope, try scope.get(owner, "agent"), options) else null;
     defer if (adc_data) |value| engine.gpa.free(value);
-    const transport = try scope.own(try @import("native_ai_http.zig").openWithOptions(engine, .{ .url = target, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)), .headers_timeout_only = kind == .mistral, .framing = if (kind == .mistral) .bytes else .sse, .prepare = if (use_adc) @import("native_ai_google_adc_prepare.zig").prepare else null, .prepare_data = adc_data orelse &.{} }, try v.optional(scope, options, "signal"), .{ .raw_header_pairs = true }));
+    const transport = try scope.own(try @import("native_ai_http.zig").openWithOptions(engine, .{ .url = target, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)), .headers_timeout_only = kind == .mistral, .framing = .bytes, .prepare = if (use_adc) @import("native_ai_google_adc_prepare.zig").prepare else null, .prepare_data = adc_data orelse &.{} }, try v.optional(scope, options, "signal"), .{ .raw_header_pairs = true }));
     try scope.put(owner, "http", transport);
     try scope.put(owner, "iterator", try scope.get(transport, "events"));
     try wait(scope, owner, try scope.get(transport, "ready"), .ready, kind);
 }
 fn next(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
+    if (kind != .mistral and scope.truthy(try scope.get(owner, "googleEvents"))) return wait(scope, owner, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), .next, kind);
     if (kind == .mistral and scope.truthy(try scope.get(owner, "mistralEvents"))) return wait(scope, owner, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), .next, kind);
     if (kind == .mistral) {
         switch (try @import("native_ai_mistral_sse.zig").pop(scope, owner)) {
@@ -362,11 +376,26 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
                     try scope.put(owner, "mistralBodySignal", try v.optional(scope, try scope.get(owner, "options"), "signal"));
                     try scope.put(owner, "mistralProviderCallback", try scope.invoke(try scope.get(owner, "decoder"), "start", &.{try scope.get(owner, "options")}));
                     try activateMistral(scope, owner);
-                } else _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
+                } else {
+                    const iterator = try scope.own(try @import("native_ai_google_producer.zig").create(scope.engine, try scope.get(owner, "http"), try scope.get(owner, "response"), try scope.get(owner, "requestUrl"), try scope.get(try scope.get(owner, "agent"), "googleResponse"), kind == .vertex));
+                    try scope.put(owner, "iterator", iterator);
+                    try scope.put(owner, "googleEvents", c.pi_js_bool(scope.engine.context, 1));
+                    _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
+                }
             }
             try next(scope, owner, kind);
         },
         .next => {
+            if (kind != .mistral and scope.truthy(try scope.get(owner, "googleEvents"))) {
+                if (scope.truthy(try scope.get(value, "done"))) {
+                    try scope.put(owner, "googleClosing", c.pi_js_bool(scope.engine.context, 1));
+                    _ = try scope.invoke(try scope.get(owner, "decoder"), "finish", &.{c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner)))});
+                    return flow.settle(scope.engine, owner, false, c.pi_js_undefined());
+                }
+                const chunk = try scope.get(value, "value");
+                try scope.put(owner, "chunk", chunk);
+                return wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", chunk), .chunk, kind);
+            }
             if (kind == .mistral and scope.truthy(try scope.get(owner, "mistralEvents"))) {
                 if (scope.truthy(try scope.get(value, "done"))) {
                     try scope.put(owner, "mistralClosing", c.pi_js_bool(scope.engine.context, 1));
@@ -431,6 +460,7 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
             try flow.settle(scope.engine, owner, false, c.pi_js_undefined());
         },
         .custom_failure => try fail(scope, owner, try scope.get(owner, "mistralFailure")),
+        .google_failure => try fail(scope, owner, try scope.get(owner, "googleFailure")),
     }
 }
 
