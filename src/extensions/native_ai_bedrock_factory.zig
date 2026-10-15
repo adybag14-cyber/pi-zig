@@ -222,6 +222,7 @@ fn open(s: *Scope, owner: c.JSValue) !void {
     try s.put(headers, "content-type", try s.text("application/json"));
     const custom = try v.optional(s, options, "headers");
     if (!v.nullish(custom)) {
+        const retained = try s.own(try v.js.builtin(engine, "Map", &.{}));
         var rows = try v.iterator(s, try s.invoke(try s.global("Object"), "entries", &.{custom}));
         defer rows.deinit();
         errdefer rows.closePreserving();
@@ -229,6 +230,16 @@ fn open(s: *Scope, owner: c.JSValue) !void {
             defer engine.freeValue(entry);
             const key = try v.at(s, entry, 0);
             const lower = try s.invoke(key, "toLowerCase", &.{});
+            _ = try s.invoke(retained, "delete", &.{lower});
+            if (!c.JS_IsNull(try v.at(s, entry, 1))) _ = try s.invoke(retained, "set", &.{ lower, entry });
+        }
+        var kept = try v.iterator(s, try s.invoke(retained, "entries", &.{}));
+        defer kept.deinit();
+        errdefer kept.closePreserving();
+        while (try kept.next()) |row| {
+            defer engine.freeValue(row);
+            const lower = try v.at(s, row, 0);
+            const entry = try v.at(s, row, 1);
             if (try v.eq(s, lower, "authorization") or try v.eq(s, lower, "host") or s.truthy(try s.invoke(lower, "startsWith", &.{try s.text("x-amz-")}))) continue;
             try v.js.setKey(engine, headers, lower, try v.at(s, entry, 1));
         }
