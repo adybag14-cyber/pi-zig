@@ -18,8 +18,10 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) 
     for (state.values) |item| c.JS_MarkValue(runtime, item, visit);
 }
 fn call(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
-    const engine = Engine.fromContext(context.?);
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)) orelse return c.JS_ThrowTypeError(context, "Invalid native constructor")));
+    const engine = state.engine;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     if (flags & c.JS_CALL_FLAG_CONSTRUCTOR == 0) return c.JS_ThrowTypeError(context, "Class constructor %s cannot be invoked without 'new'", state.name.ptr);
     return state.create(engine, target, if (argc == 0) &.{} else argv[0..@intCast(argc)], state.values) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
