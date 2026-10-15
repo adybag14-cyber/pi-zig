@@ -1,0 +1,564 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "inputSha256": "c74b0219828799e5f2d296a3823f16aebb5d6a45bea53ad8669d36f0a38c8251",
+  "cases": 39,
+  "scope": "Actual AgentSession prototype bindExtensions, extendResourcesFromExtensions, buildExtensionResourcePaths and getExtensionSourceLabel on caller-owned receivers. Full DefaultResourceLoader.extendResources and full factory are not qualified by this corpus.",
+  "rows": [
+    {
+      "case": "metadata",
+      "methods": [
+        {
+          "name": "bindExtensions",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "name": "extendResourcesFromExtensions",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "name": "buildExtensionResourcePaths",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "name": "getExtensionSourceLabel",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        }
+      ]
+    },
+    {
+      "case": "label",
+      "path": "<inline:fixture>",
+      "value": "extension:inline:fixture"
+    },
+    {
+      "case": "label",
+      "path": "<nested<name>>",
+      "value": "extension:nestedname"
+    },
+    {
+      "case": "label",
+      "path": "<unterminated",
+      "value": "extension:unterminated"
+    },
+    {
+      "case": "label",
+      "path": "builtin:mcp",
+      "value": "extension:builtin:mcp"
+    },
+    {
+      "case": "label",
+      "path": "builtin:<>name",
+      "value": "extension:builtin:name"
+    },
+    {
+      "case": "label",
+      "path": "/extensions/fun.ts",
+      "value": "extension:fun"
+    },
+    {
+      "case": "label",
+      "path": "/extensions/fun.js",
+      "value": "extension:fun"
+    },
+    {
+      "case": "label",
+      "path": "/extensions/fun.TS",
+      "value": "extension:fun.TS"
+    },
+    {
+      "case": "label",
+      "path": "/extensions/fun.ts.js",
+      "value": "extension:fun.ts"
+    },
+    {
+      "case": "label",
+      "path": ".ts",
+      "value": "extension:"
+    },
+    {
+      "case": "label",
+      "path": "",
+      "value": "extension:"
+    },
+    {
+      "case": "paths",
+      "actual": [
+        {
+          "path": "skills/a",
+          "metadata": {
+            "source": "extension:a",
+            "scope": "temporary",
+            "origin": "top-level",
+            "baseDir": "/extensions"
+          }
+        },
+        {
+          "path": "prompt.md",
+          "metadata": {
+            "source": "extension:inline:b",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        },
+        {
+          "path": "theme.json",
+          "metadata": {
+            "source": "extension:builtin:mcp",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "keys": [
+        [
+          "source",
+          "scope",
+          "origin",
+          "baseDir"
+        ],
+        [
+          "source",
+          "scope",
+          "origin",
+          "baseDir"
+        ],
+        [
+          "source",
+          "scope",
+          "origin",
+          "baseDir"
+        ]
+      ],
+      "fresh": true
+    },
+    {
+      "case": "entry-getter-order",
+      "log": [
+        "get label",
+        "extensionPath:1",
+        "label:/extensions/a.ts",
+        "extensionPath:2",
+        "path"
+      ],
+      "actual": [
+        {
+          "path": "x",
+          "metadata": {
+            "source": "custom-source",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "keys": [
+        "source",
+        "scope",
+        "origin",
+        "baseDir"
+      ]
+    },
+    {
+      "case": "custom-map",
+      "log": [
+        "get map",
+        "call map"
+      ],
+      "actual": {
+        "path": "x",
+        "metadata": {
+          "source": "extension:custom",
+          "scope": "temporary",
+          "origin": "top-level"
+        }
+      }
+    },
+    {
+      "case": "map-marker",
+      "same": true
+    },
+    {
+      "case": "bind-empty:startup",
+      "log": [
+        "apply:true",
+        "emit:startup",
+        "returned:true",
+        "report",
+        "has:resources_discover",
+        "discover:/working:startup"
+      ],
+      "undefined": true
+    },
+    {
+      "case": "bind-empty:reload",
+      "log": [
+        "apply:true",
+        "emit:reload",
+        "returned:true",
+        "report",
+        "has:resources_discover",
+        "discover:/working:reload"
+      ],
+      "undefined": true
+    },
+    {
+      "case": "bind-empty:switch",
+      "log": [
+        "apply:true",
+        "emit:switch",
+        "returned:true",
+        "report",
+        "has:resources_discover",
+        "discover:/working:startup"
+      ],
+      "undefined": true
+    },
+    {
+      "case": "binding-getters",
+      "log": [
+        "get:uiContext",
+        "get:uiContext",
+        "get:mode",
+        "get:mode",
+        "get:commandContextActions",
+        "get:commandContextActions",
+        "get:abortHandler",
+        "get:abortHandler",
+        "get:shutdownHandler",
+        "get:shutdownHandler",
+        "get:onError",
+        "get:onError",
+        "apply:true",
+        "emit:startup",
+        "report",
+        "has:resources_discover",
+        "discover:/working:startup",
+        "apply:true",
+        "emit:startup",
+        "report",
+        "has:resources_discover",
+        "discover:/working:startup"
+      ],
+      "values": [
+        null,
+        "rpc",
+        false,
+        0,
+        "stop",
+        null
+      ]
+    },
+    {
+      "case": "undefined-retains",
+      "value": "retained"
+    },
+    {
+      "case": "binding-second-read-value",
+      "reads": 2,
+      "value": "assigned"
+    },
+    {
+      "case": "path-third-read-value",
+      "log": [
+        1,
+        2,
+        3
+      ],
+      "actual": [
+        {
+          "path": "x",
+          "metadata": {
+            "source": "extension:one",
+            "scope": "temporary",
+            "origin": "top-level",
+            "baseDir": "/different"
+          }
+        }
+      ]
+    },
+    {
+      "case": "no-discovery-handler",
+      "log": [
+        "has:resources_discover"
+      ]
+    },
+    {
+      "case": "all-discovered-resources",
+      "log": [
+        "apply:true",
+        "emit:reload",
+        "report",
+        "has:resources_discover",
+        "discover:/working:reload",
+        [
+          "extend",
+          {
+            "skillPaths": [
+              {
+                "path": "skills",
+                "metadata": {
+                  "source": "extension:pack",
+                  "scope": "temporary",
+                  "origin": "top-level",
+                  "baseDir": "/extensions"
+                }
+              }
+            ],
+            "promptPaths": [
+              {
+                "path": "prompt",
+                "metadata": {
+                  "source": "extension:inline:fixture",
+                  "scope": "temporary",
+                  "origin": "top-level"
+                }
+              }
+            ],
+            "themePaths": [
+              {
+                "path": "theme",
+                "metadata": {
+                  "source": "extension:builtin:mcp",
+                  "scope": "temporary",
+                  "origin": "top-level"
+                }
+              }
+            ]
+          }
+        ],
+        "active",
+        [
+          "rebuild",
+          [
+            "read"
+          ]
+        ]
+      ]
+    },
+    {
+      "case": "discover-destructure-and-length-order",
+      "log": [
+        "skillPaths",
+        "promptPaths",
+        "themePaths",
+        "skill length",
+        "prompt length",
+        "theme length"
+      ]
+    },
+    {
+      "case": "length-short-circuit",
+      "log": [
+        "skill length",
+        "map:skill",
+        "map:prompt",
+        "map:theme"
+      ]
+    },
+    {
+      "case": "live-runner-after-await",
+      "log": [
+        "apply:true",
+        "old emit",
+        "new report",
+        "new has"
+      ]
+    },
+    {
+      "case": "failure:binding-getter",
+      "same": true,
+      "sync": false,
+      "log": []
+    },
+    {
+      "case": "failure:apply",
+      "same": true,
+      "sync": false,
+      "log": []
+    },
+    {
+      "case": "failure:emit",
+      "same": true,
+      "sync": false,
+      "log": [
+        "apply:true"
+      ]
+    },
+    {
+      "case": "failure:report",
+      "same": true,
+      "sync": false,
+      "log": [
+        "apply:true",
+        "emit:startup"
+      ]
+    },
+    {
+      "case": "failure:has",
+      "same": true,
+      "sync": false,
+      "log": [
+        "apply:true",
+        "emit:startup",
+        "report"
+      ]
+    },
+    {
+      "case": "failure:discover",
+      "same": true,
+      "sync": false,
+      "log": [
+        "apply:true",
+        "emit:startup",
+        "report",
+        "has:resources_discover"
+      ]
+    },
+    {
+      "case": "failure:map",
+      "same": true,
+      "sync": false,
+      "log": [
+        "apply:true",
+        "emit:startup",
+        "report",
+        "has:resources_discover",
+        "discover:/working:startup"
+      ]
+    },
+    {
+      "case": "failure:loader",
+      "same": true,
+      "sync": false,
+      "log": [
+        "apply:true",
+        "emit:startup",
+        "report",
+        "has:resources_discover",
+        "discover:/working:startup"
+      ]
+    },
+    {
+      "case": "failure:rebuild",
+      "same": true,
+      "sync": false,
+      "log": [
+        "apply:true",
+        "emit:startup",
+        "report",
+        "has:resources_discover",
+        "discover:/working:startup",
+        [
+          "extend",
+          {
+            "skillPaths": [
+              {
+                "path": "x",
+                "metadata": {
+                  "source": "extension:inline:x",
+                  "scope": "temporary",
+                  "origin": "top-level"
+                }
+              }
+            ],
+            "promptPaths": [],
+            "themePaths": []
+          }
+        ],
+        "active"
+      ]
+    },
+    {
+      "case": "extend-callee-before-reason",
+      "log": [
+        "apply:true",
+        "get reason",
+        "emit:reload",
+        "report",
+        "get extend",
+        "get reason",
+        "has:resources_discover",
+        "discover:/working:reload"
+      ]
+    },
+    {
+      "case": "ordinary-reload-resource-composition",
+      "log": [
+        "old flags",
+        "old shutdown handler",
+        "old invalidate",
+        "settings reload",
+        "queue modes",
+        "loader reload",
+        "active",
+        "active",
+        [
+          "build runtime",
+          {
+            "activeToolNames": [
+              "read"
+            ],
+            "flags": [
+              [
+                "enabled",
+                true
+              ]
+            ],
+            "includeAllExtensionTools": true
+          }
+        ],
+        "before session start",
+        "emit:reload",
+        "report",
+        "has:resources_discover",
+        "discover:/working:reload",
+        [
+          "extend",
+          {
+            "skillPaths": [
+              {
+                "path": "new-skill",
+                "metadata": {
+                  "source": "extension:inline:reloaded",
+                  "scope": "temporary",
+                  "origin": "top-level"
+                }
+              }
+            ],
+            "promptPaths": [],
+            "themePaths": []
+          }
+        ],
+        "active",
+        [
+          "rebuild",
+          [
+            "read"
+          ]
+        ]
+      ],
+      "pending": [
+        "read"
+      ]
+    }
+  ]
+}
