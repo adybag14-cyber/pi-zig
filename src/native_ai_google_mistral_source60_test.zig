@@ -8,6 +8,13 @@ comptime {
 }
 fn install(engine: *em.Engine) !void {
     try @import("extensions/native_stream.zig").install(engine);
+    if (engine.text_decoder_class == 0) try @import("extensions/text_decoder.zig").install(engine);
+    if (engine.text_encoder_class == 0) try @import("extensions/text_encoding.zig").install(engine);
+    try @import("extensions/node_url.zig").install(engine);
+    try @import("extensions/console.zig").install(engine, std.testing.io);
+    const base64_module = try sdk.object(engine);
+    defer engine.freeValue(base64_module);
+    try @import("extensions/node_base64.zig").install(engine, base64_module);
     const imported = try engine.evalModule("import 'pi-ai';export const loaded=true;", "native-google-mistral-stream-install.mjs");
     engine.freeValue(imported);
     const global = c.JS_GetGlobalObject(engine.context);
