@@ -243,6 +243,10 @@ fn rejectCloseAndClosed(self: *State) !void {
     }
 }
 fn promiseCallback(self: *State, function: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    // A sink callback can synchronously controller.error(), clearing the last
+    // algorithm edge, or run GC. Retain the actual executing callable itself.
+    const function_root = c.JS_DupValue(self.engine.context, function);
+    defer self.engine.freeValue(function_root);
     const result = if (c.JS_IsUndefined(function)) c.pi_js_undefined() else js.call(self.engine, function, self.sink, args) catch |err| {
         const reason = async_value.reason(self.engine, err);
         defer self.engine.freeValue(reason);
@@ -541,9 +545,11 @@ pub fn writerWriteNative(e: *Engine, value: c.JSValue, chunk: c.JSValue) !c.JSVa
     // the controller. Hold the original stream and inspect the lock afterward.
     var s: Scope = .{ .engine = e };
     defer s.deinit();
+    _ = try s.own(c.JS_DupValue(e.context, value));
     _ = try s.own(c.JS_DupValue(e.context, stream));
     const self = streamState(stream);
-    const raw_size = if (c.JS_IsUndefined(self.size_algorithm)) c.JS_NewInt32(e.context, 1) else s.call(self.size_algorithm, c.pi_js_undefined(), &.{chunk}) catch |err| blk: {
+    const size_algorithm = try s.own(c.JS_DupValue(e.context, self.size_algorithm));
+    const raw_size = if (c.JS_IsUndefined(size_algorithm)) c.JS_NewInt32(e.context, 1) else s.call(size_algorithm, c.pi_js_undefined(), &.{chunk}) catch |err| blk: {
         const reason = try s.own(async_value.reason(e, err));
         try controllerErrorNative(e, self.controller, reason);
         break :blk c.JS_NewInt32(e.context, 1);
