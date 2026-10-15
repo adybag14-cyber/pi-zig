@@ -248,7 +248,13 @@ pub const Worker = struct {
         }
     }
     fn peek(connection: *socket.Client) !void {
-        _ = try connection.connection.reader().peekGreedy(1);
+        _ = connection.connection.reader().peekGreedy(1) catch |err| {
+            // Io.Reader wraps cancellation and network failures in ReadFailed.
+            // Recover the real error so a deliberately canceled peek is not
+            // mistaken for a transport failure when a send command wins.
+            if (err == error.ReadFailed) return connection.connection.getReadError() orelse err;
+            return err;
+        };
     }
     fn abortAvailable(self: *Worker) !void {
         self.mutex.lockUncancelable(self.io);
