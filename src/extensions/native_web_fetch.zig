@@ -169,7 +169,7 @@ fn redirected(scope: *Scope, owner: c.JSValue, head: c.JSValue, status: u32) !bo
     }
     const method = try scope.get(owner, "current_method");
     const headers = try scope.get(owner, "current_headers");
-    if (status != 303 and view.payload != null and c.JS_IsNull(try scope.get(owner, "body_source"))) {
+    if (status != 303 and scope.truthy(try scope.get(owner, "has_body")) and c.JS_IsNull(try scope.get(owner, "body_source"))) {
         cleanupTransport(scope, owner);
         try reject(scope, owner, try scope.own(try js.builtin(scope.engine, "Error", &.{c.pi_js_undefined()})), true);
         return true;
@@ -177,6 +177,7 @@ fn redirected(scope: *Scope, owner: c.JSValue, head: c.JSValue, status: u32) !bo
     const drop_body = ((status == 301 or status == 302) and scope.equal(method, try scope.text("POST"))) or (status == 303 and !scope.equal(method, try scope.text("GET")) and !scope.equal(method, try scope.text("HEAD")));
     if (drop_body) {
         try scope.set(owner, "current_method", try scope.text("GET"));
+        try scope.set(owner, "has_body", c.JS_NewBool(scope.engine.context, false));
         try scope.set(owner, "body_source", c.pi_js_null());
         inline for (.{ "content-encoding", "content-language", "content-location", "content-type", "content-length" }) |name| _ = try scope.invoke(headers, "delete", &.{try scope.text(name)});
     }
@@ -254,6 +255,7 @@ pub fn fetch(engine: *em.Engine, input: c.JSValue, init: c.JSValue, options: Opt
     try scope.set(pending.owner, "current_headers", try scope.own(try header_api.clone(engine, view.headers, .none)));
     try scope.set(pending.owner, "redirect_count", c.JS_NewInt32(engine.context, 0));
     try scope.set(pending.owner, "body_source", if (view.payload) |payload| payload.source else c.pi_js_null());
+    try scope.set(pending.owner, "has_body", c.JS_NewBool(engine.context, view.payload != null));
     if (scope.truthy(try scope.get(view.signal, "aborted"))) {
         const reason = try scope.get(view.signal, "reason");
         if (view.payload) |payload| {
