@@ -1,0 +1,42 @@
+{
+  "status": "admitted",
+  "candidate": "acb9a8116130d454447754cff6faefaed38a3a6b",
+  "slot": "Root queue pending",
+  "free_kib": 20590968,
+  "threshold_kib": 16777216,
+  "max_native_roots": 4,
+  "other_native": [
+    {
+      "ProcessId": 58416,
+      "ParentProcessId": 60992,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-highlight-core-b45 -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-15T18:01:12.2410100Z"
+    },
+    {
+      "ProcessId": 46704,
+      "ParentProcessId": 59212,
+      "ExecutablePath": null,
+      "CommandLine": null,
+      "created_utc": "2026-10-15T18:01:19.0331370Z"
+    },
+    {
+      "ProcessId": 44604,
+      "ParentProcessId": 59212,
+      "ExecutablePath": null,
+      "CommandLine": null,
+      "created_utc": "2026-10-15T18:01:19.0332230Z"
+    }
+  ],
+  "source": 5968,
+  "tools": 19546,
+  "controls": 3,
+  "jobs": 1,
+  "llvm": true,
+  "compile_timeout_seconds": 1320,
+  "runtime_outer_timeout_seconds": 300,
+  "test_timeout_seconds": 120,
+  "host_await_timeout_seconds": 10,
+  "native_launched": false,
+  "observed_utc": "2026-10-15T18:01:19.1572052+00:00"
+}
