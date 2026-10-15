@@ -101,10 +101,7 @@ pub fn generateValue(scope: *Scope, namespace: c.JSValue, status: c.JSValue, bod
     if (!scope.truthy(status) or !scope.truthy(headers)) {
         const options = try scope.object();
         try scope.put(options, "message", message);
-        const instance = c.JS_IsInstanceOf(scope.engine.context, body, try scope.global("Error"));
-        if (instance < 0) return v.js.capture(scope.engine);
-        const cause = if (instance == 1) body else try scope.own(try v.js.builtin(scope.engine, "Error", &.{try scope.stringify(body)}));
-        try scope.put(options, "cause", cause);
+        try scope.put(options, "cause", try castToError(scope, body));
         const constructor = try scope.get(namespace, "APIConnectionError");
         var args = [_]c.JSValue{options};
         return scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, 1, &args)));
@@ -117,4 +114,38 @@ pub fn generateValue(scope: *Scope, namespace: c.JSValue, status: c.JSValue, bod
     const constructor = try scope.get(namespace, name);
     var args = [_]c.JSValue{ status, body, message, headers, try v.optional(scope, try v.optional(scope, body, "error"), "type") };
     return scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, args.len, &args)));
+}
+fn crossRealm(scope: *Scope, value: c.JSValue) !c.JSValue {
+    const prototype = try scope.get(try scope.global("Object"), "prototype");
+    const tag = try scope.call(try scope.get(prototype, "toString"), value, &.{});
+    if (!try v.eq(scope, tag, "[object Error]") and !try v.eq(scope, tag, "[object DOMException]")) return c.pi_js_undefined();
+    const cause = try scope.get(value, "cause");
+    const options = try scope.object();
+    if (scope.truthy(cause)) try scope.put(options, "cause", cause);
+    const result = try scope.own(try v.js.builtin(scope.engine, "Error", &.{ try scope.get(value, "message"), options }));
+    if (scope.truthy(try scope.get(value, "stack"))) try scope.set(result, "stack", try scope.get(value, "stack"));
+    if (scope.truthy(try scope.get(value, "cause")) and !scope.truthy(try scope.get(result, "cause"))) try scope.set(result, "cause", try scope.get(value, "cause"));
+    if (scope.truthy(try scope.get(value, "name"))) try scope.set(result, "name", try scope.get(value, "name"));
+    return result;
+}
+fn castToError(scope: *Scope, value: c.JSValue) !c.JSValue {
+    const branded = c.JS_IsInstanceOf(scope.engine.context, value, try scope.global("Error"));
+    if (branded < 0) return v.js.capture(scope.engine);
+    if (branded == 1) return value;
+    if (c.JS_IsObject(value) and !c.JS_IsFunction(scope.engine.context, value)) {
+        const generation = scope.engine.native_allocation_generation;
+        const converted = crossRealm(scope, value) catch |err| suppressed: {
+            try @import("native_ai_partial_json.zig").discard(scope.engine, err, generation);
+            break :suppressed c.pi_js_undefined();
+        };
+        if (!c.JS_IsUndefined(converted)) return converted;
+        var serialized_ok = true;
+        const serialized = scope.invoke(try scope.global("JSON"), "stringify", &.{value}) catch |err| suppressed: {
+            try @import("native_ai_partial_json.zig").discard(scope.engine, err, generation);
+            serialized_ok = false;
+            break :suppressed c.pi_js_undefined();
+        };
+        if (serialized_ok) return scope.own(try v.js.builtin(scope.engine, "Error", &.{serialized}));
+    }
+    return scope.own(try v.js.builtin(scope.engine, "Error", &.{value}));
 }
