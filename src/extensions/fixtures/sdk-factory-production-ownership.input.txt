@@ -1,0 +1,21 @@
+// Actual production service creation paused inside a caller-owned extension
+// factory. The loader/runtime/settings remain their real native/Source classes.
+// Run preparation and completion in separate jobs with a GC in between.
+globalThis.prepareProductionFactoryOwnership=async function(api){
+ const runtime=await api.ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});
+ const settings=api.SettingsManager.inMemory();
+ const factory=()=>new Promise(resolve=>{globalThis.productionFactoryRelease=resolve});
+ const options={cwd:api.fixtureCwd,agentDir:api.fixtureCwd+'/ownership-agent',modelRuntime:runtime,settingsManager:settings,resourceLoaderOptions:{noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true,extensionFactories:[{name:'ownership-pending',factory}]}};
+ globalThis.productionFactoryOptionsWeak=new WeakRef(options);
+ globalThis.productionFactoryRuntimeWeak=new WeakRef(runtime);
+ globalThis.productionFactoryPending=api.createAgentSessionServices(options);
+ for(let n=0;n<64&&typeof productionFactoryRelease!=='function';n++)await Promise.resolve();
+ if(typeof productionFactoryRelease!=='function')throw Error('Actual extension initializer did not reach the pending caller factory');
+};
+globalThis.completeProductionFactoryOwnership=async function(){
+ if(!productionFactoryOptionsWeak.deref()||!productionFactoryRuntimeWeak.deref())throw Error('Pending real factory lost its caller/runtime graph');
+ productionFactoryRelease();
+ const services=await productionFactoryPending;
+ if(services.modelRuntime!==productionFactoryRuntimeWeak.deref()||services.diagnostics.length)throw Error('Actual service identity lost at completion');
+ delete globalThis.productionFactoryPending;delete globalThis.productionFactoryRelease;
+};

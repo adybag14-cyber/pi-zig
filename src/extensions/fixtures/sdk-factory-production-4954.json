@@ -1,0 +1,724 @@
+{
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "inputSha256": "40cb631b4adb9ba1949c6a2255f722e2e57c0845d48b9023df385267d2cd03e8",
+  "cases": 27,
+  "scope": "Original actual SDK factory/services/fromServices/lifecycle exports, actual full Models and loader classes, caller-owned native provider and credentials without provider network requests. Real default runtime/settings/loader/manager paths, model/thinking restore, selection, tools, callbacks, raw reasons and getter order. No native or whole factory qualification inferred from Source observation.",
+  "rows": [
+    {
+      "name": "export-function-shapes",
+      "value": {
+        "createAgentSession": {
+          "name": "createAgentSession",
+          "length": 0,
+          "async": true,
+          "ownPrototype": false
+        },
+        "createAgentSessionServices": {
+          "name": "createAgentSessionServices",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false
+        },
+        "createAgentSessionFromServices": {
+          "name": "createAgentSessionFromServices",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false
+        },
+        "createAgentSessionRuntime": {
+          "name": "createAgentSessionRuntime",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "explicit-model",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "default-tools",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [
+          "read",
+          "bash",
+          "edit",
+          "write"
+        ],
+        "usesDefault": true,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "modifier-tools",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [
+          "read",
+          "edit",
+          "grep"
+        ],
+        "usesDefault": true,
+        "modifiers": [
+          "+grep",
+          "-bash"
+        ],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "allowlist-tools",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [
+          "read"
+        ],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-tools-all",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-tools-builtin",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mixed-tools-error",
+      "error": {
+        "name": "Error",
+        "message": "Invalid tools option: tool names cannot be mixed with +name or -name entries",
+        "raw": false
+      }
+    },
+    {
+      "name": "pattern-modifier-error",
+      "error": {
+        "name": "Error",
+        "message": "Invalid tools option: +name and -name entries take exact tool names, not patterns: +r*",
+        "raw": false
+      }
+    },
+    {
+      "name": "explicit-thinking",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "high",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "high"
+          }
+        ]
+      }
+    },
+    {
+      "name": "restore-thinking-model",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "low",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "low"
+          }
+        ]
+      }
+    },
+    {
+      "name": "restore-old-thinking-metadata",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "fallback-restored-missing",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "fallback": "Could not restore model missing-owned/missing-owned. Using factory-owned/owned",
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "missing-owned",
+            "modelId": "missing-owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cwd-manager-fallback",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "option-getter-order",
+      "value": {
+        "calls": [
+          "cwd",
+          "agentDir",
+          "agentDir",
+          "resourceLoader",
+          "agentDir",
+          "agentDir",
+          "modelRuntime",
+          "settingsManager",
+          "sessionManager",
+          "model",
+          "tools",
+          "tools",
+          "tools",
+          "tools",
+          "tools",
+          "tools"
+        ],
+        "out": {
+          "ordinary": true,
+          "prototype": true,
+          "model": {
+            "provider": "factory-owned",
+            "id": "owned"
+          },
+          "thinking": "medium",
+          "active": [],
+          "usesDefault": false,
+          "modifiers": [],
+          "runnerRef": true,
+          "loader": true,
+          "runtime": true,
+          "extensions": true,
+          "metadata": [
+            {
+              "type": "model_change",
+              "provider": "factory-owned",
+              "modelId": "owned"
+            },
+            {
+              "type": "thinking_level_change",
+              "thinkingLevel": "medium"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "raw-options-getter-rejection",
+      "error": {
+        "raw": true
+      }
+    },
+    {
+      "name": "null-options-rejection",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of null (reading 'cwd')",
+        "raw": false
+      }
+    },
+    {
+      "name": "from-services-identity",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "from-services-getter-order",
+      "value": {
+        "calls": [
+          "services",
+          "services",
+          "services",
+          "services",
+          "services",
+          "sessionManager",
+          "model",
+          "thinkingLevel",
+          "scopedModels",
+          "tools",
+          "excludeTools",
+          "noTools",
+          "customTools",
+          "sessionStartEvent"
+        ],
+        "result": {
+          "ordinary": true,
+          "prototype": true,
+          "model": {
+            "provider": "factory-owned",
+            "id": "owned"
+          },
+          "thinking": "medium",
+          "active": [],
+          "usesDefault": false,
+          "modifiers": [],
+          "runnerRef": true,
+          "loader": true,
+          "runtime": true,
+          "extensions": true,
+          "metadata": [
+            {
+              "type": "model_change",
+              "provider": "factory-owned",
+              "modelId": "owned"
+            },
+            {
+              "type": "thinking_level_change",
+              "thinkingLevel": "medium"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "default-loader-reload",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "default-settings-manager",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "default-session-manager",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "default-model-runtime",
+      "value": {
+        "ordinary": true,
+        "prototype": true,
+        "model": {
+          "provider": "factory-owned",
+          "id": "owned"
+        },
+        "thinking": "medium",
+        "active": [],
+        "usesDefault": false,
+        "modifiers": [],
+        "runnerRef": true,
+        "loader": true,
+        "runtime": true,
+        "extensions": true,
+        "metadata": [
+          {
+            "type": "model_change",
+            "provider": "factory-owned",
+            "modelId": "owned"
+          },
+          {
+            "type": "thinking_level_change",
+            "thinkingLevel": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "name": "services-provider-and-flags",
+      "value": {
+        "cwd": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\verification\\sdk-factory-production-4954-20261015\\sandbox",
+        "agentDir": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\verification\\sdk-factory-production-4954-20261015\\sandbox\\agent",
+        "runtime": true,
+        "settings": true,
+        "flags": [
+          [
+            "owned-boolean",
+            true
+          ],
+          [
+            "owned-string",
+            "value"
+          ]
+        ],
+        "pending": 0,
+        "diagnostics": [
+          {
+            "type": "error",
+            "message": "Extension flag \"--owned-invalid\" requires a value"
+          },
+          {
+            "type": "error",
+            "message": "Unknown option: --owned-missing"
+          }
+        ],
+        "calls": [
+          "factory"
+        ]
+      }
+    },
+    {
+      "name": "services-raw-loader-rejection",
+      "error": {
+        "raw": true
+      }
+    },
+    {
+      "name": "dynamic-block-images",
+      "value": {
+        "first": [
+          "image",
+          "image"
+        ],
+        "second": [
+          {
+            "type": "text",
+            "text": "Image reading is disabled."
+          }
+        ]
+      }
+    },
+    {
+      "name": "lifecycle-factory-identity",
+      "value": {
+        "ordinary": true,
+        "services": true,
+        "calls": [
+          {
+            "manager": true,
+            "cwd": "<cwd>"
+          }
+        ],
+        "cwd": "<cwd>",
+        "diagnostics": []
+      }
+    }
+  ]
+}
