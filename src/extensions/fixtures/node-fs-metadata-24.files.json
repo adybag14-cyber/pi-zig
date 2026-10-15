@@ -1,0 +1,9 @@
+{
+  "inherits":"sdk-resource-class-5ab.files.json",
+  "files":[
+    {"path":"metadata/plain.txt","content":"hello\n"},
+    {"path":"metadata/Ω.txt","content":"café\n"},
+    {"path":"metadata/nested/child.txt","content":"x"}
+  ],
+  "themes":[]
+}

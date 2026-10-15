@@ -1,0 +1,10 @@
+import {readFileSync,writeFileSync,realpathSync} from 'node:fs';
+import * as fs from 'node:fs';
+import {pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';
+globalThis.fsMetadataAPI={fs,pathToFileURL};
+globalThis.fsMetadataFixtureRoot=realpathSync(process.argv[4]);
+const input=readFileSync(process.argv[3]);
+await import('data:text/javascript,'+encodeURIComponent(input.toString('utf8')));
+if(fsMetadataRows.length!==22)throw Error('All22 actual Node filesystem metadata callers required; got '+fsMetadataRows.length);
+writeFileSync(process.argv[2],JSON.stringify({nodeVersion:process.versions.node,sourceHead:'5ab7fe74c400097b386662205cd93900695b8a71',inputSha256:createHash('sha256').update(input).digest('hex'),cases:fsMetadataRows.length,scope:'Actual pinned Node24.14 filesystem stat/Stats/realpath behavior required by genuine Pi Source33 parsers. No complete Node filesystem or native metadata qualification is inferred.',rows:fsMetadataRows},null,2));

@@ -1,0 +1,41 @@
+const {fs,pathToFileURL}=fsMetadataAPI,root=fsMetadataFixtureRoot.replaceAll('\\','/'),file=root+'/metadata/plain.txt',directory=root+'/metadata',missing=root+'/metadata/missing/file',rows=[];
+globalThis.fsMetadataRows=rows;
+function clean(value){return JSON.parse(JSON.stringify(value,(_k,v)=>typeof v==='string'?v.replaceAll('\\','/').replaceAll(root,'<fixture>'):typeof v==='bigint'?v.toString()+'n':v))}
+function row(name,value){rows.push({case:name,...clean(value)})}
+function error(operation){try{return{value:operation()}}catch(e){return{name:e.name,message:e.message,code:e.code,errno:e.errno,syscall:e.syscall,path:e.path,own:Object.getOwnPropertyNames(e).filter(x=>x!=='stack')}}}
+function functionInfo(f){return{name:f.name,length:f.length,ownPrototype:Object.hasOwn(f,'prototype')}}
+function prototypeInfo(p){return Object.getOwnPropertyNames(p).map(key=>{const d=Object.getOwnPropertyDescriptor(p,key);return{key,enumerable:d.enumerable,configurable:d.configurable,writable:d.writable,value:typeof d.value==='function'?functionInfo(d.value):typeof d.value,get:d.get&&functionInfo(d.get),set:d.set&&functionInfo(d.set)}})}
+function view(s){return{keys:Object.keys(s),types:Object.fromEntries(Object.keys(s).map(k=>[k,typeof s[k]])),size:s.size,methods:Object.fromEntries(['isFile','isDirectory','isSymbolicLink','isFIFO','isSocket','isBlockDevice','isCharacterDevice'].map(k=>[k,s[k]()])),dateTypes:['atime','mtime','ctime','birthtime'].map(k=>s[k] instanceof Date),dateMsMatch:['atime','mtime','ctime','birthtime'].map(k=>s[k].valueOf()===Math.trunc(Number(s[k+'Ms']))),timesFinite:['atimeMs','mtimeMs','ctimeMs','birthtimeMs'].map(k=>Number.isFinite(Number(s[k]))),modeType:typeof s.mode}}
+{
+ const s=fs.statSync(file),p=Object.getPrototypeOf(s),base=Object.getPrototypeOf(p);row('actual-stat-exports-and-prototypes',{stat:functionInfo(fs.statSync),realpath:functionInfo(fs.realpathSync),nativeRealpath:functionInfo(fs.realpathSync.native),constructor:functionInfo(fs.Stats),prototype:prototypeInfo(p),base:prototypeInfo(base),samePrototype:p===fs.Stats.prototype,methodSource:base.isFile.toString(),checkSource:p._checkModeProperty.toString(),constructorSource:fs.Stats.toString()});
+}
+row('actual-file-stat',{value:view(fs.statSync(file))});
+row('actual-directory-stat',{value:view(fs.statSync(directory))});
+row('actual-unicode-stat',{value:view(fs.statSync(root+'/metadata/Ω.txt'))});
+row('actual-buffer-stat',{value:view(fs.statSync(Buffer.from(file)))});
+row('actual-file-url-stat',{value:view(fs.statSync(pathToFileURL(file)))});
+row('actual-missing-stat-error',error(()=>fs.statSync(missing)));
+row('actual-missing-stat-no-entry',{undefined:fs.statSync(missing,{throwIfNoEntry:false})===undefined});
+row('actual-realpath-file',{value:fs.realpathSync(file)});
+row('actual-realpath-dotdot',{value:fs.realpathSync(directory+'/nested/../plain.txt')});
+row('actual-realpath-buffer-input',{value:fs.realpathSync(Buffer.from(file))});
+row('actual-realpath-url-input',{value:fs.realpathSync(pathToFileURL(file))});
+{
+ const value=fs.realpathSync(root+'/metadata/Ω.txt',{encoding:'buffer'});row('actual-realpath-buffer-output',{buffer:Buffer.isBuffer(value),value:value.toString()});
+}
+row('actual-realpath-native',{value:fs.realpathSync.native(file)});
+row('actual-realpath-missing-error',error(()=>fs.realpathSync(missing)));
+row('actual-stat-nul-error',error(()=>fs.statSync(root+'/metadata/bad\0path')));
+row('actual-realpath-nul-error',error(()=>fs.realpathSync(root+'/metadata/bad\0path')));
+for(const kind of ['stat','realpath']){
+ const marker={toString(){throw Error('premature error coercion')}},log=[],options={};Object.defineProperty(options,kind==='stat'?'bigint':'encoding',{get(){log.push('get');throw marker}});let same=false;try{(kind==='stat'?fs.statSync:fs.realpathSync)(file,options)}catch(e){same=e===marker}row('actual-options-raw-error:'+kind,{same,log});
+}
+{
+ const log=[],s=fs.statSync(file),p=Object.getPrototypeOf(s),base=Object.getPrototypeOf(p),receiver={_checkModeProperty(value){log.push({value,receiver:this===receiver});return 'custom-result'}};const value=base.isFile.call(receiver);row('actual-stats-borrowed-check-delegation',{value,log,rawMode:fs.Stats.prototype._checkModeProperty.call({mode:s.mode},s.mode&0o170000)});
+}
+{
+ const s=fs.statSync(file,{bigint:true}),p=Object.getPrototypeOf(s),base=Object.getPrototypeOf(p);row('actual-bigint-stat',{value:view(s),keys:Object.keys(s),nanosecondTypes:['atimeNs','mtimeNs','ctimeNs','birthtimeNs'].map(k=>typeof s[k]),prototype:prototypeInfo(p),base:prototypeInfo(base)});
+}
+{
+ const log=[],path={toString(){log.push('toString');return file}},value=error(()=>fs.statSync(path));row('actual-invalid-path-no-coercion',{value,log});
+}
