@@ -1,0 +1,38 @@
+name: Checkpoint Anthropic complete allocation diagnostics
+on:
+  push:
+    branches: [work/native-anthropic-oom-diag-20261015]
+permissions:
+  contents: read
+concurrency:
+  group: native-anthropic-oom-diagnostic-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  diagnostic:
+    if: github.ref == 'refs/heads/work/native-anthropic-oom-diag-20261015'
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Complete unchanged allocation universe with exact failing indices
+        shell: pwsh
+        timeout-minutes: 40
+        run: |
+          & ./tools/ci/diagnose_anthropic_allocations.ps1 -ExpectedHead '${{ github.sha }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-anthropic-oom-diagnostic-${{ matrix.os }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-anthropic-oom-diagnostic/
