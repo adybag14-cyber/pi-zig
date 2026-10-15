@@ -25,12 +25,14 @@ pub fn constructor(engine: *em.Engine, dependencies: c.JSValue, reference: c.JSV
         @import("extensions/native_sdk_session_retry.zig"),           @import("extensions/native_sdk_session_statistics.zig"),
         @import("extensions/native_sdk_send_user.zig"),               @import("extensions/native_sdk_session_registry.zig"),
         @import("extensions/native_sdk_session_loadout.zig"),         @import("extensions/native_sdk_session_restore.zig"),
+        @import("extensions/native_sdk_session_bindings.zig"),
     }) |module| try module.install(engine, staging);
     try @import("extensions/native_sdk_session_compaction.zig").installHelpers(engine, staging);
     try @import("extensions/native_sdk_session_auto_compaction.zig").install(engine, staging);
     try @import("extensions/native_sdk_session_request_auth.zig").install(engine, staging, dependencies);
     try @import("extensions/native_sdk_session_hooks.zig").installWithDependencies(engine, staging, dependencies);
     try @import("extensions/native_sdk_check_compaction.zig").install(engine, staging, dependencies);
+    try @import("extensions/native_sdk_session_boundaries.zig").install(engine, staging, dependencies);
 
     const prototype = try scope.object();
     const result = try scope.own(try @import("extensions/native_sdk_session_construct.zig").constructor(engine, prototype));
@@ -105,6 +107,9 @@ pub fn setup(engine: *em.Engine, environment: *std.process.Environ.Map) !void {
     try sdk.install(engine, namespace);
     try @import("extensions/native_agent_complete.zig").install(engine, namespace);
     const dependencies = try scope.object();
+    try scope.put(dependencies, "SessionManager", try scope.get(namespace, "SessionManager"));
+    try scope.put(dependencies, "NestedToolCallRunner", try scope.own(try @import("extensions/native_nested_tool_calls.zig").constructor(engine)));
+    try scope.put(dependencies, "runToolCall", try scope.own(try @import("extensions/native_agent_single_tool.zig").create(engine)));
     try @import("extensions/native_sdk_session_estimate.zig").install(engine, dependencies);
     try @import("extensions/native_sdk_chat_transport.zig").install(engine, dependencies);
     try scope.put(dependencies, "convertToLlm", try scope.own(try @import("extensions/native_sdk_messages.zig").create(engine)));
