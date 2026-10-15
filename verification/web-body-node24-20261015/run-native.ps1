@@ -16,7 +16,9 @@ $taskInput=Join-Path $taskRoot 'src/extensions/fixtures/web-body-node24.input.tx
 $taskSourceOutput=Join-Path $taskEvidence 'web-body-node24-source-first-20261015-output.json'
 $taskSourceMeta=Get-Content -LiteralPath $taskExpected -Raw|ConvertFrom-Json
 $taskNode='C:/Program Files/nodejs/node.exe'
-$taskAuthorityFiles=@($taskExpected,$taskInput,$taskSourceOutput,$taskSourceMeta.nodeBuiltins.path,$taskSourceMeta.bundledUndici.path,(Join-Path $taskRoot 'verification/web-body-node24-20261015/receipts/web-body-node24-source-first-20261015-node-builtin-authorities.json'),(Join-Path $taskRoot 'verification/web-body-node24-20261015/receipts/web-body-node24-source-first-20261015-bundled-undici.js.txt'),$taskNode)
+$taskSupplement=Join-Path $taskEvidence 'web-body-node-builtin-inventory-second-20261015-output.json'
+$taskSupplementOwner=Join-Path $taskEvidence 'web-body-node-builtin-inventory-second-20261015.json'
+$taskAuthorityFiles=@($taskExpected,$taskInput,$taskSourceOutput,$taskSourceMeta.nodeBuiltins.path,$taskSourceMeta.bundledUndici.path,(Join-Path $taskRoot 'verification/web-body-node24-20261015/receipts/web-body-node24-source-first-20261015-node-builtin-authorities.json'),(Join-Path $taskRoot 'verification/web-body-node24-20261015/receipts/web-body-node24-source-first-20261015-bundled-undici.js.txt'),$taskNode,$taskSupplement,$taskSupplementOwner)
 function Verify-Authority {
  if($taskSourceMeta.cases-ne176-or$taskSourceMeta.actualGcCalls-ne6-or$taskSourceMeta.actualNode.version-cne'v24.14.0'-or$taskSourceMeta.actualNode.undici-cne'7.21.0'){throw 'Genuine Body176 identity mismatch'}
  if((Get-FileHash -LiteralPath $taskExpected).Hash-cne(Get-FileHash -LiteralPath $taskSourceOutput).Hash){throw 'Genuine Body176 expected bytes drift'}
@@ -25,9 +27,13 @@ function Verify-Authority {
  foreach($taskFile in @($taskSourceMeta.nodeBuiltins.path,$taskAuthorityFiles[5])){if((Get-FileHash -LiteralPath $taskFile).Hash-ine'0cd86676bb2a46a4e772d1fd8bb3d00fca658383bc388846dcc796547dc79263'){throw 'All Node builtin source body identity drift'}}
  foreach($taskFile in @($taskSourceMeta.bundledUndici.path,$taskAuthorityFiles[6])){if((Get-FileHash -LiteralPath $taskFile).Hash-ine'c62030f1e505a4010d9972ecbf40155eddeb355f2a53a9f019a447214e1a9600'){throw 'Bundled Undici source body identity drift'}}
  $taskBuiltins=Get-Content -LiteralPath $taskSourceMeta.nodeBuiltins.path -Raw|ConvertFrom-Json -AsHashtable
- if($taskBuiltins.Count-ne369-or@($taskBuiltins.Values|Where-Object{$_-isnot[string]}).Count){throw 'Actual369 Node builtin body inventory drift'}
+ if($taskBuiltins.Count-ne368-or@($taskBuiltins.Values|Where-Object{$_-isnot[string]}).Count){throw 'Actual368 Node builtin string-body inventory drift'}
+ $taskInventory=Get-Content -LiteralPath $taskSupplement -Raw|ConvertFrom-Json
+ $taskInventoryOwner=Get-Content -LiteralPath $taskSupplementOwner -Raw|ConvertFrom-Json
+ if($taskInventoryOwner.status-cne'passed'-or$taskInventoryOwner.exit_code-ne0-or$taskInventory.enumerated_entries-ne369-or$taskInventory.string_bodies-ne368-or$taskInventory.undefined_keys.Count-ne1-or$taskInventory.undefined_keys[0]-cne'configs'-or$taskInventory.serialized_entries-ne368-or$taskInventory.serialized_includes_configs){throw 'Actual undefined configs supplement mismatch'}
+ if(!$taskInventory.configs_descriptor.enumerable-or!$taskInventory.configs_descriptor.writable-or!$taskInventory.configs_descriptor.configurable-or$taskInventory.serialized_sha256-cne'0cd86676bb2a46a4e772d1fd8bb3d00fca658383bc388846dcc796547dc79263'){throw 'Actual builtin supplement identity drift'}
  foreach($taskKey in @('internal/blob','internal/file','internal/webstreams/readablestream','internal/deps/undici/undici')){if(!$taskBuiltins.ContainsKey($taskKey)){throw 'Mandatory actual builtin body absent'}}
- return [ordered]@{source_cases=176;actual_gc_calls=6;node_builtin_bodies=369;node_builtin_bytes=9294918;drift=0}
+ return [ordered]@{source_cases=176;actual_gc_calls=6;node_builtin_bodies=368;enumerated_native_entries=369;undefined_native_entries=1;node_builtin_bytes=9294918;drift=0}
 }
 function Candidate-Rows {
     @(git -C $taskRoot ls-files --cached --others --exclude-standard | Sort-Object -Unique | ForEach-Object { $taskFile=Join-Path $taskRoot $_; [ordered]@{path=$taskFile;sha256=(Get-FileHash -LiteralPath $taskFile).Hash} })
@@ -52,7 +58,7 @@ $taskTools=@((Get-Content -LiteralPath $taskToolsPath -Raw|ConvertFrom-Json).inp
 if($taskTools.Count-ne19546){throw 'Complete compiler/library19546 inventory mismatch'}
 $taskToolRows="$taskBase-tools.json"
 $taskTools|ConvertTo-Json -Depth 4|Set-Content -LiteralPath $taskToolRows -Encoding utf8NoBOM
-$taskControls=@($PSCommandPath,$taskOwner,$taskToolsPath,$taskAudit,(Join-Path $PSScriptRoot 'source-capture.mjs'),(Join-Path $PSScriptRoot 'run-source.ps1'))|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}}
+$taskControls=@($PSCommandPath,$taskOwner,$taskToolsPath,$taskAudit,(Join-Path $PSScriptRoot 'source-capture.mjs'),(Join-Path $PSScriptRoot 'run-source.ps1'),(Join-Path $PSScriptRoot 'builtin-inventory.mjs'),(Join-Path $PSScriptRoot 'run-builtin-inventory.ps1'))|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}}
 $taskControlPath="$taskBase-controls.json"
 $taskControls|ConvertTo-Json -Depth 4|Set-Content -LiteralPath $taskControlPath -Encoding utf8NoBOM
 $taskAuthorityPath="$taskBase-authorities.json"
@@ -74,7 +80,7 @@ function Verify-Frozen {
     if($taskChecks[0].count -ne 1967 -or $taskChecks[1].count -ne 31064 -or $taskChecks[2].count -ne 1774){throw 'Original complete inventory mismatch'}
     if(@($taskAbsent|Where-Object{Test-Path -LiteralPath $_}).Count){throw 'Absent dependency state drift'}
     $taskAuthority=Verify-Authority
-    $taskChecks+=[ordered]@{manifest='actual-Body176-Node369-authority';count=$taskAuthority.node_builtin_bodies;source_cases=$taskAuthority.source_cases;actual_gc_calls=$taskAuthority.actual_gc_calls;drift=0}
+    $taskChecks+=[ordered]@{manifest='actual-Body176-Node369-entry-authority';count=$taskAuthority.node_builtin_bodies;enumerated_entries=369;undefined_configs_entries=1;source_cases=$taskAuthority.source_cases;actual_gc_calls=$taskAuthority.actual_gc_calls;drift=0}
     return $taskChecks
 }
 $taskBefore=Verify-Frozen
