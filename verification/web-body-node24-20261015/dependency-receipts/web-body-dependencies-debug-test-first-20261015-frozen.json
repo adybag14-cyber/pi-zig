@@ -1,0 +1,42 @@
+[
+  {
+    "name": "source5ab-full-manifest-20261015.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE"
+  },
+  {
+    "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "name": "root-current8a-npm-tools-before.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "name": "web-body-dependencies-debug-test-first-20261015-candidate.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-dependencies-debug-test-first-20261015-candidate.json",
+    "sha256": "9E296A052A0ED933B18635662E873F31D6C7B8C49B0665649EB067E677426BD5"
+  },
+  {
+    "name": "web-body-dependencies-debug-test-first-20261015-vendor.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-dependencies-debug-test-first-20261015-vendor.json",
+    "sha256": "59E03B0F3F4CB0C988DE0267BCE05102F2E088D23BD41E404AF75D2272EADFAC"
+  },
+  {
+    "name": "web-body-dependencies-debug-test-first-20261015-tools.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-dependencies-debug-test-first-20261015-tools.json",
+    "sha256": "CE7D170F3DDE340CB94AA29C228B83E2E9D3ABA2B62615474AF3BCE67C581018"
+  },
+  {
+    "name": "web-body-dependencies-debug-test-first-20261015-controls.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-dependencies-debug-test-first-20261015-controls.json",
+    "sha256": "1640E427D2B4EA571DFA406AD2F39B189486866C267E25AAF3E2541FBE645DB3"
+  },
+  {
+    "name": "web-body-dependencies-debug-test-first-20261015-authorities.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-dependencies-debug-test-first-20261015-authorities.json",
+    "sha256": "AC57C6FB457050B10E94584B4871FB4DB894AF7E99C0A72FB5A1D70B4A27393F"
+  }
+]
