@@ -1,0 +1,35 @@
+{
+  "candidate": "1c22a18117dcd1047e9c1fa8a6e8c94ef66362fb",
+  "scope": "functional30/request27/retainedGC/fullhostOOM component only; strict snapshot negative preserved",
+  "artifact": "C:\\Users\\adyba\\pi-zig-ai-google-mistral-20261015\\.zig-cache\\o\\1635524a1e24730f35977181387a205b\\test.exe",
+  "artifact_sha256": "0214E2F94BD706194F8D2B43546959AA2107992D0E5A0C9BB9183F508B73A85D",
+  "compile": "matching prior PASS",
+  "runtime": "passed",
+  "source": 6132,
+  "source_drift": 0,
+  "compiler": 19546,
+  "compiler_drift": 0,
+  "controls": 13,
+  "control_drift": 0,
+  "references": [
+    {
+      "drift": 0,
+      "count": 1967,
+      "name": "source"
+    },
+    {
+      "drift": 0,
+      "count": 31064,
+      "name": "dependencies"
+    },
+    {
+      "drift": 0,
+      "count": 1774,
+      "name": "node_tools"
+    }
+  ],
+  "absence_records": 84,
+  "absence_drift": 0,
+  "failure": null,
+  "completed_utc": "2026-10-15T20:00:28.2468238+00:00"
+}

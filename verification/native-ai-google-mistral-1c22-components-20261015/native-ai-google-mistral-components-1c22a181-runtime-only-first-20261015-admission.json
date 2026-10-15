@@ -1,0 +1,17 @@
+{
+  "status": "admitted",
+  "candidate": "1c22a18117dcd1047e9c1fa8a6e8c94ef66362fb",
+  "slot": 3,
+  "free_kib": 18558736,
+  "required_kib": 16777216,
+  "max_roots": 4,
+  "other_roots": [],
+  "compile": "not_invoked",
+  "artifact": "C:\\Users\\adyba\\pi-zig-ai-google-mistral-20261015\\.zig-cache\\o\\1635524a1e24730f35977181387a205b\\test.exe",
+  "artifact_sha256": "0214E2F94BD706194F8D2B43546959AA2107992D0E5A0C9BB9183F508B73A85D",
+  "runtime_upper_seconds": 300,
+  "all_tests_deadline_seconds": 120,
+  "test_deadline_seconds": 120,
+  "host_await_seconds": 10,
+  "observed_utc": "2026-10-15T19:59:52.3832620+00:00"
+}

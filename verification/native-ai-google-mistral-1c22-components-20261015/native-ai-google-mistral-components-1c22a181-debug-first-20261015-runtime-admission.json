@@ -1,0 +1,25 @@
+{
+  "status": "admission_failed",
+  "candidate": "1c22a18117dcd1047e9c1fa8a6e8c94ef66362fb",
+  "slot": 3,
+  "phase": "runtime",
+  "free_kib": 16595688,
+  "threshold_kib": 16777216,
+  "max_native_roots": 4,
+  "other_native_roots": [
+    {
+      "ProcessId": 50584,
+      "ParentProcessId": 61348,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-ui-overlay-ae7 -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-15T19:51:04.3723010Z"
+    }
+  ],
+  "jobs": 1,
+  "llvm": true,
+  "compile_timeout_seconds": 1320,
+  "runtime_timeout_seconds": 300,
+  "test_timeout_seconds": 120,
+  "host_await_timeout_seconds": 10,
+  "observed_utc": "2026-10-15T19:56:24.0623120+00:00"
+}
