@@ -101,9 +101,9 @@ The Source14 wire comparison uses the actual captured path (including any query)
 and request body. Captured content-type and custom fixture headers are now also
 asserted in the repair fork. Source14 did not capture method/full URL and replaced
 the auth value with a presence marker; the native literal fake bearer assertion
-is independent evidence. No method/full-header equivalence is claimed. The
-separate queued Source18 driver records method/URL/path and fake authorization
-verbatim and adds four streamSimple stimuli. It has not run.
+is independent evidence. No method/full-header equivalence is claimed for
+Source14. The subsequent Source18 capture below closes those observation gaps
+and adds four streamSimple stimuli.
 
 ## Source18 capture and next native owner
 
