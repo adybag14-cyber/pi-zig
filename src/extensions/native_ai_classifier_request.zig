@@ -6,7 +6,7 @@ const Scope = v.Scope;
 const c = v.c;
 const flow = @import("native_agent_async.zig");
 const Stage = enum(c_int) { payload, retried, observed, fetched, head, body, json, text, errorText };
-pub const Config = struct { require_key: bool = true, observe: bool = true, headers_once: bool = false, prepared_headers: ?c.JSValue = null, sdk_errors: bool = false, default_retries: u32 = 2 };
+pub const Config = struct { require_key: bool = true, observe: bool = true, headers_once: bool = false, prepared_headers: ?c.JSValue = null, sdk_defaults: ?c.JSValue = null, api_key: ?c.JSValue = null, fetch: ?c.JSValue = null, url_factory: ?c.JSValue = null, sdk_errors: bool = false, default_retries: u32 = 2 };
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     const retry = try @import("native_ai_provider_retry_request.zig").create(engine);
     defer engine.freeValue(retry);
@@ -37,6 +37,12 @@ pub fn post(engine: *v.em.Engine, retry: c.JSValue, args: []const c.JSValue, con
     try scope.put(owner, "headersOnce", c.pi_js_bool(engine.context, @intFromBool(config.headers_once)));
     try scope.put(owner, "preparedHeaders", c.pi_js_bool(engine.context, @intFromBool(config.prepared_headers != null)));
     if (config.prepared_headers) |headers_value| try scope.put(owner, "headers", headers_value);
+    try scope.put(owner, "preparedSdkHeaders", c.pi_js_bool(engine.context, @intFromBool(config.sdk_defaults != null)));
+    if (config.sdk_defaults) |defaults| try scope.put(owner, "sdkDefaults", defaults);
+    if (config.api_key) |key| try scope.put(owner, "apiKey", key);
+    try scope.put(owner, "preparedFetch", c.pi_js_bool(engine.context, @intFromBool(config.fetch != null)));
+    if (config.fetch) |fetch| try scope.put(owner, "fetch", fetch);
+    try scope.put(owner, "urlFactory", config.url_factory orelse c.pi_js_undefined());
     try scope.put(owner, "sdk", c.pi_js_bool(engine.context, @intFromBool(config.sdk_errors)));
     try scope.put(owner, "defaultRetries", c.JS_NewUint32(engine.context, config.default_retries));
     setup(&scope, owner, config) catch |err| try rejectError(&scope, owner, err);
@@ -114,7 +120,14 @@ fn observe(scope: *Scope, owner: c.JSValue, value: c.JSValue) !void {
 }
 fn startRetry(scope: *Scope, owner: c.JSValue, transformed: c.JSValue) !void {
     if (!c.JS_IsUndefined(transformed)) try scope.put(owner, "payload", transformed);
-    try scope.put(owner, "fetch", try v.optional(scope, try scope.get(owner, "options"), "fetch"));
+    const source_options = try scope.get(owner, "options");
+    if (!scope.truthy(try scope.get(owner, "preparedFetch"))) try scope.put(owner, "fetch", try v.optional(scope, source_options, "fetch"));
+    if (scope.truthy(try scope.get(owner, "sdk"))) {
+        const signal = try v.optional(scope, source_options, "signal");
+        try scope.put(owner, "sdkSignal", if (scope.truthy(signal)) try scope.get(source_options, "signal") else c.pi_js_undefined());
+        const timeout = try v.optional(scope, source_options, "timeoutMs");
+        try scope.put(owner, "sdkTimeout", if (c.JS_IsUndefined(timeout)) timeout else try scope.get(source_options, "timeoutMs"));
+    }
     if (scope.truthy(try scope.get(owner, "headersOnce")) and !scope.truthy(try scope.get(owner, "preparedHeaders"))) try scope.put(owner, "headers", try buildHeaders(scope, owner, true));
     const Adapter = struct {
         fn call(host: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -142,10 +155,18 @@ fn attempt(scope: *Scope, pending: c.JSValue) !void {
     const owner = try scope.get(pending, "agent");
     const options = try scope.get(owner, "options");
     const sdk = scope.truthy(try scope.get(owner, "sdk"));
-    const timeout = try v.optional(scope, options, "timeoutMs");
+    const timeout = if (sdk) try scope.get(owner, "sdkTimeout") else try v.optional(scope, options, "timeoutMs");
+    const url_factory = try scope.get(owner, "urlFactory");
+    const request_url = if (v.nullish(url_factory)) try scope.get(owner, "url") else try scope.call(url_factory, c.pi_js_undefined(), &.{});
+    var encoded_payload = c.pi_js_undefined();
+    var sdk_headers = c.pi_js_undefined();
+    if (sdk) {
+        encoded_payload = try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")});
+        if (scope.truthy(try scope.get(owner, "preparedSdkHeaders"))) sdk_headers = try @import("native_ai_openai_headers.zig").buildPrepared(scope, try scope.get(owner, "sdkDefaults"), try scope.get(owner, "apiKey"), timeout);
+    }
     const timeout_signal = if (!sdk and !c.JS_IsUndefined(timeout)) try scope.invoke(try scope.global("AbortSignal"), "timeout", &.{timeout}) else c.pi_js_undefined();
     try scope.put(pending, "timeoutSignal", timeout_signal);
-    const caller_signal = try v.optional(scope, options, "signal");
+    const caller_signal = if (sdk) try scope.get(owner, "sdkSignal") else try v.optional(scope, options, "signal");
     var signal = if (v.nullish(caller_signal)) timeout_signal else caller_signal;
     if (sdk) {
         if (scope.truthy(try v.optional(scope, caller_signal, "aborted"))) return rejectAttempt(scope, pending, try @import("native_ai_openai_api_error.zig").connection(scope, .aborted, c.pi_js_undefined()));
@@ -171,8 +192,8 @@ fn attempt(scope: *Scope, pending: c.JSValue) !void {
         signal = try scope.invoke(try scope.global("AbortSignal"), "any", &.{signals});
     }
     try scope.put(pending, "signal", signal);
-    const fields = if (scope.truthy(try scope.get(owner, "headersOnce")) or scope.truthy(try scope.get(owner, "preparedHeaders"))) try scope.get(owner, "headers") else try buildHeaders(scope, owner, false);
-    const payload = try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")});
+    const fields = if (!c.JS_IsUndefined(sdk_headers)) sdk_headers else if (scope.truthy(try scope.get(owner, "headersOnce")) or scope.truthy(try scope.get(owner, "preparedHeaders"))) try scope.get(owner, "headers") else try buildHeaders(scope, owner, false);
+    const payload = if (sdk) encoded_payload else try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")});
     const fetch = try scope.get(owner, "fetch");
     if (!v.nullish(fetch)) {
         const init = try scope.object();
@@ -180,7 +201,7 @@ fn attempt(scope: *Scope, pending: c.JSValue) !void {
         try scope.put(init, "headers", fields);
         try scope.put(init, "body", payload);
         try scope.put(init, "signal", signal);
-        const fetched = scope.call(fetch, c.pi_js_undefined(), &.{ try scope.get(owner, "url"), init }) catch |err| {
+        const fetched = scope.call(fetch, c.pi_js_undefined(), &.{ request_url, init }) catch |err| {
             if (err == error.OutOfMemory) return rejectAttemptError(scope, pending, err);
             const reason = flow.reason(scope.engine, err);
             defer scope.engine.freeValue(reason);
@@ -200,7 +221,7 @@ fn attempt(scope: *Scope, pending: c.JSValue) !void {
         }
         headers_list.deinit(scope.engine.gpa);
     }
-    const entries = if (scope.truthy(try scope.get(owner, "preparedHeaders"))) try scope.invoke(fields, "entries", &.{}) else try scope.invoke(try scope.global("Object"), "entries", &.{fields});
+    const entries = if (scope.truthy(try scope.get(owner, "preparedHeaders")) or scope.truthy(try scope.get(owner, "preparedSdkHeaders"))) try scope.invoke(fields, "entries", &.{}) else try scope.invoke(try scope.global("Object"), "entries", &.{fields});
     var iterator = try v.iterator(scope, entries);
     defer iterator.deinit();
     errdefer iterator.closePreserving();
@@ -214,7 +235,7 @@ fn attempt(scope: *Scope, pending: c.JSValue) !void {
         errdefer scope.engine.gpa.free(value);
         try headers_list.append(scope.engine.gpa, .{ .name = name, .value = value });
     }
-    const url = try scope.engine.toString(try scope.get(owner, "url"));
+    const url = try scope.engine.toString(request_url);
     defer scope.engine.gpa.free(url);
     const body = try scope.engine.toString(payload);
     defer scope.engine.gpa.free(body);

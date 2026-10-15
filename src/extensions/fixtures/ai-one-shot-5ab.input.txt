@@ -21,7 +21,7 @@ async function runOneShot(kind,mode){
   const fetch=async(url,init)=>{
     const headers=new Headers(init.headers);const explicit=new Set(Object.keys(callerHeaders).map(key=>key.toLowerCase()));
     const functional=Object.fromEntries([...headers].filter(([key])=>!nativeDiagnostics.has(key)||explicit.has(key)));
-    const body=JSON.parse(init.body);requests.push({path:new URL(String(url)).pathname,body,headers:functional,urlObject:url instanceof URL});rawHeaders.push([...headers]);order.push('fetch');count++;
+    const body=JSON.parse(init.body),address=new URL(String(url));requests.push({url:String(url),path:address.pathname+address.search,method:init.method,rawBody:init.body,body,headers:functional,urlObject:url instanceof URL});rawHeaders.push([...headers]);order.push('fetch');count++;
     let status=200,responseBody;
     if(mode==='http-error')status=400;
     if(mode==='gateway504')status=504;
@@ -46,7 +46,7 @@ async function runOneShot(kind,mode){
     return {status,statusText:status===200?'OK':'Fixture Error',ok:status===200,headers:responseHeaders,url:String(url),body:null,async json(){order.push('json');return responseBody},async text(){order.push('text');return JSON.stringify(responseBody)}};
   };
   const options={apiKey:mode==='no-key'?'':'fixture-key',fetch,headers:callerHeaders,maxRetries:mode==='retry'||mode==='gateway504'?2:0,temperature:mode==='invalid-temperature'?0:1,
-    async onPayload(payload,seen){if(seen!==model)throw Error('model identity');order.push('payload');payloads.push(clean(payload));await Promise.resolve();order.push('payload-awaited');if(mode==='payload-replace')return {...payload,custom:true};},
+    async onPayload(payload,seen){if(seen!==model)throw Error('model identity');order.push('payload');payloads.push(clean(payload));await Promise.resolve();order.push('payload-awaited');if(mode==='payload-replace'){if(kind==='image'){options.timeoutMs=1234;options.headers['x-custom']='mutated-after-client';options.fetch=()=>{throw Error('must use captured fetch')};}return {...payload,custom:true};}},
     async onResponse(response,seen){if(seen!==model||Object.keys(response).join(',')!=='status,headers')throw Error('response identity/shape');order.push('response:'+response.status);await Promise.resolve();order.push('response-awaited');if(mode==='response-throw')throw Error('caller response rejected')}
   };
   const api=oneShotAPIs[kind];const result=await (kind==='image'?api.generateImages(model,selectedContext,options):api.classify(model,selectedContext,options));

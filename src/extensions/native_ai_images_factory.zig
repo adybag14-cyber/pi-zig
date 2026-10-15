@@ -45,11 +45,23 @@ fn setup(scope: *Scope, owner: c.JSValue) !void {
     const options = try scope.get(owner, "options");
     const key = try v.optional(scope, options, "apiKey");
     if (!scope.truthy(key)) return v.errorText(scope, try scope.concat(try scope.text("No API key for provider: "), try scope.stringify(try scope.get(model, "provider"))));
-    const headers = try @import("native_ai_openai_headers.zig").build(scope, model, options, key);
-    const body = try codec.build(scope, model, try scope.get(owner, "context"));
+    const option_headers = try v.optional(scope, options, "headers");
+    const fetch = try v.optional(scope, options, "fetch");
     const base = try scope.get(model, "baseUrl");
-    const url = try scope.own(try v.js.builtin(scope.engine, "URL", &.{try scope.concat(if (scope.truthy(try scope.invoke(base, "endsWith", &.{try scope.text("/")}))) try scope.invoke(base, "slice", &.{ c.JS_NewInt32(scope.engine.context, 0), c.JS_NewInt32(scope.engine.context, -1) }) else base, try scope.text("/chat/completions"))}));
-    const promise = try scope.own(try @import("native_ai_classifier_request.zig").post(scope.engine, try scope.get(owner, "agent"), &.{ try scope.text("OpenAI"), try scope.invoke(url, "toString", &.{}), model, body, options, c.pi_js_undefined() }, .{ .require_key = false, .prepared_headers = headers, .sdk_errors = true, .default_retries = 0 }));
+    const defaults = try @import("native_ai_openai_headers.zig").prepare(scope, model, option_headers);
+    const body = try codec.build(scope, model, try scope.get(owner, "context"));
+    const Url = struct {
+        fn call(host: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            var row: Scope = .{ .engine = host };
+            defer row.deinit();
+            const original = roots[0];
+            const trimmed = if (row.truthy(try row.invoke(original, "endsWith", &.{try row.text("/")}))) try row.invoke(original, "slice", &.{ c.JS_NewInt32(host.context, 0), c.JS_NewInt32(host.context, -1) }) else original;
+            const url = try row.own(try v.js.builtin(host, "URL", &.{try row.concat(trimmed, try row.text("/chat/completions"))}));
+            return c.JS_DupValue(host.context, try row.invoke(url, "toString", &.{}));
+        }
+    };
+    const url_factory = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 0, Url.call, &.{base}));
+    const promise = try scope.own(try @import("native_ai_classifier_request.zig").post(scope.engine, try scope.get(owner, "agent"), &.{ try scope.text("OpenAI"), c.pi_js_undefined(), model, body, options, c.pi_js_undefined() }, .{ .require_key = false, .sdk_defaults = defaults, .api_key = key, .fetch = fetch, .url_factory = url_factory, .sdk_errors = true, .default_retries = 0 }));
     try flow.wait(continued, scope.engine, owner, promise, 0);
 }
 fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
