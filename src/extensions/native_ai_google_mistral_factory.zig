@@ -70,6 +70,7 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
     try scope.put(owner, "attempt", c.JS_NewInt32(engine.context, 0));
     inline for (.{ "mistralCustom", "mistralClosing", "mistralHeadersRetired" }) |key| try scope.put(owner, key, c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "mistralPrepared", c.pi_js_undefined());
+    try scope.put(owner, "googleHeaders", c.pi_js_undefined());
     if (kind == .mistral) try @import("native_ai_mistral_sse.zig").init(&scope, owner);
     const decoded = try scope.own(try decoder.create(engine, args[0], outer, try scope.get(dependencies, "json"), dependencies, if (kind == .mistral) .mistral else if (kind == .vertex) .vertex else .google));
     try scope.put(owner, "decoder", decoded);
@@ -85,6 +86,9 @@ fn setup(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
         if (scope.truthy(custom_fetch) and !scope.equal(custom_fetch, try scope.global("fetch"))) return v.errorText(scope, try scope.text(if (kind == .google) "Custom fetch is not supported by the Google Generative AI adapter" else "Custom fetch is not supported by the Google Vertex AI adapter"));
     }
     if (kind == .mistral) try scope.put(owner, "apiKey", try apiKey(scope, model, options)) else try scope.put(owner, "auth", try auth.resolve(scope, dependencies, model, options, kind == .vertex));
+    // Google SDK client construction snapshots provider header overrides before
+    // onPayload; the Mistral request constructs its Headers after onPayload.
+    if (kind != .mistral) try scope.put(owner, "googleHeaders", try headers(scope, owner, kind));
     const payload = try scope.own(if (kind == .mistral) try mistral.build(scope.engine, dependencies, model, try scope.get(owner, "context"), options) else try google.build(scope.engine, dependencies, model, try scope.get(owner, "context"), options));
     try scope.put(owner, "payload", payload);
     try wait(scope, owner, try hook(scope, owner, "onPayload", payload), .payload, kind);
@@ -249,7 +253,7 @@ fn open(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
         }
     }
     const prepared = try scope.get(owner, "mistralPrepared");
-    const fields_object = if (kind == .mistral) try scope.invoke(try scope.global("Object"), "fromEntries", &.{try scope.invoke(try scope.get(try scope.get(prepared, "init"), "headers"), "entries", &.{})}) else try headers(scope, owner, kind);
+    const fields_object = if (kind == .mistral) try scope.invoke(try scope.global("Object"), "fromEntries", &.{try scope.invoke(try scope.get(try scope.get(prepared, "init"), "headers"), "entries", &.{})}) else try scope.get(owner, "googleHeaders");
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
         for (fields.items) |field| {
