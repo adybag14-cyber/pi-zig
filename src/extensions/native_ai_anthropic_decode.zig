@@ -242,12 +242,12 @@ fn strictFallback(scope: *Scope, owner: c.JSValue, failure: c.JSValue) !void {
     const item = try scope.object();
     try scope.put(item, "type", try scope.text("anthropic_strict_tools_fallback"));
     try scope.put(item, "timestamp", try scope.invoke(try scope.global("Date"), "now", &.{}));
-    const details = try scope.object();
-    try scope.put(details, "reason", try scope.text("strict_tool_limits_exceeded"));
-    try scope.put(item, "details", details);
     const error_value = try scope.object();
     try scope.put(error_value, "message", try scope.get(failure, "message"));
     try scope.put(item, "error", error_value);
+    const details = try scope.object();
+    try scope.put(details, "reason", try scope.text("strict_tool_limits_exceeded"));
+    try scope.put(item, "details", details);
     try diagnostic(scope, owner, item);
 }
 fn finish(scope: *Scope, owner: c.JSValue, aborted: bool) !void {
