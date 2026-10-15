@@ -130,9 +130,11 @@ try{
  const sourceLifecycle={unclosedClients:[...ownedClients].filter(([socket])=>socket.readyState!==WebSocket.CLOSED).map(([,record])=>record),unclosedPeers:[...ownedPeers].filter(([socket])=>socket.readyState!==WebSocket.CLOSED).map(([,record])=>record),retainedTimers:ownedTimers.map((record,index)=>({index,scenario:record.scenario,requestedDelay:record.requestedDelay,destroyed:record.handle._destroyed,refed:record.handle.hasRef()})).filter(record=>!record.destroyed)};
  // Only exact job-owned handles/sockets are cleared after all observations.
  for(const record of ownedTimers)Reflect.apply(originalClearTimeout,globalThis,[record.handle]);
+ const teardownClosures=[...ownedClients.keys(),...ownedPeers.keys()].filter(socket=>socket.readyState!==WebSocket.CLOSED).map(socket=>new Promise(resolve=>socket.once('close',resolve)));
  for(const [socket] of ownedClients)if(socket.readyState!==WebSocket.CLOSED)socket.terminate();
  for(const [socket] of ownedPeers)if(socket.readyState!==WebSocket.CLOSED)socket.terminate();
  for(const socket of tcpSockets)socket.destroy();
+ await Promise.all(teardownClosures);
  await new Promise(resolve=>wss.close(resolve));await new Promise(resolve=>server.close(resolve));
  const testTeardown={listening:server.listening,websocketClients:wss.clients.size,tcpSockets:tcpSockets.size,remainingTimers:ownedTimers.filter(record=>!record.handle._destroyed).length,remainingClients:[...ownedClients].filter(([socket])=>socket.readyState!==WebSocket.CLOSED).length,remainingPeers:[...ownedPeers].filter(([socket])=>socket.readyState!==WebSocket.CLOSED).length};
  const result={sourceHead:'5ab7fe74c400097b386662205cd93900695b8a71',actualNode:{version:process.version,executable:process.execPath},transport:{kind:'actual-caller-global',package:JSON.parse(readFileSync('C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/ws/package.json')),origin},cases:specifications.length,context,specifications,rows,protocolSourceCompleted:true,sourceLifecycleQualified:sourceLifecycle.unclosedClients.length===0&&sourceLifecycle.unclosedPeers.length===0&&sourceLifecycle.retainedTimers.length===0,sourceLifecycle,testTeardown};
