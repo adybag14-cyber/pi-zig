@@ -96,7 +96,7 @@ fn validate(scope: *Scope, delay: c.JSValue, max: c.JSValue, message: c.JSValue)
     }
     return delay;
 }
-fn delay(scope: *Scope, failure: c.JSValue, index: c.JSValue, max: c.JSValue) !c.JSValue {
+fn retryDelay(scope: *Scope, failure: c.JSValue, index: c.JSValue, max: c.JSValue) !c.JSValue {
     const milliseconds = try header(scope, failure, "retry-after-ms");
     if (scope.truthy(milliseconds)) {
         const value = try scope.invoke(try scope.global("Number"), "parseFloat", &.{milliseconds});
@@ -124,7 +124,7 @@ fn failed(scope: *Scope, owner: c.JSValue, failure: c.JSValue, owned: bool) !voi
     }
     const index = try binary(scope, .subtract, try scope.get(owner, "maximum"), remaining);
     try scope.set(owner, "remaining", try binary(scope, .subtract, remaining, c.JS_NewInt32(scope.engine.context, 1)));
-    try flow.wait(continued, scope.engine, owner, try sleep(scope, try delay(scope, failure, index, try scope.get(options, "maxRetryDelayMs")), abort_signal), 1);
+    try flow.wait(continued, scope.engine, owner, try sleep(scope, try retryDelay(scope, failure, index, try scope.get(options, "maxRetryDelayMs")), abort_signal), 1);
 }
 fn sleep(scope: *Scope, duration: c.JSValue, abort_signal: c.JSValue) !c.JSValue {
     const pending = try flow.create(scope.engine, abort_signal);

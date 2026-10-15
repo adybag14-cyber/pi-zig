@@ -79,7 +79,7 @@ fn total(scope: *Scope, owner: c.JSValue) !void {
     try scope.set(usage, "totalTokens", count);
     _ = try scope.own(try @import("native_ai_cost.zig").calculate(scope.engine, try scope.get(owner, "usageModel"), usage));
 }
-fn usage(scope: *Scope, owner: c.JSValue, input: c.JSValue, initial: bool) !void {
+fn updateUsage(scope: *Scope, owner: c.JSValue, input: c.JSValue, initial: bool) !void {
     const output = try scope.get(try scope.get(owner, "output"), "usage");
     inline for (.{ .{ "input_tokens", "input" }, .{ "output_tokens", "output" }, .{ "cache_read_input_tokens", "cacheRead" }, .{ "cache_creation_input_tokens", "cacheWrite" } }) |pair| {
         const value = try scope.get(input, pair[0]);
@@ -134,7 +134,7 @@ pub fn event(scope: *Scope, owner: c.JSValue, input: c.JSValue) !void {
                 }
             }
         }
-        try usage(scope, owner, try scope.get(message, "usage"), true);
+        try updateUsage(scope, owner, try scope.get(message, "usage"), true);
     } else if (try v.eq(scope, kind, "content_block_start")) {
         const input_block = try scope.get(input, "content_block");
         const block_kind = try scope.get(input_block, "type");
@@ -223,7 +223,7 @@ pub fn event(scope: *Scope, owner: c.JSValue, input: c.JSValue) !void {
         const reason = try scope.get(delta, "stop_reason");
         if (scope.truthy(reason)) try stop(scope, output, reason, try scope.get(delta, "stop_details"));
         const tokens = try scope.get(input, "usage");
-        if (scope.truthy(tokens)) try usage(scope, owner, tokens, false) else try total(scope, owner);
+        if (scope.truthy(tokens)) try updateUsage(scope, owner, tokens, false) else try total(scope, owner);
     }
 }
 fn diagnostic(scope: *Scope, owner: c.JSValue, item: c.JSValue) !void {
