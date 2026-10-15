@@ -1,0 +1,26 @@
+[
+  {
+    "target": "test-native-ai-compat",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\.zig-cache\\o\\c05dc0e346c55b053b34898fac3b5172\\test.exe",
+    "sha256": "926141CA97578CB8FEAAC1C1AFB7AFC90C82F918C3660DFA1C6EBF8ACB7B5A6D",
+    "bytes": 45296128,
+    "written_utc": "2026-10-14T19:55:27.1879348Z",
+    "authority": "Retained output of successful exact-source Zig build; runtime owner records parent Zig process, not a separate kernel identity for each test child"
+  },
+  {
+    "target": "test-native-ai-env-keys",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\.zig-cache\\o\\b3908c9b2cf58eeff0f5fb411bd11a0a\\test.exe",
+    "sha256": "683C7C568372A0EC5A470D09057F42B0AF64539C328686116D31F02FDAAC4C42",
+    "bytes": 45672960,
+    "written_utc": "2026-10-14T19:55:35.4169520Z",
+    "authority": "Retained output of successful exact-source Zig build; runtime owner records parent Zig process, not a separate kernel identity for each test child"
+  },
+  {
+    "target": "test-native-crypto-random",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\.zig-cache\\o\\b753b597deabc6c5d3abe447571935cc\\test.exe",
+    "sha256": "5C291B36D76F743BC52396987EE4B2A29907602F89DF808AC66DA818C7962EEE",
+    "bytes": 45077504,
+    "written_utc": "2026-10-14T19:55:30.9442346Z",
+    "authority": "Retained output of successful exact-source Zig build; runtime owner records parent Zig process, not a separate kernel identity for each test child"
+  }
+]

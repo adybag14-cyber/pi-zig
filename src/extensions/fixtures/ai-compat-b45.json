@@ -1,0 +1,273 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "inputSha256": "a79dc80377ad2288a4b7d13efc56cbd1c59c65a5868415051d6ca06bdb35e5ca",
+  "scope": "Actual original compat.ts: global registry, custom registered streams, normalization, scoped env key dispatch, complete async semantics. Builtin real transport and cloudflare routing are not exercised by these observations.",
+  "cases": 36,
+  "rows": [
+    {
+      "name": "initial builtin order",
+      "value": [
+        "anthropic-messages",
+        "openai-completions",
+        "openai-responses",
+        "openai-codex-responses",
+        "azure-openai-responses",
+        "google-generative-ai",
+        "google-vertex",
+        "mistral-conversations",
+        "bedrock-converse-stream",
+        "pi-messages"
+      ]
+    },
+    {
+      "name": "builtin registration idempotent",
+      "value": true
+    },
+    {
+      "name": "register return",
+      "value": true
+    },
+    {
+      "name": "snapshot distinct",
+      "value": true
+    },
+    {
+      "name": "missing lookup",
+      "value": true
+    },
+    {
+      "name": "list insertion",
+      "value": [
+        "probe-api",
+        "probe-second"
+      ]
+    },
+    {
+      "name": "wrapper shape",
+      "value": {
+        "name": "",
+        "length": 3,
+        "prototype": false
+      }
+    },
+    {
+      "name": "wrapper mismatch",
+      "value": {
+        "name": "Error",
+        "message": "Mismatched api: other expected probe-api"
+      }
+    },
+    {
+      "name": "wrapper not constructible",
+      "value": true
+    },
+    {
+      "name": "stream synchronous result",
+      "value": true
+    },
+    {
+      "name": "stream caller binding",
+      "value": {
+        "label": "a",
+        "method": "stream",
+        "receiver": true,
+        "model": "model",
+        "context": {
+          "messages": [
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "normalized messages identity",
+      "value": true
+    },
+    {
+      "name": "simple normalization",
+      "value": {
+        "label": "a",
+        "method": "streamSimple",
+        "receiver": true,
+        "model": "model",
+        "context": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "system",
+              "toolsAdded": [
+                {
+                  "name": "read"
+                }
+              ],
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ]
+        },
+        "options": {
+          "apiKey": " explicit ",
+          "headers": {
+            "x": "y"
+          }
+        }
+      }
+    },
+    {
+      "name": "tools and message identity",
+      "value": true
+    },
+    {
+      "name": "env injection and clone",
+      "value": {
+        "call": {
+          "label": "a",
+          "method": "stream",
+          "receiver": true,
+          "model": "model",
+          "context": {
+            "messages": [
+              {
+                "role": "user",
+                "content": "hello"
+              }
+            ]
+          },
+          "options": {
+            "env": {
+              "OPENAI_API_KEY": "scoped-key"
+            },
+            "temperature": 0,
+            "apiKey": "scoped-key"
+          }
+        },
+        "clone": true,
+        "originalKey": false
+      }
+    },
+    {
+      "name": "explicit key identity",
+      "value": true
+    },
+    {
+      "name": "whitespace key replaced",
+      "value": {
+        "key": "scoped-key",
+        "clone": true
+      }
+    },
+    {
+      "name": "ambient marker not injected",
+      "value": true
+    },
+    {
+      "name": "spread retains symbols",
+      "value": true
+    },
+    {
+      "name": "registration captures callable",
+      "value": true
+    },
+    {
+      "name": "replacement keeps insertion order",
+      "value": [
+        "probe-api",
+        "probe-second"
+      ]
+    },
+    {
+      "name": "replacement identity",
+      "value": true
+    },
+    {
+      "name": "replacement source ownership",
+      "value": true
+    },
+    {
+      "name": "unregister all matching source",
+      "value": true
+    },
+    {
+      "name": "complete result",
+      "value": {
+        "label": "complete",
+        "method": "stream"
+      }
+    },
+    {
+      "name": "completeSimple result",
+      "value": {
+        "label": "complete",
+        "method": "streamSimple"
+      }
+    },
+    {
+      "name": "complete async shape",
+      "value": {
+        "name": "complete",
+        "length": 3,
+        "prototype": false,
+        "tag": "[object AsyncFunction]"
+      }
+    },
+    {
+      "name": "missing stream throws synchronously",
+      "value": {
+        "name": "Error",
+        "message": "No API provider registered for api: absent"
+      }
+    },
+    {
+      "name": "missing complete rejects",
+      "value": {
+        "name": "Error",
+        "message": "No API provider registered for api: absent"
+      }
+    },
+    {
+      "name": "original synchronous thrown identity",
+      "value": true
+    },
+    {
+      "name": "original async thrown identity",
+      "value": true
+    },
+    {
+      "name": "complete assimilates result thenable",
+      "value": true
+    },
+    {
+      "name": "result synchronous failure rejects",
+      "value": true
+    },
+    {
+      "name": "builtin registration preserves override",
+      "value": true
+    },
+    {
+      "name": "reset restores only builtin order",
+      "value": [
+        "anthropic-messages",
+        "openai-completions",
+        "openai-responses",
+        "openai-codex-responses",
+        "azure-openai-responses",
+        "google-generative-ai",
+        "google-vertex",
+        "mistral-conversations",
+        "bedrock-converse-stream",
+        "pi-messages"
+      ]
+    },
+    {
+      "name": "reset creates new builtin wrapper",
+      "value": true
+    }
+  ]
+}

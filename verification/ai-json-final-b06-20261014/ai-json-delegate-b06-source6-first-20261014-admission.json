@@ -1,0 +1,8 @@
+{
+  "coordinated_with": "Root explicitly coordinated AI Source reservation; max two local reservations",
+  "observed_utc": "2026-10-14T21:44:07.2287053+00:00",
+  "free_kib": 22695568,
+  "status": "admitted",
+  "heap_mb": 256,
+  "required_kib": 2097152
+}
