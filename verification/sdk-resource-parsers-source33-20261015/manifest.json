@@ -1,0 +1,77 @@
+{
+  "receipts": [
+    {
+      "original_sha256": "87FE464277F616D9E0FC1E700693711B3C236FE4F4BAC2B88B728C4A4CA8367C",
+      "archived_path": "sdk-resource-parsers-5ab-source-slot3-first-20261015-admission.json.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-parsers-5ab-source-slot3-first-20261015-admission.json",
+      "archived_sha256": "FCA822ADBD3CBD8FAEE170CD409618DAA9833B5050BCCFB56501E1F39C108FC2"
+    },
+    {
+      "original_sha256": "3120DD6D30F70717C90AC6429EE42F0900446134EE4CA6EC2AA606AF6D5720FB",
+      "archived_path": "sdk-resource-parsers-5ab-source-slot3-first-20261015-candidate-before.json.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-parsers-5ab-source-slot3-first-20261015-candidate-before.json",
+      "archived_sha256": "74E5A5A8B26BE4A37D5CB3A2941676406EE7DD2EF7455027851806194F58A386"
+    },
+    {
+      "original_sha256": "A0BDDCBEA2118AFE076BB64E4151F096EA615290D5ED75E6ECFD4D638D41B6B7",
+      "archived_path": "sdk-resource-parsers-5ab-source-slot3-first-20261015-controls-before.json.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-parsers-5ab-source-slot3-first-20261015-controls-before.json",
+      "archived_sha256": "473C9FEEA0237B0FF733D37AB5DECB162BC79A62B2C25A5208C1C25DCA471072"
+    },
+    {
+      "original_sha256": "A90CB351CE90B4CD07E43F751C6BDDC4656D7A484B4CF551551BA8E95496ADF0",
+      "archived_path": "sdk-resource-parsers-5ab-source-slot3-first-20261015-outer-controls-before.json.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-parsers-5ab-source-slot3-first-20261015-outer-controls-before.json",
+      "archived_sha256": "6E573E75A1DB060FD31DC5A50D0C1457042344C69BE0CE3A0AD6937C25C0BFE7"
+    },
+    {
+      "original_sha256": "BC1A5B81AC5D5563F308DF9130F883BD4A2B4408CD16E7AB4A9CAD217F850A41",
+      "archived_path": "sdk-resource-parsers-5ab-source-slot3-first-20261015-full-pair.json.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-parsers-5ab-source-slot3-first-20261015-full-pair.json",
+      "archived_sha256": "BADA867DDE52E544A147EB15AABDCC8C843B41438BCDF9105DDE222E48F1DFC8"
+    },
+    {
+      "original_sha256": "4AC424A1FA66347D5ECCA92B2D4FF29A2B077981E9A18D34063884D35FF8B50D",
+      "archived_path": "sdk-resource-parsers-5ab-source-slot3-first-20261015-posthash.json.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-parsers-5ab-source-slot3-first-20261015-posthash.json",
+      "archived_sha256": "22ADEFB03FF3A7ACB432578158CC3F738AC5C7DDB0361B7FC44BFC6372F1CFE7"
+    },
+    {
+      "original_sha256": "55F4BE8077A6A90F82EFBBBCEF029A7D7A7AE95C9ABE3BF9071BD034EF65FC1C",
+      "archived_path": "sdk-resource-parsers-5ab-source-slot3-first-20261015.json.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-parsers-5ab-source-slot3-first-20261015.json",
+      "archived_sha256": "451FF24B423D3BF152B3710E54DC2AE68A8C6B307D891CC3F5B7D69617BFB29F"
+    },
+    {
+      "original_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "archived_path": "sdk-resource-parsers-5ab-source-slot3-first-20261015.stdout.log.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-parsers-5ab-source-slot3-first-20261015.stdout.log",
+      "archived_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "original_sha256": "CA1F502373DFEE610C505D3D655A4E0A2A6CE2A332AFE9AD291075DEDF040A46",
+      "archived_path": "sdk-resource-parsers-5ab-source-slot3-first-20261015.stderr.log.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-parsers-5ab-source-slot3-first-20261015.stderr.log",
+      "archived_sha256": "85580191A668CDC789069A71D60D0E8CBFF2148D88B8B32A75303E40DC00AC60"
+    },
+    {
+      "original_sha256": "8AF8EBE10A68650080F9DA95F89C2DCC4F20754A5AD01329BEA5BD6D71F66FA1",
+      "archived_path": "Invoke-SDKResourceParsers15aFullPair-20261015.ps1.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-SDKResourceParsers15aFullPair-20261015.ps1",
+      "archived_sha256": "E4FE7B3C18AB5D72EE10B964CED725F777FEBA9A711566615269E7D480DEAC05"
+    },
+    {
+      "original_sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+      "archived_path": "Invoke-OwnedEeSourceJob-20261012.ps1.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+      "archived_sha256": "AF051632F129DBB064056F415B8D33B1FE17FD92C3E15563E2C4406AAA3E35A7"
+    },
+    {
+      "original_sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352",
+      "archived_path": "source5ab-dependency-contract-audit-20261015.json.gz",
+      "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json",
+      "archived_sha256": "4833D8EC72C1935C3277F4C79C1B309AB48367280B354851EEE31D11353CD31C"
+    }
+  ],
+  "schema": 1
+}

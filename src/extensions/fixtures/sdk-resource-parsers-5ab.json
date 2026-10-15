@@ -1,0 +1,783 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "inputSha256": "58a76b5a99cadaccb82100799aab9b46deafc16b468e7a3fc3efbfa2755abf16",
+  "cases": 33,
+  "scope": "Genuine skill and prompt parsers, declared/loose YAML failures, schema warnings, aliases/merge/UTF16 graph identity, default/explicit discovery and ordinary synchronous cache/override callbacks. Native parser and full-loader qualification remain separate gates.",
+  "rows": [
+    {
+      "case": "actual-skill-file:valid",
+      "value": {
+        "skills": [
+          {
+            "name": "valid",
+            "description": "Full parser skill",
+            "filePath": "<fixture>/parser-skills/valid/SKILL.md",
+            "baseDir": "<fixture>/parser-skills/valid",
+            "sourceInfo": {
+              "path": "<fixture>/parser-skills/valid/SKILL.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-skills/valid"
+            },
+            "disableModelInvocation": true
+          }
+        ],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-skill-file:no-description",
+      "value": {
+        "skills": [],
+        "diagnostics": [
+          {
+            "type": "warning",
+            "message": "description is required",
+            "path": "<fixture>/parser-skills/no-description/SKILL.md"
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-skill-file:warning-name",
+      "value": {
+        "skills": [
+          {
+            "name": "-bad--name-",
+            "description": "Warning remains loadable",
+            "filePath": "<fixture>/parser-skills/warning-name/SKILL.md",
+            "baseDir": "<fixture>/parser-skills/warning-name",
+            "sourceInfo": {
+              "path": "<fixture>/parser-skills/warning-name/SKILL.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-skills/warning-name"
+            },
+            "disableModelInvocation": false
+          }
+        ],
+        "diagnostics": [
+          {
+            "type": "warning",
+            "message": "name must not start or end with a hyphen",
+            "path": "<fixture>/parser-skills/warning-name/SKILL.md"
+          },
+          {
+            "type": "warning",
+            "message": "name must not contain consecutive hyphens",
+            "path": "<fixture>/parser-skills/warning-name/SKILL.md"
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-skill-file:yaml-bad",
+      "value": {
+        "skills": [],
+        "diagnostics": [
+          {
+            "type": "warning",
+            "message": "Flow sequence in block collection must be sufficiently indented and end with a ] at line 1, column 25:\n\ndescription: [unfinished\n                        ^\n",
+            "path": "<fixture>/parser-skills/yaml-bad/SKILL.md"
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-skill-file:typed-root",
+      "value": {
+        "skills": [],
+        "diagnostics": [
+          {
+            "type": "warning",
+            "message": "description is required",
+            "path": "<fixture>/parser-skills/typed-root/SKILL.md"
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-skill-file:quoted-flag",
+      "value": {
+        "skills": [
+          {
+            "name": "quoted-flag",
+            "description": "Quoted true is a string",
+            "filePath": "<fixture>/parser-skills/quoted-flag/SKILL.md",
+            "baseDir": "<fixture>/parser-skills/quoted-flag",
+            "sourceInfo": {
+              "path": "<fixture>/parser-skills/quoted-flag/SKILL.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-skills/quoted-flag"
+            },
+            "disableModelInvocation": false
+          }
+        ],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-skill-file:alias",
+      "value": {
+        "skills": [
+          {
+            "name": "alias",
+            "description": "alias",
+            "filePath": "<fixture>/parser-skills/alias/SKILL.md",
+            "baseDir": "<fixture>/parser-skills/alias",
+            "sourceInfo": {
+              "path": "<fixture>/parser-skills/alias/SKILL.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-skills/alias"
+            },
+            "disableModelInvocation": false
+          }
+        ],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-skill-file:merge",
+      "value": {
+        "skills": [],
+        "diagnostics": [
+          {
+            "type": "warning",
+            "message": "description is required",
+            "path": "<fixture>/parser-skills/merge/SKILL.md"
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-loose-skill-file:described.md",
+      "value": {
+        "skills": [
+          {
+            "name": "loose",
+            "description": "Direct markdown skill",
+            "filePath": "<fixture>/parser-skills/loose/described.md",
+            "baseDir": "<fixture>/parser-skills/loose",
+            "sourceInfo": {
+              "path": "<fixture>/parser-skills/loose/described.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-skills/loose"
+            },
+            "disableModelInvocation": false
+          }
+        ],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-loose-skill-file:ignored.md",
+      "value": {
+        "skills": [],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-loose-skill-file:plain.md",
+      "value": {
+        "skills": [],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-loose-skill-file:UPPER.MD",
+      "value": {
+        "skills": [],
+        "diagnostics": [
+          {
+            "type": "warning",
+            "message": "skill path is not a markdown file",
+            "path": "<fixture>/parser-skills/loose/UPPER.MD"
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-skill-directory",
+      "value": {
+        "skills": [
+          {
+            "name": "alias",
+            "description": "alias",
+            "filePath": "<fixture>/parser-skills/alias/SKILL.md",
+            "baseDir": "<fixture>/parser-skills/alias",
+            "sourceInfo": {
+              "path": "<fixture>/parser-skills/alias/SKILL.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-skills/alias"
+            },
+            "disableModelInvocation": false
+          },
+          {
+            "name": "quoted-flag",
+            "description": "Quoted true is a string",
+            "filePath": "<fixture>/parser-skills/quoted-flag/SKILL.md",
+            "baseDir": "<fixture>/parser-skills/quoted-flag",
+            "sourceInfo": {
+              "path": "<fixture>/parser-skills/quoted-flag/SKILL.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-skills/quoted-flag"
+            },
+            "disableModelInvocation": false
+          },
+          {
+            "name": "valid",
+            "description": "Full parser skill",
+            "filePath": "<fixture>/parser-skills/valid/SKILL.md",
+            "baseDir": "<fixture>/parser-skills/valid",
+            "sourceInfo": {
+              "path": "<fixture>/parser-skills/valid/SKILL.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-skills/valid"
+            },
+            "disableModelInvocation": true
+          },
+          {
+            "name": "-bad--name-",
+            "description": "Warning remains loadable",
+            "filePath": "<fixture>/parser-skills/warning-name/SKILL.md",
+            "baseDir": "<fixture>/parser-skills/warning-name",
+            "sourceInfo": {
+              "path": "<fixture>/parser-skills/warning-name/SKILL.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-skills/warning-name"
+            },
+            "disableModelInvocation": false
+          }
+        ],
+        "diagnostics": [
+          {
+            "type": "warning",
+            "message": "description is required",
+            "path": "<fixture>/parser-skills/merge/SKILL.md"
+          },
+          {
+            "type": "warning",
+            "message": "description is required",
+            "path": "<fixture>/parser-skills/no-description/SKILL.md"
+          },
+          {
+            "type": "warning",
+            "message": "description is required",
+            "path": "<fixture>/parser-skills/typed-root/SKILL.md"
+          },
+          {
+            "type": "warning",
+            "message": "name must not start or end with a hyphen",
+            "path": "<fixture>/parser-skills/warning-name/SKILL.md"
+          },
+          {
+            "type": "warning",
+            "message": "name must not contain consecutive hyphens",
+            "path": "<fixture>/parser-skills/warning-name/SKILL.md"
+          },
+          {
+            "type": "warning",
+            "message": "Flow sequence in block collection must be sufficiently indented and end with a ] at line 1, column 25:\n\ndescription: [unfinished\n                        ^\n",
+            "path": "<fixture>/parser-skills/yaml-bad/SKILL.md"
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-skill-defaults-plus-explicit",
+      "value": {
+        "skills": [
+          {
+            "name": "shared",
+            "description": "User shared skill",
+            "filePath": "<fixture>/agent/skills/shared/SKILL.md",
+            "baseDir": "<fixture>/agent/skills/shared",
+            "sourceInfo": {
+              "path": "<fixture>/agent/skills/shared/SKILL.md",
+              "source": "local",
+              "scope": "user",
+              "origin": "top-level",
+              "baseDir": "<fixture>/agent/skills/shared"
+            },
+            "disableModelInvocation": false
+          },
+          {
+            "name": "valid",
+            "description": "Full parser skill",
+            "filePath": "<fixture>/parser-skills/valid/SKILL.md",
+            "baseDir": "<fixture>/parser-skills/valid",
+            "sourceInfo": {
+              "path": "<fixture>/parser-skills/valid/SKILL.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-skills/valid"
+            },
+            "disableModelInvocation": true
+          }
+        ],
+        "diagnostics": [
+          {
+            "type": "collision",
+            "message": "name \"shared\" collision",
+            "path": "<fixture>/project/.pi/skills/shared/SKILL.md",
+            "collision": {
+              "resourceType": "skill",
+              "name": "shared",
+              "winnerPath": "<fixture>/agent/skills/shared/SKILL.md",
+              "loserPath": "<fixture>/project/.pi/skills/shared/SKILL.md"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-skill-missing-and-canonical-repeat",
+      "value": {
+        "skills": [
+          {
+            "name": "valid",
+            "description": "Full parser skill",
+            "filePath": "<fixture>/parser-skills/valid/SKILL.md",
+            "baseDir": "<fixture>/parser-skills/valid",
+            "sourceInfo": {
+              "path": "<fixture>/parser-skills/valid/SKILL.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-skills/valid"
+            },
+            "disableModelInvocation": true
+          }
+        ],
+        "diagnostics": [
+          {
+            "type": "warning",
+            "message": "skill path does not exist",
+            "path": "<fixture>/missing/SKILL.md"
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-prompt-file:plain.md",
+      "value": {
+        "templates": [
+          {
+            "name": "plain",
+            "description": "  First non-empty prompt line",
+            "content": "\n  First non-empty prompt line\nSecond line\n",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/plain.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/plain.md"
+          }
+        ],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-prompt-file:alias.md",
+      "value": {
+        "templates": [
+          {
+            "name": "alias",
+            "description": "Aliased prompt",
+            "argumentHint": "Aliased prompt",
+            "content": "Use $1",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/alias.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/alias.md"
+          }
+        ],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-prompt-file:typed.md",
+      "value": {
+        "templates": [
+          {
+            "name": "typed",
+            "description": "Fallback prompt description",
+            "content": "Fallback prompt description",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/typed.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/typed.md"
+          }
+        ],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-prompt-file:empty-hint.md",
+      "value": {
+        "templates": [
+          {
+            "name": "empty-hint",
+            "description": "   ",
+            "content": "Body",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/empty-hint.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/empty-hint.md"
+          }
+        ],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-prompt-file:yaml-bad.md",
+      "value": {
+        "templates": [],
+        "diagnostics": [
+          {
+            "type": "warning",
+            "message": "Flow sequence in block collection must be sufficiently indented and end with a ] at line 1, column 25:\n\ndescription: [unfinished\n                        ^\n",
+            "path": "<fixture>/parser-prompts/yaml-bad.md"
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-prompt-file:UPPER.MD",
+      "value": {
+        "templates": [],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-prompt-nonrecursive-directory",
+      "value": {
+        "templates": [
+          {
+            "name": ".hidden",
+            "description": "Explicit directory scan includes dot markdown files",
+            "content": "Explicit directory scan includes dot markdown files\n",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/.hidden.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/.hidden.md"
+          },
+          {
+            "name": "alias",
+            "description": "Aliased prompt",
+            "argumentHint": "Aliased prompt",
+            "content": "Use $1",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/alias.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/alias.md"
+          },
+          {
+            "name": "empty-hint",
+            "description": "   ",
+            "content": "Body",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/empty-hint.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/empty-hint.md"
+          },
+          {
+            "name": "plain",
+            "description": "  First non-empty prompt line",
+            "content": "\n  First non-empty prompt line\nSecond line\n",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/plain.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/plain.md"
+          },
+          {
+            "name": "typed",
+            "description": "Fallback prompt description",
+            "content": "Fallback prompt description",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/typed.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/typed.md"
+          }
+        ],
+        "diagnostics": [
+          {
+            "type": "warning",
+            "message": "Flow sequence in block collection must be sufficiently indented and end with a ] at line 1, column 25:\n\ndescription: [unfinished\n                        ^\n",
+            "path": "<fixture>/parser-prompts/yaml-bad.md"
+          }
+        ]
+      }
+    },
+    {
+      "case": "actual-prompt-defaults-plus-explicit",
+      "value": {
+        "templates": [
+          {
+            "name": "greet",
+            "description": "User greeting",
+            "content": "Hello $1",
+            "sourceInfo": {
+              "path": "<fixture>/agent/prompts/greet.md",
+              "source": "local",
+              "scope": "user",
+              "origin": "top-level",
+              "baseDir": "<fixture>/agent/prompts"
+            },
+            "filePath": "<fixture>/agent/prompts/greet.md"
+          },
+          {
+            "name": "review",
+            "description": "Project review",
+            "content": "Review $@",
+            "sourceInfo": {
+              "path": "<fixture>/project/.pi/prompts/review.md",
+              "source": "local",
+              "scope": "project",
+              "origin": "top-level",
+              "baseDir": "<fixture>/project/.pi/prompts"
+            },
+            "filePath": "<fixture>/project/.pi/prompts/review.md"
+          },
+          {
+            "name": "plain",
+            "description": "  First non-empty prompt line",
+            "content": "\n  First non-empty prompt line\nSecond line\n",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/plain.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/plain.md"
+          }
+        ],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "actual-prompt-missing-and-repeat",
+      "value": {
+        "templates": [
+          {
+            "name": "plain",
+            "description": "  First non-empty prompt line",
+            "content": "\n  First non-empty prompt line\nSecond line\n",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/plain.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/plain.md"
+          },
+          {
+            "name": "plain",
+            "description": "  First non-empty prompt line",
+            "content": "\n  First non-empty prompt line\nSecond line\n",
+            "sourceInfo": {
+              "path": "<fixture>/parser-prompts/plain.md",
+              "source": "local",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>/parser-prompts"
+            },
+            "filePath": "<fixture>/parser-prompts/plain.md"
+          }
+        ],
+        "diagnostics": []
+      }
+    },
+    {
+      "case": "ordinary-update-real-parser:skills",
+      "log": [
+        "get override",
+        "get override",
+        {
+          "receiver": true,
+          "names": [
+            "valid"
+          ]
+        }
+      ],
+      "value": [
+        {
+          "name": "valid",
+          "description": "Full parser skill",
+          "filePath": "<fixture>/parser-skills/valid/SKILL.md",
+          "baseDir": "<fixture>/parser-skills/valid",
+          "sourceInfo": {
+            "path": "<fixture>/parser-skills/valid/SKILL.md",
+            "source": "local",
+            "scope": "temporary",
+            "origin": "top-level",
+            "baseDir": "<fixture>/parser-skills/valid"
+          },
+          "disableModelInvocation": true
+        }
+      ],
+      "diagnostics": []
+    },
+    {
+      "case": "ordinary-update-real-parser:prompts",
+      "log": [
+        "get override",
+        "get override",
+        {
+          "receiver": true,
+          "names": [
+            "alias"
+          ]
+        }
+      ],
+      "value": [
+        {
+          "name": "alias",
+          "description": "Aliased prompt",
+          "argumentHint": "Aliased prompt",
+          "content": "Use $1",
+          "sourceInfo": {
+            "path": "<fixture>/parser-prompts/alias.md",
+            "source": "local",
+            "scope": "temporary",
+            "origin": "top-level",
+            "baseDir": "<fixture>/parser-prompts"
+          },
+          "filePath": "<fixture>/parser-prompts/alias.md"
+        }
+      ],
+      "diagnostics": []
+    },
+    {
+      "case": "update-cache-before-diagnostics-failure:skills",
+      "same": true,
+      "log": [
+        "override",
+        "diagnostics"
+      ],
+      "value": [
+        {
+          "name": "valid",
+          "description": "Full parser skill",
+          "filePath": "<fixture>/parser-skills/valid/SKILL.md",
+          "baseDir": "<fixture>/parser-skills/valid",
+          "sourceInfo": {
+            "path": "<fixture>/parser-skills/valid/SKILL.md",
+            "source": "local",
+            "scope": "temporary",
+            "origin": "top-level",
+            "baseDir": "<fixture>/parser-skills/valid"
+          },
+          "disableModelInvocation": true
+        }
+      ],
+      "oldDiagnostics": []
+    },
+    {
+      "case": "update-cache-before-diagnostics-failure:prompts",
+      "same": true,
+      "log": [
+        "override",
+        "diagnostics"
+      ],
+      "value": [
+        {
+          "name": "alias",
+          "description": "Aliased prompt",
+          "argumentHint": "Aliased prompt",
+          "content": "Use $1",
+          "sourceInfo": {
+            "path": "<fixture>/parser-prompts/alias.md",
+            "source": "local",
+            "scope": "temporary",
+            "origin": "top-level",
+            "baseDir": "<fixture>/parser-prompts"
+          },
+          "filePath": "<fixture>/parser-prompts/alias.md"
+        }
+      ],
+      "oldDiagnostics": []
+    },
+    {
+      "case": "update-promise-override-remains-synchronous:skills",
+      "sync": true,
+      "error": "TypeError"
+    },
+    {
+      "case": "update-promise-override-remains-synchronous:prompts",
+      "sync": true,
+      "error": "TypeError"
+    },
+    {
+      "case": "disabled-empty-update-still-calls-override:skills",
+      "same": true
+    },
+    {
+      "case": "disabled-empty-update-still-calls-override:prompts",
+      "same": true
+    },
+    {
+      "case": "actual-YAML-graph-identity",
+      "body": "Body",
+      "sameAlias": true,
+      "self": true,
+      "value": 7,
+      "quotedUnits": [
+        55358
+      ]
+    }
+  ]
+}
