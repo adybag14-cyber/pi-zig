@@ -2,7 +2,7 @@
   "component": "native Codex and Radius OAuth browser Source7",
   "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
   "caseCount": 7,
-  "status": "prepared, unrun",
+  "status": "sealed for Root LIGHT6 capture, not yet run",
   "ports": [
     1455,
     1456
@@ -10,7 +10,7 @@
   "actualSourceListenersRequired": 7,
   "sourceExpected": "absent intentionally until terminal Source pass and fullpost0",
   "owner": "Run-OAuthCodexRadiusBrowserAe7Source7-20261015.ps1",
-  "rootReservation": "LIGHT and callback1455/1456 not yet granted",
+  "rootReservation": "Root LIGHT6 granted; ports1455/1456 preflight required",
   "nativeBuildTarget": "build-native-ai-oauth-codex-radius-browser",
   "nativeTestTarget": "test-native-ai-oauth-codex-radius-browser",
   "nativeStatus": "uncompiled, unrun",
@@ -20,5 +20,6 @@
   ],
   "noRealUserLogin": true,
   "fullPiQualified": false,
-  "staticChecks": "Zig0.16 fmt and AST checks pass"
+  "staticChecks": "Zig0.16 fmt and AST checks pass",
+  "ownerControls": "full tracked/untracked candidate inventory, complete reference/path/control posthash, bounded300s/10s retained PID owner, raw URL/error-stack records, accepted socket cleanup"
 }
