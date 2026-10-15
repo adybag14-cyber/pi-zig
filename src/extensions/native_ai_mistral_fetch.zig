@@ -50,10 +50,9 @@ fn ready(engine: *v.em.Engine, pending: c.JSValue, response: c.JSValue, rejected
     defer scope.deinit();
     const owner = try scope.get(pending, "agent");
     try scope.put(owner, "response", response);
-    const head = try scope.object();
-    try scope.put(head, "status", try scope.get(response, "status"));
-    try scope.put(head, "headers", try scope.invoke(try scope.global("Object"), "fromEntries", &.{try scope.invoke(try scope.get(response, "headers"), "entries", &.{})}));
-    try flow.settle(engine, pending, false, head);
+    // Optional onResponse short-circuits argument evaluation in Source. Keep
+    // the live Response here; its metadata is read only when a hook exists.
+    try flow.settle(engine, pending, false, response);
 }
 fn operation(engine: *v.em.Engine, owner: c.JSValue, method: Method) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
