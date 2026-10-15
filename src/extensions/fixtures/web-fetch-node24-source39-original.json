@@ -1,0 +1,2319 @@
+{
+  "authority": "Actual Node24 builtin global fetch + bundled Undici7.21 over real loopback HTTP; new expected packet",
+  "actualNode": {
+    "version": "v24.14.0",
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "undici": "7.21.0",
+    "execArgv": [
+      "--expose-gc",
+      "--max-old-space-size=256"
+    ]
+  },
+  "bundledUndici": {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-fetch-node24-source-first-20261015-bundled-undici.js.txt",
+    "sha256": "c62030f1e505a4010d9972ecbf40155eddeb355f2a53a9f019a447214e1a9600",
+    "bytes": 728836
+  },
+  "nodeBuiltins": {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-fetch-node24-source-first-20261015-node-builtin-authorities.json",
+    "sha256": "0cd86676bb2a46a4e772d1fd8bb3d00fca658383bc388846dcc796547dc79263",
+    "enumeratedKeys": 369,
+    "stringBodies": 368,
+    "undefinedKeys": [
+      "configs"
+    ],
+    "bytes": 9294918
+  },
+  "inputSha256": "c7968685d3dfbb956f8e542f6e3d18f31f17971f790785fbe11f49aa1e8ba799",
+  "cases": 39,
+  "requests": [
+    {
+      "path": "/json",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/empty",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/json",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/binary",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/binary",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/binary",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/binary",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/error",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/cookies",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/empty",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/latin1",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/json",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/echo?query=a%20b",
+      "method": "POST",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "authorization": "Bearer fixture",
+        "x-custom": "owned",
+        "content-type": "text/plain;charset=UTF-8",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "6"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "Authorization",
+        "Bearer fixture",
+        "X-Custom",
+        "owned",
+        "content-type",
+        "text/plain;charset=UTF-8",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate",
+        "content-length",
+        "6"
+      ],
+      "bytes": [
+        195,
+        169,
+        240,
+        159,
+        152,
+        128
+      ]
+    },
+    {
+      "path": "/echo?query=a%20b",
+      "method": "POST",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "authorization": "Bearer fixture",
+        "x-custom": "owned",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "3"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "Authorization",
+        "Bearer fixture",
+        "X-Custom",
+        "owned",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate",
+        "content-length",
+        "3"
+      ],
+      "bytes": [
+        0,
+        128,
+        255
+      ]
+    },
+    {
+      "path": "/echo?query=a%20b",
+      "method": "POST",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "authorization": "Bearer fixture",
+        "x-custom": "owned",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "2"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "Authorization",
+        "Bearer fixture",
+        "X-Custom",
+        "owned",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate",
+        "content-length",
+        "2"
+      ],
+      "bytes": [
+        65,
+        66
+      ]
+    },
+    {
+      "path": "/echo?query=a%20b",
+      "method": "POST",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "authorization": "Bearer fixture",
+        "x-custom": "owned",
+        "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "22"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "Authorization",
+        "Bearer fixture",
+        "X-Custom",
+        "owned",
+        "content-type",
+        "application/x-www-form-urlencoded;charset=UTF-8",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate",
+        "content-length",
+        "22"
+      ],
+      "bytes": [
+        97,
+        61,
+        104,
+        101,
+        108,
+        108,
+        111,
+        43,
+        119,
+        111,
+        114,
+        108,
+        100,
+        38,
+        97,
+        61,
+        37,
+        67,
+        51,
+        37,
+        65,
+        57
+      ]
+    },
+    {
+      "path": "/echo?query=a%20b",
+      "method": "POST",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "authorization": "Bearer fixture",
+        "x-custom": "owned",
+        "content-type": "text/custom",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "5"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "Authorization",
+        "Bearer fixture",
+        "X-Custom",
+        "owned",
+        "content-type",
+        "text/custom",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate",
+        "content-length",
+        "5"
+      ],
+      "bytes": [
+        111,
+        119,
+        110,
+        101,
+        100
+      ]
+    },
+    {
+      "path": "/echo?query=a%20b",
+      "method": "POST",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "authorization": "Bearer fixture",
+        "x-custom": "owned",
+        "content-type": "text/plain;charset=UTF-8",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "0"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "Authorization",
+        "Bearer fixture",
+        "X-Custom",
+        "owned",
+        "content-type",
+        "text/plain;charset=UTF-8",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate",
+        "content-length",
+        "0"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/echo",
+      "method": "POST",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "x-custom": "request",
+        "content-type": "text/plain;charset=UTF-8",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "7"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "X-Custom",
+        "request",
+        "content-type",
+        "text/plain;charset=UTF-8",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate",
+        "content-length",
+        "7"
+      ],
+      "bytes": [
+        114,
+        101,
+        113,
+        117,
+        101,
+        115,
+        116
+      ]
+    },
+    {
+      "path": "/echo",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "x-custom": "before",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "X-Custom",
+        "before",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/binary",
+      "method": "HEAD",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "close",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "close",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/null204",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/empty",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/gate?id=head200",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/gate?id=head403",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/abort-head?id=abort-head",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/abort-body?id=abort-body",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/redirect",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/json",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/redirect",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/redirect",
+      "method": "GET",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate"
+      ],
+      "bytes": []
+    },
+    {
+      "path": "/echo",
+      "method": "POST",
+      "headers": {
+        "host": "127.0.0.1:10276",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "transfer-encoding": "chunked"
+      },
+      "rawHeaders": [
+        "host",
+        "127.0.0.1:10276",
+        "connection",
+        "keep-alive",
+        "accept",
+        "*/*",
+        "accept-language",
+        "*",
+        "sec-fetch-mode",
+        "cors",
+        "user-agent",
+        "node",
+        "accept-encoding",
+        "gzip, deflate",
+        "transfer-encoding",
+        "chunked"
+      ],
+      "bytes": [
+        65,
+        66
+      ]
+    }
+  ],
+  "before": [
+    {
+      "name": "source5ab-full-manifest-20261015.json",
+      "count": 1967,
+      "drift": 0
+    },
+    {
+      "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "name": "web-fetch-node24-source-first-20261015-candidate.json",
+      "count": 6116,
+      "drift": 0
+    },
+    {
+      "name": "web-fetch-node24-source-first-20261015-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "name": "source5ab-full-manifest-20261015.json",
+      "count": 1967,
+      "drift": 0
+    },
+    {
+      "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "name": "web-fetch-node24-source-first-20261015-candidate.json",
+      "count": 6116,
+      "drift": 0
+    },
+    {
+      "name": "web-fetch-node24-source-first-20261015-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "rows": [
+    {
+      "name": "fetch global descriptor",
+      "value": {
+        "key": "fetch",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "value": {
+          "type": "function",
+          "name": "fetch",
+          "length": 1
+        }
+      }
+    },
+    {
+      "name": "fetch function descriptors",
+      "value": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": 1
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "fetch"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "value": {
+            "type": "object",
+            "tag": "[object Object]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fetch actual async return",
+      "value": {
+        "promise": true,
+        "response": true
+      }
+    },
+    {
+      "name": "fetch constructible ordinary wrapper",
+      "value": {
+        "promise": true,
+        "text": ""
+      }
+    },
+    {
+      "name": "fetch HTTP JSON metadata and consumption",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/json",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": {
+          "native": true,
+          "text": "é😀"
+        },
+        "after": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/json",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        }
+      }
+    },
+    {
+      "name": "fetch binary text",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/binary",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/octet-stream"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": "\u0000A��\r\n"
+      }
+    },
+    {
+      "name": "fetch binary bytes",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/binary",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/octet-stream"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": [
+          0,
+          65,
+          128,
+          255,
+          13,
+          10
+        ]
+      }
+    },
+    {
+      "name": "fetch binary arrayBuffer",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/binary",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/octet-stream"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": [
+          0,
+          65,
+          128,
+          255,
+          13,
+          10
+        ]
+      }
+    },
+    {
+      "name": "fetch binary blob",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/binary",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/octet-stream"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": {
+          "type": "application/octet-stream",
+          "size": 6,
+          "bytes": [
+            0,
+            65,
+            128,
+            255,
+            13,
+            10
+          ]
+        }
+      }
+    },
+    {
+      "name": "fetch 403 full JSON error body",
+      "value": {
+        "before": {
+          "status": 403,
+          "statusText": "Forbidden",
+          "ok": false,
+          "type": "basic",
+          "url": "<origin>/error",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": {
+          "error": {
+            "type": "permission",
+            "message": "denied"
+          }
+        },
+        "after": {
+          "status": 403,
+          "statusText": "Forbidden",
+          "ok": false,
+          "type": "basic",
+          "url": "<origin>/error",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        }
+      }
+    },
+    {
+      "name": "fetch duplicate cookie ownership",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/cookies",
+          "redirected": false,
+          "headers": [
+            [
+              "set-cookie",
+              "one=1; Expires=Wed, 21 Oct 2026 07:28:00 GMT"
+            ],
+            [
+              "set-cookie",
+              "two=2"
+            ],
+            [
+              "x-duplicate",
+              "one, two"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "cookies": [
+          "one=1; Expires=Wed, 21 Oct 2026 07:28:00 GMT",
+          "two=2"
+        ],
+        "text": "cookies"
+      }
+    },
+    {
+      "name": "fetch immutable response headers",
+      "value": {
+        "error": {
+          "name": "TypeError",
+          "message": "immutable",
+          "typeError": true
+        },
+        "text": ""
+      }
+    },
+    {
+      "name": "fetch Latin1 raw headers and statusText",
+      "value": {
+        "shape": {
+          "status": 201,
+          "statusText": "Cr��",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/latin1",
+          "redirected": false,
+          "headers": [
+            [
+              "__proto__",
+              "own"
+            ],
+            [
+              "constructor",
+              "wire"
+            ],
+            [
+              "x-latin1",
+              "café"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "ownConstructor": "wire",
+        "text": "latin1"
+      }
+    },
+    {
+      "name": "fetch clone independent real body",
+      "value": {
+        "before": [
+          {
+            "status": 200,
+            "statusText": "OK",
+            "ok": true,
+            "type": "basic",
+            "url": "<origin>/json",
+            "redirected": false,
+            "headers": [
+              [
+                "content-type",
+                "application/json"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": false
+            },
+            "bodyUsed": false,
+            "actualResponse": true,
+            "tag": "[object Response]"
+          },
+          {
+            "status": 200,
+            "statusText": "OK",
+            "ok": true,
+            "type": "basic",
+            "url": "<origin>/json",
+            "redirected": false,
+            "headers": [
+              [
+                "content-type",
+                "application/json"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": false
+            },
+            "bodyUsed": false,
+            "actualResponse": true,
+            "tag": "[object Response]"
+          }
+        ],
+        "value": [
+          {
+            "native": true,
+            "text": "é😀"
+          },
+          "{\"native\":true,\"text\":\"é😀\"}"
+        ],
+        "after": [
+          {
+            "status": 200,
+            "statusText": "OK",
+            "ok": true,
+            "type": "basic",
+            "url": "<origin>/json",
+            "redirected": false,
+            "headers": [
+              [
+                "content-type",
+                "application/json"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": true
+            },
+            "bodyUsed": true,
+            "actualResponse": true,
+            "tag": "[object Response]"
+          },
+          {
+            "status": 200,
+            "statusText": "OK",
+            "ok": true,
+            "type": "basic",
+            "url": "<origin>/json",
+            "redirected": false,
+            "headers": [
+              [
+                "content-type",
+                "application/json"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": true
+            },
+            "bodyUsed": true,
+            "actualResponse": true,
+            "tag": "[object Response]"
+          }
+        ]
+      }
+    },
+    {
+      "name": "fetch upload string",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/echo?query=a%20b",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": {
+          "method": "POST",
+          "path": "/echo?query=a%20b",
+          "authorization": "Bearer fixture",
+          "custom": "owned",
+          "contentType": "text/plain;charset=UTF-8",
+          "bytes": [
+            195,
+            169,
+            240,
+            159,
+            152,
+            128
+          ]
+        }
+      }
+    },
+    {
+      "name": "fetch upload uint8",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/echo?query=a%20b",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": {
+          "method": "POST",
+          "path": "/echo?query=a%20b",
+          "authorization": "Bearer fixture",
+          "custom": "owned",
+          "bytes": [
+            0,
+            128,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "name": "fetch upload offset-view",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/echo?query=a%20b",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": {
+          "method": "POST",
+          "path": "/echo?query=a%20b",
+          "authorization": "Bearer fixture",
+          "custom": "owned",
+          "bytes": [
+            65,
+            66
+          ]
+        }
+      }
+    },
+    {
+      "name": "fetch upload params",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/echo?query=a%20b",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": {
+          "method": "POST",
+          "path": "/echo?query=a%20b",
+          "authorization": "Bearer fixture",
+          "custom": "owned",
+          "contentType": "application/x-www-form-urlencoded;charset=UTF-8",
+          "bytes": [
+            97,
+            61,
+            104,
+            101,
+            108,
+            108,
+            111,
+            43,
+            119,
+            111,
+            114,
+            108,
+            100,
+            38,
+            97,
+            61,
+            37,
+            67,
+            51,
+            37,
+            65,
+            57
+          ]
+        }
+      }
+    },
+    {
+      "name": "fetch upload blob",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/echo?query=a%20b",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": {
+          "method": "POST",
+          "path": "/echo?query=a%20b",
+          "authorization": "Bearer fixture",
+          "custom": "owned",
+          "contentType": "text/custom",
+          "bytes": [
+            111,
+            119,
+            110,
+            101,
+            100
+          ]
+        }
+      }
+    },
+    {
+      "name": "fetch upload empty",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/echo?query=a%20b",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "value": {
+          "method": "POST",
+          "path": "/echo?query=a%20b",
+          "authorization": "Bearer fixture",
+          "custom": "owned",
+          "contentType": "text/plain;charset=UTF-8",
+          "bytes": []
+        }
+      }
+    },
+    {
+      "name": "fetch genuine Request upload",
+      "value": {
+        "requestUsed": true,
+        "value": {
+          "method": "POST",
+          "path": "/echo",
+          "custom": "request",
+          "contentType": "text/plain;charset=UTF-8",
+          "bytes": [
+            114,
+            101,
+            113,
+            117,
+            101,
+            115,
+            116
+          ]
+        }
+      }
+    },
+    {
+      "name": "fetch supplied Headers ownership",
+      "value": {
+        "method": "GET",
+        "path": "/echo",
+        "custom": "before",
+        "bytes": []
+      }
+    },
+    {
+      "name": "fetch HEAD null body",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/binary",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/octet-stream"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "text": "",
+        "after": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/binary",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/octet-stream"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        }
+      }
+    },
+    {
+      "name": "fetch 204 null body",
+      "value": {
+        "before": {
+          "status": 204,
+          "statusText": "No Content",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/null204",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "text": "",
+        "after": {
+          "status": 204,
+          "statusText": "No Content",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/null204",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        }
+      }
+    },
+    {
+      "name": "fetch empty 200 real body",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/empty",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "text": "",
+        "after": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/empty",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        }
+      }
+    },
+    {
+      "name": "fetch header before EOF 200",
+      "value": {
+        "atHead": {
+          "sent": true,
+          "finished": false,
+          "shape": {
+            "status": 200,
+            "statusText": "OK",
+            "ok": true,
+            "type": "basic",
+            "url": "<origin>/gate?id=head200",
+            "redirected": false,
+            "headers": [
+              [
+                "content-type",
+                "application/json"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": false
+            },
+            "bodyUsed": false,
+            "actualResponse": true,
+            "tag": "[object Response]"
+          }
+        },
+        "value": {
+          "headBeforeBody": true
+        },
+        "finished": true
+      }
+    },
+    {
+      "name": "fetch header before EOF 403",
+      "value": {
+        "atHead": {
+          "sent": true,
+          "finished": false,
+          "shape": {
+            "status": 403,
+            "statusText": "Forbidden",
+            "ok": false,
+            "type": "basic",
+            "url": "<origin>/gate?id=head403",
+            "redirected": false,
+            "headers": [
+              [
+                "content-type",
+                "application/json"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": false
+            },
+            "bodyUsed": false,
+            "actualResponse": true,
+            "tag": "[object Response]"
+          }
+        },
+        "value": {
+          "headBeforeBody": true
+        },
+        "finished": true
+      }
+    },
+    {
+      "name": "fetch original pre-abort reason",
+      "value": {
+        "sameReason": true,
+        "reason": {
+          "owned": "pre"
+        }
+      }
+    },
+    {
+      "name": "fetch abort before headers original reason",
+      "value": {
+        "sameReason": true,
+        "reason": {
+          "owned": "head"
+        }
+      }
+    },
+    {
+      "name": "fetch abort after headers original reason",
+      "value": {
+        "sameReason": true,
+        "reason": {
+          "owned": "body"
+        },
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/abort-body?id=abort-body",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        }
+      }
+    },
+    {
+      "name": "fetch redirect follow",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "OK",
+          "ok": true,
+          "type": "basic",
+          "url": "<origin>/json",
+          "redirected": true,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "text": "{\"native\":true,\"text\":\"é😀\"}"
+      }
+    },
+    {
+      "name": "fetch redirect manual",
+      "value": {
+        "shape": {
+          "status": 302,
+          "statusText": "Found",
+          "ok": false,
+          "type": "basic",
+          "url": "<origin>/redirect",
+          "redirected": false,
+          "headers": [
+            [
+              "location",
+              "/json"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "actualResponse": true,
+          "tag": "[object Response]"
+        },
+        "text": ""
+      }
+    },
+    {
+      "name": "fetch redirect error",
+      "error": {
+        "name": "TypeError",
+        "message": "fetch failed",
+        "typeError": true,
+        "cause": {
+          "name": "Error",
+          "message": "unexpected redirect"
+        }
+      }
+    },
+    {
+      "name": "fetch invalid URL",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to parse URL from /relative",
+        "typeError": true,
+        "cause": {
+          "name": "TypeError",
+          "message": "Invalid URL",
+          "code": "ERR_INVALID_URL"
+        }
+      }
+    },
+    {
+      "name": "fetch no arguments",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to parse URL from undefined",
+        "typeError": true,
+        "cause": {
+          "name": "TypeError",
+          "message": "Invalid URL",
+          "code": "ERR_INVALID_URL"
+        }
+      }
+    },
+    {
+      "name": "fetch invalid GET body",
+      "error": {
+        "name": "TypeError",
+        "message": "Request with GET/HEAD method cannot have body.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "fetch invalid header ByteString",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 256 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "fetch stream requires duplex",
+      "error": {
+        "name": "TypeError",
+        "message": "RequestInit: duplex option is required when sending a body.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "fetch genuine duplex stream upload",
+      "value": {
+        "method": "POST",
+        "path": "/echo",
+        "bytes": [
+          65,
+          66
+        ]
+      }
+    }
+  ]
+}
