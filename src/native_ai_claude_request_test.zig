@@ -152,3 +152,25 @@ test "native Claude5ab every host allocation releases request schemas transcript
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
 }
+fn pendingLifecycle(gpa: std.mem.Allocator) !void {
+    const engine = try v.em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    const generation = engine.native_allocation_generation;
+    install(engine) catch |err| return engine.nativeAllocationError(err, generation);
+    const prepared = engine.evalModule(
+        \\globalThis.pendingClaude=anthropicStreams.stream({api:'anthropic-messages',provider:'anthropic',id:'claude-sonnet-4-6',name:'Claude',baseUrl:'https://fixture.invalid',input:['text'],reasoning:true,maxTokens:1024,cost:{input:1,output:1,cacheRead:1,cacheWrite:1}},{messages:[{role:'user',content:'hello'}]},{apiKey:'fixture-placeholder-key',onPayload(){return new Promise((_,reject)=>globalThis.rejectClaude=reject)}});delete globalThis.anthropicStreams;export const prepared=true;
+    , "native-claude5ab-pending-prepare.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+    engine.freeValue(prepared);
+    c.JS_RunGC(engine.runtime);
+    const completed = engine.evalModule(
+        \\rejectClaude(Error('caller marker'));const result=await pendingClaude.result();if(result.stopReason!=='error'||result.errorMessage!=='caller marker')throw Error('pending callback result');let end;for await(const event of pendingClaude)end=event;if(end.type!=='error'||end.error!==result)throw Error('terminal retained identity');delete globalThis.rejectClaude;delete globalThis.pendingClaude;export const completed=true;
+    , "native-claude5ab-pending-complete.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+    engine.freeValue(completed);
+    c.JS_RunGC(engine.runtime);
+}
+test "native Claude5ab request owner pending hook survives collection and retains terminal result identity" {
+    try pendingLifecycle(std.testing.allocator);
+}
+test "native Claude5ab every host allocation in pending callback releases continuation roots and terminal output" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, pendingLifecycle, .{});
+}
