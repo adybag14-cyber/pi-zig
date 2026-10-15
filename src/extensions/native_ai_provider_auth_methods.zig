@@ -40,8 +40,10 @@ fn wait(s: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
     return flow.wait(continued, s.engine, owner, value, @intFromEnum(stage));
 }
 fn raise(s: *Scope, prefix: []const u8, value: c.JSValue) !void {
+    const constructor = try s.global("Error");
     const message = try s.concat(try s.text(prefix), try s.stringify(value));
-    _ = try s.engine.checked(c.JS_Throw(s.engine.context, try v.js.builtin(s.engine, "Error", &.{message})));
+    var arguments = [_]c.JSValue{message};
+    _ = try s.engine.checked(c.JS_Throw(s.engine.context, try s.engine.checked(c.JS_CallConstructor(s.engine.context, constructor, arguments.len, &arguments))));
     unreachable;
 }
 
