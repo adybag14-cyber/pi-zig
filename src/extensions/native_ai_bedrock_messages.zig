@@ -41,6 +41,7 @@ pub fn document(scope: *Scope, input: c.JSValue) anyerror!c.JSValue {
     const cache_key = "\x00native-bedrock-document";
     const owner = if (scope.engine.native_module_values.get(cache_key)) |existing| existing else created: {
         const state = try scope.object();
+        try scope.put(state, "value", c.pi_js_undefined());
         var roots = [_]c.JSValue{state};
         // Padding the missing declared argument crosses the actual configured
         // QuickJS C-function-data stack guard on every recursive value.
@@ -87,7 +88,11 @@ pub fn document(scope: *Scope, input: c.JSValue) anyerror!c.JSValue {
     return documentGuard(scope, owner, input);
 }
 fn documentGuard(scope: *Scope, owner: c.JSValue, value: c.JSValue) !c.JSValue {
+    const previous = try scope.get(owner, "value");
     try scope.set(owner, "value", value);
+    // Existing private data property: restore without allocating host roots,
+    // including on stack/guest/OOM failure and reentrant callback invocation.
+    defer _ = c.JS_SetPropertyStr(scope.engine.context, owner, "value", c.JS_DupValue(scope.engine.context, previous));
     return scope.call(try scope.get(owner, "guard"), c.pi_js_undefined(), &.{});
 }
 fn documentRecurse(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
