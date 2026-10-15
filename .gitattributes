@@ -113,3 +113,6 @@ verification/native-event-stream-live-7940-debug-20261015/*.log whitespace=blank
 verification/native-event-stream-production-2e1f-debug-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/web-body-node24-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/web-body-node24-20261015/receipts/*-bundled-undici.js.txt -whitespace
+verification/native-ai-http-shared-adc-compile-negative-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-ai-http-shared-successor-negatives-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-ai-http-shared-33bf-debug-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
