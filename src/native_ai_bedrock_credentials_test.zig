@@ -273,7 +273,7 @@ fn guestValue(engine: *@import("extensions/engine.zig").Engine, value: std.json.
     defer a.free(terminated);
     return engine.checked(@import("extensions/engine.zig").c.JS_ParseJSON(engine.context, terminated.ptr, raw.len, "genuine-sdk-lifecycle-input.json"));
 }
-fn guestEnv(s: *@import("extensions/native_ai_provider_values.zig").Scope, value: std.json.Value, original_home: []const u8, home: []const u8) !@import("extensions/engine.zig").c.JSValue {
+fn guestEnv(s: *@import("extensions/native_ai_provider_values.zig").Scope, value: std.json.Value, original_home: []const u8, home: []const u8, initial_files: std.json.Value) !@import("extensions/engine.zig").c.JSValue {
     const env = try s.object();
     var fields = value.object.iterator();
     while (fields.next()) |entry| {
@@ -284,6 +284,26 @@ fn guestEnv(s: *@import("extensions/native_ai_provider_values.zig").Scope, value
     }
     try s.put(env, "HOME", try s.text(home));
     try s.put(env, "USERPROFILE", try s.text(home));
+    // The Source driver's callback trace omits persistent file-path settings.
+    // Rebind the ACTUAL captured beforeOwnedFiles that driver lines63-65 put
+    // in AWS_CONFIG_FILE/AWS_SHARED_CREDENTIALS_FILE; preserve file contents.
+    var mapped_config = false;
+    var mapped_credentials = false;
+    for (initial_files.array.items) |initial| {
+        const captured = text(initial, "path");
+        const basename = std.fs.path.basenameWindows(captured);
+        const key: [*:0]const u8 = if (std.mem.eql(u8, basename, "config")) key: {
+            mapped_config = true;
+            break :key "AWS_CONFIG_FILE";
+        } else if (std.mem.eql(u8, basename, "credentials")) key: {
+            mapped_credentials = true;
+            break :key "AWS_SHARED_CREDENTIALS_FILE";
+        } else continue;
+        const destination = try replace(captured, original_home, home);
+        defer a.free(destination);
+        try s.put(env, key, try s.text(destination));
+    }
+    if (!mapped_config or !mapped_credentials) return error.MissingCapturedLifecycleAwsFiles;
     try s.put(env, "AWS_EC2_METADATA_DISABLED", try s.text("true"));
     return env;
 }
@@ -323,7 +343,7 @@ test "native AI Bedrock lifecycle helper boundaries match8 genuine SDK post-payl
         try s.put(versions, "node", try s.text("24.14.0"));
         try s.put(process, "versions", versions);
         const callback = field(row, "callbackState");
-        try s.put(process, "env", try guestEnv(&s, field(callback, "beforeAmbient"), original_home, home));
+        try s.put(process, "env", try guestEnv(&s, field(callback, "beforeAmbient"), original_home, home, field(row, "beforeOwnedFiles")));
         try s.put(global, "process", process);
         const dependencies = try s.object();
         try s.put(dependencies, "env", try s.own(try @import("extensions/native_ai_env_keys.zig").create(engine, .{})));
@@ -341,7 +361,7 @@ test "native AI Bedrock lifecycle helper boundaries match8 genuine SDK post-payl
         // Reproduce the captured fixture mutation at the two component
         // boundaries. Actual callback-await/event timing remains the separate
         // unchanged full-facade Source14/18 gate.
-        try s.put(process, "env", try guestEnv(&s, field(callback, "afterAmbient"), original_home, home));
+        try s.put(process, "env", try guestEnv(&s, field(callback, "afterAmbient"), original_home, home, field(row, "beforeOwnedFiles")));
         try s.put(options, "env", try s.own(try guestValue(engine, field(callback, "afterScoped"))));
         if (field(callback, "afterHeaders") != .null) try s.put(options, "headers", try s.own(try guestValue(engine, field(callback, "afterHeaders"))));
         try auth.snapshotDefaultChain(&s, config);
@@ -375,6 +395,7 @@ test "native AI Bedrock lifecycle helper boundaries match8 genuine SDK post-payl
         var aborted = false;
         var prepared = try auth.prepare(a, .{ .method = .POST, .url = text(row, "endpoint"), .payload = "{}", .headers = headers.items }, data, .{ .io = std.testing.io, .abort_flag = &aborted, .deadline_ms = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() + 10000 });
         defer prepared.deinit(a);
+        if (prepared.failure) |failure| std.debug.print("Lifecycle Source8 {s}: {s}: {s}\n", .{ text(spec, "name"), failure.name, failure.message });
         try std.testing.expect(prepared.failure == null);
         const authorization = for (prepared.headers) |header| {
             if (std.ascii.eqlIgnoreCase(header.name, "authorization")) break header.value;
