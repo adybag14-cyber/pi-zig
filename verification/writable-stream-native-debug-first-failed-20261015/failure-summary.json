@@ -1,0 +1,20 @@
+{
+  "correction": "Use actual native_sdk_prompt_scope.zig already present in source closure",
+  "fullpost0": true,
+  "node_files": 1774,
+  "public_activation": false,
+  "runtime_launched": false,
+  "additional_source_audit_fix": "Release underlying sink when bound algorithms are cleared while retaining the actual executing callable and receiver",
+  "compile_exit_code": 1,
+  "candidate": "ae17eba02d74beec606606e850f0ed5e1a05d6f7",
+  "owned_root_absent": true,
+  "full_pi_qualified": false,
+  "control_files": 15,
+  "compiler_files": 19546,
+  "expected_source56_sha256": "1325C1A9B672A3F206E7711C2A3AAC4A43DDC8E4B2B169F7461AA3F8CBEA8EE5",
+  "candidate_files": 7066,
+  "compile_pid": 73512,
+  "diagnostic": "native_highlight_scope.zig FileNotFound",
+  "vendor_files": 1316,
+  "compile_status": "failed"
+}

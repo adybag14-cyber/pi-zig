@@ -1,0 +1,5 @@
+{
+  "message": "Owned terminal failed",
+  "utc": "2026-10-15T22:03:18.9431937+00:00",
+  "stack": "at <ScriptBlock>, C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\writable-stream-native-debug-first-20261015\\Invoke-OwnedNativeJob.ps1: line 66\r\nat <ScriptBlock>, C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\writable-stream-native-debug-first-20261015\\Run-WritableNativePair.ps1: line 54"
+}

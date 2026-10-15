@@ -3,7 +3,7 @@
 //! Every queue, writer promise and sink algorithm belongs to the VM owner thread.
 const std = @import("std");
 const js = @import("native_js_values.zig");
-const Scope = @import("native_highlight_scope.zig").Scope;
+const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const async_value = @import("native_agent_async.zig");
 const c = js.c;
 const Engine = js.Engine;
@@ -199,6 +199,9 @@ fn replace(e: *Engine, slot: *c.JSValue, value: c.JSValue) void {
 }
 fn clearAlgorithms(self: *State) void {
     inline for (.{ "write_algorithm", "close_algorithm", "abort_algorithm", "size_algorithm" }) |field| replace(self.engine, &@field(self, field), c.pi_js_undefined());
+    // Node's sink is captured by the bound algorithms, not retained separately
+    // once those algorithms are cleared. Do not keep a closed sink alive.
+    replace(self.engine, &self.sink, c.pi_js_undefined());
 }
 fn clearChunks(self: *State) void {
     for (self.chunks.items) |chunk| self.engine.freeValue(chunk.value);
@@ -247,7 +250,9 @@ fn promiseCallback(self: *State, function: c.JSValue, args: []const c.JSValue) !
     // algorithm edge, or run GC. Retain the actual executing callable itself.
     const function_root = c.JS_DupValue(self.engine.context, function);
     defer self.engine.freeValue(function_root);
-    const result = if (c.JS_IsUndefined(function)) c.pi_js_undefined() else js.call(self.engine, function, self.sink, args) catch |err| {
+    const receiver_root = c.JS_DupValue(self.engine.context, self.sink);
+    defer self.engine.freeValue(receiver_root);
+    const result = if (c.JS_IsUndefined(function)) c.pi_js_undefined() else js.call(self.engine, function_root, receiver_root, args) catch |err| {
         const reason = async_value.reason(self.engine, err);
         defer self.engine.freeValue(reason);
         return pendingReject(self.engine, reason);
@@ -656,7 +661,7 @@ fn makeStream(e: *Engine, sink_input: c.JSValue, strategy_input: c.JSValue, prot
     var attached = false;
     errdefer if (!attached) closed.deinit(e.runtime);
     const self = try e.gpa.create(State);
-    self.* = .{ .engine = e, .bindings = c.JS_DupValue(e.context, bindings), .sink = c.JS_DupValue(e.context, sink), .write_algorithm = c.JS_DupValue(e.context, if (s.truthy(write)) write else c.pi_js_undefined()), .close_algorithm = c.JS_DupValue(e.context, if (s.truthy(close)) close else c.pi_js_undefined()), .abort_algorithm = c.JS_DupValue(e.context, if (s.truthy(abort)) abort else c.pi_js_undefined()), .size_algorithm = c.JS_DupValue(e.context, size), .controller = c.JS_DupValue(e.context, controller), .signal = c.JS_DupValue(e.context, signal), .writer = c.pi_js_undefined(), .stored_error = c.pi_js_undefined(), .closed = closed, .high_water_mark = hwm };
+    self.* = .{ .engine = e, .bindings = c.JS_DupValue(e.context, bindings), .sink = c.JS_DupValue(e.context, if (s.truthy(write) or s.truthy(close) or s.truthy(abort)) sink else c.pi_js_undefined()), .write_algorithm = c.JS_DupValue(e.context, if (s.truthy(write)) write else c.pi_js_undefined()), .close_algorithm = c.JS_DupValue(e.context, if (s.truthy(close)) close else c.pi_js_undefined()), .abort_algorithm = c.JS_DupValue(e.context, if (s.truthy(abort)) abort else c.pi_js_undefined()), .size_algorithm = c.JS_DupValue(e.context, size), .controller = c.JS_DupValue(e.context, controller), .signal = c.JS_DupValue(e.context, signal), .writer = c.pi_js_undefined(), .stored_error = c.pi_js_undefined(), .closed = closed, .high_water_mark = hwm };
     _ = c.JS_SetOpaque(object, self);
     attached = true;
     const owned_controller = try e.gpa.create(Controller);
