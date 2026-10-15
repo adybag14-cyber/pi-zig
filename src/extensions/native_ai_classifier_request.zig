@@ -161,6 +161,10 @@ fn attempt(scope: *Scope, pending: c.JSValue) !void {
     var encoded_payload = c.pi_js_undefined();
     var sdk_headers = c.pi_js_undefined();
     if (sdk) {
+        if (!c.JS_IsUndefined(timeout)) {
+            if (!c.JS_IsNumber(timeout) or !scope.truthy(try scope.invoke(try scope.global("Number"), "isInteger", &.{timeout}))) return v.errorText(scope, try scope.text("timeout must be an integer"));
+            if (try @import("native_image_arithmetic.zig").compare(scope.engine, .less, timeout, c.JS_NewInt32(scope.engine.context, 0))) return v.errorText(scope, try scope.text("timeout must be a positive integer"));
+        }
         encoded_payload = try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")});
         if (scope.truthy(try scope.get(owner, "preparedSdkHeaders"))) sdk_headers = try @import("native_ai_openai_headers.zig").buildPrepared(scope, try scope.get(owner, "sdkDefaults"), try scope.get(owner, "apiKey"), timeout);
     }
