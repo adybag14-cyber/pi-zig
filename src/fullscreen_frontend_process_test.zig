@@ -416,7 +416,7 @@ test "ae7 overlay process real native worker preserves concurrent overlays and o
         const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
         defer errors.close(std.testing.io);
         const source =
-            \\export default pi=>{
+            \\export default pi=>{let overlayRuns=0;
             \\pi.registerCommand('overlays',{async handler(_,ctx){const call=++overlayRuns,close={},refresh={},disposed=[];let stage='AE7_TOP_READY';
             \\const open=(id,row)=>ctx.ui.custom((t,theme,keys,done)=>{close[id]=done;refresh[id]=()=>t.requestRender();return{render(){return[(id==='top'?stage:'AE7_'+id.toUpperCase()+'_READY')+':'+call]},handleInput(key){if(id==='top'&&key==='m')close.middle('middle');else if(id==='top'&&key==='l')close.lower('lower');else if(id==='top'&&key==='a'){close.middle('middle');close.lower('lower');close.top('top')}else if(key==='\x1b')done(id)},dispose(){disposed.push(id)}}},{overlay:true,overlayOptions:{width:40,height:1,row,col:4}}).then(value=>{if(id!=='top'){stage='AE7_TOP_AFTER_'+id.toUpperCase();refresh.top()}return value});
             \\const results=await Promise.all([open('lower',3),open('middle',5),open('top',7)]);return{message:'AE7_CLOSED:'+call+':'+JSON.stringify({results,disposed})}}});
