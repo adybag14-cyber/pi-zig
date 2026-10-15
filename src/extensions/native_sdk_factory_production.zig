@@ -90,8 +90,11 @@ fn start(engine: *em.Engine, owner: c.JSValue, bindings: c.JSValue, operation: O
             // Source evaluates options.services independently for each field.
             inline for (.{ "cwd", "agentDir", "modelRuntime", "settingsManager", "resourceLoader" }) |name| try scope.put(options, name, try scope.get(try scope.get(first, "services"), name));
             inline for (.{ "sessionManager", "model", "thinkingLevel", "scopedModels", "tools", "excludeTools", "noTools", "customTools", "sessionStartEvent" }) |name| try scope.put(options, name, try scope.get(first, name));
-            try scope.put(owner, "options", options);
-            try startSession(engine, owner);
+            // Source returns the inner async call from a separate async body.
+            // Keep both promises and the adoption job, including synchronous
+            // options-getter rejection of this outer call before the inner call.
+            const inner = try scope.own(try begin(engine, bindings, .createAgentSession, options, c.pi_js_undefined()));
+            return flow.settle(engine, owner, false, inner);
         },
         .createAgentSessionRuntime => {
             _ = try imported(&scope, bindings, "assertSessionCwdExists", &.{ try scope.get(second, "sessionManager"), try scope.get(second, "cwd") });
