@@ -15,6 +15,7 @@ const Chunk = struct {
     offset: usize,
     length: usize,
 };
+const ValueChunk = struct { value: c.JSValue, size: f64 };
 const Into = struct {
     owner: c.JSValue,
     backing: c.JSValue,
@@ -38,6 +39,8 @@ const State = struct {
     request: c.JSValue,
     request_view: c.JSValue,
     stored_error: c.JSValue,
+    size_algorithm: c.JSValue,
+    byte_source: bool = true,
     status: Status = .readable,
     started: bool = false,
     pulling: bool = false,
@@ -48,6 +51,8 @@ const State = struct {
     high_water_mark: f64 = 0,
     queue_bytes: usize = 0,
     queue: std.ArrayList(Chunk) = .empty,
+    value_queue: std.ArrayList(ValueChunk) = .empty,
+    queue_total_size: f64 = 0,
     pending: std.ArrayList(Into) = .empty,
 };
 const Reader = struct {
@@ -82,17 +87,20 @@ fn releaseInto(engine: *js.Engine, into: Into) void {
 }
 fn finalize(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    inline for (.{ "bindings", "source", "pull", "cancel", "controller", "reader", "request", "request_view", "stored_error" }) |name| c.JS_FreeValueRT(runtime, @field(self, name));
+    inline for (.{ "bindings", "source", "pull", "cancel", "controller", "reader", "request", "request_view", "stored_error", "size_algorithm" }) |name| c.JS_FreeValueRT(runtime, @field(self, name));
     for (self.queue.items) |chunk| c.JS_FreeValueRT(runtime, chunk.backing);
+    for (self.value_queue.items) |chunk| c.JS_FreeValueRT(runtime, chunk.value);
     for (self.pending.items) |into| releaseInto(self.engine, into);
     self.queue.deinit(self.engine.gpa);
+    self.value_queue.deinit(self.engine.gpa);
     self.pending.deinit(self.engine.gpa);
     self.engine.gpa.destroy(self);
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    inline for (.{ "bindings", "source", "pull", "cancel", "controller", "reader", "request", "request_view", "stored_error" }) |name| c.JS_MarkValue(runtime, @field(self, name), visit);
+    inline for (.{ "bindings", "source", "pull", "cancel", "controller", "reader", "request", "request_view", "stored_error", "size_algorithm" }) |name| c.JS_MarkValue(runtime, @field(self, name), visit);
     for (self.queue.items) |chunk| c.JS_MarkValue(runtime, chunk.backing, visit);
+    for (self.value_queue.items) |chunk| c.JS_MarkValue(runtime, chunk.value, visit);
     for (self.pending.items) |into| {
         c.JS_MarkValue(runtime, into.owner, visit);
         c.JS_MarkValue(runtime, into.backing, visit);
@@ -151,6 +159,12 @@ fn clearQueue(self: *State) void {
     for (self.queue.items) |chunk| self.engine.freeValue(chunk.backing);
     self.queue.clearRetainingCapacity();
     self.queue_bytes = 0;
+    for (self.value_queue.items) |chunk| self.engine.freeValue(chunk.value);
+    self.value_queue.clearRetainingCapacity();
+    self.queue_total_size = 0;
+}
+fn queuedSize(self: *State) f64 {
+    return if (self.byte_source) @floatFromInt(self.queue_bytes) else self.queue_total_size;
 }
 fn settleClosed(scope: *Scope, self: *State, failed: bool, reason: c.JSValue) !void {
     if (!c.JS_IsUndefined(self.reader)) try async_value.settle(scope.engine, reader(self.reader).closed.owner, failed, reason);
@@ -252,7 +266,7 @@ fn algorithmStep(scope: *Scope, object: c.JSValue, self: *State, owner: c.JSValu
     if (stage == .start or again) try pull(scope, object, self);
 }
 fn pull(scope: *Scope, object: c.JSValue, self: *State) !void {
-    if (!self.started or self.status != .readable or self.close_requested or (self.pending.items.len == 0 and self.high_water_mark <= @as(f64, @floatFromInt(self.queue_bytes)))) return;
+    if (!self.started or self.status != .readable or self.close_requested or (self.pending.items.len == 0 and self.high_water_mark <= queuedSize(self))) return;
     if (self.pulling) {
         self.pull_again = true;
         return;
@@ -272,6 +286,22 @@ fn pull(scope: *Scope, object: c.JSValue, self: *State) !void {
     };
 }
 fn copyQueue(scope: *Scope, self: *State) !void {
+    if (!self.byte_source) {
+        while (self.pending.items.len != 0 and self.value_queue.items.len != 0) {
+            const into = self.pending.items[0];
+            if (into.kind == .none) {
+                releaseInto(scope.engine, self.pending.orderedRemove(0));
+                continue;
+            }
+            const chunk = self.value_queue.items[0];
+            try async_value.settle(scope.engine, into.owner, false, try result(scope, chunk.value, false));
+            releaseInto(scope.engine, self.pending.orderedRemove(0));
+            self.queue_total_size = @max(0, self.queue_total_size - chunk.size);
+            scope.engine.freeValue(self.value_queue.orderedRemove(0).value);
+        }
+        if (self.close_requested and self.value_queue.items.len == 0 and self.status == .readable) try closeNow(scope, self);
+        return;
+    }
     while (self.pending.items.len != 0 and self.queue.items.len != 0) {
         const into = &self.pending.items[0];
         const chunk = &self.queue.items[0];
@@ -353,7 +383,7 @@ pub fn closeController(scope: *Scope, bindings: c.JSValue, object: c.JSValue) !v
     const retained: *Controller = @ptrCast(@alignCast(raw));
     const self = stream(retained.stream_value);
     if (self.close_requested or self.status != .readable) return;
-    if (self.queue_bytes != 0) {
+    if ((self.byte_source and self.queue_bytes != 0) or (!self.byte_source and self.value_queue.items.len != 0)) {
         self.close_requested = true;
         return;
     }
@@ -369,6 +399,9 @@ fn nativeReader(scope: *Scope, bindings: c.JSValue, object: c.JSValue) !*Reader 
 }
 pub fn lockedNative(scope: *Scope, bindings: c.JSValue, object: c.JSValue) !bool {
     return !c.JS_IsUndefined((try nativeState(scope, bindings, object)).reader);
+}
+pub fn byteStreamNative(scope: *Scope, bindings: c.JSValue, object: c.JSValue) !bool {
+    return (try nativeState(scope, bindings, object)).byte_source;
 }
 pub fn getReaderNative(scope: *Scope, bindings: c.JSValue, object: c.JSValue, options: c.JSValue) !c.JSValue {
     return getReader(scope, object, try nativeState(scope, bindings, object), options);
@@ -402,6 +435,7 @@ pub fn respondZeroNative(scope: *Scope, bindings: c.JSValue, controller: c.JSVal
 fn getReader(scope: *Scope, object: c.JSValue, self: *State, options: c.JSValue) !c.JSValue {
     const mode = try h.optional(scope, options, "mode");
     const kind: ReaderKind = if (c.JS_IsUndefined(mode)) .default else if (scope.equal(mode, try scope.text("byob"))) .byob else return typeError(scope, "Invalid reader mode");
+    if (kind == .byob and !self.byte_source) return typeError(scope, "ReadableStream does not support BYOB readers");
     if (!c.JS_IsUndefined(self.reader)) return typeError(scope, "ReadableStream is locked");
     const result_object = try scope.own(try scope.engine.checked(c.JS_NewObjectClass(scope.engine.context, try classId(scope, self.bindings, "byteReaderClass"))));
     const closed_pending = try closedPromise(scope, object);
@@ -525,6 +559,29 @@ fn cancel(scope: *Scope, object: c.JSValue, self: *State, reason: c.JSValue) !c.
     offered = true;
     return scope.own(pending.promise);
 }
+fn enqueueValue(scope: *Scope, self: *State, chunk: c.JSValue) !void {
+    while (self.pending.items.len != 0 and self.pending.items[0].kind == .none) releaseInto(scope.engine, self.pending.orderedRemove(0));
+    if (self.pending.items.len != 0) {
+        const into = self.pending.items[0];
+        try async_value.settle(scope.engine, into.owner, false, try result(scope, chunk, false));
+        releaseInto(scope.engine, self.pending.orderedRemove(0));
+        return;
+    }
+    const size_value = if (c.JS_IsUndefined(self.size_algorithm)) c.JS_NewInt32(scope.engine.context, 1) else try scope.call(self.size_algorithm, c.pi_js_undefined(), &.{chunk});
+    var size: f64 = undefined;
+    if (c.JS_ToFloat64(scope.engine.context, &size, size_value) < 0) return js.capture(scope.engine);
+    if (!std.math.isFinite(size) or size < 0) {
+        const text = try @import("node_events.zig").description(scope.engine, size_value);
+        defer scope.engine.gpa.free(text);
+        const message = try std.fmt.allocPrint(scope.engine.gpa, "The argument 'size' is invalid. Received {s}", .{text});
+        defer scope.engine.gpa.free(message);
+        return @import("node_events.zig").codedError(scope.engine, "RangeError", "ERR_INVALID_ARG_VALUE", message);
+    }
+    const retained = c.JS_DupValue(scope.engine.context, chunk);
+    errdefer scope.engine.freeValue(retained);
+    try self.value_queue.append(scope.engine.gpa, .{ .value = retained, .size = size });
+    self.queue_total_size += size;
+}
 fn operate(scope: *Scope, receiver: c.JSValue, roots: [*c]c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
     const object = roots[0];
     const self = stream(object);
@@ -554,6 +611,7 @@ fn operate(scope: *Scope, receiver: c.JSValue, roots: [*c]c.JSValue, method: Met
                 if (index != 0) scope.engine.freeValue(into.backing);
             }
             if (self.pending.items.len > 1) self.pending.shrinkRetainingCapacity(1);
+            if (!self.byte_source and self.pending.items.len != 0) releaseInto(scope.engine, self.pending.orderedRemove(0));
             if (self.status != .readable) {
                 const replacement = try closedPromise(scope, object);
                 scope.engine.freeValue(owned.closed.owner);
@@ -594,7 +652,7 @@ fn operate(scope: *Scope, receiver: c.JSValue, roots: [*c]c.JSValue, method: Met
         .enqueue, .close, .errorValue, .desiredSize, .byobRequest => {
             if (!scope.equal(receiver, self.controller)) return typeError(scope, "Invalid byte stream controller receiver");
             if (method == .byobRequest) return getRequest(scope, object, self);
-            if (method == .desiredSize) return if (self.status == .errored) c.pi_js_null() else c.JS_NewFloat64(scope.engine.context, if (self.status == .closed) 0 else self.high_water_mark - @as(f64, @floatFromInt(self.queue_bytes)));
+            if (method == .desiredSize) return if (self.status == .errored) c.pi_js_null() else c.JS_NewFloat64(scope.engine.context, if (self.status == .closed) 0 else self.high_water_mark - queuedSize(self));
             if (method == .errorValue) {
                 try errored(scope, self, first);
                 return c.pi_js_undefined();
@@ -602,7 +660,17 @@ fn operate(scope: *Scope, receiver: c.JSValue, roots: [*c]c.JSValue, method: Met
             if (self.status != .readable or self.close_requested) return typeError(scope, "ReadableStream controller is already closed");
             if (method == .close) {
                 self.close_requested = true;
-                if (self.queue_bytes == 0) try closeNow(scope, self);
+                if ((self.byte_source and self.queue_bytes == 0) or (!self.byte_source and self.value_queue.items.len == 0)) try closeNow(scope, self);
+                return c.pi_js_undefined();
+            }
+            if (!self.byte_source) {
+                enqueueValue(scope, self, first) catch |err| {
+                    const reason = async_value.reason(scope.engine, err);
+                    defer scope.engine.freeValue(reason);
+                    try errored(scope, self, reason);
+                    return h.throw(scope, reason);
+                };
+                try pull(scope, object, self);
                 return c.pi_js_undefined();
             }
             var offset: usize = undefined;
@@ -648,35 +716,47 @@ fn construct(engine: *js.Engine, target: c.JSValue, args: []const c.JSValue, con
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const bindings = constants[0];
-    const source = h.arg(args, 0);
-    if (!c.JS_IsObject(source) or !scope.equal(try scope.get(source, "type"), try scope.text("bytes"))) return typeError(&scope, "Private native stream requires a byte source");
-    const auto_value = try scope.get(source, "autoAllocateChunkSize");
-    const auto_allocate = if (c.JS_IsUndefined(auto_value)) 0 else try integer(&scope, auto_value, true);
+    const public_binding = if (engine.native_readable_stream_bindings) |retained| c.JS_IsStrictEqual(engine.context, retained, bindings) else false;
+    const provided = h.arg(args, 0);
+    const source = if (c.JS_IsUndefined(provided)) try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()))) else provided;
+    if (!c.JS_IsObject(source)) return typeError(&scope, "The source must be an object");
     const strategy = h.arg(args, 1);
+    if (!h.nullish(strategy) and !c.JS_IsObject(strategy)) return typeError(&scope, "The strategy must be an object");
+    // Source requires strategy getters before the underlying source's type.
+    const size_value = try h.optional(&scope, strategy, "size");
     const high_value = try h.optional(&scope, strategy, "highWaterMark");
-    var high: f64 = 0;
+    const type_value = try scope.get(source, "type");
+    const byte_source = scope.equal(try scope.stringify(type_value), try scope.text("bytes"));
+    if (!byte_source and (!public_binding or !c.JS_IsUndefined(type_value))) return typeError(&scope, "Invalid readable stream source type");
+    if (byte_source and !c.JS_IsUndefined(size_value)) return typeError(&scope, "Byte streams do not accept a size algorithm");
+    if (!byte_source and !c.JS_IsUndefined(size_value) and !c.JS_IsFunction(engine.context, size_value)) return typeError(&scope, "The strategy size algorithm must be callable");
+    var high: f64 = if (byte_source) 0 else 1;
     if (!c.JS_IsUndefined(high_value) and c.JS_ToFloat64(engine.context, &high, high_value) < 0) return js.capture(engine);
-    if (std.math.isNan(high) or high < 0) return typeError(&scope, "Invalid byte stream highWaterMark");
-    if (!c.JS_IsUndefined(try h.optional(&scope, strategy, "size"))) return typeError(&scope, "Byte streams do not accept a size algorithm");
+    if (std.math.isNan(high) or high < 0) return typeError(&scope, "Invalid stream highWaterMark");
+    const auto_value = if (byte_source) try scope.get(source, "autoAllocateChunkSize") else c.pi_js_undefined();
+    const auto_allocate = if (c.JS_IsUndefined(auto_value)) 0 else try integer(&scope, auto_value, true);
     const prototype = try scope.get(target, "prototype");
     const object = try scope.own(try engine.checked(c.JS_NewObjectProtoClass(engine.context, prototype, try classId(&scope, bindings, "byteStreamClass"))));
     const self = try engine.gpa.create(State);
-    self.* = .{ .engine = engine, .bindings = c.JS_DupValue(engine.context, bindings), .source = c.JS_DupValue(engine.context, source), .pull = c.pi_js_undefined(), .cancel = c.pi_js_undefined(), .controller = c.pi_js_undefined(), .reader = c.pi_js_undefined(), .request = c.pi_js_undefined(), .request_view = c.pi_js_undefined(), .stored_error = c.pi_js_undefined(), .auto_allocate = auto_allocate, .high_water_mark = high };
+    self.* = .{ .engine = engine, .bindings = c.JS_DupValue(engine.context, bindings), .source = c.JS_DupValue(engine.context, source), .pull = c.pi_js_undefined(), .cancel = c.pi_js_undefined(), .controller = c.pi_js_undefined(), .reader = c.pi_js_undefined(), .request = c.pi_js_undefined(), .request_view = c.pi_js_undefined(), .stored_error = c.pi_js_undefined(), .size_algorithm = c.JS_DupValue(engine.context, size_value), .byte_source = byte_source, .auto_allocate = auto_allocate, .high_water_mark = high };
     _ = c.JS_SetOpaque(object, self);
     const controller = try scope.own(try engine.checked(c.JS_NewObjectClass(engine.context, try classId(&scope, bindings, "byteControllerClass"))));
     const controller_owner = try engine.gpa.create(Controller);
     controller_owner.* = .{ .engine = engine, .stream_value = c.JS_DupValue(engine.context, object) };
     _ = c.JS_SetOpaque(controller, controller_owner);
     self.controller = c.JS_DupValue(engine.context, controller);
-    self.pull = c.JS_DupValue(engine.context, try scope.get(source, "pull"));
-    self.cancel = c.JS_DupValue(engine.context, try scope.get(source, "cancel"));
+    const start = try scope.get(source, "start");
+    const pull_value = try scope.get(source, "pull");
+    const cancel_value = try scope.get(source, "cancel");
+    self.pull = c.JS_DupValue(engine.context, if (scope.truthy(pull_value)) pull_value else c.pi_js_undefined());
+    self.cancel = c.JS_DupValue(engine.context, if (scope.truthy(cancel_value)) cancel_value else c.pi_js_undefined());
     if ((!c.JS_IsUndefined(self.pull) and !c.JS_IsFunction(engine.context, self.pull)) or (!c.JS_IsUndefined(self.cancel) and !c.JS_IsFunction(engine.context, self.cancel))) return typeError(&scope, "Byte source algorithms must be callable");
     var roots = [_]c.JSValue{ object, c.pi_js_undefined() };
-    const public_binding = if (engine.native_readable_stream_bindings) |retained| c.JS_IsStrictEqual(engine.context, retained, bindings) else false;
     if (!public_binding) inline for (.{ .{ "getReader", Method.getReader }, .{ "cancel", Method.cancel }, .{ "locked", Method.locked } }) |entry| try function(&scope, object, entry[0], entry[1], &roots, entry[1] == .locked);
-    inline for (.{ .{ "enqueue", Method.enqueue }, .{ "close", Method.close }, .{ "error", Method.errorValue }, .{ "desiredSize", Method.desiredSize }, .{ "byobRequest", Method.byobRequest } }) |entry| try function(&scope, controller, entry[0], entry[1], &roots, entry[1] == .desiredSize or entry[1] == .byobRequest);
-    const start = try scope.get(source, "start");
-    const pending = if (c.JS_IsUndefined(start)) c.pi_js_undefined() else try scope.call(start, source, &.{controller});
+    inline for (.{ .{ "enqueue", Method.enqueue }, .{ "close", Method.close }, .{ "error", Method.errorValue }, .{ "desiredSize", Method.desiredSize }, .{ "byobRequest", Method.byobRequest } }) |entry| {
+        if (byte_source or entry[1] != .byobRequest) try function(&scope, controller, entry[0], entry[1], &roots, entry[1] == .desiredSize or entry[1] == .byobRequest);
+    }
+    const pending = if (!scope.truthy(start)) c.pi_js_undefined() else try scope.call(start, source, &.{controller});
     try awaitAlgorithm(&scope, object, pending, c.pi_js_undefined(), .start);
     return c.JS_DupValue(engine.context, object);
 }

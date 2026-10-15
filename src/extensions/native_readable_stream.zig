@@ -57,7 +57,7 @@ fn startFunction(scope: *Scope, data: c.JSValue, branch: c_int) !c.JSValue {
 }
 fn byteSource(scope: *Scope, data: c.JSValue, pull: Operation, cancel: Operation, branch: c_int) !c.JSValue {
     const source = try scope.object();
-    try scope.put(source, "type", try scope.text("bytes"));
+    if (branch == 0 or try flagged(scope, data, "byteSource")) try scope.put(source, "type", try scope.text("bytes"));
     try scope.put(source, "start", try startFunction(scope, data, branch));
     try scope.put(source, "pull", try callback(scope, data, "pull", pull, 1));
     try scope.put(source, "cancel", try callback(scope, data, "cancel", cancel, 1));
@@ -178,7 +178,7 @@ fn teeContinued(scope: *Scope, data: c.JSValue, owner: c.JSValue, value: c.JSVal
         inline for (.{ .{ "cancelled1", "controller1" }, .{ "cancelled2", "controller2" } }) |entry| if (!try flagged(scope, data, entry[0])) {
             const controller = try scope.get(data, entry[1]);
             try core.closeController(scope, try bindings(scope.engine), controller);
-            try core.respondZeroNative(scope, try bindings(scope.engine), controller);
+            if (try flagged(scope, data, "byteSource")) try core.respondZeroNative(scope, try bindings(scope.engine), controller);
         };
         try async_value.settle(scope.engine, try scope.get(data, "cancelOwner"), false, c.pi_js_undefined());
     } else {
@@ -186,7 +186,7 @@ fn teeContinued(scope: *Scope, data: c.JSValue, owner: c.JSValue, value: c.JSVal
         const first = !try flagged(scope, data, "cancelled1");
         const second = !try flagged(scope, data, "cancelled2");
         // Clone before either enqueue transfers the original backing store.
-        const copied = if (first and second) try copyBytes(scope, chunk) else chunk;
+        const copied = if (first and second and try flagged(scope, data, "byteSource")) try copyBytes(scope, chunk) else chunk;
         if (first) try core.enqueueNative(scope, try bindings(scope.engine), try scope.get(data, "controller1"), chunk);
         if (second) try core.enqueueNative(scope, try bindings(scope.engine), try scope.get(data, "controller2"), copied);
         if (try flagged(scope, data, "readAgain")) {
@@ -208,6 +208,7 @@ pub fn tee(engine: *js.Engine, stream_value: c.JSValue) !c.JSValue {
     const retained = try bindings(engine);
     const reader_value = try core.getReaderNative(&scope, retained, stream_value, c.pi_js_undefined());
     const data = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
+    try scope.put(data, "byteSource", c.pi_js_bool(engine.context, @intFromBool(try core.byteStreamNative(&scope, retained, stream_value))));
     try scope.put(data, "reader", reader_value);
     try scope.put(data, "stream", stream_value);
     const cancel_pending = try async_value.create(engine, data);

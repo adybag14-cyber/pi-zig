@@ -17,8 +17,16 @@ iterator.return(reason) on cancellation. Promise and raw rejection identities
 flow through native continuations. It creates no extra transport worker and
 uses the captured native constructor rather than a mutable global constructor.
 
+The public constructor also creates genuine default streams. Their queue roots
+actual JavaScript values, calls the captured size algorithm only for queued
+chunks, tracks measured backpressure, and retains zero-sized queued values until
+read. Pending reads preserve chunk identity. Cancellation, reader release,
+errors and queue-drained close use the same native promise/state owner. Strategy
+getters run before source.type, following the actual Node constructor ordering.
+
 The tee implementation acquires the real source reader, performs serialized
-reads, clones each byte chunk before either branch enqueue transfers storage,
+reads, preserves default value identity across branches, clones each byte chunk
+before either branch enqueue transfers storage,
 closes/errors the actual branch controllers and combines both cancellation
 reasons before canceling the real source. Its callback state is a rooted native
 record, and error propagation uses the actual source promises. This first byte
@@ -39,10 +47,10 @@ That qualification does not extend to these new public/composition changes.
 Genuine public graph Source9 subsequently captured all9 cases with full post0;
 batch SHA256 DB0777CAD8CB59E957F51C0BFD79DDB95EC19392D9F95A0BBC59A426A385DEF7.
 
-Generic/default stream queues and size algorithms, the complete shared reader/
-controller/request constructor/prototype graph, source-compatible branding and
+The complete shared reader/controller/request constructor/prototype graph,
+source-compatible branding and
 metadata, byte tee BYOB switching, public async iteration, pipe behavior and
 allocation sweeps still need implementation and genuine native gates. Current
-install supports the genuine byte subset; it must not be presented as complete
+install supports genuine byte and default queues; it must not be presented as complete
 public or Body/Response qualification. The next phase must retain the existing
 Source12/FileHandle8 regression targets while adding graph and consumer gates.
