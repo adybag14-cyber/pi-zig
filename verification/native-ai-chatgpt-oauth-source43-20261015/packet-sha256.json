@@ -1,0 +1,182 @@
+[
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015-admission.json",
+    "sha256": "8D9A41AEF6B9BCC8FBC03577E1E1BC8898E43A25BDA44593623509F9D495CBA7",
+    "bytes": 254,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015-admission.json"
+  },
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015-callback-port-preflight.json",
+    "sha256": "CAE1E987B9379C5ED0F2EADBC4A6778CC42AB5835F44B2F9BFFE3440379015DB",
+    "bytes": 213,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015-callback-port-preflight.json"
+  },
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015-extra-before.json",
+    "sha256": "4A1F70F5EE686FF72E20DC5665345557076C8107F67EA4E17F385B220A3E9ABA",
+    "bytes": 2237,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015-extra-before.json"
+  },
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015-output.json",
+    "sha256": "61B2B03DADA222EF369EF20C901E64BFF7A17C5238E1E434FC7922FDF623DE24",
+    "bytes": 25126,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015-output.json"
+  },
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015-posthash.json",
+    "sha256": "D4AE03ACDA8166518D14F8F5B23B0535C2335918626A08CF8FE9D4DD47F02AA5",
+    "bytes": 627,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015-posthash.json"
+  },
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015-syntax-check.json",
+    "sha256": "FA2F70BBDF59A5F5B87A4E479D793EA372536F623927D8697FBA25546C7BCD67",
+    "bytes": 919,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015-syntax-check.json"
+  },
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015-syntax-check.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015-syntax-check.stderr.log"
+  },
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015-syntax-check.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015-syntax-check.stdout.log"
+  },
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015-validation.json",
+    "sha256": "D889DACC55E9BE9AE0D7861FDAD8129596C6FE19D87732EEEEA807F39A31C87D",
+    "bytes": 213,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015-validation.json"
+  },
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015.json",
+    "sha256": "425F80BA9A87AC49B4E70610B764DF9D2DBE0BDAC0912FE14593735E416E8CAF",
+    "bytes": 1152,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015.json"
+  },
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015.stderr.log",
+    "sha256": "CD2643AEE487909A7977A287F940E74E2DFE8E746C1E52EE7F312CD3E237A2AF",
+    "bytes": 178,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015.stderr.log"
+  },
+  {
+    "path": "oauth-chatgpt-ae7-source43-first-20261015.stdout.log",
+    "sha256": "27744D24B41DD9315E63D8DEA644887F069F262335B85E593D906552359D2B29",
+    "bytes": 65,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-chatgpt-ae7-source43-first-20261015.stdout.log"
+  },
+  {
+    "path": "sourceae7-oauth-chatgpt-capture-20261015.mjs",
+    "sha256": "B08A80785DF74A945B4B74BE96EDDB36746D5D1A770E7A2A8C20C75A7DBB9EB2",
+    "bytes": 1705,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-oauth-chatgpt-capture-20261015.mjs"
+  },
+  {
+    "path": "sourceae7-observe-20261015.mjs",
+    "sha256": "1891342A814F6949D3DF384D83B738159D52851FD41DF240F9F160EB3E34D8C2",
+    "bytes": 4694,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-observe-20261015.mjs"
+  },
+  {
+    "path": "Run-OAuthChatGPTAe7Source43-20261015.ps1",
+    "sha256": "E2C3074C15B40A5B464CE8B128BA7546CB78415FA466FA7B35E2A74F0BC36884",
+    "bytes": 8897,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-OAuthChatGPTAe7Source43-20261015.ps1"
+  },
+  {
+    "path": "Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1"
+  },
+  {
+    "path": "sourceae7-preparation-controls-20261015.json",
+    "sha256": "3C84A2C828A906617A50E5C568BA9DA9CAEC7FD79D202C20CA7D6087DD02637C",
+    "bytes": 1007,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-preparation-controls-20261015.json"
+  },
+  {
+    "path": "sourceae7-preparation-readiness-20261015.json",
+    "sha256": "BA4C270D341C7B8651573A2DE0B9478B1CEAE1D32D680A4EB26068D2DF08389E",
+    "bytes": 3965,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-preparation-readiness-20261015.json"
+  },
+  {
+    "path": "sourceae7-dependency-contract-audit-20261015.json",
+    "sha256": "B67885F76310D14C75505EC5EF8A61821BCF6D57136474419BB65C4AF7AF0035",
+    "bytes": 211434,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-dependency-contract-audit-20261015.json"
+  },
+  {
+    "path": "sourceae7-modules-69972-0-20261015.jsonl",
+    "sha256": "EA30D843D8633D63DB23E5CF29582B9537CE4D040E83B177F2285CF9463847CA",
+    "bytes": 1384,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-modules-69972-0-20261015.jsonl"
+  },
+  {
+    "path": "ai-oauth-chatgpt-ae7.input.mjs",
+    "sha256": "79683C3072187254FF7C3A23E2FCB11805B30FCE3B7DCC648B5FA9F82B5E0E72",
+    "bytes": 6509,
+    "original_path": "C:\\Users\\adyba\\pi-zig-native-oauth-chatgpt-20261015\\src\\extensions\\fixtures\\ai-oauth-chatgpt-ae7.input.mjs"
+  },
+  {
+    "path": "ai-oauth-chatgpt-ae7.json",
+    "sha256": "61B2B03DADA222EF369EF20C901E64BFF7A17C5238E1E434FC7922FDF623DE24",
+    "bytes": 25126,
+    "original_path": "C:\\Users\\adyba\\pi-zig-native-oauth-chatgpt-20261015\\src\\extensions\\fixtures\\ai-oauth-chatgpt-ae7.json"
+  },
+  {
+    "path": "original-source/auth/oauth/openai-chatgpt.ts",
+    "sha256": "AD9DBDD7FFA52FCBAFF1D1BE2D0BA97B643476AAF8930E6DD67147BF35C837DE",
+    "bytes": 11605,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\openai-chatgpt.ts"
+  },
+  {
+    "path": "original-source/utils/oauth-page.ts",
+    "sha256": "A5C0F7DDD7A1A803C8FBAF65ADAFFB6A7710A70A75B5559A749BA811942FAB40",
+    "bytes": 3125,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\utils\\oauth-page.ts"
+  },
+  {
+    "path": "original-source/utils/provider-env.ts",
+    "sha256": "3829251AE0674CEF7CA09800CEE9F46D4E305770129B72B822EA2F6F85EFE675",
+    "bytes": 1718,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\utils\\provider-env.ts"
+  },
+  {
+    "path": "original-source/auth/oauth/pkce.ts",
+    "sha256": "33835111577490103DBB7509B7687DB1643691D7B425845428F3CBEB873FE9CF",
+    "bytes": 997,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\pkce.ts"
+  },
+  {
+    "path": "original-frozen-manifests.zip",
+    "sha256": "0BB0813F358D4DC11BB0B6CB3BB510C6AFD8DF9156625BA680212A069B6B0DB4",
+    "bytes": 1493790,
+    "original_path": "byte-identical captured frozen manifests; each ZIP entry independently rehashed"
+  },
+  {
+    "path": "retention-verification.json",
+    "sha256": "C1BE92A7C232CA63652A71C5A7AD18F373A67214B5243CA0DD40110F223FB12B",
+    "bytes": 963,
+    "original_path": "new retention check of immutable original receipts"
+  },
+  {
+    "path": "README.md",
+    "sha256": "514FAD5285EB2B8F438A6BE61DAF47D836912F978196F9C4588B4B1C834F3143",
+    "bytes": 2296,
+    "original_path": "new retrospective retention documentation"
+  },
+  {
+    "path": "Retain-ChatGPTSource43Packet-20261015.ps1",
+    "sha256": "E6A812917FC9983F30413AB21C3F02961D4A6F98CB397F642ED9C1781D569DB8",
+    "bytes": 7603,
+    "original_path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Retain-ChatGPTSource43Packet-20261015.ps1"
+  }
+]
