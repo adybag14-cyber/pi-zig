@@ -84,7 +84,6 @@ fn get(engine: *v.em.Engine, receiver: c.JSValue, kind: Kind) !c.JSValue {
         if (scope.equal(try scope.get(selected, "length"), c.JS_NewInt32(engine.context, 0))) return c.pi_js_undefined();
         return c.JS_DupValue(engine.context, if (kind == .functionCalls) selected else try v.optional(&scope, try v.at(&scope, selected, 0), if (kind == .executableCode) "code" else "output"));
     }
-    const collected = try scope.array();
     const non_parts = try scope.array();
     var combined = try scope.text("");
     var found = false;
@@ -116,10 +115,6 @@ fn get(engine: *v.em.Engine, receiver: c.JSValue, kind: Kind) !c.JSValue {
             }
         } else if (kind == .data) {
             if (row.truthy(try row.get(part, "inlineData")) and c.JS_IsString(try row.get(try row.get(part, "inlineData"), "data"))) combined = try scope.concat(combined, try row.call(try row.global("atob"), c.pi_js_undefined(), &.{try row.get(try row.get(part, "inlineData"), "data")}));
-        } else {
-            const key: [*:0]const u8 = if (kind == .functionCalls) "functionCall" else if (kind == .executableCode) "executableCode" else "codeExecutionResult";
-            const value = try row.get(part, key);
-            if (row.truthy(value)) _ = try row.invoke(collected, "push", &.{value});
         }
     }
     if ((kind == .text or kind == .data) and try v.length(&scope, non_parts) > 0) {
@@ -130,8 +125,7 @@ fn get(engine: *v.em.Engine, receiver: c.JSValue, kind: Kind) !c.JSValue {
     return c.JS_DupValue(engine.context, switch (kind) {
         .text => if (found) combined else c.pi_js_undefined(),
         .data => if (try v.length(&scope, combined) > 0) try scope.call(try scope.global("btoa"), c.pi_js_undefined(), &.{combined}) else c.pi_js_undefined(),
-        .functionCalls => if (try v.length(&scope, collected) > 0) collected else c.pi_js_undefined(),
-        .executableCode, .codeExecutionResult => if (try v.length(&scope, collected) > 0) try v.optional(&scope, try v.at(&scope, collected, 0), if (kind == .executableCode) "code" else "output") else c.pi_js_undefined(),
+        else => unreachable,
     });
 }
 pub fn wrap(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_headers: c.JSValue, vertex: bool) !c.JSValue {
