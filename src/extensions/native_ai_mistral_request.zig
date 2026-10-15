@@ -54,7 +54,7 @@ pub fn simple(scope: *Scope, dependencies: c.JSValue, model: c.JSValue, context:
     var effort = c.pi_js_undefined();
     if (scope.truthy(map)) {
         effort = try scope.own(try v.js.getKey(scope.engine, map, if (scope.truthy(reasoning)) reasoning else try scope.text("off")));
-        if (v.nullish(effort) and scope.truthy(reasoning)) effort = try scope.text("high");
+        if (v.nullish(effort)) effort = if (scope.truthy(reasoning)) try scope.text("high") else c.pi_js_undefined();
     }
     try scope.put(result, "promptMode", if (scope.truthy(try scope.get(model, "reasoning")) and !scope.truthy(map) and scope.truthy(reasoning)) try scope.text("reasoning") else c.pi_js_undefined());
     try scope.put(result, "reasoningEffort", effort);
@@ -193,9 +193,20 @@ pub fn build(engine: *v.em.Engine, dependencies: c.JSValue, model: c.JSValue, co
     }
     const tools = try scope.own(try @import("native_agent_tool_changes.zig").currentTools(engine, try scope.get(context, "messages")));
     if (try v.length(&scope, tools) > 0) try scope.put(result, "tools", try scope.own(try @import("native_ai_openai_tools.zig").convert(engine, tools, try scope.object())));
-    inline for (.{ "temperature", "maxTokens", "toolChoice", "promptMode", "reasoningEffort" }) |key| {
+    inline for (.{ "temperature", "maxTokens", "promptMode", "reasoningEffort" }) |key| {
         const value = try v.optional(&scope, options, key);
-        if (!c.JS_IsUndefined(value) and (!@import("std").mem.eql(u8, key, "toolChoice") or scope.truthy(value))) try scope.put(result, key, value);
+        if (!c.JS_IsUndefined(value)) try scope.put(result, key, value);
+    }
+    const choice = try v.optional(&scope, options, "toolChoice");
+    if (scope.truthy(choice)) {
+        if (c.JS_IsString(choice)) try scope.put(result, "toolChoice", choice) else {
+            const selected = try scope.object();
+            try scope.put(selected, "type", try scope.text("function"));
+            const function = try scope.object();
+            try scope.put(function, "name", try scope.get(try scope.get(choice, "function"), "name"));
+            try scope.put(selected, "function", function);
+            try scope.put(result, "toolChoice", selected);
+        }
     }
     if (try cache(&scope, options)) try scope.put(result, "promptCacheKey", try scope.get(options, "sessionId"));
     return c.JS_DupValue(engine.context, result);

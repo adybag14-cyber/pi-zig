@@ -289,6 +289,8 @@ fn retryOrFail(scope: *Scope, owner: c.JSValue, reason: c.JSValue, comptime kind
     const headers_value = try scope.get(reason, "headers");
     const hint = try v.optional(scope, headers_value, "x-should-retry");
     const status = try scope.get(reason, "status");
+    const excluded = try v.optional(scope, options, "noRetryStatuses");
+    if (!v.nullish(excluded) and scope.truthy(try scope.invoke(excluded, "includes", &.{status}))) return fail(scope, owner, reason);
     const retryable = if (try v.eq(scope, hint, "true")) true else if (try v.eq(scope, hint, "false")) false else c.JS_IsUndefined(status) or scope.equal(status, c.JS_NewInt32(scope.engine.context, 408)) or scope.equal(status, c.JS_NewInt32(scope.engine.context, 409)) or scope.equal(status, c.JS_NewInt32(scope.engine.context, 429)) or (c.JS_IsNumber(status) and try arithmetic.compare(scope.engine, .greater_equal, status, c.JS_NewInt32(scope.engine.context, 500)));
     if (!retryable) return fail(scope, owner, reason);
     try scope.put(owner, "attempt", try binary(scope, .add, attempt, c.JS_NewInt32(scope.engine.context, 1)));
