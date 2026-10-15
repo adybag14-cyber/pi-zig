@@ -1,0 +1,2176 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "inputSha256": "3cdbbf54fe8173d18b62dc64c3e41dbf785ba86da48aa8ccb1da0856a6cae554",
+  "cases": 56,
+  "scope": "Actual navigateTree and collectEntriesForBranchSummary/prepareBranchEntries/generateBranchSummary with real Source manager, refresh, completion/retry and caller-controlled stream. Raw identities/callee order/finally behavior; generated IDs, timestamps and random session IDs normalized. Full class/factory and public activation remain separate.",
+  "rows": [
+    {
+      "name": "navigate-descriptor",
+      "value": {
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "name": "navigateTree",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "name": "branch-helper-metadata",
+      "value": [
+        {
+          "key": "collectEntriesForBranchSummary",
+          "name": "collectEntriesForBranchSummary",
+          "length": 3,
+          "async": false,
+          "ownPrototype": true
+        },
+        {
+          "key": "prepareBranchEntries",
+          "name": "prepareBranchEntries",
+          "length": 1,
+          "async": false,
+          "ownPrototype": true
+        },
+        {
+          "key": "generateBranchSummary",
+          "name": "generateBranchSummary",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false
+        }
+      ]
+    },
+    {
+      "name": "collect-null-f",
+      "value": {
+        "ids": [],
+        "ancestor": null
+      }
+    },
+    {
+      "name": "collect-e-f",
+      "value": {
+        "ids": [
+          "b",
+          "c",
+          "d",
+          "e"
+        ],
+        "ancestor": "a"
+      }
+    },
+    {
+      "name": "collect-e-d",
+      "value": {
+        "ids": [
+          "e"
+        ],
+        "ancestor": "d"
+      }
+    },
+    {
+      "name": "collect-a-e",
+      "value": {
+        "ids": [],
+        "ancestor": "a"
+      }
+    },
+    {
+      "name": "collect-g-e",
+      "value": {
+        "ids": [
+          "g"
+        ],
+        "ancestor": "a"
+      }
+    },
+    {
+      "name": "collect-live-callee-and-double-id",
+      "value": {
+        "trace": [
+          [
+            "branch",
+            "a"
+          ],
+          [
+            "branch",
+            "new"
+          ],
+          "id",
+          "id"
+        ],
+        "ancestor": "a",
+        "entries": []
+      }
+    },
+    {
+      "name": "collect-raw-error",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "prepare-budget-undefined",
+      "value": {
+        "roles": [
+          "user",
+          "assistant",
+          "user",
+          "assistant"
+        ],
+        "content": [
+          "root task",
+          [
+            {
+              "type": "toolCall",
+              "id": "read1",
+              "name": "read",
+              "arguments": {
+                "path": "/tmp/a"
+              }
+            }
+          ],
+          "next task",
+          [
+            {
+              "type": "text",
+              "text": "answer"
+            }
+          ]
+        ],
+        "totalTokens": 14,
+        "fileOps": {
+          "read": [
+            "/tmp/a"
+          ],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "prepare-budget-0",
+      "value": {
+        "roles": [
+          "user",
+          "assistant",
+          "user",
+          "assistant"
+        ],
+        "content": [
+          "root task",
+          [
+            {
+              "type": "toolCall",
+              "id": "read1",
+              "name": "read",
+              "arguments": {
+                "path": "/tmp/a"
+              }
+            }
+          ],
+          "next task",
+          [
+            {
+              "type": "text",
+              "text": "answer"
+            }
+          ]
+        ],
+        "totalTokens": 14,
+        "fileOps": {
+          "read": [
+            "/tmp/a"
+          ],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "prepare-budget-1",
+      "value": {
+        "roles": [],
+        "content": [],
+        "totalTokens": 0,
+        "fileOps": {
+          "read": [],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "prepare-budget-4",
+      "value": {
+        "roles": [
+          "assistant"
+        ],
+        "content": [
+          [
+            {
+              "type": "text",
+              "text": "answer"
+            }
+          ]
+        ],
+        "totalTokens": 2,
+        "fileOps": {
+          "read": [],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "prepare-budget-20",
+      "value": {
+        "roles": [
+          "user",
+          "assistant",
+          "user",
+          "assistant"
+        ],
+        "content": [
+          "root task",
+          [
+            {
+              "type": "toolCall",
+              "id": "read1",
+              "name": "read",
+              "arguments": {
+                "path": "/tmp/a"
+              }
+            }
+          ],
+          "next task",
+          [
+            {
+              "type": "text",
+              "text": "answer"
+            }
+          ]
+        ],
+        "totalTokens": 14,
+        "fileOps": {
+          "read": [
+            "/tmp/a"
+          ],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "prepare-budget-200",
+      "value": {
+        "roles": [
+          "user",
+          "assistant",
+          "user",
+          "assistant"
+        ],
+        "content": [
+          "root task",
+          [
+            {
+              "type": "toolCall",
+              "id": "read1",
+              "name": "read",
+              "arguments": {
+                "path": "/tmp/a"
+              }
+            }
+          ],
+          "next task",
+          [
+            {
+              "type": "text",
+              "text": "answer"
+            }
+          ]
+        ],
+        "totalTokens": 14,
+        "fileOps": {
+          "read": [
+            "/tmp/a"
+          ],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "prepare-cumulative-files-all-entries",
+      "value": {
+        "roles": [],
+        "content": [],
+        "totalTokens": 0,
+        "fileOps": {
+          "read": [
+            "/old",
+            "/shared"
+          ],
+          "written": [],
+          "edited": [
+            "/edit"
+          ]
+        }
+      }
+    },
+    {
+      "name": "prepare-summary-near-budget-include",
+      "value": {
+        "roles": [
+          "compactionSummary",
+          "user"
+        ],
+        "content": [
+          "longlonglonglonglonglonglonglonglonglong",
+          "1234"
+        ],
+        "totalTokens": 11,
+        "fileOps": {
+          "read": [],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "prepare-custom-and-skip-tool-result",
+      "value": {
+        "roles": [
+          "custom"
+        ],
+        "content": [
+          [
+            {
+              "type": "text",
+              "text": "one"
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "two"
+            }
+          ]
+        ],
+        "totalTokens": 1202,
+        "fileOps": {
+          "read": [],
+          "written": [],
+          "edited": []
+        }
+      }
+    },
+    {
+      "name": "prepare-iterator-close-raw",
+      "value": {
+        "same": true,
+        "trace": [
+          "closed"
+        ]
+      }
+    },
+    {
+      "name": "generate-empty",
+      "value": {
+        "result": {
+          "summary": "No content to summarize"
+        },
+        "trace": []
+      }
+    },
+    {
+      "name": "generate-normal",
+      "value": {
+        "result": {
+          "summary": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\ngenerated summary\n\n<read-files>\n/tmp/a\n</read-files>",
+          "usage": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "readFiles": [
+            "/tmp/a"
+          ],
+          "modifiedFiles": []
+        },
+        "trace": [
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[User]: root task\n\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-fixture": "header"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result"
+        ]
+      }
+    },
+    {
+      "name": "generate-custom",
+      "value": {
+        "result": {
+          "summary": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\ngenerated summary\n\n<read-files>\n/tmp/a\n</read-files>",
+          "usage": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "readFiles": [
+            "/tmp/a"
+          ],
+          "modifiedFiles": []
+        },
+        "trace": [
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[User]: root task\n\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages.\n\nAdditional focus: focus"
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-fixture": "header"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result"
+        ]
+      }
+    },
+    {
+      "name": "generate-replace",
+      "value": {
+        "result": {
+          "summary": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\ngenerated summary\n\n<read-files>\n/tmp/a\n</read-files>",
+          "usage": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "readFiles": [
+            "/tmp/a"
+          ],
+          "modifiedFiles": []
+        },
+        "trace": [
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[User]: root task\n\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nreplace all"
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-fixture": "header"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result"
+        ]
+      }
+    },
+    {
+      "name": "generate-aborted",
+      "value": {
+        "result": {
+          "aborted": true
+        },
+        "trace": [
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[User]: root task\n\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-fixture": "header"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result"
+        ]
+      }
+    },
+    {
+      "name": "generate-error",
+      "value": {
+        "result": {
+          "error": "Branch summarization failed: fixture failure"
+        },
+        "trace": [
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[User]: root task\n\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-fixture": "header"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result"
+        ]
+      }
+    },
+    {
+      "name": "generate-length",
+      "value": {
+        "result": {
+          "error": "Branch summarization failed: generation hit the token cap and the summary is incomplete"
+        },
+        "trace": [
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[User]: root task\n\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-fixture": "header"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result"
+        ]
+      }
+    },
+    {
+      "name": "generate-tool",
+      "value": {
+        "result": {
+          "error": "Branch summarization attempted to call a tool"
+        },
+        "trace": [
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[User]: root task\n\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-fixture": "header"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result"
+        ]
+      }
+    },
+    {
+      "name": "generate-empty-text",
+      "value": {
+        "result": {
+          "summary": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\n\n\n<read-files>\n/tmp/a\n</read-files>",
+          "usage": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          },
+          "readFiles": [
+            "/tmp/a"
+          ],
+          "modifiedFiles": []
+        },
+        "trace": [
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[User]: root task\n\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-fixture": "header"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result"
+        ]
+      }
+    },
+    {
+      "name": "generate-raw-stream",
+      "value": {
+        "same": true,
+        "trace": [
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[User]: root task\n\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-fixture": "header"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "navigate-streaming",
+      "value": {
+        "error": {
+          "name": "Error",
+          "message": "Wait for the current response to finish before navigating the session tree."
+        },
+        "trace": [],
+        "leaf": "e",
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-compacting",
+      "value": {
+        "error": {
+          "name": "Error",
+          "message": "Wait for the current compaction or tree navigation to finish before navigating the session tree."
+        },
+        "trace": [],
+        "leaf": "e",
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-noop",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "trace": [],
+        "leaf": "e",
+        "branch": [
+          "message",
+          "message",
+          "message",
+          "message",
+          "message"
+        ],
+        "roles": [],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-missing",
+      "value": {
+        "error": {
+          "name": "Error",
+          "message": "Entry absent not found"
+        },
+        "trace": [],
+        "leaf": "e",
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-missing-model",
+      "value": {
+        "error": {
+          "name": "Error",
+          "message": "No model available for summarization"
+        },
+        "trace": [],
+        "leaf": "e",
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-user-root",
+      "value": {
+        "result": {
+          "editorText": "root task",
+          "cancelled": false
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "refresh",
+          "restore",
+          [
+            "tree",
+            null,
+            "e",
+            null,
+            null
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": null,
+        "branch": [],
+        "roles": [],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-user-parent",
+      "value": {
+        "result": {
+          "editorText": "alternative",
+          "cancelled": false
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "a",
+            "e",
+            null,
+            null
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "a",
+        "branch": [
+          "message"
+        ],
+        "roles": [
+          "user"
+        ],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-custom-parent",
+      "value": {
+        "result": {
+          "editorText": "onetwo",
+          "cancelled": false
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "a",
+            "e",
+            null,
+            null
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "a",
+        "branch": [
+          "message"
+        ],
+        "roles": [
+          "user"
+        ],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-assistant",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "b",
+            "e",
+            null,
+            null
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "b",
+        "branch": [
+          "message",
+          "message"
+        ],
+        "roles": [
+          "user",
+          "assistant"
+        ],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-label-no-summary",
+      "value": {
+        "result": {
+          "editorText": "alternative",
+          "cancelled": false
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "generated",
+            "e",
+            null,
+            null
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "generated",
+        "branch": [
+          "message",
+          "label"
+        ],
+        "roles": [
+          "user"
+        ],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-before-cancel",
+      "value": {
+        "result": {
+          "cancelled": true
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          [
+            "before",
+            "f",
+            "e",
+            "a",
+            [
+              "b",
+              "c",
+              "d",
+              "e"
+            ],
+            false,
+            false
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "e",
+        "branch": [
+          "message",
+          "message",
+          "message",
+          "message",
+          "message"
+        ],
+        "roles": [],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-extension-summary",
+      "value": {
+        "result": {
+          "editorText": "alternative",
+          "cancelled": false,
+          "summaryEntry": {
+            "type": "branch_summary",
+            "parentId": "a",
+            "summary": "extension summary",
+            "details": {
+              "owned": true
+            },
+            "fromHook": true,
+            "usage": {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          }
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          [
+            "before",
+            "f",
+            "e",
+            "a",
+            [
+              "b",
+              "c",
+              "d",
+              "e"
+            ],
+            true,
+            false
+          ],
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "generated",
+            "e",
+            {
+              "type": "branch_summary",
+              "parentId": "a",
+              "summary": "extension summary",
+              "details": {
+                "owned": true
+              },
+              "fromHook": true,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              }
+            },
+            true
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "generated",
+        "branch": [
+          "message",
+          "branch_summary",
+          "label"
+        ],
+        "roles": [
+          "user",
+          "branchSummary"
+        ],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-extension-ignored-without-request",
+      "value": {
+        "result": {
+          "editorText": "alternative",
+          "cancelled": false
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          [
+            "before",
+            "f",
+            "e",
+            "a",
+            [
+              "b",
+              "c",
+              "d",
+              "e"
+            ],
+            false,
+            false
+          ],
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "generated",
+            "e",
+            null,
+            null
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "generated",
+        "branch": [
+          "message",
+          "label"
+        ],
+        "roles": [
+          "user"
+        ],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-extension-empty-summary",
+      "value": {
+        "result": {
+          "editorText": "alternative",
+          "cancelled": false
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          [
+            "before",
+            "f",
+            "e",
+            "a",
+            [
+              "b",
+              "c",
+              "d",
+              "e"
+            ],
+            true,
+            false
+          ],
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "a",
+            "e",
+            null,
+            null
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "a",
+        "branch": [
+          "message"
+        ],
+        "roles": [
+          "user"
+        ],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-generated",
+      "value": {
+        "result": {
+          "editorText": "alternative",
+          "cancelled": false,
+          "summaryEntry": {
+            "type": "branch_summary",
+            "parentId": "a",
+            "summary": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\ngenerated summary\n\n<read-files>\n/tmp/a\n</read-files>",
+            "details": {
+              "readFiles": [
+                "/tmp/a"
+              ],
+              "modifiedFiles": []
+            },
+            "fromHook": false,
+            "usage": {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          }
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "branch-settings",
+          [
+            "auth",
+            true,
+            true
+          ],
+          "retry-settings",
+          [
+            "callbacks",
+            "branchSummary"
+          ],
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-auth": "fixture"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result",
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "generated",
+            "e",
+            {
+              "type": "branch_summary",
+              "parentId": "a",
+              "summary": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\ngenerated summary\n\n<read-files>\n/tmp/a\n</read-files>",
+              "details": {
+                "readFiles": [
+                  "/tmp/a"
+                ],
+                "modifiedFiles": []
+              },
+              "fromHook": false,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              }
+            },
+            false
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "generated",
+        "branch": [
+          "message",
+          "branch_summary"
+        ],
+        "roles": [
+          "user",
+          "branchSummary"
+        ],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-override-instructions",
+      "value": {
+        "result": {
+          "editorText": "alternative",
+          "cancelled": false,
+          "summaryEntry": {
+            "type": "branch_summary",
+            "parentId": "a",
+            "summary": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\ngenerated summary\n\n<read-files>\n/tmp/a\n</read-files>",
+            "details": {
+              "readFiles": [
+                "/tmp/a"
+              ],
+              "modifiedFiles": []
+            },
+            "fromHook": false,
+            "usage": {
+              "input": 1,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 3,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          }
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          [
+            "before",
+            "f",
+            "e",
+            "a",
+            [
+              "b",
+              "c",
+              "d",
+              "e"
+            ],
+            true,
+            false
+          ],
+          "branch-settings",
+          [
+            "auth",
+            true,
+            true
+          ],
+          "retry-settings",
+          [
+            "callbacks",
+            "branchSummary"
+          ],
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nfocus"
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-auth": "fixture"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result",
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "generated",
+            "e",
+            {
+              "type": "branch_summary",
+              "parentId": "a",
+              "summary": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\ngenerated summary\n\n<read-files>\n/tmp/a\n</read-files>",
+              "details": {
+                "readFiles": [
+                  "/tmp/a"
+                ],
+                "modifiedFiles": []
+              },
+              "fromHook": false,
+              "usage": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 3,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              }
+            },
+            false
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "generated",
+        "branch": [
+          "message",
+          "branch_summary",
+          "label"
+        ],
+        "roles": [
+          "user",
+          "branchSummary"
+        ],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-aborted-result",
+      "value": {
+        "result": {
+          "cancelled": true,
+          "aborted": true
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "branch-settings",
+          [
+            "auth",
+            true,
+            true
+          ],
+          "retry-settings",
+          [
+            "callbacks",
+            "branchSummary"
+          ],
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-auth": "fixture"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result",
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "e",
+        "branch": [
+          "message",
+          "message",
+          "message",
+          "message",
+          "message"
+        ],
+        "roles": [],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-abort-before-summary",
+      "value": {
+        "result": {
+          "cancelled": true,
+          "aborted": true
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          [
+            "before",
+            "f",
+            "e",
+            "a",
+            [
+              "b",
+              "c",
+              "d",
+              "e"
+            ],
+            true,
+            false
+          ],
+          "branch-settings",
+          [
+            "auth",
+            true,
+            true
+          ],
+          "retry-settings",
+          [
+            "callbacks",
+            "branchSummary"
+          ],
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-auth": "fixture"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": true
+            }
+          ],
+          "result",
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "e",
+        "branch": [
+          "message",
+          "message",
+          "message",
+          "message",
+          "message"
+        ],
+        "roles": [],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-summary-error",
+      "value": {
+        "error": {
+          "name": "Error",
+          "message": "Branch summarization failed: fixture failure"
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "branch-settings",
+          [
+            "auth",
+            true,
+            true
+          ],
+          "retry-settings",
+          [
+            "callbacks",
+            "branchSummary"
+          ],
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-auth": "fixture"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result",
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "e",
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-summary-tool",
+      "value": {
+        "error": {
+          "name": "Error",
+          "message": "Branch summarization attempted to call a tool"
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "branch-settings",
+          [
+            "auth",
+            true,
+            true
+          ],
+          "retry-settings",
+          [
+            "callbacks",
+            "branchSummary"
+          ],
+          [
+            "stream",
+            true,
+            {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                  "timestamp": 0
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "<conversation>\n[Assistant tool calls]: read(path=\"/tmp/a\")\n\n[User]: next task\n\n[Assistant]: answer\n</conversation>\n\nCreate a structured summary of this conversation branch for context when returning later.\n\nUse this EXACT format:\n\n## Goal\n[What was the user trying to accomplish in this branch?]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Work that was started but not finished]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [What should happen next to continue this work]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                    }
+                  ],
+                  "timestamp": 0
+                }
+              ]
+            },
+            {
+              "maxTokens": 1000,
+              "cacheRetention": "none",
+              "hasSessionId": true,
+              "headers": {
+                "x-auth": "fixture"
+              },
+              "env": {
+                "FIXTURE": "owned"
+              },
+              "aborted": false
+            }
+          ],
+          "result",
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "e",
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-before-raw",
+      "value": {
+        "same": true,
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          [
+            "before",
+            "f",
+            "e",
+            "a",
+            [
+              "b",
+              "c",
+              "d",
+              "e"
+            ],
+            false,
+            false
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "e",
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-auth-raw",
+      "value": {
+        "same": true,
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "branch-settings",
+          [
+            "auth",
+            true,
+            true
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "e",
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-tree-raw",
+      "value": {
+        "same": true,
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "a",
+            "e",
+            null,
+            null
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "a",
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-refresh-raw",
+      "value": {
+        "same": true,
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "refresh",
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "a",
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-finally-raw",
+      "value": {
+        "same": true,
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          [
+            "before",
+            "f",
+            "e",
+            "a",
+            [
+              "b",
+              "c",
+              "d",
+              "e"
+            ],
+            false,
+            false
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "e",
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-old-root-no-summary",
+      "value": {
+        "result": {
+          "editorText": "alternative",
+          "cancelled": false
+        },
+        "trace": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "a",
+            null,
+            null,
+            null
+          ],
+          [
+            "idle",
+            true
+          ]
+        ],
+        "leaf": "a",
+        "branch": [
+          "message"
+        ],
+        "roles": [
+          "user"
+        ],
+        "cleared": true
+      }
+    },
+    {
+      "name": "navigate-live-option-getters-and-overrides",
+      "value": {
+        "trace": [
+          "summarize",
+          "instructions",
+          "replace",
+          "label",
+          "summarize",
+          "override-instructions",
+          "override-instructions",
+          "override-replace",
+          "override-replace",
+          "override-label",
+          "override-label",
+          "summarize"
+        ],
+        "result": {
+          "editorText": "alternative",
+          "cancelled": false
+        },
+        "events": [
+          [
+            "handlers",
+            "session_before_tree"
+          ],
+          [
+            "before",
+            "f",
+            "e",
+            "a",
+            [
+              "b",
+              "c",
+              "d",
+              "e"
+            ],
+            false,
+            false
+          ],
+          "refresh",
+          "restore",
+          [
+            "tree",
+            "a",
+            "e",
+            null,
+            null
+          ],
+          [
+            "idle",
+            true
+          ]
+        ]
+      }
+    }
+  ]
+}

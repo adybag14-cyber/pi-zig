@@ -1,5 +1,6 @@
-param([Parameter(Mandatory)][ValidateSet('Source','Compile','Runtime')][string]$Phase,[Parameter(Mandatory)][string]$Attempt,[Parameter(Mandatory)][ValidateRange(1,4)][int]$Slot)
+param([Parameter(Mandatory)][ValidateSet('Source','Compile','Runtime')][string]$Phase,[Parameter(Mandatory)][string]$Attempt,[Parameter(Mandatory)][ValidateRange(1,5)][int]$Slot)
 $ErrorActionPreference='Stop'
+if($Slot -eq 5 -and $Phase -ne 'Source'){throw 'Light slot5 permits Source capture only'}
 $taskRoot='C:/Users/adyba/pi-zig-sdk-navigate-20261015'
 $taskEvidence='C:/Users/adyba/pi-zig-update-evidence-20261003'
 $taskProof=$PSScriptRoot
@@ -31,7 +32,7 @@ $taskControls|ConvertTo-Json -Depth 4|Set-Content -LiteralPath (Join-Path $taskP
 $taskRequiredKiB=if($Phase -eq 'Source'){2MB}else{16MB}
 $taskFree=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory
 if($taskFree -lt $taskRequiredKiB){throw 'Fresh memory admission denied'}
-@{status='admitted';phase=$Phase;slot=$Slot;free_kib=$taskFree;required_kib=$taskRequiredKiB;max_coordinated_jobs=4;observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $taskProof "$taskName-admission.json") -Encoding utf8NoBOM
+@{status='admitted';phase=$Phase;slot=$Slot;light_source_slot=($Slot -eq 5);free_kib=$taskFree;required_kib=$taskRequiredKiB;max_normal_jobs=4;heap_mb=if($Phase -eq 'Source'){256}else{$null};observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $taskProof "$taskName-admission.json") -Encoding utf8NoBOM
 $taskExpected=Join-Path $taskRoot 'src/extensions/fixtures/sdk-session-navigate-5ab.json'
 $taskOutput=Join-Path $taskProof "$taskName-output.json"
 try{

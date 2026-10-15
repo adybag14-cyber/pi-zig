@@ -1,0 +1,11 @@
+{
+  "required_kib": 2097152,
+  "free_kib": 20038664,
+  "phase": "Source",
+  "max_normal_jobs": 4,
+  "status": "admitted",
+  "slot": 5,
+  "light_source_slot": true,
+  "heap_mb": 256,
+  "observed_utc": "2026-10-15T18:21:06.9850722+00:00"
+}

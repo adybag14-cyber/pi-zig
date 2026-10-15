@@ -1,5 +1,5 @@
 {
-  "status": "source-only-authored-not-qualified",
+  "status": "source56-captured-native-compile-runtime-pending",
   "base_commit": "89c4ce0b35589251ee1075a3a6c5dac1ffd58388",
   "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
   "implemented_actual_method": "AgentSession.navigateTree",
@@ -30,7 +30,7 @@
   "source_fixture": "src/extensions/fixtures/sdk-session-navigate-5ab.input.txt",
   "source_capture_driver": "capture-source.mjs",
   "expected_source_json": "src/extensions/fixtures/sdk-session-navigate-5ab.json",
-  "expected_source_json_status": "Intentionally absent until admitted genuine Source56 capture and full posthash0 acceptance.",
+  "expected_source_json_status": "Accepted genuine Source56 after complete posthash0; SHA256369C77FF889128F750C71210EDF7F1E45A1B93E78C5360BBC8FC325A1F86783C",
   "native_gc_tests_authored": [
     "Pending session_before_tree emission retains session, then completes and releases graph.",
     "Pending summarization auth raw rejection preserves identity, runs finally once and releases session."
@@ -40,7 +40,7 @@
   "native_build_target": "build-native-sdk-session-navigate",
   "native_runtime_executable": "sdk-session-navigate-test.exe",
   "formatter_parser": "Pinned Zig0.16 fmt passed for new modules, tests and build.zig; PowerShell owner syntax parsed without execution.",
-  "heavy_source_launches": 0,
+  "heavy_source_launches": 1,
   "native_compiles": 0,
   "native_runtime_launches": 0,
   "shared_modules_modified": false,
