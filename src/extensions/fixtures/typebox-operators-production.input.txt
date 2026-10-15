@@ -36,7 +36,9 @@
   const ctor = () => T.Constructor([T.String()], object(), { title: 'constructor' });
   const deferred = (action, parameters, options = {}) => T.Deferred(action, parameters, options);
   const instantiate = (type, context = {}) => T.Instantiate(context, type);
-  run('metadata', () => ['Instantiate','Evaluate','With','Priority','Extends','TemplateLiteralDecode','Infer','Parameter','Call','Mapped'].map(name => [name, T[name]]));
+  run('metadata', () => ['Instantiate','Evaluate','With','Priority','Extends','TemplateLiteralDecode','Infer','Parameter','Call','Mapped','IsLiteralBigInt','IsLiteralBoolean','IsLiteralNumber','IsLiteralString'].map(name => [name, T[name]]));
+  for (const value of [1n,true,1,'a']) run(`literal-subtype-${typeof value}`, () => { const type = T.Literal(value); return [T.IsLiteralBigInt(type), T.IsLiteralBoolean(type), T.IsLiteralNumber(type), T.IsLiteralString(type)]; });
+  run('literal-subtype-nonliteral', () => [T.IsLiteralBigInt(T.BigInt()), T.IsLiteralBoolean(T.Boolean()), T.IsLiteralNumber(T.Number()), T.IsLiteralString(T.String())]);
   run('ref-resolve', () => instantiate(T.Ref('A'), { A: literal('resolved') }));
   run('ref-missing', () => instantiate(T.Ref('missing')));
   run('ref-cycle', () => instantiate(T.Ref('A'), { A: T.Ref('B'), B: T.Ref('A') }));
