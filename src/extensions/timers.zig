@@ -374,6 +374,7 @@ fn schedulePromise(engine: *engine_mod.Engine, args: []c.JSValue) !c.JSValue {
 
 pub fn nextDeadline(engine: *engine_mod.Engine) !?i64 {
     const state = try scheduler(engine);
+    if (engine.native_immediate_pending) |pending| if (pending(engine)) return std.Io.Clock.awake.now(state.io).toMilliseconds();
     if (state.timers.items.len == 0) return null;
     var deadline = state.timers.items[0].deadline_ms;
     for (state.timers.items) |timer| deadline = @min(deadline, timer.deadline_ms);
@@ -384,6 +385,7 @@ pub fn nextDeadline(engine: *engine_mod.Engine) !?i64 {
 /// alive, but do not keep that script's native event loop alive themselves.
 pub fn nextReferencedDeadline(engine: *engine_mod.Engine) !?i64 {
     const state = try scheduler(engine);
+    if (engine.native_immediate_referenced) |pending| if (pending(engine)) return std.Io.Clock.awake.now(state.io).toMilliseconds();
     var deadline: ?i64 = null;
     for (state.timers.items) |timer| {
         const handle = handleState(timer.handle);
@@ -408,6 +410,8 @@ pub fn pumpReady(engine: *engine_mod.Engine) !bool {
 
 fn pump(engine: *engine_mod.Engine) !bool {
     const state = try scheduler(engine);
+    // The distinct check queue prevents waiting on an unrelated future timer.
+    if (engine.native_immediate_pending) |pending| if (pending(engine)) return pumpReady(engine);
     if (state.timers.items.len == 0) return false;
     var index: usize = 0;
     for (state.timers.items, 0..) |timer, candidate| if (timer.deadline_ms < state.timers.items[index].deadline_ms) {
@@ -457,6 +461,7 @@ fn fire(state: *Scheduler, index: usize) !bool {
 
 pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     if (engine.host_scheduler != null) return error.NativeTimersAlreadyInstalled;
+    try @import("native_immediates.zig").install(engine);
     const state = try engine.gpa.create(Scheduler);
     errdefer engine.gpa.destroy(state);
     state.* = .{ .engine = engine, .io = io };
@@ -484,7 +489,7 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, global, "queueMicrotask", microtask, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     const module = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(module);
-    inline for (.{ "setTimeout", "setInterval", "clearTimeout", "clearInterval" }) |name| {
+    inline for (.{ "setTimeout", "setInterval", "clearTimeout", "clearInterval", "setImmediate", "clearImmediate" }) |name| {
         const value = try engine.checked(c.JS_GetPropertyStr(engine.context, global, name));
         if (c.JS_DefinePropertyValueStr(engine.context, module, name, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }

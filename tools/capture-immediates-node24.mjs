@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import net from 'node:net';
+import {createHash} from 'node:crypto';
+const [inputPath,outputPath,authorityPath]=process.argv.slice(2);
+if(process.version!=='v24.14.0')throw Error('Pinned Node24.14.0 required');
+const authorityBytes=fs.readFileSync(authorityPath),authority=JSON.parse(authorityBytes),actual=process.binding('natives'),extra=Object.keys(actual).filter(k=>!(k in authority));
+if(Object.keys(authority).length!==368||Object.keys(actual).length!==369||extra.length!==1||extra[0]!=='configs'||Object.keys(authority).some(k=>authority[k]!==actual[k]))throw Error('Full368 builtin source packet drift');
+let loopbackPolls=0;
+globalThis.forceGC=globalThis.gc;
+globalThis.runInPoll=callback=>new Promise((resolve,reject)=>{
+  let client,server,connection,settled=false;
+  const deadline=setTimeout(()=>finish(Error('real loopback poll deadline')),2000);
+  const finish=error=>{if(settled)return;settled=true;clearTimeout(deadline);connection?.destroy();client?.destroy();server?.close();error?reject(error):resolve();};
+  server=net.createServer(socket=>{connection=socket;socket.once('error',finish);socket.once('data',bytes=>{try{if(bytes.toString()!=='immediate-phase-probe')throw Error('loopback bytes mismatch');loopbackPolls++;callback(bytes.toString());finish();}catch(e){finish(e)}})});
+  server.once('error',finish);server.listen(0,'127.0.0.1',()=>{client=net.connect(server.address().port,'127.0.0.1',()=>client.write('immediate-phase-probe'));client.once('error',finish)});
+});
+await vm.runInThisContext('(async()=>{'+fs.readFileSync(inputPath,'utf8')+'\n})()',{filename:inputPath});
+if(loopbackPolls!==3)throw Error('Three genuine loopback poll controls required');
+fs.writeFileSync(outputPath,JSON.stringify({nodeVersion:process.version,oracleScope:'Node builtins only; real127.0.0.1 TCP data callbacks, no PiSDK or external modules',builtinSourceCount:368,actualNativeEntries:369,excludedNonSourceKeys:extra,builtinAuthoritySha256:createHash('sha256').update(authorityBytes).digest('hex').toUpperCase(),realLoopbackPolls:loopbackPolls,count:immediateRows.length,rows:immediateRows},null,2)+'\n');

@@ -176,6 +176,11 @@ pub const Engine = struct {
     native_env_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_env_deinit: ?*const fn (*Engine) void = null,
     host_scheduler_deinit: ?*const fn (*Engine) void = null,
+    native_immediate_state: ?*anyopaque = null,
+    native_immediate_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_immediate_pending: ?*const fn (*Engine) bool = null,
+    native_immediate_referenced: ?*const fn (*Engine) bool = null,
+    native_immediate_cleanup: ?*const fn (*Engine) void = null,
     host_await_deadline_ms: ?i64 = null,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
     native_module_names: std.StringHashMapUnmanaged(void) = .empty,
@@ -290,6 +295,7 @@ pub const Engine = struct {
         if (self.native_sdk_events_deinit) |cleanup| cleanup(self);
         if (self.native_sdk_resource_owner_deinit) |cleanup| cleanup(self);
         self.closeDurableOwner();
+        if (self.native_immediate_cleanup) |cleanup| cleanup(self);
         @import("native_async_scope.zig").deinit(self);
         if (self.native_sdk_noop_ui) |value| self.freeValue(value);
         if (self.native_sdk_command_runner_prototype) |value| self.freeValue(value);
@@ -811,7 +817,11 @@ pub const Engine = struct {
         const codex_socket_worked = if (self.native_ai_codex_socket_pump) |pump| try pump(self) else false;
         const jobs = try self.runReadyJobs(self.options.job_budget);
         if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
-        return oauth_callback_worked or ai_http_worked or codex_socket_worked or jobs != 0;
+        self.finishJob();
+        const immediate_worked = if (self.native_immediate_pump) |pump| try pump(self) else false;
+        const after_immediate = if (immediate_worked) try self.runReadyJobs(self.options.job_budget -| jobs) else 0;
+        if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
+        return oauth_callback_worked or ai_http_worked or codex_socket_worked or jobs != 0 or immediate_worked or after_immediate != 0;
     }
 
     /// Run part of a microtask checkpoint. The caller must finish the checkpoint
@@ -878,9 +888,15 @@ pub const Engine = struct {
                 // The promise may span another timer/I/O turn. The current
                 // job's complete microtask checkpoint ends before that turn.
                 self.finishJob();
+                if (self.native_immediate_pump) |pump| {
+                    if (try pump(self)) continue;
+                }
                 if (self.host_pump) |pump| {
                     if (try pump(self)) continue;
                 }
+                // A completed check batch yields to the timer/poll turn before
+                // nested immediates begin the next check phase.
+                if (self.native_immediate_pending) |has_pending| if (has_pending(self)) continue;
                 // A native transport can settle a promise through an incoming
                 // abort or UI response even when no timer or JS job is pending.
                 if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or self.native_codemode_pump != null or self.native_env_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_oauth_callback_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_http_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_codex_socket_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
