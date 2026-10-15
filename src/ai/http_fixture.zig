@@ -3,6 +3,8 @@ const std = @import("std");
 pub const Reply = struct {
     path: []const u8,
     body: []const u8,
+    /// Exact caller-supplied write boundaries; null preserves the original reply.
+    body_chunks: ?[]const []const u8 = null,
     status: std.http.Status = .ok,
     reason: ?[]const u8 = null,
     headers: []const std.http.Header = &.{},
@@ -101,7 +103,15 @@ pub const PlanServer = struct {
             };
             if (!has_content_type) try headers.append(self.gpa, .{ .name = "content-type", .value = "application/json" });
             try headers.appendSlice(self.gpa, reply.headers);
-            if (reply.body_delay_ms > 0) {
+            if (reply.body_chunks) |chunks| {
+                var response = try request.respondStreaming(&.{}, .{ .respond_options = .{ .status = reply.status, .reason = reply.reason, .keep_alive = false, .extra_headers = headers.items } });
+                for (chunks) |chunk| {
+                    try response.writer.writeAll(chunk);
+                    try response.writer.flush();
+                    try response.flush();
+                }
+                try response.end();
+            } else if (reply.body_delay_ms > 0) {
                 var buffer: [256]u8 = undefined;
                 var response = try request.respondStreaming(&buffer, .{ .content_length = reply.body.len, .respond_options = .{ .status = reply.status, .reason = reply.reason, .keep_alive = false, .extra_headers = headers.items } });
                 try request.server.out.flush();
