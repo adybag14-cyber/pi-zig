@@ -1,0 +1,49 @@
+[
+  {
+    "source_sha256": "02B7192C4094E8DFD8F2FB7A7A10F22E608E76B0B99CD8CB06EF6C9B10E19588",
+    "fields": {
+      "text": 15
+    },
+    "factory": "sas",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\sas.js"
+  },
+  {
+    "source_sha256": "5A2F55D01F074FDE1DE192F53A73181D8FA325B5B4C35C8FA5351CC8EFC836A3",
+    "fields": {
+      "built_in": 3,
+      "keyword": 17,
+      "literal": 2
+    },
+    "factory": "lasso",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\lasso.js"
+  },
+  {
+    "source_sha256": "2939904070B5BE50D3B595060153DAA1600D45B000ECEA7BE86D0008B3F5677D",
+    "fields": {
+      "text": 7
+    },
+    "factory": "cos",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\cos.js"
+  },
+  {
+    "source_sha256": "ABED618F37E23B6F7408AF29D6491F34058B443DDB885D8F511664B6BCD02A98",
+    "fields": {
+      "builtin-name": 28
+    },
+    "factory": "clojure",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\clojure.js"
+  },
+  {
+    "source_sha256": "F38B4253EAD6FAD346A31B19C417C21996F03E7ED233690B0C45712EC3AB44BB",
+    "fields": {
+      "keyword": 3
+    },
+    "factory": "elixir",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\elixir.js"
+  }
+]

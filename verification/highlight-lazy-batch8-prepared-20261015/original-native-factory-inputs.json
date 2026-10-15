@@ -1,0 +1,142 @@
+[
+  {
+    "factory": "coq",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/coq.js",
+    "native": "src\\extensions\\native_highlight_grammar_coq.zig",
+    "native_sha256": "F63855EF51689EEBE255E93E5C8530E021F622EBD9545FF51CC6EC2FD1D09037",
+    "source_sha256": "A499580B69C397E56DA1FBC621609DFF14198808BD4D091E7E13F4FE3DF3074F"
+  },
+  {
+    "factory": "mipsasm",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/mipsasm.js",
+    "native": "src\\extensions\\native_highlight_grammar_mipsasm.zig",
+    "native_sha256": "C19F5561CA25E9F20DEFEA47E735A6C9464D59F435849CFA6CA9974FB7DC3BD6",
+    "source_sha256": "BF5A88E6A0C051985D0403BD2754E148D083B41C8AF0A8E2D5040EA5BE09241F"
+  },
+  {
+    "factory": "n1ql",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/n1ql.js",
+    "native": "src\\extensions\\native_highlight_grammar_n1ql.zig",
+    "native_sha256": "7CACCAC2F41E7DF5CA6FF06ABFB5238FC4792D44B56903365605207A4353403E",
+    "source_sha256": "4DC856A821A54CC6457688EC58841E531396D41E845BBE00745A83B545A003FA"
+  },
+  {
+    "factory": "purebasic",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/purebasic.js",
+    "native": "src\\extensions\\native_highlight_grammar_purebasic.zig",
+    "native_sha256": "941D7FC1F84B56D41BEF2966C37020B2C810B75A5B88A62DF4A26B01693F3900",
+    "source_sha256": "46E7575C86862D31BEB6ED17C04DAEA71E8059E8B3D0E501CB1AC59E16897998"
+  },
+  {
+    "factory": "llvm",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/llvm.js",
+    "native": "src\\extensions\\native_highlight_grammar_llvm.zig",
+    "native_sha256": "17F2468D76B4B575853E368917F05E5B3982B6E363E2B4DFF8A6B2EA696C61A8",
+    "source_sha256": "4D0EF16F66A62B2BBE6EEA5132F45526461B68D5E4A403CCDD296B9C97F00F74"
+  },
+  {
+    "factory": "applescript",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/applescript.js",
+    "native": "src\\extensions\\native_highlight_grammar_applescript.zig",
+    "native_sha256": "4BE87C48FDCC0EC9279D7019C88A148F72E32EE14BCB9F0C59121C1105447416",
+    "source_sha256": "A84FA0CDC2E454BE418A6B88D6E23847C7D3D1719992F27EF10D31E06B688713"
+  },
+  {
+    "factory": "arcade",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/arcade.js",
+    "native": "src\\extensions\\native_highlight_grammar_arcade.zig",
+    "native_sha256": "8863134E68849D1EE11925AC7135A1B3F74ADA9CCAEDA970EAD02A78CDE8E2B5",
+    "source_sha256": "BE9C0931BD8B83F7B4F75BEA1A602594249AFFFC9C577E6EFC0F0E4BEA9C6829"
+  },
+  {
+    "factory": "armasm",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/armasm.js",
+    "native": "src\\extensions\\native_highlight_grammar_armasm.zig",
+    "native_sha256": "28A7F5908B0819E0C9F3D22A05AE38CA3803A39C6FC05E6B367C359B71EC74A8",
+    "source_sha256": "A29697D187264AC5B3AFD8F1B8B8FC2198919DE72FFF1A76B85FE5F89CF9D320"
+  },
+  {
+    "factory": "ruleslanguage",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/ruleslanguage.js",
+    "native": "src\\extensions\\native_highlight_grammar_ruleslanguage.zig",
+    "native_sha256": "BFB6042AF2F6C40B6948A1DE75033B3CEDE72FD022F64287A95CC47EE4F26002",
+    "source_sha256": "B890770366CF636573B99831835B8F31240D8BE04104C298449FB8213C10E983"
+  },
+  {
+    "factory": "aspectj",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/aspectj.js",
+    "native": "src\\extensions\\native_highlight_grammar_aspectj.zig",
+    "native_sha256": "641382424A0D3657844DDE3F79BE04A91D6A992807C8A6C2A9820DE9DD4B606A",
+    "source_sha256": "35E2CAD2412E379B5596A4DE1487CA6067ED3FDE7DE390F20D56F3A66F205ED5"
+  },
+  {
+    "factory": "sas",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/sas.js",
+    "native": "src\\extensions\\native_highlight_grammar_sas.zig",
+    "native_sha256": "F57D5FDDF808F62A5132DD6C191BBBE70D6A105B16618B11A05A7DFAF1FEB600",
+    "source_sha256": "02B7192C4094E8DFD8F2FB7A7A10F22E608E76B0B99CD8CB06EF6C9B10E19588"
+  },
+  {
+    "factory": "lasso",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/lasso.js",
+    "native": "src\\extensions\\native_highlight_grammar_lasso.zig",
+    "native_sha256": "A8D903EFA2B4332027AAB5BB2EF8A8F3F51E7D3825FCB35CE9B44C7BCF7CE061",
+    "source_sha256": "5A2F55D01F074FDE1DE192F53A73181D8FA325B5B4C35C8FA5351CC8EFC836A3"
+  },
+  {
+    "factory": "cos",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/cos.js",
+    "native": "src\\extensions\\native_highlight_grammar_cos.zig",
+    "native_sha256": "85D05E11E411470BD1E5FDA872C106A5F6B0FF177E972B9359AEA281F39DB32B",
+    "source_sha256": "2939904070B5BE50D3B595060153DAA1600D45B000ECEA7BE86D0008B3F5677D"
+  },
+  {
+    "factory": "clojure",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/clojure.js",
+    "native": "src\\extensions\\native_highlight_grammar_clojure.zig",
+    "native_sha256": "E6EB3CFE481A3AB6717726EB45D36632F46823C30306BC1A58D4E9EDD2E8ADB9",
+    "source_sha256": "ABED618F37E23B6F7408AF29D6491F34058B443DDB885D8F511664B6BCD02A98"
+  },
+  {
+    "factory": "elixir",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/elixir.js",
+    "native": "src\\extensions\\native_highlight_grammar_elixir.zig",
+    "native_sha256": "8CEB65A8BAEE1CA654A7EFDEADE2DB598679A389212F3266835367F639673F10",
+    "source_sha256": "F38B4253EAD6FAD346A31B19C417C21996F03E7ED233690B0C45712EC3AB44BB"
+  },
+  {
+    "factory": "excel",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/excel.js",
+    "native": "src\\extensions\\native_highlight_grammar_excel.zig",
+    "native_sha256": "9172F69C3C1E71D452BBEDF510565F21D1058AD80EEBBD1199DF71B0A10A9283",
+    "source_sha256": "4E131672119C5F3341F7FC7D2EFAE60BC8C314ED660DACC8FE0D5C21F01273E6"
+  },
+  {
+    "factory": "routeros",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/routeros.js",
+    "native": "src\\extensions\\native_highlight_grammar_routeros.zig",
+    "native_sha256": "F2D53715C416F35DB7950F6480283546426519799833F118A19E2B33F67349DC",
+    "source_sha256": "9311B9EDA16D8CE3E438C32E7AF9C746A5AB2942E40F3CBD699D3F456412B367"
+  },
+  {
+    "factory": "scheme",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/scheme.js",
+    "native": "src\\extensions\\native_highlight_grammar_scheme.zig",
+    "native_sha256": "CC4C17A5491AC336AC77AE3A0DFFF8CCF3BF60A3A9B11EFB4B6C9379834928EF",
+    "source_sha256": "9D4043FB579D45F17353CCAD9A6DA5DB6307E1F4585F0DC858EE4938CD693CD2"
+  },
+  {
+    "factory": "puppet",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/puppet.js",
+    "native": "src\\extensions\\native_highlight_grammar_puppet.zig",
+    "native_sha256": "1B303BC56B8D113095624D84A6EC177FA27229DD8F037938B876B3EF4CD9C39E",
+    "source_sha256": "620A703259A859BAC54117EDD604B96D2FEDEE6FC20B8BBFEDEE04E8B3E509FF"
+  },
+  {
+    "factory": "qml",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/qml.js",
+    "native": "src\\extensions\\native_highlight_grammar_qml.zig",
+    "native_sha256": "5269F7752920EA4B63068D3C1ECAD6A7A17EAE1AE1AFBBE7E12BDFB295AADBE5",
+    "source_sha256": "F0DCF799CCEB259B8C50C110E2597F76D355065AED409CF06AF5F5F977604043"
+  }
+]

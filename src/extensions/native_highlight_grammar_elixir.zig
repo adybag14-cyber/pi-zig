@@ -1,0 +1,120 @@
+//! Actual highlight.js 10.7.3 static keyword inputs; native factory follows.
+const b = @import("native_highlight_lazy_batch3_values.zig");
+fn delimiters(s: *b.Scope) !b.c.JSValue {
+    const a = try s.array();
+    for ([_][2][]const u8{ .{ "\"", "\"" }, .{ "'", "'" }, .{ "/", "/" }, .{ "\\|", "\\|" }, .{ "\\(", "\\)" }, .{ "\\[", "\\]" }, .{ "\\{", "\\}" }, .{ "<", ">" } }, 0..) |p, i| {
+        const m = try s.object();
+        try s.put(m, "begin", try b.rx(s, p[0]));
+        try s.put(m, "end", try b.rx(s, p[1]));
+        try s.index(a, @intCast(i), m);
+    }
+    return a;
+}
+pub fn create(e: *b.Engine) !b.c.JSValue {
+    return b.factory(e, "elixir", build);
+}
+pub fn build(e: *b.Engine, h: b.c.JSValue) !b.c.JSValue {
+    var s: b.Scope = .{ .engine = e };
+    defer s.deinit();
+    const ident = "[a-zA-Z_][a-zA-Z0-9_.]*(!|\\?)?";
+    const method = "[a-zA-Z_]\\w*[!?=]?|[-+~]@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\]=?";
+    const kw = try s.object();
+    try s.put(kw, "$pattern", try s.text(ident));
+    try s.put(kw, "keyword", try s.text(source_keyword));
+    const subst = try b.mode(&s, "subst");
+    try s.put(subst, "begin", try b.rx(&s, "#\\{"));
+    try s.put(subst, "end", try b.rx(&s, "\\}"));
+    try s.put(subst, "keywords", kw);
+    const num = try b.mode(&s, "number");
+    try s.put(num, "begin", try s.text("(\\b0o[0-7_]+)|(\\b0b[01_]+)|(\\b0x[0-9a-fA-F_]+)|(-?\\b[1-9][0-9_]*(\\.[0-9_]+([eE][-+]?[0-9]+)?)?)"));
+    try s.put(num, "relevance", b.c.JS_NewInt32(e.context, 0));
+    const lower = try b.mode(&s, "string");
+    try s.put(lower, "begin", try s.text("~[a-z](?=[/|([{<\"'])"));
+    const lower_end = try s.object();
+    try s.put(lower_end, "endsParent", b.boolean(&s, true));
+    const lower_body = try s.object();
+    try s.put(lower_body, "contains", try b.list(&s, &.{ try s.get(h, "BACKSLASH_ESCAPE"), subst }));
+    try s.put(lower_body, "variants", try delimiters(&s));
+    try s.put(lower_end, "contains", try b.list(&s, &.{lower_body}));
+    try s.put(lower, "contains", try b.list(&s, &.{lower_end}));
+    const upper = try b.mode(&s, "string");
+    try s.put(upper, "begin", try s.text("~[A-Z](?=[/|([{<\"'])"));
+    try s.put(upper, "contains", try delimiters(&s));
+    const str = try b.mode(&s, "string");
+    try s.put(str, "contains", try b.list(&s, &.{ try s.get(h, "BACKSLASH_ESCAPE"), subst }));
+    const sv = try s.array();
+    for ([_][2][]const u8{ .{ "\"\"\"", "\"\"\"" }, .{ "'''", "'''" }, .{ "~S\"\"\"", "\"\"\"" }, .{ "~S\"", "\"" }, .{ "~S'''", "'''" }, .{ "~S'", "'" }, .{ "'", "'" }, .{ "\"", "\"" } }, 0..) |p, i| {
+        const m = try s.object();
+        try s.put(m, "begin", try b.rx(&s, p[0]));
+        try s.put(m, "end", try b.rx(&s, p[1]));
+        if (i >= 2 and i <= 5) try s.put(m, "contains", try s.array());
+        try s.index(sv, @intCast(i), m);
+    }
+    try s.put(str, "variants", sv);
+    const fun = try b.mode(&s, "function");
+    try s.put(fun, "beginKeywords", try s.text("def defp defmacro"));
+    try s.put(fun, "end", try b.rx(&s, "\\B\\b"));
+    const inherit = try s.get(h, "inherit");
+    const tm = try s.get(h, "TITLE_MODE");
+    const opt = try s.object();
+    try s.put(opt, "begin", try s.text(ident));
+    try s.put(opt, "endsParent", b.boolean(&s, true));
+    try s.put(fun, "contains", try b.list(&s, &.{try s.call(inherit, h, &.{ tm, opt })}));
+    const ci = try s.get(h, "inherit");
+    const co = try s.object();
+    try s.put(co, "className", try s.text("class"));
+    try s.put(co, "beginKeywords", try s.text("defimpl defmodule defprotocol defrecord"));
+    try s.put(co, "end", try b.rx(&s, "\\bdo\\b|$|;"));
+    const cls = try s.call(ci, h, &.{ fun, co });
+    const a = try b.list(&s, &.{ str, upper, lower, try s.get(h, "HASH_COMMENT_MODE"), cls, fun });
+    const type_token = try s.object();
+    try s.put(type_token, "begin", try s.text("::"));
+    try s.index(a, 6, type_token);
+    const atom = try b.mode(&s, "symbol");
+    try s.put(atom, "begin", try s.text(":(?![\\s:])"));
+    const am = try s.object();
+    try s.put(am, "begin", try s.text(method));
+    try s.put(atom, "contains", try b.list(&s, &.{ str, am }));
+    try s.put(atom, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.index(a, 7, atom);
+    const key = try b.mode(&s, "symbol");
+    try s.put(key, "begin", try s.text(ident ++ ":(?!:)"));
+    try s.put(key, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.index(a, 8, key);
+    try s.index(a, 9, num);
+    const variable = try b.mode(&s, "variable");
+    try s.put(variable, "begin", try s.text("(\\$\\W)|((\\$|@@?)(\\w+))"));
+    try s.index(a, 10, variable);
+    const arrow = try s.object();
+    try s.put(arrow, "begin", try s.text("->"));
+    try s.index(a, 11, arrow);
+    const container = try s.object();
+    try s.put(container, "begin", try s.concat(try s.concat(try s.text("("), try s.get(h, "RE_STARTERS_RE")), try s.text(")\\s*")));
+    const rc = try b.list(&s, &.{try s.get(h, "HASH_COMMENT_MODE")});
+    const division = try s.object();
+    try s.put(division, "begin", try b.rx(&s, "/: (?=\\d+\\s*[,\\]])"));
+    try s.put(division, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.put(division, "contains", try b.list(&s, &.{num}));
+    try s.index(rc, 1, division);
+    const regexp = try b.mode(&s, "regexp");
+    try s.put(regexp, "illegal", try s.text("\\n"));
+    try s.put(regexp, "contains", try b.list(&s, &.{ try s.get(h, "BACKSLASH_ESCAPE"), subst }));
+    const r1 = try s.object();
+    try s.put(r1, "begin", try s.text("/"));
+    try s.put(r1, "end", try s.text("/[a-z]*"));
+    const r2 = try s.object();
+    try s.put(r2, "begin", try s.text("%r\\["));
+    try s.put(r2, "end", try s.text("\\][a-z]*"));
+    try s.put(regexp, "variants", try b.list(&s, &.{ r1, r2 }));
+    try s.index(rc, 2, regexp);
+    try s.put(container, "contains", rc);
+    try s.put(container, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.index(a, 12, container);
+    try s.set(subst, "contains", a);
+    const l = try s.object();
+    try s.put(l, "name", try s.text("Elixir"));
+    try s.put(l, "keywords", kw);
+    try s.put(l, "contains", a);
+    return b.c.JS_DupValue(e.context, l);
+}
+const source_keyword = "and false then defined module in return redo retry end for true self when next until do begin unless nil break not case cond alias while ensure or include use alias fn quote require import with|0";

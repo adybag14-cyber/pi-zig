@@ -1,0 +1,51 @@
+[
+  {
+    "source_sha256": "A499580B69C397E56DA1FBC621609DFF14198808BD4D091E7E13F4FE3DF3074F",
+    "factory": "coq",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\coq.js",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "fields": {
+      "built_in": 21,
+      "keyword": 25
+    }
+  },
+  {
+    "source_sha256": "BF5A88E6A0C051985D0403BD2754E148D083B41C8AF0A8E2D5040EA5BE09241F",
+    "factory": "mipsasm",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\mipsasm.js",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "fields": {
+      "meta": 1,
+      "built_in": 11
+    }
+  },
+  {
+    "source_sha256": "4DC856A821A54CC6457688EC58841E531396D41E845BBE00745A83B545A003FA",
+    "factory": "n1ql",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\n1ql.js",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "fields": {
+      "literal": 1,
+      "built_in": 12,
+      "keyword": 12
+    }
+  },
+  {
+    "source_sha256": "46E7575C86862D31BEB6ED17C04DAEA71E8059E8B3D0E501CB1AC59E16897998",
+    "factory": "purebasic",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\purebasic.js",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "fields": {
+      "text": 15
+    }
+  },
+  {
+    "source_sha256": "4D0EF16F66A62B2BBE6EEA5132F45526461B68D5E4A403CCDD296B9C97F00F74",
+    "factory": "llvm",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\llvm.js",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "fields": {
+      "text": 37
+    }
+  }
+]

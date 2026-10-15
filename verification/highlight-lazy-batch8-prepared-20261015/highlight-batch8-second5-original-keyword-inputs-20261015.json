@@ -1,0 +1,53 @@
+[
+  {
+    "fields": {
+      "keyword": 10,
+      "literal": 1,
+      "built_in": 7
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\applescript.js",
+    "factory": "applescript",
+    "source_sha256": "A84FA0CDC2E454BE418A6B88D6E23847C7D3D1719992F27EF10D31E06B688713",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation"
+  },
+  {
+    "fields": {
+      "keyword": 1,
+      "literal": 1,
+      "built_in": 11
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\arcade.js",
+    "factory": "arcade",
+    "source_sha256": "BE9C0931BD8B83F7B4F75BEA1A602594249AFFFC9C577E6EFC0F0E4BEA9C6829",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation"
+  },
+  {
+    "fields": {
+      "meta": 2,
+      "built_in": 13
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\armasm.js",
+    "factory": "armasm",
+    "source_sha256": "A29697D187264AC5B3AFD8F1B8B8FC2198919DE72FFF1A76B85FE5F89CF9D320",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation"
+  },
+  {
+    "fields": {
+      "keyword": 35,
+      "built_in": 5
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\ruleslanguage.js",
+    "factory": "ruleslanguage",
+    "source_sha256": "B890770366CF636573B99831835B8F31240D8BE04104C298449FB8213C10E983",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation"
+  },
+  {
+    "fields": {
+      "text": 8
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\aspectj.js",
+    "factory": "aspectj",
+    "source_sha256": "35E2CAD2412E379B5596A4DE1487CA6067ED3FDE7DE390F20D56F3A66F205ED5",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation"
+  }
+]

@@ -1,0 +1,51 @@
+[
+  {
+    "fields": {
+      "built_in": 1
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\excel.js",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source_sha256": "4E131672119C5F3341F7FC7D2EFAE60BC8C314ED660DACC8FE0D5C21F01273E6",
+    "factory": "excel"
+  },
+  {
+    "fields": {
+      "text": 1
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\routeros.js",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source_sha256": "9311B9EDA16D8CE3E438C32E7AF9C746A5AB2942E40F3CBD699D3F456412B367",
+    "factory": "routeros"
+  },
+  {
+    "fields": {
+      "builtin-name": 33
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\scheme.js",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source_sha256": "9D4043FB579D45F17353CCAD9A6DA5DB6307E1F4585F0DC858EE4938CD693CD2",
+    "factory": "scheme"
+  },
+  {
+    "fields": {
+      "keyword": 1,
+      "built_in": 10,
+      "literal": 16
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\puppet.js",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source_sha256": "620A703259A859BAC54117EDD604B96D2FEDEE6FC20B8BBFEDEE04E8B3E509FF",
+    "factory": "puppet"
+  },
+  {
+    "fields": {
+      "keyword": 3,
+      "built_in": 11,
+      "literal": 1
+    },
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\qml.js",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source_sha256": "F0DCF799CCEB259B8C50C110E2597F76D355065AED409CF06AF5F5F977604043",
+    "factory": "qml"
+  }
+]

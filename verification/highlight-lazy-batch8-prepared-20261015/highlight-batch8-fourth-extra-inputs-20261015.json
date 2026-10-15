@@ -1,0 +1,32 @@
+[
+  {
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/routeros.js",
+    "scope": "Static referenced literal only",
+    "source_sha256": "9311B9EDA16D8CE3E438C32E7AF9C746A5AB2942E40F3CBD699D3F456412B367",
+    "constant": "STATEMENTS"
+  },
+  {
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/routeros.js",
+    "scope": "Static referenced literal only",
+    "source_sha256": "9311B9EDA16D8CE3E438C32E7AF9C746A5AB2942E40F3CBD699D3F456412B367",
+    "constant": "GLOBAL_COMMANDS"
+  },
+  {
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/routeros.js",
+    "scope": "Static referenced literal only",
+    "source_sha256": "9311B9EDA16D8CE3E438C32E7AF9C746A5AB2942E40F3CBD699D3F456412B367",
+    "constant": "COMMON_COMMANDS"
+  },
+  {
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/routeros.js",
+    "scope": "Static referenced literal only",
+    "source_sha256": "9311B9EDA16D8CE3E438C32E7AF9C746A5AB2942E40F3CBD699D3F456412B367",
+    "constant": "LITERALS"
+  },
+  {
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/scheme.js",
+    "scope": "Static referenced literal only",
+    "source_sha256": "9D4043FB579D45F17353CCAD9A6DA5DB6307E1F4585F0DC858EE4938CD693CD2",
+    "constant": "SCHEME_IDENT_RE"
+  }
+]

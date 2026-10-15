@@ -1,0 +1,23 @@
+[
+  {
+    "source_sha256": "02B7192C4094E8DFD8F2FB7A7A10F22E608E76B0B99CD8CB06EF6C9B10E19588",
+    "constant": "SAS_FUN",
+    "scope": "Static referenced string input only",
+    "literal_fragments": 39,
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/sas.js"
+  },
+  {
+    "source_sha256": "02B7192C4094E8DFD8F2FB7A7A10F22E608E76B0B99CD8CB06EF6C9B10E19588",
+    "constant": "SAS_MACRO_FUN",
+    "scope": "Static referenced string input only",
+    "literal_fragments": 9,
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/sas.js"
+  },
+  {
+    "source_sha256": "ABED618F37E23B6F7408AF29D6491F34058B443DDB885D8F511664B6BCD02A98",
+    "constant": "globals",
+    "scope": "Static referenced string input only",
+    "literal_fragments": 1,
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/clojure.js"
+  }
+]
