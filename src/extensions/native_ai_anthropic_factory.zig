@@ -436,6 +436,10 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     try scope.put(body_headers, "content-type", try scope.text("application/json"));
     const combined = try @import("native_ai_sdk_headers.zig").build(scope, &.{ defaults, auth_headers, try scope.get(owner, "clientHeaders"), body_headers, try scope.get(try scope.get(owner, "wire"), "headers") });
     const result = try scope.get(combined, "values");
+    if (!scope.truthy(try scope.invoke(result, "get", &.{try scope.text("x-api-key")})) and !scope.truthy(try scope.invoke(result, "get", &.{try scope.text("authorization")})) and c.JS_IsUndefined(federated_client)) {
+        const nulls = try scope.get(combined, "nulls");
+        if (!scope.truthy(try scope.invoke(nulls, "has", &.{try scope.text("x-api-key")})) and !scope.truthy(try scope.invoke(nulls, "has", &.{try scope.text("authorization")}))) return v.errorText(scope, try scope.text("Could not resolve authentication method. Expected one of apiKey, authToken, credentials, config, or profile to be set. Or for one of the \"X-Api-Key\" or \"Authorization\" headers to be explicitly omitted"));
+    }
     if (!c.JS_IsUndefined(federated_client)) {
         // SDK credential-chain emits the workspace extra header only for
         // user_oauth. Pi's explicit OIDC federation sends workspace_id in the
