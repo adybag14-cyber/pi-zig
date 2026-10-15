@@ -1,0 +1,14 @@
+{
+  "node_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "runtime": "v24.14.0",
+  "builtin_url_source_sha256": "4e7fcca3fe6772e970b4444e523305cb8c22db521a6104d3ece0553c4ebc8b89",
+  "builtin_errors_source_sha256": "2cda1ae333267dfbe6bf20da6357111d1c680aa6a5e1a0d4f10117742b6c4231",
+  "expected_sha256": "31093DADB66AD33E30C1A5BAAE4329C5B5169341A03642B4319361E9324D5832",
+  "source_cases": 40,
+  "source_capture_candidate": "efad146ba26365e98ff68792486c1f792b78036d",
+  "parent": "c1b68d21",
+  "native_compilation": false,
+  "native_qualification": false,
+  "response_normalization": false,
+  "full_pi_qualified": false
+}

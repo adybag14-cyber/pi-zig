@@ -4,6 +4,7 @@ const engine_mod = @import("engine.zig");
 const parser = @import("url_parser.zig");
 const params = @import("url_search_params.zig");
 const file_urls = @import("file_urls.zig");
+const errors = @import("native_url_errors.zig");
 const c = engine_mod.c;
 pub const State = struct { engine: *engine_mod.Engine, record: parser.Record, search_params: ?c.JSValue = null };
 const Attribute = enum(c_int) { href, origin, protocol, username, password, host, hostname, port, pathname, search, hash, searchParams };
@@ -151,27 +152,33 @@ pub fn create(engine: *engine_mod.Engine, record: *parser.Record, prototype: ?c.
     _ = c.JS_SetOpaque(object, state);
     return object;
 }
-fn parseValues(engine: *engine_mod.Engine, argc: c_int, argv: [*c]c.JSValue) !parser.Record {
-    if (argc == 0) return error.MissingURLInput;
-    const input = try params.usvString(engine, argv[0]);
+fn parseValues(engine: *engine_mod.Engine, argc: c_int, argv: [*c]c.JSValue, family: c.JSValue, raise: bool) !parser.Record {
+    if (argc == 0) return errors.missing(engine, family);
+    const input_value = try errors.string(engine, argv[0]);
+    defer engine.freeValue(input_value);
+    const base_value = if (argc > 1 and !c.JS_IsUndefined(argv[1])) try errors.string(engine, argv[1]) else c.pi_js_undefined();
+    defer engine.freeValue(base_value);
+    const input = try params.usvString(engine, input_value);
     defer engine.gpa.free(input);
     var base: ?parser.Record = null;
     defer if (base) |*value| value.deinit(engine.gpa);
-    if (argc > 1 and !c.JS_IsUndefined(argv[1])) {
-        const text = try params.usvString(engine, argv[1]);
+    if (!c.JS_IsUndefined(base_value)) {
+        const text = try params.usvString(engine, base_value);
         defer engine.gpa.free(text);
-        base = try parser.parse(engine.gpa, text, null);
+        base = parser.parse(engine.gpa, text, null) catch |err| {
+            if (err == error.OutOfMemory or err == error.UnsupportedIDNContext or !raise) return err;
+            return errors.invalid(engine, input_value, base_value);
+        };
     }
-    return parser.parse(engine.gpa, input, if (base) |*value| value else null);
+    return parser.parse(engine.gpa, input, if (base) |*value| value else null) catch |err| {
+        if (err == error.OutOfMemory or err == error.UnsupportedIDNContext or !raise) return err;
+        return errors.invalid(engine, input_value, base_value);
+    };
 }
-fn construct(context: ?*c.JSContext, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = engine_mod.Engine.fromContext(context.?);
-    return constructValue(engine, target, argc, argv) catch |err| fail(engine, err);
-}
-fn constructValue(engine: *engine_mod.Engine, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue) !c.JSValue {
+fn constructValue(engine: *engine_mod.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     const prototype = try property(engine, target, "prototype");
     defer engine.freeValue(prototype);
-    var record = try parseValues(engine, argc, argv);
+    var record = try parseValues(engine, @intCast(args.len), @constCast(args.ptr), roots[0], true);
     var transferred = false;
     defer if (!transferred) record.deinit(engine.gpa);
     const object = try create(engine, &record, if (c.JS_IsObject(prototype)) prototype else null);
@@ -243,9 +250,11 @@ fn stringify(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue
     const engine = engine_mod.Engine.fromContext(context.?);
     return getterValue(engine, this, .href) catch |err| fail(engine, err);
 }
-fn setter(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn setter(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    setValue(engine, this, @enumFromInt(magic), if (argc == 0) c.pi_js_undefined() else argv[0]) catch |err| return fail(engine, err);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    setValueFamily(engine, this, @enumFromInt(magic), if (argc == 0) c.pi_js_undefined() else argv[0], roots[0]) catch |err| return fail(engine, err);
     return c.pi_js_undefined();
 }
 fn setterFailure(err: anyerror) !bool {
@@ -366,9 +375,14 @@ fn change(gpa: std.mem.Allocator, record: *parser.Record, attribute: Attribute, 
     return true;
 }
 fn setValue(engine: *engine_mod.Engine, this: c.JSValue, attribute: Attribute, value: c.JSValue) !void {
+    return setValueFamily(engine, this, attribute, value, c.pi_js_undefined());
+}
+fn setValueFamily(engine: *engine_mod.Engine, this: c.JSValue, attribute: Attribute, value: c.JSValue, family: c.JSValue) !void {
     const state = try stateFor(engine, this);
     // User coercion may reenter and mutate this URL. Snapshot only afterward.
-    const converted = try params.usvString(engine, value);
+    const input_value = try errors.string(engine, value);
+    defer engine.freeValue(input_value);
+    const converted = try params.usvString(engine, input_value);
     defer engine.gpa.free(converted);
     var sanitized: std.ArrayList(u8) = .empty;
     defer sanitized.deinit(engine.gpa);
@@ -380,7 +394,10 @@ fn setValue(engine: *engine_mod.Engine, this: c.JSValue, attribute: Attribute, v
         if (sanitized.items.len == 0 and (attribute == .search or attribute == .hash)) try sanitized.append(engine.gpa, if (attribute == .search) '?' else '#');
     }
     const input = if (needs_sanitize) sanitized.items else converted;
-    var next = if (attribute == .href) try parser.parse(engine.gpa, input, null) else try state.record.clone(engine.gpa);
+    var next = if (attribute == .href) parser.parse(engine.gpa, input, null) catch |err| {
+        if (err == error.OutOfMemory or err == error.UnsupportedIDNContext) return err;
+        return errors.setter(engine, family, input_value);
+    } else try state.record.clone(engine.gpa);
     defer next.deinit(engine.gpa);
     if (attribute != .href and !try change(engine.gpa, &next, attribute, input)) return;
     var next_pairs: std.ArrayList(params.Pair) = .empty;
@@ -390,9 +407,11 @@ fn setValue(engine: *engine_mod.Engine, this: c.JSValue, attribute: Attribute, v
     std.mem.swap(parser.Record, &state.record, &next);
     if (replace_params) params.replacePairs(try params.stateFor(engine, state.search_params.?), &next_pairs);
 }
-fn staticParse(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn staticParse(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    var record = parseValues(engine, argc, argv) catch |err| {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    var record = parseValues(engine, argc, argv, roots[0], false) catch |err| {
         if (err == error.JavaScriptException or err == error.OutOfMemory or err == error.MissingURLInput) return fail(engine, err);
         return if (magic == 0) c.pi_js_bool(context, 0) else c.pi_js_null();
     };
@@ -412,9 +431,10 @@ pub fn install(engine: *engine_mod.Engine) !void {
     if (c.JS_NewClass(engine.runtime, class_id, &definition) < 0) return error.URLClassFailed;
     const prototype = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(prototype);
-    const constructor = try engine.checked(c.JS_NewCFunction2(engine.context, construct, "URL", 1, c.JS_CFUNC_constructor, 0));
+    const family = try errors.families(engine);
+    defer engine.freeValue(family);
+    const constructor = try @import("native_class.zig").constructor(engine, "URL", 1, prototype, constructValue, &.{family});
     defer engine.freeValue(constructor);
-    if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
     c.JS_SetClassProto(engine.context, class_id, c.JS_DupValue(engine.context, prototype));
     inline for (std.meta.fields(Attribute)) |field| {
         const name: [:0]const u8 = field.name;
@@ -425,11 +445,16 @@ pub fn install(engine: *engine_mod.Engine) !void {
         const get_name: [:0]const u8 = "get " ++ field.name;
         const set_name: [:0]const u8 = "set " ++ field.name;
         const get = try engine.checked(c.pi_js_function_magic(engine.context, getter, get_name.ptr, 0, @intCast(field.value)));
-        const set = if (attribute == .origin or attribute == .searchParams) c.pi_js_undefined() else try engine.checked(c.pi_js_function_magic(engine.context, setter, set_name.ptr, 1, @intCast(field.value)));
+        var roots = [_]c.JSValue{family};
+        const set = if (attribute == .origin or attribute == .searchParams) c.pi_js_undefined() else try engine.checked(c.JS_NewCFunctionData2(engine.context, setter, set_name.ptr, 1, @intCast(field.value), 1, &roots));
         if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, get, set, c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
     }
     inline for (.{ "toString", "toJSON" }) |name| if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, c.JS_NewCFunction(engine.context, stringify, name, 0), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
-    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "canParse", c.pi_js_function_magic(engine.context, staticParse, "canParse", 1, 0), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0 or c.JS_DefinePropertyValueStr(engine.context, constructor, "parse", c.pi_js_function_magic(engine.context, staticParse, "parse", 1, 1), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
+    var static_roots = [_]c.JSValue{family};
+    const can_parse = try engine.checked(c.JS_NewCFunctionData2(engine.context, staticParse, "canParse", 1, 0, 1, &static_roots));
+    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "canParse", can_parse, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
+    const parse = try engine.checked(c.JS_NewCFunctionData2(engine.context, staticParse, "parse", 1, 1, 1, &static_roots));
+    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "parse", parse, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     const decoder = try property(engine, global, "decodeURIComponent");
@@ -471,6 +496,40 @@ test "native URL setter coercion reentrancy original exceptions brands and faile
         return err;
     };
     defer engine.freeValue(value);
+}
+
+test "native URL actual Node24 constructor errors match focused forty Source observations" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const expected = @embedFile("fixtures/url-errors-node24.json");
+    const data = try engine.checked(c.JS_ParseJSON(engine.context, expected.ptr, expected.len, "url-errors-node24.json"));
+    if (c.JS_DefinePropertyValueStr(engine.context, global, "urlErrorSource", data, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    const result = engine.eval(@embedFile("fixtures/url-errors-node24.input.txt") ++
+        "\nif(urlErrorSource.runtime!=='v24.14.0'||urlErrorRows.length!==40||urlErrorSource.count!==40)throw Error('Node24 URL error Source authority');for(let i=0;i<40;i++)if(JSON.stringify(urlErrorRows[i])!==JSON.stringify(urlErrorSource.rows[i]))throw Error(JSON.stringify({case:i,actual:urlErrorRows[i],expected:urlErrorSource.rows[i]}));", "native-url-constructor-node24-source40.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        std.debug.print("Native URL Node24 Source40: {s}\n", .{engine.last_error orelse @errorName(err)});
+        return err;
+    };
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}
+
+test "native URL constructor error family roots preserve prototypes coercion identity and retained setters across GC" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    const prepared = try engine.eval(
+        \\globalThis.retainedURL=URL;globalThis.retainedURLSetter=Object.getOwnPropertyDescriptor(URL.prototype,'href').set;globalThis.retainedURLParse=URL.parse;delete globalThis.URL;
+    , "native-url-error-gc-prepare.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(prepared);
+    c.JS_RunGC(engine.runtime);
+    const result = try engine.eval(
+        \\const capture=fn=>{try{fn()}catch(e){return e}};const a=capture(()=>new retainedURL()),b=capture(()=>retainedURLParse());if(Object.getPrototypeOf(a)!==Object.getPrototypeOf(b)||String(a)!=='TypeError [ERR_MISSING_ARGS]: The "url" argument must be specified')throw Error('missing error roots');const u=new retainedURL('https://example.com');const x=capture(()=>retainedURLSetter.call(u,'relative')),y=capture(()=>retainedURLSetter.call(u,'relative'));if(Object.getPrototypeOf(x)!==Object.getPrototypeOf(y)||x.input!=='relative'||String(x)!=='TypeError [ERR_INVALID_URL]: Invalid URL'||u.href!=='https://example.com/')throw Error('setter error roots');let reads=0;const marker={get stack(){reads++;throw Error('must not inspect')},toString(){reads++;throw Error('must not coerce')}};const thrown=capture(()=>new retainedURL({toString(){throw marker}}));if(thrown!==marker||reads!==0)throw Error('coercion reason was inspected');delete globalThis.retainedURL;delete globalThis.retainedURLSetter;delete globalThis.retainedURLParse;
+    , "native-url-error-gc-complete.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
 }
 
 test "native URL Node24 captured properties setters and URLSearchParams foundations oracle" {

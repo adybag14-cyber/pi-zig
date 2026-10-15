@@ -1,0 +1,1270 @@
+{
+  "runtime": "v24.14.0",
+  "count": 40,
+  "rows": [
+    {
+      "name": "constructor-invalid-0",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "undefined",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-1",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "null",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-2",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "0",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-3",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "7",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-4",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "true",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-5",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "false",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-6",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-7",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "relative",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-8",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "/relative",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-9",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "http://",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-10",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "http://[bad]",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-11",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "https://x:99999",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-12",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "�",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-invalid-13",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "/object",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-missing",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"url\" argument must be specified",
+        "code": "ERR_MISSING_ARGS",
+        "ownNames": [
+          "stack",
+          "code",
+          "message"
+        ],
+        "keys": [
+          "code"
+        ],
+        "descriptors": {
+          "code": {
+            "value": "ERR_MISSING_ARGS",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "message": {
+            "value": "The \"url\" argument must be specified",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          }
+        },
+        "string": "TypeError [ERR_MISSING_ARGS]: The \"url\" argument must be specified",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "relative-invalid-base",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input",
+          "base"
+        ],
+        "keys": [
+          "code",
+          "input",
+          "base"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "/relative",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "base": {
+            "value": "bad-base",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "absolute-invalid-base",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input",
+          "base"
+        ],
+        "keys": [
+          "code",
+          "input",
+          "base"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "https://example.com",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "base": {
+            "value": "bad-base",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "relative-null-base",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input",
+          "base"
+        ],
+        "keys": [
+          "code",
+          "input",
+          "base"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "/relative",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "base": {
+            "value": "null",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "absolute-null-base",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input",
+          "base"
+        ],
+        "keys": [
+          "code",
+          "input",
+          "base"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "https://example.com",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "base": {
+            "value": "null",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "relative-empty-base",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input",
+          "base"
+        ],
+        "keys": [
+          "code",
+          "input",
+          "base"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "/relative",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "base": {
+            "value": "",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "relative-undefined-base",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid URL",
+        "code": "ERR_INVALID_URL",
+        "ownNames": [
+          "stack",
+          "message",
+          "code",
+          "input"
+        ],
+        "keys": [
+          "code",
+          "input"
+        ],
+        "descriptors": {
+          "message": {
+            "value": "Invalid URL",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          },
+          "code": {
+            "value": "ERR_INVALID_URL",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "input": {
+            "value": "/relative",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Invalid URL",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "relative-valid-base",
+      "value": "https://example.com/relative"
+    },
+    {
+      "name": "constructor-input-string-hint-and-base-order",
+      "value": {
+        "order": [
+          "input:string",
+          "base:string"
+        ],
+        "error": {
+          "name": "TypeError",
+          "message": "Invalid URL",
+          "code": "ERR_INVALID_URL",
+          "ownNames": [
+            "stack",
+            "message",
+            "code",
+            "input",
+            "base"
+          ],
+          "keys": [
+            "code",
+            "input",
+            "base"
+          ],
+          "descriptors": {
+            "message": {
+              "value": "Invalid URL",
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            },
+            "code": {
+              "value": "ERR_INVALID_URL",
+              "writable": true,
+              "enumerable": true,
+              "configurable": true
+            },
+            "input": {
+              "value": "/input",
+              "writable": true,
+              "enumerable": true,
+              "configurable": true
+            },
+            "base": {
+              "value": "invalid-base",
+              "writable": true,
+              "enumerable": true,
+              "configurable": true
+            }
+          },
+          "string": "TypeError: Invalid URL",
+          "typeError": true,
+          "constructorIsTypeError": true
+        }
+      }
+    },
+    {
+      "name": "constructor-input-throw-preserved",
+      "value": {
+        "same": true,
+        "order": [
+          "input"
+        ]
+      }
+    },
+    {
+      "name": "constructor-base-throw-preserved",
+      "value": {
+        "same": true,
+        "order": [
+          "input",
+          "base"
+        ]
+      }
+    },
+    {
+      "name": "constructor-valid-absolute-still-coerces-base",
+      "value": {
+        "href": "https://example.com/",
+        "order": [
+          "input",
+          "base"
+        ]
+      }
+    },
+    {
+      "name": "constructor-symbol-input",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert a Symbol value to a string",
+        "ownNames": [
+          "stack",
+          "message"
+        ],
+        "keys": [],
+        "descriptors": {
+          "message": {
+            "value": "Cannot convert a Symbol value to a string",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Cannot convert a Symbol value to a string",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-symbol-base",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert a Symbol value to a string",
+        "ownNames": [
+          "stack",
+          "message"
+        ],
+        "keys": [],
+        "descriptors": {
+          "message": {
+            "value": "Cannot convert a Symbol value to a string",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Cannot convert a Symbol value to a string",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-symbol-from-coercion",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert a Symbol value to a string",
+        "ownNames": [
+          "stack",
+          "message"
+        ],
+        "keys": [],
+        "descriptors": {
+          "message": {
+            "value": "Cannot convert a Symbol value to a string",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Cannot convert a Symbol value to a string",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "constructor-toString-fallback-valueOf",
+      "value": {
+        "order": [
+          "toString",
+          "valueOf"
+        ],
+        "error": {
+          "name": "TypeError",
+          "message": "Invalid URL",
+          "code": "ERR_INVALID_URL",
+          "ownNames": [
+            "stack",
+            "message",
+            "code",
+            "input"
+          ],
+          "keys": [
+            "code",
+            "input"
+          ],
+          "descriptors": {
+            "message": {
+              "value": "Invalid URL",
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            },
+            "code": {
+              "value": "ERR_INVALID_URL",
+              "writable": true,
+              "enumerable": true,
+              "configurable": true
+            },
+            "input": {
+              "value": "42",
+              "writable": true,
+              "enumerable": true,
+              "configurable": true
+            }
+          },
+          "string": "TypeError: Invalid URL",
+          "typeError": true,
+          "constructorIsTypeError": true
+        }
+      }
+    },
+    {
+      "name": "constructor-nonprimitive-coercion",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert object to primitive value",
+        "ownNames": [
+          "stack",
+          "message"
+        ],
+        "keys": [],
+        "descriptors": {
+          "message": {
+            "value": "Cannot convert object to primitive value",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          }
+        },
+        "string": "TypeError: Cannot convert object to primitive value",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "parse-missing",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"url\" argument must be specified",
+        "code": "ERR_MISSING_ARGS",
+        "ownNames": [
+          "stack",
+          "code",
+          "message"
+        ],
+        "keys": [
+          "code"
+        ],
+        "descriptors": {
+          "code": {
+            "value": "ERR_MISSING_ARGS",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "message": {
+            "value": "The \"url\" argument must be specified",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          }
+        },
+        "string": "TypeError [ERR_MISSING_ARGS]: The \"url\" argument must be specified",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "parse-invalid",
+      "value": null
+    },
+    {
+      "name": "parse-bad-base",
+      "value": null
+    },
+    {
+      "name": "parse-coercion-throw-preserved",
+      "value": true
+    },
+    {
+      "name": "canParse-missing",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"url\" argument must be specified",
+        "code": "ERR_MISSING_ARGS",
+        "ownNames": [
+          "stack",
+          "code",
+          "message"
+        ],
+        "keys": [
+          "code"
+        ],
+        "descriptors": {
+          "code": {
+            "value": "ERR_MISSING_ARGS",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          },
+          "message": {
+            "value": "The \"url\" argument must be specified",
+            "writable": true,
+            "enumerable": false,
+            "configurable": true
+          }
+        },
+        "string": "TypeError [ERR_MISSING_ARGS]: The \"url\" argument must be specified",
+        "typeError": true,
+        "constructorIsTypeError": true
+      }
+    },
+    {
+      "name": "canParse-invalid",
+      "value": false
+    },
+    {
+      "name": "canParse-bad-base",
+      "value": false
+    },
+    {
+      "name": "canParse-coercion-throw-preserved",
+      "value": true
+    },
+    {
+      "name": "href-setter-invalid",
+      "value": {
+        "href": "https://example.com/",
+        "error": {
+          "name": "TypeError",
+          "message": "Invalid URL",
+          "code": "ERR_INVALID_URL",
+          "ownNames": [
+            "stack",
+            "code",
+            "input",
+            "message"
+          ],
+          "keys": [
+            "code",
+            "input"
+          ],
+          "descriptors": {
+            "code": {
+              "value": "ERR_INVALID_URL",
+              "writable": true,
+              "enumerable": true,
+              "configurable": true
+            },
+            "input": {
+              "value": "/relative",
+              "writable": true,
+              "enumerable": true,
+              "configurable": true
+            },
+            "message": {
+              "value": "Invalid URL",
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "string": "TypeError [ERR_INVALID_URL]: Invalid URL",
+          "typeError": true,
+          "constructorIsTypeError": true
+        }
+      }
+    }
+  ],
+  "builtinSources": {
+    "internal/url": {
+      "sha256": "4e7fcca3fe6772e970b4444e523305cb8c22db521a6104d3ece0553c4ebc8b89",
+      "source": "'use strict';\r\n\r\nconst {\r\n  Array,\r\n  ArrayIsArray,\r\n  ArrayPrototypeJoin,\r\n  ArrayPrototypeMap,\r\n  ArrayPrototypePush,\r\n  Boolean,\r\n  Int8Array,\r\n  IteratorPrototype,\r\n  Number,\r\n  ObjectDefineProperties,\r\n  ObjectSetPrototypeOf,\r\n  ReflectGetOwnPropertyDescriptor,\r\n  ReflectOwnKeys,\r\n  SafeMap,\r\n  SafeSet,\r\n  StringPrototypeCharAt,\r\n  StringPrototypeCharCodeAt,\r\n  StringPrototypeCodePointAt,\r\n  StringPrototypeIncludes,\r\n  StringPrototypeIndexOf,\r\n  StringPrototypeSlice,\r\n  StringPrototypeStartsWith,\r\n  StringPrototypeToWellFormed,\r\n  Symbol,\r\n  SymbolIterator,\r\n  SymbolToStringTag,\r\n  TypedArrayPrototypeGetBuffer,\r\n  TypedArrayPrototypeGetByteLength,\r\n  TypedArrayPrototypeGetByteOffset,\r\n  decodeURIComponent,\r\n} = primordials;\r\n\r\nconst { URLPattern } = internalBinding('url_pattern');\r\nconst { inspect } = require('internal/util/inspect');\r\nconst {\r\n  encodeStr,\r\n  hexTable,\r\n  isHexTable,\r\n} = require('internal/querystring');\r\n\r\nconst {\r\n  getConstructorOf,\r\n  removeColors,\r\n  kEnumerableProperty,\r\n  kEmptyObject,\r\n  SideEffectFreeRegExpPrototypeSymbolReplace,\r\n  isWindows,\r\n} = require('internal/util');\r\n\r\nconst {\r\n  platform,\r\n} = require('internal/process/per_thread');\r\n\r\nconst {\r\n  markTransferMode,\r\n} = require('internal/worker/js_transferable');\r\n\r\nconst {\r\n  codes: {\r\n    ERR_ARG_NOT_ITERABLE,\r\n    ERR_INVALID_ARG_TYPE,\r\n    ERR_INVALID_ARG_VALUE,\r\n    ERR_INVALID_FILE_URL_HOST,\r\n    ERR_INVALID_FILE_URL_PATH,\r\n    ERR_INVALID_THIS,\r\n    ERR_INVALID_TUPLE,\r\n    ERR_INVALID_URL,\r\n    ERR_INVALID_URL_SCHEME,\r\n    ERR_MISSING_ARGS,\r\n    ERR_NO_CRYPTO,\r\n  },\r\n} = require('internal/errors');\r\nconst {\r\n  CHAR_AMPERSAND,\r\n  CHAR_BACKWARD_SLASH,\r\n  CHAR_EQUAL,\r\n  CHAR_FORWARD_SLASH,\r\n  CHAR_LOWERCASE_A,\r\n  CHAR_LOWERCASE_Z,\r\n  CHAR_PERCENT,\r\n  CHAR_PLUS,\r\n  CHAR_COLON,\r\n} = require('internal/constants');\r\nconst path = require('path');\r\nconst { Buffer } = require('buffer');\r\n\r\nconst {\r\n  validateFunction,\r\n  validateObject,\r\n  kValidateObjectAllowObjects,\r\n} = require('internal/validators');\r\n\r\nconst { percentDecode } = require('internal/data_url');\r\n\r\nconst querystring = require('querystring');\r\n\r\nconst bindingUrl = internalBinding('url');\r\n\r\nconst FORWARD_SLASH = /\\//g;\r\n\r\nconst contextForInspect = Symbol('context');\r\n\r\n// `unsafeProtocol`, `hostlessProtocol` and `slashedProtocol` is\r\n// deliberately moved to `internal/url` rather than `url`.\r\n// Workers does not bootstrap URL module. Therefore, `SafeSet`\r\n// is not initialized on bootstrap. This case breaks the\r\n// test-require-delete-array-iterator test.\r\n\r\n// Protocols that can allow \"unsafe\" and \"unwise\" chars.\r\nconst unsafeProtocol = new SafeSet([\r\n  'javascript',\r\n  'javascript:',\r\n]);\r\n// Protocols that never have a hostname.\r\nconst hostlessProtocol = new SafeSet([\r\n  'javascript',\r\n  'javascript:',\r\n]);\r\n// Protocols that always contain a // bit.\r\nconst slashedProtocol = new SafeSet([\r\n  'http',\r\n  'http:',\r\n  'https',\r\n  'https:',\r\n  'ftp',\r\n  'ftp:',\r\n  'gopher',\r\n  'gopher:',\r\n  'file',\r\n  'file:',\r\n  'ws',\r\n  'ws:',\r\n  'wss',\r\n  'wss:',\r\n]);\r\n\r\nconst updateActions = {\r\n  kProtocol: 0,\r\n  kHost: 1,\r\n  kHostname: 2,\r\n  kPort: 3,\r\n  kUsername: 4,\r\n  kPassword: 5,\r\n  kPathname: 6,\r\n  kSearch: 7,\r\n  kHash: 8,\r\n  kHref: 9,\r\n};\r\nlet blob;\r\nlet cryptoRandom;\r\n\r\nfunction lazyBlob() {\r\n  blob ??= require('internal/blob');\r\n  return blob;\r\n}\r\n\r\nfunction lazyCryptoRandom() {\r\n  try {\r\n    cryptoRandom ??= require('internal/crypto/random');\r\n  } catch {\r\n    // If Node.js built without crypto support, we'll fall\r\n    // through here and handle it later.\r\n  }\r\n  return cryptoRandom;\r\n}\r\n\r\n// This class provides the internal state of a URL object. An instance of this\r\n// class is stored in every URL object and is accessed internally by setters\r\n// and getters. It roughly corresponds to the concept of a URL record in the\r\n// URL Standard, with a few differences. It is also the object transported to\r\n// the C++ binding.\r\n// Refs: https://url.spec.whatwg.org/#concept-url\r\nclass URLContext {\r\n  // This is the maximum value uint32_t can get.\r\n  // Ada uses uint32_t(-1) for declaring omitted values.\r\n  static #omitted = 4294967295;\r\n\r\n  href = '';\r\n  protocol_end = 0;\r\n  username_end = 0;\r\n  host_start = 0;\r\n  host_end = 0;\r\n  pathname_start = 0;\r\n  search_start = 0;\r\n  hash_start = 0;\r\n  port = 0;\r\n  /**\r\n   * Refers to `ada::scheme::type`\r\n   *\r\n   * enum type : uint8_t {\r\n   *   HTTP = 0,\r\n   *   NOT_SPECIAL = 1,\r\n   *   HTTPS = 2,\r\n   *   WS = 3,\r\n   *   FTP = 4,\r\n   *   WSS = 5,\r\n   *   FILE = 6\r\n   * };\r\n   * @type {number}\r\n   */\r\n  scheme_type = 1;\r\n\r\n  get hasPort() {\r\n    return this.port !== URLContext.#omitted;\r\n  }\r\n\r\n  get hasSearch() {\r\n    return this.search_start !== URLContext.#omitted;\r\n  }\r\n\r\n  get hasHash() {\r\n    return this.hash_start !== URLContext.#omitted;\r\n  }\r\n}\r\n\r\nlet setURLSearchParamsModified;\r\nlet setURLSearchParamsContext;\r\nlet getURLSearchParamsList;\r\nlet setURLSearchParams;\r\n\r\nclass URLSearchParamsIterator {\r\n  #target;\r\n  #kind;\r\n  #index;\r\n\r\n  // https://heycam.github.io/webidl/#dfn-default-iterator-object\r\n  constructor(target, kind) {\r\n    this.#target = target;\r\n    this.#kind = kind;\r\n    this.#index = 0;\r\n  }\r\n\r\n  next() {\r\n    if (typeof this !== 'object' || this === null || !(#target in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParamsIterator');\r\n\r\n    const index = this.#index;\r\n    const values = getURLSearchParamsList(this.#target);\r\n    const len = values.length;\r\n    if (index >= len) {\r\n      return {\r\n        value: undefined,\r\n        done: true,\r\n      };\r\n    }\r\n\r\n    const name = values[index];\r\n    const value = values[index + 1];\r\n    this.#index = index + 2;\r\n\r\n    let result;\r\n    if (this.#kind === 'key') {\r\n      result = name;\r\n    } else if (this.#kind === 'value') {\r\n      result = value;\r\n    } else {\r\n      result = [name, value];\r\n    }\r\n\r\n    return {\r\n      value: result,\r\n      done: false,\r\n    };\r\n  }\r\n\r\n  [inspect.custom](recurseTimes, ctx) {\r\n    if (!this || typeof this !== 'object' || !(#target in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParamsIterator');\r\n\r\n    if (typeof recurseTimes === 'number' && recurseTimes < 0)\r\n      return ctx.stylize('[Object]', 'special');\r\n\r\n    const innerOpts = { ...ctx };\r\n    if (recurseTimes !== null) {\r\n      innerOpts.depth = recurseTimes - 1;\r\n    }\r\n    const index = this.#index;\r\n    const values = getURLSearchParamsList(this.#target);\r\n    const output = [];\r\n    for (let i = index; i < values.length; i++) {\r\n      const isKey = ((i - index) % 2) === 0;\r\n      if (this.#kind === 'key') {\r\n        if (isKey) ArrayPrototypePush(output, values[i]);\r\n      } else if (!isKey) {\r\n        ArrayPrototypePush(output, this.#kind === 'value' ? values[i] : [values[i - 1], values[i]]);\r\n      }\r\n    }\r\n    const hasBreak = StringPrototypeIncludes(inspect(output, innerOpts), '\\n');\r\n    const outputStrs = ArrayPrototypeMap(output, (p) => inspect(p, innerOpts));\r\n    let outputStr;\r\n    if (hasBreak) {\r\n      outputStr = `\\n  ${ArrayPrototypeJoin(outputStrs, ',\\n  ')}`;\r\n    } else {\r\n      outputStr = ` ${ArrayPrototypeJoin(outputStrs, ', ')}`;\r\n    }\r\n    return `${this[SymbolToStringTag]} {${outputStr} }`;\r\n  }\r\n}\r\n\r\n// https://heycam.github.io/webidl/#dfn-iterator-prototype-object\r\ndelete URLSearchParamsIterator.prototype.constructor;\r\nObjectSetPrototypeOf(URLSearchParamsIterator.prototype, IteratorPrototype);\r\n\r\nObjectDefineProperties(URLSearchParamsIterator.prototype, {\r\n  [SymbolToStringTag]: { __proto__: null, configurable: true, value: 'URLSearchParams Iterator' },\r\n  next: kEnumerableProperty,\r\n});\r\n\r\n\r\nclass URLSearchParams {\r\n  #searchParams = [];\r\n\r\n  // \"associated url object\"\r\n  #context;\r\n\r\n  static {\r\n    setURLSearchParamsContext = (obj, ctx) => {\r\n      obj.#context = ctx;\r\n    };\r\n    getURLSearchParamsList = (obj) => obj.#searchParams;\r\n    setURLSearchParams = (obj, query) => {\r\n      if (query === undefined) {\r\n        obj.#searchParams = [];\r\n      } else {\r\n        obj.#searchParams = parseParams(query);\r\n      }\r\n    };\r\n  }\r\n\r\n  // URL Standard says the default value is '', but as undefined and '' have\r\n  // the same result, undefined is used to prevent unnecessary parsing.\r\n  // Default parameter is necessary to keep URLSearchParams.length === 0 in\r\n  // accordance with Web IDL spec.\r\n  constructor(init = undefined) {\r\n    markTransferMode(this, false, false);\r\n\r\n    if (init == null) {\r\n      // Do nothing\r\n    } else if (typeof init === 'object' || typeof init === 'function') {\r\n      const method = init[SymbolIterator];\r\n      if (method === this[SymbolIterator] && #searchParams in init) {\r\n        // While the spec does not have this branch, we can use it as a\r\n        // shortcut to avoid having to go through the costly generic iterator.\r\n        const childParams = init.#searchParams;\r\n        this.#searchParams = childParams.slice();\r\n      } else if (method != null) {\r\n        // Sequence<sequence<USVString>>\r\n        if (typeof method !== 'function') {\r\n          throw new ERR_ARG_NOT_ITERABLE('Query pairs');\r\n        }\r\n\r\n        // The following implementation differs from the URL specification:\r\n        // Sequences must first be converted from ECMAScript objects before\r\n        // and operations are done on them, and the operation of converting\r\n        // the sequences would first exhaust the iterators. If the iterator\r\n        // returns something invalid in the middle, whether it would be called\r\n        // after that would be an observable change to the users.\r\n        // Exhausting the iterator and later converting them to USVString comes\r\n        // with a significant cost (~40-80%). In order optimize URLSearchParams\r\n        // creation duration, Node.js merges the iteration and converting\r\n        // iterations into a single iteration.\r\n        for (const pair of init) {\r\n          if (pair == null) {\r\n            throw new ERR_INVALID_TUPLE('Each query pair', '[name, value]');\r\n          } else if (ArrayIsArray(pair)) {\r\n            // If innerSequence's size is not 2, then throw a TypeError.\r\n            if (pair.length !== 2) {\r\n              throw new ERR_INVALID_TUPLE('Each query pair', '[name, value]');\r\n            }\r\n            // Append (innerSequence[0], innerSequence[1]) to query's list.\r\n            ArrayPrototypePush(\r\n              this.#searchParams,\r\n              StringPrototypeToWellFormed(`${pair[0]}`),\r\n              StringPrototypeToWellFormed(`${pair[1]}`),\r\n            );\r\n          } else {\r\n            if (((typeof pair !== 'object' && typeof pair !== 'function') ||\r\n                typeof pair[SymbolIterator] !== 'function')) {\r\n              throw new ERR_INVALID_TUPLE('Each query pair', '[name, value]');\r\n            }\r\n\r\n            let length = 0;\r\n\r\n            for (const element of pair) {\r\n              length++;\r\n              ArrayPrototypePush(this.#searchParams, StringPrototypeToWellFormed(`${element}`));\r\n            }\r\n\r\n            // If innerSequence's size is not 2, then throw a TypeError.\r\n            if (length !== 2) {\r\n              throw new ERR_INVALID_TUPLE('Each query pair', '[name, value]');\r\n            }\r\n          }\r\n        }\r\n      } else {\r\n        // Record<USVString, USVString>\r\n        // Need to use reflection APIs for full spec compliance.\r\n        const visited = new SafeMap();\r\n        const keys = ReflectOwnKeys(init);\r\n        for (let i = 0; i < keys.length; i++) {\r\n          const key = keys[i];\r\n          const desc = ReflectGetOwnPropertyDescriptor(init, key);\r\n          if (desc !== undefined && desc.enumerable) {\r\n            const typedKey = StringPrototypeToWellFormed(key);\r\n            const typedValue = StringPrototypeToWellFormed(`${init[key]}`);\r\n\r\n            // Two different keys may become the same USVString after normalization.\r\n            // In that case, we retain the later one. Refer to WPT.\r\n            const keyIdx = visited.get(typedKey);\r\n            if (keyIdx !== undefined) {\r\n              this.#searchParams[keyIdx] = typedValue;\r\n            } else {\r\n              visited.set(typedKey, ArrayPrototypePush(this.#searchParams,\r\n                                                       typedKey,\r\n                                                       typedValue) - 1);\r\n            }\r\n          }\r\n        }\r\n      }\r\n    } else {\r\n      // https://url.spec.whatwg.org/#dom-urlsearchparams-urlsearchparams\r\n      init = StringPrototypeToWellFormed(`${init}`);\r\n      this.#searchParams = init ? parseParams(init) : [];\r\n    }\r\n  }\r\n\r\n  [inspect.custom](recurseTimes, ctx) {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    if (typeof recurseTimes === 'number' && recurseTimes < 0)\r\n      return ctx.stylize('[Object]', 'special');\r\n\r\n    const separator = ', ';\r\n    const innerOpts = { ...ctx };\r\n    if (recurseTimes !== null) {\r\n      innerOpts.depth = recurseTimes - 1;\r\n    }\r\n    const innerInspect = (v) => inspect(v, innerOpts);\r\n\r\n    const list = this.#searchParams;\r\n    const output = [];\r\n    for (let i = 0; i < list.length; i += 2)\r\n      ArrayPrototypePush(\r\n        output,\r\n        `${innerInspect(list[i])} => ${innerInspect(list[i + 1])}`);\r\n\r\n    let length = -separator.length;\r\n    for (let i = 0; i < output.length; i++) {\r\n      length += removeColors(output[i]).length + separator.length;\r\n    }\r\n    if (length > ctx.breakLength) {\r\n      return `${this.constructor.name} {\\n` +\r\n      `  ${ArrayPrototypeJoin(output, ',\\n  ')} }`;\r\n    } else if (output.length) {\r\n      return `${this.constructor.name} { ` +\r\n      `${ArrayPrototypeJoin(output, separator)} }`;\r\n    }\r\n    return `${this.constructor.name} {}`;\r\n  }\r\n\r\n  get size() {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n    return this.#searchParams.length / 2;\r\n  }\r\n\r\n  append(name, value) {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    if (arguments.length < 2) {\r\n      throw new ERR_MISSING_ARGS('name', 'value');\r\n    }\r\n\r\n    name = StringPrototypeToWellFormed(`${name}`);\r\n    value = StringPrototypeToWellFormed(`${value}`);\r\n    ArrayPrototypePush(this.#searchParams, name, value);\r\n\r\n    if (this.#context) {\r\n      setURLSearchParamsModified(this.#context);\r\n    }\r\n  }\r\n\r\n  delete(name, value = undefined) {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    if (arguments.length < 1) {\r\n      throw new ERR_MISSING_ARGS('name');\r\n    }\r\n\r\n    const list = this.#searchParams;\r\n    name = StringPrototypeToWellFormed(`${name}`);\r\n\r\n    if (value !== undefined) {\r\n      value = StringPrototypeToWellFormed(`${value}`);\r\n      for (let i = 0; i < list.length;) {\r\n        if (list[i] === name && list[i + 1] === value) {\r\n          list.splice(i, 2);\r\n        } else {\r\n          i += 2;\r\n        }\r\n      }\r\n    } else {\r\n      for (let i = 0; i < list.length;) {\r\n        if (list[i] === name) {\r\n          list.splice(i, 2);\r\n        } else {\r\n          i += 2;\r\n        }\r\n      }\r\n    }\r\n\r\n    if (this.#context) {\r\n      setURLSearchParamsModified(this.#context);\r\n    }\r\n  }\r\n\r\n  get(name) {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    if (arguments.length < 1) {\r\n      throw new ERR_MISSING_ARGS('name');\r\n    }\r\n\r\n    const list = this.#searchParams;\r\n    name = StringPrototypeToWellFormed(`${name}`);\r\n    for (let i = 0; i < list.length; i += 2) {\r\n      if (list[i] === name) {\r\n        return list[i + 1];\r\n      }\r\n    }\r\n    return null;\r\n  }\r\n\r\n  getAll(name) {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    if (arguments.length < 1) {\r\n      throw new ERR_MISSING_ARGS('name');\r\n    }\r\n\r\n    const list = this.#searchParams;\r\n    const values = [];\r\n    name = StringPrototypeToWellFormed(`${name}`);\r\n    for (let i = 0; i < list.length; i += 2) {\r\n      if (list[i] === name) {\r\n        values.push(list[i + 1]);\r\n      }\r\n    }\r\n    return values;\r\n  }\r\n\r\n  has(name, value = undefined) {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    if (arguments.length < 1) {\r\n      throw new ERR_MISSING_ARGS('name');\r\n    }\r\n\r\n    const list = this.#searchParams;\r\n    name = StringPrototypeToWellFormed(`${name}`);\r\n\r\n    if (value !== undefined) {\r\n      value = StringPrototypeToWellFormed(`${value}`);\r\n    }\r\n\r\n    for (let i = 0; i < list.length; i += 2) {\r\n      if (list[i] === name) {\r\n        if (value === undefined || list[i + 1] === value) {\r\n          return true;\r\n        }\r\n      }\r\n    }\r\n\r\n    return false;\r\n  }\r\n\r\n  set(name, value) {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    if (arguments.length < 2) {\r\n      throw new ERR_MISSING_ARGS('name', 'value');\r\n    }\r\n\r\n    const list = this.#searchParams;\r\n    name = StringPrototypeToWellFormed(`${name}`);\r\n    value = StringPrototypeToWellFormed(`${value}`);\r\n\r\n    // If there are any name-value pairs whose name is `name`, in `list`, set\r\n    // the value of the first such name-value pair to `value` and remove the\r\n    // others.\r\n    let found = false;\r\n    for (let i = 0; i < list.length;) {\r\n      const cur = list[i];\r\n      if (cur === name) {\r\n        if (!found) {\r\n          list[i + 1] = value;\r\n          found = true;\r\n          i += 2;\r\n        } else {\r\n          list.splice(i, 2);\r\n        }\r\n      } else {\r\n        i += 2;\r\n      }\r\n    }\r\n\r\n    // Otherwise, append a new name-value pair whose name is `name` and value\r\n    // is `value`, to `list`.\r\n    if (!found) {\r\n      ArrayPrototypePush(list, name, value);\r\n    }\r\n\r\n    if (this.#context) {\r\n      setURLSearchParamsModified(this.#context);\r\n    }\r\n  }\r\n\r\n  sort() {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    const a = this.#searchParams;\r\n    const len = a.length;\r\n\r\n    if (len <= 2) {\r\n      // Nothing needs to be done.\r\n    } else if (len < 100) {\r\n      // 100 is found through testing.\r\n      // Simple stable in-place insertion sort\r\n      // Derived from v8/src/js/array.js\r\n      for (let i = 2; i < len; i += 2) {\r\n        const curKey = a[i];\r\n        const curVal = a[i + 1];\r\n        let j;\r\n        for (j = i - 2; j >= 0; j -= 2) {\r\n          if (a[j] > curKey) {\r\n            a[j + 2] = a[j];\r\n            a[j + 3] = a[j + 1];\r\n          } else {\r\n            break;\r\n          }\r\n        }\r\n        a[j + 2] = curKey;\r\n        a[j + 3] = curVal;\r\n      }\r\n    } else {\r\n      // Bottom-up iterative stable merge sort\r\n      const lBuffer = new Array(len);\r\n      const rBuffer = new Array(len);\r\n      for (let step = 2; step < len; step *= 2) {\r\n        for (let start = 0; start < len - 2; start += 2 * step) {\r\n          const mid = start + step;\r\n          let end = mid + step;\r\n          end = end < len ? end : len;\r\n          if (mid > end)\r\n            continue;\r\n          merge(a, start, mid, end, lBuffer, rBuffer);\r\n        }\r\n      }\r\n    }\r\n\r\n    if (this.#context) {\r\n      setURLSearchParamsModified(this.#context);\r\n    }\r\n  }\r\n\r\n  // https://heycam.github.io/webidl/#es-iterators\r\n  // Define entries here rather than [Symbol.iterator] as the function name\r\n  // must be set to `entries`.\r\n  entries() {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    return new URLSearchParamsIterator(this, 'key+value');\r\n  }\r\n\r\n  forEach(callback, thisArg = undefined) {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    validateFunction(callback, 'callback');\r\n\r\n    let list = this.#searchParams;\r\n\r\n    let i = 0;\r\n    while (i < list.length) {\r\n      const key = list[i];\r\n      const value = list[i + 1];\r\n      callback.call(thisArg, value, key, this);\r\n      // In case the URL object's `search` is updated\r\n      list = this.#searchParams;\r\n      i += 2;\r\n    }\r\n  }\r\n\r\n  // https://heycam.github.io/webidl/#es-iterable\r\n  keys() {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    return new URLSearchParamsIterator(this, 'key');\r\n  }\r\n\r\n  values() {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    return new URLSearchParamsIterator(this, 'value');\r\n  }\r\n\r\n  // https://heycam.github.io/webidl/#es-stringifier\r\n  // https://url.spec.whatwg.org/#urlsearchparams-stringification-behavior\r\n  toString() {\r\n    if (typeof this !== 'object' || this === null || !(#searchParams in this))\r\n      throw new ERR_INVALID_THIS('URLSearchParams');\r\n\r\n    return serializeParams(this.#searchParams);\r\n  }\r\n}\r\n\r\nObjectDefineProperties(URLSearchParams.prototype, {\r\n  append: kEnumerableProperty,\r\n  delete: kEnumerableProperty,\r\n  get: kEnumerableProperty,\r\n  getAll: kEnumerableProperty,\r\n  has: kEnumerableProperty,\r\n  set: kEnumerableProperty,\r\n  size: kEnumerableProperty,\r\n  sort: kEnumerableProperty,\r\n  entries: kEnumerableProperty,\r\n  forEach: kEnumerableProperty,\r\n  keys: kEnumerableProperty,\r\n  values: kEnumerableProperty,\r\n  toString: kEnumerableProperty,\r\n  [SymbolToStringTag]: { __proto__: null, configurable: true, value: 'URLSearchParams' },\r\n\r\n  // https://heycam.github.io/webidl/#es-iterable-entries\r\n  [SymbolIterator]: {\r\n    __proto__: null,\r\n    configurable: true,\r\n    writable: true,\r\n    value: URLSearchParams.prototype.entries,\r\n  },\r\n});\r\n\r\n/**\r\n * Checks if a value has the shape of a WHATWG URL object.\r\n *\r\n * Using a symbol or instanceof would not be able to recognize URL objects\r\n * coming from other implementations (e.g. in Electron), so instead we are\r\n * checking some well known properties for a lack of a better test.\r\n *\r\n * We use `href` and `protocol` as they are the only properties that are\r\n * easy to retrieve and calculate due to the lazy nature of the getters.\r\n *\r\n * We check for `auth` and `path` attribute to distinguish legacy url instance with\r\n * WHATWG URL instance.\r\n * @param {*} self\r\n * @returns {self is URL}\r\n */\r\nfunction isURL(self) {\r\n  return Boolean(self?.href && self.protocol && self.auth === undefined && self.path === undefined);\r\n}\r\n\r\n/**\r\n * A unique symbol used as a private identifier to safely invoke the URL constructor\r\n * with a special parsing behavior. When passed as the third argument to the URL\r\n * constructor, it signals that the constructor should not throw an exception\r\n * for invalid URL inputs.\r\n */\r\nconst kParseURLSymbol = Symbol('kParseURL');\r\nconst kCreateURLFromPosixPathSymbol = Symbol('kCreateURLFromPosixPath');\r\nconst kCreateURLFromWindowsPathSymbol = Symbol('kCreateURLFromWindowsPath');\r\n\r\nclass URL {\r\n  #context = new URLContext();\r\n  #searchParams;\r\n  #searchParamsModified;\r\n\r\n  static {\r\n    setURLSearchParamsModified = (obj) => {\r\n      // When URLSearchParams changes, we lazily update URL on the next read/write for performance.\r\n      obj.#searchParamsModified = true;\r\n\r\n      // If URL has an existing search, remove it without cascading back to URLSearchParams.\r\n      // Do this to avoid any internal confusion about whether URLSearchParams or URL is up-to-date.\r\n      if (obj.#context.hasSearch) {\r\n        obj.#updateContext(bindingUrl.update(obj.#context.href, updateActions.kSearch, ''));\r\n      }\r\n    };\r\n  }\r\n\r\n  constructor(input, base = undefined, parseSymbol = undefined) {\r\n    markTransferMode(this, false, false);\r\n\r\n    if (arguments.length === 0) {\r\n      throw new ERR_MISSING_ARGS('url');\r\n    }\r\n\r\n    // StringPrototypeToWellFormed is not needed.\r\n    input = `${input}`;\r\n\r\n    if (base !== undefined) {\r\n      base = `${base}`;\r\n    }\r\n\r\n    let href;\r\n    if (arguments.length < 3) {\r\n      href = bindingUrl.parse(input, base, true);\r\n    } else {\r\n      const raiseException = parseSymbol !== kParseURLSymbol;\r\n      const interpretAsWindowsPath = parseSymbol === kCreateURLFromWindowsPathSymbol;\r\n      const pathToFileURL = interpretAsWindowsPath || (parseSymbol === kCreateURLFromPosixPathSymbol);\r\n      href = pathToFileURL ?\r\n        bindingUrl.pathToFileURL(input, interpretAsWindowsPath, base) :\r\n        bindingUrl.parse(input, base, raiseException);\r\n    }\r\n    if (href) {\r\n      this.#updateContext(href);\r\n    }\r\n  }\r\n\r\n  static parse(input, base = undefined) {\r\n    if (arguments.length === 0) {\r\n      throw new ERR_MISSING_ARGS('url');\r\n    }\r\n    const parsedURLObject = new URL(input, base, kParseURLSymbol);\r\n    return parsedURLObject.href ? parsedURLObject : null;\r\n  }\r\n\r\n  [inspect.custom](depth, opts) {\r\n    if (typeof depth === 'number' && depth < 0)\r\n      return this;\r\n\r\n    const constructor = getConstructorOf(this) || URL;\r\n    const obj = { __proto__: { constructor } };\r\n\r\n    obj.href = this.href;\r\n    obj.origin = this.origin;\r\n    obj.protocol = this.protocol;\r\n    obj.username = this.username;\r\n    obj.password = this.password;\r\n    obj.host = this.host;\r\n    obj.hostname = this.hostname;\r\n    obj.port = this.port;\r\n    obj.pathname = this.pathname;\r\n    obj.search = this.search;\r\n    obj.searchParams = this.searchParams;\r\n    obj.hash = this.hash;\r\n\r\n    if (opts.showHidden) {\r\n      obj[contextForInspect] = this.#context;\r\n    }\r\n\r\n    return `${constructor.name} ${inspect(obj, opts)}`;\r\n  }\r\n\r\n  #getSearchFromContext() {\r\n    if (!this.#context.hasSearch) return '';\r\n    let endsAt = this.#context.href.length;\r\n    if (this.#context.hasHash) endsAt = this.#context.hash_start;\r\n    if (endsAt - this.#context.search_start <= 1) return '';\r\n    return StringPrototypeSlice(this.#context.href, this.#context.search_start, endsAt);\r\n  }\r\n\r\n  #getSearchFromParams() {\r\n    if (!this.#searchParams?.size) return '';\r\n    return `?${this.#searchParams}`;\r\n  }\r\n\r\n  #ensureSearchParamsUpdated() {\r\n    // URL is updated lazily to greatly improve performance when URLSearchParams is updated repeatedly.\r\n    // If URLSearchParams has been modified, reflect that back into URL, without cascading back.\r\n    if (this.#searchParamsModified) {\r\n      this.#searchParamsModified = false;\r\n      this.#updateContext(bindingUrl.update(this.#context.href, updateActions.kSearch, this.#getSearchFromParams()));\r\n    }\r\n  }\r\n\r\n  /**\r\n   * Update the internal context state for URL.\r\n   * @param {string} href New href string from `bindingUrl.update`.\r\n   * @param {boolean} [shouldUpdateSearchParams] If the update has potential to update search params (href/search).\r\n   */\r\n  #updateContext(href, shouldUpdateSearchParams = false) {\r\n    const previousSearch = shouldUpdateSearchParams && this.#searchParams &&\r\n      (this.#searchParamsModified ? this.#getSearchFromParams() : this.#getSearchFromContext());\r\n\r\n    this.#context.href = href;\r\n\r\n    const {\r\n      0: protocol_end,\r\n      1: username_end,\r\n      2: host_start,\r\n      3: host_end,\r\n      4: port,\r\n      5: pathname_start,\r\n      6: search_start,\r\n      7: hash_start,\r\n      8: scheme_type,\r\n    } = bindingUrl.urlComponents;\r\n\r\n    this.#context.protocol_end = protocol_end;\r\n    this.#context.username_end = username_end;\r\n    this.#context.host_start = host_start;\r\n    this.#context.host_end = host_end;\r\n    this.#context.port = port;\r\n    this.#context.pathname_start = pathname_start;\r\n    this.#context.search_start = search_start;\r\n    this.#context.hash_start = hash_start;\r\n    this.#context.scheme_type = scheme_type;\r\n\r\n    if (this.#searchParams) {\r\n      // If the search string has updated, URL becomes the source of truth, and we update URLSearchParams.\r\n      // Only do this when we're expecting it to have changed, otherwise a change to hash etc.\r\n      // would incorrectly compare the URLSearchParams state to the empty URL search state.\r\n      if (shouldUpdateSearchParams) {\r\n        const currentSearch = this.#getSearchFromContext();\r\n        if (previousSearch !== currentSearch) {\r\n          setURLSearchParams(this.#searchParams, currentSearch);\r\n          this.#searchParamsModified = false;\r\n        }\r\n      }\r\n\r\n      // If we have a URLSearchParams, ensure that URL is up-to-date with any modification to it.\r\n      this.#ensureSearchParamsUpdated();\r\n    }\r\n  }\r\n\r\n  toString() {\r\n    // Updates to URLSearchParams are lazily propagated to URL, so we need to check we're in sync.\r\n    this.#ensureSearchParamsUpdated();\r\n    return this.#context.href;\r\n  }\r\n\r\n  get href() {\r\n    // Updates to URLSearchParams are lazily propagated to URL, so we need to check we're in sync.\r\n    this.#ensureSearchParamsUpdated();\r\n    return this.#context.href;\r\n  }\r\n\r\n  set href(value) {\r\n    value = `${value}`;\r\n    const href = bindingUrl.update(this.#context.href, updateActions.kHref, value);\r\n    if (!href) { throw new ERR_INVALID_URL(value); }\r\n    this.#updateContext(href, true);\r\n  }\r\n\r\n  // readonly\r\n  get origin() {\r\n    const protocol = StringPrototypeSlice(this.#context.href, 0, this.#context.protocol_end);\r\n\r\n    // Check if scheme_type is not `NOT_SPECIAL`\r\n    if (this.#context.scheme_type !== 1) {\r\n      // Check if scheme_type is `FILE`\r\n      if (this.#context.scheme_type === 6) {\r\n        return 'null';\r\n      }\r\n      return `${protocol}//${this.host}`;\r\n    }\r\n\r\n    if (protocol === 'blob:') {\r\n      const path = this.pathname;\r\n      if (path.length > 0) {\r\n        try {\r\n          const out = new URL(path);\r\n          // Only return origin of scheme is `http` or `https`\r\n          // Otherwise return a new opaque origin (null).\r\n          if (out.#context.scheme_type === 0 || out.#context.scheme_type === 2) {\r\n            return `${out.protocol}//${out.host}`;\r\n          }\r\n        } catch {\r\n          // Do nothing.\r\n        }\r\n      }\r\n    }\r\n\r\n    return 'null';\r\n  }\r\n\r\n  get protocol() {\r\n    return StringPrototypeSlice(this.#context.href, 0, this.#context.protocol_end);\r\n  }\r\n\r\n  set protocol(value) {\r\n    const href = bindingUrl.update(this.#context.href, updateActions.kProtocol, `${value}`);\r\n    if (href) {\r\n      this.#updateContext(href);\r\n    }\r\n  }\r\n\r\n  get username() {\r\n    if (this.#context.protocol_end + 2 < this.#context.username_end) {\r\n      return StringPrototypeSlice(this.#context.href, this.#context.protocol_end + 2, this.#context.username_end);\r\n    }\r\n    return '';\r\n  }\r\n\r\n  set username(value) {\r\n    const href = bindingUrl.update(this.#context.href, updateActions.kUsername, `${value}`);\r\n    if (href) {\r\n      this.#updateContext(href);\r\n    }\r\n  }\r\n\r\n  get password() {\r\n    if (this.#context.host_start - this.#context.username_end > 0) {\r\n      return StringPrototypeSlice(this.#context.href, this.#context.username_end + 1, this.#context.host_start);\r\n    }\r\n    return '';\r\n  }\r\n\r\n  set password(value) {\r\n    const href = bindingUrl.update(this.#context.href, updateActions.kPassword, `${value}`);\r\n    if (href) {\r\n      this.#updateContext(href);\r\n    }\r\n  }\r\n\r\n  get host() {\r\n    let startsAt = this.#context.host_start;\r\n    if (this.#context.href[startsAt] === '@') {\r\n      startsAt++;\r\n    }\r\n    // If we have an empty host, then the space between components.host_end and\r\n    // components.pathname_start may be occupied by /.\r\n    if (startsAt === this.#context.host_end) {\r\n      return '';\r\n    }\r\n    return StringPrototypeSlice(this.#context.href, startsAt, this.#context.pathname_start);\r\n  }\r\n\r\n  set host(value) {\r\n    const href = bindingUrl.update(this.#context.href, updateActions.kHost, `${value}`);\r\n    if (href) {\r\n      this.#updateContext(href);\r\n    }\r\n  }\r\n\r\n  get hostname() {\r\n    let startsAt = this.#context.host_start;\r\n    // host_start might be \"@\" if the URL has credentials\r\n    if (this.#context.href[startsAt] === '@') {\r\n      startsAt++;\r\n    }\r\n    return StringPrototypeSlice(this.#context.href, startsAt, this.#context.host_end);\r\n  }\r\n\r\n  set hostname(value) {\r\n    const href = bindingUrl.update(this.#context.href, updateActions.kHostname, `${value}`);\r\n    if (href) {\r\n      this.#updateContext(href);\r\n    }\r\n  }\r\n\r\n  get port() {\r\n    if (this.#context.hasPort) {\r\n      return `${this.#context.port}`;\r\n    }\r\n    return '';\r\n  }\r\n\r\n  set port(value) {\r\n    const href = bindingUrl.update(this.#context.href, updateActions.kPort, `${value}`);\r\n    if (href) {\r\n      this.#updateContext(href);\r\n    }\r\n  }\r\n\r\n  get pathname() {\r\n    let endsAt;\r\n    if (this.#context.hasSearch) {\r\n      endsAt = this.#context.search_start;\r\n    } else if (this.#context.hasHash) {\r\n      endsAt = this.#context.hash_start;\r\n    }\r\n    return StringPrototypeSlice(this.#context.href, this.#context.pathname_start, endsAt);\r\n  }\r\n\r\n  set pathname(value) {\r\n    const href = bindingUrl.update(this.#context.href, updateActions.kPathname, `${value}`);\r\n    if (href) {\r\n      this.#updateContext(href);\r\n    }\r\n  }\r\n\r\n  get search() {\r\n    // Updates to URLSearchParams are lazily propagated to URL, so we need to check we're in sync.\r\n    this.#ensureSearchParamsUpdated();\r\n    return this.#getSearchFromContext();\r\n  }\r\n\r\n  set search(value) {\r\n    const href = bindingUrl.update(this.#context.href, updateActions.kSearch, StringPrototypeToWellFormed(`${value}`));\r\n    if (href) {\r\n      this.#updateContext(href, true);\r\n    }\r\n  }\r\n\r\n  // readonly\r\n  get searchParams() {\r\n    // Create URLSearchParams on demand to greatly improve the URL performance.\r\n    if (this.#searchParams == null) {\r\n      this.#searchParams = new URLSearchParams(this.#getSearchFromContext());\r\n      setURLSearchParamsContext(this.#searchParams, this);\r\n      this.#searchParamsModified = false;\r\n    }\r\n    return this.#searchParams;\r\n  }\r\n\r\n  get hash() {\r\n    if (!this.#context.hasHash || (this.#context.href.length - this.#context.hash_start <= 1)) {\r\n      return '';\r\n    }\r\n    return StringPrototypeSlice(this.#context.href, this.#context.hash_start);\r\n  }\r\n\r\n  set hash(value) {\r\n    const href = bindingUrl.update(this.#context.href, updateActions.kHash, `${value}`);\r\n    if (href) {\r\n      this.#updateContext(href);\r\n    }\r\n  }\r\n\r\n  toJSON() {\r\n    // Updates to URLSearchParams are lazily propagated to URL, so we need to check we're in sync.\r\n    this.#ensureSearchParamsUpdated();\r\n    return this.#context.href;\r\n  }\r\n\r\n  static canParse(url, base = undefined) {\r\n    if (arguments.length === 0) {\r\n      throw new ERR_MISSING_ARGS('url');\r\n    }\r\n\r\n    url = `${url}`;\r\n\r\n    if (base !== undefined) {\r\n      return bindingUrl.canParse(url, `${base}`);\r\n    }\r\n\r\n    // It is important to differentiate the canParse call statements\r\n    // since they resolve into different v8 fast api overloads.\r\n    return bindingUrl.canParse(url);\r\n  }\r\n}\r\n\r\nObjectDefineProperties(URL.prototype, {\r\n  [SymbolToStringTag]: { __proto__: null, configurable: true, value: 'URL' },\r\n  toString: kEnumerableProperty,\r\n  href: kEnumerableProperty,\r\n  origin: kEnumerableProperty,\r\n  protocol: kEnumerableProperty,\r\n  username: kEnumerableProperty,\r\n  password: kEnumerableProperty,\r\n  host: kEnumerableProperty,\r\n  hostname: kEnumerableProperty,\r\n  port: kEnumerableProperty,\r\n  pathname: kEnumerableProperty,\r\n  search: kEnumerableProperty,\r\n  searchParams: kEnumerableProperty,\r\n  hash: kEnumerableProperty,\r\n  toJSON: kEnumerableProperty,\r\n});\r\n\r\nObjectDefineProperties(URL, {\r\n  canParse: {\r\n    __proto__: null,\r\n    configurable: true,\r\n    writable: true,\r\n    enumerable: true,\r\n  },\r\n  parse: {\r\n    __proto__: null,\r\n    configurable: true,\r\n    writable: true,\r\n    enumerable: true,\r\n  },\r\n});\r\n\r\nfunction installObjectURLMethods() {\r\n  const bindingBlob = internalBinding('blob');\r\n\r\n  function createObjectURL(obj) {\r\n    const cryptoRandom = lazyCryptoRandom();\r\n    if (cryptoRandom === undefined)\r\n      throw new ERR_NO_CRYPTO();\r\n\r\n    const blob = lazyBlob();\r\n    if (!blob.isBlob(obj))\r\n      throw new ERR_INVALID_ARG_TYPE('obj', 'Blob', obj);\r\n\r\n    const id = cryptoRandom.randomUUID();\r\n\r\n    bindingBlob.storeDataObject(id, obj[blob.kHandle], obj.size, obj.type);\r\n\r\n    return `blob:nodedata:${id}`;\r\n  }\r\n\r\n  function revokeObjectURL(url) {\r\n    if (arguments.length === 0) {\r\n      throw new ERR_MISSING_ARGS('url');\r\n    }\r\n\r\n    bindingBlob.revokeObjectURL(`${url}`);\r\n  }\r\n\r\n  ObjectDefineProperties(URL, {\r\n    createObjectURL: {\r\n      __proto__: null,\r\n      configurable: true,\r\n      writable: true,\r\n      enumerable: true,\r\n      value: createObjectURL,\r\n    },\r\n    revokeObjectURL: {\r\n      __proto__: null,\r\n      configurable: true,\r\n      writable: true,\r\n      enumerable: true,\r\n      value: revokeObjectURL,\r\n    },\r\n  });\r\n}\r\n\r\n// application/x-www-form-urlencoded parser\r\n// Ref: https://url.spec.whatwg.org/#concept-urlencoded-parser\r\nfunction parseParams(qs) {\r\n  const out = [];\r\n  let seenSep = false;\r\n  let buf = '';\r\n  let encoded = false;\r\n  let encodeCheck = 0;\r\n  let i = qs[0] === '?' ? 1 : 0;\r\n  let pairStart = i;\r\n  let lastPos = i;\r\n  for (; i < qs.length; ++i) {\r\n    const code = StringPrototypeCharCodeAt(qs, i);\r\n\r\n    // Try matching key/value pair separator\r\n    if (code === CHAR_AMPERSAND) {\r\n      if (pairStart === i) {\r\n        // We saw an empty substring between pair separators\r\n        lastPos = pairStart = i + 1;\r\n        continue;\r\n      }\r\n\r\n      if (lastPos < i)\r\n        buf += qs.slice(lastPos, i);\r\n      if (encoded)\r\n        buf = querystring.unescape(buf);\r\n      out.push(buf);\r\n\r\n      // If `buf` is the key, add an empty value.\r\n      if (!seenSep)\r\n        out.push('');\r\n\r\n      seenSep = false;\r\n      buf = '';\r\n      encoded = false;\r\n      encodeCheck = 0;\r\n      lastPos = pairStart = i + 1;\r\n      continue;\r\n    }\r\n\r\n    // Try matching key/value separator (e.g. '=') if we haven't already\r\n    if (!seenSep && code === CHAR_EQUAL) {\r\n      // Key/value separator match!\r\n      if (lastPos < i)\r\n        buf += qs.slice(lastPos, i);\r\n      if (encoded)\r\n        buf = querystring.unescape(buf);\r\n      out.push(buf);\r\n\r\n      seenSep = true;\r\n      buf = '';\r\n      encoded = false;\r\n      encodeCheck = 0;\r\n      lastPos = i + 1;\r\n      continue;\r\n    }\r\n\r\n    // Handle + and percent decoding.\r\n    if (code === CHAR_PLUS) {\r\n      if (lastPos < i)\r\n        buf += StringPrototypeSlice(qs, lastPos, i);\r\n      buf += ' ';\r\n      lastPos = i + 1;\r\n    } else if (!encoded) {\r\n      // Try to match an (valid) encoded byte (once) to minimize unnecessary\r\n      // calls to string decoding functions\r\n      if (code === CHAR_PERCENT) {\r\n        encodeCheck = 1;\r\n      } else if (encodeCheck > 0) {\r\n        if (isHexTable[code] === 1) {\r\n          if (++encodeCheck === 3) {\r\n            encoded = true;\r\n          }\r\n        } else {\r\n          encodeCheck = 0;\r\n        }\r\n      }\r\n    }\r\n  }\r\n\r\n  // Deal with any leftover key or value data\r\n\r\n  // There is a trailing &. No more processing is needed.\r\n  if (pairStart === i)\r\n    return out;\r\n\r\n  if (lastPos < i)\r\n    buf += StringPrototypeSlice(qs, lastPos, i);\r\n  if (encoded)\r\n    buf = querystring.unescape(buf);\r\n  ArrayPrototypePush(out, buf);\r\n\r\n  // If `buf` is the key, add an empty value.\r\n  if (!seenSep)\r\n    ArrayPrototypePush(out, '');\r\n\r\n  return out;\r\n}\r\n\r\n// Adapted from querystring's implementation.\r\n// Ref: https://url.spec.whatwg.org/#concept-urlencoded-byte-serializer\r\nconst noEscape = new Int8Array([\r\n/*\r\n  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F\r\n*/\r\n  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0x00 - 0x0F\r\n  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0x10 - 0x1F\r\n  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, // 0x20 - 0x2F\r\n  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 0x30 - 0x3F\r\n  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 0x40 - 0x4F\r\n  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, // 0x50 - 0x5F\r\n  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 0x60 - 0x6F\r\n  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,  // 0x70 - 0x7F\r\n]);\r\n\r\n// Special version of hexTable that uses `+` for U+0020 SPACE.\r\nconst paramHexTable = hexTable.slice();\r\nparamHexTable[0x20] = '+';\r\n\r\n// application/x-www-form-urlencoded serializer\r\n// Ref: https://url.spec.whatwg.org/#concept-urlencoded-serializer\r\nfunction serializeParams(array) {\r\n  const len = array.length;\r\n  if (len === 0)\r\n    return '';\r\n\r\n  const firstEncodedParam = encodeStr(array[0], noEscape, paramHexTable);\r\n  const firstEncodedValue = encodeStr(array[1], noEscape, paramHexTable);\r\n  let output = `${firstEncodedParam}=${firstEncodedValue}`;\r\n\r\n  for (let i = 2; i < len; i += 2) {\r\n    const encodedParam = encodeStr(array[i], noEscape, paramHexTable);\r\n    const encodedValue = encodeStr(array[i + 1], noEscape, paramHexTable);\r\n    output += `&${encodedParam}=${encodedValue}`;\r\n  }\r\n\r\n  return output;\r\n}\r\n\r\n// for merge sort\r\nfunction merge(out, start, mid, end, lBuffer, rBuffer) {\r\n  const sizeLeft = mid - start;\r\n  const sizeRight = end - mid;\r\n  let l, r, o;\r\n\r\n  for (l = 0; l < sizeLeft; l++)\r\n    lBuffer[l] = out[start + l];\r\n  for (r = 0; r < sizeRight; r++)\r\n    rBuffer[r] = out[mid + r];\r\n\r\n  l = 0;\r\n  r = 0;\r\n  o = start;\r\n  while (l < sizeLeft && r < sizeRight) {\r\n    if (lBuffer[l] <= rBuffer[r]) {\r\n      out[o++] = lBuffer[l++];\r\n      out[o++] = lBuffer[l++];\r\n    } else {\r\n      out[o++] = rBuffer[r++];\r\n      out[o++] = rBuffer[r++];\r\n    }\r\n  }\r\n  while (l < sizeLeft)\r\n    out[o++] = lBuffer[l++];\r\n  while (r < sizeRight)\r\n    out[o++] = rBuffer[r++];\r\n}\r\n\r\nfunction domainToASCII(domain) {\r\n  if (arguments.length < 1)\r\n    throw new ERR_MISSING_ARGS('domain');\r\n\r\n  // StringPrototypeToWellFormed is not needed.\r\n  return bindingUrl.domainToASCII(`${domain}`);\r\n}\r\n\r\nfunction domainToUnicode(domain) {\r\n  if (arguments.length < 1)\r\n    throw new ERR_MISSING_ARGS('domain');\r\n\r\n  // StringPrototypeToWellFormed is not needed.\r\n  return bindingUrl.domainToUnicode(`${domain}`);\r\n}\r\n\r\n/**\r\n * Utility function that converts a URL object into an ordinary options object\r\n * as expected by the `http.request` and `https.request` APIs.\r\n * @param {URL} url\r\n * @returns {Record<string, unknown>}\r\n */\r\nfunction urlToHttpOptions(url) {\r\n  validateObject(url, 'url', kValidateObjectAllowObjects);\r\n  const { hostname, pathname, port, username, password, search } = url;\r\n  const options = {\r\n    __proto__: null,\r\n    ...url, // In case the url object was extended by the user.\r\n    protocol: url.protocol,\r\n    hostname: hostname && hostname[0] === '[' ?\r\n      StringPrototypeSlice(hostname, 1, -1) :\r\n      hostname,\r\n    hash: url.hash,\r\n    search: search,\r\n    pathname: pathname,\r\n    path: `${pathname || ''}${search || ''}`,\r\n    href: url.href,\r\n  };\r\n  if (port !== '') {\r\n    options.port = Number(port);\r\n  }\r\n  if (username || password) {\r\n    options.auth = `${decodeURIComponent(username)}:${decodeURIComponent(password)}`;\r\n  }\r\n  return options;\r\n}\r\n\r\nfunction getPathFromURLWin32(url) {\r\n  const hostname = url.hostname;\r\n  let pathname = url.pathname;\r\n  for (let n = 0; n < pathname.length; n++) {\r\n    if (pathname[n] === '%') {\r\n      const third = StringPrototypeCodePointAt(pathname, n + 2) | 0x20;\r\n      if ((pathname[n + 1] === '2' && third === 102) || // 2f 2F /\r\n          (pathname[n + 1] === '5' && third === 99)) {  // 5c 5C \\\r\n        throw new ERR_INVALID_FILE_URL_PATH(\r\n          'must not include encoded \\\\ or / characters', url,\r\n        );\r\n      }\r\n    }\r\n  }\r\n  pathname = SideEffectFreeRegExpPrototypeSymbolReplace(FORWARD_SLASH, pathname, '\\\\');\r\n  // Fast-path: if there is no percent-encoding, avoid decodeURIComponent.\r\n  if (StringPrototypeIncludes(pathname, '%')) {\r\n    pathname = decodeURIComponent(pathname);\r\n  }\r\n  if (hostname !== '') {\r\n    // If hostname is set, then we have a UNC path\r\n    // Pass the hostname through domainToUnicode just in case\r\n    // it is an IDN using punycode encoding. We do not need to worry\r\n    // about percent encoding because the URL parser will have\r\n    // already taken care of that for us. Note that this only\r\n    // causes IDNs with an appropriate `xn--` prefix to be decoded.\r\n    return `\\\\\\\\${domainToUnicode(hostname)}${pathname}`;\r\n  }\r\n  // Otherwise, it's a local path that requires a drive letter\r\n  const letter = StringPrototypeCodePointAt(pathname, 1) | 0x20;\r\n  const sep = StringPrototypeCharAt(pathname, 2);\r\n  if (letter < CHAR_LOWERCASE_A || letter > CHAR_LOWERCASE_Z ||   // a..z A..Z\r\n      (sep !== ':')) {\r\n    throw new ERR_INVALID_FILE_URL_PATH('must be absolute', url);\r\n  }\r\n  return StringPrototypeSlice(pathname, 1);\r\n}\r\n\r\nfunction getPathBufferFromURLWin32(url) {\r\n  const hostname = url.hostname;\r\n  let pathname = url.pathname;\r\n  // In the getPathFromURLWin32 variant, we scan the input for backslash (\\)\r\n  // and forward slash (/) characters, specifically looking for the ASCII/UTF8\r\n  // encoding these and forbidding their use. This is a bit tricky\r\n  // because these may conflict with non-UTF8 encodings. For instance,\r\n  // in shift-jis, %5C identifies the symbol for the Japanese Yen and not the\r\n  // backslash. If we have a url like file:///foo/%5c/bar, then we really have\r\n  // no way of knowing if that %5c is meant to be a backslash \\ or a yen sign.\r\n  // Passing in an encoding option does not help since our Buffer encoding only\r\n  // knows about certain specific text encodings and a single file path might\r\n  // actually contain segments that use multiple encodings. It's tricky! So,\r\n  // for this variation where we are producing a buffer, we won't scan for the\r\n  // slashes at all, and instead will decode the bytes literally into the\r\n  // returned Buffer. That said, that can also be tricky because, on windows,\r\n  // the file path separator *is* the ASCII backslash. This is a known issue\r\n  // on windows specific to the Shift-JIS encoding that we're not really going\r\n  // to solve here. Instead, we're going to do the best we can and just\r\n  // interpret the input url as a sequence of bytes.\r\n\r\n  // Because we are converting to a Windows file path here, we need to replace\r\n  // the explicit forward slash separators with backslashes. Note that this\r\n  // intentionally disregards any percent-encoded forward slashes in the path.\r\n  pathname = SideEffectFreeRegExpPrototypeSymbolReplace(FORWARD_SLASH, pathname, '\\\\');\r\n\r\n  // Now, let's start to build our Buffer. We will initially start with a\r\n  // Buffer allocated to fit in the entire string. Worst case there are no\r\n  // percent encoded characters and we take the string as is. Any invalid\r\n  // percent encodings, e.g. `%ZZ` are ignored and are passed through\r\n  // literally.\r\n  const decodedu8 = percentDecode(Buffer.from(pathname, 'utf8'));\r\n  const decodedPathname = Buffer.from(TypedArrayPrototypeGetBuffer(decodedu8),\r\n                                      TypedArrayPrototypeGetByteOffset(decodedu8),\r\n                                      TypedArrayPrototypeGetByteLength(decodedu8));\r\n  if (hostname !== '') {\r\n    // If hostname is set, then we have a UNC path\r\n    // Pass the hostname through domainToUnicode just in case\r\n    // it is an IDN using punycode encoding. We do not need to worry\r\n    // about percent encoding because the URL parser will have\r\n    // already taken care of that for us. Note that this only\r\n    // causes IDNs with an appropriate `xn--` prefix to be decoded.\r\n\r\n    // This is a bit tricky because of the need to convert to a Buffer\r\n    // followed by concatenation of the results.\r\n    const prefix = Buffer.from('\\\\\\\\', 'ascii');\r\n    const domain = Buffer.from(domainToUnicode(hostname), 'utf8');\r\n\r\n    return Buffer.concat([prefix, domain, decodedPathname]);\r\n  }\r\n  // Otherwise, it's a local path that requires a drive letter\r\n  // In this case we're only going to pay attention to the second and\r\n  // third bytes in the decodedPathname. If first byte is either an ASCII\r\n  // uppercase letter between 'A' and 'Z' or lowercase letter between\r\n  // 'a' and 'z', and the second byte must be an ASCII `:` or the\r\n  // operation will fail.\r\n\r\n  const letter = decodedPathname[1] | 0x20;\r\n  const sep = decodedPathname[2];\r\n\r\n  if (letter < CHAR_LOWERCASE_A || letter > CHAR_LOWERCASE_Z ||   // a..z A..Z\r\n      (sep !== CHAR_COLON)) {\r\n    throw new ERR_INVALID_FILE_URL_PATH('must be absolute', url);\r\n  }\r\n\r\n  // Now, we'll just return everything except the first byte of\r\n  // decodedPathname\r\n  return decodedPathname.subarray(1);\r\n}\r\n\r\nfunction getPathFromURLPosix(url) {\r\n  if (url.hostname !== '') {\r\n    throw new ERR_INVALID_FILE_URL_HOST(platform);\r\n  }\r\n  const pathname = url.pathname;\r\n  for (let n = 0; n < pathname.length; n++) {\r\n    if (pathname[n] === '%') {\r\n      const third = StringPrototypeCodePointAt(pathname, n + 2) | 0x20;\r\n      if (pathname[n + 1] === '2' && third === 102) {\r\n        throw new ERR_INVALID_FILE_URL_PATH(\r\n          'must not include encoded / characters',\r\n          url,\r\n        );\r\n      }\r\n    }\r\n  }\r\n  // Fast-path: if there is no percent-encoding, avoid decodeURIComponent.\r\n  return StringPrototypeIncludes(pathname, '%') ? decodeURIComponent(pathname) : pathname;\r\n}\r\n\r\nfunction getPathBufferFromURLPosix(url) {\r\n  if (url.hostname !== '') {\r\n    throw new ERR_INVALID_FILE_URL_HOST(platform);\r\n  }\r\n  const pathname = url.pathname;\r\n\r\n  // In the getPathFromURLPosix variant, we scan the input for forward slash\r\n  // (/) characters, specifically looking for the ASCII/UTF8 and forbidding\r\n  // its use. This is a bit tricky because these may conflict with non-UTF8\r\n  // encodings. Passing in an encoding option does not help since our Buffer\r\n  // encoding only knows about certain specific text encodings and a single\r\n  // file path might actually contain segments that use multiple encodings.\r\n  // It's tricky! So, for this variation where we are producing a buffer, we\r\n  // won't scan for the slashes at all, and instead will decode the bytes\r\n  // literally into the returned Buffer. We're going to do the best we can and\r\n  // just interpret the input url as a sequence of bytes.\r\n  const u8 = percentDecode(Buffer.from(pathname, 'utf8'));\r\n  return Buffer.from(TypedArrayPrototypeGetBuffer(u8),\r\n                     TypedArrayPrototypeGetByteOffset(u8),\r\n                     TypedArrayPrototypeGetByteLength(u8));\r\n}\r\n\r\nfunction fileURLToPath(path, options = kEmptyObject) {\r\n  const windows = options?.windows;\r\n  if (typeof path === 'string')\r\n    path = new URL(path);\r\n  else if (!isURL(path))\r\n    throw new ERR_INVALID_ARG_TYPE('path', ['string', 'URL'], path);\r\n  if (path.protocol !== 'file:')\r\n    throw new ERR_INVALID_URL_SCHEME('file');\r\n  return (windows ?? isWindows) ? getPathFromURLWin32(path) : getPathFromURLPosix(path);\r\n}\r\n\r\n// An alternative to fileURLToPath that outputs a Buffer\r\n// instead of a string. The other fileURLToPath does not\r\n// handle non-UTF8 encoded percent encodings at all, so\r\n// converting to a Buffer is necessary in cases where the\r\n// to string conversion would fail.\r\nfunction fileURLToPathBuffer(path, options = kEmptyObject) {\r\n  const windows = options?.windows;\r\n  if (typeof path === 'string') {\r\n    path = new URL(path);\r\n  } else if (!isURL(path)) {\r\n    throw new ERR_INVALID_ARG_TYPE('path', ['string', 'URL'], path);\r\n  }\r\n  if (path.protocol !== 'file:') {\r\n    throw new ERR_INVALID_URL_SCHEME('file');\r\n  }\r\n  return (windows ?? isWindows) ? getPathBufferFromURLWin32(path) : getPathBufferFromURLPosix(path);\r\n}\r\n\r\nfunction pathToFileURL(filepath, options = kEmptyObject) {\r\n  const windows = options?.windows ?? isWindows;\r\n  const isUNC = windows && StringPrototypeStartsWith(filepath, '\\\\\\\\');\r\n  let resolved = isUNC ?\r\n    filepath :\r\n    (windows ? path.win32.resolve(filepath) : path.posix.resolve(filepath));\r\n  if (isUNC || (windows && StringPrototypeStartsWith(resolved, '\\\\\\\\'))) {\r\n    // UNC path format: \\\\server\\share\\resource\r\n    // Handle extended UNC path and standard UNC path\r\n    // \"\\\\?\\UNC\\\" path prefix should be ignored.\r\n    // Ref: https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation\r\n    const isExtendedUNC = StringPrototypeStartsWith(resolved, '\\\\\\\\?\\\\UNC\\\\');\r\n    const prefixLength = isExtendedUNC ? 8 : 2;\r\n    const hostnameEndIndex = StringPrototypeIndexOf(resolved, '\\\\', prefixLength);\r\n    if (hostnameEndIndex === -1) {\r\n      throw new ERR_INVALID_ARG_VALUE(\r\n        'path',\r\n        resolved,\r\n        'Missing UNC resource path',\r\n      );\r\n    }\r\n    if (hostnameEndIndex === 2) {\r\n      throw new ERR_INVALID_ARG_VALUE(\r\n        'path',\r\n        resolved,\r\n        'Empty UNC servername',\r\n      );\r\n    }\r\n    const hostname = StringPrototypeSlice(resolved, prefixLength, hostnameEndIndex);\r\n    return new URL(StringPrototypeSlice(resolved, hostnameEndIndex), hostname, kCreateURLFromWindowsPathSymbol);\r\n  }\r\n  // path.resolve strips trailing slashes so we must add them back\r\n  const filePathLast = StringPrototypeCharCodeAt(filepath,\r\n                                                 filepath.length - 1);\r\n  if ((filePathLast === CHAR_FORWARD_SLASH ||\r\n       ((windows ?? isWindows) && filePathLast === CHAR_BACKWARD_SLASH)) &&\r\n      resolved[resolved.length - 1] !== path.sep)\r\n    resolved += '/';\r\n\r\n  return new URL(resolved, undefined, windows ? kCreateURLFromWindowsPathSymbol : kCreateURLFromPosixPathSymbol);\r\n}\r\n\r\nfunction toPathIfFileURL(fileURLOrPath) {\r\n  if (!isURL(fileURLOrPath))\r\n    return fileURLOrPath;\r\n  return fileURLToPath(fileURLOrPath);\r\n}\r\n\r\n/**\r\n * This util takes a string containing a URL and return the URL origin,\r\n * its meant to avoid calls to `new URL` constructor.\r\n * @param {string} url\r\n * @returns {URL['origin']}\r\n */\r\nfunction getURLOrigin(url) {\r\n  return bindingUrl.getOrigin(url);\r\n}\r\n\r\nmodule.exports = {\r\n  fileURLToPath,\r\n  fileURLToPathBuffer,\r\n  pathToFileURL,\r\n  toPathIfFileURL,\r\n  installObjectURLMethods,\r\n  URL,\r\n  URLPattern,\r\n  URLSearchParams,\r\n  URLParse: URL.parse,\r\n  domainToASCII,\r\n  domainToUnicode,\r\n  urlToHttpOptions,\r\n  encodeStr,\r\n  isURL,\r\n\r\n  urlUpdateActions: updateActions,\r\n  getURLOrigin,\r\n  unsafeProtocol,\r\n  hostlessProtocol,\r\n  slashedProtocol,\r\n};\r\n"
+    },
+    "internal/errors": {
+      "sha256": "2cda1ae333267dfbe6bf20da6357111d1c680aa6a5e1a0d4f10117742b6c4231",
+      "source": "/* eslint node-core/documented-errors: \"error\" */\r\n/* eslint node-core/alphabetize-errors: [\"error\", {checkErrorDeclarations: true}] */\r\n/* eslint node-core/prefer-util-format-errors: \"error\" */\r\n\r\n'use strict';\r\n\r\n// The whole point behind this internal module is to allow Node.js to no\r\n// longer be forced to treat every error message change as a semver-major\r\n// change. The NodeError classes here all expose a `code` property whose\r\n// value statically and permanently identifies the error. While the error\r\n// message may change, the code should not.\r\n\r\nconst {\r\n  AggregateError,\r\n  ArrayIsArray,\r\n  ArrayPrototypeFilter,\r\n  ArrayPrototypeIncludes,\r\n  ArrayPrototypeIndexOf,\r\n  ArrayPrototypeJoin,\r\n  ArrayPrototypeMap,\r\n  ArrayPrototypePush,\r\n  ArrayPrototypeSlice,\r\n  ArrayPrototypeSplice,\r\n  ArrayPrototypeUnshift,\r\n  Error,\r\n  ErrorCaptureStackTrace,\r\n  ErrorPrototypeToString,\r\n  JSONStringify,\r\n  MapPrototypeGet,\r\n  MathAbs,\r\n  MathMax,\r\n  Number,\r\n  NumberIsInteger,\r\n  ObjectAssign,\r\n  ObjectDefineProperties,\r\n  ObjectDefineProperty,\r\n  ObjectGetOwnPropertyDescriptor,\r\n  ObjectIsExtensible,\r\n  ObjectKeys,\r\n  ObjectPrototypeHasOwnProperty,\r\n  RangeError,\r\n  ReflectApply,\r\n  RegExpPrototypeExec,\r\n  SafeArrayIterator,\r\n  SafeMap,\r\n  SafeWeakMap,\r\n  String,\r\n  StringPrototypeEndsWith,\r\n  StringPrototypeIncludes,\r\n  StringPrototypeIndexOf,\r\n  StringPrototypeSlice,\r\n  StringPrototypeSplit,\r\n  StringPrototypeStartsWith,\r\n  StringPrototypeToLowerCase,\r\n  Symbol,\r\n  SymbolFor,\r\n  SyntaxError,\r\n  TypeError,\r\n  URIError,\r\n} = primordials;\r\n\r\nconst kIsNodeError = Symbol('kIsNodeError');\r\n\r\nconst isWindows = process.platform === 'win32';\r\n\r\nconst messages = new SafeMap();\r\nconst codes = {};\r\n\r\nconst classRegExp = /^[A-Z][a-zA-Z0-9]*$/;\r\n\r\n// Sorted by a rough estimate on most frequently used entries.\r\nconst kTypes = [\r\n  'string',\r\n  'function',\r\n  'number',\r\n  'object',\r\n  // Accept 'Function' and 'Object' as alternative to the lower cased version.\r\n  'Function',\r\n  'Object',\r\n  'boolean',\r\n  'bigint',\r\n  'symbol',\r\n];\r\n\r\nconst MainContextError = Error;\r\nconst overrideStackTrace = new SafeWeakMap();\r\nlet internalPrepareStackTrace = defaultPrepareStackTrace;\r\n\r\n/**\r\n * The default implementation of `Error.prepareStackTrace` with simple\r\n * concatenation of stack frames.\r\n * Read more about `Error.prepareStackTrace` at https://v8.dev/docs/stack-trace-api#customizing-stack-traces.\r\n * @returns {string}\r\n */\r\nfunction defaultPrepareStackTrace(error, trace) {\r\n  // Normal error formatting:\r\n  //\r\n  // Error: Message\r\n  //     at function (file)\r\n  //     at file\r\n  let errorString;\r\n  if (kIsNodeError in error) {\r\n    errorString = `${error.name} [${error.code}]: ${error.message}`;\r\n  } else {\r\n    errorString = ErrorPrototypeToString(error);\r\n  }\r\n  if (trace.length === 0) {\r\n    return errorString;\r\n  }\r\n  return `${errorString}\\n    at ${ArrayPrototypeJoin(trace, '\\n    at ')}`;\r\n}\r\n\r\nfunction setInternalPrepareStackTrace(callback) {\r\n  internalPrepareStackTrace = callback;\r\n}\r\n\r\n/**\r\n * Every realm has its own prepareStackTraceCallback. When `error.stack` is\r\n * accessed, if the error is created in a shadow realm, the shadow realm's\r\n * prepareStackTraceCallback is invoked. Otherwise, the principal realm's\r\n * prepareStackTraceCallback is invoked. Note that accessing `error.stack`\r\n * of error objects created in a VM Context will always invoke the\r\n * prepareStackTraceCallback of the principal realm.\r\n * @param {object} globalThis The global object of the realm that the error was\r\n *   created in. When the error object is created in a VM Context, this is the\r\n *   global object of that VM Context.\r\n * @param {object} error The error object.\r\n * @param {CallSite[]} trace An array of CallSite objects, read more at https://v8.dev/docs/stack-trace-api#customizing-stack-traces.\r\n * @returns {string}\r\n */\r\nfunction prepareStackTraceCallback(globalThis, error, trace) {\r\n  // API for node internals to override error stack formatting\r\n  // without interfering with userland code.\r\n  if (overrideStackTrace.has(error)) {\r\n    const f = overrideStackTrace.get(error);\r\n    overrideStackTrace.delete(error);\r\n    return f(error, trace);\r\n  }\r\n\r\n  // Polyfill of V8's Error.prepareStackTrace API.\r\n  // https://crbug.com/v8/7848\r\n  // `globalThis` is the global that contains the constructor which\r\n  // created `error`.\r\n  if (typeof globalThis.Error?.prepareStackTrace === 'function') {\r\n    return globalThis.Error.prepareStackTrace(error, trace);\r\n  }\r\n  // We still have legacy usage that depends on the main context's `Error`\r\n  // being used, even when the error is from a different context.\r\n  // TODO(devsnek): evaluate if this can be eventually deprecated/removed.\r\n  if (typeof MainContextError.prepareStackTrace === 'function') {\r\n    return MainContextError.prepareStackTrace(error, trace);\r\n  }\r\n\r\n  // If the Error.prepareStackTrace was not a function, fallback to the\r\n  // internal implementation.\r\n  return internalPrepareStackTrace(error, trace);\r\n}\r\n\r\n/**\r\n * The default Error.prepareStackTrace implementation.\r\n * @returns {string}\r\n */\r\nfunction ErrorPrepareStackTrace(error, trace) {\r\n  return internalPrepareStackTrace(error, trace);\r\n}\r\n\r\nconst aggregateTwoErrors = (innerError, outerError) => {\r\n  if (innerError && outerError && innerError !== outerError) {\r\n    if (ArrayIsArray(outerError.errors)) {\r\n      // If `outerError` is already an `AggregateError`.\r\n      ArrayPrototypePush(outerError.errors, innerError);\r\n      return outerError;\r\n    }\r\n    let err;\r\n    if (isErrorStackTraceLimitWritable()) {\r\n      const limit = Error.stackTraceLimit;\r\n      Error.stackTraceLimit = 0;\r\n      // eslint-disable-next-line no-restricted-syntax\r\n      err = new AggregateError(new SafeArrayIterator([\r\n        outerError,\r\n        innerError,\r\n      ]), outerError.message);\r\n      Error.stackTraceLimit = limit;\r\n      ErrorCaptureStackTrace(err, aggregateTwoErrors);\r\n    } else {\r\n      // eslint-disable-next-line no-restricted-syntax\r\n      err = new AggregateError(new SafeArrayIterator([\r\n        outerError,\r\n        innerError,\r\n      ]), outerError.message);\r\n    }\r\n    err.code = outerError.code;\r\n    return err;\r\n  }\r\n  return innerError || outerError;\r\n};\r\n\r\nclass NodeAggregateError extends AggregateError {\r\n  constructor(errors, message) {\r\n    super(new SafeArrayIterator(errors), message);\r\n    this.code = errors[0]?.code;\r\n  }\r\n\r\n  get [kIsNodeError]() {\r\n    return true;\r\n  }\r\n\r\n  get ['constructor']() {\r\n    return AggregateError;\r\n  }\r\n}\r\n\r\nconst assert = require('internal/assert');\r\n\r\n// Lazily loaded\r\nlet util;\r\n\r\nlet internalUtil = null;\r\nfunction lazyInternalUtil() {\r\n  internalUtil ??= require('internal/util');\r\n  return internalUtil;\r\n}\r\n\r\nlet internalUtilInspect = null;\r\nfunction lazyInternalUtilInspect() {\r\n  internalUtilInspect ??= require('internal/util/inspect');\r\n  return internalUtilInspect;\r\n}\r\n\r\nlet utilColors;\r\nfunction lazyUtilColors() {\r\n  utilColors ??= require('internal/util/colors');\r\n  return utilColors;\r\n}\r\n\r\nlet buffer;\r\nfunction lazyBuffer() {\r\n  buffer ??= require('buffer').Buffer;\r\n  return buffer;\r\n}\r\n\r\nfunction isErrorStackTraceLimitWritable() {\r\n  // Do no touch Error.stackTraceLimit as V8 would attempt to install\r\n  // it again during deserialization.\r\n  if (require('internal/v8/startup_snapshot').namespace.isBuildingSnapshot()) {\r\n    return false;\r\n  }\r\n\r\n  const desc = ObjectGetOwnPropertyDescriptor(Error, 'stackTraceLimit');\r\n  if (desc === undefined) {\r\n    return ObjectIsExtensible(Error);\r\n  }\r\n\r\n  return ObjectPrototypeHasOwnProperty(desc, 'writable') ?\r\n    desc.writable :\r\n    desc.set !== undefined;\r\n}\r\n\r\nfunction inspectWithNoCustomRetry(obj, options) {\r\n  const utilInspect = lazyInternalUtilInspect();\r\n\r\n  try {\r\n    return utilInspect.inspect(obj, options);\r\n  } catch {\r\n    return utilInspect.inspect(obj, { ...options, customInspect: false });\r\n  }\r\n}\r\n\r\n// A specialized Error that includes an additional info property with\r\n// additional information about the error condition.\r\n// It has the properties present in a UVException but with a custom error\r\n// message followed by the uv error code and uv error message.\r\n// It also has its own error code with the original uv error context put into\r\n// `err.info`.\r\n// The context passed into this error must have .code, .syscall and .message,\r\n// and may have .path and .dest.\r\nclass SystemError extends Error {\r\n  constructor(key, context) {\r\n    super();\r\n    const prefix = getMessage(key, [], this);\r\n    let message = `${prefix}: ${context.syscall} returned ` +\r\n                  `${context.code} (${context.message})`;\r\n\r\n    if (context.path !== undefined)\r\n      message += ` ${context.path}`;\r\n    if (context.dest !== undefined)\r\n      message += ` => ${context.dest}`;\r\n\r\n    this.code = key;\r\n\r\n    ObjectDefineProperties(this, {\r\n      [kIsNodeError]: {\r\n        __proto__: null,\r\n        value: true,\r\n        enumerable: false,\r\n        writable: false,\r\n        configurable: true,\r\n      },\r\n      name: {\r\n        __proto__: null,\r\n        value: 'SystemError',\r\n        enumerable: false,\r\n        writable: true,\r\n        configurable: true,\r\n      },\r\n      message: {\r\n        __proto__: null,\r\n        value: message,\r\n        enumerable: false,\r\n        writable: true,\r\n        configurable: true,\r\n      },\r\n      info: {\r\n        __proto__: null,\r\n        value: context,\r\n        enumerable: true,\r\n        configurable: true,\r\n        writable: false,\r\n      },\r\n      errno: {\r\n        __proto__: null,\r\n        get() {\r\n          return context.errno;\r\n        },\r\n        set: (value) => {\r\n          context.errno = value;\r\n        },\r\n        enumerable: true,\r\n        configurable: true,\r\n      },\r\n      syscall: {\r\n        __proto__: null,\r\n        get() {\r\n          return context.syscall;\r\n        },\r\n        set: (value) => {\r\n          context.syscall = value;\r\n        },\r\n        enumerable: true,\r\n        configurable: true,\r\n      },\r\n    });\r\n\r\n    if (context.path !== undefined) {\r\n      // TODO(BridgeAR): Investigate why and when the `.toString()` was\r\n      // introduced. The `path` and `dest` properties in the context seem to\r\n      // always be of type string. We should probably just remove the\r\n      // `.toString()` and `Buffer.from()` operations and set the value on the\r\n      // context as the user did.\r\n      ObjectDefineProperty(this, 'path', {\r\n        __proto__: null,\r\n        get() {\r\n          return context.path != null ?\r\n            context.path.toString() : context.path;\r\n        },\r\n        set: (value) => {\r\n          context.path = value ?\r\n            lazyBuffer().from(value.toString()) : undefined;\r\n        },\r\n        enumerable: true,\r\n        configurable: true,\r\n      });\r\n    }\r\n\r\n    if (context.dest !== undefined) {\r\n      ObjectDefineProperty(this, 'dest', {\r\n        __proto__: null,\r\n        get() {\r\n          return context.dest != null ?\r\n            context.dest.toString() : context.dest;\r\n        },\r\n        set: (value) => {\r\n          context.dest = value ?\r\n            lazyBuffer().from(value.toString()) : undefined;\r\n        },\r\n        enumerable: true,\r\n        configurable: true,\r\n      });\r\n    }\r\n  }\r\n\r\n  toString() {\r\n    return `${this.name} [${this.code}]: ${this.message}`;\r\n  }\r\n\r\n  [SymbolFor('nodejs.util.inspect.custom')](recurseTimes, ctx) {\r\n    return lazyInternalUtilInspect().inspect(this, {\r\n      ...ctx,\r\n      getters: true,\r\n      customInspect: false,\r\n    });\r\n  }\r\n}\r\n\r\nfunction makeSystemErrorWithCode(key) {\r\n  return class NodeError extends SystemError {\r\n    constructor(ctx) {\r\n      super(key, ctx);\r\n    }\r\n  };\r\n}\r\n\r\n// This is a special error type that is only used for the E function.\r\nclass HideStackFramesError extends Error {\r\n}\r\n\r\nfunction makeNodeErrorForHideStackFrame(Base, clazz) {\r\n  class HideStackFramesError extends Base {\r\n    constructor(...args) {\r\n      if (isErrorStackTraceLimitWritable()) {\r\n        const limit = Error.stackTraceLimit;\r\n        Error.stackTraceLimit = 0;\r\n        super(...args);\r\n        Error.stackTraceLimit = limit;\r\n      } else {\r\n        super(...args);\r\n      }\r\n    }\r\n\r\n    // This is a workaround for wpt tests that expect that the error\r\n    // constructor has a `name` property of the base class.\r\n    get ['constructor']() {\r\n      return clazz;\r\n    }\r\n  }\r\n\r\n  return HideStackFramesError;\r\n}\r\n\r\nfunction makeNodeErrorWithCode(Base, key) {\r\n  const msg = messages.get(key);\r\n  const expectedLength = typeof msg !== 'string' ? -1 : getExpectedArgumentLength(msg);\r\n\r\n  switch (expectedLength) {\r\n    case 0: {\r\n      class NodeError extends Base {\r\n        code = key;\r\n\r\n        constructor(...args) {\r\n          assert(\r\n            args.length === 0,\r\n            `Code: ${key}; The provided arguments length (${args.length}) does not ` +\r\n              `match the required ones (${expectedLength}).`,\r\n          );\r\n          super(msg);\r\n        }\r\n\r\n        // This is a workaround for wpt tests that expect that the error\r\n        // constructor has a `name` property of the base class.\r\n        get ['constructor']() {\r\n          return Base;\r\n        }\r\n\r\n        get [kIsNodeError]() {\r\n          return true;\r\n        }\r\n\r\n        toString() {\r\n          return `${this.name} [${key}]: ${this.message}`;\r\n        }\r\n      }\r\n      return NodeError;\r\n    }\r\n    case -1: {\r\n      class NodeError extends Base {\r\n        code = key;\r\n\r\n        constructor(...args) {\r\n          super();\r\n          ObjectDefineProperty(this, 'message', {\r\n            __proto__: null,\r\n            value: getMessage(key, args, this),\r\n            enumerable: false,\r\n            writable: true,\r\n            configurable: true,\r\n          });\r\n        }\r\n\r\n        // This is a workaround for wpt tests that expect that the error\r\n        // constructor has a `name` property of the base class.\r\n        get ['constructor']() {\r\n          return Base;\r\n        }\r\n\r\n        get [kIsNodeError]() {\r\n          return true;\r\n        }\r\n\r\n        toString() {\r\n          return `${this.name} [${key}]: ${this.message}`;\r\n        }\r\n      }\r\n      return NodeError;\r\n    }\r\n    default: {\r\n\r\n      class NodeError extends Base {\r\n        code = key;\r\n\r\n        constructor(...args) {\r\n          assert(\r\n            args.length === expectedLength,\r\n            `Code: ${key}; The provided arguments length (${args.length}) does not ` +\r\n              `match the required ones (${expectedLength}).`,\r\n          );\r\n\r\n          ArrayPrototypeUnshift(args, msg);\r\n          super(ReflectApply(lazyInternalUtilInspect().format, null, args));\r\n        }\r\n\r\n        // This is a workaround for wpt tests that expect that the error\r\n        // constructor has a `name` property of the base class.\r\n        get ['constructor']() {\r\n          return Base;\r\n        }\r\n\r\n        get [kIsNodeError]() {\r\n          return true;\r\n        }\r\n\r\n        toString() {\r\n          return `${this.name} [${key}]: ${this.message}`;\r\n        }\r\n      }\r\n      return NodeError;\r\n    }\r\n  }\r\n}\r\n\r\n/**\r\n * This function removes unnecessary frames from Node.js core errors.\r\n * @template {(...args: unknown[]) => unknown} T\r\n * @param {T} fn\r\n * @returns {T}\r\n */\r\nfunction hideStackFrames(fn) {\r\n  function wrappedFn(...args) {\r\n    try {\r\n      return ReflectApply(fn, this, args);\r\n    } catch (error) {\r\n      Error.stackTraceLimit && ErrorCaptureStackTrace(error, wrappedFn);\r\n      throw error;\r\n    }\r\n  }\r\n  wrappedFn.withoutStackTrace = fn;\r\n  return wrappedFn;\r\n}\r\n\r\n// Utility function for registering the error codes. Only used here. Exported\r\n// *only* to allow for testing.\r\nfunction E(sym, val, def, ...otherClasses) {\r\n  // Special case for SystemError that formats the error message differently\r\n  // The SystemErrors only have SystemError as their base classes.\r\n  messages.set(sym, val);\r\n\r\n  const ErrClass = def === SystemError ?\r\n    makeSystemErrorWithCode(sym) :\r\n    makeNodeErrorWithCode(def, sym);\r\n\r\n  if (otherClasses.length !== 0) {\r\n    if (otherClasses.includes(HideStackFramesError)) {\r\n      if (otherClasses.length !== 1) {\r\n        otherClasses.forEach((clazz) => {\r\n          if (clazz !== HideStackFramesError) {\r\n            ErrClass[clazz.name] = makeNodeErrorWithCode(clazz, sym);\r\n            ErrClass[clazz.name].HideStackFramesError = makeNodeErrorForHideStackFrame(ErrClass[clazz.name], clazz);\r\n          }\r\n        });\r\n      }\r\n    } else {\r\n      otherClasses.forEach((clazz) => {\r\n        ErrClass[clazz.name] = makeNodeErrorWithCode(clazz, sym);\r\n      });\r\n    }\r\n  }\r\n\r\n  if (otherClasses.includes(HideStackFramesError)) {\r\n    ErrClass.HideStackFramesError = makeNodeErrorForHideStackFrame(ErrClass, def);\r\n  }\r\n\r\n  codes[sym] = ErrClass;\r\n}\r\n\r\nfunction getExpectedArgumentLength(msg) {\r\n  let expectedLength = 0;\r\n  const regex = /%[dfijoOs]/g;\r\n  while (RegExpPrototypeExec(regex, msg) !== null) expectedLength++;\r\n  return expectedLength;\r\n}\r\n\r\nfunction getMessage(key, args, self) {\r\n  const msg = messages.get(key);\r\n\r\n  if (typeof msg === 'function') {\r\n    assert(\r\n      msg.length <= args.length, // Default options do not count.\r\n      `Code: ${key}; The provided arguments length (${args.length}) does not ` +\r\n        `match the required ones (${msg.length}).`,\r\n    );\r\n    return ReflectApply(msg, self, args);\r\n  }\r\n\r\n  const expectedLength = getExpectedArgumentLength(msg);\r\n  assert(\r\n    expectedLength === args.length,\r\n    `Code: ${key}; The provided arguments length (${args.length}) does not ` +\r\n      `match the required ones (${expectedLength}).`,\r\n  );\r\n  if (args.length === 0)\r\n    return msg;\r\n\r\n  ArrayPrototypeUnshift(args, msg);\r\n  return ReflectApply(lazyInternalUtilInspect().format, null, args);\r\n}\r\n\r\nlet uvBinding;\r\n\r\nfunction lazyUv() {\r\n  uvBinding ??= internalBinding('uv');\r\n  return uvBinding;\r\n}\r\n\r\nconst uvUnmappedError = ['UNKNOWN', 'unknown error'];\r\n\r\nfunction uvErrmapGet(name) {\r\n  uvBinding = lazyUv();\r\n  uvBinding.errmap ??= uvBinding.getErrorMap();\r\n  return MapPrototypeGet(uvBinding.errmap, name);\r\n}\r\n\r\n/**\r\n * This creates an error compatible with errors produced in the C++\r\n * function UVException using a context object with data assembled in C++.\r\n * The goal is to migrate them to ERR_* errors later when compatibility is\r\n * not a concern.\r\n */\r\nclass UVException extends Error {\r\n  /**\r\n   * @param {object} ctx\r\n   */\r\n  constructor(ctx) {\r\n    const { 0: code, 1: uvmsg } = uvErrmapGet(ctx.errno) || uvUnmappedError;\r\n    let message = `${code}: ${ctx.message || uvmsg}, ${ctx.syscall}`;\r\n\r\n    let path;\r\n    let dest;\r\n    if (ctx.path) {\r\n      path = ctx.path.toString();\r\n      message += ` '${path}'`;\r\n    }\r\n    if (ctx.dest) {\r\n      dest = ctx.dest.toString();\r\n      message += ` -> '${dest}'`;\r\n    }\r\n\r\n    super(message);\r\n\r\n    for (const prop of ObjectKeys(ctx)) {\r\n      if (prop === 'message' || prop === 'path' || prop === 'dest') {\r\n        continue;\r\n      }\r\n      this[prop] = ctx[prop];\r\n    }\r\n\r\n    this.code = code;\r\n    if (path) {\r\n      this.path = path;\r\n    }\r\n    if (dest) {\r\n      this.dest = dest;\r\n    }\r\n  }\r\n\r\n  get ['constructor']() {\r\n    return Error;\r\n  }\r\n}\r\n\r\n/**\r\n * This creates an error compatible with errors produced in the C++\r\n * This function should replace the deprecated\r\n * `exceptionWithHostPort()` function.\r\n */\r\nclass UVExceptionWithHostPort extends Error {\r\n  /**\r\n   * @param {number} err - A libuv error number\r\n   * @param {string} syscall\r\n   * @param {string} address\r\n   * @param {number} [port]\r\n   */\r\n  constructor(err, syscall, address, port) {\r\n    const { 0: code, 1: uvmsg } = uvErrmapGet(err) || uvUnmappedError;\r\n    const message = `${syscall} ${code}: ${uvmsg}`;\r\n    let details = '';\r\n\r\n    if (port && port > 0) {\r\n      details = ` ${address}:${port}`;\r\n    } else if (address) {\r\n      details = ` ${address}`;\r\n    }\r\n\r\n    super(`${message}${details}`);\r\n\r\n    this.code = code;\r\n    this.errno = err;\r\n    this.syscall = syscall;\r\n    this.address = address;\r\n    if (port) {\r\n      this.port = port;\r\n    }\r\n  }\r\n\r\n  get ['constructor']() {\r\n    return Error;\r\n  }\r\n}\r\n\r\n/**\r\n * This used to be util._errnoException().\r\n */\r\nclass ErrnoException extends Error {\r\n  /**\r\n   * @param {number} err - A libuv error number\r\n   * @param {string} syscall\r\n   * @param {string} [original] err\r\n   */\r\n  constructor(err, syscall, original) {\r\n    // TODO(joyeecheung): We have to use the type-checked\r\n    // getSystemErrorName(err) to guard against invalid arguments from users.\r\n    // This can be replaced with [ code ] = errmap.get(err) when this method\r\n    // is no longer exposed to user land.\r\n    util ??= require('util');\r\n    const code = util.getSystemErrorName(err);\r\n    const message = original ?\r\n      `${syscall} ${code} ${original}` : `${syscall} ${code}`;\r\n\r\n    super(message);\r\n\r\n    this.errno = err;\r\n    this.code = code;\r\n    this.syscall = syscall;\r\n  }\r\n\r\n  get ['constructor']() {\r\n    return Error;\r\n  }\r\n}\r\n\r\n/**\r\n * Deprecated, new Error is `UVExceptionWithHostPort()`\r\n * New function added the error description directly\r\n * from C++. this method for backwards compatibility\r\n * @param {number} err - A libuv error number\r\n * @param {string} syscall\r\n * @param {string} address\r\n * @param {number} [port]\r\n * @param {string} [additional]\r\n * @returns {Error}\r\n */\r\nclass ExceptionWithHostPort extends Error {\r\n  constructor(err, syscall, address, port, additional) {\r\n    // TODO(joyeecheung): We have to use the type-checked\r\n    // getSystemErrorName(err) to guard against invalid arguments from users.\r\n    // This can be replaced with [ code ] = errmap.get(err) when this method\r\n    // is no longer exposed to user land.\r\n    util ??= require('util');\r\n    const code = util.getSystemErrorName(err);\r\n    let details = '';\r\n    if (port && port > 0) {\r\n      details = ` ${address}:${port}`;\r\n    } else if (address) {\r\n      details = ` ${address}`;\r\n    }\r\n    if (additional) {\r\n      details += ` - Local (${additional})`;\r\n    }\r\n\r\n    super(`${syscall} ${code}${details}`);\r\n\r\n    this.errno = err;\r\n    this.code = code;\r\n    this.syscall = syscall;\r\n    this.address = address;\r\n    if (port) {\r\n      this.port = port;\r\n    }\r\n  }\r\n\r\n  get ['constructor']() {\r\n    return Error;\r\n  }\r\n}\r\n\r\nclass DNSException extends Error {\r\n  /**\r\n   * @param {number|string} code - A libuv error number or a c-ares error code\r\n   * @param {string} syscall\r\n   * @param {string} [hostname]\r\n   */\r\n  constructor(code, syscall, hostname) {\r\n    let errno;\r\n    // If `code` is of type number, it is a libuv error number, else it is a\r\n    // c-ares error code.\r\n    // TODO(joyeecheung): translate c-ares error codes into numeric ones and\r\n    // make them available in a property that's not error.errno (since they\r\n    // can be in conflict with libuv error codes). Also make sure\r\n    // util.getSystemErrorName() can understand them when an being informed that\r\n    // the number is a c-ares error code.\r\n    if (typeof code === 'number') {\r\n      errno = code;\r\n      // ENOTFOUND is not a proper POSIX error, but this error has been in place\r\n      // long enough that it's not practical to remove it.\r\n      if (code === lazyUv().UV_EAI_NODATA || code === lazyUv().UV_EAI_NONAME) {\r\n        code = 'ENOTFOUND'; // Fabricated error name.\r\n      } else {\r\n        code = lazyInternalUtil().getSystemErrorName(code);\r\n      }\r\n    }\r\n    super(`${syscall} ${code}${hostname ? ` ${hostname}` : ''}`);\r\n    this.errno = errno;\r\n    this.code = code;\r\n    this.syscall = syscall;\r\n    if (hostname) {\r\n      this.hostname = hostname;\r\n    }\r\n  }\r\n\r\n  get ['constructor']() {\r\n    return Error;\r\n  }\r\n}\r\n\r\nclass ConnResetException extends Error {\r\n  constructor(msg) {\r\n    super(msg);\r\n    this.code = 'ECONNRESET';\r\n  }\r\n\r\n  get ['constructor']() {\r\n    return Error;\r\n  }\r\n}\r\n\r\nlet maxStack_ErrorName;\r\nlet maxStack_ErrorMessage;\r\n\r\n/**\r\n * Returns true if `err.name` and `err.message` are equal to engine-specific\r\n * values indicating max call stack size has been exceeded.\r\n * \"Maximum call stack size exceeded\" in V8.\r\n * @param {Error} err\r\n * @returns {boolean}\r\n */\r\nfunction isStackOverflowError(err) {\r\n  if (maxStack_ErrorMessage === undefined) {\r\n    try {\r\n      function overflowStack() { overflowStack(); }\r\n      overflowStack();\r\n    } catch (err) {\r\n      maxStack_ErrorMessage = err.message;\r\n      maxStack_ErrorName = err.name;\r\n    }\r\n  }\r\n\r\n  return err && err.name === maxStack_ErrorName &&\r\n         err.message === maxStack_ErrorMessage;\r\n}\r\n\r\n// Only use this for integers! Decimal numbers do not work with this function.\r\nfunction addNumericalSeparator(val) {\r\n  let res = '';\r\n  let i = val.length;\r\n  const start = val[0] === '-' ? 1 : 0;\r\n  for (; i >= start + 4; i -= 3) {\r\n    res = `_${StringPrototypeSlice(val, i - 3, i)}${res}`;\r\n  }\r\n  return `${StringPrototypeSlice(val, 0, i)}${res}`;\r\n}\r\n\r\n// Used to enhance the stack that will be picked up by the inspector\r\nconst kEnhanceStackBeforeInspector = Symbol('kEnhanceStackBeforeInspector');\r\n\r\n// These are supposed to be called only on fatal exceptions before\r\n// the process exits.\r\nconst fatalExceptionStackEnhancers = {\r\n  beforeInspector(error) {\r\n    if (typeof error[kEnhanceStackBeforeInspector] !== 'function') {\r\n      return error.stack;\r\n    }\r\n\r\n    try {\r\n      // Set the error.stack here so it gets picked up by the\r\n      // inspector.\r\n      error.stack = error[kEnhanceStackBeforeInspector]();\r\n    } catch {\r\n      // We are just enhancing the error. If it fails, ignore it.\r\n    }\r\n    return error.stack;\r\n  },\r\n  afterInspector(error) {\r\n    const originalStack = error.stack;\r\n    let useColors = true;\r\n    // Some consoles do not convert ANSI escape sequences to colors,\r\n    // rather display them directly to the stdout. On those consoles,\r\n    // libuv emulates colors by intercepting stdout stream and calling\r\n    // corresponding Windows API functions for setting console colors.\r\n    // However, fatal error are handled differently and we cannot easily\r\n    // highlight them. On Windows, detecting whether a console supports\r\n    // ANSI escape sequences is not reliable.\r\n    if (isWindows) {\r\n      const info = internalBinding('os').getOSInformation();\r\n      const ver = ArrayPrototypeMap(StringPrototypeSplit(info[2], '.', 3),\r\n                                    Number);\r\n      if (ver[0] !== 10 || ver[2] < 14393) {\r\n        useColors = false;\r\n      }\r\n    }\r\n    const {\r\n      inspect,\r\n      inspectDefaultOptions: {\r\n        colors: defaultColors,\r\n      },\r\n    } = lazyInternalUtilInspect();\r\n    const colors = useColors && (lazyUtilColors().shouldColorize(process.stderr) || defaultColors);\r\n    try {\r\n      return inspect(error, {\r\n        colors,\r\n        customInspect: false,\r\n        depth: MathMax(inspect.defaultOptions.depth, 5),\r\n      });\r\n    } catch {\r\n      return originalStack;\r\n    }\r\n  },\r\n};\r\n\r\nconst {\r\n  privateSymbols: {\r\n    arrow_message_private_symbol,\r\n  },\r\n} = internalBinding('util');\r\n// Ensures the printed error line is from user code.\r\nfunction setArrowMessage(err, arrowMessage) {\r\n  err[arrow_message_private_symbol] = arrowMessage;\r\n}\r\n\r\n// Hide stack lines before the first user code line.\r\nfunction hideInternalStackFrames(error) {\r\n  overrideStackTrace.set(error, (error, stackFrames) => {\r\n    let frames = stackFrames;\r\n    if (typeof stackFrames === 'object') {\r\n      frames = ArrayPrototypeFilter(\r\n        stackFrames,\r\n        (frm) => !StringPrototypeStartsWith(frm.getFileName() || '',\r\n                                            'node:internal'),\r\n      );\r\n    }\r\n    ArrayPrototypeUnshift(frames, error);\r\n    return ArrayPrototypeJoin(frames, '\\n    at ');\r\n  });\r\n}\r\n\r\n// Node uses an AbortError that isn't exactly the same as the DOMException\r\n// to make usage of the error in userland and readable-stream easier.\r\n// It is a regular error with `.code` and `.name`.\r\nclass AbortError extends Error {\r\n  constructor(message = 'The operation was aborted', options = undefined) {\r\n    if (options !== undefined && typeof options !== 'object') {\r\n      throw new codes.ERR_INVALID_ARG_TYPE('options', 'Object', options);\r\n    }\r\n    super(message, options);\r\n    this.code = 'ABORT_ERR';\r\n    this.name = 'AbortError';\r\n  }\r\n}\r\n\r\n/**\r\n * This creates a generic Node.js error.\r\n * @param {string} message The error message.\r\n * @param {object} errorProperties Object with additional properties to be added to the error.\r\n * @returns {Error}\r\n */\r\nconst genericNodeError = hideStackFrames(function genericNodeError(message, errorProperties) {\r\n  // eslint-disable-next-line no-restricted-syntax\r\n  const err = new Error(message);\r\n  ObjectAssign(err, errorProperties);\r\n  return err;\r\n});\r\n\r\n/**\r\n * Determine the specific type of a value for type-mismatch errors.\r\n * @param {*} value\r\n * @returns {string}\r\n */\r\nfunction determineSpecificType(value) {\r\n  if (value === null) {\r\n    return 'null';\r\n  } else if (value === undefined) {\r\n    return 'undefined';\r\n  }\r\n\r\n  const type = typeof value;\r\n\r\n  switch (type) {\r\n    case 'bigint':\r\n      return `type bigint (${value}n)`;\r\n    case 'number':\r\n      if (value === 0) {\r\n        return 1 / value === -Infinity ? 'type number (-0)' : 'type number (0)';\r\n      } else if (value !== value) { // eslint-disable-line no-self-compare\r\n        return 'type number (NaN)';\r\n      } else if (value === Infinity) {\r\n        return 'type number (Infinity)';\r\n      } else if (value === -Infinity) {\r\n        return 'type number (-Infinity)';\r\n      }\r\n      return `type number (${value})`;\r\n    case 'boolean':\r\n      return value ? 'type boolean (true)' : 'type boolean (false)';\r\n    case 'symbol':\r\n      return `type symbol (${String(value)})`;\r\n    case 'function':\r\n      return `function ${value.name}`;\r\n    case 'object':\r\n      if (value.constructor && 'name' in value.constructor) {\r\n        return `an instance of ${value.constructor.name}`;\r\n      }\r\n      return `${lazyInternalUtilInspect().inspect(value, { depth: -1 })}`;\r\n    case 'string':\r\n      value.length > 28 && (value = `${StringPrototypeSlice(value, 0, 25)}...`);\r\n      if (StringPrototypeIndexOf(value, \"'\") === -1) {\r\n        return `type string ('${value}')`;\r\n      }\r\n      return `type string (${JSONStringify(value)})`;\r\n    default:\r\n      value = lazyInternalUtilInspect().inspect(value, { colors: false });\r\n      if (value.length > 28) {\r\n        value = `${StringPrototypeSlice(value, 0, 25)}...`;\r\n      }\r\n\r\n      return `type ${type} (${value})`;\r\n  }\r\n}\r\n\r\n/**\r\n * Create a list string in the form like 'A and B' or 'A, B, ..., and Z'.\r\n * We cannot use Intl.ListFormat because it's not available in\r\n * --without-intl builds.\r\n * @param {string[]} array An array of strings.\r\n * @param {string} [type] The list type to be inserted before the last element.\r\n * @returns {string}\r\n */\r\nfunction formatList(array, type = 'and') {\r\n  switch (array.length) {\r\n    case 0: return '';\r\n    case 1: return `${array[0]}`;\r\n    case 2: return `${array[0]} ${type} ${array[1]}`;\r\n    case 3: return `${array[0]}, ${array[1]}, ${type} ${array[2]}`;\r\n    default:\r\n      return `${ArrayPrototypeJoin(ArrayPrototypeSlice(array, 0, -1), ', ')}, ${type} ${array[array.length - 1]}`;\r\n  }\r\n}\r\n\r\nmodule.exports = {\r\n  AbortError,\r\n  aggregateTwoErrors,\r\n  NodeAggregateError,\r\n  codes,\r\n  ConnResetException,\r\n  DNSException,\r\n  // This is exported only to facilitate testing.\r\n  determineSpecificType,\r\n  E,\r\n  ErrnoException,\r\n  ExceptionWithHostPort,\r\n  fatalExceptionStackEnhancers,\r\n  formatList,\r\n  genericNodeError,\r\n  getMessage,\r\n  hideInternalStackFrames,\r\n  hideStackFrames,\r\n  inspectWithNoCustomRetry,\r\n  isErrorStackTraceLimitWritable,\r\n  isStackOverflowError,\r\n  kEnhanceStackBeforeInspector,\r\n  kIsNodeError,\r\n  defaultPrepareStackTrace,\r\n  setInternalPrepareStackTrace,\r\n  overrideStackTrace,\r\n  prepareStackTraceCallback,\r\n  ErrorPrepareStackTrace,\r\n  setArrowMessage,\r\n  SystemError,\r\n  uvErrmapGet,\r\n  UVException,\r\n  UVExceptionWithHostPort,\r\n};\r\n\r\n// To declare an error message, use the E(sym, val, def) function above. The sym\r\n// must be an upper case string. The val can be either a function or a string.\r\n// The def must be an error class.\r\n// The return value of the function must be a string.\r\n// Examples:\r\n// E('EXAMPLE_KEY1', 'This is the error value', Error);\r\n// E('EXAMPLE_KEY2', (a, b) => return `${a} ${b}`, RangeError);\r\n//\r\n// Once an error code has been assigned, the code itself MUST NOT change and\r\n// any given error code must never be reused to identify a different error.\r\n//\r\n// Any error code added here should also be added to the documentation\r\n//\r\n// Note: Please try to keep these in alphabetical order\r\n//\r\n// Note: Node.js specific errors must begin with the prefix ERR_\r\n\r\nE('ERR_ACCESS_DENIED',\r\n  function(msg, permission = '', resource = '') {\r\n    this.permission = permission;\r\n    this.resource = resource;\r\n    return msg;\r\n  },\r\n  Error);\r\nE('ERR_AMBIGUOUS_ARGUMENT', 'The \"%s\" argument is ambiguous. %s', TypeError);\r\nE('ERR_ARG_NOT_ITERABLE', '%s must be iterable', TypeError);\r\nE('ERR_ASSERTION', '%s', Error);\r\nE('ERR_ASYNC_CALLBACK', '%s must be a function', TypeError);\r\nE('ERR_ASYNC_LOADER_REQUEST_NEVER_SETTLED',\r\n  'Async loader request never settled', Error);\r\nE('ERR_ASYNC_TYPE', 'Invalid name for async \"type\": %s', TypeError);\r\nE('ERR_BROTLI_INVALID_PARAM', '%s is not a valid Brotli parameter', RangeError);\r\nE('ERR_BUFFER_OUT_OF_BOUNDS',\r\n  // Using a default argument here is important so the argument is not counted\r\n  // towards `Function#length`.\r\n  (name = undefined) => {\r\n    if (name) {\r\n      return `\"${name}\" is outside of buffer bounds`;\r\n    }\r\n    return 'Attempt to access memory outside buffer bounds';\r\n  }, RangeError);\r\nE('ERR_BUFFER_TOO_LARGE',\r\n  'Cannot create a Buffer larger than %s bytes',\r\n  RangeError);\r\nE('ERR_CANNOT_WATCH_SIGINT', 'Cannot watch for SIGINT signals', Error);\r\nE('ERR_CHILD_CLOSED_BEFORE_REPLY',\r\n  'Child closed before reply received', Error);\r\nE('ERR_CHILD_PROCESS_IPC_REQUIRED',\r\n  \"Forked processes must have an IPC channel, missing value 'ipc' in %s\",\r\n  Error);\r\nE('ERR_CHILD_PROCESS_STDIO_MAXBUFFER', '%s maxBuffer length exceeded',\r\n  RangeError);\r\nE('ERR_CONSOLE_WRITABLE_STREAM',\r\n  'Console expects a writable stream instance for %s', TypeError);\r\nE('ERR_CONSTRUCT_CALL_REQUIRED', 'Class constructor %s cannot be invoked without `new`', TypeError);\r\nE('ERR_CONTEXT_NOT_INITIALIZED', 'context used is not initialized', Error);\r\nE('ERR_CRYPTO_ARGON2_NOT_SUPPORTED', 'Argon2 algorithm not supported', Error);\r\nE('ERR_CRYPTO_CUSTOM_ENGINE_NOT_SUPPORTED',\r\n  'Custom engines not supported by this OpenSSL', Error);\r\nE('ERR_CRYPTO_ECDH_INVALID_FORMAT', 'Invalid ECDH format: %s', TypeError);\r\nE('ERR_CRYPTO_ECDH_INVALID_PUBLIC_KEY',\r\n  'Public key is not valid for specified curve', Error);\r\nE('ERR_CRYPTO_ENGINE_UNKNOWN', 'Engine \"%s\" was not found', Error);\r\nE('ERR_CRYPTO_FIPS_FORCED',\r\n  'Cannot set FIPS mode, it was forced with --force-fips at startup.', Error);\r\nE('ERR_CRYPTO_FIPS_UNAVAILABLE', 'Cannot set FIPS mode in a non-FIPS build.',\r\n  Error);\r\nE('ERR_CRYPTO_HASH_FINALIZED', 'Digest already called', Error);\r\nE('ERR_CRYPTO_HASH_UPDATE_FAILED', 'Hash update failed', Error);\r\nE('ERR_CRYPTO_INCOMPATIBLE_KEY', 'Incompatible %s: %s', Error);\r\nE('ERR_CRYPTO_INCOMPATIBLE_KEY_OPTIONS', 'The selected key encoding %s %s.',\r\n  Error);\r\nE('ERR_CRYPTO_INVALID_DIGEST', 'Invalid digest: %s', TypeError);\r\nE('ERR_CRYPTO_INVALID_JWK', 'Invalid JWK data', TypeError);\r\nE('ERR_CRYPTO_INVALID_KEY_OBJECT_TYPE',\r\n  'Invalid key object type %s, expected %s.', TypeError);\r\nE('ERR_CRYPTO_INVALID_STATE', 'Invalid state for operation %s', Error);\r\nE('ERR_CRYPTO_KEM_NOT_SUPPORTED', 'KEM is not supported', Error);\r\nE('ERR_CRYPTO_PBKDF2_ERROR', 'PBKDF2 error', Error);\r\nE('ERR_CRYPTO_SCRYPT_NOT_SUPPORTED', 'Scrypt algorithm not supported', Error);\r\n// Switch to TypeError. The current implementation does not seem right.\r\nE('ERR_CRYPTO_SIGN_KEY_REQUIRED', 'No key provided to sign', Error);\r\nE('ERR_DEBUGGER_ERROR', '%s', Error);\r\nE('ERR_DEBUGGER_STARTUP_ERROR', '%s', Error);\r\nE('ERR_DIR_CLOSED', 'Directory handle was closed', Error);\r\nE('ERR_DIR_CONCURRENT_OPERATION',\r\n  'Cannot do synchronous work on directory handle with concurrent ' +\r\n  'asynchronous operations', Error);\r\nE('ERR_DNS_SET_SERVERS_FAILED', 'c-ares failed to set servers: \"%s\" [%s]',\r\n  Error);\r\nE('ERR_DOMAIN_CALLBACK_NOT_AVAILABLE',\r\n  'A callback was registered through ' +\r\n     'process.setUncaughtExceptionCaptureCallback(), which is mutually ' +\r\n     'exclusive with using the `domain` module',\r\n  Error);\r\nE('ERR_DOMAIN_CANNOT_SET_UNCAUGHT_EXCEPTION_CAPTURE',\r\n  'The `domain` module is in use, which is mutually exclusive with calling ' +\r\n     'process.setUncaughtExceptionCaptureCallback()',\r\n  Error);\r\nE('ERR_DUPLICATE_STARTUP_SNAPSHOT_MAIN_FUNCTION',\r\n  'Deserialize main function is already configured.', Error);\r\nE('ERR_ENCODING_INVALID_ENCODED_DATA', function(encoding, ret) {\r\n  this.errno = ret;\r\n  return `The encoded data was not valid for encoding ${encoding}`;\r\n}, TypeError);\r\nE('ERR_ENCODING_NOT_SUPPORTED', 'The \"%s\" encoding is not supported',\r\n  RangeError);\r\nE('ERR_EVAL_ESM_CANNOT_PRINT', '--print cannot be used with ESM input', Error);\r\nE('ERR_EVENT_RECURSION', 'The event \"%s\" is already being dispatched', Error);\r\nE('ERR_FALSY_VALUE_REJECTION', function(reason) {\r\n  this.reason = reason;\r\n  return 'Promise was rejected with falsy value';\r\n}, Error, HideStackFramesError);\r\nE('ERR_FEATURE_UNAVAILABLE_ON_PLATFORM',\r\n  'The feature %s is unavailable on the current platform' +\r\n  ', which is being used to run Node.js',\r\n  TypeError);\r\nE('ERR_FS_CP_DIR_TO_NON_DIR',\r\n  'Cannot overwrite non-directory with directory', SystemError);\r\nE('ERR_FS_CP_EEXIST', 'Target already exists', SystemError);\r\nE('ERR_FS_CP_EINVAL', 'Invalid src or dest', SystemError);\r\nE('ERR_FS_CP_FIFO_PIPE', 'Cannot copy a FIFO pipe', SystemError);\r\nE('ERR_FS_CP_NON_DIR_TO_DIR',\r\n  'Cannot overwrite directory with non-directory', SystemError);\r\nE('ERR_FS_CP_SOCKET', 'Cannot copy a socket file', SystemError);\r\nE('ERR_FS_CP_SYMLINK_TO_SUBDIRECTORY',\r\n  'Cannot overwrite symlink in subdirectory of self', SystemError);\r\nE('ERR_FS_CP_UNKNOWN', 'Cannot copy an unknown file type', SystemError);\r\nE('ERR_FS_EISDIR', 'Path is a directory', SystemError, HideStackFramesError);\r\nE('ERR_FS_FILE_TOO_LARGE', 'File size (%s) is greater than 2 GiB', RangeError);\r\nE('ERR_FS_WATCH_QUEUE_OVERFLOW', 'fs.watch() queued more than %d events', Error);\r\nE('ERR_HTTP2_ALTSVC_INVALID_ORIGIN',\r\n  'HTTP/2 ALTSVC frames require a valid origin', TypeError);\r\nE('ERR_HTTP2_ALTSVC_LENGTH',\r\n  'HTTP/2 ALTSVC frames are limited to 16382 bytes', TypeError);\r\nE('ERR_HTTP2_CONNECT_AUTHORITY',\r\n  ':authority header is required for CONNECT requests', Error);\r\nE('ERR_HTTP2_CONNECT_PATH',\r\n  'The :path header is forbidden for CONNECT requests', Error);\r\nE('ERR_HTTP2_CONNECT_SCHEME',\r\n  'The :scheme header is forbidden for CONNECT requests', Error);\r\nE('ERR_HTTP2_GOAWAY_SESSION',\r\n  'New streams cannot be created after receiving a GOAWAY', Error);\r\nE('ERR_HTTP2_HEADERS_AFTER_RESPOND',\r\n  'Cannot specify additional headers after response initiated', Error);\r\nE('ERR_HTTP2_HEADERS_SENT', 'Response has already been initiated.', Error);\r\nE('ERR_HTTP2_HEADER_SINGLE_VALUE',\r\n  'Header field \"%s\" must only have a single value', TypeError);\r\nE('ERR_HTTP2_INFO_STATUS_NOT_ALLOWED',\r\n  'Informational status codes cannot be used', RangeError);\r\nE('ERR_HTTP2_INVALID_CONNECTION_HEADERS',\r\n  'HTTP/1 Connection specific headers are forbidden: \"%s\"', TypeError);\r\nE('ERR_HTTP2_INVALID_HEADER_VALUE',\r\n  'Invalid value \"%s\" for header \"%s\"', TypeError, HideStackFramesError);\r\nE('ERR_HTTP2_INVALID_INFO_STATUS',\r\n  'Invalid informational status code: %s', RangeError);\r\nE('ERR_HTTP2_INVALID_ORIGIN',\r\n  'HTTP/2 ORIGIN frames require a valid origin', TypeError);\r\nE('ERR_HTTP2_INVALID_PACKED_SETTINGS_LENGTH',\r\n  'Packed settings length must be a multiple of six', RangeError);\r\nE('ERR_HTTP2_INVALID_PSEUDOHEADER',\r\n  '\"%s\" is an invalid pseudoheader or is used incorrectly', TypeError, HideStackFramesError);\r\nE('ERR_HTTP2_INVALID_SESSION', 'The session has been destroyed', Error);\r\nE('ERR_HTTP2_INVALID_SETTING_VALUE',\r\n  // Using default arguments here is important so the arguments are not counted\r\n  // towards `Function#length`.\r\n  function(name, actual, min = undefined, max = undefined) {\r\n    this.actual = actual;\r\n    if (min !== undefined) {\r\n      this.min = min;\r\n      this.max = max;\r\n    }\r\n    return `Invalid value for setting \"${name}\": ${actual}`;\r\n  }, TypeError, RangeError, HideStackFramesError);\r\nE('ERR_HTTP2_INVALID_STREAM', 'The stream has been destroyed', Error);\r\nE('ERR_HTTP2_MAX_PENDING_SETTINGS_ACK',\r\n  'Maximum number of pending settings acknowledgements', Error);\r\nE('ERR_HTTP2_NESTED_PUSH',\r\n  'A push stream cannot initiate another push stream.', Error);\r\nE('ERR_HTTP2_NO_MEM', 'Out of memory', Error);\r\nE('ERR_HTTP2_NO_SOCKET_MANIPULATION',\r\n  'HTTP/2 sockets should not be directly manipulated (e.g. read and written)',\r\n  Error);\r\nE('ERR_HTTP2_ORIGIN_LENGTH',\r\n  'HTTP/2 ORIGIN frames are limited to 16382 bytes', TypeError);\r\nE('ERR_HTTP2_OUT_OF_STREAMS',\r\n  'No stream ID is available because maximum stream ID has been reached',\r\n  Error);\r\nE('ERR_HTTP2_PAYLOAD_FORBIDDEN',\r\n  'Responses with %s status must not have a payload', Error);\r\nE('ERR_HTTP2_PING_CANCEL', 'HTTP2 ping cancelled', Error);\r\nE('ERR_HTTP2_PING_LENGTH', 'HTTP2 ping payload must be 8 bytes', RangeError);\r\nE('ERR_HTTP2_PSEUDOHEADER_NOT_ALLOWED',\r\n  'Cannot set HTTP/2 pseudo-headers', TypeError, HideStackFramesError);\r\nE('ERR_HTTP2_PUSH_DISABLED', 'HTTP/2 client has disabled push streams', Error);\r\nE('ERR_HTTP2_SEND_FILE', 'Directories cannot be sent', Error);\r\nE('ERR_HTTP2_SEND_FILE_NOSEEK',\r\n  'Offset or length can only be specified for regular files', Error);\r\nE('ERR_HTTP2_SESSION_ERROR', 'Session closed with error code %s', Error);\r\nE('ERR_HTTP2_SETTINGS_CANCEL', 'HTTP2 session settings canceled', Error);\r\nE('ERR_HTTP2_SOCKET_BOUND',\r\n  'The socket is already bound to an Http2Session', Error);\r\nE('ERR_HTTP2_SOCKET_UNBOUND',\r\n  'The socket has been disconnected from the Http2Session', Error);\r\nE('ERR_HTTP2_STATUS_101',\r\n  'HTTP status code 101 (Switching Protocols) is forbidden in HTTP/2', Error);\r\nE('ERR_HTTP2_STATUS_INVALID', 'Invalid status code: %s', RangeError);\r\nE('ERR_HTTP2_STREAM_CANCEL', function(error) {\r\n  let msg = 'The pending stream has been canceled';\r\n  if (error) {\r\n    this.cause = error;\r\n    if (typeof error.message === 'string')\r\n      msg += ` (caused by: ${error.message})`;\r\n  }\r\n  return msg;\r\n}, Error);\r\nE('ERR_HTTP2_STREAM_ERROR', 'Stream closed with error code %s', Error);\r\nE('ERR_HTTP2_STREAM_SELF_DEPENDENCY',\r\n  'A stream cannot depend on itself', Error);\r\nE('ERR_HTTP2_TOO_MANY_CUSTOM_SETTINGS',\r\n  'Number of custom settings exceeds MAX_ADDITIONAL_SETTINGS', Error);\r\nE('ERR_HTTP2_TOO_MANY_INVALID_FRAMES', 'Too many invalid HTTP/2 frames', Error);\r\nE('ERR_HTTP2_TRAILERS_ALREADY_SENT',\r\n  'Trailing headers have already been sent', Error);\r\nE('ERR_HTTP2_TRAILERS_NOT_READY',\r\n  'Trailing headers cannot be sent until after the wantTrailers event is ' +\r\n  'emitted', Error);\r\nE('ERR_HTTP2_UNSUPPORTED_PROTOCOL', 'protocol \"%s\" is unsupported.', Error);\r\nE('ERR_HTTP_BODY_NOT_ALLOWED',\r\n  'Adding content for this request method or response status is not allowed.', Error);\r\nE('ERR_HTTP_CONTENT_LENGTH_MISMATCH',\r\n  'Response body\\'s content-length of %s byte(s) does not match the content-length of %s byte(s) set in header', Error);\r\nE('ERR_HTTP_HEADERS_SENT',\r\n  'Cannot %s headers after they are sent to the client', Error);\r\nE('ERR_HTTP_INVALID_HEADER_VALUE',\r\n  'Invalid value \"%s\" for header \"%s\"', TypeError, HideStackFramesError);\r\nE('ERR_HTTP_INVALID_STATUS_CODE', 'Invalid status code: %s', RangeError);\r\nE('ERR_HTTP_REQUEST_TIMEOUT', 'Request timeout', Error);\r\nE('ERR_HTTP_SOCKET_ASSIGNED',\r\n  'ServerResponse has an already assigned socket', Error);\r\nE('ERR_HTTP_SOCKET_ENCODING',\r\n  'Changing the socket encoding is not allowed per RFC7230 Section 3.', Error);\r\nE('ERR_HTTP_TRAILER_INVALID',\r\n  'Trailers are invalid with this transfer encoding', Error);\r\nE('ERR_ILLEGAL_CONSTRUCTOR', 'Illegal constructor', TypeError);\r\nE('ERR_IMPORT_ATTRIBUTE_MISSING',\r\n  'Module \"%s\" needs an import attribute of \"%s: %s\"', TypeError);\r\nE('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',\r\n  'Module \"%s\" is not of type \"%s\"', TypeError);\r\nE('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED',\r\n  function error(attribute, value, url = undefined) {\r\n    if (url === undefined) {\r\n      return `Import attribute \"${attribute}\" with value \"${value}\" is not supported`;\r\n    }\r\n    return `Import attribute \"${attribute}\" with value \"${value}\" is not supported in ${url}`;\r\n  }, TypeError);\r\nE('ERR_INCOMPATIBLE_OPTION_PAIR',\r\n  'Option \"%s\" cannot be used in combination with option \"%s\"', TypeError, HideStackFramesError);\r\nE('ERR_INPUT_TYPE_NOT_ALLOWED', '--input-type can only be used with string ' +\r\n  'input via --eval, --print, or STDIN', Error);\r\nE('ERR_INSPECTOR_ALREADY_ACTIVATED',\r\n  'Inspector is already activated. Close it with inspector.close() ' +\r\n  'before activating it again.',\r\n  Error);\r\nE('ERR_INSPECTOR_ALREADY_CONNECTED', '%s is already connected', Error);\r\nE('ERR_INSPECTOR_CLOSED', 'Session was closed', Error);\r\nE('ERR_INSPECTOR_COMMAND', 'Inspector error %d: %s', Error);\r\nE('ERR_INSPECTOR_NOT_ACTIVE', 'Inspector is not active', Error);\r\nE('ERR_INSPECTOR_NOT_AVAILABLE', 'Inspector is not available', Error);\r\nE('ERR_INSPECTOR_NOT_CONNECTED', 'Session is not connected', Error);\r\nE('ERR_INSPECTOR_NOT_WORKER', 'Current thread is not a worker', Error);\r\nE('ERR_INTERNAL_ASSERTION', (message) => {\r\n  const suffix = 'This is caused by either a bug in Node.js ' +\r\n    'or incorrect usage of Node.js internals.\\n' +\r\n    'Please open an issue with this stack trace at ' +\r\n    'https://github.com/nodejs/node/issues\\n';\r\n  return message === undefined ? suffix : `${message}\\n${suffix}`;\r\n}, Error);\r\nE('ERR_INVALID_ADDRESS_FAMILY', function(addressType, host, port) {\r\n  this.host = host;\r\n  this.port = port;\r\n  return `Invalid address family: ${addressType} ${host}:${port}`;\r\n}, RangeError);\r\nE('ERR_INVALID_ARG_TYPE',\r\n  (name, expected, actual) => {\r\n    assert(typeof name === 'string', \"'name' must be a string\");\r\n    if (!ArrayIsArray(expected)) {\r\n      expected = [expected];\r\n    }\r\n\r\n    let msg = 'The ';\r\n    if (StringPrototypeEndsWith(name, ' argument')) {\r\n      // For cases like 'first argument'\r\n      msg += `${name} `;\r\n    } else {\r\n      const type = StringPrototypeIncludes(name, '.') ? 'property' : 'argument';\r\n      msg += `\"${name}\" ${type} `;\r\n    }\r\n    msg += 'must be ';\r\n\r\n    const types = [];\r\n    const instances = [];\r\n    const other = [];\r\n\r\n    for (const value of expected) {\r\n      assert(typeof value === 'string',\r\n             'All expected entries have to be of type string');\r\n      if (ArrayPrototypeIncludes(kTypes, value)) {\r\n        ArrayPrototypePush(types, StringPrototypeToLowerCase(value));\r\n      } else if (RegExpPrototypeExec(classRegExp, value) !== null) {\r\n        ArrayPrototypePush(instances, value);\r\n      } else {\r\n        assert(value !== 'object',\r\n               'The value \"object\" should be written as \"Object\"');\r\n        ArrayPrototypePush(other, value);\r\n      }\r\n    }\r\n\r\n    // Special handle `object` in case other instances are allowed to outline\r\n    // the differences between each other.\r\n    if (instances.length > 0) {\r\n      const pos = ArrayPrototypeIndexOf(types, 'object');\r\n      if (pos !== -1) {\r\n        ArrayPrototypeSplice(types, pos, 1);\r\n        ArrayPrototypePush(instances, 'Object');\r\n      }\r\n    }\r\n\r\n    if (types.length > 0) {\r\n      msg += `${types.length > 1 ? 'one of type' : 'of type'} ${formatList(types, 'or')}`;\r\n      if (instances.length > 0 || other.length > 0)\r\n        msg += ' or ';\r\n    }\r\n\r\n    if (instances.length > 0) {\r\n      msg += `an instance of ${formatList(instances, 'or')}`;\r\n      if (other.length > 0)\r\n        msg += ' or ';\r\n    }\r\n\r\n    if (other.length > 0) {\r\n      if (other.length > 1) {\r\n        msg += `one of ${formatList(other, 'or')}`;\r\n      } else {\r\n        if (StringPrototypeToLowerCase(other[0]) !== other[0])\r\n          msg += 'an ';\r\n        msg += `${other[0]}`;\r\n      }\r\n    }\r\n\r\n    msg += `. Received ${determineSpecificType(actual)}`;\r\n\r\n    return msg;\r\n  }, TypeError, HideStackFramesError);\r\nE('ERR_INVALID_ARG_VALUE', (name, value, reason = 'is invalid') => {\r\n  let inspected = lazyInternalUtilInspect().inspect(value);\r\n  if (inspected.length > 128) {\r\n    inspected = `${StringPrototypeSlice(inspected, 0, 128)}...`;\r\n  }\r\n  const type = StringPrototypeIncludes(name, '.') ? 'property' : 'argument';\r\n  return `The ${type} '${name}' ${reason}. Received ${inspected}`;\r\n}, TypeError, RangeError, HideStackFramesError);\r\nE('ERR_INVALID_ASYNC_ID', 'Invalid %s value: %s', RangeError);\r\nE('ERR_INVALID_BUFFER_SIZE',\r\n  'Buffer size must be a multiple of %s', RangeError);\r\nE('ERR_INVALID_CHAR',\r\n  // Using a default argument here is important so the argument is not counted\r\n  // towards `Function#length`.\r\n  (name, field = undefined) => {\r\n    let msg = `Invalid character in ${name}`;\r\n    if (field !== undefined) {\r\n      msg += ` [\"${field}\"]`;\r\n    }\r\n    return msg;\r\n  }, TypeError, HideStackFramesError);\r\nE('ERR_INVALID_CURSOR_POS',\r\n  'Cannot set cursor row without setting its column', TypeError);\r\nE('ERR_INVALID_FD',\r\n  '\"fd\" must be a positive integer: %s', RangeError);\r\nE('ERR_INVALID_FD_TYPE', 'Unsupported fd type: %s', TypeError);\r\nE('ERR_INVALID_FILE_URL_HOST',\r\n  'File URL host must be \"localhost\" or empty on %s', TypeError);\r\nE('ERR_INVALID_FILE_URL_PATH', function(reason, input) {\r\n  this.input = input;\r\n  return `File URL path ${reason}`;\r\n}, TypeError);\r\nE('ERR_INVALID_HANDLE_TYPE', 'This handle type cannot be sent', TypeError);\r\nE('ERR_INVALID_HTTP_TOKEN', '%s must be a valid HTTP token [\"%s\"]', TypeError, HideStackFramesError);\r\nE('ERR_INVALID_IP_ADDRESS', 'Invalid IP address: %s', TypeError);\r\nE('ERR_INVALID_MIME_SYNTAX', (production, str, invalidIndex) => {\r\n  const msg = invalidIndex !== -1 ? ` at ${invalidIndex}` : '';\r\n  return `The MIME syntax for a ${production} in \"${str}\" is invalid` + msg;\r\n}, TypeError);\r\nE('ERR_INVALID_MODULE_SPECIFIER', (request, reason, base = undefined) => {\r\n  return `Invalid module \"${request}\" ${reason}${base ?\r\n    ` imported from ${base}` : ''}`;\r\n}, TypeError);\r\nE('ERR_INVALID_PACKAGE_CONFIG', (path, base, message) => {\r\n  return `Invalid package config ${path}${base ? ` while importing ${base}` :\r\n    ''}${message ? `. ${message}` : ''}`;\r\n}, Error);\r\nE('ERR_INVALID_PACKAGE_TARGET',\r\n  (pkgPath, key, target, isImport = false, base = undefined) => {\r\n    const relError = typeof target === 'string' && !isImport &&\r\n      target.length && !StringPrototypeStartsWith(target, './');\r\n    if (key === '.') {\r\n      assert(isImport === false);\r\n      return `Invalid \"exports\" main target ${JSONStringify(target)} defined ` +\r\n        `in the package config ${pkgPath}package.json${base ?\r\n          ` imported from ${base}` : ''}${relError ?\r\n          '; targets must start with \"./\"' : ''}`;\r\n    }\r\n    return `Invalid \"${isImport ? 'imports' : 'exports'}\" target ${\r\n      JSONStringify(target)} defined for '${key}' in the package config ${\r\n      pkgPath}package.json${base ? ` imported from ${base}` : ''}${relError ?\r\n      '; targets must start with \"./\"' : ''}`;\r\n  }, Error);\r\nE('ERR_INVALID_PROTOCOL',\r\n  'Protocol \"%s\" not supported. Expected \"%s\"',\r\n  TypeError);\r\nE('ERR_INVALID_REPL_EVAL_CONFIG',\r\n  'Cannot specify both \"breakEvalOnSigint\" and \"eval\" for REPL', TypeError);\r\nE('ERR_INVALID_REPL_INPUT', '%s', TypeError);\r\nE('ERR_INVALID_RETURN_PROPERTY', (input, name, prop, value) => {\r\n  return `Expected a valid ${input} to be returned for the \"${prop}\" from the` +\r\n         ` \"${name}\" hook but got ${determineSpecificType(value)}.`;\r\n}, TypeError);\r\nE('ERR_INVALID_RETURN_PROPERTY_VALUE', (input, name, prop, value) => {\r\n  return `Expected ${input} to be returned for the \"${prop}\" from the` +\r\n         ` \"${name}\" hook but got ${determineSpecificType(value)}.`;\r\n}, TypeError);\r\nE('ERR_INVALID_RETURN_VALUE', (input, name, value) => {\r\n  const type = determineSpecificType(value);\r\n\r\n  return `Expected ${input} to be returned from the \"${name}\"` +\r\n         ` function but got ${type}.`;\r\n}, TypeError, RangeError);\r\nE('ERR_INVALID_STATE', 'Invalid state: %s', Error, TypeError, RangeError);\r\nE('ERR_INVALID_SYNC_FORK_INPUT',\r\n  'Asynchronous forks do not support ' +\r\n    'Buffer, TypedArray, DataView or string input: %s',\r\n  TypeError);\r\nE('ERR_INVALID_THIS', 'Value of \"this\" must be of type %s', TypeError, HideStackFramesError);\r\nE('ERR_INVALID_TUPLE', '%s must be an iterable %s tuple', TypeError);\r\nE('ERR_INVALID_TYPESCRIPT_SYNTAX', '%s', SyntaxError);\r\nE('ERR_INVALID_URI', 'URI malformed', URIError);\r\nE('ERR_INVALID_URL', function(input, base = null) {\r\n  this.input = input;\r\n\r\n  if (base != null) {\r\n    this.base = base;\r\n  }\r\n\r\n  // Don't include URL in message.\r\n  // (See https://github.com/nodejs/node/pull/38614)\r\n  return 'Invalid URL';\r\n}, TypeError);\r\nE('ERR_INVALID_URL_SCHEME',\r\n  (expected) => {\r\n    if (typeof expected === 'string')\r\n      expected = [expected];\r\n    assert(expected.length <= 2);\r\n    const res = expected.length === 2 ?\r\n      `one of scheme ${expected[0]} or ${expected[1]}` :\r\n      `of scheme ${expected[0]}`;\r\n    return `The URL must be ${res}`;\r\n  }, TypeError);\r\nE('ERR_IPC_CHANNEL_CLOSED', 'Channel closed', Error);\r\nE('ERR_IPC_DISCONNECTED', 'IPC channel is already disconnected', Error);\r\nE('ERR_IPC_ONE_PIPE', 'Child process can have only one IPC pipe', Error);\r\nE('ERR_IPC_SYNC_FORK', 'IPC cannot be used with synchronous forks', Error);\r\nE('ERR_IP_BLOCKED', function(ip) {\r\n  return `IP(${ip}) is blocked by net.BlockList`;\r\n}, Error);\r\nE(\r\n  'ERR_LOADER_CHAIN_INCOMPLETE',\r\n  '\"%s\" did not call the next hook in its chain and did not' +\r\n  ' explicitly signal a short circuit. If this is intentional, include' +\r\n  ' `shortCircuit: true` in the hook\\'s return.',\r\n  Error,\r\n);\r\nE('ERR_METHOD_NOT_IMPLEMENTED', 'The %s method is not implemented', Error);\r\nE('ERR_MISSING_ARGS',\r\n  (...args) => {\r\n    assert(args.length > 0, 'At least one arg needs to be specified');\r\n    let msg = 'The ';\r\n    const len = args.length;\r\n    const wrap = (a) => `\"${a}\"`;\r\n    args = ArrayPrototypeMap(\r\n      args,\r\n      (a) => (ArrayIsArray(a) ?\r\n        ArrayPrototypeJoin(ArrayPrototypeMap(a, wrap), ' or ') :\r\n        wrap(a)),\r\n    );\r\n    msg += `${formatList(args)} argument${len > 1 ? 's' : ''}`;\r\n    return `${msg} must be specified`;\r\n  }, TypeError);\r\nE('ERR_MISSING_OPTION', '%s is required', TypeError);\r\nE('ERR_MODULE_LINK_MISMATCH', '%s', TypeError);\r\nE('ERR_MODULE_NOT_FOUND', function(path, base, exactUrl) {\r\n  if (exactUrl) {\r\n    lazyInternalUtil().setOwnProperty(this, 'url', `${exactUrl}`);\r\n  }\r\n  return `Cannot find ${\r\n    exactUrl ? 'module' : 'package'} '${path}' imported from ${base}`;\r\n}, Error);\r\nE('ERR_MULTIPLE_CALLBACK', 'Callback called multiple times', Error);\r\nE('ERR_NAPI_CONS_FUNCTION', 'Constructor must be a function', TypeError);\r\nE('ERR_NAPI_INVALID_DATAVIEW_ARGS',\r\n  'byte_offset + byte_length should be less than or equal to the size in ' +\r\n    'bytes of the array passed in',\r\n  RangeError);\r\nE('ERR_NAPI_INVALID_TYPEDARRAY_ALIGNMENT',\r\n  'start offset of %s should be a multiple of %s', RangeError);\r\nE('ERR_NAPI_INVALID_TYPEDARRAY_LENGTH',\r\n  'Invalid typed array length', RangeError);\r\nE('ERR_NOT_BUILDING_SNAPSHOT',\r\n  'Operation cannot be invoked when not building startup snapshot', Error);\r\nE('ERR_NOT_IN_SINGLE_EXECUTABLE_APPLICATION',\r\n  'Operation cannot be invoked when not in a single-executable application', Error);\r\nE('ERR_NOT_SUPPORTED_IN_SNAPSHOT', '%s is not supported in startup snapshot', Error);\r\nE('ERR_NO_CRYPTO',\r\n  'Node.js is not compiled with OpenSSL crypto support', Error);\r\nE('ERR_NO_ICU',\r\n  '%s is not supported on Node.js compiled without ICU', TypeError);\r\nE('ERR_NO_TYPESCRIPT',\r\n  'Node.js is not compiled with TypeScript support', Error);\r\nE('ERR_OPERATION_FAILED', 'Operation failed: %s', Error, TypeError);\r\nE('ERR_OUT_OF_RANGE',\r\n  (str, range, input, replaceDefaultBoolean = false) => {\r\n    assert(range, 'Missing \"range\" argument');\r\n    let msg = replaceDefaultBoolean ? str :\r\n      `The value of \"${str}\" is out of range.`;\r\n    let received;\r\n    if (NumberIsInteger(input) && MathAbs(input) > 2 ** 32) {\r\n      received = addNumericalSeparator(String(input));\r\n    } else if (typeof input === 'bigint') {\r\n      received = String(input);\r\n      if (input > 2n ** 32n || input < -(2n ** 32n)) {\r\n        received = addNumericalSeparator(received);\r\n      }\r\n      received += 'n';\r\n    } else {\r\n      received = lazyInternalUtilInspect().inspect(input);\r\n    }\r\n    msg += ` It must be ${range}. Received ${received}`;\r\n    return msg;\r\n  }, RangeError, HideStackFramesError);\r\nE('ERR_PACKAGE_IMPORT_NOT_DEFINED', (specifier, packagePath, base) => {\r\n  return `Package import specifier \"${specifier}\" is not defined${packagePath ?\r\n    ` in package ${packagePath}package.json` : ''} imported from ${base}`;\r\n}, TypeError);\r\nE('ERR_PACKAGE_PATH_NOT_EXPORTED', (pkgPath, subpath, base = undefined) => {\r\n  if (subpath === '.')\r\n    return `No \"exports\" main defined in ${pkgPath}package.json${base ?\r\n      ` imported from ${base}` : ''}`;\r\n  return `Package subpath '${subpath}' is not defined by \"exports\" in ${\r\n    pkgPath}package.json${base ? ` imported from ${base}` : ''}`;\r\n}, Error);\r\nE('ERR_PARSE_ARGS_INVALID_OPTION_VALUE', '%s', TypeError);\r\nE('ERR_PARSE_ARGS_UNEXPECTED_POSITIONAL', \"Unexpected argument '%s'. This \" +\r\n  'command does not take positional arguments', TypeError);\r\nE('ERR_PARSE_ARGS_UNKNOWN_OPTION', (option, allowPositionals) => {\r\n  const suggestDashDash = allowPositionals ? '. To specify a positional ' +\r\n    \"argument starting with a '-', place it at the end of the command after \" +\r\n    `'--', as in '-- ${JSONStringify(option)}` : '';\r\n  return `Unknown option '${option}'${suggestDashDash}`;\r\n}, TypeError);\r\nE('ERR_PERFORMANCE_INVALID_TIMESTAMP',\r\n  '%d is not a valid timestamp', TypeError);\r\nE('ERR_PERFORMANCE_MEASURE_INVALID_OPTIONS', '%s', TypeError);\r\nE('ERR_PROXY_INVALID_CONFIG', '%s', Error);\r\nE('ERR_PROXY_TUNNEL', '%s', Error);\r\nE('ERR_QUIC_APPLICATION_ERROR', 'A QUIC application error occurred. %d [%s]', Error);\r\nE('ERR_QUIC_CONNECTION_FAILED', 'QUIC connection failed', Error);\r\nE('ERR_QUIC_ENDPOINT_CLOSED', 'QUIC endpoint closed: %s (%d)', Error);\r\nE('ERR_QUIC_OPEN_STREAM_FAILED', 'Failed to open QUIC stream', Error);\r\nE('ERR_QUIC_TRANSPORT_ERROR', 'A QUIC transport error occurred. %d [%s]', Error);\r\nE('ERR_QUIC_VERSION_NEGOTIATION_ERROR', 'The QUIC session requires version negotiation', Error);\r\nE('ERR_REQUIRE_ASYNC_MODULE', function(filename, parentFilename) {\r\n  let message = 'require() cannot be used on an ESM ' +\r\n  'graph with top-level await. Use import() instead. To see where the' +\r\n  ' top-level await comes from, use --experimental-print-required-tla.';\r\n  if (parentFilename) {\r\n    message += `\\n  From ${parentFilename} `;\r\n  }\r\n  if (filename) {\r\n    message += `\\n  Requiring ${filename} `;\r\n  }\r\n  return message;\r\n}, Error);\r\nE('ERR_REQUIRE_CYCLE_MODULE', '%s', Error);\r\nE('ERR_REQUIRE_ESM',\r\n  function(filename, hasEsmSyntax, parentPath = null, packageJsonPath = null) {\r\n    hideInternalStackFrames(this);\r\n    let msg = `require() of ES Module ${filename}${parentPath ? ` from ${\r\n      parentPath}` : ''} not supported.`;\r\n    if (!packageJsonPath) {\r\n      if (StringPrototypeEndsWith(filename, '.mjs'))\r\n        msg += `\\nInstead change the require of ${filename} to a dynamic ` +\r\n            'import() which is available in all CommonJS modules.';\r\n      return msg;\r\n    }\r\n    const path = require('path');\r\n    const basename = parentPath && path.basename(filename) ===\r\n      path.basename(parentPath) ? filename : path.basename(filename);\r\n    if (hasEsmSyntax) {\r\n      msg += `\\nInstead change the require of ${basename} in ${parentPath} to` +\r\n        ' a dynamic import() which is available in all CommonJS modules.';\r\n      return msg;\r\n    }\r\n    msg += `\\n${basename} is treated as an ES module file as it is a .js ` +\r\n      'file whose nearest parent package.json contains \"type\": \"module\" ' +\r\n      'which declares all .js files in that package scope as ES modules.' +\r\n      `\\nInstead either rename ${basename} to end in .cjs, change the requiring ` +\r\n      'code to use dynamic import() which is available in all CommonJS ' +\r\n      'modules, or change \"type\": \"module\" to \"type\": \"commonjs\" in ' +\r\n      `${packageJsonPath} to treat all .js files as CommonJS (using .mjs for ` +\r\n      'all ES modules instead).\\n';\r\n    return msg;\r\n  }, Error);\r\nE('ERR_SCRIPT_EXECUTION_INTERRUPTED',\r\n  'Script execution was interrupted by `SIGINT`', Error);\r\nE('ERR_SERVER_ALREADY_LISTEN',\r\n  'Listen method has been called more than once without closing.', Error);\r\nE('ERR_SERVER_NOT_RUNNING', 'Server is not running.', Error);\r\nE('ERR_SINGLE_EXECUTABLE_APPLICATION_ASSET_NOT_FOUND',\r\n  'Cannot find asset %s for the single executable application', Error);\r\nE('ERR_SOCKET_ALREADY_BOUND', 'Socket is already bound', Error);\r\nE('ERR_SOCKET_BAD_BUFFER_SIZE',\r\n  'Buffer size must be a positive integer', TypeError);\r\nE('ERR_SOCKET_BAD_PORT', (name, port, allowZero = true) => {\r\n  assert(typeof allowZero === 'boolean',\r\n         \"The 'allowZero' argument must be of type boolean.\");\r\n  const operator = allowZero ? '>=' : '>';\r\n  return `${name} should be ${operator} 0 and < 65536. Received ${determineSpecificType(port)}.`;\r\n}, RangeError, HideStackFramesError);\r\nE('ERR_SOCKET_BAD_TYPE',\r\n  'Bad socket type specified. Valid types are: udp4, udp6', TypeError);\r\nE('ERR_SOCKET_BUFFER_SIZE',\r\n  'Could not get or set buffer size',\r\n  SystemError);\r\nE('ERR_SOCKET_CLOSED', 'Socket is closed', Error);\r\nE('ERR_SOCKET_CLOSED_BEFORE_CONNECTION',\r\n  'Socket closed before the connection was established',\r\n  Error);\r\nE('ERR_SOCKET_CONNECTION_TIMEOUT',\r\n  'Socket connection timeout', Error);\r\nE('ERR_SOCKET_DGRAM_IS_CONNECTED', 'Already connected', Error);\r\nE('ERR_SOCKET_DGRAM_NOT_CONNECTED', 'Not connected', Error);\r\nE('ERR_SOCKET_DGRAM_NOT_RUNNING', 'Not running', Error);\r\nE('ERR_SOURCE_MAP_CORRUPT', `The source map for '%s' does not exist or is corrupt.`, Error);\r\nE('ERR_SOURCE_MAP_MISSING_SOURCE', `Cannot find '%s' imported from the source map for '%s'`, Error);\r\nE('ERR_SRI_PARSE',\r\n  'Subresource Integrity string %j had an unexpected %j at position %d',\r\n  SyntaxError);\r\nE('ERR_STREAM_ALREADY_FINISHED',\r\n  'Cannot call %s after a stream was finished',\r\n  Error);\r\nE('ERR_STREAM_CANNOT_PIPE', 'Cannot pipe, not readable', Error);\r\nE('ERR_STREAM_DESTROYED', 'Cannot call %s after a stream was destroyed', Error);\r\nE('ERR_STREAM_NULL_VALUES', 'May not write null values to stream', TypeError);\r\nE('ERR_STREAM_PREMATURE_CLOSE', 'Premature close', Error);\r\nE('ERR_STREAM_PUSH_AFTER_EOF', 'stream.push() after EOF', Error);\r\nE('ERR_STREAM_UNABLE_TO_PIPE', 'Cannot pipe to a closed or destroyed stream', Error);\r\nE('ERR_STREAM_UNSHIFT_AFTER_END_EVENT',\r\n  'stream.unshift() after end event', Error);\r\nE('ERR_STREAM_WRAP', 'Stream has StringDecoder set or is in objectMode', Error);\r\nE('ERR_STREAM_WRITE_AFTER_END', 'write after end', Error);\r\nE('ERR_SYNTHETIC', 'JavaScript Callstack', Error);\r\nE('ERR_SYSTEM_ERROR', 'A system error occurred', SystemError, HideStackFramesError);\r\nE('ERR_TEST_FAILURE', function(error, failureType) {\r\n  hideInternalStackFrames(this);\r\n  assert(typeof failureType === 'string' || typeof failureType === 'symbol',\r\n         \"The 'failureType' argument must be of type string or symbol.\");\r\n\r\n  let msg = error?.message ?? error;\r\n\r\n  if (typeof msg !== 'string') {\r\n    msg = inspectWithNoCustomRetry(msg);\r\n  }\r\n\r\n  this.failureType = failureType;\r\n  this.cause = error;\r\n  return msg;\r\n}, Error);\r\nE('ERR_TLS_ALPN_CALLBACK_INVALID_RESULT', (value, protocols) => {\r\n  return `ALPN callback returned a value (${\r\n    value\r\n  }) that did not match any of the client's offered protocols (${\r\n    protocols.join(', ')\r\n  })`;\r\n}, TypeError);\r\nE('ERR_TLS_ALPN_CALLBACK_WITH_PROTOCOLS',\r\n  'The ALPNCallback and ALPNProtocols TLS options are mutually exclusive',\r\n  TypeError);\r\nE('ERR_TLS_CERT_ALTNAME_FORMAT', 'Invalid subject alternative name string',\r\n  SyntaxError);\r\nE('ERR_TLS_CERT_ALTNAME_INVALID', function(reason, host, cert) {\r\n  this.reason = reason;\r\n  this.host = host;\r\n  this.cert = cert;\r\n  return `Hostname/IP does not match certificate's altnames: ${reason}`;\r\n}, Error);\r\nE('ERR_TLS_DH_PARAM_SIZE', 'DH parameter size %s is less than 2048', Error);\r\nE('ERR_TLS_HANDSHAKE_TIMEOUT', 'TLS handshake timeout', Error);\r\nE('ERR_TLS_INVALID_CONTEXT', '%s must be a SecureContext', TypeError);\r\nE('ERR_TLS_INVALID_PROTOCOL_VERSION',\r\n  '%j is not a valid %s TLS protocol version', TypeError);\r\nE('ERR_TLS_INVALID_STATE', 'TLS socket connection must be securely established',\r\n  Error);\r\nE('ERR_TLS_PROTOCOL_VERSION_CONFLICT',\r\n  'TLS protocol version %j conflicts with secureProtocol %j', TypeError);\r\nE('ERR_TLS_RENEGOTIATION_DISABLED',\r\n  'TLS session renegotiation disabled for this socket', Error);\r\n\r\n// This should probably be a `TypeError`.\r\nE('ERR_TLS_REQUIRED_SERVER_NAME',\r\n  '\"servername\" is required parameter for Server.addContext', Error);\r\nE('ERR_TLS_SESSION_ATTACK', 'TLS session renegotiation attack detected', Error);\r\nE('ERR_TLS_SNI_FROM_SERVER',\r\n  'Cannot issue SNI from a TLS server-side socket', Error);\r\nE('ERR_TRACE_EVENTS_CATEGORY_REQUIRED',\r\n  'At least one category is required', TypeError);\r\nE('ERR_TRACE_EVENTS_UNAVAILABLE', 'Trace events are unavailable', Error);\r\n\r\nE('ERR_TRAILING_JUNK_AFTER_STREAM_END', 'Trailing junk found after the end of the compressed stream', TypeError);\r\n\r\n// This should probably be a `RangeError`.\r\nE('ERR_TTY_INIT_FAILED', 'TTY initialization failed', SystemError);\r\nE('ERR_UNAVAILABLE_DURING_EXIT', 'Cannot call function in process exit ' +\r\n  'handler', Error);\r\nE('ERR_UNCAUGHT_EXCEPTION_CAPTURE_ALREADY_SET',\r\n  '`process.setupUncaughtExceptionCapture()` was called while a capture ' +\r\n    'callback was already active',\r\n  Error);\r\nE('ERR_UNESCAPED_CHARACTERS', '%s contains unescaped characters', TypeError);\r\nE('ERR_UNHANDLED_ERROR',\r\n  // Using a default argument here is important so the argument is not counted\r\n  // towards `Function#length`.\r\n  (err = undefined) => {\r\n    const msg = 'Unhandled error.';\r\n    if (err === undefined) return msg;\r\n    return `${msg} (${err})`;\r\n  }, Error);\r\nE('ERR_UNKNOWN_BUILTIN_MODULE', 'No such built-in module: %s', Error);\r\nE('ERR_UNKNOWN_CREDENTIAL', '%s identifier does not exist: %s', Error);\r\nE('ERR_UNKNOWN_ENCODING', 'Unknown encoding: %s', TypeError);\r\nE('ERR_UNKNOWN_FILE_EXTENSION', 'Unknown file extension \"%s\" for %s', TypeError);\r\nE('ERR_UNKNOWN_MODULE_FORMAT', 'Unknown module format: %s for URL %s',\r\n  RangeError);\r\nE('ERR_UNKNOWN_SIGNAL', 'Unknown signal: %s', TypeError, HideStackFramesError);\r\nE('ERR_UNSUPPORTED_DIR_IMPORT', function(path, base, exactUrl) {\r\n  lazyInternalUtil().setOwnProperty(this, 'url', exactUrl);\r\n  return `Directory import '${path}' is not supported ` +\r\n    `resolving ES modules imported from ${base}`;\r\n}, Error);\r\nE('ERR_UNSUPPORTED_ESM_URL_SCHEME', (url, supported) => {\r\n  let msg = `Only URLs with a scheme in: ${formatList(supported)} are supported by the default ESM loader`;\r\n  if (isWindows && url.protocol.length === 2) {\r\n    msg +=\r\n      '. On Windows, absolute paths must be valid file:// URLs';\r\n  }\r\n  msg += `. Received protocol '${url.protocol}'`;\r\n  return msg;\r\n}, Error);\r\nE('ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING',\r\n  'Stripping types is currently unsupported for files under node_modules, for \"%s\"',\r\n  Error);\r\nE('ERR_UNSUPPORTED_RESOLVE_REQUEST',\r\n  'Failed to resolve module specifier \"%s\" from \"%s\": Invalid relative URL or base scheme is not hierarchical.',\r\n  TypeError);\r\nE('ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX', '%s', SyntaxError);\r\nE('ERR_USE_AFTER_CLOSE', '%s was closed', Error);\r\n\r\n// This should probably be a `TypeError`.\r\nE('ERR_VALID_PERFORMANCE_ENTRY_TYPE',\r\n  'At least one valid performance entry type is required', Error);\r\nE('ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING',\r\n  'A dynamic import callback was not specified.', TypeError);\r\nE('ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG',\r\n  'A dynamic import callback was invoked without --experimental-vm-modules',\r\n  TypeError);\r\nE('ERR_VM_MODULE_ALREADY_LINKED', 'Module has already been linked', Error);\r\nE('ERR_VM_MODULE_CANNOT_CREATE_CACHED_DATA',\r\n  'Cached data cannot be created for a module which has been evaluated', Error);\r\nE('ERR_VM_MODULE_DIFFERENT_CONTEXT',\r\n  'Linked modules must use the same context', Error);\r\nE('ERR_VM_MODULE_LINK_FAILURE', function(message, cause) {\r\n  this.cause = cause;\r\n  return message;\r\n}, Error);\r\nE('ERR_VM_MODULE_NOT_MODULE',\r\n  'Provided module is not an instance of Module', Error);\r\nE('ERR_VM_MODULE_STATUS', 'Module status %s', Error);\r\nE('ERR_WASI_ALREADY_STARTED', 'WASI instance has already started', Error);\r\nE('ERR_WEBASSEMBLY_NOT_SUPPORTED',\r\n  'WebAssembly is not supported in this environment, but is required for %s',\r\n  Error);\r\nE('ERR_WEBASSEMBLY_RESPONSE', 'WebAssembly response %s', TypeError);\r\nE('ERR_WORKER_INIT_FAILED', 'Worker initialization failure: %s', Error);\r\nE('ERR_WORKER_INVALID_EXEC_ARGV', (errors, msg = 'invalid execArgv flags') =>\r\n  `Initiated Worker with ${msg}: ${ArrayPrototypeJoin(errors, ', ')}`,\r\n  Error);\r\nE('ERR_WORKER_MESSAGING_ERRORED', 'The destination thread threw an error while processing the message', Error);\r\nE('ERR_WORKER_MESSAGING_FAILED', 'Cannot find the destination thread or listener', Error);\r\nE('ERR_WORKER_MESSAGING_SAME_THREAD', 'Cannot sent a message to the same thread', Error);\r\nE('ERR_WORKER_MESSAGING_TIMEOUT', 'Sending a message to another thread timed out', Error);\r\nE('ERR_WORKER_NOT_RUNNING', 'Worker instance not running', Error);\r\nE('ERR_WORKER_OUT_OF_MEMORY',\r\n  'Worker terminated due to reaching memory limit: %s', Error);\r\nE('ERR_WORKER_PATH', (filename) =>\r\n  'The worker script or module filename must be an absolute path or a ' +\r\n  'relative path starting with \\'./\\' or \\'../\\'.' +\r\n  (StringPrototypeStartsWith(filename, 'file://') ?\r\n    ' Wrap file:// URLs with `new URL`.' : ''\r\n  ) +\r\n  (StringPrototypeStartsWith(filename, 'data:text/javascript') ?\r\n    ' Wrap data: URLs with `new URL`.' : ''\r\n  ) +\r\n  ` Received \"${filename}\"`,\r\n  TypeError);\r\nE('ERR_WORKER_UNSERIALIZABLE_ERROR',\r\n  'Serializing an uncaught exception failed', Error);\r\nE('ERR_WORKER_UNSUPPORTED_OPERATION',\r\n  '%s is not supported in workers', TypeError);\r\nE('ERR_ZSTD_INVALID_PARAM', '%s is not a valid zstd parameter', RangeError);\r\n"
+    }
+  }
+}
