@@ -87,7 +87,7 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
             return flow.settle(engine, owner, false, c.pi_js_undefined());
         }
         const stage: Stage = @enumFromInt(raw);
-        const reason = if ((stage == .ready or stage == .read) and !scope.truthy(try scope.get(owner, "customFetch"))) try transportFailure(&scope, owner, value, stage) else value;
+        const reason = if ((stage == .ready or stage == .read) and !scope.truthy(try scope.get(owner, "customFetch"))) transportFailure(&scope, owner, value, stage) catch |err| return emergency(engine, owner, err) else value;
         fail(&scope, owner, reason) catch |err| return emergency(engine, owner, err);
         return;
     }
@@ -97,6 +97,7 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
 }
 fn transportFailure(scope: *Scope, owner: c.JSValue, raw: c.JSValue, stage: Stage) !c.JSValue {
     const code = try v.optional(scope, raw, "code");
+    if (try v.eq(scope, code, "OutOfMemory")) return error.OutOfMemory;
     if (try v.eq(scope, code, "ProviderRequestAborted")) {
         const signal = try v.optional(scope, try scope.get(owner, "options"), "signal");
         const reason = try v.optional(scope, signal, "reason");

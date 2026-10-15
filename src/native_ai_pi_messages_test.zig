@@ -37,7 +37,7 @@ test "native AI pi messages retained ordinary native functions keep dependencies
     defer engine.deinit();
     try install(engine);
     try evaluate(engine,
-        \\globalThis.keptPiStream=piMessagesAPI.stream;delete globalThis.piMessagesAPI;if(keptPiStream.length!==3||keptPiStream.name!=='stream'||Object.getPrototypeOf(keptPiStream)!==Function.prototype)throw Error('native function contract');
+        \\globalThis.keptPiStream=piMessagesAPI.stream;delete globalThis.piMessagesAPI;if(keptPiStream.length!==3||keptPiStream.name!=='stream'||Object.getPrototypeOf(keptPiStream)!==Function.prototype||Object.hasOwn(keptPiStream,'prototype')||Reflect.ownKeys(keptPiStream).join(',')!=='length,name')throw Error('native arrow contract');let rejected=false;try{new keptPiStream()}catch(error){rejected=error instanceof TypeError}if(!rejected)throw Error('arrow accepted new');
     , "native-ai-pi-messages-gc-before.mjs");
     c.JS_RunGC(engine.runtime);
     try evaluate(engine,
