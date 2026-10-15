@@ -7,6 +7,8 @@ import * as models from 'file:///C:/Users/adyba/pi-upstream-source-ae7b16d-20261
 import * as all from 'file:///C:/Users/adyba/pi-upstream-source-ae7b16d-20261015/packages/ai/src/providers/all.ts';
 import {withOpenCodeSessionHeader} from 'file:///C:/Users/adyba/pi-upstream-source-ae7b16d-20261015/packages/ai/src/providers/opencode-headers.ts';
 import {cloudflareStreams,cloudflareClassifier,resolveCloudflareModel} from 'file:///C:/Users/adyba/pi-upstream-source-ae7b16d-20261015/packages/ai/src/providers/cloudflare-stream.ts';
+import {personalizeOpenRouterCatalog} from 'file:///C:/Users/adyba/pi-upstream-source-ae7b16d-20261015/packages/ai/src/providers/openrouter.ts';
+import {openRouterCost} from 'file:///C:/Users/adyba/pi-upstream-source-ae7b16d-20261015/packages/ai/src/providers/openrouter-api.ts';
 import {run} from '../../src/extensions/native_ai_provider_factories_fixture.mjs';
 const [ownedDirectory,output]=process.argv.slice(2);
 if(!ownedDirectory||!output||fs.existsSync(ownedDirectory)||fs.existsSync(output))throw Error('Fresh unique owned paths required');
@@ -19,6 +21,6 @@ const factories={};
 for(const row of inventory){const namespace=await import(pathToFileURL(row.source_path).href);if(typeof namespace[row.factory]!=='function')throw Error('Original export missing '+row.factory);factories[row.factory]=namespace[row.factory]}
 const timer=ownerSetTimeout(()=>{throw Error('Owned provider factory Source fixture exceeded ten seconds')},10000);
 let observed;
-try{observed=await run({factories,all,models,wrappers:{withOpenCodeSessionHeader,cloudflareStreams,cloudflareClassifier,resolveCloudflareModel}})}finally{ownerClearTimeout(timer)}
+try{observed=await run({factories,all,models,wrappers:{withOpenCodeSessionHeader,cloudflareStreams,cloudflareClassifier,resolveCloudflareModel},helpers:{personalizeOpenRouterCatalog,openRouterCost}})}finally{ownerClearTimeout(timer)}
 if(observed.rows.filter(row=>row.case.startsWith('factory ')).length!==inventory.length||new Set(observed.rows.map(row=>row.case)).size!==observed.rows.length)throw Error('Observed factory inventory missing or repeated');
 fs.writeFileSync(output,JSON.stringify({authority:'actual immutable ae7 provider factories, providers/all.ts and models.ts, with owned callback inputs only',sourceHead:'ae7b16d43b7c78c5b6fa3213fdd1215bb339729d',actualNode:{version:process.version,executable:process.execPath},factoryCount:inventory.length,cases:observed.rows.length,rows:observed.rows,rawFunctions:observed.rawFunctions},null,2),{flag:'wx'});

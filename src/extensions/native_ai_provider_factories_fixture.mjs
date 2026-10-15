@@ -70,6 +70,15 @@ export async function run(api) {
     });
     await observe('Radius options getters and custom gateway baseline',()=>{const trace=[],options={get id(){trace.push('id');return 'owned-radius'},get name(){trace.push('name');return 'Owned Radius'},get gateway(){trace.push('gateway');return 'owned.invalid/gateway///'}};const provider=api.factories.radiusProvider(options);return {trace,id:provider.id,name:provider.name,models:provider.getModels(),keys:Object.keys(provider)};});
     await observe('Radius offline restore replaces catalog through publication',async()=>{const provider=api.factories.radiusProvider({id:'owned-radius',gateway:'owned.invalid'}),trace=[];const stored={models:[{id:'owned-one',provider:'owned-radius'},{id:'other',provider:'different'}]};await provider.refreshModels({stored,allowNetwork:false,signal:new AbortController().signal,async publish(value){trace.push(Object.keys(value));value.update?.();return true}});return {trace,models:provider.getModels(),same:provider.getModels()[0]===stored.models[0]};});
+    await observe('OpenRouter actual price conversion and prompt tiers',()=>api.helpers.openRouterCost({prompt:'0.00000125',completion:'-1',input_cache_read:'0',overrides:[{min_prompt_tokens:100,prompt:'0.0000025'},{min_prompt_tokens:50,utc_start:1,prompt:'9'},{completion:'3'}]}));
+    await observe('OpenRouter no key preserves catalog identity',async()=>{const catalog=[{id:'owned'}];return {same:await api.helpers.personalizeOpenRouterCatalog(catalog,{credential:undefined})===catalog};});
+    await observe('OpenRouter key catalog uses owned URL headers and limits',async()=>{
+      const calls=[],catalog=[{id:'owned-chat',contextWindow:10,maxTokens:20,cost:{input:1}},{id:'disabled'},{id:'owned-image',type:'image'}];
+      globalThis.fetch=async(url,init)=>{if(url!=='http://127.0.0.1:17777/models/user')throw Error('Uncontrolled personalization URL');calls.push({url,headers:init.headers,aborted:init.signal.aborted});return {status:200,ok:true,async json(){return {data:[{id:'owned-chat',top_provider:{context_length:100,max_completion_tokens:50},pricing:{prompt:'0.000001',completion:'0.000002'}}]}}}};
+      const result=await api.helpers.personalizeOpenRouterCatalog(catalog,{credential:{type:'api_key',key:'owned-key'},baseUrl:'http://127.0.0.1:17777///',signal:new AbortController().signal});
+      return {calls,result,imageIdentity:result[1]===catalog[2],chatCloned:result[0]!==catalog[0]};
+    });
+    await observe('OpenRouter denied status preserves input catalog',async()=>{const trace=[],catalog=[{id:'owned'}];globalThis.fetch=async()=>({get status(){trace.push('status');return 403},get ok(){throw Error('Should not inspect ok')}});return {same:await api.helpers.personalizeOpenRouterCatalog(catalog,{credential:{type:'oauth',access:'owned-token'},signal:new AbortController().signal})===catalog,trace};});
   } finally {globalThis.fetch=savedFetch}
   return {rows,rawFunctions};
 }
