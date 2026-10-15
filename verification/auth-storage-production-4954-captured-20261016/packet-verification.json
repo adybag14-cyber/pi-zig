@@ -1,0 +1,19 @@
+{
+  "native_qualified": false,
+  "source_files": 1970,
+  "historical_absences": 84,
+  "source_cases": 47,
+  "original_revision_fields": 5,
+  "archive_entries": 47,
+  "runtime_files": 31064,
+  "manifest_sha256": "A8730F7C1874B549567C6FA8D4CB48C189C819D0FED8E68E35FA7250FF8F2B93",
+  "original_error_stacks": 3,
+  "raw_fs_effects": 70,
+  "status": "passed",
+  "actual_package_version": "1.3.0",
+  "full_pi_qualified": false,
+  "compiler_files": 19546,
+  "payloads": 46,
+  "node_files": 1774,
+  "candidate_files": 7718
+}

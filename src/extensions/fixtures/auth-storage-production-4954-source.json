@@ -1,0 +1,823 @@
+[
+  {
+    "id": "constructor-surface",
+    "ok": true,
+    "value": {
+      "auth": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false
+        },
+        {
+          "key": "create",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "callable": {
+            "name": "create",
+            "length": 0,
+            "kind": "Function",
+            "prototype": false,
+            "constructible": false
+          }
+        },
+        {
+          "key": "fromStorage",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "callable": {
+            "name": "fromStorage",
+            "length": 1,
+            "kind": "Function",
+            "prototype": false,
+            "constructible": false
+          }
+        },
+        {
+          "key": "inMemory",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "callable": {
+            "name": "inMemory",
+            "length": 0,
+            "kind": "Function",
+            "prototype": false,
+            "constructible": false
+          }
+        }
+      ],
+      "memory": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false
+        }
+      ],
+      "file": "FileAuthStorageBackend"
+    }
+  },
+  {
+    "id": "prototype-surface",
+    "ok": true,
+    "value": [
+      {
+        "key": "constructor",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "callable": {
+          "name": "AuthStorage",
+          "length": 2,
+          "kind": "Function",
+          "prototype": true,
+          "constructible": true
+        }
+      },
+      {
+        "key": "parseStorageData",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "callable": {
+          "name": "parseStorageData",
+          "length": 1,
+          "kind": "Function",
+          "prototype": false,
+          "constructible": false
+        }
+      },
+      {
+        "key": "updateReadState",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "callable": {
+          "name": "updateReadState",
+          "length": 2,
+          "kind": "Function",
+          "prototype": false,
+          "constructible": false
+        }
+      },
+      {
+        "key": "reload",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "callable": {
+          "name": "reload",
+          "length": 0,
+          "kind": "Function",
+          "prototype": false,
+          "constructible": false
+        }
+      },
+      {
+        "key": "reloadFromStorageAsync",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "callable": {
+          "name": "reloadFromStorageAsync",
+          "length": 1,
+          "kind": "AsyncFunction",
+          "prototype": false,
+          "constructible": false
+        }
+      },
+      {
+        "key": "readLatestData",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "callable": {
+          "name": "readLatestData",
+          "length": 1,
+          "kind": "AsyncFunction",
+          "prototype": false,
+          "constructible": false
+        }
+      },
+      {
+        "key": "read",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "callable": {
+          "name": "read",
+          "length": 2,
+          "kind": "AsyncFunction",
+          "prototype": false,
+          "constructible": false
+        }
+      },
+      {
+        "key": "modify",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "callable": {
+          "name": "modify",
+          "length": 3,
+          "kind": "AsyncFunction",
+          "prototype": false,
+          "constructible": false
+        }
+      },
+      {
+        "key": "delete",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "callable": {
+          "name": "delete",
+          "length": 2,
+          "kind": "AsyncFunction",
+          "prototype": false,
+          "constructible": false
+        }
+      },
+      {
+        "key": "list",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "callable": {
+          "name": "list",
+          "length": 1,
+          "kind": "AsyncFunction",
+          "prototype": false,
+          "constructible": false
+        }
+      }
+    ]
+  },
+  {
+    "id": "memory-backend-surface",
+    "ok": true,
+    "value": {
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "callable": {
+            "name": "InMemoryAuthStorageBackend",
+            "length": 0,
+            "kind": "Function",
+            "prototype": true,
+            "constructible": true
+          }
+        },
+        {
+          "key": "withLock",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "callable": {
+            "name": "withLock",
+            "length": 1,
+            "kind": "Function",
+            "prototype": false,
+            "constructible": false
+          }
+        },
+        {
+          "key": "withLockAsync",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "callable": {
+            "name": "withLockAsync",
+            "length": 2,
+            "kind": "Function",
+            "prototype": false,
+            "constructible": false
+          }
+        }
+      ],
+      "instance": [
+        {
+          "key": "value",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "asyncChain",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "ordinary-own-fields",
+    "ok": true,
+    "value": {
+      "own": [
+        {
+          "key": "storage",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "authPath",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "readState",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true
+        }
+      ],
+      "storageSame": true,
+      "pathUndefined": true,
+      "stateKeys": [
+        "data",
+        "revision"
+      ],
+      "data": {}
+    }
+  },
+  {
+    "id": "fromStorage-identity",
+    "ok": true,
+    "value": {
+      "instance": true,
+      "storageSame": true,
+      "prototypeSame": true
+    }
+  },
+  {
+    "id": "inMemory-real-backend",
+    "ok": true,
+    "value": {
+      "instance": true,
+      "realBackend": true,
+      "text": "{\n  \"p\": {\n    \"type\": \"oauth\",\n    \"access\": \"a\",\n    \"refresh\": \"r\",\n    \"expires\": 1,\n    \"unknown\": {\n      \"kept\": true\n    }\n  }\n}",
+      "state": {
+        "p": {
+          "type": "oauth",
+          "access": "a",
+          "refresh": "r",
+          "expires": 1,
+          "unknown": {
+            "kept": true
+          }
+        }
+      }
+    }
+  },
+  {
+    "id": "no-own-methods",
+    "ok": true,
+    "value": {
+      "own": [
+        "storage",
+        "authPath",
+        "readState"
+      ],
+      "ownRead": false,
+      "ownReload": false,
+      "ownState": true
+    }
+  },
+  {
+    "id": "borrowed-static",
+    "ok": true,
+    "value": true
+  },
+  {
+    "id": "subclass-construction",
+    "ok": true,
+    "value": {
+      "child": true,
+      "base": true,
+      "own": [
+        "storage",
+        "authPath",
+        "readState"
+      ],
+      "prototype": true
+    }
+  },
+  {
+    "id": "constructor-reload-live",
+    "ok": true,
+    "value": {
+      "keys": [
+        "storage",
+        "authPath",
+        "readState"
+      ],
+      "storage": true,
+      "path": true,
+      "state": [
+        "data"
+      ]
+    }
+  },
+  {
+    "id": "field-definitions-ignore-setters",
+    "ok": true,
+    "value": {
+      "keys": [
+        "storage",
+        "authPath",
+        "readState"
+      ],
+      "calls": 0
+    }
+  },
+  {
+    "id": "parse-bom-empty",
+    "ok": true,
+    "value": {
+      "empty": {},
+      "missing": {},
+      "bom": {
+        "p": 1
+      }
+    }
+  },
+  {
+    "id": "parse-unvalidated-json",
+    "ok": true,
+    "value": [
+      null,
+      [],
+      7,
+      false,
+      "text"
+    ]
+  },
+  {
+    "id": "updateReadState-live-setters",
+    "ok": true,
+    "value": {
+      "trace": [
+        "get:readState",
+        "set:data",
+        "get:readState",
+        "set:revision"
+      ],
+      "target": {
+        "data": {
+          "p": 1
+        },
+        "revision": "revision"
+      }
+    }
+  },
+  {
+    "id": "borrowed-private-method",
+    "ok": true,
+    "value": {
+      "target": {
+        "readState": {
+          "data": {
+            "p": 1
+          }
+        }
+      },
+      "parse": {
+        "plain": true
+      }
+    }
+  },
+  {
+    "id": "read-oauth-live-identity",
+    "ok": true,
+    "value": {
+      "same": true,
+      "value": {
+        "type": "oauth",
+        "access": "a",
+        "refresh": "r",
+        "expires": 1,
+        "extra": {
+          "kept": true
+        }
+      }
+    }
+  },
+  {
+    "id": "read-api-undefined-key-identity",
+    "ok": true,
+    "value": {
+      "same": true,
+      "value": {
+        "type": "api_key",
+        "env": {
+          "OWNED": "v"
+        },
+        "extra": 1
+      }
+    }
+  },
+  {
+    "id": "read-api-copy-extra-fields",
+    "ok": true,
+    "value": {
+      "same": false,
+      "extraSame": true,
+      "value": {
+        "type": "api_key",
+        "key": "literal",
+        "extra": {
+          "retained": true
+        }
+      }
+    }
+  },
+  {
+    "id": "read-env-live",
+    "ok": true,
+    "value": {
+      "first": "prefix-first",
+      "second": "prefix-second",
+      "stored": "{\n  \"p\": {\n    \"type\": \"api_key\",\n    \"key\": \"prefix-$PI_AUTH_STORAGE_FIXTURE_VALUE\",\n    \"env\": {},\n    \"extra\": 1\n  }\n}"
+    }
+  },
+  {
+    "id": "reload-retains-snapshot",
+    "ok": true,
+    "value": {
+      "same": true,
+      "value": {
+        "p": {
+          "type": "oauth",
+          "access": "cached",
+          "refresh": "r",
+          "expires": 1
+        }
+      }
+    }
+  },
+  {
+    "id": "read-fallback-without-signal",
+    "ok": true,
+    "value": {
+      "value": {
+        "type": "oauth",
+        "access": "cached",
+        "refresh": "r",
+        "expires": 1
+      },
+      "same": true
+    }
+  },
+  {
+    "id": "read-rejects-with-signal",
+    "ok": false,
+    "error": {
+      "name": "SyntaxError",
+      "message": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+      "constructor": "SyntaxError"
+    }
+  },
+  {
+    "id": "read-aborted-before-storage",
+    "ok": true,
+    "value": {
+      "same": true,
+      "calls": 0
+    }
+  },
+  {
+    "id": "read-aborted-after-latest",
+    "ok": true,
+    "value": {
+      "same": true
+    }
+  },
+  {
+    "id": "list-metadata",
+    "ok": true,
+    "value": [
+      {
+        "providerId": "a",
+        "type": "api_key"
+      },
+      {
+        "providerId": "b",
+        "type": "oauth"
+      }
+    ]
+  },
+  {
+    "id": "list-callee-before-await",
+    "ok": true,
+    "value": {
+      "trace": [
+        "entries:get",
+        "readLatestData",
+        "entries:call"
+      ],
+      "value": [
+        {
+          "providerId": "p",
+          "type": "oauth"
+        }
+      ]
+    }
+  },
+  {
+    "id": "modify-result-identity",
+    "ok": true,
+    "value": {
+      "same": true,
+      "cached": true,
+      "extra": true,
+      "text": "{\n  \"p\": {\n    \"type\": \"oauth\",\n    \"access\": \"new\",\n    \"refresh\": \"r\",\n    \"expires\": 1,\n    \"unknown\": {\n      \"identity\": true\n    }\n  }\n}"
+    }
+  },
+  {
+    "id": "modify-undefined-mutation",
+    "ok": true,
+    "value": {
+      "result": {
+        "type": "oauth",
+        "access": "mutated",
+        "refresh": "r",
+        "expires": 1
+      },
+      "cachedSame": true,
+      "unchangedText": true,
+      "revisionUndefined": true
+    }
+  },
+  {
+    "id": "modify-rejection-retains-snapshot",
+    "ok": true,
+    "value": {
+      "same": true,
+      "snapshotSame": true
+    }
+  },
+  {
+    "id": "delete-existing",
+    "ok": true,
+    "value": {
+      "resultUndefined": true,
+      "data": {
+        "keep": {
+          "type": "api_key",
+          "key": "k"
+        }
+      },
+      "text": "{\n  \"keep\": {\n    \"type\": \"api_key\",\n    \"key\": \"k\"\n  }\n}",
+      "revisionUndefined": true
+    }
+  },
+  {
+    "id": "delete-missing-still-writes",
+    "ok": true,
+    "value": {
+      "writes": 1,
+      "text": "{\n  \"p\": {\n    \"type\": \"oauth\"\n  }\n}"
+    }
+  },
+  {
+    "id": "delete-error-retains-snapshot",
+    "ok": true,
+    "value": {
+      "error": {
+        "name": "SyntaxError",
+        "message": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+        "constructor": "SyntaxError"
+      },
+      "same": true
+    }
+  },
+  {
+    "id": "memory-queue-serialization",
+    "ok": true,
+    "value": {
+      "trace": [
+        "first:0",
+        "queued",
+        "second:1"
+      ],
+      "text": "{\n  \"p\": {\n    \"type\": \"oauth\",\n    \"access\": \"2\"\n  }\n}"
+    }
+  },
+  {
+    "id": "memory-queue-recovery",
+    "ok": true,
+    "value": {
+      "first": true,
+      "second": {
+        "type": "oauth",
+        "access": "recovered"
+      },
+      "text": "{\n  \"p\": {\n    \"type\": \"oauth\",\n    \"access\": \"recovered\"\n  }\n}"
+    }
+  },
+  {
+    "id": "memory-aborted-before-callback",
+    "ok": true,
+    "value": {
+      "same": true,
+      "calls": 0,
+      "valueUndefined": true
+    }
+  },
+  {
+    "id": "memory-sync-destructuring-order",
+    "ok": true,
+    "value": {
+      "trace": [
+        "result",
+        "next"
+      ],
+      "result": 7,
+      "value": "stored"
+    }
+  },
+  {
+    "id": "memory-async-destructuring-before-abort",
+    "ok": true,
+    "value": {
+      "trace": [
+        "result",
+        "next"
+      ],
+      "same": true,
+      "valueUndefined": true
+    }
+  },
+  {
+    "id": "file-default-real-backend",
+    "ok": true,
+    "value": {
+      "instance": true,
+      "backend": true,
+      "path": "<ROOT>\\auth.json",
+      "backendPathSame": true,
+      "text": "{}"
+    }
+  },
+  {
+    "id": "file-normalized-alias-shares-state",
+    "ok": true,
+    "value": {
+      "pathSame": true,
+      "stateSame": true,
+      "backendDifferent": true
+    }
+  },
+  {
+    "id": "file-revision-cache",
+    "ok": true,
+    "value": {
+      "valueUndefined": true,
+      "calls": 0
+    }
+  },
+  {
+    "id": "file-external-live-read",
+    "ok": true,
+    "value": {
+      "first": "external-first",
+      "second": "external-second-longer",
+      "stateSame": true
+    }
+  },
+  {
+    "id": "file-only-first-path-shared",
+    "ok": true,
+    "value": {
+      "secondPathStatesDiffer": true,
+      "firstPathStillShared": true
+    }
+  },
+  {
+    "id": "file-revision-five-fields",
+    "ok": true,
+    "value": {
+      "type": "string",
+      "fields": 5,
+      "numericFields": true
+    }
+  },
+  {
+    "id": "file-shared-reload-independent-abort",
+    "ok": true,
+    "value": {
+      "calls": 1,
+      "before": 2,
+      "after": 1,
+      "firstSame": true,
+      "internalAborted": false,
+      "value": "external-second-longer",
+      "reloadCleared": true
+    }
+  },
+  {
+    "id": "file-last-reader-aborts-reload",
+    "ok": true,
+    "value": {
+      "values": [
+        true,
+        true
+      ],
+      "internalAborted": true,
+      "cleared": true
+    }
+  },
+  {
+    "id": "file-malformed-reload-fallback",
+    "ok": true,
+    "value": {
+      "sameSnapshot": true,
+      "sameCredential": true,
+      "value": "external-second-longer"
+    }
+  },
+  {
+    "id": "file-malformed-signal-rejection",
+    "ok": false,
+    "error": {
+      "name": "SyntaxError",
+      "message": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+      "constructor": "SyntaxError"
+    }
+  }
+]
