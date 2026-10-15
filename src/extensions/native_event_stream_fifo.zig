@@ -2,7 +2,6 @@
 //! Source ae7b16d; no opaque substitute for incoming/outgoing or live methods.
 const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
-const sdk = @import("native_sdk.zig");
 const Scope = @import("native_models_stream_scope.zig").Scope;
 const c = em.c;
 const Method = enum(c_int) { length, enqueue, dequeue };
@@ -11,11 +10,13 @@ fn hasIncoming(engine: *em.Engine, receiver: c.JSValue) !bool {
     defer scope.deinit();
     return scope.positive(try scope.get(try scope.get(receiver, "incoming"), "length"));
 }
-fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    return dispatch(engine, receiver, @enumFromInt(magic), if (argc > 0) args[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
+fn function(engine: *em.Engine, comptime operation: Method) !c.JSValue {
+    const Adapter = struct {
+        fn call(host: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            return dispatch(host, receiver, operation, if (args.len > 0) args[0] else c.pi_js_undefined());
+        }
+    };
+    return @import("native_node_function.zig").createMethod(engine, if (operation == .length) "get length" else @tagName(operation), if (operation == .enqueue) 1 else 0, Adapter.call, &.{});
 }
 fn dispatch(engine: *em.Engine, receiver: c.JSValue, operation: Method, value: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
@@ -65,11 +66,11 @@ pub fn constructor(engine: *em.Engine) !c.JSValue {
     const atom = c.JS_NewAtom(engine.context, "length");
     if (atom == c.JS_ATOM_NULL) return js.capture(engine);
     defer c.JS_FreeAtom(engine.context, atom);
-    const getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, method, "get length", 0, @intFromEnum(Method.length), 0, null));
+    const getter = try function(engine, .length);
     if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     inline for (.{ Method.enqueue, Method.dequeue }) |operation| {
-        const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, method, @tagName(operation), if (operation == .enqueue) 1 else 0, @intFromEnum(operation), 0, null)));
-        if (c.JS_DefinePropertyValueStr(engine.context, prototype, @tagName(operation), c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+        const method_value = try scope.own(try function(engine, operation));
+        if (c.JS_DefinePropertyValueStr(engine.context, prototype, @tagName(operation), c.JS_DupValue(engine.context, method_value), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     }
     return @import("native_class.zig").constructor(engine, "FifoQueue", 0, prototype, construct, &.{});
 }

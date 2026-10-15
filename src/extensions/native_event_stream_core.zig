@@ -2,7 +2,6 @@
 //! This successor is source-only until its surface/queue/provider gates run.
 const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
-const sdk = @import("native_sdk.zig");
 const Scope = @import("native_models_stream_scope.zig").Scope;
 const fifo = @import("native_event_stream_fifo.zig");
 const gen = @import("native_async_generator.zig");
@@ -11,12 +10,6 @@ const Method = enum(c_int) { push, end, result, iterate };
 const PromisePurpose = enum(c_int) { final, waiting };
 fn argument(args: []const c.JSValue, index: usize) c.JSValue {
     return if (args.len > index) args[index] else c.pi_js_undefined();
-}
-fn executor(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    return executePromise(engine, roots[0], @enumFromInt(magic), if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
 }
 fn executePromise(engine: *em.Engine, receiver: c.JSValue, purpose: PromisePurpose, resolve: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
@@ -33,8 +26,12 @@ fn promise(engine: *em.Engine, receiver: c.JSValue, comptime purpose: PromisePur
     // Source's `new Promise` is a live global lookup; Await itself subsequently
     // uses QuickJS's intrinsic PromiseResolve inside the actual generator.
     const promise_constructor = try scope.global("Promise");
-    var roots = [_]c.JSValue{receiver};
-    const callback = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, executor, "", 1, @intFromEnum(purpose), roots.len, &roots)));
+    const Executor = struct {
+        fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            return executePromise(host, roots[0], purpose, argument(args, 0));
+        }
+    };
+    const callback = try scope.own(try @import("native_node_function.zig").createArrow(engine, "", 1, Executor.call, &.{receiver}));
     var args = [_]c.JSValue{callback};
     return engine.checked(c.JS_CallConstructor(engine.context, promise_constructor, args.len, &args));
 }
@@ -128,13 +125,15 @@ pub fn iterator(engine: *em.Engine, receiver: c.JSValue, prototype: c.JSValue) !
     const selected = if (c.JS_IsObject(prototype)) prototype else try scope.own(try gen.prototype(engine));
     return gen.create(engine, owner, advance, selected);
 }
-fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    return dispatch(engine, receiver, @enumFromInt(magic), if (argc > 0) argv[0] else c.pi_js_undefined(), roots) catch |err| sdk.fail(engine, err);
+fn function(engine: *em.Engine, comptime operation: Method, roots: []const c.JSValue) !c.JSValue {
+    const Adapter = struct {
+        fn call(host: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, values: []const c.JSValue) !c.JSValue {
+            return dispatch(host, receiver, operation, argument(args, 0), values);
+        }
+    };
+    return @import("native_node_function.zig").createMethod(engine, if (operation == .iterate) "[Symbol.asyncIterator]" else @tagName(operation), if (operation == .push or operation == .end) 1 else 0, Adapter.call, roots);
 }
-fn dispatch(engine: *em.Engine, receiver: c.JSValue, operation: Method, value: c.JSValue, roots: [*c]c.JSValue) !c.JSValue {
+fn dispatch(engine: *em.Engine, receiver: c.JSValue, operation: Method, value: c.JSValue, roots: []const c.JSValue) !c.JSValue {
     return switch (operation) {
         .push => push(engine, receiver, value),
         .end => end(engine, receiver, value),
@@ -162,14 +161,13 @@ pub fn constructor(engine: *em.Engine) !c.JSValue {
     const prototype = try scope.object();
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     inline for (.{ Method.push, Method.end }) |operation| {
-        const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, method, @tagName(operation), 1, @intFromEnum(operation), 0, null));
-        if (c.JS_DefinePropertyValueStr(engine.context, prototype, @tagName(operation), function, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+        const method_value = try function(engine, operation, &.{});
+        if (c.JS_DefinePropertyValueStr(engine.context, prototype, @tagName(operation), method_value, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     }
     const generator_parent = try scope.own(try gen.prototype(engine));
     const generator_prototype = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, generator_parent)));
     const function_owner = try scope.object();
-    var roots = [_]c.JSValue{function_owner};
-    const iterate = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, method, "[Symbol.asyncIterator]", 0, @intFromEnum(Method.iterate), roots.len, &roots)));
+    const iterate = try scope.own(try function(engine, .iterate, &.{function_owner}));
     if (c.JS_SetPrototype(engine.context, iterate, try scope.own(try gen.functionPrototype(engine))) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, iterate, "prototype", c.JS_DupValue(engine.context, generator_prototype), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     try scope.put(function_owner, "function", iterate);
@@ -178,7 +176,7 @@ pub fn constructor(engine: *em.Engine) !c.JSValue {
     if (atom == c.JS_ATOM_NULL) return js.capture(engine);
     defer c.JS_FreeAtom(engine.context, atom);
     if (c.JS_DefinePropertyValue(engine.context, prototype, atom, c.JS_DupValue(engine.context, iterate), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
-    const result = try engine.checked(c.JS_NewCFunctionData2(engine.context, method, "result", 0, @intFromEnum(Method.result), 0, null));
+    const result = try function(engine, .result, &.{});
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "result", result, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     return @import("native_class.zig").constructor(engine, "EventStream", 2, prototype, construct, &.{try scope.own(try fifo.constructor(engine))});
 }
