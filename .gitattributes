@@ -100,3 +100,5 @@ verification/native-ai-google-mistral-source60-20261015/ai-google-mistral60-5ab-
 verification/native-ai-google-mistral-acb9-first-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-ai-google-mistral-e554-retry-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-ai-google-mistral-1c22-components-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+
+verification/native-ai-google-mistral-source20-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

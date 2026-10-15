@@ -1,0 +1,8 @@
+{
+  "status": "admitted",
+  "heap_mb": 256,
+  "required_kib": 2097152,
+  "observed_utc": "2026-10-15T20:45:19.9206930+00:00",
+  "coordinated_with": "Root explicit queued MistralFetchSource8 grant; no launch without grant",
+  "free_kib": 17768764
+}

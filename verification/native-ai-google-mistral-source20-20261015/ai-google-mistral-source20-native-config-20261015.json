@@ -1,0 +1,17 @@
+[
+  {
+    "head": "2c94bf7711003285de3328e07d22b18559aec1cf",
+    "name": "qualified",
+    "root": "C:/Users/adyba/pi-zig-ai-google-mistral-20261015"
+  },
+  {
+    "head": "20cd1ee5c0da6b5c884cbb98b928e06a1a1e4ea9",
+    "name": "broad",
+    "root": "C:/Users/adyba/pi-zig-ai-google-mistral-source60-20261015"
+  },
+  {
+    "head": "3c918765430a3a2546cc2a4bd8e3604abbd52ca4",
+    "name": "continuation",
+    "root": "C:/Users/adyba/pi-zig-ai-google-mistral-fetch-20261015"
+  }
+]

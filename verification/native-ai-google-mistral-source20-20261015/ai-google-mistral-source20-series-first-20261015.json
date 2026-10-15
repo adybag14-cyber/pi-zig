@@ -1,0 +1,35 @@
+{
+  "slot": 3,
+  "authority": "Root explicit LIGHT3 grant sequential SourceFraming8 GoogleLive4 MistralFetch8",
+  "results": [
+    {
+      "name": "ai-mistral8-framing-5ab-source8-first-20261015",
+      "cases": 8,
+      "pid": 63364,
+      "completed_utc": "2026-10-15T21:42:18.8008887+01:00",
+      "status": "passed",
+      "posthash": "zero"
+    },
+    {
+      "name": "ai-google4-live-5ab-source4-first-20261015",
+      "cases": 4,
+      "pid": 61996,
+      "completed_utc": "2026-10-15T21:44:09.4422364+01:00",
+      "status": "passed",
+      "posthash": "zero"
+    },
+    {
+      "name": "ai-mistral-fetch8-5ab-source8-first-20261015",
+      "cases": 8,
+      "pid": 67280,
+      "completed_utc": "2026-10-15T21:45:41.0832362+01:00",
+      "status": "passed",
+      "posthash": "zero"
+    }
+  ],
+  "status": "passed",
+  "failure": null,
+  "native_builds": 0,
+  "goldens_published": false,
+  "completed_utc": "2026-10-15T20:46:14.2495410+00:00"
+}

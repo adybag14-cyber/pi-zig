@@ -1,0 +1,23 @@
+[
+  {
+    "source_output": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-mistral8-framing-5ab-source8-first-20261015-output.json",
+    "source_post_utc": "2026-10-15T21:43:02.4235037+01:00",
+    "fixture_created_utc": "2026-10-15T20:49:39.4084108+00:00",
+    "sha256": "D25B59920666809E7AFBD00BA4D50690F3D5684FE21E17410B4C738A6D95958F",
+    "expected": "src\\extensions\\fixtures\\ai-mistral-framing8-5ab.json"
+  },
+  {
+    "source_output": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-google4-live-5ab-source4-first-20261015-output.json",
+    "source_post_utc": "2026-10-15T21:44:41.848798+01:00",
+    "fixture_created_utc": "2026-10-15T20:49:39.4411017+00:00",
+    "sha256": "6D16254F88623E82FF66AAFAA53D62945E8EE2969B03E33E1146CDB83A97DE4E",
+    "expected": "src\\extensions\\fixtures\\ai-google-live4-5ab.json"
+  },
+  {
+    "source_output": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-mistral-fetch8-5ab-source8-first-20261015-output.json",
+    "source_post_utc": "2026-10-15T21:46:14.2418724+01:00",
+    "fixture_created_utc": "2026-10-15T20:49:39.4674061+00:00",
+    "sha256": "441985AEC657B748C126C5F2CCC559CA235541D795726104B7DB4E8C188E4CF6",
+    "expected": "src\\extensions\\fixtures\\ai-mistral-fetch8-5ab.json"
+  }
+]

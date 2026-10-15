@@ -1,0 +1,57 @@
+{
+  "completed_utc": "2026-10-15T20:44:41.8487980+00:00",
+  "absent_dependency_drift": [],
+  "historical_absence_records": 84,
+  "manifests": [
+    {
+      "files": 1967,
+      "name": "source",
+      "changed": [],
+      "drift": 0
+    },
+    {
+      "files": 31064,
+      "name": "dependencies",
+      "changed": [],
+      "drift": 0
+    },
+    {
+      "files": 1774,
+      "name": "node_tools",
+      "changed": [],
+      "drift": 0
+    }
+  ],
+  "driver_sha256": "9E9996C5E2911E3EFAA04614C8130032467C4ADD9FD2B8DCC073287C53D7128C",
+  "control_manifest_drift": false,
+  "extra_control_drift": [],
+  "native_candidates": [
+    {
+      "name": "qualified",
+      "inventory_drift": 0,
+      "head_drift": false,
+      "head": "2c94bf7711003285de3328e07d22b18559aec1cf",
+      "vendor": 1316,
+      "count": 6150,
+      "drift": 0
+    },
+    {
+      "name": "broad",
+      "inventory_drift": 0,
+      "head_drift": false,
+      "head": "20cd1ee5c0da6b5c884cbb98b928e06a1a1e4ea9",
+      "vendor": 1316,
+      "count": 6194,
+      "drift": 0
+    },
+    {
+      "name": "continuation",
+      "inventory_drift": 0,
+      "head_drift": false,
+      "head": "3c918765430a3a2546cc2a4bd8e3604abbd52ca4",
+      "vendor": 1316,
+      "count": 6195,
+      "drift": 0
+    }
+  ]
+}
