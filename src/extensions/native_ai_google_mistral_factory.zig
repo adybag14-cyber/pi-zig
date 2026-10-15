@@ -119,6 +119,10 @@ fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     try flow.settle(scope.engine, owner, false, c.pi_js_undefined());
 }
 fn headers(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !c.JSValue {
+    if (kind == .mistral) {
+        const actual = try @import("native_ai_mistral_headers.zig").create(scope, try scope.get(owner, "model"), try scope.get(owner, "apiKey"), try scope.get(owner, "options"));
+        return scope.invoke(try scope.global("Object"), "fromEntries", &.{try scope.invoke(actual, "entries", &.{})});
+    }
     const result = try scope.object();
     try scope.put(result, "user-agent", try scope.text(@import("../ai/pi_user_agent.zig").value));
     try scope.put(result, "accept", try scope.text("text/event-stream"));
