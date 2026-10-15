@@ -1,0 +1,11 @@
+# Pending genuine Pipe20 native gate
+
+This separate source-only candidate starts at d84b0935f85faaf689bbb5de6a061390f1610eb5. The Source capture candidate remains clean and frozen. The native gate does not accept the original three partial packets: that wrapper lacked explicit84 dependency absence checks and its scoped pause intentionally produced a control-post negative.
+
+The strict test declares all20 cases from the unchanged actual Node observer input. It compares the full JSON packet without removing messages, reason-identity flags, ordering, or lock state. The expected fixture deliberately remains absent until every corrected genuine Source child is terminal and all full inventories plus84 absence checks pass. The native build must not be launched before that acceptance and a separate Root resource grant.
+
+The sole imported implementation leaf is the actual TransformStream owner checkpoint8ada90fca110d1b9a81b9bdc10b02b6ce478e389, native_transform_stream.zig SHA2565A640AFC1DB0960A724CBEC74565E2D6628B566DA5C974EBF815C134BE090B07. Existing native_models_stream_scope and native_class are unchanged and byte-identical to that owner's checkpoint. The gate installs real native ReadableStream, WritableStream and TransformStream. No replacement pair or JavaScript product is supplied. This intake requires no older vendor, C override, or Engine replacement.
+
+A separate host-failure regression arms the permanent FailingAllocator after a real destination write is pending, releases that write, and requires the actual pipe capability to reject with the trusted native allocation origin. It also requires all charged host bytes to be freed after Engine teardown. That probe is authored but uncompiled and unrun; it does not claim proof for the Writable fatal-retirement wrapper or all pipe allocation sites.
+
+Current checks are Zig AST/fmt and git diff checks only. The native Pipe20 suite, Transform composition, permanent host-failure regression, exact4594 FileHandle gate, full Node public graph metadata, ReadableStream.from, GC algorithm-retirement successor, process/watch and POSIX remain separately unqualified.
