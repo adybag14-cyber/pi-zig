@@ -20,6 +20,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     const estimate = try scope.own(try @import("native_ai_estimate.zig").create(engine));
     try scope.put(dependencies, "simple", try scope.own(try @import("native_ai_simple_options.zig").create(engine, try scope.get(thinking, "clampThinkingLevel"), try scope.get(estimate, "estimateContextTokens"))));
     try scope.put(dependencies, "json", try scope.own(try @import("native_ai_json_parse.zig").create(engine)));
+    try scope.put(dependencies, "messageEvents", try @import("native_ai_anthropic_events.zig").messageEvents(&scope));
     try scope.put(dependencies, "errors", try scope.own(try @import("native_ai_anthropic_api_error.zig").create(engine)));
     try scope.put(dependencies, "userAgentOS", try @import("native_ai_user_agent.zig").load(&scope));
     try scope.put(dependencies, "federationSlot", try scope.own(try federation.createSlot(engine)));
@@ -541,7 +542,8 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
         .response => {
             _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
             try scope.put(owner, "streamSignal", try v.optional(scope, try scope.get(owner, "options"), "signal"));
-            const iterator = try scope.own(try @import("native_ai_anthropic_events.zig").create(scope.engine, try scope.get(owner, "response"), try scope.get(owner, "http"), try scope.get(owner, "streamSignal"), try scope.get(try scope.get(owner, "agent"), "json")));
+            const dependencies = try scope.get(owner, "agent");
+            const iterator = try scope.own(try @import("native_ai_anthropic_events.zig").create(scope.engine, try scope.get(owner, "response"), try scope.get(owner, "http"), try scope.get(owner, "streamSignal"), try scope.get(dependencies, "json"), try scope.get(dependencies, "messageEvents")));
             try scope.put(owner, "eventIterator", iterator);
             try wait(scope, owner, try scope.invoke(iterator, "next", &.{}), .producer_next);
         },

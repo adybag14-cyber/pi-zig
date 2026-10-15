@@ -35,7 +35,12 @@ fn freshAllocation(scope: *Scope, owner: c.JSValue, value: c.JSValue) !bool {
 fn captureGeneration(scope: *Scope, owner: c.JSValue) !void {
     try scope.put(owner, "generation", try scope.own(try scope.engine.checked(c.JS_NewBigUint64(scope.engine.context, scope.engine.native_allocation_generation))));
 }
-pub fn create(engine: *v.em.Engine, response: c.JSValue, http: c.JSValue, signal: c.JSValue, json: c.JSValue) !c.JSValue {
+pub fn messageEvents(scope: *Scope) !c.JSValue {
+    const names = try scope.array();
+    inline for (.{ "message_start", "message_delta", "message_stop", "content_block_start", "content_block_delta", "content_block_stop" }, 0..) |name, index| try scope.index(names, index, try scope.text(name));
+    return scope.own(try v.js.builtin(scope.engine, "Set", &.{names}));
+}
+pub fn create(engine: *v.em.Engine, response: c.JSValue, http: c.JSValue, signal: c.JSValue, json: c.JSValue, known: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const owner = try private(&scope);
@@ -43,6 +48,7 @@ pub fn create(engine: *v.em.Engine, response: c.JSValue, http: c.JSValue, signal
     try scope.put(owner, "http", http);
     try scope.put(owner, "signal", signal);
     try scope.put(owner, "json", json);
+    try scope.put(owner, "known", known);
     try scope.put(owner, "phase", c.JS_NewInt32(engine.context, 0));
     try scope.put(owner, "entered", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "closing", c.pi_js_bool(engine.context, 0));
@@ -194,7 +200,7 @@ fn eventsStep(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completion
     const frame = try scope.get(input, "value");
     const kind = try scope.get(frame, "event");
     if (try v.eq(&scope, kind, "error")) return v.errorText(&scope, try scope.get(frame, "data"));
-    if (!try sse.known(&scope, kind)) return next(&scope, owner);
+    if (!scope.truthy(try scope.invoke(try scope.get(owner, "known"), "has", &.{if (v.nullish(kind)) try scope.text("") else kind}))) return next(&scope, owner);
     const parse_generation = engine.native_allocation_generation;
     const event = parseEvent(&scope, owner, frame) catch |err| {
         const classified = engine.nativeAllocationError(err, parse_generation);

@@ -11,8 +11,8 @@ pub fn create(scope: *Scope) !c.JSValue {
     try scope.put(result, "buffer", try scope.text(""));
     return result;
 }
-fn flush(scope: *Scope, state: c.JSValue, output: c.JSValue) !void {
-    if (!scope.truthy(try scope.get(state, "event")) and try v.length(scope, try scope.get(state, "data")) == 0) return;
+fn flush(scope: *Scope, state: c.JSValue) !c.JSValue {
+    if (!scope.truthy(try scope.get(state, "event")) and try v.length(scope, try scope.get(state, "data")) == 0) return c.pi_js_null();
     const event = try scope.object();
     try scope.put(event, "event", try scope.get(state, "event"));
     try scope.put(event, "data", try scope.invoke(try scope.get(state, "data"), "join", &.{try scope.text("\n")}));
@@ -29,18 +29,19 @@ fn flush(scope: *Scope, state: c.JSValue, output: c.JSValue) !void {
     try scope.set(state, "event", c.pi_js_null());
     try scope.set(state, "data", try scope.array());
     try scope.set(state, "raw", try scope.array());
-    _ = try scope.invoke(output, "push", &.{event});
+    return event;
 }
-fn line(scope: *Scope, state: c.JSValue, input: c.JSValue, output: c.JSValue) !void {
-    if (try v.eq(scope, input, "")) return flush(scope, state, output);
+fn line(scope: *Scope, state: c.JSValue, input: c.JSValue) !c.JSValue {
+    if (try v.eq(scope, input, "")) return flush(scope, state);
     _ = try scope.invoke(try scope.get(state, "raw"), "push", &.{input});
-    if (scope.truthy(try scope.invoke(input, "startsWith", &.{try scope.text(":")}))) return;
+    if (scope.truthy(try scope.invoke(input, "startsWith", &.{try scope.text(":")}))) return c.pi_js_null();
     const colon = try scope.invoke(input, "indexOf", &.{try scope.text(":")});
     const absent = scope.equal(colon, c.JS_NewInt32(scope.engine.context, -1));
     const field = if (absent) input else try scope.invoke(input, "slice", &.{ c.JS_NewInt32(scope.engine.context, 0), colon });
     var value = if (absent) try scope.text("") else try scope.invoke(input, "slice", &.{try scope.concat(colon, c.JS_NewInt32(scope.engine.context, 1))});
     if (scope.truthy(try scope.invoke(value, "startsWith", &.{try scope.text(" ")}))) value = try scope.invoke(value, "slice", &.{c.JS_NewInt32(scope.engine.context, 1)});
     if (try v.eq(scope, field, "event")) try scope.set(state, "event", value) else if (try v.eq(scope, field, "data")) _ = try scope.invoke(try scope.get(state, "data"), "push", &.{value});
+    return c.pi_js_null();
 }
 pub fn feed(scope: *Scope, state: c.JSValue, input: c.JSValue, eof: bool) !c.JSValue {
     const output = try scope.array();
@@ -57,11 +58,16 @@ pub fn feed(scope: *Scope, state: c.JSValue, input: c.JSValue, eof: bool) !c.JSV
         if (try v.eq(scope, at, "\r") and try v.eq(scope, try scope.invoke(buffer, "charAt", &.{next}), "\n")) next = try scope.concat(next, c.JS_NewInt32(scope.engine.context, 1));
         const current = try scope.invoke(buffer, "slice", &.{ c.JS_NewInt32(scope.engine.context, 0), index });
         buffer = try scope.invoke(buffer, "slice", &.{next});
-        try line(scope, state, current, output);
+        const event = try line(scope, state, current);
+        if (!c.JS_IsNull(event)) _ = try scope.invoke(output, "push", &.{event});
     }
     if (eof) {
-        if (try v.length(scope, buffer) > 0) try line(scope, state, buffer, output);
-        try flush(scope, state, output);
+        if (try v.length(scope, buffer) > 0) {
+            const event = try line(scope, state, buffer);
+            if (!c.JS_IsNull(event)) _ = try scope.invoke(output, "push", &.{event});
+        }
+        const event = try flush(scope, state);
+        if (!c.JS_IsNull(event)) _ = try scope.invoke(output, "push", &.{event});
         buffer = try scope.text("");
     }
     try scope.set(state, "buffer", buffer);
@@ -83,13 +89,15 @@ pub fn take(engine: *v.em.Engine, state: c.JSValue, eof: bool) !?c.JSValue {
         const lf = try scope.invoke(buffer, "indexOf", &.{try scope.text("\n")});
         const no_cr = scope.equal(cr, c.JS_NewInt32(engine.context, -1));
         const no_lf = scope.equal(lf, c.JS_NewInt32(engine.context, -1));
-        const output = try scope.array();
         if (no_cr and no_lf) {
             if (!eof) return null;
             try scope.set(state, "buffer", try scope.text(""));
-            if (try v.length(&scope, buffer) > 0) try line(&scope, state, buffer, output);
-            if (try v.length(&scope, output) == 0) try flush(&scope, state, output);
-            if (try v.length(&scope, output) > 0) return c.JS_DupValue(engine.context, try v.at(&scope, output, 0));
+            if (try v.length(&scope, buffer) > 0) {
+                const event = try line(&scope, state, buffer);
+                if (!c.JS_IsNull(event)) return c.JS_DupValue(engine.context, event);
+            }
+            const event = try flush(&scope, state);
+            if (!c.JS_IsNull(event)) return c.JS_DupValue(engine.context, event);
             return null;
         }
         const index = if (no_cr) lf else if (no_lf) cr else try scope.invoke(try scope.global("Math"), "min", &.{ cr, lf });
@@ -97,8 +105,8 @@ pub fn take(engine: *v.em.Engine, state: c.JSValue, eof: bool) !?c.JSValue {
         if (try v.eq(&scope, try scope.invoke(buffer, "charAt", &.{index}), "\r") and try v.eq(&scope, try scope.invoke(buffer, "charAt", &.{following}), "\n")) following = try scope.concat(following, c.JS_NewInt32(engine.context, 1));
         const current = try scope.invoke(buffer, "slice", &.{ c.JS_NewInt32(engine.context, 0), index });
         try scope.set(state, "buffer", try scope.invoke(buffer, "slice", &.{following}));
-        try line(&scope, state, current, output);
-        if (try v.length(&scope, output) > 0) return c.JS_DupValue(engine.context, try v.at(&scope, output, 0));
+        const event = try line(&scope, state, current);
+        if (!c.JS_IsNull(event)) return c.JS_DupValue(engine.context, event);
     }
 }
 pub fn parseFailure(scope: *Scope, sse: c.JSValue, reason: c.JSValue) !c.JSValue {
