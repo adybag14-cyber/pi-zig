@@ -3,6 +3,7 @@
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
+const cache_key = "\x00native-google-response";
 const Kind = enum(c_int) { text, data, functionCalls, executableCode, codeExecutionResult };
 fn construct(engine: *v.em.Engine, target: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     return @import("native_class.zig").object(engine, target);
@@ -12,8 +13,7 @@ fn getter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValu
     return get(engine, receiver, @enumFromInt(magic)) catch |err| @import("native_sdk.zig").fail(engine, err);
 }
 pub fn create(engine: *v.em.Engine) !c.JSValue {
-    const cache_name = "@pi-native/google-genai-response";
-    if (engine.native_module_values.get(cache_name)) |value| return c.JS_DupValue(engine.context, value);
+    if (engine.native_module_values.get(cache_key)) |value| return c.JS_DupValue(engine.context, value);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const prototype = try scope.object();
@@ -25,7 +25,8 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
         try scope.put(descriptor, "configurable", c.pi_js_bool(engine.context, 1));
         _ = try scope.invoke(try scope.global("Object"), "defineProperty", &.{ prototype, try scope.text(field.name), descriptor });
     }
-    try engine.registerValueModule(cache_name, constructor);
+    try engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1);
+    engine.native_module_values.putAssumeCapacity(cache_key, c.JS_DupValue(engine.context, constructor));
     return c.JS_DupValue(engine.context, constructor);
 }
 fn warn(scope: *Scope, text: c.JSValue) !void {
