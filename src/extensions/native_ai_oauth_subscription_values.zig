@@ -33,7 +33,7 @@ pub fn errorMessage(s: *Scope, value: c.JSValue) !c.JSValue {
     const error_constructor = try s.global("Error");
     const instance = c.JS_IsInstanceOf(s.engine.context, value, error_constructor);
     if (instance < 0) return v.js.capture(s.engine);
-    return if (instance != 0) s.get(value, "message") else s.stringify(value);
+    return if (instance != 0) s.get(value, "message") else s.call(try s.global("String"), c.pi_js_undefined(), &.{value});
 }
 pub fn trusted(s: *Scope, raw: c.JSValue, https_only: bool, message: []const u8) !c.JSValue {
     const generation = s.engine.native_allocation_generation;
