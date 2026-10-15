@@ -1,0 +1,8 @@
+{
+  "free_kib": 18135592,
+  "coordinated_with": "Root pending LIGHT ResponsesRetry14 slot; no launch without grant",
+  "status": "admitted",
+  "observed_utc": "2026-10-15T20:39:03.4835318+00:00",
+  "required_kib": 2097152,
+  "heap_mb": 256
+}

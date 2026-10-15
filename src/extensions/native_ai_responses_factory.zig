@@ -193,6 +193,7 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const initial = try scope.object();
     try scope.put(initial, "accept", try scope.text(if (mode == .codex) "text/event-stream" else "application/json"));
     try scope.put(initial, "content-type", try scope.text("application/json"));
+    if (mode != .codex) try scope.put(initial, "x-stainless-retry-count", try scope.stringify(try scope.get(owner, "attempt")));
     try scope.put(initial, if (mode == .azure) "api-key" else "authorization", if (mode == .azure) try scope.get(owner, "apiKey") else try scope.concat(try scope.text("Bearer "), try scope.stringify(try scope.get(owner, "apiKey"))));
     var header_args = [_]c.JSValue{initial};
     const result = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("Headers"), header_args.len, &header_args)));
@@ -311,6 +312,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
     const timeout = try v.optional(scope, options, "timeoutMs");
     var milliseconds: i64 = 600000;
     if (!c.JS_IsUndefined(timeout) and c.JS_ToInt64(engine.context, &milliseconds, timeout) < 0) return v.js.capture(engine);
+    if (try aborted(scope, owner)) return fail(scope, owner, try abortError(scope));
     const fetch = try v.optional(scope, options, "fetch");
     var transport: c.JSValue = undefined;
     if (!v.nullish(fetch)) {
