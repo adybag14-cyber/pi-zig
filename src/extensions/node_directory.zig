@@ -28,7 +28,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, mark_value: ?*const c.JS_MarkF
 
 fn originalFailure(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     return c.JS_ThrowTypeError(engine.context, "Native Dirent: %s", @as([*:0]const u8, @errorName(err)));
 }
 
@@ -225,12 +225,7 @@ fn nameValue(engine: *engine_mod.Engine, bytes: []const u8, encoding: ?node_buff
 }
 
 fn joinPath(engine: *engine_mod.Engine, left: []const u8, right: []const u8) ![]u8 {
-    return node_path.join(engine.gpa, &.{ left, right }, flavor) catch |err| switch (err) {
-        // node_path uses an allocating writer; its WriteFailed is allocation
-        // failure rather than a filesystem I/O failure.
-        error.WriteFailed => error.OutOfMemory,
-        else => err,
-    };
+    return node_path.join(engine.gpa, &.{ left, right }, flavor);
 }
 
 fn collect(engine: *engine_mod.Engine, input_path: c.JSValue, path: []const u8, options: Options, promise: bool, post_options: c.JSValue, data: [*c]c.JSValue) !c.JSValue {

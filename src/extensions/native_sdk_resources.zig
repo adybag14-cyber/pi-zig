@@ -28,6 +28,7 @@ pub fn skillOverride(engine: *engine_mod.Engine, resolved: c.JSValue) !c.JSValue
 }
 pub fn reload(engine: *engine_mod.Engine, data: c.JSValue) !void {
     const io = engine.native_io orelse return;
+    try @import("native_sdk_resource_paths.zig").reset(engine, data);
     const options = try sdk.get(engine, data, "options");
     defer engine.freeValue(options);
     const cwd_value = try sdk.get(engine, options, "cwd");
@@ -46,6 +47,7 @@ pub fn reload(engine: *engine_mod.Engine, data: c.JSValue) !void {
     defer arena.deinit();
     const allocator = arena.allocator();
     const skill_paths = try paths(engine, allocator, options, "additionalSkillPaths", cwd, project, root, "skills", !no_skills);
+    try @import("native_sdk_resource_paths.zig").record(engine, data, "lastSkillPaths", skill_paths);
     const skills = try skills_mod.loadTrusted(engine.gpa, io, cwd, root, true, skill_paths, false);
     defer {
         for (skills) |*item| item.deinit(engine.gpa);
@@ -69,6 +71,7 @@ pub fn reload(engine: *engine_mod.Engine, data: c.JSValue) !void {
     }
     try publish(engine, data, "skills", skill_rows, skill_diagnostics);
     const prompt_paths = try paths(engine, allocator, options, "additionalPromptTemplatePaths", cwd, project, root, "prompts", !no_prompts);
+    try @import("native_sdk_resource_paths.zig").record(engine, data, "lastPromptPaths", prompt_paths);
     const prompts = try prompts_mod.loadTrusted(engine.gpa, io, cwd, root, true, prompt_paths, false);
     defer {
         for (prompts) |*item| item.deinit(engine.gpa);
@@ -91,6 +94,9 @@ pub fn reload(engine: *engine_mod.Engine, data: c.JSValue) !void {
         try sdk.append(engine, prompt_rows, c.JS_DupValue(engine.context, row));
     }
     try publish(engine, data, "prompts", prompt_rows, prompt_diagnostics);
+    const theme_paths = try paths(engine, allocator, options, "additionalThemePaths", cwd, project, root, "themes", !try flag(engine, options, "noThemes"));
+    try @import("native_sdk_resource_paths.zig").record(engine, data, "lastThemePaths", theme_paths);
+    try @import("native_sdk_resource_paths.zig").reloadThemes(engine, data);
     const contexts = try sdk.array(engine);
     defer engine.freeValue(contexts);
     if (!try flag(engine, options, "noContextFiles")) {
@@ -329,8 +335,11 @@ fn paths(engine: *engine_mod.Engine, allocator: std.mem.Allocator, options: c.JS
         try result.append(allocator, if (std.fs.path.isAbsolute(path)) try allocator.dupe(u8, path) else try std.fs.path.resolve(allocator, &.{ cwd, path }));
     };
     if (defaults) {
-        try result.append(allocator, try std.fs.path.join(allocator, &.{ project, kind }));
-        try result.append(allocator, try std.fs.path.join(allocator, &.{ root, kind }));
+        for ([_][]const u8{ project, root }) |directory| {
+            const path = try std.fs.path.join(allocator, &.{ directory, kind });
+            const stat = std.Io.Dir.cwd().statFile(engine.native_io orelse return error.NativeIoUnavailable, path, .{}) catch continue;
+            if (stat.kind == .directory) try result.append(allocator, path);
+        }
     }
     return result.items;
 }
@@ -353,7 +362,7 @@ fn publish(engine: *engine_mod.Engine, data: c.JSValue, name: [*:0]const u8, row
     try sdk.put(engine, result, "diagnostics", c.JS_DupValue(engine.context, diagnostics));
     try sdk.put(engine, data, name, c.JS_DupValue(engine.context, result));
 }
-fn duplicate(engine: *engine_mod.Engine, rows: c.JSValue, name: []const u8, path: []const u8, kind: []const u8, diagnostics: c.JSValue) !bool {
+pub fn duplicate(engine: *engine_mod.Engine, rows: c.JSValue, name: []const u8, path: []const u8, kind: []const u8, diagnostics: c.JSValue) !bool {
     for (0..try sdk.length(engine, rows)) |index| {
         const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, @intCast(index)));
         defer engine.freeValue(row);

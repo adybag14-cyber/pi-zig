@@ -1,0 +1,64 @@
+import{mkdirSync,writeFileSync}from'node:fs';
+const{DefaultResourceLoader,SettingsManager}=resourcePathsAPI,root=resourceFixtureRoot;
+const rows=[];globalThis.resourcePathsRows=rows;
+for(const p of ['agent','alpha','beta','collision','prompts','themes'])mkdirSync(root+'/'+p,{recursive:true});
+for(const [path,body]of Object.entries({
+ 'alpha/SKILL.md':'---\nname: alpha\ndescription: Alpha skill\n---\nAlpha body\n',
+ 'beta/SKILL.md':'---\nname: beta\ndescription: Beta skill\ndisable-model-invocation: true\n---\nBeta body\n',
+ 'collision/SKILL.md':'---\nname: alpha\ndescription: Colliding alpha\n---\nCollision body\n',
+ 'prompts/one.md':'---\ndescription: First prompt\n---\nFirst $1\n',
+ 'prompts/two.md':'---\ndescription: Second prompt\n---\nSecond $ARGUMENTS\n',
+ 'themes/one.json':JSON.stringify({...resourceFixtureTheme,name:'fixture-theme',colors:{...resourceFixtureTheme.colors,accent:'#112233'}}),
+ 'themes/two.json':JSON.stringify({...resourceFixtureTheme,name:'fixture-theme',colors:{...resourceFixtureTheme.colors,accent:'#445566'}}),
+ 'themes/bad.json':'{}'
+}))writeFileSync(root+'/'+path,body);
+globalThis.freezeResourceFixture?.();
+const normalize=value=>JSON.parse(JSON.stringify(value,(_,v)=>typeof v==='string'?v.replaceAll('\\','/').replaceAll(root.replaceAll('\\','/'),'<fixture>'):v));
+const metadata=(source,baseDir)=>({source,scope:'temporary',origin:'top-level',...(baseDir===undefined?{}:{baseDir})});
+const entry=(path,source='extension:fixture',baseDir)=>({path,metadata:metadata(source,baseDir)});
+function create(extra={}){return new DefaultResourceLoader({cwd:root,agentDir:root+'/agent',settingsManager:SettingsManager.inMemory({terminal:{trueColor:true}}),noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true,noContextFiles:true,...extra})}
+const view=loader=>normalize({skills:loader.getSkills(),prompts:loader.getPrompts(),themes:{themes:loader.getThemes().themes.map(t=>({name:t.name,sourcePath:t.sourcePath,sourceInfo:t.sourceInfo,fg:t.fg('accent','X')})),diagnostics:loader.getThemes().diagnostics}});
+{
+ const loader=create();await loader.reload();rows.push({case:'empty',value:view(loader)});const wrappers=[loader.getSkills(),loader.getPrompts(),loader.getThemes()],before=[wrappers[0].skills,wrappers[1].prompts,wrappers[2].themes];const result=loader.extendResources({});const after=[loader.getSkills(),loader.getPrompts(),loader.getThemes()];rows.push({case:'empty-extend',undefined:result===undefined,stable:before.map((x,i)=>x===[after[0].skills,after[1].prompts,after[2].themes][i]),wrapperFresh:wrappers.every((x,i)=>x!==after[i])});
+ loader.extendResources({skillPaths:[entry(' alpha ','extension:alpha','./alpha/..')],promptPaths:[entry('prompts/one.md','extension:one')],themePaths:[entry('themes/one.json','extension:one')]});if(loader.getThemes().themes.length!==1)throw Error('Actual fixture Theme must load');rows.push({case:'load-real-files-with-disabled-defaults',value:view(loader)});
+ loader.extendResources({skillPaths:[entry('./beta','extension:beta')],promptPaths:[entry('prompts/two.md','extension:two')]});rows.push({case:'merge-existing-resource-paths',value:view(loader)});
+ loader.extendResources({skillPaths:[entry('alpha/../alpha','extension:changed')],promptPaths:[entry('./prompts/one.md','extension:changed')]});rows.push({case:'canonical-dedupe-new-metadata',value:view(loader)});
+ loader.extendResources({skillPaths:[entry('collision','extension:collision')],themePaths:[entry('themes/two.json','extension:collision')]});rows.push({case:'name-collisions',value:view(loader)});
+ await loader.reload();rows.push({case:'reload-clears-extension-paths',value:view(loader)});
+}
+{
+ const loader=create({additionalSkillPaths:[root+'/alpha'],additionalPromptTemplatePaths:[root+'/prompts/one.md'],additionalThemePaths:[root+'/themes/one.json']});await loader.reload();if(loader.getThemes().themes.length!==1)throw Error('Initial real Theme must load');loader.extendResources({skillPaths:[entry('beta')],promptPaths:[entry('prompts/two.md')]});rows.push({case:'retains-initial-resource-paths',value:view(loader)});
+}
+{
+ const loader=create();await loader.reload();loader.extendResources({skillPaths:[entry('missing-skill')],promptPaths:[entry('missing-prompt.md')],themePaths:[entry('missing-theme.json')]});rows.push({case:'missing-resources-diagnostics',value:view(loader)});
+}
+{
+ const loader=create();await loader.reload();loader.extendResources({themePaths:[entry('themes/bad.json')]});rows.push({case:'invalid-theme-diagnostic',value:view(loader)});
+}
+{
+ const log=[],diagnostics=[{type:'warning',message:'caller diagnostic',callback(){}}],nested={callback(){}},skill={name:'override',filePath:root+'/beta/SKILL.md',description:'Override',baseDir:root+'/beta',nested,sourceInfo:{source:'caller'}};
+ const loader=create({skillsOverride(result){log.push({type:'skills',names:result.skills.map(x=>x.name),receiver:this instanceof DefaultResourceLoader});return{skills:[skill],diagnostics}},promptsOverride(result){log.push({type:'prompts',names:result.prompts.map(x=>x.name)});return result},themesOverride(result){log.push({type:'themes',names:result.themes.map(x=>x.name)});return result}});await loader.reload();log.length=0;
+ loader.extendResources({skillPaths:[entry('beta','extension:beta')],promptPaths:[entry('prompts/two.md')],themePaths:[entry('themes/one.json')]});const published=loader.getSkills();rows.push({case:'override-order-and-live-identity',log:[...log],copy:published.skills[0]!==skill,nested:published.skills[0].nested===nested,diagnostics:published.diagnostics===diagnostics,callback:published.diagnostics[0].callback===diagnostics[0].callback,sourceInfo:normalize(published.skills[0].sourceInfo)});
+ const prompt=loader.getPrompts(),theme=loader.getThemes();log.length=0;loader.extendResources({skillPaths:[entry('alpha')]});rows.push({case:'only-updates-selected-category',log,promptStable:prompt.prompts===loader.getPrompts().prompts,themeStable:theme.themes===loader.getThemes().themes});
+}
+{
+ const marker={},log=[];let fail=false;const loader=create({skillsOverride(result){log.push(result.skills.map(x=>x.name));if(fail)throw marker;return result}});await loader.reload();const before=loader.getSkills();fail=true;let same=false,sync=false;try{loader.extendResources({skillPaths:[entry('beta')]})}catch(e){same=e===marker;sync=true}rows.push({case:'override-failure-is-synchronous-and-preserves-cache',same,sync,stable:loader.getSkills().skills===before.skills});fail=false;loader.extendResources({skillPaths:[entry('alpha')]});rows.push({case:'retains-paths-after-override-failure',log,value:view(loader)});
+}
+{
+ const marker={},loader=create();await loader.reload();let same=false;try{loader.extendResources({skillPaths:[{path:'alpha',get metadata(){throw marker}}]})}catch(e){same=e===marker}rows.push({case:'metadata-getter-exception-identity',same});
+}
+{
+ const log=[],loader=create();await loader.reload();const get=category=>({get map(){log.push('get map:'+category);return function(cb){log.push('call map:'+category);return []}}});
+ loader.extendResources({get skillPaths(){log.push('skillPaths');return get('skills')},get promptPaths(){log.push('promptPaths');return get('prompts')},get themePaths(){log.push('themePaths');return get('themes')}});rows.push({case:'normalization-evaluation-order',log});
+}
+{
+ const marker={};let fail=false;const loader=create({skillsOverride(result){return fail?{skills:result.skills,get diagnostics(){throw marker}}:result}});await loader.reload();fail=true;let same=false;try{loader.extendResources({skillPaths:[entry('beta')]})}catch(e){same=e===marker}rows.push({case:'diagnostics-getter-failure-keeps-assigned-resource-array',same,names:loader.getSkills().skills.map(x=>x.name)});
+}
+{
+ const loader=create();await loader.reload();const log=[],handler=(e)=>{log.push(e.type+':'+e.reason);if(e.type==='resources_discover')return{skillPaths:['beta'],promptPaths:['prompts/two.md'],themePaths:['themes/one.json']}};
+ const extension={path:'<inline:wired>',resolvedPath:'<inline:wired>',sourceInfo:{path:'<inline:wired>',source:'inline',scope:'temporary',origin:'top-level'},handlers:new Map([['session_start',[handler]],['resources_discover',[handler]]]),tools:new Map(),commands:new Map(),flags:new Map(),shortcuts:new Map(),messageRenderers:new Map(),entryRenderers:new Map()};
+ const runner=new resourcePathsAPI.ExtensionRunner([extension],loader.getExtensions().runtime,root,resourcePathsAPI.SessionManager.inMemory(root),undefined),session=Object.create(resourcePathsAPI.SessionPrototype);
+ Object.assign(session,{_extensionRunner:runner,_resourceLoader:loader,_cwd:root,_sessionStartEvent:{type:'session_start',reason:'startup'},_extensionMode:'print',getActiveToolNames(){log.push('active tools');return ['read']},_rebuildSystemPrompt(names){log.push(['rebuilt',names])}});
+ await session.bindExtensions({});if(loader.getThemes().themes.length!==1)throw Error('Real runner must load an actual Theme');rows.push({case:'actual-runner-loader-and-session-binding-composition',log,value:view(loader)});
+}
+export const proof=true;

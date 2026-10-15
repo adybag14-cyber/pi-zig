@@ -1598,6 +1598,13 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-sdk-session-bindings", "Compile ordinary session extension binding and resource discovery bodies").dependOn(&bindings_tests.step);
     b.step("test-native-sdk-session-bindings", "Compare actual upstream extension binding and discovered resource ordering").dependOn(&b.addRunArtifact(bindings_tests).step);
 
+    const resource_paths_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_resource_paths_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native real resource paths"}, .use_llvm = use_llvm });
+    linkQuickJs(b, resource_paths_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(resource_paths_tests.root_module, sqlite_lib_dir, sqlite_library);
+    resource_paths_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-resource-paths", "Compile real discovered skill prompt and theme path loading").dependOn(&resource_paths_tests.step);
+    b.step("test-native-sdk-resource-paths", "Compare actual upstream loader path merging overrides and filesystem resources").dependOn(&b.addRunArtifact(resource_paths_tests).step);
+
     const manual_compaction_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_compaction_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary compaction"}, .use_llvm = use_llvm });
     linkQuickJs(b, manual_compaction_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(manual_compaction_tests.root_module, sqlite_lib_dir, sqlite_library);
