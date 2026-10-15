@@ -22,3 +22,13 @@ The OpenAI Completions codec, partial JSON parser, dependency pins, and coding-a
 ## Qualification boundary
 
 The previous native catalog identifies Pi 1.1.0, source `19cb534c3b6e3871458a8fa59e98f0312c50e995`, and typed catalog SHA-256 `439c53478c84ed27a58f8b54e1c3bd45810e5a969515b4e3666a3898d51ee22f`. It remains historical evidence. This refresh must obtain matching official generator output before changing the native catalog provenance. Neither a source refresh nor catalog component success qualifies the full native Pi application or authorizes removal of the compatibility host.
+
+## Official latest generator and source preparation
+
+The unmodified latest generator ran with `--strict --json-only` against eight captured public metadata responses, all HTTP 200. Its typed output SHA-256 is `4334227667568186df17628973e890a2582a44c4ef67f16621704387ae73c8c9`: 1,608 chat, 59 image, and 40 classifier models, totaling 1,707 models across 42 providers. The complete output bundle has 87 files. Compared with the historical native input, 122 typed identities were added and 46 removed. The raw typed catalog is retained in the verification packet without modification.
+
+Generator post-verification found no drift among 1,924 tracked source files, 1,925 source paths, five launch controls, or 1,774 pinned Node tool files. The official hydration script then generated 43 provider data files from that fresh typed input. The resulting complete Source manifest contains 1,967 files. Hydration preserved all tracked files, all 31,064 dependency/runtime files, all 1,774 Node tool files, all controls, and the expected path inventory.
+
+All 365 external npm lock records match the previous b06 source. Preparation checked 281 installed package metadata pins and explicitly retained 80 absent platform-optional dependencies and four unchanged stale duplicate workspace paths. Those absences are documented in the dependency audit; they are not silently classified as installed. A new dependency junction belongs only to the latest checkout. The source observer maps current official workspace exports, including `@earendil-works/chord/output`, to the latest original TypeScript source, checks each observed module against the frozen manifests, and rejects old workspace class implementations.
+
+At this preparation checkpoint the native import, native tests, publication dry-run validator, and offline generator replay remain pending. The generator and hydration receipts establish source and catalog-input preparation only.

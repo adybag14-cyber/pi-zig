@@ -1,0 +1,34 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Prepare-Source5abHydration-20261015.ps1",
+    "sha256": "47AB537DEDE017B4573A1ACE782B0EECFB1B9C88D20CDFC5CC715ED559DA34CF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-observe-20261015.mjs",
+    "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\models.all.json",
+    "sha256": "4334227667568186DF17628973E890A2582A44C4EF67F16621704387AE73C8C9"
+  },
+  {
+    "path": "C:/Program Files/nodejs/node.exe",
+    "sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-Catalog5abSource-20261015.ps1",
+    "sha256": "4CDDBA1713784E42EA68A545981967F38A47453A3B81D14389F48EEE6E18C37D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-capture-fetch-20261015.mjs",
+    "sha256": "DE5984AAEC18432A57DBCC0DE75B9DADE16BF4A18B39CBF18BBE691A5BF150AC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:/Program Files/nodejs/node.exe",
+    "sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088"
+  }
+]

@@ -1,0 +1,350 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\models.all.json",
+    "sha256": "4334227667568186DF17628973E890A2582A44C4EF67F16621704387AE73C8C9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\models.json",
+    "sha256": "9D06FCA35EE854B0A05C32D521E022351BB366B07804CBA2A809094B69CD1813"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers.json",
+    "sha256": "6D36F14C370D2651150F2868B9F218EB997E3E56ACEA0E8256E597980F27C917"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\amazon-bedrock.all.json",
+    "sha256": "6834CA134F8E554D566CB11C52E6CA0D33AFD71D9AE20897900E1BAA7AA31ADE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\amazon-bedrock.json",
+    "sha256": "993406EF216278936343E4463B6070A0DB96432513E78A66452482DD53B1C416"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\ant-ling.all.json",
+    "sha256": "08B49E982450B3B6C4080AF0D53F03FF409AF5592677738273E997992F908490"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\ant-ling.json",
+    "sha256": "6F18D16D3BEAB9FD704CF62EBF4CCD04F4D9C1691B3445E6AE6AE3F3695295B1"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\anthropic.all.json",
+    "sha256": "651149CB3102B0D8C4BC7BCA159C54AB1CC4897E72E229C4163C988BDB544463"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\anthropic.json",
+    "sha256": "2385B6CD51B64C34666D648BBA61442F923CE71381647345A4583C8635EC7593"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\azure.all.json",
+    "sha256": "742E949AA69CAF2864A4298CA639D8B9C22437E3A34B0A68B7137DE56392A441"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\azure.json",
+    "sha256": "EEF13A23EB34FA98D1369E92D4523DDA505C8032023F9E8DF8E64D9A21B1394D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\baseten.all.json",
+    "sha256": "180CE524DB3585DD8B370E441209A0F6577AD77EC00CB0D0295AB4D418BFC599"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\baseten.json",
+    "sha256": "CDB5D8D411AAAFD522413EE77A2B734AB7C1080209FB52FB4295C301A372E4AE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\cerebras.all.json",
+    "sha256": "C01A4D194CF99C1CA8E127CB7072367EC9035D10856B27FB698F81094ACC5D73"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\cerebras.json",
+    "sha256": "9FF04290722F8F7EE8BC71FBE8A480053BC2B6787172DD3439424B787E9960B4"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\cloudflare-ai-gateway.all.json",
+    "sha256": "6097BA23F4DE2690472170FDBC8A1465D2BD5FC7E52473E61CEF3C5B88F59994"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\cloudflare-ai-gateway.json",
+    "sha256": "889A14E981CBC444CA9E0915C53C4238DE650A7F7E25F50881686DB3BF67F55C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\cloudflare-workers-ai.all.json",
+    "sha256": "E8F85E099B5D115DEEFBA88ECE08514DDDE73E1A68533DC88A014E450C497189"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\cloudflare-workers-ai.json",
+    "sha256": "39CC5C9B05AFB920F1994194D818FA2EB864057040BEF02A3B0A24A75CB14045"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\deepseek.all.json",
+    "sha256": "3D4F8E0B909D3EB93B5DD8EE2FAE6FE345DDC1C118A085A681A20C139FF207FA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\deepseek.json",
+    "sha256": "35E121D8237514C8BBBE0938E210F32B340D4E7272B5493EB649C52F4F9DA56E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\fireworks.all.json",
+    "sha256": "4C0F87C2499299659170963762FEA97B662CF972582EED71E1E3CC6774D34DE9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\fireworks.json",
+    "sha256": "7ACD8C6AE0653EA747BED93EB74B3551DE976C4FCB26445838AFDF6139E0C2FC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\github-copilot.all.json",
+    "sha256": "4D4829FE461E24D11748096B9F9316A176FC9FDDE049546963E09B47A3B146FE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\github-copilot.json",
+    "sha256": "B0E0DA01512093FC4EF9EB9B046B4181301233983B0CE82D3A0D66895C4EE8F7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\google-vertex.all.json",
+    "sha256": "9F2F4C3233B28FBB6D6479E360D41F1563B09C0F71ABBD808BBE220C1AAFB9C5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\google-vertex.json",
+    "sha256": "E8FF69CCE9F15E738BF76D45EEF15CC0C269277C101296D16BE88BB85B4C8431"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\google.all.json",
+    "sha256": "A159A8FFE50220AD8FF87F721FA2D2E46476B72466DA326B8F5BEFA05DD0FA32"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\google.json",
+    "sha256": "A45ED4A2246005E3D4E42219B8DC65788FF6282E28E9679ACDAA2378D9F4D7C3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\groq.all.json",
+    "sha256": "390E52047FEC1A492F55F918CCC18B40D0A60EBBB8983E4F06D2A4D24798C6F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\groq.json",
+    "sha256": "ADF2FCB1FE4A30E8D1DDBE922C7DF145FF1E06990D79309A0B350B9A13A0D702"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\huggingface.all.json",
+    "sha256": "C30CAA81FE18D452C5EB78D0E651C567F5C4B70A2D71D8D6A22F6F2F66F8EEBE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\huggingface.json",
+    "sha256": "675711BC13D9961142EBDE568FDD5BDB2B6412028EEE372D42BAE2DD6ED47643"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\kimi-coding.all.json",
+    "sha256": "C12B0A4AFC2A1068A580B7BE55E94AB42A58111BDB8D46A1AB2C00B1632FE35C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\kimi-coding.json",
+    "sha256": "E6CEDE9347A8E157629C229F84DE6522AC4EDD3F041D7EB44B148B02E1867966"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\meta.all.json",
+    "sha256": "87F259EB73DA0FAD52EBDA744B94AD3A7FDD94903A35FB007F8790E433A8F8F3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\meta.json",
+    "sha256": "5EB7835118F8E23AEAD23FD9B92D756919B601E44E7AB3985BCF6E6AD03A40B2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\minimax-cn.all.json",
+    "sha256": "44ABDE682A888C8F1BE30603E6ABA23F92593BECE7310821C3470F0878805271"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\minimax-cn.json",
+    "sha256": "B548E3C3EF0935D2BE13638F2E6061665A0B770E5B6DCD65FF00B074C5B6A606"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\minimax.all.json",
+    "sha256": "983F4371CC7E11CA9ADF8EE58700D7CB24869F88C7EC326FF73415C974B6E1EF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\minimax.json",
+    "sha256": "4C331FBD8E3162F707AA5B7A625307C0630F2D4A3F6C73DEC7BB27BC69D6C611"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\mistral.all.json",
+    "sha256": "05FBB8CED283B4D991A043A60246825749D40696F490B58C2B9D1EF8977479D3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\mistral.json",
+    "sha256": "C8AE62C1D43168887A5581BA75D68A26898190AB67129CB7453AE5C5473CA436"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\moonshotai-cn.all.json",
+    "sha256": "2E69C8EE8DAA0A569A0A56FC22B1B798396D7B8A5D197152E4126B1D729DDF34"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\moonshotai-cn.json",
+    "sha256": "6F1B86A35335CB65F58B4B62820B9FF7EE97A7EBCEB5608FED730674650CFF7C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\moonshotai.all.json",
+    "sha256": "E46BCCD6C8FB4F8C5AB0F3732598EB74373DC5ACCCB192C30727623EDA3A0045"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\moonshotai.json",
+    "sha256": "FBA2F2EB8D0E38A29936CB99EAF83120DB651BBAB4158E696153F9A0F4EE3F4C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\nvidia.all.json",
+    "sha256": "6CD73CFF67D5B651ED1893231429F5FD15E1AC2E311EE70BEF9465D36D858C96"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\nvidia.json",
+    "sha256": "BC67E4E1057D9BDB206C37DCE4DC6677C00ABA4F98F2E9F3F284C517A4DB9520"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\openai-codex.all.json",
+    "sha256": "75E55B6DA4754E8A9BD4EC970C38B04CB620F9A1A3202D0B8EA6DBB047607810"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\openai-codex.json",
+    "sha256": "D3671B42AAB12ED46617B1CBA07F87DA9B99A06DEBD968A7138A2D188B24AE3B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\openai.all.json",
+    "sha256": "D9E3BA5488251D3EAF1BAF303F5500DA49B799B0B202F3C63EC659D9A295E3FF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\openai.json",
+    "sha256": "EA33A39307DC356D633049C1F85837E8DE4DBB6E8D5B1CE0BB9D9D4B34125027"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\opencode-go.all.json",
+    "sha256": "CFDEC4848C1F30290F66983D0B876B86459A41F729F7818EF2B1891725DD9FB6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\opencode-go.json",
+    "sha256": "26DF98D3AF0BE437940F38B49F60D6E83406C3242AD6ED5A6008537AF6C3FBCA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\opencode.all.json",
+    "sha256": "97D6EAAA2D873D5BD2095A6800734C12D6CFFA5FF9ADB3D8F442839A2EAD1AA1"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\opencode.json",
+    "sha256": "D9761E4AF0E717FBF28D75E995CCFBB0F8CF1E68AF59FA3CC8659EF172A3CD9D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\openrouter.all.json",
+    "sha256": "BB9E09F2EA15FDD479263C0F5CE25B44F8B7E69B3DBCB33CD46336C0CD704B83"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\openrouter.json",
+    "sha256": "0F127FBB059C5A7D23D63D0BB8C130AF11C13DD4A8ECA08931DDC4112444912F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\qwen-token-plan-cn.all.json",
+    "sha256": "889C795F93D32026B545186F1D81186B3A4E50757641AE023053AB9C0702B5BA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\qwen-token-plan-cn.json",
+    "sha256": "E918E66A667F11D8621A2670A2C21918F6A6F1BC9786E3187D56C03D4C939DB5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\qwen-token-plan-individual.all.json",
+    "sha256": "6868C2C95A740EA78A69EE241BBE2090346674F405D077FF9786E0829A56F1B1"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\qwen-token-plan-individual.json",
+    "sha256": "AE0798586A3E715784A5C1812B16745694207C060EF0007F5CA53F9FC8EA7BBB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\qwen-token-plan.all.json",
+    "sha256": "0DC64312228A5FC7D47E71489EFD77B920F365C9A8D2073CC820AD13D62283EC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\qwen-token-plan.json",
+    "sha256": "E9955313DA87241DA2544E8B25425BF62CD9C40530635C60C037CC6794FFB863"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\radius.all.json",
+    "sha256": "235690C9AF0DEEE41CA5B5E2CCF4690FC42E81B582B353AAE0C1197FFDC05090"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\radius.json",
+    "sha256": "00248C2CD4E9A2C90F1DB0EC35E2EFB8367B1BC00CC1F1EEA7F55D216077A245"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\together.all.json",
+    "sha256": "081F2A0AA83B796AC53DD444619B32D7F39AB13BD2BC3195687FCFE50576094F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\together.json",
+    "sha256": "4DD5E385DBFEE8D21981865551171682E72F5BD8C03D02B218DDF880BEE86BB2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\typesafe.all.json",
+    "sha256": "D84DC578280C2D5C9D65A7870FE1488A9AFC50C7CB2A8C3AF040EA983AE25D47"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\typesafe.json",
+    "sha256": "CA3D163BAB055381827226140568F3BEF7EAAC187CEBD76878E0B63E9E442356"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\vercel-ai-gateway.all.json",
+    "sha256": "80AD1CDCAAF53E45F47D0E48396C7D45600F7B513BFFD492C2F802A6BAF4A2D7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\vercel-ai-gateway.json",
+    "sha256": "265984288B9F0658E854EC33EEB7A101316B475AD111D937279F83985237E69B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\xai.all.json",
+    "sha256": "B28FB98919CA9C673B4F008B9B34938677447E41C3E40FAEF1671F2B66B2CA17"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\xai.json",
+    "sha256": "DFC4D13C66BB66FAD540E4FF31D9B5D5B02C9D2AF374649192826C20E86A5A01"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\xiaomi-token-plan-ams.all.json",
+    "sha256": "8C1428C2856C167314CB6C35070F966F9E6A6DBFC3E4A7DE411AF089A5FCC600"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\xiaomi-token-plan-ams.json",
+    "sha256": "A003DBCB37BD33B24E33D23E67E0734C9FCB709D9E1900A4E263F887AD89F9DB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\xiaomi-token-plan-cn.all.json",
+    "sha256": "973E4B1B54F9310694C4D61E1041B565A965FC972070A4298705D45E5369AE13"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\xiaomi-token-plan-cn.json",
+    "sha256": "46D72CF961C8AE04265860BDBB7BAB683BB97C8CCAB0E005081869E5A5E85B59"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\xiaomi-token-plan-sgp.all.json",
+    "sha256": "87EC63B23BB5C2C759F01B728BA4E533AC5615637E30CF1CA67B1AB8200A8DB3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\xiaomi-token-plan-sgp.json",
+    "sha256": "B49E8514C04FE26216DA8C67BD4F5C948B290C7EC4396D7073FF73ACDFF9460D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\xiaomi.all.json",
+    "sha256": "71FAD50681BA063C9A12B21B5B5BD4B0A6E7F92B60ABFF2536D739D7544C7466"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\xiaomi.json",
+    "sha256": "3D9380046CDB9090689143DC006F30FF11F6F89ACF22378EAAA4747C94678CCA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\zai-coding-cn.all.json",
+    "sha256": "DB4E3BDA3D61136CF07B07A0C69BEB10B12D86EB95D7F04B94C6546C4EEC4F05"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\zai-coding-cn.json",
+    "sha256": "09A34807C134552448A9BE56361DE398E9DF95E624A8640D6371645D7AB593FD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\zai.all.json",
+    "sha256": "7DAEC5A71B37B06C787DEDE6EDD75542CA173EDE321AAE161308D918BED5756E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog5ab-official-first-20261015\\providers\\zai.json",
+    "sha256": "1EDB537A7F7CC5CC5AA35BB5B381EB036720AF64CB161ADD41FAB6E55B21B4F2"
+  }
+]

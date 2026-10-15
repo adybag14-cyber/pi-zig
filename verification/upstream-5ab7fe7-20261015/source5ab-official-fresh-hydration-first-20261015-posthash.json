@@ -1,0 +1,18 @@
+{
+  "observed_utc": "2026-10-15T16:24:22.9727489+00:00",
+  "control_drift": 0,
+  "tracked_drift": 0,
+  "manifests": [
+    {
+      "files": 31064,
+      "drift": 0,
+      "name": "dependencies"
+    },
+    {
+      "files": 1774,
+      "drift": 0,
+      "name": "node_tools"
+    }
+  ],
+  "tracked_source": 1924
+}
