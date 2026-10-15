@@ -37,18 +37,18 @@ pub fn usage(scope: *Scope, value: c.JSValue, model: c.JSValue) !c.JSValue {
     if (c.JS_IsUndefined(try scope.get(value, "input_tokens")) and c.JS_IsUndefined(try scope.get(value, "output_tokens"))) return c.pi_js_undefined();
     const input = try tokenCount(scope, try scope.get(value, "input_tokens"));
     const output = try tokenCount(scope, try scope.get(value, "output_tokens"));
-    const result = try scope.object();
-    try scope.put(result, "input", input);
-    try scope.put(result, "output", output);
-    try scope.put(result, "cacheRead", c.JS_NewInt32(scope.engine.context, 0));
-    try scope.put(result, "cacheWrite", c.JS_NewInt32(scope.engine.context, 0));
-    try scope.put(result, "totalTokens", try binary(scope, .add, input, output));
+    const token_usage = try scope.object();
+    try scope.put(token_usage, "input", input);
+    try scope.put(token_usage, "output", output);
+    try scope.put(token_usage, "cacheRead", c.JS_NewInt32(scope.engine.context, 0));
+    try scope.put(token_usage, "cacheWrite", c.JS_NewInt32(scope.engine.context, 0));
+    try scope.put(token_usage, "totalTokens", try binary(scope, .add, input, output));
     const cost = try scope.object();
     inline for (.{ "input", "output", "cacheRead", "cacheWrite", "total" }) |key| try scope.put(cost, key, c.JS_NewInt32(scope.engine.context, 0));
-    try scope.put(result, "cost", cost);
-    const priced = try @import("native_ai_cost.zig").calculate(scope.engine, model, result);
+    try scope.put(token_usage, "cost", cost);
+    const priced = try @import("native_ai_cost.zig").calculate(scope.engine, model, token_usage);
     scope.engine.freeValue(priced);
-    return result;
+    return token_usage;
 }
 pub fn result(scope: *Scope, model: c.JSValue, images: bool) !c.JSValue {
     const output = try scope.object();

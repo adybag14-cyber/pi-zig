@@ -84,8 +84,8 @@ fn task(scope: *Scope, question: c.JSValue, labels: c.JSValue) !c.JSValue {
                 return c.JS_DupValue(host.context, output);
             }
         };
-        const mapper = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 2, Mapper.call, &.{ labels, c.pi_js_bool(scope.engine.context, @intFromBool(choice)) }));
-        const lines = try scope.invoke(source, "map", &.{mapper});
+        const render_line = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 2, Mapper.call, &.{ labels, c.pi_js_bool(scope.engine.context, @intFromBool(choice)) }));
+        const lines = try scope.invoke(source, "map", &.{render_line});
         return scope.concat(try scope.concat(head, try scope.text(if (choice) "\n\nOptions:\n" else "\n\nLevels:\n")), try scope.invoke(lines, "join", &.{try scope.text("\n")}));
     }
     const criteria = try scope.get(question, "criteria");

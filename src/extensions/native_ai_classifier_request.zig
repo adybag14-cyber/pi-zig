@@ -75,7 +75,7 @@ fn hook(scope: *Scope, owner: c.JSValue, response: c.JSValue) !c.JSValue {
     if (v.nullish(callback)) return c.pi_js_undefined();
     const metadata = try scope.object();
     try scope.put(metadata, "status", try scope.get(response, "status"));
-    const headers = try scope.object();
+    const response_headers = try scope.object();
     var iterator = try v.iterator(scope, try scope.invoke(try scope.get(response, "headers"), "entries", &.{}));
     defer iterator.deinit();
     errdefer iterator.closePreserving();
@@ -83,9 +83,9 @@ fn hook(scope: *Scope, owner: c.JSValue, response: c.JSValue) !c.JSValue {
         defer scope.engine.freeValue(entry);
         var row: Scope = .{ .engine = scope.engine };
         defer row.deinit();
-        try v.js.setKey(scope.engine, headers, try v.at(&row, entry, 0), try v.at(&row, entry, 1));
+        try v.js.setKey(scope.engine, response_headers, try v.at(&row, entry, 0), try v.at(&row, entry, 1));
     }
-    try scope.put(metadata, "headers", headers);
+    try scope.put(metadata, "headers", response_headers);
     return scope.call(callback, options, &.{ metadata, try scope.get(owner, "model") });
 }
 pub fn headers(scope: *Scope, sources: []const c.JSValue) !c.JSValue {
