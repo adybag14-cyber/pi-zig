@@ -97,7 +97,7 @@ pub fn convert(engine: *v.em.Engine, context: c.JSValue, model: c.JSValue, reten
     const original = try scope.get(context, "messages");
     const first = if (try v.length(&scope, original) > 0) try v.at(&scope, original, 0) else c.pi_js_undefined();
     const conversation = if (!c.JS_IsUndefined(first) and try v.eq(&scope, try scope.get(first, "role"), "system")) try scope.invoke(original, "slice", &.{c.JS_NewInt32(engine.context, 1)}) else original;
-    const messages = try scope.own(try @import("native_ai_transform_messages.zig").transform(engine, conversation, model, try scope.own(try @import("native_ai_anthropic_request.zig").normalizeId(engine))));
+    const messages = try scope.own(try @import("native_ai_transform_messages.zig").transform(engine, conversation, model, try scope.own(try @import("native_ai_provider_request.zig").normalizeId(engine))));
     const result = try scope.array();
     const count = try v.length(&scope, messages);
     var i: u32 = 0;
