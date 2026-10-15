@@ -40,8 +40,8 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
     inline for (.{ "input", "output", "cacheRead", "cacheWrite", "totalTokens" }) |key| try scope.put(usage, key, c.JS_NewInt32(engine.context, 0));
     try scope.put(usage, "cost", try emptyCost(&scope));
     try scope.put(output, "usage", usage);
-    try scope.put(output, "timestamp", try scope.invoke(try scope.global("Date"), "now", &.{}));
     try scope.put(output, "stopReason", try scope.text("pending"));
+    try scope.put(output, "timestamp", try scope.invoke(try scope.global("Date"), "now", &.{}));
     try scope.put(owner, "output", output);
     const result = try scope.object();
     try scope.put(result, "output", output);
@@ -185,16 +185,16 @@ fn mistral(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
         if (!c.JS_IsNumber(cached) or !scope.truthy(try scope.invoke(try scope.global("Number"), "isFinite", &.{cached}))) cached = c.JS_NewInt32(scope.engine.context, 0);
         const math = try scope.global("Math");
         cached = try scope.invoke(math, "min", &.{ prompt, try scope.invoke(math, "max", &.{ c.JS_NewInt32(scope.engine.context, 0), cached }) });
-        const usage = try scope.object();
+        const usage = try scope.get(output, "usage");
         const input = try scope.invoke(math, "max", &.{ c.JS_NewInt32(scope.engine.context, 0), try binary(scope, .subtract, prompt, cached) });
         const completion = zero(scope, try scope.get(raw, "completion_tokens"));
-        try scope.put(usage, "input", input);
-        try scope.put(usage, "output", completion);
-        try scope.put(usage, "cacheRead", cached);
-        try scope.put(usage, "cacheWrite", c.JS_NewInt32(scope.engine.context, 0));
+        try scope.set(usage, "input", input);
+        try scope.set(usage, "output", completion);
+        try scope.set(usage, "cacheRead", cached);
+        try scope.set(usage, "cacheWrite", c.JS_NewInt32(scope.engine.context, 0));
         const total = try scope.get(raw, "total_tokens");
-        try scope.put(usage, "totalTokens", if (scope.truthy(total)) total else try binary(scope, .add, try binary(scope, .add, input, completion), cached));
-        try setUsage(scope, owner, usage);
+        try scope.set(usage, "totalTokens", if (scope.truthy(total)) total else try binary(scope, .add, try binary(scope, .add, input, completion), cached));
+        _ = try scope.own(try @import("native_ai_cost.zig").calculate(scope.engine, try scope.get(owner, "model"), usage));
     }
     const choices = try scope.get(chunk, "choices");
     if (!try v.array(scope, choices)) return v.errorText(scope, try scope.text("Invalid Mistral streaming event"));
