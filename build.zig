@@ -1486,6 +1486,11 @@ pub fn build(b: *std.Build) void {
     highlight_core_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-highlight-core-b45", "Compile all21 actual native grammar factories/compiler/scanner/frontend against genuine Source74").dependOn(&highlight_core_tests.step);
     b.step("test-native-highlight-core-b45", "Compare genuine Original74 complete eager21 factory scanner class and themed syntax outputs; no fallback stubs").dependOn(&b.addRunArtifact(highlight_core_tests).step);
+    const highlight_lazy_batch1_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_lazy_batch1_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual lazy batch1 grammar bodies"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_lazy_batch1_tests.root_module, quickjs, sqlite_lib_dir);
+    highlight_lazy_batch1_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-lazy-batch1", "Compile four actual lazy grammar factories against genuine Source29").dependOn(&highlight_lazy_batch1_tests.step);
+    b.step("test-native-highlight-lazy-batch1", "Replay actual Dockerfile Makefile Protocol Buffers and INI/TOML Source grammar graphs and scanner behavior").dependOn(&b.addRunArtifact(highlight_lazy_batch1_tests).step);
     const read_prompt_b45_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_read_prompt_b45_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "b45 read range", "quoted empty command", "one empty argument", "prompt token separators" }, .use_llvm = use_llvm });
     linkQuickJs(b, read_prompt_b45_tests.root_module, quickjs, sqlite_lib_dir);
     read_prompt_b45_tests.root_module.addImport("catalog_tool", catalog_tool);
