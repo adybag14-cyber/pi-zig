@@ -1,6 +1,6 @@
-param([ValidateSet('build','test')][string]$Phase='build',[string]$Attempt='first',[ValidateSet('native-web-fetch','native-web-request','native-web-multipart','native-web-body-dependencies','native-headers-source')][string]$Step='native-web-fetch',[string]$BuildAttempt='first')
+param([ValidateSet('build','test')][string]$Phase='build',[string]$Attempt='first',[ValidateSet('native-web-fetch','native-web-request','native-web-multipart','native-web-body-dependencies','native-headers-source','native-web-body-full')][string]$Step='native-web-fetch',[string]$BuildAttempt='first')
 $ErrorActionPreference='Stop'
-$taskRoot='C:/Users/adyba/pi-zig-web-body-integration-20261015'
+$taskRoot='C:/Users/adyba/pi-zig-web-body-full-source-20261016'
 if(@(git -C $taskRoot status --porcelain).Count){throw 'Native qualification requires a sealed clean candidate'}
 $taskEvidence='C:/Users/adyba/pi-zig-update-evidence-20261003'
 $taskName="web-default-$Step-debug-$Phase-$Attempt-20261015"
