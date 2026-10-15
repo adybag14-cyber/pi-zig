@@ -66,4 +66,14 @@ try {
 } finally {
   await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
 }
-fs.writeFileSync(outputPath, JSON.stringify({ authority: "installed @anthropic-ai/sdk 0.129.0 credential-chain and TokenCache, explicit Pi-shaped config", sdkDirectory: path.resolve(sdkDirectory), fixtureDirectory: ownedDirectory, dependencyCapture, loopback }, null, 2));
+const sdkPackage = JSON.parse(fs.readFileSync(path.join(sdkDirectory, "package.json"), "utf8"));
+fs.writeFileSync(outputPath, JSON.stringify({
+  authority: "actual installed SDK credential-chain and TokenCache with explicit Pi-shaped config",
+  sdkDirectory: path.resolve(sdkDirectory),
+  sdkVersion: sdkPackage.version,
+  actualNode: { version: process.version, executable: process.execPath, versions: process.versions },
+  fixtureDirectory: ownedDirectory,
+  diagnosticPolicy: { sourceHeaders: "raw unmodified SDK headers", nativeUserAgent: "pi-zig/Zig-<actual compiler> QuickJS-<actual linked runtime> (<host OS>; <arch>)", comparison: "User-Agent diagnostic value asserted separately; auth/beta/content/session/grant/cache/error fields compared strictly" },
+  dependencyCapture,
+  loopback,
+}, null, 2));

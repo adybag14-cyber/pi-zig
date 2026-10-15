@@ -4,6 +4,7 @@
 //! VM callbacks and cached values remain on the owner. HTTP uses the shared
 //! owned native worker; a request signal must never cancel a shared exchange.
 const std = @import("std");
+const builtin = @import("builtin");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
@@ -11,6 +12,12 @@ const flow = @import("native_agent_async.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
 const Stage = enum(c_int) { identity, response, text, raw, read, cancel };
 const maximum_response_bytes = 1 << 20;
+
+fn diagnosticUserAgent(scope: *Scope) !c.JSValue {
+    const value = try std.fmt.allocPrint(scope.engine.gpa, "pi-zig/Zig-{s} QuickJS-{s} ({s}; {s})", .{ builtin.zig_version_string, std.mem.span(c.JS_GetVersion()), @tagName(builtin.os.tag), @tagName(builtin.cpu.arch) });
+    defer scope.engine.gpa.free(value);
+    return scope.text(value);
+}
 
 fn envValue(scope: *Scope, env: c.JSValue, name: []const u8) !c.JSValue {
     return scope.call(try scope.own(try @import("native_provider_env.zig").create(scope.engine)), c.pi_js_undefined(), &.{ try scope.text(name), env });
@@ -217,8 +224,10 @@ fn exchange(scope: *Scope, owner: c.JSValue, contents: c.JSValue) !void {
     const headers = try scope.object();
     try scope.put(headers, "Content-Type", try scope.text("application/json"));
     try scope.put(headers, "anthropic-beta", try scope.text("oauth-2025-04-20,oidc-federation-2026-04-01"));
-    // SDK client's getUserAgent(), rather than provider fallback user-agent.
-    try scope.put(headers, "User-Agent", try scope.text("Anthropic/JS 0.129.0"));
+    // Runtime identity is deliberately native. Keep the raw Source SDK UA in
+    // evidence and compare this diagnostic field under its explicit policy.
+    const user_agent = try diagnosticUserAgent(scope);
+    try scope.put(headers, "User-Agent", user_agent);
     const text = try scope.invoke(try scope.global("JSON"), "stringify", &.{body});
     const fetch = try scope.get(state, "fetch");
     if (!v.nullish(fetch)) {
@@ -241,10 +250,12 @@ fn exchange(scope: *Scope, owner: c.JSValue, contents: c.JSValue) !void {
     defer scope.engine.gpa.free(address);
     const bytes = try scope.engine.toString(text);
     defer scope.engine.gpa.free(bytes);
+    const user_agent_bytes = try scope.engine.toString(user_agent);
+    defer scope.engine.gpa.free(user_agent_bytes);
     const fields: []const std.http.Header = &.{
         .{ .name = "Content-Type", .value = "application/json" },
         .{ .name = "anthropic-beta", .value = "oauth-2025-04-20,oidc-federation-2026-04-01" },
-        .{ .name = "User-Agent", .value = "Anthropic/JS 0.129.0" },
+        .{ .name = "User-Agent", .value = user_agent_bytes },
     };
     // .bytes keeps the SDK's 1 MiB truncation contract in the owner instead of
     // imposing the shared worker's smaller whole-body frame limit.
@@ -460,6 +471,17 @@ test "Anthropic federation preserves real file rotation refresh coalescing advis
     );
     const namespace = try engine.evalModule(source.written(), "owned-anthropic-federation-fixture.mjs");
     defer engine.freeValue(namespace);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const capture = try scope.get(namespace, "capture");
+    const exchange_rows = try scope.get(capture, "exchanges");
+    const native_user_agent = try diagnosticUserAgent(&scope);
+    for (0..try v.length(&scope, exchange_rows)) |index| {
+        const row = try v.at(&scope, exchange_rows, @intCast(index));
+        const headers = try scope.get(row, "headers");
+        try std.testing.expect(scope.equal(native_user_agent, try scope.get(headers, "User-Agent")));
+        try std.testing.expect(try v.eq(&scope, try scope.get(headers, "anthropic-beta"), "oauth-2025-04-20,oidc-federation-2026-04-01"));
+    }
 }
 test "Anthropic federation resolver uses scoped environment without credential fallback behind keys headers or foreign providers" {
     const engine = try v.em.Engine.init(std.testing.allocator, .{});
