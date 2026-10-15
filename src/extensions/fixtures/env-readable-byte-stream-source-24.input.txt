@@ -1,0 +1,31 @@
+const packet={};
+const errorValue=error=>({name:error.name,code:error.code??null,message:error.message});
+const row=result=>({done:result.done,bytes:result.value?Array.from(new Uint8Array(result.value.buffer,result.value.byteOffset,result.value.byteLength)):null,offset:result.value?.byteOffset??null,constructor:result.value?.constructor.name??null});
+let controller;
+const source={type:'bytes',start(value){controller=value}};
+if(caseName==='enqueue-detach'){
+ const stream=new ReadableStream(source),reader=stream.getReader();const backing=new ArrayBuffer(8),view=new Uint8Array(backing,2,3);view.set([4,5,6]);controller.enqueue(view);packet.detached=backing.detached;controller.close();packet.first=row(await reader.read());packet.end=row(await reader.read());reader.releaseLock();packet.locked=stream.locked;
+}else if(caseName==='byob-offset'){
+ const stream=new ReadableStream(source),reader=stream.getReader({mode:'byob'});const backing=new ArrayBuffer(8);const pending=reader.read(new Uint8Array(backing,2,4));const request=controller.byobRequest;packet.request={offset:request.view.byteOffset,length:request.view.byteLength};request.view.set([7,8,9]);request.respond(3);packet.inputDetached=backing.detached;packet.first=row(await pending);packet.invalidated=request.view===null;const end=reader.read(new Uint8Array(2));controller.close();controller.byobRequest.respond(0);packet.end=row(await end);reader.releaseLock();
+}else if(caseName==='byob-min-elements'){
+ const stream=new ReadableStream(source),reader=stream.getReader({mode:'byob'});let settled=false;const pending=reader.read(new Uint16Array(4),{min:2}).then(value=>{settled=true;return value});const first=controller.byobRequest;first.view.set([1,2]);first.respond(2);await Promise.resolve();packet.afterFirst={settled,requestLength:controller.byobRequest.view.byteLength};controller.byobRequest.view.set([3,4]);controller.byobRequest.respond(2);packet.first=row(await pending);await reader.cancel();reader.releaseLock();
+}else if(caseName==='respond-zero'){
+ const stream=new ReadableStream(source),reader=stream.getReader({mode:'byob'});const pending=reader.read(new Uint8Array(3));const request=controller.byobRequest;try{request.respond(0)}catch(error){packet.error=errorValue(error)}packet.stillLive=request.view!==null;controller.close();request.respond(0);packet.end=row(await pending);reader.releaseLock();
+}else if(caseName==='close-partial-element'){
+ const stream=new ReadableStream(source),reader=stream.getReader({mode:'byob'});reader.closed.catch(()=>{});const pending=reader.read(new Uint16Array(2));pending.catch(()=>{});controller.byobRequest.view[0]=1;controller.byobRequest.respond(1);try{controller.close()}catch(error){packet.closeError=errorValue(error)}try{await pending}catch(error){packet.readError=errorValue(error)}reader.releaseLock();
+}else if(caseName==='cancel-identity'){
+ const reason={sentinel:true};let seen;source.cancel=value=>{seen=value};const stream=new ReadableStream(source),reader=stream.getReader({mode:'byob'});const pending=reader.read(new Uint8Array(4));const request=controller.byobRequest;await reader.cancel(reason);packet.identity=seen===reason;packet.end=row(await pending);packet.invalidated=request.view===null;await reader.closed;reader.releaseLock();
+}else if(caseName==='release-pending'){
+ const stream=new ReadableStream(source),reader=stream.getReader({mode:'byob'});reader.closed.catch(()=>{});const pending=reader.read(new Uint8Array(4));pending.catch(()=>{});const request=controller.byobRequest;reader.releaseLock();try{await pending}catch(error){packet.error=errorValue(error)}packet.locked=stream.locked;const next=stream.getReader({mode:'byob'});const nextRead=next.read(new Uint8Array(4));packet.oldRequestLive=request.view!==null;const current=controller.byobRequest;current.view.set([6,7]);current.respond(2);packet.next=row(await nextRead);await next.cancel();next.releaseLock();
+}else if(caseName==='pull-serialization'){
+ let pulls=0,active=0,maxActive=0;source.pull=async value=>{active++;maxActive=Math.max(maxActive,active);await Promise.resolve();pulls++;if(pulls<3)value.enqueue(new Uint8Array([pulls]));else value.close();active--};const stream=new ReadableStream(source),reader=stream.getReader();const pending=[reader.read(),reader.read(),reader.read()];packet.rows=(await Promise.all(pending)).map(row);packet.pulls=pulls;packet.maxActive=maxActive;reader.releaseLock();
+}else if(caseName==='empty-byob-invalid'){
+ const stream=new ReadableStream(source),reader=stream.getReader({mode:'byob'});for(const view of [new Uint8Array(0),new DataView(new ArrayBuffer(0))]){try{await reader.read(view)}catch(error){(packet.errors??=[]).push(errorValue(error))}}await reader.cancel();reader.releaseLock();
+}else if(caseName==='respond-new-view'){
+ const stream=new ReadableStream(source),reader=stream.getReader({mode:'byob'});const pending=reader.read(new Uint8Array(6));const request=controller.byobRequest;const replacement=new Uint8Array(request.view.buffer,request.view.byteOffset,2);replacement.set([4,2]);request.respondWithNewView(replacement);packet.first=row(await pending);packet.invalidated=request.view===null;await reader.cancel();reader.releaseLock();
+}else if(caseName==='desired-size'){
+ const stream=new ReadableStream(source,{highWaterMark:5});packet.before=controller.desiredSize;controller.enqueue(new Uint8Array([1,2,3]));packet.queued=controller.desiredSize;const reader=stream.getReader();packet.first=row(await reader.read());packet.drained=controller.desiredSize;controller.close();packet.closed=controller.desiredSize;reader.releaseLock();
+}else if(caseName==='error-identity'){
+ const stream=new ReadableStream(source),reader=stream.getReader({mode:'byob'});const reason={sentinel:true};const closed=reader.closed.catch(error=>error);const pending=reader.read(new Uint8Array(4)).catch(error=>error);const request=controller.byobRequest;controller.error(reason);packet.readIdentity=await pending===reason;packet.closedIdentity=await closed===reason;packet.invalidated=request.view===null;packet.desiredSize=controller.desiredSize;reader.releaseLock();
+}else throw Error('Unknown genuine byte stream case');
+nativeCollect();
