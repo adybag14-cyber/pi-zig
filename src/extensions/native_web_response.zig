@@ -126,6 +126,8 @@ fn initialize(scope: *Scope, state: *State, init: c.JSValue, payload: ?body.Body
     }
 }
 fn create(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const owner = captures[0];
@@ -276,6 +278,8 @@ fn staticOperation(scope: *Scope, owner: c.JSValue, args: []const c.JSValue, kin
 }
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const result = operation(&scope, captures[0], receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, @enumFromInt(magic)) catch |err| {
@@ -340,6 +344,8 @@ pub const Transport = struct { body: c.JSValue, status: u16, status_text: c.JSVa
 /// Borrowed input edges; returns an owned genuine Response with immutable
 /// headers. An actual async byte iterable is extracted by the shared Body graph.
 pub fn fromTransport(engine: *em.Engine, input: Transport) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const owner = engine.native_module_values.get(cache_key) orelse return error.NativeWebResponseUnavailable;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
