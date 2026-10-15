@@ -1,0 +1,101 @@
+const {DefaultResourceLoader:Loader,SettingsManager}=resourceClassDeps,p=Loader.prototype,rows=[];
+globalThis.resourceClassRows=rows;
+const root=resourceClassFixtureRoot.replaceAll('\\','/'),cwd=root+'/project',agentDir=root+'/agent';
+function clean(value){return JSON.parse(JSON.stringify(value,(_key,v)=>typeof v==='string'?v.replaceAll('\\','/').replaceAll(root,'<fixture>'):v))}
+function row(name,value){rows.push({case:name,...clean(value)})}
+function options(extra={}){return{cwd,agentDir,settingsManager:SettingsManager.inMemory(),...extra}}
+function loader(extra={}){return new Loader(options(extra))}
+function failure(name,operation){const marker={boundary:name};let same=false;try{operation(marker)}catch(e){same=e===marker}row(name,{same})}
+row('class-metadata',{name:Loader.name,length:Loader.length,prototypeWritable:Object.getOwnPropertyDescriptor(Loader,'prototype').writable,methods:Object.getOwnPropertyNames(p).map(key=>{const d=Object.getOwnPropertyDescriptor(p,key),f=d.value;return{key,name:f.name,length:f.length,async:Object.getPrototypeOf(f)===(async()=>{}).__proto__,ownPrototype:Object.hasOwn(f,'prototype'),enumerable:d.enumerable,configurable:d.configurable,writable:d.writable}})});
+{
+ const settings=SettingsManager.inMemory(),bus={sentinel:'bus'},inline=()=>{},named={name:'named',factory:()=>{},hidden:true},first={name:'builtin',builtin:true,factory:()=>{}},second={name:'builtin',builtin:true,factory:()=>{},replaceable:true},paths=['skill'];
+ const l=new Loader({cwd,agentDir,settingsManager:settings,eventBus:bus,extensionFactories:[inline,first,named,second],additionalSkillPaths:paths,disabledBuiltinExtensions:['builtin','builtin'],noExtensions:0,noSkills:'truthy',appendSystemPrompt:[]});
+ row('constructor-snapshots',{keys:Object.keys(l),packageKeys:Object.keys(l.packageManager),cwd:l.cwd,agentDir:l.agentDir,settingsSame:l.settingsManager===settings,busSame:l.eventBus===bus,inline:l.extensionFactories.map(x=>x===inline?'inline':x.name),builtinKeys:[...l.builtinExtensions.keys()],lastBuiltinWins:l.builtinExtensions.get('builtin')===second,packageBuiltins:l.packageManager.builtinExtensions,pathsSame:l.additionalSkillPaths===paths,disabled:[...l.disabledBuiltinExtensions],flags:[l.noExtensions,l.noSkills,l.noPromptTemplates,l.noThemes,l.noContextFiles],loaded:l.loaded,caches:{extensions:l.getExtensions().extensions,errors:l.getExtensions().errors,skills:l.getSkills(),prompts:l.getPrompts(),themes:l.getThemes(),agents:l.getAgentsFiles(),append:l.getAppendSystemPrompt(),sources:l.getAppendSystemPromptSources()},runtimeKeys:Object.keys(l.getExtensions().runtime)});
+}
+{
+ const log=[],base=options({eventBus:{},extensionFactories:[]}),observed={};
+ for(const key of ['cwd','agentDir','settingsManager','eventBus','extensionFactories','additionalExtensionPaths','additionalSkillPaths','additionalPromptTemplatePaths','additionalThemePaths','noExtensions','disabledBuiltinExtensions','noSkills','noPromptTemplates','noThemes','noContextFiles','systemPrompt','appendSystemPrompt','extensionsOverride','skillsOverride','promptsOverride','themesOverride','agentsFilesOverride','systemPromptOverride','appendSystemPromptOverride'])Object.defineProperty(observed,key,{get(){log.push(key);return base[key]}});
+ const l=new Loader(observed);row('constructor-option-evaluation-order',{log,loaded:l.loaded});
+}
+for(const key of ['cwd','agentDir','settingsManager','eventBus','extensionFactories','additionalSkillPaths','disabledBuiltinExtensions','systemPromptOverride'])failure('constructor-raw-failure:'+key,marker=>{const o=options({eventBus:{}});Object.defineProperty(o,key,{get(){throw marker}});new Loader(o)});
+{
+ const l=loader(),skills=l.getSkills(),prompts=l.getPrompts(),themes=l.getThemes(),agents=l.getAgentsFiles();
+ row('fresh-public-cache-wrappers',{extensionsSame:l.getExtensions()===l.getExtensions(),skillsFresh:skills!==l.getSkills(),skillRowsSame:skills.skills===l.getSkills().skills,promptsFresh:prompts!==l.getPrompts(),promptRowsSame:prompts.prompts===l.getPrompts().prompts,themesFresh:themes!==l.getThemes(),themeRowsSame:themes.themes===l.getThemes().themes,agentsFresh:agents!==l.getAgentsFiles(),agentRowsSame:agents.agentsFiles===l.getAgentsFiles().agentsFiles,appendSame:l.getAppendSystemPrompt()===l.getAppendSystemPrompt(),system:l.getSystemPrompt(),source:l.getSystemPromptSource()});
+ l.systemPromptSourcePath='source';l.appendSystemPromptSourcePaths=['one','two'];const a=l.getAppendSystemPromptSources(),b=l.getAppendSystemPromptSources();row('fresh-source-wrappers',{system:l.getSystemPromptSource(),systemFresh:l.getSystemPromptSource()!==l.getSystemPromptSource(),a,b,fresh:a!==b,entriesFresh:a[0]!==b[0]});
+}
+{
+ const l=loader(),log=[];Object.defineProperty(l,'systemPromptSourcePath',{get(){log.push('source');return 'one'}});row('system-prompt-source-getter-order',{value:l.getSystemPromptSource(),log});
+}
+for(const path of ['builtin:tool','<inline:hello>','<unfinished',' relative.md ','sub\u00a0folder/file.md']){
+ const l=loader();row('resolve-path:'+path,{resource:l.resolveResourcePath(path),extension:l.resolveExtensionLoadPath(path)});
+}
+{
+ const l=loader(),log=[],metadata={source:'extension:x',scope:'temporary',origin:'top-level',get baseDir(){log.push('baseDir');return ' base '},get tag(){log.push('tag');return 7}},entry={get metadata(){log.push('metadata');return metadata},get path(){log.push('path');return ' path '}};
+ l.resolveResourcePath=function(x){log.push(['resolve',x,this===l]);return 'resolved:'+x};row('normalize-live-metadata',{value:l.normalizeExtensionPaths([entry]),log});
+}
+{
+ const l=loader(),log=[],primary={*[Symbol.iterator](){log.push('primary-start');yield 'one';log.push('primary-end')}},additional={*[Symbol.iterator](){log.push('additional-start');yield 'one';yield 'two';log.push('additional-end')}};
+ l.resolveResourcePath=x=>{log.push(['resolve',x]);return '<'+x+'>'};row('merge-spreads-before-resolution',{value:l.mergePaths(primary,additional),log});
+}
+{
+ const l=loader(),path=cwd+'/nested/file.md',extra=new Map([[cwd,{source:'extra-first',scope:'temporary',origin:'top-level',extra:7}],[cwd+'/nested',{source:'extra-later',scope:'project',origin:'package'}]]),metadata=new Map([[path,{source:'exact',scope:'user',origin:'package',baseDir:root}]]);
+ row('source-info-extra-first-match',{value:l.findSourceInfoForPath(path,extra,metadata)});row('source-info-exact-metadata',{value:l.findSourceInfoForPath(path,undefined,metadata)});row('source-info-prefix-boundary',{value:l.findSourceInfoForPath(cwd+'-sibling/a.md',extra,metadata)});
+ for(const path of ['builtin:x','<inline:hello>','<>','<hello','']){let value,error;try{value=l.findSourceInfoForPath(path,extra,metadata)}catch(e){error={name:e.name,code:e.code}}row('source-info-synthetic:'+path,{value,error})}
+}
+for(const path of [agentDir+'/skills/missing.md',cwd+'/.pi/prompts/missing.md',root+'/shared/custom.md',root+'/shared'])row('default-source-info:'+path,{value:loader().getDefaultSourceInfoForPath(path)});
+{
+ const l=loader(),metadata=new Map(),resource={path:agentDir+'/skills/shared',metadata:{source:'auto',scope:'user',origin:'top-level',baseDir:agentDir}};row('actual-skill-directory-mapping',{value:l.mapSkillPath(resource,metadata),metadata:[...metadata]});
+}
+{
+ const l=loader(),log=[],marker={},resource={metadata:{source:'auto',origin:'top-level'},get path(){log.push('path');if(log.length===1)throw marker;return 'after-catch'}};row('skill-path-getter-caught-inside-stat',{value:l.mapSkillPath(resource,new Map()),log});
+}
+{
+ const l=loader(),command={},tool={},extension={path:'<inline:unit>',commands:new Map([['command',command]]),tools:new Map([['tool',tool]])};l.applyExtensionSourceInfo([extension],new Map());row('extension-command-tool-source-identity',{info:extension.sourceInfo,commandSame:command.sourceInfo===extension.sourceInfo,toolSame:tool.sourceInfo===extension.sourceInfo});
+}
+{
+ const l=loader(),a={name:'same',filePath:'winner'},b={name:'same',filePath:'loser'},c={name:'other',filePath:'other'};const result=l.dedupePrompts([a,b,c]);row('prompt-first-name-wins',{value:result,firstSame:result.prompts[0]===a});
+ const t={name:null},u={name:undefined,sourcePath:'loser'},v={name:'other',sourcePath:'other'};const themes=l.dedupeThemes([t,u,v]);row('theme-unnamed-and-builtin-collision',{value:themes,firstSame:themes.themes[0]===t});
+}
+for(const trusted of [false,true]){
+ const settings=SettingsManager.inMemory({}, {projectTrusted:trusted}),l=loader({settingsManager:settings});row('actual-prompt-discovery-trust:'+trusted,{system:l.discoverSystemPromptFile(),append:l.discoverAppendSystemPromptFile()});
+}
+{
+ const l=loader(),a={path:'first',tools:new Map([['read',{}]]),flags:new Map([['flag',{}]]),commands:new Map([['same-command',{}]])},same={path:'first',tools:new Map([['read',{}]]),flags:new Map([['flag',{}]])},b={path:'second',tools:new Map([['read',{}],['other',{}]]),flags:new Map([['flag',{}]]),commands:new Map([['same-command',{}]])};const result={extensions:[a,same,b],errors:[]};
+ const value=l.detectExtensionConflicts(result.extensions);const returned=l.addExtensionConflictDiagnostics(result);row('actual-tool-and-flag-conflicts',{value,errors:result.errors,undefined:returned===undefined});
+}
+failure('conflict-callback-raw-identity',marker=>{const l=loader();l.detectExtensionConflicts=()=>{throw marker};l.addExtensionConflictDiagnostics({extensions:[],errors:[]})});
+{
+ const l=loader(),log=[],metadata={source:'extension:unit',scope:'temporary',origin:'top-level',baseDir:root},paths={skillPaths:[{path:root+'/extra/SKILL.md',metadata}],promptPaths:[{path:root+'/shared/custom.md',metadata}],themePaths:[{path:root+'/extra/theme.json',metadata}]};
+ for(const method of ['updateSkillsFromPaths','updatePromptsFromPaths','updateThemesFromPaths'])l[method]=function(paths,info){log.push({method,receiver:this===l,paths,metadataSame:info===l.resourceMetadataByPath})};
+ const value=l.extendResources(paths);row('ordinary-extend-field-and-callback-flow',{undefined:value===undefined,log,last:[l.lastSkillPaths,l.lastPromptPaths,l.lastThemePaths],infos:[[...l.extensionSkillSourceInfos],[...l.extensionPromptSourceInfos],[...l.extensionThemeSourceInfos]]});
+}
+{
+ const l=loader(),log=[],marker={};l.normalizeExtensionPaths=function(entries){log.push(entries);if(log.length===2)throw marker;return entries};let same=false;try{l.extendResources({skillPaths:[{path:'skill',metadata:{}}],promptPaths:[],themePaths:[]})}catch(e){same=e===marker}row('extend-normalizes-all-before-mutation',{same,log,skillMetadataSize:l.extensionSkillSourceInfos.size,last:l.lastSkillPaths});
+}
+{
+ const l=loader(),log=[],marker={extensions:[]};l.settingsManager={setProjectTrusted(value){log.push(['trusted',value,this===l.settingsManager])},reload(){log.push('reload');return Promise.resolve('ignored')}};l.loadCurrentExtensionSet=function(options){log.push(['load',options,this===l]);return Promise.resolve(marker)};const pending=l.loadProjectTrustExtensions();log.push('returned');const value=await pending;row('trust-bootstrap-await-and-return-adoption',{log,same:value===marker});
+}
+for(const boundary of ['trusted-call','reload-getter','reload-call','reload-rejection','load-getter','load-call','return-rejection']){
+ const l=loader(),marker={},log=[];l.settingsManager={setProjectTrusted(){log.push('trusted');if(boundary==='trusted-call')throw marker},get reload(){log.push('get reload');if(boundary==='reload-getter')throw marker;return function(){log.push('reload');if(boundary==='reload-call')throw marker;return boundary==='reload-rejection'?Promise.reject(marker):Promise.resolve()}}};Object.defineProperty(l,'loadCurrentExtensionSet',{get(){log.push('get load');if(boundary==='load-getter')throw marker;return function(){log.push('load');if(boundary==='load-call')throw marker;return boundary==='return-rejection'?Promise.reject(marker):{}}}});let same=false,promise=false;try{const value=l.loadProjectTrustExtensions();promise=value instanceof Promise;await value}catch(e){same=e===marker}row('trust-bootstrap-raw-failure:'+boundary,{same,promise,log});
+}
+{
+ const l=loader(),result=l.loadThemes([root+'/extra/theme.json',root+'/missing.json',root+'/shared/custom.md'],true,'truecolor');if(result.themes.length!==3||!result.themes.every(t=>typeof t.getFgAnsi==='function'))throw Error('Real theme directory/file parsing must execute');row('actual-theme-loading-methods',{themes:result.themes.map(t=>({name:t.name,sourcePath:t.sourcePath,accent:t.getFgAnsi('accent')})),diagnostics:result.diagnostics});
+}
+{
+ const l=loader(),diagnostics=[],marker={},themes={get push(){throw marker}};const value=l.loadThemeFromFile(root+'/extra/theme.json',themes,diagnostics,'truecolor');row('theme-file-catches-push-getter',{undefined:value===undefined,diagnostics});
+}
+{
+ const l=loader(),themes=[],diagnostics=[];l.loadThemeFromFile=()=>{throw new Error('file callback failed')};const value=l.loadThemesFromDir(agentDir+'/themes',themes,diagnostics,'truecolor');row('theme-directory-catches-file-callback',{undefined:value===undefined,themes,diagnostics});
+}
+failure('theme-default-directory-callback-outside-catch',marker=>{const l=loader();l.loadThemesFromDir=()=>{throw marker};l.loadThemes([],true,'truecolor')});
+for(const mode of ['defaults','flags','temporary','package-filter','untrusted','trust-bootstrap']){
+ const settings=SettingsManager.inMemory({packages:[root+'/pkg-user'],prompts:['../shared/custom.md']},{projectTrusted:mode!=='untrusted'});
+ settings.setProjectPackages([root+'/project/pkg-project']);
+ const events=[],factories=[{name:'inline-unit',factory(pi){events.push('inline');pi.registerCommand('inline-unit',{description:'Inline command',handler:async()=>{}})}}];
+ const l=loader({settingsManager:settings,extensionFactories:factories,...(mode==='flags'?{noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true}:{}),...(mode==='temporary'?{additionalExtensionPaths:[root+'/pkg-temporary'],additionalSkillPaths:[root+'/extra/SKILL.md'],additionalPromptTemplatePaths:[root+'/shared/custom.md'],additionalThemePaths:[root+'/extra/theme.json']}:{}),...(mode==='package-filter'?{}:{})});
+ if(mode==='package-filter')settings.setPackages([{source:root+'/pkg-user',autoload:false,skills:['+skills/packaged/SKILL.md'],prompts:['+prompts/package.md']}]);
+ const trustLog=[];let preTrustRuntime;await l.reload(mode==='trust-bootstrap'?{resolveProjectTrust(input){preTrustRuntime=input.extensionsResult.runtime;trustLog.push({paths:input.extensionsResult.extensions.map(e=>e.path),inlineEvents:events.slice()});return true}}:undefined);const ex=l.getExtensions(),skills=l.getSkills(),prompts=l.getPrompts(),themes=l.getThemes(),agents=l.getAgentsFiles();
+ if(mode==='defaults'&&(!skills.skills.some(s=>s.name==='shared')||!skills.skills.some(s=>s.name==='packaged')||!prompts.prompts.some(s=>s.name==='custom')||!themes.themes.some(t=>t.name==='fixture-user')||!ex.extensions.some(e=>e.path==='<inline:inline-unit>')))throw Error('Actual default/package parser and extension factory paths must execute');
+ row('actual-reload-discovery:'+mode,{events,trustLog,preTrustRuntimeSame:preTrustRuntime===ex.runtime,loaded:l.loaded,extensions:ex.extensions.map(e=>({path:e.path,resolvedPath:e.resolvedPath,sourceInfo:e.sourceInfo,commands:[...e.commands.keys()]})),errors:ex.errors,warnings:ex.warnings,skills:skills.skills.map(s=>({name:s.name,filePath:s.filePath,sourceInfo:s.sourceInfo})),skillDiagnostics:skills.diagnostics,prompts:prompts.prompts.map(s=>({name:s.name,filePath:s.filePath,sourceInfo:s.sourceInfo})),promptDiagnostics:prompts.diagnostics,themes:themes.themes.map(t=>({name:t.name,sourcePath:t.sourcePath,sourceInfo:t.sourceInfo})),themeDiagnostics:themes.diagnostics,agents:agents.agentsFiles,system:l.getSystemPrompt(),systemSource:l.getSystemPromptSource(),append:l.getAppendSystemPrompt(),appendSources:l.getAppendSystemPromptSources(),lastSkillPaths:l.lastSkillPaths,metadata:[...l.resourceMetadataByPath]});
+}
+export const proof=true;

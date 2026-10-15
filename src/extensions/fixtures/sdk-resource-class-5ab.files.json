@@ -1,0 +1,34 @@
+{
+  "files": [
+    {"path":"agent/skills/shared/SKILL.md","content":"---\nname: shared\ndescription: User shared skill\n---\nUser skill body\n"},
+    {"path":"agent/prompts/greet.md","content":"---\ndescription: User greeting\n---\nHello $1\n"},
+    {"path":"agent/extensions/user.js","content":"export default function(pi){pi.registerCommand('fixture-user-command',{description:'User extension command',handler:async()=>{}})}\n"},
+    {"path":"agent/SYSTEM.md","content":"\ufeffUser system prompt\n"},
+    {"path":"agent/APPEND_SYSTEM.md","content":"User append prompt\n"},
+    {"path":"agent/AGENTS.md","content":"User AGENTS\n"},
+    {"path":"project/.pi/skills/shared/SKILL.md","content":"---\nname: shared\ndescription: Project shared skill\n---\nProject skill body\n"},
+    {"path":"project/.pi/prompts/review.md","content":"---\ndescription: Project review\n---\nReview $@\n"},
+    {"path":"project/.pi/extensions/project.js","content":"export default function(pi){pi.registerCommand('fixture-project-command',{description:'Project extension command',handler:async()=>{}})}\n"},
+    {"path":"project/.pi/SYSTEM.md","content":"Project system prompt\n"},
+    {"path":"project/.pi/APPEND_SYSTEM.md","content":"Project append prompt\n"},
+    {"path":"project/AGENTS.override.md","content":"Project override AGENTS\n"},
+    {"path":"project/AGENTS.md","content":"Shadowed project AGENTS\n"},
+    {"path":"shared/custom.md","content":"---\ndescription: Explicit custom\n---\nCustom $1\n"},
+    {"path":"pkg-user/package.json","content":"{\"name\":\"fixture-user\",\"pi\":{\"extensions\":[\"extensions/*.js\"],\"skills\":[\"skills\"],\"prompts\":[\"prompts/*.md\"]}}\n"},
+    {"path":"pkg-user/extensions/packaged.js","content":"export default function(pi){pi.registerCommand('fixture-package-command',{description:'Package extension command',handler:async()=>{}})}\n"},
+    {"path":"pkg-user/skills/packaged/SKILL.md","content":"---\nname: packaged\ndescription: User package skill\n---\nUser package body\n"},
+    {"path":"pkg-user/prompts/package.md","content":"---\ndescription: User package prompt\n---\nUser package $1\n"},
+    {"path":"project/pkg-project/package.json","content":"{\"name\":\"fixture-project\"}\n"},
+    {"path":"project/pkg-project/skills/packaged/SKILL.md","content":"---\nname: packaged\ndescription: Project package skill\n---\nProject package body\n"},
+    {"path":"project/pkg-project/prompts/package.md","content":"---\ndescription: Project package prompt\n---\nProject package $1\n"},
+    {"path":"pkg-temporary/package.json","content":"{\"name\":\"fixture-temporary\",\"pi\":{\"skills\":[\"skills\"],\"prompts\":[\"prompts\"]}}\n"},
+    {"path":"pkg-temporary/skills/temporary/SKILL.md","content":"---\nname: temporary\ndescription: Temporary package skill\n---\nTemporary body\n"},
+    {"path":"pkg-temporary/prompts/temporary.md","content":"---\ndescription: Temporary prompt\n---\nTemporary $1\n"},
+    {"path":"extra/SKILL.md","content":"---\nname: extra\ndescription: Explicit extra skill\n---\nExtra body\n"}
+  ],
+  "themes": [
+    {"path":"agent/themes/user.json","name":"fixture-user","asset":"sdk-resource-paths-dark-5ab.json"},
+    {"path":"project/.pi/themes/project.json","name":"fixture-project","asset":"sdk-resource-paths-dark-5ab.json"},
+    {"path":"extra/theme.json","name":"fixture-extra","asset":"sdk-resource-paths-dark-5ab.json"}
+  ]
+}
