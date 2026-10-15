@@ -7,6 +7,8 @@ const Kind = enum { base, api, abort, connection, timeout, inherited };
 fn construct(comptime kind: Kind) @import("native_class.zig").Construct {
     const Adapter = struct {
         fn call(engine: *v.em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            engine.native_exception_diagnostics_suppressed += 1;
+            defer engine.native_exception_diagnostics_suppressed -= 1;
             var scope: Scope = .{ .engine = engine };
             defer scope.deinit();
             if (kind == .base) return engine.checked(c.JS_CallConstructor2(engine.context, roots[0], target, @intCast(args.len), @constCast(args.ptr)));

@@ -1580,7 +1580,7 @@ pub fn build(b: *std.Build) void {
     claude5ab_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-ai-claude5ab", "Compile actual Anthropic and Converse request codecs").dependOn(&claude5ab_tests.step);
     b.step("test-native-ai-claude5ab", "Compare actual Source Claude requests streams callbacks and retained owner graphs").dependOn(&b.addRunArtifact(claude5ab_tests).step);
-    const claude5ab_extended = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_claude_extended_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Claude5ab extended", "native constrained sampling", "native SDK nullable headers", "native node function preserves caught getter" } });
+    const claude5ab_extended = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_claude_extended_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Claude5ab extended", "native constrained sampling", "native SDK nullable headers", "native node function preserves caught getter", "native Anthropic SDK errors" } });
     linkQuickJs(b, claude5ab_extended.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(claude5ab_extended.root_module, sqlite_lib_dir, sqlite_library);
     claude5ab_extended.root_module.addImport("catalog_tool", catalog_tool);
