@@ -9,7 +9,7 @@ const request = @import("native_ai_bedrock_request.zig");
 const auth = @import("native_ai_bedrock_auth.zig");
 const wire = @import("native_ai_bedrock_wire.zig");
 const decoder = @import("native_ai_bedrock_decode.zig");
-const Stage = enum(c_int) { payload, ready, response, prepared, next, chunk };
+const Stage = enum(c_int) { payload, ready, response, prepared, next, chunk, closing };
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     try @import("native_stream.zig").install(engine);
     var s: Scope = .{ .engine = engine };
@@ -99,8 +99,39 @@ fn wait(s: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
 fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    if (rejected) return fail(&s, owner, value);
+    const current: Stage = @enumFromInt(stage);
+    if (current == .closing) {
+        const reason = try s.get(owner, "loopFailure");
+        try v.remove(&s, owner, "loopFailure");
+        return fail(&s, owner, reason);
+    }
+    if (rejected) return if (current == .chunk) closeBody(&s, owner, value) else fail(&s, owner, value);
     advance(&s, owner, value, @enumFromInt(stage)) catch |err| try failError(&s, owner, err);
+}
+fn closeBody(s: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
+    // This is the actual for-await body abrupt-completion path. Close the
+    // generator and await its returned result; preserve the original throw.
+    const iterator = try s.get(owner, "iterator");
+    const generation = s.engine.native_allocation_generation;
+    const method = v.optional(s, iterator, "return") catch |err| {
+        try @import("native_ai_partial_json.zig").discard(s.engine, err, generation);
+        return fail(s, owner, reason);
+    };
+    if (v.nullish(method)) return fail(s, owner, reason);
+    const returned = s.call(method, iterator, &.{}) catch |err| {
+        try @import("native_ai_partial_json.zig").discard(s.engine, err, generation);
+        return fail(s, owner, reason);
+    };
+    try s.put(owner, "loopFailure", reason);
+    return wait(s, owner, returned, .closing);
+}
+fn closeBodyError(s: *Scope, owner: c.JSValue, err: anyerror) !void {
+    const reason = try s.own(flow.reason(s.engine, err));
+    if (s.engine.captured_exception) |captured| {
+        s.engine.captured_exception = null;
+        s.engine.freeValue(captured);
+    }
+    return closeBody(s, owner, reason);
 }
 fn aborted(s: *Scope, owner: c.JSValue) !bool {
     return s.truthy(try v.optional(s, try v.optional(s, try s.get(owner, "options"), "signal"), "aborted"));
@@ -161,9 +192,10 @@ fn advance(s: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
             try wait(s, owner, try hook(s, owner, "onProviderStreamEvent", item), .chunk);
         },
         .chunk => {
-            try decoder.item(s, try s.get(owner, "decoder"), try s.get(owner, "item"));
+            decoder.item(s, try s.get(owner, "decoder"), try s.get(owner, "item")) catch |err| return closeBodyError(s, owner, err);
             try next(s, owner);
         },
+        .closing => unreachable,
     }
 }
 fn replacer(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {

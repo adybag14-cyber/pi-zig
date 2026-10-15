@@ -49,11 +49,15 @@ fn finish(s: *Scope, owner: c.JSValue, thrown: bool, value: c.JSValue) !gen.Acti
     try retire(s, owner);
     return if (thrown) .{ .thrown = retained } else .{ .complete = retained };
 }
-fn close(s: *Scope, owner: c.JSValue, thrown: bool, value: c.JSValue) !gen.Action {
+fn close(comptime layer: Layer, s: *Scope, owner: c.JSValue, thrown: bool, value: c.JSValue) !gen.Action {
+    // SDK frame and first-event wrapper bodies use manual next loops with no
+    // finally clause. Their return does not call the upstream iterator return.
+    if (layer == .wrapped) return finish(s, owner, thrown, value);
     try s.put(owner, "closeValue", value);
     try s.put(owner, "stage", try s.text(if (thrown) "closeThrow" else "closeReturn"));
     const http = try s.get(owner, "http");
     if (!v.nullish(http)) _ = try s.invoke(http, "cancel", &.{});
+    if (layer == .frames) return finish(s, owner, thrown, value);
     const iterator = try s.get(owner, "iterator");
     const method = try v.optional(s, iterator, "return");
     if (v.nullish(method)) return finish(s, owner, thrown, value);
@@ -84,7 +88,11 @@ fn Body(comptime layer: Layer) type {
                     engine.captured_exception = null;
                     engine.freeValue(captured);
                 }
-                return close(&s, owner, true, reason);
+                // Only a for-await body abrupt completion closes upstream.
+                // A rejection of next itself is propagated without return.
+                const stage = try s.get(owner, "stage");
+                const in_body = completion == .fulfilled and (layer == .codec or (layer == .modeled and try v.eq(&s, stage, "deserialize")));
+                return if (in_body) close(layer, &s, owner, true, reason) else finish(&s, owner, true, reason);
             };
         }
         fn step(s: *Scope, owner: c.JSValue, completion: gen.Completion, input: c.JSValue) !gen.Action {
@@ -110,8 +118,9 @@ fn Body(comptime layer: Layer) type {
                     // its while loop; retire it only when this generator ends.
                     return pull(layer, s, owner);
                 },
-                .returned => return close(s, owner, false, input),
-                .thrown, .rejected => return close(s, owner, true, input),
+                .returned => return close(layer, s, owner, false, input),
+                .thrown => return close(layer, s, owner, true, input),
+                .rejected => return if (layer == .modeled and try v.eq(s, stage, "deserialize")) close(layer, s, owner, true, input) else finish(s, owner, true, input),
                 .fulfilled => {
                     if (layer == .modeled and try v.eq(s, stage, "deserialize")) {
                         if (c.JS_IsUndefined(input)) return pull(layer, s, owner);
@@ -126,7 +135,7 @@ fn Body(comptime layer: Layer) type {
                     if (layer == .frames) {
                         if (try v.eq(s, try s.get(value, "type"), "error_body")) {
                             const reason = try @import("native_ai_bedrock_errors.zig").http(s, try s.get(owner, "response"), try s.get(owner, "requestId"), try s.get(value, "body"));
-                            return close(s, owner, true, reason);
+                            return close(layer, s, owner, true, reason);
                         }
                         const chunk = try s.get(value, "data");
                         try s.put(owner, "chunk", chunk);
