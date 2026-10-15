@@ -56,11 +56,11 @@ timer allocation, and microtask regressions. New native tests cover actual
 stdio ref/unref liveness, namespace identity, exception identity and outstanding
 batch resumption, GC, VM shutdown, and Immediate host allocator failures.
 
-Native compilation/runtime are pending Root admission. The191-language loader
-must still intake and qualify this actual engine/installer integration before
-default-loader readiness is claimed. Async-hooks numeric IDs and custom
-promisification metadata are outside this prerequisite. ReleaseSafe, hosted
-profiles, full Pi, release and public activation remain false.
+The191-language loader must still intake and qualify this actual engine/
+installer integration before default-loader readiness is claimed. Async-hooks
+numeric IDs, custom promisification metadata and broader Node diagnostic
+formatting beyond the captured controls are outside this prerequisite.
+ReleaseSafe, hosted profiles, full Pi, release and public activation remain false.
 
 The first native candidate `abaab4bdc58eb4d17886c023fef46bfd71a2d435` passed
 155/155 compile steps and156/156 runtime steps,20/20 tests. Its full posthash
@@ -81,5 +81,33 @@ the original Source31 input and expected JSON remain unchanged.
 
 The correction consumes the completed check boundary before dispatching fresh
 poll records, instead of lazily consuming it inside the newly scheduled check.
-Its native retry must match both Source31 and Source1 before readiness is
-promoted. The Source1 probe and old passing cohort are retained independently.
+The Source1 probe and old passing cohort are retained independently.
+
+The corrected native candidate
+`919ef1d81b71e8dc7774d90e5b5bfe636957779b` passed155/155 compile steps and
+156/156 runtime steps,21/21 tests. All31 original observations and the separate
+delayed-poll observation matched, using four real TCP exchanges. The same gate
+passed the actual stdio unref-only exit check, namespace identity, callback
+exception identity/outstanding-batch continuation, GC/shutdown, Immediate
+allocator failure probe and affected existing timer regressions.
+
+Compile PID70808, created21:52:03Z, exited0 at21:52:15Z. Matching runtime PID29808,
+created21:52:31Z, exited0 at21:52:40Z. Both owned roots were independently verified
+absent. Final posthash at21:52:55Z recorded zero content and inventory drift for
+6965 candidate files,19546 compiler files,1774 scoped Node files and13 controls.
+All six cached EXE/PDB hashes remained unchanged, including the retained first
+cohort. The retry's newly generated test executable SHA256 is
+`6C06D246B5A53D05A6617D35A2CBC4DD9A929B23A843649735F3BB167AAF3E57`;
+its PDB is `8D5FF7A4DE14E4DDE356D3FDE59E875FD519E583DF7ED26F41D434294F3A0261`.
+Executed retry owner SHA256 is
+`D493D6887620DE61B1C72AF84E557B291842ECCE75A56482DE2904138B22A6D9`.
+
+The portable proof archive
+`verification/immediates-node24-source31-20261015/immediates-native-debug-qualified-20261015.zip`
+has70 raw payloads plus its manifest, SHA256
+`6A1843275D629B5A30934FD170F3DF74CA2051795549D6A1E40AD04F23D46D57`.
+The adjacent `Verify-NativeProof.ps1` independently reopens every entry and
+verifies the71-entry inventory, both Source captures, the original20-test
+cohort, the corrected21-test terminal results, and all twelve archived product/
+control files against the exact tested source manifest. Later proof commits
+leave `src` and `build.zig` byte-identical to the tested candidate.
