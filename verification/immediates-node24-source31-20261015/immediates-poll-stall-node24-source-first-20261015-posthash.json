@@ -1,0 +1,12 @@
+{
+  "expected_still_absent": true,
+  "candidate_drift": [],
+  "control_files": 6,
+  "candidate_inventory_drift": [],
+  "node_inventory_drift": [],
+  "control_drift": [],
+  "candidate_files": 6951,
+  "node_files": 1774,
+  "node_drift": [],
+  "completed_utc": "2026-10-15T21:45:52.4509892+00:00"
+}

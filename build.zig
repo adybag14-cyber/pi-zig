@@ -1639,6 +1639,12 @@ pub fn build(b: *std.Build) void {
     crypto_random_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-crypto-random", "Compare actual Node24 secure random typed-view behavior and native owner graphs").dependOn(&b.addRunArtifact(crypto_random_tests).step);
     b.step("build-native-crypto-random", "Compile secure random host independently of runtime checks").dependOn(&crypto_random_tests.step);
+    const immediates_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_immediates_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native immediates", "native timer", "native promise delay", "native microtasks" }, .use_llvm = use_llvm });
+    linkQuickJs(b, immediates_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(immediates_tests.root_module, sqlite_lib_dir, sqlite_library);
+    immediates_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-immediates", "Compare actual Node24 Immediate check batches and real loopback I/O controls").dependOn(&b.addRunArtifact(immediates_tests).step);
+    b.step("build-native-immediates", "Compile native Immediate check scheduler before bounded runtime controls").dependOn(&immediates_tests.step);
     const web_crypto_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_web_crypto_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native WebCrypto"}, .use_llvm = use_llvm });
     linkQuickJs(b, web_crypto_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(web_crypto_tests.root_module, sqlite_lib_dir, sqlite_library);

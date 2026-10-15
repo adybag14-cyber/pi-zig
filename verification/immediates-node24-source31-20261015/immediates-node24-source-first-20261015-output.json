@@ -1,0 +1,368 @@
+{
+  "nodeVersion": "v24.14.0",
+  "oracleScope": "Node builtins only; real127.0.0.1 TCP data callbacks, no PiSDK or external modules",
+  "builtinSourceCount": 368,
+  "actualNativeEntries": 369,
+  "excludedNonSourceKeys": [
+    "configs"
+  ],
+  "builtinAuthoritySha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+  "realLoopbackPolls": 3,
+  "count": 31,
+  "rows": [
+    {
+      "name": "function-metadata",
+      "value": {
+        "names": [
+          "setImmediate",
+          "clearImmediate"
+        ],
+        "lengths": [
+          1,
+          1
+        ],
+        "prototypes": [
+          true,
+          true
+        ],
+        "globalSet": {
+          "enumerable": true,
+          "writable": true,
+          "configurable": true
+        },
+        "globalClear": {
+          "enumerable": true,
+          "writable": true,
+          "configurable": true
+        }
+      }
+    },
+    {
+      "name": "handle-metadata",
+      "value": {
+        "keys": [
+          "_idleNext",
+          "_idlePrev",
+          "_onImmediate",
+          "_argv",
+          "_destroyed"
+        ],
+        "constructor": [
+          "Immediate",
+          2
+        ],
+        "tag": "[object Object]",
+        "methods": [
+          {
+            "name": "ref",
+            "length": 0,
+            "ownPrototype": false,
+            "descriptor": {
+              "enumerable": false,
+              "writable": true,
+              "configurable": true
+            }
+          },
+          {
+            "name": "unref",
+            "length": 0,
+            "ownPrototype": false,
+            "descriptor": {
+              "enumerable": false,
+              "writable": true,
+              "configurable": true
+            }
+          },
+          {
+            "name": "hasRef",
+            "length": 0,
+            "ownPrototype": false,
+            "descriptor": {
+              "enumerable": false,
+              "writable": true,
+              "configurable": true
+            }
+          }
+        ],
+        "dispose": {
+          "name": "",
+          "length": 0,
+          "ownPrototype": true,
+          "descriptor": {
+            "enumerable": true,
+            "writable": true,
+            "configurable": true
+          }
+        },
+        "argv": [
+          "a",
+          3
+        ],
+        "destroyed": false,
+        "hasRef": true
+      }
+    },
+    {
+      "name": "no-arguments",
+      "value": {
+        "argv": true,
+        "links": [
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "ref-transitions",
+      "value": [
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false
+      ]
+    },
+    {
+      "name": "dispose",
+      "value": {
+        "undefined": true,
+        "fired": 0,
+        "destroyed": true,
+        "callback": null,
+        "links": [
+          null,
+          null
+        ],
+        "ref": false
+      }
+    },
+    {
+      "name": "invalid-undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid-null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid-number",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received type number (3)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid-boolean",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received type boolean (true)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid-string",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received type string ('callback')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid-object",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid-array",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received an instance of Array",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "validation-no-coercion",
+      "value": {
+        "touched": 0,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"callback\" argument must be of type function. Received an instance of Object",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "callback-receiver-args",
+      "value": {
+        "same": true,
+        "args": [
+          "a",
+          0,
+          null
+        ],
+        "destroyed": true,
+        "callbackStillPresent": true,
+        "ref": false
+      }
+    },
+    {
+      "name": "after-fired",
+      "value": {
+        "destroyed": true,
+        "callback": null,
+        "ref": false,
+        "refReturn": true,
+        "afterRef": false,
+        "unrefReturn": true,
+        "afterUnref": false
+      }
+    },
+    {
+      "name": "fifo-and-microtasks",
+      "value": [
+        "a",
+        "promise-a",
+        "micro-a",
+        "b"
+      ]
+    },
+    {
+      "name": "nested-next-batch",
+      "value": [
+        "a",
+        "micro-a",
+        "b",
+        "after-first-batch",
+        "nested"
+      ]
+    },
+    {
+      "name": "microtask-before-first",
+      "value": [
+        "promise",
+        "microtask",
+        "immediate"
+      ]
+    },
+    {
+      "name": "cancel-before",
+      "value": [
+        "kept"
+      ]
+    },
+    {
+      "name": "cancel-current-batch",
+      "value": [
+        "a",
+        "c"
+      ]
+    },
+    {
+      "name": "microtask-cancels-current",
+      "value": [
+        "a",
+        "cancel",
+        "c"
+      ]
+    },
+    {
+      "name": "live-callback-argv",
+      "value": {
+        "same": true,
+        "args": [
+          "new",
+          7
+        ]
+      }
+    },
+    {
+      "name": "borrowed-methods",
+      "value": [
+        false,
+        true,
+        true,
+        false
+      ]
+    },
+    {
+      "name": "clear-noops",
+      "value": true
+    },
+    {
+      "name": "clear-getter-identity",
+      "value": true
+    },
+    {
+      "name": "clear-getter-order",
+      "value": [
+        "callback",
+        "destroyed"
+      ]
+    },
+    {
+      "name": "linked-cancel",
+      "value": {
+        "before": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "after": [
+          true,
+          true,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "real-loopback-poll-check",
+      "value": [
+        "poll:immediate-phase-probe",
+        "microtask",
+        "check"
+      ]
+    },
+    {
+      "name": "real-loopback-check-before-timer",
+      "value": [
+        "check",
+        "timer"
+      ]
+    },
+    {
+      "name": "real-loopback-fifo-nested",
+      "value": [
+        "a",
+        "micro-a",
+        "b",
+        "after-first-batch",
+        "nested"
+      ]
+    },
+    {
+      "name": "gc-retained-handle",
+      "value": true
+    }
+  ]
+}
