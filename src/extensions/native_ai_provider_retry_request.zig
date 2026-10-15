@@ -23,7 +23,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
             return pending.promise;
         }
     };
-    const result = try @import("native_node_function.zig").create(engine, "retryProviderRequest", 1, Adapter.call, &.{});
+    const result = try @import("native_node_function.zig").createArrow(engine, "retryProviderRequest", 1, Adapter.call, &.{});
     errdefer engine.freeValue(result);
     const prototype = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
     defer engine.freeValue(prototype);
@@ -96,7 +96,7 @@ fn validate(scope: *Scope, delay: c.JSValue, max: c.JSValue, message: c.JSValue)
     }
     return delay;
 }
-fn delay(scope: *Scope, failure: c.JSValue, index: c.JSValue, max: c.JSValue) !c.JSValue {
+fn retryDelay(scope: *Scope, failure: c.JSValue, index: c.JSValue, max: c.JSValue) !c.JSValue {
     const milliseconds = try header(scope, failure, "retry-after-ms");
     if (scope.truthy(milliseconds)) {
         const value = try scope.invoke(try scope.global("Number"), "parseFloat", &.{milliseconds});
@@ -124,7 +124,7 @@ fn failed(scope: *Scope, owner: c.JSValue, failure: c.JSValue, owned: bool) !voi
     }
     const index = try binary(scope, .subtract, try scope.get(owner, "maximum"), remaining);
     try scope.set(owner, "remaining", try binary(scope, .subtract, remaining, c.JS_NewInt32(scope.engine.context, 1)));
-    try flow.wait(continued, scope.engine, owner, try sleep(scope, try delay(scope, failure, index, try scope.get(options, "maxRetryDelayMs")), abort_signal), 1);
+    try flow.wait(continued, scope.engine, owner, try sleep(scope, try retryDelay(scope, failure, index, try scope.get(options, "maxRetryDelayMs")), abort_signal), 1);
 }
 fn sleep(scope: *Scope, duration: c.JSValue, abort_signal: c.JSValue) !c.JSValue {
     const pending = try flow.create(scope.engine, abort_signal);
@@ -151,9 +151,9 @@ fn sleep(scope: *Scope, duration: c.JSValue, abort_signal: c.JSValue) !c.JSValue
             return c.pi_js_undefined();
         }
     };
-    const callback = try scope.own(try @import("native_node_function.zig").create(scope.engine, "onAbort", 0, Adapter.onAbort, &.{pending.owner}));
+    const callback = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "onAbort", 0, Adapter.onAbort, &.{pending.owner}));
     try scope.put(pending.owner, "onAbort", callback);
-    const timer = try scope.own(try @import("native_node_function.zig").create(scope.engine, "", 0, Adapter.timeout, &.{pending.owner}));
+    const timer = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 0, Adapter.timeout, &.{pending.owner}));
     const scheduled = try scope.call(try scope.global("setTimeout"), c.pi_js_undefined(), &.{ timer, try scope.invoke(try scope.global("Math"), "max", &.{ c.JS_NewInt32(scope.engine.context, 0), duration }) });
     try scope.put(pending.owner, "timeout", scheduled);
     if (!v.nullish(abort_signal)) {
