@@ -2,6 +2,7 @@ const std = @import("std");
 const v = @import("extensions/native_ai_provider_values.zig");
 const c = v.c;
 fn install(engine: *v.em.Engine) !void {
+    if (engine.text_decoder_class == 0) try @import("extensions/text_decoder.zig").install(engine);
     var scope: v.Scope = .{ .engine = engine };
     defer scope.deinit();
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
