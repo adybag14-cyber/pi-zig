@@ -9,7 +9,7 @@ param(
  [string]$PairSealSha=''
 )
 $ErrorActionPreference='Stop'
-$taskPrivate='C:/Users/adyba/pi-zig-sdk-resource-parser-native-20261015'
+$taskPrivate='C:/Users/adyba/pi-zig-sdk-resource-parser-native-fix-20261015'
 $taskEvidence='C:/Users/adyba/pi-zig-update-evidence-20261003'
 $taskGit='C:/Program Files/Git/cmd/git.exe'
 $taskZig='C:/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-windows-0.16.0/zig.exe'
