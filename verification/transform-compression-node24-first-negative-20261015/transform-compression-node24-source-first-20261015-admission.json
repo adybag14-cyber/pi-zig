@@ -1,0 +1,15 @@
+{
+  "node_files": 1774,
+  "observed_utc": "2026-10-15T21:54:23.1060744+00:00",
+  "operation_deadline_seconds": 600,
+  "cases": 66,
+  "candidate_files": 7062,
+  "timeout_seconds": 300,
+  "candidate_head": "b2b2a451ce39a3939ec2893ff9cf1cae15235e98",
+  "required_kib": 2097152,
+  "heap_mb": 256,
+  "coordinated_with": "Explicit Root Source LIGHT slot grant required before invocation",
+  "free_kib": 21850660,
+  "control_files": 8,
+  "status": "admitted"
+}

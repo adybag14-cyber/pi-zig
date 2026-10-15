@@ -1,0 +1,11 @@
+{
+  "pid": 64736,
+  "nodeVersion": "v24.14.0",
+  "totalEntries": 369,
+  "sourceBodies": 368,
+  "configs": {
+    "own": true,
+    "type": "undefined",
+    "undefined": true
+  }
+}

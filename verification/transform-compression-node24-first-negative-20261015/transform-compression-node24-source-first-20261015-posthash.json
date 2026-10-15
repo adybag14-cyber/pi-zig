@@ -1,0 +1,14 @@
+{
+  "node_drift": [],
+  "completed_utc": "2026-10-15T21:54:39.4848023+00:00",
+  "control_drift": [],
+  "expected_still_absent": true,
+  "candidate_files": 7062,
+  "candidate_head_after": "b2b2a451ce39a3939ec2893ff9cf1cae15235e98",
+  "control_files": 8,
+  "node_files": 1774,
+  "candidate_drift": [],
+  "elapsed_seconds": 20.5852187,
+  "candidate_head_before": "b2b2a451ce39a3939ec2893ff9cf1cae15235e98",
+  "candidate_inventory_drift": []
+}

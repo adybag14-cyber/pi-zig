@@ -1,0 +1,6 @@
+Warning: Detected unsettled top-level await at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-transform-compression-configs-companion-20261015.mjs:9
+await import(pathToFileURL('C:/Users/adyba/pi-zig-native-transform-compression-20261015/tools/capture-web-transform-compression-node24.mjs').href);
+^
+
+
+

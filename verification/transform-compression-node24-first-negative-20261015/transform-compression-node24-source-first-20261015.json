@@ -1,0 +1,16 @@
+{
+  "name": "transform-compression-node24-source-first-20261015",
+  "pid": 64736,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "C:\\Program Files\\nodejs\\node.exe --max-old-space-size=256 --expose-gc C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\capture-transform-compression-configs-companion-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\transform-compression-node24-source-first-20261015-output.json C:\\Users\\adyba\\pi-zig-native-transform-compression-20261015\\src\\extensions\\fixtures\\web-transform-compression-node24.input.txt C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-node-builtin-authorities.json",
+  "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+  "created_utc": "2026-10-15T21:54:23.2459671Z",
+  "launched_utc": "2026-10-15T21:54:23.2430514+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-native-transform-compression-20261015",
+  "status": "failed",
+  "exit_code": 13,
+  "completed_utc": "2026-10-15T21:54:23.7468262+00:00"
+}
