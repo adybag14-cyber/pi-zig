@@ -154,13 +154,15 @@ fn setup(scope: *Scope, owner: c.JSValue) !void {
         }
         const request_options = try scope.object();
         const signal_value = try v.optional(scope, options, "signal");
-        if (scope.truthy(signal_value)) try scope.put(request_options, "signal", signal_value);
+        if (scope.truthy(signal_value)) try scope.put(request_options, "signal", try v.optional(scope, options, "signal"));
         const timeout = try v.optional(scope, options, "timeoutMs");
-        if (!c.JS_IsUndefined(timeout)) try scope.put(request_options, "timeout", timeout);
+        if (!c.JS_IsUndefined(timeout)) try scope.put(request_options, "timeout", try v.optional(scope, options, "timeoutMs"));
         try scope.put(request_options, "maxRetries", c.JS_NewInt32(scope.engine.context, 0));
         try scope.put(owner, "requestOptions", request_options);
         try scope.put(owner, "configured", c.pi_js_bool(scope.engine.context, 1));
     }
+    const signal_value = try v.optional(scope, options, "signal");
+    if (!v.nullish(signal_value)) _ = try scope.invoke(signal_value, "throwIfAborted", &.{});
     const built = try scope.own(try request.build(scope.engine, try scope.get(owner, "model"), try scope.get(owner, "context"), scope.truthy(try scope.get(owner, "oauth")), options, scope.truthy(try scope.get(owner, "disabledPreferred"))));
     try scope.put(owner, "built", built);
     const payload = try scope.get(built, "params");
