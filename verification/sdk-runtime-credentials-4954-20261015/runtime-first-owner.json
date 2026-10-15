@@ -1,0 +1,16 @@
+{
+  "name": "sdk-runtime-credentials-runtime-matching-519573b7-20261015",
+  "pid": 74564,
+  "executable": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\verification\\sdk-runtime-credentials-4954-20261015\\native-debug\\bin\\sdk-runtime-credentials-production-test.exe",
+  "executable_sha256": "F4783347BFEEFA439CF1B8BE838E477CD103DFABAD133C3F1AE706D2BF788E8B",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\verification\\sdk-runtime-credentials-4954-20261015\\native-debug\\bin\\sdk-runtime-credentials-production-test.exe\" --seed=0",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T23:09:59.0074098Z",
+  "launched_utc": "2026-10-15T23:09:59.0046975+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-sdk-factory-production-20261015",
+  "status": "failed",
+  "exit_code": 1,
+  "completed_utc": "2026-10-15T23:09:59.4160392+00:00"
+}
