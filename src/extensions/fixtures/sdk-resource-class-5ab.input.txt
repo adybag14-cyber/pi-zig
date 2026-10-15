@@ -99,8 +99,10 @@ failure('theme-default-directory-callback-outside-catch',marker=>{const l=loader
  const manager=loader().packageManager;let message;try{manager.getTargetMap(manager.createAccumulator(),'unknown')}catch(e){message=e.message}row('package-invalid-resource-type',{message});
 }
 for(const mode of ['defaults','flags','temporary','package-filter','untrusted','trust-bootstrap']){
- const settings=SettingsManager.inMemory({packages:[root+'/pkg-user'],prompts:['../shared/custom.md']},{projectTrusted:mode!=='untrusted'});
+ const settings=SettingsManager.inMemory({packages:[root+'/pkg-user'],prompts:['../shared/custom.md']},{projectTrusted:true});
  settings.setProjectPackages([root+'/project/pkg-project']);
+ settings.setProjectTrusted(mode!=='untrusted');
+ if(mode==='untrusted'){let message;try{settings.setProjectPackages([])}catch(error){message=error.message}if(message!=='Project is not trusted; refusing to write project settings')throw Error('Untrusted project settings writes must still be rejected');row('actual-untrusted-settings-write-rejection',{message})}
  const events=[],factories=[{name:'inline-unit',factory(pi){events.push('inline');pi.registerCommand('inline-unit',{description:'Inline command',handler:async()=>{}})}}];
  const l=loader({settingsManager:settings,extensionFactories:factories,...(mode==='flags'?{noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true}:{}),...(mode==='temporary'?{additionalExtensionPaths:[root+'/pkg-temporary'],additionalSkillPaths:[root+'/extra/SKILL.md'],additionalPromptTemplatePaths:[root+'/shared/custom.md'],additionalThemePaths:[root+'/extra/theme.json']}:{}),...(mode==='package-filter'?{}:{})});
  if(mode==='package-filter')settings.setPackages([{source:root+'/pkg-user',autoload:false,skills:['+skills/packaged/SKILL.md'],prompts:['+prompts/package.md']}]);
