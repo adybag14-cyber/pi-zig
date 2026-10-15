@@ -62,16 +62,26 @@ fn stringHeader(headers: []const u8, wanted: []const u8) !?[]const u8 {
 }
 pub fn decode(s: *Scope, value: c.JSValue) !c.JSValue {
     const frame = try buffer(s, value);
+    try validateFrame(frame);
+    return deserialize(s, value);
+}
+pub fn validate(s: *Scope, value: c.JSValue) !void {
+    return validateFrame(try buffer(s, value));
+}
+fn validateFrame(frame: []const u8) !void {
+    if (frame.len < 16 or read32(frame[0..4]) != frame.len) return error.InvalidBedrockEventFrame;
     const headers_length = read32(frame[4..8]);
     if (headers_length > frame.len - 16) return error.InvalidBedrockEventFrame;
     if (std.hash.Crc32.hash(frame[0..8]) != read32(frame[8..12])) return error.BedrockPreludeCrcMismatch;
     if (std.hash.Crc32.hash(frame[0 .. frame.len - 4]) != read32(frame[frame.len - 4 ..])) return error.BedrockMessageCrcMismatch;
+}
+pub fn deserialize(s: *Scope, value: c.JSValue) !c.JSValue {
+    const frame = try buffer(s, value);
+    const headers_length = read32(frame[4..8]);
     const headers = frame[12..][0..headers_length];
     const payload = frame[12 + headers_length .. frame.len - 4];
     const typ = (try stringHeader(headers, ":event-type")) orelse (try stringHeader(headers, ":exception-type")) orelse (try stringHeader(headers, ":error-code")) orelse return error.MissingBedrockEventType;
     const message_type = (try stringHeader(headers, ":message-type")) orelse "event";
-    const json = try s.invoke(try s.global("JSON"), "parse", &.{try s.text(payload)});
-    const item = try s.object();
     const key = try s.text(typ);
     if (std.mem.eql(u8, message_type, "error")) {
         const message = (try stringHeader(headers, ":error-message")) orelse typ;
@@ -80,6 +90,8 @@ pub fn decode(s: *Scope, value: c.JSValue) !c.JSValue {
         _ = try s.engine.checked(c.JS_Throw(s.engine.context, c.JS_DupValue(s.engine.context, exception)));
         unreachable;
     }
+    const json = try s.invoke(try s.global("JSON"), "parse", &.{try s.text(payload)});
+    const item = try s.object();
     if (std.mem.eql(u8, message_type, "exception")) {
         const exception = try serviceError(s, typ, json);
         _ = try s.engine.checked(c.JS_Throw(s.engine.context, c.JS_DupValue(s.engine.context, exception)));
@@ -111,6 +123,29 @@ pub fn decode(s: *Scope, value: c.JSValue) !c.JSValue {
     }
     try v.js.setKey(s.engine, item, key, modeled);
     return item;
+}
+/// Append raw transport bytes without inspecting a following message. The
+/// chunk/frame generator calls take only when its actual queue requests next.
+pub fn append(s: *Scope, state: c.JSValue, chunk: c.JSValue) !void {
+    const old = try buffer(s, try s.get(state, "pendingBytes"));
+    const incoming = try bytes(s, chunk);
+    if (incoming.len > maximum_frame_bytes or old.len > maximum_frame_bytes - incoming.len) return error.BedrockEventFrameTooLarge;
+    const combined = try s.engine.gpa.alloc(u8, old.len + incoming.len);
+    defer s.engine.gpa.free(combined);
+    @memcpy(combined[0..old.len], old);
+    @memcpy(combined[old.len..], incoming);
+    try s.set(state, "pendingBytes", try s.own(try s.engine.checked(c.JS_NewArrayBufferCopy(s.engine.context, combined.ptr, combined.len))));
+}
+pub fn take(s: *Scope, state: c.JSValue) !c.JSValue {
+    const pending = try buffer(s, try s.get(state, "pendingBytes"));
+    if (pending.len < 4) return c.pi_js_undefined();
+    const total: usize = read32(pending[0..4]);
+    if (total < 16 or total > maximum_frame_bytes) return error.InvalidBedrockEventFrame;
+    if (pending.len < total) return c.pi_js_undefined();
+    const frame = try s.own(try s.engine.checked(c.JS_NewArrayBufferCopy(s.engine.context, pending.ptr, total)));
+    const rest = pending[total..];
+    try s.set(state, "pendingBytes", try s.own(try s.engine.checked(c.JS_NewArrayBufferCopy(s.engine.context, rest.ptr, rest.len))));
+    return frame;
 }
 fn pick(s: *Scope, input: c.JSValue, keys: []const [*:0]const u8) !c.JSValue {
     const output = try s.object();
