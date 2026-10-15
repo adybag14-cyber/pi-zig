@@ -32,21 +32,58 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
 fn warn(scope: *Scope, text: c.JSValue) !void {
     _ = try scope.invoke(try scope.global("console"), "warn", &.{text});
 }
+fn firstParts(scope: *Scope, receiver: c.JSValue) !c.JSValue {
+    const candidates = try scope.get(receiver, "candidates");
+    const first = if (v.nullish(candidates)) c.pi_js_undefined() else try v.at(scope, candidates, 0);
+    return v.optional(scope, try v.optional(scope, first, "content"), "parts");
+}
+fn select(scope: *Scope, parts: c.JSValue, comptime kind: Kind) !c.JSValue {
+    const key: [*:0]const u8 = if (kind == .functionCalls) "functionCall" else if (kind == .executableCode) "executableCode" else "codeExecutionResult";
+    const Predicate = struct {
+        fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            var row: Scope = .{ .engine = engine };
+            defer row.deinit();
+            return c.pi_js_bool(engine.context, @intFromBool(row.truthy(try row.get(if (args.len > 0) args[0] else c.pi_js_undefined(), key))));
+        }
+    };
+    const Mapper = struct {
+        fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            return v.js.get(engine, if (args.len > 0) args[0] else c.pi_js_undefined(), key);
+        }
+    };
+    const Defined = struct {
+        fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            return c.pi_js_bool(engine.context, @intFromBool(args.len > 0 and !c.JS_IsUndefined(args[0])));
+        }
+    };
+    const selected = try scope.invoke(parts, "filter", &.{try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Predicate.call, &.{}))});
+    const mapped = try scope.invoke(selected, "map", &.{try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Mapper.call, &.{}))});
+    return scope.invoke(mapped, "filter", &.{try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Defined.call, &.{}))});
+}
 fn get(engine: *v.em.Engine, receiver: c.JSValue, kind: Kind) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const candidates = try scope.get(receiver, "candidates");
-    const first = if (v.nullish(candidates)) c.pi_js_undefined() else try v.at(&scope, candidates, 0);
-    const parts = try v.optional(&scope, try v.optional(&scope, first, "content"), "parts");
-    if (!v.nullish(parts) and try v.length(&scope, parts) == 0) return c.pi_js_undefined();
-    if (scope.truthy(candidates) and try v.length(&scope, candidates) > 1) try warn(&scope, try scope.text(switch (kind) {
+    const initial_parts = try firstParts(&scope, receiver);
+    if (!v.nullish(initial_parts) and scope.equal(try scope.get(initial_parts, "length"), c.JS_NewInt32(engine.context, 0))) return c.pi_js_undefined();
+    if (scope.truthy(try scope.get(receiver, "candidates")) and try @import("native_image_arithmetic.zig").compare(engine, .greater, try scope.get(try scope.get(receiver, "candidates"), "length"), c.JS_NewInt32(engine.context, 1))) try warn(&scope, try scope.text(switch (kind) {
         .text => "there are multiple candidates in the response, returning text from the first one.",
         .data => "there are multiple candidates in the response, returning data from the first one.",
         .functionCalls => "there are multiple candidates in the response, returning function calls from the first one.",
         .executableCode => "there are multiple candidates in the response, returning executable code from the first one.",
         .codeExecutionResult => "there are multiple candidates in the response, returning code execution result from the first one.",
     }));
+    const parts = try firstParts(&scope, receiver);
     if ((kind == .functionCalls or kind == .executableCode or kind == .codeExecutionResult) and v.nullish(parts)) return c.pi_js_undefined();
+    if (kind == .functionCalls or kind == .executableCode or kind == .codeExecutionResult) {
+        const selected = switch (kind) {
+            .functionCalls => try select(&scope, parts, .functionCalls),
+            .executableCode => try select(&scope, parts, .executableCode),
+            .codeExecutionResult => try select(&scope, parts, .codeExecutionResult),
+            else => unreachable,
+        };
+        if (scope.equal(try scope.get(selected, "length"), c.JS_NewInt32(engine.context, 0))) return c.pi_js_undefined();
+        return c.JS_DupValue(engine.context, if (kind == .functionCalls) selected else try v.optional(&scope, try v.at(&scope, selected, 0), if (kind == .executableCode) "code" else "output"));
+    }
     const collected = try scope.array();
     const non_parts = try scope.array();
     var combined = try scope.text("");
@@ -71,15 +108,14 @@ fn get(engine: *v.em.Engine, receiver: c.JSValue, kind: Kind) !c.JSValue {
             }
         }
         if (kind == .text) {
-            const text = try row.get(part, "text");
-            if (c.JS_IsString(text) and !row.equal(try row.get(part, "thought"), c.pi_js_bool(engine.context, 1))) {
+            if (c.JS_IsString(try row.get(part, "text"))) {
+                const thought = try row.get(part, "thought");
+                if (c.JS_IsBool(thought) and row.truthy(try row.get(part, "thought"))) continue;
                 found = true;
-                combined = try scope.concat(combined, text);
+                combined = try scope.concat(combined, try row.get(part, "text"));
             }
         } else if (kind == .data) {
-            const data = try row.get(part, "inlineData");
-            const text = try v.optional(&row, data, "data");
-            if (row.truthy(data) and c.JS_IsString(text)) combined = try scope.concat(combined, try row.call(try row.global("atob"), c.pi_js_undefined(), &.{text}));
+            if (row.truthy(try row.get(part, "inlineData")) and c.JS_IsString(try row.get(try row.get(part, "inlineData"), "data"))) combined = try scope.concat(combined, try row.call(try row.global("atob"), c.pi_js_undefined(), &.{try row.get(try row.get(part, "inlineData"), "data")}));
         } else {
             const key: [*:0]const u8 = if (kind == .functionCalls) "functionCall" else if (kind == .executableCode) "executableCode" else "codeExecutionResult";
             const value = try row.get(part, key);
