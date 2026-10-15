@@ -1,0 +1,92 @@
+[
+  {
+    "relative": ".gitattributes",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\.gitattributes",
+    "sha256": "1C6FD8771505652B56354ACA653A03DB7B75C862700AF6BE286659112EF63E02"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-compile.stderr.log",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-compile.stderr.log",
+    "sha256": "E94D8972A155772EBF4A29CF68561D12D8D653046011FBF71F9B0662CB808DFA"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-compile.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-compile.json",
+    "sha256": "D156E006E2636FF581DC18EEC68A44BD53812C82F312C8C82F0C60C65B79D5A4"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-admission.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-admission.json",
+    "sha256": "B49BD518C5B322D2406C53CDAC4E4ECA3475FCB849DC470C778B1D7F78F94725"
+  },
+  {
+    "relative": "auth-helpers-native95e4-owner-freeze-20261015.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\auth-helpers-native95e4-owner-freeze-20261015.json",
+    "sha256": "9D71E3CABDEDF48FF80054074414C5163E4CDA685BC5720F27FA13256FE40C87"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-immutable-before.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-immutable-before.json",
+    "sha256": "909194F39B36B1DD134CA8BD9412D553679B21F7842F47F5D1F21D8B3B2F750A"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-controls-before.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-controls-before.json",
+    "sha256": "C6ACFEB2E5EF1E5413D0F4C03E0B3C2CF2AD82907C2B247B20AB33FF8E3CE894"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-compile.stdout.log",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-immutable-post.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-immutable-post.json",
+    "sha256": "00F06F2A3CE5422797C330B6F26BEC5BC166B85B968A9D3BB188F3C0C7AFC88C"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-immutable-between.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-immutable-between.json",
+    "sha256": "71EABEB453BB2B0725F79FDC76F6DCC9725953A41CEADFE93C591A3E117B3635"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-posthash.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-posthash.json",
+    "sha256": "ED4A43FD436BF96F8A01170AAB7CC9EC606144AC24B07D5D30E21A8BEF4EBBC0"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-runtime.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-runtime.json",
+    "sha256": "A754D6EC1B3F9B27C91B6724D72E9FEAE9705E2FA7192CFBB412015CCB617304"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-runtime.stderr.log",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-runtime.stderr.log",
+    "sha256": "85267F3835F27F2D5AA4A1187348D1748FAE245F04508E91559737ABEE3A4FFC"
+  },
+  {
+    "relative": "Run-AuthHelpers95e4FullNativePair-20261015.ps1",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\Run-AuthHelpers95e4FullNativePair-20261015.ps1",
+    "sha256": "A9C590732B20A1F82E0BA0CDB8523E52FC2E68C36258F1B646B9EEF7D782398D"
+  },
+  {
+    "relative": "README.md",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\README.md",
+    "sha256": "4E54E803164569980DA43E591994E17AD3A8E0AD358343EF2954CE625E1BEECC"
+  },
+  {
+    "relative": "qualification-proof-20261015.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\qualification-proof-20261015.json",
+    "sha256": "A03C78856C25DB9EF9DE26F043E97D5086617097FD593B24ECCE6FCDCB774A15"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-source-before.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-source-before.json",
+    "sha256": "92F0A8C669E9B54209BA7BF9D3C1B52C8AC813D468CFCFC8A710FA542D187757"
+  },
+  {
+    "relative": "native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-runtime.stdout.log",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\native-windows-debug\\native-auth-helpers-95e4ba74-Debug-native3-first-20261015T2049206261211Z-fc439c27f08b4b23b14cd3fbe2bb6b0a-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  }
+]

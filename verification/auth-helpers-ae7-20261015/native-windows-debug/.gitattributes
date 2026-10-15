@@ -1,0 +1,2 @@
+# Preserve exact captured stdout/stderr bytes, including trailing newlines.
+*.log binary

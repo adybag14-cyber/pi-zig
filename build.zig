@@ -1657,6 +1657,12 @@ pub fn build(b: *std.Build) void {
     oauth_callback_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-oauth-callback", "Compare genuine Source callback pages errors lifecycle and manual races").dependOn(&b.addRunArtifact(oauth_callback_tests).step);
     b.step("build-native-ai-oauth-callback", "Compile shared callback server and owner RPC barrier").dependOn(&oauth_callback_tests.step);
+    const ai_auth_helpers_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_auth_helpers_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI auth helpers"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ai_auth_helpers_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(ai_auth_helpers_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_auth_helpers_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-ai-auth-helpers", "Validate actual native auth helper async identity and owned inputs").dependOn(&b.addRunArtifact(ai_auth_helpers_tests).step);
+    b.step("build-native-ai-auth-helpers", "Compile public native auth helpers independently of OAuth network flows").dependOn(&ai_auth_helpers_tests.step);
     const ai_http_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_http_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI HTTP"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_http_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_http_tests.root_module, sqlite_lib_dir, sqlite_library);

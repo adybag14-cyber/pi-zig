@@ -1,0 +1,77 @@
+[
+  {
+    "relative": "sourceae7-modules-40064-0-20261015.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\sourceae7-modules-40064-0-20261015.jsonl",
+    "sha256": "4F1249B3C6F974E243BCD6AEA9F714B96737B08DB85CFDC9A1F98B58BF43CA37"
+  },
+  {
+    "relative": "source16-proof-20261015.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\source16-proof-20261015.json",
+    "sha256": "0BF9C40F92F8EB176005C92FD1F0907D2F4C98798EC608A621839334BB956383"
+  },
+  {
+    "relative": "source16-owner-freeze-6f8b8be1-20261015.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\source16-owner-freeze-6f8b8be1-20261015.json",
+    "sha256": "588E6817D4ECC202CE5F1277278C9A5AAAF668DAB2D36702AA401CE318C400E4"
+  },
+  {
+    "relative": "source-observer.mjs",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\source-observer.mjs",
+    "sha256": "928F645085DDB6CABE5C07F31BE530772DB36EE74FA7272C84523BACB2671CC6"
+  },
+  {
+    "relative": "Run-AuthHelpersSource-20261015.ps1",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\Run-AuthHelpersSource-20261015.ps1",
+    "sha256": "E9CFF88F0D17458ACF2D33C1EE9C46CDE62D4112FC3810DEE8322AA42FB91502"
+  },
+  {
+    "relative": "Run-AuthHelpersNativePair-20261015.ps1",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\Run-AuthHelpersNativePair-20261015.ps1",
+    "sha256": "D300E83F20F8DFB6C02D1229BDA7791D5CA8E325F14A9567DDFB0ADE9F802453"
+  },
+  {
+    "relative": "README.md",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\README.md",
+    "sha256": "2DAB1C82DBEDD1C897EEFE5527675BB2D1F8258DBEFEBB388869A2F61EEB5807"
+  },
+  {
+    "relative": "ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5.stdout.log",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "relative": "ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5.stderr.log",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5.stderr.log",
+    "sha256": "9D8D5CC47E885842696866940D580E51B560ABEE4794A3D3F8A2541CCCE71EF2"
+  },
+  {
+    "relative": "ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5.json",
+    "sha256": "B5BC36F0804C72C2C75412B9BC9AEC69B8E987EFE88E3A10213E841F1C50AE6A"
+  },
+  {
+    "relative": "ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5-posthash.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5-posthash.json",
+    "sha256": "49BF033954FBA052E5D3157441097CB3885E3B558FC956082F31106A7C0E32DE"
+  },
+  {
+    "relative": "ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5-output.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5-output.json",
+    "sha256": "F875997C4477DB71DFD2B49B59CF4871DB7656E1B609F24915D9A4F9FBF33C9B"
+  },
+  {
+    "relative": "ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5-extra-before.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5-extra-before.json",
+    "sha256": "D29E06CBC2EC7D64780B3B4028E2CF732FC18EF9133D593E1E581AE0A205A0C2"
+  },
+  {
+    "relative": "ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5-admission.json",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5-admission.json",
+    "sha256": "EF45E8A57C365917B487E7B9A6089AB002FBD0ECCA119324C966C048396401ED"
+  },
+  {
+    "relative": "ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5-owned-fixture\\owned-auth-helper-input.txt",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5-owned-fixture\\owned-auth-helper-input.txt",
+    "sha256": "95E89E737E83556803C47A9A1C0D9ABA25D341511A15167449CD817B87C55701"
+  }
+]

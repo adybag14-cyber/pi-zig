@@ -1,0 +1,31 @@
+{
+  "preparation_control_drift": [],
+  "absent_dependency_drift": [],
+  "control_manifest_drift": false,
+  "output_path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\ai-auth-helpers-ae7-source-light6-first-20261015T2023303931574Z-c2d647447e0143529644b1c5e180d4e5-output.json",
+  "manifests": [
+    {
+      "drift": 0,
+      "files": 1968,
+      "changed": [],
+      "name": "source"
+    },
+    {
+      "drift": 0,
+      "files": 31064,
+      "changed": [],
+      "name": "dependencies"
+    },
+    {
+      "drift": 0,
+      "files": 1774,
+      "changed": [],
+      "name": "node_tools"
+    }
+  ],
+  "source_head_after": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "source_head_before": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "historical_absence_records": 84,
+  "extra_control_drift": [],
+  "completed_utc": "2026-10-15T20:24:25.3067467+00:00"
+}

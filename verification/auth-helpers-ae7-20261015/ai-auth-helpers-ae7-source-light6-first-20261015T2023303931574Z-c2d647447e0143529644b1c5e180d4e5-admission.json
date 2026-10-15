@@ -1,0 +1,10 @@
+{
+  "heap_mb": 256,
+  "observed_utc": "2026-10-15T20:23:48.6837436+00:00",
+  "status": "admitted",
+  "source_head": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "coordinated_with": "Explicit Root LIGHT Source slot grant",
+  "timeout_seconds": 300,
+  "required_kib": 2097152,
+  "free_kib": 18564704
+}
