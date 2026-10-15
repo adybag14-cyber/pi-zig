@@ -98,3 +98,24 @@ test "native AI ChatGPT callback validates ordered fields preserves issued ID an
     try std.testing.expect(!callback.pending(engine));
     c.JS_RunGC(engine.runtime);
 }
+test "native AI ChatGPT VM teardown cancels abandoned callback and idle owned connection" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    var engine_alive = true;
+    defer if (engine_alive) engine.deinit();
+    engine.native_io = std.testing.io;
+    const server = try callback.open(engine, "abandoned-state", "127.0.0.1", 0);
+    const port_value = try sdk.get(engine, server, "port");
+    var port: u32 = 0;
+    try std.testing.expect(c.JS_ToUint32(engine.context, &port, port_value) == 0);
+    engine.freeValue(port_value);
+    engine.freeValue(server);
+    const address = try std.Io.net.IpAddress.parse("127.0.0.1", @intCast(port));
+    const spare = try address.connect(std.testing.io, .{ .mode = .stream, .protocol = .tcp });
+    defer spare.close(std.testing.io);
+    c.JS_RunGC(engine.runtime);
+    try std.testing.expect(callback.pending(engine));
+    engine.deinit();
+    engine_alive = false;
+    var replacement = try address.listen(std.testing.io, .{ .reuse_address = true });
+    replacement.deinit(std.testing.io);
+}

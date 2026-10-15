@@ -352,7 +352,10 @@ fn credential(scope: *Scope, token: c.JSValue, client_id: c.JSValue) !c.JSValue 
     const refresh_token = try requireString(scope, token, "refresh_token");
     const scope_string = try requireString(scope, token, "scope");
     const expires_type = try scope.get(token, "expires_in");
-    if (!c.JS_IsNumber(expires_type) or !scope.truthy(try scope.invoke(try scope.global("Number"), "isFinite", &.{try scope.get(token, "expires_in")})) or !try scope.positive(try scope.get(token, "expires_in"))) return fail(scope, "OpenAI OAuth token response has invalid expires_in");
+    if (!c.JS_IsNumber(expires_type)) return fail(scope, "OpenAI OAuth token response has invalid expires_in");
+    const number = try scope.global("Number");
+    const finite = try scope.get(number, "isFinite");
+    if (!scope.truthy(try scope.call(finite, number, &.{try scope.get(token, "expires_in")})) or try arithmetic.compare(engine, .less_equal, try scope.get(token, "expires_in"), c.JS_NewInt32(engine.context, 0))) return fail(scope, "OpenAI OAuth token response has invalid expires_in");
     const regex = try scope.own(try v.js.builtin(engine, "RegExp", &.{try scope.text("\\s+")}));
     const split = try scope.invoke(try scope.invoke(scope_string, "trim", &.{}), "split", &.{regex});
     const scopes = try scope.invoke(split, "filter", &.{try scope.global("Boolean")});
