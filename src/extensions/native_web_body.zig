@@ -10,6 +10,7 @@ const collector = @import("native_body_collect.zig");
 const web = @import("native_headers_webidl.zig");
 const blob = @import("native_web_blob.zig");
 const form = @import("native_web_form_data.zig");
+const mime_parser = @import("native_web_mime.zig");
 const c = em.c;
 const cache_key = "\x00native-web-Body";
 pub const Streams = struct {
@@ -246,12 +247,12 @@ fn convert(scope: *Scope, bytes: c.JSValue, mode: Mode, mime: c.JSValue) !c.JSVa
     const raw = c.JS_GetUint8Array(scope.engine.context, &size, bytes);
     if (raw == null and c.JS_HasException(scope.engine.context)) return js.capture(scope.engine);
     if (mode == .blob) {
-        const mime_type = if (c.JS_IsNull(mime) or c.JS_IsUndefined(mime)) try scope.text("") else mime;
+        const mime_type = if (try mime_parser.extract(scope, mime)) |record| try mime_parser.serialize(scope, record) else try scope.text("");
         return scope.own(try blob.fromBytes(scope.engine, if (size == 0) &.{} else raw[0..size], mime_type));
     }
-    const content_type = if (c.JS_IsNull(mime) or c.JS_IsUndefined(mime)) try scope.text("") else try scope.stringify(mime);
-    const lowered = try scope.invoke(content_type, "toLowerCase", &.{});
-    if (scope.truthy(try scope.invoke(lowered, "startsWith", &.{try scope.text("application/x-www-form-urlencoded")}))) {
+    const parsed_mime = try mime_parser.extract(scope, mime);
+    const essence = if (parsed_mime) |record| try scope.get(record, "essence") else c.pi_js_null();
+    if (scope.equal(essence, try scope.text("application/x-www-form-urlencoded"))) {
         const decoded = try @import("binary_encoding.zig").decode(scope.engine.gpa, if (size == 0) &.{} else raw[0..size], .utf8);
         defer scope.engine.gpa.free(decoded);
         var pairs = try @import("url_search_params.zig").parse(scope.engine.gpa, decoded);
@@ -260,7 +261,7 @@ fn convert(scope: *Scope, bytes: c.JSValue, mode: Mode, mime: c.JSValue) !c.JSVa
         for (pairs.items) |pair| try form.appendEntry(scope, result, try scope.text(pair.name), try scope.text(pair.value));
         return result;
     }
-    if (scope.truthy(try scope.invoke(lowered, "startsWith", &.{try scope.text("multipart/form-data")}))) return error.NativeWebMultipartParsingUnavailable;
+    if (scope.equal(essence, try scope.text("multipart/form-data"))) return error.NativeWebMultipartParsingUnavailable;
     try web.typeError(scope, try scope.text("Content-Type was not one of \"multipart/form-data\" or \"application/x-www-form-urlencoded\"."), null);
 }
 fn complete(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
