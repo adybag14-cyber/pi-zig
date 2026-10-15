@@ -1,0 +1,44 @@
+{
+  "absence_records": 84,
+  "candidate_head_drift": false,
+  "source_path_drift": [],
+  "completed_utc": "2026-10-15T20:35:22.1585690+00:00",
+  "candidate_dirty": [],
+  "expected_present": false,
+  "observer_manifest_drift": false,
+  "control_drift": [],
+  "absent_dependency_drift": [],
+  "manifests": [
+    {
+      "files": 1967,
+      "drift": 0,
+      "name": "source",
+      "changed": []
+    },
+    {
+      "files": 31064,
+      "drift": 0,
+      "name": "dependencies",
+      "changed": []
+    },
+    {
+      "files": 1774,
+      "drift": 0,
+      "name": "node_tools",
+      "changed": []
+    },
+    {
+      "files": 195,
+      "drift": 0,
+      "name": "canonical_highlight_package",
+      "changed": []
+    },
+    {
+      "files": 5779,
+      "drift": 0,
+      "name": "whole_candidate",
+      "changed": []
+    }
+  ],
+  "candidate_name_drift": []
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "sha256": "45B903EDE2BE9E4DF49C7F654F0332AD40D198E88CAE691694CA8F9377DEE08D",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-lazy-batch9-source109-second-20261015\\Run-HighlightBatch9Source109.ps1"
+  },
+  {
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-lazy-batch9-source109-second-20261015\\Invoke-OwnedEeSourceJob-20261012.ps1"
+  },
+  {
+    "sha256": "0AC8730E2A2AC79FB01862C949210EAD2049B21DCA199D8C7F46C8C3F465ECB6",
+    "path": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\verification\\highlight-lazy-batch9-prepared-20261015\\capture-highlight-lazy-batch9-20261015.mjs"
+  },
+  {
+    "sha256": "88AD694816413A1D59FCE9CA95C3C509418FA09B033D33EBB28E4DFC12A9B879",
+    "path": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\fixtures\\sdk-highlight-lazy-batch9-10_7_3.input.txt"
+  },
+  {
+    "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-observe-20261015.mjs"
+  },
+  {
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json"
+  },
+  {
+    "sha256": "442C946218F299BE50251FA2A435949CF8231A9C5A38BE2F7E013F9C25205705",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-lazy-batch9-source109-second-20261015\\canonical-highlight191-before.json"
+  },
+  {
+    "sha256": "4B5852458E4DD5224CD7DB415DC43793AFCB4695180C25425A9DF36C4C890EB8",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-lazy-batch9-source109-second-20261015\\whole-candidate-before.json"
+  },
+  {
+    "sha256": "F6FB3E796F82DCE413D40CCB969F5FDAEFAC02833BCB885F653E1B95F792726B",
+    "path": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\verification\\highlight-lazy-batch9-prepared-20261015\\original-native-factory-inputs.json"
+  },
+  {
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-full-manifest-20261015.json"
+  },
+  {
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json"
+  },
+  {
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json"
+  }
+]

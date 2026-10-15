@@ -1,0 +1,8 @@
+{
+  "expected_sha256": "84BB4AEC9D2EE1107313288CB8796857D7B57C08644BB7EE3D9E39B075889748",
+  "native_compile_run": false,
+  "cases": 109,
+  "candidate_head": "27f78f4d34c42e7572b224d1d405c3606995c7ce",
+  "native_runtime_run": false,
+  "published_after_terminal_and_fullpost0": true
+}

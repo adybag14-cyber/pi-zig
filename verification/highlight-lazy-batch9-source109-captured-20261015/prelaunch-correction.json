@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-15T20:34:22.1284175+00:00",
+  "first_caller_pid": 57420,
+  "node_owner_record_absent": true,
+  "expected_absent": true,
+  "reason": "PowerShell case-insensitive Git function name shadowed git executable",
+  "correction": "TaskGit helper invokes git.exe explicitly",
+  "terminal": "failed-before-prehash"
+}

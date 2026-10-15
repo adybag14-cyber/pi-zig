@@ -1,0 +1,9 @@
+{
+  "created_utc": "2026-10-15T20:34:22.2391284Z",
+  "parent_pid": 70220,
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "pid": 70408,
+  "external_deadline_utc": "2026-10-15T20:44:22.6243100+00:00",
+  "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoProfile -File C:/Users/adyba/pi-zig-update-evidence-20261003/highlight-lazy-batch9-source109-second-20261015/Run-HighlightBatch9Source109.ps1",
+  "caller_sha256": "45B903EDE2BE9E4DF49C7F654F0332AD40D198E88CAE691694CA8F9377DEE08D"
+}
