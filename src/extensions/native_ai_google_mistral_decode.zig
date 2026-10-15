@@ -121,15 +121,15 @@ fn google(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
             if (!row.truthy(function)) continue;
             try close(&row, owner);
             var id = try row.get(try row.get(part, "functionCall"), "id");
-            const ids = try row.get(owner, "tools");
             if (!row.truthy(id) or try hasGoogleTool(&row, owner, id)) {
+                const call_name = try row.stringify(try row.get(try row.get(part, "functionCall"), "name"));
+                const now = try row.stringify(try row.invoke(try row.global("Date"), "now", &.{}));
                 const counter_owner = try row.get(owner, "counterOwner");
                 const counter = try binary(&row, .add, try row.get(counter_owner, "counter"), c.JS_NewInt32(scope.engine.context, 1));
                 try row.put(counter_owner, "counter", counter);
-                id = try row.concat(try row.concat(try row.stringify(try row.get(try row.get(part, "functionCall"), "name")), try row.text("_")), try row.stringify(try row.invoke(try row.global("Date"), "now", &.{})));
+                id = try row.concat(try row.concat(call_name, try row.text("_")), now);
                 id = try row.concat(try row.concat(id, try row.text("_")), try row.stringify(counter));
             }
-            _ = try row.invoke(ids, "set", &.{ id, c.pi_js_bool(scope.engine.context, 1) });
             const block = try row.object();
             try row.put(block, "type", try row.text("toolCall"));
             try row.put(block, "id", id);
