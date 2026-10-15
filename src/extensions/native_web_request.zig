@@ -84,6 +84,11 @@ fn ownBody(engine: *em.Engine, input: body.Body) body.Body {
     inline for (std.meta.fields(body.Body)) |field| @field(output, field.name) = c.JS_DupValue(engine.context, @field(input, field.name));
     return output;
 }
+fn copyMetadata(scope: *Scope, target: c.JSValue, source: c.JSValue) !void {
+    // makeRequest copies private fields directly; mutable Object.assign is not
+    // an extra observable hook in the bundled Request implementation.
+    inline for (.{ "url", "method", "mode", "credentials", "cache", "redirect", "referrer", "referrerPolicy", "integrity", "destination", "keepalive", "isReloadNavigation", "isHistoryNavigation" }) |field| try scope.set(target, field, try scope.get(source, field));
+}
 fn fresh(scope: *Scope, owner: c.JSValue, prototype: c.JSValue) !c.JSValue {
     const value = try scope.own(try scope.engine.checked(c.JS_NewObjectProtoClass(scope.engine.context, prototype, rootOf(owner).class)));
     const state = try scope.engine.gpa.create(State);
@@ -165,6 +170,26 @@ fn signalFor(scope: *Scope, owner: c.JSValue, request: c.JSValue, parent: c.JSVa
     }
     return signal;
 }
+fn cloneSignal(scope: *Scope, owner: c.JSValue, receiver: c.JSValue) !c.JSValue {
+    const root = rootOf(owner);
+    const ac = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, root.controller_constructor, 0, null)));
+    // Source reads this.signal afresh after allocating the controller, including
+    // repeated reads for reason and WeakMap key when a guest shadows the getter.
+    if (scope.truthy(try scope.get(try scope.get(receiver, "signal"), "aborted"))) {
+        _ = try scope.invoke(ac, "abort", &.{try scope.get(try scope.get(receiver, "signal"), "reason")});
+    } else {
+        var list = try scope.invoke(root.dependent_controllers, "get", &.{try scope.get(receiver, "signal")});
+        if (c.JS_IsUndefined(list)) {
+            list = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("Set"), 0, null)));
+            _ = try scope.invoke(root.dependent_controllers, "set", &.{ try scope.get(receiver, "signal"), list });
+        }
+        var args = [_]c.JSValue{ac};
+        const weak = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("WeakRef"), 1, &args)));
+        _ = try scope.invoke(list, "add", &.{weak});
+        _ = try scope.invoke(try scope.get(ac, "signal"), "addEventListener", &.{ try scope.text("abort"), try buildAbort(scope, owner, weak) });
+    }
+    return scope.get(ac, "signal");
+}
 fn parseUrl(scope: *Scope, owner: c.JSValue, value: c.JSValue, referrer: bool) !c.JSValue {
     var args = [_]c.JSValue{value};
     return scope.own(scope.engine.checked(c.JS_CallConstructor(scope.engine.context, rootOf(owner).url_constructor, 1, &args)) catch |err| {
@@ -217,7 +242,7 @@ fn create(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captur
         const original = try internal(&scope, owner, input);
         input_state = original;
         parent_signal = original.signal;
-        _ = try scope.invoke(try scope.global("Object"), "assign", &.{ state.metadata, original.metadata });
+        try copyMetadata(&scope, state.metadata, original.metadata);
         const explicit_dispatcher = try scope.get(init, "dispatcher");
         replace(engine, &state.dispatcher, if (scope.truthy(explicit_dispatcher)) explicit_dispatcher else original.dispatcher);
         const copied = try scope.own(try headers.fromRecord(engine, original.headers));
@@ -287,7 +312,7 @@ fn clone(scope: *Scope, owner: c.JSValue, state: *State, receiver: c.JSValue) !c
     if (try body.unusable(scope, state.payload)) try web.typeError(scope, try scope.text("unusable"), null);
     const result = try fresh(scope, owner, rootOf(owner).prototype);
     const copy = try internal(scope, owner, result);
-    _ = try scope.invoke(try scope.global("Object"), "assign", &.{ copy.metadata, state.metadata });
+    try copyMetadata(scope, copy.metadata, state.metadata);
     replace(scope.engine, &copy.headers, try scope.own(try headers.fromRecord(scope.engine, state.headers)));
     copy.guard = state.guard;
     try headers.setGuard(scope.engine, copy.headers, copy.guard);
@@ -297,7 +322,7 @@ fn clone(scope: *Scope, owner: c.JSValue, state: *State, receiver: c.JSValue) !c
         copy.payload = ownBody(scope.engine, split.copy);
         replace(scope.engine, &state.payload.?.stream, split.original_stream);
     }
-    replace(scope.engine, &copy.signal, try signalFor(scope, owner, result, try scope.get(receiver, "signal"), true));
+    replace(scope.engine, &copy.signal, try cloneSignal(scope, owner, receiver));
     return result;
 }
 fn consumer(kind: Kind) bool {
