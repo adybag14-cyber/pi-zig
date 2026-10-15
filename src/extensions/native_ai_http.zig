@@ -169,7 +169,7 @@ fn headValue(scope: *Scope, head: raw.Head, raw_header_pairs: bool) !c.JSValue {
     const value = try scope.object();
     const headers = try scope.object();
     try scope.put(value, "status", c.JS_NewInt32(scope.engine.context, head.status));
-    try scope.put(value, "statusText", try httpText(scope, head.status_text, raw_header_pairs));
+    try scope.put(value, "statusText", try scope.text(head.status_text));
     for (head.headers) |entry| {
         var row: Scope = .{ .engine = scope.engine };
         defer row.deinit();
