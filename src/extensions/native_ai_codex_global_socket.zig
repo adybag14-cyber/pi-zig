@@ -198,7 +198,20 @@ fn connectStart(engine: *v.em.Engine, turn: c.JSValue, constructor: c.JSValue, r
 }
 fn connect(scope: *Scope, turn: c.JSValue, constructor: c.JSValue) !void {
     if (v.nullish(constructor)) return errors.raise(scope, try plainError(scope, "WebSocket transport is not available in this runtime"));
-    const fields = try scope.invoke(try scope.global("Object"), "fromEntries", &.{try scope.invoke(try scope.get(turn, "headers"), "entries", &.{})});
+    const fields = try scope.object();
+    const symbol = try scope.own(try scope.engine.checked(c.JS_GetIteratorSymbol(scope.engine.context)));
+    var entries = try v.iterator(scope, try scope.invoke(try scope.get(turn, "headers"), "entries", &.{}));
+    defer entries.deinit();
+    errdefer entries.closePreserving();
+    while (try entries.next()) |entry| {
+        defer scope.engine.freeValue(entry);
+        const pair = try v.js.pair(scope.engine, entry, symbol);
+        defer for (pair) |item| scope.engine.freeValue(item);
+        const atom = c.JS_ValueToAtom(scope.engine.context, pair[0]);
+        if (atom == c.JS_ATOM_NULL) return v.js.capture(scope.engine);
+        defer c.JS_FreeAtom(scope.engine.context, atom);
+        if (c.JS_SetProperty(scope.engine.context, fields, atom, c.JS_DupValue(scope.engine.context, pair[1])) < 0) return v.js.capture(scope.engine);
+    }
     try v.remove(scope, fields, "OpenAI-Beta");
     const options = try scope.object();
     try scope.put(options, "headers", fields);
