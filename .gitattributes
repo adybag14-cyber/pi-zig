@@ -142,3 +142,5 @@ verification/writable-stream-native-debug-source56-qualified-20261015/*.log whit
 verification/native-ai-http-shared-adc-compile-negative-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-ai-http-shared-successor-negatives-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-ai-http-shared-33bf-debug-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+# Preserve original Response transport terminal EOF bytes in the proof bundle.
+verification/web-response-node24-20261015/qualified-c9b97c85/*.log whitespace=-blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
