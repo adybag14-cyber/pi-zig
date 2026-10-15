@@ -181,6 +181,8 @@ test "native async generator functional raw VM allocation failures reject and re
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     c.JS_SetDumpFlags(engine.runtime, c.JS_DUMP_LEAKS);
+    const output = if (@import("builtin").os.tag == .windows) c.__acrt_iob_func(1) else c.stdout;
+    _ = c.setvbuf(output, null, c._IONBF, 0);
     const root = try sdk.object(engine);
     defer engine.freeValue(root);
     const saved_limit = engine.options.memory_limit;
