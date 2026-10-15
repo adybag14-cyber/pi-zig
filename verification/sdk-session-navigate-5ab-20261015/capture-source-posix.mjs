@@ -1,0 +1,22 @@
+// Prepared for actual POSIX execution only under complete admitted manifests.
+import {readFileSync,writeFileSync,realpathSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+import {resolve,isAbsolute} from 'node:path';
+const[output,inputPath,sourceRoot,expectedPlatform]=process.argv.slice(2);
+if(!output||!inputPath||!sourceRoot||!expectedPlatform)throw Error('Arguments: output input source-root expected-platform');
+if(![output,inputPath,sourceRoot].every(isAbsolute))throw Error('Absolute admitted paths required');
+if(process.platform!==expectedPlatform||!['linux','darwin'].includes(process.platform))throw Error('Actual admitted POSIX platform required');
+const core=resolve(realpathSync(sourceRoot),'packages/coding-agent/src/core');
+const {AgentSession}=await import(pathToFileURL(resolve(core,'agent-session.ts')));
+const {SessionManager}=await import(pathToFileURL(resolve(core,'session-manager.ts')));
+const helpers=await import(pathToFileURL(resolve(core,'compaction/branch-summarization.ts')));
+const prototype={};Object.defineProperty(prototype,'navigateTree',Object.getOwnPropertyDescriptor(AgentSession.prototype,'navigateTree'));
+globalThis.navigationAPI={...helpers,prototype,SessionManager,refresh:AgentSession.prototype._refreshFinalizedContext};
+globalThis.navigationFixtureCwd='/owned/navigation';
+const input=readFileSync(inputPath);await import('data:text/javascript,'+encodeURIComponent(input.toString('utf8')));
+if(navigationRows.length!==56)throw Error('All56 original POSIX Source cases required');
+for(const row of navigationRows)if(row.error)throw Error('Unexpected fixture failure '+JSON.stringify(row));
+const generated=navigationRows.find(row=>row.name==='navigate-generated').value;
+if(generated.result.cancelled||!generated.result.summaryEntry?.summary?.includes('generated summary'))throw Error('Actual Source default summarizer did not execute');
+writeFileSync(output,JSON.stringify({sourceHead:'5ab7fe74c400097b386662205cd93900695b8a71',platform:process.platform,inputSha256:createHash('sha256').update(input).digest('hex'),cases:navigationRows.length,scope:'Actual POSIX navigateTree and all real branch-summary helpers, manager, refresh and completion/retry with caller-provided streams. Uses absolute /owned/navigation; generated IDs/timestamps/session IDs normalized. Accept only after complete posthash0. Native/factory/application qualification remains separate.',rows:navigationRows},null,2));

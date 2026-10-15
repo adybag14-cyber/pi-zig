@@ -1,0 +1,15 @@
+{
+  "candidate_files": 5632,
+  "candidate_drift": 0,
+  "reference_files": 1967,
+  "reference_drift": 0,
+  "dependencies_files": 31064,
+  "dependencies_drift": 0,
+  "node_files": 1774,
+  "node_drift": 0,
+  "compiler_files": 19546,
+  "compiler_drift": 0,
+  "controls_files": 9,
+  "controls_drift": 0,
+  "completed_utc": "2026-10-15T18:22:15.4420395+00:00"
+}

@@ -1,0 +1,21 @@
+{
+  "status": "actual-qualified-component-recipe-root-not-edited",
+  "shared_assembly_commit": "540df5ea",
+  "shared_assembly_module": "native_sdk_session_ai_assembly.zig",
+  "actual_shared_binding": "shared.completeSummarization from create(engine, actual_pi_ai_compat_namespace)",
+  "assembly_lines": [
+    "const branch_bindings = try scope.own(try @import(\"extensions/native_sdk_branch_summary.zig\").exports(engine, try scope.get(shared, \"completeSummarization\")));",
+    "try @import(\"extensions/native_sdk_session_navigate.zig\").install(engine, staging, branch_bindings);"
+  ],
+  "requirements": "Use the same actual compat completeSimple/reset provider identity and uuid/retry/request binding as ordinary compaction. Do not pass the test-only controlled default completion adapter to production assembly. Initialize the real native crypto module before uuidv7 is invoked; native workers already own their genuine platform globals.",
+  "session_callees_reused_live": [
+    "sessionManager getLeafId/getEntry/getBranch/branchWithSummary/appendLabelChange/resetLeaf/branch",
+    "_getSummarizationRequestAuth and _summarizationRetryCallbacks",
+    "_refreshFinalizedContext and _restoreToolsFromTranscript",
+    "_extensionRunner.hasHandlers/emit and _resolveIdleWaitIfIdle",
+    "settingsManager branch/retry settings, model and agent.streamFunction"
+  ],
+  "installed_descriptor": "navigateTree: name navigateTree, length1, AsyncFunction prototype, no own prototype; writable/configurable true, enumerable false.",
+  "full_factory_qualified": false,
+  "public_activation": false
+}

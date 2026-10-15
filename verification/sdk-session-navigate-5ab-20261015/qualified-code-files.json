@@ -1,0 +1,34 @@
+[
+  {
+    "relative": "build.zig",
+    "sha256": "26A342F4B08E89B6381EE38DD198A5F1B241BBDC9F5FD441CD994BE62E306D1B"
+  },
+  {
+    "relative": "src/extensions/native_sdk_branch_summary.zig",
+    "sha256": "5D61D1CDE9827AE703EF63749D29D823F4AD458F14A024CA854CD753CB3C7898"
+  },
+  {
+    "relative": "src/extensions/native_sdk_session_navigate.zig",
+    "sha256": "2491A47D97B9908805E4949FBE1C36B10D761CC07928BDBD7C5C7067A39BAB62"
+  },
+  {
+    "relative": "src/extensions/branch_summary_prompt_5ab.txt",
+    "sha256": "76CF34F4204CC5465282460C9A3099301D9C8C0A672EDA0E9D48EE7AF422CEC1"
+  },
+  {
+    "relative": "src/extensions/branch_summary_preamble_5ab.txt",
+    "sha256": "5ED8B8E14790F8DA297C43EEBECE78B666557C024E486B501CE65097277CAEDA"
+  },
+  {
+    "relative": "src/extensions/fixtures/sdk-session-navigate-5ab.input.txt",
+    "sha256": "3CDBBF54FE8173D18B62DC64C3E41DBF785BA86DA48AA8CCB1DA0856A6CAE554"
+  },
+  {
+    "relative": "src/extensions/fixtures/sdk-session-navigate-5ab.json",
+    "sha256": "369C77FF889128F750C71210EDF7F1E45A1B93E78C5360BBC8FC325A1F86783C"
+  },
+  {
+    "relative": "src/native_sdk_session_navigate_test.zig",
+    "sha256": "282A22EC124280BADC2748AB99A015AB2CC18A25FD2211B29E2F24C362B475BF"
+  }
+]

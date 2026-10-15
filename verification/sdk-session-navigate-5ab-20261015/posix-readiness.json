@@ -1,0 +1,26 @@
+{
+  "status": "prepared-controls-not-executed",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "cases": 56,
+  "input": "src/extensions/fixtures/sdk-session-navigate-5ab-posix.input.txt",
+  "capture": "capture-source-posix.mjs",
+  "strict_observer": "C:/Users/adyba/pi-zig-sdk-boundaries-20261015/verification/sdk-session-boundaries-5ab-20261015/source-observer-portable.mjs",
+  "observer_source_commit": "ee3389635ba936c0cb7d83610d66745730b0f7de",
+  "absolute_cwd": "/owned/navigation",
+  "expected_json": "src/extensions/fixtures/sdk-session-navigate-5ab-posix.json",
+  "expected_status": "Intentionally absent until admitted genuine Linux/macOS Source56 execution and complete posthash0 acceptance. No Windows-derived expected data.",
+  "argv": "node --max-old-space-size=256 --import <strict-observer> capture-source-posix.mjs <raw-output> <absolute-input> <immutable-source-root> linux",
+  "admission": "Root must reserve actual POSIX Source lane, prepare complete native paths for Source1967 plus full installed dependencies and Node tools, freeze observer/driver/input controls and audit every input after capture. Source2GiB fresh/256MiB heap/300s owned deadline. No local WSL or remote execution launched by this preparation.",
+  "observer_environment": [
+    "PI_SOURCE_ROOT",
+    "PI_SOURCE_OLD_DEPENDENCY_ROOT",
+    "PI_SOURCE_OBSERVER_OUTPUT_DIRECTORY",
+    "PI_SOURCE_DEPENDENCY_AUDIT",
+    "PI_SOURCE_REFERENCE_MANIFEST",
+    "PI_SOURCE_DEPENDENCY_MANIFEST",
+    "PI_SOURCE_ORACLE_CONTROL_MANIFEST"
+  ],
+  "remaining_native_wiring": "After genuine POSIX golden acceptance, select the POSIX input/golden and set navigationFixtureCwd=/owned/navigation in the POSIX comparator; the qualified Windows Source56 input/golden remain separate authority.",
+  "executed": false,
+  "native_qualified": false
+}
