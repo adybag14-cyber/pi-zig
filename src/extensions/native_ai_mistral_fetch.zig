@@ -137,15 +137,19 @@ fn read(engine: *v.em.Engine, pending: c.JSValue, value: c.JSValue, rejected: bo
         try scope.put(event, "statusText", try scope.get(response, "statusText"));
         return iteration(&scope, pending, event, false);
     }
+    // Destructuring the awaited reader record precedes the second abort check.
+    // Read value even for done records, matching Source's const { done, value }.
+    const done_value = try scope.get(value, "done");
+    const bytes = try scope.get(value, "value");
     try checkAbort(&scope, owner);
-    const done = scope.truthy(try scope.get(value, "done"));
+    const done = scope.truthy(done_value);
     if (done) {
         try scope.put(owner, "done", c.pi_js_bool(engine.context, 1));
         return iteration(&scope, pending, c.pi_js_undefined(), true);
     }
     const event = try scope.object();
     try scope.put(event, "type", try scope.text("bytes"));
-    try scope.put(event, "data", try scope.get(value, "value"));
+    try scope.put(event, "data", bytes);
     try iteration(&scope, pending, event, false);
 }
 fn cleanup(scope: *Scope, pending: c.JSValue) !void {
