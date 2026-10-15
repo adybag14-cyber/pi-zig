@@ -28,6 +28,7 @@ const State = struct {
     payload: ?body.Body = null,
     status: u16 = 200,
     network_error: bool = false,
+    basic: bool = false,
     redirected: bool = false,
     guard: headers.Guard = .response,
 };
@@ -163,6 +164,7 @@ fn clone(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, state: *State) !c
     copy.headers = c.JS_DupValue(scope.engine.context, copied_headers);
     copy.status = state.status;
     copy.network_error = state.network_error;
+    copy.basic = state.basic;
     copy.redirected = state.redirected;
     copy.guard = state.guard;
     scope.engine.freeValue(copy.status_text);
@@ -191,7 +193,7 @@ fn operation(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const
     if (kind == .static_error or kind == .static_json or kind == .static_redirect) return staticOperation(scope, owner, args, kind);
     const state = privateState(scope, owner, receiver, kind == .headers) catch |err| return if (isConsumer(kind)) reject(scope, err) else err;
     return switch (kind) {
-        .type => scope.text(if (state.network_error) "error" else "default"),
+        .type => scope.text(if (state.network_error) "error" else if (state.basic) "basic" else "default"),
         .url => state.url,
         .redirected => c.JS_NewBool(engine.context, state.redirected),
         .status => c.JS_NewInt32(engine.context, state.status),
@@ -342,13 +344,21 @@ pub fn fromTransport(engine: *em.Engine, input: Transport) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const root = rootOf(owner);
-    const init = try scope.object();
-    try scope.set(init, "status", c.JS_NewInt32(engine.context, input.status));
-    try scope.set(init, "statusText", input.status_text);
-    try scope.set(init, "headers", input.headers);
-    var args = [_]c.JSValue{ input.body, init };
-    const result = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, root.constructor, args.len, &args)));
-    const state = try privateState(&scope, owner, result, false);
+    // Source's network path uses makeResponse/fromInnerResponse, bypassing the
+    // public constructor's ResponseInit conversion and 200..599 restriction.
+    const result = try fresh(&scope, owner, root.prototype);
+    const state = internalState(owner, result);
+    state.status = input.status;
+    state.basic = true;
+    engine.freeValue(state.status_text);
+    state.status_text = c.JS_DupValue(engine.context, input.status_text);
+    const filled = try scope.own(try headers.fromRecord(engine, input.headers));
+    engine.freeValue(state.headers);
+    state.headers = c.JS_DupValue(engine.context, filled);
+    if (!c.JS_IsNull(input.body) and !c.JS_IsUndefined(input.body)) {
+        const converted = try idl.bodyInit(&scope, root.interfaces, input.body, "Response", try scope.text("body"));
+        state.payload = ownBody(engine, try body.extract(&scope, &root.interfaces, converted, false));
+    }
     const parsed = try scope.own(try js.builtin(engine, "URL", &.{input.url}));
     try scope.set(parsed, "hash", try scope.text(""));
     const url = try scope.get(parsed, "href");

@@ -108,7 +108,7 @@ test "Response native actual identity transport immutable headers and source own
     try js.define(engine, try scope.own(c.JS_GetGlobalObject(engine.context)), "nativeTransportResponse", c.JS_DupValue(engine.context, value));
     const pending = try engine.evalModule(
         \\if(!(nativeTransportResponse instanceof Response)||!(nativeTransportResponse.headers instanceof Headers)||!(nativeTransportResponse.body instanceof ReadableStream))throw Error('transport genuine graph');
-        \\if(nativeTransportResponse.status!==202||nativeTransportResponse.statusText!=='Accepted'||!nativeTransportResponse.ok||!nativeTransportResponse.redirected||nativeTransportResponse.url!=='https://example.test/path')throw Error('transport metadata');
+        \\if(nativeTransportResponse.status!==202||nativeTransportResponse.statusText!=='Accepted'||nativeTransportResponse.type!=='basic'||!nativeTransportResponse.ok||!nativeTransportResponse.redirected||nativeTransportResponse.url!=='https://example.test/path')throw Error('transport metadata');
         \\if(nativeTransportResponse.headers.getSetCookie().length!==2)throw Error('transport raw duplicate headers');
         \\const copy=nativeTransportResponse.clone();let immutable=false;try{copy.headers.append('x','bad')}catch(e){immutable=e instanceof TypeError&&e.message==='immutable'}if(!immutable)throw Error('transport clone guard');
         \\if((await Promise.all([nativeTransportResponse.text(),copy.text()])).join(',')!=='AB,AB')throw Error('transport owned Body');
@@ -177,7 +177,7 @@ test "Response native actual OAuth HTTP returns genuine headers before gated bod
     const checked = try scope.own(try engine.evalModule(
         \\const response=await nativeOAuthResponsePending;
         \\if(!(response instanceof Response)||!(response.headers instanceof Headers)||!(response.body instanceof ReadableStream))throw Error('actual OAuth Response graph');
-        \\if(response.status!==403||response.ok||response.statusText!=='Forbidden'||response.bodyUsed||!response.url.endsWith('/oauth-response'))throw Error('actual OAuth header readiness');
+        \\if(response.status!==403||response.ok||response.type!=='basic'||response.statusText!=='Forbidden'||response.bodyUsed||!response.url.endsWith('/oauth-response'))throw Error('actual OAuth header readiness');
         \\const cookies=response.headers.getSetCookie();if(cookies.length!==2||cookies[0]!=='first=one; Expires=Thu, 01 Jan 2037 00:00:00 GMT'||cookies[1]!=='second=two; Path=/')throw Error('actual OAuth duplicate raw headers');
         \\let immutable=false;try{response.headers.set('x','bad')}catch(e){immutable=e instanceof TypeError&&e.message==='immutable'}if(!immutable)throw Error('actual OAuth immutable headers');
         \\releaseNativeResponseBody();const result=await response.json();if(result.error!=='denied'||result.native!==true||!response.bodyUsed)throw Error('actual OAuth shared body JSON');
