@@ -101,7 +101,7 @@ fn ensure(scope: *Scope, owner: c.JSValue, thinking: bool, signature: c.JSValue)
     }
     return block;
 }
-fn usage(scope: *Scope, owner: c.JSValue, raw: c.JSValue) !void {
+fn parseUsage(scope: *Scope, owner: c.JSValue, raw: c.JSValue) !void {
     const result = try scope.object();
     const prompt = orZero(scope, try scope.get(raw, "prompt_tokens"));
     var read = try optional(scope, try scope.get(raw, "prompt_tokens_details"), "cached_tokens");
@@ -139,11 +139,11 @@ fn chunk(scope: *Scope, owner: c.JSValue, value: c.JSValue) !void {
     const response_model = try scope.get(value, "model");
     if (c.JS_IsString(response_model) and scope.truthy(try scope.get(response_model, "length")) and !scope.equal(response_model, try scope.get(try scope.get(owner, "model"), "id")) and !scope.truthy(try scope.get(output, "responseModel"))) try scope.put(output, "responseModel", response_model);
     const raw_usage = try scope.get(value, "usage");
-    if (scope.truthy(raw_usage)) try usage(scope, owner, raw_usage);
+    if (scope.truthy(raw_usage)) try parseUsage(scope, owner, raw_usage);
     const choices = try scope.get(value, "choices");
     const choice = if (scope.truthy(try scope.invoke(try scope.global("Array"), "isArray", &.{choices}))) try at(scope, choices, 0) else c.pi_js_undefined();
     if (!scope.truthy(choice)) return;
-    if (!scope.truthy(raw_usage) and scope.truthy(try scope.get(choice, "usage"))) try usage(scope, owner, try scope.get(choice, "usage"));
+    if (!scope.truthy(raw_usage) and scope.truthy(try scope.get(choice, "usage"))) try parseUsage(scope, owner, try scope.get(choice, "usage"));
     if (scope.truthy(try scope.get(choice, "finish_reason"))) try stop(scope, owner, try scope.get(choice, "finish_reason"));
     const delta = try scope.get(choice, "delta");
     if (!scope.truthy(delta)) return;
