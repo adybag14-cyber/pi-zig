@@ -39,10 +39,18 @@ in-flight fetch plus credential/access identities. Build targets are
 `build-native-ai-oauth-anthropic-openrouter` and
 `test-native-ai-oauth-anthropic-openrouter`.
 
-Pinned Zig 0.16.0 formatting and AST checks pass. **Source capture, expected
-fixture publication, native semantic compilation, native runtime qualification,
-raw HTTP origin qualification, full Pi and public activation remain false.**
-The expected fixture is deliberately absent until Root grants the Source lane
-and the genuine capture completes its terminal and posthash gates. Native work
-also requires the shared Response/Body/ReadableStream owner checkpoints and a
-separate Root native grant.
+Pinned Zig 0.16.0 formatting and AST checks pass. Under the explicit Root LIGHT5
+grant the genuine Source24 capture passed on Node PID 73648, exit zero, with
+full zero-drift posthash complete at `2026-10-15T20:24:01.2578565Z`. Source,
+runtime and Node inventories remain `1968/31064/1774`, all 84 historical absences
+remain absent, and 12 native control files match their frozen pre-capture hashes.
+PID absence was independently verified. Expected JSON was created only after
+successful termination and full posthash; its SHA256 is
+`CBBC24227FA4719A581111EF6AA9B99AA7BD83BED6D39648738082E42CCA6301`.
+The qualified packet retains all 24 raw observations as well as comparison rows.
+
+**Native semantic compilation, native runtime qualification, raw HTTP origin
+qualification, full Pi and public activation remain false.** Native work requires
+the actual shared Response/Body/ReadableStream owner checkpoints and a separate
+Root native grant. Source24 verifies the original-source observations; it does
+not establish that the authored native implementation passes them.
