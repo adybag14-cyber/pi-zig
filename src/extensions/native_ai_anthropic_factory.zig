@@ -110,6 +110,17 @@ fn hook(scope: *Scope, owner: c.JSValue, name: [*:0]const u8, value: c.JSValue) 
     const callback = try v.optional(scope, options, name);
     return if (v.nullish(callback)) c.pi_js_undefined() else scope.call(callback, options, &.{ value, try scope.get(owner, "model") });
 }
+fn responseHook(scope: *Scope, owner: c.JSValue, response: c.JSValue) !c.JSValue {
+    const options = try scope.get(owner, "options");
+    const callback = try v.optional(scope, options, "onResponse");
+    if (v.nullish(callback)) return c.pi_js_undefined();
+    const metadata = try scope.object();
+    try scope.put(metadata, "status", try scope.get(response, "status"));
+    const supplied_headers = try scope.get(response, "headers");
+    const headers = if (v.nullish(try scope.get(owner, "http"))) supplied_headers else try scope.own(try @import("native_headers.zig").fromRecord(scope.engine, supplied_headers));
+    try scope.put(metadata, "headers", try scope.own(try @import("native_ai_headers.zig").toRecord(scope.engine, headers)));
+    return scope.call(callback, options, &.{ metadata, try scope.get(owner, "model") });
+}
 fn wait(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
     return flow.wait(continued, scope.engine, owner, value, @intFromEnum(stage));
 }
@@ -506,23 +517,18 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
         },
         .ready => {
             try scope.put(owner, "response", value);
-            const status = try scope.get(value, "status");
             // The default SDK checks fetch Response.ok before exposing its
             // asResponse result. A caller-supplied SDK client's asResponse
             // result is already the public boundary and receives no second
             // SDK status interpretation here.
             if (!scope.truthy(try scope.get(owner, "usesSdkClient")) and v.nullish(try scope.get(owner, "http")) and !scope.truthy(try scope.get(value, "ok"))) {
+                const status = try scope.get(value, "status");
                 if (scope.equal(status, c.JS_NewInt32(scope.engine.context, 401))) try invalidateFederation(scope, owner);
                 const text_method = try scope.get(value, "text");
                 if (!v.nullish(text_method)) return wait(scope, owner, try scope.call(text_method, value, &.{}), .rejected_body);
                 return read(scope, owner);
             }
-            const metadata = try scope.object();
-            try scope.put(metadata, "status", status);
-            const headers = try scope.get(value, "headers");
-            const entries = try v.optional(scope, headers, "entries");
-            try scope.put(metadata, "headers", if (c.JS_IsFunction(scope.engine.context, entries)) try scope.invoke(try scope.global("Object"), "fromEntries", &.{try scope.call(entries, headers, &.{})}) else headers);
-            try wait(scope, owner, try hook(scope, owner, "onResponse", metadata), .response);
+            try wait(scope, owner, try responseHook(scope, owner, value), .response);
         },
         .response => {
             _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
@@ -584,6 +590,6 @@ fn sdkFailure(scope: *Scope, owner: c.JSValue, text: c.JSValue) !c.JSValue {
     };
     const status = try scope.get(try scope.get(owner, "response"), "status");
     const header_values = try scope.get(try scope.get(owner, "response"), "headers");
-    const headers = if (v.nullish(try scope.get(owner, "http"))) header_values else try scope.own(try v.js.builtin(scope.engine, "Headers", &.{header_values}));
+    const headers = if (v.nullish(try scope.get(owner, "http"))) header_values else try scope.own(try @import("native_headers.zig").fromRecord(scope.engine, header_values));
     return @import("native_ai_anthropic_api_error.zig").generateValue(scope, try scope.get(try scope.get(owner, "agent"), "errors"), status, body, text, headers);
 }
