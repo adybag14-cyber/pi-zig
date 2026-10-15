@@ -206,7 +206,12 @@ fn dispatch(engine: *v.em.Engine, owner: c.JSValue, self: c.JSValue, args: []con
     }
     if (method == .reload) {
         const generation = engine.native_allocation_generation;
-        reload(&s, owner, self) catch |err| try @import("native_ai_partial_json.zig").discard(engine, err, generation);
+        reload(&s, owner, self) catch |err| {
+            // Preserve a marked JS allocation exception as that original
+            // exception, rather than translating it into a second OOM object.
+            if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return err;
+            try @import("native_ai_partial_json.zig").discard(engine, err, generation);
+        };
         return c.pi_js_undefined();
     }
     const pending = try flow.create(engine, owner);

@@ -25,7 +25,7 @@ resolver is still mandatory. No literal-only resolver, command-skipping resolver
 identity function, or fabricated backend is supplied to qualify a default path.
 The native file backend dependency corresponds to source checkpoints `06055ee2`
 and `1128df3e`; the actual five-field revision dependency corresponds to `5789f135`
-and its native-allocation identity correction `90ae8e2e`.
+and its native-allocation identity corrections `90ae8e2e` and `c438e526`.
 
 The AuthStorage constructor defines exactly the Source own fields `storage`,
 `authPath`, and `readState`, in order. Its ordinary prototype contains
