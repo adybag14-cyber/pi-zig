@@ -1,0 +1,562 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "inputSha256": "6e257d341f1e342a1d1eb86177e7c537c7b903dc24459827a2033e513d0f7239",
+  "cases": 27,
+  "scope": "Actual AgentSession.setActiveToolsByName and actual registry/loadout dependencies on caller-owned receivers, including pending state, descriptor/evaluation order, raw callback exceptions and loadout hooks. Full factory, full resource loader and provider transports remain separate gates.",
+  "rows": [
+    {
+      "case": "metadata",
+      "name": "setActiveToolsByName",
+      "length": 1,
+      "async": false,
+      "ownPrototype": false,
+      "enumerable": false,
+      "configurable": true,
+      "writable": true
+    },
+    {
+      "case": "selection",
+      "before": [
+        "read"
+      ],
+      "next": [
+        "read"
+      ],
+      "log": [
+        [
+          "get",
+          [
+            "read"
+          ]
+        ],
+        [
+          "set",
+          [
+            "read"
+          ]
+        ],
+        [
+          "get",
+          [
+            "read"
+          ]
+        ]
+      ],
+      "pending": [
+        "future",
+        "read"
+      ],
+      "undefined": true
+    },
+    {
+      "case": "selection",
+      "before": [
+        "read"
+      ],
+      "next": [
+        "read",
+        "bash"
+      ],
+      "log": [
+        [
+          "get",
+          [
+            "read"
+          ]
+        ],
+        [
+          "set",
+          [
+            "read",
+            "bash"
+          ]
+        ],
+        [
+          "get",
+          [
+            "read",
+            "bash"
+          ]
+        ]
+      ],
+      "pending": [
+        "future",
+        "read"
+      ],
+      "undefined": true
+    },
+    {
+      "case": "selection",
+      "before": [
+        "read",
+        "bash"
+      ],
+      "next": [
+        "read"
+      ],
+      "log": [
+        [
+          "get",
+          [
+            "read",
+            "bash"
+          ]
+        ],
+        [
+          "set",
+          [
+            "read"
+          ]
+        ],
+        [
+          "get",
+          [
+            "read"
+          ]
+        ]
+      ],
+      "pending": [],
+      "undefined": true
+    },
+    {
+      "case": "selection",
+      "before": [
+        "read",
+        "bash"
+      ],
+      "next": [
+        "bash",
+        "read"
+      ],
+      "log": [
+        [
+          "get",
+          [
+            "read",
+            "bash"
+          ]
+        ],
+        [
+          "set",
+          [
+            "bash",
+            "read"
+          ]
+        ],
+        [
+          "get",
+          [
+            "bash",
+            "read"
+          ]
+        ]
+      ],
+      "pending": [
+        "future",
+        "read"
+      ],
+      "undefined": true
+    },
+    {
+      "case": "selection",
+      "before": [
+        "read"
+      ],
+      "next": [],
+      "log": [
+        [
+          "get",
+          [
+            "read"
+          ]
+        ],
+        [
+          "set",
+          []
+        ],
+        [
+          "get",
+          []
+        ]
+      ],
+      "pending": [],
+      "undefined": true
+    },
+    {
+      "case": "selection",
+      "before": [],
+      "next": [
+        "read"
+      ],
+      "log": [
+        [
+          "get",
+          []
+        ],
+        [
+          "set",
+          [
+            "read"
+          ]
+        ],
+        [
+          "get",
+          [
+            "read"
+          ]
+        ]
+      ],
+      "pending": [
+        "future",
+        "read"
+      ],
+      "undefined": true
+    },
+    {
+      "case": "selection",
+      "before": [],
+      "next": [],
+      "log": [
+        [
+          "get",
+          []
+        ],
+        [
+          "set",
+          []
+        ],
+        [
+          "get",
+          []
+        ]
+      ],
+      "pending": [
+        "future",
+        "read"
+      ],
+      "undefined": true
+    },
+    {
+      "case": "previous-collection-is-live",
+      "log": [
+        [
+          "get",
+          [
+            "read"
+          ]
+        ],
+        "mutate previous",
+        [
+          "get",
+          [
+            "bash"
+          ]
+        ]
+      ],
+      "pending": [
+        "future",
+        "read"
+      ]
+    },
+    {
+      "case": "constructor-and-has-evaluation-order",
+      "log": [
+        [
+          "get",
+          [
+            "read"
+          ]
+        ],
+        [
+          "set",
+          [
+            "bash"
+          ]
+        ],
+        "get constructor",
+        [
+          "get",
+          [
+            "bash"
+          ]
+        ],
+        [
+          "construct",
+          [
+            "bash"
+          ]
+        ],
+        "get has",
+        [
+          "has",
+          "read",
+          true
+        ]
+      ],
+      "pending": []
+    },
+    {
+      "case": "custom-some-and-retained-callback",
+      "log": [
+        "get names",
+        [
+          "set",
+          [
+            "read"
+          ]
+        ],
+        "get names",
+        "get some",
+        {
+          "receiver": true,
+          "name": "",
+          "length": 1,
+          "ownPrototype": false
+        }
+      ],
+      "pending": [
+        "future",
+        "read"
+      ],
+      "retainedRead": false,
+      "retainedMissing": true
+    },
+    {
+      "case": "failure:previous",
+      "same": true,
+      "sync": true,
+      "log": [
+        "get:1"
+      ]
+    },
+    {
+      "case": "failure:set",
+      "same": true,
+      "sync": true,
+      "log": [
+        "get:1",
+        "set"
+      ]
+    },
+    {
+      "case": "failure:current",
+      "same": true,
+      "sync": true,
+      "log": [
+        "get:1",
+        "set",
+        "get:2"
+      ]
+    },
+    {
+      "case": "failure:constructor",
+      "same": true,
+      "sync": true,
+      "log": [
+        "get:1",
+        "set",
+        "get:2",
+        "construct"
+      ]
+    },
+    {
+      "case": "failure:some-getter",
+      "same": true,
+      "sync": true,
+      "log": [
+        "get:1",
+        "set",
+        "get:2",
+        "construct",
+        "get some"
+      ]
+    },
+    {
+      "case": "failure:some-call",
+      "same": true,
+      "sync": true,
+      "log": [
+        "get:1",
+        "set",
+        "get:2",
+        "construct",
+        "get some",
+        "call some"
+      ]
+    },
+    {
+      "case": "failure:has-getter",
+      "same": true,
+      "sync": true,
+      "log": [
+        "get:1",
+        "set",
+        "get:2",
+        "construct",
+        "get some",
+        "call some",
+        "get has"
+      ]
+    },
+    {
+      "case": "failure:has-call",
+      "same": true,
+      "sync": true,
+      "log": [
+        "get:1",
+        "set",
+        "get:2",
+        "construct",
+        "get some",
+        "call some",
+        "get has",
+        "call has"
+      ]
+    },
+    {
+      "case": "failure:pending-getter",
+      "same": true,
+      "sync": true,
+      "log": [
+        "get:1",
+        "set",
+        "get:2",
+        "construct",
+        "get some",
+        "call some",
+        "get has",
+        "call has",
+        "get pending"
+      ]
+    },
+    {
+      "case": "failure:clear-getter",
+      "same": true,
+      "sync": true,
+      "log": [
+        "get:1",
+        "set",
+        "get:2",
+        "construct",
+        "get some",
+        "call some",
+        "get has",
+        "call has",
+        "get pending",
+        "get clear"
+      ]
+    },
+    {
+      "case": "failure:clear-call",
+      "same": true,
+      "sync": true,
+      "log": [
+        "get:1",
+        "set",
+        "get:2",
+        "construct",
+        "get some",
+        "call some",
+        "get has",
+        "call has",
+        "get pending",
+        "get clear",
+        "call clear"
+      ]
+    },
+    {
+      "case": "actual-registry-loadout:add",
+      "names": [
+        "read",
+        "hook"
+      ],
+      "descriptions": [
+        "Read",
+        "Hook"
+      ],
+      "pending": [
+        "future"
+      ],
+      "hidden": [],
+      "selected": [
+        "read",
+        "hook"
+      ],
+      "hookLog": []
+    },
+    {
+      "case": "actual-registry-loadout:remove",
+      "names": [
+        "bash"
+      ],
+      "descriptions": [
+        "Bash"
+      ],
+      "pending": [],
+      "hidden": [],
+      "selected": [
+        "bash"
+      ],
+      "hookLog": []
+    },
+    {
+      "case": "actual-registry-loadout:hidden",
+      "names": [],
+      "descriptions": [],
+      "pending": [],
+      "hidden": [],
+      "selected": [],
+      "hookLog": []
+    },
+    {
+      "case": "actual-registry-loadout:deduplicate",
+      "names": [
+        "hook",
+        "read"
+      ],
+      "descriptions": [
+        "Hook",
+        "Read"
+      ],
+      "pending": [
+        "future"
+      ],
+      "hidden": [],
+      "selected": [
+        "hook",
+        "read"
+      ],
+      "hookLog": []
+    },
+    {
+      "case": "actual-registry-loadout:hook",
+      "names": [
+        "read",
+        "hook"
+      ],
+      "descriptions": [
+        "Read",
+        "Changed hook"
+      ],
+      "pending": [
+        "future"
+      ],
+      "hidden": [
+        "read"
+      ],
+      "selected": [
+        "read",
+        "hook"
+      ],
+      "hookLog": [
+        {
+          "receiver": true,
+          "names": [
+            "read",
+            "hook"
+          ]
+        }
+      ]
+    }
+  ]
+}
