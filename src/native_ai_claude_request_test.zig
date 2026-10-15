@@ -79,7 +79,12 @@ test "native Claude5ab Anthropic real wire stream events callbacks and results m
             try wire.appendSlice(gpa, "\n\n");
         }
         const status: std.http.Status = if (input.get("status")) |value| @enumFromInt(value.integer) else .ok;
-        const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{ .path = "/v1/messages", .status = status, .body = if (input.get("body")) |value| value.string else wire.items, .headers = &.{ .{ .name = "content-type", .value = if (status == .ok) "text/event-stream" else "application/json" }, .{ .name = "x-fixture", .value = "source-only" } } }});
+        const expected_request = row.object.get("requests").?.array.items[0].object;
+        var expected_headers: std.ArrayList(std.http.Header) = .empty;
+        defer expected_headers.deinit(gpa);
+        var fields = expected_request.get("headers").?.object.iterator();
+        while (fields.next()) |field| try expected_headers.append(gpa, .{ .name = field.key_ptr.*, .value = field.value_ptr.string });
+        const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{ .path = expected_request.get("path").?.string, .expected_request_headers = expected_headers.items, .status = status, .body = if (input.get("body")) |value| value.string else wire.items, .headers = &.{ .{ .name = "content-type", .value = if (status == .ok) "text/event-stream" else "application/json" }, .{ .name = "x-fixture", .value = "source-only" } } }});
         defer server.deinit();
         const address = try server.url(gpa, "");
         defer gpa.free(address);

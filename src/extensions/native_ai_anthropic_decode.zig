@@ -28,7 +28,7 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
     try scope.put(output, "timestamp", try scope.invoke(try scope.global("Date"), "now", &.{}));
     try scope.put(owner, "output", output);
     const result = try scope.object();
-    inline for (.{ "event", "start", "finish", "fail", "thinkingLevel", "strictFallback" }) |name| {
+    inline for (.{ "event", "start", "finish", "fail", "thinkingLevel", "strictFallback", "oauthMode" }) |name| {
         const Adapter = struct {
             fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
                 var row: Scope = .{ .engine = host };
@@ -39,6 +39,8 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
                     try push(&row, owner_value, "start", null, null, c.pi_js_undefined());
                 } else if (comptime @import("std").mem.eql(u8, name, "thinkingLevel")) {
                     if (row.truthy(input)) try row.set(try row.get(owner_value, "output"), "providerThinkingLevel", input);
+                } else if (comptime @import("std").mem.eql(u8, name, "oauthMode")) {
+                    try row.set(owner_value, "oauth", input);
                 } else if (comptime @import("std").mem.eql(u8, name, "strictFallback")) {
                     try strictFallback(&row, owner_value, input);
                 } else if (comptime @import("std").mem.eql(u8, name, "finish")) {
