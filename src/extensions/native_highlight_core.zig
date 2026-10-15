@@ -70,8 +70,13 @@ fn aliases(s: *Scope, state: c.JSValue, list_value: c.JSValue, options: c.JSValu
     _ = try s.invoke(values, "forEach", &.{try callback(s, roots, .alias_each)});
 }
 fn register(s: *Scope, state: c.JSValue, name: c.JSValue, definition: c.JSValue) !void {
+    const allocation_generation = s.engine.native_allocation_generation;
     const language = s.call(definition, c.pi_js_undefined(), &.{try s.get(state, "api")}) catch |err| blk: {
         if (err != error.JavaScriptException) return err;
+        // Host allocation failures already carry engine-owned provenance.
+        // Keep their original exception out of Source's ordinary error logger
+        // and plaintext fallback, which can otherwise replace that identity.
+        if (s.engine.nativeAllocationError(err, allocation_generation) == error.OutOfMemory) return err;
         const reason = try s.own(c.JS_DupValue(s.engine.context, s.engine.captured_exception orelse return err));
         _ = try call(s, state, "error", &.{try s.invoke(try s.text("Language definition for '{}' could not be registered."), "replace", &.{ try s.text("{}"), name })});
         if (!s.truthy(try s.get(state, "safeMode"))) {
