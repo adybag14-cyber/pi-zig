@@ -68,8 +68,9 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
     try scope.put(owner, "http", c.pi_js_undefined());
     try scope.put(owner, "done", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "attempt", c.JS_NewInt32(engine.context, 0));
-    inline for (.{ "mistralCustom", "mistralClosing", "mistralHeadersRetired" }) |key| try scope.put(owner, key, c.pi_js_bool(engine.context, 0));
+    inline for (.{ "mistralCustom", "mistralEvents", "mistralClosing", "mistralHeadersRetired" }) |key| try scope.put(owner, key, c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "mistralPrepared", c.pi_js_undefined());
+    try scope.put(owner, "mistralBodySignal", c.pi_js_undefined());
     try scope.put(owner, "googleHeaders", c.pi_js_undefined());
     if (kind == .mistral) try @import("native_ai_mistral_sse.zig").init(&scope, owner);
     const decoded = try scope.own(try decoder.create(engine, args[0], outer, try scope.get(dependencies, "json"), dependencies, if (kind == .mistral) .mistral else if (kind == .vertex) .vertex else .google));
@@ -106,6 +107,7 @@ fn wait(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comptim
             if (rejected) {
                 var reason = result;
                 if (kind == .mistral and @as(Stage, @enumFromInt(raw)) == .ready) reason = try retireMistralHeaders(&row, state, result);
+                if (kind == .mistral and @as(Stage, @enumFromInt(raw)) == .next and row.truthy(try row.get(state, "mistralEvents"))) try row.put(state, "mistralClosing", c.pi_js_bool(engine.context, 1));
                 return fail(&row, state, reason);
             }
             advance(&row, state, result, @enumFromInt(raw), kind) catch |err| try failError(&row, state, err);
@@ -127,6 +129,11 @@ fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
 }
 fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     const transport = try scope.get(owner, "http");
+    if (scope.truthy(try scope.get(owner, "mistralEvents")) and !scope.truthy(try scope.get(owner, "mistralClosing"))) {
+        try scope.put(owner, "mistralClosing", c.pi_js_bool(scope.engine.context, 1));
+        try scope.put(owner, "mistralFailure", reason);
+        return wait(scope, owner, try scope.invoke(try scope.get(owner, "iterator"), "return", &.{}), .custom_failure, .mistral);
+    }
     if (scope.truthy(try scope.get(owner, "mistralCustom")) and !v.nullish(transport) and !scope.truthy(try scope.get(owner, "mistralClosing"))) {
         try scope.put(owner, "mistralClosing", c.pi_js_bool(scope.engine.context, 1));
         try scope.put(owner, "mistralFailure", reason);
@@ -292,6 +299,7 @@ fn open(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
     try wait(scope, owner, try scope.get(transport, "ready"), .ready, kind);
 }
 fn next(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
+    if (kind == .mistral and scope.truthy(try scope.get(owner, "mistralEvents"))) return wait(scope, owner, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), .next, kind);
     if (kind == .mistral) {
         switch (try @import("native_ai_mistral_sse.zig").pop(scope, owner)) {
             .need_bytes => {},
@@ -313,6 +321,11 @@ fn next(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
         }
     }
     try wait(scope, owner, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), .next, kind);
+}
+fn activateMistral(scope: *Scope, owner: c.JSValue) !void {
+    const iterator = try scope.own(try @import("native_ai_mistral_generator.zig").create(scope.engine, try scope.get(owner, "iterator"), try scope.get(owner, "http"), owner, try scope.get(owner, "mistralBodySignal"), scope.truthy(try scope.get(owner, "mistralCustom"))));
+    try scope.put(owner, "iterator", iterator);
+    try scope.put(owner, "mistralEvents", c.pi_js_bool(scope.engine.context, 1));
 }
 fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comptime kind: Kind) !void {
     switch (stage) {
@@ -346,13 +359,25 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
             const bad = try arithmetic.compare(scope.engine, .less, status, c.JS_NewInt32(scope.engine.context, 200)) or try arithmetic.compare(scope.engine, .greater_equal, status, c.JS_NewInt32(scope.engine.context, 300));
             if (!bad) {
                 if (kind == .mistral) {
+                    try scope.put(owner, "mistralBodySignal", try v.optional(scope, try scope.get(owner, "options"), "signal"));
                     try scope.put(owner, "mistralProviderCallback", try scope.invoke(try scope.get(owner, "decoder"), "start", &.{try scope.get(owner, "options")}));
+                    try activateMistral(scope, owner);
                 } else _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
-                if (kind == .mistral) try @import("native_ai_mistral_sse.zig").start(scope, owner);
             }
             try next(scope, owner, kind);
         },
         .next => {
+            if (kind == .mistral and scope.truthy(try scope.get(owner, "mistralEvents"))) {
+                if (scope.truthy(try scope.get(value, "done"))) {
+                    try scope.put(owner, "mistralClosing", c.pi_js_bool(scope.engine.context, 1));
+                    _ = try scope.invoke(try scope.get(owner, "decoder"), "finish", &.{c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner)))});
+                    return flow.settle(scope.engine, owner, false, c.pi_js_undefined());
+                }
+                const chunk = try scope.get(try scope.get(value, "value"), "data");
+                try scope.put(owner, "chunk", chunk);
+                const callback = try scope.get(owner, "mistralProviderCallback");
+                return wait(scope, owner, if (v.nullish(callback)) c.pi_js_undefined() else try scope.call(callback, c.pi_js_undefined(), &.{ chunk, try scope.get(owner, "model") }), .chunk, kind);
+            }
             if (scope.truthy(try scope.get(value, "done"))) {
                 if (kind == .mistral) {
                     try @import("native_ai_mistral_sse.zig").feed(scope, owner, c.pi_js_undefined(), true);
@@ -398,6 +423,7 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
         .custom_response => {
             try scope.put(owner, "mistralHeadersRetired", c.pi_js_bool(scope.engine.context, 1));
             try scope.put(owner, "mistralProviderCallback", try scope.invoke(try scope.get(owner, "decoder"), "start", &.{try scope.get(owner, "options")}));
+            try activateMistral(scope, owner);
             try next(scope, owner, kind);
         },
         .custom_closed => {
