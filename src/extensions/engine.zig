@@ -142,6 +142,7 @@ pub const Engine = struct {
     event_stream_async_atom: c.JSAtom = c.JS_ATOM_NULL,
     buffer_prototype: ?c.JSValue = null,
     buffer_ready: bool = false,
+    native_readable_stream_bindings: ?c.JSValue = null,
     abort_signal_class: c.JSClassID = 0,
     abort_controller_class: c.JSClassID = 0,
     abort_signals_ready: bool = false,
@@ -301,6 +302,7 @@ pub const Engine = struct {
         self.freeValue(self.intrinsic_regexp_constructor);
         self.freeValue(self.intrinsic_bigint_constructor);
         self.freeValue(self.intrinsic_clone_operations);
+        if (self.native_readable_stream_bindings) |retained| self.freeValue(retained);
         var values = self.native_module_values.valueIterator();
         while (values.next()) |value| self.freeValue(value.*);
         self.native_module_values.deinit(self.gpa);

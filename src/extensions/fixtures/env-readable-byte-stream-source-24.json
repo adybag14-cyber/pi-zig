@@ -1,0 +1,193 @@
+{
+  "enqueue-detach": {
+    "detached": true,
+    "first": {
+      "done": false,
+      "bytes": [
+        4,
+        5,
+        6
+      ],
+      "offset": 2,
+      "constructor": "Uint8Array"
+    },
+    "end": {
+      "done": true,
+      "bytes": null,
+      "offset": null,
+      "constructor": null
+    },
+    "locked": false
+  },
+  "byob-offset": {
+    "request": {
+      "offset": 2,
+      "length": 4
+    },
+    "inputDetached": true,
+    "first": {
+      "done": false,
+      "bytes": [
+        7,
+        8,
+        9
+      ],
+      "offset": 2,
+      "constructor": "Uint8Array"
+    },
+    "invalidated": true,
+    "end": {
+      "done": true,
+      "bytes": [],
+      "offset": 0,
+      "constructor": "Uint8Array"
+    }
+  },
+  "byob-min-elements": {
+    "afterFirst": {
+      "settled": false,
+      "requestLength": 6
+    },
+    "first": {
+      "done": false,
+      "bytes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "offset": 0,
+      "constructor": "Uint16Array"
+    }
+  },
+  "respond-zero": {
+    "error": {
+      "name": "TypeError",
+      "code": "ERR_INVALID_ARG_VALUE",
+      "message": "The argument 'bytesWritten' is invalid. Received 0"
+    },
+    "stillLive": true,
+    "end": {
+      "done": true,
+      "bytes": [],
+      "offset": 0,
+      "constructor": "Uint8Array"
+    }
+  },
+  "close-partial-element": {
+    "closeError": {
+      "name": "TypeError",
+      "code": "ERR_INVALID_STATE",
+      "message": "Invalid state: Partial read"
+    },
+    "readError": {
+      "name": "TypeError",
+      "code": "ERR_INVALID_STATE",
+      "message": "Invalid state: Partial read"
+    }
+  },
+  "cancel-identity": {
+    "identity": true,
+    "end": {
+      "done": true,
+      "bytes": null,
+      "offset": null,
+      "constructor": null
+    },
+    "invalidated": true
+  },
+  "release-pending": {
+    "error": {
+      "name": "TypeError",
+      "code": "ERR_INVALID_STATE",
+      "message": "Invalid state: Releasing reader"
+    },
+    "locked": false,
+    "oldRequestLive": true,
+    "next": {
+      "done": false,
+      "bytes": [
+        6,
+        7
+      ],
+      "offset": 0,
+      "constructor": "Uint8Array"
+    }
+  },
+  "pull-serialization": {
+    "rows": [
+      {
+        "done": false,
+        "bytes": [
+          1
+        ],
+        "offset": 0,
+        "constructor": "Uint8Array"
+      },
+      {
+        "done": false,
+        "bytes": [
+          2
+        ],
+        "offset": 0,
+        "constructor": "Uint8Array"
+      },
+      {
+        "done": true,
+        "bytes": null,
+        "offset": null,
+        "constructor": null
+      }
+    ],
+    "pulls": 3,
+    "maxActive": 1
+  },
+  "empty-byob-invalid": {
+    "errors": [
+      {
+        "name": "TypeError",
+        "code": "ERR_INVALID_STATE",
+        "message": "Invalid state: View or Viewed ArrayBuffer is zero-length or detached"
+      },
+      {
+        "name": "TypeError",
+        "code": "ERR_INVALID_STATE",
+        "message": "Invalid state: View or Viewed ArrayBuffer is zero-length or detached"
+      }
+    ]
+  },
+  "respond-new-view": {
+    "first": {
+      "done": false,
+      "bytes": [
+        4,
+        2
+      ],
+      "offset": 0,
+      "constructor": "Uint8Array"
+    },
+    "invalidated": true
+  },
+  "desired-size": {
+    "before": 5,
+    "queued": 2,
+    "first": {
+      "done": false,
+      "bytes": [
+        1,
+        2,
+        3
+      ],
+      "offset": 0,
+      "constructor": "Uint8Array"
+    },
+    "drained": 5,
+    "closed": 0
+  },
+  "error-identity": {
+    "readIdentity": true,
+    "closedIdentity": true,
+    "invalidated": true,
+    "desiredSize": null
+  }
+}

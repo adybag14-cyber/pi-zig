@@ -1,0 +1,29 @@
+const packet={};
+const errorValue=error=>({name:error.name,code:error.code??null,message:error.message});
+const symbols=()=>Object.fromEntries(Object.getOwnPropertySymbols(file).map(symbol=>[symbol.description,symbol]));
+const state=()=>{const keys=symbols();return{fdOpen:file.fd!==-1,refs:file[keys.kRefs],locked:file[keys.kLocked]??false,closing:!!file[keys.kClosePromise]}};
+const drain=async reader=>{const rows=[];while(true){const result=await reader.read();rows.push({done:result.done,bytes:result.value?Array.from(result.value):null});if(result.done)return rows}};
+if(caseName==='default-reader'||caseName==='auto-close'){
+ const stream=file.readableWebStream(caseName==='auto-close'?{autoClose:true}:undefined);
+ const reader=stream.getReader();packet.created=state();packet.rows=await drain(reader);packet.afterEof=state();reader.releaseLock();
+}else if(caseName==='byob-zero'||caseName==='byob-offset'){
+ const stream=file.readableWebStream();const reader=stream.getReader({mode:'byob'});const rows=[];
+ try{while(true){const backing=new ArrayBuffer(8),view=new Uint8Array(backing,caseName==='byob-offset'?2:0,4);const result=await reader.read(view);rows.push({done:result.done,inputDetached:backing.detached,offset:result.value?.byteOffset??null,bytes:result.value?Array.from(result.value):null});if(result.done)break}}catch(error){rows.push({error:errorValue(error)});try{await reader.cancel()}catch(error){rows.push({cancelError:errorValue(error)})}}
+ packet.rows=rows;packet.afterRead=state();reader.releaseLock();
+}else if(caseName==='cancel'){
+ const stream=file.readableWebStream();packet.created=state();await stream.cancel('source-probe');packet.afterCancel=state();
+}else if(caseName==='invalid-options-lock'){
+ try{file.readableWebStream(null)}catch(error){packet.first={error:errorValue(error),state:state()}}
+ try{file.readableWebStream()}catch(error){packet.second={error:errorValue(error),state:state()}}
+}else if(caseName==='getter-order'){
+ const log=[];const options={get type(){log.push('type');return'bytes'},get autoClose(){log.push('autoClose');return false}};
+ const stream=file.readableWebStream(options);packet.log=log;packet.created=state();await stream.cancel();packet.afterCancel=state();
+}else if(caseName==='capture-read'){
+ const original=file.read;const log=[];file.read=function(view,offset,length){log.push([view.byteOffset,view.byteLength,offset,length]);return Reflect.apply(original,this,arguments)};
+ const stream=file.readableWebStream();file.read=()=>{throw Error('captured read binding was lost')};const reader=stream.getReader({mode:'byob'});
+ const result=await reader.read(new Uint8Array(4));packet.result={done:result.done,bytes:Array.from(result.value)};packet.log=log;await reader.cancel();reader.releaseLock();packet.afterCancel=state();
+}else if(caseName==='close-pending'){
+ const blocker=queueBlocker();let read,close;try{const stream=file.readableWebStream();const reader=stream.getReader();read=reader.read();await Promise.resolve();close=file.close();packet.afterClose=state()}finally{await releaseBlocker(blocker)}
+ packet.read=await read.then(value=>({done:value.done,bytes:value.value?Array.from(value.value):null}),error=>({error:errorValue(error)}));await close;packet.closed=state();
+}else throw Error('Unknown genuine FileHandle web stream case');
+await file.close();packet.final=state();nativeCollect();
