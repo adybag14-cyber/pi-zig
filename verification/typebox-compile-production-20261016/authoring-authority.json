@@ -1,0 +1,1655 @@
+{
+  "authority": "typebox@1.3.27",
+  "sourceExecuted": false,
+  "toolingRoot": "C:/Users/adyba/tmp-typebox-compile-production-20261016",
+  "generatedCheckerEval": false,
+  "sourceModules": [
+    {
+      "module": "guard/string.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\guard\\string.mjs",
+      "bytes": 6780,
+      "sha256": "06373A5407D9CDC1D4E0A764A82AB31FE285685A2118380B5E64501E19AB6504"
+    },
+    {
+      "module": "guard/guard.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\guard\\guard.mjs",
+      "bytes": 8720,
+      "sha256": "6D244B6026C8820429DC8074124F175C749F01F67AF6B1EF0A5DF053C5BAFE8D"
+    },
+    {
+      "module": "guard/emit.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\guard\\emit.mjs",
+      "bytes": 7349,
+      "sha256": "EE96D04EDC1DD32B1993C0DC47A8157C907E554B2C3F40BA1FDED5FCB33D5F22"
+    },
+    {
+      "module": "guard/globals.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\guard\\globals.mjs",
+      "bytes": 3322,
+      "sha256": "E020F5C629058F1ABEB07AB91E2204A2603C4EEA70B08BE85776826DD9D556ED"
+    },
+    {
+      "module": "guard/native.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\guard\\native.mjs",
+      "bytes": 2133,
+      "sha256": "B1383CDA7B657E060A9EEC1AD5DAE1C34DC70BDA29FA2F0856642D06C9E56EC2"
+    },
+    {
+      "module": "guard/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\guard\\index.mjs",
+      "bytes": 231,
+      "sha256": "CAF94A5EB02C8C0BFCF82D413E9E27F78059CC9CA052D2204954FDD6CAAAEBAD"
+    },
+    {
+      "module": "schema/types/_refine.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\_refine.mjs",
+      "bytes": 711,
+      "sha256": "142794BE089CFD1C6E7E03DB106FDCD16413088458E1F5ABABBF0687CCB42C84"
+    },
+    {
+      "module": "schema/types/schema.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\schema.mjs",
+      "bytes": 491,
+      "sha256": "7B9A4D7D3060CD065997665219334D006000F65E874653DC2064FC1B6F8DC0D7"
+    },
+    {
+      "module": "schema/types/additionalItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\additionalItems.mjs",
+      "bytes": 530,
+      "sha256": "F01B32BB04CC11A910B32EBD2E6F9A0F9EF9DA2EBE92A056E4B76D9002D7D636"
+    },
+    {
+      "module": "schema/types/additionalProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\additionalProperties.mjs",
+      "bytes": 543,
+      "sha256": "3545618600B491CE3E2DEC83C64023ACEF2572EBA9ABC852A51332FB95C2AA9F"
+    },
+    {
+      "module": "schema/types/allOf.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\allOf.mjs",
+      "bytes": 544,
+      "sha256": "84737171FFE7B3C383C18C3DDE086EEEEE844B9FA885994D9750CA9131C2E7A5"
+    },
+    {
+      "module": "schema/types/anchor.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\anchor.mjs",
+      "bytes": 423,
+      "sha256": "7E63980D29D38B9419E0A64CE727FABAB48EAAE6783D48BD5F05C149C92B956A"
+    },
+    {
+      "module": "schema/types/anyOf.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\anyOf.mjs",
+      "bytes": 544,
+      "sha256": "F5759E1E6331E989541ED6E8F2FDB7E0789F8C45D029EE6EE0E3F8A6077125B7"
+    },
+    {
+      "module": "schema/types/const.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\const.mjs",
+      "bytes": 406,
+      "sha256": "48C49316F2D284152AA4503FDCE9C2E43DC6FE5C2314B13043691B0D34CE246A"
+    },
+    {
+      "module": "schema/types/contains.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\contains.mjs",
+      "bytes": 495,
+      "sha256": "ED0A4ABEE86C96224ED85ED9FC3ABA5E3C6F8E3CBACCE45FB265B0C3F3BB8278"
+    },
+    {
+      "module": "schema/types/default.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\default.mjs",
+      "bytes": 423,
+      "sha256": "65419555EBC328DBFDFAF2E4A24F2E550007097F53642A5F4417FFD07EBAF6C3"
+    },
+    {
+      "module": "schema/types/defs.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\defs.mjs",
+      "bytes": 523,
+      "sha256": "7352B89902D51B4AC95C5E6EC4D216FB8731BA375282183FB0E85283FB7A8BCC"
+    },
+    {
+      "module": "schema/types/dependencies.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\dependencies.mjs",
+      "bytes": 680,
+      "sha256": "8BF9C9D951AB8CC52C7C0F78C2A6A1B484DAD370E144BBBB96A42B449E554240"
+    },
+    {
+      "module": "schema/types/dependentRequired.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\dependentRequired.mjs",
+      "bytes": 649,
+      "sha256": "82FF54D39C0A583A2F8D42E0E983F00AC8D5E09B67A7184E3163992C632FA6D3"
+    },
+    {
+      "module": "schema/types/dependentSchemas.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\dependentSchemas.mjs",
+      "bytes": 622,
+      "sha256": "BDA08369B6C1CACD994CD6901D8EF42BC2DCBB5EF8460DCE2F03A12B12CE95E8"
+    },
+    {
+      "module": "schema/types/dynamicAnchor.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\dynamicAnchor.mjs",
+      "bytes": 451,
+      "sha256": "9AA4450D6EEF1AF6D3FC8CE44B3411051E406C751CEDA879BB6E70FD29400398"
+    },
+    {
+      "module": "schema/types/dynamicRef.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\dynamicRef.mjs",
+      "bytes": 439,
+      "sha256": "5DF80E45378A70F30D274E1EC30953E04F8BCD1B8A5639788778DCBEA639B5D9"
+    },
+    {
+      "module": "schema/types/else.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\else.mjs",
+      "bytes": 479,
+      "sha256": "951C4EA1D86A84EB479CD44EAFB70E72ACC17109C118B6965EBCC694354DB127"
+    },
+    {
+      "module": "schema/types/enum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\enum.mjs",
+      "bytes": 443,
+      "sha256": "42E516AF6133B7009A773888604A18D2F240DF561E8010C6E59233BA807AD93A"
+    },
+    {
+      "module": "schema/types/exclusiveMaximum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\exclusiveMaximum.mjs",
+      "bytes": 537,
+      "sha256": "7D156440CA653D247D0B38CAF29BE898A1A65CE104297C309899B05FF435248E"
+    },
+    {
+      "module": "schema/types/exclusiveMinimum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\exclusiveMinimum.mjs",
+      "bytes": 537,
+      "sha256": "54D79891C2EBFD60A65002A97663D1477C484BE3CF7BDCE903CDE11E1960A15B"
+    },
+    {
+      "module": "schema/types/format.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\format.mjs",
+      "bytes": 452,
+      "sha256": "28956D2CF2EC6AAFC375AEFBF8A98575D65E945A59E63EFB73EE289EFD61AD31"
+    },
+    {
+      "module": "schema/types/id.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\id.mjs",
+      "bytes": 439,
+      "sha256": "E77299F2806CD2A24A860B3506992CCC9FC83512C19ACAC1BA91548F37287003"
+    },
+    {
+      "module": "schema/types/if.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\if.mjs",
+      "bytes": 472,
+      "sha256": "3826A0E441DEC7FC8B051BF9F097BA1DD5D31AEDF15350B521CB3E765097DCA8"
+    },
+    {
+      "module": "schema/types/items.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\items.mjs",
+      "bytes": 967,
+      "sha256": "2B567ED4C2CC97EE59E7685537191B4566CE834D3E8B66EAD153CCDADD871400"
+    },
+    {
+      "module": "schema/types/maximum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\maximum.mjs",
+      "bytes": 492,
+      "sha256": "0BA958A6523A0C2D1E7427B8992A8E8F73CEC56AB573140CCF3CFB6F959613A3"
+    },
+    {
+      "module": "schema/types/maxContains.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\maxContains.mjs",
+      "bytes": 478,
+      "sha256": "1235B4F14BC6B4813964097B93BE498524E7660C7271553AF4CCD7E275EEAA13"
+    },
+    {
+      "module": "schema/types/maxItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\maxItems.mjs",
+      "bytes": 460,
+      "sha256": "EF89D11920B0216A2ABA18612F5C1EC73F5CF9542E697951CEE3E88198F555F6"
+    },
+    {
+      "module": "schema/types/maxLength.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\maxLength.mjs",
+      "bytes": 464,
+      "sha256": "71F3E5ADC18BB2521315D0C960945AE49C6EF032A72DD0EF8418C149D1F472AB"
+    },
+    {
+      "module": "schema/types/maxProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\maxProperties.mjs",
+      "bytes": 480,
+      "sha256": "B3428160A52761C4AE972D2D9CF9BDFA7B773AFD7A891AEBDAF110ACE00196C9"
+    },
+    {
+      "module": "schema/types/minimum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\minimum.mjs",
+      "bytes": 492,
+      "sha256": "9AF2EDECD4CB2F0732AA62508573D87C1CA5AF26F5A487A78FA4FCE01B7EBBD9"
+    },
+    {
+      "module": "schema/types/minContains.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\minContains.mjs",
+      "bytes": 478,
+      "sha256": "D5421F6A3F86F78C01A4B1D50692CF1603E211B0C46B62D303C4942FCC5E5F38"
+    },
+    {
+      "module": "schema/types/minItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\minItems.mjs",
+      "bytes": 460,
+      "sha256": "BF3B2689F5EDD94D5E6E0844F140C9A8FCDEA663986C52D3691346EE96885CBB"
+    },
+    {
+      "module": "schema/types/minLength.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\minLength.mjs",
+      "bytes": 464,
+      "sha256": "F303D8BF4EB82FE2E58EA4011E6A1A51135473681E2B69169C9C0C176FD30C45"
+    },
+    {
+      "module": "schema/types/minProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\minProperties.mjs",
+      "bytes": 480,
+      "sha256": "8445AD3E33BD9FD4EF14DB61410BF3468A5944CC8F6B7D9346D01D443CD96441"
+    },
+    {
+      "module": "schema/types/multipleOf.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\multipleOf.mjs",
+      "bytes": 507,
+      "sha256": "D348D563026301FC50E7590556DBAFEC9B6F165F5D458B48458D299691DE55DC"
+    },
+    {
+      "module": "schema/types/not.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\not.mjs",
+      "bytes": 475,
+      "sha256": "53D8C66F05152C283586E59E93C719CC5EED3AB9114A6412A28C73D3569D2370"
+    },
+    {
+      "module": "schema/types/oneOf.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\oneOf.mjs",
+      "bytes": 544,
+      "sha256": "CB0795A86682CCFAC0B4540D7742A2E8633822098D10B55FFD2AB15F90D234D8"
+    },
+    {
+      "module": "schema/types/pattern.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\pattern.mjs",
+      "bytes": 506,
+      "sha256": "3FE87AF33D58594C2D3BC537089AD735001B7F504282F2C53FEE569FD5208EB5"
+    },
+    {
+      "module": "schema/types/patternProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\patternProperties.mjs",
+      "bytes": 620,
+      "sha256": "6D7ADA4BBB013C8C81686CB10D83CF6B3D2BD4A233E6C8AB62FB4A3689AC9D0E"
+    },
+    {
+      "module": "schema/types/prefixItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\prefixItems.mjs",
+      "bytes": 544,
+      "sha256": "364016C1EF2B8EF53A851FC89593E4895547EDF2FCA8A3BFEA9F8756B2C1E6F9"
+    },
+    {
+      "module": "schema/types/properties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\properties.mjs",
+      "bytes": 585,
+      "sha256": "E5509ACEF2EB98635895EA15055376A02AAB1E388AD7E47BDD07172C17D743B2"
+    },
+    {
+      "module": "schema/types/propertyNames.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\propertyNames.mjs",
+      "bytes": 569,
+      "sha256": "D586A9801F24584FBEF14DE2156894BBC4D672B01A2EB4E51F33A39D0A61A4FB"
+    },
+    {
+      "module": "schema/types/recursiveAnchor.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\recursiveAnchor.mjs",
+      "bytes": 698,
+      "sha256": "130BBB021A600DBFA7179A6BD199A689C7B1640A0CAE2577C33B6413DCC979DA"
+    },
+    {
+      "module": "schema/types/recursiveRef.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\recursiveRef.mjs",
+      "bytes": 447,
+      "sha256": "B614AA5CA73629EBC52BCACFDCB7FF7847F93D393DB50EA3919AC7E90FF5536A"
+    },
+    {
+      "module": "schema/types/ref.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\ref.mjs",
+      "bytes": 443,
+      "sha256": "17295D484341B9162B6E2B864D2E14736D274FFEEE1E2E0D802DE25E979D711A"
+    },
+    {
+      "module": "schema/types/required.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\required.mjs",
+      "bytes": 524,
+      "sha256": "19592C844FA4EDBFAB7D30083E939C8040779756BAA8201595D9D4B78C76DA63"
+    },
+    {
+      "module": "schema/types/then.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\then.mjs",
+      "bytes": 479,
+      "sha256": "4BC85A44729205E1ECA150C4981C1492A44000F47095F3A4A9BA423E86F8B209"
+    },
+    {
+      "module": "schema/types/type.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\type.mjs",
+      "bytes": 559,
+      "sha256": "C5266783FFE80018B8A0A1448789A8EE6F5C4E66C50B8037AA002C839C8BD12D"
+    },
+    {
+      "module": "schema/types/uniqueItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\uniqueItems.mjs",
+      "bytes": 473,
+      "sha256": "56ED4BE2E3A4373038B548F197858AFAC4612B753C94F247FC00544AFC784E5A"
+    },
+    {
+      "module": "schema/types/unevaluatedItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\unevaluatedItems.mjs",
+      "bytes": 533,
+      "sha256": "EC2B188E8AB92A3135607AE4526021B606046BB60CD1C4338BFC396D94BF0B4A"
+    },
+    {
+      "module": "schema/types/unevaluatedProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\unevaluatedProperties.mjs",
+      "bytes": 553,
+      "sha256": "CCCDD70B27A220F98F6DD6DD580F763160A643AB9CC679D05BD66876CB1A9B06"
+    },
+    {
+      "module": "schema/types/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\types\\index.mjs",
+      "bytes": 2007,
+      "sha256": "A9382CFCF4ED9A80BE1205F96167BDB138C283B2AF76E77AD232179AF3E41E17"
+    },
+    {
+      "module": "schema/engine/_context.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\_context.mjs",
+      "bytes": 4134,
+      "sha256": "AB58C4C7C009148498B5ED222E2251449BBBE454465B6A85FC73229A876E9C0B"
+    },
+    {
+      "module": "schema/engine/_externals.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\_externals.mjs",
+      "bytes": 829,
+      "sha256": "59BFB3FAA91ACBB49C839B456F2707CC9D8375CFEA6D143D3CF1C7F40D49503B"
+    },
+    {
+      "module": "schema/engine/_refine.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\_refine.mjs",
+      "bytes": 1393,
+      "sha256": "7B9AF294E8CC3ED8CD3FF3426F2A448F2E8867955F80C6363384274116BA7088"
+    },
+    {
+      "module": "schema/engine/_unique.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\_unique.mjs",
+      "bytes": 111,
+      "sha256": "F203B28367F9641ABBC749871F75DC34A3F12988A6E2C86ADD7DCCFCDC7B24BE"
+    },
+    {
+      "module": "schema/engine/additionalItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\additionalItems.mjs",
+      "bytes": 3030,
+      "sha256": "B3F9294F5BF65AC6B6CFFBB555F73191DEE818FF62E1DE7B58D520B314043D9F"
+    },
+    {
+      "module": "schema/engine/_regexp.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\_regexp.mjs",
+      "bytes": 116,
+      "sha256": "1480622FAA8C90CADCFD04DBA25F5E40854E5267F147C3A5270CC89E3BECCAED"
+    },
+    {
+      "module": "schema/engine/additionalProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\additionalProperties.mjs",
+      "bytes": 6175,
+      "sha256": "DA9AF19920A65AD02E8127A62AD8951519A2D685650F107C8B0C2945CD15214E"
+    },
+    {
+      "module": "schema/engine/_reducer.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\_reducer.mjs",
+      "bytes": 2152,
+      "sha256": "0FBF041B8C105A8AB419A741DFABD06758A275AE1A2600BD1D7973FD28F3AECE"
+    },
+    {
+      "module": "schema/engine/allOf.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\allOf.mjs",
+      "bytes": 2427,
+      "sha256": "EC0D6940C2A326C297F2D6E4AA3FCC18C6ED27588E02A0DB7B19E080A926C09B"
+    },
+    {
+      "module": "schema/engine/anyOf.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\anyOf.mjs",
+      "bytes": 2506,
+      "sha256": "2BEB3150EB7699580119C3272F8F90EDB7728AB1C905A8AE9D6767F2B614319C"
+    },
+    {
+      "module": "schema/engine/boolean.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\boolean.mjs",
+      "bytes": 1026,
+      "sha256": "7607EC47DF9A8325BE128B58317CDDD8AD8A9300779FCEED068B6AF5416B88F9"
+    },
+    {
+      "module": "schema/engine/const.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\const.mjs",
+      "bytes": 1291,
+      "sha256": "1785BF4F1E0003E50C8EFBDB0E6011B453C468531C442005F64381335B79AE5F"
+    },
+    {
+      "module": "schema/engine/contains.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\contains.mjs",
+      "bytes": 2477,
+      "sha256": "09CB2C76FC2827D939DE587F6E11D4C7E47E4992C839229938198A83DA8DD501"
+    },
+    {
+      "module": "schema/engine/dependencies.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\dependencies.mjs",
+      "bytes": 2463,
+      "sha256": "720EAA7E8D545871C358D849CC45DEB0E9A6311AA213FF2558D2347D8EE4A4B7"
+    },
+    {
+      "module": "schema/engine/dependentRequired.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\dependentRequired.mjs",
+      "bytes": 2018,
+      "sha256": "D0E20936EDEA484322EC74AEC643EAB47F878A41BCD55B708BCCFC811F6FAB83"
+    },
+    {
+      "module": "schema/engine/dependentSchemas.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\dependentSchemas.mjs",
+      "bytes": 1936,
+      "sha256": "8AAC2F661F56E06A9723AC85B4DC96A229DB334434E0DC9E42DE49CEB9211EB5"
+    },
+    {
+      "module": "schema/engine/dynamicRef.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\dynamicRef.mjs",
+      "bytes": 1266,
+      "sha256": "F87C7F2C24AAF430FC54D927129FC326A166750F8F1F7E3208026EC1635E95D6"
+    },
+    {
+      "module": "schema/engine/enum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\enum.mjs",
+      "bytes": 1391,
+      "sha256": "D78D4D9DC8C98DD349CF85E8E92AF789236E8BE3512142869BA1065CA7BCFB38"
+    },
+    {
+      "module": "schema/engine/exclusiveMaximum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\exclusiveMaximum.mjs",
+      "bytes": 1155,
+      "sha256": "478C6125F64D349453BEF753D68BF12ADD49E13402B5A3A4486677C888CAD037"
+    },
+    {
+      "module": "schema/engine/exclusiveMinimum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\exclusiveMinimum.mjs",
+      "bytes": 1161,
+      "sha256": "D3A8EFEA049A30BC13CB6DA7FC53C1B3B3E8D64D040E20422C27B854AE64A622"
+    },
+    {
+      "module": "schema/engine/format.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\format.mjs",
+      "bytes": 1120,
+      "sha256": "072610C27FA12D63AB199352F14E5BE28FE76F4CA7DA749DAD24212F8041535F"
+    },
+    {
+      "module": "schema/engine/if.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\if.mjs",
+      "bytes": 2353,
+      "sha256": "93D7F3AEAF8760EC3A58EA5CBD16D740C81A33D14529EDB78727DD041C8A774E"
+    },
+    {
+      "module": "schema/engine/items.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\items.mjs",
+      "bytes": 4893,
+      "sha256": "8094313B44D3B5C08E2B3266B6251AA9C2C887ADA25334182BB4D6C00BDF9ED3"
+    },
+    {
+      "module": "schema/engine/maxContains.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\maxContains.mjs",
+      "bytes": 1895,
+      "sha256": "D850B7EE71B791682507E507FA45DB931F0E85BF8A07B8530C527639A4825304"
+    },
+    {
+      "module": "schema/engine/maximum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\maximum.mjs",
+      "bytes": 1094,
+      "sha256": "51C653C13B693F3D82C5EB8D64AED7D700262BC375B4F85EA4D3F54352235131"
+    },
+    {
+      "module": "schema/engine/maxItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\maxItems.mjs",
+      "bytes": 1111,
+      "sha256": "B318F28A6FF790D2BE700476B8F59B5715F8AD9FC6116200C5C1693576E4CCA2"
+    },
+    {
+      "module": "schema/engine/maxLength.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\maxLength.mjs",
+      "bytes": 1084,
+      "sha256": "944550D6DB23B22DF879AC76320BD42EE60BDE96280BD7E5DA97A23756DD04B9"
+    },
+    {
+      "module": "schema/engine/maxProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\maxProperties.mjs",
+      "bytes": 1168,
+      "sha256": "8C1393DD5AE124A086ABC279459C35732782D6A67DCA8B4A4E59FF408F325BD3"
+    },
+    {
+      "module": "schema/engine/minContains.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\minContains.mjs",
+      "bytes": 2396,
+      "sha256": "AC012AD898799DE433458D20C55C50D605CB1F95C756BE5824EA378754A04883"
+    },
+    {
+      "module": "schema/engine/minimum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\minimum.mjs",
+      "bytes": 1100,
+      "sha256": "470D7212941E41BCAB5A1C3E0895F366DC578872BE7C970E0891088A45DDC34F"
+    },
+    {
+      "module": "schema/engine/minItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\minItems.mjs",
+      "bytes": 1117,
+      "sha256": "C88A25F970A2D1A7923F1BCEBD8F75181A38E5EB0F3194DFF6CAA87FA03734E6"
+    },
+    {
+      "module": "schema/engine/minLength.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\minLength.mjs",
+      "bytes": 1084,
+      "sha256": "4811D90656586090C1F0903E436F5D5E0DEA9C194036482146A54DC43A66ADC9"
+    },
+    {
+      "module": "schema/engine/minProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\minProperties.mjs",
+      "bytes": 1174,
+      "sha256": "310FD1219325D4CCCB8871D35B02CC34BF27C3234B9418805A245B9FECE28C9F"
+    },
+    {
+      "module": "schema/engine/multipleOf.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\multipleOf.mjs",
+      "bytes": 1097,
+      "sha256": "E3AD23F52BF5142B1D504622E11E3EBD6AFCDF1B6FF5298BF0F48DF5DB59460C"
+    },
+    {
+      "module": "schema/engine/not.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\not.mjs",
+      "bytes": 1696,
+      "sha256": "AFFD534AE1877434F9F46D78A51E32B5423A8D005FE757286C74C3475C63671C"
+    },
+    {
+      "module": "schema/engine/oneOf.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\oneOf.mjs",
+      "bytes": 2899,
+      "sha256": "914BC672E9B1C755BF373F6E318EF8C63231BF8684870C49DD49C2D5E78CF979"
+    },
+    {
+      "module": "schema/engine/pattern.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\pattern.mjs",
+      "bytes": 1357,
+      "sha256": "AD634237A29A932E6D5F2226982DF6D2E267C81218C82E66F54B036EC1E75A52"
+    },
+    {
+      "module": "schema/engine/patternProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\patternProperties.mjs",
+      "bytes": 2514,
+      "sha256": "3AA84F0717F614FF30D6988AFA7B7A58E9D2A08091D98625C480DB72EB6D7349"
+    },
+    {
+      "module": "schema/engine/prefixItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\prefixItems.mjs",
+      "bytes": 2001,
+      "sha256": "DF0B198702A66A5C574C3F4B2E6B0991BB97FB22E0D3FB2EDBCBA1414A5CD479"
+    },
+    {
+      "module": "schema/engine/_exact_optional.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\_exact_optional.mjs",
+      "bytes": 934,
+      "sha256": "BE57C0E1E3099521A3B01FF28D77B63E33A8C30790BADA3BB1F6AC55850C7E82"
+    },
+    {
+      "module": "schema/engine/properties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\properties.mjs",
+      "bytes": 4134,
+      "sha256": "D77A69D5B0AB070368CD5A677387537FD55E3C8B0A610422642DBB8F8B5EB6F8"
+    },
+    {
+      "module": "schema/engine/propertyNames.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\propertyNames.mjs",
+      "bytes": 1785,
+      "sha256": "FB9949AF4C2EFD50A99CF260B4F712E23E27459103D5E3B6414F701B7F72A3DE"
+    },
+    {
+      "module": "schema/engine/recursiveRef.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\recursiveRef.mjs",
+      "bytes": 1278,
+      "sha256": "DB9C64B617A85F15F7E5BD7B87A797E8DCEBB8AE126D757CF525119BD2DC2215"
+    },
+    {
+      "module": "schema/engine/ref.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\ref.mjs",
+      "bytes": 2447,
+      "sha256": "5760B5D7324855B13ACB45EAAE95CF761DB066EA5FBFD9644972F8DA4D352C59"
+    },
+    {
+      "module": "schema/engine/required.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\required.mjs",
+      "bytes": 1349,
+      "sha256": "72757B20773700F2B3276DA67D8A06E248F52C2F032BE3BB6B6956B1471530FA"
+    },
+    {
+      "module": "schema/engine/type.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\type.mjs",
+      "bytes": 4112,
+      "sha256": "3BAB80325DAF1F465EB6CBE4F544499E3C9A59CFBB013A77441D7207DE326E7F"
+    },
+    {
+      "module": "schema/engine/unevaluatedItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\unevaluatedItems.mjs",
+      "bytes": 2445,
+      "sha256": "4F4E3F18F173D351882CFC64CBDAC2DADEBB08104A4AC4F87FE5B00AC3D72D60"
+    },
+    {
+      "module": "schema/engine/unevaluatedProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\unevaluatedProperties.mjs",
+      "bytes": 2500,
+      "sha256": "EC5A286C25458B32E0BDB468EC5AE471D968534160B946E58B9C2AE361158834"
+    },
+    {
+      "module": "schema/engine/uniqueItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\uniqueItems.mjs",
+      "bytes": 2027,
+      "sha256": "1844B125F8F9A3DF24B8A11E595E073E439A7BB6AE67343BFECFECE3F7116155"
+    },
+    {
+      "module": "schema/engine/schema.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\schema.mjs",
+      "bytes": 24736,
+      "sha256": "D3F99F995E393A26620046F8E73010845167524528A37A571F9758F398344B30"
+    },
+    {
+      "module": "schema/engine/_functions.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\_functions.mjs",
+      "bytes": 2549,
+      "sha256": "6609B9B23900BEB5C33195FA13873FBC62B704824DF1D5B791778FCCAD5766A4"
+    },
+    {
+      "module": "schema/pointer/pointer_get.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\pointer\\pointer_get.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/pointer/pointer.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\pointer\\pointer.mjs",
+      "bytes": 3872,
+      "sha256": "D881E6D8FC165EF7B75BEABCCBBAFAA6AD0192F297FBB312874669DD55F01186"
+    },
+    {
+      "module": "schema/pointer/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\pointer\\index.mjs",
+      "bytes": 77,
+      "sha256": "03ACD429F22E6E483EB714E222539512BF0D6355895C6E1C4837095F09594E23"
+    },
+    {
+      "module": "schema/resolve/resolve.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\resolve\\resolve.mjs",
+      "bytes": 15542,
+      "sha256": "F7C78D32A304A6D380379FDBC7113B1087F308700586C7A5B5748C1DE628CBD1"
+    },
+    {
+      "module": "schema/resolve/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\resolve\\index.mjs",
+      "bytes": 42,
+      "sha256": "FF277BDC89DE803109AB31F222DEA28032D6D30EEE9540E3834D9D98299F995E"
+    },
+    {
+      "module": "schema/engine/_stack.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\_stack.mjs",
+      "bytes": 11485,
+      "sha256": "DE5F29C4E6851CF54502F6597D2A939830E562A00EDC58486B990CA2C2C8E4B3"
+    },
+    {
+      "module": "schema/engine/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\engine\\index.mjs",
+      "bytes": 1925,
+      "sha256": "7E12013BA924C237D611F07DFA288C9C41621D8A88CD58DFC43CF0E981E5E59E"
+    },
+    {
+      "module": "schema/intern/intern.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\intern\\intern.mjs",
+      "bytes": 12192,
+      "sha256": "483CF49FB5D496EF64A1D11E3C95DFA5313D8D630575887784B8E6B770929EC3"
+    },
+    {
+      "module": "schema/intern/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\intern\\index.mjs",
+      "bytes": 30,
+      "sha256": "504C94F67929696B8637ED5C13D4D7CB36FF27D1E6583C69AE19151747CCE3A0"
+    },
+    {
+      "module": "schema/static/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\index.mjs",
+      "bytes": 11,
+      "sha256": "8E609BB71C20B858C77F0E9F90BB1319DB8477B13F9F965F1A1E18524BF50881"
+    },
+    {
+      "module": "schema/build.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\build.mjs",
+      "bytes": 4496,
+      "sha256": "797E1509300536CEBE96EA67603C132BCBC659A17C6B2A3DE7F604018F274841"
+    },
+    {
+      "module": "system/locale/en_US.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\system\\locale\\en_US.mjs",
+      "bytes": 3063,
+      "sha256": "A568C8C536AF7E8022C6CD479F42C232E77EACB39534B119D1535404D550FB74"
+    },
+    {
+      "module": "system/locale/_config.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\system\\locale\\_config.mjs",
+      "bytes": 309,
+      "sha256": "7236363EB385ECDB1FABEDE0DBDAFF6EE447ACB710C6A535AE89747724E83480"
+    },
+    {
+      "module": "schema/errors.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\errors.mjs",
+      "bytes": 889,
+      "sha256": "C4CB56908578E51B52696FD83338585887EE5D0ED0C80A52DFD5A47BC71E4653"
+    },
+    {
+      "module": "schema/check.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\check.mjs",
+      "bytes": 595,
+      "sha256": "AE6C7C07C68FC31467DD43145F57A1F7AC4B572C7754D61B440D052BA0232933"
+    },
+    {
+      "module": "schema/parse.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\parse.mjs",
+      "bytes": 1198,
+      "sha256": "D21A22CFDC72365A1A42A00267D579A05EF133CA7EA43067C07836BAC735F271"
+    },
+    {
+      "module": "schema/compile.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\compile.mjs",
+      "bytes": 1663,
+      "sha256": "7E20D962689705477B5FF6CA161DFBC3C6696B4796B54436D2D6D132179B7885"
+    },
+    {
+      "module": "schema/schema.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\schema.mjs",
+      "bytes": 365,
+      "sha256": "F7E724DE728EA417E9E11A15C1EBD4249ED315D3432D001963677898DD236204"
+    },
+    {
+      "module": "schema/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\index.mjs",
+      "bytes": 394,
+      "sha256": "DDFD0BF762DBAA1FB9831CEE4A9B7FB91E1DDF10124A611B8EDB2026B5E00960"
+    },
+    {
+      "module": "compile/code.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\compile\\code.mjs",
+      "bytes": 2595,
+      "sha256": "3333C7D9A0C7174B466D0EA134B6D3A836F189368B48BF1E7835E56E8C450E62"
+    },
+    {
+      "module": "value/check/check.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\check\\check.mjs",
+      "bytes": 453,
+      "sha256": "C836EAA66F6A869DE006A02AEF987F2136B3A258629222F431ACF6D0A66502B2"
+    },
+    {
+      "module": "value/check/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\check\\index.mjs",
+      "bytes": 29,
+      "sha256": "78A72D85B663FB862736B1BC64C71D0E007D73862EE941719CB9C5F623C800F1"
+    },
+    {
+      "module": "value/errors/errors.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\errors\\errors.mjs",
+      "bytes": 507,
+      "sha256": "57212EFD574AA87A041F1F1EDA3CE75E2095C7A28A06EDEFDEADC2CBD3A229CC"
+    },
+    {
+      "module": "value/errors/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\errors\\index.mjs",
+      "bytes": 30,
+      "sha256": "738E926DF03908F6BAB5B5910AA9D4D260CB92CD920E932E2411EF62E0CBD138"
+    },
+    {
+      "module": "value/assert/assert.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\assert\\assert.mjs",
+      "bytes": 1153,
+      "sha256": "1617216645ACC47824C6AFCF6A27185F00E87569EE81B2137C11C19C36E9A3E3"
+    },
+    {
+      "module": "value/assert/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\assert\\index.mjs",
+      "bytes": 30,
+      "sha256": "C3188D818A087E2B2712251B3BAA0307B9E70080B2C432238AAE1EBB01023A0A"
+    },
+    {
+      "module": "value/clean/from_array.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\from_array.mjs",
+      "bytes": 291,
+      "sha256": "3BD13B27361ADFB66E3F9DB39642F469532A3690EBE7B4BD9764327B62E75985"
+    },
+    {
+      "module": "value/clean/from_cyclic.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\from_cyclic.mjs",
+      "bytes": 240,
+      "sha256": "2DFB83B0C885AC7B79AAC5F71129C5CBE9833837D9AA7C76208A662DD3030A5B"
+    },
+    {
+      "module": "value/clean/from_intersect.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\from_intersect.mjs",
+      "bytes": 1247,
+      "sha256": "BADEFB3DF5D3F033019E723C8BFFF6C5CF717E9104675A96ECEC9AE3DD5E41BE"
+    },
+    {
+      "module": "value/clean/additional.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\additional.mjs",
+      "bytes": 279,
+      "sha256": "3565A8B2554A367290C2D08ED216A7FDAE78060608F0F685884657A06AA4E976"
+    },
+    {
+      "module": "value/clean/from_object.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\from_object.mjs",
+      "bytes": 1328,
+      "sha256": "2AC45340D02598DBA6AB8E3AB6200254BA9ECE6AD0FB4FB173CB1700A453E889"
+    },
+    {
+      "module": "value/clean/from_record.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\from_record.mjs",
+      "bytes": 1399,
+      "sha256": "3198BF4020238CDB83D29F2B364D6C90531DB033EE780D115C492FE2DC1B0CBF"
+    },
+    {
+      "module": "value/clean/from_ref.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\from_ref.mjs",
+      "bytes": 289,
+      "sha256": "3E9BC607523210AC57BCE554E113154DB659600C330496C4863CBA4997CB811D"
+    },
+    {
+      "module": "value/clean/from_tuple.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\from_tuple.mjs",
+      "bytes": 523,
+      "sha256": "0CCE96D67C65A3F1AA6765EDE26D7D7FF1CA26D2ADE26125FA37A78058BD03FB"
+    },
+    {
+      "module": "value/clone/clone.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clone\\clone.mjs",
+      "bytes": 471,
+      "sha256": "7D07AA8158C74299BC881289CC7DE2C52474B4327892CAEDF51E08B6CBF7E6F3"
+    },
+    {
+      "module": "value/clone/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clone\\index.mjs",
+      "bytes": 29,
+      "sha256": "9C4BE29CA2D83213C30D996A91B5C5FBA948D72D33F9B8906A215A58AD5A0348"
+    },
+    {
+      "module": "value/clean/from_union.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\from_union.mjs",
+      "bytes": 403,
+      "sha256": "A16DC620B52274833558B4FAA54D74B0B61ECBFD0C08C8F8856CCE55B772A59D"
+    },
+    {
+      "module": "value/clean/from_type.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\from_type.mjs",
+      "bytes": 1118,
+      "sha256": "FA291DF76F0B90EBAAF1A8E8A09CD8809622BD2F6E4DA88F1A161267B449E8FC"
+    },
+    {
+      "module": "value/shared/union_priority_sort.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\shared\\union_priority_sort.mjs",
+      "bytes": 3165,
+      "sha256": "6F3FE3D2E9847105322E70D287EFE19C2E0F3F3914B76C97348EF88B67E4EBB6"
+    },
+    {
+      "module": "value/clean/clean.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\clean.mjs",
+      "bytes": 849,
+      "sha256": "85C388D570B08BBDA4574C9C7BC1D8601C3F8066CAB237E6F61DD7A697FE090A"
+    },
+    {
+      "module": "value/clean/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\clean\\index.mjs",
+      "bytes": 29,
+      "sha256": "F7DD0DA7832AE4EB5D9C5962FA43B1B9FA10C0995175EDD0034F10238B7E8955"
+    },
+    {
+      "module": "value/convert/try/try_result.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\try\\try_result.mjs",
+      "bytes": 581,
+      "sha256": "43105FA5A39527082E3A803DC7D25DB053C6152F18230EE32517BDD20F2FE7F2"
+    },
+    {
+      "module": "value/convert/try/try_array.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\try\\try_array.mjs",
+      "bytes": 208,
+      "sha256": "D6055E19536A71AD284CFA7B0503328A076D9CB42079F51847A3854838AF4297"
+    },
+    {
+      "module": "value/convert/try/try_bigint.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\try\\try_bigint.mjs",
+      "bytes": 1933,
+      "sha256": "D4CE5D0248BC42173918C77F7CE62EB33B6C2ED8A4F0E09B489C7361F74CB518"
+    },
+    {
+      "module": "value/convert/try/try_boolean.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\try\\try_boolean.mjs",
+      "bytes": 1736,
+      "sha256": "9827373EE7FA20A0FD9AA8FA19C8AFBDAB06EF5B97472C1FD7E3C325462940F1"
+    },
+    {
+      "module": "value/convert/try/try_null.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\try\\try_null.mjs",
+      "bytes": 1848,
+      "sha256": "2A487175DEEC634623ED4E7CFF935D18EED59C6378A0059B24149310D0267B17"
+    },
+    {
+      "module": "value/convert/try/try_number.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\try\\try_number.mjs",
+      "bytes": 1777,
+      "sha256": "C78CE4B393ED46B8F7588E56E2F879EC2FEC9E06FB51C6D2CB5B0C1B731E8245"
+    },
+    {
+      "module": "value/convert/try/try_string.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\try\\try_string.mjs",
+      "bytes": 534,
+      "sha256": "848AA27BF34CEE73F943F18BF33A126A57BD52E854FFB03B6E80370FE8513423"
+    },
+    {
+      "module": "value/convert/try/try_undefined.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\try\\try_undefined.mjs",
+      "bytes": 1879,
+      "sha256": "7260B6E09F704A77B56DD337DC5B7CEB00A7799C1067CEF3C763C859DE6BAC2C"
+    },
+    {
+      "module": "value/convert/try/try.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\try\\try.mjs",
+      "bytes": 273,
+      "sha256": "BB96BA7EA63C6184DC89C8CD413506E0CE5F937F4EB6547918E465AC7475347D"
+    },
+    {
+      "module": "value/convert/try/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\try\\index.mjs",
+      "bytes": 34,
+      "sha256": "6D69E65AB0B10B4524E384741460353256AD8B5D7D34C912C0FEBE5DB7F220A1"
+    },
+    {
+      "module": "value/convert/from_array.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_array.mjs",
+      "bytes": 275,
+      "sha256": "465CBA2EEB5E95252984E08B9AE96330DA58352BE6512653F5EE719286DB5FCD"
+    },
+    {
+      "module": "value/convert/from_bigint.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_bigint.mjs",
+      "bytes": 211,
+      "sha256": "E8A4FC4AA235482F3ED22A13FEF39C8F983E42BC5BFEC67737B5ACCFAAFCE04A"
+    },
+    {
+      "module": "value/convert/from_boolean.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_boolean.mjs",
+      "bytes": 213,
+      "sha256": "8E572459EA123EB9D7338E4FF76C16481B5CF2A60D388E0E5D895E8C79A261FE"
+    },
+    {
+      "module": "value/convert/from_cyclic.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_cyclic.mjs",
+      "bytes": 240,
+      "sha256": "2DFB83B0C885AC7B79AAC5F71129C5CBE9833837D9AA7C76208A662DD3030A5B"
+    },
+    {
+      "module": "value/convert/from_enum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_enum.mjs",
+      "bytes": 221,
+      "sha256": "6B526BDDF847F9A2E767A0DB60AFF89052D6843CC63861370BAEA3933AD8F25F"
+    },
+    {
+      "module": "value/convert/from_integer.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_integer.mjs",
+      "bytes": 224,
+      "sha256": "7721273E763CB16DC99D39EA3500B7189CD1C9CF1D365C7A362D6FEA99E657E9"
+    },
+    {
+      "module": "value/convert/from_intersect.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_intersect.mjs",
+      "bytes": 333,
+      "sha256": "2CEB02953810713F608B5EA7E0EED60F9C6B9480055ED37C0CB31B9318184426"
+    },
+    {
+      "module": "system/unreachable/unreachable.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\system\\unreachable\\unreachable.mjs",
+      "bytes": 191,
+      "sha256": "D76237B89F570FD23B30FAE2D846D75C2501B3801000C2E5A0BF53134F96B1EF"
+    },
+    {
+      "module": "system/unreachable/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\system\\unreachable\\index.mjs",
+      "bytes": 35,
+      "sha256": "235FCA7FBD597E14385DC5183BCEEF257F4A19EFCCC5E352602D9557A28E969F"
+    },
+    {
+      "module": "value/convert/from_literal.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_literal.mjs",
+      "bytes": 2198,
+      "sha256": "AAC76510043053310FEA1EFE1F9A86F8AFDD5CC49C901A2512F5E9ABF65F7250"
+    },
+    {
+      "module": "value/convert/from_null.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_null.mjs",
+      "bytes": 207,
+      "sha256": "A808EAC254973A99AB5AD3C87AA6CAEC27808017180F7558297504370121792E"
+    },
+    {
+      "module": "value/convert/from_number.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_number.mjs",
+      "bytes": 211,
+      "sha256": "31FE64FB7B600F0518AD50A2E16BD58A4F8EF1A664869A10E3148CAAB485759F"
+    },
+    {
+      "module": "value/convert/from_additional.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_additional.mjs",
+      "bytes": 647,
+      "sha256": "5AB5D465BEF3968E58EA9BDC669B0A8369E44A000BD13B161B5050E870C10607"
+    },
+    {
+      "module": "value/shared/optional_undefined.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\shared\\optional_undefined.mjs",
+      "bytes": 771,
+      "sha256": "34CD3F015ADF7CA7EAEACF11A77CD6CB8740139CCBE16C30C576479DB5267524"
+    },
+    {
+      "module": "value/convert/from_object.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_object.mjs",
+      "bytes": 1256,
+      "sha256": "12ED802D3B58B9763AA9F0F4C5892DCB2DAB7CC267A4BBB562EBF7A161E4381C"
+    },
+    {
+      "module": "value/convert/from_record.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_record.mjs",
+      "bytes": 931,
+      "sha256": "4BEAA20C86402767993FC9F273C7D3E01F880FD889B7E7165692AD2C99E6E44F"
+    },
+    {
+      "module": "value/convert/from_ref.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_ref.mjs",
+      "bytes": 291,
+      "sha256": "B39A1D1AF53FB4DD63B79F1417130EB79A36B3122A9B2E082CEC20D6DEF13AD9"
+    },
+    {
+      "module": "value/convert/from_string.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_string.mjs",
+      "bytes": 211,
+      "sha256": "EB96459484C4D093A0CFA20D82133EFD6D4FE49C58341F3516980FE1A53ECB4B"
+    },
+    {
+      "module": "value/convert/from_template_literal.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_template_literal.mjs",
+      "bytes": 232,
+      "sha256": "2BEAF67644014926042C8E8C24B64BEEB528A607599E0503F474F7750C669529"
+    },
+    {
+      "module": "value/convert/from_tuple.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_tuple.mjs",
+      "bytes": 405,
+      "sha256": "E883233D01EA2FF2122FD878F43CCEF43B6F2C076320D3A3378B77C587D3963F"
+    },
+    {
+      "module": "value/convert/from_undefined.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_undefined.mjs",
+      "bytes": 217,
+      "sha256": "07E01C1D37A24718135F9A65916CA3CED26A7DA7A5BF39265238ED672853A11A"
+    },
+    {
+      "module": "value/convert/from_union.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_union.mjs",
+      "bytes": 589,
+      "sha256": "AB368FA6485D0A3760947E0F9B3C3DA9AA011E97BD0BA4934086E9BFC54CE973"
+    },
+    {
+      "module": "value/convert/from_void.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_void.mjs",
+      "bytes": 208,
+      "sha256": "853F16C0EA2E011E0B4BFCA036AB4E6DD3D53C19C87806176E5994EA99FA9341"
+    },
+    {
+      "module": "value/convert/from_type.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\from_type.mjs",
+      "bytes": 2997,
+      "sha256": "DA6E225A8FE52D22CCBBA6EBA9154B205F91D9EE270A75B8CBD6622F216BD466"
+    },
+    {
+      "module": "value/convert/convert.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\convert.mjs",
+      "bytes": 715,
+      "sha256": "4D0DEB26200B985C832E57811EFF8B657F3AB130455E595B5509ADAECC1C08CB"
+    },
+    {
+      "module": "value/convert/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\convert\\index.mjs",
+      "bytes": 31,
+      "sha256": "8441CCD97550A455FC6E41A3A606199571CC2DBBAF025DEB5E508F18E6DDB5AE"
+    },
+    {
+      "module": "value/default/from_array.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\from_array.mjs",
+      "bytes": 374,
+      "sha256": "B6FD0C11A27C67E3EF929B0488EEED5EF4BB7AD39690E035B56D589CFF5C49A4"
+    },
+    {
+      "module": "value/default/from_cyclic.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\from_cyclic.mjs",
+      "bytes": 265,
+      "sha256": "70A7727B100A94E84037824CBEABB085C2A93632B87F6C39CEC87C626F012F3E"
+    },
+    {
+      "module": "value/default/from_default.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\from_default.mjs",
+      "bytes": 545,
+      "sha256": "F2477BA95411AAB105D69BE8A76025C214DB71D849B8151AEF2EBB43AE5A32F1"
+    },
+    {
+      "module": "value/default/from_intersect.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\from_intersect.mjs",
+      "bytes": 358,
+      "sha256": "82669CF299711A029BAFC39A5C12D34B16C1F4B9F99219F786167BFBF3E3EABC"
+    },
+    {
+      "module": "value/default/from_object.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\from_object.mjs",
+      "bytes": 1399,
+      "sha256": "D41B7553B595341CA71F38D84E0C92AEEA9C79FA823BC97318C4F7A8A32E387C"
+    },
+    {
+      "module": "value/default/from_record.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\from_record.mjs",
+      "bytes": 1000,
+      "sha256": "20D79DBCB5F9B7D1816B023367D1F8FDAD55E4FBF3C5B5BA5DCA2F2C9FD064FD"
+    },
+    {
+      "module": "value/default/from_ref.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\from_ref.mjs",
+      "bytes": 314,
+      "sha256": "E3F257B3F6A851CC71C65393244873F9FD422450FD2B0F32F101899CBEE50E4C"
+    },
+    {
+      "module": "value/default/from_tuple.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\from_tuple.mjs",
+      "bytes": 485,
+      "sha256": "59499E185E00D2829F65CC00AB9C60BA31506D889C0EF46E1D18CC19F7EEAD79"
+    },
+    {
+      "module": "value/default/from_union.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\from_union.mjs",
+      "bytes": 444,
+      "sha256": "721E3249FB72BE41FD2A3BC76C1AF446870CEC782E40CA1583AE07987E2F07CC"
+    },
+    {
+      "module": "value/default/from_type.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\from_type.mjs",
+      "bytes": 1355,
+      "sha256": "013ED54A25CE7BFAC7E864B54623E0566A300AEE53B178C96C1EECDFD9AF7790"
+    },
+    {
+      "module": "value/default/default.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\default.mjs",
+      "bytes": 712,
+      "sha256": "5D7B74ECC1EADB16E46DEC1F84BF833EC6AA096B48E5F8CF38D843864C708C20"
+    },
+    {
+      "module": "value/default/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\default\\index.mjs",
+      "bytes": 31,
+      "sha256": "77E7477A7B7A0B2D4B3E7204BC85BCADC6946E8897A7C4EF4E67ECDFA027A2B3"
+    },
+    {
+      "module": "value/pipeline/pipeline.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\pipeline\\pipeline.mjs",
+      "bytes": 631,
+      "sha256": "FD630C0A8777E6987CF60B54E6FB9440A9E8AC259517D05E71781AFC4B477639"
+    },
+    {
+      "module": "value/pipeline/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\pipeline\\index.mjs",
+      "bytes": 32,
+      "sha256": "311B8671CA350E55C65074EAD639CC2E2EA41BBBCA2BC33D77496E6C2DF37E78"
+    },
+    {
+      "module": "value/codec/callback.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\callback.mjs",
+      "bytes": 972,
+      "sha256": "A0F0AEB5F6567C3D5DD2666C24EF17F21BC7D4065DA22C7002C774FAE7AB65AD"
+    },
+    {
+      "module": "value/codec/from_array.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\from_array.mjs",
+      "bytes": 1431,
+      "sha256": "1A201B7B96B962B048B6E2C717F91EDBE365A562DF3F7D01B2E7BFCF637FDBD4"
+    },
+    {
+      "module": "value/codec/from_cyclic.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\from_cyclic.mjs",
+      "bytes": 360,
+      "sha256": "B913E084AA6263F6FF500C3315C4A7E4C1ACAEC431974CF4537BA5BEF95B87AC"
+    },
+    {
+      "module": "value/codec/from_intersect.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\from_intersect.mjs",
+      "bytes": 2838,
+      "sha256": "E0E9CADE5B88C4396F9FE333E516BD2183113F840F5364B7E37EBCC8FB7B620D"
+    },
+    {
+      "module": "value/codec/from_object.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\from_object.mjs",
+      "bytes": 1934,
+      "sha256": "2C649D81CC2AB4F45EDA794A579EFD1B9A8F1376316F3B4F874E400DF3AD4CDF"
+    },
+    {
+      "module": "value/codec/from_record.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\from_record.mjs",
+      "bytes": 1592,
+      "sha256": "B1AC6BCF6F574DF2AC3BCDDC63BB83242629F9938F0B3934865BE807384AD1AD"
+    },
+    {
+      "module": "value/codec/from_ref.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\from_ref.mjs",
+      "bytes": 1365,
+      "sha256": "6F76E1EF383BD7A6A192DEAFABDC8A4513856F504130416E7DDEDF1E3B212184"
+    },
+    {
+      "module": "value/codec/from_tuple.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\from_tuple.mjs",
+      "bytes": 1339,
+      "sha256": "A406301AC519A8B2A01DDE5A5EF409FA78EF28F63D6FE813AD0B0DDF21366A32"
+    },
+    {
+      "module": "value/codec/from_union.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\from_union.mjs",
+      "bytes": 1574,
+      "sha256": "B9B064199E1B0B39233D92ACA5A04D77C2D540E043F6672662A64F01273B9729"
+    },
+    {
+      "module": "value/codec/from_type.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\from_type.mjs",
+      "bytes": 1323,
+      "sha256": "D784474E58497A4C281F1BDBA6ECA40198AC15E5AD5E5DB6870816BB5B5116E9"
+    },
+    {
+      "module": "value/codec/decode.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\decode.mjs",
+      "bytes": 2241,
+      "sha256": "5EC50BB107D3C8C36ADEAA19374891EC42640E5C732A7EFA350D8C7F3D1E74BD"
+    },
+    {
+      "module": "value/codec/encode.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\encode.mjs",
+      "bytes": 2242,
+      "sha256": "79505049504A66807AE1BD23B2BAC2EA7276EF6CE20B76B9D12C152B4D2806A5"
+    },
+    {
+      "module": "value/codec/has.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\has.mjs",
+      "bytes": 4081,
+      "sha256": "30A832B8CE5F765E185ED10A5F3CE8A38105603B6812768BF1F0D41F46AD4DAC"
+    },
+    {
+      "module": "value/codec/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\codec\\index.mjs",
+      "bytes": 87,
+      "sha256": "B3FFFC657872E52AE36FD56237F432053B6512B6A2208CC8252FACCA4BDCCD29"
+    },
+    {
+      "module": "value/create/error.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\error.mjs",
+      "bytes": 156,
+      "sha256": "D6A3F9C9D01714DC86EC8E02677827AB2DAA2477030119B5D5807051C065D762"
+    },
+    {
+      "module": "value/create/from_default.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_default.mjs",
+      "bytes": 349,
+      "sha256": "B921DBAEDCA60E5F46C8C367A2A6969F07E19566776DD44298CB41F8DEDC766D"
+    },
+    {
+      "module": "value/create/from_array.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_array.mjs",
+      "bytes": 529,
+      "sha256": "261EEF40D4099B04B6CA5252B2B473B13CD43D699C0E8EF5CC50B005BB409A83"
+    },
+    {
+      "module": "value/create/from_bigint.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_bigint.mjs",
+      "bytes": 305,
+      "sha256": "ECD7EC0080BA78F0EFF2D6E391E1FF7401412BBE86F23E41CA208C9A9A63C23F"
+    },
+    {
+      "module": "value/create/from_boolean.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_boolean.mjs",
+      "bytes": 91,
+      "sha256": "B6F6006B9AE361CC1F7B6A9FD34A61D048549B4678D2CA6738124E15FA105762"
+    },
+    {
+      "module": "value/create/from_constructor.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_constructor.mjs",
+      "bytes": 289,
+      "sha256": "AE350DE1EF2AB8449327C62A6B392D716E6F36B1A901623BAB21972DE4AE128B"
+    },
+    {
+      "module": "value/create/from_cyclic.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_cyclic.mjs",
+      "bytes": 226,
+      "sha256": "DEEF1F11E592FDEE677A319A00A42332347A58A244FBDDE06A92578B846E0C4D"
+    },
+    {
+      "module": "value/create/from_enum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_enum.mjs",
+      "bytes": 207,
+      "sha256": "D2A77810A43D3220B3B1971D57CE89539DF4A1EA2C8013BB08C47B94A88009C8"
+    },
+    {
+      "module": "value/create/from_function.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_function.mjs",
+      "bytes": 204,
+      "sha256": "6AB8E5027C42DBDBF49CF596880168C21534D3229C59786D594C97A15320D284"
+    },
+    {
+      "module": "value/create/from_integer.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_integer.mjs",
+      "bytes": 364,
+      "sha256": "72BA9BB982A49B31D933F98B65260BBA30541335C1D7163DBD7316B953C86144"
+    },
+    {
+      "module": "value/create/from_intersect.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_intersect.mjs",
+      "bytes": 319,
+      "sha256": "A9E989675053BE719124341AC49DA1FBFF2A609595269AD91F725CEF7C9AB117"
+    },
+    {
+      "module": "value/create/from_literal.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_literal.mjs",
+      "bytes": 95,
+      "sha256": "A9BCA19C139F04E3B0F63066579B9F1EA44EFB1769B0876D19D805A62EC5E7E7"
+    },
+    {
+      "module": "value/create/from_never.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_never.mjs",
+      "bytes": 176,
+      "sha256": "774C27AC39C783ADB62FFBAAA4D3F5D16ED2FAF5FD88813812BAEDB5E2FD6CDC"
+    },
+    {
+      "module": "value/create/from_null.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_null.mjs",
+      "bytes": 87,
+      "sha256": "6677DC7D3BB78CA32EFD15D11793675ED2B827A35D45D51A849AD3BA9F20C5F6"
+    },
+    {
+      "module": "value/create/from_number.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_number.mjs",
+      "bytes": 361,
+      "sha256": "27B7063606A8C58395F54E751C49EE7A13150366882F37AEB97413DB6E4E7892"
+    },
+    {
+      "module": "value/create/from_object.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_object.mjs",
+      "bytes": 373,
+      "sha256": "B1A22B3233FCC928F32A90BC092EAB85ACC4BC501CB5A1B74C140949EFDA11DF"
+    },
+    {
+      "module": "value/create/from_record.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_record.mjs",
+      "bytes": 367,
+      "sha256": "A9BBB7217F2C5A6871C88377FF07531C7AD32473C52CD04EBE23E3BE5BDFABA9"
+    },
+    {
+      "module": "value/create/from_ref.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_ref.mjs",
+      "bytes": 378,
+      "sha256": "2C388ED247ECE0E992CD09E5287D5D89EC08107BD9C3C64376633EE218ABACEC"
+    },
+    {
+      "module": "value/create/from_string.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_string.mjs",
+      "bytes": 450,
+      "sha256": "033E87FA5EB93ED892CF4B17C22EA42F2DE8197402468EAC7138888E9DBE8B39"
+    },
+    {
+      "module": "value/create/from_symbol.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_symbol.mjs",
+      "bytes": 93,
+      "sha256": "D75B68BABEF1698B5B9D603039D50900D50CFE7A78DFDD8D138B0C08601C67B6"
+    },
+    {
+      "module": "value/create/from_template_literal.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_template_literal.mjs",
+      "bytes": 528,
+      "sha256": "5099BFDE2DB11B1688A7187CFB89BF905DC71DF4748F00BBFFF7560D1E0E59D6"
+    },
+    {
+      "module": "value/create/from_tuple.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_tuple.mjs",
+      "bytes": 207,
+      "sha256": "86535E6DF6E5B3AF77A74E544DE432FD32ED800F73F89D5376A3AF57A51EC4FE"
+    },
+    {
+      "module": "value/create/from_undefined.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_undefined.mjs",
+      "bytes": 97,
+      "sha256": "4F28416A25A483C1E51A820BA13DB731BA6A5B4BCC27D5502E7706A3828088FC"
+    },
+    {
+      "module": "value/create/from_union.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_union.mjs",
+      "bytes": 322,
+      "sha256": "D235177F5F45AEE909702FC41DBE93DC926ACE44BEB9F17ED368572658B82428"
+    },
+    {
+      "module": "value/create/from_void.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_void.mjs",
+      "bytes": 89,
+      "sha256": "C3EDF71A7528D05D2838C87A5618D8CC9EB4D35D48243FD18E8DD8CB4922412F"
+    },
+    {
+      "module": "value/create/from_type.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\from_type.mjs",
+      "bytes": 4104,
+      "sha256": "A58287F307E4A70CB17B70B5C7FD35236A2EE1F2ABF50F9CF4E6AA08E33DC101"
+    },
+    {
+      "module": "value/create/create.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\create.mjs",
+      "bytes": 446,
+      "sha256": "78B28EF4AEF92F5C7FAFC105D1568D279521D1E876E519F1A610099A0060E025"
+    },
+    {
+      "module": "value/create/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\create\\index.mjs",
+      "bytes": 59,
+      "sha256": "2DCC9D2D3E828483BD20801218EB31F11EC4BD4F2A64219BC34401133887D0B6"
+    },
+    {
+      "module": "value/parse/parse.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\parse\\parse.mjs",
+      "bytes": 1917,
+      "sha256": "4D2D9BAA1DA870FD8BE0CFE68B5C6F08B782EB7657E05B3368D03DA8B1FBBABD"
+    },
+    {
+      "module": "value/parse/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\parse\\index.mjs",
+      "bytes": 29,
+      "sha256": "E178061774C6BF4A9261F3634FA9093A1220427DE1E2CC6AA15AAF6EF1DC6B96"
+    },
+    {
+      "module": "value/value.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\value.mjs",
+      "bytes": 688,
+      "sha256": "4E2948390E27C53F0A63BCD4813CD7517DAF1A9CB5719EC86751F81CACC0AC52"
+    },
+    {
+      "module": "value/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\value\\index.mjs",
+      "bytes": 1160,
+      "sha256": "8D09532C9198A51443FF5AF9423A9D771F999493B065294AAE6B71A11B87E0BC"
+    },
+    {
+      "module": "compile/validator.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\compile\\validator.mjs",
+      "bytes": 3629,
+      "sha256": "D2B2A9675042698ABC5F36478E462FB88C8301EDF249E6929516A55C3C19D7FC"
+    },
+    {
+      "module": "compile/compile.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\compile\\compile.mjs",
+      "bytes": 437,
+      "sha256": "05F0447542D1953DB8268B138D0C83DD8E5D77C7F1824FBF07E6E1A108DCC876"
+    },
+    {
+      "module": "compile/index.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\compile\\index.mjs",
+      "bytes": 575,
+      "sha256": "B1B11D0D7B57C02839B997D7BDDF1B34A274DE21719E334470617BEF56EDFB99"
+    },
+    {
+      "module": "schema/static/_canonical.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\_canonical.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/_comparer.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\_comparer.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/_elements.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\_elements.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/additionalProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\additionalProperties.mjs",
+      "bytes": 70,
+      "sha256": "1E47D38C73FFCFA9603E39E071AEB24DC1551C286B307CB1C07532572B7F4E63"
+    },
+    {
+      "module": "schema/static/allOf.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\allOf.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/anyOf.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\anyOf.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/const.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\const.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/enum.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\enum.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/if.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\if.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/items.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\items.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/oneOf.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\oneOf.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/patternProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\patternProperties.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/prefixItems.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\prefixItems.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/properties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\properties.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/propertyNames.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\propertyNames.mjs",
+      "bytes": 70,
+      "sha256": "1E47D38C73FFCFA9603E39E071AEB24DC1551C286B307CB1C07532572B7F4E63"
+    },
+    {
+      "module": "schema/static/ref.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\ref.mjs",
+      "bytes": 86,
+      "sha256": "530578561EEAC5ED3230507E530FE96A9BAED0ECE0364BD3DCE3F35EC25CC66C"
+    },
+    {
+      "module": "schema/static/required.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\required.mjs",
+      "bytes": 70,
+      "sha256": "1E47D38C73FFCFA9603E39E071AEB24DC1551C286B307CB1C07532572B7F4E63"
+    },
+    {
+      "module": "schema/static/schema.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\schema.mjs",
+      "bytes": 35,
+      "sha256": "D82C519BEC2CB451CB7742F8F08CA00478464EC615AAD40BFBFBE7DABDA93DFF"
+    },
+    {
+      "module": "schema/static/static.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\static.mjs",
+      "bytes": 70,
+      "sha256": "1E47D38C73FFCFA9603E39E071AEB24DC1551C286B307CB1C07532572B7F4E63"
+    },
+    {
+      "module": "schema/static/type.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\type.mjs",
+      "bytes": 70,
+      "sha256": "1E47D38C73FFCFA9603E39E071AEB24DC1551C286B307CB1C07532572B7F4E63"
+    },
+    {
+      "module": "schema/static/unevaluatedProperties.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\schema\\static\\unevaluatedProperties.mjs",
+      "bytes": 70,
+      "sha256": "1E47D38C73FFCFA9603E39E071AEB24DC1551C286B307CB1C07532572B7F4E63"
+    },
+    {
+      "module": "type/types/_codec.mjs",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\typebox\\build\\type\\types\\_codec.mjs",
+      "bytes": 2402,
+      "sha256": "84F1607736EC1404C85C15C8456FC435A6BAE612E95379F68457DFB58D0AA22A"
+    }
+  ],
+  "authoring": "parse-only Acorn AST extraction plus external PowerShell direct Zig authoring",
+  "nativeExecuted": false,
+  "tools": [
+    {
+      "sha256": "C623EC225AA5795FE6A62568A8BE655481E545AAB72FA22E119B85EEC767BCEF",
+      "path": "C:\\Users\\adyba\\tmp-typebox-compile-production-20261016\\Author-Catalog.ps1"
+    },
+    {
+      "sha256": "8F4A81F4CCC81A612730B7A3E5925CFE7B2AFFBFBB0D824589C36CCD027D6769",
+      "path": "C:\\Users\\adyba\\tmp-typebox-compile-production-20261016\\Author-Functions.ps1"
+    },
+    {
+      "sha256": "8F5AEFFA81DF471C86EC96993EDA9C0CB0C381B368EE7893468094C2EEA38B02",
+      "path": "C:\\Users\\adyba\\tmp-typebox-compile-production-20261016\\Author-Modules.ps1"
+    },
+    {
+      "sha256": "3DEF662CCDFA05A2B999A4D993C2966DC27088D9E3FE4C47D9C3AA1DA4E3AD61",
+      "path": "C:\\Users\\adyba\\tmp-typebox-compile-production-20261016\\Extract-ReferenceAst.cjs"
+    }
+  ],
+  "runtimeAst": false
+}

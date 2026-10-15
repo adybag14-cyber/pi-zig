@@ -1,0 +1,10 @@
+{
+  "sourceExecution": "NOT RUN",
+  "astErrors": 0,
+  "formatErrors": 0,
+  "semanticCompile": "NOT RUN",
+  "zig": "0.16.0",
+  "files": 277,
+  "nativeExecution": "NOT RUN",
+  "checkedUtc": "2026-10-15T23:49:38.9258369+00:00"
+}

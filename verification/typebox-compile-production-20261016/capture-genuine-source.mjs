@@ -1,0 +1,26 @@
+// Reference oracle only. Requires a Root-granted strict frozen Source owner.
+import fs from 'node:fs';
+import vm from 'node:vm';
+import crypto from 'node:crypto';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+const output=process.argv[2];
+if(!output||fs.existsSync(output))throw Error('Fresh explicit output required');
+if(process.version!=='v24.14.0'||typeof globalThis.gc!=='function')throw Error('Actual pinned Node24/GC required');
+const authority='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox';
+const packageBytes=fs.readFileSync(path.join(authority,'package.json'));
+const metadata=JSON.parse(packageBytes);
+if(metadata.version!=='1.3.27')throw Error('Actual TypeBox package drift');
+globalThis.actualSchemaType=await import(pathToFileURL(path.join(authority,'build/type/index.mjs')));
+globalThis.actualSchemaCompiler=await import(pathToFileURL(path.join(authority,'build/compile/index.mjs')));
+const {Memory}=await import(pathToFileURL(path.join(authority,'build/system/memory/index.mjs')));
+const {Settings}=await import(pathToFileURL(path.join(authority,'build/system/settings/index.mjs')));
+globalThis.actualSchemaSystem={Memory,Settings};
+const fixture=new URL('../../src/extensions/fixtures/typebox-compile-production.input.mjs',import.meta.url);
+const input=fs.readFileSync(fixture,'utf8');
+vm.runInThisContext(input,{filename:'actual-typebox-compile-production-controls.mjs',timeout:120000});
+const rows=globalThis.typeboxCompileProductionObservation.rows;
+if(rows.length!==74)throw Error('Complete actual Source74 scope required');
+const result={sourceHead:'4954d760504c11df9b2cbdc040346107b6a8153d',runtime:process.version,executable:process.execPath,argv:process.execArgv,authority,version:metadata.version,count:rows.length,packageSha256:crypto.createHash('sha256').update(packageBytes).digest('hex'),inputSha256:crypto.createHash('sha256').update(input).digest('hex'),actualNodeGC:true,rows};
+fs.writeFileSync(output,JSON.stringify(result,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({status:'actual_source74_capture_complete',count:rows.length,output}));

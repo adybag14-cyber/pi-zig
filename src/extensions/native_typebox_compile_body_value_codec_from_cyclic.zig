@@ -1,0 +1,66 @@
+//! Direct native bodies from pinned typebox@1.3.27. Source-only pending qualification.
+const js = @import("native_js_values.zig");
+const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const o = @import("native_typebox_compile_ops.zig");
+const ordinary = @import("native_legacy_function.zig");
+const class = @import("native_class.zig");
+const sdk = @import("native_sdk.zig");
+const c = js.c;
+const Engine = js.Engine;
+pub fn prepare(e: *Engine, graph: c.JSValue) !void {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const modules = try s.get(graph, "modules");
+    const namespace = try s.get(modules, "value/codec/from_cyclic.mjs");
+    const frame = try o.frame(&s, c.pi_js_null());
+    try s.put(frame, "@this", c.pi_js_undefined());
+    try s.put(try s.get(graph, "frames"), "value/codec/from_cyclic.mjs", frame);
+    const bindings = try s.object();
+    try s.put(try s.get(graph, "bindings"), "value/codec/from_cyclic.mjs", bindings);
+    const v24609 = try s.own(try ordinary.create(e, "FromCyclic", 4, body24580, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding24579", v24609);
+    const v24610 = try o.lookup(&s, frame, "binding24579");
+    try s.put(namespace, "FromCyclic", v24610);
+    const v24611 = try o.lookup(&s, frame, "binding24579");
+    try s.put(namespace, "FromCyclic", v24611);
+    try s.put(bindings, "FromCyclic", try s.text("binding24579"));
+}
+fn body24580(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const graph = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v24585 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding24581", v24585);
+    const v24586 = if (args.len > 1) args[1] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding24582", v24586);
+    const v24587 = if (args.len > 2) args[2] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding24583", v24587);
+    const v24588 = if (args.len > 3) args[3] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding24584", v24588);
+    const v24589 = try o.importValue(&s, graph, "value/codec/from_type.mjs", "FromType");
+    const v24590 = try o.lookup(&s, frame, "binding24581");
+    const v24591 = try s.object();
+    const v24592 = try o.lookup(&s, frame, "binding24582");
+    try js.spreadInto(e, v24591, v24592);
+    const v24593 = try o.lookup(&s, frame, "binding24583");
+    const v24594 = try s.text("$defs");
+    const v24595 = try s.own(try js.getKey(e, v24593, v24594));
+    try js.spreadInto(e, v24591, v24595);
+    const v24596 = try o.importValue(&s, graph, "type/index.mjs", "Ref");
+    const v24597 = try o.lookup(&s, frame, "binding24583");
+    const v24598 = try s.text("$ref");
+    const v24599 = try s.own(try js.getKey(e, v24597, v24598));
+    const v24600 = try s.call(v24596, c.pi_js_undefined(), &.{v24599});
+    const v24601 = try o.lookup(&s, frame, "binding24584");
+    const v24602 = try s.call(v24589, c.pi_js_undefined(), &.{ v24590, v24591, v24600, v24601 });
+    try o.assign(&s, frame, "binding24584", v24602);
+    const v24603 = try o.importValue(&s, graph, "value/codec/callback.mjs", "Callback");
+    const v24604 = try o.lookup(&s, frame, "binding24581");
+    const v24605 = try o.lookup(&s, frame, "binding24582");
+    const v24606 = try o.lookup(&s, frame, "binding24583");
+    const v24607 = try o.lookup(&s, frame, "binding24584");
+    const v24608 = try s.call(v24603, c.pi_js_undefined(), &.{ v24604, v24605, v24606, v24607 });
+    return c.JS_DupValue(e.context, v24608);
+}

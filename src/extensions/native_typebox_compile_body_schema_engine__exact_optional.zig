@@ -1,0 +1,110 @@
+//! Direct native bodies from pinned typebox@1.3.27. Source-only pending qualification.
+const js = @import("native_js_values.zig");
+const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const o = @import("native_typebox_compile_ops.zig");
+const ordinary = @import("native_legacy_function.zig");
+const class = @import("native_class.zig");
+const sdk = @import("native_sdk.zig");
+const c = js.c;
+const Engine = js.Engine;
+pub fn prepare(e: *Engine, graph: c.JSValue) !void {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const modules = try s.get(graph, "modules");
+    const namespace = try s.get(modules, "schema/engine/_exact_optional.mjs");
+    const frame = try o.frame(&s, c.pi_js_null());
+    try s.put(frame, "@this", c.pi_js_undefined());
+    try s.put(try s.get(graph, "frames"), "schema/engine/_exact_optional.mjs", frame);
+    const bindings = try s.object();
+    try s.put(try s.get(graph, "bindings"), "schema/engine/_exact_optional.mjs", bindings);
+    const v4128 = try s.own(try ordinary.create(e, "IsExactOptional", 2, body4110, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding4107", v4128);
+    const v4144 = try s.own(try ordinary.create(e, "InexactOptionalBuild", 2, body4129, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding4108", v4144);
+    const v4158 = try s.own(try ordinary.create(e, "InexactOptionalCheck", 2, body4145, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding4109", v4158);
+    const v4159 = try o.lookup(&s, frame, "binding4107");
+    try s.put(namespace, "IsExactOptional", v4159);
+    const v4160 = try o.lookup(&s, frame, "binding4108");
+    try s.put(namespace, "InexactOptionalBuild", v4160);
+    const v4161 = try o.lookup(&s, frame, "binding4109");
+    try s.put(namespace, "InexactOptionalCheck", v4161);
+    const v4162 = try o.lookup(&s, frame, "binding4107");
+    try s.put(namespace, "IsExactOptional", v4162);
+    const v4163 = try o.lookup(&s, frame, "binding4108");
+    try s.put(namespace, "InexactOptionalBuild", v4163);
+    const v4164 = try o.lookup(&s, frame, "binding4109");
+    try s.put(namespace, "InexactOptionalCheck", v4164);
+    try s.put(bindings, "IsExactOptional", try s.text("binding4107"));
+    try s.put(bindings, "InexactOptionalBuild", try s.text("binding4108"));
+    try s.put(bindings, "InexactOptionalCheck", try s.text("binding4109"));
+}
+fn body4110(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const graph = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v4113 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding4111", v4113);
+    const v4114 = if (args.len > 1) args[1] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding4112", v4114);
+    const v4115 = try o.lookup(&s, frame, "binding4111");
+    const v4116 = try s.text("includes");
+    const v4117 = try s.own(try js.getKey(e, v4115, v4116));
+    const v4118 = try o.lookup(&s, frame, "binding4112");
+    const v4119 = try s.call(v4117, v4115, &.{v4118});
+    const v4121 = logical4120: {
+        if (s.truthy(v4119)) break :logical4120 v4119;
+        const v4122 = try o.importValue(&s, graph, "system/settings/index.mjs", "Settings");
+        const v4123 = try s.text("Get");
+        const v4124 = try s.own(try js.getKey(e, v4122, v4123));
+        const v4125 = try s.call(v4124, v4122, &.{});
+        const v4126 = try s.text("exactOptionalPropertyTypes");
+        const v4127 = try s.own(try js.getKey(e, v4125, v4126));
+        break :logical4120 v4127;
+    };
+    return c.JS_DupValue(e.context, v4121);
+}
+fn body4129(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const graph = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v4132 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding4130", v4132);
+    const v4133 = if (args.len > 1) args[1] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding4131", v4133);
+    const v4134 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
+    const v4135 = try s.text("IsUndefined");
+    const v4136 = try s.own(try js.getKey(e, v4134, v4135));
+    const v4137 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
+    const v4138 = try s.text("Member");
+    const v4139 = try s.own(try js.getKey(e, v4137, v4138));
+    const v4140 = try o.lookup(&s, frame, "binding4130");
+    const v4141 = try o.lookup(&s, frame, "binding4131");
+    const v4142 = try s.call(v4139, v4137, &.{ v4140, v4141 });
+    const v4143 = try s.call(v4136, v4134, &.{v4142});
+    return c.JS_DupValue(e.context, v4143);
+}
+fn body4145(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const graph = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v4148 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding4146", v4148);
+    const v4149 = if (args.len > 1) args[1] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding4147", v4149);
+    const v4150 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
+    const v4151 = try s.text("IsUndefined");
+    const v4152 = try s.own(try js.getKey(e, v4150, v4151));
+    const v4153 = try o.lookup(&s, frame, "binding4146");
+    const v4154 = try o.lookup(&s, frame, "binding4147");
+    const v4155 = try o.propertyKey(&s, v4154);
+    const v4156 = try s.own(try js.getKey(e, v4153, v4155));
+    const v4157 = try s.call(v4152, v4150, &.{v4156});
+    return c.JS_DupValue(e.context, v4157);
+}

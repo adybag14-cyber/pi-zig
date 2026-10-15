@@ -1,0 +1,193 @@
+//! Direct native bodies from pinned typebox@1.3.27. Source-only pending qualification.
+const js = @import("native_js_values.zig");
+const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const o = @import("native_typebox_compile_ops.zig");
+const ordinary = @import("native_legacy_function.zig");
+const class = @import("native_class.zig");
+const sdk = @import("native_sdk.zig");
+const c = js.c;
+const Engine = js.Engine;
+pub fn prepare(e: *Engine, graph: c.JSValue) !void {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const modules = try s.get(graph, "modules");
+    const namespace = try s.get(modules, "schema/engine/const.mjs");
+    const frame = try o.frame(&s, c.pi_js_null());
+    try s.put(frame, "@this", c.pi_js_undefined());
+    try s.put(try s.get(graph, "frames"), "schema/engine/const.mjs", frame);
+    const bindings = try s.object();
+    try s.put(try s.get(graph, "bindings"), "schema/engine/const.mjs", bindings);
+    const v7478 = try s.own(try ordinary.create(e, "BuildConst", 4, body7436, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding7433", v7478);
+    const v7513 = try s.own(try ordinary.create(e, "CheckConst", 4, body7479, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding7434", v7513);
+    const v7552 = try s.own(try ordinary.create(e, "ErrorConst", 6, body7514, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding7435", v7552);
+    const v7553 = try o.lookup(&s, frame, "binding7433");
+    try s.put(namespace, "BuildConst", v7553);
+    const v7554 = try o.lookup(&s, frame, "binding7434");
+    try s.put(namespace, "CheckConst", v7554);
+    const v7555 = try o.lookup(&s, frame, "binding7435");
+    try s.put(namespace, "ErrorConst", v7555);
+    const v7556 = try o.lookup(&s, frame, "binding7433");
+    try s.put(namespace, "BuildConst", v7556);
+    const v7557 = try o.lookup(&s, frame, "binding7434");
+    try s.put(namespace, "CheckConst", v7557);
+    const v7558 = try o.lookup(&s, frame, "binding7435");
+    try s.put(namespace, "ErrorConst", v7558);
+    try s.put(bindings, "BuildConst", try s.text("binding7433"));
+    try s.put(bindings, "CheckConst", try s.text("binding7434"));
+    try s.put(bindings, "ErrorConst", try s.text("binding7435"));
+}
+fn body7436(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const graph = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v7441 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7437", v7441);
+    const v7442 = if (args.len > 1) args[1] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7438", v7442);
+    const v7443 = if (args.len > 2) args[2] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7439", v7443);
+    const v7444 = if (args.len > 3) args[3] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7440", v7444);
+    const v7445 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
+    const v7446 = try s.text("IsValueLike");
+    const v7447 = try s.own(try js.getKey(e, v7445, v7446));
+    const v7448 = try o.lookup(&s, frame, "binding7439");
+    const v7449 = try s.text("const");
+    const v7450 = try s.own(try js.getKey(e, v7448, v7449));
+    const v7451 = try s.call(v7447, v7445, &.{v7450});
+    const v7453 = conditional7452: {
+        if (s.truthy(v7451)) {
+            const v7454 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
+            const v7455 = try s.text("IsEqual");
+            const v7456 = try s.own(try js.getKey(e, v7454, v7455));
+            const v7457 = try o.lookup(&s, frame, "binding7440");
+            const v7458 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
+            const v7459 = try s.text("Constant");
+            const v7460 = try s.own(try js.getKey(e, v7458, v7459));
+            const v7461 = try o.lookup(&s, frame, "binding7439");
+            const v7462 = try s.text("const");
+            const v7463 = try s.own(try js.getKey(e, v7461, v7462));
+            const v7464 = try s.call(v7460, v7458, &.{v7463});
+            const v7465 = try s.call(v7456, v7454, &.{ v7457, v7464 });
+            break :conditional7452 v7465;
+        } else {
+            const v7466 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
+            const v7467 = try s.text("IsDeepEqual");
+            const v7468 = try s.own(try js.getKey(e, v7466, v7467));
+            const v7469 = try o.lookup(&s, frame, "binding7440");
+            const v7470 = try o.importValue(&s, graph, "schema/engine/_externals.mjs", "*");
+            const v7471 = try s.text("CreateVariable");
+            const v7472 = try s.own(try js.getKey(e, v7470, v7471));
+            const v7473 = try o.lookup(&s, frame, "binding7439");
+            const v7474 = try s.text("const");
+            const v7475 = try s.own(try js.getKey(e, v7473, v7474));
+            const v7476 = try s.call(v7472, v7470, &.{v7475});
+            const v7477 = try s.call(v7468, v7466, &.{ v7469, v7476 });
+            break :conditional7452 v7477;
+        }
+    };
+    return c.JS_DupValue(e.context, v7453);
+}
+fn body7479(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const graph = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v7484 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7480", v7484);
+    const v7485 = if (args.len > 1) args[1] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7481", v7485);
+    const v7486 = if (args.len > 2) args[2] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7482", v7486);
+    const v7487 = if (args.len > 3) args[3] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7483", v7487);
+    const v7488 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
+    const v7489 = try s.text("IsValueLike");
+    const v7490 = try s.own(try js.getKey(e, v7488, v7489));
+    const v7491 = try o.lookup(&s, frame, "binding7482");
+    const v7492 = try s.text("const");
+    const v7493 = try s.own(try js.getKey(e, v7491, v7492));
+    const v7494 = try s.call(v7490, v7488, &.{v7493});
+    const v7496 = conditional7495: {
+        if (s.truthy(v7494)) {
+            const v7497 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
+            const v7498 = try s.text("IsEqual");
+            const v7499 = try s.own(try js.getKey(e, v7497, v7498));
+            const v7500 = try o.lookup(&s, frame, "binding7483");
+            const v7501 = try o.lookup(&s, frame, "binding7482");
+            const v7502 = try s.text("const");
+            const v7503 = try s.own(try js.getKey(e, v7501, v7502));
+            const v7504 = try s.call(v7499, v7497, &.{ v7500, v7503 });
+            break :conditional7495 v7504;
+        } else {
+            const v7505 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
+            const v7506 = try s.text("IsDeepEqual");
+            const v7507 = try s.own(try js.getKey(e, v7505, v7506));
+            const v7508 = try o.lookup(&s, frame, "binding7483");
+            const v7509 = try o.lookup(&s, frame, "binding7482");
+            const v7510 = try s.text("const");
+            const v7511 = try s.own(try js.getKey(e, v7509, v7510));
+            const v7512 = try s.call(v7507, v7505, &.{ v7508, v7511 });
+            break :conditional7495 v7512;
+        }
+    };
+    return c.JS_DupValue(e.context, v7496);
+}
+fn body7514(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    _ = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v7521 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7515", v7521);
+    const v7522 = if (args.len > 1) args[1] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7516", v7522);
+    const v7523 = if (args.len > 2) args[2] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7517", v7523);
+    const v7524 = if (args.len > 3) args[3] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7518", v7524);
+    const v7525 = if (args.len > 4) args[4] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7519", v7525);
+    const v7526 = if (args.len > 5) args[5] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding7520", v7526);
+    const v7527 = try o.lookup(&s, frame, "binding7434");
+    const v7528 = try o.lookup(&s, frame, "binding7515");
+    const v7529 = try o.lookup(&s, frame, "binding7516");
+    const v7530 = try o.lookup(&s, frame, "binding7519");
+    const v7531 = try o.lookup(&s, frame, "binding7520");
+    const v7532 = try s.call(v7527, c.pi_js_undefined(), &.{ v7528, v7529, v7530, v7531 });
+    const v7534 = logical7533: {
+        if (s.truthy(v7532)) break :logical7533 v7532;
+        const v7535 = try o.lookup(&s, frame, "binding7516");
+        const v7536 = try s.text("AddError");
+        const v7537 = try s.own(try js.getKey(e, v7535, v7536));
+        const v7538 = try s.object();
+        const v7539 = try s.text("keyword");
+        const v7540 = try s.text("const");
+        try o.defineKey(&s, v7538, v7539, v7540);
+        const v7541 = try s.text("schemaPath");
+        const v7542 = try o.lookup(&s, frame, "binding7517");
+        try o.defineKey(&s, v7538, v7541, v7542);
+        const v7543 = try s.text("instancePath");
+        const v7544 = try o.lookup(&s, frame, "binding7518");
+        try o.defineKey(&s, v7538, v7543, v7544);
+        const v7545 = try s.text("params");
+        const v7546 = try s.object();
+        const v7547 = try s.text("allowedValue");
+        const v7548 = try o.lookup(&s, frame, "binding7519");
+        const v7549 = try s.text("const");
+        const v7550 = try s.own(try js.getKey(e, v7548, v7549));
+        try o.defineKey(&s, v7546, v7547, v7550);
+        try o.defineKey(&s, v7538, v7545, v7546);
+        const v7551 = try s.call(v7537, v7535, &.{v7538});
+        break :logical7533 v7551;
+    };
+    return c.JS_DupValue(e.context, v7534);
+}
