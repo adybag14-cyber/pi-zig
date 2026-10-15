@@ -200,6 +200,16 @@ fn traceCase(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
     return c.pi_js_undefined();
 }
 fn progress(engine: *em.Engine, peer: *Peer) void {
+    const original_message = engine.last_error;
+    const original_exception = engine.captured_exception;
+    engine.last_error = null;
+    engine.captured_exception = null;
+    defer {
+        if (engine.last_error) |message| engine.gpa.free(message);
+        if (engine.captured_exception) |exception| engine.freeValue(exception);
+        engine.last_error = original_message;
+        engine.captured_exception = original_exception;
+    }
     const value = engine.eval("JSON.stringify({active:globalThis.nativeFetch39ActiveCase,completed:globalThis.nativeFetch39ProgressRows?.length,last:globalThis.nativeFetch39ProgressRows?.at(-1)?.name})", "fetch39-failure-progress.js", c.JS_EVAL_TYPE_GLOBAL) catch return;
     defer engine.freeValue(value);
     const text = engine.toString(value) catch return;
