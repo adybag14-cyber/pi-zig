@@ -95,10 +95,9 @@ test "native OAuth Codex Radius actual ae7 Source wire only rebinds owned origin
     defer server.deinit();
     const origin = try server.url(gpa, "");
     defer gpa.free(origin);
-    const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 20000 });
+    const engine = try @import("extensions/native_web_response_test.zig").setup(gpa);
     defer engine.deinit();
     try install(engine);
-    try @import("extensions/native_web_response.zig").install(engine);
     const v = @import("extensions/native_ai_provider_values.zig");
     const http = @import("extensions/native_ai_oauth_http.zig");
     var scope: v.Scope = .{ .engine = engine };

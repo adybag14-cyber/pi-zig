@@ -4,6 +4,8 @@ const sdk = @import("extensions/native_sdk.zig");
 const Scope = @import("extensions/native_models_stream_scope.zig").Scope;
 const c = em.c;
 fn install(engine: *em.Engine) !void {
+    try @import("extensions/native_url.zig").install(engine);
+    try @import("extensions/abort_signal.zig").install(engine);
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const global = try s.own(c.JS_GetGlobalObject(engine.context));

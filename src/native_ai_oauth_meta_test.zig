@@ -3,6 +3,8 @@ const em = @import("extensions/engine.zig");
 const sdk = @import("extensions/native_sdk.zig");
 const c = em.c;
 fn install(engine: *em.Engine) !void {
+    try @import("extensions/native_url.zig").install(engine);
+    try @import("extensions/abort_signal.zig").install(engine);
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     try sdk.put(engine, global, "metaOAuth", try @import("extensions/native_ai_oauth_meta.zig").create(engine));
