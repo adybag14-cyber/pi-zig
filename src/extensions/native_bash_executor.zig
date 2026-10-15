@@ -123,7 +123,7 @@ fn ensureFile(engine: *em.Engine, owner: c.JSValue) !void {
     defer scope.deinit();
     if (scope.truthy(try scope.get(owner, "tempFilePath"))) return;
     const helpers = try scope.get(owner, "helpers");
-    const temporary = try engine.toString(try scope.call(try scope.get(helpers, "tmpdir"), c.pi_js_undefined(), &.{}));
+    const temporary = try engine.toString(try scope.invoke(try scope.get(helpers, "tmpdir"), "tmpdir", &.{}));
     defer engine.gpa.free(temporary);
     var nonce: [8]u8 = undefined;
     try std.Io.randomSecure(engine.native_io orelse return error.NativeIoUnavailable, &nonce);

@@ -8,6 +8,8 @@ Both Source jobs have terminal exit zero, full zero-drift audits and independent
 
 Expected JSON fixtures are byte-identical copies of the actual Source capture files. The native comparison normalizes only the independently created evidence-root literal and its JSON-escaped spelling, including inside JSONL strings. It does not correct any content, key order, error, callback record or HTML hash.
 
+The Source trace retains and mutates the caller's preloaded session array across its receivers. Native now preserves that backing ownership. Export comparisons replay the exact Source-produced `source-session.jsonl` retained in the original capture as their pre-export input, including its originally random entry IDs. Its copied input fixture SHA-256 is `C751DF84EE6859E033376934E61947DA62E9A9CEE12D46D1FB8D5A5B732CB643`. This makes the persistent input identical while preserving the full original expected JSONL and HTML bytes; generated native IDs are never substituted into expected results.
+
 The native gate assembles actual ordinary bodies for `executeBash`, `recordBashResult`, `exportToHtml`, `exportToJsonl` and `summarizeForBugReport`. New helpers own the raw combined-stream decoder, Source tail/rolling/spill policy, HTML/theme generation, ANSI conversion, tool renderer retention, and the in-memory authentication backend convenience helper. The shared Env raw bridge comes from the immutable v2 six-file closure. Engine integration is limited to its three Hub fields and lifecycle hooks, three memory-owner C APIs, Shell observers and exact Control PID access. Root's registry assembler and all other worktrees are untouched.
 
 After a coordinated native slot grant, run from the external evidence directory:

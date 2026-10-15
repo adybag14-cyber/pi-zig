@@ -1,0 +1,8 @@
+{"type":"session","version":3,"id":"source-ordinary-session","timestamp":"2023-11-14T22:13:20.000Z","cwd":"fixture-session-cwd"}
+{"type":"message","id":"a","parentId":"unselected","timestamp":"2023-11-14T22:13:20.000Z","message":{"role":"user","content":"first","timestamp":1700000000000}}
+{"type":"message","id":"b","parentId":"a","timestamp":"2023-11-14T22:13:20.000Z","message":{"role":"user","content":"other branch","timestamp":1700000000000}}
+{"type":"message","id":"c","parentId":"a","timestamp":"2023-11-14T22:13:20.000Z","message":{"role":"user","content":"last Ω","timestamp":1700000000000}}
+{"type":"message","id":"051e73da","parentId":"c","timestamp":"2023-11-14T22:13:20.000Z","message":{"role":"bashExecution","command":"echo Ω","output":"plain Ω","exitCode":7,"cancelled":false,"truncated":false,"timestamp":1700000000000}}
+{"type":"message","id":"f0efdf96","parentId":"051e73da","timestamp":"2023-11-14T22:13:20.000Z","message":{"role":"bashExecution","command":"queued","output":"tail","exitCode":7,"cancelled":false,"truncated":false,"fullOutputPath":"fixture-full-output.log","timestamp":1700000000000,"excludeFromContext":true}}
+{"type":"message","id":"efdc80bf","parentId":"f0efdf96","timestamp":"2023-11-14T22:13:20.000Z","message":{"role":"bashExecution","command":"user-command","output":"hiΩ\n","exitCode":7,"cancelled":false,"truncated":false,"timestamp":1700000000000,"excludeFromContext":true}}
+{"type":"message","id":"89439234","parentId":"efdc80bf","timestamp":"2023-11-14T22:13:20.000Z","message":{"role":"bashExecution","command":"cancelled","output":"part","cancelled":true,"truncated":false,"timestamp":1700000000000}}

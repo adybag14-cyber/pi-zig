@@ -1051,6 +1051,10 @@ pub fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persiste
     try put(engine, header, "parentSession", if (args.len > options_index and c.JS_IsObject(args[options_index])) try get(engine, args[options_index], "parentSession") else c.pi_js_undefined());
     try put(engine, data, "header", c.JS_DupValue(engine.context, header));
     if (!persistent and args.len > 2 and c.JS_IsArray(args[2])) {
+        // Source retains the caller's complete preloaded FileEntry array.
+        // Appending through one manager remains visible to later managers
+        // created over that same backing array.
+        try put(engine, data, "preloadedFileEntries", c.JS_DupValue(engine.context, args[2]));
         const imported = try array(engine);
         defer engine.freeValue(imported);
         var loaded_header = false;
@@ -1155,12 +1159,23 @@ pub fn entry(self: *State, kind: []const u8) !c.JSValue {
     try put(engine, result, "timestamp", try timestamp(engine));
     return result;
 }
+fn nonHeaderEntry(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    const kind = get(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), "type") catch |err| return fail(engine, err);
+    defer engine.freeValue(kind);
+    const session = text(engine, "session") catch |err| return fail(engine, err);
+    defer engine.freeValue(session);
+    return c.pi_js_bool(engine.context, @intFromBool(!c.JS_IsStrictEqual(engine.context, kind, session)));
+}
 pub fn commitEntry(self: *State, value: c.JSValue) !c.JSValue {
     const engine = self.engine;
     const entries = try get(engine, self.data, "entries");
     defer engine.freeValue(entries);
     const id = try get(engine, value, "id");
     errdefer engine.freeValue(id);
+    const preloaded = try get(engine, self.data, "preloadedFileEntries");
+    defer engine.freeValue(preloaded);
+    if (!c.JS_IsUndefined(preloaded)) try append(engine, preloaded, c.JS_DupValue(engine.context, value));
     try append(engine, entries, c.JS_DupValue(engine.context, value));
     try indexSessionEntry(engine, self.data, value);
     try put(engine, self.data, "leafId", c.JS_DupValue(engine.context, id));
@@ -2202,6 +2217,15 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             else => null,
         };
         if (simple) |name| {
+            if (operation == .getEntries) {
+                const preloaded = try get(engine, self.data, "preloadedFileEntries");
+                defer engine.freeValue(preloaded);
+                if (!c.JS_IsUndefined(preloaded)) {
+                    const predicate = try engine.checked(c.JS_NewCFunction(engine.context, nonHeaderEntry, "", 1));
+                    defer engine.freeValue(predicate);
+                    return invoke(engine, preloaded, "filter", &.{predicate});
+                }
+            }
             const value = try get(engine, self.data, name);
             if (operation != .getEntries) return value;
             defer engine.freeValue(value);

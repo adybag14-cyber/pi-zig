@@ -129,6 +129,9 @@ fn runFixture(comptime input: []const u8, source: []const u8, comptime actual_na
     try scope.put(global, "ordinaryRoot", try scope.text(root));
     const expected = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, source.ptr, source.len, "sdk-session-exports5ab-source.json")));
     try scope.put(global, "ordinarySource", expected);
+    // Replay the actual Source-produced persistent session as export input.
+    // Its random IDs are input data, not an expected-output normalization.
+    try scope.put(global, "ordinarySourceSessionBytes", try scope.text(@embedFile("extensions/fixtures/sdk-session-exports5ab-source-session.input.txt")));
     const evaluated = engine.evalModule(input ++
         // Root is an independently created evidence directory. Normalize only
         // its literal and JSON-escaped spelling, including JSONL string bodies.
@@ -164,7 +167,7 @@ test "native ordinary session exports pending Bash retains actual session and re
     defer environment.deinit();
     try setup(engine, &environment);
     const prepared = try engine.evalModule(
-        \\(()=>{const {AgentSession,SessionManager,SettingsManager,Agent}=ordinaryAPI,s=Object.assign(Object.create(AgentSession.prototype),{sessionManager:SessionManager.inMemory(),settingsManager:SettingsManager.inMemory(),agent:new Agent(),_isAgentRunActive:false,_pendingBashMessages:[],_bashAbortControllers:new Set(),_entryIdsByMessage:new WeakMap(),_eventListeners:[]});globalThis.sessionExecWeak=new WeakRef(s);globalThis.sessionExecPending=s.executeBash('held',undefined,{operations:{exec(command,cwd,{onData}){onData(Uint8Array.from([104,101,108,100]));return new Promise(resolve=>{globalThis.sessionExecRelease=resolve})}}});})();export const ready=true;
+        \\(()=>{const {AgentSession,SessionManager,SettingsManager,Agent}=ordinaryAPI,s=Object.assign(Object.create(AgentSession.prototype),{sessionManager:SessionManager.inMemory(),settingsManager:SettingsManager.inMemory(),agent:new Agent({streamFn:()=>{throw Error('Unexpected model request in Bash graph test')}}),_isAgentRunActive:false,_pendingBashMessages:[],_bashAbortControllers:new Set(),_entryIdsByMessage:new WeakMap(),_eventListeners:[]});globalThis.sessionExecWeak=new WeakRef(s);globalThis.sessionExecPending=s.executeBash('held',undefined,{operations:{exec(command,cwd,{onData}){onData(Uint8Array.from([104,101,108,100]));return new Promise(resolve=>{globalThis.sessionExecRelease=resolve})}}});})();export const ready=true;
     , "native-ordinary-bash-gc-prepare.mjs");
     engine.freeValue(prepared);
     engine.finishJob();

@@ -45,7 +45,7 @@ const observations=[];
  observations.push({name:'execute-cancelled',running,result,runningAfter:session.isBashRunning,messages:session.messages.filter(message=>message.role==='bashExecution')});
 }
 {
- const session=receiver(),before=JSON.stringify(session.sessionManager.getBranch());
+ const session=receiver({entries:ordinarySourceSessionBytes.trim().split('\n').map(line=>JSON.parse(line))}),before=JSON.stringify(session.sessionManager.getBranch());
  const file=session.exportToJsonl('nested/session Ω.jsonl'),body=readFileSync(file,'utf8');
  observations.push({name:'jsonl-explicit',file:relative(root,file).replaceAll('\\','/'),body,branchUnchanged:before===JSON.stringify(session.sessionManager.getBranch())});
  const defaultFile=session.exportToJsonl();observations.push({name:'jsonl-default',file:relative(root,defaultFile).replaceAll('\\','/'),body:readFileSync(defaultFile,'utf8')});
@@ -63,7 +63,7 @@ for(const [name,response] of [['normal',{stopReason:'stop',content:[{type:'text'
 }
 {
  const session=receiver({settings:{theme:'dark'}});let error;try{await session.exportToHtml(join(root,'memory.html'))}catch(value){error={name:value.name,message:value.message}}observations.push({name:'html-in-memory',error});
- const file=join(root,'source-session.jsonl');writeFileSync(file,seed.map(row=>JSON.stringify(row)).join('\n')+'\n');session.sessionManager=SessionManager.open(file);
+ const file=join(root,'source-session.jsonl');writeFileSync(file,ordinarySourceSessionBytes);session.sessionManager=SessionManager.open(file);
  const output=await session.exportToHtml(join(root,'export.html'),{themeName:'dark'}),html=readFileSync(output,'utf8');
  const encoded=html.match(/<script id="session-data" type="application\/json">([^<]*)<\/script>/)[1];
  observations.push({name:'html-basic',file:relative(root,output).replaceAll('\\','/'),sessionData:JSON.parse(Buffer.from(encoded,'base64').toString()),bytes:Buffer.byteLength(html),sha256:ordinaryAPI.hashUtf8(html)});
