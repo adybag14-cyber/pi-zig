@@ -14,9 +14,12 @@ pub const Dependencies = struct { models: c.JSValue, apis: c.JSValue, oauth: c.J
 pub const api_constructor_names = [_][:0]const u8{ "anthropicMessagesApi", "openAICompletionsApi", "openAIResponsesApi", "openAICodexResponsesApi", "azureOpenAIResponsesApi", "googleGenerativeAIApi", "googleVertexApi", "mistralConversationsApi", "bedrockConverseStreamApi", "piMessagesApi", "openAIDecisionsApi", "typesafeSystemOneApi", "cloudflareWorkersAISystemOneApi", "openrouterImagesApi" };
 const oauth_loader_names = [_][:0]const u8{ "loadAnthropicOAuth", "loadOpenAICodexOAuth", "loadOpenAIChatGPTOAuth", "loadGitHubCopilotOAuth", "loadOpenRouterOAuth", "loadKimiCodingOAuth", "loadMetaOAuth", "loadXaiOAuth", "loadRadiusOAuth" };
 pub fn create(engine: *v.em.Engine, actual_api_constructors: c.JSValue) !c.JSValue {
+    if (engine.native_ai_provider_factories_namespace) |cached| return c.JS_DupValue(engine.context, cached);
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    return createWithDependencies(engine, .{ .models = try s.own(try @import("native_ai_models_namespace.zig").create(engine)), .apis = actual_api_constructors, .oauth = try s.own(try @import("native_ai_oauth_loader.zig").namespace(engine)) });
+    const constructors = try createWithDependencies(engine, .{ .models = try s.own(try @import("native_ai_models_namespace.zig").create(engine)), .apis = actual_api_constructors, .oauth = try s.own(try @import("native_ai_oauth_loader.zig").namespace(engine)) });
+    engine.native_ai_provider_factories_namespace = c.JS_DupValue(engine.context, constructors);
+    return constructors;
 }
 pub fn createWithDependencies(engine: *v.em.Engine, dependencies: Dependencies) !c.JSValue {
     var s: Scope = .{ .engine = engine };
