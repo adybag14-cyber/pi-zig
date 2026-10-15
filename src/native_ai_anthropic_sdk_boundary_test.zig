@@ -2,7 +2,7 @@ const std = @import("std");
 const v = @import("extensions/native_ai_provider_values.zig");
 const c = v.c;
 
-test "native Anthropic actual Source14 seven supplied SDK client traces with identical whole-byte reader and awaited cleanup" {
+test "native Claude5ab extended actual Source14 seven supplied SDK client traces with identical whole-byte reader and awaited cleanup" {
     const engine = try v.em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try @import("extensions/text_encoding.zig").install(engine);
