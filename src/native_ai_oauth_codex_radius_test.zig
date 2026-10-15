@@ -23,7 +23,7 @@ pub fn install(engine: *em.Engine) !void {
 }
 
 test "native OAuth Codex Radius actual ae7 Source35 owned fake HTTP" {
-    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 20000 });
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try install(engine);
     const global = c.JS_GetGlobalObject(engine.context);
@@ -53,7 +53,7 @@ test "native OAuth Codex Radius actual ae7 Source35 owned fake HTTP" {
 }
 
 test "native OAuth Codex Radius actual ae7 pending roots retain credential identity through GC" {
-    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 20000 });
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try install(engine);
     const exports = engine.native_module_values.get("native-oauth-codex-radius").?;

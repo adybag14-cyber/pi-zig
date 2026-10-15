@@ -14,7 +14,7 @@ fn install(engine: *em.Engine) !void {
     try s.put(global, "xaiOAuth", try s.own(try @import("extensions/native_ai_oauth_xai.zig").create(engine)));
 }
 test "native subscription OAuth actual Source84 public flows request bodies metadata and errors" {
-    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 15000 });
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try install(engine);
     const global = c.JS_GetGlobalObject(engine.context);
