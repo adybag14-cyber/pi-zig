@@ -1,0 +1,16 @@
+{
+  "name": "sdk-boundaries-source-third-20261015",
+  "pid": 45288,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source5ab-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-sdk-boundaries-20261015\\verification\\sdk-session-boundaries-5ab-20261015\\capture-source.mjs C:\\Users\\adyba\\pi-zig-sdk-boundaries-20261015\\verification\\sdk-session-boundaries-5ab-20261015\\sdk-boundaries-source-third-20261015-output.json C:\\Users\\adyba\\pi-zig-sdk-boundaries-20261015\\src\\extensions\\fixtures\\sdk-session-boundaries-5ab.input.txt",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T16:40:12.2376514Z",
+  "launched_utc": "2026-10-15T16:40:12.2349753+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T16:40:36.7725879+00:00"
+}

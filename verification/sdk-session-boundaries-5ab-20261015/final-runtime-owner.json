@@ -1,0 +1,16 @@
+{
+  "name": "sdk-boundaries-runtime-second-20261015",
+  "pid": 24880,
+  "executable": "C:\\Users\\adyba\\pi-zig-sdk-boundaries-20261015\\verification\\sdk-session-boundaries-5ab-20261015\\native-debug\\bin\\sdk-boundaries-test.exe",
+  "executable_sha256": "38E48EDCED22CD1D71B680A1D62721508FDECFC27F95C3752AC9C927661380B1",
+  "command_line": "C:\\Users\\adyba\\pi-zig-sdk-boundaries-20261015\\verification\\sdk-session-boundaries-5ab-20261015\\native-debug\\bin\\sdk-boundaries-test.exe --seed=0",
+  "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+  "created_utc": "2026-10-15T16:44:40.6912859Z",
+  "launched_utc": "2026-10-15T16:44:40.6847208+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-sdk-boundaries-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T16:44:40.8747864+00:00"
+}
