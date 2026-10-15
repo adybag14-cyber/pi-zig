@@ -30,7 +30,8 @@ pub fn spread(scope: *Scope, value: c.JSValue) !c.JSValue {
     return scope.own(try js.spread(scope.engine, value));
 }
 pub fn sanitize(scope: *Scope, text: c.JSValue) !c.JSValue {
-    const regex = try scope.own(try js.builtin(scope.engine, "RegExp", &.{ try scope.text("[\\uD800-\\uDBFF](?![\\uDC00-\\uDFFF])|(?<![\\uD800-\\uDBFF])[\\uDC00-\\uDFFF]"), try scope.text("g") }));
+    var regex_args = [_]c.JSValue{ try scope.text("[\\uD800-\\uDBFF](?![\\uDC00-\\uDFFF])|(?<![\\uD800-\\uDBFF])[\\uDC00-\\uDFFF]"), try scope.text("g") };
+    const regex = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, scope.engine.intrinsic_regexp_constructor, regex_args.len, &regex_args)));
     return scope.invoke(text, "replace", &.{ regex, try scope.text("") });
 }
 pub fn remove(scope: *Scope, value: c.JSValue, key: [*:0]const u8) !void {
