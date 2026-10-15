@@ -1,0 +1,16 @@
+{
+  "actual_linux_metadata_version": "0.16.0",
+  "status": "passed",
+  "scope": "Replay retained CI protocol bytes; no local unit execution",
+  "server_zig_sha256": "A743AD55BDDBB44EAA1EAB8DC9186BCB45B619E323D293A558A48B66310FC1E7",
+  "request_only_query4_exit0": true,
+  "actual_linux_metadata_tests": [
+    "native_ai_json_parse_test.test.native AI JSON final helpers match33 genuine b06 observations excluding separate streaming parser",
+    "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+    "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+    "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity",
+    "native_ai_json_parse_test.test.native AI JSON every host allocation preserves intrinsic parser hook ownership and trusted OOM origin",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "malformed_count_rejected": true
+}

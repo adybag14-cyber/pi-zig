@@ -1,0 +1,164 @@
+{
+  "run_id": 38772663750,
+  "head": "5d0ff0bd32a72d4392693552aad7f118a0e0b756",
+  "product_base": "cc9053fbf63f057a63282359f8f49e30a83329e8",
+  "status": "independent_ai_json39_raw_http_six_profile_audit_passed",
+  "genuine_linux_source39_qualified": true,
+  "linux_source39_audit": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-json-ci-qualification-20261015\\38772663750-independent-posix-audit.json",
+  "profiles": [
+    {
+      "artifact_id": 11994255743,
+      "artifact": "native-ai-json-b06-macos-latest-ReleaseSafe-5d0ff0bd32a72d4392693552aad7f118a0e0b756",
+      "zip_digest": "sha256:200e3acab3d1d95357aa1886972fe158f851eb07987e023e57fd3e03b531d5fd",
+      "mode": "ReleaseSafe",
+      "os": "macOS 26.6.2",
+      "tests": 12,
+      "json_tests": 6,
+      "http_tests": 6,
+      "original_json_rows": 39,
+      "raw_source_wire_cases": 12,
+      "candidate_exact_frozen_files": 5437,
+      "compiler_frozen_files": 19546,
+      "metadata_only_inventory_tags": [
+        0,
+        3
+      ],
+      "exact_selected_metadata_test_arrays": true,
+      "post_inventory_hash_drift": 0,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ],
+      "native_gpa_scope": "Complete JSON owner/helper/diagnostic/delegate scope; raw preparation scope unchanged"
+    },
+    {
+      "artifact_id": 11993266803,
+      "artifact": "native-ai-json-b06-ubuntu-latest-ReleaseSafe-5d0ff0bd32a72d4392693552aad7f118a0e0b756",
+      "zip_digest": "sha256:559cc4e25cc6556ad5d70264f06f4c3e347a4a7923c9cd34bb9c98f31f5962fb",
+      "mode": "ReleaseSafe",
+      "os": "Ubuntu 24.04.5 LTS",
+      "tests": 12,
+      "json_tests": 6,
+      "http_tests": 6,
+      "original_json_rows": 39,
+      "raw_source_wire_cases": 12,
+      "candidate_exact_frozen_files": 5437,
+      "compiler_frozen_files": 19546,
+      "metadata_only_inventory_tags": [
+        0,
+        3
+      ],
+      "exact_selected_metadata_test_arrays": true,
+      "post_inventory_hash_drift": 0,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ],
+      "native_gpa_scope": "Complete JSON owner/helper/diagnostic/delegate scope; raw preparation scope unchanged"
+    },
+    {
+      "artifact_id": 11993157159,
+      "artifact": "native-ai-json-b06-windows-latest-ReleaseSafe-5d0ff0bd32a72d4392693552aad7f118a0e0b756",
+      "zip_digest": "sha256:f03c13f53eafc6e4540cd8417fcae75b07931790a6495094ab44ad9b63db3290",
+      "mode": "ReleaseSafe",
+      "os": "Microsoft Windows 10.0.26100",
+      "tests": 12,
+      "json_tests": 6,
+      "http_tests": 6,
+      "original_json_rows": 39,
+      "raw_source_wire_cases": 12,
+      "candidate_exact_frozen_files": 5437,
+      "compiler_frozen_files": 19546,
+      "metadata_only_inventory_tags": [
+        0,
+        3
+      ],
+      "exact_selected_metadata_test_arrays": true,
+      "post_inventory_hash_drift": 0,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ],
+      "native_gpa_scope": "Complete JSON owner/helper/diagnostic/delegate scope; raw preparation scope unchanged"
+    },
+    {
+      "artifact_id": 11993050864,
+      "artifact": "native-ai-json-b06-ubuntu-latest-Debug-5d0ff0bd32a72d4392693552aad7f118a0e0b756",
+      "zip_digest": "sha256:247f6a70909f53abf5b05fbc79a6aeb37827a3ebda4ff5457147f7a84c274682",
+      "mode": "Debug",
+      "os": "Ubuntu 24.04.5 LTS",
+      "tests": 12,
+      "json_tests": 6,
+      "http_tests": 6,
+      "original_json_rows": 39,
+      "raw_source_wire_cases": 12,
+      "candidate_exact_frozen_files": 5437,
+      "compiler_frozen_files": 19546,
+      "metadata_only_inventory_tags": [
+        0,
+        3
+      ],
+      "exact_selected_metadata_test_arrays": true,
+      "post_inventory_hash_drift": 0,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ],
+      "native_gpa_scope": "Complete JSON owner/helper/diagnostic/delegate scope; raw preparation scope unchanged"
+    },
+    {
+      "artifact_id": 11992472722,
+      "artifact": "native-ai-json-b06-macos-latest-Debug-5d0ff0bd32a72d4392693552aad7f118a0e0b756",
+      "zip_digest": "sha256:e4dcc22bbc22fcc5ffaf24bb7d5d06589cd53ebffb662ca237204f2a93119653",
+      "mode": "Debug",
+      "os": "macOS 26.6.2",
+      "tests": 12,
+      "json_tests": 6,
+      "http_tests": 6,
+      "original_json_rows": 39,
+      "raw_source_wire_cases": 12,
+      "candidate_exact_frozen_files": 5437,
+      "compiler_frozen_files": 19546,
+      "metadata_only_inventory_tags": [
+        0,
+        3
+      ],
+      "exact_selected_metadata_test_arrays": true,
+      "post_inventory_hash_drift": 0,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ],
+      "native_gpa_scope": "Complete JSON owner/helper/diagnostic/delegate scope; raw preparation scope unchanged"
+    },
+    {
+      "artifact_id": 11992193990,
+      "artifact": "native-ai-json-b06-windows-latest-Debug-5d0ff0bd32a72d4392693552aad7f118a0e0b756",
+      "zip_digest": "sha256:ef4aa80372cdfa9faef1c3e8d41197d3d3f8ea9872d64a9dbe503743ada5eaa5",
+      "mode": "Debug",
+      "os": "Microsoft Windows 10.0.26100",
+      "tests": 12,
+      "json_tests": 6,
+      "http_tests": 6,
+      "original_json_rows": 39,
+      "raw_source_wire_cases": 12,
+      "candidate_exact_frozen_files": 5437,
+      "compiler_frozen_files": 19546,
+      "metadata_only_inventory_tags": [
+        0,
+        3
+      ],
+      "exact_selected_metadata_test_arrays": true,
+      "post_inventory_hash_drift": 0,
+      "compile_and_runtime_exit_codes": [
+        0,
+        0
+      ],
+      "native_gpa_scope": "Complete JSON owner/helper/diagnostic/delegate scope; raw preparation scope unchanged"
+    }
+  ],
+  "full_provider_qualified": false,
+  "latest_catalog_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}
