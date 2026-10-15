@@ -16,10 +16,11 @@ test "native ae7 JSON39 and thinking DROP12 match fresh genuine Source51 complet
     defer engine.freeValue(global);
     try sdk.put(engine, global, "aiJSONAPI", try @import("extensions/native_ai_json_parse.zig").create(engine));
     try sdk.put(engine, global, "nativeTransform", try @import("extensions/native_node_function.zig").create(engine, "transformMessages", 3, transform, &.{}));
-    const original = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, @embedFile("extensions/fixtures/ai-json39-transform12-ae7-source51.json"), .{});
-    defer original.deinit();
-    const sections = original.value.object.get("sections").?.array.items;
-    try std.testing.expectEqual(@as(usize, 3), sections.len);
+    const original_bytes = @embedFile("extensions/fixtures/ai-json39-transform12-ae7-source51.json");
+    const original = try engine.checked(c.JS_ParseJSON(engine.context, original_bytes.ptr, original_bytes.len, "actual-ae7-source51.json"));
+    defer engine.freeValue(original);
+    const sections = try js.get(engine, original, "sections");
+    defer engine.freeValue(sections);
     inline for (.{ "parse", "delegate", "thinking" }, 0..) |section, index| {
         const input = if (index == 2) @embedFile("extensions/fixtures/ai-transform-thinking-ae7-source51.input.txt") else @embedFile("extensions/fixtures/ai-json-" ++ section ++ "-ae7-source51.input.txt");
         const module = engine.evalModule(input, "ae7-source51-" ++ section ++ ".mjs") catch |err| {
@@ -31,8 +32,14 @@ test "native ae7 JSON39 and thinking DROP12 match fresh genuine Source51 complet
         defer engine.freeValue(rows);
         const actual = try engine.stringify(rows);
         defer engine.gpa.free(actual);
-        const expected = try std.json.Stringify.valueAlloc(std.testing.allocator, sections[index].object.get("rows").?, .{});
-        defer std.testing.allocator.free(expected);
+        const expected_section = try engine.checked(c.JS_GetPropertyUint32(engine.context, sections, index));
+        defer engine.freeValue(expected_section);
+        const expected_rows = try js.get(engine, expected_section, "rows");
+        defer engine.freeValue(expected_rows);
+        // Canonicalize both actual VM graphs with the same JS JSON.stringify.
+        // Valid lone UTF16 surrogates stay in the VM until JSON escapes them.
+        const expected = try engine.stringify(expected_rows);
+        defer engine.gpa.free(expected);
         try std.testing.expectEqualStrings(expected, actual);
     }
     c.JS_RunGC(engine.runtime);

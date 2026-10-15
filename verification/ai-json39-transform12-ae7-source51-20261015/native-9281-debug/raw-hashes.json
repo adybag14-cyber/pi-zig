@@ -1,0 +1,54 @@
+[
+  {
+    "file": "native-ai-json39-transform12-928121f0-debug-source51-vmretry-20261015-admission.json",
+    "sha256": "87061DD319CEF29ED8D0F2D15FAC1D0E0F9CDDB50749A8B492A1B52F7C868BC5"
+  },
+  {
+    "file": "native-ai-json39-transform12-928121f0-debug-source51-vmretry-20261015-compile.json",
+    "sha256": "E6E3842A6823CBB69A8F9D315C70E35070C1DF7F32F5AA98242229CFEC2F6265"
+  },
+  {
+    "file": "native-ai-json39-transform12-928121f0-debug-source51-vmretry-20261015-compile.stderr.log",
+    "sha256": "4D5902145F5AB802001B4DB17EA2C8649B7ABF9B0F5D70775D4AF7C08659A2AB"
+  },
+  {
+    "file": "native-ai-json39-transform12-928121f0-debug-source51-vmretry-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-ai-json39-transform12-928121f0-debug-source51-vmretry-20261015-controls-before.json",
+    "sha256": "C51A91702EA0711EC0A056596F41FB9377C29D3594C33E9344F82E861E3FA256"
+  },
+  {
+    "file": "native-ai-json39-transform12-928121f0-debug-source51-vmretry-20261015-posthash.json",
+    "sha256": "08DEA39650CA8762AAD1E1ABDBFAB00926353F79D5CD37B80A61166777E71941"
+  },
+  {
+    "file": "native-ai-json39-transform12-928121f0-debug-source51-vmretry-20261015-reference-posthash.json",
+    "sha256": "D356FFD26A417344639BB4FA606C75C9877493B5239EC4AB2BB74F97FCF79322"
+  },
+  {
+    "file": "native-ai-json39-transform12-928121f0-debug-source51-vmretry-20261015-runtime.json",
+    "sha256": "0F7D58B26D7A9DD36DCB56F23973BA5CF92CC1FE961D403C7E762635617F10B9"
+  },
+  {
+    "file": "native-ai-json39-transform12-928121f0-debug-source51-vmretry-20261015-runtime.stderr.log",
+    "sha256": "A8D59523C6BCD1A527D91A54852D73D2C5B531E5D99F7AFF0E98ADB4DCE58A90"
+  },
+  {
+    "file": "native-ai-json39-transform12-928121f0-debug-source51-vmretry-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-ai-json39-transform12-928121f0-debug-source51-vmretry-20261015-source-before.json",
+    "sha256": "FDE9C92F0678F6B6A13A9BD96920954A6B59B47A62CF9EBD6EDFD0D6C76CA531"
+  },
+  {
+    "file": "README.md",
+    "sha256": "2A48CBF1F5A298360D34292DE3DA6D6860B42B7BF035AD226F6AD4535EA30ECF"
+  },
+  {
+    "file": "Run-NativeAIJson39Transform12Source51VMRetry-20261015.ps1",
+    "sha256": "026C1D3FC1DCB77989FD3A6563009C2B4476A01216E1DE6FAE8F2D31014D643E"
+  }
+]

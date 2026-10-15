@@ -1,0 +1,98 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-json-delegate-ae7-caller-20261015.mjs",
+    "sha256": "962C7D6E6ECF56B698E2811940118FAC67679BD130F0030E5E9698D6C9333B4F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-json-parse-ae7-caller-20261015.mjs",
+    "sha256": "117D23B450377AF10A9CED5B22671CA0CF983F9983B6A2CC8DD7F94265E908AB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-json39-transform12-ae7-source51-first-20261015-extra-before.json",
+    "sha256": "21E72C21331AD56CBEB76886BB0EB949183FEC85C876BC4CB07B7091BE899A67"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-json39-transform12-ae7-source51-first-20261015-output.json",
+    "sha256": "CB1DDF4DFAD2EE1A3376A6D519B7A9FF73BC2541B5626A3701AEB55CEDED24EC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-json39-transform12-ae7-source51-first-20261015-posthash.json",
+    "sha256": "8E64D019D068E3D37921DD89A24DE7049F6C31417B692EF5DD65E048CAAC7F79"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-json39-transform12-ae7-source51-first-20261015.json",
+    "sha256": "AE5D2A129A5358EE4A01CF65937E3119B834A233E21DC40432F840B23D2BFABB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-json39-transform12-ae7-source51-observe-20261015.mjs",
+    "sha256": "82EE625190C9C18713EB63D23AEBE04FFD20227BCBB206DCAB5D6373706FA3F6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-transform-thinking-ae7-caller12-20261015.mjs",
+    "sha256": "778D9A288DD68DB28174C87D2E7D0E0A53ED431A3C8906F33E7C0AE6ACE68AAF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\event-stream-live-ae7-source27-first-20261015-extra-before.json",
+    "sha256": "DB8EC3DE3608444D4F67D3934FABEA7BE6F6DA2F1A8C5789A5F7826840C83CE7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\event-stream-live-ae7-source27-first-20261015-posthash.json",
+    "sha256": "4E9173D50594C1021E0E6442E5C419BF8E41573652AF06327B09118CDD7606AC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\event-stream-live-ae7-source27-first-20261015.json",
+    "sha256": "5C9706BFA9914810D971BE50D5F77B0A5CD7153F71D1D40A0C3C82B46683DF96"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\event-stream-live-surface-ae7-source27-observe-20261015.mjs",
+    "sha256": "43F0B6DC35D925CB534551CD43C4394F2B701B5B0BC258E0A4B3C2133DB21AC1"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AIJson39Transform12Ae7Source51-20261015.ps1",
+    "sha256": "06968D067D877A3918801F8B04AE03E183ED91D6F8CBB0C1BD78200093226697"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-EventStreamLiveAe7Source27-20261015.ps1",
+    "sha256": "731522DF33DAD522B37A65A6DAA7C3FEDDE75BD7D015E04B0631AC70127A596E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-NativeAIJson39Transform12Source51Pair-20261015.ps1",
+    "sha256": "126E948044BF42BBFF60035936CEA2618FD6E857191EB770A1CE012E1D75B2CA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-dependency-contract-audit-20261015.json",
+    "sha256": "B67885F76310D14C75505EC5EF8A61821BCF6D57136474419BB65C4AF7AF0035"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-full-manifest-20261015.json",
+    "sha256": "C4637B7060AAB20542C7FB41DE4450245D61E0268DFBEBB38860D03B4EA00144"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-node-tools-before-20261015.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-observe-20261015.mjs",
+    "sha256": "1891342A814F6949D3DF384D83B738159D52851FD41DF240F9F160EB3E34D8C2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-preparation-controls-20261015.json",
+    "sha256": "3C84A2C828A906617A50E5C568BA9DA9CAEC7FD79D202C20CA7D6087DD02637C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-preparation-readiness-20261015.json",
+    "sha256": "BA4C270D341C7B8651573A2DE0B9478B1CEAE1D32D680A4EB26068D2DF08389E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-runtime-manifest-20261015.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  }
+]
