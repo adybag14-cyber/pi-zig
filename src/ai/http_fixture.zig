@@ -4,6 +4,7 @@ pub const Reply = struct {
     path: []const u8,
     body: []const u8,
     status: std.http.Status = .ok,
+    reason: ?[]const u8 = null,
     headers: []const std.http.Header = &.{},
     delay_ms: u32 = 0,
     body_delay_ms: u32 = 0,
@@ -97,13 +98,13 @@ pub const PlanServer = struct {
             try headers.appendSlice(self.gpa, reply.headers);
             if (reply.body_delay_ms > 0) {
                 var buffer: [256]u8 = undefined;
-                var response = try request.respondStreaming(&buffer, .{ .content_length = reply.body.len, .respond_options = .{ .status = reply.status, .keep_alive = false, .extra_headers = headers.items } });
+                var response = try request.respondStreaming(&buffer, .{ .content_length = reply.body.len, .respond_options = .{ .status = reply.status, .reason = reply.reason, .keep_alive = false, .extra_headers = headers.items } });
                 try request.server.out.flush();
                 try self.io.sleep(.fromMilliseconds(reply.body_delay_ms), .awake);
                 try response.writer.writeAll(reply.body);
                 try response.end();
                 try request.server.out.flush();
-            } else try request.respond(reply.body, .{ .status = reply.status, .keep_alive = false, .extra_headers = headers.items });
+            } else try request.respond(reply.body, .{ .status = reply.status, .reason = reply.reason, .keep_alive = false, .extra_headers = headers.items });
         }
     }
 };
