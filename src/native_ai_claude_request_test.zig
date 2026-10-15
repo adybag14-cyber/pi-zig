@@ -3,6 +3,7 @@ const v = @import("extensions/native_ai_provider_values.zig");
 const c = v.c;
 fn install(engine: *v.em.Engine) !void {
     if (engine.text_decoder_class == 0) try @import("extensions/text_decoder.zig").install(engine);
+    try @import("extensions/native_headers.zig").install(engine);
     var scope: v.Scope = .{ .engine = engine };
     defer scope.deinit();
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
@@ -62,7 +63,7 @@ test "native Claude5ab Anthropic real wire stream events callbacks and results m
     var exercised: usize = 0;
     for (source.value.object.get("rows").?.array.items) |row| {
         const input = row.object.get("input").?.object;
-        if (input.get("noRequest") != null or input.get("status") != null) continue;
+        if (input.get("noRequest") != null) continue;
         const chunks = if (input.get("chunks")) |value| value.array.items else defaults.value.array.items;
         var wire: std.ArrayList(u8) = .empty;
         defer wire.deinit(gpa);
@@ -77,7 +78,8 @@ test "native Claude5ab Anthropic real wire stream events callbacks and results m
             try wire.appendSlice(gpa, encoded);
             try wire.appendSlice(gpa, "\n\n");
         }
-        const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{ .path = "/v1/messages", .body = wire.items, .headers = &.{ .{ .name = "content-type", .value = "text/event-stream" }, .{ .name = "x-fixture", .value = "source-only" } } }});
+        const status: std.http.Status = if (input.get("status")) |value| @enumFromInt(value.integer) else .ok;
+        const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{ .path = "/v1/messages", .status = status, .body = if (input.get("body")) |value| value.string else wire.items, .headers = &.{ .{ .name = "content-type", .value = if (status == .ok) "text/event-stream" else "application/json" }, .{ .name = "x-fixture", .value = "source-only" } } }});
         defer server.deinit();
         const address = try server.url(gpa, "");
         defer gpa.free(address);
@@ -111,7 +113,7 @@ test "native Claude5ab Anthropic real wire stream events callbacks and results m
         try server.finish();
         exercised += 1;
     }
-    try std.testing.expectEqual(@as(usize, 22), exercised);
+    try std.testing.expectEqual(@as(usize, 23), exercised);
 }
 const observations =
     \\const a={api:'anthropic-messages',provider:'anthropic',id:'claude-haiku-5-5',name:'Claude Haiku 5.5',baseUrl:'https://api.anthropic.com',input:['text','image'],reasoning:true,maxTokens:8192,cost:{input:1,output:1,cacheRead:1,cacheWrite:1},compat:{forceAdaptiveThinking:true,supportsMidConvoSystemMessages:true,supportsMidConvoToolChanges:true,supportsMidConvoEffort:true},thinkingLevelMap:{off:null,max:'max'}};
