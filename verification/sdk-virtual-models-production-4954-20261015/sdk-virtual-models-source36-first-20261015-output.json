@@ -1,0 +1,474 @@
+{
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "cases": 36,
+  "inputSha256": "01db0e94ce06dc77fb7dec1ed9236668ddd1c178c144de5df658db00857919a1",
+  "scope": "Original virtual-models namespace and genuine pi-ai imports unchanged. Caller-owned provider implementations exercise actual namespace receiver, getter, spread, filtering, identity and lazy stream contracts. Source observation alone does not qualify native namespace or whole Pi.",
+  "rows": [
+    {
+      "name": "constants",
+      "value": [
+        "pi-virtual",
+        "pi.virtual-model-state"
+      ]
+    },
+    {
+      "name": "virtual-check",
+      "value": [
+        true,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "virtual-null-error",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of null (reading 'api')",
+        "raw": false
+      }
+    },
+    {
+      "name": "virtual-raw-getter",
+      "error": {
+        "name": "RawSentinel",
+        "message": "original reason",
+        "raw": true
+      }
+    },
+    {
+      "name": "latest-empty",
+      "value": true
+    },
+    {
+      "name": "latest-skips-failed",
+      "value": true
+    },
+    {
+      "name": "latest-raw-getter",
+      "error": {
+        "name": "RawSentinel",
+        "message": "original reason",
+        "raw": true
+      }
+    },
+    {
+      "name": "branch-empty",
+      "value": true
+    },
+    {
+      "name": "branch-last-change-no-lookup",
+      "value": {
+        "provider": "p",
+        "modelId": "virtual"
+      }
+    },
+    {
+      "name": "branch-virtual-holds",
+      "value": {
+        "selected": {
+          "provider": "p",
+          "modelId": "virtual"
+        },
+        "calls": 1,
+        "unbound": true
+      }
+    },
+    {
+      "name": "branch-removed-falls-back",
+      "value": {
+        "provider": "p",
+        "modelId": "physical"
+      }
+    },
+    {
+      "name": "branch-physical-change-falls-back",
+      "value": {
+        "provider": "p",
+        "modelId": "physical"
+      }
+    },
+    {
+      "name": "branch-only-last-change",
+      "value": {
+        "selected": {
+          "provider": "p",
+          "modelId": "physical"
+        },
+        "calls": [
+          [
+            "p",
+            "gone"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "branch-virtual-message-skipped",
+      "value": true
+    },
+    {
+      "name": "branch-raw-lookup",
+      "error": {
+        "name": "RawSentinel",
+        "message": "original reason",
+        "raw": true
+      }
+    },
+    {
+      "name": "state-latest-matching-identity",
+      "value": true
+    },
+    {
+      "name": "state-missing",
+      "value": true
+    },
+    {
+      "name": "state-explicit-undefined-wins",
+      "value": true
+    },
+    {
+      "name": "catalog-default",
+      "value": {
+        "id": "virtual",
+        "name": "Virtual",
+        "api": "pi-virtual",
+        "provider": "p",
+        "baseUrl": "",
+        "reasoning": false,
+        "thinkingLevelMap": {
+          "off": "off",
+          "minimal": null,
+          "low": null,
+          "medium": null,
+          "high": null,
+          "xhigh": null,
+          "max": null
+        },
+        "input": [
+          "text",
+          "image"
+        ],
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0
+        },
+        "contextWindow": 0,
+        "maxTokens": 0
+      }
+    },
+    {
+      "name": "catalog-levels-input-identity",
+      "value": {
+        "m": {
+          "id": "v",
+          "name": "V",
+          "api": "pi-virtual",
+          "provider": "p",
+          "baseUrl": "",
+          "reasoning": true,
+          "thinkingLevelMap": {
+            "off": "off",
+            "minimal": null,
+            "low": null,
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          },
+          "input": [
+            "text"
+          ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 42,
+          "maxTokens": 7
+        },
+        "inputIdentity": true
+      }
+    },
+    {
+      "name": "catalog-nullish",
+      "value": {
+        "id": "v",
+        "name": "V",
+        "api": "pi-virtual",
+        "provider": "p",
+        "baseUrl": "",
+        "reasoning": false,
+        "thinkingLevelMap": {
+          "off": "off",
+          "minimal": null,
+          "low": null,
+          "medium": null,
+          "high": null,
+          "xhigh": null,
+          "max": null
+        },
+        "input": [
+          "text",
+          "image"
+        ],
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0
+        },
+        "contextWindow": 0,
+        "maxTokens": 0
+      }
+    },
+    {
+      "name": "catalog-getter-order",
+      "value": [
+        "thinkingLevels",
+        "id",
+        "name",
+        "provider",
+        "input",
+        "contextWindow",
+        "maxTokens"
+      ]
+    },
+    {
+      "name": "catalog-raw-getter",
+      "error": {
+        "name": "RawSentinel",
+        "message": "original reason",
+        "raw": true
+      }
+    },
+    {
+      "name": "bare-provider-shape",
+      "value": {
+        "id": "p",
+        "name": "p",
+        "key": "Virtual model",
+        "models": true,
+        "all": "undefined",
+        "filter": "undefined",
+        "streams": true,
+        "arity": [
+          0,
+          1,
+          0
+        ],
+        "auth": {}
+      }
+    },
+    {
+      "name": "bare-auth",
+      "value": {
+        "auth": {},
+        "source": "virtual"
+      }
+    },
+    {
+      "name": "bare-stream-shared-identity",
+      "value": true
+    },
+    {
+      "name": "wrapped-provider-catalog",
+      "value": {
+        "ids": [
+          [
+            "physical",
+            "chat"
+          ],
+          [
+            "virtual",
+            "embedding"
+          ],
+          [
+            "virtual",
+            "chat"
+          ]
+        ],
+        "all": [
+          "physical",
+          "virtual",
+          "virtual"
+        ],
+        "calls": [
+          true,
+          true
+        ],
+        "authIdentity": true,
+        "symbol": "symbol",
+        "id": "base",
+        "name": "Base",
+        "filterAllOwn": true,
+        "filterAll": true,
+        "real": "real",
+        "simple": "simple"
+      }
+    },
+    {
+      "name": "wrapped-filter-receivers",
+      "value": {
+        "chat": [
+          "physical",
+          "virtual"
+        ],
+        "all": [
+          "physical",
+          "virtual"
+        ],
+        "trace": [
+          [
+            "chat",
+            true,
+            "key"
+          ],
+          [
+            "all",
+            true,
+            "key2"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "wrapped-filter-nullish-fallback",
+      "value": [
+        "physical",
+        "virtual"
+      ]
+    },
+    {
+      "name": "wrapped-filter-iterable",
+      "value": {
+        "ids": [
+          "physical",
+          "virtual"
+        ],
+        "trace": [
+          "iterator",
+          "next",
+          "next"
+        ]
+      }
+    },
+    {
+      "name": "wrapped-all-nullish-fallback",
+      "value": {
+        "ids": [
+          "physical",
+          "virtual"
+        ],
+        "trace": [
+          "all",
+          "models"
+        ]
+      }
+    },
+    {
+      "name": "wrapped-getter-order-symbols",
+      "value": {
+        "trace": [
+          "filterModels",
+          "filterAllModels",
+          "filterModels",
+          "filterAllModels",
+          "id",
+          "getModels",
+          "symbol"
+        ],
+        "symbol": 4
+      }
+    },
+    {
+      "name": "wrapped-stream-receiver-and-args",
+      "value": {
+        "value": [
+          true,
+          3,
+          true,
+          true,
+          true
+        ],
+        "simple": 3,
+        "arity": [
+          3,
+          3
+        ]
+      }
+    },
+    {
+      "name": "unrouted-lazy-error",
+      "value": {
+        "message": {
+          "role": "assistant",
+          "api": "pi-virtual",
+          "provider": "p",
+          "model": "virtual",
+          "stopReason": "error",
+          "errorMessage": "Virtual model p/virtual must be routed before streaming"
+        },
+        "events": [
+          [
+            "error",
+            "error",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "unrouted-model-getters-deferred",
+      "value": {
+        "before": [
+          "provider",
+          "id"
+        ],
+        "after": [
+          "provider",
+          "id",
+          "provider",
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "export-function-metadata",
+      "value": {
+        "isVirtualModel": [
+          "isVirtualModel",
+          1,
+          true
+        ],
+        "findLatestResponse": [
+          "findLatestResponse",
+          1,
+          true
+        ],
+        "getBranchSelection": [
+          "getBranchSelection",
+          2,
+          true
+        ],
+        "getVirtualModelState": [
+          "getVirtualModelState",
+          3,
+          true
+        ],
+        "createVirtualModel": [
+          "createVirtualModel",
+          1,
+          true
+        ],
+        "withVirtualModels": [
+          "withVirtualModels",
+          3,
+          true
+        ]
+      }
+    }
+  ]
+}
