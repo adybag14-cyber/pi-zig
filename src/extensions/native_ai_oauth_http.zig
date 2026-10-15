@@ -2,6 +2,7 @@
 //! absent host fetch uses the existing owned byte worker and genuine Response.
 //! The real native_web_response/body/stream graph is a required dependency.
 const std = @import("std");
+const builtin = @import("builtin");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
@@ -85,6 +86,11 @@ fn open(scope: *Scope, owner: c.JSValue, url: c.JSValue, init: c.JSValue) !void 
     defer engine.gpa.free(bytes);
     const headers_init = try v.optional(scope, init, "headers");
     const headers = try scope.own(try v.js.builtin(engine, "Headers", &.{headers_init}));
+    if (!scope.truthy(try scope.invoke(headers, "has", &.{try scope.text("user-agent")}))) {
+        const diagnostic = try std.fmt.allocPrint(engine.gpa, "pi-zig/Zig-{s} QuickJS-{s} ({s}; {s})", .{ builtin.zig_version_string, std.mem.span(c.JS_GetVersion()), @tagName(builtin.os.tag), @tagName(builtin.cpu.arch) });
+        defer engine.gpa.free(diagnostic);
+        _ = try scope.invoke(headers, "set", &.{ try scope.text("user-agent"), try scope.text(diagnostic) });
+    }
     if (!v.nullish(input_body) and !c.JS_IsString(input_body) and !scope.truthy(try scope.invoke(headers, "has", &.{try scope.text("content-type")}))) _ = try scope.invoke(headers, "set", &.{ try scope.text("content-type"), try scope.text("application/x-www-form-urlencoded;charset=UTF-8") });
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
