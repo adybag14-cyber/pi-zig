@@ -1,0 +1,50 @@
+[
+  {
+    "file": "native-event-stream-live-7940bf04-debug-source27-20261015-admission.json",
+    "sha256": "28FBE18D8F5A222781BDCB5F90BB82B47DA4A1482D4EB98A7C69F9D038D6F2C2"
+  },
+  {
+    "file": "native-event-stream-live-7940bf04-debug-source27-20261015-compile.json",
+    "sha256": "23BD2A53C6411A996A8C5F1627B48D7053F8D043BD9440EAE6EDDA52C55F8AB8"
+  },
+  {
+    "file": "native-event-stream-live-7940bf04-debug-source27-20261015-compile.stderr.log",
+    "sha256": "762144BF39ADF97AA38EFF26AABB488C770EC5B546494056521560528BDA6CE6"
+  },
+  {
+    "file": "native-event-stream-live-7940bf04-debug-source27-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-event-stream-live-7940bf04-debug-source27-20261015-controls-before.json",
+    "sha256": "887CE94A2286DB23806F777A52828FA70685CC0E82E895CBADD9D37692A94DF4"
+  },
+  {
+    "file": "native-event-stream-live-7940bf04-debug-source27-20261015-posthash.json",
+    "sha256": "8E48EEBB7706A1FF691EACBC44D43067D21B09D638BF573452B75E1802811B48"
+  },
+  {
+    "file": "native-event-stream-live-7940bf04-debug-source27-20261015-reference-posthash.json",
+    "sha256": "D2B24582DB91F6705A875D121A427888A9DD1743D2005D1867DD08D6F111B0F4"
+  },
+  {
+    "file": "native-event-stream-live-7940bf04-debug-source27-20261015-runtime.json",
+    "sha256": "B22304C23075D2AD3F8B1647FBF4F13D2A6E5FCF193A12977E2E136B875926D6"
+  },
+  {
+    "file": "native-event-stream-live-7940bf04-debug-source27-20261015-runtime.stderr.log",
+    "sha256": "B1631369C562A68BEBC6F4A50846FDA90EA1D5A0B5942849811EDE5159E9522F"
+  },
+  {
+    "file": "native-event-stream-live-7940bf04-debug-source27-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "native-event-stream-live-7940bf04-debug-source27-20261015-source-before.json",
+    "sha256": "D9E7BE990D44E8F0CAB1F3D9AFD224D9A4A8B0C92ED11BDF5C2D8A62CBA74B98"
+  },
+  {
+    "file": "Run-NativeEventStreamLive7940Source27Pair-20261015.ps1",
+    "sha256": "9CADACE72114A5FFA842669BB119F87F7846EEC55BABD3F94DFCD62F741CA5D1"
+  }
+]

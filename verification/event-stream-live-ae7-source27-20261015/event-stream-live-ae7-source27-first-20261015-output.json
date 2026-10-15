@@ -1,0 +1,649 @@
+{
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "runtime": "v24.14.0",
+  "count": 27,
+  "rows": [
+    {
+      "name": "ordinary-own-field-order-and-fifo-shapes",
+      "trace": [
+        {
+          "keys": [
+            "queue",
+            "waiting",
+            "done",
+            "finalResultPromise",
+            "resolveFinalResult",
+            "isComplete",
+            "extractResult"
+          ],
+          "all": [
+            "queue",
+            "waiting",
+            "done",
+            "finalResultPromise",
+            "resolveFinalResult",
+            "isComplete",
+            "extractResult"
+          ],
+          "queueKeys": [
+            "incoming",
+            "outgoing"
+          ],
+          "waitingKeys": [
+            "incoming",
+            "outgoing"
+          ],
+          "queuePrototype": {
+            "constructor": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "FifoQueue",
+              "length": 0,
+              "constructible": true,
+              "ownPrototype": true
+            },
+            "length": {
+              "enumerable": false,
+              "configurable": true,
+              "getterName": "get length",
+              "getterLength": 0
+            },
+            "enqueue": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "enqueue",
+              "length": 1,
+              "constructible": false,
+              "ownPrototype": false
+            },
+            "dequeue": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "dequeue",
+              "length": 0,
+              "constructible": false,
+              "ownPrototype": false
+            }
+          },
+          "fields": {
+            "queue": {
+              "enumerable": true,
+              "configurable": true,
+              "writable": true
+            },
+            "waiting": {
+              "enumerable": true,
+              "configurable": true,
+              "writable": true
+            },
+            "done": {
+              "enumerable": true,
+              "configurable": true,
+              "writable": true
+            },
+            "finalResultPromise": {
+              "enumerable": true,
+              "configurable": true,
+              "writable": true
+            },
+            "resolveFinalResult": {
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "name": "",
+              "length": 1,
+              "constructible": false,
+              "ownPrototype": false
+            },
+            "isComplete": {
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "name": "",
+              "length": 0,
+              "constructible": false,
+              "ownPrototype": false
+            },
+            "extractResult": {
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "name": "",
+              "length": 1,
+              "constructible": false,
+              "ownPrototype": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "event-and-assistant-method-descriptors",
+      "trace": [
+        {
+          "event": {
+            "constructor": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "EventStream",
+              "length": 2,
+              "constructible": true,
+              "ownPrototype": true
+            },
+            "push": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "push",
+              "length": 1,
+              "constructible": false,
+              "ownPrototype": false
+            },
+            "end": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "end",
+              "length": 1,
+              "constructible": false,
+              "ownPrototype": false
+            },
+            "result": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "result",
+              "length": 0,
+              "constructible": false,
+              "ownPrototype": false
+            }
+          },
+          "assistant": {
+            "constructor": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "AssistantMessageEventStream",
+              "length": 0,
+              "constructible": true,
+              "ownPrototype": true
+            },
+            "push": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "push",
+              "length": 1,
+              "constructible": false,
+              "ownPrototype": false
+            },
+            "end": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "name": "end",
+              "length": 1,
+              "constructible": false,
+              "ownPrototype": false
+            }
+          },
+          "constructor": {
+            "length": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": false
+            },
+            "name": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": false
+            },
+            "prototype": {
+              "enumerable": false,
+              "configurable": false,
+              "writable": false
+            }
+          },
+          "assistantConstructor": {
+            "length": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": false
+            },
+            "name": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": false
+            },
+            "prototype": {
+              "enumerable": false,
+              "configurable": false,
+              "writable": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "borrowed-push-resolve-member-receivers",
+      "trace": [
+        [
+          "complete-this",
+          true
+        ],
+        [
+          "extract-this",
+          true
+        ],
+        [
+          "resolve-this",
+          true,
+          "final"
+        ],
+        [
+          "dequeue-this",
+          true
+        ],
+        [
+          "enqueue-this",
+          true
+        ],
+        {
+          "done": true,
+          "queue": [
+            {
+              "final": true,
+              "result": "final"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "borrowed-push-waiter-is-bare-call",
+      "trace": [
+        {
+          "bareThis": true,
+          "value": {
+            "value": "raw",
+            "done": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "borrowed-end-result-and-waiter-order",
+      "trace": [
+        [
+          "resolve-this",
+          true,
+          "result"
+        ],
+        "length",
+        "dequeue",
+        [
+          "first",
+          {
+            "done": true
+          }
+        ],
+        "length",
+        "dequeue",
+        [
+          "second",
+          {
+            "done": true
+          }
+        ],
+        "length",
+        [
+          "done",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "borrowed-result-returns-live-raw-property",
+      "trace": [
+        "result-get",
+        [
+          "raw",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "borrowed-iterator-getters-run-on-first-next",
+      "trace": [
+        "created",
+        "queue-get",
+        "length-get",
+        "done-get",
+        {
+          "done": true
+        }
+      ]
+    },
+    {
+      "name": "borrowed-iterator-dequeue-reloads-queue-getter",
+      "trace": [
+        "queue-get",
+        "length",
+        "queue-get",
+        "dequeue",
+        {
+          "value": "value",
+          "done": false
+        },
+        "queue-get",
+        "length",
+        {
+          "done": true
+        }
+      ]
+    },
+    {
+      "name": "borrowed-iterator-throwing-queue-getter-is-raw",
+      "trace": [
+        "created",
+        "queue-get",
+        [
+          "raw",
+          true
+        ],
+        {
+          "done": true
+        }
+      ]
+    },
+    {
+      "name": "fifo-length-getters-and-addition-coercion",
+      "trace": [
+        "incoming",
+        "incoming.length",
+        "outgoing",
+        "outgoing.length",
+        [
+          "length",
+          "23"
+        ]
+      ]
+    },
+    {
+      "name": "fifo-dequeue-reversal-member-evaluation-order",
+      "trace": [
+        "outgoing-get",
+        "outgoing.length",
+        "incoming-get",
+        "incoming.length",
+        "outgoing-get",
+        "outgoing.push-get",
+        "incoming-get",
+        "incoming.pop",
+        [
+          "outgoing.push",
+          "value"
+        ],
+        "incoming-get",
+        "incoming.length",
+        "outgoing-get",
+        "outgoing.pop",
+        "result"
+      ]
+    },
+    {
+      "name": "live-completion-predicate-and-extractor-replacement",
+      "trace": [
+        [
+          "predicate-this",
+          true
+        ],
+        [
+          "extract-this",
+          true
+        ],
+        [
+          "raw",
+          true
+        ],
+        {
+          "value": "event",
+          "done": false
+        }
+      ]
+    },
+    {
+      "name": "completion-predicate-throw-leaves-admission-open",
+      "trace": [
+        [
+          "raw",
+          true
+        ],
+        {
+          "done": false,
+          "length": 0
+        },
+        {
+          "value": "second",
+          "done": false
+        }
+      ]
+    },
+    {
+      "name": "extractor-throw-closes-before-delivery",
+      "trace": [
+        [
+          "raw",
+          true
+        ],
+        {
+          "done": true,
+          "length": 0
+        },
+        {
+          "done": true
+        }
+      ]
+    },
+    {
+      "name": "resolve-getter-precedes-extractor-call",
+      "trace": [
+        "resolve-get",
+        "extract-get",
+        [
+          "extract-call",
+          true
+        ],
+        [
+          "resolve-call",
+          true,
+          "result"
+        ],
+        "waiting.dequeue",
+        [
+          "queue.enqueue",
+          "event"
+        ]
+      ]
+    },
+    {
+      "name": "end-undefined-retains-live-result-promise",
+      "trace": [
+        {
+          "same": true,
+          "done": true
+        },
+        {
+          "done": true
+        }
+      ]
+    },
+    {
+      "name": "done-push-observes-only-done-getter",
+      "trace": [
+        "done",
+        [
+          "returned",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "iterator-method-real-function-prototype",
+      "trace": [
+        {
+          "name": "[Symbol.asyncIterator]",
+          "length": 0,
+          "brand": "[object AsyncGeneratorFunction]",
+          "prototype": {
+            "length": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": false
+            },
+            "name": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": false
+            },
+            "prototype": {
+              "enumerable": false,
+              "configurable": false,
+              "writable": true
+            }
+          },
+          "sameFunctionPrototype": true,
+          "sameGeneratorParent": true,
+          "instanceOwnPrototype": true,
+          "ownKeys": []
+        }
+      ]
+    },
+    {
+      "name": "fifo-constructor-reachable-and-real-instance",
+      "trace": [
+        {
+          "name": "FifoQueue",
+          "length": 2,
+          "constructible": true,
+          "keys": [
+            "incoming",
+            "outgoing"
+          ],
+          "one": "a",
+          "two": "b"
+        }
+      ]
+    },
+    {
+      "name": "assistant-super-push-is-live",
+      "trace": [
+        [
+          "super-this",
+          true,
+          "text_start"
+        ]
+      ]
+    },
+    {
+      "name": "assistant-end-undefined-borrow-skips-private-time",
+      "trace": [
+        {
+          "done": true
+        }
+      ]
+    },
+    {
+      "name": "assistant-terminal-borrow-requires-private-brand",
+      "trace": [
+        {
+          "name": "TypeError",
+          "message": "Receiver must be an instance of class AssistantMessageEventStream"
+        }
+      ]
+    },
+    {
+      "name": "assistant-time-observes-global-math-method-order",
+      "trace": [
+        "performance.now",
+        "Math.max-get",
+        "Math.round-get",
+        "performance.now",
+        [
+          "Math.round-call",
+          13
+        ],
+        [
+          "Math.max-call",
+          [
+            0,
+            13
+          ]
+        ],
+        [
+          "duration",
+          13
+        ]
+      ]
+    },
+    {
+      "name": "subclass-and-reflect-construct-keep-original-fields",
+      "trace": [
+        {
+          "child": true,
+          "reflected": true,
+          "keys": [
+            "queue",
+            "waiting",
+            "done",
+            "finalResultPromise",
+            "resolveFinalResult",
+            "isComplete",
+            "extractResult"
+          ],
+          "sameQueuePrototype": true
+        }
+      ]
+    },
+    {
+      "name": "assistant-result-only-allows-long-producer-then-drain",
+      "trace": [
+        {
+          "rawResult": true,
+          "queued": 129,
+          "durationPresent": true
+        },
+        {
+          "count": 129,
+          "remaining": 0
+        }
+      ]
+    },
+    {
+      "name": "iterator-function-live-prototype-and-intrinsic-fallback",
+      "trace": [
+        {
+          "custom": true,
+          "fallback": true
+        }
+      ]
+    },
+    {
+      "name": "iterator-wait-result-local-lives-across-yield-and-retires",
+      "trace": [
+        [
+          "heldAcrossYield",
+          true
+        ],
+        [
+          "releasedAfterReturn",
+          true
+        ]
+      ]
+    }
+  ]
+}
