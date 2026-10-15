@@ -1,0 +1,20 @@
+{
+  "free_kib": 20887100,
+  "phase": "compile",
+  "slot": 4,
+  "target": "foundation",
+  "max_native_roots": 4,
+  "observed_utc": "2026-10-15T22:02:09.3862417+00:00",
+  "candidate": "8685fd09298955e1f2fbae41e7677141b07e7b14",
+  "roots": [
+    {
+      "ProcessId": 73512,
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-writable-stream -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all"
+    },
+    {
+      "ProcessId": 51520,
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-highlight-core-b45 -Doptimize=Debug -j1 --test-timeout 120s --summary all"
+    }
+  ],
+  "required_kib": 16777216
+}

@@ -1,0 +1,5 @@
+Exception: C:\Users\adyba\pi-zig-update-evidence-20261003\Run-HighlightRoot55NativePhase-20261015.ps1:124
+Line |
+ 124 |  . .Count -ne 5){throw 'Foundation must select exact five actual tests'}
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Foundation must select exact five actual tests

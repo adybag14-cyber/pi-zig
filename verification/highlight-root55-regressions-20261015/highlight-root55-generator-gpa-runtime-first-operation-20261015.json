@@ -1,0 +1,16 @@
+{
+  "name": "highlight-root55-generator-gpa-runtime-first-operation-20261015",
+  "pid": 75080,
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+  "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoProfile -File C:/Users/adyba/pi-zig-update-evidence-20261003/Run-HighlightRoot55NativePhaseV2-20261015.ps1 -Target generator-gpa -Phase runtime",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T22:17:37.9342193Z",
+  "launched_utc": "2026-10-15T22:17:37.9308930+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-update-evidence-20261003",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T22:19:04.1309224+00:00"
+}
