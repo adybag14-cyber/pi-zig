@@ -148,6 +148,9 @@ pub const OverlayOptions = struct {
     modal: bool = true,
     focus: ?layout.Component = null,
     z_index: i32 = 0,
+    hidden: bool = false,
+    /// Nonzero host presentation order makes concurrent delivery stable.
+    presentation_order: u64 = 0,
 };
 
 const OverlayEntry = struct {
@@ -302,13 +305,23 @@ pub const Application = struct {
     pub fn pushOverlay(self: *Application, component: layout.Component, options: OverlayOptions) !u64 {
         const id = self.next_overlay_id;
         self.next_overlay_id +%= 1;
-        const previous = self.focused;
-        try self.overlays.append(self.gpa, .{
+        const index = if (options.presentation_order == 0) self.overlays.items.len else for (self.overlays.items, 0..) |entry, i| {
+            if (entry.options.presentation_order > options.presentation_order) break i;
+        } else self.overlays.items.len;
+        const previous = if (index < self.overlays.items.len) self.overlays.items[index].previous_focus else self.focused;
+        try self.overlays.insert(self.gpa, index, .{
             .id = id,
             .component = component,
             .options = options,
             .previous_focus = previous,
         });
+        if (options.hidden) return id;
+        if (index + 1 < self.overlays.items.len) {
+            // A delayed presenter is inserted under an already visible
+            // sibling. Rebuild that sibling's saved focus without stealing it.
+            if (options.modal) self.overlays.items[index + 1].previous_focus = component;
+            return id;
+        }
         if (options.focus) |focus| {
             self.setFocus(focus);
         } else if (options.modal) {
@@ -321,18 +334,54 @@ pub const Application = struct {
         var index: usize = 0;
         while (index < self.overlays.items.len) : (index += 1) {
             if (self.overlays.items[index].id != id) continue;
-            const was_top = index + 1 == self.overlays.items.len;
             const entry = self.overlays.orderedRemove(index);
-            if (was_top) self.setFocus(entry.previous_focus);
+            // A later overlay may restore focus through the removed entry.
+            // Splice that link before its component context can be released.
+            for (self.overlays.items[index..]) |*successor| {
+                if (successor.previous_focus) |previous| if (overlayOwnsFocus(entry, previous)) {
+                    successor.previous_focus = entry.previous_focus;
+                };
+            }
+            if (self.focused) |focused| if (overlayOwnsFocus(entry, focused)) self.restoreOverlayFocus(entry.previous_focus);
             return true;
         }
         return false;
     }
 
+    /// Repaint/resize an existing overlay without changing its stack position
+    /// or the focus it saved when opened.
+    pub fn updateOverlay(self: *Application, id: u64, options: OverlayOptions) bool {
+        for (self.overlays.items) |*entry| if (entry.id == id) {
+            const was_hidden = entry.options.hidden;
+            entry.options = options;
+            if (!was_hidden and options.hidden) {
+                if (self.focused) |focused| if (overlayOwnsFocus(entry.*, focused)) self.restoreOverlayFocus(entry.previous_focus);
+            } else if (was_hidden and !options.hidden and options.modal) self.setFocus(entry.component);
+            return true;
+        };
+        return false;
+    }
+
+    fn overlayOwnsFocus(entry: OverlayEntry, focused: layout.Component) bool {
+        return focused.eql(entry.component) or if (entry.options.focus) |target| focused.eql(target) else false;
+    }
+
+    fn restoreOverlayFocus(self: *Application, fallback: ?layout.Component) void {
+        var index = self.overlays.items.len;
+        while (index > 0) {
+            index -= 1;
+            const entry = self.overlays.items[index];
+            if (!entry.options.hidden and entry.options.modal) {
+                self.setFocus(entry.component);
+                return;
+            }
+        }
+        self.setFocus(fallback);
+    }
+
     pub fn popOverlay(self: *Application) bool {
-        const entry = self.overlays.pop() orelse return false;
-        self.setFocus(entry.previous_focus);
-        return true;
+        if (self.overlays.items.len == 0) return false;
+        return self.removeOverlay(self.overlays.items[self.overlays.items.len - 1].id);
     }
 
     pub fn clearOverlays(self: *Application) void {
@@ -406,6 +455,7 @@ pub const Application = struct {
         // A focused dialog keeps its navigation keys; nonmodal overlays that
         // leave focus on the editor do not steal transcript navigation.
         for (self.overlays.items) |entry| {
+            if (entry.options.hidden) continue;
             if (self.focused) |focused| {
                 if (focused.eql(entry.component)) return false;
                 if (entry.options.focus) |focus| if (focused.eql(focus)) return false;
@@ -433,9 +483,13 @@ pub const Application = struct {
     }
 
     fn inputTarget(self: *const Application) ?layout.Component {
-        if (self.overlays.items.len > 0) {
-            const top = self.overlays.items[self.overlays.items.len - 1];
+        var index = self.overlays.items.len;
+        while (index > 0) {
+            index -= 1;
+            const top = self.overlays.items[index];
+            if (top.options.hidden) continue;
             if (top.options.modal) return self.focused orelse top.component;
+            break;
         }
         return self.focused orelse self.root;
     }
@@ -649,7 +703,9 @@ pub const Application = struct {
         errdefer self.clearCurrentFrames();
         try @import("cursor_markers.zig").resolveLines(self.gpa, self.current_frame.?.lines.items, self.show_hardware_cursor);
 
-        for (self.overlays.items) |entry| try self.renderOverlay(entry, width, height);
+        for (self.overlays.items) |entry| if (!entry.options.hidden) {
+            try self.renderOverlay(entry, width, height);
+        };
         const frame = &self.current_frame.?;
         try self.rebuildSearch(frame.lines.items);
         try self.applySearchHighlights(frame.lines.items);
@@ -1077,6 +1133,57 @@ test "fullscreen custom navigation respects remaps releases and focused overlays
     try app.handleInput("\x1b[1;3H");
     try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
     try std.testing.expect(bottom > 0);
+}
+
+test "ae7 overlay identity close orders splice focus restoration and repaint preserves stable handles" {
+    const orders = [_][3]usize{ .{ 1, 0, 2 }, .{ 0, 2, 1 }, .{ 2, 1, 0 } };
+    for (orders) |order| {
+        var base = layout.StaticLines{ .lines = &.{"base"} };
+        var overlays = [_]layout.StaticLines{
+            .{ .lines = &.{"lower"} },
+            .{ .lines = &.{"middle"} },
+            .{ .lines = &.{"top"} },
+        };
+        var app = Application.init(std.testing.allocator, base.component());
+        defer app.deinit();
+        app.setFocus(base.component());
+        var ids: [3]u64 = undefined;
+        for (&overlays, &ids, 0..) |*overlay, *id, i| id.* = try app.pushOverlay(overlay.component(), .{ .width = 12, .height = 1, .placement = .{ .absolute = .{ .x = 0, .y = @intCast(i) } } });
+        _ = try app.render(20, 6);
+        try std.testing.expect(app.updateOverlay(ids[0], .{ .width = 14, .height = 1, .placement = .top_left }));
+        try std.testing.expectEqual(ids[0], app.overlays.items[0].id);
+        try std.testing.expect(app.focused.?.eql(overlays[2].component()));
+        var alive = [_]bool{ true, true, true };
+        for (order, 0..) |index, step| {
+            try std.testing.expect(app.removeOverlay(ids[index]));
+            try std.testing.expect(!app.removeOverlay(ids[index]));
+            alive[index] = false;
+            try std.testing.expectEqual(@as(usize, 2) - step, app.overlays.items.len);
+            var top: ?usize = null;
+            for (alive, 0..) |present, i| if (present) {
+                top = i;
+            };
+            try std.testing.expect(app.focused.?.eql(if (top) |i| overlays[i].component() else base.component()));
+            _ = try app.render(20, 6);
+        }
+    }
+    // Presenter delivery may be reversed while authenticated first-frame
+    // order is fixed. The earlier overlay inserts below the already focused
+    // later sibling and participates in that sibling's restoration chain.
+    var base = layout.StaticLines{ .lines = &.{"base"} };
+    var lower = layout.StaticLines{ .lines = &.{"lower"} };
+    var upper = layout.StaticLines{ .lines = &.{"upper"} };
+    var app = Application.init(std.testing.allocator, base.component());
+    defer app.deinit();
+    app.setFocus(base.component());
+    const upper_id = try app.pushOverlay(upper.component(), .{ .presentation_order = 2 });
+    const lower_id = try app.pushOverlay(lower.component(), .{ .presentation_order = 1 });
+    try std.testing.expectEqual(lower_id, app.overlays.items[0].id);
+    try std.testing.expect(app.focused.?.eql(upper.component()));
+    try std.testing.expect(app.removeOverlay(upper_id));
+    try std.testing.expect(app.focused.?.eql(lower.component()));
+    try std.testing.expect(app.removeOverlay(lower_id));
+    try std.testing.expect(app.focused.?.eql(base.component()));
 }
 
 test "application extracts cursor and emits differential synchronized output" {

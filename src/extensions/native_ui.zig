@@ -60,6 +60,8 @@ const Custom = struct {
     restore_target: ?c.JSValue = null,
     layout: ?protocol.OverlayLayout = null,
     handle_published: bool = false,
+    overlay_handle: ?c.JSValue = null,
+    saved_editor_text: ?c.JSValue = null,
     overlay_options: ?c.JSValue = null,
     mouse_press_target: ?c.JSValue = null,
     mouse_capture_target: ?c.JSValue = null,
@@ -81,7 +83,7 @@ const Custom = struct {
     }
 };
 const OverlayMethod = enum(c_int) { hide, setHidden, isHidden, focus, unfocus, isFocused, getBounds, terminalColumns, terminalRows, setFocus };
-const OpeningFocus = struct { token: u64, target: ?c.JSValue = null, mode: protocol.FocusMode = .custom, explicit: bool = false, previous: ?*OpeningFocus = null };
+const OpeningFocus = struct { token: u64, component_id: u64, component_generation: u64, saved_editor_text: ?c.JSValue = null, target: ?c.JSValue = null, mode: protocol.FocusMode = .custom, explicit: bool = false, previous: ?*OpeningFocus = null };
 const OAuthMethod = enum(c_int) { onAuth, onDeviceCode, onPrompt, onProgress, onManualCodeInput, onSelect };
 pub const ProviderActionFn = *const fn (?*anyopaque, [*:0]const u8, c.JSValue) anyerror!void;
 
@@ -316,6 +318,8 @@ pub const Manager = struct {
             self.engine.freeValue(custom_request.promise);
             self.engine.freeValue(custom_request.options);
             if (custom_request.overlay_options) |options| self.engine.freeValue(options);
+            if (custom_request.overlay_handle) |handle| self.engine.freeValue(handle);
+            if (custom_request.saved_editor_text) |text| self.engine.freeValue(text);
             if (custom_request.focus_target) |target| self.engine.freeValue(target);
             if (custom_request.restore_target) |target| self.engine.freeValue(target);
         }
@@ -834,9 +838,12 @@ pub const Manager = struct {
         const overlay_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, "overlay"));
         defer self.engine.freeValue(overlay_value);
         const overlay = c.JS_ToBool(self.engine.context, overlay_value) != 0;
+        const saved_editor_text = if (overlay) null else try self.editors.textValue();
+        var saved_text_transferred = false;
+        defer if (!saved_text_transferred) if (saved_editor_text) |text| self.engine.freeValue(text);
         const token_id = self.next_id;
         self.next_id += 1;
-        var opening: OpeningFocus = .{ .token = token_id, .previous = self.opening_focus };
+        var opening: OpeningFocus = .{ .token = token_id, .component_id = self.components.next_id, .component_generation = self.components.generation, .saved_editor_text = saved_editor_text, .previous = self.opening_focus };
         self.opening_focus = &opening;
         defer {
             self.opening_focus = opening.previous;
@@ -849,7 +856,7 @@ pub const Manager = struct {
         errdefer self.components.close(opened.id, opened.generation, c.pi_js_undefined()) catch {};
         if (c.JS_PromiseState(self.engine.context, opened.result) != c.JS_PROMISE_PENDING) return opened.result;
         const fence: protocol.Fence = .{ .token = token_id, .generation = opened.generation, .invocation_id = self.invocation_id, .component_id = opened.id };
-        const custom_request: Custom = .{ .fence = fence, .ui_generation = self.generation, .promise = opened.result, .width = self.width, .height = self.height, .options = options, .overlay = overlay };
+        const custom_request: Custom = .{ .fence = fence, .ui_generation = self.generation, .promise = opened.result, .width = self.width, .height = self.height, .options = options, .overlay = overlay, .saved_editor_text = saved_editor_text };
         var request: std.Io.Writer.Allocating = .init(self.engine.gpa);
         defer request.deinit();
         try request.writer.writeByte('{');
@@ -857,9 +864,11 @@ pub const Manager = struct {
         try request.writer.writeByte('}');
         try self.customs.append(self.engine.gpa, custom_request);
         options_transferred = true;
+        saved_text_transferred = true;
         self.bridge.?.request(self.bridge.?.context, @intCast(fence.token), "custom_native", request.written()) catch |err| {
             _ = self.customs.pop();
             options_transferred = false;
+            saved_text_transferred = false;
             return err;
         };
         if (opening.explicit) {
@@ -877,6 +886,13 @@ pub const Manager = struct {
             if (custom_request.fence.component_id != id or custom_request.fence.generation != generation) continue;
             if (custom_request.closing) return;
             custom_request.closing = true;
+            if (custom_request.saved_editor_text) |text| try self.restoreCustomEditor(text);
+            if (custom_request.overlay_handle) |handle| {
+                // InteractiveMode closes through the very handle exposed to
+                // onHandle. Its observable hide getter/call may throw; the
+                // closed guard and staged completion then remain pending.
+                if (try components_mod.callMethod(self.engine, handle, "hide", &.{}, false)) |result| self.engine.freeValue(result);
+            }
             if (self.bridge) |bridge| if (bridge.component_close) |close| {
                 try close(bridge.context, custom_request.fence);
                 return;
@@ -885,7 +901,20 @@ pub const Manager = struct {
             return;
         }
         // Synchronous done() before open returns has not published a scene.
+        var opening = self.opening_focus;
+        while (opening) |candidate| : (opening = candidate.previous) {
+            if (candidate.component_id == id and candidate.component_generation == generation) {
+                if (candidate.saved_editor_text) |text| try self.restoreCustomEditor(text);
+                break;
+            }
+        }
         try self.components.acknowledgeCompletion(id, generation);
+    }
+
+    fn restoreCustomEditor(self: *Manager, text: c.JSValue) !void {
+        var args = [_]c.JSValue{text};
+        const result = try self.action(.setEditorText, &args);
+        self.engine.freeValue(result);
     }
 
     fn rejectCustom(self: *Manager, fence: protocol.Fence, err: anyerror) !void {
@@ -982,12 +1011,15 @@ pub const Manager = struct {
         const selected = self.findCustom(fence) orelse return;
         if (!selected.overlay or selected.handle_published or selected.closing) return;
         selected.handle_published = true;
+        const handle = try self.createOverlayHandle(fence.token);
+        defer self.engine.freeValue(handle);
+        selected.overlay_handle = c.JS_DupValue(self.engine.context, handle);
         const options = c.JS_DupValue(self.engine.context, selected.options);
         defer self.engine.freeValue(options);
         const callback = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, "onHandle"));
         defer self.engine.freeValue(callback);
         if (!c.JS_IsFunction(self.engine.context, callback)) return;
-        var args = [_]c.JSValue{try self.createOverlayHandle(fence.token)};
+        var args = [_]c.JSValue{c.JS_DupValue(self.engine.context, handle)};
         defer self.engine.freeValue(args[0]);
         const result = try self.engine.checked(c.JS_Call(self.engine.context, callback, c.pi_js_undefined(), args.len, &args));
         self.engine.freeValue(result);
@@ -998,7 +1030,8 @@ pub const Manager = struct {
         self.polling_custom = true;
         defer self.polling_custom = false;
         var changed = false;
-        const index: usize = 0;
+        var index: usize = 0;
+        var foreground_seen = false;
         while (index < self.customs.items.len) {
             const custom_request = self.customs.items[index];
             if (c.JS_PromiseState(self.engine.context, custom_request.promise) != c.JS_PROMISE_PENDING) {
@@ -1008,12 +1041,27 @@ pub const Manager = struct {
                 self.engine.freeValue(removed.promise);
                 self.engine.freeValue(removed.options);
                 if (removed.overlay_options) |options| self.engine.freeValue(options);
+                if (removed.overlay_handle) |handle| self.engine.freeValue(handle);
+                if (removed.saved_editor_text) |text| self.engine.freeValue(text);
                 if (removed.focus_target) |target| self.engine.freeValue(target);
                 if (removed.restore_target) |target| self.engine.freeValue(target);
                 changed = true;
                 continue;
             }
-            if (custom_request.closing) return changed;
+            // Overlays have independent lifetimes: an asynchronous lower
+            // factory or a closing middle scene must not block its siblings.
+            // Keep the established foreground-dialog admission policy.
+            if (!custom_request.overlay) {
+                if (foreground_seen) {
+                    index += 1;
+                    continue;
+                }
+                foreground_seen = true;
+            }
+            if (custom_request.closing) {
+                index += 1;
+                continue;
+            }
             if (self.signal) |signal| if (try self.isAborted(signal)) {
                 try self.components.complete(custom_request.fence.component_id, custom_request.fence.generation, c.pi_js_undefined());
                 return true;
@@ -1047,8 +1095,7 @@ pub const Manager = struct {
                     return true;
                 };
             }
-            // Foreground custom dialogs preserve FIFO, including async factories.
-            return changed;
+            index += 1;
         }
         return changed;
     }

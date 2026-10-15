@@ -2414,6 +2414,17 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_frontend_process_test.zig"), .target = target, .optimize = optimize }),
     });
     const run_fullscreen_frontend_tests = b.addRunArtifact(fullscreen_frontend_tests);
+    const ui_overlay_ae7_process_tests = b.addTest(.{
+        .root_module = fullscreen_frontend_tests.root_module,
+        .filters = &.{"ae7 overlay process"},
+        .use_llvm = use_llvm,
+    });
+    const ui_overlay_ae7_process_run = b.addRunArtifact(ui_overlay_ae7_process_tests);
+    const ui_overlay_ae7_process_build = b.step("build-ui-overlay-ae7-process", "Compile exact ae7 worker terminal regression without executing it");
+    ui_overlay_ae7_process_build.dependOn(&ui_overlay_ae7_process_tests.step);
+    ui_overlay_ae7_process_build.dependOn(b.getInstallStep());
+    ui_overlay_ae7_process_run.step.dependOn(b.getInstallStep());
+    b.step("test-ui-overlay-ae7-process", "Prove concurrent custom overlay own-fence close through real native worker and terminal cells").dependOn(&ui_overlay_ae7_process_run.step);
     const late_frontend_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_frontend_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native late live"},
@@ -2462,8 +2473,11 @@ pub fn build(b: *std.Build) void {
             });
             const installation = b.addInstallArtifact(program, .{});
             run_fullscreen_frontend_tests.step.dependOn(&installation.step);
+            ui_overlay_ae7_process_run.step.dependOn(&installation.step);
+            ui_overlay_ae7_process_build.dependOn(&installation.step);
             run_custom_editor_frontend_tests.step.dependOn(&installation.step);
             run_fullscreen_frontend_tests.setEnvironmentVariable(helper.environment, b.getInstallPath(.bin, b.fmt("{s}.exe", .{helper.name})));
+            ui_overlay_ae7_process_run.setEnvironmentVariable(helper.environment, b.getInstallPath(.bin, b.fmt("{s}.exe", .{helper.name})));
             run_late_frontend_tests.step.dependOn(&installation.step);
             run_late_frontend_tests.setEnvironmentVariable(helper.environment, b.getInstallPath(.bin, b.fmt("{s}.exe", .{helper.name})));
             run_custom_editor_frontend_tests.setEnvironmentVariable(helper.environment, b.getInstallPath(.bin, b.fmt("{s}.exe", .{helper.name})));
@@ -2481,6 +2495,14 @@ pub fn build(b: *std.Build) void {
     const run_fullscreen_frontend_components = b.addRunArtifact(fullscreen_frontend_components);
     const fullscreen_frontend_components_step = b.step("test-fullscreen-frontend-components", "Exercise retained fullscreen mailbox, surfaces, editor and transcript allocation ownership");
     fullscreen_frontend_components_step.dependOn(&run_fullscreen_frontend_components.step);
+
+    const ui_overlay_ae7_tests = b.addTest(.{
+        .root_module = test_mod,
+        .filters = &.{ "ae7 extension overlays", "ae7 overlay identity", "native custom early done ignores", "fullscreen native component scene input" },
+        .use_llvm = use_llvm,
+    });
+    b.step("build-ui-overlay-ae7", "Compile exact original ae7 overlay contract regression without executing it").dependOn(&ui_overlay_ae7_tests.step);
+    b.step("test-ui-overlay-ae7", "Exercise original ae7 custom overlay ownership through actual Manager frontend and Application").dependOn(&b.addRunArtifact(ui_overlay_ae7_tests).step);
 
     const clipboard_helper = b.addExecutable(.{
         .name = "pi-clipboard-fixture",
