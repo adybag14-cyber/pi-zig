@@ -74,10 +74,12 @@ test "native AI auth helpers retain captured guest values and promises through r
     engine.freeValue(first);
     c.JS_RunGC(engine.runtime);
     const second = try engine.evalModule(
+        \\import * as api from 'native:auth-helper-fixture';
         \\const signal={throwIfAborted(){}};
         \\if((await ownedAuth.login({signal,async prompt(value){if(value.message!=='Enter Owned retained')throw Error('lost name');return 'owned-retained-key'}})).key!=='owned-retained-key')throw Error('lost login');
         \\ownedRelease({async toAuth(credential){return {apiKey:credential.access}}});
         \\if((await ownedPending).apiKey!=='owned-retained-access')throw Error('lost pending roots');
+        \\const realm=globalThis;try{realm.globalThis={process:{env:{OWNED_GLOBAL_THIS:'owned-realm-value'}}};if(await api.defaultProviderAuthContext().env('OWNED_GLOBAL_THIS')!=='owned-realm-value')throw Error('globalThis binding bypassed')}finally{realm.globalThis=realm}
         \\delete globalThis.ownedAuth;delete globalThis.ownedDeferred;delete globalThis.ownedRelease;delete globalThis.ownedPending;
     , "native-auth-helpers-retain-after-gc.mjs");
     engine.freeValue(second);

@@ -47,7 +47,7 @@ fn contextEnv(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []
     return pending.promise;
 }
 fn readContextEnv(scope: *Scope, owner: c.JSValue, name: c.JSValue) !void {
-    const process = try scope.global("process");
+    const process = try scope.get(try scope.global("globalThis"), "process");
     const env = try v.optional(scope, process, "env");
     const value = if (v.nullish(env)) c.pi_js_undefined() else try scope.own(try v.js.getKey(scope.engine, env, name));
     const valid = c.JS_IsString(value) and try v.length(scope, try scope.invoke(value, "trim", &.{})) > 0;
