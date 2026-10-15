@@ -67,7 +67,10 @@ pub fn decode(scope: *Scope, sse: c.JSValue, json: c.JSValue) !c.JSValue {
         known = true;
     };
     if (!known) return c.pi_js_undefined();
+    const generation = scope.engine.native_allocation_generation;
     return scope.invoke(json, "parseJsonWithRepair", &.{data}) catch |err| {
+        const classified = scope.engine.nativeAllocationError(err, generation);
+        if (classified == error.OutOfMemory) return classified;
         const reason = @import("native_agent_async.zig").reason(scope.engine, err);
         defer scope.engine.freeValue(reason);
         const instance = c.JS_IsInstanceOf(scope.engine.context, reason, try scope.global("Error"));
