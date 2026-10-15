@@ -23,12 +23,15 @@ test "native readable host OOM rejects actual tee consumers without another host
         var roots = [_]c.JSValue{c.JS_NewFloat64(engine.context, @floatFromInt(@intFromPtr(&failing)))};
         const callback = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, arm, "armNativeHostFailure", 0, 0, roots.len, &roots)));
         try scope.put(global, "armNativeHostFailure", callback);
-        const generation = engine.native_allocation_generation;
-        result = operation(engine) catch |err| engine.nativeAllocationError(err, generation);
+        result = classifiedOperation(engine);
     }
     try std.testing.expect(failing.has_induced_failure);
     try std.testing.expectError(error.OutOfMemory, result);
     try std.testing.expectEqual(failing.allocated_bytes, failing.freed_bytes);
+}
+fn classifiedOperation(engine: *js.Engine) !void {
+    const generation = engine.native_allocation_generation;
+    operation(engine) catch |err| return engine.nativeAllocationError(err, generation);
 }
 fn operation(engine: *js.Engine) !void {
     const value = try engine.evalModule(
