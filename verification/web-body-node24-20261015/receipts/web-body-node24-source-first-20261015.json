@@ -1,0 +1,16 @@
+{
+  "name": "web-body-node24-source-first-20261015",
+  "pid": 60848,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --expose-gc --max-old-space-size=256 C:\\Users\\adyba\\pi-zig-web-headers-20261015\\verification\\web-body-node24-20261015\\source-capture.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-output.json C:\\Users\\adyba\\pi-zig-web-headers-20261015\\src\\extensions\\fixtures\\web-body-node24.input.txt C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-bundled-undici.js.txt C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-frozen.json",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T19:22:40.6143218Z",
+  "launched_utc": "2026-10-15T19:22:40.6111413+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-web-headers-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T19:22:55.7545551+00:00"
+}

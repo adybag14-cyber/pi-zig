@@ -62922,6 +62922,48 @@ static JSValue js_dataview_get_byteOffset(JSContext *ctx, JSValueConst this_val)
     return js_uint32(ta->offset);
 }
 
+/* Borrow obj; return an owned backing reference. Keep the existing typed-array
+   accessor unchanged. DataView spans use the same brand and bounds predicates
+   as the interpreter's own DataView getters, including length-tracking RABs. */
+JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,
+                                      size_t *pbyte_offset,
+                                      size_t *pbyte_length,
+                                      size_t *pbytes_per_element)
+{
+    JSObject *p;
+    JSTypedArray *ta;
+    JSArrayBuffer *abuf;
+
+    if (!JS_IsDataView(obj)) {
+        JSValue result = JS_GetTypedArrayBuffer(ctx, obj, pbyte_offset,
+                                                pbyte_length,
+                                                pbytes_per_element);
+        if (JS_IsException(result) || !pbyte_length)
+            return result;
+        /* The existing accessor retains its original ABI and implementation.
+           This new span API uses the interpreter's live tracking length. */
+        p = JS_VALUE_GET_OBJ(obj);
+        ta = p->u.typed_array;
+        if (ta->track_rab)
+            *pbyte_length = (size_t)p->u.array.count << typed_array_size_log2(p->class_id);
+        return result;
+    }
+    p = get_dataview(ctx, obj);
+    if (!p)
+        return JS_EXCEPTION;
+    if (dataview_is_oob(p))
+        return JS_ThrowTypeErrorArrayBufferOOB(ctx);
+    ta = p->u.typed_array;
+    abuf = ta->buffer->u.array_buffer;
+    if (pbyte_offset)
+        *pbyte_offset = ta->offset;
+    if (pbyte_length)
+        *pbyte_length = ta->track_rab ? abuf->byte_length - ta->offset : ta->length;
+    if (pbytes_per_element)
+        *pbytes_per_element = 1;
+    return js_dup(JS_MKPTR(JS_TAG_OBJECT, ta->buffer));
+}
+
 static JSValue js_dataview_getValue(JSContext *ctx,
                                     JSValueConst this_obj,
                                     int argc, JSValueConst *argv, int class_id)

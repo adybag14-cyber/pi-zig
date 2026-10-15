@@ -1,0 +1,8 @@
+{
+  "minimum_free_bytes": 2147483648,
+  "available_bytes": 18563399680,
+  "heap_mb": 256,
+  "outer_seconds": 30,
+  "grant": "Root NATIVE1 read-only builtin inventory plumbing",
+  "checked_utc": "2026-10-15T20:29:51.9482491+00:00"
+}

@@ -149,6 +149,8 @@ pub const Engine = struct {
     event_stream_async_atom: c.JSAtom = c.JS_ATOM_NULL,
     buffer_prototype: ?c.JSValue = null,
     buffer_ready: bool = false,
+    native_readable_stream_bindings: ?c.JSValue = null,
+    native_readable_stream_classes: ?[3]c.JSClassID = null,
     abort_signal_class: c.JSClassID = 0,
     abort_controller_class: c.JSClassID = 0,
     abort_signals_ready: bool = false,
@@ -301,6 +303,7 @@ pub const Engine = struct {
         if (self.captured_exception) |exception| self.freeValue(exception);
         if (self.native_allocation_exception) |exception| self.freeValue(exception);
         if (self.buffer_prototype) |prototype| self.freeValue(prototype);
+        if (self.native_readable_stream_bindings) |bindings| self.freeValue(bindings);
         if (self.url_decode_uri_component) |decoder| self.freeValue(decoder);
         if (self.native_url_constructor) |constructor| self.freeValue(constructor);
         self.freeValue(self.intrinsic_decode_uri_component);

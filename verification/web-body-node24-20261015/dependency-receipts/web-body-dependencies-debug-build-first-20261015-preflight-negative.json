@@ -1,0 +1,11 @@
+{
+  "phase": "native-admission-preflight",
+  "candidate_head": "41737e56b276c5a540e41da7283dd0d99e85eb38",
+  "status": "failed_before_native_launch",
+  "native_child_launched": false,
+  "reason": "Original actual Node metadata enumerates369 entries after Body import; immutable serialized authority JSON has368 unique string entries. Timing/type cause unverified; no contract relaxation or expected edit.",
+  "source_cases": 176,
+  "original_builtin_json_sha256": "0cd86676bb2a46a4e772d1fd8bb3d00fca658383bc388846dcc796547dc79263",
+  "observed_serialized_string_bodies": 368,
+  "recorded_utc": "2026-10-15T20:25:37.8532301+00:00"
+}

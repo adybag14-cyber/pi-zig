@@ -1,0 +1,14 @@
+// Standalone actual Node authority supplement. Does not rerun Body176.
+import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';
+const[output,originalPath,frozenPath]=process.argv.slice(2),hash=x=>createHash('sha256').update(x).digest('hex'),fileHash=p=>hash(readFileSync(p));
+const frozenHash=fileHash(frozenPath);
+function verify(){if(fileHash(frozenPath)!==frozenHash)throw Error('Frozen supplement registry drift');return JSON.parse(readFileSync(frozenPath,'utf8')).map(m=>{if(fileHash(m.path)!==m.sha256.toLowerCase())throw Error('Frozen manifest drift');const rows=JSON.parse(readFileSync(m.path,'utf8'));for(const r of rows)if(fileHash(r.path)!==r.sha256.toLowerCase())throw Error('Frozen supplement input drift '+r.path);return{name:m.name,count:rows.length,drift:0}})}
+const beforeFreeze=verify(),natives=process.binding('natives');
+const inventory=()=>Object.keys(natives).map(key=>{const value=natives[key],d=Object.getOwnPropertyDescriptor(natives,key);return{key,type:typeof value,enumerable:d.enumerable,configurable:d.configurable,writable:d.writable,...(typeof value==='string'?{bytes:Buffer.byteLength(value),sha256:hash(value)}:{})}});
+const before=inventory(),serialized=JSON.stringify(natives),afterSerialization=inventory();
+await import('node:buffer');await import('node:stream/web');await import('node:util');
+const afterImports=inventory(),original=readFileSync(originalPath),parsed=JSON.parse(serialized),strings=before.filter(r=>r.type==='string'),undefinedEntries=before.filter(r=>r.type==='undefined');
+if(before.length!==369||strings.length!==368||undefinedEntries.length!==1||undefinedEntries[0].key!=='configs'||!undefinedEntries[0].enumerable||!undefinedEntries[0].configurable||!undefinedEntries[0].writable)throw Error('Actual native source/configs inventory changed');
+if(hash(serialized)!==hash(original)||hash(original)!=='0cd86676bb2a46a4e772d1fd8bb3d00fca658383bc388846dcc796547dc79263'||Object.keys(parsed).length!==368||Object.hasOwn(parsed,'configs'))throw Error('Original serialized builtin authority drift');
+if(JSON.stringify(before)!==JSON.stringify(afterSerialization)||JSON.stringify(before)!==JSON.stringify(afterImports))throw Error('Actual builtin inventory changed during serialization/imports');
+writeFileSync(output,JSON.stringify({authority:'Actual pinned Node native source inventory; original Body176 rows are not rerun or edited',node:{version:process.version,path:process.execPath,sha256:fileHash(process.execPath)},enumerated_entries:before.length,string_bodies:strings.length,undefined_keys:undefinedEntries.map(r=>r.key),configs_descriptor:undefinedEntries[0],serialized_entries:Object.keys(parsed).length,serialized_includes_configs:Object.hasOwn(parsed,'configs'),serialized_sha256:hash(serialized),original_sha256:hash(original),before,afterSerialization,afterImports,beforeFreeze,afterFreeze:verify()},null,2));

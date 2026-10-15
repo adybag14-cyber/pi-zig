@@ -1,0 +1,6 @@
+{
+  "status": "plumbing_failure_before_Node_launch",
+  "attempt": "first",
+  "reason": "PowerShell return token required separation before ordered hashtable; fixed with no Source176/builtin edits",
+  "recorded_utc": "2026-10-15T20:29:51.1600482+00:00"
+}

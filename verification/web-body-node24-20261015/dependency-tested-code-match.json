@@ -1,0 +1,9 @@
+{
+  "tested_code_head": "aa119f26f39b8950310611a843514f2ad0a55794",
+  "tested_snapshot": "dependency-receipts/web-body-dependencies-debug-test-first-20261015-candidate.json",
+  "native_source_tool_vendor_build_inputs": 3844,
+  "native_input_drift": 0,
+  "immutable_receipts": 45,
+  "receipt_byte_drift": 0,
+  "scope": "Only17 mapped genuine Source176 dependency observations plus unchanged Header189/helper controls are qualified WindowsDebug. Five selected host-GPA failures per operation are not exhaustive ownership. Added proof files are outside native VM identity input trees. Later integration tree work is unqualified."
+}
