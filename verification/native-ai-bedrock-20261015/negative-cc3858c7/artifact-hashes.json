@@ -1,0 +1,57 @@
+[
+  {
+    "path": "native-ai-bedrock14-cc3858c7-debug-first-20261015-admission.json",
+    "sha256": "86A1AE1ADD9ECE868436A1241CEE6D58BE9E90C8854B1C84E00EBD94627050E4",
+    "bytes": 1069
+  },
+  {
+    "path": "native-ai-bedrock14-cc3858c7-debug-first-20261015-compile.json",
+    "sha256": "BD32AB97B1A3F7AA894D1A2803FC75B82E86D3442555B14C612DE1D987DF72C0",
+    "bytes": 971
+  },
+  {
+    "path": "native-ai-bedrock14-cc3858c7-debug-first-20261015-compile.stderr.log",
+    "sha256": "5C6CEE97E94187BB6FDB3CAE6D0D6BF658D2FD3A2B24216F62BA8A5CCB28FCF0",
+    "bytes": 13303
+  },
+  {
+    "path": "native-ai-bedrock14-cc3858c7-debug-first-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "native-ai-bedrock14-cc3858c7-debug-first-20261015-controls-before.json",
+    "sha256": "2438D032B2A5CE234A951D3E3357C88B82AD0548A8082C717B531E175A98399B",
+    "bytes": 1002
+  },
+  {
+    "path": "native-ai-bedrock14-cc3858c7-debug-first-20261015-posthash.json",
+    "sha256": "654B3EBDD688FBEA1089200BEB7B10D2A815123F2DD39384032861D50E35368B",
+    "bytes": 382
+  },
+  {
+    "path": "native-ai-bedrock14-cc3858c7-debug-first-20261015-runtime.json",
+    "sha256": "0A779123425C33B7B202823E39A5C44D6AC70F701661113AA583281EDAF41DAA",
+    "bytes": 970
+  },
+  {
+    "path": "native-ai-bedrock14-cc3858c7-debug-first-20261015-runtime.stderr.log",
+    "sha256": "7F323E6A7885E6AD5FB8B7E03959245A127F3B1B78DEFF081F76EAA6E107901E",
+    "bytes": 22890
+  },
+  {
+    "path": "native-ai-bedrock14-cc3858c7-debug-first-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "native-ai-bedrock14-cc3858c7-debug-first-20261015-source-before.json",
+    "sha256": "3DDD8B5D8523093DC6D01554EE7320BFB251D7661B96F86AACE652FB166090BA",
+    "bytes": 1028323
+  },
+  {
+    "path": "Run-AiBedrock14Pair-20261015.ps1",
+    "sha256": "620BA6E5D4CCB8F6BD0C51CFDD4D6972BBFD33EBC85F2FB94878416A4DD6B1EC",
+    "bytes": 8186
+  }
+]

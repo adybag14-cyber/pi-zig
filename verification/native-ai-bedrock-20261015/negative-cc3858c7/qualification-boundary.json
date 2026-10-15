@@ -1,0 +1,20 @@
+{
+  "candidate": "cc3858c7042e87373b6f2be1eac6ae3547100470",
+  "compile": "passed",
+  "compile_pid": 65908,
+  "runtime": "failed",
+  "runtime_pid": 46836,
+  "tests_passed": 2,
+  "tests_total": 4,
+  "source14_snapshots": "unchanged genuine Source",
+  "source14_output_sha256": "C53E30358BA4414FF692EE45557EC2DDCCC546AC92B66A4244BAD62E76566545",
+  "posthash": "zero candidate6115 vendor1316 compiler19546 controls5",
+  "failures": [
+    "case6 async iterator EOF timing mutates a queued delta partial before consumer snapshot",
+    "credential subprocess returns abort but cleanup exceeds unchanged3s bound"
+  ],
+  "native_slot3": "released to Root",
+  "native_qualified": false,
+  "full_pi_factory_qualified": false,
+  "public_activation": false
+}

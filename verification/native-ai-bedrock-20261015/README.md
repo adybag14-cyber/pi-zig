@@ -70,3 +70,34 @@ auth-scheme selection and broader SDK serialization behavior remain outside the
 
 `native_bedrock_facade_qualified=false`, `full_pi_factory_qualified=false`,
 `public_activation=false`. This candidate has not been activated or published.
+
+## First native pair: retained negative
+
+The frozen `cc3858c7042e87373b6f2be1eac6ae3547100470` pair compiled successfully
+under owned Zig PID 65908 and then failed runtime under PID 46836: two of four
+tests passed. Terminal posthash drift was zero across candidate 6,115, vendor
+1,316, compiler 19,546 and five controls. Exact receipts, logs, prehash inventories,
+wrapper and artifact digests are in `negative-cc3858c7/`. The original source
+branch and genuine Source14 snapshots remain unchanged.
+
+The first trace mismatch is case 6 (`missing-stop-error`): the native immediate
+EOF continuation finalizes a queued text delta's shared partial before the guest
+consumer snapshots it. Source still exposes the pending/index scratch state at
+that point. Root directed that this timing negative await reviewed C-generator
+integration. No expected snapshot or timing assertion has been weakened.
+
+The cancellation test returned the expected abort error but took longer than its
+unchanged three-second bound. On Windows, the redirected-pipe read inside
+`std.process.run` could remain blocked after task cancellation, delaying its hidden
+Child cleanup until the sleeping process exited. The source-only repair fork
+owns hProcess directly, terminates only that open spawned handle before joining
+readers, and retains all process/pipe handles until their borrowers finish. This
+repair has formatting/AST checks only and requires a fresh native gate.
+
+The Source14 wire comparison uses the actual captured path (including any query)
+and request body. Captured content-type and custom fixture headers are now also
+asserted in the repair fork. Source14 did not capture method/full URL and replaced
+the auth value with a presence marker; the native literal fake bearer assertion
+is independent evidence. No method/full-header equivalence is claimed. The
+separate queued Source18 driver records method/URL/path and fake authorization
+verbatim and adds four streamSimple stimuli. It has not run.

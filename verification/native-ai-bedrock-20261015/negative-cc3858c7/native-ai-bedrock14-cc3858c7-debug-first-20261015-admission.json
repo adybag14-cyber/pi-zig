@@ -1,0 +1,30 @@
+{
+  "status": "admitted",
+  "candidate": "cc3858c7042e87373b6f2be1eac6ae3547100470",
+  "slot": 3,
+  "free_kib": 23256084,
+  "threshold_kib": 16777216,
+  "max_native_roots": 4,
+  "other_native": [
+    {
+      "ProcessId": 66208,
+      "ParentProcessId": 60992,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-highlight-core-b45 -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-15T18:47:29.1542030Z"
+    }
+  ],
+  "source": 6115,
+  "vendor": 1316,
+  "tools": 19546,
+  "controls": 5,
+  "authority": "Root explicit native slot3 grant with maximum4 coordinated roots",
+  "jobs": 1,
+  "llvm": true,
+  "compile_timeout_seconds": 1320,
+  "runtime_outer_timeout_seconds": 300,
+  "test_timeout_seconds": 120,
+  "host_await_timeout_seconds": 10,
+  "native_launched": false,
+  "observed_utc": "2026-10-15T18:47:42.3879994+00:00"
+}
