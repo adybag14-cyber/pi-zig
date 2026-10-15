@@ -11,6 +11,7 @@ const federation = @import("native_ai_anthropic_federation.zig");
 const Stage = enum(c_int) { payload, ready, response, read, event, raw, rejected_body };
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     try @import("native_stream.zig").install(engine);
+    try @import("native_ai_sdk_headers.zig").install(engine);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const dependencies = try scope.object();
@@ -340,16 +341,6 @@ fn invalidateFederation(scope: *Scope, owner: c.JSValue) !void {
     const client = try scope.get(owner, "federationClient");
     if (!c.JS_IsUndefined(client)) try federation.invalidate(scope.engine, client);
 }
-fn merge(scope: *Scope, target: c.JSValue, source: c.JSValue) !void {
-    if (v.nullish(source)) return;
-    var rows = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{source}));
-    defer rows.deinit();
-    errdefer rows.closePreserving();
-    while (try rows.next()) |entry| {
-        defer scope.engine.freeValue(entry);
-        try v.js.setKey(scope.engine, target, try scope.invoke(try v.at(scope, entry, 0), "toLowerCase", &.{}), try v.at(scope, entry, 1));
-    }
-}
 fn captureClientHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const model = try scope.get(owner, "model");
     const options = try scope.get(owner, "options");
@@ -386,31 +377,22 @@ fn captureClientHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     return result;
 }
 fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
-    const headers = try scope.object();
-    try scope.put(headers, "content-type", try scope.text("application/json"));
-    try scope.put(headers, "accept", try scope.text("application/json"));
-    try scope.put(headers, "anthropic-version", try scope.text("2023-06-01"));
-    try scope.put(headers, "anthropic-dangerous-direct-browser-access", try scope.text("true"));
+    const defaults = try scope.object();
+    try scope.put(defaults, "accept", try scope.text("application/json"));
+    try scope.put(defaults, "anthropic-version", try scope.text("2023-06-01"));
+    try scope.put(defaults, "anthropic-dangerous-direct-browser-access", try scope.text("true"));
+    const auth_headers = try scope.object();
     const model = try scope.get(owner, "model");
     const key = try scope.get(owner, "apiKey");
     const oauth = scope.truthy(try scope.get(owner, "oauth"));
-    if (scope.truthy(key)) try scope.put(headers, if (oauth or try v.eq(scope, try scope.get(model, "provider"), "github-copilot")) "authorization" else "x-api-key", if (oauth or try v.eq(scope, try scope.get(model, "provider"), "github-copilot")) try scope.concat(try scope.text("Bearer "), key) else key);
-    const token = try scope.get(owner, "federationToken");
-    if (!c.JS_IsUndefined(token)) try scope.put(headers, "authorization", try scope.concat(try scope.text("Bearer "), token));
-    try merge(scope, headers, try scope.get(owner, "clientHeaders"));
-    try scope.put(headers, "content-type", try scope.text("application/json"));
-    try merge(scope, headers, try scope.get(try scope.get(owner, "wire"), "headers"));
-    const filtered = try scope.object();
-    var entries = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{headers}));
-    defer entries.deinit();
-    errdefer entries.closePreserving();
-    while (try entries.next()) |entry| {
-        defer scope.engine.freeValue(entry);
-        const value = try v.at(scope, entry, 1);
-        if (!v.nullish(value)) try v.js.setKey(scope.engine, filtered, try v.at(scope, entry, 0), value);
-    }
-    const result = try scope.own(try v.js.builtin(scope.engine, "Headers", &.{filtered}));
     const federated_client = try scope.get(owner, "federationClient");
+    if (c.JS_IsUndefined(federated_client) and !v.nullish(key)) try scope.put(auth_headers, if (oauth or try v.eq(scope, try scope.get(model, "provider"), "github-copilot")) "authorization" else "x-api-key", if (oauth or try v.eq(scope, try scope.get(model, "provider"), "github-copilot")) try scope.concat(try scope.text("Bearer "), key) else key);
+    const token = try scope.get(owner, "federationToken");
+    if (!c.JS_IsUndefined(token)) try scope.put(auth_headers, "authorization", try scope.concat(try scope.text("Bearer "), token));
+    const body_headers = try scope.object();
+    try scope.put(body_headers, "content-type", try scope.text("application/json"));
+    const combined = try @import("native_ai_sdk_headers.zig").build(scope, &.{ defaults, auth_headers, try scope.get(owner, "clientHeaders"), body_headers, try scope.get(try scope.get(owner, "wire"), "headers") });
+    const result = try scope.get(combined, "values");
     if (!c.JS_IsUndefined(federated_client)) {
         // SDK credential-chain emits the workspace extra header only for
         // user_oauth. Pi's explicit OIDC federation sends workspace_id in the
