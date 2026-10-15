@@ -14,10 +14,10 @@ const Root = struct {
     engine: *em.Engine,
     header_class: c.JSClassID,
     iterator_class: c.JSClassID,
-    constructor: c.JSValue = c.pi_js_undefined(),
-    prototype: c.JSValue = c.pi_js_undefined(),
-    iterator_prototype: c.JSValue = c.pi_js_undefined(),
-    has_instance: c.JSValue = c.pi_js_undefined(),
+    constructor: c.JSValue,
+    prototype: c.JSValue,
+    iterator_prototype: c.JSValue,
+    has_instance: c.JSValue,
 };
 const State = struct { engine: *em.Engine, owner: c.JSValue, entries: std.ArrayList(Entry) = .empty, cookies: std.ArrayList(c.JSValue) = .empty, guard: Guard = .none };
 const Iter = struct { engine: *em.Engine, owner: c.JSValue, target: c.JSValue, position: usize = 0, kind: Kind };
@@ -410,7 +410,7 @@ pub fn install(engine: *em.Engine) !void {
     const root_class = try classId(engine, "Native Headers Owner", freeRoot, markRoot);
     const owner = try scope.own(try engine.checked(c.JS_NewObjectClass(engine.context, root_class)));
     const root = try engine.gpa.create(Root);
-    root.* = .{ .engine = engine, .header_class = 0, .iterator_class = 0 };
+    root.* = .{ .engine = engine, .header_class = 0, .iterator_class = 0, .constructor = c.pi_js_undefined(), .prototype = c.pi_js_undefined(), .iterator_prototype = c.pi_js_undefined(), .has_instance = c.pi_js_undefined() };
     _ = c.JS_SetOpaque(owner, root);
     root.header_class = try classId(engine, "Headers", freeHeader, markHeader);
     root.iterator_class = try classId(engine, "Headers Iterator", freeIterator, markIterator);
