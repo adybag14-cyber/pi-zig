@@ -5,11 +5,12 @@ const Scope = v.Scope;
 const c = v.c;
 const flow = @import("native_agent_async.zig");
 const Method = enum { begin, next, close, abort_reader };
-pub fn open(engine: *v.em.Engine, fetch: c.JSValue, url: c.JSValue, init: c.JSValue, signal: c.JSValue, before_read: c.JSValue) !c.JSValue {
+pub fn open(engine: *v.em.Engine, fetch: c.JSValue, url: c.JSValue, init: c.JSValue, options: c.JSValue, before_read: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const owner = try scope.object();
-    try scope.put(owner, "signal", signal);
+    try scope.put(owner, "options", options);
+    try scope.put(owner, "signal", c.pi_js_undefined());
     try scope.put(owner, "beforeRead", before_read);
     inline for (.{ "started", "closed", "done", "errorBodySent", "badResponse" }) |key| try scope.put(owner, key, c.pi_js_bool(engine.context, 0));
     inline for (.{ "response", "body", "reader", "abortReader" }) |key| try scope.put(owner, key, c.pi_js_undefined());
@@ -65,6 +66,7 @@ fn operation(engine: *v.em.Engine, owner: c.JSValue, method: Method) !c.JSValue 
             if (ok) {
                 if (!scope.truthy(try scope.get(response, "body"))) return v.errorText(&scope, try scope.text("Mistral response has no body"));
                 try scope.put(owner, "body", try scope.get(response, "body"));
+                try scope.put(owner, "signal", try v.optional(&scope, try scope.get(owner, "options"), "signal"));
             }
             return c.pi_js_bool(engine.context, @intFromBool(ok));
         },

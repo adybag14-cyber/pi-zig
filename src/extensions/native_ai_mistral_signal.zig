@@ -60,8 +60,8 @@ pub fn cleanup(scope: *Scope, owner: c.JSValue) !void {
     }
 }
 
-pub fn headerError(scope: *Scope, owner: c.JSValue, caller: c.JSValue, timeout_ms: c.JSValue, original: c.JSValue) !c.JSValue {
-    if (scope.truthy(try scope.get(try scope.get(owner, "timeoutSignal"), "aborted")) and !scope.truthy(try v.optional(scope, caller, "aborted"))) {
+pub fn headerError(scope: *Scope, owner: c.JSValue, options: c.JSValue, timeout_ms: c.JSValue, original: c.JSValue) !c.JSValue {
+    if (scope.truthy(try scope.get(try scope.get(owner, "timeoutSignal"), "aborted")) and !scope.truthy(try v.optional(scope, try v.optional(scope, options, "signal"), "aborted"))) {
         const message = try scope.concat(try scope.concat(try scope.text("Mistral response headers timed out after "), try scope.stringify(timeout_ms)), try scope.text("ms"));
         return scope.own(try v.js.builtin(scope.engine, "Error", &.{message}));
     }

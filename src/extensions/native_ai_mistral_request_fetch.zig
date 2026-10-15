@@ -6,30 +6,49 @@ const flow = @import("native_agent_async.zig");
 const signals = @import("native_ai_mistral_signal.zig");
 const Stage = enum(c_int) { headers, response_hook, error_body };
 
-pub fn open(engine: *v.em.Engine, model: c.JSValue, payload: c.JSValue, api_key: c.JSValue, options: c.JSValue, before_read: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
+pub fn prepare(scope: *Scope, model: c.JSValue, payload: c.JSValue, api_key: c.JSValue, options: c.JSValue) !c.JSValue {
+    const engine = scope.engine;
     const base = try scope.own(try v.js.builtin(engine, "URL", &.{try scope.get(model, "baseUrl")}));
     const regex = try scope.own(try v.js.builtin(engine, "RegExp", &.{ try scope.text("/+$"), try scope.text("u") }));
     try scope.set(base, "pathname", try scope.concat(try scope.invoke(try scope.get(base, "pathname"), "replace", &.{ regex, try scope.text("") }), try scope.text("/")));
     const target = try scope.own(try v.js.builtin(engine, "URL", &.{ try scope.text("v1/chat/completions"), base }));
-    const headers = try @import("native_ai_mistral_headers.zig").create(&scope, model, api_key, options);
-    const raw_timeout = try v.optional(&scope, options, "timeoutMs");
+    const headers = try @import("native_ai_mistral_headers.zig").create(scope, model, api_key, options);
+    const raw_timeout = try v.optional(scope, options, "timeoutMs");
     const timeout_ms = if (v.nullish(raw_timeout)) c.JS_NewInt32(engine.context, 60000) else raw_timeout;
-    const combined = try signals.create(&scope, try v.optional(&scope, options, "signal"), timeout_ms);
+    const combined = try signals.create(scope, try v.optional(scope, options, "signal"), timeout_ms);
     const owner = try scope.object();
     try scope.put(owner, "model", model);
     try scope.put(owner, "options", options);
     try scope.put(owner, "combined", combined);
     try scope.put(owner, "timeoutMs", timeout_ms);
-    const reader = try scope.own(openReader(&scope, owner, target, headers, payload, before_read) catch |err| {
+    try scope.put(owner, "url", target);
+    fill(scope, owner, headers, payload) catch |err| {
         const reason = try scope.own(flow.reason(engine, err));
-        const classified = try signals.headerError(&scope, combined, try v.optional(&scope, options, "signal"), timeout_ms, reason);
-        try signals.cleanup(&scope, combined);
+        const classified = try signals.headerError(scope, combined, options, timeout_ms, reason);
+        try signals.cleanup(scope, combined);
         if (err == error.OutOfMemory) return err;
         _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, classified)));
         unreachable;
-    });
+    };
+    return owner;
+}
+fn fill(scope: *Scope, owner: c.JSValue, headers: c.JSValue, payload: c.JSValue) !void {
+    const options = try scope.get(owner, "options");
+    // Source evaluates the fetch callee before constructing its init argument.
+    const custom = try v.optional(scope, options, "fetch");
+    const fetch = if (v.nullish(custom)) try scope.global("fetch") else custom;
+    try scope.put(owner, "fetch", fetch);
+    const init = try scope.object();
+    try scope.put(init, "method", try scope.text("POST"));
+    try scope.put(init, "headers", headers);
+    try scope.put(init, "body", try scope.invoke(try scope.global("JSON"), "stringify", &.{try @import("native_ai_mistral_request.zig").wire(scope, payload)}));
+    try scope.put(init, "signal", try scope.get(try scope.get(owner, "combined"), "signal"));
+    try scope.put(owner, "init", init);
+}
+pub fn openPrepared(engine: *v.em.Engine, owner: c.JSValue, before_read: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const reader = try scope.own(try @import("native_ai_mistral_fetch.zig").open(engine, try scope.get(owner, "fetch"), try scope.get(owner, "url"), try scope.get(owner, "init"), try scope.get(owner, "options"), before_read));
     try scope.put(owner, "reader", reader);
     const pending = try flow.create(engine, owner);
     defer engine.freeValue(pending.owner);
@@ -40,20 +59,6 @@ pub fn open(engine: *v.em.Engine, model: c.JSValue, payload: c.JSValue, api_key:
     try wait(&scope, pending.owner, try scope.get(reader, "ready"), .headers);
     return c.JS_DupValue(engine.context, output);
 }
-
-fn openReader(scope: *Scope, owner: c.JSValue, target: c.JSValue, headers: c.JSValue, payload: c.JSValue, before_read: c.JSValue) !c.JSValue {
-    const options = try scope.get(owner, "options");
-    // Source evaluates the fetch callee before constructing its init argument.
-    const custom = try v.optional(scope, options, "fetch");
-    const fetch = if (v.nullish(custom)) try scope.global("fetch") else custom;
-    const init = try scope.object();
-    try scope.put(init, "method", try scope.text("POST"));
-    try scope.put(init, "headers", headers);
-    try scope.put(init, "body", try scope.invoke(try scope.global("JSON"), "stringify", &.{try @import("native_ai_mistral_request.zig").wire(scope, payload)}));
-    try scope.put(init, "signal", try scope.get(try scope.get(owner, "combined"), "signal"));
-    return @import("native_ai_mistral_fetch.zig").open(scope.engine, fetch, target, init, try v.optional(scope, options, "signal"), before_read);
-}
-
 fn wait(scope: *Scope, pending: c.JSValue, value: c.JSValue, stage: Stage) !void {
     try flow.wait(continued, scope.engine, pending, value, @intFromEnum(stage));
 }
@@ -65,7 +70,7 @@ fn continued(engine: *v.em.Engine, pending: c.JSValue, value: c.JSValue, rejecte
     const stage: Stage = @enumFromInt(raw);
     if (stage == .headers) {
         const combined = try scope.get(owner, "combined");
-        const reason = if (rejected) try signals.headerError(&scope, combined, try v.optional(&scope, options, "signal"), try scope.get(owner, "timeoutMs"), value) else value;
+        const reason = if (rejected) try signals.headerError(&scope, combined, options, try scope.get(owner, "timeoutMs"), value) else value;
         try signals.cleanup(&scope, combined);
         if (rejected) return flow.settle(engine, pending, true, reason);
         const callback = try v.optional(&scope, options, "onResponse");
