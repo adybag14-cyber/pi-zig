@@ -1680,6 +1680,11 @@ pub fn build(b: *std.Build) void {
     web_crypto_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-web-crypto", "Compare genuine Node24 WebCrypto digest and secure random host observations").dependOn(&b.addRunArtifact(web_crypto_tests).step);
     b.step("build-native-web-crypto", "Compile Pi WebCrypto prerequisite independently of runtime controls").dependOn(&web_crypto_tests.step);
+    const writable_stream_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_writable_stream_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native WritableStream actual Node24"}, .use_llvm = use_llvm });
+    linkQuickJs(b, writable_stream_tests.root_module, quickjs, sqlite_lib_dir);
+    writable_stream_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-writable-stream", "Compile genuine native WritableStream state-machine controls").dependOn(&writable_stream_tests.step);
+    b.step("test-native-writable-stream", "Compare actual Node24 sink queues writers promises abort close backpressure and GC").dependOn(&b.addRunArtifact(writable_stream_tests).step);
     const ai_provider_helpers_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_provider_helpers_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI provider helpers"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_provider_helpers_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_provider_helpers_tests.root_module, sqlite_lib_dir, sqlite_library);

@@ -1,0 +1,13 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+const [input,output,authority]=process.argv.slice(2);
+const bytes=readFileSync(authority);
+const authoritySha256=createHash('sha256').update(bytes).digest('hex');
+if(process.version!=='v24.14.0'||authoritySha256!=='0cd86676bb2a46a4e772d1fd8bb3d00fca658383bc388846dcc796547dc79263')throw Error('Exact original Node24 builtin authority required');
+const bodies=JSON.parse(bytes);
+for(const name of ['internal/webstreams/writablestream','internal/webstreams/util','internal/validators','internal/errors'])if(typeof bodies[name]!=='string')throw Error('Missing genuine builtin source '+name);
+const text=readFileSync(input,'utf8');
+await import('data:text/javascript;charset=utf-8,'+encodeURIComponent(text));
+if(!Array.isArray(globalThis.writableStreamRows)||writableStreamRows.length!==56||writableStreamRows.some(row=>row.unexpected))throw Error('Genuine WritableStream Source56 incomplete');
+writeFileSync(output,JSON.stringify({nodeVersion:process.version,authoritySha256,input:pathToFileURL(input).href,inputSha256:createHash('sha256').update(text).digest('hex'),cases:56,rows:writableStreamRows},null,2)+'\n');

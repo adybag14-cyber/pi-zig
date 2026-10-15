@@ -1,0 +1,12 @@
+{
+  "runtime_pid": 66568,
+  "artifact_count": 6,
+  "compile_and_runtime_fullpost0": true,
+  "full_pi_qualified": false,
+  "source_cases": 56,
+  "compile_pid": 77448,
+  "public_activation": false,
+  "terminal": "passed",
+  "candidate": "8a782321523917137eeaeeb327000d21562ea109",
+  "mode": "Debug"
+}

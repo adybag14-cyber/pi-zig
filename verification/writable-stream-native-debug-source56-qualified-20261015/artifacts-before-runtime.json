@@ -1,0 +1,26 @@
+[
+  {
+    "sha256": "92F01DCBC05878847D48BCFCD2FDF42D394C00D6993032200B618F7042BD4C93",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\.zig-cache\\o\\6685f6d1b6193a2bdd84b3e4c1d89a49\\test.exe"
+  },
+  {
+    "sha256": "1570D2331CC5A26441123B8FB440E2D8B7235404C8D6E6C4972390C34D273C8A",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\.zig-cache\\o\\6685f6d1b6193a2bdd84b3e4c1d89a49\\test.pdb"
+  },
+  {
+    "sha256": "7ED15EE4BB016F52F42A2ED4FDAD0141D9E198F0F4DBB6B42543DDD3046F75D4",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\.zig-cache\\o\\d49751e03759cbfb416b83add11b32dc\\test.exe"
+  },
+  {
+    "sha256": "86A23F8FC424D038FDEF7487F31816C5D7CF47BD31B1CF2F372EBBC5A3B362EC",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\.zig-cache\\o\\d49751e03759cbfb416b83add11b32dc\\test.pdb"
+  },
+  {
+    "sha256": "0CB8E610FC04655D9A13453B04B373B166CD575EF0FB6D4B909F31C05983D9C0",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\.zig-cache\\o\\e1eebc543a0305c9088143ae272043ee\\build.exe"
+  },
+  {
+    "sha256": "5BAB7FEA51B5566E142584187ECA0B4A4C83F32F67E18DF448E287D620530A0E",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\.zig-cache\\o\\e1eebc543a0305c9088143ae272043ee\\build.pdb"
+  }
+]

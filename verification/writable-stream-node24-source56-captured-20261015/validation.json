@@ -1,0 +1,9 @@
+{
+  "source_cases": 56,
+  "native_compile_run": false,
+  "accepted_after_terminal_and_fullpost0": true,
+  "candidate_head": "55018c7877bd952bdc01a241efdccceca38f1474",
+  "native_runtime_run": false,
+  "full_pi_qualified": false,
+  "expected_sha256": "1325C1A9B672A3F206E7711C2A3AAC4A43DDC8E4B2B169F7461AA3F8CBEA8EE5"
+}

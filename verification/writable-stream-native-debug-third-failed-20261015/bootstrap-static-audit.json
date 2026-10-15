@@ -1,0 +1,26 @@
+{
+  "encoding_or_url_needed": false,
+  "signal_and_controller": "actual abort_signal.install guarded by abort_signal_class",
+  "fixture_intrinsics": [
+    "Array",
+    "Object",
+    "Reflect",
+    "Symbol",
+    "Number",
+    "Promise",
+    "Error",
+    "TypeError",
+    "RangeError",
+    "JSON",
+    "NaN",
+    "Infinity",
+    "globalThis"
+  ],
+  "writable_classes": "native_writable_stream.install",
+  "timers_needed": false,
+  "intrinsics_provider": "actual QuickJS context; fixture already executed these in third runtime",
+  "source_input_modified": false,
+  "dom_exception": "actual dom_exception.install called by abort_signal.install when absent",
+  "gc": "dedicated native test callback calls actual JS_RunGC; Source uses actual Node --expose-gc",
+  "expected_modified": false
+}

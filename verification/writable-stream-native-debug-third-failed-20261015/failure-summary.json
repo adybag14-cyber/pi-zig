@@ -1,0 +1,21 @@
+{
+  "full_pi_qualified": false,
+  "candidate_files": 7098,
+  "runtime_pid": 74280,
+  "diagnostic": "NativeAbortSignalUnavailable in actual WritableStream construction",
+  "compile_and_runtime_fullpost0": true,
+  "source56_unchanged": true,
+  "compile_pid": 59012,
+  "compile_status": "passed",
+  "runtime_exit_code": 1,
+  "compiler_files": 19546,
+  "candidate": "8b91ff4f16fd6caec641756e8eea7b81f3c10d69",
+  "allocation_fault_injection_performed": false,
+  "public_activation": false,
+  "owned_roots_absent": true,
+  "vendor_files": 1316,
+  "node_files": 1774,
+  "runtime_status": "failed",
+  "correction": "Writable.install initializes actual abort_signal module if class absent; that module initializes real DOMException",
+  "compile_exit_code": 0
+}

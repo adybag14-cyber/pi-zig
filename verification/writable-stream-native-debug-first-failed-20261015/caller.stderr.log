@@ -1,0 +1,5 @@
+Exception: C:\Users\adyba\pi-zig-update-evidence-20261003\writable-stream-native-debug-first-20261015\Invoke-OwnedNativeJob.ps1:66
+Line |
+  66 |  . d.status -cne 'passed'){throw "Owned terminal $($taskRecord.status)"}
+     |                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Owned terminal failed

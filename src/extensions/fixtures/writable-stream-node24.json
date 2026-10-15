@@ -1,0 +1,1232 @@
+{
+  "nodeVersion": "v24.14.0",
+  "authoritySha256": "0cd86676bb2a46a4e772d1fd8bb3d00fca658383bc388846dcc796547dc79263",
+  "input": "file:///C:/Users/adyba/pi-zig-native-writable-stream-20261015/src/extensions/fixtures/writable-stream-node24.input.txt",
+  "inputSha256": "76bb569994e200107d49123c70c44bfb0706de5a70a9ef2ac154e988501474d3",
+  "cases": 56,
+  "rows": [
+    {
+      "name": "public constructor and prototype graph",
+      "value": [
+        {
+          "name": "WritableStream",
+          "length": 0,
+          "keys": [
+            "length",
+            "name",
+            "prototype"
+          ],
+          "prototype": {
+            "writable": false,
+            "enumerable": false,
+            "configurable": false
+          },
+          "methods": [
+            {
+              "name": "constructor",
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "callable": {
+                "name": "WritableStream",
+                "length": 0,
+                "constructible": true
+              }
+            },
+            {
+              "name": "locked",
+              "enumerable": true,
+              "configurable": true,
+              "getter": {
+                "name": "get locked",
+                "length": 0,
+                "constructible": false
+              }
+            },
+            {
+              "name": "abort",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "callable": {
+                "name": "abort",
+                "length": 0,
+                "constructible": false
+              }
+            },
+            {
+              "name": "close",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "callable": {
+                "name": "close",
+                "length": 0,
+                "constructible": false
+              }
+            },
+            {
+              "name": "getWriter",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "callable": {
+                "name": "getWriter",
+                "length": 0,
+                "constructible": false
+              }
+            }
+          ],
+          "tag": {
+            "value": "WritableStream",
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          }
+        },
+        {
+          "name": "WritableStreamDefaultWriter",
+          "length": 1,
+          "keys": [
+            "length",
+            "name",
+            "prototype"
+          ],
+          "prototype": {
+            "writable": false,
+            "enumerable": false,
+            "configurable": false
+          },
+          "methods": [
+            {
+              "name": "constructor",
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "callable": {
+                "name": "WritableStreamDefaultWriter",
+                "length": 1,
+                "constructible": true
+              }
+            },
+            {
+              "name": "closed",
+              "enumerable": true,
+              "configurable": true,
+              "getter": {
+                "name": "get closed",
+                "length": 0,
+                "constructible": false
+              }
+            },
+            {
+              "name": "desiredSize",
+              "enumerable": true,
+              "configurable": true,
+              "getter": {
+                "name": "get desiredSize",
+                "length": 0,
+                "constructible": false
+              }
+            },
+            {
+              "name": "ready",
+              "enumerable": true,
+              "configurable": true,
+              "getter": {
+                "name": "get ready",
+                "length": 0,
+                "constructible": false
+              }
+            },
+            {
+              "name": "abort",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "callable": {
+                "name": "abort",
+                "length": 0,
+                "constructible": false
+              }
+            },
+            {
+              "name": "close",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "callable": {
+                "name": "close",
+                "length": 0,
+                "constructible": false
+              }
+            },
+            {
+              "name": "releaseLock",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "callable": {
+                "name": "releaseLock",
+                "length": 0,
+                "constructible": false
+              }
+            },
+            {
+              "name": "write",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "callable": {
+                "name": "write",
+                "length": 0,
+                "constructible": false
+              }
+            }
+          ],
+          "tag": {
+            "value": "WritableStreamDefaultWriter",
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          }
+        },
+        {
+          "name": "WritableStreamDefaultController",
+          "length": 0,
+          "keys": [
+            "length",
+            "name",
+            "prototype"
+          ],
+          "prototype": {
+            "writable": false,
+            "enumerable": false,
+            "configurable": false
+          },
+          "methods": [
+            {
+              "name": "constructor",
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "callable": {
+                "name": "WritableStreamDefaultController",
+                "length": 0,
+                "constructible": true
+              }
+            },
+            {
+              "name": "signal",
+              "enumerable": true,
+              "configurable": true,
+              "getter": {
+                "name": "get signal",
+                "length": 0,
+                "constructible": false
+              }
+            },
+            {
+              "name": "error",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "callable": {
+                "name": "error",
+                "length": 0,
+                "constructible": false
+              }
+            }
+          ],
+          "tag": {
+            "value": "WritableStreamDefaultController",
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "default stream writer promises and lock",
+      "value": {
+        "initial": {
+          "locked": true,
+          "desired": 1,
+          "readyIdentity": true,
+          "closedIdentity": true,
+          "writerBrand": true,
+          "tag": "[object WritableStreamDefaultWriter]"
+        },
+        "closed": {
+          "fulfilled": true,
+          "value": {
+            "$undefined": true
+          }
+        },
+        "desired": 0,
+        "locked": true
+      }
+    },
+    {
+      "name": "underlying sink and strategy getter order",
+      "value": {
+        "construct": [
+          "type",
+          "size",
+          "hwm",
+          "start",
+          "write",
+          "close",
+          "abort",
+          [
+            "start-call",
+            true,
+            true
+          ]
+        ],
+        "trace": [
+          "type",
+          "size",
+          "hwm",
+          "start",
+          "write",
+          "close",
+          "abort",
+          [
+            "start-call",
+            true,
+            true
+          ],
+          [
+            "size-call",
+            true,
+            "x"
+          ],
+          [
+            "write-call",
+            true,
+            "x",
+            true
+          ],
+          [
+            "close-call",
+            true,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "name": "null strategy and callable sink accepted",
+      "value": {
+        "desired": 0,
+        "locked": true
+      }
+    },
+    {
+      "name": "invalid sink null",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"sink\" argument must be of type object. Received null",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "invalid sink 0",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"sink\" argument must be of type object. Received type number (0)",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "invalid sink false",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"sink\" argument must be of type object. Received type boolean (false)",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "invalid sink x",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"sink\" argument must be of type object. Received type string ('x')",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "invalid strategy 0",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"strategy\" argument must be of type object. Received type number (0)",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "invalid strategy false",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"strategy\" argument must be of type object. Received type boolean (false)",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "invalid strategy x",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"strategy\" argument must be of type object. Received type string ('x')",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "unsupported sink type null",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "RangeError",
+          "message": "The argument 'type' is invalid. Received null",
+          "code": "ERR_INVALID_ARG_VALUE"
+        }
+      }
+    },
+    {
+      "name": "unsupported sink type 0",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "RangeError",
+          "message": "The argument 'type' is invalid. Received 0",
+          "code": "ERR_INVALID_ARG_VALUE"
+        }
+      }
+    },
+    {
+      "name": "unsupported sink type bytes",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "RangeError",
+          "message": "The argument 'type' is invalid. Received 'bytes'",
+          "code": "ERR_INVALID_ARG_VALUE"
+        }
+      }
+    },
+    {
+      "name": "invalid high water mark -1",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "RangeError",
+          "message": "The property 'strategy.highWaterMark' is invalid. Received -1",
+          "code": "ERR_INVALID_ARG_VALUE"
+        }
+      }
+    },
+    {
+      "name": "invalid high water mark NaN",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "RangeError",
+          "message": "The property 'strategy.highWaterMark' is invalid. Received NaN",
+          "code": "ERR_INVALID_ARG_VALUE"
+        }
+      }
+    },
+    {
+      "name": "high water mark coercion and infinity",
+      "value": {
+        "trace": [
+          "valueOf"
+        ],
+        "size": {
+          "$number": "Infinity"
+        }
+      }
+    },
+    {
+      "name": "invalid strategy size",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"strategy.size\" property must be of type function. Received type number (5)",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "false sink algorithms are non-operations",
+      "value": {
+        "closed": {
+          "fulfilled": true,
+          "value": {
+            "$undefined": true
+          }
+        }
+      }
+    },
+    {
+      "name": "invalid truthy sink algorithm write",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"sink.write\" property must be of type function. Received type number (1)",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "invalid truthy sink algorithm close",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"sink.close\" property must be of type function. Received type number (1)",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "invalid truthy sink algorithm abort",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "The \"sink.abort\" property must be of type function. Received type number (1)",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "invalid truthy sink start",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Bind must be called on a function"
+        }
+      }
+    },
+    {
+      "name": "start synchronous exception identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "start rejection retains exact error",
+      "value": {
+        "same": true,
+        "ready": {
+          "fulfilled": true,
+          "value": {
+            "$undefined": true
+          }
+        },
+        "closed": {
+          "fulfilled": false,
+          "error": {}
+        },
+        "desired": null,
+        "signalAborted": false
+      }
+    },
+    {
+      "name": "pending start defers queued writes and close",
+      "value": {
+        "before": [
+          "start"
+        ],
+        "trace": [
+          "start",
+          "a",
+          "b",
+          "close"
+        ],
+        "closed": {
+          "fulfilled": true,
+          "value": {
+            "$undefined": true
+          }
+        }
+      }
+    },
+    {
+      "name": "serial writes and ready backpressure identity",
+      "value": {
+        "atQueue": {
+          "desired": 0,
+          "newReady": true
+        },
+        "first": [
+          1
+        ],
+        "midway": {
+          "trace": [
+            1,
+            2
+          ],
+          "desired": 1,
+          "readySame": true,
+          "ready": {
+            "fulfilled": true,
+            "value": {
+              "$undefined": true
+            }
+          }
+        },
+        "trace": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "zero high water mark ready resolves on close",
+      "value": {
+        "before": false,
+        "after": true,
+        "desired": 0
+      }
+    },
+    {
+      "name": "size numeric coercion precedes write algorithm",
+      "value": {
+        "before": {
+          "trace": [
+            [
+              "size",
+              "x"
+            ],
+            "coerce"
+          ],
+          "desired": 0.5
+        },
+        "trace": [
+          [
+            "size",
+            "x"
+          ],
+          "coerce",
+          [
+            "write",
+            "x"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "invalid chunk size -1",
+      "value": {
+        "write": {
+          "fulfilled": false,
+          "error": {
+            "name": "RangeError",
+            "message": "The argument 'size' is invalid. Received -1",
+            "code": "ERR_INVALID_ARG_VALUE"
+          }
+        },
+        "ready": {
+          "fulfilled": false,
+          "error": {
+            "name": "RangeError",
+            "message": "The argument 'size' is invalid. Received -1",
+            "code": "ERR_INVALID_ARG_VALUE"
+          }
+        },
+        "closed": {
+          "fulfilled": false,
+          "error": {
+            "name": "RangeError",
+            "message": "The argument 'size' is invalid. Received -1",
+            "code": "ERR_INVALID_ARG_VALUE"
+          }
+        },
+        "desired": null
+      }
+    },
+    {
+      "name": "invalid chunk size NaN",
+      "value": {
+        "write": {
+          "fulfilled": false,
+          "error": {
+            "name": "RangeError",
+            "message": "The argument 'size' is invalid. Received NaN",
+            "code": "ERR_INVALID_ARG_VALUE"
+          }
+        },
+        "ready": {
+          "fulfilled": false,
+          "error": {
+            "name": "RangeError",
+            "message": "The argument 'size' is invalid. Received NaN",
+            "code": "ERR_INVALID_ARG_VALUE"
+          }
+        },
+        "closed": {
+          "fulfilled": false,
+          "error": {
+            "name": "RangeError",
+            "message": "The argument 'size' is invalid. Received NaN",
+            "code": "ERR_INVALID_ARG_VALUE"
+          }
+        },
+        "desired": null
+      }
+    },
+    {
+      "name": "invalid chunk size Infinity",
+      "value": {
+        "write": {
+          "fulfilled": false,
+          "error": {
+            "name": "RangeError",
+            "message": "The argument 'size' is invalid. Received Infinity",
+            "code": "ERR_INVALID_ARG_VALUE"
+          }
+        },
+        "ready": {
+          "fulfilled": false,
+          "error": {
+            "name": "RangeError",
+            "message": "The argument 'size' is invalid. Received Infinity",
+            "code": "ERR_INVALID_ARG_VALUE"
+          }
+        },
+        "closed": {
+          "fulfilled": false,
+          "error": {
+            "name": "RangeError",
+            "message": "The argument 'size' is invalid. Received Infinity",
+            "code": "ERR_INVALID_ARG_VALUE"
+          }
+        },
+        "desired": null
+      }
+    },
+    {
+      "name": "size callback exception identity",
+      "value": {
+        "write": true,
+        "ready": true,
+        "closed": true,
+        "desired": null
+      }
+    },
+    {
+      "name": "size callback can release writer and cause mismatch",
+      "value": {
+        "write": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: Mismatched WritableStreams",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "closed": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: Writer has been released",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "locked": false
+      }
+    },
+    {
+      "name": "writer release preserves old promises and creates rejected replacements",
+      "value": {
+        "state": {
+          "locked": true,
+          "newReady": true,
+          "newClosed": false,
+          "readyStable": true,
+          "closedStable": true
+        },
+        "ready": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: Writer has been released",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "closed": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: Writer has been released",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "oldReady": {
+          "fulfilled": true,
+          "value": {
+            "$undefined": true
+          }
+        },
+        "oldClosed": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: Writer has been released",
+            "code": "ERR_INVALID_STATE"
+          }
+        }
+      }
+    },
+    {
+      "name": "released writer methods reject and desiredSize throws",
+      "value": {
+        "write": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: Writer is not bound to a WritableStream",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "close": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: Writer is not bound to a WritableStream",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "abort": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: Writer is not bound to a WritableStream",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "desired": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: Writer is not bound to a WritableStream",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "releaseAgain": {
+          "fulfilled": true,
+          "value": {
+            "$undefined": true
+          }
+        }
+      }
+    },
+    {
+      "name": "stream lock rejects stream close abort and writer acquisition",
+      "value": {
+        "close": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: WritableStream is locked",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "abort": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: WritableStream is locked",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "getWriter": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: WritableStream is locked",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "constructWriter": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: WritableStream is locked",
+            "code": "ERR_INVALID_STATE"
+          }
+        }
+      }
+    },
+    {
+      "name": "controller error rejects queued writes and closed",
+      "value": {
+        "trace": [
+          1
+        ],
+        "second": true,
+        "ready": true,
+        "closed": true,
+        "desired": null,
+        "signalAborted": false
+      }
+    },
+    {
+      "name": "write rejection rejects later writes and close with same error",
+      "value": {
+        "a": true,
+        "b": true,
+        "end": true,
+        "closed": true,
+        "trace": [
+          1
+        ],
+        "desired": null
+      }
+    },
+    {
+      "name": "close rejection retains exact error and terminal state",
+      "value": {
+        "end": true,
+        "closed": true,
+        "desired": null,
+        "write": {
+          "fulfilled": false,
+          "error": {}
+        }
+      }
+    },
+    {
+      "name": "duplicate close requests reject with source-specific messages",
+      "value": {
+        "duplicate": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: Failure to close WritableStream",
+            "code": "ERR_INVALID_STATE"
+          }
+        },
+        "streamAfter": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Invalid state: WritableStream is closed",
+            "code": "ERR_INVALID_STATE"
+          }
+        }
+      }
+    },
+    {
+      "name": "stream duplicate queued close",
+      "value": {
+        "fulfilled": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Invalid state: Failure closing WritableStream",
+          "code": "ERR_INVALID_STATE"
+        }
+      }
+    },
+    {
+      "name": "abort signal and sink reason identity",
+      "value": {
+        "trace": [
+          [
+            "signal",
+            true
+          ],
+          [
+            "abort",
+            true,
+            true
+          ]
+        ],
+        "signalBrand": true,
+        "signalStable": true,
+        "aborted": true,
+        "reason": true,
+        "ready": true,
+        "closed": true,
+        "desired": null
+      }
+    },
+    {
+      "name": "abort pending write waits and rejects queued writes",
+      "value": {
+        "same": true,
+        "before": [
+          [
+            "write",
+            1
+          ]
+        ],
+        "trace": [
+          [
+            "write",
+            1
+          ],
+          [
+            "abort",
+            true
+          ]
+        ],
+        "queued": true,
+        "closed": true
+      }
+    },
+    {
+      "name": "abort sink rejection does not replace stored stream error",
+      "value": {
+        "abort": true,
+        "closed": true,
+        "desired": null
+      }
+    },
+    {
+      "name": "abort while already erroring rejects stored error without sink abort",
+      "value": {
+        "abort": true,
+        "closed": true,
+        "aborts": 0
+      }
+    },
+    {
+      "name": "successful in-flight close wins abort race",
+      "value": {
+        "trace": [
+          "close"
+        ],
+        "closed": {
+          "fulfilled": true,
+          "value": {
+            "$undefined": true
+          }
+        },
+        "desired": 0,
+        "signalAborted": true
+      }
+    },
+    {
+      "name": "failed in-flight close rejects pending abort with close error",
+      "value": {
+        "end": true,
+        "abort": true,
+        "closed": false
+      }
+    },
+    {
+      "name": "abort undefined uses default signal reason while sink sees undefined",
+      "value": {
+        "signal": {
+          "name": "AbortError",
+          "message": "This operation was aborted",
+          "code": 20
+        },
+        "sinkUndefined": true,
+        "closedUndefined": true
+      }
+    },
+    {
+      "name": "controller error after close is harmless and signal stays un-aborted",
+      "value": {
+        "closed": {
+          "fulfilled": true,
+          "value": {
+            "$undefined": true
+          }
+        },
+        "signal": false,
+        "desired": 0
+      }
+    },
+    {
+      "name": "borrowed methods and getters enforce native brands",
+      "value": {
+        "locked": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Value of \"this\" must be of type WritableStream",
+            "code": "ERR_INVALID_THIS"
+          }
+        },
+        "getWriter": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Value of \"this\" must be of type WritableStream",
+            "code": "ERR_INVALID_THIS"
+          }
+        },
+        "abort": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Value of \"this\" must be of type WritableStream",
+            "code": "ERR_INVALID_THIS"
+          }
+        },
+        "close": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Value of \"this\" must be of type WritableStream",
+            "code": "ERR_INVALID_THIS"
+          }
+        },
+        "writerClosed": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Value of \"this\" must be of type WritableStreamDefaultWriter",
+            "code": "ERR_INVALID_THIS"
+          }
+        },
+        "writerReady": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Value of \"this\" must be of type WritableStreamDefaultWriter",
+            "code": "ERR_INVALID_THIS"
+          }
+        },
+        "writerSize": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Value of \"this\" must be of type WritableStreamDefaultWriter",
+            "code": "ERR_INVALID_THIS"
+          }
+        },
+        "writerWrite": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Value of \"this\" must be of type WritableStreamDefaultWriter",
+            "code": "ERR_INVALID_THIS"
+          }
+        },
+        "writerRelease": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Value of \"this\" must be of type WritableStreamDefaultWriter",
+            "code": "ERR_INVALID_THIS"
+          }
+        },
+        "controllerSignal": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Value of \"this\" must be of type WritableStreamDefaultController",
+            "code": "ERR_INVALID_THIS"
+          }
+        },
+        "controllerError": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Value of \"this\" must be of type WritableStreamDefaultController",
+            "code": "ERR_INVALID_THIS"
+          }
+        }
+      }
+    },
+    {
+      "name": "controller direct construction and writer bad stream reject",
+      "value": {
+        "controller": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Illegal constructor",
+            "code": "ERR_ILLEGAL_CONSTRUCTOR"
+          }
+        },
+        "writer": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "The \"stream\" argument must be an instance of WritableStream. Received an instance of Object",
+            "code": "ERR_INVALID_ARG_TYPE"
+          }
+        },
+        "functionCall": {
+          "fulfilled": false,
+          "error": {
+            "name": "TypeError",
+            "message": "Class constructor WritableStream cannot be invoked without 'new'"
+          }
+        }
+      }
+    },
+    {
+      "name": "subclasses retain actual prototypes and writer native state",
+      "value": {
+        "stream": true,
+        "writer": true,
+        "locked": true,
+        "desired": 0
+      }
+    },
+    {
+      "name": "underlying sink thenable assimilation",
+      "value": {
+        "trace": [
+          "then"
+        ],
+        "undefinedResult": true
+      }
+    },
+    {
+      "name": "intrinsic promises ignore mutable global constructor",
+      "value": {
+        "resultUndefined": true,
+        "closed": {
+          "fulfilled": true,
+          "value": {
+            "$undefined": true
+          }
+        }
+      }
+    },
+    {
+      "name": "retained writer sink and controller survive GC",
+      "value": {
+        "controllerBrand": true,
+        "closed": {
+          "fulfilled": true,
+          "value": {
+            "$undefined": true
+          }
+        }
+      }
+    }
+  ]
+}

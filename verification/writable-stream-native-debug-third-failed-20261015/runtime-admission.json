@@ -1,0 +1,16 @@
+{
+  "required_kib": 16777216,
+  "observed_utc": "2026-10-15T22:14:13.2157627+00:00",
+  "status": "admitted",
+  "free_kib": 22335448,
+  "candidate": "8b91ff4f16fd6caec641756e8eea7b81f3c10d69",
+  "jobs": 1,
+  "slot": 3,
+  "test_timeout_seconds": 120,
+  "runtime_outer_seconds": 300,
+  "compile_outer_seconds": 1320,
+  "maximum_native_roots": 4,
+  "host_await_seconds": 10,
+  "phase": "runtime",
+  "other_native_roots": []
+}

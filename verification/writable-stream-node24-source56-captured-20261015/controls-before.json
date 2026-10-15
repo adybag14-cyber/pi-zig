@@ -1,0 +1,42 @@
+[
+  {
+    "sha256": "3FEA863402BAF87B29D34AC43DB6D32B295BE0E558DC9036B9D50A7E4C24F278",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\writable-stream-source56-controls-20261015\\Run-WritableStreamNode24Source.ps1"
+  },
+  {
+    "sha256": "C38BAE6AD467FD8B52A368692A350DE4B2244DFC74E1AFA4FD01F33B104352EA",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\writable-stream-source56-controls-20261015\\Invoke-OwnedEeSourceJob-20261012.ps1"
+  },
+  {
+    "sha256": "76BB569994E200107D49123C70C44BFB0706DE5A70A9EF2AC154E988501474D3",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\src\\extensions\\fixtures\\writable-stream-node24.input.txt"
+  },
+  {
+    "sha256": "35190D16B9184A459ABDCA1F9537FA5C7AD86B7650299BD869F63AE821C7D846",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\tools\\capture-writable-stream-node24.mjs"
+  },
+  {
+    "sha256": "AA9D2EF8002298C6A08030157ED6035ACEE976821C7A7BF38316004C5B7F52D2",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\writable-stream-source56-controls-20261015\\observe-builtin-authority.mjs"
+  },
+  {
+    "sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+    "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/web-body-node24-source-first-20261015-node-builtin-authorities.json"
+  },
+  {
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/root-current8a-npm-tools-before.json"
+  },
+  {
+    "sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+    "path": "C:/Program Files/nodejs/node.exe"
+  },
+  {
+    "sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+    "path": "C:\\Program Files\\Git\\cmd\\git.exe"
+  },
+  {
+    "sha256": "BA611A9210EBC3AE0762D4724687C3401C91DBE06E21065E5AEE38759CE4BA45",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\writable-stream-node24-source56-first-20261015\\whole-candidate-before.json"
+  }
+]
