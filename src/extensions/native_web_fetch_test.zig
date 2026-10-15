@@ -192,6 +192,20 @@ fn gateObject(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: 
     try scope.set(object, "unblock", try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, gateField, "unblock", 0, 3, captures.len, &captures))));
     return c.JS_DupValue(engine.context, object);
 }
+fn traceCase(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    const name = engine.toString(if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| return @import("native_sdk.zig").fail(engine, err);
+    defer engine.gpa.free(name);
+    std.debug.print("Fetch39 begin: {s}\n", .{name});
+    return c.pi_js_undefined();
+}
+fn progress(engine: *em.Engine, peer: *Peer) void {
+    const value = engine.eval("JSON.stringify({active:globalThis.nativeFetch39ActiveCase,completed:globalThis.nativeFetch39ProgressRows?.length,last:globalThis.nativeFetch39ProgressRows?.at(-1)?.name})", "fetch39-failure-progress.js", c.JS_EVAL_TYPE_GLOBAL) catch return;
+    defer engine.freeValue(value);
+    const text = engine.toString(value) catch return;
+    defer engine.gpa.free(text);
+    std.debug.print("Fetch39 diagnostic {s} actual-peer-requests={d} peer-failures={d} transport-pending={any}\n", .{ text, peer.requests.load(.acquire), peer.failures.load(.acquire), @import("native_ai_http.zig").pending(engine) });
+}
 test "Web fetch Source39 complete unchanged observations real peer classes bytes redirects signals and upload" {
     const peer = try Peer.init(std.testing.allocator, std.testing.io);
     defer peer.deinit();
@@ -200,6 +214,7 @@ test "Web fetch Source39 complete unchanged observations real peer classes bytes
     engine.native_io = std.testing.io;
     try @import("timers.zig").install(engine, std.testing.io);
     try @import("native_web_fetch.zig").install(engine);
+    try engine.bindFunction("nativeTraceFetch39Case", traceCase, 1);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
@@ -216,11 +231,13 @@ test "Web fetch Source39 complete unchanged observations real peer classes bytes
         \\const mismatches=[];for(let i=0;i<39;i++){const actual=webFetchRows[i],expected=originalFetchPacket.rows[i];if(JSON.stringify(actual)!==JSON.stringify(expected))mismatches.push({index:i,actual,expected})}
         \\if(mismatches.length)throw Error(JSON.stringify({mapped:39,mismatches}));
     , "genuine-fetch39-native-peer-projection.mjs") catch |err| {
+        progress(engine, peer);
         if (engine.last_error) |message| std.debug.print("Fetch39: {s}\n", .{message});
         return err;
     };
     defer engine.freeValue(pending);
     const settled = engine.awaitValue(pending) catch |err| {
+        progress(engine, peer);
         if (engine.last_error) |message| std.debug.print("Fetch39: {s}\n", .{message});
         return err;
     };
