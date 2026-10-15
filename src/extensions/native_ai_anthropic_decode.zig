@@ -228,12 +228,10 @@ pub fn event(scope: *Scope, owner: c.JSValue, input: c.JSValue) !void {
 }
 fn diagnostic(scope: *Scope, owner: c.JSValue, item: c.JSValue) !void {
     const output = try scope.get(owner, "output");
-    var items = try scope.get(output, "diagnostics");
-    if (v.nullish(items)) {
-        items = try scope.array();
-        try scope.set(output, "diagnostics", items);
-    }
+    const previous = try scope.get(output, "diagnostics");
+    const items = try scope.own(try @import("native_sdk_transcript_replay.zig").arraySpread(scope.engine, if (v.nullish(previous)) try scope.array() else previous, null));
     _ = try scope.invoke(items, "push", &.{item});
+    try scope.set(output, "diagnostics", items);
 }
 fn strictFallback(scope: *Scope, owner: c.JSValue, failure: c.JSValue) !void {
     const item = try scope.object();

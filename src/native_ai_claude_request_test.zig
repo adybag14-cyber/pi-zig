@@ -5,6 +5,7 @@ fn install(engine: *v.em.Engine) !void {
     var scope: v.Scope = .{ .engine = engine };
     defer scope.deinit();
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "anthropicStreams", try scope.own(try @import("extensions/native_ai_anthropic_factory.zig").create(engine)));
     inline for (.{ "anthropic", "bedrock" }, 0..) |name, index| {
         const Adapter = struct {
             fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
@@ -18,6 +19,26 @@ fn install(engine: *v.em.Engine) !void {
         };
         try scope.put(global, name, try scope.own(try @import("extensions/native_node_function.zig").create(engine, name, 3, Adapter.call, &.{})));
     }
+}
+test "native Claude5ab Anthropic request bodies match25 actual public Source observations" {
+    const engine = try v.em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    try install(engine);
+    var scope: v.Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    const source = @embedFile("extensions/fixtures/ai-anthropic5ab.json");
+    const terminated = try engine.gpa.dupeZ(u8, source);
+    defer engine.gpa.free(terminated);
+    try scope.put(global, "anthropicSource", try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, terminated.ptr, source.len, "ai-anthropic5ab.json"))));
+    const result = engine.evalModule(
+        \\if(anthropicSource.sourceHead!=='5ab7fe74c400097b386662205cd93900695b8a71'||anthropicSource.cases!==25)throw Error('genuine Source25 required');for(const row of anthropicSource.rows){const item=row.input,model=row.model,context=row.context;let actual;const options={apiKey:'fixture-placeholder-key',env:{},maxTokens:1000,maxRetries:0,sessionId:'fixture-session',...item.options,onPayload(p){actual=JSON.parse(JSON.stringify(p));throw Error('request-only boundary')}};let stream;try{stream=anthropicStreams[item.simple?'streamSimple':'stream'](model,context,options)}catch(e){if(row.name!=='no-key')throw e;continue}const result=await stream.result();if(row.payloads.length){if(JSON.stringify(actual)!==JSON.stringify(row.payloads[0]))throw Error(JSON.stringify({name:row.name,actual,expected:row.payloads[0]}));if(result.stopReason!=='error'||result.errorMessage!=='request-only boundary')throw Error('request boundary failure')}else if(actual!==undefined||result.errorMessage!==row.result.errorMessage)throw Error(JSON.stringify({name:row.name,actual,result}));}export const requestSource=true;
+    , "native-claude5ab-source-request.mjs") catch |err| {
+        std.debug.print("Anthropic Source25 request: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
 }
 const observations =
     \\const a={api:'anthropic-messages',provider:'anthropic',id:'claude-haiku-5-5',name:'Claude Haiku 5.5',baseUrl:'https://api.anthropic.com',input:['text','image'],reasoning:true,maxTokens:8192,cost:{input:1,output:1,cacheRead:1,cacheWrite:1},compat:{forceAdaptiveThinking:true,supportsMidConvoSystemMessages:true,supportsMidConvoToolChanges:true,supportsMidConvoEffort:true},thinkingLevelMap:{off:null,max:'max'}};

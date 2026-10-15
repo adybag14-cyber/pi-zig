@@ -163,6 +163,21 @@ fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     try flow.settle(scope.engine, owner, false, c.pi_js_undefined());
 }
 fn open(scope: *Scope, owner: c.JSValue) !void {
+    const Adapter = struct {
+        fn call(host: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            var row: Scope = .{ .engine = host };
+            defer row.deinit();
+            return c.JS_DupValue(host.context, try perform(&row, roots[0]));
+        }
+    };
+    const callback = try scope.own(try @import("native_node_function.zig").create(scope.engine, "", 0, Adapter.call, &.{owner}));
+    const retry = try scope.own(try @import("native_ai_provider_retry_request.zig").create(scope.engine));
+    const options = try scope.get(owner, "options");
+    const retry_options = try scope.object();
+    inline for (.{ "maxRetries", "maxRetryDelayMs", "signal" }) |key| try scope.put(retry_options, key, try v.optional(scope, options, key));
+    return wait(scope, owner, try scope.call(retry, c.pi_js_undefined(), &.{ callback, retry_options }), .ready);
+}
+fn perform(scope: *Scope, owner: c.JSValue) !c.JSValue {
     if (try aborted(scope, owner)) return v.errorText(scope, try scope.text("Request was aborted"));
     const options = try scope.get(owner, "options");
     const client = try v.optional(scope, options, "client");
@@ -174,7 +189,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         if (!c.JS_IsUndefined(timeout)) try scope.put(sdk_options, "timeout", timeout);
         try scope.put(sdk_options, "maxRetries", c.JS_NewInt32(scope.engine.context, 0));
         const created = try scope.invoke(try scope.get(try scope.get(client, "beta"), "messages"), "create", &.{ try scope.get(owner, "payload"), sdk_options });
-        return wait(scope, owner, try scope.invoke(created, "asResponse", &.{}), .ready);
+        return scope.invoke(created, "asResponse", &.{});
     }
     // Guest-supplied fetch is called with a real native-built request body.
     const fetch = try v.optional(scope, options, "fetch");
@@ -192,7 +207,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         try scope.put(init, "headers", headers);
         try scope.put(init, "body", body);
         try scope.put(init, "signal", try v.optional(scope, options, "signal"));
-        return wait(scope, owner, try scope.call(fetch, c.pi_js_undefined(), &.{ url, init }), .ready);
+        return scope.call(fetch, c.pi_js_undefined(), &.{ url, init });
     }
     const address = try scope.engine.toString(url);
     defer scope.engine.gpa.free(address);
@@ -219,10 +234,13 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         errdefer scope.engine.gpa.free(value_bytes);
         try fields.append(scope.engine.gpa, .{ .name = name, .value = value_bytes });
     }
-    const http = try scope.own(try @import("native_ai_http.zig").open(scope.engine, .{ .url = address, .payload = bytes, .headers = fields.items }, try v.optional(scope, options, "signal")));
+    const timeout = try v.optional(scope, options, "timeoutMs");
+    var milliseconds: i64 = 600000;
+    if (!c.JS_IsUndefined(timeout) and c.JS_ToInt64(scope.engine.context, &milliseconds, timeout) < 0) return v.js.capture(scope.engine);
+    const http = try scope.own(try @import("native_ai_http.zig").open(scope.engine, .{ .url = address, .payload = bytes, .headers = fields.items, .framing = .bytes, .timeout_ms = @intCast(@max(0, milliseconds)) }, try v.optional(scope, options, "signal")));
     try scope.put(owner, "http", http);
     try scope.put(owner, "iterator", try scope.get(http, "events"));
-    try wait(scope, owner, try scope.get(http, "ready"), .ready);
+    return scope.get(http, "ready");
 }
 fn merge(scope: *Scope, target: c.JSValue, source: c.JSValue) !void {
     if (v.nullish(source)) return;
@@ -301,6 +319,7 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             if (try @import("native_image_arithmetic.zig").compare(scope.engine, .greater_equal, status, c.JS_NewInt32(scope.engine.context, 400))) {
                 const text_method = try scope.get(value, "text");
                 if (!v.nullish(text_method)) return wait(scope, owner, try scope.call(text_method, value, &.{}), .rejected_body);
+                return read(scope, owner);
             }
             const metadata = try scope.object();
             try scope.put(metadata, "status", status);
@@ -313,12 +332,12 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
             try scope.put(owner, "events", try scope.array());
             try scope.put(owner, "sse", try sse.create(scope));
+            try scope.put(owner, "textDecoder", try scope.own(try v.js.builtin(scope.engine, "TextDecoder", &.{})));
             const http = try scope.get(owner, "http");
             if (v.nullish(http)) {
                 const body = try scope.get(try scope.get(owner, "response"), "body");
                 if (!scope.truthy(body)) return v.errorText(scope, try scope.text("Attempted to iterate over an Anthropic response with no body"));
                 try scope.put(owner, "reader", try scope.invoke(body, "getReader", &.{}));
-                try scope.put(owner, "textDecoder", try scope.own(try v.js.builtin(scope.engine, "TextDecoder", &.{})));
             }
             try read(scope, owner);
         },
@@ -342,10 +361,13 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
                 const frame = try scope.get(value, "value");
                 const error_body = try v.eq(scope, try scope.get(frame, "type"), "error_body");
                 if (error_body) return failureBody(scope, owner, try scope.get(frame, "body"));
-                const cloned = try v.spread(scope, frame);
-                // Raw-line fidelity is available through supplied Response readers.
-                if (c.JS_IsUndefined(try scope.get(cloned, "raw"))) try scope.put(cloned, "raw", try scope.array());
-                _ = try scope.invoke(try scope.get(owner, "events"), "push", &.{cloned});
+                const config = try scope.object();
+                try scope.put(config, "stream", c.pi_js_bool(scope.engine.context, 1));
+                const text = try scope.invoke(try scope.get(owner, "textDecoder"), "decode", &.{ try scope.get(frame, "data"), config });
+                try scope.put(owner, "events", try sse.feed(scope, try scope.get(owner, "sse"), text, false));
+            } else {
+                const text = try scope.invoke(try scope.get(owner, "textDecoder"), "decode", &.{});
+                try scope.put(owner, "events", try sse.feed(scope, try scope.get(owner, "sse"), text, true));
             }
             try scope.put(owner, "eof", c.pi_js_bool(scope.engine.context, @intFromBool(eof)));
             try queued(scope, owner);
@@ -359,7 +381,8 @@ fn failureBody(scope: *Scope, owner: c.JSValue, text: c.JSValue) !void {
     const error_body = try v.optional(scope, body, "error");
     const description = try v.optional(scope, error_body, "message");
     const status = try scope.get(try scope.get(owner, "response"), "status");
-    const message = try scope.concat(try scope.concat(try scope.stringify(status), try scope.text(" ")), if (scope.truthy(description)) try scope.stringify(description) else text);
+    _ = description;
+    const message = try scope.concat(try scope.concat(try scope.stringify(status), try scope.text(" ")), try scope.invoke(try scope.global("JSON"), "stringify", &.{body}));
     const reason = try scope.own(try v.js.builtin(scope.engine, "Error", &.{message}));
     try scope.put(reason, "status", status);
     try scope.put(reason, "type", try v.optional(scope, error_body, "type"));
