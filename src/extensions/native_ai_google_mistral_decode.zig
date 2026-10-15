@@ -87,18 +87,22 @@ fn append(scope: *Scope, owner: c.JSValue, value: c.JSValue, thinking: bool, sig
         current = try scope.object();
         try scope.put(current, "type", try scope.text(@import("std").mem.span(key)));
         try scope.put(current, key, try scope.text(""));
-        if (thinking) try scope.put(current, "thinkingSignature", c.pi_js_undefined());
+        if (thinking and !skip_empty) try scope.put(current, "thinkingSignature", c.pi_js_undefined());
         _ = try scope.invoke(try scope.get(try scope.get(owner, "output"), "content"), "push", &.{current});
         try scope.put(owner, "current", current);
         try emit(scope, owner, if (thinking) "thinking_start" else "text_start", current, null, c.pi_js_undefined());
     }
-    try scope.put(current, key, try scope.concat(try scope.get(current, key), text));
-    if (c.JS_IsString(signature) and try v.length(scope, signature) > 0) try scope.put(current, if (thinking) "thinkingSignature" else "textSignature", signature);
+    try scope.set(current, key, try scope.concat(try scope.get(current, key), text));
+    if (!skip_empty) {
+        const signature_key: [*:0]const u8 = if (thinking) "thinkingSignature" else "textSignature";
+        const previous = try scope.get(current, signature_key);
+        try scope.set(current, signature_key, if (c.JS_IsString(signature) and try v.length(scope, signature) > 0) signature else previous);
+    }
     try emit(scope, owner, if (thinking) "thinking_delta" else "text_delta", current, "delta", text);
 }
 fn google(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
     const output = try scope.get(owner, "output");
-    if (!scope.truthy(try scope.get(output, "responseId"))) try scope.put(output, "responseId", try scope.get(chunk, "responseId"));
+    if (!scope.truthy(try scope.get(output, "responseId"))) try scope.set(output, "responseId", try scope.get(chunk, "responseId"));
     const candidates = try scope.get(chunk, "candidates");
     const candidate = if (!v.nullish(candidates) and try v.length(scope, candidates) > 0) try v.at(scope, candidates, 0) else c.pi_js_undefined();
     const parts = try v.optional(scope, try v.optional(scope, candidate, "content"), "parts");
@@ -142,13 +146,13 @@ fn google(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
     }
     const reason = try v.optional(scope, candidate, "finishReason");
     if (scope.truthy(reason)) {
-        try scope.put(output, "rawStopReason", reason);
+        try scope.set(output, "rawStopReason", reason);
         var handled = try v.eq(scope, reason, "STOP") or try v.eq(scope, reason, "MAX_TOKENS");
         inline for (.{ "BLOCKLIST", "PROHIBITED_CONTENT", "SPII", "SAFETY", "IMAGE_SAFETY", "IMAGE_PROHIBITED_CONTENT", "IMAGE_RECITATION", "IMAGE_OTHER", "RECITATION", "FINISH_REASON_UNSPECIFIED", "OTHER", "LANGUAGE", "MALFORMED_FUNCTION_CALL", "UNEXPECTED_TOOL_CALL", "TOO_MANY_TOOL_CALLS", "NO_IMAGE" }) |known| {
             if (try v.eq(scope, reason, known)) handled = true;
         }
         if (!handled) return v.errorText(scope, try scope.concat(try scope.text("Unhandled stop reason: "), try scope.stringify(reason)));
-        try scope.put(output, "stopReason", try scope.text(if (try v.eq(scope, reason, "MAX_TOKENS")) "length" else if (try v.eq(scope, reason, "STOP")) (if (scope.truthy(try scope.get(try scope.get(owner, "tools"), "size"))) "toolUse" else "stop") else "error"));
+        try scope.set(output, "stopReason", try scope.text(if (try v.eq(scope, reason, "MAX_TOKENS")) "length" else if (try v.eq(scope, reason, "STOP")) (if (scope.truthy(try scope.get(try scope.get(owner, "tools"), "size"))) "toolUse" else "stop") else "error"));
     }
     const raw = try scope.get(chunk, "usageMetadata");
     if (scope.truthy(raw)) {
@@ -167,11 +171,11 @@ fn google(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
 fn setUsage(scope: *Scope, owner: c.JSValue, usage: c.JSValue) !void {
     try scope.put(usage, "cost", try emptyCost(scope));
     _ = try scope.own(try @import("native_ai_cost.zig").calculate(scope.engine, try scope.get(owner, "model"), usage));
-    try scope.put(try scope.get(owner, "output"), "usage", usage);
+    try scope.set(try scope.get(owner, "output"), "usage", usage);
 }
 fn mistral(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
     const output = try scope.get(owner, "output");
-    if (!scope.truthy(try scope.get(output, "responseId"))) try scope.put(output, "responseId", try scope.get(chunk, "id"));
+    if (!scope.truthy(try scope.get(output, "responseId"))) try scope.set(output, "responseId", try scope.get(chunk, "id"));
     const raw = try scope.get(chunk, "usage");
     if (scope.truthy(raw)) {
         const prompt = zero(scope, try scope.get(raw, "prompt_tokens"));
@@ -202,10 +206,10 @@ fn mistral(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
     const choice = try v.at(scope, choices, 0);
     const reason = try scope.get(choice, "finish_reason");
     if (scope.truthy(reason)) {
-        try scope.put(output, "rawStopReason", reason);
+        try scope.set(output, "rawStopReason", reason);
         const stop = if (try v.eq(scope, reason, "stop")) "stop" else if (try v.eq(scope, reason, "length") or try v.eq(scope, reason, "model_length")) "length" else if (try v.eq(scope, reason, "tool_calls")) "toolUse" else "error";
-        try scope.put(output, "stopReason", try scope.text(stop));
-        if (@import("std").mem.eql(u8, stop, "error")) try scope.put(output, "errorMessage", if (try v.eq(scope, reason, "error")) try scope.text("Provider stopped with: error (server error)") else try scope.concat(try scope.text("Provider stopped with: "), try scope.stringify(reason)));
+        try scope.set(output, "stopReason", try scope.text(stop));
+        if (@import("std").mem.eql(u8, stop, "error")) try scope.set(output, "errorMessage", if (try v.eq(scope, reason, "error")) try scope.text("Provider stopped with: error (server error)") else try scope.concat(try scope.text("Provider stopped with: "), try scope.stringify(reason)));
     }
     const delta = try scope.get(choice, "delta");
     const content = try v.optional(scope, delta, "content");
@@ -274,8 +278,8 @@ fn mistral(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
         const arguments = try row.get(function, "arguments");
         const args = if (c.JS_IsString(arguments)) arguments else try row.invoke(try row.global("JSON"), "stringify", &.{if (row.truthy(arguments)) arguments else try row.object()});
         const partial = try row.concat(try row.get(block, "partialArgs"), args);
-        try row.put(block, "partialArgs", partial);
-        try row.put(block, "arguments", try row.invoke(try row.get(owner, "json"), "parseStreamingJson", &.{partial}));
+        try row.set(block, "partialArgs", partial);
+        try row.set(block, "arguments", try row.invoke(try row.get(owner, "json"), "parseStreamingJson", &.{partial}));
         try emit(&row, owner, "toolcall_delta", block, "delta", args);
     }
 }
@@ -306,8 +310,8 @@ fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue, aborted: bool, kind:
         try v.remove(scope, block, if (kind == .mistral) "partialArgs" else "index");
     }
     const stop = try scope.text(if (aborted) "aborted" else "error");
-    try scope.put(output, "stopReason", stop);
-    try scope.put(output, "errorMessage", try formatError(scope, reason, kind));
+    try scope.set(output, "stopReason", stop);
+    try scope.set(output, "errorMessage", try formatError(scope, reason, kind));
     try emit(scope, owner, "error", null, "reason", stop);
     _ = try scope.invoke(try scope.get(owner, "stream"), "end", &.{});
     try scope.put(owner, "finished", c.pi_js_bool(scope.engine.context, 1));
