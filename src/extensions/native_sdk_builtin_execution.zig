@@ -5,6 +5,7 @@ const engine_mod = @import("engine.zig");
 const Engine = engine_mod.Engine;
 const c = engine_mod.c;
 const vm = @import("native_values.zig");
+const js = @import("native_js_values.zig");
 const sdk = @import("native_sdk.zig");
 const templates = @import("native_sdk_tools.zig");
 const tools = @import("../agent/tools.zig");
@@ -231,12 +232,18 @@ pub fn createDefinitionWithOperations(engine: *Engine, name: []const u8, cwd: []
     const result = try templates.getTemplate(engine, name);
     errdefer engine.freeValue(result);
     var data = [_]c.JSValue{owner};
-    try vm.put(engine, result, "execute", try engine.checked(c.JS_NewCFunctionData2(engine.context, executeCallback, "execute", 5, 0, data.len, &data)));
+    const execute = try engine.checked(c.JS_NewCFunctionData2(engine.context, executeCallback, "execute", 5, 0, data.len, &data));
+    defer engine.freeValue(execute);
+    const async_prototype = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
+    defer engine.freeValue(async_prototype);
+    if (c.JS_SetPrototype(engine.context, execute, async_prototype) < 0) return js.capture(engine);
+    try vm.put(engine, result, "execute", c.JS_DupValue(engine.context, execute));
     if (std.mem.eql(u8, name, "edit")) {
         const state = try stateFor(engine);
         if (state.edit_prepare == null) state.edit_prepare = try @import("native_sdk_edit_arguments.zig").create(engine);
         try vm.put(engine, result, "prepareArguments", c.JS_DupValue(engine.context, state.edit_prepare.?));
     }
+    try @import("native_sdk_builtin_presentation.zig").attach(engine, result, name);
     return result;
 }
 pub fn createDefinitions(engine: *Engine, cwd: []const u8, auto_resize: bool) !c.JSValue {
