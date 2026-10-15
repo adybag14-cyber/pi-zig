@@ -1,0 +1,16 @@
+{
+  "name": "sdk-navigate-runtime-slot4-first-20261015",
+  "pid": 65236,
+  "executable": "C:\\Users\\adyba\\pi-zig-sdk-navigate-20261015\\verification\\sdk-session-navigate-5ab-20261015\\native-debug\\bin\\sdk-session-navigate-test.exe",
+  "executable_sha256": "3EE5011A81AFF4437F56EED8925D426F5EA80E38B75E285F083DBDB801E8B5C7",
+  "command_line": "C:\\Users\\adyba\\pi-zig-sdk-navigate-20261015\\verification\\sdk-session-navigate-5ab-20261015\\native-debug\\bin\\sdk-session-navigate-test.exe --seed=0",
+  "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+  "created_utc": "2026-10-15T19:18:47.8030024Z",
+  "launched_utc": "2026-10-15T19:18:47.8007853+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-sdk-navigate-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T19:18:48.1368986+00:00"
+}

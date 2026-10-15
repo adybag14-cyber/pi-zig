@@ -1,5 +1,5 @@
 {
-  "status": "source56-captured-native-compile-runtime-pending",
+  "status": "component-qualified-windows-debug",
   "base_commit": "89c4ce0b35589251ee1075a3a6c5dac1ffd58388",
   "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
   "implemented_actual_method": "AgentSession.navigateTree",
@@ -36,13 +36,13 @@
     "Pending summarization auth raw rejection preserves identity, runs finally once and releases session."
   ],
   "source_fixture_scope": "Actual original class method and all branch-summary helpers with real in-memory manager/refresh/completeSummarization/retry and caller-provided stream. Includes preflight/noop, parent/root/custom/assistant navigation, labels, extension override/cancel/summary, generated summaries/errors/aborts/tool attempts, getter/callee/iterator order, file tracking and budgets, raw await failures and finally replacement. Full factory/application remains separate.",
-  "next_bounded_target": "After Root reserves a slot, run run-qualified.ps1 -Phase Source -Attempt <unique> -Slot <reserved>, then Compile and matching Runtime serially. Uses full candidate/1967Source/31064deps/1774Node/19546compiler/controls freeze, Source2GiB/256MiB/300s; native16GiB/-j1/1320s compile/120s test/10s await with exact matching compiled executable/PDB manifest.",
+  "next_bounded_target": "Root intake actual navigateTree and branch helper installation over shared actual completeSummarization, then integrated class/factory qualification; POSIX and full allocation gates remain separate.",
   "native_build_target": "build-native-sdk-session-navigate",
   "native_runtime_executable": "sdk-session-navigate-test.exe",
   "formatter_parser": "Pinned Zig0.16 fmt passed for new modules, tests and build.zig; PowerShell owner syntax parsed without execution.",
   "heavy_source_launches": 1,
-  "native_compiles": 0,
-  "native_runtime_launches": 0,
+  "native_compiles": 1,
+  "native_runtime_launches": 1,
   "shared_modules_modified": false,
   "root_assembler_modified": false,
   "full_factory_qualified": false,

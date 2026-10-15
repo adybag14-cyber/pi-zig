@@ -7,6 +7,8 @@ const c = em.c;
 pub fn setup(engine: *em.Engine, environment: *std.process.Environ.Map) !void {
     engine.native_io = std.testing.io;
     try @import("extensions/native_process.zig").install(engine, std.testing.io, environment, &.{"native-sdk-navigate"});
+    // completeSummarization's actual uuidv7 binding uses crypto.getRandomValues.
+    try @import("extensions/native_crypto_random.zig").install(engine);
     try @import("extensions/abort_signal.zig").install(engine);
     // Actual completeSummarization with native uuid/retry; the caller-provided
     // stream in every nonempty fixture prevents use of the controlled default.
