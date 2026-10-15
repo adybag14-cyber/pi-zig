@@ -6,6 +6,23 @@ const http = @import("extensions/native_ai_http.zig");
 const raw = @import("extensions/native_ai_http_worker.zig");
 const fixture = @import("ai/http_fixture.zig");
 const c = em.c;
+test "native AI HTTP actual Fetch39 reason UTF8 and header Latin1 observations remain distinct" {
+    const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, &.{.{ .path = "/latin1", .status = .created, .reason = "Cr\xe9\xe9", .body = "latin1", .headers = &.{ .{ .name = "__proto__", .value = "own" }, .{ .name = "constructor", .value = "wire" }, .{ .name = "x-latin1", .value = "caf\xe9" } } }});
+    defer server.deinit();
+    const url = try server.url(std.testing.allocator, "/latin1");
+    defer std.testing.allocator.free(url);
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/text_decoder.zig").install(engine);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "latinRequest", try http.openWithOptions(engine, .{ .url = url, .method = .GET, .payload = "", .headers = &.{}, .timeout_ms = 2000, .framing = .bytes, .stream_error_bytes = true }, c.pi_js_undefined(), .{ .raw_header_pairs = true }));
+    const original = @embedFile("extensions/fixtures/web-fetch-node24-source39-original.json");
+    try sdk.put(engine, global, "fetch39", try engine.checked(c.JS_ParseJSON(engine.context, original.ptr, original.len, "actual-node24-fetch39.json")));
+    const module = try engine.evalModule("const original=fetch39.rows.find(row=>row.name==='fetch Latin1 raw headers and statusText').value;const head=await latinRequest.ready;if(head.status!==original.shape.status||head.statusText!==original.shape.statusText)throw Error('reason decoding differs from genuine Source');for(const [key,value]of original.shape.headers)if(!Object.hasOwn(head.headers,key)||head.headers[key]!==value||head.rawHeaders.find(([name])=>name.toLowerCase()===key)?.[1]!==value)throw Error('header byte decoding differs from genuine Source');const decoder=new TextDecoder();let text='';for await(const event of latinRequest.events)text+=decoder.decode(event.data,{stream:true});text+=decoder.decode();if(text!==original.text)throw Error('body');export const done=true;", "native-http-fetch39-reason.mjs");
+    engine.freeValue(module);
+}
 test "native AI HTTP fetch opt-ins preserve non-2xx binary bodies and repeated raw header pairs" {
     const body = "denied\x00\xff";
     const first = "first=one; Expires=Thu, 01 Jan 2037 00:00:00 GMT";
