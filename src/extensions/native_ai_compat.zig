@@ -10,12 +10,45 @@ const flow = @import("native_agent_async.zig");
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 pub const builtin_api_ids = [_][]const u8{ "anthropic-messages", "openai-completions", "openai-responses", "openai-codex-responses", "azure-openai-responses", "google-generative-ai", "google-vertex", "mistral-conversations", "bedrock-converse-stream", "pi-messages" };
-pub const BuiltinApi = struct { api: []const u8, streams: c.JSValue };
+pub const BuiltinApi = struct {
+    api: []const u8,
+    streams: ?c.JSValue = null,
+    /// Production calls the actual API constructor once while creating the
+    /// module's BUILTIN_APIS table. Resets retain those same lazy wrappers.
+    factory: ?c.JSValue = null,
+};
 pub const Dependencies = struct {
     builtin_apis: []const BuiltinApi,
     compat_models: c.JSValue,
+    compat_models_factory: ?c.JSValue = null,
     get_env_api_key: c.JSValue,
 };
+/// Assemble the actual compat dispatch module from all ten native API
+/// constructors and the real providers/all builtinModels export. The latter
+/// is supplied by the provider/Models module owner; no empty registry fallback
+/// is accepted here. This exports the dispatch surface, not all index.ts APIs.
+pub fn namespace(engine: *em.Engine, builtin_models: c.JSValue) !c.JSValue {
+    if (engine.native_ai_compat_exports) |cached| return c.JS_DupValue(engine.context, cached);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const apis = try scope.own(try @import("native_ai_builtin_apis.zig").create(engine));
+    const env = try scope.own(try @import("native_ai_env_keys.zig").namespace(engine));
+    var entries: [builtin_api_ids.len]BuiltinApi = undefined;
+    const constructors = .{ "anthropicMessagesApi", "openAICompletionsApi", "openAIResponsesApi", "openAICodexResponsesApi", "azureOpenAIResponsesApi", "googleGenerativeAIApi", "googleVertexApi", "mistralConversationsApi", "bedrockConverseStreamApi", "piMessagesApi" };
+    // Source's constant BUILTIN_APIS is evaluated before builtinModels().
+    inline for (constructors, 0..) |name, i| entries[i] = .{
+        .api = builtin_api_ids[i],
+        .streams = try scope.call(try scope.get(apis, name), c.pi_js_undefined(), &.{}),
+    };
+    const output = try scope.own(try create(engine, .{
+        .builtin_apis = &entries,
+        .compat_models = c.pi_js_undefined(),
+        .compat_models_factory = builtin_models,
+        .get_env_api_key = try scope.get(env, "getEnvApiKey"),
+    }));
+    engine.native_ai_compat_exports = c.JS_DupValue(engine.context, output);
+    return c.JS_DupValue(engine.context, output);
+}
 const Method = enum { registerApiProvider, getApiProvider, getApiProviders, unregisterApiProviders, registerBuiltInApiProviders, resetApiProviders, stream, streamSimple, complete, completeSimple };
 pub fn create(engine: *em.Engine, dependencies: Dependencies) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
@@ -27,13 +60,18 @@ pub fn create(engine: *em.Engine, dependencies: Dependencies) !c.JSValue {
     try scope.put(owner, "env", dependencies.get_env_api_key);
     const builtins = try scope.array();
     for (dependencies.builtin_apis, 0..) |entry, i| {
+        if (entry.streams == null and entry.factory == null) return error.NativeBuiltinApiImplementationUnavailable;
         const pair = try scope.array();
-        try scope.index(pair, 0, try scope.text(entry.api));
-        try scope.index(pair, 1, entry.streams);
+        const api = try scope.text(entry.api);
+        try scope.index(pair, 0, api);
+        const streams = if (entry.factory) |factory| try scope.call(factory, c.pi_js_undefined(), &.{}) else entry.streams.?;
+        try scope.index(pair, 1, streams);
         try scope.index(builtins, @intCast(i), pair);
     }
     try scope.put(owner, "builtins", builtins);
     try registerBuiltins(&scope, owner);
+    // compat.ts registers its API table before evaluating builtinModels().
+    if (dependencies.compat_models_factory) |factory| try scope.put(owner, "models", try scope.call(factory, c.pi_js_undefined(), &.{}));
     const exports = try scope.object();
     inline for (@typeInfo(Method).@"enum".fields) |field| {
         const method: Method = @enumFromInt(field.value);
@@ -43,12 +81,6 @@ pub fn create(engine: *em.Engine, dependencies: Dependencies) !c.JSValue {
                 defer host.native_exception_diagnostics_suppressed -= 1;
                 return dispatch(host, roots[0], method, args);
             }
-            fn asyncCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-                const host = em.Engine.fromContext(context.?);
-                host.native_exception_diagnostics_suppressed += 1;
-                defer host.native_exception_diagnostics_suppressed -= 1;
-                return dispatch(host, roots[0], method, if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(host, err);
-            }
         };
         const length = switch (method) {
             .registerApiProvider => 2,
@@ -57,8 +89,7 @@ pub fn create(engine: *em.Engine, dependencies: Dependencies) !c.JSValue {
             else => 0,
         };
         const function = if (method == .complete or method == .completeSimple) async_function: {
-            var data = [_]c.JSValue{owner};
-            const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, Adapter.asyncCall, field.name, length, 0, data.len, &data)));
+            const function = try scope.own(try @import("native_node_function.zig").createArrow(engine, field.name, length, Adapter.call, &.{owner}));
             const prototype = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
             if (c.JS_SetPrototype(engine.context, function, prototype) < 0) return js.capture(engine);
             break :async_function function;
@@ -80,11 +111,8 @@ fn lookup(scope: *Scope, owner: c.JSValue, api: c.JSValue) !c.JSValue {
 fn iterator(scope: *Scope, iterable: c.JSValue) !js.Iterator {
     return js.Iterator.init(scope.engine, iterable, try scope.own(try scope.engine.checked(JS_GetIteratorSymbol(scope.engine.context))));
 }
-fn wrapped(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    return wrapper(engine, roots[0], roots[1], if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(engine, err);
+fn wrapped(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return wrapper(engine, roots[0], roots[1], args);
 }
 fn errorMessage(scope: *Scope, prefix: []const u8, first: c.JSValue, middle: []const u8, second: ?c.JSValue) !c.JSValue {
     var text = try scope.concat(try scope.text(prefix), try scope.stringify(first));
@@ -99,8 +127,7 @@ fn wrapper(engine: *em.Engine, api: c.JSValue, function: c.JSValue, args: []cons
     return js.call(engine, function, c.pi_js_undefined(), &.{ argument(args, 0), argument(args, 1), argument(args, 2) });
 }
 fn wrap(scope: *Scope, api: c.JSValue, function: c.JSValue) !c.JSValue {
-    var data = [_]c.JSValue{ api, function };
-    return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, wrapped, "", 3, 0, data.len, &data)));
+    return scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 3, wrapped, &.{ api, function }));
 }
 fn register(scope: *Scope, owner: c.JSValue, provider: c.JSValue, source_id: c.JSValue) !void {
     const registry = try scope.get(owner, "registry");
@@ -126,8 +153,8 @@ fn registerBuiltins(scope: *Scope, owner: c.JSValue) !void {
         const fields = try js.pair(scope.engine, pair, try row.own(try scope.engine.checked(JS_GetIteratorSymbol(scope.engine.context))));
         defer for (fields) |field| scope.engine.freeValue(field);
         const api = fields[0];
-        const streams = fields[1];
         if (!row.truthy(try lookup(&row, owner, api))) {
+            const streams = fields[1];
             const provider = try row.object();
             try row.put(provider, "api", api);
             try row.put(provider, "stream", try row.get(streams, "stream"));

@@ -234,22 +234,19 @@ pub fn create(engine: *engine_mod.Engine, cache: c.JSValue, options: c.JSValue) 
     const map_constructor = try get(engine, cache, "map_constructor");
     defer engine.freeValue(map_constructor);
     try put(engine, store, "map", try engine.checked(c.JS_CallConstructor(engine.context, map_constructor, 0, null)));
-    inline for (.{ "credentials", "authContext" }) |name| try put(engine, store, name, if (c.JS_IsUndefined(options) or c.JS_IsNull(options)) c.pi_js_undefined() else try get(engine, options, name));
+    try put(engine, store, "credentials", if (c.JS_IsUndefined(options) or c.JS_IsNull(options)) c.pi_js_undefined() else try get(engine, options, "credentials"));
     const credentials = try get(engine, store, "credentials");
     defer engine.freeValue(credentials);
     if (c.JS_IsUndefined(credentials) or c.JS_IsNull(credentials)) try put(engine, store, "credentials", try @import("native_credentials_store.zig").create(engine));
+    try @import("native_models_refresh.zig").initialize(engine, store, options);
+    try put(engine, store, "authContext", if (c.JS_IsUndefined(options) or c.JS_IsNull(options)) c.pi_js_undefined() else try get(engine, options, "authContext"));
     const auth_context = try get(engine, store, "authContext");
     defer engine.freeValue(auth_context);
     if (c.JS_IsUndefined(auth_context) or c.JS_IsNull(auth_context)) {
-        const defaults = try newObject(engine);
-        defer engine.freeValue(defaults);
-        try put(engine, defaults, "env", try engine.checked(c.pi_js_function_magic(engine.context, defaultAuthContext, "env", 1, 0)));
-        try put(engine, defaults, "fileExists", try engine.checked(c.pi_js_function_magic(engine.context, defaultAuthContext, "fileExists", 1, 1)));
-        try put(engine, store, "authContext", c.JS_DupValue(engine.context, defaults));
+        try put(engine, store, "authContext", try @import("native_ai_auth_helpers.zig").defaultProviderAuthContext(engine));
     }
     const result = try engine.checked(c.JS_NewObject(engine.context));
     errdefer engine.freeValue(result);
-    try @import("native_models_refresh.zig").initialize(engine, store, options);
     var data = [_]c.JSValue{store};
     inline for (std.meta.fields(Method)) |field| try put(engine, result, field.name, try engine.checked(c.JS_NewCFunctionData2(engine.context, methodCallback, field.name, 0, field.value, data.len, &data)));
     try @import("native_models_typed.zig").install(engine, result, store);
@@ -300,18 +297,10 @@ pub fn populateExports(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     const promise_prototype = try get(engine, promise, "prototype");
     defer engine.freeValue(promise_prototype);
     try put(engine, cache, "promise_then", try get(engine, promise_prototype, "then"));
-    const error_constructor = try get(engine, global, "Error");
-    defer engine.freeValue(error_constructor);
-    const error_prototype = try get(engine, error_constructor, "prototype");
-    defer engine.freeValue(error_prototype);
-    const models_error_prototype = try engine.checked(c.JS_NewObjectProto(engine.context, error_prototype));
-    defer engine.freeValue(models_error_prototype);
-    try put(engine, cache, "models_error_prototype", c.JS_DupValue(engine.context, models_error_prototype));
-    var error_data = [_]c.JSValue{models_error_prototype};
-    const models_error = try engine.checked(c.JS_NewCFunctionData2(engine.context, errorConstructor, "ModelsError", 3, 0, 1, &error_data));
+    const models_error = try @import("native_ai_models_error.zig").create(engine);
     defer engine.freeValue(models_error);
-    _ = c.JS_SetConstructorBit(engine.context, models_error, true);
-    if (c.JS_SetConstructor(engine.context, models_error, models_error_prototype) < 0) return error.JavaScriptException;
+    try put(engine, cache, "models_error_prototype", try get(engine, models_error, "prototype"));
+    try put(engine, cache, "models_error_constructor", c.JS_DupValue(engine.context, models_error));
     try put(engine, exports, "ModelsError", c.JS_DupValue(engine.context, models_error));
     var data = [_]c.JSValue{cache};
     try put(engine, exports, "createModels", try engine.checked(c.JS_NewCFunctionData2(engine.context, createCallback, "createModels", 1, 0, 1, &data)));
@@ -412,7 +401,7 @@ fn continueJob(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: 
         defer engine.freeValue(pending);
         var previous: i32 = -1;
         if (!c.JS_IsUndefined(pending) and c.JS_ToInt32(engine.context, &previous, pending) < 0) return error.JavaScriptException;
-        if (previous == @intFromEnum(Stage.credential) or previous == @intFromEnum(Stage.auth) or previous == @intFromEnum(Stage.resolution)) {
+        if (previous == @intFromEnum(Stage.credential) or previous == @intFromEnum(Stage.auth)) {
             const provider_value = try get(engine, job, "provider");
             defer engine.freeValue(provider_value);
             const provider_id = try get(engine, provider_value, "id");
@@ -424,33 +413,10 @@ fn continueJob(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: 
             else
                 try std.fmt.allocPrint(engine.gpa, "API key auth check failed for provider {s}", .{id});
             defer engine.gpa.free(message);
-            const wrapped = try engine.checked(c.JS_NewError(engine.context));
-            defer engine.freeValue(wrapped);
             const store = try get(engine, job, "store");
             defer engine.freeValue(store);
-            const cache = try get(engine, store, "cache");
-            defer engine.freeValue(cache);
-            const prototype = try get(engine, cache, "models_error_prototype");
-            defer engine.freeValue(prototype);
-            if (c.JS_SetPrototype(engine.context, wrapped, prototype) < 0) return error.JavaScriptException;
-            try put(engine, wrapped, "name", try engine.checked(c.JS_NewString(engine.context, "ModelsError")));
-            const detail_value = if (c.JS_IsError(value)) detail: {
-                const error_message = try get(engine, value, "message");
-                if (c.JS_ToBool(engine.context, error_message) == 1) break :detail error_message;
-                engine.freeValue(error_message);
-                break :detail try get(engine, value, "name");
-            } else c.JS_DupValue(engine.context, value);
-            defer engine.freeValue(detail_value);
-            const detail_text = try engine.toString(detail_value);
-            defer engine.gpa.free(detail_text);
-            const formatted = if (detail_text.len > 0 and std.mem.indexOf(u8, message, detail_text) == null)
-                try std.fmt.allocPrint(engine.gpa, "{s}: {s}", .{ message, detail_text })
-            else
-                try engine.gpa.dupe(u8, message);
-            defer engine.gpa.free(formatted);
-            try errorProperty(engine, wrapped, "message", try engine.checked(c.JS_NewStringLen(engine.context, formatted.ptr, formatted.len)));
-            try put(engine, wrapped, "code", try engine.checked(c.JS_NewString(engine.context, "auth")));
-            try errorProperty(engine, wrapped, "cause", c.JS_DupValue(engine.context, value));
+            const wrapped = try fromCause(engine, store, "auth", message, value);
+            defer engine.freeValue(wrapped);
             return finish(engine, job, wrapped, false);
         }
         return finish(engine, job, value, false);
@@ -520,15 +486,23 @@ fn continueJob(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: 
         try put(engine, options, "signal", try get(engine, job, "signal"));
         const check = try get(engine, api_key, "check");
         defer engine.freeValue(check);
-        try put(engine, job, "pendingStage", c.JS_NewInt32(engine.context, @intFromEnum(if (!c.JS_IsUndefined(check)) Stage.auth else Stage.resolution)));
-        const pending = if (!c.JS_IsUndefined(check)) try call(engine, api_key, check, &.{options}) else try invoke(engine, api_key, "resolve", &.{options});
+        try put(engine, job, "pendingStage", c.JS_NewInt32(engine.context, @intFromEnum(if (c.JS_ToBool(engine.context, check) == 1) Stage.auth else Stage.resolution)));
+        const pending = if (c.JS_ToBool(engine.context, check) == 1) try invoke(engine, api_key, "check", &.{options}) else resolve: {
+            const overrides = try newObject(engine);
+            defer engine.freeValue(overrides);
+            try put(engine, overrides, "signal", try get(engine, job, "signal"));
+            break :resolve try @import("native_models_typed.zig").resolveProviderAuth(engine, store, provider, overrides);
+        };
         defer engine.freeValue(pending);
-        return then(engine, job, pending, if (!c.JS_IsUndefined(check)) .auth else .resolution);
+        return then(engine, job, pending, if (c.JS_ToBool(engine.context, check) == 1) .auth else .resolution);
     }
     if (stage == .resolution) {
         const check = if (c.JS_ToBool(engine.context, value) == 1) try newObject(engine) else c.pi_js_undefined();
         defer engine.freeValue(check);
-        if (!c.JS_IsUndefined(check)) try put(engine, check, "type", try engine.checked(c.JS_NewString(engine.context, "api_key")));
+        if (!c.JS_IsUndefined(check)) {
+            try put(engine, check, "source", try get(engine, value, "source"));
+            try put(engine, check, "type", try engine.checked(c.JS_NewString(engine.context, "api_key")));
+        }
         return continueJob(engine, job, .auth, check);
     }
     const only_check = try get(engine, job, "onlyCheck");
@@ -625,7 +599,7 @@ fn available(engine: *engine_mod.Engine, store: c.JSValue, method: Method, args:
     const aggregate_result = try newPromise(engine, aggregate);
     errdefer engine.freeValue(aggregate_result);
     if (try checkAborted(engine, aggregate)) return aggregate_result;
-    const providers = try providerList(engine, store, id);
+    const providers = try providerList(engine, store, if (method == .checkAuth or c.JS_ToBool(engine.context, id) == 1) id else c.pi_js_undefined());
     defer engine.freeValue(providers);
     const pending = try engine.checked(c.JS_NewArray(engine.context));
     defer engine.freeValue(pending);
@@ -698,8 +672,8 @@ fn errorConstructor(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c
 pub fn fromCause(engine: *engine_mod.Engine, store: c.JSValue, code_text: []const u8, message_text: []const u8, cause: c.JSValue) !c.JSValue {
     const cache = try get(engine, store, "cache");
     defer engine.freeValue(cache);
-    const prototype = try get(engine, cache, "models_error_prototype");
-    defer engine.freeValue(prototype);
+    const constructor = try get(engine, cache, "models_error_constructor");
+    defer engine.freeValue(constructor);
     const code = try engine.checked(c.JS_NewStringLen(engine.context, code_text.ptr, code_text.len));
     defer engine.freeValue(code);
     const message = try engine.checked(c.JS_NewStringLen(engine.context, message_text.ptr, message_text.len));
@@ -707,7 +681,8 @@ pub fn fromCause(engine: *engine_mod.Engine, store: c.JSValue, code_text: []cons
     const options = try newObject(engine);
     defer engine.freeValue(options);
     try put(engine, options, "cause", c.JS_DupValue(engine.context, cause));
-    return errorValue(engine, prototype, code, message, options);
+    var args = [_]c.JSValue{ code, message, options };
+    return engine.checked(c.JS_CallConstructor(engine.context, constructor, args.len, &args));
 }
 fn errorValue(engine: *engine_mod.Engine, prototype: c.JSValue, code: c.JSValue, message: c.JSValue, options: c.JSValue) !c.JSValue {
     const result = try engine.checked(c.JS_NewError(engine.context));

@@ -116,6 +116,21 @@ pub fn getAuth(engine: *em.Engine, store: c.JSValue, selected: c.JSValue, overri
     const id = if (c.JS_IsString(selected)) selected else try scope.get(selected, "provider");
     const provider = try scope.own(try models.query(engine, store, .getProvider, &.{id}));
     if (c.JS_IsUndefined(provider)) return capability(engine, c.pi_js_undefined(), false);
+    return resolveWithProvider(engine, store, provider, selected, id, overrides, signal);
+}
+/// Availability already owns a provider snapshot. Resolve its credentials again
+/// through the same actual resolver without reselecting a replacement provider.
+pub fn resolveProviderAuth(engine: *em.Engine, store: c.JSValue, provider: c.JSValue, overrides: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const supplied = try optional(&scope, overrides, "signal");
+    const signal = if (c.JS_IsUndefined(supplied) or c.JS_IsNull(supplied)) try scope.own(try signals.create(engine)) else supplied;
+    const id = try scope.get(provider, "id");
+    return resolveWithProvider(engine, store, provider, id, id, overrides, signal);
+}
+fn resolveWithProvider(engine: *em.Engine, store: c.JSValue, provider: c.JSValue, selected: c.JSValue, id: c.JSValue, overrides: c.JSValue, signal: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
     const state = try scope.object();
     inline for (.{ .{ "store", store }, .{ "selected", selected }, .{ "overrides", overrides }, .{ "signal", signal }, .{ "provider", provider }, .{ "id", id } }) |field| try scope.put(state, field[0], field[1]);
     const pending = startAuth(&scope, state) catch |err| pending: {
@@ -128,12 +143,12 @@ fn startAuth(scope: *Scope, state: c.JSValue) !c.JSValue {
     _ = try scope.invoke(try scope.get(state, "signal"), "throwIfAborted", &.{});
     try scope.put(state, "requestAuthContext", try requestContext(scope, state));
     const overrides = try scope.get(state, "overrides");
-    const api_key = try scope.get(try scope.get(try scope.get(state, "provider"), "auth"), "apiKey");
     const explicit = try optional(scope, overrides, "apiKey");
+    const api_key = if (c.JS_IsUndefined(explicit)) c.pi_js_undefined() else try scope.get(try scope.get(try scope.get(state, "provider"), "auth"), "apiKey");
     if (!c.JS_IsUndefined(explicit) and scope.truthy(api_key)) {
         const credential = try scope.object();
         try scope.put(credential, "type", try scope.text("api_key"));
-        try scope.put(credential, "key", explicit);
+        try scope.put(credential, "key", try optional(scope, overrides, "apiKey"));
         try scope.put(credential, "env", try optional(scope, overrides, "env"));
         return apiKey(scope, state, api_key, credential);
     }

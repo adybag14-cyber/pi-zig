@@ -84,6 +84,15 @@ pub const Engine = struct {
     native_agent_complete_cache: ?c.JSValue = null,
     native_ai_session_resources: ?c.JSValue = null,
     native_ai_model_values: ?c.JSValue = null,
+    native_ai_lazy_api: ?c.JSValue = null,
+    native_ai_builtin_modules: ?c.JSValue = null,
+    native_ai_builtin_apis: ?c.JSValue = null,
+    native_ai_env_keys: ?c.JSValue = null,
+    native_ai_compat_exports: ?c.JSValue = null,
+    native_ai_models_namespace: ?c.JSValue = null,
+    native_ai_model_operations_namespace: ?c.JSValue = null,
+    native_ai_provider_factories_namespace: ?c.JSValue = null,
+    native_ai_openai_sdk_codec: ?c.JSValue = null,
     native_ai_catalog_values: ?c.JSValue = null,
     native_ai_oauth_loader_namespace: ?c.JSValue = null,
     native_provider_env_lookup: ?c.JSValue = null,
@@ -91,6 +100,7 @@ pub const Engine = struct {
     native_sdk_compaction_prepare_callbacks: ?c.JSValue = null,
     native_cache_warmer_bindings: ?c.JSValue = null,
     native_readable_stream_bindings: ?c.JSValue = null,
+    native_readable_stream_classes: ?[3]c.JSClassID = null,
     native_sdk_command_runner_constructor: ?c.JSValue = null,
     native_sdk_reserved_shortcuts: ?c.JSValue = null,
     native_sdk_prompt_section_regex: ?c.JSValue = null,
@@ -318,6 +328,15 @@ pub const Engine = struct {
         if (self.native_agent_complete_cache) |value| self.freeValue(value);
         if (self.native_ai_session_resources) |value| self.freeValue(value);
         if (self.native_ai_model_values) |value| self.freeValue(value);
+        if (self.native_ai_lazy_api) |value| self.freeValue(value);
+        if (self.native_ai_builtin_modules) |value| self.freeValue(value);
+        if (self.native_ai_builtin_apis) |value| self.freeValue(value);
+        if (self.native_ai_env_keys) |value| self.freeValue(value);
+        if (self.native_ai_compat_exports) |value| self.freeValue(value);
+        if (self.native_ai_models_namespace) |value| self.freeValue(value);
+        if (self.native_ai_model_operations_namespace) |value| self.freeValue(value);
+        if (self.native_ai_provider_factories_namespace) |value| self.freeValue(value);
+        if (self.native_ai_openai_sdk_codec) |value| self.freeValue(value);
         if (self.native_ai_catalog_values) |value| self.freeValue(value);
         if (self.native_ai_oauth_loader_namespace) |value| self.freeValue(value);
         if (self.native_provider_env_lookup) |value| self.freeValue(value);
