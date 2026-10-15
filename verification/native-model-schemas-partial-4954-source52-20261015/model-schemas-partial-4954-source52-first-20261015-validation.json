@@ -1,0 +1,9 @@
+{
+  "expected_published_after_terminal_and_full_posthash": true,
+  "native_qualified": false,
+  "expected_sha256": "A29A7FF43504C73BA436AA697D284C86F08E67F7965BA99603E100ED5F77D742",
+  "public_activation": false,
+  "source_pid": 74660,
+  "source_cases": 52,
+  "full_pi_qualified": false
+}

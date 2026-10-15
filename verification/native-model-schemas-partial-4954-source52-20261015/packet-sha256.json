@@ -1,0 +1,200 @@
+[
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015-admission.json",
+    "sha256": "2AF629E6346B6CF4E354938D3B8941F483ABD5E86D1E8AEF1DEDC2931D57BD5A",
+    "bytes": 235,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015-admission.json"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015-extra-before.json",
+    "sha256": "639B0A46651C886028BDD7DA71CFB10FE2BA208CB129CE9ED745356AED5343BB",
+    "bytes": 2338,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015-extra-before.json"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015-module-identity.json",
+    "sha256": "6AED39DD9098D9147998AB8D81166981A131470C22FD5F4D72D0815F1DD7104A",
+    "bytes": 922,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015-module-identity.json"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015-output.json",
+    "sha256": "A29A7FF43504C73BA436AA697D284C86F08E67F7965BA99603E100ED5F77D742",
+    "bytes": 966953,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015-output.json"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015-posthash.json",
+    "sha256": "90806035E97B221BF04D53CC716FCA3A348C1D3622B311C36DF28B7724E2774F",
+    "bytes": 751,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015-posthash.json"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015-syntax.json",
+    "sha256": "A93F5D7B3A2E85FDA1894E4BD79197A5AAC19B1D8D6DCEF9CBA0C3553AE832FF",
+    "bytes": 956,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015-syntax.json"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015-syntax.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015-syntax.stderr.log"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015-syntax.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015-syntax.stdout.log"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015-validation.json",
+    "sha256": "702C0EEE1852B376F20C90D8F44C160D26145EAAC6FDDECD7A1B1115F8FD4C93",
+    "bytes": 298,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015-validation.json"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015.json",
+    "sha256": "AC84D013BA66D5045E98F1810D597320BF1EDDFEB67263A468C6846C485761F4",
+    "bytes": 1180,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015.json"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015.stderr.log",
+    "sha256": "A90E62AF9552A7011BB42F7F990B00419913373A7A0724E91EC1902FBDB28D5A",
+    "bytes": 178,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015.stderr.log"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-first-20261015.stdout.log",
+    "sha256": "460D972812928C6F2CCA8A654FC465755772261278FB09AA4DB0A60F4C5A65B8",
+    "bytes": 84,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-first-20261015.stdout.log"
+  },
+  {
+    "path": "source4954-model-schemas-partial-capture-20261015.mjs",
+    "sha256": "ECB0C232081466C0E7FF255414F9BB7D90DD1DB038FA63374D233F664094E2FB",
+    "bytes": 1591,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-model-schemas-partial-capture-20261015.mjs"
+  },
+  {
+    "path": "source4954-observe-20261015.mjs",
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3",
+    "bytes": 4698,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs"
+  },
+  {
+    "path": "Run-ModelSchemasPartial4954Source52-20261015.ps1",
+    "sha256": "945B69CF8B30BDD6780AEDBB078B357C78E1BFB9DFAAFDDADDE6800B19F29FAF",
+    "bytes": 9328,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-ModelSchemasPartial4954Source52-20261015.ps1"
+  },
+  {
+    "path": "Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+    "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45",
+    "bytes": 3813,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedModelsPersistenceSource-20261015.ps1"
+  },
+  {
+    "path": "source4954-preparation-readiness-20261015.json",
+    "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7",
+    "bytes": 2788,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-preparation-readiness-20261015.json"
+  },
+  {
+    "path": "source4954-dependency-contract-audit-20261015.json",
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745",
+    "bytes": 211596,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json"
+  },
+  {
+    "path": "model-schemas-partial-4954-source52-prelaunch-seal-20261015.json",
+    "sha256": "B919FD1C3A8C37544D8C3608BF2B965757A4509BDE470E7C8C15C5CFFA0B3AC5",
+    "bytes": 2960,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\model-schemas-partial-4954-source52-prelaunch-seal-20261015.json"
+  },
+  {
+    "path": "Retain-ModelSchemasPartialSource52Packet-20261015.ps1",
+    "sha256": "519EAE403B288B8FDEAA4AE619260C8FA98501D7FE364EE25C92A883446B83FF",
+    "bytes": 10678,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Retain-ModelSchemasPartialSource52Packet-20261015.ps1"
+  },
+  {
+    "path": "ai-model-schemas-partial-4954.input.mjs",
+    "sha256": "EB4619FFE139943A7227B61D4A793A2B0D24C22F7C1037784AF066E17C7C9B34",
+    "bytes": 11489,
+    "original_path": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015\\src\\extensions\\fixtures\\ai-model-schemas-partial-4954.input.mjs"
+  },
+  {
+    "path": "ai-model-schemas-partial-4954.json",
+    "sha256": "A29A7FF43504C73BA436AA697D284C86F08E67F7965BA99603E100ED5F77D742",
+    "bytes": 966953,
+    "original_path": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015\\src\\extensions\\fixtures\\ai-model-schemas-partial-4954.json"
+  },
+  {
+    "path": "source4954-modules-74660-0-20261015.jsonl",
+    "sha256": "9E3678312A543505AB7D9AEE084E8020AA81CEC8C94DBB7CA6ECC524699DF02C",
+    "bytes": 169850,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-modules-74660-0-20261015.jsonl"
+  },
+  {
+    "path": "Author-AIModelSchemaProgram-20261015.ps1",
+    "sha256": "CCAEE25027BA659035A7129A97B4A1BB366335C2EC3E5523497BE3AD2FBC30F2",
+    "bytes": 8619,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Author-AIModelSchemaProgram-20261015.ps1"
+  },
+  {
+    "path": "original-typebox-package.json",
+    "sha256": "C59DDFD977CE941F1E8EE8B0A0B14396C332FA27CC5FA6FA165227FFD5A3992F",
+    "bytes": 2021,
+    "original_path": "C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox/package.json"
+  },
+  {
+    "path": "TYPEBOX-LICENSE",
+    "sha256": "E8A7CC256941A26BA8234F04390165243A4D42F74FD6491934140605BF7EAE2D",
+    "bytes": 1094,
+    "original_path": "C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox/license"
+  },
+  {
+    "path": "original-source/packages/ai/src/providers/model-schema.ts",
+    "sha256": "6CFDCF0368299300AF277D1952781ED701BE55AB6A900454FC3EEEFFBE07E178",
+    "bytes": 4238,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\model-schema.ts"
+  },
+  {
+    "path": "original-source/packages/ai/src/providers/compat-schema.ts",
+    "sha256": "2DF3F174686BC945844CDEE99E063EAFE8FF675D236B032B06FE370754A6C11A",
+    "bytes": 27371,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\compat-schema.ts"
+  },
+  {
+    "path": "original-observed-modules.zip",
+    "sha256": "8696C951D801985EE16AAA69B734D8BD12242433286C168A0A29ACE70B5B61F2",
+    "bytes": 358973,
+    "original_path": "670 actually observed original module bodies; each ZIP entry independently stream-rehashed"
+  },
+  {
+    "path": "original-observed-modules-sha256.json",
+    "sha256": "558FD6C7148628DB63DF371B9F288278EF8947522EC7A2B1B80AF4655503D653",
+    "bytes": 196640,
+    "original_path": "670 actually observed original module bodies; each ZIP entry independently stream-rehashed"
+  },
+  {
+    "path": "original-frozen-input-inventories.zip",
+    "sha256": "96BF07650B990EC5A4F870A1E18C7A8CBC9F0B3DCD4E8474A90E1014585303F3",
+    "bytes": 2680588,
+    "original_path": "four original frozen manifests; ZIP entries independently rehashed"
+  },
+  {
+    "path": "retention-verification.json",
+    "sha256": "16DA028C2CB252EDEFA36E72F1FF8CC55182EF01942480CA790C6B8CE89A62DD",
+    "bytes": 981,
+    "original_path": "new retrospective original receipt verification"
+  },
+  {
+    "path": "README.md",
+    "sha256": "A3E0762B4D7A8BB6D3A93EF7CC67AC98CAB06998E0CAA679A180D662D5AB361F",
+    "bytes": 5236,
+    "original_path": "new retrospective Source52 and native integration documentation"
+  }
+]

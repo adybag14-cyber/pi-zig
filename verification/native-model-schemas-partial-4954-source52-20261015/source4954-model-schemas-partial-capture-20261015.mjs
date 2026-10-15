@@ -1,0 +1,11 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {Type} from 'file:///C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox/build/index.mjs';
+import {Memory,Settings} from 'file:///C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox/build/system/index.mjs';
+import * as compiler from 'file:///C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox/build/compile/index.mjs';
+import * as model from 'file:///C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/ai/src/providers/model-schema.ts';
+import * as compat from 'file:///C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/ai/src/providers/compat-schema.ts';
+globalThis.actualSchemaType=Type;globalThis.actualSchemaSystem={Memory,Settings};globalThis.actualModelSchemas={model,compat};globalThis.actualSchemaCompiler=compiler;
+const input=readFileSync('C:/Users/adyba/pi-zig-native-model-schemas-partial-4954-20261015/src/extensions/fixtures/ai-model-schemas-partial-4954.input.mjs','utf8');
+await(new Function('return(async()=>{'+input+'\n})()'))();
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'4954d760504c11df9b2cbdc040346107b6a8153d',runtime:process.version,typeboxVersion:'1.3.27',count:globalThis.modelSchemasPartialObservation.rows.length,network:false,sourceOnly:true,...globalThis.modelSchemasPartialObservation},null,2)+'\n');
+console.log(JSON.stringify({rows:globalThis.modelSchemasPartialObservation.rows.length,modelExports:Object.keys(model).length,compatExports:Object.keys(compat).length,typebox:'1.3.27',network:false}));
