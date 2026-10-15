@@ -8,6 +8,9 @@ $taskNode='C:/Program Files/nodejs/node.exe'
 $taskSource='C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015'
 $taskRuntime='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012'
 $taskInput=Join-Path $taskRoot 'verification/web-fetch-node24-20261015/input.mjs'
+$taskExpected=Join-Path $taskRoot 'src/extensions/fixtures/web-fetch-node24.json'
+if(Test-Path -LiteralPath $taskExpected){throw 'Actual fetch expected must remain absent until successful capture and full posthash'}
+if(@(Get-ChildItem -LiteralPath $taskEvidence -Filter "$taskName*" -File).Count){throw 'Refuse capture owner/receipt overwrite'}
 $taskDriver=Join-Path $PSScriptRoot 'source-capture.mjs'
 $taskOwner=Join-Path $taskEvidence 'Invoke-OwnedEeSourceJob-20261012.ps1'
 $taskAudit=Join-Path $taskEvidence 'source5ab-dependency-contract-audit-20261015.json'
