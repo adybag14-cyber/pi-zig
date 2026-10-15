@@ -5,7 +5,7 @@ const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
 const flow = @import("native_agent_async.zig");
-const Stage = enum(c_int) { payload, retried, observed, fetched, head, body, json, text, errorText };
+const Stage = enum(c_int) { payload, retried, observed, fetched, head, body, collected, json, text, errorText };
 pub const Config = struct { require_key: bool = true, observe: bool = true, headers_once: bool = false, prepared_headers: ?c.JSValue = null, sdk_defaults: ?c.JSValue = null, api_key: ?c.JSValue = null, fetch: ?c.JSValue = null, url_factory: ?c.JSValue = null, sdk_errors: bool = false, default_retries: u32 = 2 };
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     const retry = try @import("native_ai_provider_retry_request.zig").create(engine);
@@ -239,7 +239,7 @@ fn attempt(scope: *Scope, pending: c.JSValue) !void {
     defer scope.engine.gpa.free(url);
     const body = try scope.engine.toString(payload);
     defer scope.engine.gpa.free(body);
-    const http = try scope.own(try @import("native_ai_http.zig").open(scope.engine, .{ .url = url, .payload = body, .headers = headers_list.items, .framing = .body }, signal));
+    const http = try scope.own(try @import("native_ai_http.zig").open(scope.engine, .{ .url = url, .payload = body, .headers = headers_list.items, .framing = if (sdk) .bytes else .body, .stream_error_bytes = sdk }, signal));
     try scope.put(pending, "http", http);
     try flow.wait(attemptContinued, scope.engine, pending, try scope.get(http, "ready"), @intFromEnum(Stage.head));
 }
@@ -307,7 +307,7 @@ fn attemptContinued(engine: *v.em.Engine, pending: c.JSValue, value: c.JSValue, 
         const stage: Stage = @enumFromInt(raw);
         const native = !v.nullish(try scope.get(pending, "http"));
         var reason = value;
-        if (native and (stage == .head or stage == .body)) {
+        if (native and (stage == .head or stage == .body or stage == .collected) and !try v.eq(&scope, try v.optional(&scope, value, "code"), "NativeBodyLimit")) {
             if (try v.eq(&scope, try v.optional(&scope, value, "code"), "OutOfMemory")) return rejectAttemptError(&scope, pending, error.OutOfMemory);
             const signal = try scope.get(pending, "signal");
             reason = if (scope.truthy(try v.optional(&scope, signal, "aborted"))) try scope.get(signal, "reason") else try scope.own(try v.js.builtin(engine, "TypeError", &.{try scope.text(if (stage == .head) "fetch failed" else "terminated")}));
@@ -317,7 +317,7 @@ fn attemptContinued(engine: *v.em.Engine, pending: c.JSValue, value: c.JSValue, 
             const timed_out = scope.truthy(try v.optional(&scope, try scope.get(pending, "signal"), "aborted")) or try v.eq(&scope, try v.optional(&scope, reason, "name"), "AbortError") or try v.eq(&scope, try v.optional(&scope, value, "code"), "ProviderRequestTimeout");
             reason = try @import("native_ai_openai_api_error.zig").connection(&scope, if (aborted) .aborted else if (timed_out) .timeout else .failed, reason);
         }
-        if (sdk and (stage == .errorText or (stage == .body and !scope.truthy(try scope.get(try scope.get(pending, "response"), "ok"))))) {
+        if (sdk and (stage == .errorText or ((stage == .body or stage == .collected) and !scope.truthy(try scope.get(try scope.get(pending, "response"), "ok"))))) {
             const instance = c.JS_IsInstanceOf(engine.context, reason, try scope.global("Error"));
             if (instance < 0) return v.js.capture(engine);
             return httpError(&scope, pending, try scope.get(pending, "response"), if (instance == 1) try scope.get(reason, "message") else try scope.call(try scope.global("String"), c.pi_js_undefined(), &.{reason}));
@@ -351,12 +351,15 @@ fn attemptAdvance(scope: *Scope, pending: c.JSValue, value: c.JSValue, stage: St
             try scope.put(response, "headers", try scope.own(try @import("native_headers.zig").fromRecord(scope.engine, try scope.get(value, "headers"))));
             try scope.put(pending, "response", response);
             const http = try scope.get(pending, "http");
+            if (scope.truthy(try scope.get(try scope.get(pending, "agent"), "sdk"))) {
+                const collected = try scope.own(try @import("native_body_collect.zig").collect(scope.engine, try scope.get(http, "events"), .{ .mode = .text, .input = .byte_events, .signal = try scope.get(pending, "signal"), .cancel = try scope.get(http, "cancel") }));
+                return flow.wait(attemptContinued, scope.engine, pending, collected, @intFromEnum(Stage.collected));
+            }
             try flow.wait(attemptContinued, scope.engine, pending, try scope.invoke(try scope.get(http, "events"), "next", &.{}), @intFromEnum(Stage.body));
         },
-        .body => {
+        .body, .collected => {
             const response = try scope.get(pending, "response");
-            const done = scope.truthy(try scope.get(value, "done"));
-            var body = if (done) try scope.text("") else try scope.get(try scope.get(value, "value"), "body");
+            var body = if (stage == .collected) value else if (scope.truthy(try scope.get(value, "done"))) try scope.text("") else try scope.get(try scope.get(value, "value"), "body");
             if (scope.truthy(try scope.invoke(body, "startsWith", &.{try scope.text("\u{feff}")}))) body = try scope.invoke(body, "slice", &.{c.JS_NewInt32(scope.engine.context, 1)});
             if (!scope.truthy(try scope.get(response, "ok"))) return httpError(scope, pending, response, body);
             if (scope.truthy(try scope.get(try scope.get(pending, "agent"), "sdk"))) {

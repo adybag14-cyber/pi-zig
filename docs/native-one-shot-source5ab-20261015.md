@@ -24,8 +24,8 @@ preserved. `native_models_typed.zig` already installs the actual Models
 preserved; the central Models/provider owner wires the new operation maps.
 
 The new facades use live VM values and directly linked C ABI functions. All
-network calls use the existing owned HTTP worker in body mode; no worker was
-forked. Classifier POSTs reuse the original native `retryProviderRequest` helper
+network calls use the existing owned HTTP worker; no worker was forked.
+Classifier POSTs retain body mode and reuse the original native `retryProviderRequest` helper
 and genuine branded Headers. The one-shot operation codecs retain the different
 protocols: System One `bool` to `noul`, Cloudflare direct/completed envelopes,
 Decisions named answer arrays and refusals, and OpenRouter chat-completions image
@@ -64,8 +64,11 @@ boundaries.
 
 The independent shared body collector is a further source-only checkpoint. Its
 explicit native budget and pending large-body qualification are described in
-`native-body-collect-source-20261015.md`. The current image JSON request path has
-not yet adopted it; its old HTTP body aggregation limit remains in effect.
+`native-body-collect-source-20261015.md`. The native image JSON request path uses
+its byte-event mode for successful and unsuccessful HTTP statuses. This replaces
+the old 512 KiB aggregation limit with the documented explicit Engine-grounded
+budget. Supplied guest fetch responses retain their actual `json()`/`text()`
+methods and ownership. Large real-wire image and limit controls remain pending.
 
 This follow-up is source-only. No original expected JSON has been fabricated.
 Source capture, native compilation, runtime, broader timeout/abort controls,
