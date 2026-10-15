@@ -90,6 +90,7 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, model: c.JSValue, input
     defer engine.freeValue(pending.owner);
     defer engine.freeValue(pending.promise);
     const owner = pending.owner;
+    try scope.put(owner, "allocationGeneration", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, engine.native_allocation_generation))));
     try scope.put(owner, "model", model);
     try scope.put(owner, "context", context);
     try scope.put(owner, "options", effective);
@@ -188,7 +189,33 @@ fn fallback(scope: *Scope, owner: c.JSValue, failure: c.JSValue) !bool {
 fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
     const reason = flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
+    if (err == error.OutOfMemory or try nativeAllocationReason(scope.engine, owner, reason)) return retireNativeAllocation(scope.engine, owner, reason);
     return fail(scope, owner, reason);
+}
+fn nativeAllocationReason(engine: *v.em.Engine, owner: c.JSValue, reason: c.JSValue) !bool {
+    const tagged = c.pi_js_native_allocation_error_generation(reason);
+    if (tagged == 0) return false;
+    const value = try v.js.get(engine, owner, "allocationGeneration");
+    defer engine.freeValue(value);
+    var generation: u64 = 0;
+    if (c.JS_ToBigUint64(engine.context, &generation, value) < 0) return v.js.capture(engine);
+    const distance = tagged -% generation;
+    return distance != 0 and distance <= engine.native_allocation_generation -% generation;
+}
+fn retireNativeAllocation(engine: *v.em.Engine, owner: c.JSValue, reason: c.JSValue) !void {
+    // No Scope root growth or assistant-event serialization while the host
+    // allocator is exhausted. Preserve the actual fresh private native error,
+    // including when publication of an ordinary caller error itself ran OOM.
+    const wire = try v.js.get(engine, owner, "http");
+    defer engine.freeValue(wire);
+    if (!v.nullish(wire)) {
+        const cancelled = v.js.invoke(engine, wire, "cancel", &.{}) catch null;
+        if (cancelled) |value| engine.freeValue(value);
+    }
+    const stream_value = try v.js.get(engine, owner, "stream");
+    defer engine.freeValue(stream_value);
+    try @import("native_stream.zig").reject(engine, stream_value, reason);
+    try flow.settle(engine, owner, false, c.pi_js_undefined());
 }
 fn release(scope: *Scope, owner: c.JSValue) !void {
     const reader = try scope.get(owner, "reader");
@@ -196,12 +223,20 @@ fn release(scope: *Scope, owner: c.JSValue) !void {
     try scope.set(owner, "reader", c.pi_js_undefined());
 }
 fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
-    release(scope, owner) catch {};
+    if (try nativeAllocationReason(scope.engine, owner, reason)) return retireNativeAllocation(scope.engine, owner, reason);
+    release(scope, owner) catch |err| {
+        const release_reason = flow.reason(scope.engine, err);
+        defer scope.engine.freeValue(release_reason);
+        if (err == error.OutOfMemory or try nativeAllocationReason(scope.engine, owner, release_reason)) return retireNativeAllocation(scope.engine, owner, release_reason);
+    };
     const wire = try scope.get(owner, "http");
     if (!v.nullish(wire)) _ = try scope.invoke(wire, "cancel", &.{});
     _ = scope.invoke(try scope.get(owner, "decoder"), "fail", &.{ reason, c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner))) }) catch |err| {
+        const decoder_reason = flow.reason(scope.engine, err);
+        defer scope.engine.freeValue(decoder_reason);
+        if (err == error.OutOfMemory or try nativeAllocationReason(scope.engine, owner, decoder_reason)) return retireNativeAllocation(scope.engine, owner, decoder_reason);
         try @import("native_stream.zig").reject(scope.engine, try scope.get(owner, "stream"), reason);
-        try flow.rejectError(scope.engine, owner, err);
+        try flow.settle(scope.engine, owner, true, decoder_reason);
         return;
     };
     try flow.settle(scope.engine, owner, false, c.pi_js_undefined());
