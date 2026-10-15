@@ -100,10 +100,11 @@ fn login(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []c
 fn startLogin(scope: *Scope, owner: c.JSValue, interaction: c.JSValue, name: c.JSValue) !void {
     try scope.put(owner, "interaction", interaction);
     _ = try scope.invoke(try scope.get(interaction, "signal"), "throwIfAborted", &.{});
+    const prompt_method = try scope.get(interaction, "prompt");
     const prompt = try scope.object();
     try scope.put(prompt, "type", try scope.text("secret"));
     try scope.put(prompt, "message", try scope.concat(try scope.text("Enter "), try scope.stringify(name)));
-    try flow.wait(continued, scope.engine, owner, try scope.invoke(interaction, "prompt", &.{prompt}), @intFromEnum(Stage.login));
+    try flow.wait(continued, scope.engine, owner, try scope.call(prompt_method, interaction, &.{prompt}), @intFromEnum(Stage.login));
 }
 fn resolve(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
