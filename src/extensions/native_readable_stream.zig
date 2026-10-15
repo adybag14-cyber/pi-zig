@@ -6,7 +6,7 @@ const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const core = @import("native_readable_byte_stream.zig");
 const async_value = @import("native_agent_async.zig");
 const c = js.c;
-const Operation = enum(c_int) { pullBytes, pullIterator, cancelSource, teePull, teeCancel1, teeCancel2, getReader, cancel, locked, tee };
+const Operation = enum(c_int) { pullBytes, pullIterator, cancelSource, teePull, teeCancel1, teeCancel2, getReader, cancel, locked, tee, values };
 const Stage = enum(c_int) { iteratorNext, eof, iteratorReturn, teeRead, teeCancelled };
 fn bindings(engine: *js.Engine) !c.JSValue {
     return engine.native_readable_stream_bindings orelse error.NativeWebReadableStreamUnavailable;
@@ -57,7 +57,7 @@ fn startFunction(scope: *Scope, data: c.JSValue, branch: c_int) !c.JSValue {
 }
 fn byteSource(scope: *Scope, data: c.JSValue, pull: Operation, cancel: Operation, branch: c_int) !c.JSValue {
     const source = try scope.object();
-    try scope.put(source, "type", try scope.text("bytes"));
+    if (branch == 0 or try flagged(scope, data, "byteSource")) try scope.put(source, "type", try scope.text("bytes"));
     try scope.put(source, "start", try startFunction(scope, data, branch));
     try scope.put(source, "pull", try callback(scope, data, "pull", pull, 1));
     try scope.put(source, "cancel", try callback(scope, data, "cancel", cancel, 1));
@@ -107,7 +107,7 @@ fn continued(engine: *js.Engine, owner: c.JSValue, value: c.JSValue, rejected: b
         if (@as(Stage, @enumFromInt(raw)) == .teeRead) {
             const reason = async_value.reason(engine, err);
             defer engine.freeValue(reason);
-            try teeError(&scope, try scope.get(owner, "agent"), reason);
+            try teeAbort(&scope, try scope.get(owner, "agent"), reason);
         }
         try async_value.rejectError(engine, owner, err);
     };
@@ -151,15 +151,50 @@ fn teeError(scope: *Scope, data: c.JSValue, reason: c.JSValue) !void {
     if (!try flagged(scope, data, "cancelled2")) try core.errorNative(scope, try bindings(scope.engine), try scope.get(data, "controller2"), reason);
     try async_value.settle(scope.engine, try scope.get(data, "cancelOwner"), false, c.pi_js_undefined());
 }
-fn teeRead(scope: *Scope, data: c.JSValue) !void {
+fn teeAbort(scope: *Scope, data: c.JSValue, reason: c.JSValue) !void {
     if (try flagged(scope, data, "closed")) return;
-    if (try flagged(scope, data, "reading")) return flag(scope, data, "readAgain");
-    try flag(scope, data, "reading");
+    try flag(scope, data, "closed");
+    if (!try flagged(scope, data, "cancelled1")) try core.errorNative(scope, try bindings(scope.engine), try scope.get(data, "controller1"), reason);
+    if (!try flagged(scope, data, "cancelled2")) try core.errorNative(scope, try bindings(scope.engine), try scope.get(data, "controller2"), reason);
     const pending = try async_value.create(scope.engine, data);
     defer scope.engine.freeValue(pending.owner);
     defer scope.engine.freeValue(pending.promise);
     c.JS_PromiseMarkAsHandled(scope.engine.context, pending.promise);
-    const reading = try core.readNative(scope, try bindings(scope.engine), try scope.get(data, "reader"), &.{});
+    const cancelled = try core.cancelNative(scope, try bindings(scope.engine), try scope.get(data, "stream"), reason);
+    try async_value.wait(continued, scope.engine, pending.owner, cancelled, @intFromEnum(Stage.teeCancelled));
+}
+fn observeTeeReader(scope: *Scope, data: c.JSValue, reader_value: c.JSValue) !void {
+    const observer = try async_value.create(scope.engine, data);
+    defer scope.engine.freeValue(observer.owner);
+    defer scope.engine.freeValue(observer.promise);
+    try scope.put(observer.owner, "reader", reader_value);
+    c.JS_PromiseMarkAsHandled(scope.engine.context, observer.promise);
+    try async_value.wait(teeClosed, scope.engine, observer.owner, try core.closedNative(scope, try bindings(scope.engine), reader_value), 0);
+}
+fn teeRead(scope: *Scope, data: c.JSValue, second_branch: bool) !void {
+    if (try flagged(scope, data, "closed")) return;
+    if (try flagged(scope, data, "reading")) return flag(scope, data, if (second_branch) "readAgain2" else "readAgain1");
+    try flag(scope, data, "reading");
+    const retained = try bindings(scope.engine);
+    const controller = try scope.get(data, if (second_branch) "controller2" else "controller1");
+    const view = if (try flagged(scope, data, "byteSource")) try core.byobViewNative(scope, retained, controller) else c.pi_js_null();
+    const byob = !nullish(view);
+    if (byob != try flagged(scope, data, "readerByob")) {
+        try core.releaseReaderNative(scope, retained, try scope.get(data, "reader"));
+        const options = try scope.own(try scope.engine.checked(c.JS_NewObjectProto(scope.engine.context, c.pi_js_null())));
+        if (byob) try scope.put(options, "mode", try scope.text("byob"));
+        const reader_value = try core.getReaderNative(scope, retained, try scope.get(data, "stream"), options);
+        try scope.put(data, "reader", reader_value);
+        try scope.put(data, "readerByob", c.pi_js_bool(scope.engine.context, @intFromBool(byob)));
+        try observeTeeReader(scope, data, reader_value);
+    }
+    try scope.put(data, "activeByob", c.pi_js_bool(scope.engine.context, @intFromBool(byob)));
+    try scope.put(data, "byobBranch2", c.pi_js_bool(scope.engine.context, @intFromBool(second_branch)));
+    const pending = try async_value.create(scope.engine, data);
+    defer scope.engine.freeValue(pending.owner);
+    defer scope.engine.freeValue(pending.promise);
+    c.JS_PromiseMarkAsHandled(scope.engine.context, pending.promise);
+    const reading = try core.readNative(scope, retained, try scope.get(data, "reader"), if (byob) &.{view} else &.{});
     try async_value.wait(continued, scope.engine, pending.owner, reading, @intFromEnum(Stage.teeRead));
 }
 fn teeContinued(scope: *Scope, data: c.JSValue, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: Stage) !void {
@@ -167,39 +202,59 @@ fn teeContinued(scope: *Scope, data: c.JSValue, owner: c.JSValue, value: c.JSVal
         try async_value.settle(scope.engine, try scope.get(data, "cancelOwner"), rejected, if (rejected) value else c.pi_js_undefined());
         return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
     }
-    try scope.put(data, "reading", c.pi_js_bool(scope.engine.context, 0));
     if (rejected) {
+        try scope.put(data, "reading", c.pi_js_bool(scope.engine.context, 0));
         try teeError(scope, data, value);
         return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
     }
     if (try flagged(scope, data, "closed")) return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
     if (scope.truthy(try scope.get(value, "done"))) {
+        try scope.put(data, "reading", c.pi_js_bool(scope.engine.context, 0));
         try flag(scope, data, "closed");
         inline for (.{ .{ "cancelled1", "controller1" }, .{ "cancelled2", "controller2" } }) |entry| if (!try flagged(scope, data, entry[0])) {
             const controller = try scope.get(data, entry[1]);
             try core.closeController(scope, try bindings(scope.engine), controller);
-            try core.respondZeroNative(scope, try bindings(scope.engine), controller);
         };
+        if (try flagged(scope, data, "byteSource")) {
+            const chunk = try scope.get(value, "value");
+            const byob = try flagged(scope, data, "activeByob");
+            const second_branch = try flagged(scope, data, "byobBranch2");
+            if (byob and !c.JS_IsUndefined(chunk) and !try flagged(scope, data, if (second_branch) "cancelled2" else "cancelled1")) try core.respondWithNewViewNative(scope, try bindings(scope.engine), try scope.get(data, if (second_branch) "controller2" else "controller1"), chunk);
+            inline for (.{ .{ "cancelled1", "controller1" }, .{ "cancelled2", "controller2" } }) |entry| if (!try flagged(scope, data, entry[0])) {
+                // A BYOB branch already committed through its replacement.
+                try core.respondZeroNative(scope, try bindings(scope.engine), try scope.get(data, entry[1]));
+            };
+        }
         try async_value.settle(scope.engine, try scope.get(data, "cancelOwner"), false, c.pi_js_undefined());
     } else {
         const chunk = try scope.get(value, "value");
         const first = !try flagged(scope, data, "cancelled1");
         const second = !try flagged(scope, data, "cancelled2");
-        // Clone before either enqueue transfers the original backing store.
-        const copied = if (first and second) try copyBytes(scope, chunk) else chunk;
-        if (first) try core.enqueueNative(scope, try bindings(scope.engine), try scope.get(data, "controller1"), chunk);
-        if (second) try core.enqueueNative(scope, try bindings(scope.engine), try scope.get(data, "controller2"), copied);
-        if (try flagged(scope, data, "readAgain")) {
-            try scope.put(data, "readAgain", c.pi_js_bool(scope.engine.context, 0));
-            try teeRead(scope, data);
+        try scope.put(data, "readAgain1", c.pi_js_bool(scope.engine.context, 0));
+        try scope.put(data, "readAgain2", c.pi_js_bool(scope.engine.context, 0));
+        if (try flagged(scope, data, "activeByob")) {
+            const second_branch = try flagged(scope, data, "byobBranch2");
+            const byob_live = if (second_branch) second else first;
+            const other_live = if (second_branch) first else second;
+            // Clone the other branch before responding transfers storage.
+            const copied = if (other_live) try copyBytes(scope, chunk) else c.pi_js_undefined();
+            if (byob_live) try core.respondWithNewViewNative(scope, try bindings(scope.engine), try scope.get(data, if (second_branch) "controller2" else "controller1"), chunk);
+            if (other_live) try core.enqueueNative(scope, try bindings(scope.engine), try scope.get(data, if (second_branch) "controller1" else "controller2"), copied);
+        } else {
+            const copied = if (first and second and try flagged(scope, data, "byteSource")) try copyBytes(scope, chunk) else chunk;
+            if (first) try core.enqueueNative(scope, try bindings(scope.engine), try scope.get(data, "controller1"), chunk);
+            if (second) try core.enqueueNative(scope, try bindings(scope.engine), try scope.get(data, "controller2"), copied);
         }
+        try scope.put(data, "reading", c.pi_js_bool(scope.engine.context, 0));
+        if (try flagged(scope, data, "readAgain1")) try teeRead(scope, data, false) else if (try flagged(scope, data, "readAgain2")) try teeRead(scope, data, true);
     }
     try async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
 }
 fn teeClosed(engine: *js.Engine, owner: c.JSValue, reason: c.JSValue, rejected: bool, _: c_int) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    if (rejected) try teeError(&scope, try scope.get(owner, "agent"), reason);
+    const data = try scope.get(owner, "agent");
+    if (rejected and scope.equal(try scope.get(owner, "reader"), try scope.get(data, "reader"))) try teeError(&scope, data, reason);
     try async_value.settle(engine, owner, false, c.pi_js_undefined());
 }
 pub fn tee(engine: *js.Engine, stream_value: c.JSValue) !c.JSValue {
@@ -208,6 +263,7 @@ pub fn tee(engine: *js.Engine, stream_value: c.JSValue) !c.JSValue {
     const retained = try bindings(engine);
     const reader_value = try core.getReaderNative(&scope, retained, stream_value, c.pi_js_undefined());
     const data = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
+    try scope.put(data, "byteSource", c.pi_js_bool(engine.context, @intFromBool(try core.byteStreamNative(&scope, retained, stream_value))));
     try scope.put(data, "reader", reader_value);
     try scope.put(data, "stream", stream_value);
     const cancel_pending = try async_value.create(engine, data);
@@ -218,11 +274,7 @@ pub fn tee(engine: *js.Engine, stream_value: c.JSValue) !c.JSValue {
     c.JS_PromiseMarkAsHandled(engine.context, cancel_pending.promise);
     const first = try create(&scope, retained, try byteSource(&scope, data, .teePull, .teeCancel1, 1));
     const second = try create(&scope, retained, try byteSource(&scope, data, .teePull, .teeCancel2, 2));
-    const observer = try async_value.create(engine, data);
-    defer engine.freeValue(observer.owner);
-    defer engine.freeValue(observer.promise);
-    c.JS_PromiseMarkAsHandled(engine.context, observer.promise);
-    try async_value.wait(teeClosed, engine, observer.owner, try core.closedNative(&scope, retained, reader_value), 0);
+    try observeTeeReader(&scope, data, reader_value);
     const result = try scope.array();
     try scope.index(result, 0, first);
     try scope.index(result, 1, second);
@@ -252,7 +304,7 @@ fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]
     const operation: Operation = @enumFromInt(raw);
     const args = if (argc > 0) argv[0..@intCast(argc)] else &.{};
     const returned = dispatchValue(&scope, receiver, roots[0], args, operation) catch |err| {
-        if (operation == .getReader or operation == .locked or operation == .tee) return @import("native_durable.zig").reject(engine, err);
+        if (operation == .getReader or operation == .locked or operation == .tee or operation == .values) return @import("native_durable.zig").reject(engine, err);
         return @import("native_durable.zig").rejectedPromise(engine, err);
     };
     return c.JS_DupValue(context, returned);
@@ -266,8 +318,12 @@ fn dispatchValue(scope: *Scope, receiver: c.JSValue, data: c.JSValue, args: []co
             return core.cancelNative(scope, data, receiver, argument(args, 0));
         },
         .tee => return scope.own(try tee(scope.engine, receiver)),
+        .values => {
+            _ = try core.lockedNative(scope, data, receiver);
+            return @import("native_readable_stream_iterator.zig").create(scope, data, receiver, argument(args, 0));
+        },
         .teePull => {
-            try teeRead(scope, data);
+            try teeRead(scope, data, scope.equal(argument(args, 0), try scope.get(data, "controller2")));
             return scope.own(try @import("native_durable.zig").resolvedPromise(scope.engine, c.pi_js_undefined()));
         },
         .teeCancel1, .teeCancel2 => return cancelTee(scope, data, argument(args, 0), operation == .teeCancel2),
@@ -280,9 +336,10 @@ pub fn install(engine: *js.Engine) !void {
     defer scope.deinit();
     const retained = try scope.object();
     try core.prepare(&scope, retained);
+    try core.preparePublicGraph(&scope, retained);
     const constructor = try scope.get(retained, "fileHandleReadableStream");
     const prototype = try scope.get(constructor, "prototype");
-    inline for (.{ .{ "getReader", Operation.getReader }, .{ "cancel", Operation.cancel }, .{ "tee", Operation.tee } }) |entry| {
+    inline for (.{ .{ "getReader", Operation.getReader }, .{ "cancel", Operation.cancel }, .{ "tee", Operation.tee }, .{ "values", Operation.values } }) |entry| {
         const function = try callback(&scope, retained, entry[0], entry[1], 0);
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, entry[0], c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(engine);
     }
@@ -290,6 +347,10 @@ pub fn install(engine: *js.Engine) !void {
     const atom = c.JS_NewAtom(engine.context, "locked");
     defer c.JS_FreeAtom(engine.context, atom);
     if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, locked), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(engine);
+    const async_symbol = try scope.own(try engine.checked(c.JS_GetAsyncIteratorSymbol(engine.context)));
+    const async_atom = c.JS_ValueToAtom(engine.context, async_symbol);
+    defer c.JS_FreeAtom(engine.context, async_atom);
+    if (c.JS_DefinePropertyValue(engine.context, prototype, async_atom, c.JS_DupValue(engine.context, try scope.get(prototype, "values")), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     const tag = c.JS_ValueToAtom(engine.context, try scope.get(try scope.global("Symbol"), "toStringTag"));
     defer c.JS_FreeAtom(engine.context, tag);
     if (c.JS_DefinePropertyValue(engine.context, prototype, tag, c.JS_DupValue(engine.context, try scope.text("ReadableStream")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
