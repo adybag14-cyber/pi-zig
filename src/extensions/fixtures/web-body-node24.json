@@ -1,0 +1,5118 @@
+{
+  "authority": "Actual global Request Response BodyMixin from pinned Node v24.14.0 bundled Undici; actual public ReadableStream Blob File FormData AbortSignal dependencies",
+  "actualNode": {
+    "version": "v24.14.0",
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "undici": "7.21.0",
+    "execArgv": [
+      "--expose-gc",
+      "--max-old-space-size=256"
+    ]
+  },
+  "bundledUndici": {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-bundled-undici.js.txt",
+    "sha256": "c62030f1e505a4010d9972ecbf40155eddeb355f2a53a9f019a447214e1a9600",
+    "bytes": 728836
+  },
+  "nodeBuiltins": {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-node-builtin-authorities.json",
+    "sha256": "0cd86676bb2a46a4e772d1fd8bb3d00fca658383bc388846dcc796547dc79263",
+    "count": 369,
+    "bytes": 9294918
+  },
+  "inputSha256": "b20eca3d00631d8b7745c8769de4790f5fc2e82ca0589cbe633f2c8901756cea",
+  "cases": 176,
+  "actualGcCalls": 6,
+  "before": [
+    {
+      "name": "source5ab-full-manifest-20261015.json",
+      "count": 1967,
+      "drift": 0
+    },
+    {
+      "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "name": "web-body-node24-source-first-20261015-candidate.json",
+      "count": 6014,
+      "drift": 0
+    },
+    {
+      "name": "web-body-node24-source-first-20261015-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "name": "source5ab-full-manifest-20261015.json",
+      "count": 1967,
+      "drift": 0
+    },
+    {
+      "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "name": "web-body-node24-source-first-20261015-candidate.json",
+      "count": 6014,
+      "drift": 0
+    },
+    {
+      "name": "web-body-node24-source-first-20261015-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "rows": [
+    {
+      "name": "global descriptor Response",
+      "value": {
+        "key": "Response",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "value": {
+          "type": "function",
+          "name": "Response",
+          "length": 0
+        }
+      }
+    },
+    {
+      "name": "global descriptor Request",
+      "value": {
+        "key": "Request",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "value": {
+          "type": "function",
+          "name": "Request",
+          "length": 1
+        }
+      }
+    },
+    {
+      "name": "global descriptor Headers",
+      "value": {
+        "key": "Headers",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "value": {
+          "type": "function",
+          "name": "Headers",
+          "length": 0
+        }
+      }
+    },
+    {
+      "name": "global descriptor ReadableStream",
+      "value": {
+        "key": "ReadableStream",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "value": {
+          "type": "function",
+          "name": "ReadableStream",
+          "length": 0
+        }
+      }
+    },
+    {
+      "name": "global descriptor Blob",
+      "value": {
+        "key": "Blob",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "value": {
+          "type": "function",
+          "name": "Blob",
+          "length": 0
+        }
+      }
+    },
+    {
+      "name": "global descriptor File",
+      "value": {
+        "key": "File",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "value": {
+          "type": "function",
+          "name": "File",
+          "length": 2
+        }
+      }
+    },
+    {
+      "name": "global descriptor FormData",
+      "value": {
+        "key": "FormData",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "value": {
+          "type": "function",
+          "name": "FormData",
+          "length": 0
+        }
+      }
+    },
+    {
+      "name": "global descriptor AbortController",
+      "value": {
+        "key": "AbortController",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "value": {
+          "type": "function",
+          "name": "AbortController",
+          "length": 0
+        }
+      }
+    },
+    {
+      "name": "global descriptor AbortSignal",
+      "value": {
+        "key": "AbortSignal",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "value": {
+          "type": "function",
+          "name": "AbortSignal",
+          "length": 0
+        }
+      }
+    },
+    {
+      "name": "Response constructor descriptors",
+      "value": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": 0
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "Response"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "value": {
+            "type": "object",
+            "tag": "[object Response]"
+          }
+        },
+        {
+          "key": "error",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "error",
+            "length": 0
+          }
+        },
+        {
+          "key": "json",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "json",
+            "length": 1
+          }
+        },
+        {
+          "key": "redirect",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "redirect",
+            "length": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "Response prototype descriptors",
+      "value": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "Response",
+            "length": 0
+          }
+        },
+        {
+          "key": "type",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get type",
+            "length": 0
+          }
+        },
+        {
+          "key": "url",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get url",
+            "length": 0
+          }
+        },
+        {
+          "key": "redirected",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get redirected",
+            "length": 0
+          }
+        },
+        {
+          "key": "status",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get status",
+            "length": 0
+          }
+        },
+        {
+          "key": "ok",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get ok",
+            "length": 0
+          }
+        },
+        {
+          "key": "statusText",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get statusText",
+            "length": 0
+          }
+        },
+        {
+          "key": "headers",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get headers",
+            "length": 0
+          }
+        },
+        {
+          "key": "body",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get body",
+            "length": 0
+          }
+        },
+        {
+          "key": "bodyUsed",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get bodyUsed",
+            "length": 0
+          }
+        },
+        {
+          "key": "clone",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "clone",
+            "length": 0
+          }
+        },
+        {
+          "key": "blob",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "blob",
+            "length": 0
+          }
+        },
+        {
+          "key": "arrayBuffer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "arrayBuffer",
+            "length": 0
+          }
+        },
+        {
+          "key": "text",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "text",
+            "length": 0
+          }
+        },
+        {
+          "key": "json",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "json",
+            "length": 0
+          }
+        },
+        {
+          "key": "formData",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "formData",
+            "length": 0
+          }
+        },
+        {
+          "key": "bytes",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "bytes",
+            "length": 0
+          }
+        },
+        {
+          "key": "Symbol(nodejs.util.inspect.custom)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "[nodejs.util.inspect.custom]",
+            "length": 2
+          }
+        },
+        {
+          "key": "Symbol(Symbol.toStringTag)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "Response"
+        }
+      ]
+    },
+    {
+      "name": "Request constructor descriptors",
+      "value": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": 1
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "Request"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "value": {
+            "type": "object",
+            "tag": "[object Request]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Request prototype descriptors",
+      "value": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "Request",
+            "length": 1
+          }
+        },
+        {
+          "key": "method",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get method",
+            "length": 0
+          }
+        },
+        {
+          "key": "url",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get url",
+            "length": 0
+          }
+        },
+        {
+          "key": "headers",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get headers",
+            "length": 0
+          }
+        },
+        {
+          "key": "destination",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get destination",
+            "length": 0
+          }
+        },
+        {
+          "key": "referrer",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get referrer",
+            "length": 0
+          }
+        },
+        {
+          "key": "referrerPolicy",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get referrerPolicy",
+            "length": 0
+          }
+        },
+        {
+          "key": "mode",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get mode",
+            "length": 0
+          }
+        },
+        {
+          "key": "credentials",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get credentials",
+            "length": 0
+          }
+        },
+        {
+          "key": "cache",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get cache",
+            "length": 0
+          }
+        },
+        {
+          "key": "redirect",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get redirect",
+            "length": 0
+          }
+        },
+        {
+          "key": "integrity",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get integrity",
+            "length": 0
+          }
+        },
+        {
+          "key": "keepalive",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get keepalive",
+            "length": 0
+          }
+        },
+        {
+          "key": "isReloadNavigation",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get isReloadNavigation",
+            "length": 0
+          }
+        },
+        {
+          "key": "isHistoryNavigation",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get isHistoryNavigation",
+            "length": 0
+          }
+        },
+        {
+          "key": "signal",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get signal",
+            "length": 0
+          }
+        },
+        {
+          "key": "body",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get body",
+            "length": 0
+          }
+        },
+        {
+          "key": "bodyUsed",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get bodyUsed",
+            "length": 0
+          }
+        },
+        {
+          "key": "duplex",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get duplex",
+            "length": 0
+          }
+        },
+        {
+          "key": "clone",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "clone",
+            "length": 0
+          }
+        },
+        {
+          "key": "blob",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "blob",
+            "length": 0
+          }
+        },
+        {
+          "key": "arrayBuffer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "arrayBuffer",
+            "length": 0
+          }
+        },
+        {
+          "key": "text",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "text",
+            "length": 0
+          }
+        },
+        {
+          "key": "json",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "json",
+            "length": 0
+          }
+        },
+        {
+          "key": "formData",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "formData",
+            "length": 0
+          }
+        },
+        {
+          "key": "bytes",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "bytes",
+            "length": 0
+          }
+        },
+        {
+          "key": "attribute",
+          "enumerable": true,
+          "configurable": false,
+          "writable": false
+        },
+        {
+          "key": "Symbol(nodejs.util.inspect.custom)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "[nodejs.util.inspect.custom]",
+            "length": 2
+          }
+        },
+        {
+          "key": "Symbol(Symbol.toStringTag)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "Request"
+        }
+      ]
+    },
+    {
+      "name": "Response default instance descriptors",
+      "value": {
+        "shape": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "own": []
+      }
+    },
+    {
+      "name": "Request default instance descriptors",
+      "value": {
+        "shape": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        },
+        "own": []
+      }
+    },
+    {
+      "name": "Response scalar body 0",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response scalar body 1",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response scalar body 2",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response scalar body 3",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "hello",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response scalar body 4",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "a😀é",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response scalar body 5",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "0",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response scalar body 6",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "false",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response scalar body 7",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "1",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response scalar body 8",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "object body",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response init 0",
+      "value": {
+        "status": 200,
+        "statusText": "",
+        "ok": true,
+        "type": "default",
+        "url": "",
+        "redirected": false,
+        "headers": [
+          [
+            "content-type",
+            "text/plain;charset=UTF-8"
+          ]
+        ],
+        "actualHeaders": true,
+        "body": {
+          "actualStream": true,
+          "locked": false
+        },
+        "bodyUsed": false,
+        "tag": "[object Response]",
+        "actualResponse": true
+      }
+    },
+    {
+      "name": "Response init 1",
+      "value": {
+        "status": 200,
+        "statusText": "",
+        "ok": true,
+        "type": "default",
+        "url": "",
+        "redirected": false,
+        "headers": [
+          [
+            "content-type",
+            "text/plain;charset=UTF-8"
+          ]
+        ],
+        "actualHeaders": true,
+        "body": {
+          "actualStream": true,
+          "locked": false
+        },
+        "bodyUsed": false,
+        "tag": "[object Response]",
+        "actualResponse": true
+      }
+    },
+    {
+      "name": "Response init 2",
+      "value": {
+        "status": 200,
+        "statusText": "",
+        "ok": true,
+        "type": "default",
+        "url": "",
+        "redirected": false,
+        "headers": [
+          [
+            "content-type",
+            "text/plain;charset=UTF-8"
+          ]
+        ],
+        "actualHeaders": true,
+        "body": {
+          "actualStream": true,
+          "locked": false
+        },
+        "bodyUsed": false,
+        "tag": "[object Response]",
+        "actualResponse": true
+      }
+    },
+    {
+      "name": "Response init 3",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: Expected 0 to be one of: Null, Undefined, Object.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response init 4",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: Expected false to be one of: Null, Undefined, Object.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response init 5",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: Expected x to be one of: Null, Undefined, Object.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response init 6",
+      "value": {
+        "status": 201,
+        "statusText": "Created",
+        "ok": true,
+        "type": "default",
+        "url": "",
+        "redirected": false,
+        "headers": [
+          [
+            "content-type",
+            "text/plain;charset=UTF-8"
+          ],
+          [
+            "x",
+            "one"
+          ]
+        ],
+        "actualHeaders": true,
+        "body": {
+          "actualStream": true,
+          "locked": false
+        },
+        "bodyUsed": false,
+        "tag": "[object Response]",
+        "actualResponse": true
+      }
+    },
+    {
+      "name": "Response init 7",
+      "error": {
+        "name": "RangeError",
+        "message": "init[\"status\"] must be in the range of 200 to 599, inclusive.",
+        "typeError": false
+      }
+    },
+    {
+      "name": "Response init 8",
+      "error": {
+        "name": "RangeError",
+        "message": "init[\"status\"] must be in the range of 200 to 599, inclusive.",
+        "typeError": false
+      }
+    },
+    {
+      "name": "Response init 9",
+      "error": {
+        "name": "TypeError",
+        "message": "Response constructor: Invalid response status code 204",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response init 10",
+      "error": {
+        "name": "TypeError",
+        "message": "Response constructor: Invalid response status code 205",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response init 11",
+      "error": {
+        "name": "TypeError",
+        "message": "Response constructor: Invalid response status code 304",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response init 12",
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid statusText",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response init 13",
+      "value": {
+        "status": 200,
+        "statusText": "é",
+        "ok": true,
+        "type": "default",
+        "url": "",
+        "redirected": false,
+        "headers": [
+          [
+            "content-type",
+            "text/plain;charset=UTF-8"
+          ]
+        ],
+        "actualHeaders": true,
+        "body": {
+          "actualStream": true,
+          "locked": false
+        },
+        "bodyUsed": false,
+        "tag": "[object Response]",
+        "actualResponse": true
+      }
+    },
+    {
+      "name": "Response init 14",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 256 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response init 15",
+      "value": {
+        "status": 201,
+        "statusText": "",
+        "ok": true,
+        "type": "default",
+        "url": "",
+        "redirected": false,
+        "headers": [
+          [
+            "content-type",
+            "text/plain;charset=UTF-8"
+          ]
+        ],
+        "actualHeaders": true,
+        "body": {
+          "actualStream": true,
+          "locked": false
+        },
+        "bodyUsed": false,
+        "tag": "[object Response]",
+        "actualResponse": true
+      }
+    },
+    {
+      "name": "Response init 16",
+      "error": {
+        "name": "RangeError",
+        "message": "init[\"status\"] must be in the range of 200 to 599, inclusive.",
+        "typeError": false
+      }
+    },
+    {
+      "name": "Response init 17",
+      "error": {
+        "name": "RangeError",
+        "message": "init[\"status\"] must be in the range of 200 to 599, inclusive.",
+        "typeError": false
+      }
+    },
+    {
+      "name": "Response init 18",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response init 19",
+      "value": {
+        "status": 200,
+        "statusText": "",
+        "ok": true,
+        "type": "default",
+        "url": "",
+        "redirected": false,
+        "headers": [
+          [
+            "content-type",
+            "text/plain;charset=UTF-8"
+          ],
+          [
+            "set-cookie",
+            "a=1"
+          ],
+          [
+            "set-cookie",
+            "b=2"
+          ]
+        ],
+        "actualHeaders": true,
+        "body": {
+          "actualStream": true,
+          "locked": false
+        },
+        "bodyUsed": false,
+        "tag": "[object Response]",
+        "actualResponse": true
+      }
+    },
+    {
+      "name": "Response null body status 204",
+      "value": {
+        "before": {
+          "status": 204,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "",
+        "after": {
+          "status": 204,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response null body status 205",
+      "value": {
+        "before": {
+          "status": 205,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "",
+        "after": {
+          "status": 205,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response null body status 304",
+      "value": {
+        "before": {
+          "status": 304,
+          "statusText": "",
+          "ok": false,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "",
+        "after": {
+          "status": 304,
+          "statusText": "",
+          "ok": false,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response empty consume text",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": "",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response empty consume arrayBuffer",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response empty consume bytes",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response empty consume json",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": {
+          "error": {
+            "name": "SyntaxError",
+            "message": "Unexpected end of JSON input",
+            "typeError": false
+          }
+        },
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response empty consume blob",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": {
+          "size": 0,
+          "type": "",
+          "text": ""
+        },
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 0/text",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": "A\u0000�B",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 0/arrayBuffer",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          65,
+          0,
+          255,
+          66
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 0/bytes",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          65,
+          0,
+          255,
+          66
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 1/text",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": "AB",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 1/arrayBuffer",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          65,
+          66
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 1/bytes",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          65,
+          66
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 2/text",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": "AB",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 2/arrayBuffer",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          65,
+          66
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 2/bytes",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          65,
+          66
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 3/text",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": "AB",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 3/arrayBuffer",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          65,
+          66
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 3/bytes",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          65,
+          66
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 4/text",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": "A\u0000B\u0000",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 4/arrayBuffer",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          65,
+          0,
+          66,
+          0
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 4/bytes",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          65,
+          0,
+          66,
+          0
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 5/text",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/x-www-form-urlencoded;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": "a=hello+world&a=%C3%A9",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/x-www-form-urlencoded;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 5/arrayBuffer",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/x-www-form-urlencoded;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          97,
+          61,
+          104,
+          101,
+          108,
+          108,
+          111,
+          43,
+          119,
+          111,
+          114,
+          108,
+          100,
+          38,
+          97,
+          61,
+          37,
+          67,
+          51,
+          37,
+          65,
+          57
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/x-www-form-urlencoded;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 5/bytes",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/x-www-form-urlencoded;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          97,
+          61,
+          104,
+          101,
+          108,
+          108,
+          111,
+          43,
+          119,
+          111,
+          114,
+          108,
+          100,
+          38,
+          97,
+          61,
+          37,
+          67,
+          51,
+          37,
+          65,
+          57
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/x-www-form-urlencoded;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 6/text",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/custom"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": "blob 😀",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/custom"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 6/arrayBuffer",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/custom"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          98,
+          108,
+          111,
+          98,
+          32,
+          240,
+          159,
+          152,
+          128
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/custom"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary 6/bytes",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/custom"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "value": [
+          98,
+          108,
+          111,
+          98,
+          32,
+          240,
+          159,
+          152,
+          128
+        ],
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/custom"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response binary source mutation ownership",
+      "value": {
+        "text": "AB",
+        "source": [
+          90,
+          66
+        ]
+      }
+    },
+    {
+      "name": "Response JSON success and second consumption",
+      "value": {
+        "value": {
+          "x": 1,
+          "nested": [
+            true,
+            null
+          ]
+        },
+        "error": {
+          "name": "TypeError",
+          "message": "Body is unusable: Body has already been read",
+          "typeError": true
+        },
+        "shape": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response JSON malformed",
+      "error": {
+        "name": "SyntaxError",
+        "message": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+        "typeError": false
+      }
+    },
+    {
+      "name": "Response text UTF8 replacement and BOM",
+      "value": {
+        "malformed": "a�(�",
+        "bom": "a"
+      }
+    },
+    {
+      "name": "Response clone independent consumers and headers",
+      "value": {
+        "before": [
+          {
+            "status": 202,
+            "statusText": "",
+            "ok": true,
+            "type": "default",
+            "url": "",
+            "redirected": false,
+            "headers": [
+              [
+                "content-type",
+                "text/plain;charset=UTF-8"
+              ],
+              [
+                "x",
+                "original"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": false
+            },
+            "bodyUsed": false,
+            "tag": "[object Response]",
+            "actualResponse": true
+          },
+          {
+            "status": 202,
+            "statusText": "",
+            "ok": true,
+            "type": "default",
+            "url": "",
+            "redirected": false,
+            "headers": [
+              [
+                "content-type",
+                "text/plain;charset=UTF-8"
+              ],
+              [
+                "x",
+                "changed"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": false
+            },
+            "bodyUsed": false,
+            "tag": "[object Response]",
+            "actualResponse": true
+          }
+        ],
+        "text": [
+          "clone payload",
+          "clone payload"
+        ],
+        "after": [
+          {
+            "status": 202,
+            "statusText": "",
+            "ok": true,
+            "type": "default",
+            "url": "",
+            "redirected": false,
+            "headers": [
+              [
+                "content-type",
+                "text/plain;charset=UTF-8"
+              ],
+              [
+                "x",
+                "original"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": true
+            },
+            "bodyUsed": true,
+            "tag": "[object Response]",
+            "actualResponse": true
+          },
+          {
+            "status": 202,
+            "statusText": "",
+            "ok": true,
+            "type": "default",
+            "url": "",
+            "redirected": false,
+            "headers": [
+              [
+                "content-type",
+                "text/plain;charset=UTF-8"
+              ],
+              [
+                "x",
+                "changed"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": true
+            },
+            "bodyUsed": true,
+            "tag": "[object Response]",
+            "actualResponse": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Response clone consumed",
+      "error": {
+        "name": "TypeError",
+        "message": "Response.clone: Body has already been consumed.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response clone locked",
+      "error": {
+        "name": "TypeError",
+        "message": "Response.clone: Body has already been consumed.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response reader lock release and consumption",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "first": {
+          "done": false,
+          "value": [
+            114,
+            101,
+            97,
+            100,
+            101,
+            114
+          ]
+        },
+        "during": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "afterRelease": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "done": {
+          "done": true
+        }
+      }
+    },
+    {
+      "name": "Response stream actual byte chunks",
+      "value": {
+        "before": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "ABC",
+        "after": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response stream wrong chunk type",
+      "error": {
+        "name": "TypeError",
+        "message": "Received non-Uint8Array chunk",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response stream error identity",
+      "value": {
+        "same": true,
+        "bodyUsed": true
+      }
+    },
+    {
+      "name": "Response stream locked input",
+      "error": {
+        "name": "TypeError",
+        "message": "Response body object should not be disturbed or locked",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response stream disturbed input",
+      "error": {
+        "name": "TypeError",
+        "message": "Response body object should not be disturbed or locked",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response cancel reaches source identity",
+      "value": {
+        "same": true,
+        "shape": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response static json undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "Value is not JSON serializable",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response static json null",
+      "value": {
+        "before": {
+          "status": 201,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ],
+            [
+              "x",
+              "one"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "null"
+      }
+    },
+    {
+      "name": "Response static json true",
+      "value": {
+        "before": {
+          "status": 201,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ],
+            [
+              "x",
+              "one"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "true"
+      }
+    },
+    {
+      "name": "Response static json 123",
+      "value": {
+        "before": {
+          "status": 201,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ],
+            [
+              "x",
+              "one"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "123"
+      }
+    },
+    {
+      "name": "Response static json [object Object]",
+      "value": {
+        "before": {
+          "status": 201,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ],
+            [
+              "x",
+              "one"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "{\"nested\":[\"é\",1]}"
+      }
+    },
+    {
+      "name": "Response static json 1,2",
+      "value": {
+        "before": {
+          "status": 201,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/json"
+            ],
+            [
+              "x",
+              "one"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "text": "[1,2]"
+      }
+    },
+    {
+      "name": "Response static error immutable",
+      "value": {
+        "shape": {
+          "status": 0,
+          "statusText": "",
+          "ok": false,
+          "type": "error",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "error": {
+          "name": "TypeError",
+          "message": "immutable",
+          "typeError": true
+        },
+        "text": ""
+      }
+    },
+    {
+      "name": "Response redirect 301",
+      "value": {
+        "shape": {
+          "status": 301,
+          "statusText": "",
+          "ok": false,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "location",
+              "https://example.test/a%20%C3%A9#f"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "error": {
+          "name": "TypeError",
+          "message": "immutable",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Response redirect 302",
+      "value": {
+        "shape": {
+          "status": 302,
+          "statusText": "",
+          "ok": false,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "location",
+              "https://example.test/a%20%C3%A9#f"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "error": {
+          "name": "TypeError",
+          "message": "immutable",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Response redirect 303",
+      "value": {
+        "shape": {
+          "status": 303,
+          "statusText": "",
+          "ok": false,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "location",
+              "https://example.test/a%20%C3%A9#f"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "error": {
+          "name": "TypeError",
+          "message": "immutable",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Response redirect 307",
+      "value": {
+        "shape": {
+          "status": 307,
+          "statusText": "",
+          "ok": false,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "location",
+              "https://example.test/a%20%C3%A9#f"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "error": {
+          "name": "TypeError",
+          "message": "immutable",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Response redirect 308",
+      "value": {
+        "shape": {
+          "status": 308,
+          "statusText": "",
+          "ok": false,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "location",
+              "https://example.test/a%20%C3%A9#f"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "error": {
+          "name": "TypeError",
+          "message": "immutable",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Response redirect 200",
+      "error": {
+        "name": "RangeError",
+        "message": "Invalid status code 200",
+        "typeError": false
+      }
+    },
+    {
+      "name": "Response redirect invalid URL",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to parse URL from /relative",
+        "typeError": true,
+        "cause": {
+          "name": "TypeError",
+          "message": "Invalid URL",
+          "code": "ERR_INVALID_URL"
+        }
+      }
+    },
+    {
+      "name": "Request init 0",
+      "value": {
+        "before": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        },
+        "text": "",
+        "after": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        }
+      }
+    },
+    {
+      "name": "Request init 1",
+      "value": {
+        "before": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        },
+        "text": "",
+        "after": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        }
+      }
+    },
+    {
+      "name": "Request init 2",
+      "value": {
+        "before": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        },
+        "text": "",
+        "after": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        }
+      }
+    },
+    {
+      "name": "Request init 3",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: Expected 0 to be one of: Null, Undefined, Object.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 4",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: Expected false to be one of: Null, Undefined, Object.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 5",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: Expected x to be one of: Null, Undefined, Object.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 6",
+      "value": {
+        "before": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "POST",
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ],
+            [
+              "x",
+              "one"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        },
+        "text": "payload",
+        "after": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "POST",
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ],
+            [
+              "x",
+              "one"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        }
+      }
+    },
+    {
+      "name": "Request init 7",
+      "error": {
+        "name": "TypeError",
+        "message": "Request with GET/HEAD method cannot have body.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 8",
+      "error": {
+        "name": "TypeError",
+        "message": "Request with GET/HEAD method cannot have body.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 9",
+      "error": {
+        "name": "TypeError",
+        "message": "'TRACE' HTTP method is unsupported.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 10",
+      "error": {
+        "name": "TypeError",
+        "message": "'bad method' is not a valid HTTP method.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 11",
+      "value": {
+        "before": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "custom",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        },
+        "text": "",
+        "after": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "custom",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        }
+      }
+    },
+    {
+      "name": "Request init 12",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: invalid is not an accepted type. Expected one of navigate, same-origin, no-cors, cors.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 13",
+      "error": {
+        "name": "TypeError",
+        "message": "'PUT is unsupported in no-cors mode.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 14",
+      "value": {
+        "before": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "include",
+          "cache": "no-store",
+          "redirect": "manual",
+          "referrer": "",
+          "referrerPolicy": "no-referrer",
+          "integrity": "sha256-x",
+          "keepalive": true,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        },
+        "text": "",
+        "after": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "include",
+          "cache": "no-store",
+          "redirect": "manual",
+          "referrer": "",
+          "referrerPolicy": "no-referrer",
+          "integrity": "sha256-x",
+          "keepalive": true,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        }
+      }
+    },
+    {
+      "name": "Request init 15",
+      "error": {
+        "name": "TypeError",
+        "message": "'only-if-cached' can be set only with 'same-origin' mode",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 16",
+      "value": {
+        "before": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "same-origin",
+          "credentials": "same-origin",
+          "cache": "only-if-cached",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        },
+        "text": "",
+        "after": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "same-origin",
+          "credentials": "same-origin",
+          "cache": "only-if-cached",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        }
+      }
+    },
+    {
+      "name": "Request init 17",
+      "error": {
+        "name": "TypeError",
+        "message": "'window' option 'client' must be null",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 18",
+      "value": {
+        "before": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        },
+        "text": "",
+        "after": {
+          "url": "https://example.test/path?x=1#fragment",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        }
+      }
+    },
+    {
+      "name": "Request init 19",
+      "error": {
+        "name": "TypeError",
+        "message": "RequestInit: Expected signal (\"{}\") to be an instance of AbortSignal.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request init 20",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request input undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to parse URL from undefined",
+        "typeError": true,
+        "cause": {
+          "name": "TypeError",
+          "message": "Invalid URL",
+          "code": "ERR_INVALID_URL"
+        }
+      }
+    },
+    {
+      "name": "Request input null",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to parse URL from null",
+        "typeError": true,
+        "cause": {
+          "name": "TypeError",
+          "message": "Invalid URL",
+          "code": "ERR_INVALID_URL"
+        }
+      }
+    },
+    {
+      "name": "Request input 123",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to parse URL from 123",
+        "typeError": true,
+        "cause": {
+          "name": "TypeError",
+          "message": "Invalid URL",
+          "code": "ERR_INVALID_URL"
+        }
+      }
+    },
+    {
+      "name": "Request input /relative",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to parse URL from /relative",
+        "typeError": true,
+        "cause": {
+          "name": "TypeError",
+          "message": "Invalid URL",
+          "code": "ERR_INVALID_URL"
+        }
+      }
+    },
+    {
+      "name": "Request input https://user:password@example.test/a",
+      "error": {
+        "name": "TypeError",
+        "message": "Request cannot be constructed from a URL that includes credentials: https://user:password@example.test/a",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request input https://example.test/é?x=é#f",
+      "value": {
+        "url": "https://example.test/%C3%A9?x=%C3%A9#f",
+        "method": "GET",
+        "headers": [],
+        "actualHeaders": true,
+        "body": null,
+        "bodyUsed": false,
+        "mode": "cors",
+        "credentials": "same-origin",
+        "cache": "default",
+        "redirect": "follow",
+        "referrer": "about:client",
+        "referrerPolicy": "",
+        "integrity": "",
+        "keepalive": false,
+        "duplex": "half",
+        "destination": "",
+        "actualSignal": true,
+        "aborted": false,
+        "tag": "[object Request]",
+        "actualRequest": true
+      }
+    },
+    {
+      "name": "Request input https://example.test/a",
+      "value": {
+        "url": "https://example.test/a",
+        "method": "GET",
+        "headers": [],
+        "actualHeaders": true,
+        "body": null,
+        "bodyUsed": false,
+        "mode": "cors",
+        "credentials": "same-origin",
+        "cache": "default",
+        "redirect": "follow",
+        "referrer": "about:client",
+        "referrerPolicy": "",
+        "integrity": "",
+        "keepalive": false,
+        "duplex": "half",
+        "destination": "",
+        "actualSignal": true,
+        "aborted": false,
+        "tag": "[object Request]",
+        "actualRequest": true
+      }
+    },
+    {
+      "name": "Request no arguments",
+      "error": {
+        "name": "TypeError",
+        "message": "Request constructor: 1 argument required, but 0 found.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request abort follows actual signal and reason",
+      "value": {
+        "sameSignal": false,
+        "sameReason": true,
+        "shape": {
+          "url": "https://example.test/",
+          "method": "GET",
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": true,
+          "tag": "[object Request]",
+          "actualRequest": true
+        }
+      }
+    },
+    {
+      "name": "Request clone independent body headers signals",
+      "value": {
+        "signalsSame": false,
+        "reasons": [
+          "stop",
+          "stop"
+        ],
+        "before": [
+          {
+            "url": "https://example.test/",
+            "method": "POST",
+            "headers": [
+              [
+                "content-type",
+                "text/plain;charset=UTF-8"
+              ],
+              [
+                "x",
+                "one"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": false
+            },
+            "bodyUsed": false,
+            "mode": "cors",
+            "credentials": "same-origin",
+            "cache": "default",
+            "redirect": "follow",
+            "referrer": "about:client",
+            "referrerPolicy": "",
+            "integrity": "",
+            "keepalive": false,
+            "duplex": "half",
+            "destination": "",
+            "actualSignal": true,
+            "aborted": true,
+            "tag": "[object Request]",
+            "actualRequest": true
+          },
+          {
+            "url": "https://example.test/",
+            "method": "POST",
+            "headers": [
+              [
+                "content-type",
+                "text/plain;charset=UTF-8"
+              ],
+              [
+                "x",
+                "two"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": false
+            },
+            "bodyUsed": false,
+            "mode": "cors",
+            "credentials": "same-origin",
+            "cache": "default",
+            "redirect": "follow",
+            "referrer": "about:client",
+            "referrerPolicy": "",
+            "integrity": "",
+            "keepalive": false,
+            "duplex": "half",
+            "destination": "",
+            "actualSignal": true,
+            "aborted": true,
+            "tag": "[object Request]",
+            "actualRequest": true
+          }
+        ],
+        "text": [
+          "clone",
+          "clone"
+        ]
+      }
+    },
+    {
+      "name": "Request copy transfers body consumption",
+      "value": {
+        "before": [
+          {
+            "url": "https://example.test/",
+            "method": "POST",
+            "headers": [
+              [
+                "content-type",
+                "text/plain;charset=UTF-8"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": true
+            },
+            "bodyUsed": true,
+            "mode": "cors",
+            "credentials": "same-origin",
+            "cache": "default",
+            "redirect": "follow",
+            "referrer": "about:client",
+            "referrerPolicy": "",
+            "integrity": "",
+            "keepalive": false,
+            "duplex": "half",
+            "destination": "",
+            "actualSignal": true,
+            "aborted": false,
+            "tag": "[object Request]",
+            "actualRequest": true
+          },
+          {
+            "url": "https://example.test/",
+            "method": "POST",
+            "headers": [
+              [
+                "content-type",
+                "text/plain;charset=UTF-8"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": false
+            },
+            "bodyUsed": false,
+            "mode": "cors",
+            "credentials": "same-origin",
+            "cache": "default",
+            "redirect": "follow",
+            "referrer": "about:client",
+            "referrerPolicy": "",
+            "integrity": "",
+            "keepalive": false,
+            "duplex": "half",
+            "destination": "",
+            "actualSignal": true,
+            "aborted": false,
+            "tag": "[object Request]",
+            "actualRequest": true
+          }
+        ],
+        "text": "transfer",
+        "after": [
+          {
+            "url": "https://example.test/",
+            "method": "POST",
+            "headers": [
+              [
+                "content-type",
+                "text/plain;charset=UTF-8"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": true
+            },
+            "bodyUsed": true,
+            "mode": "cors",
+            "credentials": "same-origin",
+            "cache": "default",
+            "redirect": "follow",
+            "referrer": "about:client",
+            "referrerPolicy": "",
+            "integrity": "",
+            "keepalive": false,
+            "duplex": "half",
+            "destination": "",
+            "actualSignal": true,
+            "aborted": false,
+            "tag": "[object Request]",
+            "actualRequest": true
+          },
+          {
+            "url": "https://example.test/",
+            "method": "POST",
+            "headers": [
+              [
+                "content-type",
+                "text/plain;charset=UTF-8"
+              ]
+            ],
+            "actualHeaders": true,
+            "body": {
+              "actualStream": true,
+              "locked": true
+            },
+            "bodyUsed": true,
+            "mode": "cors",
+            "credentials": "same-origin",
+            "cache": "default",
+            "redirect": "follow",
+            "referrer": "about:client",
+            "referrerPolicy": "",
+            "integrity": "",
+            "keepalive": false,
+            "duplex": "half",
+            "destination": "",
+            "actualSignal": true,
+            "aborted": false,
+            "tag": "[object Request]",
+            "actualRequest": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Request clone consumed",
+      "error": {
+        "name": "TypeError",
+        "message": "unusable",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request stream without duplex",
+      "error": {
+        "name": "TypeError",
+        "message": "RequestInit: duplex option is required when sending a body.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request stream with duplex",
+      "value": {
+        "before": {
+          "url": "https://example.test/",
+          "method": "POST",
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        },
+        "text": "A",
+        "after": {
+          "url": "https://example.test/",
+          "method": "POST",
+          "headers": [],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        }
+      }
+    },
+    {
+      "name": "Request stream keepalive rejected",
+      "error": {
+        "name": "TypeError",
+        "message": "keepalive",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response form urlencoded roundtrip",
+      "value": {
+        "entries": [
+          [
+            "a",
+            "hello world"
+          ],
+          [
+            "a",
+            "é"
+          ]
+        ],
+        "shape": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": true
+          },
+          "bodyUsed": true,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response FormData actual multipart roundtrip",
+      "value": {
+        "actualMultipart": true,
+        "entries": [
+          [
+            "a",
+            "one"
+          ],
+          [
+            "a",
+            "é"
+          ],
+          [
+            "file",
+            {
+              "name": "sample.txt",
+              "type": "text/plain",
+              "size": 11,
+              "text": "owned bytes"
+            }
+          ]
+        ],
+        "bodyUsed": true
+      }
+    },
+    {
+      "name": "Response formData unsupported type",
+      "error": {
+        "name": "TypeError",
+        "message": "Content-Type was not one of \"multipart/form-data\" or \"application/x-www-form-urlencoded\".",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response called without new",
+      "error": {
+        "name": "TypeError",
+        "message": "Class constructor _Response cannot be invoked without 'new'",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request called without new",
+      "error": {
+        "name": "TypeError",
+        "message": "Class constructor _Request cannot be invoked without 'new'",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response empty body repeated consumption",
+      "value": {
+        "text": [
+          "",
+          ""
+        ],
+        "bodyUsed": false
+      }
+    },
+    {
+      "name": "Request copying consumed body",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot construct a Request with a Request object that has already been used.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request constructor Headers copies own list",
+      "value": {
+        "input": [
+          [
+            "set-cookie",
+            "a=1"
+          ],
+          [
+            "set-cookie",
+            "b=2"
+          ],
+          [
+            "x",
+            "caller"
+          ]
+        ],
+        "request": {
+          "url": "https://example.test/",
+          "method": "GET",
+          "headers": [
+            [
+              "set-cookie",
+              "a=1"
+            ],
+            [
+              "set-cookie",
+              "b=2"
+            ],
+            [
+              "x",
+              "one"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        },
+        "cookies": [
+          "a=1",
+          "b=2"
+        ]
+      }
+    },
+    {
+      "name": "Response constructor Headers copies own list",
+      "value": {
+        "input": [
+          [
+            "set-cookie",
+            "a=1"
+          ],
+          [
+            "set-cookie",
+            "b=2"
+          ],
+          [
+            "x",
+            "caller"
+          ]
+        ],
+        "response": {
+          "status": 200,
+          "statusText": "",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "set-cookie",
+              "a=1"
+            ],
+            [
+              "set-cookie",
+              "b=2"
+            ],
+            [
+              "x",
+              "one"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        },
+        "cookies": [
+          "a=1",
+          "b=2"
+        ]
+      }
+    },
+    {
+      "name": "Response statusText ByteString conversion trace",
+      "value": {
+        "trace": [
+          "status:number",
+          "statusText:string"
+        ],
+        "shape": {
+          "status": 201,
+          "statusText": "Created",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Request init getter conversion order",
+      "value": {
+        "trace": [
+          "method",
+          "headers",
+          "body",
+          "referrer",
+          "referrerPolicy",
+          "mode",
+          "credentials",
+          "cache",
+          "redirect",
+          "integrity",
+          "keepalive",
+          "signal",
+          "window",
+          "duplex",
+          "dispatcher",
+          "priority"
+        ],
+        "shape": {
+          "url": "https://example.test/",
+          "method": "POST",
+          "headers": [
+            [
+              "content-type",
+              "text/plain;charset=UTF-8"
+            ],
+            [
+              "x",
+              "one"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": {
+            "actualStream": true,
+            "locked": false
+          },
+          "bodyUsed": false,
+          "mode": "cors",
+          "credentials": "same-origin",
+          "cache": "default",
+          "redirect": "follow",
+          "referrer": "about:client",
+          "referrerPolicy": "",
+          "integrity": "",
+          "keepalive": false,
+          "duplex": "half",
+          "destination": "",
+          "actualSignal": true,
+          "aborted": false,
+          "tag": "[object Request]",
+          "actualRequest": true
+        }
+      }
+    },
+    {
+      "name": "Response static json missing argument",
+      "error": {
+        "name": "TypeError",
+        "message": "Response.json: 1 argument required, but 0 found.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response static JSON cyclic error",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'self' closes the circle",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response invalid status before invalid header pair fill",
+      "error": {
+        "name": "RangeError",
+        "message": "init[\"status\"] must be in the range of 200 to 599, inclusive.",
+        "typeError": false
+      }
+    },
+    {
+      "name": "Response invalid header sequence conversion before invalid status",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: undefined.headers[0] (1) is not iterable.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response header ByteString conversion before invalid status",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: undefined.headers[0][1] is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response init dictionary getter order",
+      "value": {
+        "trace": [
+          "status",
+          "statusText",
+          "headers"
+        ],
+        "shape": {
+          "status": 201,
+          "statusText": "Created",
+          "ok": true,
+          "type": "default",
+          "url": "",
+          "redirected": false,
+          "headers": [
+            [
+              "x",
+              "one"
+            ]
+          ],
+          "actualHeaders": true,
+          "body": null,
+          "bodyUsed": false,
+          "tag": "[object Response]",
+          "actualResponse": true
+        }
+      }
+    },
+    {
+      "name": "Response statusText Symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: undefined.statusText is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response body Symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "Response: body is a symbol, which cannot be converted to a DOMString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request method Symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: undefined.method is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request body Symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: undefined.body is a symbol, which cannot be converted to a DOMString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request enum Symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: undefined.redirect is a symbol, which cannot be converted to a DOMString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Request invalid URL after method conversion",
+      "error": {
+        "name": "TypeError",
+        "message": "undefined: undefined.method is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "Response method brand text",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Response method brand json",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Response method brand arrayBuffer",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Response method brand bytes",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Response method brand blob",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Response method brand formData",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Response method brand clone",
+      "value": {
+        "synchronous": true,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Request method brand text",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Request method brand json",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Request method brand arrayBuffer",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Request method brand bytes",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Request method brand blob",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Request method brand formData",
+      "value": {
+        "synchronous": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "Request method brand clone",
+      "value": {
+        "synchronous": true,
+        "error": {
+          "name": "TypeError",
+          "message": "Illegal invocation",
+          "code": "ERR_INVALID_THIS",
+          "typeError": true
+        }
+      }
+    },
+    {
+      "name": "actual GC retained body independent Response lifetime",
+      "value": {
+        "responseAlive": false,
+        "chunk": [
+          103,
+          99,
+          32,
+          98,
+          121,
+          116,
+          101,
+          115
+        ]
+      }
+    },
+    {
+      "name": "actual GC released Response body graph",
+      "value": {
+        "responseAlive": false
+      }
+    }
+  ]
+}

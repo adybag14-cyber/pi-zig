@@ -67,10 +67,10 @@ fn labeled(scope: *Scope, argument: c.JSValue, position: usize) !c.JSValue {
     return scope.concat(try scope.concat(try scope.concat(argument, try scope.text("[")), number(scope, position)), try scope.text("]"));
 }
 /// Source deliberately does not IteratorClose on conversion errors here.
-pub fn sequence(scope: *Scope, value: c.JSValue, outer: bool, argument: c.JSValue, provided: c.JSValue) anyerror!c.JSValue {
+pub fn sequence(scope: *Scope, value: c.JSValue, outer: bool, prefix: []const u8, argument: c.JSValue, provided: c.JSValue) anyerror!c.JSValue {
     if (!c.JS_IsObject(value)) {
         const detail = try scope.concat(try scope.concat(try scope.concat(argument, try scope.text(" (")), try stringify(scope, value)), try scope.text(") is not iterable."));
-        try typeError(scope, try scope.concat(try scope.text("Headers constructor: "), detail), null);
+        try typeError(scope, try scope.concat(try scope.concat(try scope.text(prefix), try scope.text(": ")), detail), null);
     }
     const method = if (c.JS_IsFunction(scope.engine.context, provided))
         try scope.call(provided, c.pi_js_undefined(), &.{})
@@ -80,7 +80,7 @@ pub fn sequence(scope: *Scope, value: c.JSValue, outer: bool, argument: c.JSValu
         break :selected try scope.call(iterator, value, &.{});
     };
     if (c.JS_IsNull(method)) try typeError(scope, try scope.text("Cannot read properties of null (reading 'next')"), null);
-    if (c.JS_IsUndefined(method) or !c.JS_IsFunction(scope.engine.context, try scope.get(method, "next"))) try typeError(scope, try scope.concat(try scope.concat(try scope.text("Headers constructor: "), argument), try scope.text(" is not iterable.")), null);
+    if (c.JS_IsUndefined(method) or !c.JS_IsFunction(scope.engine.context, try scope.get(method, "next"))) try typeError(scope, try scope.concat(try scope.concat(try scope.concat(try scope.text(prefix), try scope.text(": ")), argument), try scope.text(" is not iterable.")), null);
     const result = try scope.array();
     var position: usize = 0;
     while (true) {
@@ -92,13 +92,13 @@ pub fn sequence(scope: *Scope, value: c.JSValue, outer: bool, argument: c.JSValu
         // Resolve push before recursive conversion, exactly like seq.push(...).
         const push = try scope.get(result, "push");
         const label = try labeled(scope, argument, position);
-        const converted = if (outer) try sequence(scope, item, false, label, c.pi_js_undefined()) else try byteString(scope, item, "Headers constructor", label);
+        const converted = if (outer) try sequence(scope, item, false, prefix, label, c.pi_js_undefined()) else try byteString(scope, item, prefix, label);
         _ = try scope.call(push, result, &.{converted});
         position += 1;
     }
     return result;
 }
-pub fn record(scope: *Scope, value: c.JSValue) !c.JSValue {
+pub fn record(scope: *Scope, value: c.JSValue, prefix: []const u8, argument: c.JSValue) !c.JSValue {
     const result = try scope.object();
     const proxy = c.JS_IsProxy(value);
     const keys = if (proxy)
@@ -122,11 +122,11 @@ pub fn record(scope: *Scope, value: c.JSValue) !c.JSValue {
             if (c.JS_IsUndefined(descriptor) or !scope.truthy(try scope.get(descriptor, "enumerable"))) continue;
         }
         const key_name = if (proxy) c.pi_js_undefined() else try stringify(scope, key);
-        const key_argument = if (proxy) try scope.text("init") else try scope.concat(try scope.concat(try scope.text("Key "), key_name), try scope.text(" in init"));
-        const typed_key = try byteString(scope, key, "Headers constructor", key_argument);
+        const key_argument = if (proxy) argument else try scope.concat(try scope.concat(try scope.concat(try scope.text("Key "), key_name), try scope.text(" in ")), argument);
+        const typed_key = try byteString(scope, key, prefix, key_argument);
         const raw_value = try scope.own(try js.getKey(scope.engine, value, key));
-        const value_argument = if (proxy) try scope.text("init") else try scope.concat(try scope.concat(try scope.text("init["), key_name), try scope.text("]"));
-        const typed_value = try byteString(scope, raw_value, "Headers constructor", value_argument);
+        const value_argument = if (proxy) argument else try scope.concat(try scope.concat(try scope.concat(argument, try scope.text("[")), key_name), try scope.text("]"));
+        const typed_value = try byteString(scope, raw_value, prefix, value_argument);
         // Ordinary record assignment intentionally preserves Source __proto__
         // setter semantics rather than replacing it with own-property define.
         try js.setKey(scope.engine, result, typed_key, typed_value);
