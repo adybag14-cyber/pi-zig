@@ -1,0 +1,11 @@
+{
+  "tested_code_head": "6bca2ca3173e178449410bb2d97b42b9433d199a",
+  "tested_snapshot": "receipts/web-headers-node24-debug-test-first-20261015-candidate.json",
+  "native_source_tool_vendor_build_inputs": 3834,
+  "native_input_drift": 0,
+  "immutable_receipts": 45,
+  "receipt_byte_drift": 0,
+  "scope": "Source, tools, vendor and build input bytes match the passed Windows Debug Source189 native runtime candidate. Added proof packet and scoped Git attributes are outside native VM identity input trees. Five selected operation allocation failures are not exhaustive full-engine ownership; full Web API and profile matrix remain unqualified.",
+  "staged_files": 49,
+  "staged_blob_byte_drift": 0
+}

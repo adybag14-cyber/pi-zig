@@ -1,0 +1,24 @@
+{
+  "pid": 64676,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "argv": [
+    "build",
+    "build-native-headers-source",
+    "-Doptimize=Debug",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-headers-source -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "created_utc": "2026-10-15T18:37:14.6058261Z",
+  "launched_utc": "2026-10-15T18:37:14.6028432+00:00",
+  "working_directory": "C:/Users/adyba/pi-zig-web-headers-20261015",
+  "outer_seconds": 1320,
+  "settle_seconds": 10,
+  "status": "failed",
+  "exit_code": 1,
+  "completed_utc": "2026-10-15T18:41:50.2090190+00:00"
+}

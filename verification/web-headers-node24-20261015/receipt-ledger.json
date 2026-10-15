@@ -1,0 +1,227 @@
+[
+  {
+    "path": "receipts/durable-19cb534-reference-20261012-all-built-runtime.json",
+    "bytes": 7153406,
+    "sha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba"
+  },
+  {
+    "path": "receipts/root-current8a-npm-tools-before.json",
+    "bytes": 352993,
+    "sha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd"
+  },
+  {
+    "path": "receipts/source5ab-dependency-contract-audit-20261015.json",
+    "bytes": 211110,
+    "sha256": "c6ad1bbcb7cfae3e4369ba93dca7a183cda26c4b32620b065918650eb7977352"
+  },
+  {
+    "path": "receipts/source5ab-full-manifest-20261015.json",
+    "bytes": 556118,
+    "sha256": "dc83fe4b08a0a6bfae300540d0353905e7fba5f072c99891bb39d0170bc0b1be"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-first-20261015-admission.json",
+    "bytes": 25394,
+    "sha256": "474a7d5262b9144e2584659afa795a42322ba2c5b69240edb5d8c2c319361aeb"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-first-20261015-after.json",
+    "bytes": 842,
+    "sha256": "ca08687436dcb099e816d5bb146cad3207e117cd593a5f6ad463e4025e5073a1"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-first-20261015-before.json",
+    "bytes": 842,
+    "sha256": "ca08687436dcb099e816d5bb146cad3207e117cd593a5f6ad463e4025e5073a1"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-first-20261015-candidate.json",
+    "bytes": 1293153,
+    "sha256": "c23028a203e885864739c663a7f314a0443c312a69371fb005f52f8a2e405240"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-first-20261015-controls.json",
+    "bytes": 864,
+    "sha256": "f17b248df3d7fb38d1bd87176d5f156ecd48a1a0787acc422976d404b92f9cfa"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-first-20261015-tools.json",
+    "bytes": 4508818,
+    "sha256": "ce7d170f3dde340cb94aa29c228b83e2e9d3aba2b62615474af3bce67c581018"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-first-20261015-vendor.json",
+    "bytes": 266334,
+    "sha256": "59e03b0f3f4cb0c988de0267bce05102f2e088d23bd41e404af75d2272eadfac"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-first-20261015.process.json",
+    "bytes": 911,
+    "sha256": "76c9b0fdb02aa9b11e5114b7c5275ee93ea45941bd5842586df4ad9bb2d579a7"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-first-20261015.stderr.log",
+    "bytes": 16302,
+    "sha256": "dd794328ad6545ea13c346bf86ec899dbc989fa7fc1c992f8e78f4355f3aca60"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-first-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-second-20261015-admission.json",
+    "bytes": 1382,
+    "sha256": "a2f7868c8efe1c307b08401ceb205b47beb89a78e5d2a2a3ddfa6ac3df971d76"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-second-20261015-after.json",
+    "bytes": 846,
+    "sha256": "2d71785fe37fd10ef544c244de00ba2f441aa4e21cbfd32b2c0d870d32cc3bd2"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-second-20261015-before.json",
+    "bytes": 846,
+    "sha256": "2d71785fe37fd10ef544c244de00ba2f441aa4e21cbfd32b2c0d870d32cc3bd2"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-second-20261015-candidate.json",
+    "bytes": 1293153,
+    "sha256": "c834000c8c28e72c672b6acd3d1fe2408ccec1c20c79c99989036edeb51bd137"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-second-20261015-controls.json",
+    "bytes": 864,
+    "sha256": "f17b248df3d7fb38d1bd87176d5f156ecd48a1a0787acc422976d404b92f9cfa"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-second-20261015-tools.json",
+    "bytes": 4508818,
+    "sha256": "ce7d170f3dde340cb94aa29c228b83e2e9d3aba2b62615474af3bce67c581018"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-second-20261015-vendor.json",
+    "bytes": 266334,
+    "sha256": "59e03b0f3f4cb0c988de0267bce05102f2e088d23bd41e404af75d2272eadfac"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-second-20261015.process.json",
+    "bytes": 911,
+    "sha256": "e45f8b1c713be1fbc7ea4aa660745bc8618e61717625335245edee1040be67f7"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-second-20261015.stderr.log",
+    "bytes": 13208,
+    "sha256": "da0d6bdc7c7020e14232d51fd92f986edad746a555b00ec0ffec976103d18eb3"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-build-second-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-test-first-20261015-admission.json",
+    "bytes": 200,
+    "sha256": "9e51a28422c7c1772898d113dbe04e2e7910c0c9f29b2991bcad24d8087c9a16"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-test-first-20261015-after.json",
+    "bytes": 838,
+    "sha256": "9f6f66fe3e6cc74067f6b4d3a1f73ea128cca19eb171b4a3f8c7596df209114c"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-test-first-20261015-before.json",
+    "bytes": 838,
+    "sha256": "9f6f66fe3e6cc74067f6b4d3a1f73ea128cca19eb171b4a3f8c7596df209114c"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-test-first-20261015-candidate.json",
+    "bytes": 1293153,
+    "sha256": "c834000c8c28e72c672b6acd3d1fe2408ccec1c20c79c99989036edeb51bd137"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-test-first-20261015-controls.json",
+    "bytes": 864,
+    "sha256": "f17b248df3d7fb38d1bd87176d5f156ecd48a1a0787acc422976d404b92f9cfa"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-test-first-20261015-tools.json",
+    "bytes": 4508818,
+    "sha256": "ce7d170f3dde340cb94aa29c228b83e2e9d3aba2b62615474af3bce67c581018"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-test-first-20261015-vendor.json",
+    "bytes": 266334,
+    "sha256": "59e03b0f3f4cb0c988de0267bce05102f2e088d23bd41e404af75d2272eadfac"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-test-first-20261015.process.json",
+    "bytes": 908,
+    "sha256": "fd3b62eb8994854cc72adcaeaf682f652d8a9ca8cc6332f4d73d32498dab36ae"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-test-first-20261015.stderr.log",
+    "bytes": 14517,
+    "sha256": "fd0d983ece7ffd70e69ae012ab7e38e3e3562fa2fd809a9e9861a7ee8aafb894"
+  },
+  {
+    "path": "receipts/web-headers-node24-debug-test-first-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "receipts/web-headers-node24-source-first-20261015-admission.json",
+    "bytes": 288,
+    "sha256": "7b23bc82396a98426c3d3dd43905a9bb6e6cfe4685fb14e3cb0ba5c49fd4b1e1"
+  },
+  {
+    "path": "receipts/web-headers-node24-source-first-20261015-after.json",
+    "bytes": 582,
+    "sha256": "a84091226b043084d472652b910e738a74a16c60b66def336c1c996053b09c22"
+  },
+  {
+    "path": "receipts/web-headers-node24-source-first-20261015-before.json",
+    "bytes": 582,
+    "sha256": "a84091226b043084d472652b910e738a74a16c60b66def336c1c996053b09c22"
+  },
+  {
+    "path": "receipts/web-headers-node24-source-first-20261015-bundled-undici.js.txt",
+    "bytes": 728836,
+    "sha256": "c62030f1e505a4010d9972ecbf40155eddeb355f2a53a9f019a447214e1a9600"
+  },
+  {
+    "path": "receipts/web-headers-node24-source-first-20261015-candidate.json",
+    "bytes": 1291516,
+    "sha256": "71554a32e525035abfe965066812fb2d8b87811a6a462dd678e896ba19586bb9"
+  },
+  {
+    "path": "receipts/web-headers-node24-source-first-20261015-controls.json",
+    "bytes": 1056,
+    "sha256": "1e535bb05077a87db450f5e1105a3eb6e0a74e1a529573db5331406af6ef3bf6"
+  },
+  {
+    "path": "receipts/web-headers-node24-source-first-20261015-frozen.json",
+    "bytes": 1373,
+    "sha256": "4efbd1f835d8e7f5ce4be3d1de484fa845f7a7d9ed95f0825ddfd4505597a1b5"
+  },
+  {
+    "path": "receipts/web-headers-node24-source-first-20261015-output.json",
+    "bytes": 61762,
+    "sha256": "93b7096f3eb61bd778948e84b091ee2f2de39bd0a9a4fc371ae204977ca96149"
+  },
+  {
+    "path": "receipts/web-headers-node24-source-first-20261015.json",
+    "bytes": 1330,
+    "sha256": "fae54c654a97a3cc8107a752b8daad3101aea586e0adbd04cd25bbcddfa22c4e"
+  },
+  {
+    "path": "receipts/web-headers-node24-source-first-20261015.stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "receipts/web-headers-node24-source-first-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]
