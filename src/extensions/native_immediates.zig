@@ -30,6 +30,7 @@ fn cleanup(engine: *em.Engine) void {
     engine.native_immediate_pump = null;
     engine.native_immediate_pending = null;
     engine.native_immediate_referenced = null;
+    engine.native_immediate_before_poll = null;
     engine.native_immediate_cleanup = null;
     inline for (.{ "head", "tail", "current", "previous" }) |name| _ = c.JS_SetPropertyStr(engine.context, s.owner, name, c.pi_js_null());
     engine.freeValue(s.owner);
@@ -40,6 +41,15 @@ pub fn pending(engine: *em.Engine) bool {
 }
 pub fn referenced(engine: *em.Engine) bool {
     return if (state(engine)) |s| s.refs != 0 else |_| false;
+}
+pub fn beforePoll(engine: *em.Engine) !bool {
+    const s = try state(engine);
+    if (s.pumping or !s.timer_phase or c.JS_IsJobPending(engine.runtime)) return false;
+    // A completed check yields its timer turn before fresh poll callbacks are
+    // dispatched. Consuming this boundary lazily inside the next check would
+    // let a timer scheduled by that fresh I/O callback run before its Immediate.
+    s.timer_phase = false;
+    return if (engine.native_immediate_timer_ready) |ready| try ready(engine) else false;
 }
 fn function(scope: *Scope, owner: c.JSValue, name: [*:0]const u8, length: c_int, operation: Method) !c.JSValue {
     var roots = [_]c.JSValue{owner};
@@ -190,10 +200,6 @@ fn finishImmediate(scope: *Scope, owner: c.JSValue, immediate: c.JSValue) !void 
 pub fn pump(engine: *em.Engine) !bool {
     const s = try state(engine);
     if (s.pumping or c.JS_IsJobPending(engine.runtime)) return false;
-    if (s.timer_phase) {
-        s.timer_phase = false;
-        return false;
-    }
     s.pumping = true;
     defer s.pumping = false;
     var worked = false;
@@ -284,6 +290,7 @@ pub fn install(engine: *em.Engine) !void {
     engine.native_immediate_pump = pump;
     engine.native_immediate_pending = pending;
     engine.native_immediate_referenced = referenced;
+    engine.native_immediate_before_poll = beforePoll;
     engine.native_immediate_cleanup = cleanup;
     errdefer cleanup(engine);
     try scope.put(global, "setImmediate", set);

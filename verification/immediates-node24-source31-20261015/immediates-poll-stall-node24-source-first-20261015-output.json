@@ -1,0 +1,21 @@
+{
+  "nodeVersion": "v24.14.0",
+  "oracleScope": "Node builtins only; real127.0.0.1 TCP data callbacks, no PiSDK or external modules",
+  "builtinSourceCount": 368,
+  "actualNativeEntries": 369,
+  "excludedNonSourceKeys": [
+    "configs"
+  ],
+  "builtinAuthoritySha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+  "realLoopbackPolls": 1,
+  "count": 1,
+  "rows": [
+    {
+      "name": "completed-check-to-delayed-real-poll",
+      "value": [
+        "check",
+        "timer"
+      ]
+    }
+  ]
+}

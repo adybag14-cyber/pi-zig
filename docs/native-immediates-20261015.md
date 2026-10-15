@@ -15,7 +15,10 @@ callback and arguments. Pending handle roots are released at VM shutdown.
 
 The engine has unique `native_immediate_state`, `native_immediate_pump`,
 `native_immediate_pending`, `native_immediate_referenced` and
-`native_immediate_cleanup` hooks. A check batch starts only after the microtask
+`native_immediate_cleanup` hooks. The separate `native_immediate_before_poll`
+hook finishes the preceding check/timer boundary before fresh I/O is dispatched;
+`native_immediate_timer_ready` borrows the real timer scheduler's nonblocking
+ready callback. A check batch starts only after the microtask
 checkpoint, detaches its original queue, and drains microtasks between sibling
 callbacks. Nested immediates wait for the next batch, with a timer/poll yield
 between batches. Existing unrelated control hooks are preserved. Timer waiting
@@ -58,3 +61,25 @@ must still intake and qualify this actual engine/installer integration before
 default-loader readiness is claimed. Async-hooks numeric IDs and custom
 promisification metadata are outside this prerequisite. ReleaseSafe, hosted
 profiles, full Pi, release and public activation remain false.
+
+The first native candidate `abaab4bdc58eb4d17886c023fef46bfd71a2d435` passed
+155/155 compile steps and156/156 runtime steps,20/20 tests. Its full posthash
+passed6949 candidate files,19546 compiler files,1774 scoped Node files and nine
+controls, including all file inventories. Owned PIDs51320 and70728 exited0 and
+were independently verified absent. This proves that retained cohort only;
+review then identified a completed-check flag that could survive into fresh I/O.
+
+An additional genuine Node Source1 first completes a check phase, receives
+actual TCP bytes, schedules an Immediate and timer in the poll callback, and
+holds that callback8ms on the real clock so its timer is already due. The actual
+Node trace is `check,timer`. Source child PID51740, created
+`2026-10-15T21:45:45.1181696Z`, exited0 and was independently verified absent.
+Full posthash passed6951 candidate files,1774 Node files, six controls and both
+inventories at21:45:52Z. Supplement expected SHA256 is
+`B50F6ACD8B89FB76A14F0204FC836BB5375E831EF0AC78DEF09FB1F78A448A1F`;
+the original Source31 input and expected JSON remain unchanged.
+
+The correction consumes the completed check boundary before dispatching fresh
+poll records, instead of lazily consuming it inside the newly scheduled check.
+Its native retry must match both Source31 and Source1 before readiness is
+promoted. The Source1 probe and old passing cohort are retained independently.

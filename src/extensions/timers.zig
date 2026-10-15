@@ -66,6 +66,7 @@ fn cleanup(engine: *engine_mod.Engine) void {
     engine.host_scheduler = null;
     engine.host_pump = null;
     engine.host_scheduler_deinit = null;
+    engine.native_immediate_timer_ready = null;
 }
 
 fn failure(context: ?*c.JSContext, err: anyerror) c.JSValue {
@@ -504,6 +505,7 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     if (engine.native_io == null) engine.native_io = io;
     engine.host_pump = pump;
     engine.host_scheduler_deinit = cleanup;
+    engine.native_immediate_timer_ready = pumpReady;
 }
 
 test "native timers resolve real promises preserve arguments and retire cleared intervals" {

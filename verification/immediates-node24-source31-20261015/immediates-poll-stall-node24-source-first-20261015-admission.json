@@ -1,0 +1,8 @@
+{
+  "status": "admitted",
+  "free_kib": 21044544,
+  "observed_utc": "2026-10-15T21:45:44.9901680+00:00",
+  "coordinated_with": "Root explicit Immediates Source grant",
+  "required_kib": 2097152,
+  "heap_mb": 256
+}

@@ -180,6 +180,8 @@ pub const Engine = struct {
     native_immediate_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_immediate_pending: ?*const fn (*Engine) bool = null,
     native_immediate_referenced: ?*const fn (*Engine) bool = null,
+    native_immediate_before_poll: ?*const fn (*Engine) anyerror!bool = null,
+    native_immediate_timer_ready: ?*const fn (*Engine) anyerror!bool = null,
     native_immediate_cleanup: ?*const fn (*Engine) void = null,
     host_await_deadline_ms: ?i64 = null,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
@@ -780,6 +782,9 @@ pub const Engine = struct {
     pub fn pumpControls(self: *Engine) !bool {
         if (self.progress_probe) |probe| probe.control_pumps +%= 1;
         self.refreshUiDeadline();
+        // Complete the preceding check/timer boundary before fresh I/O records
+        // can schedule a new check batch. Timer-created jobs retain priority.
+        if (self.native_immediate_before_poll) |before_poll| if (try before_poll(self)) return true;
         const host_worked = if (self.host_control_pump) |pump| try pump(self) else false;
         const storage_worked = if (self.native_durable_storage_pump) |pump| try pump(self) else false;
         const durable_worked = if (self.native_durable_control_pump) |pump| try pump(self) else false;
@@ -826,10 +831,14 @@ pub const Engine = struct {
         const jobs = try self.runReadyJobs(self.options.job_budget);
         if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
         self.finishJob();
-        const immediate_worked = if (check_phase) (if (self.native_immediate_pump) |pump| try pump(self) else false) else false;
-        const after_immediate = if (immediate_worked) try self.runReadyJobs(self.options.job_budget -| jobs) else 0;
+        const timer_worked = if (check_phase) (if (self.native_immediate_before_poll) |before_poll| try before_poll(self) else false) else false;
+        const timer_jobs = if (timer_worked) try self.runReadyJobs(self.options.job_budget -| jobs) else 0;
         if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
-        return oauth_callback_worked or ai_http_worked or codex_socket_worked or jobs != 0 or immediate_worked or after_immediate != 0;
+        if (timer_worked) self.finishJob();
+        const immediate_worked = if (check_phase) (if (self.native_immediate_pump) |pump| try pump(self) else false) else false;
+        const after_immediate = if (immediate_worked) try self.runReadyJobs(self.options.job_budget -| jobs -| timer_jobs) else 0;
+        if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
+        return oauth_callback_worked or ai_http_worked or codex_socket_worked or jobs != 0 or timer_worked or immediate_worked or timer_jobs != 0 or after_immediate != 0;
     }
 
     /// Run part of a microtask checkpoint. The caller must finish the checkpoint
