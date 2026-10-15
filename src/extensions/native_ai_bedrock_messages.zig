@@ -38,31 +38,81 @@ pub fn text(scope: *Scope, input: c.JSValue, required: bool) !c.JSValue {
     return result;
 }
 pub fn document(scope: *Scope, input: c.JSValue) anyerror!c.JSValue {
-    if (try v.array(scope, input)) {
-        const output = try scope.array();
-        var rows = try v.iterator(scope, input);
-        defer rows.deinit();
-        errdefer rows.closePreserving();
-        while (try rows.next()) |entry| {
-            defer scope.engine.freeValue(entry);
-            _ = try scope.invoke(output, "push", &.{try document(scope, entry)});
-        }
-        return output;
+    const cache_key = "\x00native-bedrock-document";
+    const owner = if (scope.engine.native_module_values.get(cache_key)) |existing| existing else created: {
+        const state = try scope.object();
+        try scope.put(state, "value", c.pi_js_undefined());
+        var roots = [_]c.JSValue{state};
+        // Padding the missing declared argument crosses the actual configured
+        // QuickJS C-function-data stack guard on every recursive value.
+        const guard = try scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, documentRecurse, "", 1, 0, roots.len, &roots)));
+        try scope.put(state, "guard", guard);
+        const Mapper = struct {
+            fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, captured: []const c.JSValue) !c.JSValue {
+                var row: Scope = .{ .engine = engine };
+                defer row.deinit();
+                return c.JS_DupValue(engine.context, try documentGuard(&row, captured[0], if (args.len > 0) args[0] else c.pi_js_undefined()));
+            }
+            fn filter(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+                var row: Scope = .{ .engine = engine };
+                defer row.deinit();
+                var iterator = try v.iterator(&row, if (args.len > 0) args[0] else c.pi_js_undefined());
+                defer iterator.deinit();
+                errdefer iterator.closePreserving();
+                const key = try row.own((try iterator.next()) orelse c.pi_js_undefined());
+                try iterator.close();
+                return c.pi_js_bool(engine.context, @intFromBool(try @import("native_image_arithmetic.zig").compare(engine, .greater, try row.get(key, "length"), c.JS_NewInt32(engine.context, 0))));
+            }
+            fn entry(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, captured: []const c.JSValue) !c.JSValue {
+                var row: Scope = .{ .engine = engine };
+                defer row.deinit();
+                const symbol = try row.own(try engine.checked(c.JS_GetIteratorSymbol(engine.context)));
+                const pair = try v.js.pair(engine, if (args.len > 0) args[0] else c.pi_js_undefined(), symbol);
+                defer for (pair) |value| engine.freeValue(value);
+                const result = try row.array();
+                try row.index(result, 0, pair[0]);
+                try row.index(result, 1, try documentGuard(&row, captured[0], pair[1]));
+                return c.JS_DupValue(engine.context, result);
+            }
+        };
+        try scope.put(state, "mapper", try scope.own(try @import("native_node_function.zig").create(scope.engine, "sanitizeBedrockDocument", 1, Mapper.call, &.{state})));
+        try scope.put(state, "filter", try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Mapper.filter, &.{})));
+        try scope.put(state, "entry", try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Mapper.entry, &.{state})));
+        const retained = c.JS_DupValue(scope.engine.context, state);
+        scope.engine.native_module_values.put(scope.engine.gpa, cache_key, retained) catch |err| {
+            scope.engine.freeValue(retained);
+            return err;
+        };
+        break :created state;
+    };
+    return documentGuard(scope, owner, input);
+}
+fn documentGuard(scope: *Scope, owner: c.JSValue, value: c.JSValue) !c.JSValue {
+    const previous = try scope.get(owner, "value");
+    try scope.set(owner, "value", value);
+    // Existing private data property: restore without allocating host roots,
+    // including on stack/guest/OOM failure and reentrant callback invocation.
+    defer _ = c.JS_SetPropertyStr(scope.engine.context, owner, "value", c.JS_DupValue(scope.engine.context, previous));
+    return scope.call(try scope.get(owner, "guard"), c.pi_js_undefined(), &.{});
+}
+fn documentRecurse(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = v.em.Engine.fromContext(context.?);
+    return documentBody(engine, roots[0]) catch |err| @import("native_sdk.zig").fail(engine, err);
+}
+fn documentBody(engine: *v.em.Engine, owner: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const input = try scope.get(owner, "value");
+    if (try v.array(&scope, input)) return v.js.invoke(engine, input, "map", &.{try scope.get(owner, "mapper")});
+    if (!c.JS_IsNull(input) and c.JS_IsObject(input) and !c.JS_IsFunction(engine.context, input)) {
+        const object = try scope.global("Object");
+        const from_entries = try scope.get(object, "fromEntries");
+        const entries = try scope.invoke(try scope.global("Object"), "entries", &.{input});
+        const filtered = try scope.invoke(entries, "filter", &.{try scope.get(owner, "filter")});
+        const mapped = try scope.invoke(filtered, "map", &.{try scope.get(owner, "entry")});
+        return v.js.call(engine, from_entries, object, &.{mapped});
     }
-    if (!c.JS_IsNull(input) and c.JS_IsObject(input) and !c.JS_IsFunction(scope.engine.context, input)) {
-        const output = try scope.object();
-        var rows = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{input}));
-        defer rows.deinit();
-        errdefer rows.closePreserving();
-        while (try rows.next()) |entry| {
-            defer scope.engine.freeValue(entry);
-            const key = try v.at(scope, entry, 0);
-            if (try v.length(scope, key) == 0) continue;
-            try v.js.setKey(scope.engine, output, key, try document(scope, try v.at(scope, entry, 1)));
-        }
-        return output;
-    }
-    return input;
+    return c.JS_DupValue(engine.context, input);
 }
 fn message(scope: *Scope, role: []const u8, content: c.JSValue) !c.JSValue {
     const result = try scope.object();
@@ -185,7 +235,9 @@ pub fn convert(engine: *v.em.Engine, context: c.JSValue, model: c.JSValue, reten
                 try row.put(block, "toolResult", tool);
                 _ = try row.invoke(blocks, "push", &.{block});
                 if (!c.JS_IsUndefined(split)) {
-                    _ = try row.invoke(siblings, "push", &.{try text(&row, try row.get(split, "caption"), true)});
+                    const caption = try row.object();
+                    try row.put(caption, "text", try row.get(split, "caption"));
+                    _ = try row.invoke(siblings, "push", &.{caption});
                     var images = try v.iterator(&row, try row.get(split, "images"));
                     defer images.deinit();
                     errdefer images.closePreserving();
