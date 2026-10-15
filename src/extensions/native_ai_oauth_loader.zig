@@ -11,6 +11,14 @@ const helpers = @import("native_ai_auth_helpers.zig");
 pub const Kind = enum { anthropic, openaiCodex, openaiChatGPT, githubCopilot, openrouter, kimiCoding, meta, xai, radius };
 const names = .{ "loadAnthropicOAuth", "loadOpenAICodexOAuth", "loadOpenAIChatGPTOAuth", "loadGitHubCopilotOAuth", "loadOpenRouterOAuth", "loadKimiCodingOAuth", "loadMetaOAuth", "loadXaiOAuth", "loadRadiusOAuth" };
 const exports = .{ "anthropicOAuth", "openaiCodexOAuth", "openaiChatGPTOAuth", "githubCopilotOAuth", "openRouterOAuth", "kimiCodingOAuth", "metaOAuth", "xaiOAuth", "createRadiusOAuth" };
+/// The public module has one bundled-loader binding and import cache per realm.
+/// Provider factories and direct consumers must retain this same namespace.
+pub fn namespace(engine: *v.em.Engine) !c.JSValue {
+    if (engine.native_ai_oauth_loader_namespace) |value| return c.JS_DupValue(engine.context, value);
+    const value = try create(engine);
+    engine.native_ai_oauth_loader_namespace = c.JS_DupValue(engine.context, value);
+    return value;
+}
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -24,7 +32,7 @@ pub fn createWithCatalog(engine: *v.em.Engine, github_models: c.JSValue) !c.JSVa
     try scope.put(state, "bundledLoaders", c.pi_js_undefined());
     try scope.put(state, "modules", try scope.object());
     try scope.put(state, "githubModels", github_models);
-    const namespace = try scope.object();
+    const module_exports = try scope.object();
     const Register = struct {
         fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
             var local: Scope = .{ .engine = host };
@@ -33,16 +41,16 @@ pub fn createWithCatalog(engine: *v.em.Engine, github_models: c.JSValue) !c.JSVa
             return c.pi_js_undefined();
         }
     };
-    try scope.put(namespace, "registerBundledOAuthFlowLoaders", try scope.own(try functions.create(engine, "registerBundledOAuthFlowLoaders", 1, Register.call, &.{state})));
+    try scope.put(module_exports, "registerBundledOAuthFlowLoaders", try scope.own(try functions.create(engine, "registerBundledOAuthFlowLoaders", 1, Register.call, &.{state})));
     inline for (names, 0..) |name, index| {
         const Adapter = struct {
             fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
                 return load(host, roots[0], @enumFromInt(index), if (args.len > 0) args[0] else c.pi_js_undefined());
             }
         };
-        try scope.put(namespace, name, try scope.own(try helpers.asyncArrow(engine, name, if (index == 8) 1 else 0, Adapter.call, &.{state})));
+        try scope.put(module_exports, name, try scope.own(try helpers.asyncArrow(engine, name, if (index == 8) 1 else 0, Adapter.call, &.{state})));
     }
-    return c.JS_DupValue(engine.context, namespace);
+    return c.JS_DupValue(engine.context, module_exports);
 }
 fn load(engine: *v.em.Engine, state: c.JSValue, kind: Kind, options: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
@@ -90,7 +98,7 @@ fn imported(engine: *v.em.Engine, owner: c.JSValue, _: c.JSValue, _: bool, _: c_
 }
 fn initialize(scope: *Scope, owner: c.JSValue) !void {
     const kind = try ownerKind(scope, owner);
-    const namespace = try scope.object();
+    const module_exports = try scope.object();
     const value = switch (kind) {
         .anthropic => try @import("native_ai_oauth_anthropic.zig").create(scope.engine),
         .openaiCodex => try @import("native_ai_oauth_codex.zig").create(scope.engine),
@@ -103,8 +111,8 @@ fn initialize(scope: *Scope, owner: c.JSValue) !void {
         .radius => try @import("native_ai_oauth_radius.zig").factory(scope.engine),
     };
     _ = try scope.own(value);
-    inline for (exports, 0..) |name, index| if (@intFromEnum(kind) == index) try scope.put(namespace, name, value);
-    return flow.settle(scope.engine, owner, false, namespace);
+    inline for (exports, 0..) |name, index| if (@intFromEnum(kind) == index) try scope.put(module_exports, name, value);
+    return flow.settle(scope.engine, owner, false, module_exports);
 }
 fn loaded(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
     if (rejected) return flow.settle(engine, owner, true, value);
@@ -112,12 +120,12 @@ fn loaded(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bo
     defer scope.deinit();
     completeLoad(&scope, owner, value) catch |err| try flow.rejectError(engine, owner, err);
 }
-fn completeLoad(scope: *Scope, owner: c.JSValue, namespace: c.JSValue) !void {
+fn completeLoad(scope: *Scope, owner: c.JSValue, module_exports: c.JSValue) !void {
     const kind = try ownerKind(scope, owner);
     var value = c.pi_js_undefined();
     inline for (exports, 0..) |name, index| if (@intFromEnum(kind) == index) {
-        value = try scope.get(namespace, name);
+        value = try scope.get(module_exports, name);
     };
-    if (kind == .radius) value = try scope.call(value, namespace, &.{try scope.get(owner, "options")});
+    if (kind == .radius) value = try scope.call(value, module_exports, &.{try scope.get(owner, "options")});
     return flow.settle(scope.engine, owner, false, value);
 }
