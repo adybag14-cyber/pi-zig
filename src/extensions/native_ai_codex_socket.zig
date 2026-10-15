@@ -19,6 +19,7 @@ const Connection = struct {
     closed: bool = false,
     busy: bool = true,
     cached: bool = false,
+    cache_current: bool = false,
     fn freeWaiter(engine: *v.em.Engine, waiter: ?Waiter) void {
         if (waiter) |w| {
             engine.freeValue(w.resolve);
@@ -168,7 +169,7 @@ pub fn acquire(engine: *v.em.Engine, input: raw.Input, session: c.JSValue, accou
     var connection: ?*Connection = null;
     const now = try scope.invoke(try scope.global("Date"), "now", &.{});
     if (scope.truthy(session)) for (state.connections.items) |candidate| {
-        if (!candidate.cached or candidate.closed or !scope.equal(try scope.get(candidate.meta, "sessionId"), session) or !scope.equal(try scope.get(candidate.meta, "accountId"), account)) continue;
+        if (!candidate.cache_current or candidate.closed or !scope.equal(try scope.get(candidate.meta, "sessionId"), session) or !scope.equal(try scope.get(candidate.meta, "accountId"), account)) continue;
         try clearIdleTimer(&scope, candidate);
         if (!candidate.busy and !candidate.worker.finished.load(.acquire)) {
             const age = try scope.own(try arithmetic.binary(engine, .subtract, now, try scope.get(candidate.meta, "createdAt")));
@@ -206,7 +207,7 @@ pub fn acquire(engine: *v.em.Engine, input: raw.Input, session: c.JSValue, accou
         const fresh = try engine.gpa.create(Connection);
         errdefer engine.gpa.destroy(fresh);
         var cached = scope.truthy(session);
-        if (cached) for (state.connections.items) |entry| if (entry.cached and !entry.closed and scope.equal(try scope.get(entry.meta, "sessionId"), session) and scope.equal(try scope.get(entry.meta, "accountId"), account)) {
+        if (cached) for (state.connections.items) |entry| if (entry.cache_current and !entry.closed and scope.equal(try scope.get(entry.meta, "sessionId"), session) and scope.equal(try scope.get(entry.meta, "accountId"), account)) {
             cached = false;
             break;
         };
@@ -255,6 +256,18 @@ pub fn pump(engine: *v.em.Engine) !bool {
             switch (event) {
                 .connected => {
                     connection.connected = true;
+                    if (connection.cached) {
+                        // Source publishes the cache entry only after connect.
+                        // Simultaneous initial connects can both own entries;
+                        // retain both workers even when the later entry replaces
+                        // the map selection so cleanup cannot leak either one.
+                        const session = try scope.get(connection.meta, "sessionId");
+                        const account = try scope.get(connection.meta, "accountId");
+                        for (state.connections.items) |other| if (other.cache_current and scope.equal(try scope.get(other.meta, "sessionId"), session) and scope.equal(try scope.get(other.meta, "accountId"), account)) {
+                            other.cache_current = false;
+                        };
+                        connection.cache_current = true;
+                    }
                     if (connection.ready) |waiter| {
                         connection.ready = null;
                         try settle(&scope, waiter, c.pi_js_undefined(), false);

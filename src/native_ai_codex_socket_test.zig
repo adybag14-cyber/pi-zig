@@ -192,6 +192,12 @@ test "native Codex socket owner reuses the real connection retains guest metadat
 }
 
 test "native Codex socket session cleanup disconnects both busy cached and uncached owned connections" {
+    try checkConcurrentCleanup(false);
+}
+test "native Codex socket publishes simultaneous initial cache entries after connect and retains both for cleanup" {
+    try checkConcurrentCleanup(true);
+}
+fn checkConcurrentCleanup(comptime simultaneous: bool) !void {
     var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
     defer arena.deinit();
     const a = arena.allocator();
@@ -222,9 +228,12 @@ test "native Codex socket session cleanup disconnects both busy cached and uncac
     defer engine.deinit();
     try installOwnerFixture(engine, try first.url(a), object(connections[0], "headers"), &.{}, "acquireOwnedSocket");
     try installOwnerFixture(engine, try second.url(a), object(connections[0], "headers"), &.{}, "acquireConcurrentOwnedSocket");
-    const result = engine.evalModule(
-        \\const first=acquireOwnedSocket();const second=acquireConcurrentOwnedSocket();await Promise.all([first.ready,second.ready]);if(!first.cached||second.cached||first.reused||second.reused)throw Error('busy ownership');closeOwnedSocketSession();export const proof=true;
-    , "native-owned-codex-concurrent-cleanup.mjs") catch |err| {
+    const script = if (simultaneous)
+        \\const first=acquireOwnedSocket();const second=acquireConcurrentOwnedSocket();await Promise.all([first.ready,second.ready]);if(!first.cached||!second.cached||first.reused||second.reused)throw Error('initial concurrent ownership');closeOwnedSocketSession();export const proof=true;
+    else
+        \\const first=acquireOwnedSocket();await first.ready;const second=acquireConcurrentOwnedSocket();await second.ready;if(!first.cached||second.cached||first.reused||second.reused)throw Error('busy ownership');closeOwnedSocketSession();export const proof=true;
+    ;
+    const result = engine.evalModule(script, "native-owned-codex-concurrent-cleanup.mjs") catch |err| {
         std.debug.print("Codex concurrent cleanup: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
     };
