@@ -134,10 +134,17 @@ pub fn resolve(a: std.mem.Allocator, env: *const std.process.Environ.Map, profil
     inline for (.{ "accessKeyId", "secretAccessKey", "sessionToken" }) |key| if (types.string(credentials, key) == null or types.string(credentials, key).?.len == 0) return fail(a, "SSO returns an invalid temporary credential.");
     if (expiration_ms == null or expiration_ms.? == 0) return fail(a, "SSO returns an invalid temporary credential.");
     _ = try budget.remaining();
-    return .{ .credentials = try types.fromJson(a, credentials, @divFloor(expiration_ms.?, 1000)) };
+    var result = try types.fromJson(a, credentials, @divFloor(expiration_ms.?, 1000));
+    // The installed SDK RoleCredentials schema has exactly four members;
+    // unknown accountId/credentialScope wire fields are not exposed.
+    if (result.account_id) |value| a.free(value);
+    if (result.credential_scope) |value| a.free(value);
+    result.account_id = null;
+    result.credential_scope = null;
+    return .{ .credentials = result };
 }
 fn refresh(a: std.mem.Allocator, env: *const std.process.Environ.Map, token: *std.json.Parsed(std.json.Value), region: []const u8, file: []const u8, now: i64, budget: Budget) !?std.json.Parsed(std.json.Value) {
-    const body = try std.json.Stringify.valueAlloc(a, .{ .clientId = types.string(token.value, "clientId"), .clientSecret = types.string(token.value, "clientSecret"), .refreshToken = types.string(token.value, "refreshToken"), .grantType = "refresh_token" }, .{});
+    const body = try std.json.Stringify.valueAlloc(a, .{ .clientId = types.string(token.value, "clientId"), .clientSecret = types.string(token.value, "clientSecret"), .grantType = "refresh_token", .refreshToken = types.string(token.value, "refreshToken") }, .{});
     defer {
         @memset(body, 0);
         a.free(body);

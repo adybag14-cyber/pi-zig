@@ -31,6 +31,15 @@ pub fn configure(s: *Scope, dependencies: c.JSValue, model: c.JSValue, options: 
     if (!s.truthy(bearer)) bearer = try v.optional(s, options, "apiKey");
     if (!s.truthy(bearer)) bearer = try s.invoke(env_module, "getProviderEnvValue", &.{ try s.text("AWS_BEARER_TOKEN_BEDROCK"), scoped_env });
     try s.put(result, "bearerToken", if (s.truthy(bearer) and !try v.eq(s, skip, "1")) bearer else c.pi_js_undefined());
+    // The SDK separately tests key presence in ambient process.env. Empty
+    // values still select httpBearerAuth even when Source's truthy lookup
+    // omitted its configured token (genuine credential Source25).
+    const process_env = try v.optional(s, try s.global("process"), "env");
+    const bearer_key = try s.text("AWS_BEARER_TOKEN_BEDROCK");
+    if (!v.nullish(process_env) and try v.js.hasKey(s.engine, process_env, bearer_key)) {
+        try s.put(result, "sdkBearerSelected", c.pi_js_bool(s.engine.context, 1));
+        try s.put(result, "sdkBearerToken", try s.own(try v.js.getKey(s.engine, process_env, bearer_key)));
+    }
     var region = try @import("native_ai_bedrock_request.zig").configuredRegion(s, options);
     const base = try s.get(model, "baseUrl");
     const ambient_profile = try s.invoke(env_module, "getProviderEnvValue", &.{try s.text("AWS_PROFILE")});
@@ -90,7 +99,15 @@ pub fn prepare(a: std.mem.Allocator, request: prep.View, data: []const u8, budge
     errdefer a.free(url);
     const now: i64 = @intCast(@divFloor(std.Io.Clock.real.now(budget.io).toMilliseconds(), 1000));
     const skip = if (input.object.get("skipAuth")) |value| value == .bool and value.bool else false;
-    if (field(input, "bearerToken")) |bearer| {
+    const sdk_bearer_selected = if (input.object.get("sdkBearerSelected")) |value| value == .bool and value.bool else false;
+    const bearer_token = field(input, "bearerToken") orelse if (sdk_bearer_selected) field(input, "sdkBearerToken") else null;
+    if (sdk_bearer_selected and (bearer_token == null or bearer_token.?.len == 0)) {
+        var failure = try @import("native_ai_http_failure.zig").Owned.init(a, "Error", "request could not be signed with `token` since the `token` is not defined", null);
+        errdefer failure.deinit(a);
+        _ = try budget.remaining();
+        return .{ .url = url, .headers = try a.alloc(std.http.Header, 0), .failure = failure };
+    }
+    if (bearer_token) |bearer| {
         const value = try std.fmt.allocPrint(a, "Bearer {s}", .{bearer});
         defer a.free(value);
         const headers = try a.alloc(std.http.Header, 1);

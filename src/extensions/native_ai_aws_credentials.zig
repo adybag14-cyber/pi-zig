@@ -74,7 +74,10 @@ fn resolveInner(a: std.mem.Allocator, io: std.Io, env: *const std.process.Enviro
         defer temporary.deinit(a);
         return copy(a, temporary.borrowed(), temporary.expiration_unix, now);
     }
-    if (imds.metadataDisabled(env)) return error.MissingBedrockCredentials;
+    if (imds.metadataDisabled(env)) {
+        failure.* = try types.Failure.init(a, "CredentialsProviderError", "Could not load credentials from any providers", false);
+        return error.AwsModeledCredentialFailure;
+    }
     var temporary = try imds.fetchCredentialsWithOptions(a, io, try imds.resolveConfig(env, null), try httpOptions(budget));
     defer temporary.deinit(a);
     return copy(a, temporary.borrowed(), temporary.expiration_unix, now);
@@ -123,9 +126,19 @@ fn resolveProfile(a: std.mem.Allocator, io: std.Io, env: *const std.process.Envi
         return try copy(a, temporary.borrowed(), temporary.expiration_unix, now);
     }
     if (profile.credential_process) |command| {
-        var temporary = try runProcess(a, io, command, budget);
+        var temporary = runProcess(a, io, command, budget) catch |err| {
+            const suffix: []const u8 = switch (err) {
+                error.UnsupportedCredentialProcessVersion => "did not return Version 1.",
+                error.SyntaxError, error.UnexpectedEndOfInput, error.InvalidNumber, error.Overflow => "returned invalid JSON.",
+                error.InvalidCredentialProcessOutput => "returned invalid credentials.",
+                else => return err,
+            };
+            return processFailure(a, name, suffix, failure);
+        };
         defer temporary.deinit(a);
-        return try copy(a, temporary.borrowed(), temporary.expiration_unix, now);
+        if (temporary.expiration_unix) |expires| if (expires < now) return processFailure(a, name, "returned expired credentials.", failure);
+        // SDK comparison is strictly earlier than now; equality is not expired.
+        return try copy(a, temporary.borrowed(), temporary.expiration_unix, if (temporary.expiration_unix == now) now - 1 else now);
     }
     if (profile.sso_session != null or profile.sso_start_url != null or profile.sso_account_id != null or profile.sso_role_name != null or profile.sso_region != null) {
         const result = try @import("native_ai_aws_sso.zig").resolve(a, env, &profile, now, budget);
@@ -148,6 +161,12 @@ fn resolveProfile(a: std.mem.Allocator, io: std.Io, env: *const std.process.Envi
         }
     }
     return null;
+}
+fn processFailure(a: std.mem.Allocator, profile: []const u8, suffix: []const u8, failure: *?types.Failure) !?Credentials {
+    const message = try std.fmt.allocPrint(a, "Profile {s} credential_process {s}", .{ profile, suffix });
+    defer a.free(message);
+    failure.* = try types.Failure.init(a, "CredentialsProviderError", message, true);
+    return error.AwsModeledCredentialFailure;
 }
 fn assumeRole(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ.Map, source: bedrock.AwsCredentials, options: role.Options, now: i64, budget: Budget) !role.OwnedAssumedCredentials {
     const endpoint = if (env.get("AWS_ENDPOINT_URL_STS")) |url| try a.dupe(u8, url) else try role.endpointForRegion(a, options.region);

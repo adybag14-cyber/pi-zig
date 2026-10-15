@@ -97,7 +97,7 @@ pub fn resolve(a: std.mem.Allocator, env: *const std.process.Environ.Map, profil
     };
     defer a.free(proof);
     // tokenInput is Smithy's HTTP payload binding; the wire body is the inner object.
-    const body = try std.json.Stringify.valueAlloc(a, .{ .clientId = types.string(fresh.value, "clientId"), .refreshToken = types.string(fresh.value, "refreshToken"), .grantType = "refresh_token" }, .{});
+    const body = try std.json.Stringify.valueAlloc(a, .{ .clientId = types.string(fresh.value, "clientId"), .grantType = "refresh_token", .refreshToken = types.string(fresh.value, "refreshToken") }, .{});
     defer {
         @memset(body, 0);
         a.free(body);
