@@ -1,0 +1,30 @@
+{
+  "status": "actual_class_and_source20_controls_prepared_unrun",
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "source_files": 1970,
+  "runtime_files": 31064,
+  "node_files": 1774,
+  "declared_absent_packages": 84,
+  "source_cases": 20,
+  "native_class": "native_sdk_runtime_credentials_production.constructor(engine) returns owned ordinary RuntimeCredentials",
+  "actual_prototype_members": 9,
+  "actual_constructor_length": 1,
+  "pending_ownership_entry_prepared": true,
+  "model_runtime_create_body": "native_sdk_model_runtime_create_production.install(engine, actualRuntimeConstructor, actualImports)",
+  "model_runtime_required_constructor_arguments": ["RuntimeCredentials instance", "ModelConfig instance", "modelsPath", "modelsStore", "42 actual wrapped providers", "PI_OFFLINE is undefined"],
+  "source_only_dependency_owners": {
+    "actual_ModelRuntime_class": "ui_overlay_ae7_15",
+    "ModelConfig_and_ModelsStore": "oauth_chatgpt_15",
+    "FileAuthStorageBackend": "oauth_anthropic_router_15",
+    "actual_42_factory_catalog": "ai_anthropic_federation_15",
+    "remote_personalized_wrappers": "web_crypto_15"
+  },
+  "source_capture_run": false,
+  "expected_exists": false,
+  "native_compile_run": false,
+  "native_runtime_run": false,
+  "credentials_qualified": false,
+  "default_model_runtime_qualified": false,
+  "factory_qualified": false,
+  "whole_pi_qualified": false
+}
