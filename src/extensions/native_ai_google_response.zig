@@ -135,46 +135,67 @@ fn get(engine: *v.em.Engine, receiver: c.JSValue, kind: Kind) !c.JSValue {
         else => unreachable,
     });
 }
+fn copyList(scope: *Scope, value: c.JSValue) !c.JSValue {
+    if (!try v.array(scope, value)) return value;
+    const Identity = struct {
+        fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            return c.JS_DupValue(engine.context, if (args.len > 0) args[0] else c.pi_js_undefined());
+        }
+    };
+    return scope.invoke(value, "map", &.{try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Identity.call, &.{}))});
+}
+fn candidate(scope: *Scope, value: c.JSValue) !c.JSValue {
+    const output = try scope.object();
+    inline for (.{ "content", "citationMetadata", "tokenCount", "finishReason", "groundingMetadata", "avgLogprobs", "index", "logprobsResult", "safetyRatings", "urlContextMetadata" }) |key| {
+        const field = try v.optional(scope, value, key);
+        if (!v.nullish(field)) {
+            if (@import("std").mem.eql(u8, key, "citationMetadata")) {
+                const citations = try scope.object();
+                const sources = try v.optional(scope, field, "citationSources");
+                if (!v.nullish(sources)) try scope.put(citations, "citations", try copyList(scope, sources));
+                try scope.put(output, key, citations);
+            } else if (@import("std").mem.eql(u8, key, "safetyRatings")) {
+                try scope.put(output, key, try copyList(scope, field));
+            } else try scope.put(output, key, field);
+        }
+    }
+    return output;
+}
 pub fn wrap(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_headers: c.JSValue, vertex: bool) !c.JSValue {
     const result = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, 0, null)));
-    inline for (.{ "candidates", "modelVersion", "promptFeedback", "responseId", "usageMetadata" }) |key| {
+    const candidates = try scope.get(raw, "candidates");
+    if (!v.nullish(candidates)) {
+        var converted = candidates;
+        if (vertex) {
+            converted = try copyList(scope, candidates);
+        } else if (try v.array(scope, candidates)) {
+            const Convert = struct {
+                fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+                    engine.native_exception_diagnostics_suppressed += 1;
+                    defer engine.native_exception_diagnostics_suppressed -= 1;
+                    var row: Scope = .{ .engine = engine };
+                    defer row.deinit();
+                    return c.JS_DupValue(engine.context, try candidate(&row, if (args.len > 0) args[0] else c.pi_js_undefined()));
+                }
+            };
+            converted = try scope.invoke(candidates, "map", &.{try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Convert.call, &.{}))});
+        }
+        try scope.put(result, "candidates", converted);
+    }
+    if (vertex) {
+        const create_time = try scope.get(raw, "createTime");
+        if (!v.nullish(create_time)) try scope.put(result, "createTime", create_time);
+    }
+    inline for (.{ "modelVersion", "promptFeedback", "responseId", "usageMetadata" }) |key| {
         const value = try scope.get(raw, key);
         if (!v.nullish(value)) try scope.put(result, key, value);
     }
-    const extra = try scope.get(raw, if (vertex) "createTime" else "modelStatus");
-    if (!v.nullish(extra)) try scope.put(result, if (vertex) "createTime" else "modelStatus", extra);
+    if (!vertex) {
+        const status = try scope.get(raw, "modelStatus");
+        if (!v.nullish(status)) try scope.put(result, "modelStatus", status);
+    }
     const http = try scope.object();
     try scope.put(http, "headers", try v.spread(scope, response_headers));
     try scope.put(result, "sdkHttpResponse", http);
-    if (!vertex) {
-        const candidates = try scope.get(result, "candidates");
-        if (try v.array(scope, candidates)) {
-            const filtered = try scope.array();
-            var rows = try v.iterator(scope, candidates);
-            defer rows.deinit();
-            errdefer rows.closePreserving();
-            while (try rows.next()) |candidate| {
-                defer scope.engine.freeValue(candidate);
-                var row: Scope = .{ .engine = scope.engine };
-                defer row.deinit();
-                const copy = try row.object();
-                inline for (.{ "content", "citationMetadata", "tokenCount", "finishReason", "groundingMetadata", "avgLogprobs", "index", "logprobsResult", "safetyRatings", "urlContextMetadata" }) |key| {
-                    const value = try v.optional(&row, candidate, key);
-                    if (!v.nullish(value)) {
-                        if (@import("std").mem.eql(u8, key, "citationMetadata")) {
-                            const citations = try row.object();
-                            const sources = try row.get(value, "citationSources");
-                            if (!v.nullish(sources)) try row.put(citations, "citations", sources);
-                            try row.put(copy, key, citations);
-                        } else if (@import("std").mem.eql(u8, key, "safetyRatings") and try v.array(&row, value)) {
-                            try row.put(copy, key, try row.invoke(value, "slice", &.{}));
-                        } else try row.put(copy, key, value);
-                    }
-                }
-                _ = try row.invoke(filtered, "push", &.{copy});
-            }
-            try scope.put(result, "candidates", filtered);
-        }
-    }
     return result;
 }
