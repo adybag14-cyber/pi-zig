@@ -107,10 +107,35 @@ fn continued(engine: *js.Engine, owner: c.JSValue, value: c.JSValue, rejected: b
         if (@as(Stage, @enumFromInt(raw)) == .teeRead) {
             const reason = async_value.reason(engine, err);
             defer engine.freeValue(reason);
-            try teeAbort(&scope, try scope.get(owner, "agent"), reason);
+            if (err == error.OutOfMemory) {
+                try teeHostFailure(engine, owner, reason);
+            } else teeAbort(&scope, try scope.get(owner, "agent"), reason) catch |failure| {
+                if (failure != error.OutOfMemory) return failure;
+                try teeHostFailure(engine, owner, reason);
+            };
         }
         try async_value.rejectError(engine, owner, err);
     };
+}
+fn teeHostFailure(engine: *js.Engine, owner: c.JSValue, reason: c.JSValue) !void {
+    const data = try js.get(engine, owner, "agent");
+    defer engine.freeValue(data);
+    const retained = try bindings(engine);
+    // Use direct private-property references and real native state. Repeating
+    // Scope.get after permanent host OOM strands the public readers because
+    // only the ignored tee continuation's capability would be rejected.
+    try js.define(engine, data, "closed", c.pi_js_bool(engine.context, 1));
+    inline for (.{ "controller1", "controller2" }) |key| {
+        const controller = try js.get(engine, data, key);
+        defer engine.freeValue(controller);
+        try core.errorControllerAfterHostFailure(engine, retained, controller, reason);
+    }
+    const source = try js.get(engine, data, "stream");
+    defer engine.freeValue(source);
+    try core.errorStreamAfterHostFailure(engine, retained, source, reason);
+    const cancel_owner = try js.get(engine, data, "cancelOwner");
+    defer engine.freeValue(cancel_owner);
+    try async_value.settle(engine, cancel_owner, true, reason);
 }
 fn begin(scope: *Scope, data: c.JSValue, owner: c.JSValue, args: []const c.JSValue, operation: Operation) !void {
     if (operation == .cancelSource) {
