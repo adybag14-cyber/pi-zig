@@ -69,36 +69,8 @@ fn field(object: std.json.Value, name: []const u8) ?[]const u8 {
     return if (value == .string) value.string else null;
 }
 pub fn prepare(a: std.mem.Allocator, request: prep.View, data: []const u8, budget: prep.Budget) !prep.Prepared {
-    const Completion = union(enum) { prepared: anyerror!prep.Prepared, canceled: anyerror!void };
-    var results: [2]Completion = undefined;
-    var selected = std.Io.Select(Completion).init(budget.io, &results);
-    // The entire chain shares one deadline, including multi-request IMDS/STS
-    // providers. Cancellation propagates through the owned Io task, and any
-    // completed preparation racing with cancellation is explicitly destroyed.
-    defer while (selected.cancel()) |completion| switch (completion) {
-        .prepared => |finished| if (finished) |value| {
-            var owned = value;
-            owned.deinit(a);
-        } else |_| {},
-        .canceled => {},
-    };
-    try selected.concurrent(.prepared, prepareRequest, .{ a, request, data, budget });
-    try selected.concurrent(.canceled, watchBudget, .{budget});
-    return switch (try selected.await()) {
-        .prepared => |finished| finished,
-        .canceled => |finished| {
-            try finished;
-            unreachable;
-        },
-    };
-}
-fn watchBudget(budget: prep.Budget) !void {
-    while (true) {
-        _ = try budget.remaining();
-        try budget.io.sleep(.fromMilliseconds(20), .awake);
-    }
-}
-fn prepareRequest(a: std.mem.Allocator, request: prep.View, data: []const u8, budget: prep.Budget) !prep.Prepared {
+    // The central HTTP worker supervises this complete byte-only chain with
+    // native_ai_http_prepare_run; provider subrequests consume the same Budget.
     _ = try budget.remaining();
     var parsed = try std.json.parseFromSlice(std.json.Value, a, data, .{});
     defer parsed.deinit();
