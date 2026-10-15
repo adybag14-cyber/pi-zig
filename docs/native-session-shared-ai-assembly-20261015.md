@@ -1,0 +1,5 @@
+The session AI assembly accepts one actual `pi-ai/compat` namespace and captures its `completeSimple` and `resetApiProviders` functions. It builds the native UUID, retry, complete-summarization, and summary-generation chain, then installs ordinary manual compaction and reload using those shared bindings. It creates neither a second provider registry nor a completion substitute.
+
+This is source-only implementation pending runtime qualification. Its caller must assemble actual builtin provider facades, Models, environment-key lookup, and the native environment before supplying the compat namespace. Required provider families remain under implementation. Passing an empty test registry is insufficient evidence of application parity.
+
+Qualification must compare the genuine upstream summary/manual/reload observations with this complete assembly, cover provider registration and reset visibility across sessions, pending-result roots and cancellation, and allocation failures. The private class integration must then rerun its constructor behavior and current 166 prototype descriptors. Full factory qualification, full Pi qualification, and public activation remain false.
