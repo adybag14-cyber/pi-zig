@@ -1,0 +1,270 @@
+{
+  "default-reader": {
+    "created": {
+      "fdOpen": true,
+      "refs": 2,
+      "locked": true,
+      "closing": false
+    },
+    "rows": [
+      {
+        "done": false,
+        "bytes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "done": true,
+        "bytes": null
+      }
+    ],
+    "afterEof": {
+      "fdOpen": true,
+      "refs": 1,
+      "locked": true,
+      "closing": false
+    },
+    "final": {
+      "fdOpen": false,
+      "refs": 0,
+      "locked": true,
+      "closing": false
+    }
+  },
+  "auto-close": {
+    "created": {
+      "fdOpen": true,
+      "refs": 2,
+      "locked": true,
+      "closing": false
+    },
+    "rows": [
+      {
+        "done": false,
+        "bytes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "done": true,
+        "bytes": null
+      }
+    ],
+    "afterEof": {
+      "fdOpen": false,
+      "refs": 0,
+      "locked": true,
+      "closing": true
+    },
+    "final": {
+      "fdOpen": false,
+      "refs": 0,
+      "locked": true,
+      "closing": true
+    }
+  },
+  "byob-zero": {
+    "rows": [
+      {
+        "done": false,
+        "inputDetached": true,
+        "offset": 0,
+        "bytes": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "done": false,
+        "inputDetached": true,
+        "offset": 0,
+        "bytes": [
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "done": false,
+        "inputDetached": true,
+        "offset": 0,
+        "bytes": [
+          8,
+          9
+        ]
+      },
+      {
+        "done": true,
+        "inputDetached": true,
+        "offset": 0,
+        "bytes": []
+      }
+    ],
+    "afterRead": {
+      "fdOpen": true,
+      "refs": 1,
+      "locked": true,
+      "closing": false
+    },
+    "final": {
+      "fdOpen": false,
+      "refs": 0,
+      "locked": true,
+      "closing": false
+    }
+  },
+  "cancel": {
+    "created": {
+      "fdOpen": true,
+      "refs": 2,
+      "locked": true,
+      "closing": false
+    },
+    "afterCancel": {
+      "fdOpen": true,
+      "refs": 1,
+      "locked": true,
+      "closing": false
+    },
+    "final": {
+      "fdOpen": false,
+      "refs": 0,
+      "locked": true,
+      "closing": false
+    }
+  },
+  "invalid-options-lock": {
+    "first": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_ARG_TYPE",
+        "message": "The \"options\" argument must be of type object. Received null"
+      },
+      "state": {
+        "fdOpen": true,
+        "refs": 1,
+        "locked": true,
+        "closing": false
+      }
+    },
+    "second": {
+      "error": {
+        "name": "Error",
+        "code": "ERR_INVALID_STATE",
+        "message": "Invalid state: The FileHandle is locked"
+      },
+      "state": {
+        "fdOpen": true,
+        "refs": 1,
+        "locked": true,
+        "closing": false
+      }
+    },
+    "final": {
+      "fdOpen": false,
+      "refs": 0,
+      "locked": true,
+      "closing": false
+    }
+  },
+  "getter-order": {
+    "log": [
+      "type",
+      "autoClose"
+    ],
+    "created": {
+      "fdOpen": true,
+      "refs": 2,
+      "locked": true,
+      "closing": false
+    },
+    "afterCancel": {
+      "fdOpen": true,
+      "refs": 1,
+      "locked": true,
+      "closing": false
+    },
+    "final": {
+      "fdOpen": false,
+      "refs": 0,
+      "locked": true,
+      "closing": false
+    }
+  },
+  "capture-read": {
+    "result": {
+      "done": false,
+      "bytes": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    "log": [
+      [
+        0,
+        4,
+        0,
+        4
+      ]
+    ],
+    "afterCancel": {
+      "fdOpen": true,
+      "refs": 1,
+      "locked": true,
+      "closing": false
+    },
+    "final": {
+      "fdOpen": false,
+      "refs": 0,
+      "locked": true,
+      "closing": false
+    }
+  },
+  "close-pending": {
+    "afterClose": {
+      "fdOpen": true,
+      "refs": 1,
+      "locked": true,
+      "closing": true
+    },
+    "read": {
+      "done": true,
+      "bytes": null
+    },
+    "closed": {
+      "fdOpen": false,
+      "refs": 0,
+      "locked": true,
+      "closing": false
+    },
+    "final": {
+      "fdOpen": false,
+      "refs": 0,
+      "locked": true,
+      "closing": false
+    }
+  }
+}

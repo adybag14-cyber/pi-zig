@@ -17,7 +17,7 @@ pub fn prepare(scope: *Scope, bindings: c.JSValue) !void {
         .{ Key.ref_method, "kRef" },                                 .{ Key.unref_method, "kUnref" },         .{ Key.transfer_method, "messaging_transfer_symbol" }, .{ Key.transfer_list_method, "messaging_transfer_list_symbol" },
         .{ Key.deserialize_method, "messaging_deserialize_symbol" },
     }) |entry| try scope.put(keys, @tagName(entry[0]), try scope.own(try scope.engine.checked(c.JS_NewSymbol(scope.engine.context, entry[1], false))));
-    try scope.put(keys, @tagName(Key.async_dispose), try scope.own(try scope.engine.checked(c.JS_AtomToValue(scope.engine.context, c.JS_ATOM_Symbol_asyncDispose))));
+    try scope.put(keys, @tagName(Key.async_dispose), try scope.get(try scope.global("Symbol"), "asyncDispose"));
     var intrinsic = try @import("native_durable_await.zig").Intrinsics.init(scope.engine);
     defer intrinsic.deinit(scope.engine);
     try scope.put(bindings, "promise_constructor", intrinsic.constructor);

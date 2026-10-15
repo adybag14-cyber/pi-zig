@@ -722,6 +722,13 @@ pub fn build(b: *std.Build) void {
     if (diagnostic_tests) env_transfer_source_run.stdio = .inherit;
     b.step("test-native-env-filehandle-transfer-source", "Compare equal length RAB pending read and write with actual Node24 capture").dependOn(&env_transfer_source_run.step);
     addCompileOnlyGroup(b, "build-hosted-native-env-filehandle-transfer-source", &.{"test-native-env-filehandle-transfer-source"});
+    const env_webstream_source_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_env_filehandle_webstream_source_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Env FileHandle webstream source"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
+    linkQuickJs(b, env_webstream_source_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(env_webstream_source_tests.root_module, sqlite_lib_dir, sqlite_library);
+    const env_webstream_source_run = b.addRunArtifact(env_webstream_source_tests);
+    if (diagnostic_tests) env_webstream_source_run.stdio = .inherit;
+    b.step("test-native-env-filehandle-webstream-source", "Compare private actual FileHandle byte streams with eight corrected genuine Node24 packets").dependOn(&env_webstream_source_run.step);
+    addCompileOnlyGroup(b, "build-hosted-native-env-filehandle-webstream-source", &.{"test-native-env-filehandle-webstream-source"});
     const capability_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     const native_durable_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native durable VM"}, .use_llvm = use_llvm });
     linkQuickJs(b, native_durable_tests.root_module, quickjs, sqlite_lib_dir);
