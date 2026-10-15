@@ -1,0 +1,7 @@
+{
+  "scope": "Tiny isolated static file/link inventory fixture; no source runtime or native job",
+  "workspace_links": 1,
+  "status": "passed",
+  "added_file_rejected": true,
+  "physical_files": 1
+}
