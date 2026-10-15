@@ -121,7 +121,7 @@ const HeaderGate = struct {
     listener: std.Io.net.Server,
     release_body: std.Io.Event = .unset,
     future: ?std.Io.Future(anyerror!void) = null,
-    fn serve(self: *HeaderGate) !void {
+    fn serve(self: *HeaderGate) anyerror!void {
         const connection = try self.listener.accept(self.io);
         defer connection.close(self.io);
         var read_buffer: [4096]u8 = undefined;
