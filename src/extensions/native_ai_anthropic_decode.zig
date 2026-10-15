@@ -44,7 +44,10 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
                 } else if (comptime @import("std").mem.eql(u8, name, "strictFallback")) {
                     try strictFallback(&row, owner_value, input);
                 } else if (comptime @import("std").mem.eql(u8, name, "finish")) {
+                    const generation = host.native_allocation_generation;
                     finish(&row, owner_value, row.truthy(input)) catch |err| {
+                        const classified = host.nativeAllocationError(err, generation);
+                        if (classified == error.OutOfMemory) return classified;
                         const reason = @import("native_agent_async.zig").reason(host, err);
                         defer host.freeValue(reason);
                         try fail(&row, owner_value, reason, row.truthy(input));
