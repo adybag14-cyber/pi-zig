@@ -34,7 +34,7 @@ $taskCompilerRows=@($taskSourceFreeze.compiler)
 if($taskCompilerRows.Count -ne 19546 -or @(Check-Rows $taskCompilerRows).Count){throw 'Exact pinned full compiler changed since Source20 freeze'}
 $taskControls=Hash-Paths @($PSCommandPath,$taskOwner,$taskExpected,(Join-Path $taskRoot 'src/extensions/fixtures/sdk-runtime-credentials-4954.input.txt'),(Join-Path $taskRoot 'src/extensions/native_sdk_runtime_credentials_production.zig'),(Join-Path $taskRoot 'src/native_sdk_runtime_credentials_production_test.zig'),(Join-Path $taskRoot 'build.zig'),(Join-Path $taskEvidence 'source4954-full-manifest-20261015.json'),(Join-Path $taskEvidence 'source4954-runtime-manifest-20261015.json'),(Join-Path $taskEvidence 'source4954-node-tools-before-20261015.json'),(Join-Path $taskEvidence 'source4954-dependency-contract-audit-20261015.json'))
 $taskControls=@($taskControls)+@(Hash-Paths @($taskQualificationPath,$taskSourceArchive))
-$taskPrefix=Join-Path $taskProof 'native-debug'
+$taskPrefix=Join-Path (Join-Path $taskProof 'native-debug') $taskHead
 $taskArtifactManifest=Join-Path $taskPrefix 'artifacts.json'
 if($Phase -eq 'Runtime'){
  $taskArtifacts=Get-Content -LiteralPath $taskArtifactManifest -Raw|ConvertFrom-Json
