@@ -43,6 +43,8 @@ fn select(scope: *Scope, parts: c.JSValue, comptime kind: Kind) !c.JSValue {
     const key: [*:0]const u8 = if (kind == .functionCalls) "functionCall" else if (kind == .executableCode) "executableCode" else "codeExecutionResult";
     const Predicate = struct {
         fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            engine.native_exception_diagnostics_suppressed += 1;
+            defer engine.native_exception_diagnostics_suppressed -= 1;
             // Source's filter arrow returns the field itself. A caller may
             // replace Array.prototype.filter and inspect that return value.
             return v.js.get(engine, if (args.len > 0) args[0] else c.pi_js_undefined(), key);
@@ -50,6 +52,8 @@ fn select(scope: *Scope, parts: c.JSValue, comptime kind: Kind) !c.JSValue {
     };
     const Mapper = struct {
         fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            engine.native_exception_diagnostics_suppressed += 1;
+            defer engine.native_exception_diagnostics_suppressed -= 1;
             return v.js.get(engine, if (args.len > 0) args[0] else c.pi_js_undefined(), key);
         }
     };

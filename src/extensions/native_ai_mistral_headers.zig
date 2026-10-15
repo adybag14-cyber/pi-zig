@@ -37,6 +37,8 @@ fn has(scope: *Scope, overrides: c.JSValue) !bool {
     if (!scope.truthy(overrides)) return false;
     const Predicate = struct {
         fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            engine.native_exception_diagnostics_suppressed += 1;
+            defer engine.native_exception_diagnostics_suppressed -= 1;
             var row: Scope = .{ .engine = engine };
             defer row.deinit();
             return c.pi_js_bool(engine.context, @intFromBool(try v.eq(&row, try row.invoke(if (args.len > 0) args[0] else c.pi_js_undefined(), "toLowerCase", &.{}), "x-affinity")));
