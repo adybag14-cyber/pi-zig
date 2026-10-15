@@ -1,0 +1,23 @@
+{
+  "status": "owned_process_and_listener_absent",
+  "pid": 45480,
+  "expected_created_utc": "2026-10-15T23:18:34.8727923Z",
+  "expected_executable": "C:\\Program Files\\nodejs\\node.exe",
+  "pid_absent": true,
+  "owned_identity_present": false,
+  "owned_listener_count": 0,
+  "port": 55764,
+  "source_terminal": "passed",
+  "source_exit": 0,
+  "source_post_completed": "2026-10-16T00:19:21.3218758+01:00",
+  "candidate_post_completed": "2026-10-16T00:19:30.9313127+01:00",
+  "test_teardown": {
+    "listening": false,
+    "websocketClients": 0,
+    "tcpSockets": 0,
+    "remainingTimers": 0,
+    "remainingClients": 0,
+    "remainingPeers": 0
+  },
+  "independent_checked_utc": "2026-10-15T23:20:16.2186867+00:00"
+}

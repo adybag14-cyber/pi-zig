@@ -1,0 +1,21 @@
+{
+  "slot": "LIGHT3",
+  "candidate": 6221,
+  "candidate_after": 6221,
+  "candidate_drift": 0,
+  "candidate_path_drift": 0,
+  "candidate_head_drift": false,
+  "qualified": 6215,
+  "qualified_after": 6215,
+  "qualified_drift": 0,
+  "qualified_path_drift": 0,
+  "qualified_head_drift": false,
+  "source_paths": 1924,
+  "source_path_drift": 0,
+  "compiler_paths": 19546,
+  "compiler_path_drift": 0,
+  "controls": 3,
+  "control_drift": 0,
+  "failure": null,
+  "completed_utc": "2026-10-15T23:19:30.9313127+00:00"
+}

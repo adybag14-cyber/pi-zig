@@ -1,0 +1,87 @@
+[
+  {
+    "file": "ai-codex-wire16-5ab-source16-first-20261015-admission.json",
+    "bytes": 245,
+    "sha256": "904DB1459599347731325FE31DD592FFE9F661A4805430E31F162CEFD900AB01"
+  },
+  {
+    "file": "ai-codex-wire16-5ab-source16-first-20261015-candidate-freeze.json",
+    "bytes": 5635828,
+    "sha256": "42FFE625E8BD2BB81C8DF013D2CAD2C55C43F69F0D7A2592F95B7CC0C8B03287"
+  },
+  {
+    "file": "ai-codex-wire16-5ab-source16-first-20261015-candidate-posthash.json",
+    "bytes": 531,
+    "sha256": "DAD992B78EB6F65EB125B5C1ED13F0BF1BAE7B1B5A77EE04A5420FCBB84D5463"
+  },
+  {
+    "file": "ai-codex-wire16-5ab-source16-first-20261015-extra-before.json",
+    "bytes": 1839,
+    "sha256": "B61D08C0D6DC3B2A5CC98A77F47E8E52DD1595C41D415D369EC79A664E444A15"
+  },
+  {
+    "file": "ai-codex-wire16-5ab-source16-first-20261015-output.json",
+    "bytes": 648562,
+    "sha256": "76B0DC0724EEE717C886AB55C585DAFD0B2DC529D53A98F7CE71A1402299DC77"
+  },
+  {
+    "file": "ai-codex-wire16-5ab-source16-first-20261015-owner-absence.json",
+    "bytes": 739,
+    "sha256": "EF6E300202A61ACC6F6EE61EB9256F3988AA0C6294E71FD221A5ECAEF0C3D53C"
+  },
+  {
+    "file": "ai-codex-wire16-5ab-source16-first-20261015-posthash.json",
+    "bytes": 732,
+    "sha256": "D807C3CA55FB4D2D597A6BE1E5F58C686C428EA84FE1A4A306045AFE73F92051"
+  },
+  {
+    "file": "ai-codex-wire16-5ab-source16-first-20261015.json",
+    "bytes": 1143,
+    "sha256": "4D079AAE6C7FF45FDB371ADEC52E7904E84146DA43E3201D14E4B4537605F093"
+  },
+  {
+    "file": "ai-codex-wire16-5ab-source16-first-20261015.stderr.log",
+    "bytes": 178,
+    "sha256": "BA206C34F96BF909F0FB79A7B89E05160FC8F55489E5D7E1F315EEA7CAC56832"
+  },
+  {
+    "file": "ai-codex-wire16-5ab-source16-first-20261015.stdout.log",
+    "bytes": 47,
+    "sha256": "8B0EEFC9FD8C12F4EE40F87CB650963192FE2BA3BB65081C493FF5D3BFB0BCDD"
+  },
+  {
+    "file": "ai-codex-wire16-actual-source5ab-latest4954-module-comparison-20261016.json",
+    "bytes": 17182,
+    "sha256": "377301567D39FD0B8330EE12C3B6C22D9138C04B85DE768408F8E56B471704DD"
+  },
+  {
+    "file": "ai-codex-wire16-source5ab-latest4954-module-comparison-20261016.json",
+    "bytes": 17209,
+    "sha256": "E738FF90EACBC8AC281155E5BCDCD4245205E817364BAE1B46BA9EA23A755D69"
+  },
+  {
+    "file": "qualification.json",
+    "bytes": 1304,
+    "sha256": "D8847EE1691471EC14FFAB06B265ABD97BD9EC1CDECDE9B57D9EB7AA4CAA9C7C"
+  },
+  {
+    "file": "Run-AiCodexWire16Source-20261015.ps1",
+    "bytes": 6782,
+    "sha256": "3DBC755AD437B686D318E24D74536F57886BF7EBC8FC8488F6695B5D5357E070"
+  },
+  {
+    "file": "Run-AiCodexWire16SourceFrozen-20261015.ps1",
+    "bytes": 5342,
+    "sha256": "FB73688C741DB33F190D777BC5159B0D49A9E399A54BE8EBCB9F28126F61166F"
+  },
+  {
+    "file": "source5ab-codex-wire16-capture-20261015.mjs",
+    "bytes": 15352,
+    "sha256": "A8DA38B97F19B7438BDC4580BBB947C1F644EA0F1366D5E0C9B55B37DB877FF5"
+  },
+  {
+    "file": "source5ab-modules-45480-0-20261015.jsonl",
+    "bytes": 11300,
+    "sha256": "13A241C32CC72E247FD34B6BEBA50D5DF0DC53FD1990461FBE3830AE89E2376F"
+  }
+]

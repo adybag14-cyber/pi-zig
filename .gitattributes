@@ -1,6 +1,9 @@
 # Source inventories hash exact bytes, including captured verification records.
 # Keep checkout bytes identical on every runner; source files below use LF.
 * -text
+# Preserve the sealed SourceWire16 controls' exact terminal newlines.
+verification/native-ai-codex-wire16-source-20261016/Run-AiCodexWire16Source-20261015.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-ai-codex-wire16-source-20261016/Run-AiCodexWire16SourceFrozen-20261015.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 # Preserved evidence may use CRLF; keep its bytes and the normal space checks.
 verification/** whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 *.zig text eol=lf

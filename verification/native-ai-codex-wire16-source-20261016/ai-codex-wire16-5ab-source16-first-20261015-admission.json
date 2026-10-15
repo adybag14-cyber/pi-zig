@@ -1,0 +1,8 @@
+{
+  "required_kib": 2097152,
+  "coordinated_with": "Root pending LIGHT CodexWire16 slot; no launch without grant",
+  "observed_utc": "2026-10-15T23:18:34.7505011+00:00",
+  "status": "admitted",
+  "free_kib": 17809328,
+  "heap_mb": 256
+}
