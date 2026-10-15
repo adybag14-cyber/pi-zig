@@ -39,6 +39,36 @@ test "native AI one shot source-controlled requests outputs billed malformed ans
     , "native-ai-one-shot-controls.mjs");
     c.JS_RunGC(engine.runtime);
 }
+test "native AI one shot owned image HTTP consumes large success and error bodies" {
+    const gpa = std.testing.allocator;
+    const repeated = try gpa.alloc(u8, 700000);
+    defer gpa.free(repeated);
+    @memset(repeated, 'A');
+    const image_body = try std.fmt.allocPrint(gpa, "{{\"id\":\"large-image\",\"choices\":[{{\"message\":{{\"images\":[{{\"image_url\":{{\"url\":\"data:image/png;base64,{s}\"}}}}]}}}}]}}", .{repeated});
+    defer gpa.free(image_body);
+    const error_body = try std.fmt.allocPrint(gpa, "{{\"error\":{{\"message\":\"{s}END\"}}}}", .{repeated});
+    defer gpa.free(error_body);
+    const fixture = @import("ai/http_fixture.zig");
+    for ([_][]const u8{ image_body, error_body }, [_]std.http.Status{ .ok, .bad_request }, 0..) |body, status, index| {
+        const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{ .path = "/v1/chat/completions", .body = body, .status = status, .payload_contains = "\"model\":\"wire-image\"", .expected_request_headers = &.{ .{ .name = "authorization", .value = "Bearer fixture-key" }, .{ .name = "content-type", .value = "application/json" } } }});
+        defer server.deinit();
+        const url = try server.url(gpa, "/v1");
+        defer gpa.free(url);
+        const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000, .interrupt_budget = 10000000 });
+        defer engine.deinit();
+        try install(engine);
+        var scope: Scope = .{ .engine = engine };
+        defer scope.deinit();
+        const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+        try scope.put(global, "wireImageBase", try scope.text(url));
+        try scope.put(global, "wireImageSuccess", c.pi_js_bool(engine.context, @intFromBool(index == 0)));
+        try evaluate(engine,
+            \\const model={id:'wire-image',api:'openrouter-images',provider:'wire',baseUrl:wireImageBase,output:['image'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0}};let responseStatus;const result=await oneShotAPIs.image.generateImages(model,{input:[{role:'user',content:'large native image'}]},{apiKey:'fixture-key',maxRetries:0,onResponse(head){responseStatus=head.status}});if(wireImageSuccess){if(responseStatus!==200||result.stopReason!=='stop'||result.responseId!=='large-image'||result.output.length!==1||result.output[0].data.length!==700000||result.output[0].data[699999]!=='A')throw Error('large native image was not fully collected')}else if(responseStatus!==400||result.stopReason!=='error'||!result.errorMessage.startsWith('400 ')||!result.errorMessage.endsWith('END')||result.errorMessage.length!==700007)throw Error('large native error body was not fully collected');
+        , "native-ai-one-shot-large-image-wire.mjs");
+        try server.finish();
+        try std.testing.expectEqual(@as(usize, 1), server.captured.items.len);
+    }
+}
 test "native AI one shot retained classifier and image dependency graphs survive GC" {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
