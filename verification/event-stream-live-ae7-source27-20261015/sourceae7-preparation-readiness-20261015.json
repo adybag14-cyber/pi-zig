@@ -1,0 +1,71 @@
+{
+  "status": "new_ae7_source_plumbing_prepared_without_execution",
+  "observed_utc": "2026-10-15T19:28:41.548417+00:00",
+  "source_head": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "source_root": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015",
+  "source_files": 1968,
+  "official_tracked_files": 1925,
+  "copied_typed_fixture_files": 43,
+  "typed_fixture_origin": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "latest_catalog_qualified": false,
+  "official_ae7_catalog_pin": "sha256-ffa3e98626230f378f80200debb736c4a2238b5f2ba246a92cfc7d8e19604678",
+  "official_catalog_hydration_performed": false,
+  "external_npm_pins_identical": 365,
+  "installed_metadata_verified": 281,
+  "platform_optional_absent": 80,
+  "historical_required_absent": 4,
+  "retained_absences_total": 84,
+  "runtime_files_rehashed": 31064,
+  "node_files_rehashed": 1774,
+  "workspaces_latest_exports": 16,
+  "workspace_versions": "1.3.0",
+  "node_executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "new_source_manifest": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-full-manifest-20261015.json",
+  "new_runtime_manifest": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-runtime-manifest-20261015.json",
+  "new_node_pins": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-node-tools-before-20261015.json",
+  "new_dependency_audit": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-dependency-contract-audit-20261015.json",
+  "new_observer": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-observe-20261015.mjs",
+  "source_execution_performed": false,
+  "build_performed": false,
+  "old5ab_tools_or_manifests_edited": false,
+  "light_grant_required_before_source_capture": true,
+  "caller_controls_env": "PI_SOURCE_ORACLE_CONTROL_MANIFEST must include any caller outside evidence root",
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "final_verification_utc": "2026-10-15T19:32:35.620948+00:00",
+  "source_tracked_worktree_diff": false,
+  "new_source_files_rehashed": 1968,
+  "old5ab_source_files_rehashed": 1967,
+  "new_observer_node_syntax_check_exit": 0,
+  "dependency_junction": {
+    "FullName": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\node_modules",
+    "LinkType": "Junction",
+    "Target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules",
+    "Attributes": 1040
+  },
+  "new_controls_manifest": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-preparation-controls-20261015.json",
+  "new_controls_manifest_sha256": "3C84A2C828A906617A50E5C568BA9DA9CAEC7FD79D202C20CA7D6087DD02637C",
+  "new_controls": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-full-manifest-20261015.json",
+      "sha256": "C4637B7060AAB20542C7FB41DE4450245D61E0268DFBEBB38860D03B4EA00144"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-runtime-manifest-20261015.json",
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-node-tools-before-20261015.json",
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-dependency-contract-audit-20261015.json",
+      "sha256": "B67885F76310D14C75505EC5EF8A61821BCF6D57136474419BB65C4AF7AF0035"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-observe-20261015.mjs",
+      "sha256": "1891342A814F6949D3DF384D83B738159D52851FD41DF240F9F160EB3E34D8C2"
+    }
+  ],
+  "capture_control_rule": "Copy or extend these controls into the capture owner control manifest together with its exact caller and inputs; include its path in PI_SOURCE_ORACLE_CONTROL_MANIFEST."
+}
