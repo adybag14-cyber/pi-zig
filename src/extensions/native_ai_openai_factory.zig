@@ -7,7 +7,7 @@ const c = v.c;
 const flow = @import("native_agent_async.zig");
 const http = @import("native_ai_http.zig");
 const request = @import("native_ai_openai_request.zig");
-const Stage = enum(c_int) { payload, ready, response, next, chunk, retried };
+const Stage = enum(c_int) { payload, ready, response, next, chunk, retried, closed };
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     try @import("native_stream.zig").install(engine);
     var scope: Scope = .{ .engine = engine };
@@ -91,6 +91,7 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
     try scope.put(owner, "http", c.pi_js_undefined());
     try scope.put(owner, "seenDone", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "attempt", c.JS_NewInt32(engine.context, 0));
+    try scope.put(owner, "iteratorActive", c.pi_js_bool(engine.context, 0));
     // Source creates output before entering its setup try/catch. Tool grammar
     // validation belongs inside that catch and must produce an error stream.
     const created = try @import("native_ai_openai_decode.zig").createDetailed(engine, args[0], c.pi_js_undefined(), outer, try scope.get(dependencies, "json"), c.pi_js_undefined());
@@ -111,6 +112,10 @@ fn setup(scope: *Scope, owner: c.JSValue) !void {
     try @import("native_ai_openai_decode.zig").configure(scope.engine, try scope.get(owner, "decoderState"), compat, properties);
     const retention = try request.cacheRetention(scope, options);
     try scope.put(owner, "retention", retention);
+    // createClient captures these defaults before the awaited payload hook.
+    try scope.put(owner, "clientHeaders", try buildHeaders(scope, owner));
+    try scope.put(owner, "clientBaseUrl", try scope.get(try scope.get(owner, "model"), "baseUrl"));
+    try scope.put(owner, "clientFetch", try v.optional(scope, options, "fetch"));
     const params = try scope.own(try request.build(scope.engine, try scope.get(owner, "model"), try scope.get(owner, "context"), options, try scope.get(owner, "compat"), retention, properties, try scope.get(try scope.get(owner, "agent"), "simple")));
     try scope.put(owner, "payload", params);
     try wait(scope, owner, try hook(scope, owner, "onPayload", params), .payload);
@@ -128,13 +133,18 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     defer scope.deinit();
     if (rejected) {
         const stage: Stage = @enumFromInt(raw);
+        if (stage == .closed) return applyFailure(&scope, owner, try scope.get(owner, "closeReason"));
         if (stage == .ready) {
             retryOrFail(&scope, owner, try transportError(&scope, owner, value)) catch |err| try failError(&scope, owner, err);
         } else if (stage == .next and try aborted(&scope, owner)) {
             _ = try scope.invoke(try scope.get(owner, "http"), "cancel", &.{});
             _ = try scope.invoke(try scope.get(owner, "decoder"), "finish", &.{c.pi_js_bool(engine.context, 1)});
             try flow.settle(engine, owner, false, c.pi_js_undefined());
-        } else fail(&scope, owner, if (stage == .next) try transportError(&scope, owner, value) else value) catch |err| try flow.rejectError(engine, owner, err);
+        } else {
+            // A rejected iterator.next does not perform AsyncIteratorClose.
+            if (stage == .next) try scope.put(owner, "iteratorActive", c.pi_js_bool(engine.context, 0));
+            fail(&scope, owner, value) catch |err| try flow.rejectError(engine, owner, err);
+        }
         return;
     }
     advance(&scope, owner, value, @enumFromInt(raw)) catch |err| try failError(&scope, owner, err);
@@ -152,10 +162,38 @@ fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
     return fail(scope, owner, reason);
 }
 fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
+    if (scope.truthy(try scope.get(owner, "iteratorActive"))) {
+        try scope.put(owner, "iteratorActive", c.pi_js_bool(scope.engine.context, 0));
+        try scope.put(owner, "closeReason", reason);
+        const iterator = try scope.get(owner, "iterator");
+        const close = scope.get(iterator, "return") catch |err| {
+            // GetMethod errors replace the original throw; invocation errors
+            // are suppressed by AsyncIteratorClose's original throw.
+            return failError(scope, owner, err);
+        };
+        if (!v.nullish(close)) {
+            const result = scope.call(close, iterator, &.{}) catch |err| {
+                if (err == error.OutOfMemory) return err;
+                if (scope.engine.captured_exception) |value| {
+                    scope.engine.captured_exception = null;
+                    scope.engine.freeValue(value);
+                }
+                return applyFailure(scope, owner, reason);
+            };
+            return wait(scope, owner, result, .closed);
+        }
+    }
+    return applyFailure(scope, owner, reason);
+}
+fn applyFailure(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     const transport = try scope.get(owner, "http");
     if (!v.nullish(transport)) _ = try scope.invoke(transport, "cancel", &.{});
-    _ = scope.invoke(try scope.get(owner, "decoder"), "fail", &.{ reason, c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner))) }) catch |err| {
-        try @import("native_stream.zig").reject(scope.engine, try scope.get(owner, "stream"), reason);
+    const generation = scope.engine.native_allocation_generation;
+    _ = scope.invoke(try scope.get(owner, "decoder"), "fail", &.{ reason, c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner))) }) catch |raw_err| {
+        const err = scope.engine.nativeAllocationError(raw_err, generation);
+        const failure = flow.reason(scope.engine, err);
+        defer scope.engine.freeValue(failure);
+        try @import("native_stream.zig").reject(scope.engine, try scope.get(owner, "stream"), failure);
         try flow.rejectError(scope.engine, owner, err);
         return;
     };
@@ -178,7 +216,7 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     try scope.put(result, "content-type", try scope.text("application/json"));
     try scope.put(result, "authorization", try scope.concat(try scope.text("Bearer "), try scope.stringify(try scope.get(owner, "apiKey"))));
     const defaults = try scope.object();
-    try scope.put(defaults, "User-Agent", try userAgent(scope, try scope.get(owner, "agent")));
+    try scope.put(defaults, "User-Agent", try @import("native_ai_user_agent.zig").runtime(scope));
     const model = try scope.get(owner, "model");
     try v.js.spreadInto(scope.engine, defaults, try scope.get(model, "headers"));
     if (try v.eq(scope, try scope.get(model, "provider"), "github-copilot")) {
@@ -229,8 +267,8 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
 fn open(scope: *Scope, owner: c.JSValue) !void {
     const engine = scope.engine;
     const options = try scope.get(owner, "options");
-    if (!v.nullish(try v.optional(scope, options, "fetch"))) return v.errorText(scope, try scope.text("Native OpenAI custom fetch adapter is not yet qualified"));
-    const header_object = try buildHeaders(scope, owner);
+    if (!v.nullish(try scope.get(owner, "clientFetch"))) return v.errorText(scope, try scope.text("Native OpenAI custom fetch adapter is not yet qualified"));
+    const header_object = try scope.get(owner, "clientHeaders");
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
         for (fields.items) |field| {
@@ -252,7 +290,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         errdefer engine.gpa.free(text);
         try fields.append(engine.gpa, .{ .name = name, .value = text });
     }
-    const base = try scope.get(try scope.get(owner, "model"), "baseUrl");
+    const base = try scope.get(owner, "clientBaseUrl");
     const trimmed = if (scope.truthy(try scope.invoke(base, "endsWith", &.{try scope.text("/")}))) try scope.invoke(base, "slice", &.{ c.JS_NewInt32(engine.context, 0), c.JS_NewInt32(engine.context, -1) }) else base;
     const url = try engine.toString(try scope.concat(trimmed, try scope.text("/chat/completions")));
     defer engine.gpa.free(url);
@@ -261,7 +299,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
     const timeout = try v.optional(scope, options, "timeoutMs");
     var milliseconds: i64 = 600000;
     if (!c.JS_IsUndefined(timeout) and c.JS_ToInt64(engine.context, &milliseconds, timeout) < 0) return v.js.capture(engine);
-    const transport = try scope.own(try http.open(engine, .{ .url = url, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)) }, try v.optional(scope, options, "signal")));
+    const transport = try scope.own(try http.openWithOptions(engine, .{ .url = url, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)), .headers_timeout_only = true, .framing = .bytes }, try v.optional(scope, options, "signal"), .{ .raw_header_pairs = true }));
     try scope.put(owner, "http", transport);
     try scope.put(owner, "iterator", try scope.get(transport, "events"));
     try wait(scope, owner, try scope.get(transport, "ready"), .ready);
@@ -284,51 +322,66 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
                 return next(scope, owner);
             }
             try scope.put(owner, "httpError", c.pi_js_bool(scope.engine.context, 0));
-            const public_response = try scope.object();
-            try scope.put(public_response, "status", status);
-            try scope.put(public_response, "headers", try scope.get(value, "headers"));
-            try wait(scope, owner, try hook(scope, owner, "onResponse", public_response), .response);
+            try prepareSdk(scope, owner, value);
+            const options = try scope.get(owner, "options");
+            const callback = try v.optional(scope, options, "onResponse");
+            const observed = if (v.nullish(callback)) c.pi_js_undefined() else observed: {
+                const public_response = try scope.object();
+                try scope.put(public_response, "status", status);
+                try scope.put(public_response, "headers", try scope.own(try @import("native_ai_headers.zig").toRecord(scope.engine, try scope.get(owner, "responseHeaders"))));
+                break :observed try scope.call(callback, options, &.{ public_response, try scope.get(owner, "model") });
+            };
+            try wait(scope, owner, observed, .response);
         },
         .response => {
             _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
+            try scope.put(owner, "iteratorActive", c.pi_js_bool(scope.engine.context, 1));
             try next(scope, owner);
         },
         .next => {
             if (scope.truthy(try scope.get(value, "done"))) {
+                try scope.put(owner, "iteratorActive", c.pi_js_bool(scope.engine.context, 0));
                 _ = try scope.invoke(try scope.get(owner, "decoder"), "finish", &.{c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner)))});
                 return flow.settle(scope.engine, owner, false, c.pi_js_undefined());
             }
             const frame = try scope.get(value, "value");
-            if (try v.eq(scope, try scope.get(frame, "type"), "error_body")) {
+            if (scope.truthy(try scope.get(owner, "httpError"))) {
                 const reason = try sdkError(scope, try scope.get(try scope.get(owner, "response"), "status"), try scope.get(frame, "body"));
                 try scope.put(reason, "headers", try scope.get(try scope.get(owner, "response"), "headers"));
                 return retryOrFail(scope, owner, reason);
             }
-            if (scope.truthy(try scope.get(owner, "seenDone"))) return next(scope, owner);
-            const data = try scope.get(frame, "data");
-            if (scope.truthy(try scope.invoke(data, "startsWith", &.{try scope.text("[DONE]")}))) {
-                try scope.put(owner, "seenDone", c.pi_js_bool(scope.engine.context, 1));
-                return next(scope, owner);
-            }
-            var decoded = try decodeJSON(scope, data);
-            const event = try scope.get(frame, "event");
-            if (c.JS_IsNull(event) or !scope.truthy(try scope.invoke(event, "startsWith", &.{try scope.text("thread.")}))) {
-                if (scope.truthy(decoded) and scope.truthy(try scope.get(decoded, "error"))) return fail(scope, owner, try sdkErrorValue(scope, c.pi_js_undefined(), try scope.get(decoded, "error"), c.pi_js_undefined()));
-            } else {
-                const wrapped = try scope.object();
-                try scope.put(wrapped, "event", event);
-                try scope.put(wrapped, "data", decoded);
-                decoded = wrapped;
-            }
-            try scope.put(owner, "chunk", decoded);
-            try wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", decoded), .chunk);
+            try scope.put(owner, "chunk", frame);
+            try wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", frame), .chunk);
         },
         .chunk => {
             _ = try scope.invoke(try scope.get(owner, "decoder"), "push", &.{try scope.get(owner, "chunk")});
             try next(scope, owner);
         },
         .retried => try open(scope, owner),
+        .closed => try applyFailure(scope, owner, try scope.get(owner, "closeReason")),
     }
+}
+fn prepareSdk(scope: *Scope, owner: c.JSValue, response: c.JSValue) !void {
+    const engine = scope.engine;
+    const headers = try scope.own(try @import("native_headers.zig").fromRecord(engine, try scope.get(response, "rawHeaders")));
+    try scope.put(owner, "responseHeaders", headers);
+    const Adapter = struct {
+        fn convert(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            var row: Scope = .{ .engine = host };
+            defer row.deinit();
+            return c.JS_DupValue(host.context, try transportError(&row, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined()));
+        }
+    };
+    const convert = try scope.own(try @import("native_node_function.zig").createArrow(engine, "", 1, Adapter.convert, &.{owner}));
+    const body = try scope.own(try @import("native_ai_openai_sdk_body.zig").create(engine, try scope.get(owner, "http"), convert));
+    const controller = try scope.own(try v.js.builtin(engine, "AbortController", &.{}));
+    const iterator = try scope.own(try @import("native_ai_openai_sdk_stream.zig").fromBodyIterator(engine, body, .{
+        .codec = try scope.own(try @import("native_ai_openai_sdk_chunks.zig").codec(engine)),
+        .controller = controller,
+        .error_factory = try scope.own(try @import("native_ai_openai_sdk_error.zig").factory(engine, headers)),
+        .logger = try scope.global("console"),
+    }));
+    try scope.put(owner, "iterator", iterator);
 }
 fn decodeJSON(scope: *Scope, text: c.JSValue) !c.JSValue {
     var diagnostics = @import("native_ai_json_scope.zig").Guard.enter(scope.engine);
