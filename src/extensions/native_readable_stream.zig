@@ -6,7 +6,7 @@ const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const core = @import("native_readable_byte_stream.zig");
 const async_value = @import("native_agent_async.zig");
 const c = js.c;
-const Operation = enum(c_int) { pullBytes, pullIterator, cancelSource, teePull, teeCancel1, teeCancel2, getReader, cancel, locked, tee, values };
+const Operation = enum(c_int) { pullBytes, pullIterator, cancelSource, teePull, teeCancel1, teeCancel2, getReader, cancel, locked, tee, values, pipeTo, pipeThrough };
 const Stage = enum(c_int) { iteratorNext, eof, iteratorReturn, teeRead, teeCancelled };
 fn bindings(engine: *js.Engine) !c.JSValue {
     return engine.native_readable_stream_bindings orelse error.NativeWebReadableStreamUnavailable;
@@ -57,7 +57,7 @@ fn startFunction(scope: *Scope, data: c.JSValue, branch: c_int) !c.JSValue {
 }
 fn byteSource(scope: *Scope, data: c.JSValue, pull: Operation, cancel: Operation, branch: c_int) !c.JSValue {
     const source = try scope.object();
-    if (branch == 0 or try flagged(scope, data, "byteSource")) try scope.put(source, "type", try scope.text("bytes"));
+    if ((branch == 0 and !try flagged(scope, data, "generic")) or try flagged(scope, data, "byteSource")) try scope.put(source, "type", try scope.text("bytes"));
     try scope.put(source, "start", try startFunction(scope, data, branch));
     try scope.put(source, "pull", try callback(scope, data, "pull", pull, 1));
     try scope.put(source, "cancel", try callback(scope, data, "cancel", cancel, 1));
@@ -71,7 +71,15 @@ fn finish(scope: *Scope, data: c.JSValue, owner: c.JSValue) !void {
 }
 fn next(scope: *Scope, data: c.JSValue, owner: c.JSValue) !void {
     const pending = try scope.call(try scope.get(data, "next"), try scope.get(data, "iterator"), &.{});
+    if (try flagged(scope, data, "generic") and !c.JS_IsObject(pending)) return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_STATE", "The iterator.next() method must return an object");
     try async_value.wait(continued, scope.engine, owner, pending, @intFromEnum(Stage.iteratorNext));
+}
+fn valueStep(scope: *Scope, data: c.JSValue, owner: c.JSValue, value: c.JSValue, done: bool) !void {
+    if (done) {
+        try flag(scope, data, "done");
+        try core.closeController(scope, try bindings(scope.engine), try scope.get(data, "controller"));
+    } else try core.enqueueNative(scope, try bindings(scope.engine), try scope.get(data, "controller"), value);
+    try async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
 }
 fn continueValue(scope: *Scope, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: Stage) !void {
     const data = try scope.get(owner, "agent");
@@ -82,11 +90,21 @@ fn continueValue(scope: *Scope, owner: c.JSValue, value: c.JSValue, rejected: bo
         return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
     }
     if (stage == .iteratorReturn) {
-        if (!c.JS_IsObject(value)) return error.NativeAsyncIteratorReturnNotObject;
+        if (!c.JS_IsObject(value)) {
+            if (try flagged(scope, data, "generic")) return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_STATE", "The promise returned by the iterator.return() method must fulfill with an object");
+            return error.NativeAsyncIteratorReturnNotObject;
+        }
         return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
     }
     if (try flagged(scope, data, "cancelled")) return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
-    if (!c.JS_IsObject(value)) return error.NativeAsyncIteratorResultNotObject;
+    if (!c.JS_IsObject(value)) {
+        if (try flagged(scope, data, "generic")) return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_STATE", "The promise returned by the iterator.next() method must fulfill with an object");
+        return error.NativeAsyncIteratorResultNotObject;
+    }
+    if (try flagged(scope, data, "generic")) {
+        const done = scope.truthy(try scope.get(value, "done"));
+        return valueStep(scope, data, owner, if (done) c.pi_js_undefined() else try scope.get(value, "value"), done);
+    }
     if (scope.truthy(try scope.get(value, "done"))) {
         try flag(scope, data, "done");
         return finish(scope, data, owner);
@@ -107,10 +125,36 @@ fn continued(engine: *js.Engine, owner: c.JSValue, value: c.JSValue, rejected: b
         if (@as(Stage, @enumFromInt(raw)) == .teeRead) {
             const reason = async_value.reason(engine, err);
             defer engine.freeValue(reason);
-            try teeAbort(&scope, try scope.get(owner, "agent"), reason);
+            if (err == error.OutOfMemory) {
+                try teeHostFailure(engine, owner, reason);
+            } else teeAbort(&scope, try scope.get(owner, "agent"), reason) catch |failure| {
+                if (failure != error.OutOfMemory) return failure;
+                // A cleanup allocation must not replace the original reason.
+                try teeHostFailure(engine, owner, reason);
+            };
         }
         try async_value.rejectError(engine, owner, err);
     };
+}
+fn teeHostFailure(engine: *js.Engine, owner: c.JSValue, reason: c.JSValue) !void {
+    const data = try js.get(engine, owner, "agent");
+    defer engine.freeValue(data);
+    const retained = try bindings(engine);
+    // Use direct private-property references and real native state. Repeating
+    // Scope.get after permanent host OOM strands the public readers because
+    // only the ignored tee continuation's capability would be rejected.
+    try js.define(engine, data, "closed", c.pi_js_bool(engine.context, 1));
+    inline for (.{ "controller1", "controller2" }) |key| {
+        const controller = try js.get(engine, data, key);
+        defer engine.freeValue(controller);
+        try core.errorControllerAfterHostFailure(engine, retained, controller, reason);
+    }
+    const source = try js.get(engine, data, "stream");
+    defer engine.freeValue(source);
+    try core.errorStreamAfterHostFailure(engine, retained, source, reason);
+    const cancel_owner = try js.get(engine, data, "cancelOwner");
+    defer engine.freeValue(cancel_owner);
+    try async_value.settle(engine, cancel_owner, true, reason);
 }
 fn begin(scope: *Scope, data: c.JSValue, owner: c.JSValue, args: []const c.JSValue, operation: Operation) !void {
     if (operation == .cancelSource) {
@@ -118,7 +162,7 @@ fn begin(scope: *Scope, data: c.JSValue, owner: c.JSValue, args: []const c.JSVal
         const iterator = try scope.get(data, "iterator");
         if (nullish(iterator)) return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
         const return_method = try scope.get(iterator, "return");
-        if (nullish(return_method)) return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
+        if (c.JS_IsUndefined(return_method) or (c.JS_IsNull(return_method) and !try flagged(scope, data, "generic"))) return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
         const pending = try scope.call(return_method, iterator, &.{argument(args, 0)});
         return async_value.wait(continued, scope.engine, owner, pending, @intFromEnum(Stage.iteratorReturn));
     }
@@ -210,7 +254,6 @@ fn teeContinued(scope: *Scope, data: c.JSValue, owner: c.JSValue, value: c.JSVal
     if (try flagged(scope, data, "closed")) return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
     if (scope.truthy(try scope.get(value, "done"))) {
         try scope.put(data, "reading", c.pi_js_bool(scope.engine.context, 0));
-        try flag(scope, data, "closed");
         inline for (.{ .{ "cancelled1", "controller1" }, .{ "cancelled2", "controller2" } }) |entry| if (!try flagged(scope, data, entry[0])) {
             const controller = try scope.get(data, entry[1]);
             try core.closeController(scope, try bindings(scope.engine), controller);
@@ -225,6 +268,9 @@ fn teeContinued(scope: *Scope, data: c.JSValue, owner: c.JSValue, value: c.JSVal
                 try core.respondZeroNative(scope, try bindings(scope.engine), try scope.get(data, entry[1]));
             };
         }
+        // A controller close can reject a partial typed element. Keep the
+        // error path able to retire the other branch and actual source.
+        try flag(scope, data, "closed");
         try async_value.settle(scope.engine, try scope.get(data, "cancelOwner"), false, c.pi_js_undefined());
     } else {
         const chunk = try scope.get(value, "value");
@@ -304,13 +350,14 @@ fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]
     const operation: Operation = @enumFromInt(raw);
     const args = if (argc > 0) argv[0..@intCast(argc)] else &.{};
     const returned = dispatchValue(&scope, receiver, roots[0], args, operation) catch |err| {
-        if (operation == .getReader or operation == .locked or operation == .tee or operation == .values) return @import("native_durable.zig").reject(engine, err);
+        if (operation == .getReader or operation == .locked or operation == .tee or operation == .values or operation == .pipeThrough) return @import("native_durable.zig").reject(engine, err);
         return @import("native_durable.zig").rejectedPromise(engine, err);
     };
     return c.JS_DupValue(context, returned);
 }
 fn dispatchValue(scope: *Scope, receiver: c.JSValue, data: c.JSValue, args: []const c.JSValue, operation: Operation) !c.JSValue {
     switch (operation) {
+        .pipeTo, .pipeThrough => return pipe(scope, data, receiver, args, operation == .pipeThrough),
         .getReader => return core.getReaderNative(scope, data, receiver, argument(args, 0)),
         .locked => return c.pi_js_bool(scope.engine.context, @intFromBool(try core.lockedNative(scope, data, receiver))),
         .cancel => {
@@ -334,19 +381,20 @@ pub fn install(engine: *js.Engine) !void {
     if (engine.native_readable_stream_bindings != null) return;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    try @import("native_writable_stream.zig").install(engine);
     const retained = try scope.object();
     try core.prepare(&scope, retained);
     try core.preparePublicGraph(&scope, retained);
     const constructor = try scope.get(retained, "fileHandleReadableStream");
     const prototype = try scope.get(constructor, "prototype");
-    inline for (.{ .{ "getReader", Operation.getReader }, .{ "cancel", Operation.cancel }, .{ "tee", Operation.tee }, .{ "values", Operation.values } }) |entry| {
-        const function = try callback(&scope, retained, entry[0], entry[1], 0);
-        if (c.JS_DefinePropertyValueStr(engine.context, prototype, entry[0], c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(engine);
-    }
     const locked = try callback(&scope, retained, "get locked", .locked, 0);
     const atom = c.JS_NewAtom(engine.context, "locked");
     defer c.JS_FreeAtom(engine.context, atom);
     if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, locked), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(engine);
+    inline for (.{ .{ "cancel", Operation.cancel }, .{ "getReader", Operation.getReader }, .{ "pipeThrough", Operation.pipeThrough }, .{ "pipeTo", Operation.pipeTo }, .{ "tee", Operation.tee }, .{ "values", Operation.values } }) |entry| {
+        const function = try callback(&scope, retained, entry[0], entry[1], if (entry[1] == .pipeTo or entry[1] == .pipeThrough) 1 else 0);
+        if (c.JS_DefinePropertyValueStr(engine.context, prototype, entry[0], c.JS_DupValue(engine.context, function), c.JS_PROP_C_W_E) < 0) return js.capture(engine);
+    }
     const async_symbol = try scope.own(try engine.checked(c.JS_GetAsyncIteratorSymbol(engine.context)));
     const async_atom = c.JS_ValueToAtom(engine.context, async_symbol);
     defer c.JS_FreeAtom(engine.context, async_atom);
@@ -358,6 +406,36 @@ pub fn install(engine: *js.Engine) !void {
     try scope.put(global, "ReadableStream", constructor);
     engine.native_readable_stream_bindings = c.JS_DupValue(engine.context, retained);
 }
+fn invalidPipeArgument(scope: *Scope, name: []const u8, expected: []const u8, value: c.JSValue, instance: bool) anyerror {
+    const received = try @import("node_events.zig").description(scope.engine, value);
+    defer scope.engine.gpa.free(received);
+    const message = try std.fmt.allocPrint(scope.engine.gpa, "The \"{s}\" {s} must be {s} {s}. Received {s}", .{ name, if (std.mem.indexOfScalar(u8, name, '.') != null) "property" else "argument", if (instance) "an instance of" else "of type", expected, received });
+    defer scope.engine.gpa.free(message);
+    return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_ARG_TYPE", message);
+}
+fn pipe(scope: *Scope, retained: c.JSValue, source: c.JSValue, args: []const c.JSValue, through: bool) !c.JSValue {
+    _ = try core.lockedNative(scope, retained, source);
+    const supplied = argument(args, 0);
+    const output = if (through and !nullish(supplied)) try scope.get(supplied, "readable") else c.pi_js_undefined();
+    if (through and !try core.isReadableStream(scope, retained, output)) return invalidPipeArgument(scope, "transform.readable", "ReadableStream", output, true);
+    const destination = if (through) if (nullish(supplied)) c.pi_js_undefined() else try scope.get(supplied, "writable") else supplied;
+    const writable = @import("native_writable_stream.zig");
+    if (!try writable.isWritableStream(scope.engine, destination)) return invalidPipeArgument(scope, "transform.writable", "WritableStream", destination, true);
+    const options = argument(args, 1);
+    if (!nullish(options) and !c.JS_IsObject(options)) return invalidPipeArgument(scope, "options", "object", options, false);
+    // The observable getter order is part of the actual Node pipe contract.
+    const prevent_abort = if (nullish(options)) c.pi_js_undefined() else try scope.get(options, "preventAbort");
+    const prevent_cancel = if (nullish(options)) c.pi_js_undefined() else try scope.get(options, "preventCancel");
+    const prevent_close = if (nullish(options)) c.pi_js_undefined() else try scope.get(options, "preventClose");
+    const signal = if (nullish(options)) c.pi_js_undefined() else try scope.get(options, "signal");
+    if (!c.JS_IsUndefined(signal) and c.JS_GetOpaque(signal, scope.engine.abort_signal_class) == null) return invalidPipeArgument(scope, "options.signal", "AbortSignal", signal, true);
+    if (try core.lockedNative(scope, retained, source)) return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_STATE", "Invalid state: The ReadableStream is locked");
+    if (try writable.isWritableStreamLocked(scope.engine, destination)) return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_STATE", "Invalid state: The WritableStream is locked");
+    const promise = try @import("native_readable_stream_pipe.zig").start(scope, retained, source, destination, .{ .prevent_abort = scope.truthy(prevent_abort), .prevent_cancel = scope.truthy(prevent_cancel), .prevent_close = scope.truthy(prevent_close), .signal = signal });
+    if (!through) return promise;
+    c.JS_PromiseMarkAsHandled(scope.engine.context, promise);
+    return output;
+}
 pub fn fromBytes(engine: *js.Engine, copied_bytes: c.JSValue) !c.JSValue {
     try install(engine);
     var scope: Scope = .{ .engine = engine };
@@ -366,11 +444,75 @@ pub fn fromBytes(engine: *js.Engine, copied_bytes: c.JSValue) !c.JSValue {
     try scope.put(data, "bytes", copied_bytes);
     return c.JS_DupValue(engine.context, try create(&scope, try bindings(engine), try byteSource(&scope, data, .pullBytes, .cancelSource, 0)));
 }
+pub fn exports(engine: *js.Engine) !c.JSValue {
+    try install(engine);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const retained = try bindings(engine);
+    const result = try scope.object();
+    try scope.put(result, "ReadableStream", try scope.get(retained, "fileHandleReadableStream"));
+    inline for (.{ "ReadableStreamDefaultReader", "ReadableStreamBYOBReader", "ReadableStreamDefaultController", "ReadableByteStreamController", "ReadableStreamBYOBRequest" }) |name| try scope.put(result, name, try scope.get(retained, name));
+    return c.JS_DupValue(engine.context, result);
+}
+/// Native TransformStream composition supplies its own rooted callbacks and
+/// null-prototype underlying source. The captured constructor owns real state.
+pub fn createDefaultNative(engine: *js.Engine, underlying_source: c.JSValue, strategy: c.JSValue) !c.JSValue {
+    try install(engine);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    if (!c.JS_IsUndefined(try scope.get(underlying_source, "type"))) return error.NativeDefaultReadableSourceType;
+    var args = [_]c.JSValue{ underlying_source, strategy };
+    return engine.checked(c.JS_CallConstructor(engine.context, try scope.get(try bindings(engine), "fileHandleReadableStream"), args.len, &args));
+}
+pub fn controllerDesiredSizeNative(engine: *js.Engine, controller: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    return c.JS_DupValue(engine.context, try core.controllerDesiredSizeNative(&scope, try bindings(engine), controller));
+}
+pub fn controllerHasBackpressureNative(engine: *js.Engine, controller: c.JSValue) !bool {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    return core.controllerHasBackpressureNative(&scope, try bindings(engine), controller);
+}
+pub fn controllerCanCloseOrEnqueueNative(engine: *js.Engine, controller: c.JSValue) !bool {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    return core.controllerCanCloseOrEnqueueNative(&scope, try bindings(engine), controller);
+}
+pub fn streamStoredErrorNative(engine: *js.Engine, stream_value: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    return core.streamStoredErrorNative(&scope, try bindings(engine), stream_value);
+}
+fn defaultController(scope: *Scope, retained: c.JSValue, controller: c.JSValue) !void {
+    if (try core.controllerIsByteNative(scope, retained, controller)) return error.NativeDefaultReadableControllerRequired;
+}
+pub fn enqueueDefaultNative(engine: *js.Engine, controller: c.JSValue, chunk: c.JSValue) !void {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const retained = try bindings(engine);
+    try defaultController(&scope, retained, controller);
+    try core.enqueueNative(&scope, retained, controller, chunk);
+}
+pub fn closeDefaultNative(engine: *js.Engine, controller: c.JSValue) !void {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const retained = try bindings(engine);
+    try defaultController(&scope, retained, controller);
+    try core.closeController(&scope, retained, controller);
+}
+pub fn errorDefaultNative(engine: *js.Engine, controller: c.JSValue, reason: c.JSValue) !void {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const retained = try bindings(engine);
+    try defaultController(&scope, retained, controller);
+    try core.errorNative(&scope, retained, controller, reason);
+}
 pub fn fromAsyncIterator(engine: *js.Engine, supplied: c.JSValue) !c.JSValue {
     try install(engine);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const symbol = try scope.get(try scope.global("Symbol"), "asyncIterator");
+    const symbol = try scope.own(try engine.checked(c.JS_GetAsyncIteratorSymbol(engine.context)));
     const method = try scope.own(try js.getKey(engine, supplied, symbol));
     const iterator = if (nullish(method)) supplied else try scope.call(method, supplied, &.{});
     const next_method = try scope.get(iterator, "next");

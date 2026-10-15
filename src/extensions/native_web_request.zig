@@ -408,16 +408,22 @@ fn getter(scope: *Scope, owner: c.JSValue, comptime name: [:0]const u8, kind: Ki
     defer c.JS_FreeAtom(scope.engine.context, atom);
     if (c.JS_DefinePropertyGetSet(scope.engine.context, rootOf(owner).prototype, atom, c.JS_DupValue(scope.engine.context, try function(scope, owner, "get " ++ name, kind)), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(scope.engine);
 }
+fn identityTransform(engine: *em.Engine, constructor: c.JSValue) anyerror!c.JSValue {
+    return engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null));
+}
 pub fn install(engine: *em.Engine) !void {
     if (engine.native_module_values.contains(key)) return;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const interfaces = try platform.prepare(&scope);
+    try @import("native_transform_stream.zig").install(engine);
+    const transform_constructor = try scope.global("TransformStream");
     const owner = try scope.own(try engine.checked(c.JS_NewObjectClass(engine.context, try classId(engine, "Native Request Owner", freeRoot, markRoot))));
     const root = try engine.gpa.create(Root);
     root.* = .{ .engine = engine, .constructor = c.pi_js_undefined(), .prototype = c.pi_js_undefined(), .url_constructor = c.pi_js_undefined(), .controller_constructor = c.pi_js_undefined(), .registry = c.pi_js_undefined(), .dependent_controllers = c.pi_js_undefined(), .abort_symbol = c.pi_js_undefined(), .interfaces = interfaces };
     inline for (std.meta.fields(idl.Interfaces)) |field| @field(root.interfaces, field.name) = c.JS_DupValue(engine.context, @field(interfaces, field.name));
     _ = c.JS_SetOpaque(owner, root);
+    root.transfer = .{ .owner = c.JS_DupValue(engine.context, transform_constructor), .create = identityTransform };
     root.class = try classId(engine, "Request", freeState, markState);
     root.prototype = try js.object(engine);
     root.url_constructor = try js.global(engine, "URL");

@@ -404,6 +404,25 @@ fn nativeReader(scope: *Scope, bindings: c.JSValue, object: c.JSValue) !*Reader 
 pub fn lockedNative(scope: *Scope, bindings: c.JSValue, object: c.JSValue) !bool {
     return !c.JS_IsUndefined((try nativeState(scope, bindings, object)).reader);
 }
+pub fn markDisturbedNative(scope: *Scope, bindings: c.JSValue, object: c.JSValue) !void {
+    (try nativeState(scope, bindings, object)).disturbed = true;
+}
+pub fn isReadableStateNative(scope: *Scope, bindings: c.JSValue, object: c.JSValue) !bool {
+    return (try nativeState(scope, bindings, object)).status == .readable;
+}
+pub fn releaseReaderAfterHostFailure(engine: *js.Engine, bindings: c.JSValue, object: c.JSValue) !void {
+    const raw = c.JS_GetOpaque(object, try failureClass(engine, bindings, "byteReaderClass")) orelse return error.NativeReadableReaderRequired;
+    const owned: *Reader = @ptrCast(@alignCast(raw));
+    if (owned.released) return;
+    const self = stream(owned.stream);
+    // Internal pipe cleanup first errors the actual stream, settling every
+    // public read. Its private reader can then release without allocating a
+    // replacement capability or a second failure reason.
+    if (self.status == .readable) return error.NativeReadableFailureNotRetired;
+    owned.released = true;
+    engine.freeValue(self.reader);
+    self.reader = c.pi_js_undefined();
+}
 pub fn byteStreamNative(scope: *Scope, bindings: c.JSValue, object: c.JSValue) !bool {
     return (try nativeState(scope, bindings, object)).byte_source;
 }
@@ -447,9 +466,49 @@ pub fn enqueueNative(scope: *Scope, bindings: c.JSValue, controller: c.JSValue, 
     var roots = [_]c.JSValue{ (try controllerNative(scope, bindings, controller)).stream_value, c.pi_js_undefined() };
     _ = try operate(scope, controller, &roots, .enqueue, &.{chunk});
 }
+pub fn controllerIsByteNative(scope: *Scope, bindings: c.JSValue, controller: c.JSValue) !bool {
+    return (try nativeState(scope, bindings, (try controllerNative(scope, bindings, controller)).stream_value)).byte_source;
+}
+pub fn controllerDesiredSizeNative(scope: *Scope, bindings: c.JSValue, controller: c.JSValue) !c.JSValue {
+    var roots = [_]c.JSValue{ (try controllerNative(scope, bindings, controller)).stream_value, c.pi_js_undefined() };
+    return operate(scope, controller, &roots, .desiredSize, &.{});
+}
+pub fn controllerHasBackpressureNative(scope: *Scope, bindings: c.JSValue, controller: c.JSValue) !bool {
+    const self = try nativeState(scope, bindings, (try controllerNative(scope, bindings, controller)).stream_value);
+    return !self.started or self.status != .readable or self.close_requested or (self.pending.items.len == 0 and self.high_water_mark <= queuedSize(self));
+}
+pub fn controllerCanCloseOrEnqueueNative(scope: *Scope, bindings: c.JSValue, controller: c.JSValue) !bool {
+    const self = try nativeState(scope, bindings, (try controllerNative(scope, bindings, controller)).stream_value);
+    return self.status == .readable and !self.close_requested;
+}
+pub fn streamStoredErrorNative(scope: *Scope, bindings: c.JSValue, stream_value: c.JSValue) !c.JSValue {
+    return c.JS_DupValue(scope.engine.context, (try nativeState(scope, bindings, stream_value)).stored_error);
+}
 pub fn errorNative(scope: *Scope, bindings: c.JSValue, controller: c.JSValue, reason: c.JSValue) !void {
     var roots = [_]c.JSValue{ (try controllerNative(scope, bindings, controller)).stream_value, c.pi_js_undefined() };
     _ = try operate(scope, controller, &roots, .errorValue, &.{reason});
+}
+fn failureClass(engine: *js.Engine, bindings: c.JSValue, key: [*:0]const u8) !c.JSClassID {
+    // Failure retirement cannot append temporary roots to a host-allocated
+    // Scope. These private binding properties contain only native class IDs.
+    const value = try js.get(engine, bindings, key);
+    defer engine.freeValue(value);
+    var class: u32 = undefined;
+    if (c.JS_ToUint32(engine.context, &class, value) < 0) return js.capture(engine);
+    return class;
+}
+pub fn errorStreamAfterHostFailure(engine: *js.Engine, bindings: c.JSValue, object: c.JSValue, reason: c.JSValue) !void {
+    const raw = c.JS_GetOpaque(object, try failureClass(engine, bindings, "byteStreamClass")) orelse return error.NativeReadableStreamRequired;
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    // errored releases queues and rejects actual pending reads/closed using
+    // direct JS capabilities. It does not create Scope-owned temporary roots.
+    try errored(&scope, @ptrCast(@alignCast(raw)), reason);
+}
+pub fn errorControllerAfterHostFailure(engine: *js.Engine, bindings: c.JSValue, controller: c.JSValue, reason: c.JSValue) !void {
+    const raw = c.JS_GetOpaque(controller, try failureClass(engine, bindings, "byteControllerClass")) orelse return error.NativeReadableControllerRequired;
+    const owned: *Controller = @ptrCast(@alignCast(raw));
+    try errorStreamAfterHostFailure(engine, bindings, owned.stream_value, reason);
 }
 pub fn respondZeroNative(scope: *Scope, bindings: c.JSValue, controller: c.JSValue) !void {
     const self = try nativeState(scope, bindings, (try controllerNative(scope, bindings, controller)).stream_value);
@@ -905,6 +964,7 @@ pub fn preparePublicGraph(scope: *Scope, bindings: c.JSValue) !void {
         try scope.put(bindings, key, prototype);
         const is_reader = group == .defaultReader or group == .byobReader;
         const constructor = try scope.own(try @import("native_class.zig").constructor(scope.engine, publicName(group), if (is_reader) 1 else 0, prototype, if (is_reader) constructReader else illegalConstruct, &.{ bindings, c.pi_js_bool(scope.engine.context, @intFromBool(group == .byobReader)) }));
+        try scope.put(bindings, publicName(group).ptr, constructor);
         try scope.put(global, publicName(group).ptr, constructor);
         if (c.JS_DefinePropertyValue(scope.engine.context, prototype, tag, c.JS_DupValue(scope.engine.context, try scope.text(publicName(group))), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(scope.engine);
         if (is_reader) {
