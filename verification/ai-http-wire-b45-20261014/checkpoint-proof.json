@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "candidate_base": "f5e69af0f7e4f70f9ff50862366e14041e2db376",
+  "source_head": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "genuine_wire_scenarios": 12,
+  "native": {
+    "worker_allocator": "page_allocator; failure injection over worker allocations is not claimed",
+    "imported_unnamed_storage_tests": 1,
+    "strict_inventory": "Read-only actual PE TestFn array; six exact names/lengths and executable function pointers",
+    "tool_drift": 0,
+    "source_drift": 0,
+    "tool_files": 19546,
+    "tests": 6,
+    "optimize": "Debug",
+    "host_allocation_failure_scope": "Every host allocation in pre-aborted request preparation; worker does not start",
+    "authored_tests": 5,
+    "source_files": 5330
+  },
+  "ownership": {
+    "workers": "Owned input/header/proxy bytes and native Io only; no JS values or provider state",
+    "owner": "All promise capabilities, iterators, signal reads and provider decisions stay on owner thread",
+    "limits": "64 events/1MiB queue,512KiB frame/errorbody,16 owner requests",
+    "wake": "Actual Engine pump/drain/await and stdio idle pending predicates",
+    "teardown": "Cancel every worker before joining any; VM/context/Io retained through all joins; queued responses freed exactly once"
+  },
+  "negative": {
+    "original_caller_sha256": "31F49621B4369E5469EED3E33BE19897C24D8279D622AFC81F78753221866854",
+    "runtime_first": "5/6 passed; wire replay failed before HTTP because test caller passed non-NUL buffer to direct JS_ParseJSON",
+    "compile_first": "Zig declaration shadowing; parameter renamed function to callee",
+    "runtime_fix": "Use gpa.dupeZ as required by existing direct C API; original caller recovered and hash verified against first frozen manifest"
+  },
+  "code": [
+    {
+      "path": "src/extensions/native_ai_http_worker.zig",
+      "sha256": "0771D4886A332ACD0D0F1017EFE90935686FF47F73DEAA42B801457F2CBC53CF"
+    },
+    {
+      "path": "src/extensions/native_ai_http.zig",
+      "sha256": "EC5A5E7ACBAD0F822676CDB080D85BCCA295D059BC47155CC3C4A6ED815D559B"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "A1CDFE003A71A6C236BA125F3A08584B5DE3783B2CE27B2A0631FA8AE545980F"
+    },
+    {
+      "path": "src/extensions/native_stdio_frontend.zig",
+      "sha256": "BE5DEB621E3400E96564A9935385738A5FD570FFCE45098C4132DA7C4494B443"
+    },
+    {
+      "path": "src/native_ai_http_test.zig",
+      "sha256": "58AF46C170FEBFDEB887EB8B29F072A2B6290CD60919023889F6091CC5F4BD77"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "01AE9E25A8240D355B9BB6B2ECC06718FB549860D22E9FE09F9601B845710E81"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-http-b45.input.json",
+      "sha256": "2ABBC00B83460A9A60C7EBBF166CF039430EFF531B2444B0B9B31106A4A81407"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-http-b45.json",
+      "sha256": "A2A204564432415EF469A81A78F08B8302AEA36AD92475041470C5CA8A2F74EC"
+    }
+  ],
+  "qualification": {
+    "provider": "No native provider request builder, assistant-event decoder, provider error/retry or builtin API qualification",
+    "raw_wire": "Actual native owned HTTP POST, captured request body/auth placeholder and raw SSE frames from genuine b45 Source12",
+    "latest_upstream": "b06 delta separately source-audited; b45 oracles retain original head; fresh b06 JSON helper observations external, no native claim here",
+    "lifecycle": "CR/LF/CRLF/BOM/multiline/events,429 body, native AbortSignal, bounded-queue timeout, cancel/join teardown and host preparation GPA"
+  },
+  "limitations": [
+    "ReleaseSafe has not run",
+    "Raw worker API is internal and not a public module alias",
+    "OpenAI provider integration remains incomplete",
+    "Builtins and latest official generated catalog remain incomplete",
+    "Default compat completeSimple for production summaries remains unwired",
+    "Whole application parity, public activation, Node bridge removal and release are not qualified"
+  ],
+  "recorded_utc": "2026-10-14T21:36:06.0156242+00:00"
+}

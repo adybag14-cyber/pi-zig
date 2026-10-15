@@ -1,0 +1,5709 @@
+{
+  "sourceHead": "b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+  "inputSha256": "914ea5eea05cf1bed61b632c0316949307c724e5797e92d6a0c99f678d7db677",
+  "actualNode": {
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.14.0",
+    "pid": 20436
+  },
+  "scope": "Actual official b06 OpenAI completions through real pinned OpenAI SDK and owned loopback with placeholder auth. Original12 cases freshly recaptured, four new final-tool cleanup cases, four actual kimiCodingProvider factory streams using caller-controlled new-generator compatibility metadata and loopback model URL. Full event partial snapshots retained; only assistant clocks normalized. No latest catalog qualification, live credential or paid endpoint use.",
+  "cases": 20,
+  "rows": [
+    {
+      "name": "text-stop",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello "
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response",
+            "responseModel": "served"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "hello ",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello "
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response",
+            "responseModel": "served"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "world",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello world"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 13,
+              "output": 3,
+              "cacheRead": 5,
+              "cacheWrite": 2,
+              "reasoning": 1,
+              "totalTokens": 23,
+              "cost": {
+                "input": 0.000013,
+                "output": 0.000006,
+                "cacheRead": 0.0000024999999999999998,
+                "cacheWrite": 0.000003,
+                "total": 0.0000245
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response",
+            "responseModel": "served",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "hello world",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello world"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 13,
+              "output": 3,
+              "cacheRead": 5,
+              "cacheWrite": 2,
+              "reasoning": 1,
+              "totalTokens": 23,
+              "cost": {
+                "input": 0.000013,
+                "output": 0.000006,
+                "cacheRead": 0.0000024999999999999998,
+                "cacheWrite": 0.000003,
+                "total": 0.0000245
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response",
+            "responseModel": "served",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello world"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 13,
+              "output": 3,
+              "cacheRead": 5,
+              "cacheWrite": 2,
+              "reasoning": 1,
+              "totalTokens": 23,
+              "cost": {
+                "input": 0.000013,
+                "output": 0.000006,
+                "cacheRead": 0.0000024999999999999998,
+                "cacheWrite": 0.000003,
+                "total": 0.0000245
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response",
+            "responseModel": "served",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "hello world"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 13,
+          "output": 3,
+          "cacheRead": 5,
+          "cacheWrite": 2,
+          "reasoning": 1,
+          "totalTokens": 23,
+          "cost": {
+            "input": 0.000013,
+            "output": 0.000006,
+            "cacheRead": 0.0000024999999999999998,
+            "cacheWrite": 0.000003,
+            "total": 0.0000245
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "responseId": "response",
+        "responseModel": "served",
+        "rawStopReason": "stop",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "reasoning-precedes-text",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "developer",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000,
+          "reasoning_effort": "low"
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "thinking_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "thinking_delta",
+          "contentIndex": 0,
+          "delta": "think",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 1,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 1,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "thinking_end",
+          "contentIndex": 0,
+          "content": "think",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 1,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "think",
+            "thinkingSignature": "reasoning_content"
+          },
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "stop",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "tool-split-arguments",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000,
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "read",
+                "description": "read file",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call",
+                "name": "read",
+                "arguments": {},
+                "partialArgs": "{\"path\":",
+                "streamIndex": 0
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "{\"path\":",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call",
+                "name": "read",
+                "arguments": {},
+                "partialArgs": "{\"path\":",
+                "streamIndex": 0
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "\"file\"}",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call",
+                "name": "read",
+                "arguments": {
+                  "path": "file"
+                },
+                "partialArgs": "{\"path\":\"file\"}",
+                "streamIndex": 0
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls"
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 0,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "call",
+            "name": "read",
+            "arguments": {
+              "path": "file"
+            }
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call",
+                "name": "read",
+                "arguments": {
+                  "path": "file"
+                }
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "toolUse",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call",
+                "name": "read",
+                "arguments": {
+                  "path": "file"
+                }
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "read",
+            "arguments": {
+              "path": "file"
+            }
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "toolUse",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "tool_calls",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "multi-tool-index-id",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000,
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "read",
+                "description": "read file",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "a",
+                "name": "read",
+                "arguments": {},
+                "partialArgs": "{}",
+                "streamIndex": 0
+              },
+              {
+                "type": "toolCall",
+                "id": "b",
+                "name": "read",
+                "arguments": {
+                  "path": "b"
+                },
+                "partialArgs": "{\"path\":\"b\"}",
+                "streamIndex": 1
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "{}",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "a",
+                "name": "read",
+                "arguments": {},
+                "partialArgs": "{}",
+                "streamIndex": 0
+              },
+              {
+                "type": "toolCall",
+                "id": "b",
+                "name": "read",
+                "arguments": {
+                  "path": "b"
+                },
+                "partialArgs": "{\"path\":\"b\"}",
+                "streamIndex": 1
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 1,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "a",
+                "name": "read",
+                "arguments": {},
+                "partialArgs": "{}",
+                "streamIndex": 0
+              },
+              {
+                "type": "toolCall",
+                "id": "b",
+                "name": "read",
+                "arguments": {
+                  "path": "b"
+                },
+                "partialArgs": "{\"path\":\"b\"}",
+                "streamIndex": 1
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 1,
+          "delta": "{\"path\":\"b\"}",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "a",
+                "name": "read",
+                "arguments": {},
+                "partialArgs": "{}",
+                "streamIndex": 0
+              },
+              {
+                "type": "toolCall",
+                "id": "b",
+                "name": "read",
+                "arguments": {
+                  "path": "b"
+                },
+                "partialArgs": "{\"path\":\"b\"}",
+                "streamIndex": 1
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls"
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "a",
+                "name": "read",
+                "arguments": {},
+                "partialArgs": "{}",
+                "streamIndex": 0
+              },
+              {
+                "type": "toolCall",
+                "id": "b",
+                "name": "read",
+                "arguments": {
+                  "path": "b"
+                },
+                "partialArgs": "{\"path\":\"b\"}",
+                "streamIndex": 1
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls"
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 0,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "a",
+            "name": "read",
+            "arguments": {}
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "a",
+                "name": "read",
+                "arguments": {}
+              },
+              {
+                "type": "toolCall",
+                "id": "b",
+                "name": "read",
+                "arguments": {
+                  "path": "b"
+                }
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 1,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "b",
+            "name": "read",
+            "arguments": {
+              "path": "b"
+            }
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "a",
+                "name": "read",
+                "arguments": {}
+              },
+              {
+                "type": "toolCall",
+                "id": "b",
+                "name": "read",
+                "arguments": {
+                  "path": "b"
+                }
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "toolUse",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "a",
+                "name": "read",
+                "arguments": {}
+              },
+              {
+                "type": "toolCall",
+                "id": "b",
+                "name": "read",
+                "arguments": {
+                  "path": "b"
+                }
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "toolCall",
+            "id": "a",
+            "name": "read",
+            "arguments": {}
+          },
+          {
+            "type": "toolCall",
+            "id": "b",
+            "name": "read",
+            "arguments": {
+              "path": "b"
+            }
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "toolUse",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "tool_calls",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "reasoning-replay-details",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "thinking_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "",
+                "thinkingSignature": ""
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 1,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "",
+                "thinkingSignature": ""
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 1,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "",
+                "thinkingSignature": ""
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "thinking_end",
+          "contentIndex": 0,
+          "content": "",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "",
+                "thinkingSignature": "[{\"text\":\"onetwo\",\"type\":\"reasoning.text\",\"id\":\"id\",\"format\":\"fmt\"},{\"type\":\"reasoning.summary\",\"summary\":\"summary\"},{\"type\":\"reasoning.encrypted\",\"data\":\"opaque\",\"index\":1}]"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 1,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "",
+                "thinkingSignature": "[{\"text\":\"onetwo\",\"type\":\"reasoning.text\",\"id\":\"id\",\"format\":\"fmt\"},{\"type\":\"reasoning.summary\",\"summary\":\"summary\"},{\"type\":\"reasoning.encrypted\",\"data\":\"opaque\",\"index\":1}]"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "",
+                "thinkingSignature": "[{\"text\":\"onetwo\",\"type\":\"reasoning.text\",\"id\":\"id\",\"format\":\"fmt\"},{\"type\":\"reasoning.summary\",\"summary\":\"summary\"},{\"type\":\"reasoning.encrypted\",\"data\":\"opaque\",\"index\":1}]"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "",
+            "thinkingSignature": "[{\"text\":\"onetwo\",\"type\":\"reasoning.text\",\"id\":\"id\",\"format\":\"fmt\"},{\"type\":\"reasoning.summary\",\"summary\":\"summary\"},{\"type\":\"reasoning.encrypted\",\"data\":\"opaque\",\"index\":1}]"
+          },
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "stop",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "length-stop",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "length",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "length"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "partial",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "length",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "length"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "partial",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "length",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "length",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "length",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "length",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "length",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "partial"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "length",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "length",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "unknown-finish",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "new_reason",
+            "errorMessage": "Provider finish_reason: new_reason"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "new_reason",
+            "errorMessage": "Provider finish_reason: new_reason"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "new_reason",
+            "errorMessage": "Provider finish_reason: new_reason",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "new_reason",
+            "errorMessage": "Provider finish_reason: new_reason",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "new_reason",
+        "errorMessage": "Provider finish_reason: new_reason",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "missing-finish",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "unfinished"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "unfinished",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "unfinished"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "unfinished",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "unfinished"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": "$TIMESTAMP",
+            "errorMessage": "Stream ended without finish_reason",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "unfinished"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": "$TIMESTAMP",
+            "errorMessage": "Stream ended without finish_reason",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "unfinished"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": "$TIMESTAMP",
+        "errorMessage": "Stream ended without finish_reason",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "optional-finish",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "finished"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "finished",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "finished"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "finished",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "finished"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "finished"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "finished"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "choice-usage-fallback",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 9,
+              "output": 4,
+              "cacheRead": 3,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000009,
+                "output": 0.000008,
+                "cacheRead": 0.0000015,
+                "cacheWrite": 0,
+                "total": 0.0000185
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "end"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 9,
+              "output": 4,
+              "cacheRead": 3,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000009,
+                "output": 0.000008,
+                "cacheRead": 0.0000015,
+                "cacheWrite": 0,
+                "total": 0.0000185
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "end"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 9,
+              "output": 4,
+              "cacheRead": 3,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000009,
+                "output": 0.000008,
+                "cacheRead": 0.0000015,
+                "cacheWrite": 0,
+                "total": 0.0000185
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "end",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 9,
+              "output": 4,
+              "cacheRead": 3,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000009,
+                "output": 0.000008,
+                "cacheRead": 0.0000015,
+                "cacheWrite": 0,
+                "total": 0.0000185
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "end",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 9,
+          "output": 4,
+          "cacheRead": 3,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 16,
+          "cost": {
+            "input": 0.000009,
+            "output": 0.000008,
+            "cacheRead": 0.0000015,
+            "cacheWrite": 0,
+            "total": 0.0000185
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "end",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "role-only-empty-choice",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk",
+        "chunk",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "stop",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "alternate-reasoning-opencode-go",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "opencode-go",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "thinking_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "opencode-go",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "thinking_delta",
+          "contentIndex": 0,
+          "delta": "think",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "opencode-go",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 1,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "opencode-go",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 1,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "opencode-go",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "thinking_end",
+          "contentIndex": 0,
+          "content": "think",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "opencode-go",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 1,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "opencode-go",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "think",
+                "thinkingSignature": "reasoning_content"
+              },
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "opencode-go",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "think",
+            "thinkingSignature": "reasoning_content"
+          },
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "opencode-go",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "stop",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "final-malformed-cutoff",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000,
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "read",
+                "description": "read file",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {
+                  "path": "ok"
+                },
+                "partialArgs": "{\"path\":\"ok\",\"cutoff\":",
+                "streamIndex": 0
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "{\"path\":\"ok\",\"cutoff\":",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {
+                  "path": "ok"
+                },
+                "partialArgs": "{\"path\":\"ok\",\"cutoff\":",
+                "streamIndex": 0
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 0,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "call-fixture",
+            "name": "read",
+            "arguments": {},
+            "argumentsError": "Unexpected end of JSON input\n\nReceived arguments:\n{\"path\":\"ok\",\"cutoff\":"
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {},
+                "argumentsError": "Unexpected end of JSON input\n\nReceived arguments:\n{\"path\":\"ok\",\"cutoff\":"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "toolUse",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {},
+                "argumentsError": "Unexpected end of JSON input\n\nReceived arguments:\n{\"path\":\"ok\",\"cutoff\":"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "toolCall",
+            "id": "call-fixture",
+            "name": "read",
+            "arguments": {},
+            "argumentsError": "Unexpected end of JSON input\n\nReceived arguments:\n{\"path\":\"ok\",\"cutoff\":"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "toolUse",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "tool_calls",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "final-nonobject-array",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000,
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "read",
+                "description": "read file",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": [
+                  1,
+                  2
+                ],
+                "partialArgs": "[1,2]",
+                "streamIndex": 0
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "[1,2]",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": [
+                  1,
+                  2
+                ],
+                "partialArgs": "[1,2]",
+                "streamIndex": 0
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 0,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "call-fixture",
+            "name": "read",
+            "arguments": {},
+            "argumentsError": "Tool arguments must be a JSON object\n\nReceived arguments:\n[1,2]"
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {},
+                "argumentsError": "Tool arguments must be a JSON object\n\nReceived arguments:\n[1,2]"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "toolUse",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {},
+                "argumentsError": "Tool arguments must be a JSON object\n\nReceived arguments:\n[1,2]"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "toolCall",
+            "id": "call-fixture",
+            "name": "read",
+            "arguments": {},
+            "argumentsError": "Tool arguments must be a JSON object\n\nReceived arguments:\n[1,2]"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "toolUse",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "tool_calls",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "final-repaired-escape",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000,
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "read",
+                "description": "read file",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {
+                  "path": "C:\\Users\file"
+                },
+                "partialArgs": "{\"path\":\"C:\\Users\\file\"}",
+                "streamIndex": 0
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "{\"path\":\"C:\\Users\\file\"}",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {
+                  "path": "C:\\Users\file"
+                },
+                "partialArgs": "{\"path\":\"C:\\Users\\file\"}",
+                "streamIndex": 0
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 0,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "call-fixture",
+            "name": "read",
+            "arguments": {
+              "path": "C:\\Users\file"
+            }
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {
+                  "path": "C:\\Users\file"
+                }
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "toolUse",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {
+                  "path": "C:\\Users\file"
+                }
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "toolCall",
+            "id": "call-fixture",
+            "name": "read",
+            "arguments": {
+              "path": "C:\\Users\file"
+            }
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "toolUse",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "tool_calls",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "final-cutoff-backslash",
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "fixture-model",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "store": false,
+          "max_completion_tokens": 1000,
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "read",
+                "description": "read file",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {
+                  "path": "unfinished"
+                },
+                "partialArgs": "{\"path\":\"unfinished\\",
+                "streamIndex": 0
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "{\"path\":\"unfinished\\",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {
+                  "path": "unfinished"
+                },
+                "partialArgs": "{\"path\":\"unfinished\\",
+                "streamIndex": 0
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 0,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "call-fixture",
+            "name": "read",
+            "arguments": {},
+            "argumentsError": "Unterminated string in JSON at position 21 (line 1 column 22)\n\nReceived arguments:\n{\"path\":\"unfinished\\"
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {},
+                "argumentsError": "Unterminated string in JSON at position 21 (line 1 column 22)\n\nReceived arguments:\n{\"path\":\"unfinished\\"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "toolUse",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-fixture",
+                "name": "read",
+                "arguments": {},
+                "argumentsError": "Unterminated string in JSON at position 21 (line 1 column 22)\n\nReceived arguments:\n{\"path\":\"unfinished\\"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "openai",
+            "model": "fixture-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "tool_calls",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "toolCall",
+            "id": "call-fixture",
+            "name": "read",
+            "arguments": {},
+            "argumentsError": "Unterminated string in JSON at position 21 (line 1 column 22)\n\nReceived arguments:\n{\"path\":\"unfinished\\"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "openai",
+        "model": "fixture-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "toolUse",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "tool_calls",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "kimi-factory-late-tools-k3",
+      "factory": {
+        "id": "kimi-coding",
+        "name": "Kimi For Coding",
+        "baseUrl": "https://api.kimi.com/coding/v1"
+      },
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "k3",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            },
+            {
+              "role": "assistant",
+              "content": "prior answer",
+              "reasoning_content": ""
+            },
+            {
+              "role": "system",
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "search",
+                    "description": "search",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "query": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "role": "system",
+              "content": "late instructions"
+            },
+            {
+              "role": "user",
+              "content": "continue"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "max_tokens": 1000,
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "read",
+                "description": "read file",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ],
+          "reasoning_effort": "low"
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "k3",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "k3",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "done",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "k3",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "done",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "k3",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "k3",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "kimi-coding",
+        "model": "k3",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "stop",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "kimi-factory-late-tools-k3-256k",
+      "factory": {
+        "id": "kimi-coding",
+        "name": "Kimi For Coding",
+        "baseUrl": "https://api.kimi.com/coding/v1"
+      },
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "k3-256k",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            },
+            {
+              "role": "assistant",
+              "content": "prior answer",
+              "reasoning_content": ""
+            },
+            {
+              "role": "system",
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "search",
+                    "description": "search",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "query": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "role": "system",
+              "content": "late instructions"
+            },
+            {
+              "role": "user",
+              "content": "continue"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "max_tokens": 1000,
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "read",
+                "description": "read file",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ],
+          "reasoning_effort": "low"
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "k3-256k",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "k3-256k",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "done",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "k3-256k",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "done",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "k3-256k",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "k3-256k",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "kimi-coding",
+        "model": "k3-256k",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "stop",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "kimi-factory-late-tools-kimi-for-coding",
+      "factory": {
+        "id": "kimi-coding",
+        "name": "Kimi For Coding",
+        "baseUrl": "https://api.kimi.com/coding/v1"
+      },
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "kimi-for-coding",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            },
+            {
+              "role": "assistant",
+              "content": "prior answer",
+              "reasoning_content": ""
+            },
+            {
+              "role": "system",
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "search",
+                    "description": "search",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "query": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "role": "system",
+              "content": "late instructions"
+            },
+            {
+              "role": "user",
+              "content": "continue"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "max_tokens": 1000,
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "read",
+                "description": "read file",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ],
+          "reasoning_effort": "low"
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "kimi-for-coding",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "kimi-for-coding",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "done",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "kimi-for-coding",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "done",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "kimi-for-coding",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "kimi-for-coding",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "kimi-coding",
+        "model": "kimi-for-coding",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "stop",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "name": "kimi-factory-late-tools-kimi-for-coding-highspeed",
+      "factory": {
+        "id": "kimi-coding",
+        "name": "Kimi For Coding",
+        "baseUrl": "https://api.kimi.com/coding/v1"
+      },
+      "request": {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "headers": {
+          "authorization": "Bearer fixture-placeholder-key",
+          "content-type": "application/json"
+        },
+        "body": {
+          "model": "kimi-for-coding-highspeed",
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            },
+            {
+              "role": "assistant",
+              "content": "prior answer"
+            },
+            {
+              "role": "system",
+              "content": "late instructions"
+            },
+            {
+              "role": "user",
+              "content": "continue"
+            }
+          ],
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "max_tokens": 1000,
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "read",
+                "description": "read file",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "type": "function",
+              "function": {
+                "name": "search",
+                "description": "search",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "query": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "thinking": {
+            "type": "enabled"
+          }
+        }
+      },
+      "callbacks": [
+        "payload",
+        "response:200:source-only",
+        "chunk"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "kimi-for-coding-highspeed",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "kimi-for-coding-highspeed",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "done",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "kimi-for-coding-highspeed",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "done",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "kimi-for-coding-highspeed",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "openai-completions",
+            "provider": "kimi-coding",
+            "model": "kimi-for-coding-highspeed",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "openai-completions",
+        "provider": "kimi-coding",
+        "model": "kimi-for-coding-highspeed",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "rawStopReason": "stop",
+        "durationMs": "$DURATION"
+      }
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "recorded_utc": "2026-10-14T22:06:25.1226221+00:00",
+  "runtime_count": 6,
+  "binary": "C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014\\.zig-cache\\o\\27e5772a4fcd27d2c731046ff757ce0f\\test.exe",
+  "imported_unnamed_tests": 1,
+  "method": "Read-only PE32+ TestFn metadata: six contiguous24-byte entries, exact UTF8 names/lengths, every function pointer within executable section; no binary execution",
+  "authored_tests": 5,
+  "bytes": 48966144,
+  "binary_sha256": "CF956763CE82F01524CFF6099C9A7F0CBD2433751CE2F7CCAD43E48419E427F6",
+  "inventory": {
+    "word_permutation": [
+      0,
+      1,
+      2
+    ],
+    "tests": [
+      {
+        "bytes": 141,
+        "name": "native_ai_http_test.test.native AI HTTP raw transport replays12 genuine Source wire payloads and exact SSE data without provider substitution",
+        "name_virtual_address": 5413925944,
+        "function_virtual_address": 5374082640
+      },
+      {
+        "bytes": 112,
+        "name": "native_ai_http_test.test.native AI HTTP preserves CR LF BOM multiline event fields and non-success response body",
+        "name_virtual_address": 5413926085,
+        "function_virtual_address": 5374079248
+      },
+      {
+        "bytes": 106,
+        "name": "native_ai_http_test.test.native AI HTTP real abort signal cancels owned body work and retires reader roots",
+        "name_virtual_address": 5413926197,
+        "function_virtual_address": 5373939104
+      },
+      {
+        "bytes": 114,
+        "name": "native_ai_http_test.test.native AI HTTP full-queue timeout and VM teardown cancel join and release owned responses",
+        "name_virtual_address": 5413926303,
+        "function_virtual_address": 5373856448
+      },
+      {
+        "bytes": 119,
+        "name": "native_ai_http_test.test.native AI HTTP every host allocation unwinds pre-aborted preparation without starting a worker",
+        "name_virtual_address": 5413926417,
+        "function_virtual_address": 5370247616
+      },
+      {
+        "bytes": 40,
+        "name": "extensions.native_durable_storage.test_0",
+        "name_virtual_address": 5413926536,
+        "function_virtual_address": 5373854288
+      }
+    ],
+    "file_offset": 45213096
+  }
+}

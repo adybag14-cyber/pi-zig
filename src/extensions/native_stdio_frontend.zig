@@ -315,7 +315,8 @@ pub const Frontend = struct {
             _ = try self.engine.drainReadyJobs();
             const referenced_timer = try timers.nextReferencedDeadline(self.engine);
             const builtin_pending = if (self.engine.native_sdk_builtin_execution_pending) |pending| pending(self.engine) else false;
-            if (!self.referencedInput() and referenced_timer == null and !builtin_pending) return;
+            const ai_http_pending = if (self.engine.native_ai_http_pending) |pending| pending(self.engine) else false;
+            if (!self.referencedInput() and referenced_timer == null and !builtin_pending and !ai_http_pending) return;
             _ = try self.engine.pumpControls();
             _ = try timers.pumpReady(self.engine);
             _ = try self.engine.drainReadyJobs();
