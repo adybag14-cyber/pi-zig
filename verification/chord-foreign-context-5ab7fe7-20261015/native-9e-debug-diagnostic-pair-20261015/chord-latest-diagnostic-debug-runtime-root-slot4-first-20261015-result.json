@@ -1,0 +1,81 @@
+{
+  "completed_utc": "2026-10-15T19:36:55.0440451+00:00",
+  "head": "9e6825df2787df4f44dbe4ba7913c66d4e6afed5",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "status": "passed",
+  "targets": [
+    {
+      "name": "output",
+      "target": "test-native-chord-output-source",
+      "status": "passed",
+      "owner": {
+        "name": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output",
+        "pid": 63268,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-chord-output-source -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+        "command_line_source": "live Win32_Process",
+        "created_utc": "2026-10-15T19:33:57.9143082Z",
+        "launched_utc": "2026-10-15T20:33:57.9121177+01:00",
+        "identity_captured": true,
+        "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+        "working_directory": "C:/Users/adyba/pi-zig-chord-foreign-context-5ab7fe7-20261015",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-15T20:34:04.8930974+01:00"
+      },
+      "root_pid_absent": true,
+      "compiled_inventory": [
+        "native_chord_output_source_test.test.native Chord5ab7fe7 output diagnostic compiled inventory",
+        "native_chord_output_source_test.test.native Chord5ab7fe7 output actual private factory observations with optional Buffer skips and serialized Progress GC",
+        "native_chord_output_source_test.test.native Chord5ab7fe7 output measured complete caller host allocation baseline diagnostic only",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "cases": 14,
+      "actual_source_match": true,
+      "host_baseline_allocations": 316,
+      "complete_host_failure_coverage": false
+    },
+    {
+      "name": "foreign",
+      "target": "test-native-chord-foreign-context-review",
+      "status": "passed",
+      "owner": {
+        "name": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign",
+        "pid": 61972,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-chord-foreign-context-review -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+        "command_line_source": "live Win32_Process",
+        "created_utc": "2026-10-15T19:35:30.5530425Z",
+        "launched_utc": "2026-10-15T20:35:30.5521268+01:00",
+        "identity_captured": true,
+        "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+        "working_directory": "C:/Users/adyba/pi-zig-chord-foreign-context-5ab7fe7-20261015",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-15T20:35:36.9403727+01:00"
+      },
+      "root_pid_absent": true,
+      "compiled_inventory": [
+        "native_chord_foreign_context_review_test.test.native Chord5ab7fe7 foreign context review compiled inventory",
+        "native_chord_foreign_context_review_test.test.native Chord5ab7fe7 foreign forged and null contexts reject before remote call while valid context calls with GC",
+        "native_chord_foreign_context_review_test.test.native Chord5ab7fe7 foreign context review measured host allocation baseline diagnostic only",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "cases": 5,
+      "actual_source_match": true,
+      "host_baseline_allocations": 2918,
+      "complete_host_failure_coverage": false
+    }
+  ],
+  "compiled_test_executions": 8,
+  "unique_compiled_test_names": 7,
+  "source_output_cases": 14,
+  "source_foreign_cases": 5,
+  "complete_host_failure_coverage": false,
+  "fork_guest_compiled": false,
+  "full_chord_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}

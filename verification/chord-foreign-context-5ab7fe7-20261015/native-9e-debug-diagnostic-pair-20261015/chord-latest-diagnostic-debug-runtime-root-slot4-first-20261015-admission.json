@@ -1,0 +1,14 @@
+{
+  "observed_utc": "2026-10-15T19:33:11.2143677+00:00",
+  "root_authority": "Root NATIVE4 conditional runtime grant after exact9e compile2 PASS and fullpost0; serialmatching4+4 Source14/5; normal16/-j1/120test/300outer/10hostawait/fullfrozenpair",
+  "runtime_seconds": 300,
+  "test_seconds": 120,
+  "host_await_ms": 10000,
+  "jobs": 1,
+  "serial": true,
+  "compile_result": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-result.json",
+  "complete_host_failure_coverage": false,
+  "full_chord_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}

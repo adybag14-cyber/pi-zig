@@ -1,0 +1,36 @@
+{
+  "completed_utc": "2026-10-15T19:32:16.7089790+00:00",
+  "head": "9e6825df2787df4f44dbe4ba7913c66d4e6afed5",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "status": "passed",
+  "targets": [
+    "build-native-chord-output-source",
+    "build-native-chord-foreign-context-review"
+  ],
+  "owner": {
+    "name": "chord-latest-diagnostic-debug-compile-root-slot4-first-20261015",
+    "pid": 63892,
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-chord-output-source build-native-chord-foreign-context-review -Doptimize=Debug -j1 --summary all",
+    "command_line_source": "live Win32_Process",
+    "created_utc": "2026-10-15T19:25:33.2961558Z",
+    "launched_utc": "2026-10-15T20:25:33.2926957+01:00",
+    "identity_captured": true,
+    "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+    "working_directory": "C:/Users/adyba/pi-zig-chord-foreign-context-5ab7fe7-20261015",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-15T20:31:31.6593156+01:00"
+  },
+  "root_pid_absent": true,
+  "source_output_cases": 14,
+  "source_foreign_cases": 5,
+  "runtime_executed": false,
+  "fresh_host_baselines": null,
+  "complete_host_failure_coverage": false,
+  "fork_guest_compiled": false,
+  "full_chord_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}

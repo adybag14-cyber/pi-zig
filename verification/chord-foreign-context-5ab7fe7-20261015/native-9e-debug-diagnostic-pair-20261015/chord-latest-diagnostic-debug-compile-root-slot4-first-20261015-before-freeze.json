@@ -1,0 +1,40 @@
+{
+  "completed_utc": "2026-10-15T19:25:32.1986553+00:00",
+  "phase": "before",
+  "head": "9e6825df2787df4f44dbe4ba7913c66d4e6afed5",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "candidate": 5707,
+  "candidate_drift": 0,
+  "candidate_inventory_drift": 0,
+  "sets": [
+    {
+      "name": "source",
+      "count": 1967,
+      "drift": 0,
+      "inventory_drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 31064,
+      "drift": 0,
+      "inventory_drift": 0
+    },
+    {
+      "name": "node",
+      "count": 1774,
+      "drift": 0,
+      "inventory_drift": 0
+    },
+    {
+      "name": "compiler",
+      "count": 19546,
+      "drift": 0,
+      "inventory_drift": 0
+    }
+  ],
+  "controls": 12,
+  "control_drift": 0,
+  "control_manifest_sha256": "BD3A0C120D6D36D199E7CA14D55B43F88744D5F2F4C0AF649EBF8DED17E16367",
+  "runtime_executed": false,
+  "public_activation": false
+}

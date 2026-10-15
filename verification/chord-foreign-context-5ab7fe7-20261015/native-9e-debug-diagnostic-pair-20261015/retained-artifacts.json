@@ -1,0 +1,182 @@
+[
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-admission.json",
+    "retained": "chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-admission.json",
+    "sha256": "AC1E2CF050D54CBA9C5F19A34FD632D86671472C08D23F357667FCF93E2D041D",
+    "bytes": 24144
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-after-freeze.json",
+    "retained": "chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-after-freeze.json",
+    "sha256": "5AFEE20BE2EAF767E3C5F5CC749C1165EFD13549C347569714D147A06ADFEF4F",
+    "bytes": 945
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-before-freeze.json",
+    "retained": "chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-before-freeze.json",
+    "sha256": "C3EA11A76604618E8F4BB83B5B9DC43636580BA304EBF2B92033D8AE893E0927",
+    "bytes": 946
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-candidate-before.json",
+    "retained": "chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-candidate-before.json",
+    "sha256": "98BB9CF9352C78056E802D771DEEF389C0F93327E3A00F2D84F21221C5C23CE7",
+    "bytes": 943670
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-controls.json",
+    "retained": "chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-controls.json",
+    "sha256": "BD3A0C120D6D36D199E7CA14D55B43F88744D5F2F4C0AF649EBF8DED17E16367",
+    "bytes": 2645
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-result.json",
+    "retained": "chord-latest-diagnostic-debug-compile-root-slot4-first-20261015-result.json",
+    "sha256": "E4B3EFC7498D298A6CEE94BBDB69C2A75370D1A681C52930DAE993D2AF040B08",
+    "bytes": 1684
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-compile-root-slot4-first-20261015.json",
+    "retained": "chord-latest-diagnostic-debug-compile-root-slot4-first-20261015.json",
+    "sha256": "6CD858FC687AF4725F901AA86734F069E6F088E27EBC4AF6229B9B8364212E18",
+    "bytes": 1004
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-compile-root-slot4-first-20261015.stderr.log",
+    "retained": "chord-latest-diagnostic-debug-compile-root-slot4-first-20261015.stderr.log",
+    "sha256": "33AC649422C1646AC4742A0CA0F664052AE1084243C3FFA108FEEACD68671424",
+    "bytes": 13945
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-compile-root-slot4-first-20261015.stdout.log",
+    "retained": "chord-latest-diagnostic-debug-compile-root-slot4-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-admission.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-admission.json",
+    "sha256": "A35F0E98C71EA39A82A4B49C5683188362A2CAAAF197684A01500A509D0257A4",
+    "bytes": 656
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-before-freeze.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-before-freeze.json",
+    "sha256": "0FEE7A1AD96A027A369FF06186488B60F374E16C62316FE0998C5FE2D95D5372",
+    "bytes": 946
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-candidate-before.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-candidate-before.json",
+    "sha256": "98BB9CF9352C78056E802D771DEEF389C0F93327E3A00F2D84F21221C5C23CE7",
+    "bytes": 943670
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-controls.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-controls.json",
+    "sha256": "11A597350323092D96899B85F8236DA721D5FB59B2806CE4EAF4FB607C0B5641",
+    "bytes": 6247
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-final-freeze.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-final-freeze.json",
+    "sha256": "66434ABAFFE1D6D191D2C85E237B7BB76952DD1B2E3375DDD35DDBF2132D894E",
+    "bytes": 944
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign-after-freeze.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign-after-freeze.json",
+    "sha256": "E22757621471136BED7B72C2B6EC1EDF78282E072E96D046C2501D28B7904686",
+    "bytes": 952
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign-before-freeze.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign-before-freeze.json",
+    "sha256": "D7550D9142317EF939A138E9ED249B2543E44ED7223F6628F26FFA58A94734EC",
+    "bytes": 953
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign-result.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign-result.json",
+    "sha256": "6B93730DC682010608177E0EE5C6BD6A9568905D3708F84FC9FE98AF3DD1AD2A",
+    "bytes": 1815
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign.json",
+    "sha256": "F838BDA910703209B05D9B425A8E63386D1C78A91F7110C256322617707F820C",
+    "bytes": 998
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign.stderr.log",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign.stderr.log",
+    "sha256": "184C99AC079FF1E4D426A0180BBF4892589F89BDC6C463EECE9E4EB639CBD542",
+    "bytes": 15544
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign.stdout.log",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output-after-freeze.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output-after-freeze.json",
+    "sha256": "A28DB2EDDFEF9DF953F561ECA43191E9753490F130F4AAD902DF037C13AA76C1",
+    "bytes": 951
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output-before-freeze.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output-before-freeze.json",
+    "sha256": "3F033CDFCFDA3ED3A4CE10214A80686D895D4249A2D22F748EC54C8E2F24B3EC",
+    "bytes": 953
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output-result.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output-result.json",
+    "sha256": "6C6D224814006A2EDC427120B690D68353E91143B0D1D60B26E34C98C9BA0BE2",
+    "bytes": 1767
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output.json",
+    "sha256": "1FCBE0BFEE33037BBE1B5672D67F49C28E662778B0C41EA7EB582AA2BCD47E96",
+    "bytes": 988
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output.stderr.log",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output.stderr.log",
+    "sha256": "DEB46D0ACE98015477A14E67C0DBCE54E0D946582276D8BF30B1F005B20A807B",
+    "bytes": 20841
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output.stdout.log",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-result.json",
+    "retained": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-result.json",
+    "sha256": "03E632AA8490443BA46D8F9473C8AE13D3AC8E56F7CBA5DDD7932404433EA279",
+    "bytes": 4366
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-ChordLatestDiagnosticCompile-20261015.ps1",
+    "retained": "Run-ChordLatestDiagnosticCompile-20261015.ps1",
+    "sha256": "46E60B9CC4359365301F5B1A508573D780CF6132BBFC2A9D8A8AEA049A08451F",
+    "bytes": 10633
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-ChordLatestDiagnosticRuntime-20261015.ps1",
+    "retained": "Run-ChordLatestDiagnosticRuntime-20261015.ps1",
+    "sha256": "E5C7142270FE11101551C68D6E4B4210ACD2D33D2432D758A4A89337A969BA60",
+    "bytes": 14374
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "retained": "Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  }
+]

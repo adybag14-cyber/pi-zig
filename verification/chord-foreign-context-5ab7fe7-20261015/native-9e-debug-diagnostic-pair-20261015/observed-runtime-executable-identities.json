@@ -1,0 +1,18 @@
+[
+  {
+    "target": "output",
+    "path": "C:\\Users\\adyba\\pi-zig-chord-foreign-context-5ab7fe7-20261015\\.zig-cache\\o\\5bf6ec493496a7e29618112ceb05c9eb\\test.exe",
+    "bytes": 45669376,
+    "sha256": "8516D6176708E3DFECC657A5B22BE6DA840109446BF2862FC21A85DA7BE4419C",
+    "observed_from": "unchanged raw Zig runtime stderr invocation; all4tests passed and rootexit0",
+    "measured_after_runtime": true
+  },
+  {
+    "target": "foreign",
+    "path": "C:\\Users\\adyba\\pi-zig-chord-foreign-context-5ab7fe7-20261015\\.zig-cache\\o\\9ca01f5c0516677ab37b2ddc23ca6991\\test.exe",
+    "bytes": 51856384,
+    "sha256": "9AA2C4187A67C66CFCB2C497FA429894E07443E0DE90EDB2EC2AA725983644FC",
+    "observed_from": "unchanged raw Zig runtime stderr invocation; all4tests passed and rootexit0",
+    "measured_after_runtime": true
+  }
+]

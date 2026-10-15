@@ -1,0 +1,163 @@
+{
+  "recorded_utc": "2026-10-15T19:38:04.2220544+00:00",
+  "tested_native_head": "9e6825df2787df4f44dbe4ba7913c66d4e6afed5",
+  "actual_source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "source_output_capture_candidate": "e66b0b3f90f4a4a8f6c997f1924a3e3c332963e1",
+  "source_foreign_capture_candidate": "b636bbb88da7e1bb21330c6e237c2a9a243fd4f0",
+  "source_output_caller_and_wrapper_unchanged": true,
+  "native_output_push_arity_correction": 2,
+  "native_compile_targets_passed": 2,
+  "compiled_test_executions": 8,
+  "unique_compiled_test_names": 7,
+  "shared_anonymous_test": "extensions.native_durable_storage.test_0",
+  "output_cases": 14,
+  "foreign_cases": 5,
+  "all_observed_cases_match_actual_source": true,
+  "fresh_output_host_allocations": 316,
+  "fresh_foreign_host_allocations": 2918,
+  "both_host_allocators_balanced_after_gc_teardown": true,
+  "candidate_files": 5707,
+  "source_files": 1967,
+  "dependency_files": 31064,
+  "node_files": 1774,
+  "compiler_files": 19546,
+  "compile_controls": 12,
+  "runtime_controls_with_retained_compile_rows": 28,
+  "full_final_freeze": {
+    "completed_utc": "2026-10-15T20:36:55.0423562+01:00",
+    "phase": "final",
+    "head": "9e6825df2787df4f44dbe4ba7913c66d4e6afed5",
+    "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+    "candidate": 5707,
+    "candidate_drift": 0,
+    "candidate_inventory_drift": 0,
+    "sets": [
+      {
+        "name": "source",
+        "count": 1967,
+        "drift": 0,
+        "inventory_drift": 0
+      },
+      {
+        "name": "dependencies",
+        "count": 31064,
+        "drift": 0,
+        "inventory_drift": 0
+      },
+      {
+        "name": "node",
+        "count": 1774,
+        "drift": 0,
+        "inventory_drift": 0
+      },
+      {
+        "name": "compiler",
+        "count": 19546,
+        "drift": 0,
+        "inventory_drift": 0
+      }
+    ],
+    "controls": 28,
+    "control_drift": 0,
+    "control_manifest_sha256": "11A597350323092D96899B85F8236DA721D5FB59B2806CE4EAF4FB607C0B5641",
+    "runtime_executed": true,
+    "public_activation": false
+  },
+  "runtime_result": {
+    "completed_utc": "2026-10-15T20:36:55.0440451+01:00",
+    "head": "9e6825df2787df4f44dbe4ba7913c66d4e6afed5",
+    "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+    "status": "passed",
+    "targets": [
+      {
+        "name": "output",
+        "target": "test-native-chord-output-source",
+        "status": "passed",
+        "owner": {
+          "name": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-output",
+          "pid": 63268,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+          "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-chord-output-source -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+          "command_line_source": "live Win32_Process",
+          "created_utc": "2026-10-15T19:33:57.9143082Z",
+          "launched_utc": "2026-10-15T20:33:57.9121177+01:00",
+          "identity_captured": true,
+          "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+          "working_directory": "C:/Users/adyba/pi-zig-chord-foreign-context-5ab7fe7-20261015",
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-15T20:34:04.8930974+01:00"
+        },
+        "root_pid_absent": true,
+        "compiled_inventory": [
+          "native_chord_output_source_test.test.native Chord5ab7fe7 output diagnostic compiled inventory",
+          "native_chord_output_source_test.test.native Chord5ab7fe7 output actual private factory observations with optional Buffer skips and serialized Progress GC",
+          "native_chord_output_source_test.test.native Chord5ab7fe7 output measured complete caller host allocation baseline diagnostic only",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "cases": 14,
+        "actual_source_match": true,
+        "host_baseline_allocations": 316,
+        "complete_host_failure_coverage": false
+      },
+      {
+        "name": "foreign",
+        "target": "test-native-chord-foreign-context-review",
+        "status": "passed",
+        "owner": {
+          "name": "chord-latest-diagnostic-debug-runtime-root-slot4-first-20261015-foreign",
+          "pid": 61972,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+          "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-chord-foreign-context-review -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+          "command_line_source": "live Win32_Process",
+          "created_utc": "2026-10-15T19:35:30.5530425Z",
+          "launched_utc": "2026-10-15T20:35:30.5521268+01:00",
+          "identity_captured": true,
+          "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+          "working_directory": "C:/Users/adyba/pi-zig-chord-foreign-context-5ab7fe7-20261015",
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-15T20:35:36.9403727+01:00"
+        },
+        "root_pid_absent": true,
+        "compiled_inventory": [
+          "native_chord_foreign_context_review_test.test.native Chord5ab7fe7 foreign context review compiled inventory",
+          "native_chord_foreign_context_review_test.test.native Chord5ab7fe7 foreign forged and null contexts reject before remote call while valid context calls with GC",
+          "native_chord_foreign_context_review_test.test.native Chord5ab7fe7 foreign context review measured host allocation baseline diagnostic only",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "cases": 5,
+        "actual_source_match": true,
+        "host_baseline_allocations": 2918,
+        "complete_host_failure_coverage": false
+      }
+    ],
+    "compiled_test_executions": 8,
+    "unique_compiled_test_names": 7,
+    "source_output_cases": 14,
+    "source_foreign_cases": 5,
+    "complete_host_failure_coverage": false,
+    "fork_guest_compiled": false,
+    "full_chord_qualified": false,
+    "full_pi_qualified": false,
+    "public_activation": false
+  },
+  "artifact_count": 30,
+  "compiler_peak_calibrated": false,
+  "complete_host_failure_coverage": false,
+  "cmalloc_qualified": false,
+  "native_fork_guest_compiled": false,
+  "full_chord_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "limits": [
+    "Diagnostic Windows Debug observations and fresh allocator balance only; every-allocation failure partitions remain required.",
+    "5ab actual Source bodies remain original proof authority; no relabel to later ae7 source head.",
+    "Separate original worker and native fork candidate is uncompiled and unexecuted; no fork or guest qualification.",
+    "Source Output14 capture preceded native push arity correction from1to2; caller/wrapper/golden bytes unchanged.",
+    "Zig stderr includes its failed-command label when the test writes markers to stderr; retained exit0 plus4/4 summary and marker/source/baseline validator independently passed.",
+    "Nested copied result timestamps may serialize DateTime with local offset; raw immutable owner records retain original UTC timestamps and exact kernel identity."
+  ]
+}
