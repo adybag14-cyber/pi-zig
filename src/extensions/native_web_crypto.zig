@@ -183,6 +183,16 @@ fn dataLength(scope: *Scope, owner: c.JSValue, data: c.JSValue) !c.JSValue {
     }
     return scope.get(data, "byteLength") catch |err| {
         if (!intrinsic or err != error.JavaScriptException) return err;
+        // Only translate the actual detached backing-store diagnostic. An
+        // allocator failure while invoking this intrinsic must remain OOM.
+        if (engine.captured_exception) |exception| {
+            if (c.pi_js_native_allocation_error_generation(exception) != 0) return err;
+        }
+        const backing = try scope.call(try scope.get(owner, "dataBuffer"), data, &.{});
+        var total: usize = 0;
+        _ = c.JS_GetArrayBuffer(engine.context, &total, backing);
+        if (!c.JS_HasException(engine.context)) return err;
+        engine.freeValue(c.JS_GetException(engine.context));
         return @import("native_js_values.zig").typeError(engine, "Cannot perform get DataView.prototype.byteLength on a detached ArrayBuffer");
     };
 }
