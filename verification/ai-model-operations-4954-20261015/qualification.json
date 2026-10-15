@@ -1,0 +1,14 @@
+{
+  "full_pi_qualified": false,
+  "native_compiled": false,
+  "raw_diagnostics_sha256": "C2583EEFFBDC88796A9149C7692C6A158A3FDA36934DBE0B69855FD9920C9320",
+  "candidate_head": "f4a9a3937594b8129b90181e136ffcf9945274ec",
+  "public_activation": false,
+  "status": "source-qualified-native-unrun",
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "native_replayed": false,
+  "owner_pid": 56660,
+  "owned_absence_verified": true,
+  "cases": 88,
+  "expected_sha256": "99244517F5B7A85811380EE6BE2D587D962402F16ADF94D341F1F287DEAD6AE0"
+}

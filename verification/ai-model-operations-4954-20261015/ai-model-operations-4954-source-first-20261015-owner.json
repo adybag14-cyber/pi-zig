@@ -1,0 +1,23 @@
+{
+  "name": "ai-model-operations-4954-source-first-20261015",
+  "pid": 56660,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "created_utc": "2026-10-15T22:49:31.5787928Z",
+  "launched_utc": "2026-10-15T22:49:31.5768380+00:00",
+  "launch_argv": [
+    "--max-old-space-size=256",
+    "--import",
+    "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-observe-20261015.mjs",
+    "C:\\Users\\adyba\\pi-zig-ai-model-operations-source-20261015\\verification\\ai-model-operations-4954-20261015\\capture-source.mjs",
+    "C:\\Users\\adyba\\pi-zig-ai-model-operations-source-20261015\\verification\\ai-model-operations-4954-20261015\\ai-model-operations-4954-source-first-20261015-output.json",
+    "C:\\Users\\adyba\\pi-zig-ai-model-operations-source-20261015\\src\\extensions\\fixtures\\ai-model-operations-4954.input.txt"
+  ],
+  "raw_initial_command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-ai-model-operations-source-20261015\\verification\\ai-model-operations-4954-20261015\\capture-source.mjs C:\\Users\\adyba\\pi-zig-ai-model-operations-source-20261015\\verification\\ai-model-operations-4954-20261015\\ai-model-operations-4954-source-first-20261015-output.json C:\\Users\\adyba\\pi-zig-ai-model-operations-source-20261015\\src\\extensions\\fixtures\\ai-model-operations-4954.input.txt",
+  "identity_source": "live Win32_Process raw CommandLine plus retained handle/executable/UTC start",
+  "retained_handle": true,
+  "status": "passed",
+  "timeout_seconds": 300,
+  "settle_seconds": 10,
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T22:49:47.7483393+00:00"
+}

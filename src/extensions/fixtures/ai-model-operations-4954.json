@@ -1,0 +1,1362 @@
+{
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "cases": 88,
+  "inputSha256": "fb0774a9b93766efb67e8d0afdac94d7e2d2cc0e60e885a2f3f1304ad6457644",
+  "canonicalModelsErrorIdentity": true,
+  "scope": "Actual original eight model-operation functions and canonical ModelsError. Explicit VM-error cases compare error class only; full original name/message/stack diagnostics retained separately without rewriting.",
+  "rows": [
+    {
+      "name": "metadata:getModelType",
+      "returned": {
+        "name": "getModelType",
+        "length": 1,
+        "own": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "functionPrototype": true,
+        "descriptors": [
+          {
+            "key": "name",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "length",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "prototype",
+            "present": true,
+            "writable": true,
+            "enumerable": false,
+            "configurable": false
+          }
+        ],
+        "prototypeConstructor": true
+      },
+      "events": []
+    },
+    {
+      "name": "construct:getModelType",
+      "returned": {
+        "object": true,
+        "alternatePrototype": true,
+        "keys": []
+      },
+      "events": [
+        "newTarget.prototype",
+        "newTarget.prototype"
+      ]
+    },
+    {
+      "name": "metadata:isModelType",
+      "returned": {
+        "name": "isModelType",
+        "length": 2,
+        "own": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "functionPrototype": true,
+        "descriptors": [
+          {
+            "key": "name",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "length",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "prototype",
+            "present": true,
+            "writable": true,
+            "enumerable": false,
+            "configurable": false
+          }
+        ],
+        "prototypeConstructor": true
+      },
+      "events": []
+    },
+    {
+      "name": "construct:isModelType",
+      "returned": {
+        "object": true,
+        "alternatePrototype": true,
+        "keys": []
+      },
+      "events": [
+        "newTarget.prototype",
+        "newTarget.prototype"
+      ]
+    },
+    {
+      "name": "metadata:assertChatModel",
+      "returned": {
+        "name": "assertChatModel",
+        "length": 1,
+        "own": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "functionPrototype": true,
+        "descriptors": [
+          {
+            "key": "name",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "length",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "prototype",
+            "present": true,
+            "writable": true,
+            "enumerable": false,
+            "configurable": false
+          }
+        ],
+        "prototypeConstructor": true
+      },
+      "events": []
+    },
+    {
+      "name": "construct:assertChatModel",
+      "returned": {
+        "object": true,
+        "alternatePrototype": true,
+        "keys": []
+      },
+      "events": [
+        "newTarget.prototype",
+        "newTarget.prototype"
+      ]
+    },
+    {
+      "name": "metadata:assertImageModel",
+      "returned": {
+        "name": "assertImageModel",
+        "length": 1,
+        "own": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "functionPrototype": true,
+        "descriptors": [
+          {
+            "key": "name",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "length",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "prototype",
+            "present": true,
+            "writable": true,
+            "enumerable": false,
+            "configurable": false
+          }
+        ],
+        "prototypeConstructor": true
+      },
+      "events": []
+    },
+    {
+      "name": "construct:assertImageModel",
+      "returned": {
+        "object": true,
+        "alternatePrototype": true,
+        "keys": []
+      },
+      "events": [
+        "newTarget.prototype",
+        "newTarget.prototype"
+      ]
+    },
+    {
+      "name": "metadata:assertClassifierModel",
+      "returned": {
+        "name": "assertClassifierModel",
+        "length": 1,
+        "own": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "functionPrototype": true,
+        "descriptors": [
+          {
+            "key": "name",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "length",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "prototype",
+            "present": true,
+            "writable": true,
+            "enumerable": false,
+            "configurable": false
+          }
+        ],
+        "prototypeConstructor": true
+      },
+      "events": []
+    },
+    {
+      "name": "construct:assertClassifierModel",
+      "returned": {
+        "object": true,
+        "alternatePrototype": true,
+        "keys": []
+      },
+      "events": [
+        "newTarget.prototype",
+        "newTarget.prototype"
+      ]
+    },
+    {
+      "name": "metadata:assertClassifierInputSupported",
+      "returned": {
+        "name": "assertClassifierInputSupported",
+        "length": 2,
+        "own": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "functionPrototype": true,
+        "descriptors": [
+          {
+            "key": "name",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "length",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "prototype",
+            "present": true,
+            "writable": true,
+            "enumerable": false,
+            "configurable": false
+          }
+        ],
+        "prototypeConstructor": true
+      },
+      "events": []
+    },
+    {
+      "name": "construct:assertClassifierInputSupported",
+      "returned": {
+        "object": true,
+        "alternatePrototype": true,
+        "keys": []
+      },
+      "events": [
+        "newTarget.prototype",
+        "newTarget.prototype"
+      ]
+    },
+    {
+      "name": "metadata:imageErrorResult",
+      "returned": {
+        "name": "imageErrorResult",
+        "length": 2,
+        "own": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "functionPrototype": true,
+        "descriptors": [
+          {
+            "key": "name",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "length",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "prototype",
+            "present": true,
+            "writable": true,
+            "enumerable": false,
+            "configurable": false
+          }
+        ],
+        "prototypeConstructor": true
+      },
+      "events": []
+    },
+    {
+      "name": "construct:imageErrorResult",
+      "returned": {
+        "object": true,
+        "alternatePrototype": false,
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "output",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ]
+      },
+      "events": [
+        "newTarget.prototype",
+        "newTarget.prototype"
+      ]
+    },
+    {
+      "name": "metadata:classifierErrorResult",
+      "returned": {
+        "name": "classifierErrorResult",
+        "length": 2,
+        "own": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "functionPrototype": true,
+        "descriptors": [
+          {
+            "key": "name",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "length",
+            "present": true,
+            "writable": false,
+            "enumerable": false,
+            "configurable": true
+          },
+          {
+            "key": "prototype",
+            "present": true,
+            "writable": true,
+            "enumerable": false,
+            "configurable": false
+          }
+        ],
+        "prototypeConstructor": true
+      },
+      "events": []
+    },
+    {
+      "name": "construct:classifierErrorResult",
+      "returned": {
+        "object": true,
+        "alternatePrototype": false,
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "answers",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ]
+      },
+      "events": [
+        "newTarget.prototype",
+        "newTarget.prototype"
+      ]
+    },
+    {
+      "name": "type:absent",
+      "returned": "chat",
+      "events": []
+    },
+    {
+      "name": "type:null",
+      "returned": "chat",
+      "events": []
+    },
+    {
+      "name": "type:undefined",
+      "returned": "chat",
+      "events": []
+    },
+    {
+      "name": "type:false",
+      "returned": false,
+      "events": []
+    },
+    {
+      "name": "type:zero",
+      "returned": 0,
+      "events": []
+    },
+    {
+      "name": "type:empty",
+      "returned": "",
+      "events": []
+    },
+    {
+      "name": "type:symbol-identity",
+      "returned": {
+        "same": true
+      },
+      "events": []
+    },
+    {
+      "name": "type:object-identity",
+      "returned": {
+        "same": true
+      },
+      "events": []
+    },
+    {
+      "name": "type:getter-once",
+      "returned": "classifier",
+      "events": [
+        "type"
+      ]
+    },
+    {
+      "name": "type:raw-getter",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "type"
+      ]
+    },
+    {
+      "name": "type:null-model",
+      "thrown": {
+        "vmErrorName": "TypeError",
+        "rawDiagnosticRetainedSeparately": true
+      },
+      "events": []
+    },
+    {
+      "name": "type:primitive-model",
+      "returned": "chat",
+      "events": []
+    },
+    {
+      "name": "is:nullish-chat",
+      "returned": true,
+      "events": []
+    },
+    {
+      "name": "is:strict-number",
+      "returned": false,
+      "events": []
+    },
+    {
+      "name": "is:object-identity",
+      "returned": [
+        true,
+        false
+      ],
+      "events": []
+    },
+    {
+      "name": "is:getter-raw",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "type"
+      ]
+    },
+    {
+      "name": "assert:pass:chat",
+      "returned": {
+        "kind": "undefined"
+      },
+      "events": [
+        "type"
+      ]
+    },
+    {
+      "name": "assert:wrong:chat",
+      "thrown": {
+        "canonicalClass": true,
+        "errorName": "ModelsError",
+        "code": "provider",
+        "message": "Model provider/identifier is not a chat model"
+      },
+      "events": [
+        "type",
+        "provider",
+        "provider:string",
+        "id",
+        "id:string"
+      ]
+    },
+    {
+      "name": "assert:pass:image",
+      "returned": {
+        "kind": "undefined"
+      },
+      "events": [
+        "type"
+      ]
+    },
+    {
+      "name": "assert:wrong:image",
+      "thrown": {
+        "canonicalClass": true,
+        "errorName": "ModelsError",
+        "code": "provider",
+        "message": "Model provider/identifier is not an image model"
+      },
+      "events": [
+        "type",
+        "provider",
+        "provider:string",
+        "id",
+        "id:string"
+      ]
+    },
+    {
+      "name": "assert:pass:classifier",
+      "returned": {
+        "kind": "undefined"
+      },
+      "events": [
+        "type"
+      ]
+    },
+    {
+      "name": "assert:wrong:classifier",
+      "thrown": {
+        "canonicalClass": true,
+        "errorName": "ModelsError",
+        "code": "provider",
+        "message": "Model provider/identifier is not a classifier model"
+      },
+      "events": [
+        "type",
+        "provider",
+        "provider:string",
+        "id",
+        "id:string"
+      ]
+    },
+    {
+      "name": "assert:legacy-chat",
+      "returned": {
+        "kind": "undefined"
+      },
+      "events": []
+    },
+    {
+      "name": "assert:symbol-template",
+      "thrown": {
+        "vmErrorName": "TypeError",
+        "rawDiagnosticRetainedSeparately": true
+      },
+      "events": [
+        "provider"
+      ]
+    },
+    {
+      "name": "assert:provider-conversion-raw",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "provider",
+        "convert:string"
+      ]
+    },
+    {
+      "name": "assert:id-getter-raw",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "id"
+      ]
+    },
+    {
+      "name": "assert:canonical-class-setter-raw",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "ModelsError.name"
+      ]
+    },
+    {
+      "name": "construct:object-return",
+      "returned": true,
+      "events": []
+    },
+    {
+      "name": "input:empty:44",
+      "returned": {
+        "kind": "undefined"
+      },
+      "events": []
+    },
+    {
+      "name": "input:empty:45",
+      "returned": {
+        "kind": "undefined"
+      },
+      "events": []
+    },
+    {
+      "name": "input:empty:46",
+      "returned": {
+        "kind": "undefined"
+      },
+      "events": []
+    },
+    {
+      "name": "input:empty:47",
+      "returned": {
+        "kind": "undefined"
+      },
+      "events": []
+    },
+    {
+      "name": "input:empty:48",
+      "returned": {
+        "kind": "undefined"
+      },
+      "events": []
+    },
+    {
+      "name": "input:includes-receiver",
+      "returned": {
+        "kind": "undefined"
+      },
+      "events": [
+        "images",
+        "length",
+        "input",
+        "includes",
+        "call:true:image"
+      ]
+    },
+    {
+      "name": "input:reject-order",
+      "thrown": {
+        "canonicalClass": true,
+        "errorName": "ModelsError",
+        "code": "provider",
+        "message": "Model p/i does not accept image input"
+      },
+      "events": [
+        "images",
+        "length",
+        "input",
+        "includes:image",
+        "provider",
+        "id"
+      ]
+    },
+    {
+      "name": "input:images-raw",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "images"
+      ]
+    },
+    {
+      "name": "input:length-raw",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "length"
+      ]
+    },
+    {
+      "name": "input:model-input-raw",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "input"
+      ]
+    },
+    {
+      "name": "input:includes-getter-raw",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "includes"
+      ]
+    },
+    {
+      "name": "input:includes-call-raw",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "includes-call"
+      ]
+    },
+    {
+      "name": "input:missing-context",
+      "thrown": {
+        "vmErrorName": "TypeError",
+        "rawDiagnosticRetainedSeparately": true
+      },
+      "events": []
+    },
+    {
+      "name": "input:missing-input",
+      "thrown": {
+        "vmErrorName": "TypeError",
+        "rawDiagnosticRetainedSeparately": true
+      },
+      "events": []
+    },
+    {
+      "name": "result:default:imageErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "output",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": {
+          "array": true,
+          "length": 0
+        },
+        "answers": null,
+        "stopReason": "error",
+        "errorMessage": "failure",
+        "timestamp": 1700000000123
+      },
+      "events": []
+    },
+    {
+      "name": "result:aborted:imageErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "output",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": {
+          "array": true,
+          "length": 0
+        },
+        "answers": null,
+        "stopReason": "aborted",
+        "errorMessage": "17",
+        "timestamp": 1700000000123
+      },
+      "events": []
+    },
+    {
+      "name": "result:undefined-aborted:imageErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "output",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": {
+          "array": true,
+          "length": 0
+        },
+        "answers": null,
+        "stopReason": "error",
+        "errorMessage": "null",
+        "timestamp": 1700000000123
+      },
+      "events": []
+    },
+    {
+      "name": "result:error-message-identity:imageErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "output",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": {
+          "array": true,
+          "length": 0
+        },
+        "answers": null,
+        "stopReason": "error",
+        "errorMessage": {
+          "kind": "object",
+          "tokenIdentity": true
+        },
+        "timestamp": 1700000000123
+      },
+      "events": [
+        "message"
+      ]
+    },
+    {
+      "name": "result:field-order:imageErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "output",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "id",
+        "output": {
+          "array": true,
+          "length": 0
+        },
+        "answers": null,
+        "stopReason": "error",
+        "errorMessage": "formatted",
+        "timestamp": 1700000000123
+      },
+      "events": [
+        "api",
+        "provider",
+        "id",
+        "String:true",
+        "Date.now",
+        "Date.this:true"
+      ]
+    },
+    {
+      "name": "result:live-instanceof:imageErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "output",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": {
+          "array": true,
+          "length": 0
+        },
+        "answers": null,
+        "stopReason": "error",
+        "errorMessage": "live",
+        "timestamp": 1700000000123
+      },
+      "events": [
+        "Error",
+        "instanceof:true"
+      ]
+    },
+    {
+      "name": "result:instanceof-raw:imageErrorResult",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "instanceof"
+      ]
+    },
+    {
+      "name": "result:String-getter-raw:imageErrorResult",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "String"
+      ]
+    },
+    {
+      "name": "result:Date-getter-raw:imageErrorResult",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "Date"
+      ]
+    },
+    {
+      "name": "result:message-getter-raw:imageErrorResult",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "message"
+      ]
+    },
+    {
+      "name": "result:String-return-identity:imageErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "output",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": {
+          "array": true,
+          "length": 0
+        },
+        "answers": null,
+        "stopReason": "error",
+        "errorMessage": {
+          "kind": "object",
+          "tokenIdentity": true
+        },
+        "timestamp": 1700000000123
+      },
+      "events": [
+        "String:true"
+      ]
+    },
+    {
+      "name": "result:Date-return-identity:imageErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "output",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": {
+          "array": true,
+          "length": 0
+        },
+        "answers": null,
+        "stopReason": "error",
+        "errorMessage": "failure",
+        "timestamp": {
+          "kind": "object",
+          "tokenIdentity": true
+        }
+      },
+      "events": []
+    },
+    {
+      "name": "result:model-getter-raw:imageErrorResult",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "api",
+        "provider"
+      ]
+    },
+    {
+      "name": "result:invalid-Error:imageErrorResult",
+      "thrown": {
+        "vmErrorName": "TypeError",
+        "rawDiagnosticRetainedSeparately": true
+      },
+      "events": []
+    },
+    {
+      "name": "result:invalid-Date-now:imageErrorResult",
+      "thrown": {
+        "vmErrorName": "TypeError",
+        "rawDiagnosticRetainedSeparately": true
+      },
+      "events": []
+    },
+    {
+      "name": "result:default:classifierErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "answers",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": null,
+        "answers": {
+          "keys": [],
+          "ordinaryPrototype": true
+        },
+        "stopReason": "error",
+        "errorMessage": "failure",
+        "timestamp": 1700000000123
+      },
+      "events": []
+    },
+    {
+      "name": "result:aborted:classifierErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "answers",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": null,
+        "answers": {
+          "keys": [],
+          "ordinaryPrototype": true
+        },
+        "stopReason": "aborted",
+        "errorMessage": "17",
+        "timestamp": 1700000000123
+      },
+      "events": []
+    },
+    {
+      "name": "result:undefined-aborted:classifierErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "answers",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": null,
+        "answers": {
+          "keys": [],
+          "ordinaryPrototype": true
+        },
+        "stopReason": "error",
+        "errorMessage": "null",
+        "timestamp": 1700000000123
+      },
+      "events": []
+    },
+    {
+      "name": "result:error-message-identity:classifierErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "answers",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": null,
+        "answers": {
+          "keys": [],
+          "ordinaryPrototype": true
+        },
+        "stopReason": "error",
+        "errorMessage": {
+          "kind": "object",
+          "tokenIdentity": true
+        },
+        "timestamp": 1700000000123
+      },
+      "events": [
+        "message"
+      ]
+    },
+    {
+      "name": "result:field-order:classifierErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "answers",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "id",
+        "output": null,
+        "answers": {
+          "keys": [],
+          "ordinaryPrototype": true
+        },
+        "stopReason": "error",
+        "errorMessage": "formatted",
+        "timestamp": 1700000000123
+      },
+      "events": [
+        "api",
+        "provider",
+        "id",
+        "String:true",
+        "Date.now",
+        "Date.this:true"
+      ]
+    },
+    {
+      "name": "result:live-instanceof:classifierErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "answers",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": null,
+        "answers": {
+          "keys": [],
+          "ordinaryPrototype": true
+        },
+        "stopReason": "error",
+        "errorMessage": "live",
+        "timestamp": 1700000000123
+      },
+      "events": [
+        "Error",
+        "instanceof:true"
+      ]
+    },
+    {
+      "name": "result:instanceof-raw:classifierErrorResult",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "instanceof"
+      ]
+    },
+    {
+      "name": "result:String-getter-raw:classifierErrorResult",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "String"
+      ]
+    },
+    {
+      "name": "result:Date-getter-raw:classifierErrorResult",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "Date"
+      ]
+    },
+    {
+      "name": "result:message-getter-raw:classifierErrorResult",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "message"
+      ]
+    },
+    {
+      "name": "result:String-return-identity:classifierErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "answers",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": null,
+        "answers": {
+          "keys": [],
+          "ordinaryPrototype": true
+        },
+        "stopReason": "error",
+        "errorMessage": {
+          "kind": "object",
+          "tokenIdentity": true
+        },
+        "timestamp": 1700000000123
+      },
+      "events": [
+        "String:true"
+      ]
+    },
+    {
+      "name": "result:Date-return-identity:classifierErrorResult",
+      "returned": {
+        "keys": [
+          "api",
+          "provider",
+          "model",
+          "answers",
+          "stopReason",
+          "errorMessage",
+          "timestamp"
+        ],
+        "api": "api",
+        "provider": "provider",
+        "model": "identifier",
+        "output": null,
+        "answers": {
+          "keys": [],
+          "ordinaryPrototype": true
+        },
+        "stopReason": "error",
+        "errorMessage": "failure",
+        "timestamp": {
+          "kind": "object",
+          "tokenIdentity": true
+        }
+      },
+      "events": []
+    },
+    {
+      "name": "result:model-getter-raw:classifierErrorResult",
+      "thrown": {
+        "rawSentinelIdentity": true
+      },
+      "events": [
+        "api",
+        "provider"
+      ]
+    },
+    {
+      "name": "result:invalid-Error:classifierErrorResult",
+      "thrown": {
+        "vmErrorName": "TypeError",
+        "rawDiagnosticRetainedSeparately": true
+      },
+      "events": []
+    },
+    {
+      "name": "result:invalid-Date-now:classifierErrorResult",
+      "thrown": {
+        "vmErrorName": "TypeError",
+        "rawDiagnosticRetainedSeparately": true
+      },
+      "events": []
+    }
+  ]
+}
