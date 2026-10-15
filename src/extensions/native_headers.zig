@@ -388,8 +388,20 @@ fn symbolProperty(scope: *Scope, object: c.JSValue, symbol: c.JSValue, value: c.
     if (c.JS_DefinePropertyValue(scope.engine.context, object, atom, c.JS_DupValue(scope.engine.context, value), flags) < 0) return js.capture(scope.engine);
 }
 fn function(scope: *Scope, owner: c.JSValue, name: [*:0]const u8, length: c_int, kind: Kind) !c.JSValue {
+    // Undici's iteratorMixin defines ordinary functions, whereas Headers and
+    // FastIterableIterator class methods are nonconstructible class methods.
+    if (kind == .keys or kind == .values or kind == .entries or kind == .forEach) {
+        return scope.own(try @import("native_node_function.zig").create(scope.engine, name, length, ordinary, &.{ owner, c.JS_NewInt32(scope.engine.context, @intFromEnum(kind)) }));
+    }
     var captures = [_]c.JSValue{owner};
     return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, callback, name, length, @intFromEnum(kind), 1, &captures)));
+}
+fn ordinary(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    var kind: i32 = 0;
+    if (c.JS_ToInt32(engine.context, &kind, captures[1]) < 0) return js.capture(engine);
+    return c.JS_DupValue(engine.context, try operate(&scope, captures[0], receiver, args, @enumFromInt(kind)));
 }
 pub fn install(engine: *em.Engine) !void {
     if (engine.native_module_values.contains(cache_key)) return;

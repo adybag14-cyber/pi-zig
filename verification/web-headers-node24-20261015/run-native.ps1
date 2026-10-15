@@ -5,6 +5,12 @@ $taskEvidence='C:/Users/adyba/pi-zig-update-evidence-20261003'
 $taskName="web-headers-node24-debug-$Phase-$Attempt-20261015"
 $taskBase=Join-Path $taskEvidence $taskName
 $taskOwner=Join-Path $PSScriptRoot 'run-owner.ps1'
+$taskAudit=Join-Path $taskEvidence 'source5ab-dependency-contract-audit-20261015.json'
+$taskRuntime='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012'
+$taskContract=Get-Content -LiteralPath $taskAudit -Raw|ConvertFrom-Json
+$taskAbsent=@($taskContract.pins|Where-Object status -eq 'platform_optional_absent'|ForEach-Object{Join-Path $taskRuntime $_.path})+@($taskContract.mismatches|ForEach-Object{Join-Path $taskRuntime $_.path})
+if($taskAbsent.Count-ne84-or@($taskAbsent|Where-Object{Test-Path -LiteralPath $_}).Count){throw 'Original absent dependency inventory drift'}
+if((Get-FileHash -LiteralPath 'C:/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-windows-0.16.0/zig.exe').Hash-cne'086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864'){throw 'Pinned Zig0.16 executable drift'}
 function Candidate-Rows {
     @(git -C $taskRoot ls-files --cached --others --exclude-standard | Sort-Object -Unique | ForEach-Object { $taskFile=Join-Path $taskRoot $_; [ordered]@{path=$taskFile;sha256=(Get-FileHash -LiteralPath $taskFile).Hash} })
 }
@@ -18,7 +24,7 @@ $taskToolsPath=Join-Path $taskEvidence 'durable-latest89-full-inspect-53ae-tool-
 $taskTools=@((Get-Content -LiteralPath $taskToolsPath -Raw|ConvertFrom-Json).inputs)
 $taskToolRows="$taskBase-tools.json"
 $taskTools|ConvertTo-Json -Depth 4|Set-Content -LiteralPath $taskToolRows -Encoding utf8NoBOM
-$taskControls=@($PSCommandPath,$taskOwner,$taskToolsPath)|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}}
+$taskControls=@($PSCommandPath,$taskOwner,$taskToolsPath,$taskAudit)|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}}
 $taskControlPath="$taskBase-controls.json"
 $taskControls|ConvertTo-Json -Depth 4|Set-Content -LiteralPath $taskControlPath -Encoding utf8NoBOM
 $taskManifestPaths=@((Join-Path $taskEvidence 'source5ab-full-manifest-20261015.json'),(Join-Path $taskEvidence 'durable-19cb534-reference-20261012-all-built-runtime.json'),(Join-Path $taskEvidence 'root-current8a-npm-tools-before.json'),$taskCandidatePath,$taskVendorPath,$taskToolRows,$taskControlPath)
@@ -32,6 +38,7 @@ function Verify-Frozen {
         $taskChecks+=[ordered]@{manifest=$taskManifest.name;count=$taskRows.Count;drift=0}
     }
     if($taskChecks[0].count -ne 1967 -or $taskChecks[1].count -ne 31064 -or $taskChecks[2].count -ne 1774){throw 'Original complete inventory mismatch'}
+    if(@($taskAbsent|Where-Object{Test-Path -LiteralPath $_}).Count){throw 'Absent dependency state drift'}
     return $taskChecks
 }
 $taskBefore=Verify-Frozen
