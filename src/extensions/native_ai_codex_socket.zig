@@ -57,7 +57,7 @@ fn find(engine: *v.em.Engine, id: u64) ?*Connection {
 }
 pub fn pending(engine: *v.em.Engine) bool {
     const state = stateMaybe(engine) orelse return false;
-    for (state.connections.items) |connection| if (connection.busy and !connection.closed) return true;
+    for (state.connections.items) |connection| if ((connection.busy and !connection.closed) or connection.ready != null or connection.send_waiter != null or connection.read_waiter != null) return true;
     return false;
 }
 pub fn deinit(engine: *v.em.Engine) void {

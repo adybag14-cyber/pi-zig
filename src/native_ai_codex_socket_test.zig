@@ -192,12 +192,16 @@ test "native Codex socket owner reuses the real connection retains guest metadat
 }
 
 test "native Codex socket session cleanup disconnects both busy cached and uncached owned connections" {
-    try checkConcurrentCleanup(false);
+    try checkConcurrentCleanup(.busy);
 }
 test "native Codex socket publishes simultaneous initial cache entries after connect and retains both for cleanup" {
-    try checkConcurrentCleanup(true);
+    try checkConcurrentCleanup(.initial);
 }
-fn checkConcurrentCleanup(comptime simultaneous: bool) !void {
+test "native Codex socket close during an awaited read rejects the retained promise before releasing owner work" {
+    try checkConcurrentCleanup(.pending_read);
+}
+const CleanupScenario = enum { busy, initial, pending_read };
+fn checkConcurrentCleanup(comptime scenario: CleanupScenario) !void {
     var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
     defer arena.deinit();
     const a = arena.allocator();
@@ -228,8 +232,10 @@ fn checkConcurrentCleanup(comptime simultaneous: bool) !void {
     defer engine.deinit();
     try installOwnerFixture(engine, try first.url(a), object(connections[0], "headers"), &.{}, "acquireOwnedSocket");
     try installOwnerFixture(engine, try second.url(a), object(connections[0], "headers"), &.{}, "acquireConcurrentOwnedSocket");
-    const script = if (simultaneous)
+    const script = if (scenario == .initial)
         \\const first=acquireOwnedSocket();const second=acquireConcurrentOwnedSocket();await Promise.all([first.ready,second.ready]);if(!first.cached||!second.cached||first.reused||second.reused)throw Error('initial concurrent ownership');closeOwnedSocketSession();export const proof=true;
+    else if (scenario == .pending_read)
+        \\const first=acquireOwnedSocket();await first.ready;const second=acquireConcurrentOwnedSocket();await second.ready;const pendingRead=first.events.next();closeOwnedSocketSession();let rejected=false;try{await pendingRead}catch(error){rejected=true;if(error.name!=='NativeWebSocketError')throw error}if(!rejected)throw Error('read settled without cancellation');export const proof=true;
     else
         \\const first=acquireOwnedSocket();await first.ready;const second=acquireConcurrentOwnedSocket();await second.ready;if(!first.cached||second.cached||first.reused||second.reused)throw Error('busy ownership');closeOwnedSocketSession();export const proof=true;
     ;
