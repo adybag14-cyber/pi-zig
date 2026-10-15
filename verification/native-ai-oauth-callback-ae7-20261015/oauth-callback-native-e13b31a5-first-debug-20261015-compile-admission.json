@@ -1,0 +1,16 @@
+{
+  "root_slot": 3,
+  "phase": "compile",
+  "free_bytes": 19205726208,
+  "required_bytes": 17179869184,
+  "other_native_build_roots": 1,
+  "max_roots": 4,
+  "jobs": 1,
+  "compile_seconds": 1320,
+  "runtime_seconds": 300,
+  "test_seconds": 120,
+  "await_ms": 10000,
+  "settle_seconds": 10,
+  "candidate": "e13b31a55c532c288330627665777f96e33b3d1a",
+  "observed_utc": "2026-10-15T20:24:11.2013125+00:00"
+}

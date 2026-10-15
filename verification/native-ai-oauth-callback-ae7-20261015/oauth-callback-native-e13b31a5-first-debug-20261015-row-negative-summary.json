@@ -1,0 +1,130 @@
+[
+  {
+    "name": "invalid-route-state-missing-retry-success-and-duplicate",
+    "error": {
+      "name": "TypeError",
+      "message": "not a function"
+    }
+  },
+  {
+    "name": "method-rejected-before-state",
+    "value": {
+      "status": 500,
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "no-store",
+      "body": "[HTML 2255 chars]"
+    }
+  },
+  {
+    "name": "provider-error-empty-description",
+    "value": {
+      "response": {
+        "status": 500,
+        "contentType": "text/html; charset=utf-8",
+        "cacheControl": "no-store",
+        "body": "[HTML 2255 chars]"
+      },
+      "error": "not a function"
+    }
+  },
+  {
+    "name": "async-complete-rejection-error-identity",
+    "value": {
+      "response": {
+        "status": 500,
+        "contentType": "text/html; charset=utf-8",
+        "cacheControl": "no-store",
+        "body": "[HTML 2255 chars]"
+      },
+      "same": false
+    }
+  },
+  {
+    "name": "sync-complete-throw-string",
+    "value": {
+      "response": {
+        "status": 500,
+        "contentType": "text/html; charset=utf-8",
+        "cacheControl": "no-store",
+        "body": "[HTML 2255 chars]"
+      },
+      "error": {
+        "name": "TypeError",
+        "message": "not a function"
+      }
+    }
+  },
+  {
+    "name": "cancel-before-claimed",
+    "value": {
+      "undefined": true,
+      "response": {
+        "status": 500,
+        "contentType": "text/html; charset=utf-8",
+        "cacheControl": "no-store",
+        "body": "[HTML 2255 chars]"
+      }
+    }
+  },
+  {
+    "name": "close-rejects",
+    "value": "OAuth callback server closed"
+  },
+  {
+    "name": "already-aborted",
+    "error": {
+      "name": "ReferenceError",
+      "message": "AbortController is not defined"
+    }
+  },
+  {
+    "name": "abort-during-wait",
+    "error": {
+      "name": "ReferenceError",
+      "message": "AbortController is not defined"
+    }
+  },
+  {
+    "name": "controlled-timeout",
+    "value": "Fixture <&> sign-in timed out"
+  },
+  {
+    "name": "manual-no-callback-shape-and-abort",
+    "error": {
+      "name": "TypeError",
+      "message": "not a function"
+    }
+  },
+  {
+    "name": "manual-error-preserves-identity",
+    "value": false
+  },
+  {
+    "name": "manual-error-string-normalization",
+    "value": {
+      "name": "TypeError",
+      "message": "not a function"
+    }
+  },
+  {
+    "name": "callback-result-aborts-manual",
+    "error": {
+      "name": "TypeError",
+      "message": "not a function"
+    }
+  },
+  {
+    "name": "manual-first-cancels-and-waits",
+    "error": {
+      "name": "TypeError",
+      "message": "not a function"
+    }
+  },
+  {
+    "name": "callback-rejection-precedes-manual-error",
+    "value": {
+      "same": false,
+      "aborted": false
+    }
+  }
+]
