@@ -43,7 +43,7 @@ fn codedError(engine: *em.Engine, owner: c.JSValue, constructor: [*:0]const u8, 
 fn domError(engine: *em.Engine, name: []const u8, message: []const u8) !c.JSValue {
     return engine.checked(c.JS_Throw(engine.context, try @import("dom_exception.zig").create(engine, message, name)));
 }
-fn fill(engine: *em.Engine, receiver: c.JSValue, owner: c.JSValue, args: []const c.JSValue) !c.JSValue {
+pub fn fill(engine: *em.Engine, receiver: c.JSValue, owner: c.JSValue, args: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     if (!scope.equal(receiver, try scope.get(owner, "crypto"))) return codedError(engine, owner, "typeError", "Value of \"this\" must be of type Crypto", "ERR_INVALID_THIS");

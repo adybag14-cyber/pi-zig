@@ -1,0 +1,379 @@
+{
+  "nodeVersion": "v24.14.0",
+  "builtinAuthorityCount": 368,
+  "actualBuiltinEntries": 369,
+  "excludedNonSourceKeys": [
+    "configs"
+  ],
+  "builtinAuthoritySha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+  "count": 52,
+  "oracleScope": "Node builtins only; no Pi, SDK, or external dependency imports",
+  "rows": [
+    {
+      "name": "shape",
+      "value": {
+        "crypto": true,
+        "subtle": true,
+        "cryptoTag": "[object Crypto]",
+        "subtleTag": "[object SubtleCrypto]",
+        "digestTag": "[object AsyncFunction]",
+        "cryptoOwn": [],
+        "subtleOwn": [],
+        "cryptoConstructor": {
+          "writable": false,
+          "enumerable": false,
+          "configurable": false
+        },
+        "subtleConstructor": {
+          "writable": false,
+          "enumerable": false,
+          "configurable": false
+        },
+        "random": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "uuid": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "digest": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "subtleGetter": {
+          "enumerable": true,
+          "configurable": true,
+          "get": "get subtle"
+        },
+        "metadata": [
+          "getRandomValues",
+          1,
+          "randomUUID",
+          0,
+          "digest",
+          2
+        ],
+        "prototypes": [
+          true,
+          true,
+          false
+        ]
+      }
+    },
+    {
+      "name": "SHA-1:Uint8Array:0",
+      "value": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    {
+      "name": "SHA-1:Uint8Array:3",
+      "value": "a9993e364706816aba3e25717850c26c9cd0d89d"
+    },
+    {
+      "name": "SHA-1:DataView:3",
+      "value": "a9993e364706816aba3e25717850c26c9cd0d89d"
+    },
+    {
+      "name": "SHA-1:ArrayBuffer:3",
+      "value": "a9993e364706816aba3e25717850c26c9cd0d89d"
+    },
+    {
+      "name": "SHA-256:Uint8Array:0",
+      "value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "SHA-256:Uint8Array:3",
+      "value": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "name": "SHA-256:DataView:3",
+      "value": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "name": "SHA-256:ArrayBuffer:3",
+      "value": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "name": "SHA-384:Uint8Array:0",
+      "value": "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
+    },
+    {
+      "name": "SHA-384:Uint8Array:3",
+      "value": "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7"
+    },
+    {
+      "name": "SHA-384:DataView:3",
+      "value": "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7"
+    },
+    {
+      "name": "SHA-384:ArrayBuffer:3",
+      "value": "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7"
+    },
+    {
+      "name": "SHA-512:Uint8Array:0",
+      "value": "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"
+    },
+    {
+      "name": "SHA-512:Uint8Array:3",
+      "value": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
+    },
+    {
+      "name": "SHA-512:DataView:3",
+      "value": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
+    },
+    {
+      "name": "SHA-512:ArrayBuffer:3",
+      "value": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
+    },
+    {
+      "name": "sha-256:Uint8Array:0",
+      "value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "sha-256:Uint8Array:3",
+      "value": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "name": "sha-256:DataView:3",
+      "value": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "name": "sha-256:ArrayBuffer:3",
+      "value": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "name": "object-algorithm",
+      "value": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "name": "Crypto-new",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal constructor",
+        "code": "ERR_ILLEGAL_CONSTRUCTOR"
+      }
+    },
+    {
+      "name": "SubtleCrypto-new",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal constructor",
+        "code": "ERR_ILLEGAL_CONSTRUCTOR"
+      }
+    },
+    {
+      "name": "Crypto-call",
+      "error": {
+        "name": "TypeError",
+        "message": "Class constructor Crypto cannot be invoked without 'new'"
+      }
+    },
+    {
+      "name": "uuid-brand",
+      "error": {
+        "name": "TypeError",
+        "message": "Value of \"this\" must be of type Crypto",
+        "code": "ERR_INVALID_THIS"
+      }
+    },
+    {
+      "name": "random-brand",
+      "error": {
+        "name": "TypeError",
+        "message": "Value of \"this\" must be of type Crypto",
+        "code": "ERR_INVALID_THIS"
+      }
+    },
+    {
+      "name": "subtle-getter-brand",
+      "error": {
+        "name": "TypeError",
+        "message": "Value of \"this\" must be of type Crypto",
+        "code": "ERR_INVALID_THIS"
+      }
+    },
+    {
+      "name": "digest-brand",
+      "error": {
+        "name": "TypeError",
+        "message": "Value of \"this\" must be of type SubtleCrypto",
+        "code": "ERR_INVALID_THIS"
+      }
+    },
+    {
+      "name": "digest-missing0",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to execute 'digest' on 'SubtleCrypto': 2 arguments required, but only 0 present.",
+        "code": "ERR_MISSING_ARGS"
+      }
+    },
+    {
+      "name": "digest-missing1",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to execute 'digest' on 'SubtleCrypto': 2 arguments required, but only 1 present.",
+        "code": "ERR_MISSING_ARGS"
+      }
+    },
+    {
+      "name": "digest-symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to execute 'digest' on 'SubtleCrypto': 1st argument is a Symbol and cannot be converted to a string.",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "digest-missing-name",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to normalize algorithm: passed algorithm can not be converted to 'Algorithm' because 'name' is required in 'Algorithm'.",
+        "code": "ERR_MISSING_OPTION"
+      }
+    },
+    {
+      "name": "digest-name-symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to normalize algorithm: 'name' of 'Algorithm' (passed algorithm) is a Symbol and cannot be converted to a string.",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "digest-unknown",
+      "error": {
+        "name": "NotSupportedError",
+        "message": "Unrecognized algorithm name",
+        "code": 9
+      }
+    },
+    {
+      "name": "digest-buffer-type",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to execute 'digest' on 'SubtleCrypto': 2nd argument is not instance of ArrayBuffer, Buffer, TypedArray, or DataView.",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "digest-shared",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to execute 'digest' on 'SubtleCrypto': 2nd argument is not instance of ArrayBuffer, Buffer, TypedArray, or DataView.",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "digest-shared-view",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to execute 'digest' on 'SubtleCrypto': 2nd argument is a view on a SharedArrayBuffer, which is not allowed.",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "random-float",
+      "error": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17
+      }
+    },
+    {
+      "name": "random-quota",
+      "error": {
+        "name": "QuotaExceededError",
+        "message": "The requested length exceeds 65,536 bytes",
+        "code": 22
+      }
+    },
+    {
+      "name": "async-rejection",
+      "value": {
+        "sync": false,
+        "promise": true,
+        "reason": {
+          "name": "TypeError",
+          "message": "Value of \"this\" must be of type SubtleCrypto",
+          "code": "ERR_INVALID_THIS"
+        }
+      }
+    },
+    {
+      "name": "getter-order",
+      "value": {
+        "calls": [
+          "name",
+          "name.toString",
+          "data.byteLength"
+        ],
+        "value": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+      }
+    },
+    {
+      "name": "algorithm-throw",
+      "value": true
+    },
+    {
+      "name": "byteLength-throw",
+      "value": true
+    },
+    {
+      "name": "buffer-before-name",
+      "value": {
+        "calls": [],
+        "error": {
+          "name": "TypeError",
+          "message": "Failed to execute 'digest' on 'SubtleCrypto': 2nd argument is not instance of ArrayBuffer, Buffer, TypedArray, or DataView.",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "byteLength-limit",
+      "error": {
+        "name": "OperationError",
+        "message": "data must be less than 2147483648 bits",
+        "code": 0
+      }
+    },
+    {
+      "name": "digest-copy",
+      "value": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "name": "detached-ArrayBuffer",
+      "value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "detached-Uint8Array",
+      "value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "detached-DataView",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot perform get DataView.prototype.byteLength on a detached ArrayBuffer"
+      }
+    },
+    {
+      "name": "secure-random",
+      "value": {
+        "same": true,
+        "different": true,
+        "notZero": true
+      }
+    },
+    {
+      "name": "uuid-shape",
+      "value": {
+        "valid": true,
+        "different": true
+      }
+    }
+  ]
+}

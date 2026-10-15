@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {createHash} from 'node:crypto';
+const [inputPath,outputPath,authorityPath]=process.argv.slice(2);
+if(process.version!=='v24.14.0')throw Error('Node24.14.0 authority required');
+const authorityBytes=fs.readFileSync(authorityPath),authority=JSON.parse(authorityBytes),actual=process.binding('natives');
+const mismatches=Object.keys(authority).filter(k=>authority[k]!==actual[k]);
+const excludedKeys=Object.keys(actual).filter(k=>!(k in authority));
+if(Object.keys(authority).length!==368||Object.keys(actual).length!==369||excludedKeys.length!==1||excludedKeys[0]!=='configs'||mismatches.length)throw Error(JSON.stringify({reason:'Full368 builtin source authority bytes changed',expectedCount:Object.keys(authority).length,actualCount:Object.keys(actual).length,excludedKeys,mismatches}));
+const source=fs.readFileSync(inputPath,'utf8');
+await vm.runInThisContext('(async()=>{'+source+'\n})()', {filename:inputPath});
+fs.writeFileSync(outputPath,JSON.stringify({nodeVersion:process.version,builtinAuthorityCount:368,actualBuiltinEntries:369,excludedNonSourceKeys:excludedKeys,builtinAuthoritySha256:createHash('sha256').update(authorityBytes).digest('hex').toUpperCase(),count:globalThis.webCryptoRows.length,oracleScope:'Node builtins only; no Pi, SDK, or external dependency imports',rows:globalThis.webCryptoRows},null,2)+'\n');
