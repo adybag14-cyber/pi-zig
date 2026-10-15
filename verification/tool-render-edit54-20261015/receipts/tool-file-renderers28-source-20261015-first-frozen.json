@@ -1,0 +1,27 @@
+[
+  {
+    "name": "sdk-source-b45-full-manifest-20261014.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b45-full-manifest-20261014.json",
+    "sha256": "5FE14C9790D7874032CA6440C45FA11102F4D1EE9219E511593C63635E652276"
+  },
+  {
+    "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "name": "root-current8a-npm-tools-before.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "name": "tool-file-renderers28-source-20261015-first-candidate.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-file-renderers28-source-20261015-first-candidate.json",
+    "sha256": "B98FDF813B4F0AEF50A0DC6C9328F17EE7F63973EE7BDDE13E4A1710642F8BE0"
+  },
+  {
+    "name": "tool-file-renderers28-source-20261015-first-controls.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-file-renderers28-source-20261015-first-controls.json",
+    "sha256": "00C86A7C7F0703363DDADA11C2BEC263A929A9337B6065BD4DBF5A63CFD61A48"
+  }
+]

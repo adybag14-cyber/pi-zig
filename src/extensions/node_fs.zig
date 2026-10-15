@@ -14,6 +14,12 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     try node_buffer.install(engine);
     const exports = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(exports);
+    const constants = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
+    defer engine.freeValue(constants);
+    inline for (.{ "F_OK", "R_OK", "W_OK", "X_OK" }) |name| {
+        if (c.JS_DefinePropertyValueStr(engine.context, constants, name, c.JS_NewInt32(engine.context, @field(std.c, name)), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
+    }
+    if (c.JS_DefinePropertyValueStr(engine.context, exports, "constants", c.JS_DupValue(engine.context, constants), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
     inline for (std.meta.fields(Method)) |field| {
         const name: [:0]const u8 = field.name;
         const function = try engine.checked(c.pi_js_function_magic(engine.context, invoke, name.ptr, if (field.value == @intFromEnum(Method.appendFileSync)) 3 else 2, @intCast(field.value)));
@@ -91,7 +97,7 @@ test "native filesystem promises settle asynchronous reads writes access and fai
     defer source.deinit();
     try source.writer.writeAll("import fs from 'node:fs'; import fsp, {writeFile,readFile,access,unlink} from 'node:fs/promises'; const path=");
     try std.json.Stringify.value(path, .{}, &source.writer);
-    try source.writer.writeAll("; const order=[]; const writing=writeFile(path,'async-native'); if (!(writing instanceof Promise)) throw Error('not a Promise'); writing.then(()=>order.push('settled')); order.push('sync'); await writing; export const text=await readFile(path,'utf8'); await access(path); export const shared=fs.promises===fsp; if (JSON.stringify(fs)!=='{\"promises\":{}}' || 'default' in fsp) throw Error('cyclic builtin default'); await unlink(path); export let failure=''; try {await readFile(path,'utf8');} catch(error) {if (!(error instanceof Error)) throw Error('not an Error'); failure=error.message;} export const observed=order;");
+    try source.writer.writeAll("; const order=[]; const writing=writeFile(path,'async-native'); if (!(writing instanceof Promise)) throw Error('not a Promise'); writing.then(()=>order.push('settled')); order.push('sync'); await writing; export const text=await readFile(path,'utf8'); await access(path,fs.constants.R_OK); export const shared=fs.promises===fsp; if (JSON.stringify(fs.promises)!=='{}' || 'default' in fsp) throw Error('cyclic builtin default');for(const [key,value] of Object.entries({F_OK:0,R_OK:4,W_OK:2,X_OK:1})){const d=Object.getOwnPropertyDescriptor(fs.constants,key);if(d.value!==value||d.writable||d.configurable||!d.enumerable)throw Error('access flag '+key)} await unlink(path); export let failure=''; try {await readFile(path,'utf8');} catch(error) {if (!(error instanceof Error)) throw Error('not an Error'); failure=error.message;} export const observed=order;");
     const namespace = engine.evalModule(source.written(), "native-fs-promises.js") catch |err| {
         std.debug.print("Native filesystem promise fixture: {s}\n", .{engine.last_error orelse @errorName(err)});
         return err;
