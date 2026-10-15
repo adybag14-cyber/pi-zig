@@ -169,6 +169,9 @@ fn dataLength(scope: *Scope, owner: c.JSValue, data: c.JSValue) !c.JSValue {
     var current = data;
     var intrinsic = false;
     while (c.JS_IsObject(current)) {
+        // Descriptor discovery must never introduce a guest Proxy trap that
+        // the source's single public property read would not perform.
+        if (c.JS_IsProxy(current)) return scope.get(data, "byteLength");
         var descriptor: c.JSPropertyDescriptor = undefined;
         const found = c.JS_GetOwnProperty(engine.context, &descriptor, current, atom);
         if (found < 0) return js.capture(engine);
