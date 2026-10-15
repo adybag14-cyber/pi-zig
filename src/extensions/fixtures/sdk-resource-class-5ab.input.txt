@@ -88,6 +88,16 @@ for(const boundary of ['trusted-call','reload-getter','reload-call','reload-reje
  const l=loader(),themes=[],diagnostics=[];l.loadThemeFromFile=()=>{throw new Error('file callback failed')};const value=l.loadThemesFromDir(agentDir+'/themes',themes,diagnostics,'truecolor');row('theme-directory-catches-file-callback',{undefined:value===undefined,themes,diagnostics});
 }
 failure('theme-default-directory-callback-outside-catch',marker=>{const l=loader();l.loadThemesFromDir=()=>{throw marker};l.loadThemes([],true,'truecolor')});
+{
+ const manager=loader().packageManager,accumulator=manager.createAccumulator(),metadata={source:'local',scope:'user',origin:'top-level'},first=manager.addResource(accumulator.prompts,'one',metadata,false);manager.addResource(accumulator.prompts,'one',{source:'other'},true);manager.addResource(accumulator.prompts,'',{source:'empty'},true);row('actual-package-accumulator-first-wins',{keys:Object.keys(accumulator),sameTarget:manager.getTargetMap(accumulator,'prompts')===accumulator.prompts,undefined:first===undefined,entries:[...accumulator.prompts]});
+}
+{
+ const manager=loader().packageManager,accumulator=manager.createAccumulator();for(const[path,metadata]of [['builtin:x',{source:'builtin',scope:'user',origin:'top-level'}],['package',{source:'pkg',scope:'project',origin:'package'}],['auto-user',{source:'auto',scope:'user',origin:'top-level'}],['local-user',{source:'local',scope:'user',origin:'top-level'}],['auto-project',{source:'auto',scope:'project',origin:'top-level'}],['local-project',{source:'local',scope:'project',origin:'top-level'}]])manager.addResource(accumulator.extensions,path,metadata,true);row('actual-package-resource-precedence',{value:manager.toResolvedPaths(accumulator)});
+ const canonical=manager.createAccumulator();manager.addResource(canonical.prompts,root+'/shared/custom.md',{source:'pkg',scope:'user',origin:'package'},true);manager.addResource(canonical.prompts,root+'/shared/../shared/custom.md',{source:'local',scope:'project',origin:'top-level'},false);row('actual-package-canonical-dedupe-after-precedence',{value:manager.toResolvedPaths(canonical)});
+}
+{
+ const manager=loader().packageManager;let message;try{manager.getTargetMap(manager.createAccumulator(),'unknown')}catch(e){message=e.message}row('package-invalid-resource-type',{message});
+}
 for(const mode of ['defaults','flags','temporary','package-filter','untrusted','trust-bootstrap']){
  const settings=SettingsManager.inMemory({packages:[root+'/pkg-user'],prompts:['../shared/custom.md']},{projectTrusted:mode!=='untrusted'});
  settings.setProjectPackages([root+'/project/pkg-project']);
