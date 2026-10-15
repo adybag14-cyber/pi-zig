@@ -91,16 +91,24 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
     try scope.put(owner, "http", c.pi_js_undefined());
     try scope.put(owner, "seenDone", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "attempt", c.JS_NewInt32(engine.context, 0));
-    const declared = try scope.own(try @import("native_ai_provider_transcript.zig").declared(engine, try scope.get(context, "messages")));
-    const properties = try scope.own(try @import("native_ai_openai_tools.zig").grammarProperties(engine, declared, scope.truthy(try scope.get(compat, "supportsOpenAIGrammarTools"))));
-    const decoder = try scope.own(try @import("native_ai_openai_decode.zig").create(engine, args[0], compat, outer, try scope.get(dependencies, "json"), properties));
-    try scope.put(owner, "decoder", decoder);
-    setup(&scope, owner, properties) catch |err| try failError(&scope, owner, err);
+    // Source creates output before entering its setup try/catch. Tool grammar
+    // validation belongs inside that catch and must produce an error stream.
+    const created = try @import("native_ai_openai_decode.zig").createDetailed(engine, args[0], c.pi_js_undefined(), outer, try scope.get(dependencies, "json"), c.pi_js_undefined());
+    defer engine.freeValue(created.namespace);
+    defer engine.freeValue(created.owner);
+    try scope.put(owner, "decoder", created.namespace);
+    try scope.put(owner, "decoderState", created.owner);
+    setup(&scope, owner) catch |err| try failError(&scope, owner, err);
     return c.JS_DupValue(engine.context, outer);
 }
-fn setup(scope: *Scope, owner: c.JSValue, properties: c.JSValue) !void {
+fn setup(scope: *Scope, owner: c.JSValue) !void {
     const options = try scope.get(owner, "options");
     try scope.put(owner, "apiKey", try apiKey(scope, try scope.get(owner, "model"), options));
+    const compat = try scope.own(try @import("native_ai_openai_compat_options.zig").resolve(scope.engine, try scope.get(owner, "model")));
+    try scope.put(owner, "compat", compat);
+    const declared = try scope.own(try @import("native_ai_provider_transcript.zig").declared(scope.engine, try scope.get(try scope.get(owner, "context"), "messages")));
+    const properties = try scope.own(try @import("native_ai_openai_tools.zig").grammarProperties(scope.engine, declared, scope.truthy(try scope.get(compat, "supportsOpenAIGrammarTools"))));
+    try @import("native_ai_openai_decode.zig").configure(scope.engine, try scope.get(owner, "decoderState"), compat, properties);
     const retention = try request.cacheRetention(scope, options);
     try scope.put(owner, "retention", retention);
     const params = try scope.own(try request.build(scope.engine, try scope.get(owner, "model"), try scope.get(owner, "context"), options, try scope.get(owner, "compat"), retention, properties, try scope.get(try scope.get(owner, "agent"), "simple")));

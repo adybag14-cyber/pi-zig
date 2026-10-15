@@ -39,10 +39,10 @@ pub fn binary(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !c.JSValue {
     if (c.JS_IsString(chunk)) return encode(scope, owner, chunk);
     return chunk;
 }
-pub fn concat(scope: *Scope, first: c.JSValue, second: c.JSValue) !c.JSValue {
+pub fn concat(scope: *Scope, first: c.JSValue, second: c.JSValue, explicit_first_offset: bool) !c.JSValue {
     const length = try scope.own(try arithmetic.binary(scope.engine, .add, try scope.get(first, "length"), try scope.get(second, "length")));
     const data = try scope.own(try v.js.builtin(scope.engine, "Uint8Array", &.{length}));
-    _ = try scope.invoke(data, "set", &.{first});
+    if (explicit_first_offset) _ = try scope.invoke(data, "set", &.{ first, c.JS_NewInt32(scope.engine.context, 0) }) else _ = try scope.invoke(data, "set", &.{first});
     _ = try scope.invoke(data, "set", &.{ second, try scope.get(first, "length") });
     return data;
 }
@@ -118,7 +118,7 @@ fn step(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completion, inpu
         }
         const chunk = try scope.get(input, "value");
         if (v.nullish(chunk)) return record.next(&scope, owner);
-        try scope.put(owner, "data", try concat(&scope, try scope.get(owner, "data"), try binary(&scope, try scope.get(owner, "codec"), chunk)));
+        try scope.put(owner, "data", try concat(&scope, try scope.get(owner, "data"), try binary(&scope, try scope.get(owner, "codec"), chunk), false));
     }
     const data = try scope.get(owner, "data");
     if (try delimiter(engine, data)) |index| {

@@ -27,7 +27,7 @@ fn find(scope: *Scope, buffer: c.JSValue, start: c.JSValue) !?Newline {
 pub fn decode(scope: *Scope, decoder: c.JSValue, codec: c.JSValue, chunk: c.JSValue) !c.JSValue {
     const lines = try scope.array();
     if (v.nullish(chunk)) return lines;
-    try scope.put(decoder, "buffer", try chunks.concat(scope, try scope.get(decoder, "buffer"), try chunks.binary(scope, codec, chunk)));
+    try scope.put(decoder, "buffer", try chunks.concat(scope, try scope.get(decoder, "buffer"), try chunks.binary(scope, codec, chunk), true));
     while (true) {
         var row: Scope = .{ .engine = scope.engine };
         defer row.deinit();
