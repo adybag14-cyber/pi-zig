@@ -14,10 +14,10 @@ const Root = struct {
     engine: *em.Engine,
     header_class: c.JSClassID,
     iterator_class: c.JSClassID,
-    constructor: c.JSValue = c.pi_js_undefined(),
-    prototype: c.JSValue = c.pi_js_undefined(),
-    iterator_prototype: c.JSValue = c.pi_js_undefined(),
-    has_instance: c.JSValue = c.pi_js_undefined(),
+    constructor: c.JSValue,
+    prototype: c.JSValue,
+    iterator_prototype: c.JSValue,
+    has_instance: c.JSValue,
 };
 const State = struct { engine: *em.Engine, owner: c.JSValue, entries: std.ArrayList(Entry) = .empty, cookies: std.ArrayList(c.JSValue) = .empty, guard: Guard = .none };
 const Iter = struct { engine: *em.Engine, owner: c.JSValue, target: c.JSValue, position: usize = 0, kind: Kind };
@@ -388,8 +388,20 @@ fn symbolProperty(scope: *Scope, object: c.JSValue, symbol: c.JSValue, value: c.
     if (c.JS_DefinePropertyValue(scope.engine.context, object, atom, c.JS_DupValue(scope.engine.context, value), flags) < 0) return js.capture(scope.engine);
 }
 fn function(scope: *Scope, owner: c.JSValue, name: [*:0]const u8, length: c_int, kind: Kind) !c.JSValue {
+    // Undici's iteratorMixin defines ordinary functions, whereas Headers and
+    // FastIterableIterator class methods are nonconstructible class methods.
+    if (kind == .keys or kind == .values or kind == .entries or kind == .forEach) {
+        return scope.own(try @import("native_node_function.zig").create(scope.engine, name, length, ordinary, &.{ owner, c.JS_NewInt32(scope.engine.context, @intFromEnum(kind)) }));
+    }
     var captures = [_]c.JSValue{owner};
     return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, callback, name, length, @intFromEnum(kind), 1, &captures)));
+}
+fn ordinary(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    var kind: i32 = 0;
+    if (c.JS_ToInt32(engine.context, &kind, captures[1]) < 0) return js.capture(engine);
+    return c.JS_DupValue(engine.context, try operate(&scope, captures[0], receiver, args, @enumFromInt(kind)));
 }
 pub fn install(engine: *em.Engine) !void {
     if (engine.native_module_values.contains(cache_key)) return;
@@ -398,7 +410,7 @@ pub fn install(engine: *em.Engine) !void {
     const root_class = try classId(engine, "Native Headers Owner", freeRoot, markRoot);
     const owner = try scope.own(try engine.checked(c.JS_NewObjectClass(engine.context, root_class)));
     const root = try engine.gpa.create(Root);
-    root.* = .{ .engine = engine, .header_class = 0, .iterator_class = 0 };
+    root.* = .{ .engine = engine, .header_class = 0, .iterator_class = 0, .constructor = c.pi_js_undefined(), .prototype = c.pi_js_undefined(), .iterator_prototype = c.pi_js_undefined(), .has_instance = c.pi_js_undefined() };
     _ = c.JS_SetOpaque(owner, root);
     root.header_class = try classId(engine, "Headers", freeHeader, markHeader);
     root.iterator_class = try classId(engine, "Headers Iterator", freeIterator, markIterator);
