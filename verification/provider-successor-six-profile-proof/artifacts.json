@@ -1,0 +1,125 @@
+{
+  "total_count": 6,
+  "artifacts": [
+    {
+      "id": 12008282517,
+      "node_id": "MDg6QXJ0aWZhY3QxMjAwODI4MjUxNw==",
+      "name": "native-provider-successor-ubuntu-latest-ReleaseFast-087858aad7c3425dab083ec2dc0a3dda5f93835f",
+      "size_in_bytes": 2630357,
+      "url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12008282517",
+      "archive_download_url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12008282517/zip",
+      "expired": false,
+      "digest": "sha256:db089f688ca9b1f627fe400b93736537c1ac1a4e3e76aac6bdb0668f561031a5",
+      "created_at": "2026-10-15T21:31:18Z",
+      "updated_at": "2026-10-15T21:31:18Z",
+      "expires_at": "2026-10-29T21:31:17Z",
+      "workflow_run": {
+        "id": 38806198483,
+        "repository_id": 1318360354,
+        "head_repository_id": 1318360354,
+        "head_branch": "work/native-provider-hosted-successor-20261015",
+        "head_sha": "087858aad7c3425dab083ec2dc0a3dda5f93835f"
+      }
+    },
+    {
+      "id": 12008242759,
+      "node_id": "MDg6QXJ0aWZhY3QxMjAwODI0Mjc1OQ==",
+      "name": "native-provider-successor-windows-latest-ReleaseFast-087858aad7c3425dab083ec2dc0a3dda5f93835f",
+      "size_in_bytes": 2662017,
+      "url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12008242759",
+      "archive_download_url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12008242759/zip",
+      "expired": false,
+      "digest": "sha256:98a26bc5714258b0417dbe00452571be32d06cb6ed102aac7410a4cc06e23b6a",
+      "created_at": "2026-10-15T21:35:03Z",
+      "updated_at": "2026-10-15T21:35:03Z",
+      "expires_at": "2026-10-29T21:35:02Z",
+      "workflow_run": {
+        "id": 38806198483,
+        "repository_id": 1318360354,
+        "head_repository_id": 1318360354,
+        "head_branch": "work/native-provider-hosted-successor-20261015",
+        "head_sha": "087858aad7c3425dab083ec2dc0a3dda5f93835f"
+      }
+    },
+    {
+      "id": 12007443003,
+      "node_id": "MDg6QXJ0aWZhY3QxMjAwNzQ0MzAwMw==",
+      "name": "native-provider-successor-ubuntu-latest-ReleaseSafe-087858aad7c3425dab083ec2dc0a3dda5f93835f",
+      "size_in_bytes": 2630432,
+      "url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12007443003",
+      "archive_download_url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12007443003/zip",
+      "expired": false,
+      "digest": "sha256:05dda1ed5a7b1ea129311694d66b34820b4714a423ba017898f44b4726fb4a58",
+      "created_at": "2026-10-15T21:23:21Z",
+      "updated_at": "2026-10-15T21:23:21Z",
+      "expires_at": "2026-10-29T21:23:20Z",
+      "workflow_run": {
+        "id": 38806198483,
+        "repository_id": 1318360354,
+        "head_repository_id": 1318360354,
+        "head_branch": "work/native-provider-hosted-successor-20261015",
+        "head_sha": "087858aad7c3425dab083ec2dc0a3dda5f93835f"
+      }
+    },
+    {
+      "id": 12006863136,
+      "node_id": "MDg6QXJ0aWZhY3QxMjAwNjg2MzEzNg==",
+      "name": "native-provider-successor-windows-latest-Debug-087858aad7c3425dab083ec2dc0a3dda5f93835f",
+      "size_in_bytes": 2661743,
+      "url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12006863136",
+      "archive_download_url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12006863136/zip",
+      "expired": false,
+      "digest": "sha256:7aa5952280e63bef61599a870f915b05e96042a995830a91163b20e688e0e20a",
+      "created_at": "2026-10-15T21:15:32Z",
+      "updated_at": "2026-10-15T21:15:32Z",
+      "expires_at": "2026-10-29T21:15:30Z",
+      "workflow_run": {
+        "id": 38806198483,
+        "repository_id": 1318360354,
+        "head_repository_id": 1318360354,
+        "head_branch": "work/native-provider-hosted-successor-20261015",
+        "head_sha": "087858aad7c3425dab083ec2dc0a3dda5f93835f"
+      }
+    },
+    {
+      "id": 12006861825,
+      "node_id": "MDg6QXJ0aWZhY3QxMjAwNjg2MTgyNQ==",
+      "name": "native-provider-successor-ubuntu-latest-Debug-087858aad7c3425dab083ec2dc0a3dda5f93835f",
+      "size_in_bytes": 2629322,
+      "url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12006861825",
+      "archive_download_url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12006861825/zip",
+      "expired": false,
+      "digest": "sha256:0fe477d682816ad694ee4249c04d5d456f4f739451d7451dca59039e5c165931",
+      "created_at": "2026-10-15T21:07:20Z",
+      "updated_at": "2026-10-15T21:07:20Z",
+      "expires_at": "2026-10-29T21:07:19Z",
+      "workflow_run": {
+        "id": 38806198483,
+        "repository_id": 1318360354,
+        "head_repository_id": 1318360354,
+        "head_branch": "work/native-provider-hosted-successor-20261015",
+        "head_sha": "087858aad7c3425dab083ec2dc0a3dda5f93835f"
+      }
+    },
+    {
+      "id": 12006079928,
+      "node_id": "MDg6QXJ0aWZhY3QxMjAwNjA3OTkyOA==",
+      "name": "native-provider-successor-windows-latest-ReleaseSafe-087858aad7c3425dab083ec2dc0a3dda5f93835f",
+      "size_in_bytes": 2662036,
+      "url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12006079928",
+      "archive_download_url": "https://api.github.com/repos/adybag14-cyber/pi-zig/actions/artifacts/12006079928/zip",
+      "expired": false,
+      "digest": "sha256:7b3ed4bb47457f34b249716d70501c6be6a01e49740386cc94765118e80aa5f2",
+      "created_at": "2026-10-15T21:15:26Z",
+      "updated_at": "2026-10-15T21:15:26Z",
+      "expires_at": "2026-10-29T21:15:24Z",
+      "workflow_run": {
+        "id": 38806198483,
+        "repository_id": 1318360354,
+        "head_repository_id": 1318360354,
+        "head_branch": "work/native-provider-hosted-successor-20261015",
+        "head_sha": "087858aad7c3425dab083ec2dc0a3dda5f93835f"
+      }
+    }
+  ]
+}
