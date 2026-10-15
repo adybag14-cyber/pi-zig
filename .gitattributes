@@ -120,3 +120,5 @@ verification/ai-json39-transform12-ae7-source51-20261015/native-9281-debug/*.log
 # Preserve original terminal EOF bytes in the qualified Responses retry receipts.
 verification/native-ai-responses-retry14-54503454-negative-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-ai-responses-retry14-eb1b6520-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+# The default model map retains the exact captured Windows Source bytes.
+src/extensions/fixtures/sdk-factory-default-models-4954.json whitespace=cr-at-eol
