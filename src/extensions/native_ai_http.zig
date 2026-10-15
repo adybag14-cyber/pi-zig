@@ -207,6 +207,16 @@ fn failureValue(scope: *Scope, failure: anyerror) !c.JSValue {
     try scope.put(value, "code", try scope.text(@errorName(failure)));
     return value;
 }
+fn modeledFailureValue(scope: *Scope, failure: @import("native_ai_http_failure.zig").Owned) !c.JSValue {
+    // Use the VM intrinsic directly: replacing guest Error must not strand a
+    // ready waiter or turn a typed worker failure into a constructor callback.
+    const value = try scope.own(try scope.engine.checked(c.JS_NewError(scope.engine.context)));
+    try scope.put(value, "name", try scope.text(failure.name));
+    const message = try scope.text(failure.message);
+    if (c.JS_DefinePropertyValueStr(scope.engine.context, value, "message", c.JS_DupValue(scope.engine.context, message), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(scope.engine);
+    if (failure.try_next_link) |next| try scope.put(value, "tryNextLink", c.pi_js_bool(scope.engine.context, @intFromBool(next)));
+    return value;
+}
 pub fn pump(engine: *em.Engine) !bool {
     const state: *State = @ptrCast(@alignCast(engine.native_ai_http_state orelse return false));
     if (state.pumping) return false;
@@ -241,7 +251,7 @@ pub fn pump(engine: *em.Engine) !bool {
         }
         if (job.worker.finished.load(.acquire) and job.worker.peek() == null) {
             const failure = job.worker.failure;
-            const reason = if (failure) |err| try failureValue(&scope, err) else c.pi_js_undefined();
+            const reason = if (job.worker.modeled_failure) |typed| try modeledFailureValue(&scope, typed) else if (failure) |err| try failureValue(&scope, err) else c.pi_js_undefined();
             if (!job.ready_settled) {
                 try call(&scope, job.ready_reject, if (failure != null) reason else try failureValue(&scope, error.NativeHttpNoResponse));
                 job.ready_settled = true;
