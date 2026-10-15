@@ -87,7 +87,7 @@ fn linuxStat(gpa: std.mem.Allocator, path: []const u8) !Stat {
     defer gpa.free(terminated);
     var info: linux.Statx = undefined;
     const wanted: linux.STATX = .{ .INO = true, .SIZE = true, .MTIME = true, .CTIME = true };
-    while (true) switch (std.posix.errno(linux.statx(linux.AT.FDCWD, terminated, 0, wanted, &info))) {
+    while (true) switch (linux.errno(linux.statx(linux.AT.FDCWD, terminated, 0, wanted, &info))) {
         .SUCCESS => break,
         .INTR => continue,
         else => return error.FileStatFailed,
