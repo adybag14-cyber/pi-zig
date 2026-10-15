@@ -6,6 +6,7 @@ const cache_key = "\x00native-google-http-response";
 fn construct(engine: *v.em.Engine, target: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    const result = try scope.own(try @import("native_class.zig").object(engine, target));
     const response = if (args.len > 0) args[0] else c.pi_js_undefined();
     const headers = try scope.object();
     var entries = try v.iterator(&scope, try scope.invoke(try scope.get(response, "headers"), "entries", &.{}));
@@ -15,7 +16,6 @@ fn construct(engine: *v.em.Engine, target: c.JSValue, args: []const c.JSValue, _
         defer engine.freeValue(entry);
         try v.js.setKey(engine, headers, try v.at(&scope, entry, 0), try v.at(&scope, entry, 1));
     }
-    const result = try scope.own(try @import("native_class.zig").object(engine, target));
     try scope.set(result, "headers", headers);
     try scope.set(result, "responseInternal", response);
     return c.JS_DupValue(engine.context, result);
