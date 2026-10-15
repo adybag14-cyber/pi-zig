@@ -143,6 +143,11 @@ fn google(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
     const reason = try v.optional(scope, candidate, "finishReason");
     if (scope.truthy(reason)) {
         try scope.put(output, "rawStopReason", reason);
+        var handled = try v.eq(scope, reason, "STOP") or try v.eq(scope, reason, "MAX_TOKENS");
+        inline for (.{ "BLOCKLIST", "PROHIBITED_CONTENT", "SPII", "SAFETY", "IMAGE_SAFETY", "IMAGE_PROHIBITED_CONTENT", "IMAGE_RECITATION", "IMAGE_OTHER", "RECITATION", "FINISH_REASON_UNSPECIFIED", "OTHER", "LANGUAGE", "MALFORMED_FUNCTION_CALL", "UNEXPECTED_TOOL_CALL", "TOO_MANY_TOOL_CALLS", "NO_IMAGE" }) |known| {
+            if (try v.eq(scope, reason, known)) handled = true;
+        }
+        if (!handled) return v.errorText(scope, try scope.concat(try scope.text("Unhandled stop reason: "), try scope.stringify(reason)));
         try scope.put(output, "stopReason", try scope.text(if (try v.eq(scope, reason, "MAX_TOKENS")) "length" else if (try v.eq(scope, reason, "STOP")) (if (scope.truthy(try scope.get(try scope.get(owner, "tools"), "size"))) "toolUse" else "stop") else "error"));
     }
     const raw = try scope.get(chunk, "usageMetadata");
