@@ -229,7 +229,9 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
         },
         .ready => {
             try scope.put(owner, "response", value);
-            try wait(scope, owner, if (kind == .mistral) try hook(scope, owner, "onResponse", value) else c.pi_js_undefined(), .response, kind);
+            const observed = try scope.object();
+            inline for (.{ "status", "headers" }) |key| try scope.put(observed, key, try scope.get(value, key));
+            try wait(scope, owner, if (kind == .mistral) try hook(scope, owner, "onResponse", observed) else c.pi_js_undefined(), .response, kind);
         },
         .response => {
             const status = try scope.get(try scope.get(owner, "response"), "status");
@@ -246,7 +248,9 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
             const frame = try scope.get(value, "value");
             if (try v.eq(scope, try scope.get(frame, "type"), "error_body")) {
                 const response = try scope.get(owner, "response");
-                const reason = try scope.own(try v.js.builtin(scope.engine, "Error", &.{try scope.text("HTTP request failed")}));
+                const status_text = try scope.get(response, "statusText");
+                const message = if (kind == .mistral and scope.truthy(status_text)) status_text else if (kind == .mistral) try scope.concat(try scope.text("Request failed with status "), try scope.stringify(try scope.get(response, "status"))) else try scope.get(frame, "body");
+                const reason = try scope.own(try v.js.builtin(scope.engine, "Error", &.{message}));
                 try scope.put(reason, if (kind == .mistral) "statusCode" else "status", try scope.get(response, "status"));
                 try scope.put(reason, "headers", if (kind == .mistral) try scope.get(response, "headers") else c.pi_js_undefined());
                 if (kind == .mistral) try scope.put(reason, "body", try scope.get(frame, "body")) else try scope.put(reason, "message", try scope.get(frame, "body"));
