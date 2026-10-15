@@ -1699,6 +1699,13 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-sdk-session-integration", "Compile integrated session constructor regression and fourteen new method descriptors").dependOn(&session_integration_tests.step);
     b.step("test-native-sdk-session-integration", "Verify integrated Source64 behavior and installed method descriptors while reporting remaining gaps").dependOn(&b.addRunArtifact(session_integration_tests).step);
 
+    const production_prerequisite_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_production_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native production constructor"}, .use_llvm = use_llvm });
+    linkQuickJs(b, production_prerequisite_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(production_prerequisite_tests.root_module, sqlite_lib_dir, sqlite_library);
+    production_prerequisite_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-production-prerequisites", "Compile ordinary constructor namespace guards and genuine declaration order checks").dependOn(&production_prerequisite_tests.step);
+    b.step("test-native-sdk-production-prerequisites", "Verify required namespace guards and Source166 order; positive factory qualification remains separate").dependOn(&b.addRunArtifact(production_prerequisite_tests).step);
+
     const reload_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_reload_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary reload"}, .use_llvm = use_llvm });
     linkQuickJs(b, reload_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(reload_tests.root_module, sqlite_lib_dir, sqlite_library);

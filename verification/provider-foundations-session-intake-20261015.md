@@ -37,3 +37,28 @@ latest beta query and complete HTTP wire contract; its later genuine wire
 captures and implementation follow-up are separate. Actual Zig/QuickJS runtime
 diagnostic headers remain distinct from upstream's Node SDK diagnostics.
 The combined head has not yet run its own compilation/runtime or hosted matrix.
+
+## Further bounded intake
+
+The ordinary Bash/export component and its preserved Source20/22, full HTML
+and native12 proof were intaken from `f64fd1d0`. Engine lifecycle conflicts
+retain both the AI HTTP and Env pump, pending and cleanup hooks. The ordinary
+production constructor composition was intaken from `c80e3398`. It supplies
+actual method bodies and requires the real AI namespaces and platform installer;
+it does not change the application's existing factory route. Its two namespace
+guard and declaration-order tests have explicit prerequisite targets; these
+targets do not claim a positive complete constructor or factory gate.
+
+The official ae7/FFA3 catalog projection from `83899965` replaces the historical
+1707-model catalog with 1705 models and the genuine epoch-time manifest. Native
+import/generation/check and the raw typed-metadata comparison passed in that
+isolated component. The new catalog tests still need compilation and execution
+in this combined tree. Google/Mistral component proof `2c94bf77` retains its
+passing terminal/request/ownership checks and its unresolved strict intermediate
+snapshot test; its limited component result is not full provider parity.
+
+The upstream main subsequently moved to `4954d760504c11df9b2cbdc040346107b6a8153d`.
+The official comparison records all 1783 package files unchanged from ae7 and
+five catalog publication-tool changes. Retained component proofs keep their
+original Source heads. The new upstream publication compatibility check and
+the combined complete application remain unqualified.
