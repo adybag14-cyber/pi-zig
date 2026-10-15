@@ -1,0 +1,55 @@
+const {DefaultResourceLoader:Loader,SettingsManager}=resourceExtensionLoaderAPI;
+const root=resourceExtensionLoaderFixtureRoot.replaceAll('\\','/'),cwd=root+'/project',agentDir=root+'/agent',rows=[];
+globalThis.resourceExtensionLoaderRows=rows;
+function row(name,value){rows.push({case:name,...JSON.parse(JSON.stringify(value,(_k,v)=>typeof v==='string'?v.replaceAll('\\','/').replaceAll(root,'<fixture>'):v))})}
+function loader(extra={}){return new Loader({cwd,agentDir,settingsManager:SettingsManager.inMemory({}, {projectTrusted:true}),...extra})}
+function view(result){return{extensions:result.extensions.map(e=>({path:e.path,resolvedPath:e.resolvedPath,hidden:e.hidden,replaceable:e.replaceable,commands:[...e.commands.keys()],tools:[...e.tools.keys()],flags:[...e.flags.keys()],sourceInfo:e.sourceInfo})),errors:result.errors,warnings:result.warnings}}
+async function fail(name,operation){const marker={boundary:name};let same=false,promise=false;try{const value=operation(marker);promise=value instanceof Promise;await value}catch(e){same=e===marker}row(name,{same,promise})}
+{
+ const log=[],l=loader({extensionFactories:[async pi=>{log.push('factory');pi.registerCommand('inline-command',{handler:async()=>{}});pi.registerTool({name:'inline-tool',parameters:{type:'object'},execute:async()=>({content:[]})});pi.registerFlag('inline-flag',{type:'string',default:'first'});pi.registerProvider('inline-provider',{});pi.events.on('inline-channel',v=>log.push(['event',v]));await Promise.resolve();log.push('after-await')}]});
+ const runtime=l.extensionsResult.runtime,pending=l.loadExtensionFactories(runtime);log.push('returned');const result=await pending;l.eventBus.emit('inline-channel',7);await Promise.resolve();const e=result.extensions[0];row('actual-inline-registration-await',{result:view(result),log,toolDefinitionName:e.tools.get('inline-tool').definition.name,toolSourceSame:e.tools.get('inline-tool').sourceInfo===e.sourceInfo,flag:runtime.flagValues.get('inline-flag'),providers:runtime.pendingProviderRegistrations.map(x=>({name:x.name,extensionPath:x.extensionPath}))});
+}
+{
+ const log=[],input={get factory(){log.push('factory');return pi=>{log.push('execute');pi.registerCommand('named-command',{handler:async()=>{}})}},get name(){log.push('name');return 'named'},get hidden(){log.push('hidden');return 'hidden-value'},get replaceable(){log.push('replaceable');return true}},l=loader();l.extensionFactories=[input];const result=await l.loadExtensionFactories(l.extensionsResult.runtime);row('inline-named-getter-order',{result:view(result),log});
+}
+{
+ const l=loader({extensionFactories:[()=>{throw new Error('inline error')},()=>{throw {raw:true}},pi=>pi.registerCommand('survivor',{handler:async()=>{}})]});row('inline-errors-continue',{result:view(await l.loadExtensionFactories(l.extensionsResult.runtime))});
+}
+{
+ let saved;const events=[],l=loader({extensionFactories:[pi=>{saved=pi;pi.registerFlag('rollback-flag',{type:'boolean',default:true});pi.registerProvider('rollback-provider',{});pi.events.on('rollback-channel',v=>events.push(v));throw new Error('rollback')}]});const runtime=l.extensionsResult.runtime,result=await l.loadExtensionFactories(runtime);l.eventBus.emit('rollback-channel',8);await Promise.resolve();let inactive;try{saved.getFlag('rollback-flag')}catch(e){inactive=e.message}row('inline-discard-flag-provider-event-rollback',{result:view(result),events,flagPresent:runtime.flagValues.has('rollback-flag'),providerNames:runtime.pendingProviderRegistrations.map(x=>x.name),inactive});
+}
+{
+ const l=loader({extensionFactories:[pi=>{pi.registerFlag('same',{type:'string',default:'first'});pi.registerFlag('same',{type:'string',default:'second'})},pi=>pi.registerFlag('same',{type:'string',default:'third'})]});const runtime=l.extensionsResult.runtime,result=await l.loadExtensionFactories(runtime);row('inline-commit-flag-first-value',{result:view(result),value:runtime.flagValues.get('same')});
+}
+for(const key of ['factory','name'])await fail('inline-raw-'+key+'-getter',marker=>{const l=loader();l.extensionFactories=[Object.defineProperty({},key,{get(){throw marker}})];return l.loadExtensionFactories(l.extensionsResult.runtime)});
+{
+ const marker={},log=[],input={get factory(){log.push('factory');throw marker}},l=loader();l.extensionFactories={entries(){return{[Symbol.iterator](){return this},next(){log.push('next');return{done:false,value:[0,input]}},return(){log.push('return');throw new Error('close error')}}}};let same=false;try{await l.loadExtensionFactories(l.extensionsResult.runtime)}catch(e){same=e===marker}row('inline-for-of-close-preserves-raw-failure',{same,log});
+}
+{
+ const l=loader({extensionFactories:[{name:'bad-hidden',factory:()=>{},get hidden(){throw new Error('hidden failed')}},{name:'after-hidden',factory:()=>{},hidden:false,replaceable:false}]});row('inline-post-await-hidden-error-caught',{result:view(await l.loadExtensionFactories(l.extensionsResult.runtime))});
+}
+{
+ const l=loader({extensionFactories:[{name:'fixture',builtin:true,replaceable:true,factory:pi=>pi.registerCommand('builtin-command',{handler:async()=>{}})}]}),runtime=l.extensionsResult.runtime,result=await l.loadExtensionPaths([agentDir+'/extensions/user.js','builtin:fixture','builtin:missing'],runtime);row('actual-disk-builtin-and-unknown',{result:view(result),runtimeSame:result.runtime===runtime});
+}
+{
+ const l=loader({extensionFactories:[{name:'failure',builtin:true,factory:()=>{throw {primitive:true}}}]}),result=await l.loadExtensionPaths(['builtin:failure',root+'/invalid-factory.js',root+'/failed-factory.js']);row('actual-disk-and-builtin-factory-errors',{result:view(result)});
+}
+{
+ const log=[],paths=[];paths.filter=function(callback){log.push({name:callback.name,length:callback.length,ownPrototype:Object.hasOwn(callback,'prototype'),sample:callback('builtin:probe')});return []};const l=loader(),result=await l.loadExtensionPaths(paths,l.extensionsResult.runtime);row('load-paths-filter-callback-metadata',{result:view(result),log});
+}
+await fail('load-paths-second-filter-raw-failure',marker=>{let n=0;const paths={filter(){if(++n===2)throw marker;return[]}},l=loader();return l.loadExtensionPaths(paths,l.extensionsResult.runtime)});
+await fail('builtin-map-getter-raw-failure',marker=>{const l=loader();l.builtinExtensions={get get(){throw marker}};return l.loadExtensionPaths(['builtin:one'],l.extensionsResult.runtime)});
+{
+ const log=[],l=loader({extensionFactories:[{name:'bad',builtin:true,get factory(){log.push('factory');throw new Error('builtin getter failed')}}]}),result=await l.loadExtensionPaths(['builtin:bad'],l.extensionsResult.runtime);row('builtin-factory-getter-inside-catch',{result:view(result),log});
+}
+for(const includeInlineFactories of [false,true]){
+ let calls=0;const l=loader({extensionFactories:[pi=>{calls++;pi.registerCommand('current-inline',{handler:async()=>{}})},{name:'excluded',builtin:true,factory:()=>{throw new Error('builtin must wait')}}]});l.settingsManager.setGlobalPackages([root+'/package-warning']);const result=await l.loadCurrentExtensionSet({includeInlineFactories});row('actual-current-packages-inline:'+includeInlineFactories,{result:view(result),calls,hasBuiltin:result.extensions.some(e=>e.path.startsWith('builtin:'))});
+}
+{
+ const l=loader({noExtensions:true,additionalExtensionPaths:[agentDir+'/extensions/user.js'],extensionFactories:[pi=>pi.registerCommand('cli-inline',{handler:async()=>{}})]}),result=await l.loadCurrentExtensionSet({includeInlineFactories:true});row('actual-current-noextensions-cli-only',{result:view(result)});
+}
+await fail('current-package-resolve-raw-rejection',marker=>{const l=loader();l.packageManager.resolve=()=>Promise.reject(marker);return l.loadCurrentExtensionSet({includeInlineFactories:false})});
+await fail('current-options-getter-after-load',marker=>{const l=loader({noExtensions:true});return l.loadCurrentExtensionSet({get includeInlineFactories(){throw marker}})});
+{
+ const l=loader({noExtensions:true}),log=[],manager=l.packageManager,resolve=manager.resolve,extensions=manager.resolveExtensionSources;manager.resolve=function(...args){log.push(['resolve',this===manager,args.length]);return resolve.apply(this,args)};manager.resolveExtensionSources=function(...args){log.push(['extension-sources',this===manager,args[0]===l.additionalExtensionPaths,args[1]]);return extensions.apply(this,args)};const options={get includeInlineFactories(){log.push('options');return false}};const pending=l.loadCurrentExtensionSet(options);log.push('returned');const result=await pending;row('current-genuine-package-await-receiver-order',{result:view(result),log});
+}

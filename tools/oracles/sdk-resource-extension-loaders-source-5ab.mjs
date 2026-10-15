@@ -1,0 +1,12 @@
+import {readFileSync,writeFileSync,realpathSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+const base=pathToFileURL('C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/coding-agent/src/').href;
+const {DefaultResourceLoader}=await import(base+'core/resource-loader.ts');
+const {SettingsManager}=await import(base+'core/settings-manager.ts');
+globalThis.resourceExtensionLoaderAPI={DefaultResourceLoader,SettingsManager};
+globalThis.resourceExtensionLoaderFixtureRoot=realpathSync(process.argv[4]);
+const input=readFileSync(process.argv[3]);
+await import('data:text/javascript,'+encodeURIComponent(input.toString('utf8')));
+if(resourceExtensionLoaderRows.length!==21)throw Error('All 21 genuine extension-loader callers required; got '+resourceExtensionLoaderRows.length);
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'5ab7fe74c400097b386662205cd93900695b8a71',inputSha256:createHash('sha256').update(input).digest('hex'),cases:resourceExtensionLoaderRows.length,scope:'Genuine ordinary inline, file/builtin and current/pre-trust loading through the actual extension initializer/cache/runtime/event bus and live package settings; callback evaluation, rollback, runtime identity and raw failures. Native agreement is a separate qualification.',rows:resourceExtensionLoaderRows},null,2));

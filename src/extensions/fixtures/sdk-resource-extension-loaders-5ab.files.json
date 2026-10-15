@@ -1,0 +1,10 @@
+{
+  "inherits": "sdk-resource-class-5ab.files.json",
+  "files": [
+    {"path":"package-warning/package.json","content":"{\"name\":\"fixture-warning\",\"dependencies\":{\"@earendil-works/pi-ai\":\"*\",\"typebox\":\"*\",\"unrelated\":\"1.0.0\"},\"pi\":{\"extensions\":[\"extension.js\"]}}\n"},
+    {"path":"package-warning/extension.js","content":"export default function(pi){pi.registerCommand('fixture-warning-command',{handler:async()=>{}})}\n"},
+    {"path":"invalid-factory.js","content":"export default {notAFactory:true};\n"},
+    {"path":"failed-factory.js","content":"export default function(){throw new Error('disk factory failed')};\n"}
+  ],
+  "themes": []
+}
