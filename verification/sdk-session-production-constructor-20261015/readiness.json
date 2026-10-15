@@ -1,0 +1,41 @@
+{
+  "status": "source-only-production-constructor-prepared-not-compiled-or-run",
+  "base_head": "77effe0a479ccad658463f9e1bfd565b0b9903a3",
+  "worktree": "C:/Users/adyba/pi-zig-sdk-production-constructor-20261015",
+  "source_prototype_authority": "5ab7fe74c400097b386662205cd93900695b8a71; actual166 capture89c4ce0b with exact historical descriptor/order equality",
+  "new_production_module": "src/extensions/native_sdk_session_production.zig",
+  "new_declaration_order_module": "src/extensions/native_sdk_session_declaration_order.zig",
+  "new_platform_adapter": "src/extensions/native_sdk_session_platform_composition.zig",
+  "new_test_entrypoint": "src/native_sdk_session_production_test.zig",
+  "composition": "constructor(engine,Inputs) accepts actual configurable pi-ai namespace, actual compat namespace, existing native SDK namespace/SessionManager identity, optional actual sharedAi, and mandatory actual platform installer. It constructs a new ordinary AgentSession class over actual native declarations/config/hook/runtime/restore phases and own ordinary methods; it inherits no legacy SDK.State AgentSession prototype.",
+  "method_installation": "Actual existing public/query/event/control/queue/model/prepare/prompt/post/run/settled/retry/statistics/send/registry/loadout/restore/binding/custom/active-tool bodies; actual hooks/auth/compaction checks/boundaries; sharedAi installs actual manual compaction/reload/navigate; platform adapter installs actual five Bash/export methods. Missing own methods are hard errors, not stubs. Genuine installed descriptors are preserved and copied in actual Source declaration order.",
+  "real_inputs_required": [
+    "ai.createModels/createProvider from actual central pi-ai Models/provider assembly",
+    "compat.streamSimple/completeSimple/resetApiProviders/getApiProviders from actual native shared compat dispatch",
+    "All ten actual builtin API families present at module-construction time; custom additional providers remain allowed",
+    "sdk_namespace.SessionManager from the existing genuine native SDK identity",
+    "sharedAi from native_sdk_session_ai_assembly using this same compat namespace; supplied reset binding identity must agree",
+    "platform installer is required and the provided adapter calls actual qualified native Bash/export modules"
+  ],
+  "namespace_lifecycle": "Construct this ordinary class once while assembling the module namespace, before extension/user registry mutations; retain the class export for subsequent SDK sessions. This is a class composition entry, not createAgentSession or a replacement model/provider factory.",
+  "platform_prerequisite": {
+    "qualified_code": "671e2285ee8cd2a5c7dc9c657249b2e01313018e",
+    "owner_status": "platform_cleanup_15 reports real Source20/22 and matching12native tests passed with fullpost0; publication/proof successor pending",
+    "files_needed_in_intake": ["native_bash_executor.zig", "native_bash_local_operations.zig", "native_sdk_session_bash.zig", "native_sdk_session_exports.zig", "native_sdk_bug_report_summary.zig"],
+    "note": "These actual sibling components must be intaken before analyzing the platform adapter. They are not synthesized into this Source-only branch, and Root/shared files were not edited."
+  },
+  "test_entrypoints": [
+    "constructActual(engine,ai,compat,sdk_namespace,shared_ai,config): accepts real central namespaces and real constructor config",
+    "verifyActualPrototype: compares actual complete own166 descriptors/order and rejects inherited legacy prototypes",
+    "verifyOrdinaryInstance: validates direct constructor prototype,66declarations/own handle-event body and absence of opaque legacy SDK.State",
+    "Missing namespace negative and native declaration-order versus genuine Source166 tests; no fabricated positive Models/provider fixture"
+  ],
+  "no_placeholders_created": true,
+  "build_root_files_modified": false,
+  "root_assembly_edited": false,
+  "source_native_launches": 0,
+  "compiled": false,
+  "positive_constructor_qualified": false,
+  "full_factory_qualified": false,
+  "public_activation": false
+}
