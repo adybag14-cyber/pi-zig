@@ -1,0 +1,11 @@
+{
+  "heap_mb": 256,
+  "settle_seconds": 10,
+  "free_kib": 21905496,
+  "status": "admitted",
+  "slot": 3,
+  "required_kib": 2097152,
+  "source_only": true,
+  "observed_utc": "2026-10-15T22:49:31.4185212+00:00",
+  "deadline_seconds": 300
+}

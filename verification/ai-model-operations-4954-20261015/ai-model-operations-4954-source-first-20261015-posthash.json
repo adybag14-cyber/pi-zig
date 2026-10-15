@@ -1,0 +1,52 @@
+{
+  "manifests": [
+    {
+      "name": "candidate",
+      "files": 7685,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "name": "source",
+      "files": 1970,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "name": "dependencies",
+      "files": 31064,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "name": "node",
+      "files": 1774,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "name": "compiler",
+      "files": 19546,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "name": "controls",
+      "files": 13,
+      "drift": 0,
+      "changed": []
+    }
+  ],
+  "candidate_tracked_inventory_drift": false,
+  "candidate_head_drift": false,
+  "source_inventory_drift": false,
+  "dependency_inventory_drift": false,
+  "compiler_inventory_drift": false,
+  "source_junction_drift": false,
+  "absence_drift": [],
+  "control_manifest_drift": false,
+  "completed_utc": "2026-10-15T22:49:59.776332+00:00",
+  "declared_absence_records": 84,
+  "absence_locations_checked": 168,
+  "unexpected_candidate_untracked_paths": []
+}

@@ -1,0 +1,272 @@
+[
+  {
+    "relative": "ai-model-operations-4954-source-first-20261015-admission.json",
+    "bytes": 249,
+    "sha256": "770771FB6548B141719DEEC536E2D9DF2EE15983288C17F1AB28659B1F982BCF"
+  },
+  {
+    "relative": "ai-model-operations-4954-source-first-20261015-launch-pins.json",
+    "bytes": 373,
+    "sha256": "BF5D992DCA7C22EA3185B5DE5738810F7564649269AE96EEAE597485CFA324E5"
+  },
+  {
+    "relative": "ai-model-operations-4954-source-first-20261015-oracle-controls.json",
+    "bytes": 2866,
+    "sha256": "6DCF6421E9E28A02E462441EDF0FF8EDEBA82B1C9503D0A93E039D9F919D38BB"
+  },
+  {
+    "relative": "ai-model-operations-4954-source-first-20261015-output.json",
+    "bytes": 29553,
+    "sha256": "99244517F5B7A85811380EE6BE2D587D962402F16ADF94D341F1F287DEAD6AE0"
+  },
+  {
+    "relative": "ai-model-operations-4954-source-first-20261015-output.json.raw-diagnostics.json",
+    "bytes": 1226241,
+    "sha256": "C2583EEFFBDC88796A9149C7692C6A158A3FDA36934DBE0B69855FD9920C9320"
+  },
+  {
+    "relative": "ai-model-operations-4954-source-first-20261015-owner.json",
+    "bytes": 1763,
+    "sha256": "E2693E8BD83708A9E139486F5C4833A8B50D60DB08EF22A490327C9D5905038A"
+  },
+  {
+    "relative": "ai-model-operations-4954-source-first-20261015-posthash.json",
+    "bytes": 1116,
+    "sha256": "2DFC5E1FED9A525FD73650C9E5B370AA5E2BF69E6E4B3EC249D607BF8B80E949"
+  },
+  {
+    "relative": "ai-model-operations-4954-source-first-20261015-prehash.json",
+    "bytes": 22918159,
+    "sha256": "176A8110A27FE92466FC0459FCA2E7A0277F3613A5528D6764D911EA571C8EAE"
+  },
+  {
+    "relative": "ai-model-operations-4954-source-first-20261015.stderr.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "relative": "ai-model-operations-4954-source-first-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "relative": "capture-source.mjs",
+    "bytes": 2189,
+    "sha256": "C557BD2BF7DF52E99E969B23C1374959436B9ED1C1A2D0354D962F5C4995232D"
+  },
+  {
+    "relative": "controls/ai-model-operations-4954.input.txt",
+    "bytes": 14055,
+    "sha256": "FB0774A9B93766EFB67E8D0AFDAC94D7E2D2CC0E60E885A2F3F1304AD6457644"
+  },
+  {
+    "relative": "controls/native_ai_model_operations.zig",
+    "bytes": 6226,
+    "sha256": "EE286531F6A22005BFF1E650D5185B1F10B76B1F2438E9DF8DE6C181D81BE76E"
+  },
+  {
+    "relative": "controls/native_ai_model_operations_source_test.zig",
+    "bytes": 3972,
+    "sha256": "2C5A50F4B5164C14252454983745416937DF394493C2411E7D4CDF753C913FB7"
+  },
+  {
+    "relative": "freeze-inputs.py",
+    "bytes": 7584,
+    "sha256": "9FDBB1F41007EADF245AA6A8C35A6502DA544A2CA40FCE0DFA1328279580D2ED"
+  },
+  {
+    "relative": "independent-source-audit.json",
+    "bytes": 1435,
+    "sha256": "9882F731EB05E80D24407185D4851BE60F633C12C15BBC7069C63D0373040489"
+  },
+  {
+    "relative": "independent-source-audit.py",
+    "bytes": 6395,
+    "sha256": "CFF2BD6B5FA9F92457177FDE43B4E07F7E9E0424E5B8F404792371D98E216E25"
+  },
+  {
+    "relative": "Invoke-ExactSourceProcess.ps1",
+    "bytes": 4168,
+    "sha256": "F33C63718BA96E9DEF962A1EB83688B0489791325D618968047923BAF456BBD6"
+  },
+  {
+    "relative": "original-source/packages/ai/src/api/lazy.ts",
+    "bytes": 3252,
+    "sha256": "1D38468B570B179DC404BE7D13B737CB1D001BD96A0A9B3626D8C3F0BF9A49BE"
+  },
+  {
+    "relative": "original-source/packages/ai/src/auth/context.ts",
+    "bytes": 1345,
+    "sha256": "03101BFA711FAD214AF111E25328B6F607D6B0A7EBFE289AF58A89CD55BAF639"
+  },
+  {
+    "relative": "original-source/packages/ai/src/auth/credential-store.ts",
+    "bytes": 2353,
+    "sha256": "50EBDE56B80B5862025E031719006EA303EDD9AA80FEC780FBC64319BB9E2847"
+  },
+  {
+    "relative": "original-source/packages/ai/src/auth/helpers.ts",
+    "bytes": 2061,
+    "sha256": "37B4C7F8048F09A54363607FA91BB1C265DDFE0790067DE3C3220C1F06485B90"
+  },
+  {
+    "relative": "original-source/packages/ai/src/auth/resolve.ts",
+    "bytes": 7491,
+    "sha256": "B64D4B13CCDB3E8D056EC4849190AA68F002988EE0417317151D59D8668502EC"
+  },
+  {
+    "relative": "original-source/packages/ai/src/auth/types.ts",
+    "bytes": 8830,
+    "sha256": "2D14D659F1C62F11CC942B1C2D681F2218C0B671CC37A1DF59A5E1A1EE37AEF5"
+  },
+  {
+    "relative": "original-source/packages/ai/src/index.ts",
+    "bytes": 2343,
+    "sha256": "D8F7F7414FCF821C87EA69EE6F95BA654C955491E31586509DC51DBDF54EDEA8"
+  },
+  {
+    "relative": "original-source/packages/ai/src/models-store.ts",
+    "bytes": 1698,
+    "sha256": "34EE433CA1501E98D19F31E0E5ADF8D1721902E9F35E46C270626E32D7F711CC"
+  },
+  {
+    "relative": "original-source/packages/ai/src/models.ts",
+    "bytes": 46697,
+    "sha256": "C10385291E4E79DC3EA5301629288A35CAC354F8A3635C07F9312608C269F573"
+  },
+  {
+    "relative": "original-source/packages/ai/src/providers/faux.ts",
+    "bytes": 22396,
+    "sha256": "AEAA8DF95399776587AD0CFCCCCD3B498891A20C5C5846F935E04D9D09DD84A1"
+  },
+  {
+    "relative": "original-source/packages/ai/src/session-resources.ts",
+    "bytes": 671,
+    "sha256": "3E6D76F038D6B7FE515EDE0B6650D41A7DF16EB4B3A9F1AA91C9DE329FF092E2"
+  },
+  {
+    "relative": "original-source/packages/ai/src/types.ts",
+    "bytes": 31988,
+    "sha256": "258627828297EB0165DE9828CAB62666265A77E932DEA5DBA1542ACE9C47C7D5"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/abort.ts",
+    "bytes": 1374,
+    "sha256": "E81DC16DE331E82D7F15759B27E38C7D0A3D28955693E0CF157DD52DADEA7035"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/diagnostics.ts",
+    "bytes": 1399,
+    "sha256": "06FCBC2347F65A43938078094A7118036B5F12E73147AFFB5C73CD72753443F0"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/event-stream.ts",
+    "bytes": 3971,
+    "sha256": "9FD5E33A8E295D88B5911AF71D7AFBFD437C9620288808D18331F16811E24DAC"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/json-parse.ts",
+    "bytes": 3846,
+    "sha256": "B101D288394A45498A50E06966C753FFB55A2B4900BEC24ECBECAFB7C17591BD"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/model-operations.ts",
+    "bytes": 2485,
+    "sha256": "D8A7BB663AD3B97253F03B424C6D9E821ED066C8C0449AA00E1F06B75F41115B"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/models-error.ts",
+    "bytes": 794,
+    "sha256": "F35F82BD86123BE7EF05E86036F18E8D3D5DF14F394F558B22C38B23D122C12C"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/overflow.ts",
+    "bytes": 10267,
+    "sha256": "2FA34713FAA32430AF3295AC25A10FD2E361CC0343B0F554491C16D2A2F44FC9"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/retry.ts",
+    "bytes": 9975,
+    "sha256": "1F7947FA6F30596415E78FCA0C0CBD43345C918509F6160B79CDEEC459881DD8"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/text.ts",
+    "bytes": 1560,
+    "sha256": "D37C1825855C7FC71669A545B5B266810242C1C7E58D57228C0C143F29C1C544"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/transcript.ts",
+    "bytes": 9602,
+    "sha256": "E0814F35BDCC93B017FA45589A6920E46B5480B88FBA01EF93E5D2D4E815F0F2"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/typebox-helpers.ts",
+    "bytes": 789,
+    "sha256": "CAF756258CE20C793DC8002CB8130A8EFCE18A7B5262BA0C54832B96F5A76E9F"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/uuid.ts",
+    "bytes": 1880,
+    "sha256": "234A48D4B999E69188FDFA49173CCFA7887D947E443EF206CC30219515105A1F"
+  },
+  {
+    "relative": "original-source/packages/ai/src/utils/validation.ts",
+    "bytes": 10033,
+    "sha256": "E4B8029C184BD6DF830E0EE2CB7034A39D49B5ECB8C068C26AF9564C20246594"
+  },
+  {
+    "relative": "qualification.json",
+    "bytes": 559,
+    "sha256": "828F7EB475A11D9158715517C4A728EEB85DFE299F26E3AC40139FB499C00ECB"
+  },
+  {
+    "relative": "reference-controls/source4954-dependency-contract-audit-20261015.json",
+    "bytes": 211596,
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745"
+  },
+  {
+    "relative": "reference-controls/source4954-full-manifest-20261015.json",
+    "bytes": 556967,
+    "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C"
+  },
+  {
+    "relative": "reference-controls/source4954-node-tools-before-20261015.json",
+    "bytes": 352993,
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "relative": "reference-controls/source4954-observe-20261015.mjs",
+    "bytes": 4698,
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3"
+  },
+  {
+    "relative": "reference-controls/source4954-reference-controls-20261015.json",
+    "bytes": 1012,
+    "sha256": "A11A87511B15B6AEDF4FFC94EA541DE986FCCC4334BA9A47C2BED3ED0A5094D0"
+  },
+  {
+    "relative": "reference-controls/source4954-runtime-manifest-20261015.json",
+    "bytes": 7153406,
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "relative": "run-source.ps1",
+    "bytes": 3618,
+    "sha256": "092B9E7D5E1922B9BF5D714608A8BC80A6A20CA18A3D8D22C46CDACA27C0928E"
+  },
+  {
+    "relative": "source4954-modules-56660-0-20261015.jsonl",
+    "bytes": 175876,
+    "sha256": "12132F839D65AE0E34A67EBDAAB0A3FF12EAC0DA12FFD01FF38B7E1900540794"
+  },
+  {
+    "relative": "static-review.md",
+    "bytes": 1982,
+    "sha256": "8D83855B04D361FEA17A1C6B30BAE92F0AA7E661B2EB96F6E414A809A1445765"
+  },
+  {
+    "relative": "Verify-SourceProof.py",
+    "bytes": 2075,
+    "sha256": "8530DF2A22559C41940F05C0DCA9689B07FB1F1DA838D8B61B5E67A896CDD729"
+  }
+]

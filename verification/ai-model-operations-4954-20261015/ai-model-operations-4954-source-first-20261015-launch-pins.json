@@ -1,0 +1,5 @@
+{
+  "control_manifest": "C:\\Users\\adyba\\pi-zig-ai-model-operations-source-20261015\\verification\\ai-model-operations-4954-20261015\\ai-model-operations-4954-source-first-20261015-oracle-controls.json",
+  "control_manifest_sha256": "6DCF6421E9E28A02E462441EDF0FF8EDEBA82B1C9503D0A93E039D9F919D38BB",
+  "candidate_head": "f4a9a3937594b8129b90181e136ffcf9945274ec"
+}

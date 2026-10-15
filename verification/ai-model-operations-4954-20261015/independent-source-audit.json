@@ -1,0 +1,36 @@
+{
+  "status": "passed_original_source88_native_unrun",
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "tested_candidate": "f4a9a3937594b8129b90181e136ffcf9945274ec",
+  "cases": 88,
+  "expected_sha256": "99244517F5B7A85811380EE6BE2D587D962402F16ADF94D341F1F287DEAD6AE0",
+  "raw_diagnostics_sha256": "C2583EEFFBDC88796A9149C7692C6A158A3FDA36934DBE0B69855FD9920C9320",
+  "raw_diagnostic_counts": {
+    "raw-sentinel": 20,
+    "vm-error": 8,
+    "ModelsError": 4
+  },
+  "unexpected_outcomes": [],
+  "canonical_original_models_error_reexport_identity": true,
+  "observed_original_source_modules": 25,
+  "observed_workspace_mappings": 1,
+  "frozen_counts": {
+    "candidate": 7685,
+    "source": 1970,
+    "dependencies": 31064,
+    "node": 1774,
+    "compiler": 19546,
+    "controls": 13
+  },
+  "all_file_and_inventory_drift": 0,
+  "owner_pid": 56660,
+  "owner_created_utc": "2026-10-15T22:49:31.5787928Z",
+  "owner_completed_utc": "2026-10-15T22:49:47.7483393+00:00",
+  "posthash_completed_utc": "2026-10-15T22:49:59.776332+00:00",
+  "native_compilation_performed": false,
+  "native_replay_performed": false,
+  "actual_native_models_error_dependency": "Federation3e46e0af actual shared file is absent from base3b479; native entry requires owner intake, not a substitute",
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "observed_utc": "2026-10-15T22:52:36.582182+00:00"
+}

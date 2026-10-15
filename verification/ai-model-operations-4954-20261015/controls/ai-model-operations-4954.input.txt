@@ -1,0 +1,125 @@
+"use strict";
+(() => {
+  const api = globalThis.modelOperationNamespace;
+  const ModelsError = globalThis.CanonicalModelsError;
+  const OriginalError = Error;
+  const OriginalDate = Date;
+  const OriginalString = String;
+  const rows = [], rawDiagnostics = [];
+  const names = ["getModelType", "isModelType", "assertChatModel", "assertImageModel", "assertClassifierModel", "assertClassifierInputSupported", "imageErrorResult", "classifierErrorResult"];
+  const clock = 1700000000123;
+  const dateNow = Object.getOwnPropertyDescriptor(OriginalDate, "now");
+  Object.defineProperty(OriginalDate, "now", {value: () => clock, configurable: true, writable: true});
+  function globals(values, body) {
+    const before = Object.fromEntries(Object.keys(values).map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
+    try { for (const key of Object.keys(values)) Object.defineProperty(globalThis, key, values[key]); return body(); }
+    finally { for (const key of Object.keys(values)) Object.defineProperty(globalThis, key, before[key]); }
+  }
+  function primitive(value) {
+    if (value === undefined) return {kind: "undefined"};
+    if (typeof value === "symbol") return {kind: "symbol", description: value.description};
+    if (typeof value === "bigint") return {kind: "bigint", value: value.toString()};
+    return value;
+  }
+  function result(value, token) {
+    return {keys: Object.keys(value), api: value.api, provider: value.provider, model: value.model,
+      output: Object.hasOwn(value, "output") ? {array: Array.isArray(value.output), length: value.output.length} : null,
+      answers: Object.hasOwn(value, "answers") ? {keys: Object.keys(value.answers), ordinaryPrototype: Object.getPrototypeOf(value.answers) === Object.prototype} : null,
+      stopReason: value.stopReason, errorMessage: typeof value.errorMessage === "object" && value.errorMessage !== null ? {kind: "object", tokenIdentity: value.errorMessage === token} : primitive(value.errorMessage),
+      timestamp: typeof value.timestamp === "object" && value.timestamp !== null ? {kind: "object", tokenIdentity: value.timestamp === token} : primitive(value.timestamp)};
+  }
+  function observe(name, body, vmDiagnostic = false) {
+    const events = [], sentinel = {case: name};
+    try { rows.push({name, returned: body(events, sentinel), events}); }
+    catch (error) {
+      if (error === sentinel) {
+        rows.push({name, thrown: {rawSentinelIdentity: true}, events});
+        rawDiagnostics.push({name, kind: "raw-sentinel", identityPreserved: true, ownDescriptors: Object.getOwnPropertyNames(error)});
+      } else if (error instanceof OriginalError) {
+        const diagnostic = {name, kind: error instanceof ModelsError ? "ModelsError" : "vm-error", errorName: error.name, message: error.message, stack: error.stack};
+        rawDiagnostics.push(diagnostic);
+        rows.push({name, thrown: error instanceof ModelsError ? {canonicalClass: true, errorName: error.name, code: error.code, message: error.message} : vmDiagnostic ? {vmErrorName: error.name, rawDiagnosticRetainedSeparately: true} : {errorName: error.name, message: error.message}, events});
+      } else {
+        rows.push({name, thrown: {kind: typeof error, value: primitive(error)}, events});
+        rawDiagnostics.push({name, kind: "raw-value", value: primitive(error)});
+      }
+    }
+  }
+  try {
+    const validArgs = name => name === "isModelType" ? [{}, "chat"] : name === "assertImageModel" ? [{type: "image"}] : name === "assertClassifierModel" ? [{type: "classifier"}] : name === "assertClassifierInputSupported" ? [{input: []}, {}] : name.endsWith("ErrorResult") ? [{api: "api", provider: "p", id: "id"}, "error"] : [{}];
+    for (const name of names) {
+      observe("metadata:" + name, () => {
+        const fn = api[name], own = Object.getOwnPropertyNames(fn);
+        return {name: fn.name, length: fn.length, own, functionPrototype: Object.getPrototypeOf(fn) === Function.prototype,
+          descriptors: ["name", "length", "prototype"].map(key => { const d = Object.getOwnPropertyDescriptor(fn, key); return {key, present: Boolean(d), writable: d?.writable, enumerable: d?.enumerable, configurable: d?.configurable}; }),
+          prototypeConstructor: fn.prototype.constructor === fn};
+      });
+      observe("construct:" + name, events => {
+        const alternate = new Proxy(function Alternate() {}, {get(target, key, receiver) { if (key === "prototype") events.push("newTarget.prototype"); return Reflect.get(target, key, receiver); }});
+        const made = Reflect.construct(api[name], validArgs(name), alternate);
+        return {object: typeof made === "object", alternatePrototype: Object.getPrototypeOf(made) === alternate.prototype, keys: Object.keys(made)};
+      });
+    }
+    observe("type:absent", () => api.getModelType({}));
+    observe("type:null", () => api.getModelType({type: null}));
+    observe("type:undefined", () => api.getModelType({type: undefined}));
+    observe("type:false", () => api.getModelType({type: false}));
+    observe("type:zero", () => api.getModelType({type: 0}));
+    observe("type:empty", () => api.getModelType({type: ""}));
+    observe("type:symbol-identity", () => {const type = Symbol("type"); return {same: api.getModelType({type}) === type};});
+    observe("type:object-identity", () => {const type = {}; return {same: api.getModelType({type}) === type};});
+    observe("type:getter-once", events => api.getModelType({get type() {events.push("type"); return "classifier";}}));
+    observe("type:raw-getter", (events, sentinel) => api.getModelType({get type() {events.push("type"); throw sentinel;}}));
+    observe("type:null-model", () => api.getModelType(null), true);
+    observe("type:primitive-model", () => api.getModelType(7));
+    observe("is:nullish-chat", () => api.isModelType({type: null}, "chat"));
+    observe("is:strict-number", () => api.isModelType({type: 0}, "0"));
+    observe("is:object-identity", () => {const type = {}; return [api.isModelType({type}, type), api.isModelType({type}, {})];});
+    observe("is:getter-raw", (events, sentinel) => api.isModelType({get type() {events.push("type"); throw sentinel;}}, "chat"));
+    for (const [name, type] of [["assertChatModel", "chat"], ["assertImageModel", "image"], ["assertClassifierModel", "classifier"]]) {
+      observe("assert:pass:" + type, events => primitive(api[name]({get type() {events.push("type"); return type;}, get provider() {throw Error("provider must not be read");}})));
+      observe("assert:wrong:" + type, events => api[name]({get type() {events.push("type"); return "other";}, get provider() {events.push("provider"); return {[Symbol.toPrimitive](hint) {events.push("provider:" + hint); return "provider";}};}, get id() {events.push("id"); return {[Symbol.toPrimitive](hint) {events.push("id:" + hint); return "identifier";}};}}));
+    }
+    observe("assert:legacy-chat", () => primitive(api.assertChatModel({})));
+    observe("assert:symbol-template", events => api.assertImageModel({type: "chat", get provider() {events.push("provider"); return Symbol("provider");}, get id() {events.push("id"); return "never";}}), true);
+    observe("assert:provider-conversion-raw", (events, sentinel) => api.assertClassifierModel({type: "chat", get provider() {events.push("provider"); return {[Symbol.toPrimitive](hint) {events.push("convert:" + hint); throw sentinel;}};}, get id() {events.push("id"); return "never";}}));
+    observe("assert:id-getter-raw", (events, sentinel) => api.assertImageModel({type: "chat", provider: "provider", get id() {events.push("id"); throw sentinel;}}));
+    observe("assert:canonical-class-setter-raw", (events, sentinel) => {
+      const previous = Object.getOwnPropertyDescriptor(ModelsError.prototype, "name");
+      try {Object.defineProperty(ModelsError.prototype, "name", {configurable: true, set() {events.push("ModelsError.name"); throw sentinel;}}); return api.assertImageModel({type: "chat", provider: "p", id: "i"});}
+      finally {if (previous) Object.defineProperty(ModelsError.prototype, "name", previous); else delete ModelsError.prototype.name;}
+    });
+    observe("construct:object-return", () => {const value = {}; return Reflect.construct(api.getModelType, [{type: value}]) === value;});
+    for (const images of [undefined, null, [], {length: 0}, {length: false}]) observe("input:empty:" + rows.length, () => primitive(api.assertClassifierInputSupported({get input() {throw Error("input must not be read");}}, {images})));
+    observe("input:includes-receiver", events => {const input = {get includes() {events.push("includes"); return function(value) {events.push("call:" + (this === input) + ":" + value); return {};};}}; return primitive(api.assertClassifierInputSupported({get input() {events.push("input"); return input;}}, {get images() {events.push("images"); return {get length() {events.push("length"); return {};}};}}));});
+    observe("input:reject-order", events => api.assertClassifierInputSupported({get input() {events.push("input"); return {includes(value) {events.push("includes:" + value); return false;}};}, get provider() {events.push("provider"); return "p";}, get id() {events.push("id"); return "i";}}, {get images() {events.push("images"); return {get length() {events.push("length"); return 1;}};}}));
+    observe("input:images-raw", (events, sentinel) => api.assertClassifierInputSupported({}, {get images() {events.push("images"); throw sentinel;}}));
+    observe("input:length-raw", (events, sentinel) => api.assertClassifierInputSupported({}, {images: {get length() {events.push("length"); throw sentinel;}}}));
+    observe("input:model-input-raw", (events, sentinel) => api.assertClassifierInputSupported({get input() {events.push("input"); throw sentinel;}}, {images: [1]}));
+    observe("input:includes-getter-raw", (events, sentinel) => api.assertClassifierInputSupported({input: {get includes() {events.push("includes"); throw sentinel;}}}, {images: [1]}));
+    observe("input:includes-call-raw", (events, sentinel) => api.assertClassifierInputSupported({input: {includes() {events.push("includes-call"); throw sentinel;}}}, {images: [1]}));
+    observe("input:missing-context", () => api.assertClassifierInputSupported({}, undefined), true);
+    observe("input:missing-input", () => api.assertClassifierInputSupported({}, {images: [1]}), true);
+    for (const name of ["imageErrorResult", "classifierErrorResult"]) {
+      const model = {api: "api", provider: "provider", id: "identifier"};
+      observe("result:default:" + name, () => result(api[name](model, "failure")));
+      observe("result:aborted:" + name, () => result(api[name](model, 17, {})));
+      observe("result:undefined-aborted:" + name, () => result(api[name](model, null, undefined)));
+      observe("result:error-message-identity:" + name, events => {const token = {}; const error = new OriginalError("old"); Object.defineProperty(error, "message", {get() {events.push("message"); return token;}}); return result(api[name](model, error), token);});
+      observe("result:field-order:" + name, events => {const traced = {}; for (const key of ["api", "provider", "id"]) Object.defineProperty(traced, key, {get() {events.push(key); return key;}}); return globals({String: {configurable: true, value: function(value) {"use strict"; events.push("String:" + (this === undefined)); return "formatted";}}, Date: {configurable: true, value: {get now() {events.push("Date.now"); return function() {events.push("Date.this:" + (this === globalThis.Date)); return clock;};}}}}, () => result(api[name](traced, {})));});
+      observe("result:live-instanceof:" + name, events => {const token = {message: "live"}; const replacement = {[Symbol.hasInstance](value) {events.push("instanceof:" + (value === token)); return true;}}; return globals({Error: {configurable: true, get() {events.push("Error"); return replacement;}}}, () => result(api[name](model, token)));});
+      observe("result:instanceof-raw:" + name, (events, sentinel) => globals({Error: {configurable: true, value: {[Symbol.hasInstance]() {events.push("instanceof"); throw sentinel;}}}}, () => api[name](model, {})));
+      observe("result:String-getter-raw:" + name, (events, sentinel) => globals({String: {configurable: true, get() {events.push("String"); throw sentinel;}}}, () => api[name](model, {})));
+      observe("result:Date-getter-raw:" + name, (events, sentinel) => globals({Date: {configurable: true, get() {events.push("Date"); throw sentinel;}}}, () => api[name](model, "failure")));
+      observe("result:message-getter-raw:" + name, (events, sentinel) => {const error = new OriginalError("old"); Object.defineProperty(error, "message", {get() {events.push("message"); throw sentinel;}}); return api[name](model, error);});
+      observe("result:String-return-identity:" + name, events => {const token = {}; return globals({String: {configurable: true, value: function(value) {"use strict"; events.push("String:" + (this === undefined)); return token;}}}, () => result(api[name](model, {}), token));});
+      observe("result:Date-return-identity:" + name, () => {const token = {}; const date = {now() {return token;}}; return globals({Date: {configurable: true, value: date}}, () => result(api[name](model, "failure"), token));});
+      observe("result:model-getter-raw:" + name, (events, sentinel) => api[name]({get api() {events.push("api"); return "api";}, get provider() {events.push("provider"); throw sentinel;}, get id() {events.push("id"); return "never";}}, "failure"));
+      observe("result:invalid-Error:" + name, () => globals({Error: {configurable: true, value: 17}}, () => api[name](model, "failure")), true);
+      observe("result:invalid-Date-now:" + name, () => globals({Date: {configurable: true, value: {now: 1}}}, () => api[name](model, "failure")), true);
+    }
+    globalThis.modelOperationRows = rows;
+    globalThis.modelOperationRawDiagnostics = rawDiagnostics;
+    globalThis.modelOperationCaptureComplete = true;
+  } finally {Object.defineProperty(OriginalDate, "now", dateNow);}
+})();
