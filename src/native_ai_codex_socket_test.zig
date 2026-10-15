@@ -33,8 +33,8 @@ test "native Codex socket replays genuine captured Source path headers and two c
     var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
     defer arena.deinit();
     const a = arena.allocator();
-    // This data is genuine Source protocol output. Its original lifecycle job
-    // timed out; this test makes no provider or Source-cleanup qualification.
+    // Genuine completed protocol output retains sourceLifecycleQualified=false.
+    // This test makes no provider-factory or Source-cleanup qualification.
     const source = try std.json.parseFromSlice(std.json.Value, a, @embedFile("extensions/fixtures/ai-codex-socket10-5ab.protocol.json"), .{});
     try std.testing.expectEqualStrings("5ab7fe74c400097b386662205cd93900695b8a71", object(source.value, "sourceHead").string);
     try std.testing.expect(object(source.value, "protocolSourceCompleted").bool);
@@ -89,7 +89,7 @@ test "native Codex socket replays genuine captured Source path headers and two c
     try server.finish();
 }
 
-fn installOwnerFixture(engine: *em.Engine, url: []const u8, headers: std.json.Value, frames: []const []const u8) !void {
+fn installOwnerFixture(engine: *em.Engine, url: []const u8, headers: std.json.Value, turns: []const fixture.Turn) !void {
     engine.native_io = std.testing.io;
     try @import("extensions/timers.zig").install(engine, std.testing.io);
     var scope: Scope = .{ .engine = engine };
@@ -136,8 +136,13 @@ fn installOwnerFixture(engine: *em.Engine, url: []const u8, headers: std.json.Va
     try scope.put(global, "acquireOwnedSocket", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "acquireOwnedSocket", 0, Adapter.acquire, &.{ try scope.text(url), values, session, try scope.text("fake-account") })));
     try scope.put(global, "closeOwnedSocketSession", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "closeOwnedSocketSession", 0, Adapter.close, &.{session})));
     const array = try scope.array();
-    for (frames, 0..) |frame, index| try scope.index(array, @intCast(index), try scope.text(frame));
+    const counts = try scope.array();
+    for (turns, 0..) |turn, index| {
+        try scope.index(array, @intCast(index), try scope.text(turn.request));
+        try scope.index(counts, @intCast(index), c.JS_NewUint32(engine.context, @intCast(turn.replies.len)));
+    }
     try scope.put(global, "sourceSocketFrames", array);
+    try scope.put(global, "sourceSocketReplyCounts", counts);
 }
 
 test "native Codex socket owner reuses the real connection retains guest metadata and closes owned state" {
@@ -173,9 +178,9 @@ test "native Codex socket owner reuses the real connection retains guest metadat
     defer peer.deinit();
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
-    try installOwnerFixture(engine, try peer.url(a), object(connection, "headers"), frames);
+    try installOwnerFixture(engine, try peer.url(a), object(connection, "headers"), turns);
     const result = engine.evalModule(
-        \\const first=acquireOwnedSocket();await first.ready;if(first.reused||!first.cached)throw Error('first acquisition');await first.send(sourceSocketFrames[0]);for(let i=0;i<5;i++){const event=await first.events.next();if(event.done||!JSON.parse(event.value).type)throw Error('real first message')};first.release(true);const next=acquireOwnedSocket();await next.ready;if(!next.reused||next.meta!==first.meta)throw Error('retained connection metadata');await next.send(sourceSocketFrames[1]);for(let i=0;i<5;i++){const event=await next.events.next();if(event.done||!JSON.parse(event.value).type)throw Error('real second message')};next.release(true);closeOwnedSocketSession();export const proof=true;
+        \\const first=acquireOwnedSocket();await first.ready;if(first.reused||!first.cached)throw Error('first acquisition');await first.send(sourceSocketFrames[0]);for(let i=0;i<sourceSocketReplyCounts[0];i++){const event=await first.events.next();if(event.done||!JSON.parse(event.value).type)throw Error('real first message')};first.release(true);const next=acquireOwnedSocket();await next.ready;if(!next.reused||next.meta!==first.meta)throw Error('retained connection metadata');await next.send(sourceSocketFrames[1]);for(let i=0;i<sourceSocketReplyCounts[1];i++){const event=await next.events.next();if(event.done||!JSON.parse(event.value).type)throw Error('real second message')};next.release(true);closeOwnedSocketSession();export const proof=true;
     , "native-owned-codex-pool-loopback.mjs") catch |err| {
         std.debug.print("Codex owner loopback: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
