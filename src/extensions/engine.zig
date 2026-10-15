@@ -143,6 +143,7 @@ pub const Engine = struct {
     buffer_prototype: ?c.JSValue = null,
     buffer_ready: bool = false,
     native_readable_stream_bindings: ?c.JSValue = null,
+    native_writable_stream_bindings: ?c.JSValue = null,
     native_readable_stream_classes: ?[3]c.JSClassID = null,
     abort_signal_class: c.JSClassID = 0,
     abort_controller_class: c.JSClassID = 0,
@@ -304,6 +305,7 @@ pub const Engine = struct {
         self.freeValue(self.intrinsic_bigint_constructor);
         self.freeValue(self.intrinsic_clone_operations);
         if (self.native_readable_stream_bindings) |retained| self.freeValue(retained);
+        if (self.native_writable_stream_bindings) |retained| self.freeValue(retained);
         var values = self.native_module_values.valueIterator();
         while (values.next()) |value| self.freeValue(value.*);
         self.native_module_values.deinit(self.gpa);
