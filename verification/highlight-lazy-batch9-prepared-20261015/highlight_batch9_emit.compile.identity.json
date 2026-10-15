@@ -1,0 +1,7 @@
+{
+  "pid": 12284,
+  "startUtc": "2026-10-15T19:55:44.3861574Z",
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "argv": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" cc -O0 C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/tools/highlight_batch9_emit.c -o C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/tools/highlight_batch9_emit.exe",
+  "maxSeconds": 60
+}

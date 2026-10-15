@@ -1,0 +1,19 @@
+{
+  "base": "20bc816810b633a4b3d393aa61ca1c170fada537",
+  "state": "authored-source-only",
+  "grammarBodies": 20,
+  "controlCases": 109,
+  "zigVersion": "0.16.0",
+  "checks": [
+    "zig fmt 20 grammar bodies helper native harness build.zig",
+    "zig ast-check 20 grammar bodies helper native harness",
+    "node --check external fixture and capture entrypoint"
+  ],
+  "sourceCaptureRun": false,
+  "nativeProductCompileRun": false,
+  "nativeDifferentialRun": false,
+  "expectedFixturePresent": false,
+  "publicActivation": false,
+  "fullFactoryQualified": false,
+  "fullPiQualified": false
+}

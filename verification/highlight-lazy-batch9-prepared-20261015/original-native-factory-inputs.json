@@ -1,0 +1,182 @@
+[
+  {
+    "canonical": "1c",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/1c.js",
+    "sourceSha256": "430504aec37d17242b3752f26c66834656082ad7a6293ea8df74802f3b180bdc",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_1c.zig",
+    "nativeSha256": "f2fe35d061764d005250e54c1f8bc79defdf5bd4b18c8b25d684d536d2890155",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "ada",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/ada.js",
+    "sourceSha256": "3653b86f1ada79d8bb82662befdfbb45e11ea373d04a1c11f18572fbe802f4e8",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_ada.zig",
+    "nativeSha256": "50bb22d3a3c477346a901cbb342ece00022e7bbeb0003faf4fb8e068d2807fa2",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "arduino",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/arduino.js",
+    "sourceSha256": "8d3b3190df404961133a3cb50407944181ef383ece767cb5222d95f384560f79",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_arduino.zig",
+    "nativeSha256": "01a466c94f34c3d081ed62f6cf49ed5e6931ac7e70ca6729e04983b95ca69b47",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "asciidoc",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/asciidoc.js",
+    "sourceSha256": "6402d7f95649b2c168346216861a17311ec7dac5939e973bea002edaf5fba2f5",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_asciidoc.zig",
+    "nativeSha256": "48418efbc8e828f7b2e4fe490ab67fff644f0afdb20f7bc5e62fb71785cfe29f",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "autoit",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/autoit.js",
+    "sourceSha256": "ae09598c14382d3b4872b78457d353bf28c3ce55f8a4ccebc5503c707cba8bde",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_autoit.zig",
+    "nativeSha256": "16212cd0177a480862f1256599f3136edc03d68edf9e084ba07ac3ca16d5c343",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "c-like",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/c-like.js",
+    "sourceSha256": "92789efb44d2e733efdcee0ac5dc2dbf0b0f4227d4434d20e82ae6a81ba931a4",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_c_like.zig",
+    "nativeSha256": "5aafc52cdc2048f9ddfec57aba24a00161ecb9e6cf1bd0c018bcb63808b24ba6",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "coffeescript",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/coffeescript.js",
+    "sourceSha256": "eb3a9040f727dbbd850e0a5254410f07cfb10b7f22b382fcfc2240afe8f65613",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_coffeescript.zig",
+    "nativeSha256": "4c9513d0863aeb2dc49a0b4773afdfbf72d0ba350a56a0f6949b2dc79bbd9613",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "crystal",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/crystal.js",
+    "sourceSha256": "d68b944e127e91edfa8c26fac3d0e918d4e50858471cc8c2832ad69a747a6bd5",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_crystal.zig",
+    "nativeSha256": "1c5c814e5670290b5da3231860a997c1892a652c1a69b3595108ff058ad3b9d4",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "d",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/d.js",
+    "sourceSha256": "ec2409c45239150bebdea08b5054735bfefb2d745b48afa5b2381ff945295c1b",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_d.zig",
+    "nativeSha256": "5e6d0b18c65fd3ee66cf052f465618b32672a36ebe74d81cf91fe4453d6990b4",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "fortran",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/fortran.js",
+    "sourceSha256": "da8996fc6b9d04548c6aac81fe3409800b8cc0ff611174d895c196f4ec907fc4",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_fortran.zig",
+    "nativeSha256": "a267880a5df6d766e8c755179e90b4b3281391d2ea794b70c93cbfc779cb57d0",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "gauss",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/gauss.js",
+    "sourceSha256": "12c49a07a4f759a4e12bce663dcfc7795cc97b862ed9017162364a2ca2db100c",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_gauss.zig",
+    "nativeSha256": "db938e106fa5444edf215348333d683c105fff2597702e574283c9da733c57f2",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "glsl",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/glsl.js",
+    "sourceSha256": "2da4faa387f415da896545351dcbb58aac1f54d30d0fe5f3a02093f600b1e044",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_glsl.zig",
+    "nativeSha256": "ece09de8085362d212dd794171e324d8fbadfe26f11fb7bf490551e85f8e38c8",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "gml",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/gml.js",
+    "sourceSha256": "85f28a811804c7343a8a729b7217ccdfd0df1ebec4f6c044066eab4e2dff0e92",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_gml.zig",
+    "nativeSha256": "c4d9994a5e7abe5492f09cc083b6f3eca5e21c2eeb38d5476b15402f46d28693",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "handlebars",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/handlebars.js",
+    "sourceSha256": "ff93b243634307b63fd2068d7336f83a80bc7dc75025ddedc7192d68c3fc45a2",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_handlebars.zig",
+    "nativeSha256": "ddfa2d90213f65a2be71870f05bb06fe41e6ba3c0e89d0756a616f57c9b42201",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "htmlbars",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/htmlbars.js",
+    "sourceSha256": "6fc8235afd92aa8183df59289d1adcc5f219883508611d9880ba641c73b3b904",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_htmlbars.zig",
+    "nativeSha256": "9b1687a5ef5244e32b27e07b7c219750d79348f1114de45a761732fe815434d3",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "irpf90",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/irpf90.js",
+    "sourceSha256": "103cccfc08386afd9148eb8f96149b1d509cd80666ca960744cb4c018e3b87df",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_irpf90.zig",
+    "nativeSha256": "492bebc6afb783368773a4794681f870edac22c140bd90771d3da4842f9155ee",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "isbl",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/isbl.js",
+    "sourceSha256": "492c27b6a79a5df0bab3c7e98798a143f4eb447dce2db06a15629f1eec37b112",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_isbl.zig",
+    "nativeSha256": "a134ea45fc24df89d6158cb2ef5b25197af4bb4649a3f2fdee14f49df538595f",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "julia",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/julia.js",
+    "sourceSha256": "2702f5eb667efe8696ae00b5c64d0a21a559c2dc66afc4d64154c5fa94af0f5f",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_julia.zig",
+    "nativeSha256": "98c6a36404be34083e613f5f557b68c388304c327aed22b353022163749015f3",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "latex",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/latex.js",
+    "sourceSha256": "fd678ef97fd65e68f5567a96c719f59d683c86b3062709484a760ec5054af1db",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_latex.zig",
+    "nativeSha256": "9db25f7604fca4cd58c0d0f5da532f91403bb0404cf363846188018987b4df0b",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  },
+  {
+    "canonical": "less",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/less.js",
+    "sourceSha256": "7867797c9dbd9db42cb5e6e07aeb3542d5ba347dbf95f14174486aa2cef76f10",
+    "native": "C:/Users/adyba/pi-zig-highlight-lazy-batch9-20261015/src/extensions/native_highlight_grammar_less.zig",
+    "nativeSha256": "cd34dd26d676b8a83f098e4327db3dfa199b6ed33e97098a3f9d1398b19420b5",
+    "state": "authored-source-only",
+    "qualification": "genuine Source109 capture and native differential not run"
+  }
+]

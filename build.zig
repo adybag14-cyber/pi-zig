@@ -1496,6 +1496,11 @@ pub fn build(b: *std.Build) void {
     highlight_lazy_batch3_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-highlight-lazy-batch3", "Compile twenty actual lazy factories against genuine Source102").dependOn(&highlight_lazy_batch3_tests.step);
     b.step("test-native-highlight-lazy-batch3", "Replay actual twenty batch3 factory graphs helper traces and scanner outputs against genuine Source102").dependOn(&b.addRunArtifact(highlight_lazy_batch3_tests).step);
+    const highlight_lazy_batch9_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_lazy_batch9_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual lazy batch9 grammar bodies"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_lazy_batch9_tests.root_module, quickjs, sqlite_lib_dir);
+    highlight_lazy_batch9_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-lazy-batch9", "Compile twenty actual batch9 factories against genuine Source109").dependOn(&highlight_lazy_batch9_tests.step);
+    b.step("test-native-highlight-lazy-batch9", "Replay actual batch9 graphs helper getter errors cyclic aliases callbacks and scanner outputs against genuine Source109").dependOn(&b.addRunArtifact(highlight_lazy_batch9_tests).step);
     const highlight_lazy_batch2_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_lazy_batch2_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual lazy batch2 grammar bodies"}, .use_llvm = use_llvm });
     linkQuickJs(b, highlight_lazy_batch2_tests.root_module, quickjs, sqlite_lib_dir);
     highlight_lazy_batch2_tests.root_module.addImport("catalog_tool", catalog_tool);
