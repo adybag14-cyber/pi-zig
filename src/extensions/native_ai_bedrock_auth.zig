@@ -34,18 +34,35 @@ pub fn configure(s: *Scope, dependencies: c.JSValue, model: c.JSValue, options: 
     var region = try @import("native_ai_bedrock_request.zig").configuredRegion(s, options);
     const base = try s.get(model, "baseUrl");
     const ambient_profile = try s.invoke(env_module, "getProviderEnvValue", &.{try s.text("AWS_PROFILE")});
-    const regex = try s.own(try v.js.builtin(s.engine, "RegExp", &.{try s.text("^https?://bedrock-runtime(?:-fips)?\\.([a-z0-9-]+)\\.amazonaws\\.com(?:\\.cn)?(?:/|$)")}));
-    const endpoint_match = if (s.truthy(base)) try s.invoke(base, "match", &.{regex}) else c.pi_js_null();
-    const explicit_endpoint = !s.truthy(endpoint_match) or (!s.truthy(region) and !s.truthy(ambient_profile));
-    const arn_regex = try s.own(try v.js.builtin(s.engine, "RegExp", &.{try s.text("^arn:aws(?:-[a-z0-9-]+)?:bedrock:([a-z0-9-]+):")}));
+    const endpoint_region = try standardRegion(s, base);
+    const explicit_endpoint = !s.truthy(endpoint_region) or (!s.truthy(region) and !s.truthy(ambient_profile));
+    const arn_regex = try literal(s, "^arn:aws(?:-[a-z0-9-]+)?:bedrock:([a-z0-9-]+):");
     const arn = try s.invoke(try s.get(model, "id"), "match", &.{arn_regex});
-    if (s.truthy(arn)) region = try v.at(s, arn, 1) else if (!s.truthy(region) and s.truthy(endpoint_match) and explicit_endpoint) region = try v.at(s, endpoint_match, 1);
+    if (s.truthy(arn)) region = try v.at(s, arn, 1) else if (!s.truthy(region) and s.truthy(endpoint_region) and explicit_endpoint) region = endpoint_region;
     // Profile region is resolved by native credentials preparation when no region is pinned.
     if (!s.truthy(region) and !s.truthy(ambient_profile)) region = try s.text("us-east-1");
     try s.put(result, "region", region);
     try s.put(result, "baseUrl", if (explicit_endpoint) base else c.pi_js_undefined());
     try s.put(result, "modelId", try s.get(model, "id"));
     return result;
+}
+fn literal(s: *Scope, pattern: []const u8) !c.JSValue {
+    var args = [_]c.JSValue{try s.text(pattern)};
+    return s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, s.engine.intrinsic_regexp_constructor, args.len, &args)));
+}
+fn standardRegion(s: *Scope, base: c.JSValue) !c.JSValue {
+    if (!s.truthy(base)) return c.pi_js_undefined();
+    const generation = s.engine.native_allocation_generation;
+    return standardRegionUnsafe(s, base) catch |err| {
+        try @import("native_ai_partial_json.zig").discard(s.engine, err, generation);
+        return c.pi_js_undefined();
+    };
+}
+fn standardRegionUnsafe(s: *Scope, base: c.JSValue) !c.JSValue {
+    const url = try s.own(try v.js.builtin(s.engine, "URL", &.{base}));
+    const hostname = try s.invoke(try s.get(url, "hostname"), "toLowerCase", &.{});
+    const match = try s.invoke(hostname, "match", &.{try literal(s, "^bedrock-runtime(?:-fips)?\\.([a-z0-9-]+)\\.amazonaws\\.com(?:\\.cn)?$")});
+    return if (v.nullish(match)) c.pi_js_undefined() else v.at(s, match, 1);
 }
 fn field(object: std.json.Value, name: []const u8) ?[]const u8 {
     const value = if (object == .object) object.object.get(name) orelse return null else return null;

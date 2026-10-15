@@ -277,6 +277,9 @@ pub fn fail(s: *Scope, state: c.JSValue, reason: c.JSValue, aborted: bool, reque
     try finalize(s, output);
     try s.set(output, "stopReason", try s.text(if (aborted) "aborted" else "error"));
     var text = try @import("native_ai_provider_error.zig").format(s, try @import("native_ai_provider_error.zig").normalize(s, reason), c.pi_js_undefined());
+    var regex_args = [_]c.JSValue{ try s.text("data retention mode"), try s.text("i") };
+    const regex = try s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, s.engine.intrinsic_regexp_constructor, regex_args.len, &regex_args)));
+    if (s.truthy(try s.invoke(regex, "test", &.{text}))) text = try s.concat(text, try s.text(" See https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html for supported data retention modes."));
     if (s.truthy(try v.optional(s, reason, "__bedrockServiceException"))) {
         const name = try s.get(reason, "name");
         var prefix = name;
@@ -285,8 +288,6 @@ pub fn fail(s: *Scope, state: c.JSValue, reason: c.JSValue, aborted: bool, reque
         };
         text = try s.concat(try s.concat(prefix, try s.text(": ")), text);
     }
-    const regex = try s.own(try v.js.builtin(s.engine, "RegExp", &.{ try s.text("data retention mode"), try s.text("i") }));
-    if (s.truthy(try s.invoke(regex, "test", &.{text}))) text = try s.concat(text, try s.text(" See https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html for supported data retention modes."));
     try s.set(output, "errorMessage", text);
     if (!aborted) {
         const details = try s.object();
