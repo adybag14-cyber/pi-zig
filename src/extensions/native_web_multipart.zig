@@ -106,7 +106,7 @@ fn finish(scope: *Scope, owner: c.JSValue) !void {
 }
 fn advance(scope: *Scope, owner: c.JSValue) anyerror!void {
     const delegated = try scope.get(owner, "delegate");
-    if (!c.JS_IsUndefined(delegated)) return flow.wait(step, scope.engine, owner, try scope.invoke(delegated, "next", &.{}), 1);
+    if (!c.JS_IsUndefined(delegated)) return flow.wait(step, scope.engine, owner, try scope.call(try scope.get(owner, "delegate_next"), delegated, &.{}), 1);
     const parts = try scope.get(owner, "parts");
     var position: u32 = 0;
     if (c.JS_ToUint32(scope.engine.context, &position, try scope.get(owner, "position")) < 0) return js.capture(scope.engine);
@@ -116,9 +116,11 @@ fn advance(scope: *Scope, owner: c.JSValue) anyerror!void {
     if (scope.truthy(try scope.get(part, "stream"))) {
         const stream = try scope.invoke(part, "stream", &.{});
         const symbol = try scope.own(try scope.engine.checked(c.JS_GetAsyncIteratorSymbol(scope.engine.context)));
-        const method = try scope.own(try js.getKey(scope.engine, stream, symbol));
+        var method = try scope.own(try js.getKey(scope.engine, stream, symbol));
+        if (c.JS_IsUndefined(method) or c.JS_IsNull(method)) method = try scope.own(try js.getKey(scope.engine, stream, try web.iteratorSymbol(scope)));
         const iterator = try scope.call(method, stream, &.{});
         try scope.set(owner, "delegate", iterator);
+        try scope.set(owner, "delegate_next", try scope.get(iterator, "next"));
         return advance(scope, owner);
     }
     try flow.wait(step, scope.engine, owner, part, 0);
@@ -131,10 +133,12 @@ fn step(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, 
     if (stage == 1) {
         if (scope.truthy(try scope.get(value, "done"))) {
             try scope.set(owner, "delegate", c.pi_js_undefined());
-            return advance(&scope, owner);
+            // Async generator yield* awaits the delegate's completion value.
+            return flow.wait(step, engine, owner, try scope.get(value, "value"), 3);
         }
         return flow.wait(step, engine, owner, try scope.get(value, "value"), 0);
     }
+    if (stage == 3) return advance(&scope, owner);
     if (try body.errored(&scope, try scope.get(owner, "stream"))) {
         const iterator = try scope.get(owner, "delegate");
         if (!c.JS_IsUndefined(iterator)) {
