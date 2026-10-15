@@ -1627,7 +1627,7 @@ pub fn build(b: *std.Build) void {
     crypto_random_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-crypto-random", "Compare actual Node24 secure random typed-view behavior and native owner graphs").dependOn(&b.addRunArtifact(crypto_random_tests).step);
     b.step("build-native-crypto-random", "Compile secure random host independently of runtime checks").dependOn(&crypto_random_tests.step);
-    const immediates_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_immediates_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native immediates"}, .use_llvm = use_llvm });
+    const immediates_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_immediates_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native immediates", "native timer", "native promise delay", "native microtasks" }, .use_llvm = use_llvm });
     linkQuickJs(b, immediates_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(immediates_tests.root_module, sqlite_lib_dir, sqlite_library);
     immediates_tests.root_module.addImport("catalog_tool", catalog_tool);

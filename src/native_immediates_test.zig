@@ -123,3 +123,50 @@ test "native immediates preserve callback throw identity outstanding batch and s
     try std.testing.expect(immediates.pending(engine));
     c.JS_RunGC(engine.runtime);
 }
+test "native immediates actual direct stdio loop respects unref-only exit and referenced liveness" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"immediate-stdio-test"});
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    var frontend: @import("extensions/native_stdio_frontend.zig").Frontend = undefined;
+    try frontend.init(engine, std.testing.io);
+    defer frontend.deinit();
+    const unref = try engine.eval("globalThis.trace=[];setImmediate(()=>trace.push('unref')).unref();", "immediate-unref-only.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(unref);
+    try frontend.runUntilIdle();
+    try std.testing.expect(immediates.pending(engine));
+    try std.testing.expect(!immediates.referenced(engine));
+    const ref = try engine.eval("if(trace.length)throw Error('unref kept script alive');setImmediate(()=>trace.push('ref'));", "immediate-ref-keepalive.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(ref);
+    try frontend.runUntilIdle();
+    const checked = try engine.eval("if(trace.join(',')!=='unref,ref')throw Error('live check queue lost');", "immediate-ref-complete.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(checked);
+    try std.testing.expect(!immediates.pending(engine));
+    try std.testing.expect(!immediates.referenced(engine));
+}
+test "native immediates Node timer namespace retains actual global function identity" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const result = try engine.evalModule("import timers,{setImmediate as set,clearImmediate as clear} from 'node:timers';if(set!==globalThis.setImmediate||clear!==globalThis.clearImmediate||timers.setImmediate!==set)throw Error('timer namespace identity');const h=new set(()=>{});if(h.constructor.name!=='Immediate'||!h.hasRef())throw Error('ordinary set constructor');clear(h);export const done=true;", "immediate-timer-namespace.mjs");
+    engine.freeValue(result);
+}
+test "native immediates installation scheduling cancellation callback and shutdown release every failed allocation" {
+    const Probe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            const engine = try em.Engine.init(gpa, .{});
+            defer engine.deinit();
+            engine.native_io = std.testing.io;
+            const generation = engine.native_allocation_generation;
+            immediates.install(engine) catch |err| return engine.nativeAllocationError(err, generation);
+            const value = engine.eval("const h=setImmediate(()=>{throw Error('cancelled')});clearImmediate(h);setImmediate(()=>{});", "immediate-allocations.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| return engine.nativeAllocationError(err, generation);
+            engine.freeValue(value);
+            _ = engine.drainReadyJobs() catch |err| return engine.nativeAllocationError(err, generation);
+            try std.testing.expect(!immediates.pending(engine));
+            c.JS_RunGC(engine.runtime);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}

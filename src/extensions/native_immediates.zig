@@ -83,7 +83,9 @@ fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, roo
         engine.freeValue(retained.scope);
         engine.gpa.destroy(retained);
     };
-    const object = try scope.own(try engine.checked(c.JS_NewObjectProtoClass(engine.context, try scope.get(target, "prototype"), s.class)));
+    const supplied_prototype = try scope.get(target, "prototype");
+    const prototype = if (c.JS_IsObject(supplied_prototype)) supplied_prototype else try scope.get(roots[0], "objectPrototype");
+    const object = try scope.own(try engine.checked(c.JS_NewObjectProtoClass(engine.context, prototype, s.class)));
     _ = c.JS_SetOpaque(object, retained);
     attached = true;
     try scope.set(object, "_idleNext", c.pi_js_null());
@@ -254,6 +256,8 @@ pub fn install(engine: *em.Engine) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const owner = try scope.object();
+    const ordinary = try scope.object();
+    try scope.put(owner, "objectPrototype", try scope.own(try engine.checked(c.JS_GetPrototype(engine.context, ordinary))));
     inline for (.{ "head", "tail", "current", "previous" }) |name| try scope.put(owner, name, c.pi_js_null());
     try scope.put(owner, "refed", try scope.call(try scope.global("Symbol"), c.pi_js_undefined(), &.{try scope.text("refed")}));
     var class: c.JSClassID = 0;

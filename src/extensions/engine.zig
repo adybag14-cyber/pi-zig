@@ -808,9 +808,17 @@ pub const Engine = struct {
         self.native_durable_control_deinit = null;
     }
 
-    /// Drain queued microtasks without awaiting a promise or sleeping on the
-    /// host scheduler. Used by the persistent owner's idle event loop.
+    /// Finish a microtask checkpoint and one ready check batch without sleeping.
+    /// Used by the persistent owner's idle event loop.
     pub fn drainReadyJobs(self: *Engine) !bool {
+        return self.drainReadyJobsImpl(true);
+    }
+    /// The direct stdio loop checks referenced liveness between its microtask
+    /// checkpoint and the check phase, while preserving every existing I/O pump.
+    pub fn drainReadyJobsBeforeCheck(self: *Engine) !bool {
+        return self.drainReadyJobsImpl(false);
+    }
+    fn drainReadyJobsImpl(self: *Engine, check_phase: bool) !bool {
         defer self.finishJob();
         const oauth_callback_worked = if (self.native_ai_oauth_callback_pump) |pump| try pump(self) else false;
         const ai_http_worked = if (self.native_ai_http_pump) |pump| try pump(self) else false;
@@ -818,7 +826,7 @@ pub const Engine = struct {
         const jobs = try self.runReadyJobs(self.options.job_budget);
         if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
         self.finishJob();
-        const immediate_worked = if (self.native_immediate_pump) |pump| try pump(self) else false;
+        const immediate_worked = if (check_phase) (if (self.native_immediate_pump) |pump| try pump(self) else false) else false;
         const after_immediate = if (immediate_worked) try self.runReadyJobs(self.options.job_budget -| jobs) else 0;
         if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
         return oauth_callback_worked or ai_http_worked or codex_socket_worked or jobs != 0 or immediate_worked or after_immediate != 0;

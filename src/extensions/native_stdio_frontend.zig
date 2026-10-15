@@ -312,12 +312,16 @@ pub const Frontend = struct {
     }
     pub fn runUntilIdle(self: *Frontend) !void {
         while (true) {
-            _ = try self.engine.drainReadyJobs();
+            // Finish the microtask checkpoint before deciding whether any
+            // referenced handle keeps this direct script alive. An unref-only
+            // Immediate queue must not execute merely to discover it is idle.
+            _ = try self.engine.drainReadyJobsBeforeCheck();
             const referenced_timer = try timers.nextReferencedDeadline(self.engine);
             const builtin_pending = if (self.engine.native_sdk_builtin_execution_pending) |pending| pending(self.engine) else false;
             const ai_http_pending = if (self.engine.native_ai_http_pending) |pending| pending(self.engine) else false;
             if (!self.referencedInput() and referenced_timer == null and !builtin_pending and !ai_http_pending) return;
             _ = try self.engine.pumpControls();
+            _ = try self.engine.drainReadyJobs();
             _ = try timers.pumpReady(self.engine);
             _ = try self.engine.drainReadyJobs();
             const deadline = try timers.nextDeadline(self.engine);

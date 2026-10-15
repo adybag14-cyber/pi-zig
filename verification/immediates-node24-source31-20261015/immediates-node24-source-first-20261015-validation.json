@@ -1,0 +1,9 @@
+{
+  "native_qualified": false,
+  "expected_published_after_terminal_and_posthash": true,
+  "owner_sha256": "BAF421D9C6A2A6E50424E2303E4437FF57FABF5962E6AAB333165ED1B2D92615",
+  "source_cases": 31,
+  "full_pi_qualified": false,
+  "expected_sha256": "998FA2F426746FB3CC2406AC4A375C4777EDE4A3F6485A2C6E4C5CEA09FF5F27",
+  "pid": 70908
+}
