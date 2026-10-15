@@ -1,0 +1,11 @@
+5ab7fe74c400097b386662205cd93900695b8a71 2026-10-15T16:49:50+02:00 fix(ai): keep images of error tool results for Anthropic and Bedrock Claude
+eddebaeebf8168dfc31d6712b7a021e4df3b4e6a 2026-10-15T15:49:34+02:00 fix(coding-agent): append Node to PATH in the Nix wrapper
+a3f265b1c6a49bc0904c76518d2d436ba44c95e9 2026-10-15T15:29:11+02:00 feat(ai): use Chat Completions for the kimi-coding provider
+dfb03c3283cb4eb568ef646c37b9c2ef70c8b400 2026-10-15T15:27:42+02:00 fix(coding-agent): use claude-sonnet-4.5 in model registry tests
+568c2a82a7e8252e21489a57739d7f5a407da622 2026-10-15T15:23:31+02:00 fix(ai): use claude-sonnet-4.5 in OpenRouter tests
+f7e3cb5433ba9500d4381d201e628bb5301c9924 2026-10-15T14:02:27+01:00 feat(durable): support namespaced SQLite storage (#10937)
+6a1f799b675c8cb98320b71ff7ee44f160fe8d66 2026-10-15T13:19:40+02:00 fix(ai): revert kimi-coding switch to Chat Completions
+4a5d37291531ad48b8e536c892557877d219463c 2026-10-15T09:59:46Z feat(chord,durable): move OutputBuffer and Progress to @earendil-works/chord/output
+dc939913f6142adce7c09da5707fdd6451b37fb0 2026-10-15T11:24:04+02:00 fix(ai): support off thinking level on Claude Haiku 5.5 and Opus 5
+550f1f3ecd75bf756ab3c379ca9503e808a6c6d1 2026-10-15T10:12:50+02:00 fix(ai): retry "The service is temporarily unavailable" errors
+9a3ca68bda4db67efc506ec114bffe64635e8569 2026-10-15T06:25:18Z fix(chord): remote references refuse a foreign ctx
