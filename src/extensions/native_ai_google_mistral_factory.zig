@@ -74,8 +74,10 @@ fn setup(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
     const model = try scope.get(owner, "model");
     const options = try scope.get(owner, "options");
     const dependencies = try scope.get(owner, "agent");
-    const custom_fetch = try v.optional(scope, options, "fetch");
-    if (kind != .mistral and scope.truthy(custom_fetch) and !scope.equal(custom_fetch, try scope.global("fetch"))) return v.errorText(scope, try scope.text(if (kind == .google) "Custom fetch is not supported by the Google Generative AI adapter" else "Custom fetch is not supported by the Google Vertex AI adapter"));
+    if (kind != .mistral) {
+        const custom_fetch = try v.optional(scope, options, "fetch");
+        if (scope.truthy(custom_fetch) and !scope.equal(custom_fetch, try scope.global("fetch"))) return v.errorText(scope, try scope.text(if (kind == .google) "Custom fetch is not supported by the Google Generative AI adapter" else "Custom fetch is not supported by the Google Vertex AI adapter"));
+    }
     if (kind == .mistral) try scope.put(owner, "apiKey", try apiKey(scope, model, options)) else try scope.put(owner, "auth", try auth.resolve(scope, dependencies, model, options, kind == .vertex));
     const payload = try scope.own(if (kind == .mistral) try mistral.build(scope.engine, dependencies, model, try scope.get(owner, "context"), options) else try google.build(scope.engine, dependencies, model, try scope.get(owner, "context"), options));
     try scope.put(owner, "payload", payload);
