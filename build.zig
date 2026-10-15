@@ -673,6 +673,13 @@ pub fn build(b: *std.Build) void {
     const env_test_step = b.step("test-env", "Check native daemon framing files processes client sessions and SSH contracts");
     env_test_step.dependOn(&run_env_tests.step);
     test_step.dependOn(&run_env_tests.step);
+    const readable_oom_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_readable_stream_oom_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native readable host OOM"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
+    linkQuickJs(b, readable_oom_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(readable_oom_tests.root_module, sqlite_lib_dir, sqlite_library);
+    const readable_oom_run = b.addRunArtifact(readable_oom_tests);
+    if (diagnostic_tests) readable_oom_run.stdio = .inherit;
+    b.step("test-native-readable-host-oom", "Reject actual tee consumers after permanent host allocator failure and free all ownership").dependOn(&readable_oom_run.step);
+    addCompileOnlyGroup(b, "build-hosted-native-readable-host-oom", &.{"test-native-readable-host-oom"});
     const capability_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     const native_durable_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native durable VM"}, .use_llvm = use_llvm });
     linkQuickJs(b, native_durable_tests.root_module, quickjs, sqlite_lib_dir);

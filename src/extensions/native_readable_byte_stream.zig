@@ -428,6 +428,28 @@ pub fn errorNative(scope: *Scope, bindings: c.JSValue, controller: c.JSValue, re
     var roots = [_]c.JSValue{ (try controllerNative(scope, bindings, controller)).stream_value, c.pi_js_undefined() };
     _ = try operate(scope, controller, &roots, .errorValue, &.{reason});
 }
+fn failureClass(engine: *js.Engine, bindings: c.JSValue, key: [*:0]const u8) !c.JSClassID {
+    // Failure retirement cannot append temporary roots to a host-allocated
+    // Scope. These private binding properties contain only native class IDs.
+    const value = try js.get(engine, bindings, key);
+    defer engine.freeValue(value);
+    var class: u32 = undefined;
+    if (c.JS_ToUint32(engine.context, &class, value) < 0) return js.capture(engine);
+    return class;
+}
+pub fn errorStreamAfterHostFailure(engine: *js.Engine, bindings: c.JSValue, object: c.JSValue, reason: c.JSValue) !void {
+    const raw = c.JS_GetOpaque(object, try failureClass(engine, bindings, "byteStreamClass")) orelse return error.NativeReadableStreamRequired;
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    // errored releases queues and rejects actual pending reads/closed using
+    // direct JS capabilities. It does not create Scope-owned temporary roots.
+    try errored(&scope, @ptrCast(@alignCast(raw)), reason);
+}
+pub fn errorControllerAfterHostFailure(engine: *js.Engine, bindings: c.JSValue, controller: c.JSValue, reason: c.JSValue) !void {
+    const raw = c.JS_GetOpaque(controller, try failureClass(engine, bindings, "byteControllerClass")) orelse return error.NativeReadableControllerRequired;
+    const owned: *Controller = @ptrCast(@alignCast(raw));
+    try errorStreamAfterHostFailure(engine, bindings, owned.stream_value, reason);
+}
 pub fn respondZeroNative(scope: *Scope, bindings: c.JSValue, controller: c.JSValue) !void {
     const self = try nativeState(scope, bindings, (try controllerNative(scope, bindings, controller)).stream_value);
     if (self.status == .closed and self.pending.items.len != 0) try respond(scope, self, 0);
