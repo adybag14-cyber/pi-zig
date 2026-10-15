@@ -13,6 +13,7 @@ pub const Kind = enum { google, vertex, mistral };
 const Stage = enum(c_int) { payload, ready, response, next, chunk, retried };
 pub fn create(engine: *v.em.Engine, comptime kind: Kind) !c.JSValue {
     try @import("native_stream.zig").install(engine);
+    if (kind == .mistral) try @import("native_headers.zig").install(engine);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const dependencies = try scope.own(try @import("native_ai_openai_dependencies.zig").create(engine));
