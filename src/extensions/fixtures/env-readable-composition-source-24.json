@@ -1,0 +1,229 @@
+{
+  "default-size-direct": {
+    "desiredQueued": 1,
+    "firstIdentity": true,
+    "secondIdentity": true,
+    "end": {
+      "done": true,
+      "value": null
+    },
+    "calls": [
+      1
+    ],
+    "desiredClosed": 0,
+    "locked": false
+  },
+  "default-zero-size-close": {
+    "before": 1,
+    "rows": [
+      {
+        "done": false,
+        "value": "a"
+      },
+      {
+        "done": false,
+        "value": "b"
+      },
+      {
+        "done": true,
+        "value": null
+      }
+    ],
+    "after": 0
+  },
+  "default-size-throw": {
+    "enqueueIdentity": true,
+    "readIdentity": true,
+    "closedIdentity": true,
+    "desired": null
+  },
+  "constructor-order": {
+    "log": [
+      "size",
+      "highWaterMark",
+      "type",
+      "start",
+      "pull",
+      "cancel",
+      "start-call"
+    ]
+  },
+  "tee-default-identity": {
+    "firstIdentity": true,
+    "secondIdentity": true,
+    "sameIdentity": true,
+    "ends": [
+      {
+        "done": true,
+        "value": null
+      },
+      {
+        "done": true,
+        "value": null
+      }
+    ],
+    "sourceLocked": true
+  },
+  "tee-byob-first": {
+    "detached": 0,
+    "rows": [
+      {
+        "done": false,
+        "value": {
+          "bytes": [
+            1,
+            2
+          ],
+          "offset": 2,
+          "length": 2,
+          "backing": 8
+        }
+      },
+      {
+        "done": false,
+        "value": {
+          "bytes": [
+            1,
+            2
+          ],
+          "offset": 0,
+          "length": 2,
+          "backing": 2
+        }
+      }
+    ],
+    "ends": [
+      {
+        "done": true,
+        "value": {
+          "bytes": [],
+          "offset": 0,
+          "length": 0,
+          "backing": 4
+        }
+      },
+      {
+        "done": true,
+        "value": null
+      }
+    ],
+    "modes": [
+      true,
+      true
+    ]
+  },
+  "tee-reader-switch": {
+    "defaults": [
+      {
+        "done": false,
+        "value": {
+          "bytes": [
+            1
+          ],
+          "offset": 0,
+          "length": 1,
+          "backing": 1
+        }
+      },
+      {
+        "done": false,
+        "value": {
+          "bytes": [
+            1
+          ],
+          "offset": 0,
+          "length": 1,
+          "backing": 1
+        }
+      }
+    ],
+    "byob": [
+      {
+        "done": false,
+        "value": {
+          "bytes": [
+            2
+          ],
+          "offset": 0,
+          "length": 1,
+          "backing": 3
+        }
+      },
+      {
+        "done": false,
+        "value": {
+          "bytes": [
+            2
+          ],
+          "offset": 0,
+          "length": 1,
+          "backing": 1
+        }
+      }
+    ],
+    "ends": [
+      {
+        "done": true,
+        "value": {
+          "bytes": [],
+          "offset": 0,
+          "length": 0,
+          "backing": 3
+        }
+      },
+      {
+        "done": true,
+        "value": null
+      }
+    ],
+    "modes": [
+      false,
+      true,
+      true
+    ]
+  },
+  "tee-cancel-reasons": {
+    "beforeSecond": false,
+    "reasonsIdentity": true,
+    "sourceLocked": true
+  },
+  "iterator-queue-values": {
+    "valueIdentity": true,
+    "firstDone": false,
+    "end": {
+      "done": true,
+      "value": null
+    },
+    "locked": false,
+    "log": [
+      "queued",
+      "pull0",
+      "pull1"
+    ],
+    "self": true
+  },
+  "iterator-prevent-cancel": {
+    "returnIdentity": true,
+    "done": true,
+    "cancelled": false,
+    "locked": false,
+    "remainingIdentity": true
+  },
+  "iterator-error-identity": {
+    "identity": true,
+    "locked": false,
+    "after": {
+      "done": true,
+      "value": null
+    }
+  },
+  "iterator-return-cancel-reject": {
+    "identity": true,
+    "valueIdentity": true,
+    "locked": false,
+    "after": {
+      "done": true,
+      "value": null
+    }
+  }
+}
