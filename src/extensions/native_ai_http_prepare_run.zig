@@ -16,7 +16,13 @@ pub fn run(a: std.mem.Allocator, callback: prep.Callback, request: prep.View, da
         } else |_| {},
         .canceled => {},
     };
-    try selected.concurrent(.prepared, callback, .{ a, request, data, budget });
+    const Invoke = struct {
+        fn call(allocator: std.mem.Allocator, function: prep.Callback, view: prep.View, bytes: []const u8, limits: prep.Budget) anyerror!prep.Prepared {
+            return function(allocator, view, bytes, limits);
+        }
+    };
+    // Io.Select accepts a function declaration, not a runtime function pointer.
+    try selected.concurrent(.prepared, Invoke.call, .{ a, callback, request, data, budget });
     try selected.concurrent(.canceled, watchBudget, .{budget});
     const prepared = switch (try selected.await()) {
         .prepared => |finished| try finished,

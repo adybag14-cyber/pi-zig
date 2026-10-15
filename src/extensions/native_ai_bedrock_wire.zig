@@ -121,7 +121,7 @@ fn pick(s: *Scope, input: c.JSValue, keys: []const [*:0]const u8) !c.JSValue {
     return output;
 }
 pub fn serviceError(s: *Scope, typ: []const u8, json: c.JSValue) !c.JSValue {
-    var name = try s.engine.gpa.dupe(u8, typ);
+    const name = try s.engine.gpa.dupe(u8, typ);
     defer s.engine.gpa.free(name);
     if (name.len != 0) name[0] = std.ascii.toUpper(name[0]);
     const lower = try v.optional(s, json, "message");
