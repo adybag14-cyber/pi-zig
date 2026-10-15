@@ -1,0 +1,28 @@
+{
+  "status": "admitted",
+  "candidate": "ff2286f9755838d1aef5e9daa098b4613c4619c4",
+  "slot": 1,
+  "free_kib": 20237140,
+  "threshold_kib": 16777216,
+  "max_native_roots": 4,
+  "other_native": [
+    {
+      "ProcessId": 46580,
+      "ParentProcessId": 47484,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-resource-paths test-native-sdk-session-bindings -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-15T18:07:26.8914200Z"
+    }
+  ],
+  "source": 5975,
+  "tools": 19546,
+  "controls": 3,
+  "jobs": 1,
+  "llvm": true,
+  "compile_timeout_seconds": 1320,
+  "runtime_outer_timeout_seconds": 300,
+  "test_timeout_seconds": 120,
+  "host_await_timeout_seconds": 10,
+  "native_launched": false,
+  "observed_utc": "2026-10-15T18:08:56.9088058+00:00"
+}

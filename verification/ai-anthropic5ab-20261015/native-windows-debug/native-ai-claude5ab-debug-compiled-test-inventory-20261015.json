@@ -1,0 +1,50 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig-ai-anthropic-bedrock-20261015\\.zig-cache\\o\\1944e7f5ef1534c160baeaa307b3edc8\\test.exe",
+  "imported_unnamed_tests": 1,
+  "inventory": {
+    "word_permutation": [
+      0,
+      1,
+      2
+    ],
+    "file_offset": 48529560,
+    "tests": [
+      {
+        "bytes": 118,
+        "name_virtual_address": 5417242384,
+        "function_virtual_address": 5377246384,
+        "name": "native_ai_claude_request_test.test.native Claude5ab Anthropic request bodies match25 actual public Source observations"
+      },
+      {
+        "bytes": 127,
+        "name_virtual_address": 5417242502,
+        "function_virtual_address": 5377049568,
+        "name": "native_ai_claude_request_test.test.native Claude5ab Anthropic real wire stream events callbacks and results match actual Source"
+      },
+      {
+        "bytes": 142,
+        "name_virtual_address": 5417242629,
+        "function_virtual_address": 5377045472,
+        "name": "native_ai_claude_request_test.test.native Claude5ab request owner graphs preserve error images unsupported off effort and actual Bedrock bytes"
+      },
+      {
+        "bytes": 135,
+        "name_virtual_address": 5417242771,
+        "function_virtual_address": 5370465040,
+        "name": "native_ai_claude_request_test.test.native Claude5ab request owner pending hook survives collection and retains terminal result identity"
+      },
+      {
+        "bytes": 40,
+        "name_virtual_address": 5417242906,
+        "function_virtual_address": 5377045360,
+        "name": "extensions.native_durable_storage.test_0"
+      }
+    ]
+  },
+  "authored_tests": 4,
+  "bytes": 52326400,
+  "binary_sha256": "C1F3CD060F3E9DE1D3786D4FD477CFB5A52DB60E3C53E5C76B5CC32A22B97AE0",
+  "recorded_utc": "2026-10-15T18:31:39.8618503+00:00",
+  "method": "Read-only PE32+ TestFn metadata: five contiguous24-byte entries, exact UTF8 names/lengths, every function pointer within executable section; no binary execution",
+  "runtime_count": 5
+}

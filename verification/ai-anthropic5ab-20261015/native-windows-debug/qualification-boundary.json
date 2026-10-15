@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "tested_candidate": "a9f13e054fe9728cfb992689ee822f6a0cd43ded",
+  "native_profile": "Windows x86_64 Debug LLVM Zig0.16.0",
+  "source25_capture": "passed",
+  "native_compile": "passed",
+  "native_runtime": "passed",
+  "compiled_tests": 5,
+  "authored_tests": 4,
+  "imported_unnamed_tests": 1,
+  "genuine_request_cases": 25,
+  "genuine_native_http_stream_cases": 22,
+  "candidate_files": 6116,
+  "compiler_files": 19546,
+  "control_files": 3,
+  "candidate_drift": 0,
+  "compiler_drift": 0,
+  "control_drift": 0,
+  "compiled_test_binary_sha256": "C1F3CD060F3E9DE1D3786D4FD477CFB5A52DB60E3C53E5C76B5CC32A22B97AE0",
+  "negative_attempts": [
+    "ff2286f9: compile rejected unavailable shorthand descriptor macro; runtime not run; full posthash0",
+    "1a4978ca: compile passed, runtime4/5 passed; standalone fixture missing genuine native TextDecoder; full posthash0"
+  ],
+  "coverage": [
+    "Source25 real public Anthropic stream/streamSimple onPayload requests and auth/strict errors",
+    "22 actual native HTTP payload/callback/event/result snapshots against Source",
+    "Claude error image grouping, unsupported thinking-off exceptions, adaptive effort and actual Bedrock Uint8Array blobs",
+    "Native pending callback roots survive collection and retain terminal result identity"
+  ],
+  "pending": [
+    "Exhaustive host-allocation gate not run",
+    "HTTP403 case awaits actual native Headers integration",
+    "Other optimization and native target profiles not run",
+    "Federation token exchange integration and source qualification pending",
+    "Bedrock facade/credentials/binary stream qualified separately",
+    "Additional protocol and hostile-input coverage pending"
+  ],
+  "public_activation": false,
+  "full_pi_qualified": false,
+  "recorded_utc": "2026-10-15T18:33:07.7172812+00:00"
+}

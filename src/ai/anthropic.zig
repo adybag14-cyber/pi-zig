@@ -1031,6 +1031,10 @@ fn writeAnthropicMediaContent(
 }
 
 fn writeAnthropicSiblingMedia(w: *std.Io.Writer, msg: ai.ChatMessage, first: *bool) !void {
+    return writeAnthropicSiblingMediaCached(w, msg, first, false, false);
+}
+
+fn writeAnthropicSiblingMediaCached(w: *std.Io.Writer, msg: ai.ChatMessage, first: *bool, cache_control: bool, long_ttl: bool) !void {
     if (std.mem.trim(u8, msg.content, " \\t\\r\\n").len > 0) {
         if (!first.*) try w.writeAll(",");
         first.* = false;
@@ -1047,7 +1051,13 @@ fn writeAnthropicSiblingMedia(w: *std.Io.Writer, msg: ai.ChatMessage, first: *bo
         try std.json.Stringify.value(image.mime_type, .{}, w);
         try w.writeAll(",\"data\":");
         try std.json.Stringify.value(image.data_b64, .{}, w);
-        try w.writeAll("}}");
+        try w.writeAll("}");
+        if (cache_control and image_index + 1 == msg.imageCount()) {
+            try w.writeAll(",\"cache_control\":{\"type\":\"ephemeral\"");
+            if (long_ttl) try w.writeAll(",\"ttl\":\"1h\"");
+            try w.writeAll("}");
+        }
+        try w.writeAll("}");
     }
 }
 
@@ -1181,11 +1191,22 @@ fn buildRequestBodyConfiguredCompatCachedSamplingOptions(
                     }
                     try w.writeAll("]");
                     if (tool_msg.content.len > 0 or tool_msg.hasImages()) try sibling_media.append(gpa, tool_msg);
+                } else if (tool_msg.tool_is_error and tool_msg.hasImages()) {
+                    var text: std.Io.Writer.Allocating = .init(gpa);
+                    defer text.deinit();
+                    try text.writer.writeAll(tool_msg.content);
+                    if (tool_msg.content.len > 0) try text.writer.writeByte('\n');
+                    try text.writer.writeAll("(image attached after the tool results)");
+                    try std.json.Stringify.value(text.written(), .{}, w);
                 } else {
                     try writeAnthropicMediaContent(w, tool_msg.content, tool_msg.image_b64, tool_msg.image_mime, tool_msg.images, false, false);
                 }
                 if (tool_msg.tool_is_error) try w.writeAll(",\"is_error\":true");
-                if (cache_enabled and last_cache_message != null and last_cache_message.? == j) {
+                var has_error_images = false;
+                for (replay_messages[msg_index .. j + 1]) |candidate| {
+                    if (candidate.tool_is_error and candidate.hasImages()) has_error_images = true;
+                }
+                if (cache_enabled and last_cache_message != null and last_cache_message.? == j and !has_error_images) {
                     try w.writeAll(",\"cache_control\":{\"type\":\"ephemeral\"");
                     if (long_ttl) try w.writeAll(",\"ttl\":\"1h\"");
                     try w.writeAll("}");
@@ -1193,6 +1214,22 @@ fn buildRequestBodyConfiguredCompatCachedSamplingOptions(
                 try w.writeAll("}");
             }
             for (sibling_media.items) |sibling| try writeAnthropicSiblingMedia(w, sibling, &first_result);
+            for (replay_messages[msg_index..j], 0..) |tool_msg, offset| {
+                if (!tool_msg.tool_is_error or !tool_msg.hasImages()) continue;
+                try w.writeAll(",{\"type\":\"text\",\"text\":");
+                const caption = try std.fmt.allocPrint(gpa, "Images from the error result of tool call {s} ({s}):", .{ tool_msg.tool_call_id orelse "", tool_msg.tool_name orelse "" });
+                defer gpa.free(caption);
+                try std.json.Stringify.value(caption, .{}, w);
+                try w.writeAll("}");
+                var final_error = true;
+                for (replay_messages[msg_index + offset + 1 .. j]) |later| {
+                    if (later.tool_is_error and later.hasImages()) final_error = false;
+                }
+                // Anthropic puts the cache breakpoint on the final sibling image.
+                var images_only = tool_msg;
+                images_only.content = "";
+                try writeAnthropicSiblingMediaCached(w, images_only, &first_result, cache_enabled and last_cache_message != null and last_cache_message.? == j - 1 and final_error, long_ttl);
+            }
             try w.writeAll("]}");
             if (j > 0) msg_index = j - 1;
         } else if (std.mem.eql(u8, msg.role, "assistant")) {
@@ -1573,6 +1610,26 @@ test "Anthropic serializes user and tool images as base64 blocks" {
     try std.testing.expect(std.mem.indexOf(u8, body, "\"media_type\":\"image/gif\"") != null);
     try std.testing.expectEqual(@as(usize, 4), std.mem.count(u8, body, "\"type\":\"image\""));
     try std.testing.expect(std.mem.indexOf(u8, body, "\"type\":\"tool_result\"") != null);
+}
+
+test "Source5ab Anthropic error images follow every tool result and carry the final cache breakpoint" {
+    const gpa = std.testing.allocator;
+    const transcript = [_]ai.ChatMessage{
+        .{ .role = "assistant", .tool_calls_json = "[{\"id\":\"c1\",\"function\":{\"name\":\"shot\",\"arguments\":\"{}\"}},{\"id\":\"c2\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}}]" },
+        .{ .role = "tool", .content = "failed", .tool_call_id = "c1", .tool_name = "shot", .tool_is_error = true, .image_b64 = "AQ==", .image_mime = "image/png" },
+        .{ .role = "tool", .content = "ok", .tool_call_id = "c2", .tool_name = "read" },
+    };
+    const body = try buildRequestBodyConfiguredCompatCached(gpa, "claude-haiku-5-5", &transcript, "[]", false, .off, 1024, .{ .cache_control_format = .anthropic }, .short);
+    defer gpa.free(body);
+    const parsed = try std.json.parseFromSlice(std.json.Value, gpa, body, .{});
+    defer parsed.deinit();
+    const content = parsed.value.object.get("messages").?.array.items[1].object.get("content").?.array.items;
+    try std.testing.expectEqual(@as(usize, 4), content.len);
+    try std.testing.expectEqualStrings("failed\n(image attached after the tool results)", content[0].object.get("content").?.string);
+    try std.testing.expectEqualStrings("tool_result", content[1].object.get("type").?.string);
+    try std.testing.expectEqualStrings("Images from the error result of tool call c1 (shot):", content[2].object.get("text").?.string);
+    try std.testing.expect(content[1].object.get("cache_control") == null);
+    try std.testing.expect(content[3].object.get("cache_control") != null);
 }
 
 test "Anthropic server-side fallbacks include beta payload and returned-model pricing" {

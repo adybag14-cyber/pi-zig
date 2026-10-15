@@ -1,0 +1,47 @@
+import {createServer} from 'node:http';
+import {once} from 'node:events';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+const api=await import('file:///C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/ai/src/api/anthropic-messages.ts');
+const cost={input:1,output:2,cacheRead:.5,cacheWrite:1.5};
+const tool={name:'read',description:'read file',parameters:{type:'object',properties:{path:{type:'string'}},required:['path']}};
+const image={type:'image',mimeType:'image/png',data:'AQI='};
+const model={id:'claude-sonnet-4-6',name:'Claude Sonnet 4.6',provider:'anthropic',api:'anthropic-messages',input:['text','image'],reasoning:true,cost,contextWindow:32000,maxTokens:8192,compat:{forceAdaptiveThinking:true},thinkingLevelMap:{max:'max'}};
+const system={role:'system',content:'system',timestamp:0,toolsAdded:[tool]};
+const user={role:'user',content:'hello',timestamp:1};
+const prior={role:'assistant',api:model.api,provider:model.provider,model:model.id,stopReason:'toolUse',timestamp:2,content:[{type:'toolCall',id:'call:1',name:'read',arguments:{path:'a'}}]};
+const result={role:'toolResult',toolCallId:'call:1',toolName:'read',isError:true,timestamp:3,content:[image,{type:'text',text:'failed'},image]};
+const cases=[
+ {name:'plain-off',simple:true},
+ {name:'raw-thinking-omitted'},
+ {name:'adaptive-max',simple:true,options:{reasoning:'max'}},
+ {name:'haiku55-off-exception',simple:true,model:{id:'claude-haiku-5-5',thinkingLevelMap:{off:null,max:'max'}}},
+ {name:'opus5-off-exception',simple:true,model:{id:'claude-opus-5',thinkingLevelMap:{off:null,max:'max'}}},
+ {name:'managed-effort-off',simple:true,model:{compat:{forceAdaptiveThinking:true,supportsMidConvoEffort:true}}},
+ {name:'managed-effort-haiku55-off',simple:true,model:{id:'claude-haiku-5-5',thinkingLevelMap:{off:null,max:'max'},compat:{forceAdaptiveThinking:true,supportsMidConvoEffort:true}}},
+ {name:'error-images',context:{messages:[system,user,prior,result]}},
+ {name:'success-images',context:{messages:[system,user,prior,{...result,isError:false}]}},
+ {name:'image-only-error',context:{messages:[system,user,prior,{...result,content:[image,image]}]}},
+ {name:'mixed-tool-results',context:{messages:[system,user,{...prior,content:[...prior.content,{type:'toolCall',id:'call:2',name:'read',arguments:{path:'b'}}]},result,{...result,toolCallId:'call:2',isError:false,content:[{type:'text',text:'ok'},image]}]}},
+ {name:'cache-long-images',context:{messages:[system,user,prior,result]},options:{cacheRetention:'long'}},
+ {name:'cache-none',options:{cacheRetention:'none'}},
+ {name:'oauth-tool-casing',options:{apiKey:'sk-ant-oat-fixture-placeholder'},context:{messages:[system,user,prior,result]}},
+ {name:'native-system-tool-effort',model:{compat:{forceAdaptiveThinking:true,supportsMidConvoSystemMessages:true,supportsMidConvoToolChanges:true,supportsMidConvoEffort:true}},context:{messages:[system,user,{role:'system',content:'changed',toolsRemoved:[tool],toolsAdded:[{...tool,description:'redefined'}],timestamp:2},{...prior,providerThinkingLevel:'low'},result]},options:{thinkingEnabled:true,effort:'max'}},
+ {name:'strict-prefer-unsupported',model:{compat:{forceAdaptiveThinking:true,supportsStrictTools:true}},context:{messages:[{...system,toolsAdded:[{...tool,constrainedSampling:{type:'json_schema',strict:'prefer'},parameters:{type:'object',properties:{count:{type:'number',minimum:0}},required:['count']}}]},user]}},
+ {name:'strict-require-unsupported',model:{compat:{forceAdaptiveThinking:true,supportsStrictTools:true}},context:{messages:[{...system,toolsAdded:[{...tool,constrainedSampling:{type:'json_schema',strict:'require'},parameters:{type:'object',properties:{count:{type:'number',minimum:0}},required:['count']}}]},user]},noRequest:true},
+ {name:'text-thinking-tool-events',chunks:[{type:'message_start',message:{id:'m1',model:'claude-sonnet-4-6',usage:{input_tokens:10,output_tokens:1,cache_read_input_tokens:2,cache_creation_input_tokens:3,cache_creation:{ephemeral_1h_input_tokens:1}}}},{type:'content_block_start',index:0,content_block:{type:'thinking',thinking:'',signature:''}},{type:'content_block_delta',index:0,delta:{type:'thinking_delta',thinking:'plan'}},{type:'content_block_delta',index:0,delta:{type:'signature_delta',signature:'sig'}},{type:'content_block_stop',index:0},{type:'content_block_start',index:1,content_block:{type:'tool_use',id:'c1',name:'read',input:{}}},{type:'content_block_delta',index:1,delta:{type:'input_json_delta',partial_json:'{"path":'}},{type:'content_block_delta',index:1,delta:{type:'input_json_delta',partial_json:'"a"}'}},{type:'content_block_stop',index:1},{type:'message_delta',delta:{stop_reason:'tool_use'},usage:{output_tokens:4,output_tokens_details:{thinking_tokens:2}}},{type:'message_stop'}]},
+ {name:'redacted-events',chunks:[{type:'message_start',message:{id:'m1',model:'claude-sonnet-4-6',usage:{input_tokens:1,output_tokens:0}}},{type:'content_block_start',index:0,content_block:{type:'redacted_thinking',data:'AQI='}},{type:'content_block_stop',index:0},{type:'message_delta',delta:{stop_reason:'end_turn'},usage:{output_tokens:1}},{type:'message_stop'}]},
+ {name:'missing-message-stop',omitStop:true},
+ {name:'async-hooks',callback:'async'},
+ {name:'hook-throws',callback:'throw'},
+ {name:'payload-replace',callback:'replace'},
+ {name:'http-error',status:403,body:'{"type":"error","error":{"type":"permission_error","message":"fixture denied request"}}'},
+ {name:'no-key',options:{apiKey:''},noRequest:true},
+];
+const defaultChunks=[{type:'message_start',message:{id:'m1',model:'claude-sonnet-4-6',usage:{input_tokens:10,output_tokens:0}}},{type:'content_block_start',index:0,content_block:{type:'text',text:''}},{type:'content_block_delta',index:0,delta:{type:'text_delta',text:'answer'}},{type:'content_block_stop',index:0},{type:'message_delta',delta:{stop_reason:'end_turn'},usage:{output_tokens:2}},{type:'message_stop'}];
+let item,requests;
+const server=createServer(async(req,res)=>{try{let raw='';for await(const chunk of req)raw+=chunk;requests.push({path:req.url,body:JSON.parse(raw),headers:Object.fromEntries(['authorization','x-api-key','anthropic-beta','anthropic-version','x-session-affinity','x-session-id'].filter(key=>req.headers[key]!==undefined).map(key=>[key,req.headers[key]]))});res.writeHead(item.status??200,{'content-type':item.status?'application/json':'text/event-stream','x-fixture':'source-only'});if(item.status)res.end(item.body);else{for(const chunk of item.chunks??defaultChunks){if(item.omitStop&&chunk.type==='message_stop')continue;res.write('event: '+chunk.type+'\ndata: '+JSON.stringify(chunk)+'\n\n');await new Promise(setImmediate)}res.end()}}catch(error){res.destroy(error)}});
+server.listen(0,'127.0.0.1');await once(server,'listening');
+function snapshot(value){if(ArrayBuffer.isView(value))return{$bytes:[...value]};if(Array.isArray(value))return value.map(snapshot);if(value&&typeof value==='object'){const out={};for(const[key,item]of Object.entries(value)){if(value.role==='assistant'&&key==='timestamp')out[key]='$TIMESTAMP';else if(value.role==='assistant'&&key==='durationMs')out[key]='$DURATION';else out[key]=snapshot(item)}return out}return value}
+const rows=[];
+try{for(item of cases){requests=[];const callbacks=[],events=[],payloads=[];const current={...model,...item.model,baseUrl:`http://127.0.0.1:${server.address().port}`};const context=structuredClone(item.context??{messages:[system,user]});const options={apiKey:'fixture-placeholder-key',env:{},maxTokens:1000,maxRetries:0,sessionId:'fixture-session',...item.options,onPayload(payload){callbacks.push('payload');payloads.push(snapshot(payload));if(item.callback==='replace')return {...payload,temperature:.25};if(item.callback==='async')return Promise.resolve()},onResponse(response){callbacks.push('response:'+response.status+':'+response.headers['x-fixture']);if(item.callback==='throw')throw Error('caller response failed');if(item.callback==='async')return Promise.resolve()},onProviderStreamEvent(chunk){callbacks.push('chunk');if(item.callback==='async')return Promise.resolve()}};let result,syncError;try{const stream=api[item.simple?'streamSimple':'stream'](current,context,options);for await(const event of stream)events.push(snapshot(event));result=snapshot(await stream.result())}catch(error){syncError={name:error.name,message:error.message}}if(item.noRequest?requests.length!==0:requests.length!==1)throw Error('request count '+item.name+' '+requests.length);rows.push({input:item,name:item.name,model:{...current,baseUrl:'$BASE_URL'},context,payloads,requests,callbacks,events,result,...(syncError?{syncError}:{})})}writeFileSync(process.argv[2],JSON.stringify({sourceHead:'5ab7fe74c400097b386662205cd93900695b8a71',driverSha256:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),actualNode:{execPath:process.execPath,version:process.version,pid:process.pid},scope:'Actual official5ab Anthropic public stream/streamSimple APIs, pinned SDK, owned loopback placeholder auth; complete events/callback snapshots. Assistant clocks normalized only.',cases:rows.length,rows},null,2));}finally{server.closeAllConnections();await new Promise((resolve,reject)=>server.close(error=>error?reject(error):resolve()))}

@@ -1,0 +1,207 @@
+[
+  {
+    "path": "ai-anthropic25-5ab-source-capture-20261015.mjs",
+    "sha256": "8F682DE1B5B146FED551447FFF90021EA07F6F881F0934E1B5FCEF7D09AB09EC",
+    "bytes": 9265
+  },
+  {
+    "path": "ai-anthropic25-5ab-source25-first-20261015-admission.json",
+    "sha256": "465AFCDB487093DAE4B80A0BA516483173981F405876DC213CE4AE4F955468DC",
+    "bytes": 260
+  },
+  {
+    "path": "ai-anthropic25-5ab-source25-first-20261015-extra-before.json",
+    "sha256": "4ED3D1A7DC67F6FD092D4357ECAF3B06278B5B21FAC0BA13ABB12FC8B31AC3D3",
+    "bytes": 1620
+  },
+  {
+    "path": "ai-anthropic25-5ab-source25-first-20261015-posthash.json",
+    "sha256": "6C81A973C92B3FB5173855B3528F9414D05EA89C10757CA0E40C826E572DC0AB",
+    "bytes": 627
+  },
+  {
+    "path": "ai-anthropic25-5ab-source25-first-20261015.json",
+    "sha256": "604F10C720BE132FF0CE2A9FD7DEE245CEAF52425D8BDCEA539DEA35D89613EF",
+    "bytes": 1144
+  },
+  {
+    "path": "native-windows-debug\\Inspect-AiClaude5abInventory-20261015.ps1",
+    "sha256": "5CAD5F9476AE2C6EEA8A411EC1E5DE72E42E2D7849020496DF7ABD94F094EB59",
+    "bytes": 4772
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-1a4978ca-debug-second-20261015-admission.json",
+    "sha256": "4FF5DB1EEA7FB6F9325DBE8F972F517DD400CE07A0A693373615BDCAC52D8C71",
+    "bytes": 24735
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-1a4978ca-debug-second-20261015-compile.json",
+    "sha256": "EB628F9F3B072CF254B169771A23E7AD2D302FDF909EF3AB28BDC82F14825FBC",
+    "bytes": 977
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-1a4978ca-debug-second-20261015-compile.stderr.log",
+    "sha256": "154EB4334C4601BD3BC090968E8126D202E324B2D6235949884942AC0E731D73",
+    "bytes": 13333
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-1a4978ca-debug-second-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-1a4978ca-debug-second-20261015-controls-before.json",
+    "sha256": "A73DF53B73B71E871CFE31519E7FF0C78DF12D867A938392534C8FDBA4F95593",
+    "bytes": 623
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-1a4978ca-debug-second-20261015-posthash.json",
+    "sha256": "11EDD19616F1EC104AE4ED80CF7D3BAEB9E8341E01888FF2C4CEBA8B2B1692FD",
+    "bytes": 316
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-1a4978ca-debug-second-20261015-runtime.json",
+    "sha256": "5EEE2F83F76449E46A0F002EEBBBAC433BFF1D990F4516672F5A801311874A55",
+    "bytes": 976
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-1a4978ca-debug-second-20261015-runtime.stderr.log",
+    "sha256": "440FDB46C7C45A32E63CB572961ABE1E9B0FDFA7FEE2F8FAC0B28004131E85CC",
+    "bytes": 16140
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-1a4978ca-debug-second-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-1a4978ca-debug-second-20261015-source-before.json",
+    "sha256": "6D59FC7247455B2D7D61C1E3E60D88E1CE2FD97DF0677AE433DAAEF16216A965",
+    "bytes": 1028521
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-a9f13e05-debug-third-20261015-admission.json",
+    "sha256": "7764D5AACB1EB60C5167FBAA654DB516DBA24C9552C33579118EACBC68C32025",
+    "bytes": 526
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-a9f13e05-debug-third-20261015-compile.json",
+    "sha256": "A95CAF8787D40ED7E6520DA707249864DBFA8DE1C073438EFD11B7AC2DC46539",
+    "bytes": 976
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-a9f13e05-debug-third-20261015-compile.stderr.log",
+    "sha256": "EB2FEB97E0B3FE68E9DAF6A71EC809FF2DE1FCFCEA68043BB06958079E954793",
+    "bytes": 13334
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-a9f13e05-debug-third-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-a9f13e05-debug-third-20261015-controls-before.json",
+    "sha256": "F1DD9574183ED012664F5EF4BE240FB384B5747E6C7EA55D7C62CB57F6C7B577",
+    "bytes": 622
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-a9f13e05-debug-third-20261015-posthash.json",
+    "sha256": "42767F5C892CFBD45D9D95BCC8D9CEDCB428036EEDEDC26B8EFAFC770C0F8DE0",
+    "bytes": 316
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-a9f13e05-debug-third-20261015-runtime.json",
+    "sha256": "C4398F81D4C10B3316EB9D29AE9E860295F51B97CDB1CE5A640E397A992383AA",
+    "bytes": 975
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-a9f13e05-debug-third-20261015-runtime.stderr.log",
+    "sha256": "E6F6E88144AF00224CC6A735495E5587F0F3B724464ED5D8158A41A31B43041E",
+    "bytes": 14096
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-a9f13e05-debug-third-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-a9f13e05-debug-third-20261015-source-before.json",
+    "sha256": "2A067F6C708A5759FEA5812586495F4DFA93390E5C517FF80DBC6D0CC94FE792",
+    "bytes": 1028521
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-debug-compiled-test-inventory-20261015.json",
+    "sha256": "D50FE982B9F29F5F69479862C08404FCE9A6AB8F59C8A743A1E426F1B04A773C",
+    "bytes": 2038
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-ff2286f9-debug-first-20261015-admission.json",
+    "sha256": "300EF9A8D81D31F4AA431008AC4130CCDA7C75E177B482B1E7762037A96F62EB",
+    "bytes": 1015
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-ff2286f9-debug-first-20261015-compile.json",
+    "sha256": "30AB97F002F8026E835DDB23BDE15271BC4C90C24BFBA7A109A0E1BA8CC4DABA",
+    "bytes": 976
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-ff2286f9-debug-first-20261015-compile.stderr.log",
+    "sha256": "54CC5DA51657599D8046D570BF144A38DD99793E69CDAC9C1CC9766E95D72BA2",
+    "bytes": 17023
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-ff2286f9-debug-first-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-ff2286f9-debug-first-20261015-controls-before.json",
+    "sha256": "4BBCA2FE852C858543E4808F82C4EA075E32A25342C46F42B5849593BF98C610",
+    "bytes": 617
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-ff2286f9-debug-first-20261015-posthash.json",
+    "sha256": "8B6849CC4B0294B9AB8D0C4AF0682115968F67584BDD8A702548D2AE95CE2DB9",
+    "bytes": 317
+  },
+  {
+    "path": "native-windows-debug\\native-ai-claude5ab-ff2286f9-debug-first-20261015-source-before.json",
+    "sha256": "0F04BB9EB6BD5300A7BD41EE124D5DD58FF341DFA2C179D664C665D6B48963E3",
+    "bytes": 999908
+  },
+  {
+    "path": "native-windows-debug\\qualification-boundary.json",
+    "sha256": "CDC13670E0CFB22A7EEF474AC403AEDFBD1E6C62BF81AA8C49693E27952E2568",
+    "bytes": 1924
+  },
+  {
+    "path": "native-windows-debug\\Run-AiClaude5abPair-20261015.ps1",
+    "sha256": "D3C47DBA457DCE9F39BC155B0DE16631A3EB162B8B6A7711A8C0F9D2A6CCA27E",
+    "bytes": 5727
+  },
+  {
+    "path": "native-windows-debug\\Run-AiClaude5abPairSecond-20261015.ps1",
+    "sha256": "7596E375748237B92B63D06661AF0AAC16BC36F9D0775EAE389AFA67FBB60629",
+    "bytes": 5728
+  },
+  {
+    "path": "native-windows-debug\\Run-AiClaude5abPairThird-20261015.ps1",
+    "sha256": "02D73FD17D5F5B15CC81F332334D4A50C915A5B2EFFA90DD9ACE95CAF08389C6",
+    "bytes": 5727
+  },
+  {
+    "path": "native-windows-debug\\tested-code-match.json",
+    "sha256": "85759F2E8A13A92516A12670A209163CF130B83BCFD00D7FA13951B42580E1CF",
+    "bytes": 4625
+  },
+  {
+    "path": "Run-AiAnthropic25Source-20261015.ps1",
+    "sha256": "D99C1C17E92C880165F71F06B871BC0C621799B85B81917D36D19816EB322742",
+    "bytes": 6268
+  },
+  {
+    "path": "source5ab-modules-51344-0-20261015.jsonl",
+    "sha256": "DF91966DB201ADADBDB8693DD2D814CE24593CEE2649C7828DD4372298CE4479",
+    "bytes": 39232
+  }
+]

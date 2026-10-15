@@ -509,9 +509,17 @@ pub fn buildRequestBody(
         if (supportsAdaptiveThinking(model)) {
             try w.writeAll(",\"additionalModelRequestFields\":{\"thinking\":{\"type\":\"adaptive\"");
             if (!govcloud) try w.writeAll(",\"display\":\"summarized\"");
+            const block_binding = !govcloud and supportsNativeXhighEffort(model);
+            if (block_binding) try w.writeAll(",\"block_binding\":{\"prefix_mismatch_behavior\":\"drop_block\"}");
             try w.writeAll("},\"output_config\":{\"effort\":");
-            try std.json.Stringify.value(mapAdaptiveEffort(model, options.thinking), .{}, w);
-            try w.writeAll("}}");
+            const mapped = if (options.thinking_level_map) |map| switch (map.entry(options.thinking)) {
+                .mapped => |value| value,
+                else => mapAdaptiveEffort(model, options.thinking),
+            } else mapAdaptiveEffort(model, options.thinking);
+            try std.json.Stringify.value(if (options.thinking == .xhigh and supportsNativeXhighEffort(model)) "xhigh" else mapped, .{}, w);
+            try w.writeAll("}");
+            if (block_binding) try w.writeAll(",\"anthropic_beta\":[\"thinking-binding-controls-2026-08-01\"]");
+            try w.writeAll("}");
         } else {
             const budget: u64 = switch (options.thinking) {
                 .minimal => 1024,
@@ -590,13 +598,45 @@ fn writeMessages(
                 const normalized = try normalizeToolId(gpa, tool.tool_call_id orelse "");
                 defer gpa.free(normalized);
                 try std.json.Stringify.value(normalized, .{}, w);
-                try w.writeAll(",\"content\":[{\"text\":");
-                const text = if (std.mem.trim(u8, tool.content, " \t\r\n").len == 0) "<empty>" else tool.content;
-                try std.json.Stringify.value(text, .{}, w);
-                try w.writeAll("}],\"status\":");
+                try w.writeAll(",\"content\":[");
+                const split_images = claude_thinking_signature and tool.tool_is_error and tool.hasImages();
+                var first_block = true;
+                if (tool.content.len > 0) {
+                    try w.writeAll("{\"text\":");
+                    try std.json.Stringify.value(tool.content, .{}, w);
+                    try w.writeByte('}');
+                    first_block = false;
+                }
+                if (split_images) {
+                    if (!first_block) try w.writeByte(',');
+                    try w.writeAll("{\"text\":\"(image attached after the tool results)\"}");
+                    first_block = false;
+                } else {
+                    var image_index: usize = 0;
+                    while (image_index < tool.imageCount()) : (image_index += 1) {
+                        if (!first_block) try w.writeByte(',');
+                        first_block = false;
+                        try writeImage(w, tool.imageAt(image_index).?);
+                    }
+                }
+                if (first_block) try w.writeAll("{\"text\":\"<empty>\"}");
+                try w.writeAll("],\"status\":");
                 try std.json.Stringify.value(if (tool.tool_is_error) "error" else "success", .{}, w);
                 try w.writeAll("}}");
             }
+            if (claude_thinking_signature) for (messages[i..j]) |tool| {
+                if (!tool.tool_is_error or !tool.hasImages()) continue;
+                try w.writeAll(",{\"text\":");
+                const caption = try std.fmt.allocPrint(gpa, "Images from the error result of tool call {s} ({s}):", .{ tool.tool_call_id orelse "", tool.tool_name orelse "" });
+                defer gpa.free(caption);
+                try std.json.Stringify.value(caption, .{}, w);
+                try w.writeByte('}');
+                var image_index: usize = 0;
+                while (image_index < tool.imageCount()) : (image_index += 1) {
+                    try w.writeByte(',');
+                    try writeImage(w, tool.imageAt(image_index).?);
+                }
+            };
             i = j - 1;
             if (cache_enabled and last_non_system != null and last_non_system.? == i) try writeCachePoint(w, cache_retention);
             try w.writeAll("]}");
@@ -671,6 +711,14 @@ fn writeMessages(
             try w.writeAll("]}");
         }
     }
+}
+
+fn writeImage(w: *std.Io.Writer, image: ai.ChatImage) !void {
+    try w.writeAll("{\"image\":{\"format\":");
+    try std.json.Stringify.value(imageFormat(image.mime_type), .{}, w);
+    try w.writeAll(",\"source\":{\"bytes\":");
+    try std.json.Stringify.value(image.data_b64, .{}, w);
+    try w.writeAll("}}}");
 }
 
 fn writeCachePoint(w: *std.Io.Writer, retention: metadata.CacheRetention) !void {
@@ -1427,9 +1475,34 @@ test "Bedrock adaptive Claude thinking maps effort and omits legacy beta" {
     const messages = [_]ai.ChatMessage{.{ .role = "user", .content = "hello" }};
     const body = try buildRequestBody(gpa, "global.anthropic.claude-opus-4-8-v1", &messages, "[]", .{ .thinking = .xhigh });
     defer gpa.free(body);
-    try std.testing.expect(std.mem.indexOf(u8, body, "\"thinking\":{\"type\":\"adaptive\",\"display\":\"summarized\"}") != null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"thinking\":{\"type\":\"adaptive\",\"display\":\"summarized\",\"block_binding\":{\"prefix_mismatch_behavior\":\"drop_block\"}}") != null);
     try std.testing.expect(std.mem.indexOf(u8, body, "\"output_config\":{\"effort\":\"xhigh\"}") != null);
-    try std.testing.expect(std.mem.indexOf(u8, body, "anthropic_beta") == null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "interleaved-thinking-2025-05-14") == null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "thinking-binding-controls-2026-08-01") != null);
+}
+
+test "Source5ab Bedrock retains success tool images and moves only Claude error images after the results" {
+    const gpa = std.testing.allocator;
+    const transcript = [_]ai.ChatMessage{
+        .{ .role = "assistant", .tool_calls_json = "[{\"id\":\"c1\",\"function\":{\"name\":\"shot\",\"arguments\":\"{}\"}},{\"id\":\"c2\",\"function\":{\"name\":\"shot\",\"arguments\":\"{}\"}}]" },
+        .{ .role = "tool", .content = "failed", .tool_call_id = "c1", .tool_name = "shot", .tool_is_error = true, .image_b64 = "AQ==", .image_mime = "image/png" },
+        .{ .role = "tool", .content = "ok", .tool_call_id = "c2", .tool_name = "shot", .image_b64 = "Ag==", .image_mime = "image/png" },
+    };
+    for ([_][]const u8{ "anthropic.claude-haiku-5-5-v1:0", "amazon.nova-pro-v1:0" }, 0..) |model, index| {
+        const body = try buildRequestBody(gpa, model, &transcript, "[]", .{ .cache_retention = .none });
+        defer gpa.free(body);
+        const parsed = try std.json.parseFromSlice(std.json.Value, gpa, body, .{});
+        defer parsed.deinit();
+        const content = parsed.value.object.get("messages").?.array.items[1].object.get("content").?.array.items;
+        try std.testing.expectEqual(@as(usize, if (index == 0) 4 else 2), content.len);
+        const failed = content[0].object.get("toolResult").?.object.get("content").?.array.items;
+        try std.testing.expectEqual(@as(usize, 2), failed.len);
+        if (index == 0) {
+            try std.testing.expectEqualStrings("(image attached after the tool results)", failed[1].object.get("text").?.string);
+            try std.testing.expect(content[3].object.get("image") != null);
+        } else try std.testing.expect(failed[1].object.get("image") != null);
+        try std.testing.expect(content[1].object.get("toolResult").?.object.get("content").?.array.items[1].object.get("image") != null);
+    }
 }
 
 test "Bedrock GovCloud Claude thinking omits display" {
