@@ -21,6 +21,11 @@ fn fail(engine: *js.Engine, err: anyerror) c.JSValue {
 }
 fn call(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
+    // A guest catch must receive the original exception before host diagnostic
+    // formatting can invoke its observable toString/getters. Uncaught failures
+    // are diagnosed by the outer Engine eval/await after this frame returns.
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
     return invoke(engine, owned, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0) catch |err| fail(engine, err);
 }
