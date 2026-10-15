@@ -122,3 +122,7 @@ verification/native-ai-responses-retry14-54503454-negative-20261015/*.log whites
 verification/native-ai-responses-retry14-eb1b6520-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 # The default model map retains the exact captured Windows Source bytes.
 src/extensions/fixtures/sdk-factory-default-models-4954.json whitespace=cr-at-eol
+verification/web-body-node24-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/web-body-node24-20261015/receipts/*-bundled-undici.js.txt -whitespace
+# Response projection is retained byte-for-byte with its original CRLF input.
+src/extensions/fixtures/web-response-node24.input.txt whitespace=cr-at-eol

@@ -1,0 +1,9 @@
+{
+  "candidate": "95e4ba746780a9b8bfaa7c708646299ffb6dd986",
+  "source_runner": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\verification\\auth-helpers-ae7-20261015\\Run-AuthHelpersNativePair-20261015.ps1",
+  "source_runner_sha256": "D300E83F20F8DFB6C02D1229BDA7791D5CA8E325F14A9567DDFB0ADE9F802453",
+  "exact_external_runner": "C:/Users/adyba/pi-zig-update-evidence-20261003/Run-AuthHelpers95e4FullNativePair-20261015.ps1",
+  "exact_external_runner_sha256": "A9C590732B20A1F82E0BA0CDB8523E52FC2E68C36258F1B646B9EEF7D782398D",
+  "scope": "Root exact95e4 grant; candidate source untouched; expanded immutable cohorts before/between/post",
+  "recorded_utc": "2026-10-15T20:49:20.5902389+00:00"
+}

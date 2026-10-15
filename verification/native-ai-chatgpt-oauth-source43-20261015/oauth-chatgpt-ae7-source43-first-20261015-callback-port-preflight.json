@@ -1,0 +1,8 @@
+{
+  "probe_bound": true,
+  "probe_owner_pid": 60464,
+  "observed_utc": "2026-10-15T20:13:08.2704589+00:00",
+  "source_child_must_own_each_actual_listener": true,
+  "address": "127.0.0.1",
+  "port": 1455
+}

@@ -5,7 +5,7 @@ const Scope = v.Scope;
 const c = v.c;
 const flow = @import("native_agent_async.zig");
 const functions = @import("native_node_function.zig");
-const Stage = enum(c_int) { login, env, lazy, delegated, file_module, file_os, file_access };
+const Stage = enum(c_int) { login, env, lazy, file_module, file_os, file_access };
 
 pub fn asyncArrow(engine: *v.em.Engine, name: [*:0]const u8, length: c_int, callback: functions.Callback, roots: []const c.JSValue) !c.JSValue {
     const value = try functions.createArrow(engine, name, length, callback, roots);
@@ -47,7 +47,7 @@ fn contextEnv(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []
     return pending.promise;
 }
 fn readContextEnv(scope: *Scope, owner: c.JSValue, name: c.JSValue) !void {
-    const process = try scope.global("process");
+    const process = try scope.get(try scope.global("globalThis"), "process");
     const env = try v.optional(scope, process, "env");
     const value = if (v.nullish(env)) c.pi_js_undefined() else try scope.own(try v.js.getKey(scope.engine, env, name));
     const valid = c.JS_IsString(value) and try v.length(scope, try scope.invoke(value, "trim", &.{})) > 0;
@@ -68,8 +68,22 @@ fn fileExists(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []
 }
 fn startFileExists(scope: *Scope, owner: c.JSValue, path: c.JSValue) !void {
     try scope.put(owner, "path", path);
-    const module = try scope.call(try scope.global("require"), c.pi_js_undefined(), &.{try scope.text("node:fs/promises")});
+    // Source imports the builtin module; global require is not involved.
+    const module = scope.engine.native_module_values.get("node:fs/promises") orelse return error.NativeAuthFilesystemUnavailable;
     return flow.wait(continued, scope.engine, owner, module, @intFromEnum(Stage.file_module));
+}
+fn osModule(scope: *Scope) !c.JSValue {
+    if (scope.engine.native_module_values.get("node:os")) |module| return module;
+    // A private homedir binding implements only this imported dependency. It
+    // does not register or advertise an incomplete public node:os namespace.
+    const Adapter = struct {
+        fn call(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            return @import("native_home.zig").get(engine);
+        }
+    };
+    const module = try scope.object();
+    try scope.put(module, "homedir", try scope.own(try functions.create(scope.engine, "homedir", 0, Adapter.call, &.{})));
+    return module;
 }
 fn accessFile(scope: *Scope, owner: c.JSValue, path: c.JSValue) !void {
     return flow.wait(continued, scope.engine, owner, try scope.invoke(try scope.get(owner, "fs"), "access", &.{path}), @intFromEnum(Stage.file_access));
@@ -254,14 +268,15 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             const arguments = try scope.get(owner, "arguments");
             const first = try v.at(scope, arguments, 0);
             const returned = if (try v.length(scope, arguments) == 1) try scope.call(method, value, &.{first}) else try scope.call(method, value, &.{ first, try v.at(scope, arguments, 1) });
-            return flow.wait(continued, scope.engine, owner, returned, @intFromEnum(Stage.delegated));
+            // Source tail-returns the delegated value after awaiting the load;
+            // resolve adopts it directly rather than adding another await job.
+            return flow.settle(scope.engine, owner, false, returned);
         },
-        .delegated => return flow.settle(scope.engine, owner, false, value),
         .file_module => {
             try scope.put(owner, "fs", value);
             const path = try scope.get(owner, "path");
             if (scope.truthy(try scope.invoke(path, "startsWith", &.{try scope.text("~")}))) {
-                const os = try scope.call(try scope.global("require"), c.pi_js_undefined(), &.{try scope.text("node:os")});
+                const os = try osModule(scope);
                 return flow.wait(continued, scope.engine, owner, os, @intFromEnum(Stage.file_os));
             }
             return accessFile(scope, owner, path);

@@ -1,0 +1,64 @@
+{
+  "kind": "native public auth helper Debug qualification",
+  "tested_code": "95e4ba746780a9b8bfaa7c708646299ffb6dd986",
+  "actual_source": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "source_case_count": 16,
+  "actual_source16_sha256": "F875997C4477DB71DFD2B49B59CF4871DB7656E1B609F24915D9A4F9FBF33C9B",
+  "compiler_version": "0.16.0",
+  "compiler_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "optimize": "Debug",
+  "compile": {
+    "status": "passed",
+    "pid": 38752,
+    "exit_code": 0,
+    "steps_passed": 155,
+    "steps_total": 155,
+    "completed_utc": "2026-10-15T20:54:51.1391906Z"
+  },
+  "runtime": {
+    "status": "passed",
+    "pid": 64844,
+    "exit_code": 0,
+    "steps_passed": 156,
+    "steps_total": 156,
+    "tests_passed": 3,
+    "tests_total": 3,
+    "authored_helper_tests": 2,
+    "automatic_declaration_test": 1,
+    "elapsed_ms": 60,
+    "max_rss_mib": 12,
+    "completed_utc": "2026-10-15T20:55:22.3207622Z"
+  },
+  "binary": {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015\\.zig-cache\\o\\086c70d1d4f8a03ef2922efcff985c10\\test.exe",
+    "sha256": "58DE1D79656E398AAD90B6C253FB945DA344D4BDAE0D87B804B812ECDCDD3C75",
+    "bytes": 45736448,
+    "binary_publication": false
+  },
+  "immutable_controls": {
+    "candidate_vendor_files": 6550,
+    "compiler_files": 19546,
+    "owner_controls": 8,
+    "source_files": 1968,
+    "runtime_dependency_files": 31064,
+    "node_tool_files": 1774,
+    "preparation_controls": 5,
+    "retained_absences": 84,
+    "before_between_post_all_drift": 0,
+    "posthash_completed_utc": "2026-10-15T20:55:45.4770805Z"
+  },
+  "qualification": {
+    "public_auth_helpers_debug": true,
+    "source16_strict_replay": true,
+    "gc_retained_callbacks_pending_values": true,
+    "mutable_globalThis_context": true,
+    "other_profiles_qualified": false,
+    "oauth_loader_provider_http_graph_qualified": false,
+    "full_pi_factory_qualified": false,
+    "main_merge": false,
+    "release": false,
+    "public_activation": false
+  },
+  "private_checkpoint_scope": "Source plus actual evidence only; no new installed/public runtime",
+  "created_utc": "2026-10-15T21:00:06.3561085+00:00"
+}

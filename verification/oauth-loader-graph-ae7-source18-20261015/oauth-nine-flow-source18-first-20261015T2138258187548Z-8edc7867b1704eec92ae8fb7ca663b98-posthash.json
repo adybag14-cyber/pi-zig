@@ -1,0 +1,16 @@
+{
+  "candidate_before": "fe7e883d4b25c27b78d8336eacb58264217d5957",
+  "candidate_after": "fe7e883d4b25c27b78d8336eacb58264217d5957",
+  "candidate_files": 7220,
+  "candidate_files_after": 7220,
+  "candidate_drift": 0,
+  "vendor_files": 1316,
+  "controls": 35,
+  "control_drift": 0,
+  "original_flow_fixtures": 5,
+  "actual_flows": 9,
+  "expected18_absent": true,
+  "runner_exit": 0,
+  "runner_exception": null,
+  "completed_utc": "2026-10-15T21:39:38.6605823+00:00"
+}

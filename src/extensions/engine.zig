@@ -83,10 +83,13 @@ pub const Engine = struct {
     native_agent_complete_cache: ?c.JSValue = null,
     native_ai_session_resources: ?c.JSValue = null,
     native_ai_model_values: ?c.JSValue = null,
+    native_ai_catalog_values: ?c.JSValue = null,
+    native_ai_oauth_loader_namespace: ?c.JSValue = null,
     native_provider_env_lookup: ?c.JSValue = null,
     native_ai_retry_patterns: ?c.JSValue = null,
     native_sdk_compaction_prepare_callbacks: ?c.JSValue = null,
     native_cache_warmer_bindings: ?c.JSValue = null,
+    native_readable_stream_bindings: ?c.JSValue = null,
     native_sdk_command_runner_constructor: ?c.JSValue = null,
     native_sdk_reserved_shortcuts: ?c.JSValue = null,
     native_sdk_prompt_section_regex: ?c.JSValue = null,
@@ -206,6 +209,10 @@ pub const Engine = struct {
     native_ai_http_cleanup: ?*const fn (*Engine) void = null,
     native_ai_http_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_ai_http_pending: ?*const fn (*Engine) bool = null,
+    native_ai_oauth_chatgpt_state: ?*anyopaque = null,
+    native_ai_oauth_chatgpt_cleanup: ?*const fn (*Engine) void = null,
+    native_ai_oauth_chatgpt_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_ai_oauth_chatgpt_pending: ?*const fn (*Engine) bool = null,
     native_ai_codex_socket_state: ?*anyopaque = null,
     native_ai_codex_socket_cleanup: ?*const fn (*Engine) void = null,
     native_ai_codex_socket_pump: ?*const fn (*Engine) anyerror!bool = null,
@@ -289,6 +296,7 @@ pub const Engine = struct {
         self.native_json_diagnostic_depth = 0;
         if (self.native_ai_oauth_callback_cleanup) |cleanup| cleanup(self);
         if (self.native_ai_http_cleanup) |cleanup| cleanup(self);
+        if (self.native_ai_oauth_chatgpt_cleanup) |cleanup| cleanup(self);
         if (self.native_ai_codex_socket_cleanup) |cleanup| cleanup(self);
         if (self.native_env_deinit) |cleanup| cleanup(self);
         if (self.native_codemode_deinit) |cleanup| cleanup(self);
@@ -308,10 +316,13 @@ pub const Engine = struct {
         if (self.native_agent_complete_cache) |value| self.freeValue(value);
         if (self.native_ai_session_resources) |value| self.freeValue(value);
         if (self.native_ai_model_values) |value| self.freeValue(value);
+        if (self.native_ai_catalog_values) |value| self.freeValue(value);
+        if (self.native_ai_oauth_loader_namespace) |value| self.freeValue(value);
         if (self.native_provider_env_lookup) |value| self.freeValue(value);
         if (self.native_ai_retry_patterns) |value| self.freeValue(value);
         if (self.native_sdk_compaction_prepare_callbacks) |value| self.freeValue(value);
         if (self.native_cache_warmer_bindings) |value| self.freeValue(value);
+        if (self.native_readable_stream_bindings) |value| self.freeValue(value);
         if (self.native_sdk_command_runner_constructor) |value| self.freeValue(value);
         if (self.native_sdk_reserved_shortcuts) |value| self.freeValue(value);
         if (self.native_sdk_prompt_section_regex) |value| self.freeValue(value);
@@ -792,11 +803,12 @@ pub const Engine = struct {
         const tools_worked = if (self.native_sdk_builtin_execution_pump) |pump| try pump(self) else false;
         const oauth_callback_worked = if (self.native_ai_oauth_callback_pump) |pump| try pump(self) else false;
         const ai_http_worked = if (self.native_ai_http_pump) |pump| try pump(self) else false;
+        const oauth_chatgpt_worked = if (self.native_ai_oauth_chatgpt_pump) |pump| try pump(self) else false;
         const codex_socket_worked = if (self.native_ai_codex_socket_pump) |pump| try pump(self) else false;
         const commands_worked = if (self.native_command_metadata_pump) |pump| try pump(self) else false;
         const codemode_worked = if (self.native_codemode_pump) |pump| try pump(self) else false;
         const env_worked = if (self.native_env_pump) |pump| try pump(self) else false;
-        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or oauth_callback_worked or ai_http_worked or codex_socket_worked or commands_worked or codemode_worked or env_worked;
+        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or oauth_callback_worked or ai_http_worked or oauth_chatgpt_worked or codex_socket_worked or commands_worked or codemode_worked or env_worked;
     }
     /// Native leases notify through this Engine-owned signal. External worker
     /// transports keep their existing wakeup while standalone VMs wake too.
@@ -827,6 +839,7 @@ pub const Engine = struct {
         defer self.finishJob();
         const oauth_callback_worked = if (self.native_ai_oauth_callback_pump) |pump| try pump(self) else false;
         const ai_http_worked = if (self.native_ai_http_pump) |pump| try pump(self) else false;
+        const oauth_chatgpt_worked = if (self.native_ai_oauth_chatgpt_pump) |pump| try pump(self) else false;
         const codex_socket_worked = if (self.native_ai_codex_socket_pump) |pump| try pump(self) else false;
         const jobs = try self.runReadyJobs(self.options.job_budget);
         if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
@@ -838,7 +851,7 @@ pub const Engine = struct {
         const immediate_worked = if (check_phase) (if (self.native_immediate_pump) |pump| try pump(self) else false) else false;
         const after_immediate = if (immediate_worked) try self.runReadyJobs(self.options.job_budget -| jobs -| timer_jobs) else 0;
         if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
-        return oauth_callback_worked or ai_http_worked or codex_socket_worked or jobs != 0 or timer_worked or immediate_worked or timer_jobs != 0 or after_immediate != 0;
+        return oauth_callback_worked or ai_http_worked or oauth_chatgpt_worked or codex_socket_worked or jobs != 0 or timer_worked or immediate_worked or timer_jobs != 0 or after_immediate != 0;
     }
 
     /// Run part of a microtask checkpoint. The caller must finish the checkpoint
@@ -916,7 +929,7 @@ pub const Engine = struct {
                 if (self.native_immediate_pending) |has_pending| if (has_pending(self)) continue;
                 // A native transport can settle a promise through an incoming
                 // abort or UI response even when no timer or JS job is pending.
-                if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or self.native_codemode_pump != null or self.native_env_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_oauth_callback_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_http_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_codex_socket_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
+                if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or self.native_codemode_pump != null or self.native_env_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_oauth_callback_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_http_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_oauth_chatgpt_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_codex_socket_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
                     _ = try self.native_owner_signal.waitAfter(self.native_io.?, owner_epoch, .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } });
                     continue;
                 }

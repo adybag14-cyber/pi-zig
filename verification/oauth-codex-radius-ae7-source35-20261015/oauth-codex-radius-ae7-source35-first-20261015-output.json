@@ -1,0 +1,1138 @@
+{
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "runtime": "v24.14.0",
+  "count": 35,
+  "caseIds": [
+    "metadata",
+    "codex-toAuth-identity",
+    "radius-toAuth-identity",
+    "codex-refresh-getter-sync",
+    "radius-refresh-getter-async",
+    "codex-unknown-method",
+    "radius-name-is-live",
+    "codex-refresh-success",
+    "codex-refresh-missing-fields",
+    "codex-refresh-null",
+    "codex-refresh-account-missing",
+    "codex-refresh-malformed-jwt",
+    "codex-refresh-http",
+    "codex-refresh-text-reject",
+    "codex-refresh-fetch-error",
+    "codex-refresh-fetch-value",
+    "radius-refresh-success",
+    "radius-refresh-unvalidated-fields",
+    "radius-refresh-json-null",
+    "radius-refresh-json-error",
+    "radius-refresh-text-error",
+    "radius-refresh-null-error",
+    "radius-refresh-fetch-identity",
+    "radius-refresh-cancellation",
+    "codex-device-success",
+    "codex-device-not-enabled",
+    "codex-device-invalid-interval",
+    "codex-device-poll-error",
+    "radius-device-success",
+    "radius-device-invalid",
+    "radius-device-expired",
+    "radius-device-denied",
+    "radius-device-error-brand",
+    "radius-discovery-invalid",
+    "radius-discovery-http"
+  ],
+  "rows": [
+    {
+      "id": "metadata",
+      "ok": true,
+      "value": {
+        "codexKeys": [
+          "name",
+          "isSubscription",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "radiusKeys": [
+          "name",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "codexName": "OpenAI (ChatGPT Plus/Pro)",
+        "subscription": true,
+        "radiusName": "Radius test",
+        "codex": {
+          "login": {
+            "name": "login",
+            "length": 2,
+            "prototypeName": "AsyncFunction",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "refresh": {
+            "name": "refresh",
+            "length": 2,
+            "prototypeName": "Function",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "toAuth": {
+            "name": "toAuth",
+            "length": 1,
+            "prototypeName": "AsyncFunction",
+            "ownPrototype": false,
+            "constructible": false
+          }
+        },
+        "radius": {
+          "login": {
+            "name": "login",
+            "length": 1,
+            "prototypeName": "AsyncFunction",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "refresh": {
+            "name": "refresh",
+            "length": 2,
+            "prototypeName": "AsyncFunction",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "toAuth": {
+            "name": "toAuth",
+            "length": 1,
+            "prototypeName": "AsyncFunction",
+            "ownPrototype": false,
+            "constructible": false
+          }
+        }
+      },
+      "requests": [],
+      "notices": []
+    },
+    {
+      "id": "codex-toAuth-identity",
+      "ok": true,
+      "value": {
+        "same": true
+      },
+      "requests": [],
+      "notices": []
+    },
+    {
+      "id": "radius-toAuth-identity",
+      "ok": true,
+      "value": {
+        "same": true
+      },
+      "requests": [],
+      "notices": []
+    },
+    {
+      "id": "codex-refresh-getter-sync",
+      "ok": true,
+      "value": {
+        "sync": true,
+        "same": true
+      },
+      "requests": [],
+      "notices": []
+    },
+    {
+      "id": "radius-refresh-getter-async",
+      "ok": true,
+      "value": {
+        "sync": false,
+        "same": true,
+        "promise": true
+      },
+      "requests": [],
+      "notices": []
+    },
+    {
+      "id": "codex-unknown-method",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Unknown OpenAI Codex login method: bad",
+        "constructor": "Error"
+      },
+      "requests": [],
+      "notices": []
+    },
+    {
+      "id": "radius-name-is-live",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Unknown Second sign-in method: bad",
+        "constructor": "Error"
+      },
+      "requests": [],
+      "notices": [
+        {
+          "type": "select",
+          "message": "Sign in to Second:",
+          "options": [
+            {
+              "id": "browser",
+              "label": "Sign in with browser (recommended)"
+            },
+            {
+              "id": "device-code",
+              "label": "Sign in with device code (when signing in from another device)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "codex-refresh-success",
+      "ok": true,
+      "value": {
+        "type": "oauth",
+        "access": "e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC0xIn19.sig",
+        "refresh": "refresh-2",
+        "expires": 1700000120000,
+        "accountId": "account-1"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&refresh_token=r+%2B%2F%3Dx&client_id=app_EMoamEEZ73f0CkXaXp7hrann",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "codex-refresh-missing-fields",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "OpenAI Codex token refresh response missing fields: {\"access_token\":\"a\",\"expires_in\":120}",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&refresh_token=r&client_id=app_EMoamEEZ73f0CkXaXp7hrann",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "codex-refresh-null",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "OpenAI Codex token refresh response missing fields: null",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&refresh_token=r&client_id=app_EMoamEEZ73f0CkXaXp7hrann",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "codex-refresh-account-missing",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Failed to extract accountId from token",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&refresh_token=r&client_id=app_EMoamEEZ73f0CkXaXp7hrann",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "codex-refresh-malformed-jwt",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Failed to extract accountId from token",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&refresh_token=r&client_id=app_EMoamEEZ73f0CkXaXp7hrann",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "codex-refresh-http",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "OpenAI Codex token refresh failed (401): raw failure",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&refresh_token=r&client_id=app_EMoamEEZ73f0CkXaXp7hrann",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "codex-refresh-text-reject",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "OpenAI Codex token refresh failed (401): Unauthorized",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&refresh_token=r&client_id=app_EMoamEEZ73f0CkXaXp7hrann",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "codex-refresh-fetch-error",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "OpenAI Codex token refresh error: network failure",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&refresh_token=r&client_id=app_EMoamEEZ73f0CkXaXp7hrann",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "codex-refresh-fetch-value",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "OpenAI Codex token refresh error: network value",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&refresh_token=r&client_id=app_EMoamEEZ73f0CkXaXp7hrann",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "radius-refresh-success",
+      "ok": true,
+      "value": {
+        "type": "oauth",
+        "access": "a",
+        "refresh": "r",
+        "expires": 1700000060000,
+        "scope": "gateway offline_access"
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&client_id=pi-gateway&refresh_token=r+%2B%2F%3Dx",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "radius-refresh-unvalidated-fields",
+      "ok": true,
+      "value": {
+        "type": "oauth",
+        "access": 7,
+        "expires": 1699999942000
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&client_id=pi-gateway&refresh_token=undefined",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "radius-refresh-json-null",
+      "ok": false,
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of null (reading 'access_token')",
+        "constructor": "TypeError"
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&client_id=pi-gateway&refresh_token=r",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "radius-refresh-json-error",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Radius OAuth token request failed: invalid_client: bad",
+        "constructor": "OAuthResponseError",
+        "status": 400,
+        "oauthError": "invalid_client"
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&client_id=pi-gateway&refresh_token=r",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "radius-refresh-text-error",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Radius OAuth token request failed: unavailable",
+        "constructor": "OAuthResponseError",
+        "status": 503,
+        "oauthError": null
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&client_id=pi-gateway&refresh_token=r",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "radius-refresh-null-error",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Radius OAuth token request failed: null",
+        "constructor": "OAuthResponseError",
+        "status": 400,
+        "oauthError": null
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&client_id=pi-gateway&refresh_token=r",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "radius-refresh-fetch-identity",
+      "ok": true,
+      "value": {
+        "same": true
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&client_id=pi-gateway&refresh_token=r",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "radius-refresh-cancellation",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Login cancelled",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=refresh_token&client_id=pi-gateway&refresh_token=r",
+          "bodyKind": "URLSearchParams",
+          "signalSame": false
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "codex-device-success",
+      "ok": true,
+      "value": {
+        "type": "oauth",
+        "access": "e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC0xIn19.sig",
+        "refresh": "refresh-2",
+        "expires": 1700000120000,
+        "accountId": "account-1"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/api/accounts/deviceauth/usercode",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/json"
+            ]
+          ],
+          "body": "{\"client_id\":\"app_EMoamEEZ73f0CkXaXp7hrann\"}",
+          "bodyKind": "String",
+          "signalSame": true
+        },
+        {
+          "url": "https://auth.openai.com/api/accounts/deviceauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/json"
+            ]
+          ],
+          "body": "{\"device_auth_id\":\"device-id\",\"user_code\":\"CODE\"}",
+          "bodyKind": "String",
+          "signalSame": true
+        },
+        {
+          "url": "https://auth.openai.com/oauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=authorization_code&client_id=app_EMoamEEZ73f0CkXaXp7hrann&code=code&code_verifier=verifier&redirect_uri=https%3A%2F%2Fauth.openai.com%2Fdeviceauth%2Fcallback",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": [
+        {
+          "type": "device_code",
+          "userCode": "CODE",
+          "verificationUri": "https://auth.openai.com/codex/device",
+          "intervalSeconds": 0.25,
+          "expiresInSeconds": 900
+        }
+      ]
+    },
+    {
+      "id": "codex-device-not-enabled",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "OpenAI Codex device code login is not enabled for this server. Use browser login or verify the server URL.",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/api/accounts/deviceauth/usercode",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/json"
+            ]
+          ],
+          "body": "{\"client_id\":\"app_EMoamEEZ73f0CkXaXp7hrann\"}",
+          "bodyKind": "String",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "codex-device-invalid-interval",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Invalid OpenAI Codex device code response: {\"device_auth_id\":\"device-id\",\"user_code\":\"CODE\",\"interval\":-1}",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/api/accounts/deviceauth/usercode",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/json"
+            ]
+          ],
+          "body": "{\"client_id\":\"app_EMoamEEZ73f0CkXaXp7hrann\"}",
+          "bodyKind": "String",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "codex-device-poll-error",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "OpenAI Codex device auth failed with status 500: {\"error\":\"bad\"}",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://auth.openai.com/api/accounts/deviceauth/usercode",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/json"
+            ]
+          ],
+          "body": "{\"client_id\":\"app_EMoamEEZ73f0CkXaXp7hrann\"}",
+          "bodyKind": "String",
+          "signalSame": true
+        },
+        {
+          "url": "https://auth.openai.com/api/accounts/deviceauth/token",
+          "inputKind": "string",
+          "method": "POST",
+          "headers": [
+            [
+              "Content-Type",
+              "application/json"
+            ]
+          ],
+          "body": "{\"device_auth_id\":\"device-id\",\"user_code\":\"CODE\"}",
+          "bodyKind": "String",
+          "signalSame": true
+        }
+      ],
+      "notices": [
+        {
+          "type": "device_code",
+          "userCode": "CODE",
+          "verificationUri": "https://auth.openai.com/codex/device",
+          "intervalSeconds": 0,
+          "expiresInSeconds": 900
+        }
+      ]
+    },
+    {
+      "id": "radius-device-success",
+      "ok": true,
+      "value": {
+        "type": "oauth",
+        "access": "a",
+        "refresh": "r",
+        "expires": 1700000060000
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/device",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "client_id=pi-gateway&scope=gateway+offline_access",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        },
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=pi-gateway&device_code=device-id",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": [
+        {
+          "type": "device_code",
+          "userCode": "CODE",
+          "verificationUri": "https://owned.example/device",
+          "intervalSeconds": 0,
+          "expiresInSeconds": 900
+        }
+      ]
+    },
+    {
+      "id": "radius-device-invalid",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Radius OAuth device authorization response is missing required fields",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/device",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "client_id=pi-gateway&scope=gateway+offline_access",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "radius-device-expired",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Device authorization expired.",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/device",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "client_id=pi-gateway&scope=gateway+offline_access",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        },
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=pi-gateway&device_code=d",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": [
+        {
+          "type": "device_code",
+          "userCode": "CODE",
+          "verificationUri": "https://owned.example/device",
+          "expiresInSeconds": 900
+        }
+      ]
+    },
+    {
+      "id": "radius-device-denied",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Device authorization was denied.",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/device",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "client_id=pi-gateway&scope=gateway+offline_access",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        },
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=pi-gateway&device_code=d",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": [
+        {
+          "type": "device_code",
+          "userCode": "CODE",
+          "verificationUri": "https://owned.example/device",
+          "expiresInSeconds": 900
+        }
+      ]
+    },
+    {
+      "id": "radius-device-error-brand",
+      "ok": true,
+      "value": {
+        "same": true
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth/device",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "client_id=pi-gateway&scope=gateway+offline_access",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        },
+        {
+          "url": "https://gateway.example/v1/oauth/token",
+          "inputKind": "URL",
+          "method": "POST",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ],
+            [
+              "content-type",
+              "application/x-www-form-urlencoded"
+            ]
+          ],
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=pi-gateway&device_code=d",
+          "bodyKind": "URLSearchParams",
+          "signalSame": true
+        }
+      ],
+      "notices": [
+        {
+          "type": "device_code",
+          "userCode": "CODE",
+          "verificationUri": "https://owned.example/device",
+          "expiresInSeconds": 900
+        }
+      ]
+    },
+    {
+      "id": "radius-discovery-invalid",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Invalid Radius OAuth config from https://gateway.example/base",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth",
+          "inputKind": "URL",
+          "method": "GET",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ]
+          ],
+          "body": null,
+          "bodyKind": null,
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    },
+    {
+      "id": "radius-discovery-http",
+      "ok": false,
+      "error": {
+        "name": "Error",
+        "message": "Could not load Radius OAuth config from https://gateway.example/base: 500 config failure",
+        "constructor": "Error"
+      },
+      "requests": [
+        {
+          "url": "https://gateway.example/v1/oauth",
+          "inputKind": "URL",
+          "method": "GET",
+          "headers": [
+            [
+              "accept",
+              "application/json"
+            ]
+          ],
+          "body": null,
+          "bodyKind": null,
+          "signalSame": true
+        }
+      ],
+      "notices": []
+    }
+  ]
+}

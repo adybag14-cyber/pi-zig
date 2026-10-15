@@ -1176,6 +1176,10 @@ JS_EXTERN JSValue JS_NewUint8Array(JSContext *ctx, uint8_t *buf, size_t len,
                                    JSReallocArrayBufferDataFunc *realloc_func,
                                    void *opaque, bool is_shared);
 /* returns -1 if not a typed array otherwise return a JSTypedArrayEnum value */
+JS_EXTERN JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,
+                                                size_t *pbyte_offset,
+                                                size_t *pbyte_length,
+                                                size_t *pbytes_per_element);
 JS_EXTERN int JS_GetTypedArrayType(JSValueConst obj);
 JS_EXTERN JSValue JS_NewUint8ArrayCopy(JSContext *ctx, const uint8_t *buf, size_t len);
 typedef struct {

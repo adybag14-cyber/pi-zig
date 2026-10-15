@@ -2,12 +2,14 @@
 //! absent host fetch uses the existing owned byte worker and genuine Response.
 //! The real native_web_response/body/stream graph is a required dependency.
 const std = @import("std");
+const builtin = @import("builtin");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
 const flow = @import("native_agent_async.zig");
 const helpers = @import("native_ai_auth_helpers.zig");
 const response = @import("native_web_response.zig");
+const streams = @import("native_readable_stream.zig");
 pub fn captureFetch(scope: *Scope) !c.JSValue {
     const value = try scope.global("fetch");
     if (!c.JS_IsUndefined(value)) return value;
@@ -84,6 +86,11 @@ fn open(scope: *Scope, owner: c.JSValue, url: c.JSValue, init: c.JSValue) !void 
     defer engine.gpa.free(bytes);
     const headers_init = try v.optional(scope, init, "headers");
     const headers = try scope.own(try v.js.builtin(engine, "Headers", &.{headers_init}));
+    if (!scope.truthy(try scope.invoke(headers, "has", &.{try scope.text("user-agent")}))) {
+        const diagnostic = try std.fmt.allocPrint(engine.gpa, "pi-zig/Zig-{s} QuickJS-{s} ({s}; {s})", .{ builtin.zig_version_string, std.mem.span(c.JS_GetVersion()), @tagName(builtin.os.tag), @tagName(builtin.cpu.arch) });
+        defer engine.gpa.free(diagnostic);
+        _ = try scope.invoke(headers, "set", &.{ try scope.text("user-agent"), try scope.text(diagnostic) });
+    }
     if (!v.nullish(input_body) and !c.JS_IsString(input_body) and !scope.truthy(try scope.invoke(headers, "has", &.{try scope.text("content-type")}))) _ = try scope.invoke(headers, "set", &.{ try scope.text("content-type"), try scope.text("application/x-www-form-urlencoded;charset=UTF-8") });
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
@@ -109,42 +116,79 @@ fn open(scope: *Scope, owner: c.JSValue, url: c.JSValue, init: c.JSValue) !void 
     defer engine.gpa.free(method_text);
     const method = std.meta.stringToEnum(std.http.Method, method_text) orelse return error.InvalidNativeOAuthHttpMethod;
     try scope.put(owner, "url", url);
-    try scope.put(owner, "chunks", try scope.array());
-    const http = try scope.own(try @import("native_ai_http.zig").openWithOptions(engine, .{ .url = address, .payload = bytes, .headers = fields.items, .method = method, .framing = .bytes, .stream_error_bytes = true }, try v.optional(scope, init, "signal"), .{ .raw_header_pairs = true }));
+    const signal = try v.optional(scope, init, "signal");
+    try scope.put(owner, "signal", signal);
+    try scope.put(owner, "headOnly", c.pi_js_bool(engine.context, @intFromBool(method == .HEAD)));
+    const http = try scope.own(try @import("native_ai_http.zig").openWithOptions(engine, .{ .url = address, .payload = bytes, .headers = fields.items, .method = method, .framing = .bytes, .stream_error_bytes = true }, signal, .{ .raw_header_pairs = true }));
     try scope.put(owner, "http", http);
     try scope.put(owner, "iterator", try scope.get(http, "events"));
     return flow.wait(nativeReady, engine, owner, try scope.get(http, "ready"), 0);
 }
-fn nativeReady(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
-    if (rejected) return flow.settle(engine, owner, true, value);
+fn abortReason(scope: *Scope, owner: c.JSValue, original: c.JSValue) !c.JSValue {
+    const signal = try scope.get(owner, "signal");
+    if (!v.nullish(signal) and scope.truthy(try scope.get(signal, "aborted"))) return scope.get(signal, "reason");
+    return original;
+}
+fn nativeReady(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    advance(&scope, owner, value, stage) catch |err| try flow.rejectError(engine, owner, err);
+    if (rejected) return flow.settle(engine, owner, true, try abortReason(&scope, owner, value));
+    readyResponse(&scope, owner, value) catch |err| {
+        const original = try scope.own(flow.reason(engine, err));
+        const generation = engine.native_allocation_generation;
+        _ = scope.invoke(try scope.get(owner, "iterator"), "return", &.{}) catch |close_error| discarded: {
+            try @import("native_ai_partial_json.zig").discard(engine, close_error, generation);
+            break :discarded c.pi_js_undefined();
+        };
+        return flow.settle(engine, owner, true, original);
+    };
 }
-fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: c_int) !void {
-    if (stage == 0) try scope.put(owner, "head", value) else {
-        if (scope.truthy(try scope.get(value, "done"))) return completed(scope, owner);
+fn mappedIterator(scope: *Scope, owner: c.JSValue) !c.JSValue {
+    const result = try scope.object();
+    const Adapter = struct {
+        fn next(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            var local: Scope = .{ .engine = engine };
+            defer local.deinit();
+            const pending = try flow.create(engine, roots[0]);
+            defer engine.freeValue(pending.owner);
+            errdefer engine.freeValue(pending.promise);
+            const value = local.invoke(try local.get(roots[0], "iterator"), "next", &.{}) catch |err| {
+                try flow.rejectError(engine, pending.owner, err);
+                return pending.promise;
+            };
+            try flow.wait(mappedReady, engine, pending.owner, value, 0);
+            return pending.promise;
+        }
+        fn close(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            var local: Scope = .{ .engine = engine };
+            defer local.deinit();
+            return v.js.invoke(engine, try local.get(roots[0], "iterator"), "return", &.{});
+        }
+    };
+    try scope.put(result, "next", try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "next", 0, Adapter.next, &.{owner})));
+    try scope.put(result, "return", try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "return", 0, Adapter.close, &.{owner})));
+    return result;
+}
+fn mappedReady(engine: *v.em.Engine, pending: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    if (rejected) return flow.settle(engine, pending, true, try abortReason(&scope, try scope.get(pending, "agent"), value));
+    const done = scope.truthy(try scope.get(value, "done"));
+    const result = try scope.object();
+    try scope.put(result, "done", c.pi_js_bool(engine.context, @intFromBool(done)));
+    if (done) try scope.put(result, "value", c.pi_js_undefined()) else {
         const frame = try scope.get(value, "value");
-        if (!try v.eq(scope, try scope.get(frame, "type"), "bytes")) return error.NativeOAuthHttpByteFrameRequired;
-        _ = try scope.invoke(try scope.get(owner, "chunks"), "push", &.{try scope.get(frame, "data")});
+        if (!try v.eq(&scope, try scope.get(frame, "type"), "bytes")) return flow.rejectError(engine, pending, error.NativeOAuthHttpByteFrameRequired);
+        try scope.put(result, "value", try scope.get(frame, "data"));
     }
-    return flow.wait(nativeReady, scope.engine, owner, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), 1);
+    return flow.settle(engine, pending, false, result);
 }
-fn completed(scope: *Scope, owner: c.JSValue) !void {
-    const chunks = try scope.get(owner, "chunks");
-    const count = try v.length(scope, chunks);
-    var length: usize = 0;
-    for (0..count) |index| length = try std.math.add(usize, length, try v.length(scope, try v.at(scope, chunks, @intCast(index))));
-    const body = try scope.own(try v.js.builtin(scope.engine, "Uint8Array", &.{try scope.own(try scope.engine.checked(c.JS_NewFloat64(scope.engine.context, @floatFromInt(length))))}));
-    var offset: usize = 0;
-    for (0..count) |index| {
-        const chunk = try v.at(scope, chunks, @intCast(index));
-        _ = try scope.invoke(body, "set", &.{ chunk, c.JS_NewFloat64(scope.engine.context, @floatFromInt(offset)) });
-        offset += try v.length(scope, chunk);
-    }
-    const head = try scope.get(owner, "head");
+fn readyResponse(scope: *Scope, owner: c.JSValue, head: c.JSValue) !void {
     var status: u32 = 0;
     if (c.JS_ToUint32(scope.engine.context, &status, try scope.get(head, "status")) < 0) return v.js.capture(scope.engine);
+    const null_body = scope.truthy(try scope.get(owner, "headOnly")) or status == 204 or status == 205 or status == 304;
+    const body = if (null_body) c.pi_js_null() else try scope.own(try streams.fromAsyncIterator(scope.engine, try mappedIterator(scope, owner)));
+    if (null_body) _ = try scope.invoke(try scope.get(owner, "iterator"), "return", &.{});
     const result = try scope.own(try response.fromTransport(scope.engine, .{ .body = body, .status = @intCast(status), .status_text = try scope.get(head, "statusText"), .headers = try scope.get(head, "rawHeaders"), .url = try scope.get(owner, "url") }));
     return flow.settle(scope.engine, owner, false, result);
 }

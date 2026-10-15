@@ -1,0 +1,83 @@
+const oauthRows=[],oauthRawRows=[];
+const oauthOriginalNow=Date.now;
+Date.now=()=>1700000000000;
+const oauthOriginalCrypto=Object.getOwnPropertyDescriptor(globalThis,'crypto');
+Object.defineProperty(globalThis,'crypto',{configurable:true,value:{
+  getRandomValues(bytes){bytes.fill(7);return bytes;},
+  subtle:{digest(algorithm,data){if(algorithm!=='SHA-256'||!(data instanceof Uint8Array))throw Error('PKCE input');return Promise.resolve(new Uint8Array(32).fill(9).buffer);}},
+  randomUUID(){return '11111111-2222-4333-8444-555555555555';}
+}});
+function oauthError(error){
+  if(error===oauthMarker)return {marker:true};
+  let message=String(error?.message??error);
+  if(message.includes('returned invalid JSON.'))message=message.replace(/; details=[\s\S]*/,'; details=[parser diagnostic]');
+  else message=message.replace(/; stack=[\s\S]*/,'; stack=[owned diagnostic]');
+  return {name:error?.name,message};
+}
+const oauthMarker={owned:'marker'};
+let oauthTrace=[],oauthOrigin,oauthCurrentResponse,oauthResponseMode='success',oauthFetchFailure;
+const oauthOriginalFetch=globalThis.fetch;
+globalThis.fetch=async function(url,init){
+  oauthTrace.push(['fetch',String(url),init.method,Object.entries(init.headers),init.body,init.signal instanceof AbortSignal,init.signal.aborted]);
+  if(oauthFetchFailure)throw oauthFetchFailure;
+  let status=200,body;
+  if(oauthResponseMode==='http-error'){status=403;body=JSON.stringify({message:'message',error_description:'description',error:{message:'nested'}});}
+  else if(oauthResponseMode==='invalid-json')body='not JSON';
+  else if(oauthResponseMode==='missing-key')body=JSON.stringify({key:''});
+  else if(oauthResponseMode==='array')body='[]';
+  else if(String(url).includes('openrouter.ai'))body=JSON.stringify({key:'sk-owned-router',unused:'retained only in response'});
+  else body=JSON.stringify({access_token:'owned-access',refresh_token:'owned-refresh',expires_in:3600,unused:'ignored'});
+  const response=new Response(body,{status});oauthCurrentResponse=response;
+  const text=response.text,json=response.json;
+  Object.defineProperty(response,'text',{configurable:true,value:function(){oauthTrace.push(['text',this===response]);return text.call(this);}});
+  Object.defineProperty(response,'json',{configurable:true,value:function(){oauthTrace.push(['json',this===response]);return json.call(this);}});
+  return response;
+};
+function oauthNormalized(value){
+  if(typeof value==='string'&&oauthOrigin)return value.replaceAll(oauthOrigin,'http://owned-callback.invalid').replaceAll(encodeURIComponent(oauthOrigin),encodeURIComponent('http://owned-callback.invalid'));
+  if(Array.isArray(value))return value.map(oauthNormalized);
+  if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,oauthNormalized(v)]));
+  return value;
+}
+async function oauthCase(name,run){
+  oauthTrace=[];oauthOrigin=undefined;oauthResponseMode='success';oauthFetchFailure=undefined;
+  let result;try{result=await run();}catch(error){result={error:oauthError(error)};}
+  const row={name,result,trace:oauthTrace};oauthRawRows.push(row);oauthRows.push(oauthNormalized(row));
+}
+function oauthInteraction(method,input='owned-code'){
+  const controller=new AbortController();let state;
+  return {
+    get signal(){oauthTrace.push(['get-signal']);return controller.signal;},
+    get prompt(){oauthTrace.push(['get-prompt']);return async function(prompt){
+      oauthTrace.push(['prompt',this===interactionRef,prompt.type,prompt.message,prompt.placeholder??null,prompt.options??null,prompt.signal===undefined?null:prompt.signal instanceof AbortSignal]);
+      if(prompt.type==='select')return method;
+      if(input==='match-state')return 'owned-code#'+state;
+      return input;
+    };},
+    get notify(){oauthTrace.push(['get-notify']);return function(event){
+      oauthTrace.push(['notify',this===interactionRef,event]);
+      if(event.type==='auth_url'){
+        const parsed=new URL(event.url);state=parsed.searchParams.get('state');
+        const callback=parsed.searchParams.get('callback_url');if(callback)oauthOrigin=new URL(callback).origin;
+      }
+    };}
+  };
+}
+let interactionRef;
+await oauthCase('metadata',()=>Object.fromEntries(Object.entries(oauthAPI).map(([provider,api])=>[provider,{keys:Object.keys(api),name:api.name,label:api.loginLabel??null,subscription:api.isSubscription??null,methods:['login','refresh','toAuth'].map(name=>{const f=api[name];return {key:name,name:f.name,length:f.length,prototype:Object.hasOwn(f,'prototype'),async:Object.getPrototypeOf(f)===Object.getPrototypeOf(async()=>{})};})}])));
+for(const provider of ['anthropic','openrouter']){
+  await oauthCase(provider+' toAuth access getter',async()=>{const access={owned:'access'},credential={get access(){oauthTrace.push(['access']);return access;}};const promise=oauthAPI[provider].toAuth(credential);return {promise:promise instanceof Promise,key:(await promise).apiKey===access};});
+  await oauthCase(provider+' toAuth rejection identity',async()=>{let returned;try{returned=oauthAPI[provider].toAuth({get access(){throw oauthMarker;}});}catch(error){return {sync:oauthError(error)};}try{await returned;}catch(error){return {async:oauthError(error)};}});
+}
+await oauthCase('openrouter refresh original credential',async()=>{const credential={type:'oauth',access:'owned',refresh:'',expires:1,unknown:oauthMarker};return {same:await oauthAPI.openrouter.refresh(credential,new AbortController().signal)===credential,unknown:credential.unknown===oauthMarker};});
+await oauthCase('anthropic refresh synchronous credential getter',async()=>{let promise;try{promise=oauthAPI.anthropic.refresh({get refresh(){throw oauthMarker;}},new AbortController().signal);}catch(error){return {sync:oauthError(error)};}try{await promise;}catch(error){return {async:oauthError(error)};}});
+for(const mode of ['success','http-error','invalid-json'])await oauthCase('anthropic refresh '+mode,async()=>{oauthResponseMode=mode;return oauthAPI.anthropic.refresh({get refresh(){oauthTrace.push(['refresh']);return 'owned-old-refresh';}},new AbortController().signal);});
+await oauthCase('anthropic refresh diagnostic detail',async()=>{const cause=new Error('inner');cause.stack='inner-stack';const error=new Error('outer');error.stack='outer-stack';error.code='E_OWNED';error.errno=17;error.cause=cause;oauthFetchFailure=error;return oauthAPI.anthropic.refresh({refresh:'old'},new AbortController().signal);});
+for(const [method,input] of [['copy_code','owned-code'],['copy_code','match-state'],['copy_code','https://owned.invalid/callback?code=url%2Bcode'],['copy_code','foo=1&code=query%2Fcode'],['copy_code','owned-code#wrong-state'],['copy_code',''],['unknown','owned-code']])await oauthCase('anthropic login '+method+' '+input,async()=>{interactionRef=oauthInteraction(method,input);return oauthAPI.anthropic.login(interactionRef);});
+for(const mode of ['success','http-error','invalid-json','missing-key','array'])await oauthCase('openrouter manual login '+mode,async()=>{oauthResponseMode=mode;interactionRef=oauthInteraction('unused','https://owned.invalid/callback?code=router%2Bcode');return oauthAPI.openrouter.login(interactionRef);});
+await oauthCase('openrouter cancelled exchange',async()=>{const controller=new AbortController();interactionRef={signal:controller.signal,notify(event){if(event.type==='auth_url'){const value=new URL(new URL(event.url).searchParams.get('callback_url'));oauthOrigin=value.origin;}},prompt:async()=>{controller.abort(oauthMarker);return 'code';}};return oauthAPI.openrouter.login(interactionRef);});
+Date.now=oauthOriginalNow;
+if(oauthOriginalCrypto)Object.defineProperty(globalThis,'crypto',oauthOriginalCrypto);else delete globalThis.crypto;
+globalThis.fetch=oauthOriginalFetch;
+globalThis.oauthObservedRows=oauthRows;
+globalThis.oauthObservedRawRows=oauthRawRows;

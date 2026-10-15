@@ -1,0 +1,3 @@
+import {openaiCodexOAuth,createRadiusOAuth} from 'native-oauth-codex-radius';
+import {runOAuthCases} from 'oauth-codex-radius-cases';
+globalThis.oauthCodexRadiusActual=await runOAuthCases(openaiCodexOAuth,createRadiusOAuth);

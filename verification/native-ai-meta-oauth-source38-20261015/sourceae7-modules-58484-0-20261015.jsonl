@@ -1,0 +1,4 @@
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-observe-20261015.mjs","sha256":"1891342a814f6949d3df384d83b738159d52851fd41df240f9f160eb3e34d8c2","externalControl":true}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-oauth-meta-capture-20261015.mjs","sha256":"f436778b932f98a29408d681ec89bf6c2aae596d52bd7d92e56bf19bd52aae86","externalControl":true}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\meta.ts","sha256":"b885a59e1ea71ce718c9246b4907b79d3e70524639a8a49589fa96f465ad38ad","externalControl":false}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts","sha256":"b402bbbf66d693ee7dd6c5e2c4e45544050722d5bfa3668b100df76284a4fb37","externalControl":false}

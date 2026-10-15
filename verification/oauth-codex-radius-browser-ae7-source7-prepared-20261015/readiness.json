@@ -1,0 +1,24 @@
+{
+  "component": "native Codex and Radius OAuth browser Source7",
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "caseCount": 7,
+  "status": "prepared, unrun",
+  "ports": [
+    1455,
+    1456
+  ],
+  "actualSourceListenersRequired": 7,
+  "sourceExpected": "absent intentionally until terminal Source pass and fullpost0",
+  "owner": "Run-OAuthCodexRadiusBrowserAe7Source7-20261015.ps1",
+  "rootReservation": "LIGHT and callback1455/1456 not yet granted",
+  "nativeBuildTarget": "build-native-ai-oauth-codex-radius-browser",
+  "nativeTestTarget": "test-native-ai-oauth-codex-radius-browser",
+  "nativeStatus": "uncompiled, unrun",
+  "nativePrerequisites": [
+    "actual native_web_response/Body/ReadableStream graph",
+    "Root native resource admission"
+  ],
+  "noRealUserLogin": true,
+  "fullPiQualified": false,
+  "staticChecks": "Zig0.16 fmt and AST checks pass"
+}

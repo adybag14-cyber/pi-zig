@@ -1,0 +1,9 @@
+{
+  "heap_mb": 256,
+  "status": "admitted",
+  "coordinated_with": "Root LIGHT5 Source35 explicit grant",
+  "required_kib": 2097152,
+  "free_kib": 19202860,
+  "native_head": "86ffc4d0a5f589e712d8b84fab5ad96a505aca14",
+  "observed_utc": "2026-10-15T20:19:45.2038692+00:00"
+}

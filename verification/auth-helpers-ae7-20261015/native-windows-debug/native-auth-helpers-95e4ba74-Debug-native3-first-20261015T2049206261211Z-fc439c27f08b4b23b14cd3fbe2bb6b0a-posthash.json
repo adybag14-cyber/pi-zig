@@ -1,0 +1,14 @@
+{
+  "candidate": "95e4ba746780a9b8bfaa7c708646299ffb6dd986",
+  "candidate_after": "95e4ba746780a9b8bfaa7c708646299ffb6dd986",
+  "source_files": 6550,
+  "source_files_after": 6550,
+  "source_drift": 0,
+  "compiler_files": 19546,
+  "compiler_drift": 0,
+  "controls": 8,
+  "control_drift": 0,
+  "compile": "passed",
+  "runtime": "passed",
+  "completed_utc": "2026-10-15T20:55:45.4770805+00:00"
+}

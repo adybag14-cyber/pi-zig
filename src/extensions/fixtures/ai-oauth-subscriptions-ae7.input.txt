@@ -1,0 +1,82 @@
+// Original Source public OAuth objects and native facades consume this same input.
+// All network access is replaced before the first invocation.
+globalThis.subscriptionOAuthRows=[];globalThis.subscriptionOAuthDiagnostics=[];
+const rows=globalThis.subscriptionOAuthRows, originals={fetch:globalThis.fetch,now:Date.now,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout,process:globalThis.process};
+let now=1700000000000,calls,notifications,sleeps,queue,controller,hook,promptValue,trace;
+Date.now=()=>now;
+let nextTimer=0;const timers=new Set();
+globalThis.setTimeout=(fn,ms)=>{const id=++nextTimer;timers.add(id);sleeps.push(ms);Promise.resolve().then(()=>{if(timers.delete(id)){now+=ms;fn();}});return id;};
+globalThis.clearTimeout=id=>timers.delete(id);
+const allowed=new Set(['https://github.com/login/device/code','https://github.com/login/oauth/access_token','https://api.github.com/copilot_internal/v2/token','https://api.individual.githubcopilot.com/models','https://api.individual.githubcopilot.com/models/claude-sonnet-4.6/policy','https://enterprise.example/login/device/code','https://enterprise.example/login/oauth/access_token','https://api.enterprise.example/copilot_internal/v2/token','https://copilot-api.enterprise.example/models','https://auth.kimi.com/api/oauth/device_authorization','https://auth.kimi.com/api/oauth/token','http://127.0.0.1:7777/api/oauth/token','https://auth.x.ai/oauth2/device/code','https://auth.x.ai/oauth2/token']);
+globalThis.fetch=async(url,init)=>{
+  url=String(url);if(!allowed.has(url))throw Error('Uncontrolled OAuth URL '+url);
+  calls.push({url,path:new URL(url).pathname,query:new URL(url).search,method:init.method??'GET',headers:{...init.headers},body:init.body===undefined?null:String(init.body),bodyTag:init.body===undefined?null:Object.prototype.toString.call(init.body),signal:{aborted:init.signal.aborted,sameInput:init.signal===controller.signal,brand:Object.prototype.toString.call(init.signal)}});
+  if(init.signal.aborted)throw init.signal.reason;
+  const entry=queue.shift();if(!entry)throw Error('Controlled queue exhausted');if(entry.throw)throw entry.throw;
+  if(entry.afterFetch)entry.afterFetch();
+  return {status:entry.status??200,statusText:entry.statusText??'controlled',ok:(entry.status??200)>=200&&(entry.status??200)<300,headers:{get(name){return name==='retry-after'?entry.retryAfter??null:null;}},body:entry.noBody?null:{async cancel(){trace.push('body.cancel');}},async text(){if(entry.textError)throw Error('controlled text error');return entry.text??'controlled response';},async json(){if(entry.invalidJson)throw SyntaxError('controlled JSON error');return entry.json;}};
+};
+function setup(responses=[],options={}){calls=[];notifications=[];sleeps=[];queue=responses;now=1700000000000;controller=new AbortController();hook=options.notify;promptValue=options.prompt??'';trace=[];globalThis.process={env:{...(options.env??{})},versions:{}};return{signal:controller.signal,async prompt(event){notifications.push({...event});return promptValue;},notify(event){notifications.push({...event});if(hook)hook(event);}};}
+async function record(name,fn){let result;try{result={value:await fn()};}catch(error){subscriptionOAuthDiagnostics.push({case:name,name:error?.name,message:error?.message,stack:error?.stack});result={error:{name:error?.name,message:error?.message}};}rows.push({name,result,calls,notifications,sleeps,now,trace});}
+const kimiDevice=extra=>({json:{device_code:'d +/Ω',user_code:'ABCD',verification_uri:'https://EXAMPLE.com',verification_uri_complete:'https://EXAMPLE.com/complete?code=ABCD',interval:0.001,expires_in:30,...extra}});
+const xaiDevice=extra=>({json:{device_code:'d +/Ω',user_code:'ABCD',verification_uri:'https://EXAMPLE.com',interval:0.001,expires_in:30,...extra}});
+const copilotDevice=extra=>({json:{device_code:'d +/Ω',user_code:'ABCD',verification_uri:'http://EXAMPLE.com',interval:0.001,expires_in:30,...extra}});
+const token=extra=>({json:{access_token:'access',refresh_token:'refresh',expires_in:3600,...extra}});
+const copilotToken={json:{token:'tid=1;proxy-ep=proxy.individual.githubcopilot.com;',expires_at:1700003600}};
+const catalog=data=>({json:{data}}),model=(id,extra)=>({id,model_picker_enabled:true,policy:{state:'enabled'},...extra});
+for(const [key,auth]of Object.entries({copilot:githubCopilotOAuth,kimi:kimiCodingOAuth,xai:xaiOAuth})){
+  setup();await record(key+'-metadata',()=>({keys:Object.keys(auth),name:auth.name,isSubscription:auth.isSubscription,loginLabel:auth.loginLabel,methods:['login','refresh','toAuth'].map(k=>({key:k,name:auth[k].name,length:auth[k].length,ownPrototype:Object.hasOwn(auth[k],'prototype'),tag:Object.prototype.toString.call(auth[k]),constructible:(()=>{try{Reflect.construct(Object,[],auth[k]);return true;}catch{return false;}})()}))}));
+  setup();await record(key+'-toAuth',()=>auth.toAuth({access:'access',extra:'retained?'}));
+  setup();await record(key+'-toAuth-getter-identity',async()=>{const marker={};const p=auth.toAuth({get access(){throw marker;}});try{await p;}catch(e){return e===marker;}return false;});
+  setup();await record(key+'-toAuth-access-getter-order',async()=>{let reads=0;const credential={get access(){trace.push('access'+(++reads));return 'access';},get enterpriseUrl(){trace.push('enterprise');return '';}};return auth.toAuth(credential);});
+  setup();await record(key+'-toAuth-null-async',async()=>{let p;try{p=auth.toAuth(null);}catch{return 'sync';}try{await p;}catch(e){subscriptionOAuthDiagnostics.push({case:key+'-toAuth-null',name:e.name,message:e.message,stack:e.stack});return {async:true,name:e.name};}return false;});
+  setup();await record(key+'-refresh-getter-order',async()=>{const marker={};let p;try{p=auth.refresh({get refresh(){trace.push('refresh');throw marker;}},controller.signal);}catch(e){return {sync:true,identity:e===marker};}try{await p;}catch(e){return{async:true,identity:e===marker};}return false;});
+}
+setup([token()]);await record('kimi-refresh-success',()=>kimiCodingOAuth.refresh({refresh:'r +/Ω',unknown:{x:1}},controller.signal));
+setup([token()],{env:{KIMI_CODE_OAUTH_HOST:'http://127.0.0.1:7777///',KIMI_OAUTH_HOST:'ignored'}});await record('kimi-refresh-host-override',()=>kimiCodingOAuth.refresh({refresh:'r'},controller.signal));
+setup([{throw:new Error('network1')},{status:429,json:{}},{status:500,json:{}},token()]);await record('kimi-refresh-retry-four-attempts',()=>kimiCodingOAuth.refresh({refresh:'r'},controller.signal));
+setup([{throw:'one'},{throw:'two'},{throw:'three'},{throw:'four'}]);await record('kimi-refresh-network-exhausted',()=>kimiCodingOAuth.refresh({refresh:'r'},controller.signal));
+for(const status of [401,403]){setup([{status,json:{error_description:'expired'}}]);await record('kimi-refresh-unauthorized-'+status,()=>kimiCodingOAuth.refresh({refresh:'r'},controller.signal));}
+setup([{status:400,json:{error:'invalid_grant',error_description:'rotated'}}]);await record('kimi-refresh-invalid-grant',()=>kimiCodingOAuth.refresh({refresh:'r'},controller.signal));
+setup([{status:400,invalidJson:true}]);await record('kimi-refresh-invalid-json-failure',()=>kimiCodingOAuth.refresh({refresh:'r'},controller.signal));
+setup([token({refresh_token:''})]);await record('kimi-refresh-missing-field',()=>kimiCodingOAuth.refresh({refresh:'r'},controller.signal));
+setup();controller.abort('controlled abort');await record('kimi-refresh-preaborted',()=>kimiCodingOAuth.refresh({refresh:'r'},controller.signal));
+for(const [name,queueValue]of Object.entries({success:[kimiDevice(),token()],pending:[kimiDevice(),{status:400,json:{error:'authorization_pending'}},token()],slowdown:[kimiDevice(),{status:400,json:{error:'slow_down',interval:2.5}},token()],denied:[kimiDevice(),{status:400,json:{error:'access_denied'}}],expired:[kimiDevice(),{status:400,json:{error:'expired_token'}}],server:[kimiDevice(),{status:503,text:'server'}],invalidtoken:[kimiDevice(),token({expires_in:0})],invaliddevice:[kimiDevice({verification_uri_complete:'javascript:bad'})],authorizationerror:[{status:403,text:'forbidden'}],defaults:[kimiDevice({interval:0,expires_in:0}),token()],timeout:[kimiDevice({expires_in:0.5})]})){const interaction=setup(queueValue);await record('kimi-login-'+name,()=>kimiCodingOAuth.login(interaction));}
+let interaction=setup([kimiDevice()],{notify(){controller.abort('controlled abort');}});await record('kimi-login-notify-abort',()=>kimiCodingOAuth.login(interaction));
+setup([token()]);await record('xai-refresh-success',()=>xaiOAuth.refresh({refresh:'r +/Ω',unknown:true},controller.signal));
+setup([token({refresh_token:undefined,expires_in:undefined})]);await record('xai-refresh-retains-token-default-expiry',()=>xaiOAuth.refresh({refresh:'previous'},controller.signal));
+setup([token({refresh_token:undefined})]);await record('xai-refresh-missing-without-previous',()=>xaiOAuth.refresh({refresh:''},controller.signal));
+setup([token({expires_in:-1})]);await record('xai-refresh-bad-expiry',()=>xaiOAuth.refresh({refresh:'r'},controller.signal));
+setup([{status:401,json:{error:'invalid_grant',error_description:'expired'}}]);await record('xai-refresh-unauthorized',()=>xaiOAuth.refresh({refresh:'r'},controller.signal));
+setup([{status:500,invalidJson:true}]);await record('xai-refresh-invalid-json',()=>xaiOAuth.refresh({refresh:'r'},controller.signal));
+setup([{json:[]}]);await record('xai-refresh-array-json',()=>xaiOAuth.refresh({refresh:'r'},controller.signal));
+setup();controller.abort('controlled abort');await record('xai-refresh-preaborted',()=>xaiOAuth.refresh({refresh:'r'},controller.signal));
+for(const [name,queueValue]of Object.entries({success:[xaiDevice(),token()],complete:[xaiDevice({verification_uri_complete:'https://EXAMPLE.com/path'}),token()],pending:[xaiDevice(),{status:400,json:{error:'authorization_pending'}},token()],slowdown:[xaiDevice(),{status:400,json:{error:'slow_down',interval:2.5}},token()],denied:[xaiDevice(),{status:400,json:{error:'authorization_denied'}}],expired:[xaiDevice(),{status:400,json:{error:'expired_token'}}],invalidinterval:[xaiDevice({interval:0}),token()],invaliduri:[xaiDevice({verification_uri:'http://example.com'})],invalidcomplete:[xaiDevice({verification_uri_complete:'javascript:bad'})],invalidfields:[xaiDevice({device_code:''})],unknown:[xaiDevice(),{status:500,json:{error:'server',error_description:'busy'}}],invalidtoken:[xaiDevice(),token({access_token:''})]})){const interaction=setup(queueValue);await record('xai-login-'+name,()=>xaiOAuth.login(interaction));}
+interaction=setup([xaiDevice()],{notify(){controller.abort();}});await record('xai-login-notify-abort',()=>xaiOAuth.login(interaction));
+setup([copilotToken,catalog([model('alpha'),model('disabled',{policy:{state:'disabled'}}),model('no-tools',{capabilities:{supports:{tool_calls:false}}})])]);await record('copilot-refresh-model-filter',()=>githubCopilotOAuth.refresh({refresh:'github',unknown:true},controller.signal));
+setup([copilotToken,catalog([model('alpha',{model_picker_enabled:false})])]);await record('copilot-refresh-policy-fallback',()=>githubCopilotOAuth.refresh({refresh:'github'},controller.signal));
+setup([copilotToken,catalog([model('alpha',{model_picker_enabled:false})])]);await record('copilot-refresh-enterprise-no-fallback',()=>githubCopilotOAuth.refresh({refresh:'github',enterpriseUrl:'https://ENTERPRISE.example/path'},controller.signal));
+setup([{json:{token:'token',expires_at:'bad'}}]);await record('copilot-refresh-invalid-token',()=>githubCopilotOAuth.refresh({refresh:'github'},controller.signal));
+setup([copilotToken,{json:{data:null}}]);await record('copilot-refresh-invalid-models',()=>githubCopilotOAuth.refresh({refresh:'github'},controller.signal));
+setup([{status:403,statusText:'Forbidden',text:'blocked'}]);await record('copilot-refresh-http-error',()=>githubCopilotOAuth.refresh({refresh:'github'},controller.signal));
+setup([copilotToken,{status:429,statusText:'Rate limited',text:'retry'}]);await record('copilot-refresh-no-rate-retry',()=>githubCopilotOAuth.refresh({refresh:'github'},controller.signal));
+setup();await record('copilot-toAuth-proxy',()=>githubCopilotOAuth.toAuth({access:'tid=x;proxy-ep=other.example;',enterpriseUrl:'enterprise.example'}));
+setup();await record('copilot-toAuth-enterprise',()=>githubCopilotOAuth.toAuth({access:'plain',enterpriseUrl:'https://ENTERPRISE.example/path'}));
+for(const [name,queueValue,options]of [
+ ['success',[copilotDevice(),{json:{access_token:'github'}},copilotToken,catalog([model('alpha')])]],
+ ['pending',[copilotDevice(),{json:{error:'authorization_pending'}},{json:{access_token:'github'}},copilotToken,catalog([])]],
+ ['slowdown',[copilotDevice(),{json:{error:'slow_down',interval:2.5}},{json:{access_token:'github'}},copilotToken,catalog([])]],
+ ['tokenerror',[copilotDevice(),{json:{error:'access_denied',error_description:'no'}}]],
+ ['badfields',[copilotDevice({interval:'bad'})]],['baduri',[copilotDevice({verification_uri:'file:///bad'})]],
+ ['bad-domain',[],{prompt:'https://['}],
+ ['rate-retry',[copilotDevice(),{json:{access_token:'github'}},copilotToken,{status:429,retryAfter:'0.5'},catalog([])]],
+ ['rate-budget',[copilotDevice(),{json:{access_token:'github'}},copilotToken,{status:429,retryAfter:'10',text:'budget'}]],
+ ['policy-enable',[copilotDevice(),{json:{access_token:'github'}},copilotToken,catalog([model('alpha'),model('claude-sonnet-4.6',{policy:{state:'unconfigured'}})]),{json:{}}]],
+ ['policy-failure',[copilotDevice(),{json:{access_token:'github'}},copilotToken,catalog([model('claude-sonnet-4.6',{policy:{state:'unconfigured'}})]),{throw:Error('policy unavailable')}]],
+ ['policy-rate-exhausted',[copilotDevice(),{json:{access_token:'github'}},copilotToken,catalog([model('claude-sonnet-4.6',{policy:{state:'unconfigured'}})]),{status:429,retryAfter:'0'},{status:429,retryAfter:'0'},{status:429,text:'limited'}]],
+ ]){const interaction=setup(queueValue,options);await record('copilot-login-'+name,()=>githubCopilotOAuth.login(interaction));}
+interaction=setup([copilotDevice()],{notify(event){if(event.type==='device_code')controller.abort();}});await record('copilot-login-notify-abort',()=>githubCopilotOAuth.login(interaction));
+setup();await record('copilot-login-prompt-abort',()=>githubCopilotOAuth.login({signal:controller.signal,async prompt(){controller.abort();return '';}}));
+Date.now=originals.now;globalThis.setTimeout=originals.setTimeout;globalThis.clearTimeout=originals.clearTimeout;globalThis.fetch=originals.fetch;globalThis.process=originals.process;
+
+

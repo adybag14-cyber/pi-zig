@@ -1,0 +1,4407 @@
+{
+  "runtime": "v24.14.0",
+  "count": 84,
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "clock": "controlled Date.now/microtask sleep; owner uses real wall time",
+  "rawDiagnostics": [
+    {
+      "case": "copilot-toAuth-null",
+      "name": "TypeError",
+      "message": "Cannot read properties of null (reading 'access')",
+      "stack": "TypeError: Cannot read properties of null (reading 'access')\n    at Object.toAuth (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:503:23)\n    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:34:76)\n    at record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:67)\n    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:34:17)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-toAuth-null",
+      "name": "TypeError",
+      "message": "Cannot read properties of null (reading 'access')",
+      "stack": "TypeError: Cannot read properties of null (reading 'access')\n    at Object.toAuth (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:294:59)\n    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:34:76)\n    at record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:67)\n    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:34:17)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-toAuth-null",
+      "name": "TypeError",
+      "message": "Cannot read properties of null (reading 'access')",
+      "stack": "TypeError: Cannot read properties of null (reading 'access')\n    at Object.toAuth (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:237:31)\n    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:34:76)\n    at record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:67)\n    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:34:17)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-refresh-network-exhausted",
+      "name": "Error",
+      "message": "four",
+      "stack": "Error: four\n    at refreshToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:240:49)\n    at async Object.refresh (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:289:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:40:69)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-refresh-unauthorized-401",
+      "name": "Error",
+      "message": "Kimi Code token refresh unauthorized (status 401): expired",
+      "stack": "Error: Kimi Code token refresh unauthorized (status 401): expired\n    at refreshToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:252:10)\n    at async Object.refresh (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:289:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:41:85)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-refresh-unauthorized-403",
+      "name": "Error",
+      "message": "Kimi Code token refresh unauthorized (status 403): expired",
+      "stack": "Error: Kimi Code token refresh unauthorized (status 403): expired\n    at refreshToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:252:10)\n    at async Object.refresh (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:289:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:41:85)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-refresh-invalid-grant",
+      "name": "Error",
+      "message": "Kimi Code token refresh unauthorized (status 400): rotated",
+      "stack": "Error: Kimi Code token refresh unauthorized (status 400): rotated\n    at refreshToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:252:10)\n    at async Object.refresh (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:289:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:42:80)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-refresh-invalid-json-failure",
+      "name": "Error",
+      "message": "Kimi Code token refresh failed with status 400: null",
+      "stack": "Error: Kimi Code token refresh failed with status 400: null\n    at refreshToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:261:9)\n    at async Object.refresh (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:289:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:43:40)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-refresh-missing-field",
+      "name": "Error",
+      "message": "Kimi Code token refresh response missing fields: {\"access_token\":\"access\",\"refresh_token\":\"\",\"expires_in\":3600}",
+      "stack": "Error: Kimi Code token refresh response missing fields: {\"access_token\":\"access\",\"refresh_token\":\"\",\"expires_in\":3600}\n    at parseTokenResponse (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:133:9)\n    at refreshToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:246:11)\n    at async Object.refresh (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:289:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:44:36)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-refresh-preaborted",
+      "name": "Error",
+      "message": "Kimi Code token refresh aborted",
+      "stack": "Error: Kimi Code token refresh aborted\n    at refreshToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:221:10)\n    at Object.refresh (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:289:23)\n    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:45:105)\n    at record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:67)\n    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:45:52)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-login-denied",
+      "name": "Error",
+      "message": "Kimi Code login was denied.",
+      "stack": "Error: Kimi Code login was denied.\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:74:10)\n    at async Object.loginKimiCoding (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:277:16)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:46:729)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-login-expired",
+      "name": "Error",
+      "message": "Kimi Code device authorization expired. Please restart login.",
+      "stack": "Error: Kimi Code device authorization expired. Please restart login.\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:74:10)\n    at async Object.loginKimiCoding (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:277:16)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:46:729)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-login-server",
+      "name": "Error",
+      "message": "Kimi Code device token request failed with status 503: server",
+      "stack": "Error: Kimi Code device token request failed with status 503: server\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:74:10)\n    at async Object.loginKimiCoding (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:277:16)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:46:729)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-login-invalidtoken",
+      "name": "Error",
+      "message": "Kimi Code token poll response missing fields: {\"access_token\":\"access\",\"refresh_token\":\"refresh\",\"expires_in\":0}",
+      "stack": "Error: Kimi Code token poll response missing fields: {\"access_token\":\"access\",\"refresh_token\":\"refresh\",\"expires_in\":0}\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:74:10)\n    at async Object.loginKimiCoding (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:277:16)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:46:729)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-login-invaliddevice",
+      "name": "Error",
+      "message": "Invalid Kimi Code device authorization response: {\"device_code\":\"d +/Ω\",\"user_code\":\"ABCD\",\"verification_uri\":\"https://EXAMPLE.com\",\"verification_uri_complete\":\"javascript:bad\",\"interval\":0.001,\"expires_in\":30}",
+      "stack": "Error: Invalid Kimi Code device authorization response: {\"device_code\":\"d +/Ω\",\"user_code\":\"ABCD\",\"verification_uri\":\"https://EXAMPLE.com\",\"verification_uri_complete\":\"javascript:bad\",\"interval\":0.001,\"expires_in\":30}\n    at startDeviceAuthorization (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:99:9)\n    at async Object.loginKimiCoding (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:269:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:46:729)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-login-authorizationerror",
+      "name": "Error",
+      "message": "Kimi Code device authorization failed with status 403: forbidden",
+      "stack": "Error: Kimi Code device authorization failed with status 403: forbidden\n    at startDeviceAuthorization (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:83:9)\n    at async Object.loginKimiCoding (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:269:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:46:729)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-login-timeout",
+      "name": "Error",
+      "message": "Device flow timed out",
+      "stack": "Error: Device flow timed out\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:97:8)\n    at async Object.loginKimiCoding (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:277:16)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:46:729)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "kimi-login-notify-abort",
+      "name": "Error",
+      "message": "Login cancelled",
+      "stack": "Error: Login cancelled\n    at <anonymous> (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:29:11)\n    at new Promise (<anonymous>)\n    at abortableSleep (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:27:9)\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:60:10)\n    at pollForToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:147:9)\n    at Object.loginKimiCoding (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\kimi-coding.ts:277:22)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:47:89)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-refresh-missing-without-previous",
+      "name": "Error",
+      "message": "Invalid xAI OAuth response field: refresh_token",
+      "stack": "Error: Invalid xAI OAuth response field: refresh_token\n    at requiredString (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:36:9)\n    at credentialsFromTokenResponse (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:134:6)\n    at refreshXaiToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:226:9)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:50:43)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-refresh-bad-expiry",
+      "name": "Error",
+      "message": "Invalid xAI OAuth response field: expires_in",
+      "stack": "Error: Invalid xAI OAuth response field: expires_in\n    at positiveNumber (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:44:9)\n    at credentialsFromTokenResponse (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:136:68)\n    at refreshXaiToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:226:9)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:51:33)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-refresh-unauthorized",
+      "name": "Error",
+      "message": "xAI OAuth token refresh failed (HTTP 401): invalid_grant: expired",
+      "stack": "Error: xAI OAuth token refresh failed (HTTP 401): invalid_grant: expired\n    at requestFailure (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:105:9)\n    at refreshXaiToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:224:9)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:52:80)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-refresh-invalid-json",
+      "name": "Error",
+      "message": "xAI OAuth returned invalid JSON (HTTP 500)",
+      "stack": "Error: xAI OAuth returned invalid JSON (HTTP 500)\n    at postForm (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:91:9)\n    at async refreshXaiToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:214:19)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:53:40)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-refresh-array-json",
+      "name": "Error",
+      "message": "Invalid xAI OAuth response field: access_token",
+      "stack": "Error: Invalid xAI OAuth response field: access_token\n    at requiredString (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:36:9)\n    at credentialsFromTokenResponse (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:129:17)\n    at refreshXaiToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:226:9)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:54:20)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-refresh-preaborted",
+      "name": "Error",
+      "message": "Login cancelled",
+      "stack": "Error: Login cancelled\n    at postForm (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:78:10)\n    at async refreshXaiToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:214:19)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:55:46)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-login-denied",
+      "name": "Error",
+      "message": "xAI device authorization was denied",
+      "stack": "Error: xAI device authorization was denied\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:74:10)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:56:863)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-login-expired",
+      "name": "Error",
+      "message": "xAI device code expired",
+      "stack": "Error: xAI device code expired\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:74:10)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:56:863)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-login-invaliduri",
+      "name": "Error",
+      "message": "Untrusted verification URI in xAI OAuth response",
+      "stack": "Error: Untrusted verification URI in xAI OAuth response\n    at validateVerificationUri (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:59:9)\n    at parseDeviceCode (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:121:20)\n    at requestDeviceCode (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:158:9)\n    at async Object.loginXai (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:202:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:56:863)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-login-invalidcomplete",
+      "name": "Error",
+      "message": "Untrusted verification URI in xAI OAuth response",
+      "stack": "Error: Untrusted verification URI in xAI OAuth response\n    at validateVerificationUri (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:59:9)\n    at parseDeviceCode (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:116:6)\n    at requestDeviceCode (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:158:9)\n    at async Object.loginXai (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:202:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:56:863)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-login-invalidfields",
+      "name": "Error",
+      "message": "Invalid xAI OAuth response field: device_code",
+      "stack": "Error: Invalid xAI OAuth response field: device_code\n    at requiredString (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:36:9)\n    at parseDeviceCode (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:119:15)\n    at requestDeviceCode (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:158:9)\n    at async Object.loginXai (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:202:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:56:863)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-login-unknown",
+      "name": "Error",
+      "message": "xAI OAuth device token polling failed (HTTP 500): server: busy",
+      "stack": "Error: xAI OAuth device token polling failed (HTTP 500): server: busy\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:74:10)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:56:863)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-login-invalidtoken",
+      "name": "Error",
+      "message": "Invalid xAI OAuth response field: access_token",
+      "stack": "Error: Invalid xAI OAuth response field: access_token\n    at requiredString (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:36:9)\n    at credentialsFromTokenResponse (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:129:17)\n    at Object.poll (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:179:41)\n    at async pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:69:18)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:56:863)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "xai-login-notify-abort",
+      "name": "Error",
+      "message": "Login cancelled",
+      "stack": "Error: Login cancelled\n    at <anonymous> (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:29:11)\n    at new Promise (<anonymous>)\n    at abortableSleep (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:27:9)\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:60:10)\n    at pollForTokens (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:162:9)\n    at Object.loginXai (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\xai.ts:210:9)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:57:66)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "copilot-refresh-invalid-token",
+      "name": "Error",
+      "message": "Invalid Copilot token response fields",
+      "stack": "Error: Invalid Copilot token response fields\n    at refreshGitHubCopilotAccessToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:338:9)\n    at async refreshGitHubCopilotToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:358:22)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:61:50)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "copilot-refresh-invalid-models",
+      "name": "Error",
+      "message": "Invalid Copilot models response",
+      "stack": "Error: Invalid Copilot models response\n    at parseGitHubCopilotModelCatalog (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:96:9)\n    at fetchGitHubCopilotModels (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:194:9)\n    at async refreshGitHubCopilotToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:359:32)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:62:42)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "copilot-refresh-http-error",
+      "name": "Error",
+      "message": "403 Forbidden: blocked",
+      "stack": "Error: 403 Forbidden: blocked\n    at fetchJson (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:201:9)\n    at async refreshGitHubCopilotAccessToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:321:14)\n    at async refreshGitHubCopilotToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:358:22)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:63:61)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "copilot-refresh-no-rate-retry",
+      "name": "Error",
+      "message": "429 Rate limited: retry",
+      "stack": "Error: 429 Rate limited: retry\n    at fetchGitHubCopilotModels (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:192:9)\n    at async refreshGitHubCopilotToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:359:32)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:64:75)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "copilot-login-tokenerror",
+      "name": "Error",
+      "message": "Device flow failed: access_denied: no",
+      "stack": "Error: Device flow failed: access_denied: no\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:74:10)\n    at async Object.loginGitHubCopilot (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:456:28)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:79:49)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "copilot-login-badfields",
+      "name": "Error",
+      "message": "Invalid device code response fields",
+      "stack": "Error: Invalid device code response fields\n    at startDeviceFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:239:9)\n    at async Object.loginGitHubCopilot (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:447:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:79:49)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "copilot-login-baduri",
+      "name": "Error",
+      "message": "Untrusted verification_uri in device code response",
+      "stack": "Error: Untrusted verification_uri in device code response\n    at startDeviceFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:251:9)\n    at async Object.loginGitHubCopilot (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:447:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:79:49)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "copilot-login-bad-domain",
+      "name": "Error",
+      "message": "Invalid GitHub Enterprise URL/domain",
+      "stack": "Error: Invalid GitHub Enterprise URL/domain\n    at Object.loginGitHubCopilot (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:444:42)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:79:49)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "copilot-login-rate-budget",
+      "name": "Error",
+      "message": "429 controlled: budget",
+      "stack": "Error: 429 controlled: budget\n    at fetchGitHubCopilotModels (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:192:9)\n    at async Object.loginGitHubCopilot (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:462:17)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:79:49)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "copilot-login-notify-abort",
+      "name": "Error",
+      "message": "Login cancelled",
+      "stack": "Error: Login cancelled\n    at <anonymous> (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:29:11)\n    at new Promise (<anonymous>)\n    at abortableSleep (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:27:9)\n    at pollOAuthDeviceCodeFlow (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\device-code.ts:60:10)\n    at pollForGitHubAccessToken (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:269:9)\n    at Object.loginGitHubCopilot (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:456:34)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:80:105)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    },
+    {
+      "case": "copilot-login-prompt-abort",
+      "name": "Error",
+      "message": "Login cancelled",
+      "stack": "Error: Login cancelled\n    at Object.loginGitHubCopilot (C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\auth\\oauth\\github-copilot.ts:440:40)\n    at async record (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:22:61)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:7), <anonymous>:81:9)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs:7:1"
+    }
+  ],
+  "rows": [
+    {
+      "name": "copilot-metadata",
+      "result": {
+        "value": {
+          "keys": [
+            "name",
+            "isSubscription",
+            "login",
+            "refresh",
+            "toAuth"
+          ],
+          "name": "GitHub Copilot",
+          "isSubscription": true,
+          "methods": [
+            {
+              "key": "login",
+              "name": "loginGitHubCopilot",
+              "length": 1,
+              "ownPrototype": false,
+              "tag": "[object AsyncFunction]",
+              "constructible": false
+            },
+            {
+              "key": "refresh",
+              "name": "refresh",
+              "length": 2,
+              "ownPrototype": false,
+              "tag": "[object Function]",
+              "constructible": false
+            },
+            {
+              "key": "toAuth",
+              "name": "toAuth",
+              "length": 1,
+              "ownPrototype": false,
+              "tag": "[object AsyncFunction]",
+              "constructible": false
+            }
+          ]
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-toAuth",
+      "result": {
+        "value": {
+          "apiKey": "access",
+          "baseUrl": "https://api.individual.githubcopilot.com"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-toAuth-getter-identity",
+      "result": {
+        "value": true
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-toAuth-access-getter-order",
+      "result": {
+        "value": {
+          "apiKey": "access",
+          "baseUrl": "https://api.individual.githubcopilot.com"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": [
+        "access1",
+        "access2",
+        "enterprise"
+      ]
+    },
+    {
+      "name": "copilot-toAuth-null-async",
+      "result": {
+        "value": {
+          "async": true,
+          "name": "TypeError"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-refresh-getter-order",
+      "result": {
+        "value": {
+          "sync": true,
+          "identity": true
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": [
+        "refresh"
+      ]
+    },
+    {
+      "name": "kimi-metadata",
+      "result": {
+        "value": {
+          "keys": [
+            "name",
+            "isSubscription",
+            "loginLabel",
+            "login",
+            "refresh",
+            "toAuth"
+          ],
+          "name": "Kimi Code (subscription)",
+          "isSubscription": true,
+          "loginLabel": "Sign in with Kimi Code",
+          "methods": [
+            {
+              "key": "login",
+              "name": "loginKimiCoding",
+              "length": 1,
+              "ownPrototype": false,
+              "tag": "[object AsyncFunction]",
+              "constructible": false
+            },
+            {
+              "key": "refresh",
+              "name": "refresh",
+              "length": 2,
+              "ownPrototype": false,
+              "tag": "[object AsyncFunction]",
+              "constructible": false
+            },
+            {
+              "key": "toAuth",
+              "name": "toAuth",
+              "length": 1,
+              "ownPrototype": false,
+              "tag": "[object AsyncFunction]",
+              "constructible": false
+            }
+          ]
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-toAuth",
+      "result": {
+        "value": {
+          "headers": {
+            "Authorization": "Bearer access"
+          }
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-toAuth-getter-identity",
+      "result": {
+        "value": true
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-toAuth-access-getter-order",
+      "result": {
+        "value": {
+          "headers": {
+            "Authorization": "Bearer access"
+          }
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": [
+        "access1"
+      ]
+    },
+    {
+      "name": "kimi-toAuth-null-async",
+      "result": {
+        "value": {
+          "async": true,
+          "name": "TypeError"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-refresh-getter-order",
+      "result": {
+        "value": {
+          "async": true,
+          "identity": true
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": [
+        "refresh"
+      ]
+    },
+    {
+      "name": "xai-metadata",
+      "result": {
+        "value": {
+          "keys": [
+            "name",
+            "isSubscription",
+            "loginLabel",
+            "login",
+            "refresh",
+            "toAuth"
+          ],
+          "name": "xAI (Grok/X subscription)",
+          "isSubscription": true,
+          "loginLabel": "Sign in with SuperGrok or X Premium",
+          "methods": [
+            {
+              "key": "login",
+              "name": "loginXai",
+              "length": 1,
+              "ownPrototype": false,
+              "tag": "[object AsyncFunction]",
+              "constructible": false
+            },
+            {
+              "key": "refresh",
+              "name": "refresh",
+              "length": 2,
+              "ownPrototype": false,
+              "tag": "[object Function]",
+              "constructible": false
+            },
+            {
+              "key": "toAuth",
+              "name": "toAuth",
+              "length": 1,
+              "ownPrototype": false,
+              "tag": "[object AsyncFunction]",
+              "constructible": false
+            }
+          ]
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-toAuth",
+      "result": {
+        "value": {
+          "apiKey": "access"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-toAuth-getter-identity",
+      "result": {
+        "value": true
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-toAuth-access-getter-order",
+      "result": {
+        "value": {
+          "apiKey": "access"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": [
+        "access1"
+      ]
+    },
+    {
+      "name": "xai-toAuth-null-async",
+      "result": {
+        "value": {
+          "async": true,
+          "name": "TypeError"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-refresh-getter-order",
+      "result": {
+        "value": {
+          "sync": true,
+          "identity": true
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": [
+        "refresh"
+      ]
+    },
+    {
+      "name": "kimi-refresh-success",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003600000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r+%2B%2F%CE%A9",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-refresh-host-override",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003600000
+        }
+      },
+      "calls": [
+        {
+          "url": "http://127.0.0.1:7777/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-refresh-retry-four-attempts",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003607000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [
+        1000,
+        2000,
+        4000
+      ],
+      "now": 1700000007000,
+      "trace": []
+    },
+    {
+      "name": "kimi-refresh-network-exhausted",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "four"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [
+        1000,
+        2000,
+        4000
+      ],
+      "now": 1700000007000,
+      "trace": []
+    },
+    {
+      "name": "kimi-refresh-unauthorized-401",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Kimi Code token refresh unauthorized (status 401): expired"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-refresh-unauthorized-403",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Kimi Code token refresh unauthorized (status 403): expired"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-refresh-invalid-grant",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Kimi Code token refresh unauthorized (status 400): rotated"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-refresh-invalid-json-failure",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Kimi Code token refresh failed with status 400: null"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-refresh-missing-field",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Kimi Code token refresh response missing fields: {\"access_token\":\"access\",\"refresh_token\":\"\",\"expires_in\":3600}"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&grant_type=refresh_token&refresh_token=r",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-refresh-preaborted",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Kimi Code token refresh aborted"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-success",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003601000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://EXAMPLE.com/complete?code=ABCD",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-pending",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003602000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://EXAMPLE.com/complete?code=ABCD",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000,
+        1000
+      ],
+      "now": 1700000002000,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-slowdown",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003603500
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://EXAMPLE.com/complete?code=ABCD",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000,
+        2500
+      ],
+      "now": 1700000003500,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-denied",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Kimi Code login was denied."
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://EXAMPLE.com/complete?code=ABCD",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-expired",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Kimi Code device authorization expired. Please restart login."
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://EXAMPLE.com/complete?code=ABCD",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-server",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Kimi Code device token request failed with status 503: server"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://EXAMPLE.com/complete?code=ABCD",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-invalidtoken",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Kimi Code token poll response missing fields: {\"access_token\":\"access\",\"refresh_token\":\"refresh\",\"expires_in\":0}"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://EXAMPLE.com/complete?code=ABCD",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-invaliddevice",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid Kimi Code device authorization response: {\"device_code\":\"d +/Ω\",\"user_code\":\"ABCD\",\"verification_uri\":\"https://EXAMPLE.com\",\"verification_uri_complete\":\"javascript:bad\",\"interval\":0.001,\"expires_in\":30}"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-authorizationerror",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Kimi Code device authorization failed with status 403: forbidden"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-defaults",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003605000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.kimi.com/api/oauth/token",
+          "path": "/api/oauth/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://EXAMPLE.com/complete?code=ABCD",
+          "intervalSeconds": 5,
+          "expiresInSeconds": 900
+        }
+      ],
+      "sleeps": [
+        5000
+      ],
+      "now": 1700000005000,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-timeout",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Device flow timed out"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://EXAMPLE.com/complete?code=ABCD",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 0.5
+        }
+      ],
+      "sleeps": [
+        500
+      ],
+      "now": 1700000000500,
+      "trace": []
+    },
+    {
+      "name": "kimi-login-notify-abort",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Login cancelled"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.kimi.com/api/oauth/device_authorization",
+          "path": "/api/oauth/device_authorization",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=17e5f671-d194-4dfb-9706-5516cb48c098",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://EXAMPLE.com/complete?code=ABCD",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-refresh-success",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003300000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=refresh_token&client_id=b1a00492-073a-47ea-816f-4c329264a828&refresh_token=r+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-refresh-retains-token-default-expiry",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "previous",
+          "expires": 1700003300000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=refresh_token&client_id=b1a00492-073a-47ea-816f-4c329264a828&refresh_token=previous",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-refresh-missing-without-previous",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid xAI OAuth response field: refresh_token"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=refresh_token&client_id=b1a00492-073a-47ea-816f-4c329264a828&refresh_token=",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-refresh-bad-expiry",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid xAI OAuth response field: expires_in"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=refresh_token&client_id=b1a00492-073a-47ea-816f-4c329264a828&refresh_token=r",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-refresh-unauthorized",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "xAI OAuth token refresh failed (HTTP 401): invalid_grant: expired"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=refresh_token&client_id=b1a00492-073a-47ea-816f-4c329264a828&refresh_token=r",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-refresh-invalid-json",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "xAI OAuth returned invalid JSON (HTTP 500)"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=refresh_token&client_id=b1a00492-073a-47ea-816f-4c329264a828&refresh_token=r",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-refresh-array-json",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid xAI OAuth response field: access_token"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=refresh_token&client_id=b1a00492-073a-47ea-816f-4c329264a828&refresh_token=r",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-refresh-preaborted",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Login cancelled"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=refresh_token&client_id=b1a00492-073a-47ea-816f-4c329264a828&refresh_token=r",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": true,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-success",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003301000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=b1a00492-073a-47ea-816f-4c329264a828&device_code=d+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-complete",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003301000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=b1a00492-073a-47ea-816f-4c329264a828&device_code=d+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://example.com/path",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-pending",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003302000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=b1a00492-073a-47ea-816f-4c329264a828&device_code=d+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=b1a00492-073a-47ea-816f-4c329264a828&device_code=d+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000,
+        1000
+      ],
+      "now": 1700000002000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-slowdown",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003303500
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=b1a00492-073a-47ea-816f-4c329264a828&device_code=d+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=b1a00492-073a-47ea-816f-4c329264a828&device_code=d+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000,
+        2500
+      ],
+      "now": 1700000003500,
+      "trace": []
+    },
+    {
+      "name": "xai-login-denied",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "xAI device authorization was denied"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=b1a00492-073a-47ea-816f-4c329264a828&device_code=d+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-expired",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "xAI device code expired"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=b1a00492-073a-47ea-816f-4c329264a828&device_code=d+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-invalidinterval",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "access",
+          "refresh": "refresh",
+          "expires": 1700003305000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=b1a00492-073a-47ea-816f-4c329264a828&device_code=d+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://example.com/",
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        5000
+      ],
+      "now": 1700000005000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-invaliduri",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Untrusted verification URI in xAI OAuth response"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-invalidcomplete",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Untrusted verification URI in xAI OAuth response"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-invalidfields",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid xAI OAuth response field: device_code"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-unknown",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "xAI OAuth device token polling failed (HTTP 500): server: busy"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=b1a00492-073a-47ea-816f-4c329264a828&device_code=d+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-invalidtoken",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid xAI OAuth response field: access_token"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.x.ai/oauth2/token",
+          "path": "/oauth2/token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&client_id=b1a00492-073a-47ea-816f-4c329264a828&device_code=d+%2B%2F%CE%A9",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "xai-login-notify-abort",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Login cancelled"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.x.ai/oauth2/device/code",
+          "path": "/oauth2/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "client_id=b1a00492-073a-47ea-816f-4c329264a828&scope=openid+profile+email+offline_access+grok-cli%3Aaccess+api%3Aaccess&referrer=pi",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-refresh-model-filter",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "github",
+          "access": "tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+          "expires": 1700003300000,
+          "availableModelIds": [
+            "alpha"
+          ]
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-refresh-policy-fallback",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "github",
+          "access": "tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+          "expires": 1700003300000,
+          "availableModelIds": [
+            "alpha"
+          ]
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-refresh-enterprise-no-fallback",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "github",
+          "access": "tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+          "expires": 1700003300000,
+          "enterpriseUrl": "enterprise.example",
+          "availableModelIds": [
+            "alpha"
+          ]
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.enterprise.example/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-refresh-invalid-token",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid Copilot token response fields"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-refresh-invalid-models",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid Copilot models response"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-refresh-http-error",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "403 Forbidden: blocked"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-refresh-no-rate-retry",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "429 Rate limited: retry"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-toAuth-proxy",
+      "result": {
+        "value": {
+          "apiKey": "tid=x;proxy-ep=other.example;",
+          "baseUrl": "https://other.example"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-toAuth-enterprise",
+      "result": {
+        "value": {
+          "apiKey": "plain",
+          "baseUrl": "https://copilot-api.enterprise.example"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-success",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "github",
+          "access": "tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+          "expires": 1700003300000,
+          "availableModelIds": [
+            "alpha"
+          ]
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://github.com/login/oauth/access_token",
+          "path": "/login/oauth/access_token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        },
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "http://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-pending",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "github",
+          "access": "tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+          "expires": 1700003300000,
+          "availableModelIds": []
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://github.com/login/oauth/access_token",
+          "path": "/login/oauth/access_token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://github.com/login/oauth/access_token",
+          "path": "/login/oauth/access_token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        },
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "http://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000,
+        1000
+      ],
+      "now": 1700000002000,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-slowdown",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "github",
+          "access": "tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+          "expires": 1700003300000,
+          "availableModelIds": []
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://github.com/login/oauth/access_token",
+          "path": "/login/oauth/access_token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://github.com/login/oauth/access_token",
+          "path": "/login/oauth/access_token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        },
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "http://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000,
+        2500
+      ],
+      "now": 1700000003500,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-tokenerror",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Device flow failed: access_denied: no"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://github.com/login/oauth/access_token",
+          "path": "/login/oauth/access_token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        },
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "http://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-badfields",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid device code response fields"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        }
+      ],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-baduri",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Untrusted verification_uri in device code response"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        }
+      ],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-bad-domain",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid GitHub Enterprise URL/domain"
+        }
+      },
+      "calls": [],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        }
+      ],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-rate-retry",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "github",
+          "access": "tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+          "expires": 1700003300000,
+          "availableModelIds": []
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://github.com/login/oauth/access_token",
+          "path": "/login/oauth/access_token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        },
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "http://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000,
+        500
+      ],
+      "now": 1700000001500,
+      "trace": [
+        "body.cancel"
+      ]
+    },
+    {
+      "name": "copilot-login-rate-budget",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "429 controlled: budget"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://github.com/login/oauth/access_token",
+          "path": "/login/oauth/access_token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        },
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "http://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-policy-enable",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "github",
+          "access": "tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+          "expires": 1700003300000,
+          "availableModelIds": [
+            "alpha",
+            "claude-sonnet-4.6"
+          ]
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://github.com/login/oauth/access_token",
+          "path": "/login/oauth/access_token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models/claude-sonnet-4.6/policy",
+          "path": "/models/claude-sonnet-4.6/policy",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "openai-intent": "chat-policy",
+            "x-interaction-type": "chat-policy"
+          },
+          "body": "{\"state\":\"enabled\"}",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        },
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "http://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        },
+        {
+          "type": "progress",
+          "message": "Enabling models..."
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-policy-failure",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "github",
+          "access": "tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+          "expires": 1700003300000,
+          "availableModelIds": [
+            "claude-sonnet-4.6"
+          ]
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://github.com/login/oauth/access_token",
+          "path": "/login/oauth/access_token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models/claude-sonnet-4.6/policy",
+          "path": "/models/claude-sonnet-4.6/policy",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "openai-intent": "chat-policy",
+            "x-interaction-type": "chat-policy"
+          },
+          "body": "{\"state\":\"enabled\"}",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        },
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "http://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        },
+        {
+          "type": "progress",
+          "message": "Enabling models..."
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "now": 1700000001000,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-policy-rate-exhausted",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "github",
+          "access": "tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+          "expires": 1700003300000,
+          "availableModelIds": [
+            "claude-sonnet-4.6"
+          ]
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://github.com/login/oauth/access_token",
+          "path": "/login/oauth/access_token",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&device_code=d+%2B%2F%CE%A9&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.github.com/copilot_internal/v2/token",
+          "path": "/copilot_internal/v2/token",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer github",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models",
+          "path": "/models",
+          "query": "",
+          "method": "GET",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "X-GitHub-Api-Version": "2026-06-01"
+          },
+          "body": null,
+          "bodyTag": null,
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models/claude-sonnet-4.6/policy",
+          "path": "/models/claude-sonnet-4.6/policy",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "openai-intent": "chat-policy",
+            "x-interaction-type": "chat-policy"
+          },
+          "body": "{\"state\":\"enabled\"}",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models/claude-sonnet-4.6/policy",
+          "path": "/models/claude-sonnet-4.6/policy",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "openai-intent": "chat-policy",
+            "x-interaction-type": "chat-policy"
+          },
+          "body": "{\"state\":\"enabled\"}",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.individual.githubcopilot.com/models/claude-sonnet-4.6/policy",
+          "path": "/models/claude-sonnet-4.6/policy",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer tid=1;proxy-ep=proxy.individual.githubcopilot.com;",
+            "User-Agent": "GitHubCopilotChat/0.35.0",
+            "Editor-Version": "vscode/1.107.0",
+            "Editor-Plugin-Version": "copilot-chat/0.35.0",
+            "Copilot-Integration-Id": "vscode-chat",
+            "openai-intent": "chat-policy",
+            "x-interaction-type": "chat-policy"
+          },
+          "body": "{\"state\":\"enabled\"}",
+          "bodyTag": "[object String]",
+          "signal": {
+            "aborted": false,
+            "sameInput": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        },
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "http://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        },
+        {
+          "type": "progress",
+          "message": "Enabling models..."
+        }
+      ],
+      "sleeps": [
+        1000,
+        0,
+        0
+      ],
+      "now": 1700000001000,
+      "trace": [
+        "body.cancel",
+        "body.cancel"
+      ]
+    },
+    {
+      "name": "copilot-login-notify-abort",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Login cancelled"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://github.com/login/device/code",
+          "path": "/login/device/code",
+          "query": "",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "GitHubCopilotChat/0.35.0"
+          },
+          "body": "client_id=Iv1.b507a08c87ecfe98&scope=read%3Auser",
+          "bodyTag": "[object URLSearchParams]",
+          "signal": {
+            "aborted": false,
+            "sameInput": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "text",
+          "message": "GitHub Enterprise URL/domain (blank for github.com)",
+          "placeholder": "company.ghe.com"
+        },
+        {
+          "type": "device_code",
+          "userCode": "ABCD",
+          "verificationUri": "http://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    },
+    {
+      "name": "copilot-login-prompt-abort",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Login cancelled"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "now": 1700000000000,
+      "trace": []
+    }
+  ]
+}

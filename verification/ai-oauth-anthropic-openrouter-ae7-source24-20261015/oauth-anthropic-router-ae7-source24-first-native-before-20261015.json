@@ -1,0 +1,50 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\src\\extensions\\native_ai_oauth_anthropic.zig",
+    "sha256": "2C0FF84D75ECD612F0A4AA9EC2BB75A4E91902A4220F33CF9F6A75BD88603FB2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\src\\extensions\\native_ai_oauth_openrouter.zig",
+    "sha256": "9CF7F19CEF36714FFF50608D2BAE27CE47C3E2CC1CCABAD8756C394CB4F2B5BA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\src\\native_ai_oauth_anthropic_openrouter_test.zig",
+    "sha256": "4754B6020EBDBE142E40BDC393718A80C034094D37528325AF3DF9C6F6C9734A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\build.zig",
+    "sha256": "641054A4409F75376FC29B1920479E9F67AEBF49A865511F9C030A9D4AED4575"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\src\\extensions\\native_ai_oauth_pkce.zig",
+    "sha256": "DD7AE7DC7FD5B0318572A99D3DCE422390F7CDC66C49A374842EEA66A131EC68"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\src\\extensions\\native_ai_oauth_callback_server.zig",
+    "sha256": "C2F2C84436C7FE90E68F66A3C0DF8B06CE00BD481221C9DF9E7FC231CEAC2293"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\src\\extensions\\native_ai_oauth_callback_page.html",
+    "sha256": "D39C77D65902F05049BD6B9F6328997CA57574E4CA9676FBBC96CCB82860108B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\src\\extensions\\native_ai_auth_helpers.zig",
+    "sha256": "A6E77F8AE357B8783D9D170B15A37F6834B8AFBC4BEEE2BE6AD22A99B0F4E959"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\src\\extensions\\native_ai_oauth_http.zig",
+    "sha256": "5DC92771E492359047A5390AE2726AA99A8E7ED0E7426463E48165E03D7E13E7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\src\\extensions\\native_ai_provider_values.zig",
+    "sha256": "E93BAD98020A96B1C9C82E395910AC10025E5B2764876AC47DFE2DD9302841C5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\src\\extensions\\native_provider_env.zig",
+    "sha256": "3CC5BD99EEABB9AA51703601DE62BA2660484EF77A2C958278E5C8F3B333863F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015\\src\\extensions\\engine.zig",
+    "sha256": "C11B5DB198454D72E59DB39CE157921DDFE9022406E9BD0333E960E1FEFC0544"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "path": "receipts/web-body-node24-source-first-20261015-admission.json",
+    "bytes": 307,
+    "sha256": "57e1c825562ac0891d7fd144290a92089b92dcc688fff48af00b15a001ffd6e2"
+  },
+  {
+    "path": "receipts/web-body-node24-source-first-20261015-after.json",
+    "bytes": 576,
+    "sha256": "b4b9b0041fa3042768e6c018f9c9d3e877775539196f64e0394fa65bc1abe7cc"
+  },
+  {
+    "path": "receipts/web-body-node24-source-first-20261015-before.json",
+    "bytes": 576,
+    "sha256": "b4b9b0041fa3042768e6c018f9c9d3e877775539196f64e0394fa65bc1abe7cc"
+  },
+  {
+    "path": "receipts/web-body-node24-source-first-20261015-bundled-undici.js.txt",
+    "bytes": 728836,
+    "sha256": "c62030f1e505a4010d9972ecbf40155eddeb355f2a53a9f019a447214e1a9600"
+  },
+  {
+    "path": "receipts/web-body-node24-source-first-20261015-candidate.json",
+    "bytes": 1306560,
+    "sha256": "de79d4b4703be3a1e7d56c1a7af5cdbee3ae8da7d3b2499060f4a2b0efb59f61"
+  },
+  {
+    "path": "receipts/web-body-node24-source-first-20261015-controls.json",
+    "bytes": 1047,
+    "sha256": "8db1c08c6596991babfb27ed87e29ab0db5625159c9c7f88d218e6a024581d65"
+  },
+  {
+    "path": "receipts/web-body-node24-source-first-20261015-frozen.json",
+    "bytes": 1361,
+    "sha256": "006926b1f3f970fc2213601600f9fa45f58e9f01cdd031e5f80c61b3dae6b98c"
+  },
+  {
+    "path": "receipts/web-body-node24-source-first-20261015-node-builtin-authorities.json",
+    "bytes": 9294918,
+    "sha256": "0cd86676bb2a46a4e772d1fd8bb3d00fca658383bc388846dcc796547dc79263"
+  },
+  {
+    "path": "receipts/web-body-node24-source-first-20261015-output.json",
+    "bytes": 125019,
+    "sha256": "7518fdcd2401e2c6d8111e3327b6a6d01b85d06f9e95128bd4c62a04cf295ed5"
+  },
+  {
+    "path": "receipts/web-body-node24-source-first-20261015.json",
+    "bytes": 1312,
+    "sha256": "3df1cff383291827151ba7ef4139d57bfdb2fa2718402c783c18399fd6356d38"
+  },
+  {
+    "path": "receipts/web-body-node24-source-first-20261015.stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "receipts/web-body-node24-source-first-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

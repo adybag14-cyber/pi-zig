@@ -1,0 +1,486 @@
+{
+  "authority": "actual immutable ae7 auth/oauth/load.ts and helpers.ts; nine real dynamically imported Source flow modules",
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "cases": 18,
+  "rows": [
+    {
+      "case": "loader-export-metadata",
+      "functions": [
+        {
+          "key": "loadAnthropicOAuth",
+          "name": "loadAnthropicOAuth",
+          "length": 0,
+          "tag": "[object AsyncFunction]",
+          "constructible": false
+        },
+        {
+          "key": "loadOpenAICodexOAuth",
+          "name": "loadOpenAICodexOAuth",
+          "length": 0,
+          "tag": "[object AsyncFunction]",
+          "constructible": false
+        },
+        {
+          "key": "loadOpenAIChatGPTOAuth",
+          "name": "loadOpenAIChatGPTOAuth",
+          "length": 0,
+          "tag": "[object AsyncFunction]",
+          "constructible": false
+        },
+        {
+          "key": "loadGitHubCopilotOAuth",
+          "name": "loadGitHubCopilotOAuth",
+          "length": 0,
+          "tag": "[object AsyncFunction]",
+          "constructible": false
+        },
+        {
+          "key": "loadOpenRouterOAuth",
+          "name": "loadOpenRouterOAuth",
+          "length": 0,
+          "tag": "[object AsyncFunction]",
+          "constructible": false
+        },
+        {
+          "key": "loadKimiCodingOAuth",
+          "name": "loadKimiCodingOAuth",
+          "length": 0,
+          "tag": "[object AsyncFunction]",
+          "constructible": false
+        },
+        {
+          "key": "loadMetaOAuth",
+          "name": "loadMetaOAuth",
+          "length": 0,
+          "tag": "[object AsyncFunction]",
+          "constructible": false
+        },
+        {
+          "key": "loadXaiOAuth",
+          "name": "loadXaiOAuth",
+          "length": 0,
+          "tag": "[object AsyncFunction]",
+          "constructible": false
+        },
+        {
+          "key": "loadRadiusOAuth",
+          "name": "loadRadiusOAuth",
+          "length": 1,
+          "tag": "[object AsyncFunction]",
+          "constructible": false
+        },
+        {
+          "key": "registerBundledOAuthFlowLoaders",
+          "name": "registerBundledOAuthFlowLoaders",
+          "length": 1,
+          "tag": "[object Function]",
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "case": "loadAnthropicOAuth",
+      "same": true,
+      "shape": {
+        "keys": [
+          "name",
+          "isSubscription",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "name": "Anthropic (Claude Pro/Max)",
+        "isSubscription": true,
+        "loginLabel": null,
+        "methods": [
+          {
+            "key": "login",
+            "name": "login",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "refresh",
+            "name": "refresh",
+            "length": 2,
+            "tag": "[object Function]",
+            "constructible": false
+          },
+          {
+            "key": "toAuth",
+            "name": "toAuth",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          }
+        ]
+      }
+    },
+    {
+      "case": "loadOpenAICodexOAuth",
+      "same": true,
+      "shape": {
+        "keys": [
+          "name",
+          "isSubscription",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "name": "OpenAI (ChatGPT Plus/Pro)",
+        "isSubscription": true,
+        "loginLabel": null,
+        "methods": [
+          {
+            "key": "login",
+            "name": "login",
+            "length": 2,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "refresh",
+            "name": "refresh",
+            "length": 2,
+            "tag": "[object Function]",
+            "constructible": false
+          },
+          {
+            "key": "toAuth",
+            "name": "toAuth",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          }
+        ]
+      }
+    },
+    {
+      "case": "loadOpenAIChatGPTOAuth",
+      "same": true,
+      "shape": {
+        "keys": [
+          "name",
+          "isSubscription",
+          "loginLabel",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "name": "OpenAI (ChatGPT subscription)",
+        "isSubscription": true,
+        "loginLabel": "Sign in with ChatGPT",
+        "methods": [
+          {
+            "key": "login",
+            "name": "loginOpenAIChatGPT",
+            "length": 2,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "refresh",
+            "name": "refreshAccessToken",
+            "length": 2,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "toAuth",
+            "name": "toAuth",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          }
+        ]
+      }
+    },
+    {
+      "case": "loadGitHubCopilotOAuth",
+      "same": true,
+      "shape": {
+        "keys": [
+          "name",
+          "isSubscription",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "name": "GitHub Copilot",
+        "isSubscription": true,
+        "loginLabel": null,
+        "methods": [
+          {
+            "key": "login",
+            "name": "loginGitHubCopilot",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "refresh",
+            "name": "refresh",
+            "length": 2,
+            "tag": "[object Function]",
+            "constructible": false
+          },
+          {
+            "key": "toAuth",
+            "name": "toAuth",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          }
+        ]
+      }
+    },
+    {
+      "case": "loadOpenRouterOAuth",
+      "same": true,
+      "shape": {
+        "keys": [
+          "name",
+          "loginLabel",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "name": "OpenRouter OAuth",
+        "isSubscription": null,
+        "loginLabel": "Sign in with OpenRouter",
+        "methods": [
+          {
+            "key": "login",
+            "name": "loginOpenRouter",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "refresh",
+            "name": "refresh",
+            "length": 2,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "toAuth",
+            "name": "toAuth",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          }
+        ]
+      }
+    },
+    {
+      "case": "loadKimiCodingOAuth",
+      "same": true,
+      "shape": {
+        "keys": [
+          "name",
+          "isSubscription",
+          "loginLabel",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "name": "Kimi Code (subscription)",
+        "isSubscription": true,
+        "loginLabel": "Sign in with Kimi Code",
+        "methods": [
+          {
+            "key": "login",
+            "name": "loginKimiCoding",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "refresh",
+            "name": "refresh",
+            "length": 2,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "toAuth",
+            "name": "toAuth",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          }
+        ]
+      }
+    },
+    {
+      "case": "loadMetaOAuth",
+      "same": true,
+      "shape": {
+        "keys": [
+          "name",
+          "isSubscription",
+          "loginLabel",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "name": "Meta (Muse subscription)",
+        "isSubscription": true,
+        "loginLabel": "Sign in with Meta",
+        "methods": [
+          {
+            "key": "login",
+            "name": "loginMeta",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "refresh",
+            "name": "refresh",
+            "length": 2,
+            "tag": "[object Function]",
+            "constructible": false
+          },
+          {
+            "key": "toAuth",
+            "name": "toAuth",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          }
+        ]
+      }
+    },
+    {
+      "case": "loadXaiOAuth",
+      "same": true,
+      "shape": {
+        "keys": [
+          "name",
+          "isSubscription",
+          "loginLabel",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "name": "xAI (Grok/X subscription)",
+        "isSubscription": true,
+        "loginLabel": "Sign in with SuperGrok or X Premium",
+        "methods": [
+          {
+            "key": "login",
+            "name": "loginXai",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "refresh",
+            "name": "refresh",
+            "length": 2,
+            "tag": "[object Function]",
+            "constructible": false
+          },
+          {
+            "key": "toAuth",
+            "name": "toAuth",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          }
+        ]
+      }
+    },
+    {
+      "case": "radius-fresh-factory",
+      "fresh": true,
+      "shape": {
+        "keys": [
+          "name",
+          "login",
+          "refresh",
+          "toAuth"
+        ],
+        "name": "Owned Radius graph",
+        "isSubscription": null,
+        "loginLabel": null,
+        "methods": [
+          {
+            "key": "login",
+            "name": "login",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "refresh",
+            "name": "refresh",
+            "length": 2,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          },
+          {
+            "key": "toAuth",
+            "name": "toAuth",
+            "length": 1,
+            "tag": "[object AsyncFunction]",
+            "constructible": false
+          }
+        ]
+      },
+      "accessIdentity": true
+    },
+    {
+      "case": "bundled-receiver-and-getter",
+      "identity": true,
+      "trace": [
+        "get",
+        "receiver",
+        0,
+        "returned"
+      ]
+    },
+    {
+      "case": "bundled-getter-rejection",
+      "sync": false,
+      "sameReason": true
+    },
+    {
+      "case": "bundled-thenable",
+      "identity": true,
+      "count": 1
+    },
+    {
+      "case": "bundled-radius-options",
+      "identity": true,
+      "sameOptions": true,
+      "sameReceiver": true,
+      "args": 1
+    },
+    {
+      "case": "bundled-getter-not-cached",
+      "gets": 2
+    },
+    {
+      "case": "lazy-loader-coalesces",
+      "loads": 1,
+      "identity": true
+    },
+    {
+      "case": "default-module-restored",
+      "same": true,
+      "name": "Anthropic (Claude Pro/Max)"
+    },
+    {
+      "case": "missing-bundled-method",
+      "typeError": true
+    }
+  ]
+}
