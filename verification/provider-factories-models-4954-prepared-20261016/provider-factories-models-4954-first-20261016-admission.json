@@ -1,0 +1,11 @@
+{
+  "status": "admitted",
+  "source_only": true,
+  "observed_utc": "2026-10-15T23:35:15.9025949+00:00",
+  "slot": 3,
+  "deadline_seconds": 300,
+  "heap_mb": 256,
+  "free_kib": 18936528,
+  "fixture_deadline_seconds": 10,
+  "required_kib": 2097152
+}

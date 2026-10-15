@@ -1,0 +1,19 @@
+{
+  "source_only": true,
+  "owned_pid": 68548,
+  "raw_function_text_count": 42,
+  "provider_factories": 42,
+  "row_errors": 0,
+  "status": "passed",
+  "source_package_version": "1.3.0",
+  "candidate_head": "f2c946315eb098e82447653b8fa9b432df1357e4",
+  "source_package_override_absent": true,
+  "observed_cases": 92,
+  "http_inputs": "owned fake callbacks only; no sockets or login flows",
+  "scope": "Actual Source observation only; provider/Models native compilation and semantic replay remain unrun",
+  "network_listeners_created": 0,
+  "owned_pid_absent": true,
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "api_constructors": 14,
+  "expected_sha256": "B120871154FA2D13AD4D176D4519FABDFC06592B8B49A729A2849B48F078D669"
+}

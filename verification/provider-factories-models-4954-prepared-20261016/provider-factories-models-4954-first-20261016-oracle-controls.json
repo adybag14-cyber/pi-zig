@@ -1,0 +1,82 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-provider-factories-models-20261015\\src\\extensions\\native_ai_provider_factories_fixture.mjs",
+    "sha256": "E135B9AC20DC64A251078C6532DDA9E65A4F462CF5565C58855EADECDCEF7CAC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-provider-factories-models-20261015\\verification\\provider-factories-models-4954-prepared-20261016\\run-source-qualified.ps1",
+    "sha256": "6050D14DBD9BEE13FB2A9EEB27A820B8AFF9ED028DFDF8F9E803D79427E801F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-provider-factories-models-20261015\\verification\\provider-factories-models-4954-prepared-20261016\\source-factory-inventory.json",
+    "sha256": "0220B44F637F8AFE0E415E81A6A259004DE8664FDFEB77388641FAB6DF422EEE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-provider-factories-models-20261015\\verification\\provider-factories-models-4954-prepared-20261016\\source-observer.mjs",
+    "sha256": "55686940FE32388274E3094E8C3EDE5AD073826D7B9DFC59855AC5D37357FD30"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-codex-wire16-5ab-source16-first-20261015-candidate-posthash.json",
+    "sha256": "DAD992B78EB6F65EB125B5C1ED13F0BF1BAE7B1B5A77EE04A5420FCBB84D5463"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-codex-wire16-5ab-source16-first-20261015-owner-absence.json",
+    "sha256": "EF6E300202A61ACC6F6EE61EB9256F3988AA0C6294E71FD221A5ECAEF0C3D53C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-codex-wire16-5ab-source16-first-20261015-posthash.json",
+    "sha256": "D807C3CA55FB4D2D597A6BE1E5F58C686C428EA84FE1A4A306045AFE73F92051"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-codex-wire16-5ab-source16-first-20261015.json",
+    "sha256": "4D079AAE6C7FF45FDB371ADEC52E7904E84146DA43E3201D14E4B4537605F093"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-reference-controls-20261015.json",
+    "sha256": "A11A87511B15B6AEDF4FFC94EA541DE986FCCC4334BA9A47C2BED3ED0A5094D0"
+  },
+  {
+    "path": "C:/Program Files/nodejs/node.exe",
+    "sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\package.json",
+    "sha256": "83C3BB7619F590C213CC96A24216EB29A819A3EF6DC548607CC037ED276E8DC5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json",
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-full-manifest-20261015.json",
+    "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs",
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-preparation-readiness-20261015.json",
+    "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-runtime-manifest-20261015.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  }
+]
