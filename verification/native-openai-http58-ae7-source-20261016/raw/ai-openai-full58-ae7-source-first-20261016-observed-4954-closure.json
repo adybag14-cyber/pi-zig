@@ -1,0 +1,221 @@
+{
+  "status": "observed_source_bytes_equal",
+  "executed": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "compared": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "observed_records": 184,
+  "source_modules": 35,
+  "differences": [],
+  "rows": [
+    {
+      "relative": "packages\\ai\\src\\api\\constrained-sampling.ts",
+      "observed_sha256": "f795db4afbbdf2918b346a7f260841ca477c29b26bcdb1084e039697a715a22a",
+      "latest4954_sha256": "F795DB4AFBBDF2918B346A7F260841CA477C29B26BCDB1084E039697A715A22A",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\api\\github-copilot-headers.ts",
+      "observed_sha256": "32d154965223d746140957ca6754f69955f1c631ed5e8445dcf2be11bb4b5180",
+      "latest4954_sha256": "32D154965223D746140957CA6754F69955F1C631ED5E8445DCF2BE11BB4B5180",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\api\\lazy.ts",
+      "observed_sha256": "1d38468b570b179dc404be7d13b737cb1d001bd96a0a9b3626d8c3f0bf9a49be",
+      "latest4954_sha256": "1D38468B570B179DC404BE7D13B737CB1D001BD96A0A9B3626D8C3F0BF9A49BE",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\api\\openai-completions.lazy.ts",
+      "observed_sha256": "a1defe07f6d7bd37de3933164cc88cfeb2d46cf390d0bbb52c85b280cc58d193",
+      "latest4954_sha256": "A1DEFE07F6D7BD37DE3933164CC88CFEB2D46CF390D0BBB52C85B280CC58D193",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\api\\openai-completions.ts",
+      "observed_sha256": "bddb09f395df6d5d29fbab4dd8039f89dea0c58f892dc4c15c73be74fe6e0b7d",
+      "latest4954_sha256": "BDDB09F395DF6D5D29FBAB4DD8039F89DEA0C58F892DC4C15C73BE74FE6E0B7D",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\api\\openai-prompt-cache.ts",
+      "observed_sha256": "78727b9b42d5c5cdc47d17f44d532cdf951cbee3b158cacfb3e640d8f792e8a4",
+      "latest4954_sha256": "78727B9B42D5C5CDC47D17F44D532CDF951CBEE3B158CACFB3E640D8F792E8A4",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\api\\simple-options.ts",
+      "observed_sha256": "f68b3e13a55a72214243b37eb85fa0532b67cfb22ac80ea3434eb5d26ae36616",
+      "latest4954_sha256": "F68B3E13A55A72214243B37EB85FA0532B67CFB22AC80EA3434EB5D26AE36616",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\api\\transform-messages.ts",
+      "observed_sha256": "1afe70d8ab9ac24fcfc7ee46bf002b24f9557396ffe3c61e44d3e35c692e27f4",
+      "latest4954_sha256": "1AFE70D8AB9AC24FCFC7EE46BF002B24F9557396FFE3C61E44D3E35C692E27F4",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\auth\\context.ts",
+      "observed_sha256": "03101bfa711fad214af111e25328b6f607d6b0a7ebfe289af58a89cd55baf639",
+      "latest4954_sha256": "03101BFA711FAD214AF111E25328B6F607D6B0A7EBFE289AF58A89CD55BAF639",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\auth\\credential-store.ts",
+      "observed_sha256": "50ebde56b80b5862025e031719006ea303edd9aa80fec780fbc64319bb9e2847",
+      "latest4954_sha256": "50EBDE56B80B5862025E031719006EA303EDD9AA80FEC780FBC64319BB9E2847",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\auth\\helpers.ts",
+      "observed_sha256": "37b4c7f8048f09a54363607fa91bb1c265ddfe0790067de3c3220c1f06485b90",
+      "latest4954_sha256": "37B4C7F8048F09A54363607FA91BB1C265DDFE0790067DE3C3220C1F06485B90",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\auth\\oauth\\load.ts",
+      "observed_sha256": "8417cf2dea16b38f94ccb6c21ae1c4e6b4104370093c32b8dfe77747763b3f9c",
+      "latest4954_sha256": "8417CF2DEA16B38F94CCB6C21AE1C4E6B4104370093C32B8DFE77747763B3F9C",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\auth\\resolve.ts",
+      "observed_sha256": "b64d4b13ccdb3e8d056ec4849190aa68f002988ee0417317151d59d8668502ec",
+      "latest4954_sha256": "B64D4B13CCDB3E8D056EC4849190AA68F002988EE0417317151D59D8668502EC",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\model-catalog.ts",
+      "observed_sha256": "567b559600439eac5e6c341658bb45b149c5e8a22e34624a54ad5a06f5a92885",
+      "latest4954_sha256": "567B559600439EAC5E6C341658BB45B149C5E8A22E34624A54AD5A06F5A92885",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\models-store.ts",
+      "observed_sha256": "34ee433ca1501e98d19f31e0e5adf8d1721902e9f35e46c270626e32d7f711cc",
+      "latest4954_sha256": "34EE433CA1501E98D19F31E0E5ADF8D1721902E9F35E46C270626E32D7F711CC",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\models.ts",
+      "observed_sha256": "c10385291e4e79dc3ea5301629288a35cac354f8a3635c07f9312608c269f573",
+      "latest4954_sha256": "C10385291E4E79DC3EA5301629288A35CAC354F8A3635C07F9312608C269F573",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\providers\\data\\kimi-coding.json",
+      "observed_sha256": "728d5ddb63ef52130552022d5ae2fd138fdc131ff854ac8c3b10ccaad355ab39",
+      "latest4954_sha256": "728D5DDB63EF52130552022D5AE2FD138FDC131FF854AC8C3B10CCAAD355AB39",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\providers\\kimi-coding.models.ts",
+      "observed_sha256": "36399a9a92489a33d1a802161a12a18a307933c9987e5367236c2623f4ecb7cc",
+      "latest4954_sha256": "36399A9A92489A33D1A802161A12A18A307933C9987E5367236C2623F4ECB7CC",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\providers\\kimi-coding.ts",
+      "observed_sha256": "7b74ceaa07c4b90fbafccaeff5085bc6493bce28a04097540a3589f23cbc14bd",
+      "latest4954_sha256": "7B74CEAA07C4B90FBAFCCAEFF5085BC6493BCE28A04097540A3589F23CBC14BD",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\abort.ts",
+      "observed_sha256": "e81dc16de331e82d7f15759b27e38c7d0a3d28955693e0cf157dd52dadea7035",
+      "latest4954_sha256": "E81DC16DE331E82D7F15759B27E38C7D0A3D28955693E0CF157DD52DADEA7035",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\diagnostics.ts",
+      "observed_sha256": "06fcbc2347f65a43938078094a7118036b5f12e73147affb5c73cd72753443f0",
+      "latest4954_sha256": "06FCBC2347F65A43938078094A7118036B5F12E73147AFFB5C73CD72753443F0",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\error-body.ts",
+      "observed_sha256": "7170181ae6926709fe4ab7ac6b5b51c46ffe906868a7aac3c7627cb28ad77c09",
+      "latest4954_sha256": "7170181AE6926709FE4AB7AC6B5B51C46FFE906868A7AAC3C7627CB28AD77C09",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\estimate.ts",
+      "observed_sha256": "b1fb184f293167b9f270567a09bf43e296ff7dd809e26fa4bc5c1f968946eaed",
+      "latest4954_sha256": "B1FB184F293167B9F270567A09BF43E296FF7DD809E26FA4BC5C1F968946EAED",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\event-stream.ts",
+      "observed_sha256": "9fd5e33a8e295d88b5911af71d7afbfd437c9620288808d18331f16811e24dac",
+      "latest4954_sha256": "9FD5E33A8E295D88B5911AF71D7AFBFD437C9620288808D18331F16811E24DAC",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\hash.ts",
+      "observed_sha256": "2cdfce4af41810d1a92c7f0a55c78637a3173041038aafd85b378be345761ed8",
+      "latest4954_sha256": "2CDFCE4AF41810D1A92C7F0A55C78637A3173041038AAFD85B378BE345761ED8",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\headers.ts",
+      "observed_sha256": "423ded49de35ee755f62229ccd64bed6448739c78c6111226ff8e4a201cf9732",
+      "latest4954_sha256": "423DED49DE35EE755F62229CCD64BED6448739C78C6111226FF8E4A201CF9732",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\json-parse.ts",
+      "observed_sha256": "b101d288394a45498a50e06966c753ffb55a2b4900bec24ecbecafb7c17591bd",
+      "latest4954_sha256": "B101D288394A45498A50E06966C753FFB55A2B4900BEC24ECBECAFB7C17591BD",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\model-operations.ts",
+      "observed_sha256": "d8a7bb663ad3b97253f03b424c6d9e821ed066c8c0449aa00e1f06b75f41115b",
+      "latest4954_sha256": "D8A7BB663AD3B97253F03B424C6D9E821ED066C8C0449AA00E1F06B75F41115B",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\models-error.ts",
+      "observed_sha256": "f35f82bd86123be7ef05e86036f18e8d3d5df14f394f558b22c38b23d122c12c",
+      "latest4954_sha256": "F35F82BD86123BE7EF05E86036F18E8D3D5DF14F394F558B22C38B23D122C12C",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\pi-user-agent.ts",
+      "observed_sha256": "c60d2777f4362985b74f7d7cfadf35a47ae2c6f8b5cc0b809efbb4c546579b8e",
+      "latest4954_sha256": "C60D2777F4362985B74F7D7CFADF35A47AE2C6F8B5CC0B809EFBB4C546579B8E",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\provider-env.ts",
+      "observed_sha256": "3829251ae0674cef7ca09800cee9f46d4e305770129b72b822ea2f6f85efe675",
+      "latest4954_sha256": "3829251AE0674CEF7CA09800CEE9F46D4E305770129B72B822EA2F6F85EFE675",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\provider-retry.ts",
+      "observed_sha256": "91350009509d50845ff0c609bf98bd8818081b6fcc64d034e6d45522f41db9ab",
+      "latest4954_sha256": "91350009509D50845FF0C609BF98BD8818081B6FCC64D034E6D45522F41DB9AB",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\sanitize-unicode.ts",
+      "observed_sha256": "f8ef2c957f9f13a77df45ebf344f1b852dfe8f2e3d164d815127ea7290c12e22",
+      "latest4954_sha256": "F8EF2C957F9F13A77DF45EBF344F1B852DFE8F2E3D164D815127EA7290C12E22",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\text.ts",
+      "observed_sha256": "d37c1825855c7fc71669a545b5b266810242c1c7e58d57228c0c143f29c1c544",
+      "latest4954_sha256": "D37C1825855C7FC71669A545B5B266810242C1C7E58D57228C0C143F29C1C544",
+      "same": true
+    },
+    {
+      "relative": "packages\\ai\\src\\utils\\transcript.ts",
+      "observed_sha256": "e0814f35bdcc93b017fa45589a6920e46b5480b88fba01ef93e5d2d4e815f0f2",
+      "latest4954_sha256": "E0814F35BDCC93B017FA45589A6920E46B5480B88FBA01EF93E5D2D4E815F0F2",
+      "same": true
+    }
+  ],
+  "scope": "Actual imported Source module bytes only. Capture retains ae7 metadata and full1968 reference cohort; no latest namespace/catalog/version relabel."
+}

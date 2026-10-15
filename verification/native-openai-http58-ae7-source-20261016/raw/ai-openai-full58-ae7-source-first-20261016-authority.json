@@ -1,0 +1,10 @@
+{
+  "executed_source": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "compared_source": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "compared_paths": [
+    "packages/ai/src",
+    "packages/agent-core/src"
+  ],
+  "runtime_git_delta": [],
+  "scope": "Exact ae7 full1968 cohort retained; no newer package metadata relabel"
+}

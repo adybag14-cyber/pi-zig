@@ -1,0 +1,8 @@
+{
+  "status": "admitted",
+  "coordinated_with": "Root queued latest-ae7 Source58; explicit LIGHT grant required before invocation",
+  "required_kib": 2097152,
+  "observed_utc": "2026-10-15T23:29:04.4582867+00:00",
+  "free_kib": 18502052,
+  "heap_mb": 256
+}

@@ -1,0 +1,9 @@
+# Actual ae7 OpenAI HTTP58 Source capture
+
+This is a genuine original Source observation, not a native factory result. Node15420 passed58 cases plus6 deep partial-JSON cases and2 error-image cases, then all frozen inputs passed posthash at2026-10-15T23:29:45.6153759Z. Source1968, dependency31064, Node1774, compiler19546 and candidate6467 inventories were unchanged; preparation controls and84 absent dependency paths were retained. The output SHA256 is6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852. The matching immutable fixture was copied only after full posthash0.
+
+The unchanged CCDB driver executes the original openai-completions API, real Kimi provider factory, shared JSON helpers and error-image transform through pinned OpenAI SDK6.40.0 against a unique owned loopback server. It retains consumer event snapshots with only assistant clock values replaced by their original declared observation markers; clock field presence, ordering, live partial values, callback traces, original inputs, raw requests/URLs/methods/bodies/headers remain intact. No native expected result is authored here.
+
+The observed module log contains184 records. All35 imported Source files are byte-equal to their corresponding files in4954d760504c11df9b2cbdc040346107b6a8153d, independently of the empty tracked AI/agent runtime Git delta. This capture remains explicitly scoped to the executed ae7 head and its exact1968 reference cohort, without relabeling package metadata or latest catalog identities.
+
+This driver observes CONSUMER snapshots and provider/payload/response hooks. It does not instrument EventStream.push producer snapshots. A separate transparent original-push observation is needed for that additional boundary. Factory-native HTTP58, customfetch, all-provider parity, native async-function branding and full Pi remain unqualified. Historical b06/5ab captures and negatives are preserved independently.

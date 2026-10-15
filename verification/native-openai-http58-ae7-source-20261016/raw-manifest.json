@@ -1,0 +1,104 @@
+[
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-capture-20261015.mjs",
+    "file": "ai-openai-full58-ae7-source-capture-20261015.mjs",
+    "sha256": "CCDB1C489292414D5C935C12BD002184571E9A9B97CC7089C39752BA331B5C18",
+    "bytes": 14409
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016-admission.json",
+    "file": "ai-openai-full58-ae7-source-first-20261016-admission.json",
+    "sha256": "B1CFBA8F18FA927FC85CFC6B5155CAE6BBBB8C1317D3BF6EE751D3DE7B4B017C",
+    "bytes": 265
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016-authority.json",
+    "file": "ai-openai-full58-ae7-source-first-20261016-authority.json",
+    "sha256": "BCFC973EB75C1F28587624DA88E5638526E78443C5AE51BDBF988B0DED084111",
+    "bytes": 334
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016-candidate-before.json",
+    "file": "ai-openai-full58-ae7-source-first-20261016-candidate-before.json",
+    "sha256": "5B60CD48C6238CA0F9970191E62681FE526C1ED55B54DDA2130045CFA913510B",
+    "bytes": 1495928
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016-extra-before.json",
+    "file": "ai-openai-full58-ae7-source-first-20261016-extra-before.json",
+    "sha256": "C1525F08EED578F86A8A37DEBBC746182FABB01B98BAF19DCD2D7B19AC56CD66",
+    "bytes": 2465
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016-observed-4954-closure.json",
+    "file": "ai-openai-full58-ae7-source-first-20261016-observed-4954-closure.json",
+    "sha256": "ECF2C7F27C2AC916FB3E17100A135481B43AD56A6AFD7D1C5B6F5271DF7F79AF",
+    "bytes": 10516
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016-output.json",
+    "file": "ai-openai-full58-ae7-source-first-20261016-output.json",
+    "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852",
+    "bytes": 533979
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016-posthash.json",
+    "file": "ai-openai-full58-ae7-source-first-20261016-posthash.json",
+    "sha256": "5673F2D1F89C2A90BC019E839DB84DBABF4D66F2D105AC8ABB054FBEEFF74DB3",
+    "bytes": 837
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016-syntax-check.json",
+    "file": "ai-openai-full58-ae7-source-first-20261016-syntax-check.json",
+    "sha256": "BBC5B7DF345665461EA360314E672386E0D5EC5D7F2217B383112594D1DBFB45",
+    "bytes": 924
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016-syntax-check.stderr.log",
+    "file": "ai-openai-full58-ae7-source-first-20261016-syntax-check.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016-syntax-check.stdout.log",
+    "file": "ai-openai-full58-ae7-source-first-20261016-syntax-check.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016.json",
+    "file": "ai-openai-full58-ae7-source-first-20261016.json",
+    "sha256": "6641202BDAD3462CD83165E3735A63DE7D077360837AB44687D076902A1751F9",
+    "bytes": 1158
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016.stderr.log",
+    "file": "ai-openai-full58-ae7-source-first-20261016.stderr.log",
+    "sha256": "C50E3B44290C6E8FBAD23FAA3D3A1F01856E2B6102F17EBFDDD32506AD64AE9C",
+    "bytes": 259
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-ae7-source-first-20261016.stdout.log",
+    "file": "ai-openai-full58-ae7-source-first-20261016.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "file": "Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AIOpenAIFull58Ae7Source-20261016.ps1",
+    "file": "Run-AIOpenAIFull58Ae7Source-20261016.ps1",
+    "sha256": "A332CD88DCDD849D3720F41FED45D72B010EC328A0EEFE2D008FA260EE439820",
+    "bytes": 9874
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-modules-15420-0-20261015.jsonl",
+    "file": "sourceae7-modules-15420-0-20261015.jsonl",
+    "sha256": "E2299AFF3F3E10045D5FAE34A3E9A348443FD6F6FCDBF680988778D19531C541",
+    "bytes": 45152
+  }
+]

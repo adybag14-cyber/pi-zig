@@ -1,0 +1,40 @@
+{
+  "control_manifest_drift": false,
+  "extra_control_drift": [],
+  "historical_absence_records": 84,
+  "driver_sha256": "CCDB1C489292414D5C935C12BD002184571E9A9B97CC7089C39752BA331B5C18",
+  "completed_utc": "2026-10-15T23:29:45.6153759+00:00",
+  "manifests": [
+    {
+      "changed": [],
+      "drift": 0,
+      "name": "source",
+      "files": 1968
+    },
+    {
+      "changed": [],
+      "drift": 0,
+      "name": "dependencies",
+      "files": 31064
+    },
+    {
+      "changed": [],
+      "drift": 0,
+      "name": "node_tools",
+      "files": 1774
+    },
+    {
+      "changed": [],
+      "drift": 0,
+      "name": "compiler",
+      "files": 19546
+    },
+    {
+      "changed": [],
+      "drift": 0,
+      "name": "candidate",
+      "files": 6467
+    }
+  ],
+  "absent_dependency_drift": []
+}
