@@ -1,0 +1,13 @@
+const rows=[];const record=(name,run)=>{try{rows.push({name,value:run()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}};
+const words=[['',''],['a','b'],['foo bar baz','foo baz'],['foo baz','foo bar baz'],['foo bar baz','foo qux baz'],['foo\nbar baz','foo baz'],['foo   bar baz','foo  baz'],['  old word  ',' new word '],[' \t\n',' \n'],['','word'],['word',''],['Café déjà vu','Café encore vu'],['a\u00a0b','a b'],['emoji 😀 one','emoji 😎 two'],['漢字 中文','漢語 中間'],['one,two;three','one.two:three'],['a\r\nb','a\nb'],['repeat repeat one','repeat one repeat'],['soft\u00adhyphen','soft-hyphen'],['e\u0301 x','é y']];
+for(const [index,pair]of words.entries())record('actual diffWords '+index,()=>editDiffAPI.diffWords(...pair));
+const lines=[['',''],['a','b'],['a\n','a'],['a\r\nb\r\n','a\r\nc\r\n'],['\n\n','\n'],['a\nb\nc','a\nx\nc'],['same\n','same\nmore\n'],['before\nsame\n','same\n'],['x\ry','x\rz'],['😀\n漢字\n','😎\n漢字\n']];
+for(const[index,pair]of lines.entries())record('actual diffLines '+index,()=>editDiffAPI.diffLines(...pair));
+const long=Array.from({length:25},(_,i)=>'line '+i).join('\n');
+const displays=[['',''],['old\n','new\n'],['same\nold\nsame\n','same\nnew\nsame\n'],[long,long.replace('line 12','changed')],[long,long.replace('line 2','changed 2').replace('line 22','changed 22')],['one\nlast','one\nlast\n']];
+for(const[index,pair]of displays.entries())record('actual generateDiffString '+index,()=>editDiffAPI.generateDiffString(...pair));
+const renderInputs=['','-1 old word\n+1 new word',' 1 kept\n-2  old\tvalue\n+2  new\tvalue\n 3 kept','-1 first\n-2 second\n+1 third\n+2 fourth','+10 added only\n 11 context','malformed\tline\n     ...'];
+for(const[index,input]of renderInputs.entries())record('actual renderDiff '+index,()=>editDiffAPI.renderDiff(input));
+const edits=[['one two',[{oldText:'two',newText:'THREE'}]],['a\nb\nc\n',[{oldText:'a',newText:'A'},{oldText:'c',newText:'C'}]],['one “two”  \nkeep  \nlast',[{oldText:'"two"',newText:'"THREE"'}]],['a\nrepeat  \nrepeat\nlast',[{oldText:'a',newText:'A'}]],['abc',[{oldText:'abc',newText:'x'},{oldText:'bc',newText:'y'}]],['repeat repeat',[{oldText:'repeat',newText:'one'}]],['abc',[{oldText:'z',newText:'x'}]],['abc',[{oldText:'',newText:'x'}]],['abc',[{oldText:'abc',newText:'abc'}]],['A\nB\n',[{oldText:'A\r\nB',newText:'C\rD'}]],['fullwidth Ａ\nkeep  \n',[{oldText:'A',newText:'B'}]],['one two three',[{oldText:'one',newText:'ONE'},{oldText:'three',newText:'THREE'}]]];
+for(const[index,[content,operations]]of edits.entries())record('actual applyEdits '+index,()=>editDiffAPI.applyEditsToNormalizedContent(content,operations,'demo.txt'));
+if(rows.length!==54)throw Error('Actual EditDiff54 count '+rows.length);globalThis.sdkEditDiffRows=rows;
