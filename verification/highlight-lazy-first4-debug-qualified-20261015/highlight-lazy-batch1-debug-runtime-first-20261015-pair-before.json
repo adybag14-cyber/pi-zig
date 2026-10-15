@@ -1,0 +1,35 @@
+{
+  "artifacts": [
+    {
+      "bytes": 47531520,
+      "sha256": "339CC06236B5103E114DB0019645AFA96FBAEF6F880D1BF4D6DBC514652FB4CF",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch1-20261015\\.zig-cache\\o\\e13a7405be71233456190e932aedfa0f\\test.exe"
+    }
+  ],
+  "source_files": 5555,
+  "runtime": "highlight-lazy-batch1-debug-runtime-first-20261015",
+  "observed_utc": "2026-10-15T19:33:47.0882700+00:00",
+  "compile": "highlight-lazy-batch1-debug-compile-first-20261015",
+  "controls": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-HighlightLazyBatch1MatchingRuntime-20261015.ps1",
+      "sha256": "38092A37B0BE61E24594B6344CB5EB6C85945B1F33DE2BF91BFF51BC948C639B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-HighlightLazyBatch1Native-20261015.ps1",
+      "sha256": "AE1787A65129317BF12E9926CE91C292F4DAEBB32ABCCB318CD0E3ACA3CB2916"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-lazy-batch1-debug-compile-first-20261015.json",
+      "sha256": "D02209E1C275EA1D43DE4C53D312E2CADCF7355426F116096830155E2C8A2BC2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-lazy-batch1-debug-compile-first-20261015-posthash.json",
+      "sha256": "32D53724A5DC4FC6D0F7F068309564A9C2F5108A5F68CF50FF0DB071F8FD32BA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-lazy-batch1-debug-compile-first-20261015-source-before.json",
+      "sha256": "5C9D98CB7E48854C536D56D4B697FE128829CBD126CEC6EB1E2BEDB535491B3A"
+    }
+  ]
+}

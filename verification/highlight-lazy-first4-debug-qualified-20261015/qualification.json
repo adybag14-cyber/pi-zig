@@ -1,0 +1,23 @@
+{
+  "source_head": "fed244fe58017fa539f999d1abb661875c5b0bd1",
+  "control_drift": 0,
+  "exhaustive_gpa": "unrun",
+  "artifact_drift": 0,
+  "zig_tools_drift": 0,
+  "qualified_factories": [
+    "dockerfile",
+    "makefile",
+    "protobuf",
+    "ini"
+  ],
+  "complete191": "unqualified",
+  "full_pi": false,
+  "debug_runtime": "passed",
+  "source_drift": 0,
+  "debug_compile": "passed",
+  "public_activation": false,
+  "computational_baseline": "733800b8b872d86c5766dc4a30cf44ae8d373254",
+  "genuine_source_sha256": "17d9117f4f5f94de6fd2a25c9c2cf162d5cae40fd656fb35802021ba88b00cd3",
+  "genuine_source_rows": 29,
+  "release_safe": "unrun"
+}

@@ -1,0 +1,12 @@
+{
+  "observed_utc": "2026-10-15T19:34:00.9650902+00:00",
+  "max_coordinated_jobs": 4,
+  "jobs": 1,
+  "required_kib": 16777216,
+  "test_timeout_seconds": 120,
+  "baseline": "733800b8b872d86c5766dc4a30cf44ae8d373254",
+  "host_await_timeout_seconds": 10,
+  "free_kib": 23457940,
+  "cases": 29,
+  "status": "admitted"
+}
