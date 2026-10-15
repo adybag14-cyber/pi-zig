@@ -1,0 +1,30 @@
+{
+  "archive_sha256": "155DF89C7AAB8FCF8C6DDB2A8369ACE5E3BE33D710076CBC38A5305BF0B72821",
+  "status": "opaque_historical_bytes_preserved",
+  "captured_ledger_or_golden_rewritten": false,
+  "new_root_base": "7d2dc008e80655c0bbf51f8bb245b6daf2ac818c",
+  "original_source_proof": "0a0ae5c0e5c51724dafdd024f2a567ac09c0697a",
+  "runtime_python_dependency": false,
+  "mapping": [
+    {
+      "original": "freeze-inputs.py",
+      "sha256": "9FDBB1F41007EADF245AA6A8C35A6502DA544A2CA40FCE0DFA1328279580D2ED",
+      "opaque": "freeze-inputs.py.txt"
+    },
+    {
+      "original": "Verify-SourceProof.py",
+      "sha256": "8530DF2A22559C41940F05C0DCA9689B07FB1F1DA838D8B61B5E67A896CDD729",
+      "opaque": "Verify-SourceProof.py.txt"
+    },
+    {
+      "original": "independent-source-audit.py",
+      "sha256": "CFF2BD6B5FA9F92457177FDE43B4E07F7E9E0424E5B8F404792371D98E216E25",
+      "opaque": "independent-source-audit.py.txt"
+    },
+    {
+      "original": "run-source.ps1",
+      "sha256": "092B9E7D5E1922B9BF5D714608A8BC80A6A20CA18A3D8D22C46CDACA27C0928E",
+      "opaque": "run-source.ps1.txt"
+    }
+  ]
+}

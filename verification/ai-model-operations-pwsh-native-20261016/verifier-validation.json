@@ -1,0 +1,17 @@
+{
+  "altered_archive_rejected": true,
+  "native_job_launched": false,
+  "node_or_zig_required": false,
+  "detached_verifier": {
+    "status": "passed",
+    "verifier": "PowerShell7/.NET only",
+    "source_cases": 88,
+    "archive_entries": 55,
+    "payloads": 54,
+    "original_archive_unchanged": true,
+    "python_executed": false,
+    "native_qualification_claimed": false
+  },
+  "status": "passed",
+  "python_used": false
+}
