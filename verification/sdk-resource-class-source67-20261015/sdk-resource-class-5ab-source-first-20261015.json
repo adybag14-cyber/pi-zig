@@ -1,0 +1,16 @@
+{
+  "name": "sdk-resource-class-5ab-source-first-20261015",
+  "pid": 47584,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source5ab-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-sdk-resource-class-20261015\\tools\\oracles\\sdk-resource-class-source-5ab.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-5ab-source-first-20261015-output.json C:\\Users\\adyba\\pi-zig-sdk-resource-class-20261015\\src\\extensions\\fixtures\\sdk-resource-class-5ab.input.txt C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-first-d671af8f749644718226932ecdc97d66",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T19:47:00.5036418Z",
+  "launched_utc": "2026-10-15T19:47:00.5007585+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015",
+  "status": "failed",
+  "exit_code": 1,
+  "completed_utc": "2026-10-15T19:47:30.2577376+00:00"
+}

@@ -1,0 +1,158 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-resource-class-20261015\\src\\extensions\\fixtures\\sdk-resource-class-5ab.files.json",
+    "sha256": "11A7FBCA515A8473AA855D862056FAAA5701E9BFE35FE2E97BACA7C9C0AB2BED"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-resource-class-20261015\\src\\extensions\\fixtures\\sdk-resource-class-5ab.input.txt",
+    "sha256": "6A1AD5CC594DD678B726BB79DA57D108B02475D718C91D286649D19AD8EF521F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-resource-class-20261015\\src\\extensions\\fixtures\\sdk-resource-paths-dark-5ab.json",
+    "sha256": "E1F96982F8CB7D2A48ECA7DB03C9CB282CB1E14A243680CD855638ECD6A251B6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-resource-class-20261015\\tools\\oracles\\Invoke-SDKResourceClass5abSource.ps1",
+    "sha256": "35CE55554E73DACEC55672C3B201CD3AAEFDE34982B38B5AF54BAE5F816AE604"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-resource-class-20261015\\tools\\oracles\\sdk-resource-class-source-5ab.mjs",
+    "sha256": "970FDB1F1CDF6E94D28A566B2807EE82EFB5A31A2EDFE352D4E67B6F6ACE93A9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\agent\\AGENTS.md",
+    "sha256": "6C390BE26AC23B3A9D1B4CDC081427557B36A9EDDF4069E5264ADD98862F89F7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\agent\\APPEND_SYSTEM.md",
+    "sha256": "0FCBB81C12548A5E15EDC7311C26475D2BCD7C7FBDA0C3614FB0BDB5A864CCD7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\agent\\extensions\\user.js",
+    "sha256": "FAF1EB77ACF223C5EA0A83D9CBB07AC216635F0C1D062B4482813C4D56D0077F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\agent\\prompts\\greet.md",
+    "sha256": "85370035D088080296ED5E6C16672F1C7F300890F8A02B532761FC7511210A5F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\agent\\skills\\shared\\SKILL.md",
+    "sha256": "C636A42A4B115D742A17974FFF5B48DA31B5D8C49C88EE1965AF1B0D9933521F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\agent\\SYSTEM.md",
+    "sha256": "6206B303C1B430ABADF34F4E328A577D70EA0C5350A44D257024D8848DC18D30"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\agent\\themes\\user.json",
+    "sha256": "319C187CBBF9E2E9B7984DB3ADF34DFDF865E999DE2AAFAC33B06875350D19F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\extra\\SKILL.md",
+    "sha256": "EFDD510541EC5EABDD9B877AE5C757A18D689A76AFB47D027299994309433019"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\extra\\theme.json",
+    "sha256": "A4B8A21B3390752464D1ACEDB16827FBE4F74C5855F7FB7550781DA208567679"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\pkg-temporary\\package.json",
+    "sha256": "DC63EDD5D1C2635CDA38A68B1201ADFC34AD554140AE203BD7DA717A2F0B4947"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\pkg-temporary\\prompts\\temporary.md",
+    "sha256": "9BCF1E02DBC276EB0A8A296B68BD859B1B752E9190F9AC7FEB67901A27A06329"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\pkg-temporary\\skills\\temporary\\SKILL.md",
+    "sha256": "66950E53F79F6D31C9A650C35290E05F476F68F5ECA838EB27D5E458B7B88CAB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\pkg-user\\extensions\\packaged.js",
+    "sha256": "E0E6E7BCCE22C5F8939A1B30FF9EBB0DC8C8544D5D251C3E4B396942743753A7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\pkg-user\\package.json",
+    "sha256": "CB1F37CDE2DD5C5813C78B838803147D8F25ECB6C6EF2D2304D0502118DDC9F7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\pkg-user\\prompts\\package.md",
+    "sha256": "4B8CC7FA48AE3041A70F9FEC758ABAB2B5959159845EE35C06BC655E50528502"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\pkg-user\\skills\\packaged\\SKILL.md",
+    "sha256": "314B9FD0A0C65C451DFFD5805CD2BED714D310B07B9618A35BE86B416EA9E616"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\project\\.pi\\APPEND_SYSTEM.md",
+    "sha256": "81CFDBDBC1D342B31CB53242B896BCA184D5968C07DB4C966B8DE9E9E72F9ABB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\project\\.pi\\extensions\\project.js",
+    "sha256": "9193B8A8D60A9B539E084044CB13B0FB7776C4D3622A020238015CC79C0B5AD7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\project\\.pi\\prompts\\review.md",
+    "sha256": "744D9327BC6D77215BA44375F1820B033C0DA31BB4E57D6D14A022CE5478899B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\project\\.pi\\skills\\shared\\SKILL.md",
+    "sha256": "321571129126927F16807F9B023C89C1BA1607595C1A51FE4AEF9A9CA4807290"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\project\\.pi\\SYSTEM.md",
+    "sha256": "CDFB8ABA533E2A4517C1CA22EABC0A721BE0FF0FEC3361325E6A76F9F829D66D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\project\\.pi\\themes\\project.json",
+    "sha256": "FED0FD849CA2431B1F7A62989CEED7F9465852CAED113BD5150B5DF61C6B544B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\project\\AGENTS.md",
+    "sha256": "95C8DECC1EB99B9A716AA3EAC251505898E029C3969922D4CB148FF51141AD16"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\project\\AGENTS.override.md",
+    "sha256": "E243A1F091CB376ADCAB1C54C66889F51CA2A6114A4C636EDBAC5D45EEC6C282"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\project\\pkg-project\\package.json",
+    "sha256": "148DEDEE0A753BA328E0D3C6626A9490EC58264FB98C66D62E6262EC744A9995"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\project\\pkg-project\\prompts\\package.md",
+    "sha256": "AB30A369FCEA4DB6D0207B6E4339577F707BD012BE0C283F42D8176C9459406D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\project\\pkg-project\\skills\\packaged\\SKILL.md",
+    "sha256": "2519B87EFCE11AD424A665F88F1603DCA92342BDF1B14DEBF2C8FB9DF2E04040"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e\\shared\\custom.md",
+    "sha256": "0F49152EB0A6FD3814DCB10578A48446F5CF1B163E839F7005B8298E96175037"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-observe-20261015.mjs",
+    "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017"
+  }
+]

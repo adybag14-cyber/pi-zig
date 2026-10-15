@@ -1,0 +1,32 @@
+{
+  "manifests": [
+    {
+      "name": "source",
+      "drift": 0,
+      "changed": [],
+      "files": 1967
+    },
+    {
+      "name": "dependencies",
+      "drift": 0,
+      "changed": [],
+      "files": 31064
+    },
+    {
+      "name": "node_tools",
+      "drift": 0,
+      "changed": [],
+      "files": 1774
+    }
+  ],
+  "completed_utc": "2026-10-15T19:52:59.9921640+00:00",
+  "absent_drift": [],
+  "control_files": 39,
+  "historical_absences": 84,
+  "fixture_files": 28,
+  "ambient_absences": 39,
+  "ambient_tree_drift": [],
+  "control_manifest_drift": false,
+  "control_drift": [],
+  "fixture_root": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e"
+}
