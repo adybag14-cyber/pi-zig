@@ -58,9 +58,12 @@ wrapper errors, async dispatcher errors, unbound implementation calls, method
 receivers, strict API matching and explicit built-in restoration. Registration
 uses the actual provided image implementation. Static legacy image catalog
 queries and shared catalog object identities belong to the central Models
-assembler. Source lazy-module loading and its public adapter still need their
-separate native implementation; direct registration does not qualify those
-boundaries.
+assembler. The public `generateImagesOpenRouter` adapter now lazily materializes
+the actual native C-backed provider module, caches its module promise, awaits the
+operation and applies the original lazy-load fallback shape. It does not load
+repository JavaScript. Original JavaScript module-loader scheduling and native
+module allocation failures remain distinct runtime boundaries; no cross-runtime
+import timing or OOM equivalence is claimed.
 
 The independent shared body collector is a further source-only checkpoint. Its
 explicit native budget and pending large-body qualification are described in

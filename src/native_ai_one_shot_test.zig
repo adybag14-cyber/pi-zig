@@ -18,7 +18,9 @@ fn install(engine: *em.Engine) !void {
     inline for (.{ "typesafe", "cloudflare", "decisions" }) |name| try scope.put(apis, name, try scope.own(try @import("extensions/native_ai_classifier_factory.zig").create(engine, @field(@import("extensions/native_ai_classifier_factory.zig").Kind, name))));
     try scope.put(apis, "llama", try scope.own(try @import("extensions/native_ai_llama_classifier_factory.zig").create(engine)));
     try scope.put(apis, "shared", try scope.own(try @import("extensions/native_ai_classifier_shared.zig").create(engine)));
-    const registry = try scope.own(try @import("extensions/native_ai_images_registry.zig").create(engine, try scope.get(try scope.get(apis, "image"), "generateImages")));
+    const builtins = try scope.own(try @import("extensions/native_ai_images_builtins.zig").create(engine));
+    const registry = try scope.own(try @import("extensions/native_ai_images_registry.zig").create(engine, try scope.get(builtins, "generateImagesOpenRouter")));
+    try scope.put(registry, "generateImagesOpenRouter", try scope.get(builtins, "generateImagesOpenRouter"));
     _ = try scope.invoke(registry, "registerBuiltInImagesApiProviders", &.{});
     try scope.put(try scope.own(c.JS_GetGlobalObject(engine.context)), "imageRegistryAPI", registry);
     try scope.put(try scope.own(c.JS_GetGlobalObject(engine.context)), "oneShotAPIs", apis);
