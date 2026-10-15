@@ -109,6 +109,8 @@ pub const Engine = struct {
     native_sdk_resource_retire_pending: ?*anyopaque = null,
     native_sdk_resource_owner_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_sdk_resource_owner_deinit: ?*const fn (*Engine) void = null,
+    native_sdk_resource_runtime_owners: ?*anyopaque = null,
+    native_sdk_resource_runtime_owners_deinit: ?*const fn (*Engine) void = null,
     native_sdk_next_runtime_id: u64 = 1,
     native_durable_harness_class: c.JSClassID = 0,
     native_durable_submission_class: c.JSClassID = 0,
@@ -303,6 +305,7 @@ pub const Engine = struct {
         while (values.next()) |value| self.freeValue(value.*);
         self.native_module_values.deinit(self.gpa);
         if (self.native_sdk_model_bridge_registry) |value| self.freeValue(value);
+        if (self.native_sdk_resource_runtime_owners_deinit) |cleanup| cleanup(self);
         if (self.native_tool_validator_cache) |cache| self.freeValue(cache);
         if (self.native_tool_legacy_symbol) |symbol| self.freeValue(symbol);
         for (self.native_tool_parameter_constants) |value| if (value) |constant| self.freeValue(constant);

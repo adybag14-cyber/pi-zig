@@ -35,18 +35,26 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVal
     const engine = em.Engine.fromContext(context.?);
     return observed(engine, @enumFromInt(magic), if (argc > 0) argv[0..@intCast(argc)] else &.{}, roots) catch |err| sdk.fail(engine, err);
 }
-fn function(scope: *Scope, kind: Callback, roots: []c.JSValue) !c.JSValue {
+fn callbackFunction(scope: *Scope, kind: Callback, roots: []c.JSValue) !c.JSValue {
     return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, callback, "", if (kind == .precedence) 2 else 1, @intFromEnum(kind), @intCast(roots.len), roots.ptr)));
 }
-fn pair(scope: *Scope, value: c.JSValue) ![2]c.JSValue {
+fn entry(scope: *Scope, value: c.JSValue) !c.JSValue {
     const symbol = try scope.own(try scope.engine.checked(JS_GetIteratorSymbol(scope.engine.context)));
     var it = try js.Iterator.init(scope.engine, value, symbol);
     defer it.deinit();
     errdefer it.closePreserving();
-    const first = if (try it.next()) |entry| try scope.own(entry) else c.pi_js_undefined();
-    const second = if (try it.next()) |entry| try scope.own(entry) else c.pi_js_undefined();
+    const first = if (try it.next()) |item| try scope.own(item) else c.pi_js_undefined();
+    const second = if (try it.next()) |item| try scope.own(item) else c.pi_js_undefined();
+    // The nested object binding executes before IteratorClose in Source's
+    // ([path, { metadata, enabled }]) callback parameter.
+    const metadata = try scope.get(second, "metadata");
+    const enabled = try scope.get(second, "enabled");
     try it.close();
-    return .{ first, second };
+    const result = try scope.object();
+    try scope.put(result, "path", first);
+    try scope.put(result, "enabled", enabled);
+    try scope.put(result, "metadata", metadata);
+    return result;
 }
 fn rank(scope: *Scope, metadata: c.JSValue) !i32 {
     if (scope.equal(try scope.get(metadata, "source"), try scope.text("builtin"))) return 5;
@@ -69,14 +77,7 @@ fn observed(engine: *em.Engine, kind: Callback, args: []const c.JSValue, roots: 
     defer scope.deinit();
     switch (kind) {
         .entry => {
-            const selected = try pair(&scope, arg(args, 0));
-            const metadata = try scope.get(selected[1], "metadata");
-            const enabled = try scope.get(selected[1], "enabled");
-            const row = try scope.object();
-            try scope.put(row, "path", selected[0]);
-            try scope.put(row, "enabled", enabled);
-            try scope.put(row, "metadata", metadata);
-            return c.JS_DupValue(engine.context, row);
+            return c.JS_DupValue(engine.context, try entry(&scope, arg(args, 0)));
         },
         .precedence => {
             const left = try rank(&scope, try scope.get(arg(args, 0), "metadata"));
@@ -96,13 +97,13 @@ fn resolved(scope: *Scope, entries: c.JSValue, realpath_function: c.JSValue) !c.
     const from = try scope.get(array_constructor, "from");
     const all = try scope.call(from, array_constructor, &.{try scope.invoke(entries, "entries", &.{})});
     const map = try scope.get(all, "map");
-    const mapped = try scope.call(map, all, &.{try function(scope, .entry, &.{})});
+    const mapped = try scope.call(map, all, &.{try callbackFunction(scope, .entry, &.{})});
     const sort = try scope.get(mapped, "sort");
-    _ = try scope.call(sort, mapped, &.{try function(scope, .precedence, &.{})});
+    _ = try scope.call(sort, mapped, &.{try callbackFunction(scope, .precedence, &.{})});
     const seen = try scope.own(try js.builtin(scope.engine, "Set", &.{}));
     const filter = try scope.get(mapped, "filter");
     var roots = [_]c.JSValue{ seen, realpath_function };
-    return scope.call(filter, mapped, &.{try function(scope, .canonical, &roots)});
+    return scope.call(filter, mapped, &.{try callbackFunction(scope, .canonical, &roots)});
 }
 fn method(engine: *em.Engine, kind: Method, args: []const c.JSValue, realpath_function: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };

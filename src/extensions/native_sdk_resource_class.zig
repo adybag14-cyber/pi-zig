@@ -16,7 +16,12 @@ const Getter = enum(c_int) { getExtensions, getSkills, getPrompts, getThemes, ge
 const Predicate = enum(c_int) { inline_factory, builtin_factory, builtin_pair, source_path };
 pub fn constructor(engine: *em.Engine, prototype: c.JSValue, settings_manager: c.JSValue, package_manager: c.JSValue) !c.JSValue {
     if (!c.JS_IsConstructor(engine.context, settings_manager) or !c.JS_IsConstructor(engine.context, package_manager)) return error.RequiredActualNativeResourceLoaderDependencies;
-    return @import("native_class.zig").constructor(engine, "DefaultResourceLoader", 1, prototype, construct, &.{ settings_manager, package_manager });
+    const is_builtin = try @import("native_node_function.zig").create(engine, "isBuiltinExtension", 1, builtinPredicate, &.{});
+    defer engine.freeValue(is_builtin);
+    return @import("native_class.zig").constructor(engine, "DefaultResourceLoader", 1, prototype, construct, &.{ settings_manager, package_manager, is_builtin });
+}
+fn builtinPredicate(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    return mapped(engine, .builtin_factory, if (args.len > 0) args[0] else c.pi_js_undefined());
 }
 pub fn installGetters(engine: *em.Engine, prototype: c.JSValue) !void {
     inline for (std.meta.fields(Getter)) |field| {
@@ -78,7 +83,10 @@ fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, dep
     const factories = if (temp.nullish(supplied_factories)) try scope.array() else supplied_factories;
     try scope.set(loader, "extensionFactories", try collection(&scope, factories, "filter", .inline_factory));
     const map_constructor = try scope.global("Map");
-    const builtin_factories = try collection(&scope, factories, "filter", .builtin_factory);
+    // Source passes its imported named ordinary function directly. Keep one
+    // constructible function per class binding, including its prototype and
+    // stable identity across all constructor calls.
+    const builtin_factories = try scope.invoke(factories, "filter", &.{dependencies[2]});
     var map_args = [_]c.JSValue{try collection(&scope, builtin_factories, "map", .builtin_pair)};
     try scope.set(loader, "builtinExtensions", try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, map_constructor, map_args.len, &map_args))));
     const package_options = try scope.object();
@@ -105,7 +113,7 @@ fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, dep
     const extensions = try scope.object();
     try scope.put(extensions, "extensions", try scope.array());
     try scope.put(extensions, "errors", try scope.array());
-    try scope.put(extensions, "runtime", try scope.own(try @import("native_sdk_extension_runtime.zig").create(engine, c.pi_js_undefined())));
+    try scope.put(extensions, "runtime", try scope.own(try @import("native_sdk_resource_runtime_owners.zig").create(engine)));
     try scope.set(loader, "extensionsResult", extensions);
     inline for (.{ "skills", "skillDiagnostics", "prompts", "promptDiagnostics", "themes", "themeDiagnostics", "agentsFiles", "appendSystemPrompt", "appendSystemPromptSourcePaths", "lastSkillPaths" }) |name| try scope.set(loader, name, try scope.array());
     inline for (.{ "extensionSkillSourceInfos", "extensionPromptSourceInfos", "extensionThemeSourceInfos", "resourceMetadataByPath" }) |name| try scope.set(loader, name, try builtin(&scope, "Map", &.{}));

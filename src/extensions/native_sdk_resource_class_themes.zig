@@ -101,9 +101,9 @@ fn directoryBody(scope: *Scope, roots: [*c]c.JSValue, loader: c.JSValue, dir: c.
         }
         if (!is_file) continue;
         if (!scope.truthy(try scope.invoke(try scope.get(entry, "name"), "endsWith", &.{try scope.text(".json")}))) continue;
-        const load = try scope.get(loader, "loadThemeFromFile");
+        const load_function = try scope.get(loader, "loadThemeFromFile");
         const path = try imported(scope, roots, .join, &.{ dir, try scope.get(entry, "name") });
-        _ = try scope.call(load, loader, &.{ path, themes, diagnostics, mode });
+        _ = try scope.call(load_function, loader, &.{ path, themes, diagnostics, mode });
     }
 }
 fn directory(scope: *Scope, roots: [*c]c.JSValue, loader: c.JSValue, dir: c.JSValue, themes: c.JSValue, diagnostics: c.JSValue, mode: c.JSValue) !void {
