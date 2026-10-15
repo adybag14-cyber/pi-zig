@@ -1,0 +1,749 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "inputSha256": "a0a49d56460a13e8c228eef917cd07cf2944349ff6753991d445653820e0adfd",
+  "cases": 18,
+  "resourceFiles": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-paths-5ab-assets-SiRDRA\\alpha\\SKILL.md",
+      "sha256": "75264669d9c4cfe5aa62b6ce6a29971947661a3b7d967269c4807eb92ecca581"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-paths-5ab-assets-SiRDRA\\beta\\SKILL.md",
+      "sha256": "127e20f6ce57a6f0065d1b845a7042db45a00885255ff9a8f6739049b14cab18"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-paths-5ab-assets-SiRDRA\\collision\\SKILL.md",
+      "sha256": "44729827fa49e75818fe6e542faa7fc8ba4cba83a70a6c5dcc1c907eea9be006"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-paths-5ab-assets-SiRDRA\\prompts\\one.md",
+      "sha256": "82dffff98c97d573a938420c18d9c6aff31ddb02f2fed954478ff53fcb73f444"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-paths-5ab-assets-SiRDRA\\prompts\\two.md",
+      "sha256": "6da591f43a5aba619313640934b804d0144f8533d51cc04f0c58375d736ee173"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-paths-5ab-assets-SiRDRA\\themes\\bad.json",
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-paths-5ab-assets-SiRDRA\\themes\\one.json",
+      "sha256": "303f748bd0aca5f34ca17ddcb4aaf18e110e22411df777c3fbb274a04799cd96"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-paths-5ab-assets-SiRDRA\\themes\\two.json",
+      "sha256": "a856a8a691e72fa5da24fc0b7388fda67a89f677aae8d59a541070f5674b0f2a"
+    }
+  ],
+  "resourceFileDrift": 0,
+  "scope": "Actual DefaultResourceLoader extendResources and actual ExtensionRunner plus ordinary AgentSession.bindExtensions composition over real caller fixture files. Full factory, all parser cases and production transport remain separate gates.",
+  "rows": [
+    {
+      "case": "empty",
+      "value": {
+        "skills": {
+          "skills": [],
+          "diagnostics": []
+        },
+        "prompts": {
+          "prompts": [],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [],
+          "diagnostics": []
+        }
+      }
+    },
+    {
+      "case": "empty-extend",
+      "undefined": true,
+      "stable": [
+        true,
+        true,
+        true
+      ],
+      "wrapperFresh": true
+    },
+    {
+      "case": "load-real-files-with-disabled-defaults",
+      "value": {
+        "skills": {
+          "skills": [
+            {
+              "name": "alpha",
+              "description": "Alpha skill",
+              "filePath": "<fixture>/alpha/SKILL.md",
+              "baseDir": "<fixture>/alpha",
+              "sourceInfo": {
+                "path": "<fixture>/alpha/SKILL.md",
+                "source": "extension:alpha",
+                "scope": "temporary",
+                "origin": "top-level",
+                "baseDir": "<fixture>"
+              },
+              "disableModelInvocation": false
+            }
+          ],
+          "diagnostics": []
+        },
+        "prompts": {
+          "prompts": [
+            {
+              "name": "one",
+              "description": "First prompt",
+              "content": "First $1",
+              "sourceInfo": {
+                "path": "<fixture>/prompts/one.md",
+                "source": "extension:one",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "filePath": "<fixture>/prompts/one.md"
+            }
+          ],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [
+            {
+              "name": "fixture-theme",
+              "sourcePath": "<fixture>/themes/one.json",
+              "sourceInfo": {
+                "path": "<fixture>/themes/one.json",
+                "source": "extension:one",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "fg": "\u001b[38;2;17;34;51mX\u001b[39m"
+            }
+          ],
+          "diagnostics": []
+        }
+      }
+    },
+    {
+      "case": "merge-existing-resource-paths",
+      "value": {
+        "skills": {
+          "skills": [
+            {
+              "name": "alpha",
+              "description": "Alpha skill",
+              "filePath": "<fixture>/alpha/SKILL.md",
+              "baseDir": "<fixture>/alpha",
+              "sourceInfo": {
+                "path": "<fixture>/alpha/SKILL.md",
+                "source": "extension:alpha",
+                "scope": "temporary",
+                "origin": "top-level",
+                "baseDir": "<fixture>"
+              },
+              "disableModelInvocation": false
+            },
+            {
+              "name": "beta",
+              "description": "Beta skill",
+              "filePath": "<fixture>/beta/SKILL.md",
+              "baseDir": "<fixture>/beta",
+              "sourceInfo": {
+                "path": "<fixture>/beta/SKILL.md",
+                "source": "extension:beta",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "disableModelInvocation": true
+            }
+          ],
+          "diagnostics": []
+        },
+        "prompts": {
+          "prompts": [
+            {
+              "name": "one",
+              "description": "First prompt",
+              "content": "First $1",
+              "sourceInfo": {
+                "path": "<fixture>/prompts/one.md",
+                "source": "extension:one",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "filePath": "<fixture>/prompts/one.md"
+            },
+            {
+              "name": "two",
+              "description": "Second prompt",
+              "content": "Second $ARGUMENTS",
+              "sourceInfo": {
+                "path": "<fixture>/prompts/two.md",
+                "source": "extension:two",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "filePath": "<fixture>/prompts/two.md"
+            }
+          ],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [
+            {
+              "name": "fixture-theme",
+              "sourcePath": "<fixture>/themes/one.json",
+              "sourceInfo": {
+                "path": "<fixture>/themes/one.json",
+                "source": "extension:one",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "fg": "\u001b[38;2;17;34;51mX\u001b[39m"
+            }
+          ],
+          "diagnostics": []
+        }
+      }
+    },
+    {
+      "case": "canonical-dedupe-new-metadata",
+      "value": {
+        "skills": {
+          "skills": [
+            {
+              "name": "alpha",
+              "description": "Alpha skill",
+              "filePath": "<fixture>/alpha/SKILL.md",
+              "baseDir": "<fixture>/alpha",
+              "sourceInfo": {
+                "path": "<fixture>/alpha/SKILL.md",
+                "source": "extension:changed",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "disableModelInvocation": false
+            },
+            {
+              "name": "beta",
+              "description": "Beta skill",
+              "filePath": "<fixture>/beta/SKILL.md",
+              "baseDir": "<fixture>/beta",
+              "sourceInfo": {
+                "path": "<fixture>/beta/SKILL.md",
+                "source": "extension:beta",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "disableModelInvocation": true
+            }
+          ],
+          "diagnostics": []
+        },
+        "prompts": {
+          "prompts": [
+            {
+              "name": "one",
+              "description": "First prompt",
+              "content": "First $1",
+              "sourceInfo": {
+                "path": "<fixture>/prompts/one.md",
+                "source": "extension:changed",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "filePath": "<fixture>/prompts/one.md"
+            },
+            {
+              "name": "two",
+              "description": "Second prompt",
+              "content": "Second $ARGUMENTS",
+              "sourceInfo": {
+                "path": "<fixture>/prompts/two.md",
+                "source": "extension:two",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "filePath": "<fixture>/prompts/two.md"
+            }
+          ],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [
+            {
+              "name": "fixture-theme",
+              "sourcePath": "<fixture>/themes/one.json",
+              "sourceInfo": {
+                "path": "<fixture>/themes/one.json",
+                "source": "extension:one",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "fg": "\u001b[38;2;17;34;51mX\u001b[39m"
+            }
+          ],
+          "diagnostics": []
+        }
+      }
+    },
+    {
+      "case": "name-collisions",
+      "value": {
+        "skills": {
+          "skills": [
+            {
+              "name": "alpha",
+              "description": "Alpha skill",
+              "filePath": "<fixture>/alpha/SKILL.md",
+              "baseDir": "<fixture>/alpha",
+              "sourceInfo": {
+                "path": "<fixture>/alpha/SKILL.md",
+                "source": "extension:changed",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "disableModelInvocation": false
+            },
+            {
+              "name": "beta",
+              "description": "Beta skill",
+              "filePath": "<fixture>/beta/SKILL.md",
+              "baseDir": "<fixture>/beta",
+              "sourceInfo": {
+                "path": "<fixture>/beta/SKILL.md",
+                "source": "extension:beta",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "disableModelInvocation": true
+            }
+          ],
+          "diagnostics": [
+            {
+              "type": "collision",
+              "message": "name \"alpha\" collision",
+              "path": "<fixture>/collision/SKILL.md",
+              "collision": {
+                "resourceType": "skill",
+                "name": "alpha",
+                "winnerPath": "<fixture>/alpha/SKILL.md",
+                "loserPath": "<fixture>/collision/SKILL.md"
+              }
+            }
+          ]
+        },
+        "prompts": {
+          "prompts": [
+            {
+              "name": "one",
+              "description": "First prompt",
+              "content": "First $1",
+              "sourceInfo": {
+                "path": "<fixture>/prompts/one.md",
+                "source": "extension:changed",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "filePath": "<fixture>/prompts/one.md"
+            },
+            {
+              "name": "two",
+              "description": "Second prompt",
+              "content": "Second $ARGUMENTS",
+              "sourceInfo": {
+                "path": "<fixture>/prompts/two.md",
+                "source": "extension:two",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "filePath": "<fixture>/prompts/two.md"
+            }
+          ],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [
+            {
+              "name": "fixture-theme",
+              "sourcePath": "<fixture>/themes/one.json",
+              "sourceInfo": {
+                "path": "<fixture>/themes/one.json",
+                "source": "extension:one",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "fg": "\u001b[38;2;17;34;51mX\u001b[39m"
+            }
+          ],
+          "diagnostics": [
+            {
+              "type": "collision",
+              "message": "name \"fixture-theme\" collision",
+              "path": "<fixture>/themes/two.json",
+              "collision": {
+                "resourceType": "theme",
+                "name": "fixture-theme",
+                "winnerPath": "<fixture>/themes/one.json",
+                "loserPath": "<fixture>/themes/two.json"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "reload-clears-extension-paths",
+      "value": {
+        "skills": {
+          "skills": [],
+          "diagnostics": []
+        },
+        "prompts": {
+          "prompts": [],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [],
+          "diagnostics": []
+        }
+      }
+    },
+    {
+      "case": "retains-initial-resource-paths",
+      "value": {
+        "skills": {
+          "skills": [
+            {
+              "name": "alpha",
+              "description": "Alpha skill",
+              "filePath": "<fixture>/alpha/SKILL.md",
+              "baseDir": "<fixture>/alpha",
+              "sourceInfo": {
+                "path": "<fixture>/alpha/SKILL.md",
+                "source": "local",
+                "scope": "temporary",
+                "origin": "top-level",
+                "baseDir": "<fixture>/alpha"
+              },
+              "disableModelInvocation": false
+            },
+            {
+              "name": "beta",
+              "description": "Beta skill",
+              "filePath": "<fixture>/beta/SKILL.md",
+              "baseDir": "<fixture>/beta",
+              "sourceInfo": {
+                "path": "<fixture>/beta/SKILL.md",
+                "source": "extension:fixture",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "disableModelInvocation": true
+            }
+          ],
+          "diagnostics": []
+        },
+        "prompts": {
+          "prompts": [
+            {
+              "name": "one",
+              "description": "First prompt",
+              "content": "First $1",
+              "sourceInfo": {
+                "path": "<fixture>/prompts/one.md",
+                "source": "local",
+                "scope": "temporary",
+                "origin": "top-level",
+                "baseDir": "<fixture>/prompts"
+              },
+              "filePath": "<fixture>/prompts/one.md"
+            },
+            {
+              "name": "two",
+              "description": "Second prompt",
+              "content": "Second $ARGUMENTS",
+              "sourceInfo": {
+                "path": "<fixture>/prompts/two.md",
+                "source": "extension:fixture",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "filePath": "<fixture>/prompts/two.md"
+            }
+          ],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [
+            {
+              "name": "fixture-theme",
+              "sourcePath": "<fixture>/themes/one.json",
+              "sourceInfo": {
+                "path": "<fixture>/themes/one.json",
+                "source": "local",
+                "scope": "temporary",
+                "origin": "top-level",
+                "baseDir": "<fixture>/themes"
+              },
+              "fg": "\u001b[38;2;17;34;51mX\u001b[39m"
+            }
+          ],
+          "diagnostics": []
+        }
+      }
+    },
+    {
+      "case": "missing-resources-diagnostics",
+      "value": {
+        "skills": {
+          "skills": [],
+          "diagnostics": [
+            {
+              "type": "warning",
+              "message": "skill path does not exist",
+              "path": "<fixture>/missing-skill"
+            }
+          ]
+        },
+        "prompts": {
+          "prompts": [],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [],
+          "diagnostics": [
+            {
+              "type": "warning",
+              "message": "theme path does not exist",
+              "path": "<fixture>/missing-theme.json"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "invalid-theme-diagnostic",
+      "value": {
+        "skills": {
+          "skills": [],
+          "diagnostics": []
+        },
+        "prompts": {
+          "prompts": [],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [],
+          "diagnostics": [
+            {
+              "type": "warning",
+              "message": "Invalid theme \"<fixture>/themes/bad.json\": expected an object with a \"colors\" map.",
+              "path": "<fixture>/themes/bad.json"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "override-order-and-live-identity",
+      "log": [
+        {
+          "type": "skills",
+          "names": [
+            "beta"
+          ],
+          "receiver": true
+        },
+        {
+          "type": "prompts",
+          "names": [
+            "two"
+          ]
+        },
+        {
+          "type": "themes",
+          "names": [
+            "fixture-theme"
+          ]
+        }
+      ],
+      "copy": true,
+      "nested": true,
+      "diagnostics": true,
+      "callback": true,
+      "sourceInfo": {
+        "path": "<fixture>/beta/SKILL.md",
+        "source": "extension:beta",
+        "scope": "temporary",
+        "origin": "top-level"
+      }
+    },
+    {
+      "case": "only-updates-selected-category",
+      "log": [
+        {
+          "type": "skills",
+          "names": [
+            "beta",
+            "alpha"
+          ],
+          "receiver": true
+        }
+      ],
+      "promptStable": true,
+      "themeStable": true
+    },
+    {
+      "case": "override-failure-is-synchronous-and-preserves-cache",
+      "same": true,
+      "sync": true,
+      "stable": true
+    },
+    {
+      "case": "retains-paths-after-override-failure",
+      "log": [
+        [],
+        [
+          "beta"
+        ],
+        [
+          "beta",
+          "alpha"
+        ]
+      ],
+      "value": {
+        "skills": {
+          "skills": [
+            {
+              "name": "beta",
+              "description": "Beta skill",
+              "filePath": "<fixture>/beta/SKILL.md",
+              "baseDir": "<fixture>/beta",
+              "sourceInfo": {
+                "path": "<fixture>/beta/SKILL.md",
+                "source": "extension:fixture",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "disableModelInvocation": true
+            },
+            {
+              "name": "alpha",
+              "description": "Alpha skill",
+              "filePath": "<fixture>/alpha/SKILL.md",
+              "baseDir": "<fixture>/alpha",
+              "sourceInfo": {
+                "path": "<fixture>/alpha/SKILL.md",
+                "source": "extension:fixture",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "disableModelInvocation": false
+            }
+          ],
+          "diagnostics": []
+        },
+        "prompts": {
+          "prompts": [],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [],
+          "diagnostics": []
+        }
+      }
+    },
+    {
+      "case": "metadata-getter-exception-identity",
+      "same": true
+    },
+    {
+      "case": "normalization-evaluation-order",
+      "log": [
+        "skillPaths",
+        "get map:skills",
+        "call map:skills",
+        "promptPaths",
+        "get map:prompts",
+        "call map:prompts",
+        "themePaths",
+        "get map:themes",
+        "call map:themes"
+      ]
+    },
+    {
+      "case": "diagnostics-getter-failure-keeps-assigned-resource-array",
+      "same": true,
+      "names": [
+        "beta"
+      ]
+    },
+    {
+      "case": "actual-runner-loader-and-session-binding-composition",
+      "log": [
+        "session_start:startup",
+        "resources_discover:startup",
+        "active tools",
+        [
+          "rebuilt",
+          [
+            "read"
+          ]
+        ]
+      ],
+      "value": {
+        "skills": {
+          "skills": [
+            {
+              "name": "beta",
+              "description": "Beta skill",
+              "filePath": "<fixture>/beta/SKILL.md",
+              "baseDir": "<fixture>/beta",
+              "sourceInfo": {
+                "path": "<fixture>/beta/SKILL.md",
+                "source": "extension:inline:wired",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "disableModelInvocation": true
+            }
+          ],
+          "diagnostics": []
+        },
+        "prompts": {
+          "prompts": [
+            {
+              "name": "two",
+              "description": "Second prompt",
+              "content": "Second $ARGUMENTS",
+              "sourceInfo": {
+                "path": "<fixture>/prompts/two.md",
+                "source": "extension:inline:wired",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "filePath": "<fixture>/prompts/two.md"
+            }
+          ],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [
+            {
+              "name": "fixture-theme",
+              "sourcePath": "<fixture>/themes/one.json",
+              "sourceInfo": {
+                "path": "<fixture>/themes/one.json",
+                "source": "extension:inline:wired",
+                "scope": "temporary",
+                "origin": "top-level"
+              },
+              "fg": "\u001b[38;2;17;34;51mX\u001b[39m"
+            }
+          ],
+          "diagnostics": []
+        }
+      }
+    }
+  ]
+}

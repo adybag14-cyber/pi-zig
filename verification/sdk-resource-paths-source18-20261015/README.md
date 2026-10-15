@@ -1,0 +1,7 @@
+The tested implementation is commit `1847a4d140c7f0e7ecf98e3d255856a724fcf608`, tree `60ab2a3756a06fbc2f8c02a71905997a132116bd`. This directory is a proof-only child of that commit. The proof child itself was not used as the tested source identity.
+
+The actual latest upstream Source fixture has 18 cases over real skill, prompt and Theme files, including ANSI rendering, live override and metadata semantics, reload behavior, and actual ExtensionRunner to ordinary AgentSession.bindExtensions to native DefaultResourceLoader composition. Source39 binding regression runs accompany it.
+
+Windows Debug functional agreement and all 6,246 loader allocation indices plus all 267 binding allocation indices passed across eight contiguous shards. The first batch stopped at the unchanged 16-GiB admission floor after shards 0–2; the later batch completed shards 3–7. Every candidate, compiler/vendor, upstream reference and owner-control posthash reported zero drift. `qualification.json` records the union; each compressed stderr log preserves every individual completion index. `manifest.json` binds these artifact bytes.
+
+The qualified scope is the explicit discovered resource pipeline. Complete DefaultResourceLoader class reflection, automatic package/default discovery, all parser cases, complete factory behavior and production provider transport remain unqualified. No public activation is claimed.

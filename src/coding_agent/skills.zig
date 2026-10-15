@@ -132,7 +132,10 @@ fn scanSkillsDir(gpa: std.mem.Allocator, io: Io, dir_path: []const u8, out: *std
 }
 
 fn loadSkillFile(gpa: std.mem.Allocator, io: Io, skill_path: []const u8, fallback_name: []const u8, out: *std.ArrayList(Skill)) !void {
-    var content = std.Io.Dir.cwd().readFileAlloc(io, skill_path, gpa, .limited(512 * 1024)) catch return;
+    var content = std.Io.Dir.cwd().readFileAlloc(io, skill_path, gpa, .limited(512 * 1024)) catch |err| switch (err) {
+        error.OutOfMemory => return err,
+        else => return,
+    };
     errdefer gpa.free(content);
     if (std.mem.startsWith(u8, content, "\xEF\xBB\xBF")) {
         const stripped = try gpa.dupe(u8, content[3..]);
@@ -148,10 +151,16 @@ fn loadSkillFile(gpa: std.mem.Allocator, io: Io, skill_path: []const u8, fallbac
         gpa.free(content);
         return;
     }
+    const name_copy = try gpa.dupe(u8, fm.name orelse fallback_name);
+    errdefer gpa.free(name_copy);
+    const description_copy = try gpa.dupe(u8, description);
+    errdefer gpa.free(description_copy);
+    const path_copy = try gpa.dupe(u8, skill_path);
+    errdefer gpa.free(path_copy);
     try out.append(gpa, .{
-        .name = try gpa.dupe(u8, fm.name orelse fallback_name),
-        .description = try gpa.dupe(u8, description),
-        .path = try gpa.dupe(u8, skill_path),
+        .name = name_copy,
+        .description = description_copy,
+        .path = path_copy,
         .content = content,
         .disable_model_invocation = fm.disable_model_invocation,
     });
