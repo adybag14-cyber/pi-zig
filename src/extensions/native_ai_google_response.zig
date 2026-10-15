@@ -81,8 +81,9 @@ fn get(engine: *v.em.Engine, receiver: c.JSValue, kind: Kind) !c.JSValue {
             .codeExecutionResult => try select(&scope, parts, .codeExecutionResult),
             else => unreachable,
         };
-        if (scope.equal(try scope.get(selected, "length"), c.JS_NewInt32(engine.context, 0))) return c.pi_js_undefined();
-        return c.JS_DupValue(engine.context, if (kind == .functionCalls) selected else try v.optional(&scope, try v.at(&scope, selected, 0), if (kind == .executableCode) "code" else "output"));
+        if (scope.equal(try v.optional(&scope, selected, "length"), c.JS_NewInt32(engine.context, 0))) return c.pi_js_undefined();
+        if (kind == .functionCalls) return c.JS_DupValue(engine.context, selected);
+        return c.JS_DupValue(engine.context, try v.optional(&scope, if (v.nullish(selected)) c.pi_js_undefined() else try v.at(&scope, selected, 0), if (kind == .executableCode) "code" else "output"));
     }
     const non_parts = try scope.array();
     var combined = try scope.text("");
