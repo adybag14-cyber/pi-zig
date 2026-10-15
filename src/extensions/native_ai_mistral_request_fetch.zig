@@ -22,15 +22,14 @@ pub fn open(engine: *v.em.Engine, model: c.JSValue, payload: c.JSValue, api_key:
     try scope.put(owner, "options", options);
     try scope.put(owner, "combined", combined);
     try scope.put(owner, "timeoutMs", timeout_ms);
-    // Source evaluates the fetch callee before constructing its init argument.
-    const custom = try v.optional(&scope, options, "fetch");
-    const fetch = if (v.nullish(custom)) try scope.global("fetch") else custom;
-    const init = try scope.object();
-    try scope.put(init, "method", try scope.text("POST"));
-    try scope.put(init, "headers", headers);
-    try scope.put(init, "body", try scope.invoke(try scope.global("JSON"), "stringify", &.{try @import("native_ai_mistral_request.zig").wire(&scope, payload)}));
-    try scope.put(init, "signal", try scope.get(combined, "signal"));
-    const reader = try scope.own(try @import("native_ai_mistral_fetch.zig").open(engine, fetch, target, init, try v.optional(&scope, options, "signal"), before_read));
+    const reader = try scope.own(openReader(&scope, owner, target, headers, payload, before_read) catch |err| {
+        const reason = try scope.own(flow.reason(engine, err));
+        const classified = try signals.headerError(&scope, combined, try v.optional(&scope, options, "signal"), timeout_ms, reason);
+        try signals.cleanup(&scope, combined);
+        if (err == error.OutOfMemory) return err;
+        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, classified)));
+        unreachable;
+    });
     try scope.put(owner, "reader", reader);
     const pending = try flow.create(engine, owner);
     defer engine.freeValue(pending.owner);
@@ -40,6 +39,19 @@ pub fn open(engine: *v.em.Engine, model: c.JSValue, payload: c.JSValue, api_key:
     inline for (.{ "events", "cancel", "close" }) |key| try scope.put(output, key, try scope.get(reader, key));
     try wait(&scope, pending.owner, try scope.get(reader, "ready"), .headers);
     return c.JS_DupValue(engine.context, output);
+}
+
+fn openReader(scope: *Scope, owner: c.JSValue, target: c.JSValue, headers: c.JSValue, payload: c.JSValue, before_read: c.JSValue) !c.JSValue {
+    const options = try scope.get(owner, "options");
+    // Source evaluates the fetch callee before constructing its init argument.
+    const custom = try v.optional(scope, options, "fetch");
+    const fetch = if (v.nullish(custom)) try scope.global("fetch") else custom;
+    const init = try scope.object();
+    try scope.put(init, "method", try scope.text("POST"));
+    try scope.put(init, "headers", headers);
+    try scope.put(init, "body", try scope.invoke(try scope.global("JSON"), "stringify", &.{try @import("native_ai_mistral_request.zig").wire(scope, payload)}));
+    try scope.put(init, "signal", try scope.get(try scope.get(owner, "combined"), "signal"));
+    return @import("native_ai_mistral_fetch.zig").open(scope.engine, fetch, target, init, try v.optional(scope, options, "signal"), before_read);
 }
 
 fn wait(scope: *Scope, pending: c.JSValue, value: c.JSValue, stage: Stage) !void {
