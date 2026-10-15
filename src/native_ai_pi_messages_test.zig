@@ -101,6 +101,14 @@ test "native AI pi messages every allocation releases request codec converter ro
                 if (classified != error.OutOfMemory) {
                     const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
                     std.debug.print("Pi allocation index {d}, induced {any}: {s}\n", .{ failing.fail_index, failing.has_induced_failure, engine.last_error orelse @errorName(classified) });
+                    std.debug.print("Native generation {d}->{d}, captured tag {d}\n{f}\n", .{ generation, engine.native_allocation_generation, if (engine.captured_exception) |reason| c.pi_js_native_allocation_error_generation(reason) else 0, std.debug.FormatStackTrace{ .stack_trace = failing.getStackTrace() } });
+                    if (engine.captured_exception) |reason| {
+                        const message = c.JS_ToCString(engine.context, reason);
+                        if (message != null) {
+                            defer c.JS_FreeCString(engine.context, message);
+                            std.debug.print("Captured: {s}\n", .{std.mem.span(message)});
+                        }
+                    }
                 }
                 return classified;
             };
