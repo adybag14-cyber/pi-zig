@@ -52,6 +52,21 @@ The baseline, retained-GC and pure-helper exhaustive-allocation tests are
 prepared. The pure-helper allocation scope excludes network workers and async
 transport callbacks; those require separate qualification.
 
+The separate image registry and global image dispatcher are also prepared with
+20 controls for live provider identity, captured getter order, synchronous
+wrapper errors, async dispatcher errors, unbound implementation calls, method
+receivers, strict API matching and explicit built-in restoration. Registration
+uses the actual provided image implementation. Static legacy image catalog
+queries and shared catalog object identities belong to the central Models
+assembler. Source lazy-module loading and its public adapter still need their
+separate native implementation; direct registration does not qualify those
+boundaries.
+
+The independent shared body collector is a further source-only checkpoint. Its
+explicit native budget and pending large-body qualification are described in
+`native-body-collect-source-20261015.md`. The current image JSON request path has
+not yet adopted it; its old HTTP body aggregation limit remains in effect.
+
 This follow-up is source-only. No original expected JSON has been fabricated.
 Source capture, native compilation, runtime, broader timeout/abort controls,
 complete provider registration and full factory/application qualification are

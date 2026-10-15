@@ -18,6 +18,9 @@ fn install(engine: *em.Engine) !void {
     inline for (.{ "typesafe", "cloudflare", "decisions" }) |name| try scope.put(apis, name, try scope.own(try @import("extensions/native_ai_classifier_factory.zig").create(engine, @field(@import("extensions/native_ai_classifier_factory.zig").Kind, name))));
     try scope.put(apis, "llama", try scope.own(try @import("extensions/native_ai_llama_classifier_factory.zig").create(engine)));
     try scope.put(apis, "shared", try scope.own(try @import("extensions/native_ai_classifier_shared.zig").create(engine)));
+    const registry = try scope.own(try @import("extensions/native_ai_images_registry.zig").create(engine, try scope.get(try scope.get(apis, "image"), "generateImages")));
+    _ = try scope.invoke(registry, "registerBuiltInImagesApiProviders", &.{});
+    try scope.put(try scope.own(c.JS_GetGlobalObject(engine.context)), "imageRegistryAPI", registry);
     try scope.put(try scope.own(c.JS_GetGlobalObject(engine.context)), "oneShotAPIs", apis);
 }
 fn evaluate(engine: *em.Engine, source: []const u8, name: [:0]const u8) !void {
@@ -47,6 +50,15 @@ test "native AI one shot retained classifier and image dependency graphs survive
     try evaluate(engine,
         \\const model={id:'m',api:'typesafe-system-one',provider:'p',baseUrl:'https://fixture.invalid/',cost:{input:1,output:1,cacheRead:1,cacheWrite:1}},result=await keptOneShot.typesafe.classify(model,{state:{},questions:{}});if(result.errorMessage!=='No API key for provider: p'||result.stopReason!=='error')throw Error('retained auth failure');if(keptOneShot.llama.llamaServerRoot('https://fixture.invalid/v1///')!=='https://fixture.invalid')throw Error('retained root helper');delete globalThis.keptOneShot;
     , "native-ai-one-shot-gc-after.mjs");
+    c.JS_RunGC(engine.runtime);
+}
+test "native AI one shot image registry keeps independent dispatch getters errors and method receivers" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    try install(engine);
+    try evaluate(engine, @embedFile("extensions/fixtures/ai-images-registry-5ab.input.txt") ++
+        \\const rows=imageRegistryRows,by=name=>rows.find(row=>row.name===name);if(rows.length!==20||!by('api-getter-error').value||!by('function-getter-error').value||!by('global-identity').value||!by('global-method-receiver').value||!by('map-set-capture').value||!by('replacement-identity').value||!by('live-provider-mutation').value||!by('rejection-identity').value)throw Error('registry semantics');if(by('getter-order').value.count!==3||by('getter-order').value.display!=='display'||by('getter-order').value.value!=='captured-ok')throw Error('getter capture order');if(by('missing-async').value.synchronous||by('missing-async').value.error.message!=='No API provider registered for api: missing'||by('null-model-async').value.synchronous||by('null-model-async').value.error!=='TypeError')throw Error('async errors');if(by('explicit-builtin-restored').value.errorMessage!=='No API key for provider: registry'||!by('builtin-keeps-custom').value||!by('map-vs-strict-key').value.lookup||by('map-vs-strict-key').value.error!=='Mismatched api: NaN expected NaN')throw Error('registry defaults/keys');
+    , "native-ai-one-shot-registry-controls.mjs");
     c.JS_RunGC(engine.runtime);
 }
 test "native AI one shot every pure classifier helper allocation releases maps pricing and callback roots" {

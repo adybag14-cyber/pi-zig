@@ -1,0 +1,32 @@
+'use strict';
+const imageRegistryRows=[];
+const record=(name,value)=>imageRegistryRows.push({name,value});
+const api=imageRegistryAPI;
+const savedNow=Date.now;Date.now=()=>123456789;
+try{
+  record('builtin-present',api.getImagesApiProvider('openrouter-images').api);
+  record('unknown',api.getImagesApiProvider('absent')===undefined);
+  const calls=[],marker={result:'identity'},model={api:'custom',provider:'registry',id:'m'},context={input:[]},options={apiKey:'fixture'};
+  const original={api:'custom',generateImages:function(...args){calls.push({thisUndefined:this===undefined,model:args[0]===model,context:args[1]===context,options:args[2]===options,arity:args.length});return Promise.resolve(marker)}};
+  api.registerImagesApiProvider(original,'source-id');const registered=api.getImagesApiProvider('custom');
+  record('new-wrapper',registered!==original&&registered.generateImages!==original.generateImages&&Object.keys(registered).join(',')==='api,generateImages');
+  record('wrapper-metadata',{name:registered.generateImages.name,length:registered.generateImages.length,keys:Reflect.ownKeys(registered.generateImages).map(String),prototype:Object.getPrototypeOf(registered.generateImages)===Function.prototype});
+  let mismatch;try{registered.generateImages({...model,api:'wrong'},context,options)}catch(error){mismatch={name:error.name,message:error.message}}record('mismatch-sync',mismatch);
+  record('global-identity',await api.generateImages(model,context,options)===marker&&calls[0].thisUndefined&&calls[0].model&&calls[0].context&&calls[0].options&&calls[0].arity===3);
+  registered.generateImages=async()=>({changed:true});record('live-provider-mutation',(await api.generateImages(model,context,options)).changed===true);
+  api.registerImagesApiProvider(original,'replacement');record('replacement-identity',api.getImagesApiProvider('custom')!==registered);
+  record('source-id-private',api.getImagesApiProvider('custom').sourceId===undefined);
+  let getterCount=0;api.registerImagesApiProvider({get api(){getterCount++;return ['key','display','captured'][getterCount-1]},generateImages(){return 'captured-ok'}});const getterProvider=api.getImagesApiProvider('key');record('getter-order',{count:getterCount,display:getterProvider.api,value:getterProvider.generateImages({api:'captured'},context,options)});
+  let coerced=0;const reason={toString(){coerced++;return 'must not coerce'}};let seen;try{api.registerImagesApiProvider({get api(){throw reason},generateImages(){}})}catch(error){seen=error}record('api-getter-error',seen===reason&&coerced===0);
+  seen=undefined;try{api.registerImagesApiProvider({api:'throw-function',get generateImages(){throw reason}})}catch(error){seen=error}record('function-getter-error',seen===reason&&coerced===0);
+  let synchronous=false,promise;try{promise=api.generateImages({api:'missing'},context,options)}catch{ synchronous=true }let missing;try{await promise}catch(error){missing={name:error.name,message:error.message}}record('missing-async',{synchronous,error:missing});
+  synchronous=false;try{promise=api.generateImages(null,context,options)}catch{synchronous=true}let nullError;try{await promise}catch(error){nullError=error.name}record('null-model-async',{synchronous,error:nullError});
+  const rejected={rejected:true};api.registerImagesApiProvider({api:'reject',generateImages:()=>Promise.reject(rejected)});seen=undefined;try{await api.generateImages({api:'reject'},context,options)}catch(error){seen=error}record('rejection-identity',seen===rejected);
+  api.registerImagesApiProvider({api:'openrouter-images',generateImages:async()=>({fake:true})});api.registerBuiltInImagesApiProviders();const builtin=await api.generateImages({api:'openrouter-images',provider:'registry',id:'m',baseUrl:'https://fixture.invalid',output:['image'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0}},{input:[]});record('explicit-builtin-restored',{api:builtin.api,stopReason:builtin.stopReason,errorMessage:builtin.errorMessage,timestamp:builtin.timestamp});
+  record('builtin-keeps-custom',api.getImagesApiProvider('custom')!==undefined);
+  const setter=Map.prototype.set;let replaced=false;try{api.registerImagesApiProvider({get api(){if(!replaced){replaced=true;Map.prototype.set=()=>{throw Error('late setter')}}return 'setter-captured'},generateImages(){return 'ok'}})}finally{Map.prototype.set=setter}record('map-set-capture',api.getImagesApiProvider('setter-captured').generateImages({api:'setter-captured'})==='ok');
+  api.registerImagesApiProvider({api:NaN,generateImages(){return 'nan'}});let nanError;try{api.getImagesApiProvider(NaN).generateImages({api:NaN})}catch(error){nanError=error.message}record('map-vs-strict-key',{lookup:Number.isNaN(api.getImagesApiProvider(NaN).api),error:nanError});
+  const receiver=api.getImagesApiProvider('custom');receiver.generateImages=function(){return Promise.resolve(this===receiver)};record('global-method-receiver',await api.generateImages(model,context,options));
+  if(imageRegistryRows.length!==20)throw Error('all20 registry controls required');
+  globalThis.imageRegistryRows=imageRegistryRows;
+}finally{Date.now=savedNow}
