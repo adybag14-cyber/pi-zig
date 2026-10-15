@@ -1,0 +1,8 @@
+{
+  "observed_utc": "2026-10-15T22:00:34.4164235+00:00",
+  "required_kib": 2097152,
+  "heap_mb": 256,
+  "coordinated_with": "Root queued SDKProducer16; explicit LIGHT grant required before invocation",
+  "status": "admitted",
+  "free_kib": 21474100
+}

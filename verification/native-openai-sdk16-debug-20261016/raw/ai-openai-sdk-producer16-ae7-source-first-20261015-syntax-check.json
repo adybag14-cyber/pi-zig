@@ -1,0 +1,16 @@
+{
+  "name": "ai-openai-sdk-producer16-ae7-source-first-20261015-syntax-check",
+  "pid": 63952,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "C:\\Program Files\\nodejs\\node.exe --check C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-observe-20261015.mjs",
+  "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+  "created_utc": "2026-10-15T22:00:14.3749068Z",
+  "launched_utc": "2026-10-15T22:00:14.3709144+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-ae7b16d-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T22:00:14.8661318+00:00"
+}

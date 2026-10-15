@@ -1,0 +1,42 @@
+{
+  "status": "passed_scoped_component",
+  "tested_candidate": "dc3d5106b089465a81e27a99c45b67600d48bb97",
+  "source_head": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "source16_output_sha256": "CA3EB48A9A7097EFDBBB19F24953B91402B8F4351E9F2AFDB3C6756DDA76B009",
+  "pinned_sdk": "OpenAI6.40.0",
+  "target": "test-native-ai-openai-sdk-stream",
+  "build_steps_passed": 156,
+  "runtime_tests_passed": 3,
+  "authored_tests": 2,
+  "inherited_declaration_tests": 1,
+  "full_trace_cases": 16,
+  "gc_full_trace_cases": 16,
+  "compile_pid": 77404,
+  "runtime_pid": 68964,
+  "posthash_sha256": "C42ABEDB84EBBB2AF58A38A0057E0190E5E0D001C80944D391BAF2790E9D5D41",
+  "candidate_files": 6426,
+  "compiler_files": 19546,
+  "controls": 16,
+  "source_files": 1968,
+  "dependency_files": 31064,
+  "node_files": 1774,
+  "historical_absences": 84,
+  "all_drift": 0,
+  "wrapper_sha256": "E68A186A86E1A299A4DCA8D78C33847767AEBA6021D500448E78A2E8BC1260D3",
+  "quickjs_c_sha256": "ED1F3A59AD13DE57B32CCA164FC42D347C463632F0B8A1921DC79621E79DE69E",
+  "quickjs_h_sha256": "91A39801056D4B4DA6A1B357AD09A20BA61AD3C669D3EEE219F781B4A56ACA28",
+  "outer_negative_preserved": "C393 wrapper expanded regex replacement $_; inner pair passed with incomplete SDK controls; unqualified",
+  "qualified": [
+    "actual pinnedSDK chunk/SSE/item generator framing and demand",
+    "completeSource16 raw traces including queuednext/return/throw/thenables/errorfields",
+    "forcedGC full16case replay and retainedcodec roots"
+  ],
+  "excluded": [
+    "factoryHTTP58 and reader adapter integration",
+    "customfetch",
+    "fullSDK/clientconstructor/errorclass brand",
+    "genuine native async callable class",
+    "completeHostGPA/exhaustiveCmalloc",
+    "fullprovider/fullPi/activation"
+  ]
+}

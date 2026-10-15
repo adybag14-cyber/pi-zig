@@ -1,0 +1,230 @@
+[
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-first-20261015-admission.json",
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-admission.json",
+    "sha256": "78A0726106D51FA16B275AE322B05F253F2D4FB7384A30F25AD35BD411BB7618",
+    "bytes": 259
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-first-20261015-extra-before.json",
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-extra-before.json",
+    "sha256": "2E5C36E649839404F65179075E69F207CEEFB1CAB362C170EEF02332DFF22BAA",
+    "bytes": 2040
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-first-20261015-output.json",
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-output.json",
+    "sha256": "CA3EB48A9A7097EFDBBB19F24953B91402B8F4351E9F2AFDB3C6756DDA76B009",
+    "bytes": 10430
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-first-20261015-posthash.json",
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-posthash.json",
+    "sha256": "459E4AD877D58A8F0177D10AF029A711B9033305F6C3AD0EB55004718E334362",
+    "bytes": 627
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-first-20261015-syntax-check.json",
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-syntax-check.json",
+    "sha256": "DDCC52C8A43C5E2D14335F435533A08A5123C947B2A72049933DDDE24535FC28",
+    "bytes": 940
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-first-20261015-syntax-check.stderr.log",
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-syntax-check.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-first-20261015-syntax-check.stdout.log",
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-syntax-check.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-first-20261015.json",
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015.json",
+    "sha256": "69366EB6FB077ED9DCCDFF60435501B4F9C0772F1E0D9179C369FC0FCF7D0D49",
+    "bytes": 1182
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-first-20261015.stderr.log",
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-first-20261015.stdout.log",
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-sdk-producer16-ae7-source-observe-20261015.mjs",
+    "file": "ai-openai-sdk-producer16-ae7-source-observe-20261015.mjs",
+    "sha256": "40DC226309E24C3C714846991B1C619F6AEA8246658501FEA3D81B818A796BFD",
+    "bytes": 4366
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "file": "Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-admission.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-admission.json",
+    "sha256": "4DF4B4634D03E16BB235771BE57258DA6BED1DADAA27A55613CB340B8A3B1C26",
+    "bytes": 527
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-compile.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-compile.json",
+    "sha256": "D7F615A223D3E9DF6942407678574584B5C4513677E7E1A4EAF00480997AC8E5",
+    "bytes": 997
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-compile.stderr.log",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-compile.stderr.log",
+    "sha256": "A34D1C52DAC07C552BC5C8913EC15200DE223DB3621D09D481202B3325E06EAD",
+    "bytes": 13338
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-compile.stdout.log",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-controls-before.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-controls-before.json",
+    "sha256": "8A77BFACEA224A945509CE3985168F880AADAEFBB3EB3B94F0E7045F3BCAC252",
+    "bytes": 3376
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-posthash.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-posthash.json",
+    "sha256": "C42ABEDB84EBBB2AF58A38A0057E0190E5E0D001C80944D391BAF2790E9D5D41",
+    "bytes": 317
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-reference-posthash.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-reference-posthash.json",
+    "sha256": "D356FFD26A417344639BB4FA606C75C9877493B5239EC4AB2BB74F97FCF79322",
+    "bytes": 229
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-runtime.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-runtime.json",
+    "sha256": "D4BA81C32A0664BE1C268E1B83AB6125D68E167140E886DCC298EF5411BEE1D4",
+    "bytes": 996
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-runtime.stderr.log",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-runtime.stderr.log",
+    "sha256": "23F490F672E631CC2713569B361DE38FADAF32C677E106EED25506FE66EA870D",
+    "bytes": 14102
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-runtime.stdout.log",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-source-before.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-control-retry-20261016-source-before.json",
+    "sha256": "DE16F5CF26C95F637A8957DF46E1E331E622802D06ECF0F886E07A44E39D4C83",
+    "bytes": 1095111
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-admission.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-admission.json",
+    "sha256": "653E24A7C7A19BC583117750A5F48A6929EAA8F0B7BAD1AC6528B2A17814565E",
+    "bytes": 527
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-compile.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-compile.json",
+    "sha256": "497295C87D8F745B558C7A56C3DA9B939F71FD514B0287D45901EE6DF6324886",
+    "bytes": 989
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-compile.stderr.log",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-compile.stderr.log",
+    "sha256": "170305E2F8D8A28C3E35405162F4EF517F6638C24E6BCBF7706CB95E9991FDA6",
+    "bytes": 13344
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-compile.stdout.log",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-controls-before.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-controls-before.json",
+    "sha256": "1E3BA81A774B1FF1F8D360DCADF2841B75079D599103C25B8FD526ACC3BC44DA",
+    "bytes": 5058
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-outer-negative.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-outer-negative.json",
+    "sha256": "7A1D27484A121FF825D999EA2E5887C5854E075F311E4437D8B11EB33D56FD0B",
+    "bytes": 642
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-posthash.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-posthash.json",
+    "sha256": "E88055CFDB19B2D3A21DD26D67044EACC3595E5794DE2EBDF9F17E15B7EDFDEC",
+    "bytes": 317
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-reference-posthash.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-reference-posthash.json",
+    "sha256": "E47200BD90134C2663923816018E0D7AB2B280ED89E4BC6F2DFA86A078A95D5E",
+    "bytes": 229
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-runtime.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-runtime.json",
+    "sha256": "CDFE49CA2B99F3B1116F90103555800C599B950251D35A1CDD8D2966335C761A",
+    "bytes": 988
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-runtime.stderr.log",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-runtime.stderr.log",
+    "sha256": "ADC0A229D3CDEB3055A2715A3CA16D512DA15ED1606D796144877D92994040F4",
+    "bytes": 14100
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-runtime.stdout.log",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-ai-openai-sdk16-dc3d5106-debug-first-20261016-source-before.json",
+    "file": "native-ai-openai-sdk16-dc3d5106-debug-first-20261016-source-before.json",
+    "sha256": "DE16F5CF26C95F637A8957DF46E1E331E622802D06ECF0F886E07A44E39D4C83",
+    "bytes": 1095111
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AIOpenAISDKProducer16Ae7Source-20261015.ps1",
+    "file": "Run-AIOpenAISDKProducer16Ae7Source-20261015.ps1",
+    "sha256": "0BFF8C2F3C7856E94E0155FCC4104CD5F4DF458B0556D9ED965B747EA08DDE60",
+    "bytes": 7308
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-NativeAIOpenAISDKProducer16ControlRetryPair-20261016.ps1",
+    "file": "Run-NativeAIOpenAISDKProducer16ControlRetryPair-20261016.ps1",
+    "sha256": "E68A186A86E1A299A4DCA8D78C33847767AEBA6021D500448E78A2E8BC1260D3",
+    "bytes": 9546
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-NativeAIOpenAISDKProducer16Pair-20261016.ps1",
+    "file": "Run-NativeAIOpenAISDKProducer16Pair-20261016.ps1",
+    "sha256": "C393439D76B5B67426FA6940BE8784F4704B8FB2BDCF992290E978254CB7902F",
+    "bytes": 29732
+  }
+]

@@ -1,0 +1,7 @@
+# Actual OpenAI SDK producer Source16 Windows Debug component
+
+Exact candidate dc3d5106 compiled and passed the corrected strict pair:156/156 steps,3/3 tests (two authored plus inherited declaration). Both authored tests replay the complete genuine16-case Source traces; the second forces actual GC through the caller's JSON.parse hook. Full product/compiler/reference/control posthashes were zero.
+
+The original C393 wrapper is preserved as an outer harness negative. Its regex replacement expanded $_ to the whole template, executing a nested pair with an incomplete SDK control list. That inner pair passed but is not a qualification result. The corrected E68 wrapper uses literal substring assembly and explicitly freezes the genuine SDK driver/wrapper/owner/post/extra controls, output, candidate fixture, and complete Source/runtime/tool references. It completed with exit0 and full posthash0.
+
+This result covers the direct actual three-generator SDK producer, with actual QuickJS AsyncGenerator queues, mandatory Await, raw error values, original byte chunk boundaries and caller demand/cleanup traces. It does not qualify the new native_ai_openai_factory wiring also present in the candidate:that source path and its owned HTTP body adapter are not imported by the selected component tests. Full HTTP58, customfetch, genuine native async-function class branding, full allocation profiles and complete Pi remain separate gates. No expected trace was altered and no scheduling delay was inserted.

@@ -1,0 +1,557 @@
+{
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "sdk": "openai6.40.0",
+  "runtime": "v24.14.0",
+  "actualNode": {
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "pid": 69520
+  },
+  "driverSha256": "40dc226309e24c3c714846991b1c619f6aea8246658501fea3d81b818a796bfd",
+  "scope": "Unmodified pinned OpenAI Stream.fromSSEResponse actual three producer AsyncGenerators. Caller byte-iterator inputs expose demand/return/throw/thenable/log/error-field observations; no Source/SDK body replacement. Component scope excludes SDK class prototype identity, real HTTP transport and provider factory.",
+  "count": 16,
+  "rows": [
+    {
+      "name": "joined",
+      "input": {
+        "name": "joined",
+        "chunks": [
+          "data: {\"n\":1}\n\ndata: {\"n\":2}\n\ndata: [DONE]\n\n"
+        ]
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          "{\"n\":1}"
+        ],
+        [
+          "parse",
+          "{\"n\":2}"
+        ],
+        [
+          "body.next",
+          1
+        ]
+      ],
+      "values": [
+        {
+          "n": 1
+        },
+        {
+          "n": 2
+        }
+      ],
+      "aborted": false
+    },
+    {
+      "name": "split-crlf",
+      "input": {
+        "name": "split-crlf",
+        "chunks": [
+          "data: {\"n\":1}\r",
+          "\n\r",
+          "\ndata: {\"n\":2}\r\n\r\n"
+        ]
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "body.next",
+          1
+        ],
+        [
+          "body.next",
+          2
+        ],
+        [
+          "parse",
+          "{\"n\":1}"
+        ],
+        [
+          "parse",
+          "{\"n\":2}"
+        ],
+        [
+          "body.next",
+          3
+        ]
+      ],
+      "values": [
+        {
+          "n": 1
+        },
+        {
+          "n": 2
+        }
+      ],
+      "aborted": false
+    },
+    {
+      "name": "carriage-pairs",
+      "input": {
+        "name": "carriage-pairs",
+        "chunks": [
+          "data: {\"n\":1}\r\rdata: {\"n\":2}\r\r"
+        ]
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          "{\"n\":1}"
+        ],
+        [
+          "body.next",
+          1
+        ],
+        [
+          "parse",
+          "{\"n\":2}"
+        ]
+      ],
+      "values": [
+        {
+          "n": 1
+        },
+        {
+          "n": 2
+        }
+      ],
+      "aborted": false
+    },
+    {
+      "name": "single-terminal-newline",
+      "input": {
+        "name": "single-terminal-newline",
+        "chunks": [
+          "data: {\"n\":1}\n"
+        ]
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "body.next",
+          1
+        ]
+      ],
+      "values": [],
+      "aborted": false
+    },
+    {
+      "name": "unterminated-data",
+      "input": {
+        "name": "unterminated-data",
+        "chunks": [
+          "data: {\"n\":1}"
+        ]
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "body.next",
+          1
+        ]
+      ],
+      "values": [],
+      "aborted": false
+    },
+    {
+      "name": "event-only-invalid-json",
+      "input": {
+        "name": "event-only-invalid-json",
+        "chunks": [
+          "event: ping\n\n"
+        ]
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          ""
+        ],
+        [
+          "log",
+          "Could not parse message into JSON:",
+          ""
+        ],
+        [
+          "log",
+          "From chunk:",
+          [
+            "event: ping"
+          ]
+        ],
+        "body.return",
+        "abort"
+      ],
+      "values": [],
+      "aborted": true,
+      "error": {
+        "sameMarker": false,
+        "name": "SyntaxError",
+        "message": "Unexpected end of JSON input"
+      }
+    },
+    {
+      "name": "multiline-data",
+      "input": {
+        "name": "multiline-data",
+        "chunks": [
+          "data: {\ndata: \"n\":1}\n\n"
+        ]
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          "{\n\"n\":1}"
+        ],
+        [
+          "body.next",
+          1
+        ]
+      ],
+      "values": [
+        {
+          "n": 1
+        }
+      ],
+      "aborted": false
+    },
+    {
+      "name": "comments-and-colons",
+      "input": {
+        "name": "comments-and-colons",
+        "chunks": [
+          ":comment\nid: ignored\nfoo: ignored\ndata:{\"n\":\"a:b\"}\n\n"
+        ]
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          "{\"n\":\"a:b\"}"
+        ],
+        [
+          "body.next",
+          1
+        ]
+      ],
+      "values": [
+        {
+          "n": "a:b"
+        }
+      ],
+      "aborted": false
+    },
+    {
+      "name": "done-prefix",
+      "input": {
+        "name": "done-prefix",
+        "chunks": [
+          "data: [DONE] suffix\n\ndata: definitely invalid\n\n"
+        ]
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "body.next",
+          1
+        ]
+      ],
+      "values": [],
+      "aborted": false
+    },
+    {
+      "name": "thread-envelope",
+      "input": {
+        "name": "thread-envelope",
+        "chunks": [
+          "event: thread.message\ndata: {\"error\":{\"message\":\"kept\"},\"n\":1}\n\n"
+        ]
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          "{\"error\":{\"message\":\"kept\"},\"n\":1}"
+        ],
+        [
+          "body.next",
+          1
+        ]
+      ],
+      "values": [
+        {
+          "event": "thread.message",
+          "data": {
+            "error": {
+              "message": "kept"
+            },
+            "n": 1
+          }
+        }
+      ],
+      "aborted": false
+    },
+    {
+      "name": "api-error-fields",
+      "input": {
+        "name": "api-error-fields",
+        "chunks": [
+          "data: {\"error\":{\"message\":\"denied\",\"code\":\"blocked\",\"param\":\"field\",\"type\":\"fixture\"}}\n\n"
+        ]
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          "{\"error\":{\"message\":\"denied\",\"code\":\"blocked\",\"param\":\"field\",\"type\":\"fixture\"}}"
+        ],
+        "body.return",
+        "abort"
+      ],
+      "values": [],
+      "aborted": true,
+      "error": {
+        "sameMarker": false,
+        "name": "Error",
+        "message": "denied",
+        "error": {
+          "message": "denied",
+          "code": "blocked",
+          "param": "field",
+          "type": "fixture"
+        },
+        "requestID": "fixture-request",
+        "code": "blocked",
+        "param": "field",
+        "type": "fixture",
+        "headersRequestID": "fixture-request"
+      }
+    },
+    {
+      "name": "return-closes-inner",
+      "input": {
+        "name": "return-closes-inner",
+        "chunks": [
+          "data: {\"n\":1}\n\ndata: {\"n\":2}\n\n"
+        ],
+        "operation": "return"
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          "{\"n\":1}"
+        ],
+        "body.return",
+        "abort"
+      ],
+      "values": [
+        {
+          "value": {
+            "n": 1
+          },
+          "done": false
+        },
+        {
+          "value": "returned",
+          "done": true
+        }
+      ],
+      "aborted": true
+    },
+    {
+      "name": "throw-closes-inner",
+      "input": {
+        "name": "throw-closes-inner",
+        "chunks": [
+          "data: {\"n\":1}\n\ndata: {\"n\":2}\n\n"
+        ],
+        "operation": "throw"
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          "{\"n\":1}"
+        ],
+        "body.return",
+        "abort"
+      ],
+      "values": [
+        {
+          "value": {
+            "n": 1
+          },
+          "done": false
+        }
+      ],
+      "aborted": true,
+      "error": {
+        "sameMarker": true
+      }
+    },
+    {
+      "name": "queued-next",
+      "input": {
+        "name": "queued-next",
+        "chunks": [
+          "data: {\"n\":1}\n\ndata: {\"n\":2}\n\n"
+        ],
+        "operation": "queued"
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          "{\"n\":1}"
+        ],
+        [
+          "parse",
+          "{\"n\":2}"
+        ],
+        [
+          "body.next",
+          1
+        ]
+      ],
+      "values": [
+        {
+          "value": {
+            "n": 1
+          },
+          "done": false
+        },
+        {
+          "value": {
+            "n": 2
+          },
+          "done": false
+        },
+        {
+          "done": true
+        }
+      ],
+      "aborted": false
+    },
+    {
+      "name": "yield-assimilates-thenable",
+      "input": {
+        "name": "yield-assimilates-thenable",
+        "chunks": [
+          "data: {\"n\":1}\n\n"
+        ],
+        "parse": "thenable"
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          "{\"n\":1}"
+        ],
+        "yield.then",
+        [
+          "body.next",
+          1
+        ]
+      ],
+      "values": [
+        {
+          "n": 1
+        }
+      ],
+      "aborted": false
+    },
+    {
+      "name": "yield-rejects-thenable",
+      "input": {
+        "name": "yield-rejects-thenable",
+        "chunks": [
+          "data: {\"n\":1}\n\n"
+        ],
+        "parse": "rejected"
+      },
+      "trace": [
+        "body.iterator",
+        [
+          "body.next",
+          0
+        ],
+        [
+          "parse",
+          "{\"n\":1}"
+        ],
+        "yield.then",
+        "body.return",
+        "abort"
+      ],
+      "values": [],
+      "aborted": true,
+      "error": {
+        "sameMarker": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "status": "outer_wrapper_failed_inner_pair_passed",
+  "candidate": "dc3d5106b089465a81e27a99c45b67600d48bb97",
+  "wrapper_sha256": "C393439D76B5B67426FA6940BE8784F4704B8FB2BDCF992290E978254CB7902F",
+  "reason": "Regex replacement string expanded $_ as entire template inside control list. Nested original-template pair passed with full zero posthash, but SDK caller/proof controls absent. No qualification claimed.",
+  "compile_pid": 73608,
+  "runtime_pid": 44840,
+  "compile": "passed",
+  "runtime": "passed",
+  "outer_exit_code": 1,
+  "slot": 2,
+  "released": true,
+  "observed_utc": "2026-10-15T23:19:49.0224110+00:00"
+}
