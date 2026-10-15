@@ -17,6 +17,54 @@ fn identity(input: []const u8, expected: []const u8) !void {
     std.crypto.hash.sha2.Sha256.hash(input, &digest, .{});
     try std.testing.expectEqualStrings(expected, &std.fmt.bytesToHex(digest, .lower));
 }
+fn callableSubject(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    const v = @import("extensions/native_ai_provider_values.zig");
+    var row: v.Scope = .{ .engine = engine };
+    defer row.deinit();
+    const mode = if (args.len > 0) args[0] else c.pi_js_undefined();
+    if (try v.eq(&row, mode, "receiver")) return c.JS_DupValue(engine.context, receiver);
+    if (try v.eq(&row, mode, "throw")) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, roots[1])));
+    return c.JS_DupValue(engine.context, roots[0]);
+}
+fn installCallableSubjects(engine: *em.Engine) !void {
+    const v = @import("extensions/native_ai_provider_values.zig");
+    var scope: v.Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    const root = try scope.object();
+    const reason = try scope.object();
+    try scope.put(global, "callableCapture", root);
+    try scope.put(global, "callableReason", reason);
+    try scope.put(global, "nativeArrow", try scope.own(try @import("extensions/native_node_function.zig").createArrow(engine, "subject", 1, callableSubject, &.{ root, reason })));
+    try scope.put(global, "nativeOrdinary", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "subject", 1, callableSubject, &.{ root, reason })));
+}
+test "native AI JSON native arrow metadata constructor guards lexical receiver and captures match actual language functions" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    try installCallableSubjects(engine);
+    const prepared = try engine.evalModule(
+        \\const capture=callableCapture,reason=callableReason;const subject=(mode)=>{if(mode==='receiver')return this;if(mode==='throw')throw reason;return capture};globalThis.sourceArrow=subject;globalThis.sourceOrdinary=(function(){return function subject(mode){if(mode==='receiver')return this;if(mode==='throw')throw reason;return capture}})();globalThis.arrowChecks=()=>{function metadata(fn){const props={};for(const key of Object.getOwnPropertyNames(fn)){const d=Object.getOwnPropertyDescriptor(fn,key);props[key]={writable:d.writable,enumerable:d.enumerable,configurable:d.configurable}}let constructible=true;try{Reflect.construct(function(){},[],fn)}catch(error){if(!(error instanceof TypeError))throw error;constructible=false}return {name:fn.name,length:fn.length,props,constructible,functionPrototype:Object.getPrototypeOf(fn)===Function.prototype}}for(const [actual,expected]of [[nativeArrow,sourceArrow],[nativeOrdinary,sourceOrdinary]])if(JSON.stringify(metadata(actual))!==JSON.stringify(metadata(expected)))throw Error('metadata '+JSON.stringify({actual:metadata(actual),expected:metadata(expected)}));const receiver={};if(nativeArrow.call(receiver,'receiver')!==sourceArrow.call(receiver,'receiver')||nativeArrow.apply(receiver,['receiver'])!==undefined)throw Error('lexical this');if(nativeOrdinary.call(receiver,'receiver')!==receiver)throw Error('ordinary this');for(const fn of [nativeArrow,sourceArrow])for(const make of [()=>new fn(),()=>Reflect.construct(fn,[]),()=>Reflect.construct(function(){},[],fn)]){let rejected=false;try{make()}catch(error){if(!(error instanceof TypeError))throw error;rejected=true}if(!rejected)throw Error('arrow constructor/new.target guard')}function Alternate(){}for(const fn of [nativeOrdinary,sourceOrdinary]){const built=Reflect.construct(fn,['receiver'],Alternate);if(Object.getPrototypeOf(built)!==Alternate.prototype)throw Error('Reflect new.target prototype')}for(const fn of [nativeArrow,sourceArrow,nativeOrdinary,sourceOrdinary]){if(fn()!==capture)throw Error('captured raw identity');let seen;try{fn('throw')}catch(error){seen=error}if(seen!==reason)throw Error('throw identity')}return true};delete globalThis.callableCapture;delete globalThis.callableReason;export const ready=true;
+    , "native-ai-arrow-subjects.mjs");
+    engine.freeValue(prepared);
+    c.JS_RunGC(engine.runtime);
+    const checked = try engine.evalModule("if(!arrowChecks())throw Error('retained arrow captures');export const done=true;", "native-ai-arrow-checks.mjs");
+    engine.freeValue(checked);
+    c.JS_RunGC(engine.runtime);
+}
+test "native AI JSON every host allocation releases ordinary and arrow callable captures" {
+    const Probe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
+            defer engine.deinit();
+            const generation = engine.native_allocation_generation;
+            installCallableSubjects(engine) catch |err| return engine.nativeAllocationError(err, generation);
+            const checked = engine.evalModule("const held=nativeArrow;if(held()!==callableCapture||held.call({},'receiver')!==undefined||Object.hasOwn(held,'prototype'))throw Error('arrow capture');let reason;try{held('throw')}catch(error){reason=error}if(reason!==callableReason)throw Error('arrow reason');export const done=true;", "native-ai-arrow-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+            engine.freeValue(checked);
+            c.JS_RunGC(engine.runtime);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}
 test "native AI JSON actual OpenAI factory owned HTTP20 matches full intermediate snapshots and callbacks" {
     const gpa = std.testing.allocator;
     const input = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("extensions/fixtures/ai-openai-http-b06.input.json"), .{});

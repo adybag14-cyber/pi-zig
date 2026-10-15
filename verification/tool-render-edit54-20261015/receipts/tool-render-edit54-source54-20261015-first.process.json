@@ -1,0 +1,26 @@
+{
+  "pid": 45380,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "argv": [
+    "--expose-gc",
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-b45-observe-20261014.mjs",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-render-edit54-source-capture-20261015.mjs",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-render-edit54-source54-20261015-first-output.json",
+    "C:\\Users\\adyba\\pi-zig-tool-render-20261015\\src\\extensions\\fixtures\\sdk-edit-diff54-b45.input.txt",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-render-edit54-source54-20261015-first-frozen.json"
+  ],
+  "live_command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --expose-gc --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-b45-observe-20261014.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-render-edit54-source-capture-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-render-edit54-source54-20261015-first-output.json C:\\Users\\adyba\\pi-zig-tool-render-20261015\\src\\extensions\\fixtures\\sdk-edit-diff54-b45.input.txt C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-render-edit54-source54-20261015-first-frozen.json",
+  "created_utc": "2026-10-15T16:19:14.4699791Z",
+  "launched_utc": "2026-10-15T16:19:14.4683308+00:00",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T16:19:23.1978318+00:00"
+}

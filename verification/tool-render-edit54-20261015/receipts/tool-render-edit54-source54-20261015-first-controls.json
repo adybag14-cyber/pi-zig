@@ -1,0 +1,22 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-tool-render-20261015\\verification\\tool-render-edit54-20261015\\run-source.ps1",
+    "sha256": "22CC5A863F6F0B032489CF28192840B7ED85BEBDF68EADAE8F4CC8DDF8DCA7D6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-tool-render-20261015\\verification\\tool-render-edit54-20261015\\run-owner.ps1",
+    "sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-tool-render-20261015\\src\\extensions\\fixtures\\sdk-edit-diff54-b45.input.txt",
+    "sha256": "0695E7457307012D69FE4A595D25ED31BA620CB9C4BF5410EAD4EC268C4681C5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-render-edit54-source-capture-20261015.mjs",
+    "sha256": "E9BDE4B9786D50B16C423956677C47F5B88B8E7ABF2E890657755FC033171F08"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b45-observe-20261014.mjs",
+    "sha256": "277C6CCC272A30C512C9BC18CC1ADAFE9A3F2A99403704020D9C4FF17D2B8D82"
+  }
+]

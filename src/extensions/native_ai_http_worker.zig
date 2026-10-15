@@ -64,6 +64,8 @@ pub const Input = struct {
     timeout_ms: ?u64 = null,
     method: std.http.Method = .POST,
     framing: Framing = .sse,
+    prepare: ?@import("native_ai_http_prepare.zig").Callback = null,
+    prepare_data: []const u8 = &.{},
 };
 const OwnedInput = struct {
     url: []u8,
@@ -73,6 +75,8 @@ const OwnedInput = struct {
     timeout_ms: ?u64,
     method: std.http.Method,
     framing: Framing,
+    prepare: ?@import("native_ai_http_prepare.zig").Callback,
+    prepare_data: []u8,
     fn copy(input: Input) !OwnedInput {
         const url = try a.dupe(u8, input.url);
         errdefer a.free(url);
@@ -93,7 +97,7 @@ const OwnedInput = struct {
             destination.* = .{ .name = name, .value = try a.dupe(u8, source.value) };
             count += 1;
         }
-        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms, .method = input.method, .framing = input.framing };
+        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms, .method = input.method, .framing = input.framing, .prepare = input.prepare, .prepare_data = try a.dupe(u8, input.prepare_data) };
     }
     fn deinit(self: OwnedInput) void {
         a.free(self.url);
@@ -104,6 +108,8 @@ const OwnedInput = struct {
         }
         a.free(self.headers);
         if (self.proxy_url) |value| a.free(value);
+        @memset(self.prepare_data, 0);
+        a.free(self.prepare_data);
     }
 };
 pub const Worker = struct {
@@ -207,11 +213,31 @@ pub const Worker = struct {
     fn request(self: *Worker) !void {
         var arena = std.heap.ArenaAllocator.init(a);
         defer arena.deinit();
+        const prep = @import("native_ai_http_prepare.zig");
+        const now_ms = std.Io.Clock.awake.now(self.io).toMilliseconds();
+        const budget: prep.Budget = .{ .io = self.io, .abort_flag = &self.abort_flag, .deadline_ms = if (self.input.timeout_ms) |ms| now_ms +| @as(i64, @intCast(@min(ms, std.math.maxInt(i64)))) else null };
+        var prepared: ?prep.Prepared = if (self.input.prepare) |callback| try callback(a, .{ .method = self.input.method, .url = self.input.url, .payload = self.input.payload, .headers = self.input.headers }, self.input.prepare_data, budget) else null;
+        defer if (prepared) |*value| value.deinit(a);
+        const url = if (prepared) |value| value.url orelse self.input.url else self.input.url;
+        const headers = if (prepared) |value| merged: {
+            var combined: std.ArrayList(std.http.Header) = .empty;
+            for (self.input.headers) |original| {
+                var overridden = false;
+                for (value.headers) |replacement| if (std.ascii.eqlIgnoreCase(original.name, replacement.name)) {
+                    overridden = true;
+                    break;
+                };
+                if (!overridden) try combined.append(arena.allocator(), original);
+            }
+            try combined.appendSlice(arena.allocator(), value.headers);
+            break :merged combined.items;
+        } else self.input.headers;
+        const timeout_ms = try budget.remaining();
         var client: std.http.Client = .{ .allocator = a, .io = self.io };
         defer client.deinit();
-        _ = try proxy.configureClient(&client, arena.allocator(), self.input.url, .{ .setting = self.input.proxy_url });
+        _ = try proxy.configureClient(&client, arena.allocator(), url, .{ .setting = self.input.proxy_url });
         const payload: ?[]const u8 = if ((self.input.method == .GET or self.input.method == .HEAD) and self.input.payload.len == 0) null else self.input.payload;
-        _ = try fetch.fetchControlledObserved(&client, .{ .location = .{ .url = self.input.url }, .method = self.input.method, .payload = payload, .extra_headers = self.input.headers, .keep_alive = false, .response_writer = &self.writer }, self.input.timeout_ms, &self.abort_flag, .{ .context = self, .callback = observeHead });
+        _ = try fetch.fetchControlledObserved(&client, .{ .location = .{ .url = url }, .method = self.input.method, .payload = payload, .extra_headers = headers, .keep_alive = false, .response_writer = &self.writer }, timeout_ms, &self.abort_flag, .{ .context = self, .callback = observeHead });
         if (self.writer.end != 0) {
             try self.feed(self.writer.buffer[0..self.writer.end]);
             self.writer.end = 0;
