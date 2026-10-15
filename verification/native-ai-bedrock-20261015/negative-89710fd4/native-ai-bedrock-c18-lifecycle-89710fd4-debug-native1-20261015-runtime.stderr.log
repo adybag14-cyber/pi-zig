@@ -1,0 +1,270 @@
+test-native-ai-bedrock18
++- run test 4 pass, 1 fail (5 total)
+error: 'native_ai_bedrock18_test.test.native AI Bedrock18 exact Source SDK method URL path body auth hooks and streamSimple traces' failed:
+       Bedrock Source18 case 16: Error: {"case":"stream-simple-budget-clamp","actual":{"callbacks":[{"type":"payload","model":"anthropic.claude-3-7-sonnet","value":{"modelId":"anthropic.claude-3-7-sonnet","messages":[{"role":"user","content":[{"text":"Hello"},{"cachePoint":{"type":"default"}}]}],"inferenceConfig":{"maxTokens":8192},"additionalModelRequestFields":{"thinking":{"type":"enabled","display":"summarized","budget_tokens":7168},"anthropic_beta":["interleaved-thinking-2025-05-14"]}}},{"type":"response","model":"anthropic.claude-3-7-sonnet","value":{"status":200,"headers":{"content-type":"application/vnd.amazon.eventstream","x-amzn-requestid":"fixture-request-id","x-fixture-response":"raw-gateway"}}},{"type":"provider","model":"anthropic.claude-3-7-sonnet","value":{"messageStart":{"role":"assistant"}}},{"type":"provider","model":"anthropic.claude-3-7-sonnet","value":{"contentBlockDelta":{"delta":{"text":"Simple result"},"contentBlockIndex":0}}},{"type":"provider","model":"anthropic.claude-3-7-sonnet","value":{"messageStop":{"stopReason":"end_turn"}}}],"events":[{"type":"start","partial":{"role":"assistant","content":[],"api":"bedrock-converse-stream","provider":"amazon-bedrock","model":"anthropic.claude-3-7-sonnet","usage":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":0,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"pending","timestamp":0}},{"type":"text_start","contentIndex":0,"partial":{"role":"assistant","content":[{"type":"text","text":"Simple result","index":0}],"api":"bedrock-converse-stream","provider":"amazon-bedrock","model":"anthropic.claude-3-7-sonnet","usage":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":0,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"pending","timestamp":0}},{"type":"text_delta","contentIndex":0,"delta":"Simple result","partial":{"role":"assistant","content":[{"type":"text","text":"Simple result","index":0}],"api":"bedrock-converse-stream","provider":"amazon-bedrock","model":"anthropic.claude-3-7-sonnet","usage":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":0,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"pending","timestamp":0}},{"type":"done","reason":"stop","message":{"role":"assistant","content":[{"type":"text","text":"Simple result"}],"api":"bedrock-converse-stream","provider":"amazon-bedrock","model":"anthropic.claude-3-7-sonnet","usage":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":0,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"stop","timestamp":0,"rawStopReason":"end_turn","durationMs":0}}],"result":{"role":"assistant","content":[{"type":"text","text":"Simple result"}],"api":"bedrock-converse-stream","provider":"amazon-bedrock","model":"anthropic.claude-3-7-sonnet","usage":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":0,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"stop","timestamp":0,"rawStopReason":"end_turn","durationMs":0}},"expected":{"callbacks":[{"type":"payload","model":"anthropic.claude-3-7-sonnet","value":{"modelId":"anthropic.claude-3-7-sonnet","messages":[{"role":"user","content":[{"text":"Hello"},{"cachePoint":{"type":"default"}}]}],"inferenceConfig":{"maxTokens":8192},"additionalModelRequestFields":{"thinking":{"type":"enabled","budget_tokens":7168,"display":"summarized"},"anthropic_beta":["interleaved-thinking-2025-05-14"]}}},{"type":"response","model":"anthropic.claude-3-7-sonnet","value":{"status":200,"headers":{"content-type":"application/vnd.amazon.eventstream","x-amzn-requestid":"fixture-request-id","x-fixture-response":"raw-gateway"}}},{"type":"provider","model":"anthropic.claude-3-7-sonnet","value":{"messageStart":{"role":"assistant"}}},{"type":"provider","model":"anthropic.claude-3-7-sonnet","value":{"contentBlockDelta":{"delta":{"text":"Simple result"},"contentBlockIndex":0}}},{"type":"provider","model":"anthropic.claude-3-7-sonnet","value":{"messageStop":{"stopReason":"end_turn"}}}],"events":[{"type":"start","partial":{"role":"assistant","content":[],"api":"bedrock-converse-stream","provider":"amazon-bedrock","model":"anthropic.claude-3-7-sonnet","usage":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":0,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"pending","timestamp":0}},{"type":"text_start","contentIndex":0,"partial":{"role":"assistant","content":[{"type":"text","text":"Simple result","index":0}],"api":"bedrock-converse-stream","provider":"amazon-bedrock","model":"anthropic.claude-3-7-sonnet","usage":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":0,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"pending","timestamp":0}},{"type":"text_delta","contentIndex":0,"delta":"Simple result","partial":{"role":"assistant","content":[{"type":"text","text":"Simple result","index":0}],"api":"bedrock-converse-stream","provider":"amazon-bedrock","model":"anthropic.claude-3-7-sonnet","usage":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":0,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"pending","timestamp":0}},{"type":"done","reason":"stop","message":{"role":"assistant","content":[{"type":"text","text":"Simple result"}],"api":"bedrock-converse-stream","provider":"amazon-bedrock","model":"anthropic.claude-3-7-sonnet","usage":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":0,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"stop","timestamp":0,"rawStopReason":"end_turn","durationMs":0}}],"result":{"role":"assistant","content":[{"type":"text","text":"Simple result"}],"api":"bedrock-converse-stream","provider":"amazon-bedrock","model":"anthropic.claude-3-7-sonnet","usage":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":0,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"stop","timestamp":0,"rawStopReason":"end_turn","durationMs":0}}}
+       C:\Users\adyba\pi-zig-ai-bedrock-lifecycle-files-source-20261015\src\extensions\engine.zig:875:9: 0x7ff75be8d6de in awaitValueImpl (test_zcu.obj)
+               return switch (c.JS_PromiseState(self.context, value)) {
+               ^
+       C:\Users\adyba\pi-zig-ai-bedrock-lifecycle-files-source-20261015\src\extensions\engine.zig:822:9: 0x7ff75be8d789 in awaitValue (test_zcu.obj)
+               return self.awaitValueImpl(value, true);
+               ^
+       C:\Users\adyba\pi-zig-ai-bedrock-lifecycle-files-source-20261015\src\extensions\engine.zig:554:25: 0x7ff75beaccea in evalModule (test_zcu.obj)
+               const settled = try self.awaitValue(evaluated);
+                               ^
+       C:\Users\adyba\pi-zig-ai-bedrock-lifecycle-files-source-20261015\src\native_ai_bedrock18_test.zig:53:13: 0x7ff75beb126e in test.native AI Bedrock18 exact Source SDK method URL path body auth hooks and streamSimple traces (test_zcu.obj)
+                   return err;
+                   ^
+failed command: ".\\.zig-cache\\o\\7e65bc2b92ae6c0373df2efaa99b59fa\\test.exe" "--cache-dir=.\\.zig-cache" --seed=0x5b8ead93 --listen=-
+
+Build Summary: 157/159 steps succeeded (1 failed); 11/12 tests passed (1 failed)
+test-native-ai-bedrock18 transitive failure
++- run test 4 pass, 1 fail (5 total)
+   +- compile test Debug native cached 309ms MaxRSS:51M
+      +- WriteFile cached
+      +- compile lib pi-quickjs Debug native cached 34ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile lib pi-icu78-i18n Debug native cached 74ms MaxRSS:54M
+      |  |  +- WriteFile cached
+      |  |  +- compile lib pi-icu78-common Debug native cached 98ms MaxRSS:55M
+      |  |  |  +- WriteFile cached
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native cached 53ms MaxRSS:54M
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native (reused)
+      |  |  +- compile lib pi-icu78-common Debug native (+3 more reused dependencies)
+      |  +- WriteFile cached
+      |  +- compile lib pi-native-yaml Debug native cached 18ms MaxRSS:54M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native cached 68ms MaxRSS:53M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native cached 73ms MaxRSS:53M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native cached 62ms MaxRSS:51M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native cached 66ms MaxRSS:51M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native cached 63ms MaxRSS:53M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native cached 53ms MaxRSS:51M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native cached 49ms MaxRSS:54M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native cached 38ms MaxRSS:54M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native cached 54ms MaxRSS:51M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native cached 41ms MaxRSS:54M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native cached 63ms MaxRSS:51M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native cached 64ms MaxRSS:53M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native cached 43ms MaxRSS:54M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native cached 61ms MaxRSS:51M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native cached 55ms MaxRSS:51M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native cached 69ms MaxRSS:52M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native cached 72ms MaxRSS:53M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native cached 65ms MaxRSS:51M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native cached 54ms MaxRSS:51M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native cached 56ms MaxRSS:54M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native cached 55ms MaxRSS:51M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native cached 56ms MaxRSS:54M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native cached 61ms MaxRSS:51M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native cached 51ms MaxRSS:54M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native cached 54ms MaxRSS:54M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native cached 22ms MaxRSS:54M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native cached 52ms MaxRSS:51M
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)
+      |  +- WriteFile cached
+      |  +- compile lib pi-sqlite Debug native cached 32ms MaxRSS:55M
+      |  +- compile lib pi-icu78-i18n Debug native (+3 more reused dependencies)
+      |  +- compile lib pi-native-yaml Debug native (+81 more reused dependencies)
+      |  +- compile lib pi-sqlite Debug native (reused)
+      +- WriteFile (reused)
+      +- compile lib pi-sqlite Debug native (reused)
+      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)
+      +- compile lib pi-sqlite Debug native (reused)
+      +- WriteFile cached
+      +- compile lib pi-photon Debug native cached 56ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_0 Debug native cached 47ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_0 Debug native cached 45ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_1 Debug native cached 59ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_1 Debug native cached 44ms MaxRSS:55M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_2 Debug native cached 102ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_2 Debug native cached 61ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_3 Debug native cached 91ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_3 Debug native cached 38ms MaxRSS:55M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_4 Debug native cached 74ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_4 Debug native cached 109ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_5 Debug native cached 82ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_5 Debug native cached 64ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_6 Debug native cached 73ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_6 Debug native cached 104ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_7 Debug native cached 74ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_7 Debug native cached 62ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_8 Debug native cached 102ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_8 Debug native cached 63ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_9 Debug native cached 88ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_9 Debug native cached 55ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_10 Debug native cached 72ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_10 Debug native cached 65ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_11 Debug native cached 86ms MaxRSS:52M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_11 Debug native cached 83ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_12 Debug native cached 76ms MaxRSS:53M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_12 Debug native cached 59ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_13 Debug native cached 81ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_13 Debug native cached 56ms MaxRSS:53M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_14 Debug native cached 109ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_14 Debug native cached 85ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_15 Debug native cached 35ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_15 Debug native cached 74ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_imports Debug native cached 44ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-browser_imports Debug native cached 40ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native cached 59ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_native Debug native cached 45ms MaxRSS:55M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_native Debug native cached 59ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_api Debug native cached 56ms MaxRSS:53M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_browser_api Debug native cached 75ms MaxRSS:54M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native cached 104ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native cached 62ms MaxRSS:51M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native cached 54ms MaxRSS:51M
+      |  +- compile obj pi-photon-photon_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_15 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_15 Debug native (reused)
+      |  +- compile obj pi-photon-codec_imports Debug native (reused)
+      |  +- compile obj pi-photon-browser_imports Debug native (reused)
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native (reused)
+      |  +- compile obj pi-photon-photon_native Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_native Debug native (reused)
+      |  +- compile obj pi-photon-session_api Debug native (reused)
+      |  +- compile obj pi-photon-session_browser_api Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native (reused)
+      +- compile lib pi-photon Debug native (+126 more reused dependencies)
+      +- options cached
+test-native-ai-bedrock-credentials success
++- run test 7 pass (7 total) 1s MaxRSS:15M
+   +- compile test Debug native cached 87ms MaxRSS:54M
+      +- WriteFile (reused)
+      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)
+      +- WriteFile (reused)
+      +- compile lib pi-sqlite Debug native (reused)
+      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)
+      +- compile lib pi-sqlite Debug native (reused)
+      +- WriteFile (reused)
+      +- compile lib pi-photon Debug native (+126 more reused dependencies)
+      +- compile lib pi-photon Debug native (+126 more reused dependencies)
+      +- options (reused)
+
+error: the following build command failed with exit code 1:
+.zig-cache\o\48b26162e822fe531f221e4d28fdd0c6\build.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\zig.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib C:\Users\adyba\pi-zig-ai-bedrock-lifecycle-files-source-20261015 .zig-cache C:\Users\adyba\AppData\Local\zig --seed 0x5b8ead93 -Za31f604431cdd73f test-native-ai-bedrock18 test-native-ai-bedrock-credentials -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all
