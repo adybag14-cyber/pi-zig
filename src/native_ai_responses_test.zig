@@ -27,7 +27,7 @@ fn install(engine: *em.Engine) !void {
 }
 
 test "native Responses actual factory requests callbacks push snapshots consumer snapshots and alias identity against Source18" {
-    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 20000 });
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try install(engine);
     const result = engine.evalModule(@embedFile("extensions/fixtures/ai-responses18-5ab.input.txt"), "native-responses18-source-differential.mjs") catch |err| {
@@ -39,7 +39,7 @@ test "native Responses actual factory requests callbacks push snapshots consumer
 }
 
 test "native Responses retained factory graph survives collection before actual request" {
-    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 20000 });
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try install(engine);
     const held = try engine.evalModule("globalThis.keptResponses=responsesAPI;delete globalThis.responsesAPI;globalThis.responsesAPI=keptResponses;export const held=true;", "native-responses-retained-prepare.mjs");
@@ -56,7 +56,7 @@ test "native Responses retained factory graph survives collection before actual 
 test "native Responses every host allocation releases factory dependencies and closure roots" {
     const Probe = struct {
         fn run(gpa: std.mem.Allocator) !void {
-            const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 20000 });
+            const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
             defer engine.deinit();
             const generation = engine.native_allocation_generation;
             const factory = @import("extensions/native_ai_responses_factory.zig").create(engine) catch |err| return engine.nativeAllocationError(err, generation);
