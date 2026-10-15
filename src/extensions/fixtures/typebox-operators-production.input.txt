@@ -1,0 +1,171 @@
+(() => {
+  const graph = globalThis.TypeBoxOperatorGraph;
+  const T = graph.Type, Settings = graph.Settings, Metrics = graph.Memory.Metrics;
+  const rows = [];
+  function snapshot(value, seen = new Map()) {
+    if (typeof value === 'bigint') return { bigint: String(value) };
+    if (typeof value === 'symbol') return { symbol: String(value) };
+    if (typeof value === 'undefined') return { undefined: true };
+    if (typeof value === 'number' && !Number.isFinite(value)) return { number: String(value) };
+    if (value === null || typeof value !== 'object' && typeof value !== 'function') return value;
+    if (seen.has(value)) return { reference: seen.get(value) };
+    seen.set(value, seen.size);
+    if (typeof value === 'function') return { function: value.name, length: value.length, prototype: Object.hasOwn(value, 'prototype') };
+    return Reflect.ownKeys(value).map(key => {
+      const descriptor = Object.getOwnPropertyDescriptor(value, key);
+      return { key: typeof key === 'symbol' ? { symbol: String(key) } : key,
+        enumerable: descriptor.enumerable, configurable: descriptor.configurable,
+        writable: descriptor.writable, value: 'value' in descriptor ? snapshot(descriptor.value, seen) : { getter: !!descriptor.get, setter: !!descriptor.set } };
+    });
+  }
+  function run(name, operation) {
+    Settings.Reset();
+    for (const key of Object.keys(Metrics)) Metrics[key] = 0;
+    try {
+      const value = operation();
+      const metrics = { ...Metrics };
+      rows.push({ name, value: snapshot(value), metrics });
+    } catch (error) {
+      rows.push({ name, error: { name: error?.name, message: error?.message }, metrics: { ...Metrics } });
+    } finally { Settings.Reset(); }
+  }
+  const literal = value => T.Literal(value);
+  const union = values => T.Union(values);
+  const object = () => T.Object({ a: T.String(), b: T.Optional(T.Number()) }, { title: 'object' });
+  const fn = () => T.Function([T.String(), T.Optional(T.Number())], T.Boolean(), { title: 'function' });
+  const ctor = () => T.Constructor([T.String()], object(), { title: 'constructor' });
+  const deferred = (action, parameters, options = {}) => T.Deferred(action, parameters, options);
+  const instantiate = (type, context = {}) => T.Instantiate(context, type);
+  run('metadata', () => ['Instantiate','Evaluate','With','Priority','Extends','TemplateLiteralDecode','Infer','Parameter','Call','Mapped'].map(name => [name, T[name]]));
+  run('ref-resolve', () => instantiate(T.Ref('A'), { A: literal('resolved') }));
+  run('ref-missing', () => instantiate(T.Ref('missing')));
+  run('ref-cycle', () => instantiate(T.Ref('A'), { A: T.Ref('B'), B: T.Ref('A') }));
+  run('ref-inherited-context', () => instantiate(T.Ref('A'), Object.create({ A: literal(17) })));
+  run('ref-getter-order', () => { const order = []; const context = { get A() { order.push('A'); return T.Ref('B'); }, get B() { order.push('B'); return literal(7); } }; return [instantiate(T.Ref('A'), context), order]; });
+  run('ref-getter-throw-identity', () => { const sentinel = {}; try { instantiate(T.Ref('A'), { get A() { throw sentinel; } }); } catch (error) { return error === sentinel; } });
+  const containers = {
+    Array: () => T.Array(T.Ref('A'), { minItems: 2 }),
+    Constructor: () => T.Constructor([T.Ref('A')], T.Ref('A'), { title: 'C' }),
+    Function: () => T.Function([T.Ref('A')], T.Ref('A'), { title: 'F' }),
+    Dependent: () => T.Dependent(T.Ref('A'), T.Ref('A'), T.Ref('A'), { title: 'D' }),
+    Intersect: () => T.Intersect([T.Ref('A'), T.String()], { title: 'I' }),
+    Object: () => T.Object({ p: T.Ref('A') }, { title: 'O' }),
+    Record: () => T.RecordFromPattern('^.*$', T.Ref('A')),
+    Rest: () => T.Rest(T.Ref('A')),
+    Tuple: () => T.Tuple([T.Ref('A')], { title: 'T' }),
+    Union: () => union([T.Ref('A'), T.Number()]),
+  };
+  for (const [name, make] of Object.entries(containers)) run(`instantiate-${name}`, () => instantiate(make(), { A: literal('a') }));
+  run('instantiate-rest-tuple', () => instantiate(T.Tuple([T.Rest(T.Tuple([T.String(), T.Number()])), T.Boolean()])));
+  run('instantiate-rest-invalid', () => instantiate(T.Tuple([T.Rest(T.Boolean())])));
+  run('instantiate-all-modifiers', () => instantiate(T.Immutable(T.Readonly(T.Optional(T.Ref('A')))), { A: literal(1) }));
+  const actions = {
+    AddImmutable: () => [T.Ref('A')], RemoveImmutable: () => [T.Immutable(T.Ref('A'))],
+    AddReadonly: () => [T.Ref('A')], RemoveReadonly: () => [T.Readonly(T.Ref('A'))],
+    AddOptional: () => [T.Ref('A')], RemoveOptional: () => [T.Optional(T.Ref('A'))],
+    Capitalize: () => [literal('hello')], Lowercase: () => [literal('HELLO')],
+    Uncapitalize: () => [literal('Hello')], Uppercase: () => [literal('hello')],
+    Conditional: () => [T.Ref('A'), T.String(), literal('yes'), literal('no')],
+    ConstructorParameters: () => [ctor()], Evaluate: () => [T.Intersect([T.String(), literal('x')])],
+    Exclude: () => [union([literal('a'), literal('b')]), literal('a')],
+    Extract: () => [union([literal('a'), literal('b')]), literal('a')],
+    Index: () => [object(), literal('a')], InstanceType: () => [ctor()],
+    Interface: () => [[object()], { c: T.Boolean() }], KeyOf: () => [object()],
+    Mapped: () => [T.Identifier('K'), union([literal('a'), literal('b')]), T.Ref('K'), T.Ref('K')],
+    Module: () => [{ A: T.String(), B: T.Array(T.Ref('A')) }],
+    NonNullable: () => [union([T.Null(), T.Undefined(), T.String()])],
+    Pick: () => [object(), literal('a')], Parameters: () => [fn()], Partial: () => [object()],
+    Omit: () => [object(), literal('a')], ReadonlyObject: () => [object()],
+    Record: () => [union([literal('a'), literal('b')]), T.Boolean()],
+    Required: () => [object()], ReturnType: () => [fn()],
+    TemplateLiteral: () => [[literal('pre-'), union([literal('a'), literal('b')])]],
+    With: () => [object(), { description: 'annotation', additionalProperties: false }],
+  };
+  for (const [action, parameters] of Object.entries(actions)) run(`deferred-${action}`, () => instantiate(deferred(action, parameters(), { title: action }), { A: literal('a') }));
+  for (const [action, parameters] of Object.entries(actions)) run(`deferred-unresolved-${action}`, () => {
+    const values = parameters();
+    if (action === 'Mapped') values[1] = T.Ref('missing');
+    else if (action === 'Module') values[0] = { A: T.Ref('missing') };
+    else if (action === 'Interface' || action === 'TemplateLiteral') values[0] = [T.Ref('missing')];
+    else values[0] = T.Ref('missing');
+    return instantiate(deferred(action, values, { title: action }));
+  });
+  run('deferred-unknown-preserved', () => instantiate(deferred('UnknownAction', [literal(1)], { annotation: true })));
+  run('deferred-unresolved-conditional', () => instantiate(deferred('Conditional', [T.Ref('missing'), T.String(), literal('yes'), literal('no')])));
+  run('with-unresolved-ref', () => T.With(T.Ref('A'), { title: 'deferred' }));
+  run('with-symbol-and-hidden', () => { const symbol = Symbol('option'); const output = T.With(T.Optional(T.String()), { [symbol]: 3, description: 'x' }); return [output, output[symbol], T.IsOptional(output)]; });
+  run('with-options-getter-order', () => { const order = []; const options = { get x() { order.push('x'); return 1; }, get y() { order.push('y'); return 2; } }; return [T.With(T.String(), options), order]; });
+  run('with-options-throw-identity', () => { const sentinel = {}; try { T.With(T.String(), { get x() { throw sentinel; } }); } catch (error) { return error === sentinel; } });
+  run('with-guest-oom-lookalike-identity', () => { const sentinel = new Error('out of memory'); sentinel.name = 'OutOfMemory'; try { T.With(T.String(), { get x() { throw sentinel; } }); } catch (error) { return error === sentinel; } });
+  run('closure-gc-rooting', () => { const kept = {}; const weak = new WeakRef(kept); const output = T.With(T.Array(T.String()), { get annotation() { if (typeof globalThis.gc === 'function') globalThis.gc(); return weak.deref() === kept; } }); return [output.annotation, weak.deref() === kept]; });
+  const primitiveKinds = { Any: () => T.Any(), BigInt: () => T.BigInt(), Boolean: () => T.Boolean(), Integer: () => T.Integer(), Never: () => T.Never(), Null: () => T.Null(), Number: () => T.Number(), String: () => T.String(), Symbol: () => T.Symbol(), Undefined: () => T.Undefined(), Unknown: () => T.Unknown(), Void: () => T.Void(), Unsafe: () => T.Unsafe({ type: 'custom' }) };
+  for (const [leftName, left] of Object.entries(primitiveKinds)) for (const [rightName, right] of Object.entries(primitiveKinds)) run(`extends-${leftName}-${rightName}`, () => T.Extends({ Existing: literal('existing') }, left(), right()));
+  const structural = {
+    Array: () => T.Array(T.String()), Constructor: ctor, Function: fn,
+    Dependent: () => T.Dependent(T.String(), literal('a'), T.Number()),
+    Enum: () => T.Enum(['a','b']), Intersect: () => T.Intersect([T.String(), literal('a')]),
+    LiteralBigInt: () => literal(1n), LiteralBoolean: () => literal(true), LiteralNumber: () => literal(1), LiteralString: () => literal('a'),
+    Object: object, Record: () => T.Record(T.String(), T.String()),
+    TemplateLiteral: () => T.TemplateLiteral([literal('a'), union([literal('b'), literal('c')])]),
+    Tuple: () => T.Tuple([T.String(), T.Optional(T.Number())]), Union: () => union([literal('a'), literal('b')]),
+    Cyclic: () => T.Cyclic({ Node: T.Object({ next: T.Optional(T.Ref('Node')) }) }, 'Node'),
+  };
+  for (const [name, make] of Object.entries(structural)) {
+    run(`extends-${name}-same`, () => T.Extends({}, make(), make()));
+    run(`extends-${name}-any`, () => T.Extends({}, make(), T.Any()));
+    run(`extends-${name}-infer`, () => T.Extends({}, make(), T.Infer('Inferred')));
+    run(`evaluate-${name}`, () => T.Evaluate(make(), { description: 'evaluation' }));
+  }
+  run('extends-right-dependent', () => T.Extends({}, literal('a'), T.Dependent(T.String(), literal('a'), T.Number())));
+  run('extends-right-intersection', () => T.Extends({}, literal('a'), T.Intersect([T.String(), literal('a')])));
+  run('extends-right-enum', () => T.Extends({}, literal('a'), T.Enum(['a','b'])));
+  run('extends-right-union', () => T.Extends({}, literal('a'), union([T.Number(), T.String()])));
+  run('extends-object-optional-missing', () => T.Extends({}, T.Object({}), T.Object({ x: T.Optional(T.Infer('X', T.String())) })));
+  run('extends-object-infer-shadow', () => T.Extends({ X: T.Number() }, T.Object({ x: literal('a') }), T.Object({ x: T.Infer('X') })));
+  run('extends-object-record', () => T.Extends({}, T.Object({ x: literal('a'), y: literal('b') }), T.Record(T.String(), T.Infer('X'))));
+  run('extends-function-contravariance', () => T.Extends({}, T.Function([T.Any()], T.String()), T.Function([T.String()], T.Unknown())));
+  run('extends-function-optional-mismatch', () => T.Extends({}, T.Function([T.String()], T.String()), T.Function([T.Optional(T.String())], T.String())));
+  run('extends-constructor-inference', () => T.Extends({}, ctor(), T.Constructor([T.Infer('P')], T.Infer('R'))));
+  run('extends-right-infer-never', () => T.Extends({}, T.Object({ x: T.String() }), T.Object({ x: T.Infer('X', T.Never()) })));
+  for (const [name, make] of Object.entries(primitiveKinds)) {
+    run(`extends-${name}-empty-object`, () => T.Extends({}, make(), T.Object({})));
+    run(`extends-${name}-length-object`, () => T.Extends({}, make(), T.Object({ length: T.Number() })));
+  }
+  run('extends-array-tuple', () => T.Extends({}, T.Array(T.String()), T.Tuple([T.String()])));
+  run('extends-tuple-array', () => T.Extends({}, T.Tuple([T.String(), T.String()]), T.Array(T.String())));
+  run('extends-record-object', () => T.Extends({}, T.Record(T.String(), T.String()), T.Object({ x: T.String() })));
+  run('extends-record-record', () => T.Extends({}, T.Record(T.String(), literal('a')), T.Record(T.String(), T.String())));
+  run('priority-stable-disjoint', () => T.Priority([literal('b'), T.Number(), literal('a'), T.String(), T.Any(), T.Never()]));
+  run('priority-objects', () => T.Priority([T.Object({}), T.Object({ a: T.String() }), T.Object({ a: literal('a') })]));
+  for (const pattern of ['^hello$','^(a|b)$','^pre-(a|b)-(x|y)$','^a\\|b$','^.*$','^a(.*)$','^([0-9]+)$','broken']) run(`decode-${pattern}`, () => T.TemplateLiteralDecode(pattern));
+  const generic = expression => T.Generic([T.Parameter('A')], expression);
+  run('generic-anonymous', () => T.Call(generic(T.Array(T.Ref('A'))), [T.String()]));
+  run('generic-default', () => T.Call(T.Generic([T.Parameter('A', T.Unknown(), literal('default'))], T.Ref('A')), []));
+  run('generic-constraint-failure', () => T.Call(T.Generic([T.Parameter('A', T.String())], T.Ref('A')), [T.Number()]));
+  run('generic-ref-target', () => instantiate(T.Call(T.Ref('F'), [T.Number()]), { F: generic(T.Array(T.Ref('A'))) }));
+  run('generic-ref-target-chain', () => instantiate(T.Call(T.Ref('Alias'), [T.String()]), { Alias: T.Ref('F'), F: generic(T.Ref('A')) }));
+  run('generic-not-generic', () => T.Call(T.String(), [T.Number()]));
+  run('generic-unresolved-target', () => T.Call(T.Ref('missing'), [T.Number()]));
+  run('generic-conditional-distribution', () => T.Call(generic(T.Conditional(T.Ref('A'), T.String(), T.Ref('A'), T.Never())), [union([literal('a'), literal(1)])]));
+  run('generic-mapped-distribution', () => T.Call(generic(T.Mapped(T.Identifier('K'), T.KeyOf(T.Ref('A')), T.Ref('K'), T.Index(T.Ref('A'), T.Ref('K')))), [union([T.Object({ a: T.String() }), T.Object({ b: T.Number() })])]));
+  run('generic-instantiation-limit-recovery', () => {
+    Settings.Set({ maxInstantiationCount: 3 });
+    const F = generic(T.Call(T.Ref('F'), [T.Ref('A')]));
+    let failure;
+    try { instantiate(T.Call(T.Ref('F'), [T.String()]), { F }); } catch (error) { failure = { name: error.name, message: error.message }; }
+    return [failure, T.Call(generic(T.Ref('A')), [literal('recovered')])];
+  });
+  run('generic-default-instantiation-limit-recovery', () => {
+    const F = generic(T.Call(T.Ref('F'), [T.Ref('A')]));
+    let failure;
+    try { instantiate(T.Call(T.Ref('F'), [T.String()]), { F }); } catch (error) { failure = { name: error.name, message: error.message }; }
+    return [failure, T.Call(generic(T.Ref('A')), [literal('recovered')])];
+  });
+  run('mapped-key-coercion', () => { const order = []; const name = { [Symbol.toPrimitive]() { order.push('key'); return 'K'; } }; return [T.Mapped({ name }, union([literal('a'), literal('b')]), T.Ref('K'), T.Ref('K')), order]; });
+  run('constructor-enumerable-kind', () => { Settings.Set({ enumerableKind: true }); return T.Array(T.String(), { title: 'enumerable' }); });
+  run('constructor-immutable-shared-settings', () => { Settings.Set({ immutableTypes: true }); const output = T.Evaluate(T.Intersect([T.String(), literal('a')])); return [output, Object.isFrozen(output)]; });
+  run('literal-invalid-cause', () => { try { literal({}); } catch (error) { return [error instanceof Error, error.name, error.message, Object.getOwnPropertyDescriptor(error, 'cause')]; } });
+  if (typeof globalThis.gc === 'function') globalThis.gc();
+  globalThis.TypeBoxOperatorRows = rows;
+  globalThis.TypeBoxOperatorOutput = JSON.stringify(rows);
+})();
