@@ -1627,6 +1627,12 @@ pub fn build(b: *std.Build) void {
     crypto_random_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-crypto-random", "Compare actual Node24 secure random typed-view behavior and native owner graphs").dependOn(&b.addRunArtifact(crypto_random_tests).step);
     b.step("build-native-crypto-random", "Compile secure random host independently of runtime checks").dependOn(&crypto_random_tests.step);
+    const web_crypto_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_web_crypto_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native WebCrypto"}, .use_llvm = use_llvm });
+    linkQuickJs(b, web_crypto_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(web_crypto_tests.root_module, sqlite_lib_dir, sqlite_library);
+    web_crypto_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-web-crypto", "Compare genuine Node24 WebCrypto digest and secure random host observations").dependOn(&b.addRunArtifact(web_crypto_tests).step);
+    b.step("build-native-web-crypto", "Compile Pi WebCrypto prerequisite independently of runtime controls").dependOn(&web_crypto_tests.step);
     const ai_provider_helpers_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_provider_helpers_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI provider helpers"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_provider_helpers_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_provider_helpers_tests.root_module, sqlite_lib_dir, sqlite_library);

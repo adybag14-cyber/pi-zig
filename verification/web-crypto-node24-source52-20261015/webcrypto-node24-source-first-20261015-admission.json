@@ -1,0 +1,8 @@
+{
+  "heap_mb": 256,
+  "observed_utc": "2026-10-15T20:18:41.3285364+00:00",
+  "required_kib": 2097152,
+  "free_kib": 18823660,
+  "coordinated_with": "Root explicit LIGHT3 WebCrypto Source grant",
+  "status": "admitted"
+}

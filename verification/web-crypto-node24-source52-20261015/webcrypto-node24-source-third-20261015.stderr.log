@@ -1,0 +1,11 @@
+file:///C:/Users/adyba/pi-zig-native-web-crypto-20261015/tools/capture-web-crypto-node24.mjs:8
+if(Object.keys(authority).length!==368||Object.keys(actual).length!==368||mismatches.length)throw Error(JSON.stringify({reason:'Full368 Node builtin authority bytes changed',expectedCount:Object.keys(authority).length,actualCount:Object.keys(actual).length,missing:Object.keys(actual).filter(k=>!(k in authority)),mismatches:mismatches.map(k=>({key:k,expectedLength:authority[k].length,actualLength:actual[k]?.length,expectedSha256:createHash('sha256').update(authority[k]).digest('hex'),actualSha256:actual[k]&&createHash('sha256').update(actual[k]).digest('hex')}))}));
+                                                                                                  ^
+
+Error: {"reason":"Full368 Node builtin authority bytes changed","expectedCount":368,"actualCount":369,"missing":["configs"],"mismatches":[]}
+    at file:///C:/Users/adyba/pi-zig-native-web-crypto-20261015/tools/capture-web-crypto-node24.mjs:8:99
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.14.0

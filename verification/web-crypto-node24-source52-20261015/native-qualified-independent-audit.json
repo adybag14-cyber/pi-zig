@@ -1,0 +1,9 @@
+{
+  "code_diff_to_tested_candidate": [],
+  "owned_pids_absent": true,
+  "full_pi_qualified": false,
+  "compile_pid": 73508,
+  "runtime_pid": 912,
+  "candidate": "6894882c29cd21011b414e7fc23571329c528e99",
+  "observed_utc": "2026-10-15T20:48:02.0385705+00:00"
+}
