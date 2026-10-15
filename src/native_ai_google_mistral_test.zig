@@ -17,6 +17,48 @@ fn source(engine: *em.Engine, name: [*:0]const u8, value: std.json.Value) !void 
     defer engine.freeValue(global);
     try sdk.put(engine, global, name, try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "actual-source5ab-google-mistral.json")));
 }
+test "native AI Google Mistral Source30 request component retains actual payload hook and wire observations" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    const v = @import("extensions/native_ai_provider_values.zig");
+    var scope: v.Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const dependencies = try scope.own(try @import("extensions/native_ai_openai_dependencies.zig").create(engine));
+    try scope.put(dependencies, "text", try scope.own(try @import("extensions/native_ai_text.zig").create(engine)));
+    const Adapter = struct {
+        fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            var row: v.Scope = .{ .engine = host };
+            defer row.deinit();
+            if (args.len != 4) return error.NativeGoogleMistralRequestTestArguments;
+            const is_mistral = try v.eq(&row, args[0], "mistral");
+            const is_vertex = try v.eq(&row, args[0], "vertex");
+            const mid_system = is_mistral and row.truthy(try v.optional(&row, try row.get(args[1], "compat"), "supportsMidConvoSystemMessages"));
+            const context = try row.own(try @import("extensions/native_ai_provider_transcript.zig").resolve(host, args[2], mid_system));
+            const options = if (is_mistral) try @import("extensions/native_ai_mistral_request.zig").simple(&row, roots[0], args[1], args[2], args[3]) else try @import("extensions/native_ai_google_request.zig").simple(&row, roots[0], args[1], args[2], args[3], is_vertex);
+            const payload = try row.own(if (is_mistral) try @import("extensions/native_ai_mistral_request.zig").build(host, roots[0], args[1], context, options) else try @import("extensions/native_ai_google_request.zig").build(host, roots[0], args[1], context, options));
+            const result = try row.object();
+            try row.put(result, "payload", payload);
+            if (row.truthy(try v.optional(&row, args[3], "replace"))) {
+                if (is_mistral) try row.put(payload, "temperature", c.JS_NewFloat64(host.context, 0.25)) else try row.put(try row.get(payload, "config"), "temperature", c.JS_NewFloat64(host.context, 0.25));
+            }
+            try row.put(result, "wire", if (is_mistral) try @import("extensions/native_ai_mistral_request.zig").wire(&row, payload) else try @import("extensions/native_ai_google_request.zig").wire(&row, payload));
+            return c.JS_DupValue(host.context, result);
+        }
+    };
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "buildProviderRequest", try @import("extensions/native_node_function.zig").create(engine, "buildProviderRequest", 4, Adapter.call, &.{dependencies}));
+    const original_bytes = @embedFile("extensions/fixtures/ai-google-mistral30-5ab.json");
+    try sdk.put(engine, global, "source30", try engine.checked(c.JS_ParseJSON(engine.context, original_bytes.ptr, original_bytes.len, "actual-source5ab-google-mistral.json")));
+    const checked = engine.evalModule(
+        \\function canonical(v){if(Array.isArray(v))return v.map(canonical);if(v&&typeof v==='object'){const out={};for(const k of Object.keys(v).sort())if(v[k]!==undefined)out[k]=canonical(v[k]);return out}return v}let count=0;for(const expected of source30.rows){if(!expected.payloads.length)continue;const item=expected.input,model={id:item.kind==='mistral'?'mistral-fixture':'gemini-3.1-pro-preview',name:'fixture',provider:item.kind==='vertex'?'google-vertex':item.kind,api:item.kind==='google'?'google-generative-ai':item.kind==='vertex'?'google-vertex':'mistral-conversations',baseUrl:'http://127.0.0.1/v1',reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192,...item.model},context=item.context??{messages:[{role:'system',content:'system',timestamp:0},{role:'user',content:'hello',timestamp:1}]},options={apiKey:'fixture-placeholder-key',maxTokens:1000,maxRetries:0,sessionId:'fixture-session',...item.options};const actual=buildProviderRequest(item.kind,model,context,options);if(JSON.stringify(canonical(actual.payload))!==JSON.stringify(canonical(expected.payloads[0])))throw Error(JSON.stringify({name:item.name,payload:actual.payload,expected:expected.payloads[0]}));if(item.callback==='replace'){if(item.kind==='mistral')actual.wire.temperature=.25;else actual.wire.generationConfig.temperature=.25}if(JSON.stringify(canonical(actual.wire))!==JSON.stringify(canonical(expected.requests[0].body)))throw Error(JSON.stringify({name:item.name,wire:actual.wire,expected:expected.requests[0].body}));count++}if(count!==27)throw Error('all27 actual request controls required');export const done=true;
+    , "native-google-mistral-request-source30.mjs") catch |err| {
+        std.debug.print("Google/Mistral requests: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(checked);
+    c.JS_RunGC(engine.runtime);
+}
 test "native AI Google Mistral actual Source30 request event callback error semantics" {
     const gpa = std.testing.allocator;
     const original = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("extensions/fixtures/ai-google-mistral30-5ab.json"), .{});
