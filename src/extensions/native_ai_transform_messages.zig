@@ -1,4 +1,5 @@
-//! Actual shared provider message transformation, including latest5ab image split.
+//! Actual shared provider message transformation, including ae7 cross-model
+//! thinking removal and the retained 5ab error-image split.
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
@@ -54,14 +55,12 @@ fn callback(scope: *Scope, kind: Kind, value: c.JSValue, roots: []const c.JSValu
             const same = scope.truthy(roots[4]);
             const kind_value = try scope.get(value, "type");
             if (try v.eq(scope, kind_value, "thinking")) {
-                if (scope.truthy(try scope.get(value, "redacted"))) return c.JS_DupValue(engine.context, if (same) value else try scope.array());
-                if (same and scope.truthy(try scope.get(value, "thinkingSignature"))) return c.JS_DupValue(engine.context, value);
+                // Source returns before touching any other block getter when
+                // the producing model differs, including readable thinking.
+                if (!same) return v.js.array(engine);
+                if (scope.truthy(try scope.get(value, "redacted")) or scope.truthy(try scope.get(value, "thinkingSignature"))) return c.JS_DupValue(engine.context, value);
                 if (!scope.truthy(try scope.get(value, "thinking")) or try v.eq(scope, try scope.invoke(try scope.get(value, "thinking"), "trim", &.{}), "")) return v.js.array(engine);
-                if (same) return c.JS_DupValue(engine.context, value);
-                const result = try scope.object();
-                try scope.put(result, "type", try scope.text("text"));
-                try scope.put(result, "text", try scope.get(value, "thinking"));
-                return c.JS_DupValue(engine.context, result);
+                return c.JS_DupValue(engine.context, value);
             }
             if (try v.eq(scope, kind_value, "text")) {
                 if (same) return c.JS_DupValue(engine.context, value);
