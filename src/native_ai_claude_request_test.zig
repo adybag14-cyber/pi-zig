@@ -146,19 +146,38 @@ test "native Claude5ab request owner graphs preserve error images unsupported of
     engine.freeValue(retained);
     c.JS_RunGC(engine.runtime);
 }
+fn allocationDiagnostic(gpa: std.mem.Allocator, comptime label: []const u8, cause: ?anyerror) void {
+    // Called only by the exhaustive helper's probe wrappers, which receive its
+    // actual FailingAllocator for the baseline and every complete 0/1 range.
+    const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+    if (!failing.has_induced_failure) return;
+    std.debug.print("CLAUDE_ALLOCATION_DIAGNOSTIC {s} fail_index={d} outcome={s} allocated={d} freed={d}\n{f}\n", .{ label, failing.fail_index, if (cause) |err| @errorName(err) else "success_after_failure", failing.allocated_bytes, failing.freed_bytes, std.debug.FormatStackTrace{ .stack_trace = failing.getStackTrace() } });
+}
+fn allocationBoundary(engine: *v.em.Engine, err: anyerror, generation: u64, comptime label: []const u8) anyerror {
+    const classified = engine.nativeAllocationError(err, generation);
+    if (classified != error.OutOfMemory) std.debug.print("CLAUDE_ALLOCATION_BOUNDARY {s} raw={s} classified={s} before={d} after={d} captured_tag={d} diagnostic={s}\n", .{ label, @errorName(err), @errorName(classified), generation, engine.native_allocation_generation, if (engine.captured_exception) |value| c.pi_js_native_allocation_error_generation(value) else 0, engine.last_error orelse "none" });
+    return classified;
+}
 test "native Claude5ab every host allocation releases request schemas transcript images and getter exceptions" {
     const Probe = struct {
         fn run(gpa: std.mem.Allocator) !void {
+            inner(gpa) catch |err| {
+                if (err != error.OutOfMemory) allocationDiagnostic(gpa, "request", err);
+                return err;
+            };
+            allocationDiagnostic(gpa, "request", null);
+        }
+        fn inner(gpa: std.mem.Allocator) !void {
             const engine = try v.em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
             defer engine.deinit();
             const generation = engine.native_allocation_generation;
             install(engine) catch |err| return engine.nativeAllocationError(err, generation);
-            const result = engine.evalModule(observations, "native-claude5ab-request-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+            const result = engine.evalModule(observations, "native-claude5ab-request-allocation.mjs") catch |err| return allocationBoundary(engine, err, generation, "request-eval");
             engine.freeValue(result);
             c.JS_RunGC(engine.runtime);
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+    try @import("test_support/exhaustive_allocation_shards.zig").run(std.testing.allocator, .worker, "anthropic-request", Probe.run, .{}, 0, 1);
 }
 fn pendingLifecycle(gpa: std.mem.Allocator) !void {
     const engine = try v.em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
@@ -167,12 +186,12 @@ fn pendingLifecycle(gpa: std.mem.Allocator) !void {
     install(engine) catch |err| return engine.nativeAllocationError(err, generation);
     const prepared = engine.evalModule(
         \\globalThis.pendingClaude=anthropicStreams.stream({api:'anthropic-messages',provider:'anthropic',id:'claude-sonnet-4-6',name:'Claude',baseUrl:'https://fixture.invalid',input:['text'],reasoning:true,maxTokens:1024,cost:{input:1,output:1,cacheRead:1,cacheWrite:1}},{messages:[{role:'user',content:'hello'}]},{apiKey:'fixture-placeholder-key',onPayload(){return new Promise((_,reject)=>globalThis.rejectClaude=reject)}});delete globalThis.anthropicStreams;export const prepared=true;
-    , "native-claude5ab-pending-prepare.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+    , "native-claude5ab-pending-prepare.mjs") catch |err| return allocationBoundary(engine, err, generation, "pending-prepare");
     engine.freeValue(prepared);
     c.JS_RunGC(engine.runtime);
     const completed = engine.evalModule(
         \\rejectClaude(Error('caller marker'));const result=await pendingClaude.result();if(result.stopReason!=='error'||result.errorMessage!=='caller marker')throw Error('pending callback result');let end;for await(const event of pendingClaude)end=event;if(end.type!=='error'||end.error!==result)throw Error('terminal retained identity');delete globalThis.rejectClaude;delete globalThis.pendingClaude;export const completed=true;
-    , "native-claude5ab-pending-complete.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+    , "native-claude5ab-pending-complete.mjs") catch |err| return allocationBoundary(engine, err, generation, "pending-complete");
     engine.freeValue(completed);
     c.JS_RunGC(engine.runtime);
 }
@@ -180,5 +199,14 @@ test "native Claude5ab request owner pending hook survives collection and retain
     try pendingLifecycle(std.testing.allocator);
 }
 test "native Claude5ab every host allocation in pending callback releases continuation roots and terminal output" {
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, pendingLifecycle, .{});
+    const Probe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            pendingLifecycle(gpa) catch |err| {
+                if (err != error.OutOfMemory) allocationDiagnostic(gpa, "pending", err);
+                return err;
+            };
+            allocationDiagnostic(gpa, "pending", null);
+        }
+    };
+    try @import("test_support/exhaustive_allocation_shards.zig").run(std.testing.allocator, .worker, "anthropic-pending", Probe.run, .{}, 0, 1);
 }
