@@ -1,0 +1,16 @@
+{
+  "completed_utc": "2026-10-15T20:06:34.2809198+00:00",
+  "native_drift_outside_allowed": 0,
+  "allowed_mutations": [
+    "src/ai/catalog_source.json",
+    "src/ai/catalog_generated.zig"
+  ],
+  "native_after": 6527,
+  "control_drift": 0,
+  "source_files": 1968,
+  "source_drift": 0,
+  "native_before": 6527,
+  "zig_files": 19546,
+  "zig_drift": 0,
+  "source_path_drift": 0
+}

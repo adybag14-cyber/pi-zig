@@ -1,0 +1,8 @@
+{
+  "required_kib": 2097152,
+  "observed_utc": "2026-10-15T20:06:16.5446084+00:00",
+  "free_kib": 17996168,
+  "timeout_seconds_per_phase": 300,
+  "status": "admitted",
+  "new_zig_compile": false
+}

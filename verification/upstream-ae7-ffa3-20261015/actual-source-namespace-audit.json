@@ -1,0 +1,59 @@
+{
+  "status": "passed",
+  "source_head": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "catalog_revision": "sha256-ffa3e98626230f378f80200debb736c4a2238b5f2ba246a92cfc7d8e19604678",
+  "catalog_bytes": 931299,
+  "providers": 42,
+  "chat_apis": 10,
+  "typed_model_counts": {
+    "chat": 1608,
+    "image": 59,
+    "classifier": 38
+  },
+  "typed_total": 1705,
+  "source_tracked": 1925,
+  "official_generated": 43,
+  "source_full": 1968,
+  "runtime_files": 31064,
+  "node_pins": 1774,
+  "node_host_extra_files": 64,
+  "external_pins": 365,
+  "metadata": 281,
+  "absences": 84,
+  "fresh_capture_bytes": 6542685,
+  "fresh_capture_sha256": "D58EAE1072AEF88E556B87B7EA535BAECB085E0DEF5FDA40D84C62141312334E",
+  "fresh_capture_raw_equal": true,
+  "actual_source_modules_observed": 184,
+  "actual_external_modules_observed": 670,
+  "namespaces": [
+    "core",
+    "compat",
+    "providersAll",
+    "generated"
+  ],
+  "all_getter_values_order_and_identity_verified": true,
+  "all_frozen_file_and_path_drift": 0,
+  "official_pinned_catalog_hydration_qualified": true,
+  "current_live_generator_qualification": false,
+  "provider_transports_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "observed_utc": "2026-10-15T19:58:46.726041+00:00",
+  "historical_wrapper_control": "Original hydration wrapper4F848 retained verbatim; Windows --import URI correction F8119 applies only later capture controls. Negative firstcapture retained.",
+  "official_tracked_gitblob_hashes_matched_raw": 1923,
+  "official_tracked_checkout_conversions_verified": [
+    {
+      "relative": "pi-test.bat",
+      "git_blob_sha256": "D454A5A0E203D9009283B887720472B022B0853380758B11419C8547A32DBB88",
+      "checkout_sha256": "C9D3430A614CABFAAE5A9E97259643AB9041629BC8253F58F22579A5B6D9C448",
+      "official_attribute": "pi-test.bat: eol: crlf"
+    },
+    {
+      "relative": "pi-test.ps1",
+      "git_blob_sha256": "9F76D37F75B1D6F03BE14D8BCE3CA05331C4B09B8003A53329D8E4FE942792EF",
+      "checkout_sha256": "9B97FA3BE6582E935F43865599D21BBB216E5FFE2CB1EB198C77E7298490B895",
+      "official_attribute": "pi-test.ps1: eol: crlf"
+    }
+  ],
+  "matching_official_generated_manifest_sha256": "05A7F9B7D8FC9A28018F38C6EBB4B0321E3C3685FD6BED191730D5B32D9E60AF"
+}
