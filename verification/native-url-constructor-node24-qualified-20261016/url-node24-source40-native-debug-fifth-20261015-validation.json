@@ -1,0 +1,24 @@
+{
+  "candidate": "416e0a59b029e698bf0257b84738923a995a6086",
+  "mode": "Debug",
+  "source_cases": 40,
+  "named_tests": 17,
+  "metadata_count": 19,
+  "unnamed_wrappers": 2,
+  "compile_absence": {
+    "pid": 59900,
+    "pid_reused": false,
+    "created_utc": "2026-10-15T22:58:30.1702998Z",
+    "owned_root_absent": true
+  },
+  "runtime_absence": {
+    "pid": 7804,
+    "pid_reused": false,
+    "created_utc": "2026-10-15T22:59:32.2055957Z",
+    "owned_root_absent": true
+  },
+  "terminal": "passed",
+  "all_posthash_zero": true,
+  "full_pi_qualified": false,
+  "public_activation": false
+}

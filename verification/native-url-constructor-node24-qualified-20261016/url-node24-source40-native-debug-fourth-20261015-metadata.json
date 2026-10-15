@@ -1,0 +1,42 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig-native-url-errors-20261015\\.zig-cache\\o\\351fcff9c082825047d14b04537a2d4d\\test.exe",
+  "binary_sha256": "3D33EF27D306281479C77ADC376D7686DA778A9D7D32A1760B55B5DD8CDAE796",
+  "version": "0.16.0",
+  "tests": [
+    "extension_node_url_test.test_0",
+    "extensions.node_url.test.native URL module exports real URL classes and bidirectional file conversions with original exceptions",
+    "extensions.native_url.test.native URL class serializes real records and links stable live search params through setters",
+    "extensions.native_url.test.native URL setter coercion reentrancy original exceptions brands and failed parses preserve state",
+    "extensions.native_url.test.native URL actual Node24 constructor errors match focused forty Source observations",
+    "extensions.native_url.test.native URL constructor error family roots preserve prototypes coercion identity and retained setters across GC",
+    "extensions.native_url.test.native URL Node24 captured properties setters and URLSearchParams foundations oracle",
+    "extensions.native_url.test.native URL actual runtime allocation failure preserves lazy params and retries installation",
+    "extensions.native_url.test.native URL every allocator failure releases parser setters live params and GC association cycles",
+    "extensions.url_search_params.test.native URLSearchParams form parsing ordered pairs duplicate selection mutations live iteration and UTF16 sorting",
+    "extensions.url_search_params.test.native URLSearchParams constructor iterables records original errors brands and reentrant conversions",
+    "extensions.url_search_params.test.native URLSearchParams runtime allocation failure retains live iterator position and pairs",
+    "extensions.url_search_params.test.native URLSearchParams every allocation failure releases constructor pairs associations and iterators",
+    "extensions.url_search_params.test.native URLSearchParams association update failures preserve both parameter and URL query state",
+    "extensions.file_urls.test.native file URLs preserve Unicode reserved characters drive and UNC paths",
+    "extensions.native_durable_storage.test_0",
+    "extensions.url_parser.test.native URL parser special opaque IPv4 IPv6 IDN credentials percent paths and file records",
+    "extensions.url_parser.test.native URL parser resolves relative URLs and preserves query fragment and special scheme semantics",
+    "extensions.url_parser.test.native URL parser rejects bounded malformed IPv6 and unsupported contextual IDN in Unicode and A labels"
+  ],
+  "count": 19,
+  "named_count": 17,
+  "unnamed_count": 2,
+  "unnamed_tests": [
+    "extension_node_url_test.test_0",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "probe_absence": {
+    "created_utc": "2026-10-15T22:54:18.6421403Z",
+    "owned_root_absent": true,
+    "pid": 60572,
+    "pid_reused": false
+  },
+  "source40_expected_sha256": "31093DADB66AD33E30C1A5BAAE4329C5B5169341A03642B4319361E9324D5832",
+  "method": "Actual Zig0.16 metadata-only query4 and exit0; no run_test command",
+  "candidate": "1c3d01e42328de7353c5102fd910da41cae336ae"
+}

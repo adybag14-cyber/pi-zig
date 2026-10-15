@@ -1,0 +1,46 @@
+[
+  {
+    "path": "C:/Users/adyba/pi-zig-native-url-errors-20261015/src/extensions/fixtures/url-errors-node24.input.txt",
+    "sha256": "489B81A98EDD3538DECCC97E3A2D92965226D8924383D6A2410FE5CE3D83FBBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\url-errors-node24-capture-20261015.mjs",
+    "sha256": "16A384856A6FDAABCCF932515D8E91D13811DDCFDA81F0F19EA50CCD89FDE65C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-observe-20261015.mjs",
+    "sha256": "1891342A814F6949D3DF384D83B738159D52851FD41DF240F9F160EB3E34D8C2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-dependency-contract-audit-20261015.json",
+    "sha256": "B67885F76310D14C75505EC5EF8A61821BCF6D57136474419BB65C4AF7AF0035"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-URLConstructorNode24Source-20261015.ps1",
+    "sha256": "602E8555CC530105B1CBEF46362A10A8E00947E04519208FC0028B685CADD8F3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-preparation-controls-20261015.json",
+    "sha256": "3C84A2C828A906617A50E5C568BA9DA9CAEC7FD79D202C20CA7D6087DD02637C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-preparation-readiness-20261015.json",
+    "sha256": "BA4C270D341C7B8651573A2DE0B9478B1CEAE1D32D680A4EB26068D2DF08389E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-full-manifest-20261015.json",
+    "sha256": "C4637B7060AAB20542C7FB41DE4450245D61E0268DFBEBB38860D03B4EA00144"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-runtime-manifest-20261015.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-node-tools-before-20261015.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  }
+]

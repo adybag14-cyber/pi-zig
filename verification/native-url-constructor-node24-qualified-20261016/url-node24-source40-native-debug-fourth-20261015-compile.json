@@ -1,0 +1,31 @@
+{
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "arguments": [
+    "build",
+    "build-extension-url",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "working_directory": "C:/Users/adyba/pi-zig-native-url-errors-20261015",
+  "pid": 74556,
+  "retained_handle": 2104,
+  "created_utc": "2026-10-15T22:53:41.4396957Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 1320,
+  "status": "passed",
+  "live_identity": {
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "command_line_method": "Win32_Process.CommandLine",
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-extension-url -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+    "pid": 74556,
+    "created_utc": "2026-10-15T22:53:41.4396957Z"
+  },
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T22:53:52.0498832+00:00"
+}

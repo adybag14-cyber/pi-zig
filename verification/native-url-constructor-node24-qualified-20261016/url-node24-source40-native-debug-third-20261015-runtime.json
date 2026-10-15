@@ -1,0 +1,32 @@
+{
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "arguments": [
+    "build",
+    "test-extension-url",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "working_directory": "C:/Users/adyba/pi-zig-native-url-errors-20261015",
+  "pid": 78720,
+  "retained_handle": 2388,
+  "created_utc": "2026-10-15T22:48:54.8555101Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 300,
+  "status": "failed",
+  "live_identity": {
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-url -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+    "pid": 78720,
+    "command_line_method": "Win32_Process.CommandLine",
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "created_utc": "2026-10-15T22:48:54.8555101Z"
+  },
+  "exit_code": 1,
+  "completed_utc": "2026-10-15T22:49:03.1033804+00:00",
+  "error": "Owned terminal failed: C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe"
+}

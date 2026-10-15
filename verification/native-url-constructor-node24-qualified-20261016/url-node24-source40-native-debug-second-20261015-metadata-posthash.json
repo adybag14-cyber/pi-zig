@@ -1,0 +1,77 @@
+{
+  "phase": "metadata",
+  "head": "ed03cf97932933e3293a005807fc474f18eabea2",
+  "head_after": "ed03cf97932933e3293a005807fc474f18eabea2",
+  "candidate_before": 7128,
+  "candidate_after": 7128,
+  "candidate_drift": [],
+  "vendor": 1316,
+  "vendor_drift": [],
+  "references": [
+    {
+      "name": "source",
+      "count": 1968,
+      "drift": []
+    },
+    {
+      "name": "dependencies",
+      "count": 31064,
+      "drift": []
+    },
+    {
+      "name": "node",
+      "count": 1774,
+      "drift": []
+    },
+    {
+      "name": "compiler",
+      "count": 19546,
+      "drift": []
+    }
+  ],
+  "inventories": [
+    {
+      "name": "source",
+      "before": 1968,
+      "drift": [],
+      "after": 1968
+    },
+    {
+      "name": "dependencies",
+      "before": 31064,
+      "drift": [],
+      "after": 31064
+    },
+    {
+      "name": "compiler",
+      "before": 19546,
+      "drift": [],
+      "after": 19546
+    },
+    {
+      "name": "node",
+      "before": 1774,
+      "drift": [],
+      "after": 1774
+    },
+    {
+      "name": "vendor",
+      "before": 1316,
+      "drift": [],
+      "after": 1316
+    }
+  ],
+  "controls": 26,
+  "control_drift": [],
+  "preparation_drift": [],
+  "absences84": 84,
+  "absence_drift": [],
+  "artifacts": 3,
+  "artifact_drift": [],
+  "compile": "passed",
+  "runtime": "not_run",
+  "metadata_count": 19,
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "completed_utc": "2026-10-15T22:43:24.9259613+00:00"
+}

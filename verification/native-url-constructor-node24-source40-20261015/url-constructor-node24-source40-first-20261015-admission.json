@@ -1,0 +1,8 @@
+{
+  "observed_utc": "2026-10-15T22:12:37.7931939+00:00",
+  "heap_mb": 256,
+  "status": "admitted",
+  "free_kib": 21809860,
+  "coordinated_with": "Root explicit LIGHT3 URL constructor Source40 grant; no native launch",
+  "required_kib": 2097152
+}

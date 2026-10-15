@@ -1,0 +1,16 @@
+{
+  "phase": "metadata",
+  "root_slot": 3,
+  "free_bytes": 20088168448,
+  "required_bytes": 17179869184,
+  "other_native_roots": [],
+  "max_roots": 4,
+  "jobs": 1,
+  "compile_seconds": 1320,
+  "runtime_seconds": 300,
+  "test_seconds": 120,
+  "new_test_await_ms": 10000,
+  "settle_seconds": 10,
+  "candidate": "ed03cf97932933e3293a005807fc474f18eabea2",
+  "observed_utc": "2026-10-15T22:42:50.5749644+00:00"
+}

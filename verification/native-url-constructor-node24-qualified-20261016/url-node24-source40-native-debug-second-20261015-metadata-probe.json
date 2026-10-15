@@ -1,0 +1,23 @@
+{
+  "executable": "C:\\Users\\adyba\\pi-zig-native-url-errors-20261015\\.zig-cache\\o\\cb47f987d9cf0d0ce254cf5bce9f8040\\test.exe",
+  "executable_sha256": "654F80F91AEA85E94A82BC426136DA278C7D81488DA0E2929C4B80F445F23D18",
+  "arguments": [
+    "--listen=-"
+  ],
+  "working_directory": "C:/Users/adyba/pi-zig-native-url-errors-20261015",
+  "pid": 75872,
+  "retained_handle": 2384,
+  "created_utc": "2026-10-15T22:42:50.5863446Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 30,
+  "status": "passed",
+  "live_identity": {
+    "created_utc": "2026-10-15T22:42:50.5863446Z",
+    "executable": "C:\\Users\\adyba\\pi-zig-native-url-errors-20261015\\.zig-cache\\o\\cb47f987d9cf0d0ce254cf5bce9f8040\\test.exe",
+    "pid": 75872,
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-native-url-errors-20261015\\.zig-cache\\o\\cb47f987d9cf0d0ce254cf5bce9f8040\\test.exe\" --listen=-",
+    "command_line_method": "Win32_Process.CommandLine"
+  },
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T22:42:51.1545426+00:00"
+}
