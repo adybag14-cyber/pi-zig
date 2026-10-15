@@ -10,6 +10,10 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue {
     return if (args.len > index) args[index] else c.pi_js_undefined();
 }
 pub fn create(engine: *v.em.Engine, comptime kind: Kind, models_error: c.JSValue, operations: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    const lexical = try s.object();
+    inline for (.{ "isModelType", "assertChatModel" }) |name| try s.put(lexical, name, try s.get(operations, name));
     const Handler = struct {
         fn call(host: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
             return invoke(host, kind, receiver, args, roots[0], roots[1]);
@@ -20,19 +24,20 @@ pub fn create(engine: *v.em.Engine, comptime kind: Kind, models_error: c.JSValue
         .getModelsOfType, .getModel => 2,
         .getModelOfType => 3,
         else => 1,
-    }, Handler.call, &.{ models_error, operations });
+    }, Handler.call, &.{ models_error, lexical });
 }
 fn fieldCall(s: *Scope, receiver: c.JSValue, field: [*:0]const u8, method: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
     return s.invoke(try s.get(receiver, field), method, args);
 }
 fn collectInto(s: *Scope, target: c.JSValue, value: c.JSValue) !void {
+    var position = try v.length(s, target);
     var iterator = try v.iterator(s, value);
     defer iterator.deinit();
     errdefer iterator.closePreserving();
     while (try iterator.next()) |item| {
         defer s.engine.freeValue(item);
-        const ignored = try s.invoke(target, "push", &.{item});
-        _ = ignored;
+        try s.index(target, position, item);
+        position += 1;
     }
 }
 fn providerModels(s: *Scope, provider: c.JSValue, all: bool) !c.JSValue {
@@ -79,7 +84,8 @@ pub fn invoke(engine: *v.em.Engine, comptime kind: Kind, receiver: c.JSValue, ar
     const first = arg(args, 0);
     switch (kind) {
         .setProvider => {
-            _ = try s.invoke(receiver, "supersedeProviderRefresh", &.{try s.get(first, "id")});
+            const supersede = try s.get(receiver, "supersedeProviderRefresh");
+            _ = try s.call(supersede, receiver, &.{try s.get(first, "id")});
             const providers = try s.get(receiver, "providers");
             const set = try s.get(providers, "set");
             _ = try s.call(set, providers, &.{ try s.get(first, "id"), first });
@@ -105,7 +111,11 @@ pub fn invoke(engine: *v.em.Engine, comptime kind: Kind, receiver: c.JSValue, ar
             }
             _ = try fieldCall(&s, receiver, "providers", "clear", &.{});
         },
-        .getProviders => return c.JS_DupValue(engine.context, try s.invoke(try s.global("Array"), "from", &.{try fieldCall(&s, receiver, "providers", "values", &.{})})),
+        .getProviders => {
+            const array = try s.global("Array");
+            const from = try s.get(array, "from");
+            return c.JS_DupValue(engine.context, try s.call(from, array, &.{try fieldCall(&s, receiver, "providers", "values", &.{})}));
+        },
         .getProvider => return c.JS_DupValue(engine.context, try fieldCall(&s, receiver, "providers", "get", &.{first})),
         .getModels, .getAllModels => return c.JS_DupValue(engine.context, try catalogs(&s, receiver, first, kind == .getAllModels)),
         .getModelsOfType => {
@@ -155,7 +165,9 @@ pub fn invoke(engine: *v.em.Engine, comptime kind: Kind, receiver: c.JSValue, ar
             return c.JS_DupValue(engine.context, try s.invoke(receiver, "requireProvider", &.{first}));
         },
         .requireProvider => {
-            const provider = try fieldCall(&s, receiver, "providers", "get", &.{try s.get(first, "provider")});
+            const providers = try s.get(receiver, "providers");
+            const get = try s.get(providers, "get");
+            const provider = try s.call(get, providers, &.{try s.get(first, "provider")});
             if (s.truthy(provider)) return c.JS_DupValue(engine.context, provider);
             const name = try s.own(try engine.checked(c.JS_ToString(engine.context, try s.get(first, "provider"))));
             const message = try s.concat(try s.text("Unknown provider: "), name);
