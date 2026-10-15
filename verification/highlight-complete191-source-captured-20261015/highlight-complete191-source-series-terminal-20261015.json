@@ -1,0 +1,56 @@
+[
+  {
+    "observed_canonical_grammar_modules": 191,
+    "output_sha256": "D6D410D29A79FCCC24D2C4690F40D66A34A879E6C3B662C102B4B9B7F9AD17F6",
+    "node_pid": 68164,
+    "post0_utc": "2026-10-15T21:32:54.7401634+00:00",
+    "bytes": 11145926,
+    "cases": 419,
+    "all_post_drift": 0,
+    "mode": "success",
+    "node_terminal_utc": "2026-10-15T21:32:28.2514904+00:00",
+    "observed_modules": 197,
+    "logs": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-modules-68164-0-20261015.jsonl",
+        "sha256": "7A6F6529158C502C2DA9886E9C59AF36B82F7427FA2529353A0D44DBCDF7730B"
+      }
+    ]
+  },
+  {
+    "observed_canonical_grammar_modules": 28,
+    "output_sha256": "5AF3FF3C8BA5433DC6D5945B84A99D08F7AACD2F5FF93A4BF972E58C88AF1BEA",
+    "node_pid": 71572,
+    "post0_utc": "2026-10-15T21:34:16.3634826+00:00",
+    "bytes": 6814,
+    "cases": 13,
+    "all_post_drift": 0,
+    "mode": "lookup_failure",
+    "node_terminal_utc": "2026-10-15T21:33:50.5467681+00:00",
+    "observed_modules": 34,
+    "logs": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-modules-71572-0-20261015.jsonl",
+        "sha256": "188EF75666692F1A17902495043DB9A11F9C905BD59239CB4664A5A444864C6F"
+      }
+    ]
+  },
+  {
+    "observed_canonical_grammar_modules": 191,
+    "output_sha256": "C5D2A7A27D1711885B76D74A1CBFFB926B0DA3FEEA65543B354B854350FBAB92",
+    "node_pid": 26852,
+    "post0_utc": "2026-10-15T21:35:41.0994572+00:00",
+    "bytes": 37103,
+    "cases": 13,
+    "all_post_drift": 0,
+    "mode": "safe_factory_failure",
+    "node_terminal_utc": "2026-10-15T21:35:12.0625948+00:00",
+    "observed_modules": 197,
+    "logs": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-modules-26852-0-20261015.jsonl",
+        "sha256": "7A6F6529158C502C2DA9886E9C59AF36B82F7427FA2529353A0D44DBCDF7730B"
+      }
+    ]
+  }
+]
