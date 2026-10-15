@@ -1,0 +1,17 @@
+{
+  "component": "oauth-codex-radius",
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "nativeBase": "ee3e06e74d2136c0669209d3acff806956fb40ea",
+  "sourceRoot": "C:/Users/adyba/pi-upstream-source-ae7b16d-20261015",
+  "observer": "C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-observe-20261015.mjs",
+  "harness": "C:/Users/adyba/pi-zig-update-evidence-20261003/oauth-codex-radius-ae7-cases-20261015.mjs",
+  "sourceOwner": "C:/Users/adyba/pi-zig-update-evidence-20261003/oauth-codex-radius-source-owner-20261015.mjs",
+  "expected": "C:/Users/adyba/pi-zig-native-oauth-codex-radius-20261015/src/extensions/fixtures/oauth-codex-radius-ae7-source.json",
+  "internalDeadlineMs": 20000,
+  "externalDeadlineMs": 45000,
+  "caseCount": 35,
+  "noRealLogin": true,
+  "network": "guest fake fetch only, fixture exhausted fails closed",
+  "expectedPolicy": "original immutable Source emits first, no hand authored expected values",
+  "status": "prepared-not-run"
+}
