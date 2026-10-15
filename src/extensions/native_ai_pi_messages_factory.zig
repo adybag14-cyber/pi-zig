@@ -122,7 +122,10 @@ fn emergency(engine: *v.em.Engine, owner: c.JSValue, err: anyerror) !void {
     try @import("native_stream.zig").reject(engine, stream_value, reason);
     try flow.settle(engine, owner, false, c.pi_js_undefined());
 }
-fn release(scope: *Scope, owner: c.JSValue) !void {
+fn release(caller: *Scope, owner: c.JSValue) !void {
+    var cleanup: Scope = .{ .engine = caller.engine };
+    defer cleanup.deinit();
+    const scope = &cleanup;
     const reader = try scope.get(owner, "reader");
     if (!v.nullish(reader)) {
         try scope.put(owner, "reader", c.pi_js_undefined());
@@ -166,10 +169,18 @@ fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     const aborted = scope.truthy(try v.optional(scope, signal, "aborted"));
     const why: []const u8 = if (aborted) "aborted" else "error";
     const output = try scope.object();
-    const assistant = try codec.message(scope, try scope.get(owner, "model"), why);
+    const model = try scope.get(owner, "model");
+    const assistant = try scope.object();
+    try scope.put(assistant, "role", try scope.text("assistant"));
+    try scope.put(assistant, "content", try scope.array());
+    inline for (.{ "api", "provider" }) |key| try scope.put(assistant, key, try scope.get(model, key));
+    try scope.put(assistant, "model", try scope.get(model, "id"));
+    try scope.put(assistant, "usage", try codec.emptyUsage(scope));
+    try scope.put(assistant, "stopReason", try scope.text(why));
     const instance = c.JS_IsInstanceOf(scope.engine.context, failure, try scope.global("Error"));
     if (instance < 0) return v.js.capture(scope.engine);
     try scope.put(assistant, "errorMessage", if (instance != 0) try scope.get(failure, "message") else try scope.call(try scope.global("String"), c.pi_js_undefined(), &.{failure}));
+    try scope.put(assistant, "timestamp", try scope.invoke(try scope.global("Date"), "now", &.{}));
     // Only the private response-error instance constructed by this invocation
     // receives the HTTP diagnostic; guest name/code lookalikes do not.
     if (!aborted and scope.equal(failure, try scope.get(owner, "responseFailure"))) {
@@ -343,9 +354,10 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
         },
         .providerEvent => {
             const event = try codec.convert(scope, owner, try scope.get(owner, "event"));
-            _ = try scope.invoke(try scope.get(owner, "stream"), "push", &.{event});
             const kind = try scope.get(event, "type");
-            if (try v.eq(scope, kind, "done") or try v.eq(scope, kind, "error")) {
+            const terminal = try v.eq(scope, kind, "done") or try v.eq(scope, kind, "error");
+            _ = try scope.invoke(try scope.get(owner, "stream"), "push", &.{event});
+            if (terminal) {
                 try release(scope, owner);
                 return flow.settle(scope.engine, owner, false, c.pi_js_undefined());
             }
