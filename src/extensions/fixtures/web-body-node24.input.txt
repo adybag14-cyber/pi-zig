@@ -61,6 +61,16 @@ await bodyRecord('Response statusText ByteString conversion trace',()=>{const tr
 await bodyRecord('Request init getter conversion order',()=>{const trace=[],init=new Proxy({method:'post',body:'payload',headers:{X:'one'}},{get(t,k,r){trace.push(String(k));return Reflect.get(t,k,r)}}),r=new Request('https://example.test/',init);return{trace,shape:requestShape(r)}});
 await bodyRecord('Response static json missing argument',()=>Response.json());
 await bodyRecord('Response static JSON cyclic error',()=>{const cyclic={};cyclic.self=cyclic;return Response.json(cyclic)});
+await bodyRecord('Response invalid status before invalid header pair fill',()=>new Response(null,{status:600,headers:[['x']]}));
+await bodyRecord('Response invalid header sequence conversion before invalid status',()=>new Response(null,{status:600,headers:[1]}));
+await bodyRecord('Response header ByteString conversion before invalid status',()=>new Response(null,{status:600,headers:[['x',Symbol('value')]]}));
+await bodyRecord('Response init dictionary getter order',()=>{const trace=[],init={get status(){trace.push('status');return 201},get statusText(){trace.push('statusText');return'Created'},get headers(){trace.push('headers');return{X:'one'}}};return{trace,shape:responseShape(new Response(null,init))}});
+await bodyRecord('Response statusText Symbol',()=>new Response(null,{statusText:Symbol('statusText')}));
+await bodyRecord('Response body Symbol',()=>new Response(Symbol('body')));
+await bodyRecord('Request method Symbol',()=>new Request('https://example.test/',{method:Symbol('method')}));
+await bodyRecord('Request body Symbol',()=>new Request('https://example.test/',{method:'POST',body:Symbol('body')}));
+await bodyRecord('Request enum Symbol',()=>new Request('https://example.test/',{redirect:Symbol('redirect')}));
+await bodyRecord('Request invalid URL after method conversion',()=>new Request('/relative',{method:Symbol('method')}));
 for(const name of ['Response','Request'])for(const method of ['text','json','arrayBuffer','bytes','blob','formData','clone'])await bodyRecord(name+' method brand '+method,async()=>{let returned,synchronous=false;try{returned=globalThis[name].prototype[method].call({})}catch(e){synchronous=true;return{synchronous,error:bodyError(e)}}try{await returned;return{synchronous,unexpected:true}}catch(e){return{synchronous,error:bodyError(e)}}});
 let weakBodyResponse,retainedResponseBody;
 (()=>{let response=new Response('gc bytes');weakBodyResponse=new WeakRef(response);retainedResponseBody=response.body;response=null})();

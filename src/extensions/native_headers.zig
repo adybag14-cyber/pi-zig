@@ -351,19 +351,29 @@ fn originalPairs(scope: *Scope, state: *State) !c.JSValue {
     }
     return output;
 }
-fn initialize(scope: *Scope, owner: c.JSValue, target: c.JSValue, init: c.JSValue) !void {
+fn convert(scope: *Scope, owner: c.JSValue, init: c.JSValue, prefix: []const u8, argument: c.JSValue) !c.JSValue {
     if (!c.JS_IsObject(init)) try web.typeError(scope, try scope.text("Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>."), null);
     const iterator = try scope.own(try js.getKey(scope.engine, init, try web.iteratorSymbol(scope)));
-    const converted = selected: {
+    return selected: {
         if (!c.JS_IsProxy(init) and scope.equal(iterator, try scope.get(rootOf(owner).prototype, "entries"))) {
             if (c.JS_GetOpaque(init, rootOf(owner).header_class)) |opaque_state| break :selected try originalPairs(scope, @ptrCast(@alignCast(opaque_state)));
         }
         if (c.JS_IsFunction(scope.engine.context, iterator)) {
             const bound = try scope.invoke(iterator, "bind", &.{init});
-            break :selected try web.sequence(scope, init, true, try scope.text("init"), bound);
+            break :selected try web.sequence(scope, init, true, prefix, argument, bound);
         }
-        break :selected try web.record(scope, init);
+        break :selected try web.record(scope, init, prefix, argument);
     };
+}
+/// WebIDL HeadersInit conversion deliberately does not validate names/values
+/// or pair lengths. ResponseInit and RequestInit convert before fill does so.
+/// The result is owned by the supplied scope.
+pub fn convertInit(scope: *Scope, init: c.JSValue, prefix: []const u8, argument: c.JSValue) !c.JSValue {
+    try install(scope.engine);
+    return convert(scope, scope.engine.native_module_values.get(cache_key).?, init, prefix, argument);
+}
+fn initialize(scope: *Scope, owner: c.JSValue, target: c.JSValue, init: c.JSValue) !void {
+    const converted = try convert(scope, owner, init, "Headers constructor", try scope.text("init"));
     if (c.JS_IsArray(converted)) {
         for (0..try web.count(scope, converted)) |position| {
             const pair = try web.index(scope, converted, position);
