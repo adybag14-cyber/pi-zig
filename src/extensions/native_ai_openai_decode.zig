@@ -92,7 +92,7 @@ fn ensure(scope: *Scope, owner: c.JSValue, thinking: bool, signature: c.JSValue)
     var block = try scope.get(owner, key);
     if (!scope.truthy(block)) {
         block = try scope.object();
-        try scope.put(block, "type", try scope.text(key));
+        try scope.put(block, "type", try scope.text(@import("std").mem.span(key)));
         try scope.put(block, key, try scope.text(""));
         if (thinking) try scope.put(block, "thinkingSignature", signature);
         try scope.put(owner, key, block);
