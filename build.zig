@@ -1583,6 +1583,18 @@ pub fn build(b: *std.Build) void {
     google_mistral60_component_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-ai-google-mistral60-components", "Compile broader Source60 functional SDK callback and ownership components").dependOn(&google_mistral60_component_tests.step);
     b.step("test-native-ai-google-mistral60-components", "Compare actual Source60 components with strict snapshots retained separately").dependOn(&b.addRunArtifact(google_mistral60_component_tests).step);
+    const google_mistral20_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_google_mistral_source20_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI Google Mistral"}, .use_llvm = use_llvm });
+    linkQuickJs(b, google_mistral20_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(google_mistral20_tests.root_module, sqlite_lib_dir, sqlite_library);
+    google_mistral20_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-ai-google-mistral20", "Compile genuine Source20 raw wire live getters and injectable request controls").dependOn(&google_mistral20_tests.step);
+    b.step("test-native-ai-google-mistral20", "Compare full genuine Source20 snapshots without expected filtering").dependOn(&b.addRunArtifact(google_mistral20_tests).step);
+    const google_mistral20_components = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_google_mistral_source20_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "Source12 actual wire", "Source8 injectable fetch functional", "Source8 injectable fetch retained", "Source8 complete injectable", "Source8 pending injectable" }, .use_llvm = use_llvm });
+    linkQuickJs(b, google_mistral20_components.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(google_mistral20_components.root_module, sqlite_lib_dir, sqlite_library);
+    google_mistral20_components.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-ai-google-mistral20-components", "Compile genuine Source20 functional components and complete injectable host ownership path").dependOn(&google_mistral20_components.step);
+    b.step("test-native-ai-google-mistral20-components", "Compare actual Source20 components with strict full snapshots retained separately").dependOn(&b.addRunArtifact(google_mistral20_components).step);
     const google_mistral_component_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_google_mistral_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "Source30 request component", "Source30 terminal callback", "retained facade roots", "complete native facade allocation graph", "preflight preserves thrown guest" }, .use_llvm = use_llvm });
     linkQuickJs(b, google_mistral_component_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(google_mistral_component_tests.root_module, sqlite_lib_dir, sqlite_library);

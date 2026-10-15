@@ -136,3 +136,101 @@ test "native AI Google Mistral Source12 full intermediate snapshots remain stric
     try controls(@embedFile("extensions/fixtures/ai-mistral-framing8-5ab.json"), 8, true);
     try controls(@embedFile("extensions/fixtures/ai-google-live4-5ab.json"), 4, true);
 }
+
+fn fetchControls(full: bool, retained: bool) !void {
+    for (0..8) |index| {
+        const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+        defer engine.deinit();
+        try install(engine);
+        var scope: v.Scope = .{ .engine = engine };
+        defer scope.deinit();
+        const bytes = @embedFile("extensions/fixtures/ai-mistral-fetch8-5ab.json");
+        const original = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "actual-source-mistral-fetch8.json")));
+        const rows = try scope.get(original, "rows");
+        try std.testing.expectEqual(@as(u32, 8), try v.length(&scope, rows));
+        const expected = try v.at(&scope, rows, @intCast(index));
+        const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+        try scope.put(global, "expected", expected);
+        try scope.put(global, "fullSnapshots", c.pi_js_bool(engine.context, @intFromBool(full)));
+        if (retained) {
+            const prepared = try engine.evalModule("globalThis.retainedMistral=mistral.streamSimple;delete globalThis.mistral;export const ready=true;", "mistral-fetch-retained-prepare.mjs");
+            engine.freeValue(prepared);
+            c.JS_RunGC(engine.runtime);
+        }
+        try scope.put(global, "retainedFactory", c.pi_js_bool(engine.context, @intFromBool(retained)));
+        const checked = engine.evalModule(fetch_control_script, "native-actual-mistral-fetch8.mjs") catch |err| {
+            const name = try engine.toString(try scope.get(expected, "name"));
+            defer engine.gpa.free(name);
+            std.debug.print("Source20 fetch {s}: {s}\n", .{ name, engine.last_error orelse "no diagnostic" });
+            return err;
+        };
+        engine.freeValue(checked);
+        c.JS_RunGC(engine.runtime);
+    }
+}
+test "native AI Google Mistral Source8 injectable fetch functional getter callback reader components" {
+    try fetchControls(false, false);
+}
+test "native AI Google Mistral Source8 injectable fetch retained facade GC components" {
+    try fetchControls(false, true);
+}
+test "native AI Google Mistral Source8 injectable fetch full intermediate snapshots remain strict" {
+    try fetchControls(true, false);
+}
+
+const fetch_control_script =
+    \\function snapshot(v){if(Array.isArray(v))return v.map(snapshot);if(v&&typeof v==='object'){const out={};for(const[k,x]of Object.entries(v)){if(v.role==='assistant'&&k==='timestamp')out[k]='$TIMESTAMP';else if(v.role==='assistant'&&k==='durationMs')out[k]='$DURATION';else out[k]=snapshot(x)}return out}return v}function canonical(v){if(Array.isArray(v))return v.map(canonical);if(v&&typeof v==='object'){const out={};for(const k of Object.keys(v).sort())if(v[k]!==undefined)out[k]=canonical(v[k]);return out}return v}function same(a,b,key){if(JSON.stringify(canonical(a))!==JSON.stringify(canonical(b)))throw Error(JSON.stringify({name:expected.name,key,actual:a,expected:b}))}
+    \\const mode=expected.input.mode,log=[],requests=[],events=[],payloads=[],controller=new AbortController(),model={id:'mistral-fixture',name:'fixture',provider:'mistral',api:'mistral-conversations',baseUrl:'https://source-fixture.invalid/prefix?preserved=1#fragment',reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192},data=new TextEncoder().encode('data: '+JSON.stringify({id:'response-1',choices:[{delta:{content:'answer'},finish_reason:'stop'}],usage:{prompt_tokens:12,completion_tokens:4,total_tokens:16}})+'\n\n');let reads=0;
+    \\const reader={read(){log.push('reader.read');if(mode==='read-rejects')return Promise.reject(Error('reader rejected'));return Promise.resolve(reads++?{done:true,value:undefined}:{done:false,value:data})},cancel(){log.push('reader.cancel');return mode==='cancel-rejects'?Promise.reject(Error('cancel rejected')):Promise.resolve()},releaseLock(){log.push('reader.releaseLock')}},body={getReader(){log.push('body.getReader');return reader}},response={get status(){log.push('response.status');return mode==='http-error'?403:200},get statusText(){log.push('response.statusText');return mode==='http-error'?'Forbidden':'OK'},get headers(){log.push('response.headers');return new Headers({'x-fixture':'source-only'})},get ok(){log.push('response.ok');return mode!=='http-error'},get body(){log.push('response.body');return mode==='missing-body'?null:body},text(){log.push('response.text');return Promise.resolve('{"message":"fixture denied"}')}};
+    \\const options={apiKey:'fixture-placeholder-key',maxTokens:1000,sessionId:'fixture-session',signal:controller.signal,fetch(url,init){log.push('fetch');requests.push({url:String(url),path:url.pathname+url.search,pathname:url.pathname,query:url.search,rawBody:init.body,urlConstructor:url.constructor.name,urlKeys:Object.keys(url),receiverUndefined:this===undefined,initKeys:Object.keys(init),method:init.method,body:JSON.parse(init.body),headers:Object.fromEntries(init.headers.entries()),headersConstructor:init.headers.constructor.name,headersTag:Object.prototype.toString.call(init.headers),signalType:init.signal.constructor.name,signalAborted:init.signal.aborted});if(mode==='fetch-rejects')return Promise.reject(Error('fetch rejected'));return Promise.resolve(response)},onPayload(payload){log.push('onPayload');payloads.push(snapshot(payload))},onResponse(head){log.push('onResponse');log.push(snapshot(head));if(mode==='onResponse-throws')throw Error('caller response failed');return Promise.resolve()},onProviderStreamEvent(){log.push('onProviderStreamEvent');if(mode==='abort-after-chunk')controller.abort(Error('owned signal aborted'));return Promise.resolve()}};let result,syncError;try{const stream=(retainedFactory?retainedMistral:mistral.streamSimple)(model,{messages:[{role:'system',content:'system',timestamp:0},{role:'user',content:'hello',timestamp:1}]},options);for await(const event of stream)events.push(snapshot(event));result=snapshot(await stream.result())}catch(error){syncError={name:error.name,message:error.message}}
+    \\same(log,expected.log,'live getter callback reader log');same(payloads,expected.payloads,'payloads');same(result,expected.result,'result');same(syncError,expected.syncError,'syncError');if(requests.length!==1)throw Error('one actual injectable fetch required');if(requests[0].headers['user-agent']!==nativeUserAgent)throw Error('native user agent identity');const project=request=>({...request,headers:Object.fromEntries(Object.entries(request.headers).filter(([name])=>name!=='user-agent'))});same(requests.map(project),expected.requests.map(project),'functional request and URL/Header/Signal metadata');if(fullSnapshots)same(events,expected.events,'full events');else{const shape=e=>{const out={...e};delete out.partial;delete out.message;delete out.error;return out};same(events.map(shape),expected.events.map(shape),'event shapes')}export const checked=true;
+;
+
+test "native AI Google Mistral Source8 complete injectable request reader host allocation graph" {
+    const Probe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
+            defer engine.deinit();
+            const generation = engine.native_allocation_generation;
+            install(engine) catch |err| return engine.nativeAllocationError(err, generation);
+            var scope: v.Scope = .{ .engine = engine };
+            defer scope.deinit();
+            prepareProbe(&scope) catch |err| return engine.nativeAllocationError(err, generation);
+            const checked = engine.evalModule(fetch_control_script, "native-source8-request-reader-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+            engine.freeValue(checked);
+            c.JS_RunGC(engine.runtime);
+        }
+        fn prepareProbe(scope: *v.Scope) !void {
+            const bytes = @embedFile("extensions/fixtures/ai-mistral-fetch8-5ab.json");
+            const original = try scope.own(try scope.engine.checked(c.JS_ParseJSON(scope.engine.context, bytes.ptr, bytes.len, "actual-source8-oom-control.json")));
+            const expected = try v.at(scope, try scope.get(original, "rows"), 0);
+            const global = try scope.own(c.JS_GetGlobalObject(scope.engine.context));
+            try scope.put(global, "expected", expected);
+            try scope.put(global, "fullSnapshots", c.pi_js_bool(scope.engine.context, 0));
+            try scope.put(global, "retainedFactory", c.pi_js_bool(scope.engine.context, 0));
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}
+
+test "native AI Google Mistral Source8 pending injectable fetch graph survives GC and optional response hook skips getters" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    try install(engine);
+    var scope: v.Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const bytes = @embedFile("extensions/fixtures/ai-mistral-fetch8-5ab.json");
+    const original = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "actual-source8-pending-gc.json")));
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "expected", try v.at(&scope, try scope.get(original, "rows"), 0));
+    const prepared = try engine.evalModule(
+        \\let started;const startedPromise=new Promise(resolve=>started=resolve);globalThis.retainedMistral=mistral.streamSimple;delete globalThis.mistral;const model={id:'mistral-fixture',name:'fixture',provider:'mistral',api:'mistral-conversations',baseUrl:'https://source-fixture.invalid/prefix?preserved=1#fragment',reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192};globalThis.pending=retainedMistral(model,{messages:[{role:'system',content:'system',timestamp:0},{role:'user',content:'hello',timestamp:1}]},{apiKey:'fixture-placeholder-key',maxTokens:1000,sessionId:'fixture-session',fetch(){started();return new Promise(resolve=>globalThis.releaseFetch=resolve)}});await startedPromise;export const prepared=true;
+    , "native-source8-pending-fetch-prepare.mjs");
+    engine.freeValue(prepared);
+    c.JS_RunGC(engine.runtime);
+    const checked = try engine.evalModule(
+        \\let reads=0;const data=new TextEncoder().encode('data: '+JSON.stringify({id:'response-1',choices:[{delta:{content:'answer'},finish_reason:'stop'}],usage:{prompt_tokens:12,completion_tokens:4,total_tokens:16}})+'\n\n');releaseFetch({get status(){throw Error('optional response status read')},get headers(){throw Error('optional response headers read')},ok:true,body:{getReader(){return{read(){return Promise.resolve(reads++?{done:true,value:undefined}:{done:false,value:data})},cancel(){return Promise.resolve()},releaseLock(){}}}}});const events=[];for await(const event of pending){const value={...event};delete value.partial;delete value.message;delete value.error;events.push(value)}const result=await pending.result();function snapshot(v){if(Array.isArray(v))return v.map(snapshot);if(v&&typeof v==='object'){const out={};for(const[k,x]of Object.entries(v)){if(v.role==='assistant'&&k==='timestamp')out[k]='$TIMESTAMP';else if(v.role==='assistant'&&k==='durationMs')out[k]='$DURATION';else out[k]=snapshot(x)}return out}return v}function canonical(v){if(Array.isArray(v))return v.map(canonical);if(v&&typeof v==='object'){const out={};for(const k of Object.keys(v).sort())if(v[k]!==undefined)out[k]=canonical(v[k]);return out}return v}if(JSON.stringify(canonical(snapshot(result)))!==JSON.stringify(canonical(expected.result)))throw Error('pending owner result mismatch');const shape=e=>{const out={...e};delete out.partial;delete out.message;delete out.error;return out};if(JSON.stringify(canonical(events))!==JSON.stringify(canonical(expected.events.map(shape))))throw Error('pending owner event shape mismatch');delete globalThis.pending;delete globalThis.releaseFetch;delete globalThis.retainedMistral;export const checked=true;
+    , "native-source8-pending-fetch-complete.mjs");
+    engine.freeValue(checked);
+    c.JS_RunGC(engine.runtime);
+}
