@@ -78,6 +78,13 @@ pub fn errored(scope: *Scope, stream: c.JSValue) !bool {
     const root = rootOf(try ownerOf(scope.engine));
     return root.streams.is_errored(scope, root.streams.bindings, stream);
 }
+pub fn streamConstructor(scope: *Scope) !c.JSValue {
+    return scope.own(c.JS_DupValue(scope.engine.context, rootOf(try ownerOf(scope.engine)).streams.constructor));
+}
+pub fn closeController(scope: *Scope, controller: c.JSValue) !void {
+    const root = rootOf(try ownerOf(scope.engine));
+    return root.streams.close_controller(scope, root.streams.bindings, controller);
+}
 fn responseCollected(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -189,10 +196,11 @@ pub fn extract(scope: *Scope, interfaces: *const idl.Interfaces, converted: c.JS
     } else {
         const symbol = try scope.own(try scope.engine.checked(c.JS_GetAsyncIteratorSymbol(scope.engine.context)));
         const iterator = try scope.own(try js.getKey(scope.engine, converted, symbol));
-        if (!c.JS_IsFunction(scope.engine.context, iterator)) return error.NativeWebBodyInitUnconverted;
-        if (keepalive) try web.typeError(scope, try scope.text("keepalive"), null);
-        if (try disturbed(scope, converted) or scope.truthy(try scope.get(converted, "locked"))) try web.typeError(scope, try scope.text("Response body object should not be disturbed or locked"), null);
-        if (!readable) return error.NativeWebAsyncIterableBodyUnavailable;
+        if (c.JS_IsFunction(scope.engine.context, iterator)) {
+            if (keepalive) try web.typeError(scope, try scope.text("keepalive"), null);
+            if (try disturbed(scope, converted) or scope.truthy(try scope.get(converted, "locked"))) try web.typeError(scope, try scope.text("Response body object should not be disturbed or locked"), null);
+            if (!readable) return error.NativeWebAsyncIterableBodyUnavailable;
+        } else if (!readable) return error.NativeWebBodyInitUnconverted;
     }
     if (c.JS_IsString(source) or c.JS_GetTypedArrayType(source) == c.JS_TYPED_ARRAY_UINT8) {
         const bytes = if (c.JS_IsString(source)) try scope.invoke(root.encoder, "encode", &.{source}) else source;
