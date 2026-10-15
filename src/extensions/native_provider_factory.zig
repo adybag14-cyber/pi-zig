@@ -5,6 +5,7 @@ const js = @import("native_js_values.zig");
 const vm = @import("native_values.zig");
 const Scope = @import("native_models_stream_scope.zig").Scope;
 const awaiting = @import("native_durable_await.zig");
+const functions = @import("native_node_function.zig");
 const c = em.c;
 const Method = enum(c_int) { getModels, getAllModels, refreshModels, stream, streamSimple, fetchDeferred, cancelDeferred, generateImages, classify };
 const Stage = enum(c_int) { restored, fetched, published, cancelled };
@@ -19,30 +20,46 @@ fn kind(scope: *Scope, model: c.JSValue) !c.JSValue {
     return if (nullish(value)) scope.text("chat") else value;
 }
 fn implementations(scope: *Scope, value: c.JSValue) !c.JSValue {
-    const result = try scope.array();
-    if (nullish(value)) return result;
-    const entries = try scope.invoke(try scope.global("Object"), "values", &.{value});
-    var count: u32 = 0;
-    for (0..try vm.length(scope.engine, entries)) |i| {
-        const entry = try item(scope, entries, i);
-        if (!c.JS_IsUndefined(entry)) {
-            try scope.index(result, count, entry);
-            count += 1;
+    const entries = try scope.invoke(try scope.global("Object"), "values", &.{if (nullish(value)) try scope.object() else value});
+    const Filter = struct {
+        fn call(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            return c.JS_NewBool(engine.context, args.len > 0 and !c.JS_IsUndefined(args[0]));
         }
-    }
-    return result;
+    };
+    return scope.invoke(entries, "filter", &.{try scope.own(try functions.createArrow(scope.engine, "", 1, Filter.call, &.{}))});
 }
 fn hasCapability(scope: *Scope, entries: c.JSValue, key: [*:0]const u8) !bool {
-    for (0..try vm.length(scope.engine, entries)) |i| if (!c.JS_IsUndefined(try scope.get(try item(scope, entries, i), key))) return true;
-    return false;
+    const Predicate = struct {
+        fn call(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            const value = try js.getKey(engine, if (args.len > 0) args[0] else c.pi_js_undefined(), roots[0]);
+            defer engine.freeValue(value);
+            return c.JS_NewBool(engine.context, !c.JS_IsUndefined(value));
+        }
+    };
+    const predicate = try scope.own(try functions.createArrow(scope.engine, "", 1, Predicate.call, &.{try scope.text(std.mem.span(key))}));
+    return scope.truthy(try scope.invoke(entries, "some", &.{predicate}));
 }
 fn methodFunction(scope: *Scope, state: c.JSValue, method: Method) !c.JSValue {
-    var data = [_]c.JSValue{state};
-    return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, dispatch, @tagName(method), switch (method) {
+    const name: [*:0]const u8 = if (method == .getAllModels) "currentModels" else @tagName(method);
+    const arity: c_int = switch (method) {
         .getModels, .getAllModels => 0,
         .refreshModels => 1,
         else => 3,
-    }, @intFromEnum(method), data.len, &data)));
+    };
+    const roots: []const c.JSValue = &.{ state, c.JS_NewInt32(scope.engine.context, @intFromEnum(method)) };
+    return scope.own(if (method == .refreshModels or method == .cancelDeferred or method == .generateImages or method == .classify)
+        try @import("native_ai_auth_helpers.zig").asyncArrow(scope.engine, name, arity, methodCall, roots)
+    else
+        try functions.createArrow(scope.engine, name, arity, methodCall, roots));
+}
+fn methodCall(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var raw: i32 = 0;
+    if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return js.capture(engine);
+    const method: Method = @enumFromInt(raw);
+    return invoke(engine, roots[0], method, args) catch |err| switch (method) {
+        .refreshModels, .cancelDeferred, .generateImages, .classify => @import("native_durable.zig").rejectedPromise(engine, err),
+        else => return err,
+    };
 }
 pub fn install(engine: *em.Engine, exports: c.JSValue, cache: c.JSValue) !void {
     var data = [_]c.JSValue{cache};
@@ -60,29 +77,33 @@ fn create(engine: *em.Engine, cache: c.JSValue, input: c.JSValue) !c.JSValue {
     try scope.put(store, "cache", cache);
     try scope.put(state, "store", store);
     try scope.put(state, "input", input);
-    try scope.put(state, "baseline", try scope.get(input, "models"));
-    try scope.put(state, "dynamic", try scope.array());
-    try scope.put(state, "fetch", try scope.get(input, "fetchModels"));
-    const api = try scope.get(input, "api");
-    const single = scope.truthy(api) and c.JS_IsFunction(engine.context, try scope.get(api, "stream"));
-    try scope.put(state, "single", if (single) api else c.pi_js_undefined());
-    try scope.put(state, "byApi", if (single or !scope.truthy(api)) c.pi_js_undefined() else api);
-    const streams = if (single) list: {
-        const result = try scope.array();
-        try scope.index(result, 0, api);
-        break :list result;
-    } else try implementations(&scope, api);
+    // Preserve Source's repeated input.api reads, including short circuiting.
+    const first_api = try scope.get(input, "api");
+    const single = if (scope.truthy(first_api) and c.JS_IsFunction(engine.context, try scope.get(try scope.get(input, "api"), "stream"))) try scope.get(input, "api") else c.pi_js_undefined();
+    const by_api = if (scope.truthy(single) or !scope.truthy(try scope.get(input, "api"))) c.pi_js_undefined() else try scope.get(input, "api");
+    try scope.put(state, "single", single);
+    try scope.put(state, "byApi", by_api);
     const images = try scope.get(input, "images");
     const classifiers = try scope.get(input, "classifiers");
     try scope.put(state, "images", images);
     try scope.put(state, "classifiers", classifiers);
+    const streams = if (scope.truthy(single)) list: {
+        const result = try scope.array();
+        try scope.index(result, 0, single);
+        break :list result;
+    } else try implementations(&scope, by_api);
     const image_entries = try implementations(&scope, images);
     const classifier_entries = try implementations(&scope, classifiers);
     if (try vm.length(engine, streams) == 0 and try vm.length(engine, image_entries) == 0 and try vm.length(engine, classifier_entries) == 0) {
-        const message = try scope.concat(try scope.concat(try scope.text("Provider "), try scope.get(input, "id")), try scope.text(": at least one of \"api\", \"images\", or \"classifiers\" is required."));
-        const reason = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, try scope.global("Error"), 1, @constCast(&[_]c.JSValue{message}))));
+        const error_constructor = try scope.global("Error");
+        const id = try scope.own(try engine.checked(c.JS_ToString(engine.context, try scope.get(input, "id"))));
+        const message = try scope.concat(try scope.concat(try scope.text("Provider "), id), try scope.text(": at least one of \"api\", \"images\", or \"classifiers\" is required."));
+        const reason = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, error_constructor, 1, @constCast(&[_]c.JSValue{message}))));
         return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
     }
+    try scope.put(state, "baseline", try scope.get(input, "models"));
+    try scope.put(state, "dynamic", try scope.array());
+    try scope.put(state, "fetch", try scope.get(input, "fetchModels"));
     const provider = try scope.object();
     try scope.put(provider, "id", try scope.get(input, "id"));
     const name = try scope.get(input, "name");
@@ -96,8 +117,8 @@ fn create(engine: *em.Engine, cache: c.JSValue, input: c.JSValue) !c.JSValue {
     try scope.put(provider, "streamSimple", try methodFunction(&scope, state, .streamSimple));
     if (try hasCapability(&scope, streams, "fetchDeferred")) try scope.put(provider, "fetchDeferred", try methodFunction(&scope, state, .fetchDeferred));
     if (try hasCapability(&scope, streams, "cancelDeferred")) try scope.put(provider, "cancelDeferred", try methodFunction(&scope, state, .cancelDeferred));
-    if (try vm.length(engine, image_entries) > 0) try scope.put(provider, "generateImages", try methodFunction(&scope, state, .generateImages));
-    if (try vm.length(engine, classifier_entries) > 0) try scope.put(provider, "classify", try methodFunction(&scope, state, .classify));
+    if (scope.truthy(images) and try vm.length(engine, image_entries) > 0) try scope.put(provider, "generateImages", try methodFunction(&scope, state, .generateImages));
+    if (scope.truthy(classifiers) and try vm.length(engine, classifier_entries) > 0) try scope.put(provider, "classify", try methodFunction(&scope, state, .classify));
     return c.JS_DupValue(engine.context, provider);
 }
 fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -111,44 +132,39 @@ fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSVal
 fn catalog(scope: *Scope, state: c.JSValue, chat_only: bool) !c.JSValue {
     const baseline = try scope.get(state, "baseline");
     const dynamic = try scope.get(state, "dynamic");
-    const result = try scope.array();
-    for (0..try vm.length(scope.engine, baseline)) |i| {
+    const result = try scope.own(try js.collect(scope.engine, baseline, try scope.own(try scope.engine.checked(c.JS_GetIteratorSymbol(scope.engine.context)))));
+    var iterator = try @import("native_ai_provider_values.zig").iterator(scope, dynamic);
+    defer iterator.deinit();
+    errdefer iterator.closePreserving();
+    while (try iterator.next()) |owned_model| {
+        defer scope.engine.freeValue(owned_model);
         var row: Scope = .{ .engine = scope.engine };
         defer row.deinit();
-        try scope.index(result, @intCast(i), try item(&row, baseline, i));
-    }
-    for (0..try vm.length(scope.engine, dynamic)) |i| {
-        var row: Scope = .{ .engine = scope.engine };
-        defer row.deinit();
-        const model = try item(&row, dynamic, i);
-        const model_kind = try kind(&row, model);
-        const id = try row.get(model, "id");
-        var position: usize = try vm.length(scope.engine, result);
-        for (0..position) |j| {
-            var entry: Scope = .{ .engine = scope.engine };
-            defer entry.deinit();
-            const existing = try item(&entry, result, j);
-            if (entry.equal(try kind(&entry, existing), model_kind) and entry.equal(try entry.get(existing, "id"), id)) {
-                position = j;
-                break;
+        const Match = struct {
+            fn call(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+                var inner: Scope = .{ .engine = engine };
+                defer inner.deinit();
+                const entry = if (args.len > 0) args[0] else c.pi_js_undefined();
+                return c.JS_NewBool(engine.context, inner.equal(try kind(&inner, entry), try kind(&inner, roots[0])) and inner.equal(try inner.get(entry, "id"), try inner.get(roots[0], "id")));
             }
+        };
+        const position_value = try row.invoke(result, "findIndex", &.{try row.own(try functions.createArrow(scope.engine, "", 1, Match.call, &.{owned_model}))});
+        if (row.truthy(try row.own(try scope.engine.checked(c.JS_PiBinaryOperator(scope.engine.context, 7, position_value, c.JS_NewInt32(scope.engine.context, 0)))))) {
+            // Assignment follows ordinary Set semantics, including patched setters.
+            try js.setKey(scope.engine, result, position_value, owned_model);
+        } else {
+            _ = try row.invoke(result, "push", &.{owned_model});
         }
-        try scope.index(result, @intCast(position), model);
     }
     if (!chat_only) return result;
-    const filtered = try scope.array();
-    const chat = try scope.text("chat");
-    var count: u32 = 0;
-    for (0..try vm.length(scope.engine, result)) |i| {
-        var row: Scope = .{ .engine = scope.engine };
-        defer row.deinit();
-        const model = try item(&row, result, i);
-        if (row.equal(try kind(&row, model), chat)) {
-            try scope.index(filtered, count, model);
-            count += 1;
+    const Chat = struct {
+        fn call(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            var row: Scope = .{ .engine = engine };
+            defer row.deinit();
+            return c.JS_NewBool(engine.context, row.equal(try kind(&row, if (args.len > 0) args[0] else c.pi_js_undefined()), try row.text("chat")));
         }
-    }
-    return filtered;
+    };
+    return scope.invoke(result, "filter", &.{try scope.own(try functions.createArrow(scope.engine, "", 1, Chat.call, &.{}))});
 }
 
 fn implementation(scope: *Scope, state: c.JSValue, method: Method, model: c.JSValue) !c.JSValue {
@@ -192,11 +208,17 @@ fn invoke(engine: *em.Engine, state: c.JSValue, method: Method, args: []const c.
     try scope.put(job, "context", if (args.len > 1) args[1] else c.pi_js_undefined());
     try scope.put(job, "options", if (args.len > 2) args[2] else c.pi_js_undefined());
     try scope.put(job, "method", c.JS_NewInt32(engine.context, @intFromEnum(method)));
-    const entry = try implementation(&scope, state, method, model);
+    const entry = if (method == .fetchDeferred) c.pi_js_undefined() else try implementation(&scope, state, method, model);
     if (method == .fetchDeferred or ((method == .stream or method == .streamSimple) and !scope.truthy(entry))) {
-        var data = [_]c.JSValue{job};
-        const setup = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, deferredSetup, "", 0, 0, data.len, &data)));
-        return @import("native_models_streaming.zig").fromSetup(engine, try scope.get(state, "store"), model, setup);
+        const Setup = struct {
+            fn call(host: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+                const value = setupCall(host, roots[0]) catch |err| return @import("native_durable.zig").rejectedPromise(host, err);
+                defer host.freeValue(value);
+                return @import("native_durable.zig").resolvedPromise(host, value);
+            }
+        };
+        const setup = try scope.own(try @import("native_ai_auth_helpers.zig").asyncArrow(engine, "", 0, Setup.call, &.{job}));
+        return @import("native_ai_lazy_api.zig").lazyStream(engine, model, setup);
     }
     if (!scope.truthy(entry) or (method == .cancelDeferred and !scope.truthy(try scope.get(entry, "cancelDeferred")))) {
         const reason = try missing(&scope, state, method, model);
@@ -223,7 +245,7 @@ fn setupCall(engine: *em.Engine, job: c.JSValue) !c.JSValue {
     if (c.JS_ToInt32(engine.context, &raw, try scope.get(job, "method")) < 0) return js.capture(engine);
     const method: Method = @enumFromInt(raw);
     const model = try scope.get(job, "model");
-    const entry = try implementation(&scope, state, method, model);
+    const entry = if (method == .stream or method == .streamSimple) c.pi_js_undefined() else try implementation(&scope, state, method, model);
     if (!scope.truthy(entry) or (method == .fetchDeferred and !scope.truthy(try scope.get(entry, "fetchDeferred")))) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, try missing(&scope, state, method, model))));
     return c.JS_DupValue(engine.context, try scope.invoke(entry, @tagName(method), &.{ model, try scope.get(job, "context"), try scope.get(job, "options") }));
 }
@@ -239,37 +261,44 @@ fn update(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c
 fn publication(scope: *Scope, job: c.JSValue, models: c.JSValue, persist: bool) !c.JSValue {
     const result = try scope.object();
     const state = try scope.get(job, "state");
-    var data = [_]c.JSValue{ state, models };
     if (persist) {
         const record = try scope.object();
         try scope.put(record, "models", models);
         try scope.put(record, "checkedAt", try scope.invoke(try scope.global("Date"), "now", &.{}));
         try scope.put(result, "persist", record);
     }
-    try scope.put(result, "update", try scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, update, "update", 0, 0, data.len, &data))));
+    const Update = struct {
+        fn call(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            try js.define(engine, roots[0], "dynamic", c.JS_DupValue(engine.context, roots[1]));
+            return c.pi_js_undefined();
+        }
+    };
+    try scope.put(result, "update", try scope.own(try functions.createArrow(scope.engine, "update", 0, Update.call, &.{ state, models })));
     return result;
 }
 fn refresh(scope: *Scope, job: c.JSValue, restore: bool) !c.JSValue {
     const context = try scope.get(job, "context");
     const state = try scope.get(job, "state");
-    const stored = try scope.get(context, "stored");
-    if (restore and scope.truthy(stored)) {
-        const values = try scope.get(stored, "models");
-        const restored = try scope.array();
-        const id = try scope.get(try scope.get(state, "input"), "id");
-        var count: u32 = 0;
-        for (0..try vm.length(scope.engine, values)) |i| {
-            const model = try item(scope, values, i);
-            if (scope.equal(try scope.get(model, "provider"), id)) {
-                try scope.index(restored, count, model);
-                count += 1;
+    if (restore and scope.truthy(try scope.get(context, "stored"))) {
+        const values = try scope.get(try scope.get(context, "stored"), "models");
+        const Filter = struct {
+            fn call(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+                var row: Scope = .{ .engine = engine };
+                defer row.deinit();
+                return c.JS_NewBool(engine.context, row.equal(try row.get(if (args.len > 0) args[0] else c.pi_js_undefined(), "provider"), try row.get(roots[0], "id")));
             }
-        }
+        };
+        const Identity = struct {
+            fn call(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+                return if (args.len > 0) c.JS_DupValue(engine.context, args[0]) else c.pi_js_undefined();
+            }
+        };
+        const selected = try scope.invoke(values, "filter", &.{try scope.own(try functions.createArrow(scope.engine, "", 1, Filter.call, &.{try scope.get(state, "input")}))});
+        const restored = try scope.invoke(selected, "map", &.{try scope.own(try functions.createArrow(scope.engine, "", 1, Identity.call, &.{}))});
         const pending = try scope.invoke(context, "publish", &.{try publication(scope, job, restored, false)});
         return wait(scope, job, pending, .restored);
     }
-    const signal = try scope.get(context, "signal");
-    if (!scope.truthy(try scope.get(context, "allowNetwork")) or scope.truthy(try scope.get(signal, "aborted"))) return scope.own(try @import("native_durable.zig").resolvedPromise(scope.engine, c.pi_js_undefined()));
+    if (!scope.truthy(try scope.get(context, "allowNetwork")) or scope.truthy(try scope.get(try scope.get(context, "signal"), "aborted"))) return scope.own(try @import("native_durable.zig").resolvedPromise(scope.engine, c.pi_js_undefined()));
     return wait(scope, job, try scope.call(try scope.get(state, "fetch"), c.pi_js_undefined(), &.{context}), .fetched);
 }
 fn advance(engine: *em.Engine, job: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) anyerror!c.JSValue {
@@ -286,16 +315,15 @@ fn advance(engine: *em.Engine, job: c.JSValue, value: c.JSValue, rejected: bool,
         .fetched => {
             const context = try scope.get(job, "context");
             if (scope.truthy(try scope.get(try scope.get(context, "signal"), "aborted"))) return c.pi_js_undefined();
-            const models = try scope.array();
-            var count: u32 = 0;
-            for (0..try vm.length(engine, value)) |i| {
-                const model = try item(&scope, value, i);
-                const model_kind = try kind(&scope, model);
-                if (scope.equal(model_kind, try scope.text("chat")) or scope.equal(model_kind, try scope.text("image")) or scope.equal(model_kind, try scope.text("classifier"))) {
-                    try scope.index(models, count, model);
-                    count += 1;
+            const Known = struct {
+                fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+                    var row: Scope = .{ .engine = host };
+                    defer row.deinit();
+                    const model_kind = try kind(&row, if (args.len > 0) args[0] else c.pi_js_undefined());
+                    return c.JS_NewBool(host.context, row.equal(model_kind, try row.text("chat")) or row.equal(model_kind, try row.text("image")) or row.equal(model_kind, try row.text("classifier")));
                 }
-            }
+            };
+            const models = try scope.invoke(value, "filter", &.{try scope.own(try functions.createArrow(engine, "hasKnownModelType", 1, Known.call, &.{}))});
             return c.JS_DupValue(engine.context, try wait(&scope, job, try scope.invoke(context, "publish", &.{try publication(&scope, job, models, true)}), .published));
         },
     }
