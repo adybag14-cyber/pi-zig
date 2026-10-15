@@ -104,3 +104,4 @@ verification/native-event-stream-production-2e1f-debug-20261015/*.log whitespace
 verification/ai-json39-transform12-ae7-source51-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 src/extensions/fixtures/ai-transform-thinking-ae7-source51.input.txt whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/ai-json39-transform12-ae7-source51-20261015/native-9ae8-harness-negative/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/ai-json39-transform12-ae7-source51-20261015/native-9281-debug/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
