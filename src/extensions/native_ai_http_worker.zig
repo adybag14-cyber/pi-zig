@@ -125,6 +125,7 @@ pub const Worker = struct {
     finished: std.atomic.Value(bool) = .init(false),
     thread: ?std.Thread = null,
     failure: ?anyerror = null,
+    modeled_failure: ?@import("native_ai_http_failure.zig").Owned = null,
     writer_failure: ?anyerror = null,
     mutex: std.Io.Mutex = .init,
     changed: std.Io.Condition = .init,
@@ -167,6 +168,7 @@ pub const Worker = struct {
         self.data.deinit(a);
         self.error_body.deinit(a);
         if (self.event) |value| a.free(value);
+        if (self.modeled_failure) |*failure| failure.deinit(a);
         self.input.deinit();
         a.destroy(self);
     }
@@ -222,6 +224,12 @@ pub const Worker = struct {
         const budget: prep.Budget = .{ .io = self.io, .abort_flag = &self.abort_flag, .deadline_ms = if (self.input.timeout_ms) |ms| now_ms +| @as(i64, @intCast(@min(ms, std.math.maxInt(i64)))) else null };
         var prepared: ?prep.Prepared = if (self.input.prepare) |callback| try @import("native_ai_http_prepare_run.zig").run(a, callback, .{ .method = self.input.method, .url = self.input.url, .payload = self.input.payload, .headers = self.input.headers }, self.input.prepare_data, budget) else null;
         defer if (prepared) |*value| value.deinit(a);
+        _ = try budget.remaining();
+        if (prepared) |*value| if (value.failure) |failure| {
+            self.modeled_failure = failure;
+            value.failure = null;
+            return error.NativeHttpPreparedFailure;
+        };
         const url = if (prepared) |value| value.url orelse self.input.url else self.input.url;
         const headers = if (prepared) |value| merged: {
             var combined: std.ArrayList(std.http.Header) = .empty;
