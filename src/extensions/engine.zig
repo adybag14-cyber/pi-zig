@@ -172,6 +172,9 @@ pub const Engine = struct {
     native_durable_storage_context: ?*anyopaque = null,
     native_durable_storage_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_durable_storage_close: ?*const fn (*Engine) void = null,
+    native_env_context: ?*anyopaque = null,
+    native_env_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_env_deinit: ?*const fn (*Engine) void = null,
     host_scheduler_deinit: ?*const fn (*Engine) void = null,
     host_await_deadline_ms: ?i64 = null,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
@@ -270,6 +273,7 @@ pub const Engine = struct {
         _ = c.JS_PiSetJSONParseErrorHook(self.context, null);
         self.native_json_diagnostic_depth = 0;
         if (self.native_ai_http_cleanup) |cleanup| cleanup(self);
+        if (self.native_env_deinit) |cleanup| cleanup(self);
         if (self.native_codemode_deinit) |cleanup| cleanup(self);
         if (self.native_command_metadata_deinit) |cleanup| cleanup(self);
         if (self.native_sdk_builtin_execution_cleanup) |cleanup| cleanup(self);
@@ -768,7 +772,8 @@ pub const Engine = struct {
         const ai_http_worked = if (self.native_ai_http_pump) |pump| try pump(self) else false;
         const commands_worked = if (self.native_command_metadata_pump) |pump| try pump(self) else false;
         const codemode_worked = if (self.native_codemode_pump) |pump| try pump(self) else false;
-        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or ai_http_worked or commands_worked or codemode_worked;
+        const env_worked = if (self.native_env_pump) |pump| try pump(self) else false;
+        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or ai_http_worked or commands_worked or codemode_worked or env_worked;
     }
     /// Native leases notify through this Engine-owned signal. External worker
     /// transports keep their existing wakeup while standalone VMs wake too.
@@ -864,7 +869,7 @@ pub const Engine = struct {
                 }
                 // A native transport can settle a promise through an incoming
                 // abort or UI response even when no timer or JS job is pending.
-                if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or self.native_codemode_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_http_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
+                if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or self.native_codemode_pump != null or self.native_env_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_http_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
                     _ = try self.native_owner_signal.waitAfter(self.native_io.?, owner_epoch, .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } });
                     continue;
                 }

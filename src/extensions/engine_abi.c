@@ -23,6 +23,17 @@ static int pi_reserve(PiMemoryOwner *owner, size_t size) {
                 memory_order_relaxed, memory_order_relaxed));
     return 1;
 }
+void pi_js_retain_memory_owner(void *opaque) {
+    PiMemoryOwner *owner = opaque;
+    atomic_fetch_add_explicit(&owner->references, 1, memory_order_relaxed);
+}
+int pi_js_native_memory_reserve(void *opaque, size_t bytes) {
+    return pi_reserve(opaque, bytes);
+}
+void pi_js_native_memory_release(void *opaque, size_t bytes) {
+    PiMemoryOwner *owner = opaque;
+    if (atomic_fetch_sub_explicit(&owner->used, bytes, memory_order_relaxed) < bytes) abort();
+}
 void pi_js_release_memory_owner(void *opaque) {
     PiMemoryOwner *owner = opaque;
     if (atomic_fetch_sub_explicit(&owner->references, 1, memory_order_acq_rel) == 1) {

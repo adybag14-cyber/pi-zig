@@ -7,23 +7,23 @@
   "root": "pi-zig",
   "complete_inventory": "FILES.sha256",
   "continuation": "UPSTREAM-UPDATE-20261003.md",
-  "file_count_excluding_FILES_sha256": 5411,
-  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 329105520,
+  "file_count_excluding_FILES_sha256": 5686,
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 413804242,
   "generated_catalog": {
-    "models": 1631,
+    "models": 1707,
     "providers": 42,
-    "upstream_commit": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
-    "upstream_version": "1.1.0",
-    "upstream_source_archive_sha256": "5da1185d5c3bd4ba55618c38ee0524defd5cb0797c9aaa0ead7507387472f2f0",
-    "catalog_revision": "sha256-439c53478c84ed27a58f8b54e1c3bd45810e5a969515b4e3666a3898d51ee22f",
-    "catalog_sha256": "439c53478c84ed27a58f8b54e1c3bd45810e5a969515b4e3666a3898d51ee22f",
+    "upstream_commit": "5ab7fe74c400097b386662205cd93900695b8a71",
+    "upstream_version": "1.2.0",
+    "upstream_source_archive_sha256": "bb1b83d360c004472059628ea7594fee16232eb3931a58a1f07e2aba67c3df72",
+    "catalog_revision": "sha256-4334227667568186df17628973e890a2582a44c4ef67f16621704387ae73c8c9",
+    "catalog_sha256": "4334227667568186df17628973e890a2582a44c4ef67f16621704387ae73c8c9",
     "source": "src/ai/catalog_source.json",
     "generated": "src/ai/catalog_generated.zig",
-    "source_sha256": "da19da59a33e81507df7fa47c453fc3f9747930bc9820e11a7fdc5e4f0171d32"
+    "source_sha256": "13dd31371c203312a8a70fe0698c5d7848032d0340b53548a4c310c51868f0d4"
   },
   "zig_source": {
-    "files": 1244,
-    "lines": 395821
+    "files": 1278,
+    "lines": 400621
   },
   "excluded_generated_paths": [
     ".git",

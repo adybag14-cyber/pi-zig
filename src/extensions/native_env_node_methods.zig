@@ -1,0 +1,2 @@
+//! Source NodeExecutionEnv method identities shared by the class and native adapters.
+pub const Method = enum(c_int) { watch, absolutePath, joinPath, exec, openTextLineReader, readTextFile, readTextLines, readBinaryFile, openBinaryReader, writeFile, appendFile, truncateFile, flushFile, renameFile, fileInfo, listDir, openDirReader, canonicalPath, exists, createDir, remove, createTempDir, createTempFile, cleanup };

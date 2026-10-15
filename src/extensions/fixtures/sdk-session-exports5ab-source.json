@@ -1,0 +1,2280 @@
+{
+  "source": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "scope": "Genuine ordinary Source bodies on real Agent/SessionManager/SettingsManager/ModelRuntime collaborators; not full AgentSession constructor parity",
+  "clock": 1700000000000,
+  "observations": [
+    {
+      "name": "record-direct",
+      "messages": [
+        {
+          "role": "bashExecution",
+          "command": "echo Ω",
+          "output": "plain Ω",
+          "exitCode": 7,
+          "cancelled": false,
+          "truncated": false,
+          "timestamp": 1700000000000
+        }
+      ],
+      "pending": 0,
+      "inputUnchanged": true
+    },
+    {
+      "name": "record-streaming",
+      "queued": [
+        {
+          "role": "bashExecution",
+          "command": "queued",
+          "output": "tail",
+          "exitCode": 7,
+          "cancelled": false,
+          "truncated": false,
+          "fullOutputPath": "fixture-full-output.log",
+          "timestamp": 1700000000000,
+          "excludeFromContext": true
+        }
+      ],
+      "messagesBeforeFlush": 1
+    },
+    {
+      "name": "record-flush",
+      "messages": [
+        {
+          "role": "bashExecution",
+          "command": "echo Ω",
+          "output": "plain Ω",
+          "exitCode": 7,
+          "cancelled": false,
+          "truncated": false,
+          "timestamp": 1700000000000
+        },
+        {
+          "role": "bashExecution",
+          "command": "queued",
+          "output": "tail",
+          "exitCode": 7,
+          "cancelled": false,
+          "truncated": false,
+          "fullOutputPath": "fixture-full-output.log",
+          "timestamp": 1700000000000,
+          "excludeFromContext": true
+        }
+      ],
+      "pending": 0
+    },
+    {
+      "name": "execute-custom",
+      "calls": [
+        {
+          "command": "fixture-prefix\nuser-command",
+          "cwd": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ordinary-session-exports5ab-source-state-20261015-lqXm9J\\fixture-session-cwd",
+          "signal": true
+        }
+      ],
+      "chunks": [
+        "hi",
+        "Ω\n"
+      ],
+      "events": [
+        {
+          "type": "bash_execution_update",
+          "id": "owned-bash",
+          "delta": "hi"
+        },
+        {
+          "type": "bash_execution_update",
+          "id": "owned-bash",
+          "delta": "Ω\n"
+        }
+      ],
+      "result": {
+        "output": "hiΩ\n",
+        "exitCode": 7,
+        "cancelled": false,
+        "truncated": false
+      },
+      "messages": [
+        {
+          "role": "bashExecution",
+          "command": "echo Ω",
+          "output": "plain Ω",
+          "exitCode": 7,
+          "cancelled": false,
+          "truncated": false,
+          "timestamp": 1700000000000
+        },
+        {
+          "role": "bashExecution",
+          "command": "queued",
+          "output": "tail",
+          "exitCode": 7,
+          "cancelled": false,
+          "truncated": false,
+          "fullOutputPath": "fixture-full-output.log",
+          "timestamp": 1700000000000,
+          "excludeFromContext": true
+        },
+        {
+          "role": "bashExecution",
+          "command": "user-command",
+          "output": "hiΩ\n",
+          "exitCode": 7,
+          "cancelled": false,
+          "truncated": false,
+          "timestamp": 1700000000000,
+          "excludeFromContext": true
+        }
+      ],
+      "running": false
+    },
+    {
+      "name": "execute-raw-callback",
+      "raw": true,
+      "running": false,
+      "recorded": 0
+    },
+    {
+      "name": "execute-cancelled",
+      "running": true,
+      "result": {
+        "output": "part",
+        "cancelled": true,
+        "truncated": false
+      },
+      "runningAfter": false,
+      "messages": [
+        {
+          "role": "bashExecution",
+          "command": "echo Ω",
+          "output": "plain Ω",
+          "exitCode": 7,
+          "cancelled": false,
+          "truncated": false,
+          "timestamp": 1700000000000
+        },
+        {
+          "role": "bashExecution",
+          "command": "queued",
+          "output": "tail",
+          "exitCode": 7,
+          "cancelled": false,
+          "truncated": false,
+          "fullOutputPath": "fixture-full-output.log",
+          "timestamp": 1700000000000,
+          "excludeFromContext": true
+        },
+        {
+          "role": "bashExecution",
+          "command": "user-command",
+          "output": "hiΩ\n",
+          "exitCode": 7,
+          "cancelled": false,
+          "truncated": false,
+          "timestamp": 1700000000000,
+          "excludeFromContext": true
+        },
+        {
+          "role": "bashExecution",
+          "command": "cancelled",
+          "output": "part",
+          "cancelled": true,
+          "truncated": false,
+          "timestamp": 1700000000000
+        }
+      ]
+    },
+    {
+      "name": "jsonl-explicit",
+      "file": "nested/session Ω.jsonl",
+      "body": "{\"type\":\"session\",\"version\":3,\"id\":\"source-ordinary-session\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"cwd\":\"C:\\\\Users\\\\adyba\\\\pi-zig-update-evidence-20261003\\\\ordinary-session-exports5ab-source-state-20261015-lqXm9J\\\\fixture-session-cwd\"}\n{\"type\":\"message\",\"id\":\"a\",\"parentId\":null,\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"user\",\"content\":\"first\",\"timestamp\":1700000000000}}\n{\"type\":\"message\",\"id\":\"c\",\"parentId\":\"a\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"user\",\"content\":\"last Ω\",\"timestamp\":1700000000000}}\n{\"type\":\"message\",\"id\":\"051e73da\",\"parentId\":\"c\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"echo Ω\",\"output\":\"plain Ω\",\"exitCode\":7,\"cancelled\":false,\"truncated\":false,\"timestamp\":1700000000000}}\n{\"type\":\"message\",\"id\":\"f0efdf96\",\"parentId\":\"051e73da\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"queued\",\"output\":\"tail\",\"exitCode\":7,\"cancelled\":false,\"truncated\":false,\"fullOutputPath\":\"fixture-full-output.log\",\"timestamp\":1700000000000,\"excludeFromContext\":true}}\n{\"type\":\"message\",\"id\":\"efdc80bf\",\"parentId\":\"f0efdf96\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"user-command\",\"output\":\"hiΩ\\n\",\"exitCode\":7,\"cancelled\":false,\"truncated\":false,\"timestamp\":1700000000000,\"excludeFromContext\":true}}\n{\"type\":\"message\",\"id\":\"89439234\",\"parentId\":\"efdc80bf\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"cancelled\",\"output\":\"part\",\"cancelled\":true,\"truncated\":false,\"timestamp\":1700000000000}}\n",
+      "branchUnchanged": true
+    },
+    {
+      "name": "jsonl-default",
+      "file": "session-2023-11-14T22-13-20-000Z.jsonl",
+      "body": "{\"type\":\"session\",\"version\":3,\"id\":\"source-ordinary-session\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"cwd\":\"C:\\\\Users\\\\adyba\\\\pi-zig-update-evidence-20261003\\\\ordinary-session-exports5ab-source-state-20261015-lqXm9J\\\\fixture-session-cwd\"}\n{\"type\":\"message\",\"id\":\"a\",\"parentId\":null,\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"user\",\"content\":\"first\",\"timestamp\":1700000000000}}\n{\"type\":\"message\",\"id\":\"c\",\"parentId\":\"a\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"user\",\"content\":\"last Ω\",\"timestamp\":1700000000000}}\n{\"type\":\"message\",\"id\":\"051e73da\",\"parentId\":\"c\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"echo Ω\",\"output\":\"plain Ω\",\"exitCode\":7,\"cancelled\":false,\"truncated\":false,\"timestamp\":1700000000000}}\n{\"type\":\"message\",\"id\":\"f0efdf96\",\"parentId\":\"051e73da\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"queued\",\"output\":\"tail\",\"exitCode\":7,\"cancelled\":false,\"truncated\":false,\"fullOutputPath\":\"fixture-full-output.log\",\"timestamp\":1700000000000,\"excludeFromContext\":true}}\n{\"type\":\"message\",\"id\":\"efdc80bf\",\"parentId\":\"f0efdf96\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"user-command\",\"output\":\"hiΩ\\n\",\"exitCode\":7,\"cancelled\":false,\"truncated\":false,\"timestamp\":1700000000000,\"excludeFromContext\":true}}\n{\"type\":\"message\",\"id\":\"89439234\",\"parentId\":\"efdc80bf\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"cancelled\",\"output\":\"part\",\"cancelled\":true,\"truncated\":false,\"timestamp\":1700000000000}}\n"
+    },
+    {
+      "name": "jsonl-trailing",
+      "body": "{\"type\":\"session\",\"version\":3,\"id\":\"source-ordinary-session\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"cwd\":\"C:\\\\Users\\\\adyba\\\\pi-zig-update-evidence-20261003\\\\ordinary-session-exports5ab-source-state-20261015-lqXm9J\\\\fixture-session-cwd\"}\n{\"type\":\"message\",\"id\":\"a\",\"parentId\":null,\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"user\",\"content\":\"first\",\"timestamp\":1700000000000}}\n{\"type\":\"message\",\"id\":\"c\",\"parentId\":\"a\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"user\",\"content\":\"last Ω\",\"timestamp\":1700000000000}}\n{\"type\":\"message\",\"id\":\"051e73da\",\"parentId\":\"c\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"echo Ω\",\"output\":\"plain Ω\",\"exitCode\":7,\"cancelled\":false,\"truncated\":false,\"timestamp\":1700000000000}}\n{\"type\":\"message\",\"id\":\"f0efdf96\",\"parentId\":\"051e73da\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"queued\",\"output\":\"tail\",\"exitCode\":7,\"cancelled\":false,\"truncated\":false,\"fullOutputPath\":\"fixture-full-output.log\",\"timestamp\":1700000000000,\"excludeFromContext\":true}}\n{\"type\":\"message\",\"id\":\"efdc80bf\",\"parentId\":\"f0efdf96\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"user-command\",\"output\":\"hiΩ\\n\",\"exitCode\":7,\"cancelled\":false,\"truncated\":false,\"timestamp\":1700000000000,\"excludeFromContext\":true}}\n{\"type\":\"message\",\"id\":\"89439234\",\"parentId\":\"efdc80bf\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"message\":{\"role\":\"bashExecution\",\"command\":\"cancelled\",\"output\":\"part\",\"cancelled\":true,\"truncated\":false,\"timestamp\":1700000000000}}\n{\"type\":\"custom\",\"id\":\"export-only\",\"parentId\":\"89439234\",\"timestamp\":\"2023-11-14T22:13:20.000Z\",\"customType\":\"fixture\",\"data\":{\"ok\":true}}\n"
+    },
+    {
+      "name": "summary-normal",
+      "result": "report Ω",
+      "calls": [
+        {
+          "model": {
+            "kind": "chat",
+            "id": "fixture",
+            "name": "Fixture",
+            "api": "openai-completions",
+            "provider": "source-fixture",
+            "baseUrl": "https://source.invalid",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 24,
+            "maxTokens": 8000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are helping a user file a bug report about pi, the coding agent they are talking to. You will be shown the conversation transcript. Write a report for the pi developers describing what the user was doing and what went wrong.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the report.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Note: only the last 3 of 4 messages are shown.\n\n<conversation>\n[User]: message 1 text\n\n[User]: message 2 text\n\n[User]: message 3 text\n</conversation>\n\n<user-report>\nfailure hint\n</user-report>\n\nWrite the bug report in Markdown with these sections:\n\n## What the user was doing\nOne short paragraph.\n\n## What went wrong\nConcrete description of the failure: wrong output, errors, hangs, tool failures, unexpected behavior. Quote error messages and tool output verbatim where they exist.\n\n## Steps to reproduce\nNumbered list, as specific as the transcript allows.\n\n## Relevant details\nTool calls involved, files touched, model behavior, anything else that helps a developer reproduce or locate the problem.\n\nDo not include file contents, secrets, or credentials from the transcript; refer to files by path only. Keep the report factual and concise."
+                  }
+                ],
+                "timestamp": 1700000000000
+              }
+            ]
+          },
+          "options": {
+            "maxTokens": 4096,
+            "signal": "same",
+            "sessionId": "source-ordinary-session",
+            "reasoning": "high",
+            "cacheRetention": "none"
+          },
+          "optionKeys": [
+            "maxTokens",
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "reasoning",
+            "cacheRetention"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "summary-aborted",
+      "error": {
+        "name": "Error",
+        "message": "Bug report summary was cancelled"
+      },
+      "calls": [
+        {
+          "model": {
+            "kind": "chat",
+            "id": "fixture",
+            "name": "Fixture",
+            "api": "openai-completions",
+            "provider": "source-fixture",
+            "baseUrl": "https://source.invalid",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 24,
+            "maxTokens": 8000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are helping a user file a bug report about pi, the coding agent they are talking to. You will be shown the conversation transcript. Write a report for the pi developers describing what the user was doing and what went wrong.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the report.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Note: only the last 3 of 4 messages are shown.\n\n<conversation>\n[User]: message 1 text\n\n[User]: message 2 text\n\n[User]: message 3 text\n</conversation>\n\n<user-report>\nfailure hint\n</user-report>\n\nWrite the bug report in Markdown with these sections:\n\n## What the user was doing\nOne short paragraph.\n\n## What went wrong\nConcrete description of the failure: wrong output, errors, hangs, tool failures, unexpected behavior. Quote error messages and tool output verbatim where they exist.\n\n## Steps to reproduce\nNumbered list, as specific as the transcript allows.\n\n## Relevant details\nTool calls involved, files touched, model behavior, anything else that helps a developer reproduce or locate the problem.\n\nDo not include file contents, secrets, or credentials from the transcript; refer to files by path only. Keep the report factual and concise."
+                  }
+                ],
+                "timestamp": 1700000000000
+              }
+            ]
+          },
+          "options": {
+            "maxTokens": 4096,
+            "signal": "same",
+            "sessionId": "source-ordinary-session",
+            "reasoning": "high",
+            "cacheRetention": "none"
+          },
+          "optionKeys": [
+            "maxTokens",
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "reasoning",
+            "cacheRetention"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "summary-error",
+      "error": {
+        "name": "Error",
+        "message": "Bug report summary failed: fixture failure"
+      },
+      "calls": [
+        {
+          "model": {
+            "kind": "chat",
+            "id": "fixture",
+            "name": "Fixture",
+            "api": "openai-completions",
+            "provider": "source-fixture",
+            "baseUrl": "https://source.invalid",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 24,
+            "maxTokens": 8000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are helping a user file a bug report about pi, the coding agent they are talking to. You will be shown the conversation transcript. Write a report for the pi developers describing what the user was doing and what went wrong.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the report.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Note: only the last 3 of 4 messages are shown.\n\n<conversation>\n[User]: message 1 text\n\n[User]: message 2 text\n\n[User]: message 3 text\n</conversation>\n\n<user-report>\nfailure hint\n</user-report>\n\nWrite the bug report in Markdown with these sections:\n\n## What the user was doing\nOne short paragraph.\n\n## What went wrong\nConcrete description of the failure: wrong output, errors, hangs, tool failures, unexpected behavior. Quote error messages and tool output verbatim where they exist.\n\n## Steps to reproduce\nNumbered list, as specific as the transcript allows.\n\n## Relevant details\nTool calls involved, files touched, model behavior, anything else that helps a developer reproduce or locate the problem.\n\nDo not include file contents, secrets, or credentials from the transcript; refer to files by path only. Keep the report factual and concise."
+                  }
+                ],
+                "timestamp": 1700000000000
+              }
+            ]
+          },
+          "options": {
+            "maxTokens": 4096,
+            "signal": "same",
+            "sessionId": "source-ordinary-session",
+            "reasoning": "high",
+            "cacheRetention": "none"
+          },
+          "optionKeys": [
+            "maxTokens",
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "reasoning",
+            "cacheRetention"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "summary-length",
+      "error": {
+        "name": "Error",
+        "message": "Bug report summary failed: generation hit the token cap and the summary is incomplete"
+      },
+      "calls": [
+        {
+          "model": {
+            "kind": "chat",
+            "id": "fixture",
+            "name": "Fixture",
+            "api": "openai-completions",
+            "provider": "source-fixture",
+            "baseUrl": "https://source.invalid",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 24,
+            "maxTokens": 8000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are helping a user file a bug report about pi, the coding agent they are talking to. You will be shown the conversation transcript. Write a report for the pi developers describing what the user was doing and what went wrong.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the report.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Note: only the last 3 of 4 messages are shown.\n\n<conversation>\n[User]: message 1 text\n\n[User]: message 2 text\n\n[User]: message 3 text\n</conversation>\n\n<user-report>\nfailure hint\n</user-report>\n\nWrite the bug report in Markdown with these sections:\n\n## What the user was doing\nOne short paragraph.\n\n## What went wrong\nConcrete description of the failure: wrong output, errors, hangs, tool failures, unexpected behavior. Quote error messages and tool output verbatim where they exist.\n\n## Steps to reproduce\nNumbered list, as specific as the transcript allows.\n\n## Relevant details\nTool calls involved, files touched, model behavior, anything else that helps a developer reproduce or locate the problem.\n\nDo not include file contents, secrets, or credentials from the transcript; refer to files by path only. Keep the report factual and concise."
+                  }
+                ],
+                "timestamp": 1700000000000
+              }
+            ]
+          },
+          "options": {
+            "maxTokens": 4096,
+            "signal": "same",
+            "sessionId": "source-ordinary-session",
+            "reasoning": "high",
+            "cacheRetention": "none"
+          },
+          "optionKeys": [
+            "maxTokens",
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "reasoning",
+            "cacheRetention"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "summary-tool",
+      "error": {
+        "name": "Error",
+        "message": "Bug report summary attempted to call a tool"
+      },
+      "calls": [
+        {
+          "model": {
+            "kind": "chat",
+            "id": "fixture",
+            "name": "Fixture",
+            "api": "openai-completions",
+            "provider": "source-fixture",
+            "baseUrl": "https://source.invalid",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 24,
+            "maxTokens": 8000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are helping a user file a bug report about pi, the coding agent they are talking to. You will be shown the conversation transcript. Write a report for the pi developers describing what the user was doing and what went wrong.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the report.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Note: only the last 3 of 4 messages are shown.\n\n<conversation>\n[User]: message 1 text\n\n[User]: message 2 text\n\n[User]: message 3 text\n</conversation>\n\n<user-report>\nfailure hint\n</user-report>\n\nWrite the bug report in Markdown with these sections:\n\n## What the user was doing\nOne short paragraph.\n\n## What went wrong\nConcrete description of the failure: wrong output, errors, hangs, tool failures, unexpected behavior. Quote error messages and tool output verbatim where they exist.\n\n## Steps to reproduce\nNumbered list, as specific as the transcript allows.\n\n## Relevant details\nTool calls involved, files touched, model behavior, anything else that helps a developer reproduce or locate the problem.\n\nDo not include file contents, secrets, or credentials from the transcript; refer to files by path only. Keep the report factual and concise."
+                  }
+                ],
+                "timestamp": 1700000000000
+              }
+            ]
+          },
+          "options": {
+            "maxTokens": 4096,
+            "signal": "same",
+            "sessionId": "source-ordinary-session",
+            "reasoning": "high",
+            "cacheRetention": "none"
+          },
+          "optionKeys": [
+            "maxTokens",
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "reasoning",
+            "cacheRetention"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "summary-empty",
+      "error": {
+        "name": "Error",
+        "message": "Bug report summary was empty"
+      },
+      "calls": [
+        {
+          "model": {
+            "kind": "chat",
+            "id": "fixture",
+            "name": "Fixture",
+            "api": "openai-completions",
+            "provider": "source-fixture",
+            "baseUrl": "https://source.invalid",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 24,
+            "maxTokens": 8000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are helping a user file a bug report about pi, the coding agent they are talking to. You will be shown the conversation transcript. Write a report for the pi developers describing what the user was doing and what went wrong.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the report.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Note: only the last 3 of 4 messages are shown.\n\n<conversation>\n[User]: message 1 text\n\n[User]: message 2 text\n\n[User]: message 3 text\n</conversation>\n\n<user-report>\nfailure hint\n</user-report>\n\nWrite the bug report in Markdown with these sections:\n\n## What the user was doing\nOne short paragraph.\n\n## What went wrong\nConcrete description of the failure: wrong output, errors, hangs, tool failures, unexpected behavior. Quote error messages and tool output verbatim where they exist.\n\n## Steps to reproduce\nNumbered list, as specific as the transcript allows.\n\n## Relevant details\nTool calls involved, files touched, model behavior, anything else that helps a developer reproduce or locate the problem.\n\nDo not include file contents, secrets, or credentials from the transcript; refer to files by path only. Keep the report factual and concise."
+                  }
+                ],
+                "timestamp": 1700000000000
+              }
+            ]
+          },
+          "options": {
+            "maxTokens": 4096,
+            "signal": "same",
+            "sessionId": "source-ordinary-session",
+            "reasoning": "high",
+            "cacheRetention": "none"
+          },
+          "optionKeys": [
+            "maxTokens",
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "reasoning",
+            "cacheRetention"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "summary-no-model",
+      "error": {
+        "name": "Error",
+        "message": "No model selected"
+      }
+    },
+    {
+      "name": "html-in-memory",
+      "error": {
+        "name": "Error",
+        "message": "Cannot export in-memory session to HTML"
+      }
+    },
+    {
+      "name": "html-basic",
+      "file": "export.html",
+      "sessionData": {
+        "header": {
+          "type": "session",
+          "version": 3,
+          "id": "source-ordinary-session",
+          "timestamp": "2023-11-14T22:13:20.000Z",
+          "cwd": "fixture-session-cwd"
+        },
+        "entries": [
+          {
+            "type": "message",
+            "id": "a",
+            "parentId": "unselected",
+            "timestamp": "2023-11-14T22:13:20.000Z",
+            "message": {
+              "role": "user",
+              "content": "first",
+              "timestamp": 1700000000000
+            }
+          },
+          {
+            "type": "message",
+            "id": "b",
+            "parentId": "a",
+            "timestamp": "2023-11-14T22:13:20.000Z",
+            "message": {
+              "role": "user",
+              "content": "other branch",
+              "timestamp": 1700000000000
+            }
+          },
+          {
+            "type": "message",
+            "id": "c",
+            "parentId": "a",
+            "timestamp": "2023-11-14T22:13:20.000Z",
+            "message": {
+              "role": "user",
+              "content": "last Ω",
+              "timestamp": 1700000000000
+            }
+          },
+          {
+            "type": "message",
+            "id": "051e73da",
+            "parentId": "c",
+            "timestamp": "2023-11-14T22:13:20.000Z",
+            "message": {
+              "role": "bashExecution",
+              "command": "echo Ω",
+              "output": "plain Ω",
+              "exitCode": 7,
+              "cancelled": false,
+              "truncated": false,
+              "timestamp": 1700000000000
+            }
+          },
+          {
+            "type": "message",
+            "id": "f0efdf96",
+            "parentId": "051e73da",
+            "timestamp": "2023-11-14T22:13:20.000Z",
+            "message": {
+              "role": "bashExecution",
+              "command": "queued",
+              "output": "tail",
+              "exitCode": 7,
+              "cancelled": false,
+              "truncated": false,
+              "fullOutputPath": "fixture-full-output.log",
+              "timestamp": 1700000000000,
+              "excludeFromContext": true
+            }
+          },
+          {
+            "type": "message",
+            "id": "efdc80bf",
+            "parentId": "f0efdf96",
+            "timestamp": "2023-11-14T22:13:20.000Z",
+            "message": {
+              "role": "bashExecution",
+              "command": "user-command",
+              "output": "hiΩ\n",
+              "exitCode": 7,
+              "cancelled": false,
+              "truncated": false,
+              "timestamp": 1700000000000,
+              "excludeFromContext": true
+            }
+          },
+          {
+            "type": "message",
+            "id": "89439234",
+            "parentId": "efdc80bf",
+            "timestamp": "2023-11-14T22:13:20.000Z",
+            "message": {
+              "role": "bashExecution",
+              "command": "cancelled",
+              "output": "part",
+              "cancelled": true,
+              "truncated": false,
+              "timestamp": 1700000000000
+            }
+          }
+        ],
+        "leafId": "89439234",
+        "systemPrompt": "",
+        "tools": []
+      },
+      "bytes": 274284,
+      "sha256": "4c516e9807a2e862b9216f869e5611ba15bce33ab2b628c50f15cc9a0f49fc41"
+    },
+    {
+      "name": "ansi-html",
+      "cases": [
+        {
+          "name": "plain",
+          "input": "<&>\"' Ω\ud800",
+          "output": "&lt;&amp;&gt;&quot;&#039; Ω\ud800"
+        },
+        {
+          "name": "styles",
+          "input": "\u001b[1;2;3;4;31;44mstyled\u001b[22;23;24;39;49mplain",
+          "output": "<span style=\"color:#800000;background-color:#000080;font-weight:bold;opacity:0.6;font-style:italic;text-decoration:underline\">styled</span>plain"
+        },
+        {
+          "name": "empty-reset",
+          "input": "a\u001b[mb",
+          "output": "ab"
+        },
+        {
+          "name": "unknown",
+          "input": "x\u001b[99mY\u001b[2Jz",
+          "output": "xY\u001b[2Jz"
+        },
+        {
+          "name": "rgb",
+          "input": "\u001b[38;2;12;34;56;48;2;240;230;220mRGB\u001b[0m",
+          "output": "<span style=\"color:rgb(12,34,56);background-color:rgb(240,230,220)\">RGB</span>"
+        },
+        {
+          "name": "empty-span",
+          "input": "\u001b[31m",
+          "output": "<span style=\"color:#800000\"></span>"
+        },
+        {
+          "name": "incomplete-rgb",
+          "input": "\u001b[38;2;12;34mX",
+          "output": "<span style=\"color:#000080;opacity:0.6\">X</span>"
+        },
+        {
+          "name": "empty-params",
+          "input": "\u001b[1;;31mX",
+          "output": "<span style=\"color:#800000\">X</span>"
+        },
+        {
+          "name": "palette-outside",
+          "input": "\u001b[38;5;999mX",
+          "output": "<span style=\"color:#1dfe1dfe1dfe\">X</span>"
+        },
+        {
+          "name": "rgb-outside",
+          "input": "\u001b[38;2;999;256;0mX",
+          "output": "<span style=\"color:rgb(999,256,0)\">X</span>"
+        },
+        {
+          "name": "standard-0",
+          "input": "\u001b[30m0\u001b[0m",
+          "output": "<span style=\"color:#000000\">0</span>"
+        },
+        {
+          "name": "standard-1",
+          "input": "\u001b[31m1\u001b[0m",
+          "output": "<span style=\"color:#800000\">1</span>"
+        },
+        {
+          "name": "standard-2",
+          "input": "\u001b[32m2\u001b[0m",
+          "output": "<span style=\"color:#008000\">2</span>"
+        },
+        {
+          "name": "standard-3",
+          "input": "\u001b[33m3\u001b[0m",
+          "output": "<span style=\"color:#808000\">3</span>"
+        },
+        {
+          "name": "standard-4",
+          "input": "\u001b[34m4\u001b[0m",
+          "output": "<span style=\"color:#000080\">4</span>"
+        },
+        {
+          "name": "standard-5",
+          "input": "\u001b[35m5\u001b[0m",
+          "output": "<span style=\"color:#800080\">5</span>"
+        },
+        {
+          "name": "standard-6",
+          "input": "\u001b[36m6\u001b[0m",
+          "output": "<span style=\"color:#008080\">6</span>"
+        },
+        {
+          "name": "standard-7",
+          "input": "\u001b[37m7\u001b[0m",
+          "output": "<span style=\"color:#c0c0c0\">7</span>"
+        },
+        {
+          "name": "standard-8",
+          "input": "\u001b[90m8\u001b[0m",
+          "output": "<span style=\"color:#808080\">8</span>"
+        },
+        {
+          "name": "standard-9",
+          "input": "\u001b[91m9\u001b[0m",
+          "output": "<span style=\"color:#ff0000\">9</span>"
+        },
+        {
+          "name": "standard-10",
+          "input": "\u001b[92m10\u001b[0m",
+          "output": "<span style=\"color:#00ff00\">10</span>"
+        },
+        {
+          "name": "standard-11",
+          "input": "\u001b[93m11\u001b[0m",
+          "output": "<span style=\"color:#ffff00\">11</span>"
+        },
+        {
+          "name": "standard-12",
+          "input": "\u001b[94m12\u001b[0m",
+          "output": "<span style=\"color:#0000ff\">12</span>"
+        },
+        {
+          "name": "standard-13",
+          "input": "\u001b[95m13\u001b[0m",
+          "output": "<span style=\"color:#ff00ff\">13</span>"
+        },
+        {
+          "name": "standard-14",
+          "input": "\u001b[96m14\u001b[0m",
+          "output": "<span style=\"color:#00ffff\">14</span>"
+        },
+        {
+          "name": "standard-15",
+          "input": "\u001b[97m15\u001b[0m",
+          "output": "<span style=\"color:#ffffff\">15</span>"
+        },
+        {
+          "name": "palette-0",
+          "input": "\u001b[38;5;0m0\u001b[0m",
+          "output": "<span style=\"color:#000000\">0</span>"
+        },
+        {
+          "name": "palette-1",
+          "input": "\u001b[38;5;1m1\u001b[0m",
+          "output": "<span style=\"color:#800000\">1</span>"
+        },
+        {
+          "name": "palette-2",
+          "input": "\u001b[38;5;2m2\u001b[0m",
+          "output": "<span style=\"color:#008000\">2</span>"
+        },
+        {
+          "name": "palette-3",
+          "input": "\u001b[38;5;3m3\u001b[0m",
+          "output": "<span style=\"color:#808000\">3</span>"
+        },
+        {
+          "name": "palette-4",
+          "input": "\u001b[38;5;4m4\u001b[0m",
+          "output": "<span style=\"color:#000080\">4</span>"
+        },
+        {
+          "name": "palette-5",
+          "input": "\u001b[38;5;5m5\u001b[0m",
+          "output": "<span style=\"color:#800080\">5</span>"
+        },
+        {
+          "name": "palette-6",
+          "input": "\u001b[38;5;6m6\u001b[0m",
+          "output": "<span style=\"color:#008080\">6</span>"
+        },
+        {
+          "name": "palette-7",
+          "input": "\u001b[38;5;7m7\u001b[0m",
+          "output": "<span style=\"color:#c0c0c0\">7</span>"
+        },
+        {
+          "name": "palette-8",
+          "input": "\u001b[38;5;8m8\u001b[0m",
+          "output": "<span style=\"color:#808080\">8</span>"
+        },
+        {
+          "name": "palette-9",
+          "input": "\u001b[38;5;9m9\u001b[0m",
+          "output": "<span style=\"color:#ff0000\">9</span>"
+        },
+        {
+          "name": "palette-10",
+          "input": "\u001b[38;5;10m10\u001b[0m",
+          "output": "<span style=\"color:#00ff00\">10</span>"
+        },
+        {
+          "name": "palette-11",
+          "input": "\u001b[38;5;11m11\u001b[0m",
+          "output": "<span style=\"color:#ffff00\">11</span>"
+        },
+        {
+          "name": "palette-12",
+          "input": "\u001b[38;5;12m12\u001b[0m",
+          "output": "<span style=\"color:#0000ff\">12</span>"
+        },
+        {
+          "name": "palette-13",
+          "input": "\u001b[38;5;13m13\u001b[0m",
+          "output": "<span style=\"color:#ff00ff\">13</span>"
+        },
+        {
+          "name": "palette-14",
+          "input": "\u001b[38;5;14m14\u001b[0m",
+          "output": "<span style=\"color:#00ffff\">14</span>"
+        },
+        {
+          "name": "palette-15",
+          "input": "\u001b[38;5;15m15\u001b[0m",
+          "output": "<span style=\"color:#ffffff\">15</span>"
+        },
+        {
+          "name": "palette-16",
+          "input": "\u001b[38;5;16m16\u001b[0m",
+          "output": "<span style=\"color:#000000\">16</span>"
+        },
+        {
+          "name": "palette-17",
+          "input": "\u001b[38;5;17m17\u001b[0m",
+          "output": "<span style=\"color:#00005f\">17</span>"
+        },
+        {
+          "name": "palette-18",
+          "input": "\u001b[38;5;18m18\u001b[0m",
+          "output": "<span style=\"color:#000087\">18</span>"
+        },
+        {
+          "name": "palette-19",
+          "input": "\u001b[38;5;19m19\u001b[0m",
+          "output": "<span style=\"color:#0000af\">19</span>"
+        },
+        {
+          "name": "palette-20",
+          "input": "\u001b[38;5;20m20\u001b[0m",
+          "output": "<span style=\"color:#0000d7\">20</span>"
+        },
+        {
+          "name": "palette-21",
+          "input": "\u001b[38;5;21m21\u001b[0m",
+          "output": "<span style=\"color:#0000ff\">21</span>"
+        },
+        {
+          "name": "palette-22",
+          "input": "\u001b[38;5;22m22\u001b[0m",
+          "output": "<span style=\"color:#005f00\">22</span>"
+        },
+        {
+          "name": "palette-23",
+          "input": "\u001b[38;5;23m23\u001b[0m",
+          "output": "<span style=\"color:#005f5f\">23</span>"
+        },
+        {
+          "name": "palette-24",
+          "input": "\u001b[38;5;24m24\u001b[0m",
+          "output": "<span style=\"color:#005f87\">24</span>"
+        },
+        {
+          "name": "palette-25",
+          "input": "\u001b[38;5;25m25\u001b[0m",
+          "output": "<span style=\"color:#005faf\">25</span>"
+        },
+        {
+          "name": "palette-26",
+          "input": "\u001b[38;5;26m26\u001b[0m",
+          "output": "<span style=\"color:#005fd7\">26</span>"
+        },
+        {
+          "name": "palette-27",
+          "input": "\u001b[38;5;27m27\u001b[0m",
+          "output": "<span style=\"color:#005fff\">27</span>"
+        },
+        {
+          "name": "palette-28",
+          "input": "\u001b[38;5;28m28\u001b[0m",
+          "output": "<span style=\"color:#008700\">28</span>"
+        },
+        {
+          "name": "palette-29",
+          "input": "\u001b[38;5;29m29\u001b[0m",
+          "output": "<span style=\"color:#00875f\">29</span>"
+        },
+        {
+          "name": "palette-30",
+          "input": "\u001b[38;5;30m30\u001b[0m",
+          "output": "<span style=\"color:#008787\">30</span>"
+        },
+        {
+          "name": "palette-31",
+          "input": "\u001b[38;5;31m31\u001b[0m",
+          "output": "<span style=\"color:#0087af\">31</span>"
+        },
+        {
+          "name": "palette-32",
+          "input": "\u001b[38;5;32m32\u001b[0m",
+          "output": "<span style=\"color:#0087d7\">32</span>"
+        },
+        {
+          "name": "palette-33",
+          "input": "\u001b[38;5;33m33\u001b[0m",
+          "output": "<span style=\"color:#0087ff\">33</span>"
+        },
+        {
+          "name": "palette-34",
+          "input": "\u001b[38;5;34m34\u001b[0m",
+          "output": "<span style=\"color:#00af00\">34</span>"
+        },
+        {
+          "name": "palette-35",
+          "input": "\u001b[38;5;35m35\u001b[0m",
+          "output": "<span style=\"color:#00af5f\">35</span>"
+        },
+        {
+          "name": "palette-36",
+          "input": "\u001b[38;5;36m36\u001b[0m",
+          "output": "<span style=\"color:#00af87\">36</span>"
+        },
+        {
+          "name": "palette-37",
+          "input": "\u001b[38;5;37m37\u001b[0m",
+          "output": "<span style=\"color:#00afaf\">37</span>"
+        },
+        {
+          "name": "palette-38",
+          "input": "\u001b[38;5;38m38\u001b[0m",
+          "output": "<span style=\"color:#00afd7\">38</span>"
+        },
+        {
+          "name": "palette-39",
+          "input": "\u001b[38;5;39m39\u001b[0m",
+          "output": "<span style=\"color:#00afff\">39</span>"
+        },
+        {
+          "name": "palette-40",
+          "input": "\u001b[38;5;40m40\u001b[0m",
+          "output": "<span style=\"color:#00d700\">40</span>"
+        },
+        {
+          "name": "palette-41",
+          "input": "\u001b[38;5;41m41\u001b[0m",
+          "output": "<span style=\"color:#00d75f\">41</span>"
+        },
+        {
+          "name": "palette-42",
+          "input": "\u001b[38;5;42m42\u001b[0m",
+          "output": "<span style=\"color:#00d787\">42</span>"
+        },
+        {
+          "name": "palette-43",
+          "input": "\u001b[38;5;43m43\u001b[0m",
+          "output": "<span style=\"color:#00d7af\">43</span>"
+        },
+        {
+          "name": "palette-44",
+          "input": "\u001b[38;5;44m44\u001b[0m",
+          "output": "<span style=\"color:#00d7d7\">44</span>"
+        },
+        {
+          "name": "palette-45",
+          "input": "\u001b[38;5;45m45\u001b[0m",
+          "output": "<span style=\"color:#00d7ff\">45</span>"
+        },
+        {
+          "name": "palette-46",
+          "input": "\u001b[38;5;46m46\u001b[0m",
+          "output": "<span style=\"color:#00ff00\">46</span>"
+        },
+        {
+          "name": "palette-47",
+          "input": "\u001b[38;5;47m47\u001b[0m",
+          "output": "<span style=\"color:#00ff5f\">47</span>"
+        },
+        {
+          "name": "palette-48",
+          "input": "\u001b[38;5;48m48\u001b[0m",
+          "output": "<span style=\"color:#00ff87\">48</span>"
+        },
+        {
+          "name": "palette-49",
+          "input": "\u001b[38;5;49m49\u001b[0m",
+          "output": "<span style=\"color:#00ffaf\">49</span>"
+        },
+        {
+          "name": "palette-50",
+          "input": "\u001b[38;5;50m50\u001b[0m",
+          "output": "<span style=\"color:#00ffd7\">50</span>"
+        },
+        {
+          "name": "palette-51",
+          "input": "\u001b[38;5;51m51\u001b[0m",
+          "output": "<span style=\"color:#00ffff\">51</span>"
+        },
+        {
+          "name": "palette-52",
+          "input": "\u001b[38;5;52m52\u001b[0m",
+          "output": "<span style=\"color:#5f0000\">52</span>"
+        },
+        {
+          "name": "palette-53",
+          "input": "\u001b[38;5;53m53\u001b[0m",
+          "output": "<span style=\"color:#5f005f\">53</span>"
+        },
+        {
+          "name": "palette-54",
+          "input": "\u001b[38;5;54m54\u001b[0m",
+          "output": "<span style=\"color:#5f0087\">54</span>"
+        },
+        {
+          "name": "palette-55",
+          "input": "\u001b[38;5;55m55\u001b[0m",
+          "output": "<span style=\"color:#5f00af\">55</span>"
+        },
+        {
+          "name": "palette-56",
+          "input": "\u001b[38;5;56m56\u001b[0m",
+          "output": "<span style=\"color:#5f00d7\">56</span>"
+        },
+        {
+          "name": "palette-57",
+          "input": "\u001b[38;5;57m57\u001b[0m",
+          "output": "<span style=\"color:#5f00ff\">57</span>"
+        },
+        {
+          "name": "palette-58",
+          "input": "\u001b[38;5;58m58\u001b[0m",
+          "output": "<span style=\"color:#5f5f00\">58</span>"
+        },
+        {
+          "name": "palette-59",
+          "input": "\u001b[38;5;59m59\u001b[0m",
+          "output": "<span style=\"color:#5f5f5f\">59</span>"
+        },
+        {
+          "name": "palette-60",
+          "input": "\u001b[38;5;60m60\u001b[0m",
+          "output": "<span style=\"color:#5f5f87\">60</span>"
+        },
+        {
+          "name": "palette-61",
+          "input": "\u001b[38;5;61m61\u001b[0m",
+          "output": "<span style=\"color:#5f5faf\">61</span>"
+        },
+        {
+          "name": "palette-62",
+          "input": "\u001b[38;5;62m62\u001b[0m",
+          "output": "<span style=\"color:#5f5fd7\">62</span>"
+        },
+        {
+          "name": "palette-63",
+          "input": "\u001b[38;5;63m63\u001b[0m",
+          "output": "<span style=\"color:#5f5fff\">63</span>"
+        },
+        {
+          "name": "palette-64",
+          "input": "\u001b[38;5;64m64\u001b[0m",
+          "output": "<span style=\"color:#5f8700\">64</span>"
+        },
+        {
+          "name": "palette-65",
+          "input": "\u001b[38;5;65m65\u001b[0m",
+          "output": "<span style=\"color:#5f875f\">65</span>"
+        },
+        {
+          "name": "palette-66",
+          "input": "\u001b[38;5;66m66\u001b[0m",
+          "output": "<span style=\"color:#5f8787\">66</span>"
+        },
+        {
+          "name": "palette-67",
+          "input": "\u001b[38;5;67m67\u001b[0m",
+          "output": "<span style=\"color:#5f87af\">67</span>"
+        },
+        {
+          "name": "palette-68",
+          "input": "\u001b[38;5;68m68\u001b[0m",
+          "output": "<span style=\"color:#5f87d7\">68</span>"
+        },
+        {
+          "name": "palette-69",
+          "input": "\u001b[38;5;69m69\u001b[0m",
+          "output": "<span style=\"color:#5f87ff\">69</span>"
+        },
+        {
+          "name": "palette-70",
+          "input": "\u001b[38;5;70m70\u001b[0m",
+          "output": "<span style=\"color:#5faf00\">70</span>"
+        },
+        {
+          "name": "palette-71",
+          "input": "\u001b[38;5;71m71\u001b[0m",
+          "output": "<span style=\"color:#5faf5f\">71</span>"
+        },
+        {
+          "name": "palette-72",
+          "input": "\u001b[38;5;72m72\u001b[0m",
+          "output": "<span style=\"color:#5faf87\">72</span>"
+        },
+        {
+          "name": "palette-73",
+          "input": "\u001b[38;5;73m73\u001b[0m",
+          "output": "<span style=\"color:#5fafaf\">73</span>"
+        },
+        {
+          "name": "palette-74",
+          "input": "\u001b[38;5;74m74\u001b[0m",
+          "output": "<span style=\"color:#5fafd7\">74</span>"
+        },
+        {
+          "name": "palette-75",
+          "input": "\u001b[38;5;75m75\u001b[0m",
+          "output": "<span style=\"color:#5fafff\">75</span>"
+        },
+        {
+          "name": "palette-76",
+          "input": "\u001b[38;5;76m76\u001b[0m",
+          "output": "<span style=\"color:#5fd700\">76</span>"
+        },
+        {
+          "name": "palette-77",
+          "input": "\u001b[38;5;77m77\u001b[0m",
+          "output": "<span style=\"color:#5fd75f\">77</span>"
+        },
+        {
+          "name": "palette-78",
+          "input": "\u001b[38;5;78m78\u001b[0m",
+          "output": "<span style=\"color:#5fd787\">78</span>"
+        },
+        {
+          "name": "palette-79",
+          "input": "\u001b[38;5;79m79\u001b[0m",
+          "output": "<span style=\"color:#5fd7af\">79</span>"
+        },
+        {
+          "name": "palette-80",
+          "input": "\u001b[38;5;80m80\u001b[0m",
+          "output": "<span style=\"color:#5fd7d7\">80</span>"
+        },
+        {
+          "name": "palette-81",
+          "input": "\u001b[38;5;81m81\u001b[0m",
+          "output": "<span style=\"color:#5fd7ff\">81</span>"
+        },
+        {
+          "name": "palette-82",
+          "input": "\u001b[38;5;82m82\u001b[0m",
+          "output": "<span style=\"color:#5fff00\">82</span>"
+        },
+        {
+          "name": "palette-83",
+          "input": "\u001b[38;5;83m83\u001b[0m",
+          "output": "<span style=\"color:#5fff5f\">83</span>"
+        },
+        {
+          "name": "palette-84",
+          "input": "\u001b[38;5;84m84\u001b[0m",
+          "output": "<span style=\"color:#5fff87\">84</span>"
+        },
+        {
+          "name": "palette-85",
+          "input": "\u001b[38;5;85m85\u001b[0m",
+          "output": "<span style=\"color:#5fffaf\">85</span>"
+        },
+        {
+          "name": "palette-86",
+          "input": "\u001b[38;5;86m86\u001b[0m",
+          "output": "<span style=\"color:#5fffd7\">86</span>"
+        },
+        {
+          "name": "palette-87",
+          "input": "\u001b[38;5;87m87\u001b[0m",
+          "output": "<span style=\"color:#5fffff\">87</span>"
+        },
+        {
+          "name": "palette-88",
+          "input": "\u001b[38;5;88m88\u001b[0m",
+          "output": "<span style=\"color:#870000\">88</span>"
+        },
+        {
+          "name": "palette-89",
+          "input": "\u001b[38;5;89m89\u001b[0m",
+          "output": "<span style=\"color:#87005f\">89</span>"
+        },
+        {
+          "name": "palette-90",
+          "input": "\u001b[38;5;90m90\u001b[0m",
+          "output": "<span style=\"color:#870087\">90</span>"
+        },
+        {
+          "name": "palette-91",
+          "input": "\u001b[38;5;91m91\u001b[0m",
+          "output": "<span style=\"color:#8700af\">91</span>"
+        },
+        {
+          "name": "palette-92",
+          "input": "\u001b[38;5;92m92\u001b[0m",
+          "output": "<span style=\"color:#8700d7\">92</span>"
+        },
+        {
+          "name": "palette-93",
+          "input": "\u001b[38;5;93m93\u001b[0m",
+          "output": "<span style=\"color:#8700ff\">93</span>"
+        },
+        {
+          "name": "palette-94",
+          "input": "\u001b[38;5;94m94\u001b[0m",
+          "output": "<span style=\"color:#875f00\">94</span>"
+        },
+        {
+          "name": "palette-95",
+          "input": "\u001b[38;5;95m95\u001b[0m",
+          "output": "<span style=\"color:#875f5f\">95</span>"
+        },
+        {
+          "name": "palette-96",
+          "input": "\u001b[38;5;96m96\u001b[0m",
+          "output": "<span style=\"color:#875f87\">96</span>"
+        },
+        {
+          "name": "palette-97",
+          "input": "\u001b[38;5;97m97\u001b[0m",
+          "output": "<span style=\"color:#875faf\">97</span>"
+        },
+        {
+          "name": "palette-98",
+          "input": "\u001b[38;5;98m98\u001b[0m",
+          "output": "<span style=\"color:#875fd7\">98</span>"
+        },
+        {
+          "name": "palette-99",
+          "input": "\u001b[38;5;99m99\u001b[0m",
+          "output": "<span style=\"color:#875fff\">99</span>"
+        },
+        {
+          "name": "palette-100",
+          "input": "\u001b[38;5;100m100\u001b[0m",
+          "output": "<span style=\"color:#878700\">100</span>"
+        },
+        {
+          "name": "palette-101",
+          "input": "\u001b[38;5;101m101\u001b[0m",
+          "output": "<span style=\"color:#87875f\">101</span>"
+        },
+        {
+          "name": "palette-102",
+          "input": "\u001b[38;5;102m102\u001b[0m",
+          "output": "<span style=\"color:#878787\">102</span>"
+        },
+        {
+          "name": "palette-103",
+          "input": "\u001b[38;5;103m103\u001b[0m",
+          "output": "<span style=\"color:#8787af\">103</span>"
+        },
+        {
+          "name": "palette-104",
+          "input": "\u001b[38;5;104m104\u001b[0m",
+          "output": "<span style=\"color:#8787d7\">104</span>"
+        },
+        {
+          "name": "palette-105",
+          "input": "\u001b[38;5;105m105\u001b[0m",
+          "output": "<span style=\"color:#8787ff\">105</span>"
+        },
+        {
+          "name": "palette-106",
+          "input": "\u001b[38;5;106m106\u001b[0m",
+          "output": "<span style=\"color:#87af00\">106</span>"
+        },
+        {
+          "name": "palette-107",
+          "input": "\u001b[38;5;107m107\u001b[0m",
+          "output": "<span style=\"color:#87af5f\">107</span>"
+        },
+        {
+          "name": "palette-108",
+          "input": "\u001b[38;5;108m108\u001b[0m",
+          "output": "<span style=\"color:#87af87\">108</span>"
+        },
+        {
+          "name": "palette-109",
+          "input": "\u001b[38;5;109m109\u001b[0m",
+          "output": "<span style=\"color:#87afaf\">109</span>"
+        },
+        {
+          "name": "palette-110",
+          "input": "\u001b[38;5;110m110\u001b[0m",
+          "output": "<span style=\"color:#87afd7\">110</span>"
+        },
+        {
+          "name": "palette-111",
+          "input": "\u001b[38;5;111m111\u001b[0m",
+          "output": "<span style=\"color:#87afff\">111</span>"
+        },
+        {
+          "name": "palette-112",
+          "input": "\u001b[38;5;112m112\u001b[0m",
+          "output": "<span style=\"color:#87d700\">112</span>"
+        },
+        {
+          "name": "palette-113",
+          "input": "\u001b[38;5;113m113\u001b[0m",
+          "output": "<span style=\"color:#87d75f\">113</span>"
+        },
+        {
+          "name": "palette-114",
+          "input": "\u001b[38;5;114m114\u001b[0m",
+          "output": "<span style=\"color:#87d787\">114</span>"
+        },
+        {
+          "name": "palette-115",
+          "input": "\u001b[38;5;115m115\u001b[0m",
+          "output": "<span style=\"color:#87d7af\">115</span>"
+        },
+        {
+          "name": "palette-116",
+          "input": "\u001b[38;5;116m116\u001b[0m",
+          "output": "<span style=\"color:#87d7d7\">116</span>"
+        },
+        {
+          "name": "palette-117",
+          "input": "\u001b[38;5;117m117\u001b[0m",
+          "output": "<span style=\"color:#87d7ff\">117</span>"
+        },
+        {
+          "name": "palette-118",
+          "input": "\u001b[38;5;118m118\u001b[0m",
+          "output": "<span style=\"color:#87ff00\">118</span>"
+        },
+        {
+          "name": "palette-119",
+          "input": "\u001b[38;5;119m119\u001b[0m",
+          "output": "<span style=\"color:#87ff5f\">119</span>"
+        },
+        {
+          "name": "palette-120",
+          "input": "\u001b[38;5;120m120\u001b[0m",
+          "output": "<span style=\"color:#87ff87\">120</span>"
+        },
+        {
+          "name": "palette-121",
+          "input": "\u001b[38;5;121m121\u001b[0m",
+          "output": "<span style=\"color:#87ffaf\">121</span>"
+        },
+        {
+          "name": "palette-122",
+          "input": "\u001b[38;5;122m122\u001b[0m",
+          "output": "<span style=\"color:#87ffd7\">122</span>"
+        },
+        {
+          "name": "palette-123",
+          "input": "\u001b[38;5;123m123\u001b[0m",
+          "output": "<span style=\"color:#87ffff\">123</span>"
+        },
+        {
+          "name": "palette-124",
+          "input": "\u001b[38;5;124m124\u001b[0m",
+          "output": "<span style=\"color:#af0000\">124</span>"
+        },
+        {
+          "name": "palette-125",
+          "input": "\u001b[38;5;125m125\u001b[0m",
+          "output": "<span style=\"color:#af005f\">125</span>"
+        },
+        {
+          "name": "palette-126",
+          "input": "\u001b[38;5;126m126\u001b[0m",
+          "output": "<span style=\"color:#af0087\">126</span>"
+        },
+        {
+          "name": "palette-127",
+          "input": "\u001b[38;5;127m127\u001b[0m",
+          "output": "<span style=\"color:#af00af\">127</span>"
+        },
+        {
+          "name": "palette-128",
+          "input": "\u001b[38;5;128m128\u001b[0m",
+          "output": "<span style=\"color:#af00d7\">128</span>"
+        },
+        {
+          "name": "palette-129",
+          "input": "\u001b[38;5;129m129\u001b[0m",
+          "output": "<span style=\"color:#af00ff\">129</span>"
+        },
+        {
+          "name": "palette-130",
+          "input": "\u001b[38;5;130m130\u001b[0m",
+          "output": "<span style=\"color:#af5f00\">130</span>"
+        },
+        {
+          "name": "palette-131",
+          "input": "\u001b[38;5;131m131\u001b[0m",
+          "output": "<span style=\"color:#af5f5f\">131</span>"
+        },
+        {
+          "name": "palette-132",
+          "input": "\u001b[38;5;132m132\u001b[0m",
+          "output": "<span style=\"color:#af5f87\">132</span>"
+        },
+        {
+          "name": "palette-133",
+          "input": "\u001b[38;5;133m133\u001b[0m",
+          "output": "<span style=\"color:#af5faf\">133</span>"
+        },
+        {
+          "name": "palette-134",
+          "input": "\u001b[38;5;134m134\u001b[0m",
+          "output": "<span style=\"color:#af5fd7\">134</span>"
+        },
+        {
+          "name": "palette-135",
+          "input": "\u001b[38;5;135m135\u001b[0m",
+          "output": "<span style=\"color:#af5fff\">135</span>"
+        },
+        {
+          "name": "palette-136",
+          "input": "\u001b[38;5;136m136\u001b[0m",
+          "output": "<span style=\"color:#af8700\">136</span>"
+        },
+        {
+          "name": "palette-137",
+          "input": "\u001b[38;5;137m137\u001b[0m",
+          "output": "<span style=\"color:#af875f\">137</span>"
+        },
+        {
+          "name": "palette-138",
+          "input": "\u001b[38;5;138m138\u001b[0m",
+          "output": "<span style=\"color:#af8787\">138</span>"
+        },
+        {
+          "name": "palette-139",
+          "input": "\u001b[38;5;139m139\u001b[0m",
+          "output": "<span style=\"color:#af87af\">139</span>"
+        },
+        {
+          "name": "palette-140",
+          "input": "\u001b[38;5;140m140\u001b[0m",
+          "output": "<span style=\"color:#af87d7\">140</span>"
+        },
+        {
+          "name": "palette-141",
+          "input": "\u001b[38;5;141m141\u001b[0m",
+          "output": "<span style=\"color:#af87ff\">141</span>"
+        },
+        {
+          "name": "palette-142",
+          "input": "\u001b[38;5;142m142\u001b[0m",
+          "output": "<span style=\"color:#afaf00\">142</span>"
+        },
+        {
+          "name": "palette-143",
+          "input": "\u001b[38;5;143m143\u001b[0m",
+          "output": "<span style=\"color:#afaf5f\">143</span>"
+        },
+        {
+          "name": "palette-144",
+          "input": "\u001b[38;5;144m144\u001b[0m",
+          "output": "<span style=\"color:#afaf87\">144</span>"
+        },
+        {
+          "name": "palette-145",
+          "input": "\u001b[38;5;145m145\u001b[0m",
+          "output": "<span style=\"color:#afafaf\">145</span>"
+        },
+        {
+          "name": "palette-146",
+          "input": "\u001b[38;5;146m146\u001b[0m",
+          "output": "<span style=\"color:#afafd7\">146</span>"
+        },
+        {
+          "name": "palette-147",
+          "input": "\u001b[38;5;147m147\u001b[0m",
+          "output": "<span style=\"color:#afafff\">147</span>"
+        },
+        {
+          "name": "palette-148",
+          "input": "\u001b[38;5;148m148\u001b[0m",
+          "output": "<span style=\"color:#afd700\">148</span>"
+        },
+        {
+          "name": "palette-149",
+          "input": "\u001b[38;5;149m149\u001b[0m",
+          "output": "<span style=\"color:#afd75f\">149</span>"
+        },
+        {
+          "name": "palette-150",
+          "input": "\u001b[38;5;150m150\u001b[0m",
+          "output": "<span style=\"color:#afd787\">150</span>"
+        },
+        {
+          "name": "palette-151",
+          "input": "\u001b[38;5;151m151\u001b[0m",
+          "output": "<span style=\"color:#afd7af\">151</span>"
+        },
+        {
+          "name": "palette-152",
+          "input": "\u001b[38;5;152m152\u001b[0m",
+          "output": "<span style=\"color:#afd7d7\">152</span>"
+        },
+        {
+          "name": "palette-153",
+          "input": "\u001b[38;5;153m153\u001b[0m",
+          "output": "<span style=\"color:#afd7ff\">153</span>"
+        },
+        {
+          "name": "palette-154",
+          "input": "\u001b[38;5;154m154\u001b[0m",
+          "output": "<span style=\"color:#afff00\">154</span>"
+        },
+        {
+          "name": "palette-155",
+          "input": "\u001b[38;5;155m155\u001b[0m",
+          "output": "<span style=\"color:#afff5f\">155</span>"
+        },
+        {
+          "name": "palette-156",
+          "input": "\u001b[38;5;156m156\u001b[0m",
+          "output": "<span style=\"color:#afff87\">156</span>"
+        },
+        {
+          "name": "palette-157",
+          "input": "\u001b[38;5;157m157\u001b[0m",
+          "output": "<span style=\"color:#afffaf\">157</span>"
+        },
+        {
+          "name": "palette-158",
+          "input": "\u001b[38;5;158m158\u001b[0m",
+          "output": "<span style=\"color:#afffd7\">158</span>"
+        },
+        {
+          "name": "palette-159",
+          "input": "\u001b[38;5;159m159\u001b[0m",
+          "output": "<span style=\"color:#afffff\">159</span>"
+        },
+        {
+          "name": "palette-160",
+          "input": "\u001b[38;5;160m160\u001b[0m",
+          "output": "<span style=\"color:#d70000\">160</span>"
+        },
+        {
+          "name": "palette-161",
+          "input": "\u001b[38;5;161m161\u001b[0m",
+          "output": "<span style=\"color:#d7005f\">161</span>"
+        },
+        {
+          "name": "palette-162",
+          "input": "\u001b[38;5;162m162\u001b[0m",
+          "output": "<span style=\"color:#d70087\">162</span>"
+        },
+        {
+          "name": "palette-163",
+          "input": "\u001b[38;5;163m163\u001b[0m",
+          "output": "<span style=\"color:#d700af\">163</span>"
+        },
+        {
+          "name": "palette-164",
+          "input": "\u001b[38;5;164m164\u001b[0m",
+          "output": "<span style=\"color:#d700d7\">164</span>"
+        },
+        {
+          "name": "palette-165",
+          "input": "\u001b[38;5;165m165\u001b[0m",
+          "output": "<span style=\"color:#d700ff\">165</span>"
+        },
+        {
+          "name": "palette-166",
+          "input": "\u001b[38;5;166m166\u001b[0m",
+          "output": "<span style=\"color:#d75f00\">166</span>"
+        },
+        {
+          "name": "palette-167",
+          "input": "\u001b[38;5;167m167\u001b[0m",
+          "output": "<span style=\"color:#d75f5f\">167</span>"
+        },
+        {
+          "name": "palette-168",
+          "input": "\u001b[38;5;168m168\u001b[0m",
+          "output": "<span style=\"color:#d75f87\">168</span>"
+        },
+        {
+          "name": "palette-169",
+          "input": "\u001b[38;5;169m169\u001b[0m",
+          "output": "<span style=\"color:#d75faf\">169</span>"
+        },
+        {
+          "name": "palette-170",
+          "input": "\u001b[38;5;170m170\u001b[0m",
+          "output": "<span style=\"color:#d75fd7\">170</span>"
+        },
+        {
+          "name": "palette-171",
+          "input": "\u001b[38;5;171m171\u001b[0m",
+          "output": "<span style=\"color:#d75fff\">171</span>"
+        },
+        {
+          "name": "palette-172",
+          "input": "\u001b[38;5;172m172\u001b[0m",
+          "output": "<span style=\"color:#d78700\">172</span>"
+        },
+        {
+          "name": "palette-173",
+          "input": "\u001b[38;5;173m173\u001b[0m",
+          "output": "<span style=\"color:#d7875f\">173</span>"
+        },
+        {
+          "name": "palette-174",
+          "input": "\u001b[38;5;174m174\u001b[0m",
+          "output": "<span style=\"color:#d78787\">174</span>"
+        },
+        {
+          "name": "palette-175",
+          "input": "\u001b[38;5;175m175\u001b[0m",
+          "output": "<span style=\"color:#d787af\">175</span>"
+        },
+        {
+          "name": "palette-176",
+          "input": "\u001b[38;5;176m176\u001b[0m",
+          "output": "<span style=\"color:#d787d7\">176</span>"
+        },
+        {
+          "name": "palette-177",
+          "input": "\u001b[38;5;177m177\u001b[0m",
+          "output": "<span style=\"color:#d787ff\">177</span>"
+        },
+        {
+          "name": "palette-178",
+          "input": "\u001b[38;5;178m178\u001b[0m",
+          "output": "<span style=\"color:#d7af00\">178</span>"
+        },
+        {
+          "name": "palette-179",
+          "input": "\u001b[38;5;179m179\u001b[0m",
+          "output": "<span style=\"color:#d7af5f\">179</span>"
+        },
+        {
+          "name": "palette-180",
+          "input": "\u001b[38;5;180m180\u001b[0m",
+          "output": "<span style=\"color:#d7af87\">180</span>"
+        },
+        {
+          "name": "palette-181",
+          "input": "\u001b[38;5;181m181\u001b[0m",
+          "output": "<span style=\"color:#d7afaf\">181</span>"
+        },
+        {
+          "name": "palette-182",
+          "input": "\u001b[38;5;182m182\u001b[0m",
+          "output": "<span style=\"color:#d7afd7\">182</span>"
+        },
+        {
+          "name": "palette-183",
+          "input": "\u001b[38;5;183m183\u001b[0m",
+          "output": "<span style=\"color:#d7afff\">183</span>"
+        },
+        {
+          "name": "palette-184",
+          "input": "\u001b[38;5;184m184\u001b[0m",
+          "output": "<span style=\"color:#d7d700\">184</span>"
+        },
+        {
+          "name": "palette-185",
+          "input": "\u001b[38;5;185m185\u001b[0m",
+          "output": "<span style=\"color:#d7d75f\">185</span>"
+        },
+        {
+          "name": "palette-186",
+          "input": "\u001b[38;5;186m186\u001b[0m",
+          "output": "<span style=\"color:#d7d787\">186</span>"
+        },
+        {
+          "name": "palette-187",
+          "input": "\u001b[38;5;187m187\u001b[0m",
+          "output": "<span style=\"color:#d7d7af\">187</span>"
+        },
+        {
+          "name": "palette-188",
+          "input": "\u001b[38;5;188m188\u001b[0m",
+          "output": "<span style=\"color:#d7d7d7\">188</span>"
+        },
+        {
+          "name": "palette-189",
+          "input": "\u001b[38;5;189m189\u001b[0m",
+          "output": "<span style=\"color:#d7d7ff\">189</span>"
+        },
+        {
+          "name": "palette-190",
+          "input": "\u001b[38;5;190m190\u001b[0m",
+          "output": "<span style=\"color:#d7ff00\">190</span>"
+        },
+        {
+          "name": "palette-191",
+          "input": "\u001b[38;5;191m191\u001b[0m",
+          "output": "<span style=\"color:#d7ff5f\">191</span>"
+        },
+        {
+          "name": "palette-192",
+          "input": "\u001b[38;5;192m192\u001b[0m",
+          "output": "<span style=\"color:#d7ff87\">192</span>"
+        },
+        {
+          "name": "palette-193",
+          "input": "\u001b[38;5;193m193\u001b[0m",
+          "output": "<span style=\"color:#d7ffaf\">193</span>"
+        },
+        {
+          "name": "palette-194",
+          "input": "\u001b[38;5;194m194\u001b[0m",
+          "output": "<span style=\"color:#d7ffd7\">194</span>"
+        },
+        {
+          "name": "palette-195",
+          "input": "\u001b[38;5;195m195\u001b[0m",
+          "output": "<span style=\"color:#d7ffff\">195</span>"
+        },
+        {
+          "name": "palette-196",
+          "input": "\u001b[38;5;196m196\u001b[0m",
+          "output": "<span style=\"color:#ff0000\">196</span>"
+        },
+        {
+          "name": "palette-197",
+          "input": "\u001b[38;5;197m197\u001b[0m",
+          "output": "<span style=\"color:#ff005f\">197</span>"
+        },
+        {
+          "name": "palette-198",
+          "input": "\u001b[38;5;198m198\u001b[0m",
+          "output": "<span style=\"color:#ff0087\">198</span>"
+        },
+        {
+          "name": "palette-199",
+          "input": "\u001b[38;5;199m199\u001b[0m",
+          "output": "<span style=\"color:#ff00af\">199</span>"
+        },
+        {
+          "name": "palette-200",
+          "input": "\u001b[38;5;200m200\u001b[0m",
+          "output": "<span style=\"color:#ff00d7\">200</span>"
+        },
+        {
+          "name": "palette-201",
+          "input": "\u001b[38;5;201m201\u001b[0m",
+          "output": "<span style=\"color:#ff00ff\">201</span>"
+        },
+        {
+          "name": "palette-202",
+          "input": "\u001b[38;5;202m202\u001b[0m",
+          "output": "<span style=\"color:#ff5f00\">202</span>"
+        },
+        {
+          "name": "palette-203",
+          "input": "\u001b[38;5;203m203\u001b[0m",
+          "output": "<span style=\"color:#ff5f5f\">203</span>"
+        },
+        {
+          "name": "palette-204",
+          "input": "\u001b[38;5;204m204\u001b[0m",
+          "output": "<span style=\"color:#ff5f87\">204</span>"
+        },
+        {
+          "name": "palette-205",
+          "input": "\u001b[38;5;205m205\u001b[0m",
+          "output": "<span style=\"color:#ff5faf\">205</span>"
+        },
+        {
+          "name": "palette-206",
+          "input": "\u001b[38;5;206m206\u001b[0m",
+          "output": "<span style=\"color:#ff5fd7\">206</span>"
+        },
+        {
+          "name": "palette-207",
+          "input": "\u001b[38;5;207m207\u001b[0m",
+          "output": "<span style=\"color:#ff5fff\">207</span>"
+        },
+        {
+          "name": "palette-208",
+          "input": "\u001b[38;5;208m208\u001b[0m",
+          "output": "<span style=\"color:#ff8700\">208</span>"
+        },
+        {
+          "name": "palette-209",
+          "input": "\u001b[38;5;209m209\u001b[0m",
+          "output": "<span style=\"color:#ff875f\">209</span>"
+        },
+        {
+          "name": "palette-210",
+          "input": "\u001b[38;5;210m210\u001b[0m",
+          "output": "<span style=\"color:#ff8787\">210</span>"
+        },
+        {
+          "name": "palette-211",
+          "input": "\u001b[38;5;211m211\u001b[0m",
+          "output": "<span style=\"color:#ff87af\">211</span>"
+        },
+        {
+          "name": "palette-212",
+          "input": "\u001b[38;5;212m212\u001b[0m",
+          "output": "<span style=\"color:#ff87d7\">212</span>"
+        },
+        {
+          "name": "palette-213",
+          "input": "\u001b[38;5;213m213\u001b[0m",
+          "output": "<span style=\"color:#ff87ff\">213</span>"
+        },
+        {
+          "name": "palette-214",
+          "input": "\u001b[38;5;214m214\u001b[0m",
+          "output": "<span style=\"color:#ffaf00\">214</span>"
+        },
+        {
+          "name": "palette-215",
+          "input": "\u001b[38;5;215m215\u001b[0m",
+          "output": "<span style=\"color:#ffaf5f\">215</span>"
+        },
+        {
+          "name": "palette-216",
+          "input": "\u001b[38;5;216m216\u001b[0m",
+          "output": "<span style=\"color:#ffaf87\">216</span>"
+        },
+        {
+          "name": "palette-217",
+          "input": "\u001b[38;5;217m217\u001b[0m",
+          "output": "<span style=\"color:#ffafaf\">217</span>"
+        },
+        {
+          "name": "palette-218",
+          "input": "\u001b[38;5;218m218\u001b[0m",
+          "output": "<span style=\"color:#ffafd7\">218</span>"
+        },
+        {
+          "name": "palette-219",
+          "input": "\u001b[38;5;219m219\u001b[0m",
+          "output": "<span style=\"color:#ffafff\">219</span>"
+        },
+        {
+          "name": "palette-220",
+          "input": "\u001b[38;5;220m220\u001b[0m",
+          "output": "<span style=\"color:#ffd700\">220</span>"
+        },
+        {
+          "name": "palette-221",
+          "input": "\u001b[38;5;221m221\u001b[0m",
+          "output": "<span style=\"color:#ffd75f\">221</span>"
+        },
+        {
+          "name": "palette-222",
+          "input": "\u001b[38;5;222m222\u001b[0m",
+          "output": "<span style=\"color:#ffd787\">222</span>"
+        },
+        {
+          "name": "palette-223",
+          "input": "\u001b[38;5;223m223\u001b[0m",
+          "output": "<span style=\"color:#ffd7af\">223</span>"
+        },
+        {
+          "name": "palette-224",
+          "input": "\u001b[38;5;224m224\u001b[0m",
+          "output": "<span style=\"color:#ffd7d7\">224</span>"
+        },
+        {
+          "name": "palette-225",
+          "input": "\u001b[38;5;225m225\u001b[0m",
+          "output": "<span style=\"color:#ffd7ff\">225</span>"
+        },
+        {
+          "name": "palette-226",
+          "input": "\u001b[38;5;226m226\u001b[0m",
+          "output": "<span style=\"color:#ffff00\">226</span>"
+        },
+        {
+          "name": "palette-227",
+          "input": "\u001b[38;5;227m227\u001b[0m",
+          "output": "<span style=\"color:#ffff5f\">227</span>"
+        },
+        {
+          "name": "palette-228",
+          "input": "\u001b[38;5;228m228\u001b[0m",
+          "output": "<span style=\"color:#ffff87\">228</span>"
+        },
+        {
+          "name": "palette-229",
+          "input": "\u001b[38;5;229m229\u001b[0m",
+          "output": "<span style=\"color:#ffffaf\">229</span>"
+        },
+        {
+          "name": "palette-230",
+          "input": "\u001b[38;5;230m230\u001b[0m",
+          "output": "<span style=\"color:#ffffd7\">230</span>"
+        },
+        {
+          "name": "palette-231",
+          "input": "\u001b[38;5;231m231\u001b[0m",
+          "output": "<span style=\"color:#ffffff\">231</span>"
+        },
+        {
+          "name": "palette-232",
+          "input": "\u001b[38;5;232m232\u001b[0m",
+          "output": "<span style=\"color:#080808\">232</span>"
+        },
+        {
+          "name": "palette-233",
+          "input": "\u001b[38;5;233m233\u001b[0m",
+          "output": "<span style=\"color:#121212\">233</span>"
+        },
+        {
+          "name": "palette-234",
+          "input": "\u001b[38;5;234m234\u001b[0m",
+          "output": "<span style=\"color:#1c1c1c\">234</span>"
+        },
+        {
+          "name": "palette-235",
+          "input": "\u001b[38;5;235m235\u001b[0m",
+          "output": "<span style=\"color:#262626\">235</span>"
+        },
+        {
+          "name": "palette-236",
+          "input": "\u001b[38;5;236m236\u001b[0m",
+          "output": "<span style=\"color:#303030\">236</span>"
+        },
+        {
+          "name": "palette-237",
+          "input": "\u001b[38;5;237m237\u001b[0m",
+          "output": "<span style=\"color:#3a3a3a\">237</span>"
+        },
+        {
+          "name": "palette-238",
+          "input": "\u001b[38;5;238m238\u001b[0m",
+          "output": "<span style=\"color:#444444\">238</span>"
+        },
+        {
+          "name": "palette-239",
+          "input": "\u001b[38;5;239m239\u001b[0m",
+          "output": "<span style=\"color:#4e4e4e\">239</span>"
+        },
+        {
+          "name": "palette-240",
+          "input": "\u001b[38;5;240m240\u001b[0m",
+          "output": "<span style=\"color:#585858\">240</span>"
+        },
+        {
+          "name": "palette-241",
+          "input": "\u001b[38;5;241m241\u001b[0m",
+          "output": "<span style=\"color:#626262\">241</span>"
+        },
+        {
+          "name": "palette-242",
+          "input": "\u001b[38;5;242m242\u001b[0m",
+          "output": "<span style=\"color:#6c6c6c\">242</span>"
+        },
+        {
+          "name": "palette-243",
+          "input": "\u001b[38;5;243m243\u001b[0m",
+          "output": "<span style=\"color:#767676\">243</span>"
+        },
+        {
+          "name": "palette-244",
+          "input": "\u001b[38;5;244m244\u001b[0m",
+          "output": "<span style=\"color:#808080\">244</span>"
+        },
+        {
+          "name": "palette-245",
+          "input": "\u001b[38;5;245m245\u001b[0m",
+          "output": "<span style=\"color:#8a8a8a\">245</span>"
+        },
+        {
+          "name": "palette-246",
+          "input": "\u001b[38;5;246m246\u001b[0m",
+          "output": "<span style=\"color:#949494\">246</span>"
+        },
+        {
+          "name": "palette-247",
+          "input": "\u001b[38;5;247m247\u001b[0m",
+          "output": "<span style=\"color:#9e9e9e\">247</span>"
+        },
+        {
+          "name": "palette-248",
+          "input": "\u001b[38;5;248m248\u001b[0m",
+          "output": "<span style=\"color:#a8a8a8\">248</span>"
+        },
+        {
+          "name": "palette-249",
+          "input": "\u001b[38;5;249m249\u001b[0m",
+          "output": "<span style=\"color:#b2b2b2\">249</span>"
+        },
+        {
+          "name": "palette-250",
+          "input": "\u001b[38;5;250m250\u001b[0m",
+          "output": "<span style=\"color:#bcbcbc\">250</span>"
+        },
+        {
+          "name": "palette-251",
+          "input": "\u001b[38;5;251m251\u001b[0m",
+          "output": "<span style=\"color:#c6c6c6\">251</span>"
+        },
+        {
+          "name": "palette-252",
+          "input": "\u001b[38;5;252m252\u001b[0m",
+          "output": "<span style=\"color:#d0d0d0\">252</span>"
+        },
+        {
+          "name": "palette-253",
+          "input": "\u001b[38;5;253m253\u001b[0m",
+          "output": "<span style=\"color:#dadada\">253</span>"
+        },
+        {
+          "name": "palette-254",
+          "input": "\u001b[38;5;254m254\u001b[0m",
+          "output": "<span style=\"color:#e4e4e4\">254</span>"
+        },
+        {
+          "name": "palette-255",
+          "input": "\u001b[38;5;255m255\u001b[0m",
+          "output": "<span style=\"color:#eeeeee\">255</span>"
+        }
+      ],
+      "lines": "<div class=\"ansi-line\">&nbsp;</div><div class=\"ansi-line\"><span style=\"color:#800000\"></span></div><div class=\"ansi-line\">x&lt;&amp;Ω</div>"
+    },
+    {
+      "name": "tool-html-renderer",
+      "call": "<div class=\"ansi-line\"><span style=\"color:#800000\">call &lt;Ω</span>                       </div>",
+      "result": {
+        "expanded": "<div class=\"ansi-line\"><span style=\"color:#008000\">result &amp;Ω</span>                     </div>"
+      },
+      "missing": null,
+      "failed": null,
+      "coerced": 0,
+      "events": [
+        {
+          "kind": "call",
+          "context": {
+            "keys": [
+              "args",
+              "toolCallId",
+              "invalidate",
+              "lastComponent",
+              "state",
+              "cwd",
+              "executionStarted",
+              "argsComplete",
+              "isPartial",
+              "expanded",
+              "showImages",
+              "isError",
+              "durationMs",
+              "outputPad"
+            ],
+            "args": {
+              "n": 1
+            },
+            "toolCallId": "tool-1",
+            "last": null,
+            "state": {
+              "calls": 1
+            },
+            "cwd": "fixture-render-cwd",
+            "executionStarted": true,
+            "argsComplete": true,
+            "isPartial": true,
+            "expanded": false,
+            "showImages": false,
+            "isError": false,
+            "outputPad": 1
+          }
+        },
+        {
+          "kind": "result",
+          "options": {
+            "expanded": false,
+            "isPartial": false
+          },
+          "context": {
+            "keys": [
+              "args",
+              "toolCallId",
+              "invalidate",
+              "lastComponent",
+              "state",
+              "cwd",
+              "executionStarted",
+              "argsComplete",
+              "isPartial",
+              "expanded",
+              "showImages",
+              "isError",
+              "durationMs",
+              "outputPad"
+            ],
+            "args": {
+              "n": 1
+            },
+            "toolCallId": "tool-1",
+            "last": null,
+            "state": {
+              "calls": 1
+            },
+            "cwd": "fixture-render-cwd",
+            "executionStarted": true,
+            "argsComplete": true,
+            "isPartial": false,
+            "expanded": false,
+            "showImages": false,
+            "isError": true,
+            "outputPad": 1
+          },
+          "sameState": true
+        },
+        {
+          "kind": "result",
+          "options": {
+            "expanded": true,
+            "isPartial": false
+          },
+          "context": {
+            "keys": [
+              "args",
+              "toolCallId",
+              "invalidate",
+              "lastComponent",
+              "state",
+              "cwd",
+              "executionStarted",
+              "argsComplete",
+              "isPartial",
+              "expanded",
+              "showImages",
+              "isError",
+              "durationMs",
+              "outputPad"
+            ],
+            "args": {
+              "n": 1
+            },
+            "toolCallId": "tool-1",
+            "last": 2,
+            "state": {
+              "calls": 1
+            },
+            "cwd": "fixture-render-cwd",
+            "executionStarted": true,
+            "argsComplete": true,
+            "isPartial": false,
+            "expanded": true,
+            "showImages": false,
+            "isError": true,
+            "outputPad": 1
+          },
+          "sameState": true
+        }
+      ]
+    }
+  ],
+  "root": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ordinary-session-exports5ab-source-state-20261015-lqXm9J"
+}

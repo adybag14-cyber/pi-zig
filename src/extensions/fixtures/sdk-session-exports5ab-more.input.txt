@@ -1,0 +1,18 @@
+const root=ordinaryAPI.path.normalize(ordinaryRoot);
+const {readFileSync}=ordinaryAPI.fs;const{join}=ordinaryAPI.path;const statSync=ordinaryAPI.statSnapshot;const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const{executeBashWithOperations,createLocalBashOperations,truncateTail}=ordinaryAPI;
+
+
+const rows=[],hash=text=>ordinaryAPI.hashUtf8(text);
+for(const[name,input]of[['empty',''],['short-trailing','a\nb\n'],['exact-lines','x\n'.repeat(2000)],['excess-lines','x\n'.repeat(2001)],['exact-bytes','x'.repeat(51200)],['excess-bytes','x'.repeat(51201)],['unicode-tail','Ω'.repeat(25601)],['unicode-boundary','😀'.repeat(12801)],['lone-surrogate-tail','x'.repeat(51200)+'\ud800'],['byte-before-line','long'.repeat(13000)+'\nlast'],['last-line-overflow','prior\n'+'Ω'.repeat(25601)]]){const result=truncateTail(input);rows.push({name:'tail-'+name,input,result:{content:result.content,truncated:result.truncated}})}
+async function spillBytes(path,expected){for(let i=0;i<100;i++){try{if(statSync(path).size===expected)return readFileSync(path)}catch{}await delay(10)}throw Error('Source spill did not finish bounded flush')}
+for(const[name,rawChunks]of[['line-spill',[Buffer.from('x\n'.repeat(2001))]],['byte-spill',[Buffer.from('Ω'.repeat(27000))]],['rolling-spill',[Buffer.from('first\n'.repeat(14000)),Buffer.from('second\n'.repeat(14000)),Buffer.from('last\n'.repeat(14000))]],['invalid-utf8',[Buffer.from([0xf0,0x28,0x8c,0xbc]),Buffer.from([0xc3]),Buffer.from([0xa9,13,10])]],['long-unfinished-ansi',[Buffer.from('\x1b]'+'X'.repeat(300))]]]){
+ const chunks=[],operations={async exec(command,cwd,{onData}){for(const chunk of rawChunks)onData(chunk);return{exitCode:3}}};
+ const result=await executeBashWithOperations('caller-command',root,operations,{onChunk:text=>chunks.push(text)});let spill;
+ if(result.fullOutputPath){const bytes=await spillBytes(result.fullOutputPath,Buffer.byteLength(chunks.join('')));spill={validPath:/pi-bash-[0-9a-f]{16}\.log$/.test(result.fullOutputPath),bytes:bytes.length,sha256:hash(bytes)}}
+ rows.push({name:'execute-'+name,rawChunks:rawChunks.map(bytes=>Array.from(bytes)),chunks,result:{...result,fullOutputPath:result.fullOutputPath?'spill':undefined},spill});
+}
+const shellPath='C:/Program Files/Git/bin/bash.exe',local=createLocalBashOperations({shellPath});
+{const chunks=[],result=await executeBashWithOperations("printf '\\033[31mactual Ω\\033[0m\\r\\n'; exit 7",root,local,{onChunk:text=>chunks.push(text)});rows.push({name:'local-real-shell',result,combined:chunks.join('')})}
+for(const[name,operations,cwd,options]of[['invalid-shell',createLocalBashOperations({shellPath:join(root,'missing-bash.exe')}),root,{}],['missing-cwd',local,join(root,'absent'),{}],['timeout-zero',local,root,{timeout:0}],['timeout-max',local,root,{timeout:2147483.648}],['already-aborted',local,root,{signal:AbortSignal.abort()}]]){let error;try{await operations.exec('printf never',cwd,{onData(){throw Error('unexpected output')},...options})}catch(value){error={name:value.name,message:value.message.replaceAll(root,'ROOT').replaceAll('\\','/')}}rows.push({name:'local-'+name,error})}
+const capture={source:'5ab7fe74c400097b386662205cd93900695b8a71',scope:'Actual Source Bash helpers and explicit owned local shell; not full Pi application',rows,root};globalThis.ordinaryMoreRows=rows;

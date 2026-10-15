@@ -1,0 +1,42 @@
+{
+  "source_commit": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "frozen_source_manifest": "source5ab-full-manifest-20261015.json",
+  "scope": "Native Zig host exports original browser presentation assets as data",
+  "files": [
+    {
+      "file": "template.html",
+      "source_path": "packages/coding-agent/src/core/export-html/template.html",
+      "sha256": "916782B1184A9597527605AD751E2B3AF30FCEA23BA2194002969CD217A06881",
+      "bytes": 2225,
+      "role": "Original HTML export template data"
+    },
+    {
+      "file": "template.css",
+      "source_path": "packages/coding-agent/src/core/export-html/template.css",
+      "sha256": "8EE19851F8E583277ED396CBB76496687AA556707FDFC1F78D1118BFF87C740A",
+      "bytes": 22952,
+      "role": "Original HTML export template data"
+    },
+    {
+      "file": "template-client.js.txt",
+      "source_path": "packages/coding-agent/src/core/export-html/template.js",
+      "sha256": "A2DBF5BC70B95973AD58AFA9AFE61372E1640A13AD9FAFB0C6D7DD772D694879",
+      "bytes": 80492,
+      "role": "Original browser client bytes emitted into exported HTML; never executed by the native host"
+    },
+    {
+      "file": "marked-client.js.txt",
+      "source_path": "packages/coding-agent/src/core/export-html/vendor/marked.min.js",
+      "sha256": "D5487EDC7258B404BFA74C393D74A6393155F02517BD5E7E77CD64F8187F39A0",
+      "bytes": 42882,
+      "role": "Original browser client bytes emitted into exported HTML; never executed by the native host"
+    },
+    {
+      "file": "highlight-client.js.txt",
+      "source_path": "packages/coding-agent/src/core/export-html/vendor/highlight.min.js",
+      "sha256": "837A6FA5B0C736B52BBDE2B2B6190F305DA3FC9ED41681DB5321507057B5C846",
+      "bytes": 121727,
+      "role": "Original browser client bytes emitted into exported HTML; never executed by the native host"
+    }
+  ]
+}

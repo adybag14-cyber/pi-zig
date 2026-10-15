@@ -1726,6 +1726,12 @@ pub fn build(b: *std.Build) void {
     navigate_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-session-navigate", "Compile actual tree navigation and branch summary collaborators").dependOn(&b.addInstallArtifact(navigate_tests, .{}).step);
     b.step("test-native-sdk-session-navigate", "Compare latest Source tree navigation and real branch summarization").dependOn(&b.addRunArtifact(navigate_tests).step);
+    const exports_tests = b.addTest(.{ .name = "sdk-session-exports-test", .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_exports_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary session exports"}, .use_llvm = use_llvm });
+    linkQuickJs(b, exports_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(exports_tests.root_module, sqlite_lib_dir, sqlite_library);
+    exports_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-session-exports", "Compile actual ordinary Bash exports and bug report helpers").dependOn(&b.addInstallArtifact(exports_tests, .{}).step);
+    b.step("test-native-sdk-session-exports", "Compare genuine Source ordinary session exports and renderers").dependOn(&b.addRunArtifact(exports_tests).step);
 
     const manual_compaction_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_compaction_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary compaction"}, .use_llvm = use_llvm });
     linkQuickJs(b, manual_compaction_tests.root_module, quickjs, sqlite_lib_dir);
