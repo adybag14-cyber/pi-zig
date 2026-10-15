@@ -1,0 +1,282 @@
+[
+  {
+    "path": "ordinary-session-exports5ab-more-source-first-20261015-absence.json",
+    "sha256": "024E2F905238A47B3B25BC1F6AF3A5BE1736884650972C2AE82877896640D459",
+    "bytes": 244
+  },
+  {
+    "path": "ordinary-session-exports5ab-more-source-first-20261015-admission.json",
+    "sha256": "C2B9CBBA22D0B4DE7D9E1F892FE3C86C092FFF16ED243D0797ACBBC9BEEEFA38",
+    "bytes": 277
+  },
+  {
+    "path": "ordinary-session-exports5ab-more-source-first-20261015-artifacts.json",
+    "sha256": "53D70E38C2C07825B79C4435F933976D46F7A702FCDB0DFF6B4743E116AE6336",
+    "bytes": 270
+  },
+  {
+    "path": "ordinary-session-exports5ab-more-source-first-20261015-controls-before.json",
+    "sha256": "9BBFE605AAB7C6D7CC8C08B76B8CFB47A103D946554AD4A9433344B3F2FE7C7F",
+    "bytes": 1878
+  },
+  {
+    "path": "ordinary-session-exports5ab-more-source-first-20261015-native-before.json",
+    "sha256": "2615CDDCE557C5AA44D7F38CCB46D46F9FFF648BC45C38044D27D6B3C0797172",
+    "bytes": 1718468
+  },
+  {
+    "path": "ordinary-session-exports5ab-more-source-first-20261015-posthash.json",
+    "sha256": "D2A05FBD7679F00BDEE5B162E4ACD6CA08A62C26B7481A10D132154F28739E8A",
+    "bytes": 535
+  },
+  {
+    "path": "ordinary-session-exports5ab-more-source-first-20261015-shell-tools-before.json",
+    "sha256": "7BF462582B14762B529488BA3C76534F758A164DC372F93F9DDAC27D94D011DB",
+    "bytes": 57058
+  },
+  {
+    "path": "ordinary-session-exports5ab-more-source-first-20261015-spill-retention.json",
+    "sha256": "6932C8953739CBDB69E9F71C00F212B76D4E9BB70ED194187DC034514DD5FFAA",
+    "bytes": 1478
+  },
+  {
+    "path": "ordinary-session-exports5ab-more-source-first-20261015.json",
+    "sha256": "BAE8BDFC6F7C991E4EBDD44C15186FF40D3132A8941FA7F98B4F63E639164746",
+    "bytes": 1016
+  },
+  {
+    "path": "ordinary-session-exports5ab-more-source-first-20261015.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "ordinary-session-exports5ab-more-source-first-20261015.stdout.log",
+    "sha256": "68B9902A5E932B119585BA04CA2A89F5858689FAB5C8E828BC9F89E953854B51",
+    "bytes": 2286218
+  },
+  {
+    "path": "ordinary-session-exports5ab-source-first-20261015-absence.json",
+    "sha256": "68F2D7293C32290C429BC16BF9D7521A40CFC9BA9401A92A793042047F4D653A",
+    "bytes": 236
+  },
+  {
+    "path": "ordinary-session-exports5ab-source-first-20261015-admission.json",
+    "sha256": "283788548B56F7C2F2D441C962A0FAF56BC4EB3CFCB5FBE9E0800421CFEABBD0",
+    "bytes": 277
+  },
+  {
+    "path": "ordinary-session-exports5ab-source-first-20261015-artifacts.json",
+    "sha256": "F24F800A95DFE6646598F60EF4B5E01A77470F6CF593AC8286C29FA70975CC0D",
+    "bytes": 1518
+  },
+  {
+    "path": "ordinary-session-exports5ab-source-first-20261015-controls-before.json",
+    "sha256": "5E41A9A6FF3BD939E8F41C1342BB865B49C547C0216E81EBFBA9395054B1D706",
+    "bytes": 1630
+  },
+  {
+    "path": "ordinary-session-exports5ab-source-first-20261015-native-before.json",
+    "sha256": "16D6736EAA721CB04EE28CE6F2B430D68E582665D0E607AEF0150C1F86AB25DE",
+    "bytes": 1701008
+  },
+  {
+    "path": "ordinary-session-exports5ab-source-first-20261015-posthash.json",
+    "sha256": "854591A8BAF743BF617D8DA9834444C913FB2DA2A638189C3521EBE2696EF1D4",
+    "bytes": 455
+  },
+  {
+    "path": "ordinary-session-exports5ab-source-first-20261015.json",
+    "sha256": "D74EB5C2CB8B09D9FB1271A404BC0AB50B2E2B903B8F5D19772440784197AAD0",
+    "bytes": 1006
+  },
+  {
+    "path": "ordinary-session-exports5ab-source-first-20261015.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "ordinary-session-exports5ab-source-first-20261015.stdout.log",
+    "sha256": "6789142B1BDE7106B8E2C675A6E47A15D70471ACEE7D7239424BACD02D02EAFF",
+    "bytes": 56441
+  },
+  {
+    "path": "env-prerequisites-v2/engine-dc434339-before.zig.txt",
+    "sha256": "08F7BB9728AE7CBA6ED1FD9F4F3EDBCA387D2DF18AADB1086543735C15426940",
+    "bytes": 75360
+  },
+  {
+    "path": "env-prerequisites-v2/engine-dc434339-env-hub-after.zig.txt",
+    "sha256": "E4E870384B73D6B44CB2713452D555E160955BDCAB06BA97403F789B977EC75D",
+    "bytes": 75719
+  },
+  {
+    "path": "env-prerequisites-v2/engine-hub-lifecycle-dc434339.patch",
+    "sha256": "243B5B8FA42D47A8223B88C3AB9C5B8DB4BF045ED1FDA5F470C6D50196F8A0F9",
+    "bytes": 3104
+  },
+  {
+    "path": "env-prerequisites-v2/source-leaves.json",
+    "sha256": "97BC9ED1DB3F9A0398FD89B192DAB4E0BE8A7EC3F1B4D8055F786F856E9B2AAC",
+    "bytes": 1784
+  },
+  {
+    "path": "env-prerequisites-v2/src/extensions/native_env_charged_allocator.zig",
+    "sha256": "2BF55B71DB0AE7A0F2FA151F536D86329C0FC22532D6E6C487D7DFCE5C739E85",
+    "bytes": 3018
+  },
+  {
+    "path": "env-prerequisites-v2/src/extensions/native_env_io.zig",
+    "sha256": "5C735F1808380E5C64ABBD02061DAAAA0CAA8D8C19686647AB8864C8E0870283",
+    "bytes": 4900
+  },
+  {
+    "path": "env-prerequisites-v2/src/extensions/native_env_node_exec.zig",
+    "sha256": "55F7C8D2592F38E61D334A8CE0A171ED4AB943538A3F5088A885D311723E4545",
+    "bytes": 24685
+  },
+  {
+    "path": "env-prerequisites-v2/src/extensions/native_env_node_methods.zig",
+    "sha256": "83D77508F56FC4CCD94412E7353D0AB929912AD42EC82983F24B1B920AD1F512",
+    "bytes": 418
+  },
+  {
+    "path": "env-prerequisites-v2/src/extensions/native_env_node_path.zig",
+    "sha256": "487C5AB79417F676379B1772387FA6E3F38B992FAC3F7B3E27D240D676B9F40C",
+    "bytes": 8583
+  },
+  {
+    "path": "env-prerequisites-v2/src/extensions/native_env_values.zig",
+    "sha256": "6BC0A4830A95D9481630C6361E3F51630EC790F78B03A3DE4243872493AF6A29",
+    "bytes": 8798
+  },
+  {
+    "path": "frozen-controls/durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "bytes": 7153406
+  },
+  {
+    "path": "frozen-controls/Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "path": "frozen-controls/ordinary-session-exports5ab-source-capture-20261015.mjs",
+    "sha256": "1F17810C66A427771048E6988D6A273252CF0A148821DE701CD293483EA3A1A0",
+    "bytes": 11843
+  },
+  {
+    "path": "frozen-controls/root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "bytes": 352993
+  },
+  {
+    "path": "frozen-controls/Run-SessionExportsSource-20261015.ps1",
+    "sha256": "318A7BAFC1869DA89FDDFB75B119F743488A25028FF29ABDD0933D80398BD3CC",
+    "bytes": 6091
+  },
+  {
+    "path": "frozen-controls/source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352",
+    "bytes": 211110
+  },
+  {
+    "path": "frozen-controls/source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE",
+    "bytes": 556118
+  },
+  {
+    "path": "frozen-controls/source5ab-observe-20261015.mjs",
+    "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017",
+    "bytes": 4469
+  },
+  {
+    "path": "more-frozen-controls/durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "bytes": 7153406
+  },
+  {
+    "path": "more-frozen-controls/Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "path": "more-frozen-controls/ordinary-session-exports5ab-more-source-capture-20261015.mjs",
+    "sha256": "109264CD2D226D12CD66980F63A8971DA1C93096A014FDEE8CE85E6F4B42F1FD",
+    "bytes": 3993
+  },
+  {
+    "path": "more-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-shell-tools-before.json",
+    "sha256": "7BF462582B14762B529488BA3C76534F758A164DC372F93F9DDAC27D94D011DB",
+    "bytes": 57058
+  },
+  {
+    "path": "more-frozen-controls/root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "bytes": 352993
+  },
+  {
+    "path": "more-frozen-controls/Run-SessionExportsMoreSource-20261015.ps1",
+    "sha256": "0C8F77B493E24A26B2F5D8E062032E28071806C50A1179A30F482736757F5318",
+    "bytes": 7234
+  },
+  {
+    "path": "more-frozen-controls/source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352",
+    "bytes": 211110
+  },
+  {
+    "path": "more-frozen-controls/source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE",
+    "bytes": 556118
+  },
+  {
+    "path": "more-frozen-controls/source5ab-observe-20261015.mjs",
+    "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017",
+    "bytes": 4469
+  },
+  {
+    "path": "more-retained-spills/execute-byte-spill.log",
+    "sha256": "D9D7AD3942E280F6A350712AC79AFA3F92BC36D2209046B329E93736A010671E",
+    "bytes": 54000
+  },
+  {
+    "path": "more-retained-spills/execute-line-spill.log",
+    "sha256": "BC530969D22627A984FB58A1BF51E5FB940A7DA7DA16AD791158D62EFFF3C9FE",
+    "bytes": 4002
+  },
+  {
+    "path": "more-retained-spills/execute-rolling-spill.log",
+    "sha256": "F1CB6C2DDC3F670C0235D25DDD139F3EA71342D418E16FF050AE1EFFE93D6A08",
+    "bytes": 252000
+  },
+  {
+    "path": "more-source-output/capture.json",
+    "sha256": "509C5FFFAEF7446416E45E43B18395B81463DE593B3D695A9B523DE165134282",
+    "bytes": 5701601
+  },
+  {
+    "path": "source-output/capture.json",
+    "sha256": "6CB84E911F8C2CE0B8B273FE056268886A8BAA4D46DB3C97C80D52F4A51A31BF",
+    "bytes": 82471
+  },
+  {
+    "path": "source-output/export.html",
+    "sha256": "4C516E9807A2E862B9216F869E5611BA15BCE33AB2B628C50F15CC9A0F49FC41",
+    "bytes": 274284
+  },
+  {
+    "path": "source-output/session-2023-11-14T22-13-20-000Z.jsonl",
+    "sha256": "9B7D3A4B93DD94C03D3D625C2AAD9EABFC5112635ED3E8D3B1E2FF95A376583F",
+    "bytes": 1599
+  },
+  {
+    "path": "source-output/source-session.jsonl",
+    "sha256": "C751DF84EE6859E033376934E61947DA62E9A9CEE12D46D1FB8D5A5B732CB643",
+    "bytes": 1657
+  },
+  {
+    "path": "source-output/nested/session Ω.jsonl",
+    "sha256": "9B7D3A4B93DD94C03D3D625C2AAD9EABFC5112635ED3E8D3B1E2FF95A376583F",
+    "bytes": 1599
+  }
+]

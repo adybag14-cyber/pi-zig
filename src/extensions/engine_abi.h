@@ -22,4 +22,7 @@ void pi_js_retain_shared_buffer(void *buffer);
 void pi_js_release_shared_buffer(void *buffer);
 size_t pi_js_native_memory_owners(void);
 size_t pi_js_native_memory_used(void *memory_owner);
+void pi_js_retain_memory_owner(void *memory_owner);
+int pi_js_native_memory_reserve(void *memory_owner, size_t bytes);
+void pi_js_native_memory_release(void *memory_owner, size_t bytes);
 #endif

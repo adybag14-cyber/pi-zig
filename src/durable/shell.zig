@@ -12,6 +12,8 @@ pub const Command = union(enum) { text: []const u8, argv: []const []const u8 };
 pub const Stream = enum { stdout, stderr };
 pub const OutputInfo = struct { stream: Stream, skipped: ?output.ShellOutputSkip = null };
 pub const OutputFn = *const fn (?*anyopaque, []const u8, types.Context, OutputInfo) anyerror!void;
+pub const RawOutputFn = *const fn (?*anyopaque, []const u8, types.Context, Stream) anyerror!void;
+pub const SpawnFn = *const fn (?*anyopaque, u32) anyerror!void;
 pub const SpillOptions = struct { afterBytes: u64, afterLines: u64 };
 pub const Options = struct {
     parent_owner: ?*ownership.ParentJob = null,
@@ -21,6 +23,10 @@ pub const Options = struct {
     timeout: ?f64 = null,
     onOutput: ?OutputFn = null,
     output_context: ?*anyopaque = null,
+    onRawOutput: ?RawOutputFn = null,
+    raw_output_context: ?*anyopaque = null,
+    onSpawn: ?SpawnFn = null,
+    spawn_context: ?*anyopaque = null,
     spill: ?SpillOptions = null,
     window: ?output.ShellOutputWindow = null,
 };
@@ -242,6 +248,9 @@ pub const Shell = struct {
         try self.register(&control);
         var registered = true;
         defer if (registered) self.unregister(&control);
+        // Observers receive identity only after the exact process capability
+        // is registered. A throw enters the existing owned rollback path.
+        if (options.onSpawn) |observer| try observer(options.spawn_context, try control.processId());
         var storage: [3]std.Io.Operation.Storage = undefined;
         var batch: std.Io.Batch = .init(&storage);
         defer batch.cancel(self.io);
@@ -330,6 +339,10 @@ pub const Shell = struct {
                 }
                 if (idle_since != null) idle_since = now(self.io);
                 const bytes = raw[index][0..count];
+                if (callback_error == null) if (options.onRawOutput) |observer| observer(options.raw_output_context, bytes, context, if (index == 0) .stdout else .stderr) catch |err| {
+                    callback_error = err;
+                    control.kill();
+                };
                 if (spill) |*value| if (spill_error == null) value.push(bytes) catch |err| {
                     if (err == error.OutOfMemory) return err;
                     spill_error = err;

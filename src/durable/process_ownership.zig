@@ -98,6 +98,16 @@ pub const Control = struct {
             };
         }
     }
+    /// Read the identity held by this exact process capability.
+    pub fn processId(self: *const Control) !u32 {
+        const id = self.child.id orelse return error.OwnedChildAlreadyReaped;
+        if (builtin.os.tag == .windows) {
+            const pid = win.GetProcessId(self.process_lease);
+            if (pid == 0) return error.OwnedChildIdentityUnavailable;
+            return pid;
+        }
+        return std.math.cast(u32, id) orelse error.OwnedChildIdentityUnavailable;
+    }
     /// Get the full exit status without reaping or closing pipe handles.
     pub fn peek(self: *const Control) !?i64 {
         const id = self.child.id orelse return error.OwnedChildAlreadyReaped;

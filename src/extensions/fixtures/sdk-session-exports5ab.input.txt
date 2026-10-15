@@ -1,0 +1,93 @@
+const root=ordinaryRoot;
+const {writeFileSync,readFileSync}=ordinaryAPI.fs;
+const {join,relative}=ordinaryAPI.path;
+const RealDate=Date,fixed=1700000000000;
+globalThis.Date=class extends RealDate{constructor(...args){super(...(args.length?args:[fixed]))}static now(){return fixed}};
+const {AgentSession,SessionManager,SettingsManager,ModelRuntime,AuthStorage,serializeSessionBranch}=ordinaryAPI;
+const {Agent}=ordinaryAPI;
+
+
+const clock=new Date().toISOString();
+const header={type:'session',version:3,id:'source-ordinary-session',timestamp:clock,cwd:'fixture-session-cwd'};
+const seed=[header,{type:'message',id:'a',parentId:'unselected',timestamp:clock,message:{role:'user',content:'first',timestamp:fixed}},{type:'message',id:'b',parentId:'a',timestamp:clock,message:{role:'user',content:'other branch',timestamp:fixed}},{type:'message',id:'c',parentId:'a',timestamp:clock,message:{role:'user',content:'last Ω',timestamp:fixed}}];
+const runtime=await ModelRuntime.create({credentials:AuthStorage.inMemory(),modelsPath:null,refreshOnCreate:false,allowModelNetwork:false});
+const model={kind:'chat',id:'fixture',name:'Fixture',api:'openai-completions',provider:'source-fixture',baseUrl:'https://source.invalid',reasoning:true,input:['text'],contextWindow:24,maxTokens:8000,cost:{input:0,output:0,cacheRead:0,cacheWrite:0}};
+function receiver({entries=seed,streamFn=()=>{throw Error('unexpected model request')},settings={retry:{enabled:false}}}={}){
+ const session=Object.create(AgentSession.prototype);
+ Object.assign(session,{sessionManager:SessionManager.inMemory('fixture-session-cwd',undefined,entries),settingsManager:SettingsManager.inMemory(settings),agent:new Agent({streamFn,initialState:{model,thinkingLevel:'high',messages:[]}}),_modelRuntime:runtime,_isAgentRunActive:false,_pendingBashMessages:[],_bashAbortControllers:new Set(),_entryIdsByMessage:new WeakMap(),_eventListeners:[]});
+ return session;
+}
+const observations=[];
+{
+ const session=receiver(),result={output:'plain Ω',exitCode:7,cancelled:false,truncated:false};
+ const before=JSON.stringify(result);session.recordBashResult('echo Ω',result);
+ observations.push({name:'record-direct',messages:session.messages.filter(message=>message.role==='bashExecution'),pending:session._pendingBashMessages.length,inputUnchanged:before===JSON.stringify(result)});
+ session._isAgentRunActive=true;session.recordBashResult('queued', {...result,output:'tail',fullOutputPath:'fixture-full-output.log'},{excludeFromContext:true});
+ observations.push({name:'record-streaming',queued:session._pendingBashMessages,messagesBeforeFlush:session.messages.filter(message=>message.role==='bashExecution').length});
+ session._isAgentRunActive=false;session._flushPendingBashMessages();observations.push({name:'record-flush',messages:session.messages.filter(message=>message.role==='bashExecution'),pending:session._pendingBashMessages.length});
+}
+{
+ const session=receiver(),events=[],chunks=[],calls=[];
+ session.subscribe(event=>events.push(event));
+ const operations={async exec(command,cwd,{onData,signal}){calls.push({command,cwd,signal:signal instanceof AbortSignal});for(const bytes of [[104,105,27,91,51],[49,109,206],[169,27,91,48,109,13,10]])onData(Uint8Array.from(bytes));return{exitCode:7}}};
+ session.settingsManager.applyOverrides({shellCommandPrefix:'fixture-prefix',shellPath:'fixture-shell'});
+ const result=await session.executeBash('user-command',text=>chunks.push(text),{id:'owned-bash',operations,excludeFromContext:true});
+ observations.push({name:'execute-custom',calls,chunks,events,result,messages:session.messages.filter(message=>message.role==='bashExecution'),running:session.isBashRunning});
+}
+{
+ const session=receiver(),reason={raw:'chunk'},operations={async exec(_,__,{onData}){onData(Uint8Array.from([120]));return{exitCode:0}}};let raw=false;
+ try{await session.executeBash('throws',()=>{throw reason},{operations})}catch(error){raw=error===reason}
+ observations.push({name:'execute-raw-callback',raw,running:session.isBashRunning,recorded:session.messages.filter(message=>message.role==='bashExecution').length});
+}
+{
+ const session=receiver(),operations={async exec(_,__,{onData,signal}){onData(Uint8Array.from([112,97,114,116]));await new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(new Error('caller-abort')),{once:true}));return{exitCode:0}}};
+ const pending=session.executeBash('cancelled',undefined,{operations}),running=session.isBashRunning;session.abortBash();const result=await pending;
+ observations.push({name:'execute-cancelled',running,result,runningAfter:session.isBashRunning,messages:session.messages.filter(message=>message.role==='bashExecution')});
+}
+{
+ const session=receiver(),before=JSON.stringify(session.sessionManager.getBranch());
+ const file=session.exportToJsonl('nested/session Ω.jsonl'),body=readFileSync(file,'utf8');
+ observations.push({name:'jsonl-explicit',file:relative(root,file).replaceAll('\\','/'),body,branchUnchanged:before===JSON.stringify(session.sessionManager.getBranch())});
+ const defaultFile=session.exportToJsonl();observations.push({name:'jsonl-default',file:relative(root,defaultFile).replaceAll('\\','/'),body:readFileSync(defaultFile,'utf8')});
+ observations.push({name:'jsonl-trailing',body:serializeSessionBranch(session.sessionManager,(parentId,timestamp)=>[{type:'custom',id:'export-only',parentId,timestamp,customType:'fixture',data:{ok:true}}])});
+}
+for(const [name,response] of [['normal',{stopReason:'stop',content:[{type:'text',text:'  report Ω  '}]}],['aborted',{stopReason:'aborted',content:[]}],['error',{stopReason:'error',errorMessage:'fixture failure',content:[]}],['length',{stopReason:'length',content:[{type:'text',text:'partial'}]}],['tool',{stopReason:'stop',content:[{type:'toolCall',id:'t',name:'x',arguments:{}}]}],['empty',{stopReason:'stop',content:[{type:'text',text:'   '}]}]]){
+ const calls=[],signal=new AbortController().signal;
+ const session=receiver({streamFn:async(selected,context,options)=>{calls.push({model:selected,context,options:{...options,signal:options.signal===signal?'same':'other'},optionKeys:Object.keys(options)});return{result:async()=>({role:'assistant',api:model.api,provider:model.provider,model:model.id,usage:{input:0,output:0,cacheRead:0,cacheWrite:0,totalTokens:0,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}},timestamp:fixed,...response})}}});
+ session.agent.state.messages=[0,1,2,3].map(index=>({role:'user',content:'message '+index+' text',timestamp:fixed}));let result,error;
+ try{result=await session.summarizeForBugReport({hint:'  failure hint  ',signal})}catch(value){error={name:value.name,message:value.message}}
+ observations.push({name:'summary-'+name,...(error?{error}:{result}),calls});
+}
+{
+ const session=receiver();session.agent.state.model=undefined;let error;try{await session.summarizeForBugReport(undefined)}catch(value){error={name:value.name,message:value.message}}observations.push({name:'summary-no-model',error});
+}
+{
+ const session=receiver({settings:{theme:'dark'}});let error;try{await session.exportToHtml(join(root,'memory.html'))}catch(value){error={name:value.name,message:value.message}}observations.push({name:'html-in-memory',error});
+ const file=join(root,'source-session.jsonl');writeFileSync(file,seed.map(row=>JSON.stringify(row)).join('\n')+'\n');session.sessionManager=SessionManager.open(file);
+ const output=await session.exportToHtml(join(root,'export.html'),{themeName:'dark'}),html=readFileSync(output,'utf8');
+ const encoded=html.match(/<script id="session-data" type="application\/json">([^<]*)<\/script>/)[1];
+ observations.push({name:'html-basic',file:relative(root,output).replaceAll('\\','/'),sessionData:JSON.parse(Buffer.from(encoded,'base64').toString()),bytes:Buffer.byteLength(html),sha256:ordinaryAPI.hashUtf8(html)});
+}
+{
+ const {ansiToHtml,ansiLinesToHtml}=ordinaryAPI;
+ const ansiCases=[['plain',`<&>"' Ω\ud800`],['styles','\x1b[1;2;3;4;31;44mstyled\x1b[22;23;24;39;49mplain'],['empty-reset','a\x1b[mb'],['unknown','x\x1b[99mY\x1b[2Jz'],['rgb','\x1b[38;2;12;34;56;48;2;240;230;220mRGB\x1b[0m'],['empty-span','\x1b[31m'],['incomplete-rgb','\x1b[38;2;12;34mX'],['empty-params','\x1b[1;;31mX'],['palette-outside','\x1b[38;5;999mX'],['rgb-outside','\x1b[38;2;999;256;0mX']];
+ for(let index=0;index<16;index++)ansiCases.push(['standard-'+index,`\x1b[${index<8?30+index:90+index-8}m${index}\x1b[0m`]);
+ for(let index=0;index<256;index++)ansiCases.push(['palette-'+index,`\x1b[38;5;${index}m${index}\x1b[0m`]);
+ observations.push({name:'ansi-html',cases:ansiCases.map(([name,input])=>({name,input,output:ansiToHtml(input)})),lines:ansiLinesToHtml(['','\x1b[31m','x<&Ω'])});
+ const {createToolHtmlRenderer}=ordinaryAPI;
+ const {getThemeByName}=ordinaryAPI;
+ const {Text}=ordinaryAPI;
+ const events=[],components=new WeakMap();let next=0,coerced=0;const identify=value=>value?(components.has(value)?components.get(value):(components.set(value,++next),next)):null;
+ const context=value=>({keys:Object.keys(value),args:value.args,toolCallId:value.toolCallId,last:identify(value.lastComponent),state:value.state,cwd:value.cwd,executionStarted:value.executionStarted,argsComplete:value.argsComplete,isPartial:value.isPartial,expanded:value.expanded,showImages:value.showImages,isError:value.isError,outputPad:value.outputPad});
+ const definition={renderCall(args,theme,ctx){events.push({kind:'call',context:context(ctx)});ctx.state.calls=(ctx.state.calls??0)+1;const component=new Text('\x1b[31mcall <Ω\x1b[0m',0,0);identify(component);return component},renderResult(result,options,theme,ctx){events.push({kind:'result',options,context:context(ctx),sameState:ctx.state.calls===1});const component=new Text('\n\x1b[32mresult &Ω\x1b[0m\n\n',0,0);identify(component);return component}};
+ const raw={toString(){coerced++;throw Error('must not coerce renderer failure')}};
+ const renderer=createToolHtmlRenderer({getToolRenderers(name){if(name==='throw')throw raw;return name==='fixture'?definition:undefined},theme:getThemeByName('dark'),cwd:'fixture-render-cwd',width:30});
+ const call=renderer.renderCall('tool-1','fixture',{n:1}),result=renderer.renderResult('tool-1','fixture',[{type:'text',text:'raw'}],{detail:true},true),missing=renderer.renderCall('missing','missing',{}),failed=renderer.renderCall('failed','throw',{});
+ observations.push({name:'tool-html-renderer',call,result,missing:missing??null,failed:failed??null,coerced,events});
+}
+const capture={source:'5ab7fe74c400097b386662205cd93900695b8a71',scope:'Genuine ordinary Source bodies on real Agent/SessionManager/SettingsManager/ModelRuntime collaborators; not full AgentSession constructor parity',clock:fixed,observations,root};
+globalThis.ordinaryRows=observations;
+
+
+
+
