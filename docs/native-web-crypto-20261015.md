@@ -41,6 +41,31 @@ byteLength getter order and exception identity, copied inputs, detached inputs,
 and rejected shared buffers. Native tests also exercise retained methods through
 GC and mutation of the public Promise constructor.
 
-Native compilation/runtime are pending Root admission. `build-native-web-crypto`
-and `test-native-web-crypto` are dedicated targets. Full Pi, exhaustive allocator
-coverage, hosted profiles and public activation remain false.
+The exact native candidate `6894882c29cd21011b414e7fc23571329c528e99` passed
+the Root-admitted Debug pair:155/155 compile steps and156/156 runtime steps,
+3/3 tests passed. Compile PID73508 exited0 at20:44:51Z; runtime PID912 exited0
+at20:45:13Z. The final full audit at20:45:27Z recorded zero drift for6573
+candidate files,19546 compiler files,1774 scoped Node files, nine controls, and
+all corresponding file inventories. All four compiled EXE/PDB hashes remained
+unchanged, and both owned root PIDs were independently verified absent.
+
+The test executable SHA256 is
+`E03D00A1BF1D6BC78D371AC3EFA23DD82861A29F16783381C213397F865B7BEF`.
+The strict pair owner SHA256 is
+`3F34E4BAFCEF7DB6DD8E54BDADCB09B7A92046833AAA70F42BE77708283B9487`.
+The Node inventory explicitly covers `node.exe` plus the complete npm directory;
+unrelated launchers/corepack are excluded. The oracle executes Node builtins,
+not Pi Source, and the fixture's full builtin source comparison remains368
+entries plus the separately reported non-source `configs` entry.
+
+`verification/web-crypto-node24-source52-20261015/webcrypto-native-debug-qualified-20261015.zip`
+retains30 raw proof payloads and a manifest. Its SHA256 is
+`7DB3EDE2288559F84AC5F7184553C86BD76CB608DDBA151805AC9F44B720B223`.
+The adjacent `Verify-NativeProof.ps1` independently reopens every entry, checks
+its raw bytes and the31-entry inventory, and validates Source52 and native
+terminal summaries. Later commits add proof/documentation only; qualified code
+remains identical to the tested candidate.
+
+`build-native-web-crypto` and `test-native-web-crypto` are dedicated targets.
+ReleaseSafe, full Pi, exhaustive allocator coverage, hosted profiles and public
+activation remain false.

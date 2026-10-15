@@ -20,12 +20,16 @@ function Check-Rows($rows){
 function Candidate-Rows {
  @(& git -c gc.auto=0 -c maintenance.auto=false -C $taskTree ls-files --cached --others --exclude-standard|Sort-Object -Unique|ForEach-Object {$path=Join-Path $taskTree $_;@{path=$path;relative=$_;sha256=(Get-FileHash -LiteralPath $path).Hash}})
 }
+function Compiler-Paths {@(Get-ChildItem -LiteralPath (Split-Path $taskZig -Parent) -Recurse -File -Force|ForEach-Object FullName|Sort-Object)}
+function Node-Paths {@(@('C:\Program Files\nodejs\node.exe')+@(Get-ChildItem -LiteralPath 'C:/Program Files/nodejs/node_modules/npm' -Recurse -File -Force|ForEach-Object FullName)|Sort-Object)}
 if((& git -c gc.auto=0 -c maintenance.auto=false -C $taskTree rev-parse HEAD) -cne $ExpectedHead -or (& git -c gc.auto=0 -c maintenance.auto=false -C $taskTree status --porcelain)){throw 'Exact clean native candidate required'}
 if((Get-FileHash -LiteralPath $taskZig).Hash -cne '086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864'){throw 'Pinned Zig0.16 compiler changed'}
 if((Get-FileHash -LiteralPath (Join-Path $taskTree 'src/extensions/fixtures/web-crypto-node24.json')).Hash -cne '888E237C0AA9A1C9E6E40A8BEFA5CEFE83BCA0864A0407B6C5E24630E342B136'){throw 'Genuine Source52 fixture changed'}
 $taskTools=@((Get-Content -Raw $taskToolManifest|ConvertFrom-Json).inputs)
 $taskNode=@(Get-Content -Raw $taskNodeManifest|ConvertFrom-Json)
 if($taskTools.Count -ne 19546 -or $taskNode.Count -ne 1774 -or @(Check-Rows $taskTools).Count -or @(Check-Rows $taskNode).Count){throw 'Full compiler/Node immutable input prehash drift'}
+$taskCompilerPaths=Compiler-Paths;$taskNodePaths=Node-Paths
+if(@(Compare-Object @($taskTools.path|Sort-Object) $taskCompilerPaths).Count -or @(Compare-Object @($taskNode.path|Sort-Object) $taskNodePaths).Count){throw 'Compiler/Node full scoped path inventory prehash drift'}
 $taskBefore=Candidate-Rows
 $taskControls=@($PSCommandPath,$taskOwner,$taskToolManifest,$taskNodeManifest,(Join-Path $taskEvidence 'web-body-node24-source-first-20261015-node-builtin-authorities.json'),(Join-Path $taskEvidence 'Run-WebCryptoNode24Source-20261015.ps1'),(Join-Path $taskEvidence 'webcrypto-node24-source-fourth-20261015.json'),(Join-Path $taskEvidence 'webcrypto-node24-source-fourth-20261015-posthash.json'),(Join-Path $taskEvidence 'webcrypto-node24-source-fourth-20261015-validation.json'))|ForEach-Object {@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}}
 $taskBefore|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-before.json") -Encoding utf8NoBOM
@@ -34,13 +38,15 @@ function Post-Check([string]$phase){
  $after=Candidate-Rows
  $drift=@(Compare-Object @($taskBefore|ForEach-Object {"$($_.relative):$($_.sha256)"}) @($after|ForEach-Object {"$($_.relative):$($_.sha256)"}))
  $toolDrift=@(Check-Rows $taskTools);$nodeDrift=@(Check-Rows $taskNode);$controlDrift=@(Check-Rows $taskControls)
- @{candidate=$ExpectedHead;source_files=$taskBefore.Count;source_after=$after.Count;source_drift=$drift;compiler_files=$taskTools.Count;compiler_drift=$toolDrift;node_files=$taskNode.Count;node_drift=$nodeDrift;control_files=@($taskControls).Count;control_drift=$controlDrift;phase=$phase;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-$phase-posthash.json") -Encoding utf8NoBOM
- if($drift.Count -or $toolDrift.Count -or $nodeDrift.Count -or $controlDrift.Count){throw 'Frozen native pair input drift'}
+ $compilerInventoryDrift=@(Compare-Object $taskCompilerPaths @(Compiler-Paths));$nodeInventoryDrift=@(Compare-Object $taskNodePaths @(Node-Paths))
+ @{candidate=$ExpectedHead;source_files=$taskBefore.Count;source_after=$after.Count;source_drift=$drift;compiler_files=$taskTools.Count;compiler_drift=$toolDrift;compiler_inventory_drift=$compilerInventoryDrift;node_files=$taskNode.Count;node_drift=$nodeDrift;node_inventory_drift=$nodeInventoryDrift;node_scope='node.exe plus complete npm directory1774; unrelated launchers/corepack excluded';builtin_source_count=368;non_source_configs_excluded=$true;control_files=@($taskControls).Count;control_drift=$controlDrift;phase=$phase;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-$phase-posthash.json") -Encoding utf8NoBOM
+ if($drift.Count -or $toolDrift.Count -or $nodeDrift.Count -or $controlDrift.Count -or $compilerInventoryDrift.Count -or $nodeInventoryDrift.Count){throw 'Frozen native pair input drift'}
 }
 function Admission([string]$phase){
  $free=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory
- @{status=if($free -lt 16MB){'denied'}else{'admitted'};free_kib=$free;required_kib=16MB;slot=$Slot;jobs=1;compile_outer_seconds=1320;runtime_outer_seconds=300;test_timeout_seconds=120;host_await_seconds=10;candidate=$ExpectedHead;observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-$phase-admission.json") -Encoding utf8NoBOM
- if($free -lt 16MB){throw 'Fresh native16GiB admission denied'}
+ $roots=@(Get-CimInstance Win32_Process -Filter "Name = 'zig.exe'"|Where-Object {$_.CommandLine -match '\sbuild\s'}|Select-Object ProcessId,CommandLine)
+ @{status=if($free -lt 16MB -or $roots.Count -ge 4){'denied'}else{'admitted'};free_kib=$free;required_kib=16MB;slot=$Slot;jobs=1;maximum_native_roots=4;other_native_roots=$roots;compile_outer_seconds=1320;runtime_outer_seconds=300;test_timeout_seconds=120;host_await_seconds=10;candidate=$ExpectedHead;observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-$phase-admission.json") -Encoding utf8NoBOM
+ if($free -lt 16MB -or $roots.Count -ge 4){throw 'Fresh native16GiB/max4 admission denied'}
 }
 Admission 'compile'
 try{& $taskOwner -Name "$taskName-compile" -Executable $taskZig -WorkingDirectory $taskTree -Arguments @('build','build-native-web-crypto',"-Doptimize=$Mode",'-Duse-llvm=true','-j1','--test-timeout','120s','--summary','all') -TimeoutSeconds 1320}finally{Post-Check 'compile'}
