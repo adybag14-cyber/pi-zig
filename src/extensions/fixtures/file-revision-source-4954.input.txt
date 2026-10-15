@@ -1,0 +1,46 @@
+const fs=fileRevisionFs, path=fileRevisionPath, root=fileRevisionRoot, revision=fileRevision;
+const rows=[], rawRows=[];
+function row(name,value){if(value!==true)throw Error('getFileRevision control failed: '+name);rows.push({name,value});}
+function raw(name,file){const result=revision(file);const stats=fs.statSync(file,{bigint:true});const fields=[stats.dev,stats.ino,stats.size,stats.mtimeNs,stats.ctimeNs].map(String);if(result!==fields.join(':'))throw Error('Actual five kernel fields mismatch: '+name);rawRows.push({name,path:typeof file==='string'?file:String(file),revision:result,fields});return fields;}
+const left=path.join(root,'left'), right=path.join(root,'right');fs.mkdirSync(left);fs.mkdirSync(right);
+const entry=path.join(left,'entry.json'), same=path.join(right,'entry.json'), empty=path.join(root,'empty'), unicode=path.join(root,' leading\u00a0é trailing ');
+fs.writeFileSync(entry,'old');fs.writeFileSync(same,'old');fs.writeFileSync(empty,'');fs.writeFileSync(unicode,'literal spaces');
+const initial=raw('initial',entry);
+row('exact-five-field-order',revision(entry).split(':').length===5);
+row('repeat-stable',revision(entry)===revision(entry));
+row('empty-size-zero',raw('empty',empty)[2]==='0');
+row('literal-unicode-space-path',raw('literal-spaces',unicode)[2]==='14');
+const directory=raw('directory',left);row('directory-stat-defined',directory.length===5);
+row('missing-undefined',revision(path.join(root,'missing'))===undefined);
+row('empty-path-undefined',revision('')===undefined);
+row('embedded-nul-undefined',revision(entry+'\0suffix')===undefined);
+row('number-path-undefined',revision(42)===undefined);
+row('undefined-path-undefined',revision(undefined)===undefined);
+row('null-path-undefined',revision(null)===undefined);
+let coerced=0;row('object-not-coerced',revision({toString(){coerced++;return entry}})===undefined&&coerced===0);
+row('buffer-path',revision(Buffer.from(entry))===revision(entry));
+const encoded=Buffer.from('x'+entry+'y');row('uint8array-offset-path',revision(new Uint8Array(encoded.buffer,encoded.byteOffset+1,encoded.byteLength-2))===revision(entry));
+row('uint16array-path-undefined',revision(new Uint16Array([1,2]))===undefined);
+row('file-url-path',revision(fileRevisionToURL(entry))===revision(entry));
+row('non-file-url-undefined',revision(new URL('https://invalid.test/file'))===undefined);
+const badURL=fileRevisionToURL(entry);let getters=0;Object.defineProperty(badURL,'pathname',{get(){getters++;throw Error('owned URL getter')}});
+row('url-getter-error-suppressed',revision(badURL)===undefined&&getters===1);
+fs.appendFileSync(entry,' appended');const appended=raw('appended',entry);
+row('append-keeps-device-and-inode',appended[0]===initial[0]&&appended[1]===initial[1]);
+row('append-size-observed',appended[2]==='12');
+fs.writeFileSync(entry,'equal-length');fs.utimesSync(entry,1712345678.1234567,1712345678.1234567);
+const timed=raw('controlled-submillisecond-time',entry);
+row('same-size-mutation-keeps-identity',timed[0]===initial[0]&&timed[1]===initial[1]&&timed[2]==='12');
+row('mtime-not-millisecond-rounded',BigInt(timed[3])%1000000n!==0n);
+row('mtime-beyond-number-integer-precision',BigInt(timed[3])>9007199254740991n);
+row('mtime-decimal-preserves-integer-precision',BigInt(Number(timed[3]))!==BigInt(timed[3]));
+const beforeReplace=revision(entry), replacement=path.join(root,'replacement'), retained=path.join(root,'retained-original');
+fs.writeFileSync(replacement,'equal-length');fs.renameSync(entry,retained);fs.renameSync(replacement,entry);
+const replaced=raw('replacement',entry), other=raw('cross-directory-same-basename',same);
+row('replacement-identity-changes',replaced[0]!==initial[0]||replaced[1]!==initial[1]);
+row('replacement-revision-changes',revision(entry)!==beforeReplace);
+row('cross-directory-identity-distinct',replaced[0]!==other[0]||replaced[1]!==other[1]);
+const hard=path.join(root,'hard-link');fs.linkSync(entry,hard);row('hard-link-same-revision',revision(entry)===revision(hard));raw('hard-link',hard);
+let symlink={status:'not-attempted'};try{const link=path.join(root,'symbolic-link');fs.symlinkSync(entry,link,'file');row('symlink-follows-target',revision(link)===revision(entry));raw('symlink',link);symlink={status:'created-and-followed'};}catch(error){if(error.code!=='EPERM'&&error.code!=='EACCES')throw error;symlink={status:'host-denied-creation',code:error.code};}
+const finalFiles=[entry,same,empty,unicode,retained,hard];
+globalThis.fileRevisionSourceObservations={rows,rawRows,symlink,finalFiles:finalFiles.map(file=>({path:file,revision:revision(file)}))};
