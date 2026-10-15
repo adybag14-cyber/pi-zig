@@ -36,7 +36,7 @@ test "native AI HTTP observed header-only deadline permits long body and rejects
     engine.native_io = std.testing.io;
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
-    for (.{ "/body", "/headers" }, 0..) |path, index| {
+    for ([_][]const u8{ "/body", "/headers" }, 0..) |path, index| {
         const url = try server.url(std.testing.allocator, path);
         defer std.testing.allocator.free(url);
         try sdk.put(engine, global, if (index == 0) "longBody" else "lateHeaders", try http.open(engine, .{ .url = url, .payload = "{}", .headers = &.{}, .timeout_ms = if (index == 0) 100 else 30, .headers_timeout_only = true, .framing = .body }, c.pi_js_undefined()));

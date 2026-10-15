@@ -99,7 +99,7 @@ test "native AI HTTP explicit user agent suppresses duplicate implicit standard 
     defer server.deinit();
     var client: std.http.Client = .{ .allocator = gpa, .io = std.testing.io };
     defer client.deinit();
-    for (.{ "/extra", "/privileged" }, 0..) |path, index| {
+    for ([_][]const u8{ "/extra", "/privileged" }, 0..) |path, index| {
         const url = try server.url(gpa, path);
         defer gpa.free(url);
         var output: std.Io.Writer.Allocating = .init(gpa);
