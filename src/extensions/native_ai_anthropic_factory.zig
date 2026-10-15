@@ -7,6 +7,7 @@ const c = v.c;
 const flow = @import("native_agent_async.zig");
 const request = @import("native_ai_anthropic_request.zig");
 const sse = @import("native_ai_anthropic_sse.zig");
+const federation = @import("native_ai_anthropic_federation.zig");
 const Stage = enum(c_int) { payload, ready, response, read, event, raw, rejected_body };
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     try @import("native_stream.zig").install(engine);
@@ -19,6 +20,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     try scope.put(dependencies, "json", try scope.own(try @import("native_ai_json_parse.zig").create(engine)));
     try scope.put(dependencies, "errors", try scope.own(try @import("native_ai_anthropic_api_error.zig").create(engine)));
     try scope.put(dependencies, "userAgentOS", try @import("native_ai_user_agent.zig").load(&scope));
+    try scope.put(dependencies, "federationSlot", try scope.own(try federation.createSlot(engine)));
     const result = try scope.object();
     inline for (.{ "stream", "streamSimple" }, 0..) |name, index| {
         const Adapter = struct {
@@ -47,7 +49,8 @@ fn auth(scope: *Scope, model: c.JSValue, options: c.JSValue) !void {
     return v.errorText(scope, try scope.concat(try scope.text("No API key for provider: "), try scope.stringify(try scope.get(model, "provider"))));
 }
 fn simple(scope: *Scope, dependencies: c.JSValue, model: c.JSValue, context: c.JSValue, options: c.JSValue) !c.JSValue {
-    try auth(scope, model, options);
+    const config = try federationConfig(scope, model, options);
+    if (c.JS_IsUndefined(config)) try auth(scope, model, options);
     const helpers = try scope.get(dependencies, "simple");
     const base = try scope.invoke(helpers, "buildBaseOptions", &.{ model, context, options, try v.optional(scope, options, "apiKey") });
     const result = try v.spread(scope, base);
@@ -113,13 +116,23 @@ fn aborted(scope: *Scope, owner: c.JSValue) !bool {
 }
 fn setup(scope: *Scope, owner: c.JSValue) !void {
     const options = try scope.get(owner, "options");
-    if (!scope.truthy(try v.optional(scope, options, "client"))) try auth(scope, try scope.get(owner, "model"), options);
+    if (!scope.truthy(try v.optional(scope, options, "client"))) {
+        const model = try scope.get(owner, "model");
+        const config = try federationConfig(scope, model, options);
+        if (c.JS_IsUndefined(config)) try auth(scope, model, options) else {
+            const client = try scope.own(try federation.client(scope.engine, try scope.get(try scope.get(owner, "agent"), "federationSlot"), model, config, try v.optional(scope, options, "fetch")));
+            try scope.put(owner, "federationClient", client);
+        }
+    }
     const built = try scope.own(try request.build(scope.engine, try scope.get(owner, "model"), try scope.get(owner, "context"), scope.truthy(try scope.get(owner, "oauth")), options, scope.truthy(try scope.get(owner, "disabledPreferred"))));
     try scope.put(owner, "built", built);
     const payload = try scope.get(built, "params");
     try scope.put(owner, "payload", payload);
     _ = try scope.invoke(try scope.get(owner, "decoder"), "thinkingLevel", &.{try scope.get(built, "providerThinkingLevel")});
     try wait(scope, owner, try hook(scope, owner, "onPayload", payload), .payload);
+}
+fn federationConfig(scope: *Scope, model: c.JSValue, options: c.JSValue) !c.JSValue {
+    return scope.own(try federation.resolve(scope.engine, model, try v.optional(scope, options, "apiKey"), try v.optional(scope, options, "headers"), try v.optional(scope, options, "env")));
 }
 fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) !void {
     var scope: Scope = .{ .engine = engine };
@@ -184,6 +197,27 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
     return wait(scope, owner, try scope.call(retry, c.pi_js_undefined(), &.{ callback, retry_options }), .ready);
 }
 fn perform(scope: *Scope, owner: c.JSValue) !c.JSValue {
+    const client = try scope.get(owner, "federationClient");
+    if (c.JS_IsUndefined(client)) return performAuthorized(scope, owner);
+    const pending = try flow.create(scope.engine, owner);
+    defer scope.engine.freeValue(pending.owner);
+    errdefer scope.engine.freeValue(pending.promise);
+    try flow.wait(authorized, scope.engine, pending.owner, try scope.own(try federation.authorize(scope.engine, client)), 0);
+    return scope.own(pending.promise);
+}
+fn authorized(engine: *v.em.Engine, pending: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
+    if (rejected or stage == 1) return flow.settle(engine, pending, rejected, value);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const owner = try scope.get(pending, "agent");
+    try scope.put(owner, "federationToken", value);
+    const response = performAuthorized(&scope, owner) catch |err| {
+        try flow.rejectError(engine, pending, err);
+        return;
+    };
+    try flow.wait(authorized, engine, pending, response, 1);
+}
+fn performAuthorized(scope: *Scope, owner: c.JSValue) !c.JSValue {
     if (try aborted(scope, owner)) return v.errorText(scope, try scope.text("Request was aborted"));
     const options = try scope.get(owner, "options");
     const client = try v.optional(scope, options, "client");
@@ -227,7 +261,7 @@ fn perform(scope: *Scope, owner: c.JSValue) !c.JSValue {
         }
         fields.deinit(scope.engine.gpa);
     }
-    var rows = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{headers}));
+    var rows = try v.iterator(scope, try scope.invoke(headers, "entries", &.{}));
     defer rows.deinit();
     errdefer rows.closePreserving();
     while (try rows.next()) |entry| {
@@ -277,12 +311,17 @@ fn wireAdvance(scope: *Scope, pending: c.JSValue, owner: c.JSValue, value: c.JSV
         const status = try scope.get(value, "status");
         if (try @import("native_image_arithmetic.zig").compare(scope.engine, .greater_equal, status, c.JS_NewInt32(scope.engine.context, 200)) and try @import("native_image_arithmetic.zig").compare(scope.engine, .less, status, c.JS_NewInt32(scope.engine.context, 300))) return flow.settle(scope.engine, pending, false, value);
         try scope.put(owner, "response", value);
+        if (scope.equal(status, c.JS_NewInt32(scope.engine.context, 401))) try invalidateFederation(scope, owner);
         return flow.wait(wireReady, scope.engine, pending, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), 1);
     }
     const frame = try scope.get(value, "value");
     const body = if (scope.truthy(try scope.get(value, "done"))) try scope.text("") else try scope.get(frame, "body");
     const failure = try sdkFailure(scope, owner, body);
     return flow.settle(scope.engine, pending, true, failure);
+}
+fn invalidateFederation(scope: *Scope, owner: c.JSValue) !void {
+    const client = try scope.get(owner, "federationClient");
+    if (!c.JS_IsUndefined(client)) try federation.invalidate(scope.engine, client);
 }
 fn merge(scope: *Scope, target: c.JSValue, source: c.JSValue) !void {
     if (v.nullish(source)) return;
@@ -305,6 +344,8 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const key = try v.optional(scope, options, "apiKey");
     const oauth = scope.truthy(try scope.get(owner, "oauth"));
     if (scope.truthy(key)) try scope.put(headers, if (oauth or try v.eq(scope, try scope.get(model, "provider"), "github-copilot")) "authorization" else "x-api-key", if (oauth or try v.eq(scope, try scope.get(model, "provider"), "github-copilot")) try scope.concat(try scope.text("Bearer "), key) else key);
+    const token = try scope.get(owner, "federationToken");
+    if (!c.JS_IsUndefined(token)) try scope.put(headers, "authorization", try scope.concat(try scope.text("Bearer "), token));
     if (oauth) {
         try scope.put(headers, "user-agent", try scope.text("claude-cli/2.1.280"));
         try scope.put(headers, "x-app", try scope.text("cli"));
@@ -322,7 +363,36 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
         try merge(scope, headers, try helper.build(scope, transcript, try helper.hasVision(scope, transcript)));
     }
     try merge(scope, headers, try v.optional(scope, options, "headers"));
-    return headers;
+    const filtered = try scope.object();
+    var entries = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{headers}));
+    defer entries.deinit();
+    errdefer entries.closePreserving();
+    while (try entries.next()) |entry| {
+        defer scope.engine.freeValue(entry);
+        const value = try v.at(scope, entry, 1);
+        if (!v.nullish(value)) try v.js.setKey(scope.engine, filtered, try v.at(scope, entry, 0), value);
+    }
+    const result = try scope.own(try v.js.builtin(scope.engine, "Headers", &.{filtered}));
+    const federated_client = try scope.get(owner, "federationClient");
+    if (!c.JS_IsUndefined(federated_client)) {
+        const workspace = try scope.get(try scope.get(federated_client, "config"), "workspace_id");
+        if (scope.truthy(workspace) and !scope.truthy(try scope.invoke(result, "has", &.{try scope.text("anthropic-workspace-id")}))) _ = try scope.invoke(result, "set", &.{ try scope.text("anthropic-workspace-id"), workspace });
+        const current = try scope.invoke(result, "get", &.{try scope.text("anthropic-beta")});
+        const values = if (v.nullish(current)) try scope.array() else try scope.invoke(current, "split", &.{try scope.text(",")});
+        const trimmed = try scope.array();
+        var features = try v.iterator(scope, values);
+        defer features.deinit();
+        errdefer features.closePreserving();
+        while (try features.next()) |feature| {
+            defer scope.engine.freeValue(feature);
+            _ = try scope.invoke(trimmed, "push", &.{try scope.invoke(feature, "trim", &.{})});
+        }
+        if (!scope.truthy(try scope.invoke(trimmed, "includes", &.{try scope.text("oauth-2025-04-20")}))) {
+            _ = try scope.invoke(trimmed, "push", &.{try scope.text("oauth-2025-04-20")});
+            _ = try scope.invoke(result, "set", &.{ try scope.text("anthropic-beta"), try scope.invoke(trimmed, "join", &.{try scope.text(",")}) });
+        }
+    }
+    return result;
 }
 fn read(scope: *Scope, owner: c.JSValue) !void {
     if (try aborted(scope, owner)) return v.errorText(scope, try scope.text("Request was aborted"));
@@ -364,6 +434,7 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             try scope.put(owner, "response", value);
             const status = try scope.get(value, "status");
             if (try @import("native_image_arithmetic.zig").compare(scope.engine, .greater_equal, status, c.JS_NewInt32(scope.engine.context, 400))) {
+                if (scope.equal(status, c.JS_NewInt32(scope.engine.context, 401))) try invalidateFederation(scope, owner);
                 const text_method = try scope.get(value, "text");
                 if (!v.nullish(text_method)) return wait(scope, owner, try scope.call(text_method, value, &.{}), .rejected_body);
                 return read(scope, owner);
@@ -434,6 +505,6 @@ fn sdkFailure(scope: *Scope, owner: c.JSValue, text: c.JSValue) !c.JSValue {
     };
     const status = try scope.get(try scope.get(owner, "response"), "status");
     const header_values = try scope.get(try scope.get(owner, "response"), "headers");
-    const headers = try scope.own(try v.js.builtin(scope.engine, "Headers", &.{header_values}));
+    const headers = if (v.nullish(try scope.get(owner, "http"))) header_values else try scope.own(try v.js.builtin(scope.engine, "Headers", &.{header_values}));
     return @import("native_ai_anthropic_api_error.zig").generateValue(scope, try scope.get(try scope.get(owner, "agent"), "errors"), status, body, text, headers);
 }
