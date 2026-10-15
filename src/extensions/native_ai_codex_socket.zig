@@ -89,7 +89,7 @@ fn result(scope: *Scope, value: c.JSValue, done: bool) !c.JSValue {
     return object;
 }
 fn failure(scope: *Scope, err: anyerror) !c.JSValue {
-    const object = try scope.own(try scope.engine.checked(c.JS_NewObjectProto(scope.engine.context, c.pi_js_null())));
+    const object = try scope.own(try v.js.builtin(scope.engine, "Error", &.{try scope.text(@errorName(err))}));
     try scope.put(object, "name", try scope.text("NativeWebSocketError"));
     try scope.put(object, "message", try scope.text(@errorName(err)));
     try scope.put(object, "code", try scope.text(@errorName(err)));
@@ -167,11 +167,11 @@ pub fn acquire(engine: *v.em.Engine, input: raw.Input, session: c.JSValue, accou
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     var connection: ?*Connection = null;
-    const now = try scope.invoke(try scope.global("Date"), "now", &.{});
     if (scope.truthy(session)) for (state.connections.items) |candidate| {
         if (!candidate.cache_current or candidate.closed or !scope.equal(try scope.get(candidate.meta, "sessionId"), session) or !scope.equal(try scope.get(candidate.meta, "accountId"), account)) continue;
         try clearIdleTimer(&scope, candidate);
         if (!candidate.busy and !candidate.worker.finished.load(.acquire)) {
+            const now = try scope.invoke(try scope.global("Date"), "now", &.{});
             const age = try scope.own(try arithmetic.binary(engine, .subtract, now, try scope.get(candidate.meta, "createdAt")));
             if (try arithmetic.compare(engine, .greater_equal, age, c.JS_NewInt32(engine.context, 55 * 60 * 1000))) {
                 candidate.closed = true;
@@ -198,7 +198,7 @@ pub fn acquire(engine: *v.em.Engine, input: raw.Input, session: c.JSValue, accou
     } else {
         try state.connections.ensureUnusedCapacity(engine.gpa, 1);
         const meta = try scope.object();
-        try scope.put(meta, "createdAt", now);
+        try scope.put(meta, "createdAt", c.pi_js_undefined());
         try scope.put(meta, "sessionId", session);
         try scope.put(meta, "accountId", account);
         try scope.put(meta, "readTimeoutMs", read_timeout);
@@ -257,6 +257,7 @@ pub fn pump(engine: *v.em.Engine) !bool {
                 .connected => {
                     connection.connected = true;
                     if (connection.cached) {
+                        try scope.put(connection.meta, "createdAt", try scope.invoke(try scope.global("Date"), "now", &.{}));
                         // Source publishes the cache entry only after connect.
                         // Simultaneous initial connects can both own entries;
                         // retain both workers even when the later entry replaces

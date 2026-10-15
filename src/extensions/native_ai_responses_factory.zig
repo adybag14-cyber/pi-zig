@@ -8,7 +8,9 @@ const flow = @import("native_agent_async.zig");
 const http = @import("native_ai_http.zig");
 const request = @import("native_ai_responses_request.zig");
 const codex_http = @import("native_ai_codex_http.zig");
-const Stage = enum(c_int) { payload, ready, response, next, chunk, retried };
+const codex_protocol = @import("native_ai_codex_protocol.zig");
+const codex_errors = @import("native_ai_codex_errors.zig");
+const Stage = enum(c_int) { payload, ready, response, next, chunk, retried, websocket_ready, websocket_sent, websocket_next, websocket_chunk };
 fn getMode(scope: *Scope, dependencies: c.JSValue) !request.Mode {
     const value = try scope.get(dependencies, "mode");
     return if (try v.eq(scope, value, "azure")) .azure else if (try v.eq(scope, value, "codex")) .codex else .standard;
@@ -25,6 +27,11 @@ pub fn createMode(engine: *v.em.Engine, mode: request.Mode) !c.JSValue {
     try scope.put(dependencies, "userAgentOS", try userAgentOS(&scope));
     try scope.put(dependencies, "mode", try scope.text(@tagName(mode)));
     const result = try scope.object();
+    if (mode == .codex) {
+        const state = try scope.own(try codex_protocol.create(engine));
+        try scope.put(dependencies, "codexState", state);
+        try v.js.spreadInto(engine, result, try scope.get(state, "exports"));
+    }
     inline for (.{ "stream", "streamSimple" }, 0..) |name, index| {
         const Adapter = struct {
             fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -103,6 +110,7 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
     try scope.put(owner, "attempt", c.JS_NewInt32(engine.context, 0));
     const declared = try scope.own(try @import("native_ai_provider_transcript.zig").declared(engine, try scope.get(context, "messages")));
     const properties = try scope.own(try @import("native_ai_openai_tools.zig").grammarProperties(engine, declared, scope.truthy(try scope.get(compat, "supportsOpenAIGrammarTools"))));
+    try scope.put(owner, "grammar", properties);
     const effort = try request.configurationEffort(&scope, args[0], options, compat, try getMode(&scope, dependencies));
     try scope.put(owner, "effort", effort);
     const decoder = try scope.own(try @import("native_ai_responses_decode.zig").create(engine, args[0], outer, try scope.get(dependencies, "json"), properties, options, effort, try getMode(&scope, dependencies) == .codex));
@@ -113,7 +121,6 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
 fn setup(scope: *Scope, owner: c.JSValue, properties: c.JSValue) !void {
     const options = try scope.get(owner, "options");
     const mode = try getMode(scope, try scope.get(owner, "agent"));
-    if (mode == .codex and !try v.eq(scope, try v.optional(scope, options, "transport"), "sse")) return v.errorText(scope, try scope.text("Native Codex WebSocket integration is not yet qualified"));
     try scope.put(owner, "apiKey", try apiKey(scope, try scope.get(owner, "model"), options, mode));
     const retention = if (mode == .codex) (if (try v.eq(scope, try v.optional(scope, options, "cacheRetention"), "none")) try scope.text("none") else try scope.text("short")) else try @import("native_ai_openai_request.zig").cacheRetention(scope, options);
     try scope.put(owner, "retention", retention);
@@ -141,6 +148,16 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     if (rejected) {
         const stage: Stage = @enumFromInt(raw);
         const mode = try getMode(&scope, try scope.get(owner, "agent"));
+        if (stage == .websocket_ready or stage == .websocket_sent or stage == .websocket_next or stage == .websocket_chunk) {
+            const reason = if (stage == .websocket_chunk) try codex_errors.construct(&scope, try scope.get(try codexState(&scope, owner), "errors"), .callback, value, c.pi_js_undefined()) else value;
+            websocketRejected(&scope, owner, reason, stage) catch |err| try failError(&scope, owner, err);
+            return;
+        }
+        if (mode == .codex and stage == .chunk) {
+            const reason = try codex_errors.construct(&scope, try scope.get(try codexState(&scope, owner), "errors"), .callback, value, c.pi_js_undefined());
+            fail(&scope, owner, reason) catch |err| try flow.rejectError(engine, owner, err);
+            return;
+        }
         if (mode == .codex and (stage == .ready or stage == .response or (stage == .next and scope.truthy(try v.optional(&scope, owner, "httpError"))))) {
             handleCodexRejection(&scope, owner, value, stage) catch |err| try failError(&scope, owner, err);
             return;
@@ -152,7 +169,18 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
         } else fail(&scope, owner, value) catch |err| try flow.rejectError(engine, owner, err);
         return;
     }
-    advance(&scope, owner, value, @enumFromInt(raw)) catch |err| try failError(&scope, owner, err);
+    advance(&scope, owner, value, @enumFromInt(raw)) catch |err| {
+        const stage: Stage = @enumFromInt(raw);
+        if (stage == .websocket_ready or stage == .websocket_sent or stage == .websocket_next or stage == .websocket_chunk) {
+            const reason = flow.reason(engine, err);
+            defer engine.freeValue(reason);
+            if (engine.captured_exception) |captured| {
+                engine.captured_exception = null;
+                engine.freeValue(captured);
+            }
+            websocketRejected(&scope, owner, reason, stage) catch |failure| try failError(&scope, owner, failure);
+        } else try failError(&scope, owner, err);
+    };
 }
 fn aborted(scope: *Scope, owner: c.JSValue) !bool {
     return scope.truthy(try v.optional(scope, try v.optional(scope, try scope.get(owner, "options"), "signal"), "aborted"));
@@ -329,15 +357,229 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
     try scope.put(owner, "iterator", try scope.get(transport, "events"));
     try wait(scope, owner, try scope.get(transport, "ready"), .ready);
 }
+fn codexState(scope: *Scope, owner: c.JSValue) !c.JSValue {
+    return scope.get(try scope.get(owner, "agent"), "codexState");
+}
+fn beginCodex(scope: *Scope, owner: c.JSValue) !void {
+    const options = try scope.get(owner, "options");
+    const state = try codexState(scope, owner);
+    const supplied = try v.optional(scope, options, "transport");
+    const configured = if (scope.truthy(supplied)) supplied else try scope.text("auto");
+    const session = if (try v.eq(scope, try scope.get(owner, "retention"), "none")) c.pi_js_undefined() else try v.optional(scope, options, "sessionId");
+    try scope.put(owner, "codexSession", session);
+    try scope.put(owner, "codexTransport", configured);
+    const model = try scope.get(owner, "model");
+    const clamped = try request.cacheKey(scope, session);
+    const request_id = if (scope.truthy(clamped)) clamped else try scope.call(try scope.get(state, "uuid"), c.pi_js_undefined(), &.{});
+    try scope.put(owner, "codexHeaders", try codex_protocol.headers(scope, try scope.get(model, "headers"), try v.optional(scope, options, "headers"), try scope.get(owner, "accountId"), try scope.get(owner, "apiKey"), try userAgent(scope, try scope.get(owner, "agent")), clamped, false));
+    try scope.put(owner, "codexWebsocketHeaders", try codex_protocol.headers(scope, try scope.get(model, "headers"), try v.optional(scope, options, "headers"), try scope.get(owner, "accountId"), try scope.get(owner, "apiKey"), try userAgent(scope, try scope.get(owner, "agent")), request_id, true));
+    try scope.put(owner, "codexBodyJson", try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")}));
+    try scope.put(owner, "codexConnectTimeout", try codex_http.timeout(scope, try v.optional(scope, options, "websocketConnectTimeoutMs")));
+    try scope.put(owner, "codexIdleTimeout", try codex_http.timeout(scope, try v.optional(scope, options, "timeoutMs")));
+    inline for (.{ "startEmitted", "websocketLimitRetried", "websocketContinuationRetried" }) |key| try scope.put(owner, key, c.pi_js_bool(scope.engine.context, 0));
+    if (try v.eq(scope, configured, "sse")) return openCodex(scope, owner);
+    if (try codex_protocol.fallbackActive(scope, state, session)) {
+        try codex_protocol.recordFallback(scope, state, session);
+        return openCodex(scope, owner);
+    }
+    try websocketTryOpen(scope, owner);
+}
+fn websocketTryOpen(scope: *Scope, owner: c.JSValue) !void {
+    try scope.put(owner, "websocketStarted", c.pi_js_bool(scope.engine.context, 0));
+    try scope.put(owner, "websocketEntry", c.pi_js_undefined());
+    try scope.put(owner, "websocketConnection", c.pi_js_undefined());
+    const generation = scope.engine.native_allocation_generation;
+    websocketOpen(scope, owner) catch |err| {
+        if (scope.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return err;
+        const reason = try scope.own(flow.reason(scope.engine, err));
+        if (scope.engine.captured_exception) |captured| {
+            scope.engine.captured_exception = null;
+            scope.engine.freeValue(captured);
+        }
+        return websocketRejected(scope, owner, reason, .websocket_ready);
+    };
+}
+fn websocketOpen(scope: *Scope, owner: c.JSValue) !void {
+    const engine = scope.engine;
+    const options = try scope.get(owner, "options");
+    const model = try scope.get(owner, "model");
+    const session = try scope.get(owner, "codexSession");
+    const headers = try scope.get(owner, "codexWebsocketHeaders");
+    const address = try engine.toString(try codex_protocol.url(scope, try scope.get(model, "baseUrl"), true));
+    defer engine.gpa.free(address);
+    var fields: std.ArrayList(std.http.Header) = .empty;
+    defer {
+        for (fields.items) |field| {
+            engine.gpa.free(field.name);
+            engine.gpa.free(field.value);
+        }
+        fields.deinit(engine.gpa);
+    }
+    var entries = try v.iterator(scope, try scope.invoke(headers, "entries", &.{}));
+    defer entries.deinit();
+    errdefer entries.closePreserving();
+    while (try entries.next()) |entry| {
+        defer engine.freeValue(entry);
+        const name = try engine.toString(try v.at(scope, entry, 0));
+        errdefer engine.gpa.free(name);
+        const value = try engine.toString(try v.at(scope, entry, 1));
+        errdefer engine.gpa.free(value);
+        try fields.append(engine.gpa, .{ .name = name, .value = value });
+    }
+    var milliseconds: i64 = 15000;
+    const configured = try scope.get(owner, "codexConnectTimeout");
+    if (!c.JS_IsUndefined(configured) and c.JS_ToInt64(engine.context, &milliseconds, configured) < 0) return v.js.capture(engine);
+    try scope.put(owner, "websocketStarted", c.pi_js_bool(engine.context, 0));
+    try scope.put(owner, "websocketEntry", c.pi_js_undefined());
+    const connection = try scope.own(try @import("native_ai_codex_socket.zig").acquire(engine, .{ .url = address, .headers = fields.items, .connect_timeout_ms = @intCast(@max(0, milliseconds)) }, session, try scope.get(owner, "accountId"), try v.optional(scope, options, "signal"), try scope.get(owner, "codexIdleTimeout")));
+    try scope.put(owner, "websocketConnection", connection);
+    try wait(scope, owner, try scope.get(connection, "ready"), .websocket_ready);
+}
+fn websocketReady(scope: *Scope, owner: c.JSValue) !void {
+    const connection = try scope.get(owner, "websocketConnection");
+    const options = try scope.get(owner, "options");
+    const supplied = try v.optional(scope, options, "transport");
+    const use_cached = try v.eq(scope, supplied, "websocket-cached") or try v.eq(scope, supplied, "auto");
+    const entry = if (scope.truthy(try scope.get(connection, "cached"))) try scope.get(connection, "meta") else c.pi_js_undefined();
+    try scope.put(owner, "websocketEntry", entry);
+    try scope.put(owner, "websocketUseCached", c.pi_js_bool(scope.engine.context, @intFromBool(use_cached)));
+    const body = try codex_protocol.request(scope, entry, try scope.get(owner, "payload"), use_cached);
+    const stats = try codex_protocol.stats(scope, try codexState(scope, owner), try scope.get(owner, "codexSession"));
+    if (!v.nullish(stats)) {
+        try codex_protocol.increment(scope, stats, "requests");
+        try codex_protocol.increment(scope, stats, if (scope.truthy(try scope.get(connection, "reused"))) "connectionsReused" else "connectionsCreated");
+        if (use_cached) try codex_protocol.increment(scope, stats, "cachedContextRequests");
+        if (scope.equal(try scope.get(body, "store"), c.pi_js_bool(scope.engine.context, 1))) try codex_protocol.increment(scope, stats, "storeTrueRequests");
+        const input = try scope.get(body, "input");
+        const length = try v.optional(scope, input, "length");
+        const count = if (v.nullish(length)) c.JS_NewInt32(scope.engine.context, 0) else length;
+        try scope.put(stats, "lastInputItems", count);
+        const previous = try scope.get(body, "previous_response_id");
+        if (scope.truthy(previous)) {
+            try codex_protocol.increment(scope, stats, "deltaRequests");
+            try scope.put(stats, "lastDeltaInputItems", count);
+            try scope.put(stats, "lastPreviousResponseId", previous);
+        } else {
+            try codex_protocol.increment(scope, stats, "fullContextRequests");
+            try scope.put(stats, "lastDeltaInputItems", c.pi_js_undefined());
+            try scope.put(stats, "lastPreviousResponseId", c.pi_js_undefined());
+        }
+    }
+    const frame = try scope.object();
+    try scope.put(frame, "type", try scope.text("response.create"));
+    try v.js.spreadInto(scope.engine, frame, body);
+    try wait(scope, owner, try scope.invoke(connection, "send", &.{try scope.invoke(try scope.global("JSON"), "stringify", &.{frame})}), .websocket_sent);
+}
+fn websocketNext(scope: *Scope, owner: c.JSValue) !void {
+    try wait(scope, owner, try scope.invoke(try scope.get(try scope.get(owner, "websocketConnection"), "events"), "next", &.{}), .websocket_next);
+}
+fn websocketValue(scope: *Scope, owner: c.JSValue, value: c.JSValue) !void {
+    if (scope.truthy(try scope.get(value, "done"))) return v.errorText(scope, try scope.text("WebSocket stream closed before response.completed"));
+    const data = try scope.get(value, "value");
+    const generation = scope.engine.native_allocation_generation;
+    const event = websocketJSON(scope, data) catch |err| {
+        if (scope.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return err;
+        const cause = try scope.own(flow.reason(scope.engine, err));
+        if (scope.engine.captured_exception) |captured| {
+            scope.engine.captured_exception = null;
+            scope.engine.freeValue(captured);
+        }
+        const options = try scope.object();
+        try scope.put(options, "cause", cause);
+        try scope.put(options, "payload", data);
+        return codex_errors.raise(scope, try codex_errors.construct(scope, try scope.get(try codexState(scope, owner), "errors"), .protocol, try scope.concat(try scope.text("Invalid Codex WebSocket JSON: "), try codex_errors.thrownText(scope, cause)), options));
+    };
+    try scope.put(owner, "chunk", event);
+    try wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", event), .websocket_chunk);
+}
+fn websocketJSON(scope: *Scope, data: c.JSValue) !c.JSValue {
+    const value = try decodeJSON(scope, data);
+    // parseWebSocket inspects the parsed type before enqueueing, so null and
+    // throwing type getters are protocol errors before provider callbacks.
+    _ = try scope.get(value, "type");
+    return value;
+}
+fn websocketChunk(scope: *Scope, owner: c.JSValue) !void {
+    const source = try scope.get(owner, "chunk");
+    const event = try mapCodex(scope, owner, source);
+    const typ = try scope.get(event, "type");
+    if (!c.JS_IsString(typ) or !scope.truthy(typ)) return websocketNext(scope, owner);
+    if (!scope.truthy(try scope.get(owner, "startEmitted"))) {
+        try scope.put(owner, "startEmitted", c.pi_js_bool(scope.engine.context, 1));
+        _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
+    }
+    try scope.put(owner, "websocketStarted", c.pi_js_bool(scope.engine.context, 1));
+    _ = try scope.invoke(try scope.get(owner, "decoder"), "push", &.{event});
+    if (!scope.truthy(try v.optional(scope, owner, "codexTerminal"))) return websocketNext(scope, owner);
+    const entry = try scope.get(owner, "websocketEntry");
+    const output = try scope.get(try scope.get(owner, "decoder"), "output");
+    if (!try aborted(scope, owner) and scope.truthy(try scope.get(owner, "websocketUseCached")) and !v.nullish(entry) and scope.truthy(try scope.get(output, "responseId"))) {
+        const messages = try scope.array();
+        _ = try scope.invoke(messages, "push", &.{output});
+        const context = try scope.object();
+        try scope.put(context, "messages", messages);
+        const properties = try scope.get(owner, "grammar");
+        const converted = try request.messages(scope, try scope.get(owner, "model"), context, try scope.get(owner, "compat"), properties, c.pi_js_undefined(), .codex);
+        const items = try scope.array();
+        var iterator = try v.iterator(scope, converted);
+        defer iterator.deinit();
+        errdefer iterator.closePreserving();
+        while (try iterator.next()) |item| {
+            defer scope.engine.freeValue(item);
+            const kind = try scope.get(item, "type");
+            if (!try v.eq(scope, kind, "function_call_output") and !try v.eq(scope, kind, "custom_tool_call_output")) _ = try scope.invoke(items, "push", &.{item});
+        }
+        const continuation = try scope.object();
+        try scope.put(continuation, "lastRequestBody", try scope.get(owner, "payload"));
+        try scope.put(continuation, "lastResponseId", try scope.get(output, "responseId"));
+        try scope.put(continuation, "lastResponseItems", items);
+        try scope.put(entry, "continuation", continuation);
+    }
+    _ = try scope.invoke(try scope.get(owner, "websocketConnection"), "release", &.{c.pi_js_bool(scope.engine.context, @intFromBool(!try aborted(scope, owner)))});
+    _ = try scope.invoke(try scope.get(owner, "decoder"), "finish", &.{c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner)))});
+    try flow.settle(scope.engine, owner, false, c.pi_js_undefined());
+}
+fn websocketRejected(scope: *Scope, owner: c.JSValue, reason: c.JSValue, _: Stage) !void {
+    const state = try codexState(scope, owner);
+    const classes = try scope.get(state, "errors");
+    const entry = try v.optional(scope, owner, "websocketEntry");
+    if (!v.nullish(entry)) try scope.put(entry, "continuation", c.pi_js_undefined());
+    const connection = try v.optional(scope, owner, "websocketConnection");
+    if (!v.nullish(connection)) _ = try scope.invoke(connection, "release", &.{c.pi_js_bool(scope.engine.context, 0)});
+    const started = scope.truthy(try v.optional(scope, owner, "websocketStarted"));
+    const connection_limit = !started and try codex_errors.apiCode(scope, classes, reason, "websocket_connection_limit_reached");
+    if (!try aborted(scope, owner)) {
+        if (try codex_errors.apiCode(scope, classes, reason, "previous_response_not_found") and !scope.truthy(try scope.get(owner, "websocketContinuationRetried"))) {
+            try scope.put(owner, "websocketContinuationRetried", c.pi_js_bool(scope.engine.context, 1));
+            return websocketTryOpen(scope, owner);
+        }
+        if (connection_limit and !scope.truthy(try scope.get(owner, "websocketLimitRetried"))) {
+            try scope.put(owner, "websocketLimitRetried", c.pi_js_bool(scope.engine.context, 1));
+            return websocketTryOpen(scope, owner);
+        }
+    }
+    if (try aborted(scope, owner) or (try codex_errors.nonTransport(scope, classes, reason) and !connection_limit)) return fail(scope, owner, reason);
+    const details = try scope.object();
+    try scope.put(details, "configuredTransport", try scope.get(owner, "codexTransport"));
+    if (!started) try scope.put(details, "fallbackTransport", try scope.text("sse"));
+    try scope.put(details, "eventsEmitted", c.pi_js_bool(scope.engine.context, @intFromBool(started)));
+    try scope.put(details, "phase", try scope.text(if (started) "after_message_stream_start" else "before_message_stream_start"));
+    const text = try scope.invoke(try scope.own(try v.js.builtin(scope.engine, "TextEncoder", &.{})), "encode", &.{try scope.get(owner, "codexBodyJson")});
+    try scope.put(details, "requestBytes", try scope.get(text, "byteLength"));
+    try codex_protocol.diagnostic(scope, try scope.get(try scope.get(owner, "decoder"), "output"), reason, details);
+    try codex_protocol.recordFailure(scope, state, try scope.get(owner, "codexSession"), reason);
+    if (started) return fail(scope, owner, reason);
+    try codex_protocol.recordFallback(scope, state, try scope.get(owner, "codexSession"));
+    try openCodex(scope, owner);
+}
 fn prepareCodex(scope: *Scope, owner: c.JSValue) !void {
     if (scope.truthy(try v.optional(scope, owner, "codexPrepared"))) return;
     const engine = scope.engine;
     const options = try scope.get(owner, "options");
-    const headers = try buildHeaders(scope, owner);
-    const payload = try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")});
+    const headers = try scope.get(owner, "codexHeaders");
+    const payload = try scope.get(owner, "codexBodyJson");
     // These validations precede compression and the retry loop in Source.
-    const timeout = try codex_http.timeout(scope, try v.optional(scope, options, "timeoutMs"));
-    _ = try codex_http.timeout(scope, try v.optional(scope, options, "websocketConnectTimeoutMs"));
+    const timeout = try scope.get(owner, "codexIdleTimeout");
     const text = try engine.toString(payload);
     defer engine.gpa.free(text);
     const encoded = try @import("../ai/openai_responses.zig").encodeZstdRequestBody(engine.gpa, text);
@@ -362,10 +604,7 @@ fn openCodex(scope: *Scope, owner: c.JSValue) !void {
         return fail(scope, owner, if (scope.truthy(last)) last else try scope.own(try v.js.builtin(engine, "Error", &.{try scope.text("Failed after retries")})));
     }
     if (try aborted(scope, owner)) return fail(scope, owner, try codex_http.abortReason(scope));
-    var base = try scope.get(try scope.get(owner, "model"), "baseUrl");
-    if (!scope.truthy(base) or try v.length(scope, try scope.invoke(base, "trim", &.{})) == 0) base = try scope.text("https://chatgpt.com/backend-api");
-    const trimmed = if (scope.truthy(try scope.invoke(base, "endsWith", &.{try scope.text("/")}))) try scope.invoke(base, "slice", &.{ c.JS_NewInt32(engine.context, 0), c.JS_NewInt32(engine.context, -1) }) else base;
-    const url = if (scope.truthy(try scope.invoke(trimmed, "endsWith", &.{try scope.text("/codex/responses")}))) trimmed else try scope.concat(trimmed, try scope.text(if (scope.truthy(try scope.invoke(trimmed, "endsWith", &.{try scope.text("/codex")}))) "/responses" else "/codex/responses"));
+    const url = try codex_protocol.url(scope, try scope.get(try scope.get(owner, "model"), "baseUrl"), false);
     const headers = try scope.get(owner, "codexHeaders");
     const body = try scope.get(owner, "codexBody");
     const fetch = try v.optional(scope, options, "fetch");
@@ -445,7 +684,7 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
     switch (stage) {
         .payload => {
             if (!c.JS_IsUndefined(value)) try scope.put(owner, "payload", value);
-            try open(scope, owner);
+            if (try getMode(scope, try scope.get(owner, "agent")) == .codex) try beginCodex(scope, owner) else try open(scope, owner);
         },
         .ready => {
             if (try getMode(scope, try scope.get(owner, "agent")) == .codex) try cleanupCodexAttempt(scope, owner);
@@ -462,7 +701,10 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
         },
         .response => {
             if (scope.truthy(try scope.get(owner, "httpError"))) return next(scope, owner);
-            _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
+            if (try getMode(scope, try scope.get(owner, "agent")) != .codex or !scope.truthy(try scope.get(owner, "startEmitted"))) {
+                try scope.put(owner, "startEmitted", c.pi_js_bool(scope.engine.context, 1));
+                _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
+            }
             try next(scope, owner);
         },
         .next => {
@@ -499,22 +741,39 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             try next(scope, owner);
         },
         .retried => try open(scope, owner),
+        .websocket_ready => try websocketReady(scope, owner),
+        .websocket_sent => try websocketNext(scope, owner),
+        .websocket_next => try websocketValue(scope, owner, value),
+        .websocket_chunk => try websocketChunk(scope, owner),
     }
 }
 fn mapCodex(scope: *Scope, owner: c.JSValue, event: c.JSValue) !c.JSValue {
     const typ = try scope.get(event, "type");
     if (try v.eq(scope, typ, "error")) {
-        const nested = try scope.get(event, "error");
+        const raw_nested = try scope.get(event, "error");
+        const nested = if (scope.truthy(raw_nested) and c.JS_IsObject(raw_nested) and !c.JS_IsFunction(scope.engine.context, raw_nested)) raw_nested else c.pi_js_undefined();
         var code = try scope.get(event, "code");
-        if (!c.JS_IsString(code)) code = try v.optional(scope, nested, "code");
+        if (!c.JS_IsString(code)) {
+            const value = try v.optional(scope, nested, "code");
+            code = if (c.JS_IsString(value)) value else c.pi_js_undefined();
+        }
         var message = try scope.get(event, "message");
-        if (!c.JS_IsString(message)) message = try v.optional(scope, nested, "message");
+        if (!c.JS_IsString(message)) {
+            const value = try v.optional(scope, nested, "message");
+            message = if (c.JS_IsString(value)) value else c.pi_js_undefined();
+        }
         const fallback = if (scope.truthy(message)) message else if (scope.truthy(code)) code else try scope.invoke(try scope.global("JSON"), "stringify", &.{event});
-        return v.errorText(scope, try scope.concat(try scope.text("Codex error: "), fallback));
+        const options = try scope.object();
+        try scope.put(options, "code", code);
+        try scope.put(options, "payload", event);
+        return codex_errors.raise(scope, try codex_errors.construct(scope, try scope.get(try codexState(scope, owner), "errors"), .api, try scope.concat(try scope.text("Codex error: "), fallback), options));
     }
     if (try v.eq(scope, typ, "response.failed")) {
         const message = try v.optional(scope, try v.optional(scope, try v.optional(scope, event, "response"), "error"), "message");
-        return v.errorText(scope, if (scope.truthy(message)) message else try scope.text("Codex response failed"));
+        const options = try scope.object();
+        try scope.put(options, "code", try v.optional(scope, try v.optional(scope, try v.optional(scope, event, "response"), "error"), "code"));
+        try scope.put(options, "payload", event);
+        return codex_errors.raise(scope, try codex_errors.construct(scope, try scope.get(try codexState(scope, owner), "errors"), .api, if (scope.truthy(message)) message else try scope.text("Codex response failed"), options));
     }
     if (try v.eq(scope, typ, "response.done") or try v.eq(scope, typ, "response.completed") or try v.eq(scope, typ, "response.incomplete")) {
         try scope.put(owner, "codexTerminal", c.pi_js_bool(scope.engine.context, 1));
