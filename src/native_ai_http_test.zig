@@ -6,6 +6,30 @@ const http = @import("extensions/native_ai_http.zig");
 const raw = @import("extensions/native_ai_http_worker.zig");
 const fixture = @import("ai/http_fixture.zig");
 const c = em.c;
+test "native AI HTTP opt-in byte and JSON body framing preserves exact bytes and real status text" {
+    const byte_body = "data: first\r\ndata: second\r\n\r\nunterminated\x00\xff";
+    const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, &.{ .{ .path = "/bytes", .body = byte_body, .status = .created }, .{ .path = "/json", .body = "{\"token\":\"fixture-placeholder\"}" } });
+    defer server.deinit();
+    for ([_]raw.Framing{ .bytes, .body }, [_][]const u8{ "/bytes", "/json" }) |framing, suffix| {
+        const url = try server.url(std.testing.allocator, suffix);
+        defer std.testing.allocator.free(url);
+        const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+        defer engine.deinit();
+        engine.native_io = std.testing.io;
+        const global = c.JS_GetGlobalObject(engine.context);
+        defer engine.freeValue(global);
+        try sdk.put(engine, global, "rawRequest", try http.open(engine, .{ .url = url, .payload = "{}", .headers = &.{}, .timeout_ms = 2000, .framing = framing }, c.pi_js_undefined()));
+        const checked = if (framing == .bytes) try engine.evalModule(
+            \\const head=await rawRequest.ready;if(head.status!==201||head.statusText!=='Created')throw Error('actual status text');const bytes=[];for await(const event of rawRequest.events){if(event.type!=='bytes'||!(event.data instanceof Uint8Array))throw Error('byte framing');bytes.push(...event.data)}const expected='data: first\r\ndata: second\r\n\r\nunterminated';if(bytes.length!==expected.length+2||bytes.at(-2)!==0||bytes.at(-1)!==255||bytes.slice(0,-2).some((byte,index)=>byte!==expected.charCodeAt(index)))throw Error('unmodified binary bytes including final line');export const done=true;
+        , "native-ai-http-bytes.mjs") else try engine.evalModule(
+            \\const head=await rawRequest.ready;if(head.status!==200||head.statusText!=='OK')throw Error('actual OK status');const events=[];for await(const event of rawRequest.events)events.push(event);if(events.length!==1||events[0].type!=='body'||events[0].body!=='{"token":"fixture-placeholder"}')throw Error('JSON body framing');export const done=true;
+        , "native-ai-http-json-body.mjs");
+        engine.freeValue(checked);
+        c.JS_RunGC(engine.runtime);
+        try std.testing.expect(!http.pending(engine));
+    }
+    try server.finish();
+}
 fn install(engine: *em.Engine, url: []const u8, payload: []const u8) !void {
     engine.native_io = std.testing.io;
     var scope: Scope = .{ .engine = engine };

@@ -276,7 +276,10 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
                 return next(scope, owner);
             }
             try scope.put(owner, "httpError", c.pi_js_bool(scope.engine.context, 0));
-            try wait(scope, owner, try hook(scope, owner, "onResponse", value), .response);
+            const public_response = try scope.object();
+            try scope.put(public_response, "status", status);
+            try scope.put(public_response, "headers", try scope.get(value, "headers"));
+            try wait(scope, owner, try hook(scope, owner, "onResponse", public_response), .response);
         },
         .response => {
             _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});

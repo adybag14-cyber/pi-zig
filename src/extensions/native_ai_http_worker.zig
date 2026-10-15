@@ -8,11 +8,14 @@ const a = std.heap.page_allocator;
 pub const maximum_frame_bytes = 512 * 1024;
 pub const maximum_queue_bytes = 1024 * 1024;
 pub const maximum_queue_items = 64;
+pub const Framing = enum { sse, bytes, body };
 pub const Header = struct { name: []u8, value: []u8 };
 pub const Head = struct {
     status: u16,
+    status_text: []u8,
     headers: []Header,
     fn deinit(self: Head) void {
+        a.free(self.status_text);
         for (self.headers) |header| {
             a.free(header.name);
             a.free(header.value);
@@ -31,23 +34,25 @@ pub const Frame = struct {
 pub const Event = union(enum) {
     head: Head,
     frame: Frame,
+    bytes: []u8,
+    body: []u8,
     error_body: []u8,
     pub fn deinit(self: Event) void {
         switch (self) {
             .head => |value| value.deinit(),
             .frame => |value| value.deinit(),
-            .error_body => |value| a.free(value),
+            .bytes, .body, .error_body => |value| a.free(value),
         }
     }
-    fn bytes(self: Event) usize {
+    fn storageBytes(self: Event) usize {
         return switch (self) {
             .head => |value| count: {
-                var n: usize = 0;
+                var n: usize = value.status_text.len;
                 for (value.headers) |header| n += header.name.len + header.value.len;
                 break :count n;
             },
             .frame => |value| value.data.len + if (value.event) |name| name.len else 0,
-            .error_body => |value| value.len,
+            .bytes, .body, .error_body => |value| value.len,
         };
     }
 };
@@ -57,6 +62,8 @@ pub const Input = struct {
     headers: []const std.http.Header,
     proxy_url: ?[]const u8 = null,
     timeout_ms: ?u64 = null,
+    method: std.http.Method = .POST,
+    framing: Framing = .sse,
 };
 const OwnedInput = struct {
     url: []u8,
@@ -64,6 +71,8 @@ const OwnedInput = struct {
     headers: []std.http.Header,
     proxy_url: ?[]u8,
     timeout_ms: ?u64,
+    method: std.http.Method,
+    framing: Framing,
     fn copy(input: Input) !OwnedInput {
         const url = try a.dupe(u8, input.url);
         errdefer a.free(url);
@@ -84,7 +93,7 @@ const OwnedInput = struct {
             destination.* = .{ .name = name, .value = try a.dupe(u8, source.value) };
             count += 1;
         }
-        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms };
+        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms, .method = input.method, .framing = input.framing };
     }
     fn deinit(self: OwnedInput) void {
         a.free(self.url);
@@ -159,7 +168,7 @@ pub const Worker = struct {
         self.queue[self.queue_head] = null;
         self.queue_head = (self.queue_head + 1) % maximum_queue_items;
         self.queue_count -= 1;
-        self.queued_bytes -= value.bytes();
+        self.queued_bytes -= value.storageBytes();
         self.changed.broadcast(self.io);
         return value;
     }
@@ -170,7 +179,7 @@ pub const Worker = struct {
     }
     fn push(self: *Worker, value: Event) !void {
         errdefer value.deinit();
-        const bytes = value.bytes();
+        const bytes = value.storageBytes();
         if (bytes > maximum_queue_bytes) return error.NativeHttpEventLimit;
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
@@ -201,7 +210,8 @@ pub const Worker = struct {
         var client: std.http.Client = .{ .allocator = a, .io = self.io };
         defer client.deinit();
         _ = try proxy.configureClient(&client, arena.allocator(), self.input.url, .{ .setting = self.input.proxy_url });
-        _ = try fetch.fetchControlledObserved(&client, .{ .location = .{ .url = self.input.url }, .method = .POST, .payload = self.input.payload, .extra_headers = self.input.headers, .keep_alive = false, .response_writer = &self.writer }, self.input.timeout_ms, &self.abort_flag, .{ .context = self, .callback = observeHead });
+        const payload: ?[]const u8 = if ((self.input.method == .GET or self.input.method == .HEAD) and self.input.payload.len == 0) null else self.input.payload;
+        _ = try fetch.fetchControlledObserved(&client, .{ .location = .{ .url = self.input.url }, .method = self.input.method, .payload = payload, .extra_headers = self.input.headers, .keep_alive = false, .response_writer = &self.writer }, self.input.timeout_ms, &self.abort_flag, .{ .context = self, .callback = observeHead });
         if (self.writer.end != 0) {
             try self.feed(self.writer.buffer[0..self.writer.end]);
             self.writer.end = 0;
@@ -209,6 +219,9 @@ pub const Worker = struct {
         if (self.status < 200 or self.status >= 300) {
             const body = try self.error_body.toOwnedSlice(a);
             try self.push(.{ .error_body = body });
+        } else if (self.input.framing == .body) {
+            const body = try self.error_body.toOwnedSlice(a);
+            try self.push(.{ .body = body });
         }
         // SSE dispatches only complete events separated by an empty line.
         // A trailing incomplete line/event is retained solely for teardown.
@@ -232,8 +245,14 @@ pub const Worker = struct {
             errdefer a.free(value);
             try headers.append(a, .{ .name = name, .value = value });
         }
+        const status_text = try a.dupe(u8, head.reason);
+        var transferred = false;
+        errdefer if (!transferred) a.free(status_text);
         const owned = try headers.toOwnedSlice(a);
-        try self.push(.{ .head = .{ .status = self.status, .headers = owned } });
+        // push takes complete ownership even when cancellation/backpressure
+        // fails; do not run a second cleanup for its status/header buffers.
+        transferred = true;
+        try self.push(.{ .head = .{ .status = self.status, .status_text = status_text, .headers = owned } });
     }
     fn drain(writer: *std.Io.Writer, input: []const []const u8, splat: usize) std.Io.Writer.Error!usize {
         const self: *Worker = @fieldParentPtr("writer", writer);
@@ -263,9 +282,13 @@ pub const Worker = struct {
     }
     fn feed(self: *Worker, bytes: []const u8) !void {
         if (@atomicLoad(bool, &self.abort_flag, .acquire)) return error.NativeHttpAborted;
-        if (self.status < 200 or self.status >= 300) {
+        if (self.status < 200 or self.status >= 300 or self.input.framing == .body) {
             if (bytes.len > maximum_frame_bytes - self.error_body.items.len) return error.NativeHttpErrorBodyLimit;
             return self.error_body.appendSlice(a, bytes);
+        }
+        if (self.input.framing == .bytes) {
+            if (bytes.len == 0) return;
+            return self.push(.{ .bytes = try a.dupe(u8, bytes) });
         }
         for (bytes) |byte| {
             if (byte == '\n' and self.previous_cr) {

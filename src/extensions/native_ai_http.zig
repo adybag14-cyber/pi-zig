@@ -155,6 +155,7 @@ fn headValue(scope: *Scope, head: raw.Head) !c.JSValue {
     const value = try scope.object();
     const headers = try scope.object();
     try scope.put(value, "status", c.JS_NewInt32(scope.engine.context, head.status));
+    try scope.put(value, "statusText", try scope.text(head.status_text));
     for (head.headers) |entry| {
         var row: Scope = .{ .engine = scope.engine };
         defer row.deinit();
@@ -181,6 +182,17 @@ fn frameValue(scope: *Scope, event: raw.Event) !c.JSValue {
         .error_body => |body| {
             try scope.put(value, "type", try scope.text("error_body"));
             try scope.put(value, "body", try scope.text(body));
+        },
+        .body => |body| {
+            try scope.put(value, "type", try scope.text("body"));
+            try scope.put(value, "body", try scope.text(body));
+        },
+        .bytes => |bytes| {
+            try scope.put(value, "type", try scope.text("bytes"));
+            const buffer = try scope.own(try scope.engine.checked(c.JS_NewArrayBufferCopy(scope.engine.context, bytes.ptr, bytes.len)));
+            var args = [_]c.JSValue{buffer};
+            const view = try scope.own(try scope.engine.checked(c.JS_NewTypedArray(scope.engine.context, args.len, &args, c.JS_TYPED_ARRAY_UINT8)));
+            try scope.put(value, "data", view);
         },
         else => unreachable,
     }
