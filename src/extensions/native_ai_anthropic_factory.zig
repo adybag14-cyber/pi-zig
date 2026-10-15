@@ -164,6 +164,7 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     if (rejected) {
+        if (@as(Stage, @enumFromInt(raw)) == .rejected_body and !try nativeAllocationReason(engine, owner, value)) return failureBody(&scope, owner, try scope.text("")) catch |err| failError(&scope, owner, err);
         if (@as(Stage, @enumFromInt(raw)) == .ready) {
             const recovered = fallback(&scope, owner, value) catch |err| return failError(&scope, owner, err);
             if (recovered) return;
@@ -227,8 +228,8 @@ fn retireNativeAllocation(engine: *v.em.Engine, owner: c.JSValue, reason: c.JSVa
 }
 fn release(scope: *Scope, owner: c.JSValue) !void {
     const reader = try scope.get(owner, "reader");
-    if (!v.nullish(reader)) _ = try scope.invoke(reader, "releaseLock", &.{});
     try scope.set(owner, "reader", c.pi_js_undefined());
+    if (!v.nullish(reader)) _ = try scope.invoke(reader, "releaseLock", &.{});
 }
 fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     if (try nativeAllocationReason(scope.engine, owner, reason)) return retireNativeAllocation(scope.engine, owner, reason);
@@ -500,7 +501,11 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
         .ready => {
             try scope.put(owner, "response", value);
             const status = try scope.get(value, "status");
-            if (try @import("native_image_arithmetic.zig").compare(scope.engine, .greater_equal, status, c.JS_NewInt32(scope.engine.context, 400))) {
+            // The default SDK checks fetch Response.ok before exposing its
+            // asResponse result. A caller-supplied SDK client's asResponse
+            // result is already the public boundary and receives no second
+            // SDK status interpretation here.
+            if (!scope.truthy(try scope.get(owner, "usesSdkClient")) and v.nullish(try scope.get(owner, "http")) and !scope.truthy(try scope.get(value, "ok"))) {
                 if (scope.equal(status, c.JS_NewInt32(scope.engine.context, 401))) try invalidateFederation(scope, owner);
                 const text_method = try scope.get(value, "text");
                 if (!v.nullish(text_method)) return wait(scope, owner, try scope.call(text_method, value, &.{}), .rejected_body);
