@@ -1,0 +1,57 @@
+{
+  "status": "source_only_unqualified",
+  "base": "4e128e2c8f33f5ef7aa299475adfe4b1e8e84f2b",
+  "upstream": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "source_model_runtime_sha256": "BA6DB976A8947167CB867EDED70DFA96475182A3723CE2C7C9A88DB5AFEAB756",
+  "source_abort_sha256": "F3A3265A2FB2B577BF32334AE8849C1F3DD1AC1487B81D7BC2D5007897FB5790",
+  "ordinary_fields": 17,
+  "prototype_methods": 57,
+  "constructor_length": 6,
+  "static_create_owned_by": "sdk_boundaries_15",
+  "source_capture_launched": false,
+  "expected_output_exists": false,
+  "native_semantic_compile_launched": false,
+  "native_runtime_launched": false,
+  "default_sdk_route_changed": false,
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "files": [
+    {
+      "path": "src/extensions/native_sdk_model_runtime_production.zig",
+      "sha256": "77A6EC9D08DFCCA7763B332B03AE0CFB87E24DC84C4CDB881B828A8145F8FBDF"
+    },
+    {
+      "path": "src/native_sdk_model_runtime_production_test.zig",
+      "sha256": "129F7C68DD6A90925BB644974D37B3B16EE4BA6296C2324B855928F5195DC454"
+    },
+    {
+      "path": "src/extensions/fixtures/model-runtime-ordinary-4954.input.mjs",
+      "sha256": "026DA24546ED81373D0DA9794B2E7568BA631F98D5D917575B539986DA58F995"
+    },
+    {
+      "path": "verification/model-runtime-ordinary-4954-20261015/source-model-runtime-ordinary-capture.mjs",
+      "sha256": "07F29B137E7903353AD8FF7BA519912B854599B0C70DB240752CFE28760C4FE6"
+    },
+    {
+      "path": "verification/model-runtime-ordinary-4954-20261015/README.md",
+      "sha256": "DBA77F4A93B183F86F8F103510EFEB40CEED7F72C990723E307CB15675271E38"
+    }
+  ],
+  "gaps": [
+    "Genuine observed Source class/abort caller capture on sealed latest4954 cohort",
+    "Native semantic compilation and runtime/allocation gates",
+    "ActualModels42/core prototype and all required AI helper namespace assembly",
+    "ProviderComposer/config-value namespace integration and native qualification",
+    "VirtualModels namespace native qualification",
+    "ModelConfig/schema +AuthStorage/backend +ModelsStore +RuntimeCredentials actual assembly",
+    "Root shared SDK/Engine routing must replace Kind.model_runtime/seedBuiltins after qualification"
+  ],
+  "peer_checkpoints": {
+    "runtime_credentials_product": "5d577f61186cd93b2919c2fecfbeec03b366b483",
+    "runtime_credentials_source_proof": "ef2e5ecba942e70508d6e8b546d3db812b60bf4b",
+    "provider_composer": "059c4224b6f8ac9de1763a0bc09cf2991e4be45f",
+    "virtual_models": "53c68a60afe0669af849b3b7ff36be3390dedd25",
+    "models_namespace_private_source": "3e46e0af"
+  },
+  "recorded_utc": "2026-10-15T23:51:03.7000618+01:00"
+}
