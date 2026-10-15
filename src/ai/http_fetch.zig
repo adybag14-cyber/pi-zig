@@ -30,10 +30,6 @@ pub fn fetchObserved(client: *std.http.Client, options: std.http.Client.FetchOpt
             standard_headers.user_agent = .omit;
             break;
         };
-        if (standard_headers.user_agent == .default) for (options.privileged_headers) |header| if (std.ascii.eqlIgnoreCase(header.name, "user-agent")) {
-            standard_headers.user_agent = .omit;
-            break;
-        };
     }
     var req = try client.request(method, uri, .{
         .redirect_behavior = redirect_behavior,
@@ -91,20 +87,20 @@ pub fn fetchObserved(client: *std.http.Client, options: std.http.Client.FetchOpt
 
     return .{ .status = status, .provider = provider };
 }
-test "native AI HTTP explicit user agent suppresses duplicate implicit standard user agent" {
+test "native AI HTTP explicit mixed-case and empty user agents suppress duplicate implicit standard user agent" {
     const fixture = @import("http_fixture.zig");
     const gpa = std.testing.allocator;
-    const header: std.http.Header = .{ .name = "UsEr-AgEnT", .value = "fixture-native-runtime" };
-    const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{ .{ .path = "/extra", .body = "ok", .expected_request_headers = &.{header} }, .{ .path = "/privileged", .body = "ok", .expected_request_headers = &.{header} } });
+    const headers = [_]std.http.Header{ .{ .name = "UsEr-AgEnT", .value = "fixture-native-runtime" }, .{ .name = "user-agent", .value = "" } };
+    const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{ .{ .path = "/extra", .body = "ok", .expected_request_headers = headers[0..1] }, .{ .path = "/empty-agent", .body = "ok", .expected_request_headers = headers[1..2] } });
     defer server.deinit();
     var client: std.http.Client = .{ .allocator = gpa, .io = std.testing.io };
     defer client.deinit();
-    for ([_][]const u8{ "/extra", "/privileged" }, 0..) |path, index| {
+    for ([_][]const u8{ "/extra", "/empty-agent" }, 0..) |path, index| {
         const url = try server.url(gpa, path);
         defer gpa.free(url);
         var output: std.Io.Writer.Allocating = .init(gpa);
         defer output.deinit();
-        const response = try fetchControlledObserved(&client, .{ .location = .{ .url = url }, .extra_headers = if (index == 0) &.{header} else &.{}, .privileged_headers = if (index == 1) &.{header} else &.{}, .response_writer = &output.writer }, 2000, null, null);
+        const response = try fetchControlledObserved(&client, .{ .location = .{ .url = url }, .extra_headers = headers[index .. index + 1], .response_writer = &output.writer }, 2000, null, null);
         try std.testing.expectEqual(@as(u16, 200), response.status);
         try std.testing.expectEqualStrings("ok", output.written());
     }
