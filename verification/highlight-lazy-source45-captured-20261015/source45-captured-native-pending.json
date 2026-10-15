@@ -1,0 +1,14 @@
+{
+  "node_tools_drift": 0,
+  "native_compiled": false,
+  "caller_head": "fed244fe58017fa539f999d1abb661875c5b0bd1",
+  "lazy_index_complete": false,
+  "source_cases": 45,
+  "source_captured": true,
+  "source_output_sha256": "9524c71853823d375265b0ce14c8916c45dec3990d5f1e920447fdc7a0a33059",
+  "full_pi_qualified": false,
+  "control_drift": 0,
+  "dependencies_drift": 0,
+  "native_runtime_qualified": false,
+  "source_drift": 0
+}

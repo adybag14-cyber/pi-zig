@@ -1,0 +1,9 @@
+{
+  "node_launched": false,
+  "status": "prelaunch_owner_rejected_missing_caller",
+  "original_bad_owner_path": "C:/Users/adyba/pi-zig-highlight-lazy-batch2-20261015",
+  "caller_sha256": "A6D1AAB4FE38431200239C26AE7FF70268891E6C9E0A6CFB4ED43206328F4363",
+  "caller_head": "fed244fe58017fa539f999d1abb661875c5b0bd1",
+  "corrected_caller": "C:/Users/adyba/pi-zig-highlight-lazy-batch1-20261015",
+  "corrected_owner_sha256": "40E8AA13870EE8F97706692E5ED90F4DC0FC77DB07630ECA2604473003E3A69E"
+}
