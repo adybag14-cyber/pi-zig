@@ -1,5 +1,6 @@
 const fs=fileRevisionFs, path=fileRevisionPath, root=fileRevisionRoot, revision=fileRevision;
 const rows=[], rawRows=[];
+globalThis.fileRevisionSourceObservations={rows,rawRows};
 function row(name,value){if(value!==true)throw Error('getFileRevision control failed: '+name);rows.push({name,value});}
 function raw(name,file){const result=revision(file);const stats=fs.statSync(file,{bigint:true});const fields=[stats.dev,stats.ino,stats.size,stats.mtimeNs,stats.ctimeNs].map(String);if(result!==fields.join(':'))throw Error('Actual five kernel fields mismatch: '+name);rawRows.push({name,path:typeof file==='string'?file:String(file),revision:result,fields});return fields;}
 const left=path.join(root,'left'), right=path.join(root,'right');fs.mkdirSync(left);fs.mkdirSync(right);
@@ -35,7 +36,11 @@ const timed=raw('controlled-submillisecond-time',entry);
 row('same-size-mutation-keeps-identity',timed[0]===initial[0]&&timed[1]===initial[1]&&timed[2]==='12');
 row('mtime-not-millisecond-rounded',BigInt(timed[3])%1000000n!==0n);
 row('mtime-beyond-number-integer-precision',BigInt(timed[3])>9007199254740991n);
-row('mtime-decimal-preserves-integer-precision',BigInt(Number(timed[3]))!==BigInt(timed[3]));
+// utimesSync accepts Number seconds, so its stored mtime may itself be exactly
+// Number-representable. Observe both genuine fields without assuming a
+// particular floating-point rounding artifact from the mutation API.
+rows.push({name:'mtime-number-rounding-observation',value:BigInt(Number(timed[3]))!==BigInt(timed[3])});
+rows.push({name:'ctime-number-rounding-observation',value:BigInt(Number(timed[4]))!==BigInt(timed[4])});
 const beforeReplace=revision(entry), replacement=path.join(root,'replacement'), retained=path.join(root,'retained-original');
 fs.writeFileSync(replacement,'equal-length');fs.renameSync(entry,retained);fs.renameSync(replacement,entry);
 const replaced=raw('replacement',entry), other=raw('cross-directory-same-basename',same);
