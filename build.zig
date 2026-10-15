@@ -512,9 +512,14 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_wheel_settings_tests.step);
     const latest_catalog_tests = b.addTest(.{ .root_module = test_mod, .use_llvm = use_llvm, .filters = &.{ "ai.bedrock", "ai.catalog", "ai.providers" } });
     const run_latest_catalog_tests = b.addRunArtifact(latest_catalog_tests);
-    const latest_catalog_step = b.step("test-latest-catalog", "Exercise reviewed Pi 1.1 model catalog and Bedrock contracts");
+    const latest_catalog_step = b.step("test-latest-catalog", "Exercise reviewed current model catalog and Bedrock contracts");
     latest_catalog_step.dependOn(&run_latest_catalog_tests.step);
     test_step.dependOn(&run_latest_catalog_tests.step);
+    const latest_catalog_data_module = b.createModule(.{ .root_source_file = b.path("src/latest_catalog_data_test.zig"), .target = target, .optimize = optimize });
+    latest_catalog_data_module.addImport("catalog_tool", catalog_tool);
+    const latest_catalog_data_tests = b.addTest(.{ .root_module = latest_catalog_data_module, .use_llvm = use_llvm, .filters = &.{ "latest pinned Pi 5ab", "catalog contains only real provider entries", "generated catalog preserves exact upstream identity cardinality", "native catalog projection preserves all existing model metadata", "every provider default resolves to its public catalog identity" } });
+    b.step("build-latest-catalog-data", "Compile focused current catalog data regressions").dependOn(&latest_catalog_data_tests.step);
+    b.step("test-latest-catalog-data", "Verify complete current catalog provenance metadata projection and native lookup without application runtime compilation").dependOn(&b.addRunArtifact(latest_catalog_data_tests).step);
     const program_status_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/program_status_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,

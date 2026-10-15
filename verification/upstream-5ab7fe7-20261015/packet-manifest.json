@@ -1,118 +1,350 @@
 [
   {
-    "sha256": "B3D4E278CD1E772BB0BB5CCC830A0CC322CFED3E7F604A0DE12C70AD9A28BCCA",
-    "relative": "authority.json"
+    "relative": "authority.json",
+    "sha256": "B3D4E278CD1E772BB0BB5CCC830A0CC322CFED3E7F604A0DE12C70AD9A28BCCA"
   },
   {
-    "sha256": "DE5984AAEC18432A57DBCC0DE75B9DADE16BF4A18B39CBF18BBE691A5BF150AC",
-    "relative": "catalog5ab-capture-fetch-20261015.mjs"
+    "relative": "catalog5ab-capture-fetch-20261015.mjs",
+    "sha256": "DE5984AAEC18432A57DBCC0DE75B9DADE16BF4A18B39CBF18BBE691A5BF150AC"
   },
   {
-    "sha256": "7AC8151A7A4F3C8EB920094621DAF71E12DBF4983088AA93CE02A91533BB650B",
-    "relative": "catalog5ab-data-delta-20261015.json"
+    "relative": "catalog5ab-data-delta-20261015.json",
+    "sha256": "7AC8151A7A4F3C8EB920094621DAF71E12DBF4983088AA93CE02A91533BB650B"
   },
   {
-    "sha256": "1478A537D24E6BF09603779E0BE6DC39A830603046BEBB25BE2D1327D66A86DD",
-    "relative": "catalog5ab-official-generator-first-20261015-admission.json"
+    "relative": "catalog5ab-native-debugcompile-first-20261015-admission.json",
+    "sha256": "61E6FCB140E85DDDAC3E44C937D561E8AEDC329C5005E42FE87AB253846D57D6"
   },
   {
-    "sha256": "6D3ABA79307114720123B6AEF930D08938D85766C53D16F319B6430F89887140",
-    "relative": "catalog5ab-official-generator-first-20261015-artifacts.json"
+    "relative": "catalog5ab-native-debugcompile-first-20261015-controls-before.json",
+    "sha256": "C9BD3A3F76CA6C768B02B438C1F4D8441B35CF3B3B696E28D11A030901715AE8"
   },
   {
-    "sha256": "4F86510C526BD1350DDA344BF4146CF516179FA2F4982B686BF247AE7352343C",
-    "relative": "catalog5ab-official-generator-first-20261015-controls-before.json"
+    "relative": "catalog5ab-native-debugcompile-first-20261015-posthash.json",
+    "sha256": "D0CF7BB3B2E526476C9080213ECE604F17C029A728D5460F851CB81FE03FB47E"
   },
   {
-    "sha256": "1D91307117D9D30959DCAEF4612ED36910087CD4F6357D3886DD1635F4208C26",
-    "relative": "catalog5ab-official-generator-first-20261015-posthash.json"
+    "relative": "catalog5ab-native-debugcompile-first-20261015-source-before.json",
+    "sha256": "E84FEA5584566C41B40E50283415ACE0DDCF3EB95E9416AB42AF96014B9A7052"
   },
   {
-    "sha256": "1E7002AE874BC7BB6D3A6947E7A24120F6A4EBBD4B6F8E91E21E2CA52F41192C",
-    "relative": "catalog5ab-official-generator-first-20261015.json"
+    "relative": "catalog5ab-native-debugcompile-first-20261015.json",
+    "sha256": "5DAF1FB716CA74F2681DFAEA8D0020A9BFC70A5295072470ACF5C0B210EFFA93"
   },
   {
-    "sha256": "FAF7E5A5F34E16EC6DD276B00969B91CBC63DD247797FBCC8D76C264F919063D",
-    "relative": "catalog5ab-official-generator-first-20261015.stdout.log"
+    "relative": "catalog5ab-native-debugcompile-first-20261015.stderr.log",
+    "sha256": "C05EC4619A7DCAD5CDE4677F6122CEE54040A9AA0B868121CB6E7E928916C16E"
   },
   {
-    "sha256": "4334227667568186DF17628973E890A2582A44C4EF67F16621704387AE73C8C9",
-    "relative": "models.all.json"
+    "relative": "catalog5ab-native-debugcompile-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
   },
   {
-    "sha256": "47AB537DEDE017B4573A1ACE782B0EECFB1B9C88D20CDFC5CC715ED559DA34CF",
-    "relative": "Prepare-Source5abHydration-20261015.ps1"
+    "relative": "catalog5ab-native-debugruntime-first-20261015-admission.json",
+    "sha256": "2C2BFDEA1324386F267E26B6F3330644E701E84C17C0CD3BC40121F9E6662ECC"
   },
   {
-    "sha256": "4CDDBA1713784E42EA68A545981967F38A47453A3B81D14389F48EEE6E18C37D",
-    "relative": "Run-Catalog5abSource-20261015.ps1"
+    "relative": "catalog5ab-native-debugruntime-first-20261015-controls-before.json",
+    "sha256": "2729E364DC14309F6CEDB489FA3820736A8A9501D2BC5DAEFAB8213A4DA9E4EF"
   },
   {
-    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352",
-    "relative": "source5ab-dependency-contract-audit-20261015.json"
+    "relative": "catalog5ab-native-debugruntime-first-20261015-posthash.json",
+    "sha256": "B690706755C958ADD2FB6D8BCBB65171106782B3CD3BB05EA86DAAA8C42A80C5"
   },
   {
-    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE",
-    "relative": "source5ab-full-manifest-20261015.json"
+    "relative": "catalog5ab-native-debugruntime-first-20261015.json",
+    "sha256": "93A440A9E53FD77A75FBB67F738F325F318F6CF16A30D5919D92A17A1C33A5E5"
   },
   {
-    "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017",
-    "relative": "source5ab-observe-20261015.mjs"
+    "relative": "catalog5ab-native-debugruntime-first-20261015.stderr.log",
+    "sha256": "A03565FCA1A671CF7D5637204D51C489A193E65DAC03F22FA2FEF76AAA0D5789"
   },
   {
-    "sha256": "B738DE82AFA1973D18DED7A09812F9731FA968D838133A6BF96E4C80C579DC4F",
-    "relative": "source5ab-official-fresh-hydration-first-20261015-admission.json"
+    "relative": "catalog5ab-native-debugruntime-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
   },
   {
-    "sha256": "2C428BA5E467E6278717579C52619BFB87D2A7705849A7859618979203EB54DD",
-    "relative": "source5ab-official-fresh-hydration-first-20261015-controls-before.json"
+    "relative": "catalog5ab-native-import-first-20261015-admission.json",
+    "sha256": "1DE1F2154D8B85C05E7DED78403CBF9C24A9888E67737F695BED392D618671E4"
   },
   {
-    "sha256": "BC37DC8DBEE706851978C0ED73057A0BB948488E26879F76F6F41692C69E3F78",
-    "relative": "source5ab-official-fresh-hydration-first-20261015-posthash.json"
+    "relative": "catalog5ab-native-import-first-20261015-check.json",
+    "sha256": "8F6C9C4E0D635F29C24832A503D8BDEBA8DC3E09B430451DFB97DDB16EFB6964"
   },
   {
-    "sha256": "93F69B6595B3C9F4109CE6F65A5E4507DAD8F5E03900CD9D1CF406ABC10807EF",
-    "relative": "source5ab-official-fresh-hydration-first-20261015.json"
+    "relative": "catalog5ab-native-import-first-20261015-check.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
   },
   {
-    "sha256": "F3756F8C2C0D3D65710801D71389C433CA3AF4194A9A82DB68311B5C7E909798",
-    "relative": "source5ab-preparation-20261015.json"
+    "relative": "catalog5ab-native-import-first-20261015-check.stdout.log",
+    "sha256": "DD3434121FEC61D1CD97658495A9D7693B21C62B4D036ADD87E5A3FA19D239E0"
   },
   {
-    "sha256": "918B6DA7DB999FB97B4179A3B41AD0914B4C9A18020E4430AE45DF32BCC8ABA8",
-    "relative": "upstream-b06-to-5ab7fe7-20261015-commits.txt"
+    "relative": "catalog5ab-native-import-first-20261015-controls-before.json",
+    "sha256": "C9BD3A3F76CA6C768B02B438C1F4D8441B35CF3B3B696E28D11A030901715AE8"
   },
   {
-    "sha256": "9F8EBF6CAA44E1D2457ADC616628ECE7A868841A0B80E11AE1418154CE4A4044",
-    "relative": "network/01.json"
+    "relative": "catalog5ab-native-import-first-20261015-generate.json",
+    "sha256": "768684A9E266ADFF8E14BD77A38782A2E31A6730570B7DA0994C3998DA69CAEF"
   },
   {
-    "sha256": "9AB4C092ABD271BD64B27D4CFEBF6D86752B7DCA1F38A9723D43812021900CA3",
-    "relative": "network/02.json"
+    "relative": "catalog5ab-native-import-first-20261015-generate.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
   },
   {
-    "sha256": "D85F1780F03E373140D7EA0FD3DED753F03DC3854A6EE319DD7EE89B8DB557C0",
-    "relative": "network/03.json"
+    "relative": "catalog5ab-native-import-first-20261015-generate.stdout.log",
+    "sha256": "1B579D0CCDC260E0ABEFA0415BE3A53E60CF8DA9C3116E542F49BC347BF0F346"
   },
   {
-    "sha256": "11F19B8B701695A8E38655F8C73775E51A4EC0CEB253929E9D7522327CE70F65",
-    "relative": "network/04.json"
+    "relative": "catalog5ab-native-import-first-20261015-import.json",
+    "sha256": "0CEF9D1957272DC31DF08EDB59600BEA6075E09D617324205B57C32B96BE498D"
   },
   {
-    "sha256": "A8290A7244BC43B856209E64C7C548AD6C8200750EEA21EAC3024EFF5D5BD032",
-    "relative": "network/05.json"
+    "relative": "catalog5ab-native-import-first-20261015-import.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
   },
   {
-    "sha256": "DCF0DE420F3442C99DE6FE2E020E7025C3B44290FC2540D72F664299569C835E",
-    "relative": "network/06.json"
+    "relative": "catalog5ab-native-import-first-20261015-import.stdout.log",
+    "sha256": "3D7386B3D9285F26A81399ACA6E45A226900EF52126DDD4BD9DCB3D497FC60B0"
   },
   {
-    "sha256": "0E3AA4192D2B4B72DDF8183B5FD7D6AB57794922CA12C48F1EFDEFBBE276D687",
-    "relative": "network/07.json"
+    "relative": "catalog5ab-native-import-first-20261015-posthash.json",
+    "sha256": "1AFB6A7DDBE9C30E62C04727E235EB7ABC359917BAC28670BCB5643B91D9100F"
   },
   {
-    "sha256": "38FC0C4FC6494D26BB7293E5DBB9C4178B328B24D4BD48F981C01A4565E0A0C5",
-    "relative": "network/08.json"
+    "relative": "catalog5ab-native-releasesafecompile-first-20261015-admission.json",
+    "sha256": "DAC7A38D865307F3A7BA3DEBE82F51B28E633D41D153F89C1B7EB124952B2BC9"
+  },
+  {
+    "relative": "catalog5ab-native-releasesafecompile-first-20261015-controls-before.json",
+    "sha256": "2729E364DC14309F6CEDB489FA3820736A8A9501D2BC5DAEFAB8213A4DA9E4EF"
+  },
+  {
+    "relative": "catalog5ab-native-releasesafecompile-first-20261015-posthash.json",
+    "sha256": "C1319B3162420193ABC104B325F02939D8A4ED54CD0970C4FA7D1BC792E34C62"
+  },
+  {
+    "relative": "catalog5ab-native-releasesafecompile-first-20261015.json",
+    "sha256": "DE8EBC4240463D29A8F5EFC62BF4A14BE206D320F5EAE0A3051D954FE9CAE219"
+  },
+  {
+    "relative": "catalog5ab-native-releasesafecompile-first-20261015.stderr.log",
+    "sha256": "555EF6255D159524AF74A9031AAAFFAE14C5C6C089575AEFC41C662236A1556C"
+  },
+  {
+    "relative": "catalog5ab-native-releasesafecompile-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "relative": "catalog5ab-native-releasesaferuntime-first-20261015-admission.json",
+    "sha256": "2F7B0A8DCCFBDA6AF1ED0CC7F5186BE77B7DD1442E98041DA365C7921E9A5946"
+  },
+  {
+    "relative": "catalog5ab-native-releasesaferuntime-first-20261015-controls-before.json",
+    "sha256": "C9BD3A3F76CA6C768B02B438C1F4D8441B35CF3B3B696E28D11A030901715AE8"
+  },
+  {
+    "relative": "catalog5ab-native-releasesaferuntime-first-20261015-posthash.json",
+    "sha256": "B5E8BCBE8996E8A9AFEC9DACB47F37425A81D3E8B15059F204B30F728200DF22"
+  },
+  {
+    "relative": "catalog5ab-native-releasesaferuntime-first-20261015.json",
+    "sha256": "30FCD558BFBE091100FC4D9BD0C9C26A92AB3B37E7A7403C8E155B40232D108C"
+  },
+  {
+    "relative": "catalog5ab-native-releasesaferuntime-first-20261015.stderr.log",
+    "sha256": "71E4EC39359BBA14AED08EAEF4E213FC06AEE3DD823205F97E294EA511B011D2"
+  },
+  {
+    "relative": "catalog5ab-native-releasesaferuntime-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "relative": "catalog5ab-official-generator-first-20261015-admission.json",
+    "sha256": "1478A537D24E6BF09603779E0BE6DC39A830603046BEBB25BE2D1327D66A86DD"
+  },
+  {
+    "relative": "catalog5ab-official-generator-first-20261015-artifacts.json",
+    "sha256": "6D3ABA79307114720123B6AEF930D08938D85766C53D16F319B6430F89887140"
+  },
+  {
+    "relative": "catalog5ab-official-generator-first-20261015-controls-before.json",
+    "sha256": "4F86510C526BD1350DDA344BF4146CF516179FA2F4982B686BF247AE7352343C"
+  },
+  {
+    "relative": "catalog5ab-official-generator-first-20261015-posthash.json",
+    "sha256": "1D91307117D9D30959DCAEF4612ED36910087CD4F6357D3886DD1635F4208C26"
+  },
+  {
+    "relative": "catalog5ab-official-generator-first-20261015.json",
+    "sha256": "1E7002AE874BC7BB6D3A6947E7A24120F6A4EBBD4B6F8E91E21E2CA52F41192C"
+  },
+  {
+    "relative": "catalog5ab-official-generator-first-20261015.stdout.log",
+    "sha256": "FAF7E5A5F34E16EC6DD276B00969B91CBC63DD247797FBCC8D76C264F919063D"
+  },
+  {
+    "relative": "catalog5ab-replay-fetch-20261015.mjs",
+    "sha256": "8AD660AA0BA8244FFA5A70DB800C59E3477917AD692909DE82DF34D0EEAE03AA"
+  },
+  {
+    "relative": "catalog5ab-source-publishvalidate-first-20261015-admission.json",
+    "sha256": "DBA07FE879751B70B33AC64D50241F1132508C5E6F471269F4647DB1FC5FD2D9"
+  },
+  {
+    "relative": "catalog5ab-source-publishvalidate-first-20261015-controls-before.json",
+    "sha256": "AE9129D977C1EEF4EE7C0668C44C1AE23EFA0CC46B3340484E7053E6A32503D5"
+  },
+  {
+    "relative": "catalog5ab-source-publishvalidate-first-20261015-posthash.json",
+    "sha256": "9F206EAA0E2CF488623069362496B8DF7C4D828B75AC94CCFA2DA0D4417F0E26"
+  },
+  {
+    "relative": "catalog5ab-source-publishvalidate-first-20261015.json",
+    "sha256": "34158DD49C64DDE983197FE87C4503480B6FAD00870E03D14EC6A817169FECC1"
+  },
+  {
+    "relative": "catalog5ab-source-publishvalidate-first-20261015.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "relative": "catalog5ab-source-publishvalidate-first-20261015.stdout.log",
+    "sha256": "0E2B9518BDB19DC0756037F47985172886ED8ED70CDCA16E7F3B40D693429F62"
+  },
+  {
+    "relative": "catalog5ab-source-replay-corrected-artifact-equivalence-20261015.json",
+    "sha256": "093D986984ECC4C3516F59EB26C9678BECF1916456451E3B904187EE0B73B4DF"
+  },
+  {
+    "relative": "catalog5ab-source-replay-first-20261015-admission.json",
+    "sha256": "F34B4A98B3E9ACBD6EC37D0254612614AE1FD116BAF7B069CB844C46D3B1EE03"
+  },
+  {
+    "relative": "catalog5ab-source-replay-first-20261015-controls-before.json",
+    "sha256": "05B14144F39B84BF2F2D2FA824F865081F1509A72483F985B5473CA6CC282EF6"
+  },
+  {
+    "relative": "catalog5ab-source-replay-first-20261015-equivalence.json",
+    "sha256": "94648E61F0077088C09F541AA2F4131D285FD894F7A299989B9150D16FE56A54"
+  },
+  {
+    "relative": "catalog5ab-source-replay-first-20261015-posthash.json",
+    "sha256": "B7F1A68313E40E4EE8EE5F020B397936063070F2317F68B442A1B4AE9E577201"
+  },
+  {
+    "relative": "catalog5ab-source-replay-first-20261015.json",
+    "sha256": "85B1746A5449523FBD200A7839F001460F7BAAE94493C654B8D35BDC649FAC31"
+  },
+  {
+    "relative": "catalog5ab-source-replay-first-20261015.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "relative": "catalog5ab-source-replay-first-20261015.stdout.log",
+    "sha256": "235BB26FEDA3551A7A81B9628FA537F0CA07632BAF1A251128AB1251565D8576"
+  },
+  {
+    "relative": "models.all.json",
+    "sha256": "4334227667568186DF17628973E890A2582A44C4EF67F16621704387AE73C8C9"
+  },
+  {
+    "relative": "network/01.json",
+    "sha256": "9F8EBF6CAA44E1D2457ADC616628ECE7A868841A0B80E11AE1418154CE4A4044"
+  },
+  {
+    "relative": "network/02.json",
+    "sha256": "9AB4C092ABD271BD64B27D4CFEBF6D86752B7DCA1F38A9723D43812021900CA3"
+  },
+  {
+    "relative": "network/03.json",
+    "sha256": "D85F1780F03E373140D7EA0FD3DED753F03DC3854A6EE319DD7EE89B8DB557C0"
+  },
+  {
+    "relative": "network/04.json",
+    "sha256": "11F19B8B701695A8E38655F8C73775E51A4EC0CEB253929E9D7522327CE70F65"
+  },
+  {
+    "relative": "network/05.json",
+    "sha256": "A8290A7244BC43B856209E64C7C548AD6C8200750EEA21EAC3024EFF5D5BD032"
+  },
+  {
+    "relative": "network/06.json",
+    "sha256": "DCF0DE420F3442C99DE6FE2E020E7025C3B44290FC2540D72F664299569C835E"
+  },
+  {
+    "relative": "network/07.json",
+    "sha256": "0E3AA4192D2B4B72DDF8183B5FD7D6AB57794922CA12C48F1EFDEFBBE276D687"
+  },
+  {
+    "relative": "network/08.json",
+    "sha256": "38FC0C4FC6494D26BB7293E5DBB9C4178B328B24D4BD48F981C01A4565E0A0C5"
+  },
+  {
+    "relative": "Prepare-Source5abHydration-20261015.ps1",
+    "sha256": "47AB537DEDE017B4573A1ACE782B0EECFB1B9C88D20CDFC5CC715ED559DA34CF"
+  },
+  {
+    "relative": "publication.json",
+    "sha256": "CAF8B48D67B19B542E34547ED0E0546D3BAD7206565A527024096DA25AFE41B1"
+  },
+  {
+    "relative": "qualification.json",
+    "sha256": "7DF1B41FED9D5FA2801B621924B3A0A14698263F85C805A2BC8C7A0A80A70E11"
+  },
+  {
+    "relative": "qualified-implementation-inputs.json",
+    "sha256": "D041B57AE22BEB5CC18B44487C04013E1D683FA4444B9E5B9849D3216D789076"
+  },
+  {
+    "relative": "Run-Catalog5abNative-20261015.ps1",
+    "sha256": "768310A2A736C41D93C96C98FF5E41A41F2474399C34E47AC902843EE26D7A08"
+  },
+  {
+    "relative": "Run-Catalog5abSource-20261015.ps1",
+    "sha256": "4CDDBA1713784E42EA68A545981967F38A47453A3B81D14389F48EEE6E18C37D"
+  },
+  {
+    "relative": "Run-Catalog5abSourceVerify-20261015.ps1",
+    "sha256": "8763C6BC52185D49665120BE97B3414653D9C121001DE60053121D3CEB8BEC13"
+  },
+  {
+    "relative": "source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352"
+  },
+  {
+    "relative": "source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE"
+  },
+  {
+    "relative": "source5ab-observe-20261015.mjs",
+    "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017"
+  },
+  {
+    "relative": "source5ab-official-fresh-hydration-first-20261015-admission.json",
+    "sha256": "B738DE82AFA1973D18DED7A09812F9731FA968D838133A6BF96E4C80C579DC4F"
+  },
+  {
+    "relative": "source5ab-official-fresh-hydration-first-20261015-controls-before.json",
+    "sha256": "2C428BA5E467E6278717579C52619BFB87D2A7705849A7859618979203EB54DD"
+  },
+  {
+    "relative": "source5ab-official-fresh-hydration-first-20261015-posthash.json",
+    "sha256": "BC37DC8DBEE706851978C0ED73057A0BB948488E26879F76F6F41692C69E3F78"
+  },
+  {
+    "relative": "source5ab-official-fresh-hydration-first-20261015.json",
+    "sha256": "93F69B6595B3C9F4109CE6F65A5E4507DAD8F5E03900CD9D1CF406ABC10807EF"
+  },
+  {
+    "relative": "source5ab-preparation-20261015.json",
+    "sha256": "F3756F8C2C0D3D65710801D71389C433CA3AF4194A9A82DB68311B5C7E909798"
+  },
+  {
+    "relative": "upstream-b06-to-5ab7fe7-20261015-commits.txt",
+    "sha256": "918B6DA7DB999FB97B4179A3B41AD0914B4C9A18020E4430AE45DF32BCC8ABA8"
+  },
+  {
+    "relative": "Verify-Catalog5abReplayArtifacts-20261015.ps1",
+    "sha256": "1223B38D37A2D0BCEFA778BB8033BBEC88448131BCEF168DE777A7E6CA808D89"
   }
 ]

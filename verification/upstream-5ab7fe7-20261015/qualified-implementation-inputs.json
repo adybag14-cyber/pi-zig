@@ -1,0 +1,30 @@
+[
+  {
+    "relative": "build.zig",
+    "sha256": "059C746188F4E65E293FB075D9A4ABE8705B744E29456A6584647CEE5B4E517D"
+  },
+  {
+    "relative": "tools/catalog.zig",
+    "sha256": "81AA67B5526B81AF1991B3C84ADE5634E58465E75D8936C8DFBA02AA78646EE5"
+  },
+  {
+    "relative": "tools/maintenance.zig",
+    "sha256": "C04B6A8BCB719721D658742DD8122BA91B8592DB250758D2A523F32513B85EF9"
+  },
+  {
+    "relative": "src/ai/catalog.zig",
+    "sha256": "529AD3757D5EE9F10AEA9451F03E7894191B14F0690CF74ACD22DB319EBB8A55"
+  },
+  {
+    "relative": "src/ai/catalog_source.json",
+    "sha256": "13DD31371C203312A8A70FE0698C5D7848032D0340B53548A4C310C51868F0D4"
+  },
+  {
+    "relative": "src/ai/catalog_generated.zig",
+    "sha256": "F1507073F9E83C490AA5E519174C5F56E8433DDC3530F6C19B2320FEF7F5C8CD"
+  },
+  {
+    "relative": "src/latest_catalog_data_test.zig",
+    "sha256": "D29974342FE5976D2EDCF75C7D9F0C462C15F2FB623E9901CBB7E55D5175F4A9"
+  }
+]

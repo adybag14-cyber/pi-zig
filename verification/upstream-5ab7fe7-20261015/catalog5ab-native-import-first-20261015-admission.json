@@ -1,0 +1,10 @@
+{
+  "phase": "Import",
+  "test_timeout_seconds": 120,
+  "jobs": 1,
+  "observed_utc": "2026-10-15T16:38:57.8824614+00:00",
+  "required_kib": 16777216,
+  "max_coordinated_jobs": 4,
+  "status": "admitted",
+  "free_kib": 24203748
+}
