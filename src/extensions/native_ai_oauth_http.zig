@@ -24,20 +24,9 @@ pub fn request(engine: *v.em.Engine, url: c.JSValue, init: c.JSValue) !c.JSValue
     return requestWithFetch(engine, try captureFetch(&scope), url, init);
 }
 pub fn requestWithFetch(engine: *v.em.Engine, fetch: c.JSValue, url: c.JSValue, init: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    const result = scope.call(fetch, c.pi_js_undefined(), &.{ url, init }) catch |err| {
-        try flow.rejectError(engine, pending.owner, err);
-        return pending.promise;
-    };
-    try flow.wait(forward, engine, pending.owner, result, 0);
-    return pending.promise;
-}
-fn forward(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
-    return flow.settle(engine, owner, rejected, value);
+    // The provider's native await performs PromiseResolve. Do not wrap a
+    // caller-supplied Promise in an extra reaction or defer a synchronous throw.
+    return v.js.call(engine, fetch, c.pi_js_undefined(), &.{ url, init });
 }
 pub fn requestJson(engine: *v.em.Engine, url: c.JSValue, init: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
@@ -50,7 +39,11 @@ pub fn requestJsonWithFetch(engine: *v.em.Engine, fetch: c.JSValue, url: c.JSVal
     const pending = try flow.create(engine, c.pi_js_undefined());
     defer engine.freeValue(pending.owner);
     errdefer engine.freeValue(pending.promise);
-    try flow.wait(jsonReady, engine, pending.owner, try scope.own(try requestWithFetch(engine, fetch, url, init)), 0);
+    const result = scope.call(fetch, c.pi_js_undefined(), &.{ url, init }) catch |err| {
+        try flow.rejectError(engine, pending.owner, err);
+        return pending.promise;
+    };
+    try flow.wait(jsonReady, engine, pending.owner, result, 0);
     return pending.promise;
 }
 fn jsonResult(scope: *Scope, owner: c.JSValue, json: c.JSValue) !void {
