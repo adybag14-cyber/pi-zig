@@ -123,6 +123,24 @@ test "native immediates preserve callback throw identity outstanding batch and s
     try std.testing.expect(immediates.pending(engine));
     c.JS_RunGC(engine.runtime);
 }
+test "native immediates real delayed poll callback follows completed check phase before its due timer" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    var poll: Poll = undefined;
+    try install(engine, &poll);
+    defer poll.deinit();
+    const expected = @embedFile("extensions/fixtures/immediates-poll-stall-node24.json");
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try js.define(engine, global, "pollStallSource", try engine.checked(c.JS_ParseJSON(engine.context, expected.ptr, expected.len, "immediates-poll-stall-node24.json")));
+    const value = engine.evalModule(@embedFile("extensions/fixtures/immediates-poll-stall-node24.input.txt") ++
+        "\nif(pollStallSource.nodeVersion!=='v24.14.0'||pollStallSource.realLoopbackPolls!==1||pollStallSource.count!==1||JSON.stringify(immediateRows)!==JSON.stringify(pollStallSource.rows))throw Error(JSON.stringify({actual:immediateRows,expected:pollStallSource.rows}));", "native-immediate-poll-stall-node24.mjs") catch |err| {
+        std.debug.print("Delayed poll phase: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(value);
+    try std.testing.expectEqual(@as(usize, 1), poll.real_reads);
+}
 test "native immediates actual direct stdio loop respects unref-only exit and referenced liveness" {
     const engine = try em.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
