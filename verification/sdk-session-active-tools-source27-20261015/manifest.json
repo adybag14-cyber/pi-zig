@@ -1,0 +1,136 @@
+[
+  {
+    "original_sha256": "E76546A357B8FDFC5D4BEFE93319D357784F6E3A5AA32E9C87DD143F477E4446",
+    "sha256": "E76546A357B8FDFC5D4BEFE93319D357784F6E3A5AA32E9C87DD143F477E4446",
+    "original_name": "sdk-session-active-tools-5ab-source27-first-20261015.json",
+    "path": "sdk-session-active-tools-5ab-source27-first-20261015.json"
+  },
+  {
+    "original_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "original_name": "sdk-session-active-tools-5ab-source27-first-20261015.stdout.log",
+    "path": "sdk-session-active-tools-5ab-source27-first-20261015.stdout.log.gz"
+  },
+  {
+    "original_sha256": "2B365E0CE93F5CBCE7C08A5FC839A73F12F5F370F8B45880572B160503C6EAFC",
+    "sha256": "C12CCBF501DEBEF524ED354E6441CA77514629C68D0FF3B6495FC28B9CFF7D83",
+    "original_name": "sdk-session-active-tools-5ab-source27-first-20261015.stderr.log",
+    "path": "sdk-session-active-tools-5ab-source27-first-20261015.stderr.log.gz"
+  },
+  {
+    "original_sha256": "B3F0D8A737A3EBA41A835C0921A3F649AE3185C521CF67CB93D675EF59E6576D",
+    "sha256": "B3F0D8A737A3EBA41A835C0921A3F649AE3185C521CF67CB93D675EF59E6576D",
+    "original_name": "sdk-session-active-tools-5ab-source27-first-20261015-posthash.json",
+    "path": "sdk-session-active-tools-5ab-source27-first-20261015-posthash.json"
+  },
+  {
+    "original_sha256": "A466C9A2E0A4F3D10CED0D77F4395D5EDBBC4297759470CEEBC0567B0AF9164B",
+    "sha256": "A466C9A2E0A4F3D10CED0D77F4395D5EDBBC4297759470CEEBC0567B0AF9164B",
+    "original_name": "sdk-session-active-tools-compile-qualified-debug-first-20261015.json",
+    "path": "sdk-session-active-tools-compile-qualified-debug-first-20261015.json"
+  },
+  {
+    "original_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "original_name": "sdk-session-active-tools-compile-qualified-debug-first-20261015.stdout.log",
+    "path": "sdk-session-active-tools-compile-qualified-debug-first-20261015.stdout.log.gz"
+  },
+  {
+    "original_sha256": "79944D19DC344E59068182CD130B2CAA8DB2F99B06DC64FFD0866F1A145AD902",
+    "sha256": "0A6637D1D4BEFCB2FE9C7F635C66D2C68D9E40D41E0998FF3FB7AEFE3576A616",
+    "original_name": "sdk-session-active-tools-compile-qualified-debug-first-20261015.stderr.log",
+    "path": "sdk-session-active-tools-compile-qualified-debug-first-20261015.stderr.log.gz"
+  },
+  {
+    "original_sha256": "D59D6003B9B1B0CBF92186D23EFB4FE7B162AC0166955F2172C8CD30BAE0CE47",
+    "sha256": "D59D6003B9B1B0CBF92186D23EFB4FE7B162AC0166955F2172C8CD30BAE0CE47",
+    "original_name": "sdk-session-active-tools-compile-qualified-debug-first-20261015-posthash.json",
+    "path": "sdk-session-active-tools-compile-qualified-debug-first-20261015-posthash.json"
+  },
+  {
+    "original_sha256": "DD6AB71B444104E02922C2557603A6A7F00C919E4FCD07E000311E7660BF787B",
+    "sha256": "DD6AB71B444104E02922C2557603A6A7F00C919E4FCD07E000311E7660BF787B",
+    "original_name": "sdk-session-active-tools-compile-qualified-debug-first-20261015-reference-controls-posthash.json",
+    "path": "sdk-session-active-tools-compile-qualified-debug-first-20261015-reference-controls-posthash.json"
+  },
+  {
+    "original_sha256": "609DAEC5AE42001C2E6765B950DFFD91EA77A675C9B3159622A3EE81DBD0CEC3",
+    "sha256": "609DAEC5AE42001C2E6765B950DFFD91EA77A675C9B3159622A3EE81DBD0CEC3",
+    "original_name": "sdk-session-active-tools-compile-qualified-debug-first-20261015-admission.json",
+    "path": "sdk-session-active-tools-compile-qualified-debug-first-20261015-admission.json"
+  },
+  {
+    "original_sha256": "DB65C4D213031A5DCA74D14F0FCC9DCD781B703D1A35EA5DBA6F91D97B285D95",
+    "sha256": "E3371B7DA4310621AB4022095D0355FB009044F539C05DF20A156CCBE6900D89",
+    "original_name": "sdk-session-active-tools-compile-qualified-debug-first-20261015-source-before.json",
+    "path": "sdk-session-active-tools-compile-qualified-debug-first-20261015-source-before.json.gz"
+  },
+  {
+    "original_sha256": "63ABFA5830499A8C3789DAA9A39AD4B54F90D1984EBFD40ABAE6ED7507233E40",
+    "sha256": "63ABFA5830499A8C3789DAA9A39AD4B54F90D1984EBFD40ABAE6ED7507233E40",
+    "original_name": "sdk-session-active-tools-compile-qualified-debug-first-20261015-controls-before.json",
+    "path": "sdk-session-active-tools-compile-qualified-debug-first-20261015-controls-before.json"
+  },
+  {
+    "original_sha256": "DFC15C34B5A44C54204052D0CF9554E7C6A8CAC33E271BE795EF67555B33C07C",
+    "sha256": "DFC15C34B5A44C54204052D0CF9554E7C6A8CAC33E271BE795EF67555B33C07C",
+    "original_name": "sdk-session-active-tools-runtime-qualified-debug-first-20261015.json",
+    "path": "sdk-session-active-tools-runtime-qualified-debug-first-20261015.json"
+  },
+  {
+    "original_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "original_name": "sdk-session-active-tools-runtime-qualified-debug-first-20261015.stdout.log",
+    "path": "sdk-session-active-tools-runtime-qualified-debug-first-20261015.stdout.log.gz"
+  },
+  {
+    "original_sha256": "31DF43994D557DE9688CBB7A06249298DAE16BF222F2EA83FB00AD23632B8CE3",
+    "sha256": "B3AEBD231AC27AB8B93DC3377172E3C4463E0C763434AD53C43981E5C5CAA5C5",
+    "original_name": "sdk-session-active-tools-runtime-qualified-debug-first-20261015.stderr.log",
+    "path": "sdk-session-active-tools-runtime-qualified-debug-first-20261015.stderr.log.gz"
+  },
+  {
+    "original_sha256": "1A326AD05A8DD86B4EF8F5D2BBB7CE1C88D4640CD760EB1EE51FFD0BC3F96E56",
+    "sha256": "1A326AD05A8DD86B4EF8F5D2BBB7CE1C88D4640CD760EB1EE51FFD0BC3F96E56",
+    "original_name": "sdk-session-active-tools-runtime-qualified-debug-first-20261015-posthash.json",
+    "path": "sdk-session-active-tools-runtime-qualified-debug-first-20261015-posthash.json"
+  },
+  {
+    "original_sha256": "569B05AB11340D9B34529568ACCCDF1805B36E1625FD55DDE87DDC779C554931",
+    "sha256": "569B05AB11340D9B34529568ACCCDF1805B36E1625FD55DDE87DDC779C554931",
+    "original_name": "sdk-session-active-tools-runtime-qualified-debug-first-20261015-reference-controls-posthash.json",
+    "path": "sdk-session-active-tools-runtime-qualified-debug-first-20261015-reference-controls-posthash.json"
+  },
+  {
+    "original_sha256": "629E8D0CABCB391605F09EE73A173AF8348E524DD35BF6B3CA36C3259D5B4C00",
+    "sha256": "629E8D0CABCB391605F09EE73A173AF8348E524DD35BF6B3CA36C3259D5B4C00",
+    "original_name": "sdk-session-active-tools-runtime-qualified-debug-first-20261015-admission.json",
+    "path": "sdk-session-active-tools-runtime-qualified-debug-first-20261015-admission.json"
+  },
+  {
+    "original_sha256": "DB65C4D213031A5DCA74D14F0FCC9DCD781B703D1A35EA5DBA6F91D97B285D95",
+    "sha256": "E3371B7DA4310621AB4022095D0355FB009044F539C05DF20A156CCBE6900D89",
+    "original_name": "sdk-session-active-tools-runtime-qualified-debug-first-20261015-source-before.json",
+    "path": "sdk-session-active-tools-runtime-qualified-debug-first-20261015-source-before.json.gz"
+  },
+  {
+    "original_sha256": "EA3FCE8F23B556A59E3A6BC070B0333C13E98BEB93441B697164B65F161DA229",
+    "sha256": "EA3FCE8F23B556A59E3A6BC070B0333C13E98BEB93441B697164B65F161DA229",
+    "original_name": "sdk-session-active-tools-runtime-qualified-debug-first-20261015-controls-before.json",
+    "path": "sdk-session-active-tools-runtime-qualified-debug-first-20261015-controls-before.json"
+  },
+  {
+    "original_sha256": "AC53E2B77B1AA26B607A71ACA25FFCBF760A0DFEF903AC6FC9AB3A2A546BD8AB",
+    "sha256": "AC53E2B77B1AA26B607A71ACA25FFCBF760A0DFEF903AC6FC9AB3A2A546BD8AB",
+    "original_name": "sdk-session-active-tools-debug-universe-validator-20261015.json",
+    "path": "sdk-session-active-tools-debug-universe-validator-20261015.json"
+  },
+  {
+    "path": "qualification.json",
+    "sha256": "8C38F7D9F403EC4BF991E9ED62316EB4A1565CE8B74668B7FA3EE4BBF80D5EF5"
+  },
+  {
+    "path": "README.md",
+    "sha256": "4FAF4BA649253DC92E6F7508639A1449CA829801F4A8F34A1BCF2D42D7382CA6"
+  }
+]

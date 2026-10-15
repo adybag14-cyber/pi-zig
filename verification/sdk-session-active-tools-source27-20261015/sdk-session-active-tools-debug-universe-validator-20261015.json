@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "allocation_total": 642,
+  "complete_per_index": 642,
+  "range": [
+    0,
+    642
+  ],
+  "candidate": 5608,
+  "native_tools": 19546,
+  "references": 34805,
+  "controls_per_phase": 9,
+  "historical_absences": 84,
+  "complete_candidate_pair_drift": 0,
+  "validated_utc": "2026-10-15T19:09:05.6060949+00:00"
+}

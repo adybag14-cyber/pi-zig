@@ -1,0 +1,16 @@
+{
+  "name": "sdk-session-active-tools-5ab-source27-first-20261015",
+  "pid": 65344,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source5ab-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-session-active-tools-5ab-source-capture-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-session-active-tools-5ab-source27-first-20261015-output.json C:\\Users\\adyba\\pi-zig-sdk-active-tools-20261015\\src\\extensions\\fixtures\\sdk-session-active-tools-5ab.input.txt",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T18:18:23.9565558Z",
+  "launched_utc": "2026-10-15T18:18:23.9533160+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:\\Users\\adyba\\pi-upstream-source-5ab7fe7-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T18:19:01.8838716+00:00"
+}

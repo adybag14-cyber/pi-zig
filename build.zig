@@ -1693,6 +1693,13 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-sdk-resource-paths", "Compile real discovered skill prompt and theme path loading").dependOn(&resource_paths_tests.step);
     b.step("test-native-sdk-resource-paths", "Compare actual upstream loader path merging overrides and filesystem resources").dependOn(&b.addRunArtifact(resource_paths_tests).step);
 
+    const active_tools_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_active_tools_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary active tool selection"}, .use_llvm = use_llvm });
+    linkQuickJs(b, active_tools_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(active_tools_tests.root_module, sqlite_lib_dir, sqlite_library);
+    active_tools_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-session-active-tools", "Compile ordinary active tool selection over registry and loadout dependencies").dependOn(&active_tools_tests.step);
+    b.step("test-native-sdk-session-active-tools", "Compare actual upstream pending tool clearing and real loadout composition").dependOn(&b.addRunArtifact(active_tools_tests).step);
+
     const manual_compaction_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_compaction_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary compaction"}, .use_llvm = use_llvm });
     linkQuickJs(b, manual_compaction_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(manual_compaction_tests.root_module, sqlite_lib_dir, sqlite_library);
