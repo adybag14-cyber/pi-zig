@@ -1,0 +1,9 @@
+<anonymous_script>:22
+  if(!isChordError(foreign,'invalid')||foreign.reason!=='foreign_ctx'||foreign.message!=='ctx belongs to another host')throw Error('foreign context accepted or wrong error');
+                                                                                                                             ^
+
+Error: foreign context accepted or wrong error
+    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-chord-foreign-context-5ab7fe7-20261015/verification/chord-foreign-context-5ab7fe7-20261015/Capture-ChordForeignContext5ab7fe7.mjs:12:7), <anonymous>:22:126)
+    at async file:///C:/Users/adyba/pi-zig-chord-foreign-context-5ab7fe7-20261015/verification/chord-foreign-context-5ab7fe7-20261015/Capture-ChordForeignContext5ab7fe7.mjs:12:1
+
+Node.js v24.14.0

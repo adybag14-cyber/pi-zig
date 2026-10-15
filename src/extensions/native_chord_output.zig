@@ -140,7 +140,7 @@ pub fn exports(engine: *h.Engine) !c.JSValue {
         const prototype = try s.record();
         try js.define(engine, api, class[0], try @import("native_class.zig").constructor(engine, class[0], class[2], prototype, construct, &.{ bindings, c.pi_js_bool(engine.context, @intFromBool(class[1])) }));
         if (class[1]) {
-            inline for (.{ .{ "push", Method.push, 1, false }, .{ "end", Method.end, 0, false }, .{ "snapshot", Method.snapshot, 0, false }, .{ "storedBytes", Method.storedBytes, 0, true } }) |method| try h.define(&s, prototype, bindings, method[0], callback, @intFromEnum(method[1]), method[2], method[3], false);
+            inline for (.{ .{ "push", Method.push, 2, false }, .{ "end", Method.end, 0, false }, .{ "snapshot", Method.snapshot, 0, false }, .{ "storedBytes", Method.storedBytes, 0, true } }) |method| try h.define(&s, prototype, bindings, method[0], callback, @intFromEnum(method[1]), method[2], method[3], false);
         } else {
             inline for (.{ .{ "mark", Method.mark, 0 }, .{ "markAndWait", Method.markAndWait, 0 }, .{ "stop", Method.stop, 0 } }) |method| try h.define(&s, prototype, bindings, method[0], callback, @intFromEnum(method[1]), method[2], false, method[1] == .stop);
         }

@@ -1,0 +1,157 @@
+{
+  "completed_utc": "2026-10-15T18:04:18.6768679+00:00",
+  "capture_candidate_head": "e66b0b3f90f4a4a8f6c997f1924a3e3c332963e1",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "output_cases": 14,
+  "output_double_capture": "passed",
+  "output_sha256": "EE67E4E925EE0784D863A3BC10D668C88EC5D229E4F34C3810CB0CF8340BF1BC",
+  "foreign_capture": "failed authored bare-message expectation; actual ChordError includes invalid/foreign_ctx prefix",
+  "foreign_pid": 60968,
+  "all_source_owner_pids_absent": true,
+  "all_final_frozen_drift": 0,
+  "last_full_post_utc": "2026-10-15T17:55:17.2754363Z",
+  "candidate_files": 5649,
+  "source_files": 1967,
+  "dependency_files": 31064,
+  "node_files": 1774,
+  "compiler_files": 19546,
+  "controls": 16,
+  "node_authority_scope": "node.exe and complete npm subtree1774; unrelated64 Corepack/root launchers untouched",
+  "actual_source_push_length": 2,
+  "prelaunch_negative_preserved": true,
+  "copied_artifacts": [
+    {
+      "path": "Run-ChordLatestOutputForeignSourcePair-20261015.ps1",
+      "sha256": "035660BBC360DFF05557F69ABD06D580E28AFFC61A98B28E1664AB9D1C31B4AA"
+    },
+    {
+      "path": "Run-ChordLatestOutputForeignSourcePairRevision2-20261015.ps1",
+      "sha256": "E9D5F9AD303574235217ACC386E1B76A06BE285AF298805ED835AA982F6613CB"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-first-20261015-prelaunch-negative.json",
+      "sha256": "33D97A71137BA35B5274E3BA5709EFE0D3104E3B8CA34FA68AD3E318144108F6"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-first-20261015-output-first-before-freeze.json",
+      "sha256": "FB3DAB192CDFEC95136C50A8DB981B1FF2A2FA72AB189062F205506799004305"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-controls.json",
+      "sha256": "7EB8F9D66E6CBB19156AFB9426DB83D5112A571F6C8386388EB4C27F28B584BC"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-first.json",
+      "sha256": "C79CA039C380A25237CCD103FCE08D5B4C07C413AFD6A5A98DDB92715185B487"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-first-result.json",
+      "sha256": "91C4A516750A07C80F31D97834055599A858F239599F7ACC63933F8973D052C8"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-first-before-freeze.json",
+      "sha256": "7F2D6930810554BBE61499EC27517A536273BF425429E3754036B28F1FEC0916"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-first-after-freeze.json",
+      "sha256": "6C6065D35E919AF85095A08F151D56D610F05CB504780FBB45000B95FF4EF253"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-first-admission.json",
+      "sha256": "896FF88EF204C6FD34F1D654708D23DD6C098BB13F2C56F0272EA15C37E5C7A2"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-first.stdout.log",
+      "sha256": "EE67E4E925EE0784D863A3BC10D668C88EC5D229E4F34C3810CB0CF8340BF1BC"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-first.stderr.log",
+      "sha256": "42757AA05335D6528439A10AB5036814A25F5D9A9380FD4F4B42D5142FF67262"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-first-output.json",
+      "sha256": "EE67E4E925EE0784D863A3BC10D668C88EC5D229E4F34C3810CB0CF8340BF1BC"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-second.json",
+      "sha256": "5F159A7CCB4F0AF26795C0BAA82A2E1EAF52EB853052D750A311F43CD8D5DD07"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-second-result.json",
+      "sha256": "59A9BA0AE57A88D2D976AE995BF02C4F527189B07A55B5613D8CCF29CA87573D"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-second-before-freeze.json",
+      "sha256": "E2EA9BD505FC888216C2EFF6BF35B071A52E651C500467A34793683930339AEB"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-second-after-freeze.json",
+      "sha256": "9495C4D53FB269543970B064AA4DDB4C04D2CB64C2C9EE34CEE623A674A6CB15"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-second-admission.json",
+      "sha256": "77E376558BFA879610D68968D3FB36A62F5D0A77A1FE39E32069D960A77C4724"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-second.stdout.log",
+      "sha256": "EE67E4E925EE0784D863A3BC10D668C88EC5D229E4F34C3810CB0CF8340BF1BC"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-second.stderr.log",
+      "sha256": "E86DCD144C1623CC525412B782F0E65BDBCAD3CEE799C421EABEC04C38F3430F"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-second-output.json",
+      "sha256": "EE67E4E925EE0784D863A3BC10D668C88EC5D229E4F34C3810CB0CF8340BF1BC"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-foreign-first.json",
+      "sha256": "F3ABCF9F999FEA18048480DF9B43AFDA6A0A5E5BD5C3ADB25EC4770927EFBE95"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-foreign-first-result.json",
+      "sha256": "B49F3AFD1AF12E81F723A1208DBB946F4CC012502EC39427EC77AFCC05C17304"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-foreign-first-before-freeze.json",
+      "sha256": "3D611538B27F468EEBE6C09C2E79442148C7DFD44D4C7FEF43D812FA87E926AD"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-foreign-first-after-freeze.json",
+      "sha256": "10F176C623F7C75CBF262A97EFEB7A3A0FAD7A1CE8A8E26564FF2E2AED79AB79"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-foreign-first-admission.json",
+      "sha256": "BFF414E0EDF520EFBA6025A952725349B9CF030B0F56E1178B93A9720F7656D3"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-foreign-first.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-foreign-first.stderr.log",
+      "sha256": "DD1E17C248D0D84C4F825140280AA861CFE86FC2F906BEB3D39BC362EC49ACA3"
+    },
+    {
+      "path": "chord-latest-output-foreign-source-root-slot3-second-20261015-foreign-first-output.json",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "source5ab-modules-57824-0-20261015.jsonl",
+      "sha256": "27FEA7E0A22D12DC52CB84A4122B831DE0279DD10DE89629D672C9649188CA47"
+    },
+    {
+      "path": "source5ab-modules-60968-0-20261015.jsonl",
+      "sha256": "8DD3F8DDD7F1EF87B215028AC9B5761BF6E075CAFC5E36910ED28F623E752DF0"
+    },
+    {
+      "path": "source5ab-modules-8820-0-20261015.jsonl",
+      "sha256": "27FEA7E0A22D12DC52CB84A4122B831DE0279DD10DE89629D672C9649188CA47"
+    }
+  ],
+  "native_compiled": false,
+  "native_runtime_executed": false,
+  "full_chord_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}

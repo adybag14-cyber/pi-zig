@@ -1,0 +1,37 @@
+{
+  "head": "e66b0b3f90f4a4a8f6c997f1924a3e3c332963e1",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "target": "output",
+  "iteration": "second",
+  "status": "passed",
+  "cases": 14,
+  "owner": {
+    "name": "chord-latest-output-foreign-source-root-slot3-second-20261015-output-second",
+    "pid": 8820,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+    "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source5ab-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-chord-foreign-context-5ab7fe7-20261015\\verification\\chord-foreign-context-5ab7fe7-20261015\\Capture-ChordOutput5ab7fe7.mjs C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015 C:\\Users\\adyba\\pi-zig-chord-foreign-context-5ab7fe7-20261015\\src\\extensions\\fixtures\\chord-output-5ab7fe7.input.txt",
+    "command_line_source": "live Win32_Process",
+    "created_utc": "2026-10-15T17:52:28.6080024Z",
+    "launched_utc": "2026-10-15T18:52:28.6064787+01:00",
+    "identity_captured": true,
+    "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+    "working_directory": "C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-15T18:52:48.2605196+01:00"
+  },
+  "root_pid_absent": true,
+  "observed_module_files": [
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-modules-8820-0-20261015.jsonl"
+  ],
+  "observed_module_records": 3,
+  "output": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-output-foreign-source-root-slot3-second-20261015-output-second-output.json",
+  "output_sha256": "EE67E4E925EE0784D863A3BC10D668C88EC5D229E4F34C3810CB0CF8340BF1BC",
+  "failures": [],
+  "native_compiled": false,
+  "native_runtime_executed": false,
+  "public_activation": false,
+  "full_chord_qualified": false,
+  "full_pi_qualified": false
+}

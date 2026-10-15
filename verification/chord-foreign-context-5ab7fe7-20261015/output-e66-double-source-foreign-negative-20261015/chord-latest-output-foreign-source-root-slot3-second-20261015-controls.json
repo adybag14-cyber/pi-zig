@@ -1,0 +1,66 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-chord-foreign-context-5ab7fe7-20261015\\src\\extensions\\fixtures\\chord-foreign-context-review-5ab7fe7.input.txt",
+    "sha256": "7FDD206B08BD0D7C1ED7E2F5DE763C40B1FBB859C088B7F35201BAAF6A088B5C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-chord-foreign-context-5ab7fe7-20261015\\src\\extensions\\fixtures\\chord-output-5ab7fe7.input.txt",
+    "sha256": "C6BD224BE8539AD0F343510B545E0CBD8DC2614D1298F79DDCFFC0F9A089C24D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-chord-foreign-context-5ab7fe7-20261015\\verification\\chord-foreign-context-5ab7fe7-20261015\\Capture-ChordForeignContext5ab7fe7.mjs",
+    "sha256": "C1CCB1A714AFB897A6C8E75295918B0C8D825896AF8FB5412C1CFB890661A94E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-chord-foreign-context-5ab7fe7-20261015\\verification\\chord-foreign-context-5ab7fe7-20261015\\Capture-ChordOutput5ab7fe7.mjs",
+    "sha256": "BD1682C817095E5356240B4C81161AD2A5B224F13BC0F99BC35B1F5642A9BC76"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-output-foreign-source-root-slot3-first-20261015-output-first-before-freeze.json",
+    "sha256": "FB3DAB192CDFEC95136C50A8DB981B1FF2A2FA72AB189062F205506799004305"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-output-foreign-source-root-slot3-first-20261015-prelaunch-negative.json",
+    "sha256": "33D97A71137BA35B5274E3BA5709EFE0D3104E3B8CA34FA68AD3E318144108F6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-latest-output-foreign-source-root-slot3-second-20261015-candidate-before.json",
+    "sha256": "C1618B7F38A5CD0544EC1903F0E23C6E88D8553E25238A18683BBC9CC09BDD3A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-ChordLatestOutputForeignSourcePair-20261015.ps1",
+    "sha256": "035660BBC360DFF05557F69ABD06D580E28AFFC61A98B28E1664AB9D1C31B4AA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-ChordLatestOutputForeignSourcePairRevision2-20261015.ps1",
+    "sha256": "E9D5F9AD303574235217ACC386E1B76A06BE285AF298805ED835AA982F6613CB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-observe-20261015.mjs",
+    "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017"
+  }
+]

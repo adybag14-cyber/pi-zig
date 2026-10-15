@@ -17,14 +17,14 @@ try{
  try{
   await target.ready;
   const foreign=await other.root(ctx=>target.hit(ctx).catch(error=>error));
-  if(!isChordError(foreign,'invalid')||foreign.reason!=='foreign_ctx'||foreign.message!=='ctx belongs to another host')throw Error('foreign context accepted or wrong error');
+  if(!isChordError(foreign,'invalid')||foreign.reason!=='foreign_ctx'||foreign.message!=='invalid/foreign_ctx: ctx belongs to another host')throw Error('foreign context accepted or wrong error');
   cases.push({name:'foreign host context',value:errorValue(foreign)});
   const forged={rootId:'forged',codeVersion:1,signal:new AbortController().signal};
   for(const ctx of [forged,null]){
    const result=target.hit(ctx);
    if(!result||typeof result.then!=='function')throw Error('invalid context did not return a Promise');
    const error=await result.then(()=>{throw Error('forged context accepted')},failure=>failure);
-   if(!isChordError(error,'invalid')||error.reason!=='foreign_ctx'||error.message!=='ctx must come from a Chord host')throw Error('forged context wrong error');
+   if(!isChordError(error,'invalid')||error.reason!=='foreign_ctx'||error.message!=='invalid/foreign_ctx: ctx must come from a Chord host')throw Error('forged context wrong error');
    cases.push({name:ctx===null?'null context':'forged context',value:errorValue(error)});
   }
   for(let i=0;i<10;i++)await new Promise(resolve=>setTimeout(resolve,0));

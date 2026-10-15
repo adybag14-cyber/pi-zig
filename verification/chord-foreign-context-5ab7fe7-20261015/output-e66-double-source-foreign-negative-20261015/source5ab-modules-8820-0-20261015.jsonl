@@ -1,0 +1,3 @@
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-observe-20261015.mjs","sha256":"6261264d0a4d3d82b36e12b6675cc59fcc74ace1a1e92a225703a24285dcf017","externalControl":true}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-chord-foreign-context-5ab7fe7-20261015\\verification\\chord-foreign-context-5ab7fe7-20261015\\Capture-ChordOutput5ab7fe7.mjs","sha256":"bd1682c817095e5356240b4c81161ad2a5b224f13bc0f99bc35b1f5642a9bc76","externalControl":false}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-upstream-source-5ab7fe7-20261015\\packages\\chord\\src\\output.ts","sha256":"43f158bd71caa4a64e62426c4ef7b93ea3c71ccf3b7033efc675669e69287bfb","externalControl":false}

@@ -19,8 +19,10 @@ const Probe = struct {
         try js.define(engine, global, "apiFallback", try @import("extensions/native_chord_output.zig").exports(engine));
         try @import("extensions/node_buffer.zig").install(engine);
         try js.define(engine, global, "apiBuffer", try @import("extensions/native_chord_output.zig").exports(engine));
+        const golden = @embedFile("extensions/fixtures/chord-output-original-5ab7fe7.json");
+        try js.define(engine, global, "chordOutputExpected", try engine.checked(c.JS_ParseJSON(engine.context, golden.ptr, golden.len, "chord-output-original-5ab7fe7.json")));
         const generation = engine.native_allocation_generation;
-        const result = engine.evalModule("await(async()=>{\n" ++ @embedFile("extensions/fixtures/chord-output-5ab7fe7.input.txt") ++ "\n})();if(chordOutputCases.length!==14)throw Error('Output14 count');globalThis.chordOutputObserved=JSON.stringify(chordOutputCases);", "chord-output-5ab7fe7.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+        const result = engine.evalModule("await(async()=>{\n" ++ @embedFile("extensions/fixtures/chord-output-5ab7fe7.input.txt") ++ "\n})();if(chordOutputCases.length!==14||chordOutputExpected.cases.length!==14)throw Error('Output14 count');for(let i=0;i<14;i++)if(JSON.stringify(chordOutputCases[i])!==JSON.stringify(chordOutputExpected.cases[i]))throw Error(JSON.stringify({case:i,actual:chordOutputCases[i],expected:chordOutputExpected.cases[i]}));globalThis.chordOutputObserved=JSON.stringify(chordOutputCases);", "chord-output-5ab7fe7.mjs") catch |err| return engine.nativeAllocationError(err, generation);
         defer engine.freeValue(result);
         if (emit) {
             const json = try engine.toString(try s.get(global, "chordOutputObserved"));
