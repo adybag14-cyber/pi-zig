@@ -28,7 +28,7 @@ fn construct(comptime kind: Kind) @import("native_class.zig").Construct {
                 headers = c.pi_js_undefined();
                 error_type = c.pi_js_undefined();
             }
-            const text = try makeMessage(&scope, status, body, message);
+            const text = try scope.invoke(try scope.get(roots[1], "api"), "makeMessage", &.{ status, body, message });
             var error_args = [_]c.JSValue{text};
             const result = try scope.own(try engine.checked(c.JS_CallConstructor2(engine.context, roots[0], target, 1, &error_args)));
             try scope.set(result, "status", status);
@@ -55,9 +55,9 @@ pub fn makeMessage(scope: *Scope, status: c.JSValue, body: c.JSValue, fallback: 
     message = try scope.text("(no status code or body)");
     return message;
 }
-fn add(scope: *Scope, namespace: c.JSValue, name: [:0]const u8, length: u8, parent: c.JSValue, error_root: c.JSValue, comptime kind: Kind) !c.JSValue {
+fn add(scope: *Scope, namespace: c.JSValue, name: [:0]const u8, length: u8, parent: c.JSValue, error_root: c.JSValue, box: c.JSValue, comptime kind: Kind) !c.JSValue {
     const prototype = try scope.own(try scope.engine.checked(c.JS_NewObjectProto(scope.engine.context, try scope.get(parent, "prototype"))));
-    const constructor = try scope.own(try @import("native_class.zig").constructor(scope.engine, name, length, prototype, construct(kind), &.{error_root}));
+    const constructor = try scope.own(try @import("native_class.zig").constructor(scope.engine, name, length, prototype, construct(kind), &.{ error_root, box }));
     if (c.JS_SetPrototype(scope.engine.context, constructor, parent) < 0) return v.js.capture(scope.engine);
     try scope.put(namespace, name.ptr, constructor);
     return constructor;
@@ -68,13 +68,15 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const result = try scope.object();
+    const box = try scope.object();
     const error_constructor = try scope.global("Error");
-    const base = try add(&scope, result, "AnthropicError", 0, error_constructor, error_constructor, .base);
-    const api = try add(&scope, result, "APIError", 5, base, error_constructor, .api);
-    _ = try add(&scope, result, "APIUserAbortError", 0, api, error_constructor, .abort);
-    const connection = try add(&scope, result, "APIConnectionError", 1, api, error_constructor, .connection);
-    _ = try add(&scope, result, "APIConnectionTimeoutError", 0, connection, error_constructor, .timeout);
-    inline for (.{ "BadRequestError", "AuthenticationError", "PermissionDeniedError", "NotFoundError", "ConflictError", "UnprocessableEntityError", "RateLimitError", "InternalServerError" }) |name| _ = try add(&scope, result, name, 0, api, error_constructor, .inherited);
+    const base = try add(&scope, result, "AnthropicError", 0, error_constructor, error_constructor, box, .base);
+    const api = try add(&scope, result, "APIError", 5, base, error_constructor, box, .api);
+    try scope.put(box, "api", api);
+    _ = try add(&scope, result, "APIUserAbortError", 0, api, error_constructor, box, .abort);
+    const connection = try add(&scope, result, "APIConnectionError", 1, api, error_constructor, box, .connection);
+    _ = try add(&scope, result, "APIConnectionTimeoutError", 0, connection, error_constructor, box, .timeout);
+    inline for (.{ "BadRequestError", "AuthenticationError", "PermissionDeniedError", "NotFoundError", "ConflictError", "UnprocessableEntityError", "RateLimitError", "InternalServerError" }) |name| _ = try add(&scope, result, name, 0, api, error_constructor, box, .inherited);
     const Static = struct {
         fn message(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
             var row: Scope = .{ .engine = host };
