@@ -8,7 +8,6 @@ const idl = @import("native_web_idl.zig");
 const flow = @import("native_agent_async.zig");
 const collector = @import("native_body_collect.zig");
 const web = @import("native_headers_webidl.zig");
-const blob = @import("native_web_blob.zig");
 const form = @import("native_web_form_data.zig");
 const mime_parser = @import("native_web_mime.zig");
 const multipart = @import("native_web_multipart.zig");
@@ -247,14 +246,22 @@ pub fn clone(scope: *Scope, body: Body) !Clone {
     return .{ .original_stream = try web.index(scope, pair, 0), .copy = .{ .stream = try web.index(scope, pair, 1), .source = try scope.own(c.JS_DupValue(scope.engine.context, body.source)), .length = try scope.own(c.JS_DupValue(scope.engine.context, body.length)), .content_type = try scope.own(c.JS_DupValue(scope.engine.context, body.content_type)) } };
 }
 fn convert(scope: *Scope, bytes: c.JSValue, mode: Mode, mime: c.JSValue) !c.JSValue {
-    if (mode == .bytes or mode == .array_buffer or mode == .text) return bytes;
+    if (mode == .bytes or mode == .array_buffer) {
+        const copied = try scope.own(try js.builtin(scope.engine, "Uint8Array", &.{bytes}));
+        return if (mode == .bytes) copied else scope.get(copied, "buffer");
+    }
+    if (mode == .text) return bytes;
     if (mode == .json) return scope.invoke(try scope.global("JSON"), "parse", &.{bytes});
     var size: usize = 0;
     const raw = c.JS_GetUint8Array(scope.engine.context, &size, bytes);
     if (raw == null and c.JS_HasException(scope.engine.context)) return js.capture(scope.engine);
     if (mode == .blob) {
         const mime_type = if (try mime_parser.extract(scope, mime)) |record| try mime_parser.serialize(scope, record) else try scope.text("");
-        return scope.own(try blob.fromBytes(scope.engine, if (size == 0) &.{} else raw[0..size], mime_type));
+        const parts = try scope.array();
+        try scope.index(parts, 0, bytes);
+        const options = try scope.object();
+        try scope.set(options, "type", mime_type);
+        return scope.own(try js.builtin(scope.engine, "Blob", &.{ parts, options }));
     }
     const parsed_mime = try mime_parser.extract(scope, mime);
     const essence = if (parsed_mime) |record| try scope.get(record, "essence") else c.pi_js_null();
@@ -301,7 +308,6 @@ pub fn consume(engine: *em.Engine, body: ?Body, mode: Mode, mime: c.JSValue) !c.
         };
         const collected = scope.own(collector.collect(engine, reader, .{ .mode = switch (mode) {
             .text, .json => .text,
-            .array_buffer => .array_buffer,
             else => .bytes,
         } }) catch |err| {
             try flow.rejectError(engine, pending.owner, err);
@@ -314,7 +320,6 @@ pub fn consume(engine: *em.Engine, body: ?Body, mode: Mode, mime: c.JSValue) !c.
     } else {
         const empty = switch (mode) {
             .text, .json => try scope.text(""),
-            .array_buffer => try scope.own(try engine.checked(c.JS_NewArrayBufferCopy(engine.context, null, 0))),
             else => try scope.own(try engine.checked(c.JS_NewUint8ArrayCopy(engine.context, null, 0))),
         };
         const result = convert(&scope, empty, mode, mime) catch |err| {
