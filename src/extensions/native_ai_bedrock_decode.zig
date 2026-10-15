@@ -52,14 +52,14 @@ fn flush(s: *Scope, block: c.JSValue) !void {
         defer s.engine.freeValue(chunk);
         var row: Scope = .{ .engine = s.engine };
         defer row.deinit();
-        var index: u32 = 0;
-        while (try @import("native_image_arithmetic.zig").compare(s.engine, .less, c.JS_NewUint32(s.engine.context, index), try row.get(chunk, "length"))) : (index += 0x8000) {
+        var index: f64 = 0;
+        while (try @import("native_image_arithmetic.zig").compare(s.engine, .less, c.JS_NewFloat64(s.engine.context, index), try row.get(chunk, "length"))) : (index += 0x8000) {
             try @import("native_ai_budget.zig").step(s.engine, &steps);
             var window: Scope = .{ .engine = s.engine };
             defer window.deinit();
             const string = try window.global("String");
             const from_char_code = try window.get(string, "fromCharCode");
-            const view = try window.invoke(chunk, "subarray", &.{ c.JS_NewUint32(s.engine.context, index), c.JS_NewUint32(s.engine.context, index + 0x8000) });
+            const view = try window.invoke(chunk, "subarray", &.{ c.JS_NewFloat64(s.engine.context, index), c.JS_NewFloat64(s.engine.context, index + 0x8000) });
             var values: std.ArrayList(c.JSValue) = .empty;
             defer {
                 for (values.items) |value| s.engine.freeValue(value);
