@@ -188,10 +188,6 @@ fn url(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !c.JSValue {
 fn open(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
     const engine = scope.engine;
     const options = try scope.get(owner, "options");
-    if (kind == .vertex) {
-        const credentials = try scope.get(owner, "auth");
-        if (scope.truthy(try scope.get(credentials, "adc"))) try auth.adc(scope, try scope.get(owner, "agent"), options, credentials);
-    }
     // The injectable fetch path requires its own live Response/reader adapter.
     // Keep this failure explicit until that path is implemented and qualified.
     if (kind == .mistral and !v.nullish(try v.optional(scope, options, "fetch")) and !scope.equal(try scope.get(options, "fetch"), try scope.global("fetch"))) return v.errorText(scope, try scope.text("Native Mistral custom fetch transport is not yet qualified"));
@@ -225,7 +221,10 @@ fn open(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
     const timeout = try v.optional(scope, options, "timeoutMs");
     var milliseconds: i64 = if (kind == .mistral) 60000 else 600000;
     if (!v.nullish(timeout) and c.JS_ToInt64(engine.context, &milliseconds, timeout) < 0) return v.js.capture(engine);
-    const transport = try scope.own(try @import("native_ai_http.zig").open(engine, .{ .url = target, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)), .framing = if (kind == .mistral) .bytes else .sse }, try v.optional(scope, options, "signal")));
+    const use_adc = kind == .vertex and scope.truthy(try scope.get(try scope.get(owner, "auth"), "adc"));
+    const adc_data = if (use_adc) try @import("native_ai_google_adc_prepare.zig").data(scope, try scope.get(owner, "agent"), options) else null;
+    defer if (adc_data) |value| engine.gpa.free(value);
+    const transport = try scope.own(try @import("native_ai_http.zig").open(engine, .{ .url = target, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)), .framing = if (kind == .mistral) .bytes else .sse, .prepare = if (use_adc) @import("native_ai_google_adc_prepare.zig").prepare else null, .prepare_data = adc_data orelse &.{} }, try v.optional(scope, options, "signal")));
     try scope.put(owner, "http", transport);
     try scope.put(owner, "iterator", try scope.get(transport, "events"));
     try wait(scope, owner, try scope.get(transport, "ready"), .ready, kind);
