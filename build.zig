@@ -1612,6 +1612,12 @@ pub fn build(b: *std.Build) void {
     ai_http_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-http", "Validate owned raw HTTP/SSE transport cancellation teardown and original wire fidelity").dependOn(&b.addRunArtifact(ai_http_tests).step);
     b.step("build-native-ai-http", "Compile native raw transport and narrow owner hooks before runtime").dependOn(&ai_http_tests.step);
+    const ae7_json_transform_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_ae7_json_transform_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ae7 JSON39"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ae7_json_transform_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(ae7_json_transform_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ae7_json_transform_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-ai-ae7-json-transform", "Compile fresh actual ae7 JSON39 and thinking DROP12 caller parity").dependOn(&ae7_json_transform_tests.step);
+    b.step("test-native-ai-ae7-json-transform", "Compare genuine Source51 JSON error origins and latest cross-model thinking DROP ordering").dependOn(&b.addRunArtifact(ae7_json_transform_tests).step);
     const ai_json_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_json_parse_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI JSON"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_json_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_json_tests.root_module, sqlite_lib_dir, sqlite_library);

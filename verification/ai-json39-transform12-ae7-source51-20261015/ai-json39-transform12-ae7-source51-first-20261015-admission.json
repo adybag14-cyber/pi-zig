@@ -1,0 +1,8 @@
+{
+  "observed_utc": "2026-10-15T21:04:54.0771961+00:00",
+  "coordinated_with": "Root queued Source51; require explicit LIGHT grant before invoking wrapper",
+  "required_kib": 2097152,
+  "heap_mb": 256,
+  "free_kib": 20266152,
+  "status": "admitted"
+}

@@ -1,0 +1,48 @@
+const api=globalThis.aiJSONAPI;
+
+const rows = [];
+const cases = [
+  ['undefined', undefined], ['empty', ''], ['spaces', ' \n\r\t'],
+  ['object', '{"a":1}'], ['nested', '{"a":{"b":[true,null,3]}}'],
+  ['invalid-escape', '{"path":"C:\\Users\\file"}'],
+  ['raw-newline', '{"value":"first\nsecond"}'],
+  ['raw-control', '{"value":"a\u0000b"}'],
+  ['valid-unicode', '{"value":"\\uD800"}'],
+  ['short-unicode', '{"value":"\\u123"}'],
+  ['bad-unicode', '{"value":"\\u12xz"}'],
+  ['null', 'null'], ['array', '[1,2]'], ['string', '"text"'],
+  ['number', '12'], ['boolean', 'false'],
+  ['cutoff', '{"ok":1,"missing":'], ['cutoff-string', '{"value":"unfinished'],
+  ['cutoff-backslash', '{"value":"unfinished\\'],
+  ['leading-decimal', '{"score":.5}'], ['trailing-comma', '{"ok":1,}'],
+  ['extra-text', '{"ok":1} extra'], ['single-quotes', "{'ok':1}"],
+  ['bad-literal', '{"ok":tru}'], ['bad-number', '{"ok":01}'],
+  ['multiline-invalid', '{\n "ok": 1,\n "bad": .5\n}'],
+  ['unicode-key-offset', '{"😀":1,"bad":.5}'],
+  ['large-invalid', '{"value":"' + 'x'.repeat(100) + '","bad":.5}'],
+];
+for (const [name, input] of cases) {
+  const row = { name };
+  if (input !== undefined) row.input = input;
+  for (const method of ['repairJson', 'parseJsonWithRepair', 'parseStreamingJson', 'parseToolCallArguments']) {
+    try { row[method] = { value: api[method](input) }; }
+    catch (error) { row[method] = { error: { name: error.name, message: error.message } }; }
+  }
+  rows.push(row);
+}
+// Caller replacements expose the original lexical helper's dependency order.
+for (const name of ['parse-throws-error', 'parse-throws-raw', 'parse-nonobject', 'parse-array-getter', 'trim-throws']) {
+  const events = [], originalParse = JSON.parse, originalIsArray = Array.isArray;
+  const raw = { toString() { events.push('raw.string'); return 'caller raw'; } };
+  let input = '{}';
+  try {
+    if (name === 'parse-throws-error') JSON.parse = function (value) { events.push(['parse', value]); throw new Error('caller parse'); };
+    if (name === 'parse-throws-raw') JSON.parse = function (value) { events.push(['parse', value]); throw raw; };
+    if (name === 'parse-nonobject') JSON.parse = function (value) { events.push(['parse', value]); return 7; };
+    if (name === 'parse-array-getter') Array.isArray = function (value) { events.push(['isArray', value]); throw raw; };
+    if (name === 'trim-throws') input = { get trim() { events.push('trim.get'); throw raw; } };
+    try { rows.push({ name, result: api.parseToolCallArguments(input), events }); }
+    catch (error) { rows.push({ name, uncaught: error === raw ? 'caller-raw' : { name: error.name, message: error.message }, events }); }
+  } finally { JSON.parse = originalParse; Array.isArray = originalIsArray; }
+}
+export default rows;
