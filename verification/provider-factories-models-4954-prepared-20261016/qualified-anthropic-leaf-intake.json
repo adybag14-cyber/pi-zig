@@ -1,0 +1,67 @@
+{
+  "tested_component": "b6080f3164c85fd4f199548e867afff6485df542",
+  "scope": "Exact owner15 productionleaves. Prior component14native tests passed; receiving merged graph/nativeSource92 remain UNCOMPILED/unqualified. Engine/vendor/sharedHTTP not restored.",
+  "owner_head": "89957f4b9d4bd3e18b223ebd46b16f80078eab04",
+  "files": [
+    {
+      "path": "src/extensions/native_ai_anthropic_factory.zig",
+      "sha256": "13FDFF2931E0A2E69B2AD8C00275C0DD5CB765A662DF1907A8ED921F854034F8"
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_federation.zig",
+      "sha256": "5F09C356A1F8AA6A459DD35F0725D4ADC09DCBBE8A4B88556AB5027C44D6D72B"
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_api_error.zig",
+      "sha256": "484E498FBA2B13BCF449DC03F65B22DF56877D940C370700F8CFF6EE196994CE"
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_decode.zig",
+      "sha256": "F63679E2616187377534543A6CC1752CDAEF4C321C245302CC8CA83EFAA87BA5"
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_events.zig",
+      "sha256": "C5A66C76EFAD884B7B4072DA98AC7E4A603F935E570398A737B98BBC6BA09F0F"
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_sse.zig",
+      "sha256": "60629FB9FFBA921C7CAC4121E521CF45DEAEA92909748C8504F1C9C5BEF07088"
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_wire.zig",
+      "sha256": "0061A5AB80FB37BB3625BED352154CE079F1CB04756CB2D57C6B1E35B8E61931"
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_request.zig",
+      "sha256": "C7A1EEA8B367006E22186282CA115CA4902D441F6FCDD234B4C061E5A7547519"
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_messages.zig",
+      "sha256": "A8AA15BDD02FCA988B75A7789556777B37D8D92417C043C95A8490DD556720FC"
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_tools.zig",
+      "sha256": "B0762028A5F341C6B83F2D268AE1B4F6627542EC2B2ACB753E5377619B5941E8"
+    },
+    {
+      "path": "src/extensions/native_ai_sdk_headers.zig",
+      "sha256": "A46BFFAE310F5F725666E6FE081BBEDCBA5FB227085D0DC738620F69BECD4B72"
+    },
+    {
+      "path": "src/extensions/native_ai_headers.zig",
+      "sha256": "C5C92C2028D75409DD4E551ECEBBF50207A0B70E9A08728476785AADA4160298"
+    },
+    {
+      "path": "src/extensions/native_ai_constrained_sampling.zig",
+      "sha256": "9552C384729D638A73E6B66172B785167C6E71756ECD0358920D0E19B998E124"
+    },
+    {
+      "path": "src/extensions/native_ai_provider_request.zig",
+      "sha256": "F45E149638E7C29BA4D15D845C5D77F0428500C5BADCDA6DAFF4E5537D1333A7"
+    },
+    {
+      "path": "src/extensions/native_ai_user_agent.zig",
+      "sha256": "EDAA1E722A5910B3952E1D154AF0A45551D7C27E0B4DEA1D7C21A1E324C5F833"
+    }
+  ]
+}

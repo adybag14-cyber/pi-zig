@@ -7,6 +7,8 @@ const Kind = enum { base, api, abort, connection, timeout, inherited };
 fn construct(comptime kind: Kind) @import("native_class.zig").Construct {
     const Adapter = struct {
         fn call(engine: *v.em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            engine.native_exception_diagnostics_suppressed += 1;
+            defer engine.native_exception_diagnostics_suppressed -= 1;
             var scope: Scope = .{ .engine = engine };
             defer scope.deinit();
             if (kind == .base) return engine.checked(c.JS_CallConstructor2(engine.context, roots[0], target, @intCast(args.len), @constCast(args.ptr)));
@@ -17,19 +19,22 @@ fn construct(comptime kind: Kind) @import("native_class.zig").Construct {
             var error_type = arg(args, 4);
             var cause = c.pi_js_undefined();
             if (kind == .abort or kind == .connection or kind == .timeout) {
-                const options = if (args.len == 0 or c.JS_IsUndefined(args[0])) try scope.object() else args[0];
+                const options = if (kind != .connection and (args.len == 0 or c.JS_IsUndefined(args[0]))) try scope.object() else arg(args, 0);
                 message = try scope.get(options, "message");
+                cause = if (kind == .connection) try scope.get(options, "cause") else c.pi_js_undefined();
                 if (kind == .timeout) {
                     if (v.nullish(message)) message = try scope.text("Request timed out.");
+                    // The timeout subclass delegates through the connection
+                    // constructor, whose fallback uses || rather than ??.
+                    if (!scope.truthy(message)) message = try scope.text("Connection error.");
                 } else if (!scope.truthy(message)) message = try scope.text(if (kind == .abort) "Request was aborted." else "Connection error.");
-                cause = if (kind == .connection) try scope.get(options, "cause") else c.pi_js_undefined();
                 status = c.pi_js_undefined();
                 body = c.pi_js_undefined();
                 headers = c.pi_js_undefined();
                 error_type = c.pi_js_undefined();
             }
             const text = try scope.invoke(try scope.get(roots[1], "api"), "makeMessage", &.{ status, body, message });
-            var error_args = [_]c.JSValue{text};
+            var error_args = [_]c.JSValue{try scope.stringify(text)};
             const result = try scope.own(try engine.checked(c.JS_CallConstructor2(engine.context, roots[0], target, 1, &error_args)));
             try scope.set(result, "status", status);
             try scope.set(result, "headers", headers);
@@ -121,16 +126,17 @@ fn crossRealm(scope: *Scope, value: c.JSValue) !c.JSValue {
     const prototype = try scope.get(try scope.global("Object"), "prototype");
     const tag = try scope.call(try scope.get(prototype, "toString"), value, &.{});
     if (!try v.eq(scope, tag, "[object Error]") and !try v.eq(scope, tag, "[object DOMException]")) return c.pi_js_undefined();
+    const message = try scope.get(value, "message");
     const cause = try scope.get(value, "cause");
     const options = try scope.object();
-    if (scope.truthy(cause)) try scope.put(options, "cause", cause);
-    const result = try scope.own(try v.js.builtin(scope.engine, "Error", &.{ try scope.get(value, "message"), options }));
+    if (scope.truthy(cause)) try scope.put(options, "cause", try scope.get(value, "cause"));
+    const result = try scope.own(try v.js.builtin(scope.engine, "Error", &.{ message, options }));
     if (scope.truthy(try scope.get(value, "stack"))) try scope.set(result, "stack", try scope.get(value, "stack"));
     if (scope.truthy(try scope.get(value, "cause")) and !scope.truthy(try scope.get(result, "cause"))) try scope.set(result, "cause", try scope.get(value, "cause"));
     if (scope.truthy(try scope.get(value, "name"))) try scope.set(result, "name", try scope.get(value, "name"));
     return result;
 }
-fn castToError(scope: *Scope, value: c.JSValue) !c.JSValue {
+pub fn castToError(scope: *Scope, value: c.JSValue) !c.JSValue {
     const branded = c.JS_IsInstanceOf(scope.engine.context, value, try scope.global("Error"));
     if (branded < 0) return v.js.capture(scope.engine);
     if (branded == 1) return value;
