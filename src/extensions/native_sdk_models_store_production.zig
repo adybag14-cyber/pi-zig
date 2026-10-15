@@ -5,7 +5,6 @@ const Scope = v.Scope;
 const c = v.c;
 const flow = @import("native_agent_async.zig");
 const classes = @import("native_class.zig");
-const arithmetic = @import("native_image_arithmetic.zig");
 const Method = enum(c_int) { memory_read, memory_write, memory_delete, parse, update, reload, latest, read, write, delete, reload_callback, write_callback, delete_callback, clear_reload };
 const Stage = enum(c_int) { latest, read, modified };
 fn arg(args: []const c.JSValue, index: usize) c.JSValue {
@@ -39,18 +38,20 @@ pub fn create(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {
     try scope.put(exports, "InMemoryModelsStore", try scope.own(try createInMemory(engine)));
     try scope.put(exports, "InMemoryCodingAgentModelsStore", try scope.own(try createInMemoryCodingAgent(engine)));
     const prototype = try scope.object();
+    const constructor = try scope.own(try classes.constructor(engine, "FileModelsStore", 0, prototype, fileConstructor, &.{env}));
     inline for (.{ .{ Method.parse, "parse", 1, false }, .{ Method.update, "updateReadState", 3, false }, .{ Method.reload, "reloadFromStorage", 2, false }, .{ Method.latest, "readLatest", 2, true }, .{ Method.read, "read", 2, true }, .{ Method.write, "write", 3, true }, .{ Method.delete, "delete", 2, true } }) |entry| try define(&scope, prototype, entry[0], entry[1], entry[2], env, entry[3]);
-    try scope.put(exports, "FileModelsStore", try scope.own(try classes.constructor(engine, "FileModelsStore", 0, prototype, fileConstructor, &.{env})));
+    try scope.put(exports, "FileModelsStore", constructor);
     return c.JS_DupValue(engine.context, exports);
 }
 fn memoryClass(engine: *v.em.Engine, comptime name: [:0]const u8) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const prototype = try scope.object();
+    const constructor = try scope.own(try classes.constructor(engine, name, 0, prototype, memoryConstructor, &.{}));
     try define(&scope, prototype, .memory_read, "read", 2, c.pi_js_undefined(), true);
     try define(&scope, prototype, .memory_write, "write", 3, c.pi_js_undefined(), true);
     try define(&scope, prototype, .memory_delete, "delete", 2, c.pi_js_undefined(), true);
-    return classes.constructor(engine, name, 0, prototype, memoryConstructor, &.{});
+    return c.JS_DupValue(engine.context, constructor);
 }
 pub fn createInMemory(engine: *v.em.Engine) !c.JSValue {
     return memoryClass(engine, "InMemoryModelsStore");
@@ -110,8 +111,7 @@ fn parse(scope: *Scope, content: c.JSValue) !c.JSValue {
     if (!scope.truthy(content)) return scope.object();
     const json = try scope.global("JSON");
     const parse_fn = try scope.get(json, "parse");
-    const first = try scope.invoke(content, "charCodeAt", &.{c.JS_NewInt32(scope.engine.context, 0)});
-    const stripped = if (scope.equal(first, c.JS_NewInt32(scope.engine.context, 0xfeff))) try scope.invoke(content, "slice", &.{c.JS_NewInt32(scope.engine.context, 1)}) else content;
+    const stripped = if (scope.truthy(try scope.invoke(content, "startsWith", &.{try scope.text("\xef\xbb\xbf")}))) try scope.invoke(content, "slice", &.{c.JS_NewInt32(scope.engine.context, 1)}) else content;
     return scope.call(parse_fn, json, &.{stripped});
 }
 fn update(scope: *Scope, state: c.JSValue, data: c.JSValue, revision: c.JSValue) !void {
@@ -262,7 +262,7 @@ fn start(engine: *v.em.Engine, owner: c.JSValue, receiver: c.JSValue, method: Me
 fn finishLatest(scope: *Scope, owner: c.JSValue) !void {
     const reload = try scope.get(owner, "reload");
     const state = try scope.get(owner, "readState");
-    try scope.set(reload, "readers", try scope.own(try arithmetic.binary(scope.engine, .subtract, try scope.get(reload, "readers"), c.JS_NewInt32(scope.engine.context, 1))));
+    try scope.set(reload, "readers", try scope.own(try scope.engine.checked(c.JS_PiDecrement(scope.engine.context, try scope.get(reload, "readers")))));
     if (scope.equal(try scope.get(reload, "readers"), c.JS_NewInt32(scope.engine.context, 0)) and scope.equal(try scope.get(state, "reload"), reload)) {
         try scope.set(state, "reload", c.pi_js_undefined());
         _ = try scope.invoke(try scope.get(reload, "controller"), "abort", &.{});

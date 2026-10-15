@@ -29,10 +29,10 @@ pub fn create(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {
     const schema = try scope.own(try @import("native_sdk_model_config_schema_production.zig").create(engine, imports));
     try scope.put(env, "validator", try scope.call(try scope.get(env, "Compile"), c.pi_js_undefined(), &.{schema}));
     const prototype = try scope.object();
+    const constructor = try scope.own(try classes.constructor(engine, "ModelConfig", 2, prototype, construct, &.{}));
     inline for (.{ .{ Method.provider, "getProvider", 1 }, .{ Method.ids, "getProviderIds", 0 }, .{ Method.error_value, "getError", 0 } }) |entry| {
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, entry[1], c.JS_DupValue(engine.context, try function(&scope, entry[0], entry[1], entry[2], env)), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return v.js.capture(engine);
     }
-    const constructor = try scope.own(try classes.constructor(engine, "ModelConfig", 2, prototype, construct, &.{}));
     try scope.put(env, "constructor", constructor);
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "load", c.JS_DupValue(engine.context, try function(&scope, .load, "load", 1, env)), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return v.js.capture(engine);
     const exports = try scope.object();
@@ -128,8 +128,7 @@ fn stripMatch(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots
     return if (try v.eq(&scope, first, "\"")) c.JS_DupValue(engine.context, arg(args, 0)) else @import("native_sdk.zig").text(engine, "");
 }
 fn strip(scope: *Scope, input: c.JSValue) !c.JSValue {
-    const first = try scope.invoke(input, "charCodeAt", &.{c.JS_NewInt32(scope.engine.context, 0)});
-    const content = if (scope.equal(first, c.JS_NewInt32(scope.engine.context, 0xfeff))) try scope.invoke(input, "slice", &.{c.JS_NewInt32(scope.engine.context, 1)}) else input;
+    const content = if (scope.truthy(try scope.invoke(input, "startsWith", &.{try scope.text("\xef\xbb\xbf")}))) try scope.invoke(input, "slice", &.{c.JS_NewInt32(scope.engine.context, 1)}) else input;
     const functions = @import("native_node_function.zig");
     const line = try scope.own(try functions.createArrow(scope.engine, "", 1, stripMatch, &.{c.pi_js_bool(scope.engine.context, 0)}));
     const tail = try scope.own(try functions.createArrow(scope.engine, "", 2, stripMatch, &.{c.pi_js_bool(scope.engine.context, 1)}));
@@ -173,21 +172,18 @@ fn validationPath(scope: *Scope, path: c.JSValue) !c.JSValue {
     const first = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, scope.engine.intrinsic_regexp_constructor, args.len, &args)));
     return scope.invoke(try scope.invoke(path, "replace", &.{ first, try scope.text("") }), "replace", &.{ try regex(scope, "/"), try scope.text(".") });
 }
+fn parsedContent(scope: *Scope, content: c.JSValue) !c.JSValue {
+    const json = try scope.global("JSON");
+    const parse_fn = try scope.get(json, "parse");
+    return scope.call(parse_fn, json, &.{try strip(scope, content)});
+}
 fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, failed: bool, _: c_int) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     if (failed) return readFailure(&scope, owner, value);
-    const json = try scope.global("JSON");
-    const parse_fn = try scope.get(json, "parse");
-    const parsed = parse: {
-        const stripped = strip(&scope, value) catch |err| {
-            const reason = try scope.own(flow.reason(engine, err));
-            return instance(&scope, owner, try map(&scope), try message(&scope, owner, "Failed to parse models.json: ", try description(&scope, reason)));
-        };
-        break :parse scope.call(parse_fn, json, &.{stripped}) catch |err| {
-            const reason = try scope.own(flow.reason(engine, err));
-            return instance(&scope, owner, try map(&scope), try message(&scope, owner, "Failed to parse models.json: ", try description(&scope, reason)));
-        };
+    const parsed = parsedContent(&scope, value) catch |err| {
+        const reason = try scope.own(flow.reason(engine, err));
+        return instance(&scope, owner, try map(&scope), try message(&scope, owner, "Failed to parse models.json: ", try description(&scope, reason)));
     };
     const env = try scope.get(owner, "agent");
     const validator = try scope.get(env, "validator");
