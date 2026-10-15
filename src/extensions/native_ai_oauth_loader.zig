@@ -100,14 +100,7 @@ fn initialize(scope: *Scope, owner: c.JSValue) !void {
         .kimiCoding => try @import("native_ai_oauth_kimi.zig").create(scope.engine),
         .meta => try @import("native_ai_oauth_meta.zig").create(scope.engine),
         .xai => try @import("native_ai_oauth_xai.zig").create(scope.engine),
-        .radius => blk: {
-            const Adapter = struct {
-                fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-                    return @import("native_ai_oauth_radius.zig").create(engine, if (args.len > 0) args[0] else c.pi_js_undefined());
-                }
-            };
-            break :blk try functions.create(scope.engine, "createRadiusOAuth", 1, Adapter.call, &.{});
-        },
+        .radius => try @import("native_ai_oauth_radius.zig").factory(scope.engine),
     };
     _ = try scope.own(value);
     inline for (exports, 0..) |name, index| if (@intFromEnum(kind) == index) try scope.put(namespace, name, value);
