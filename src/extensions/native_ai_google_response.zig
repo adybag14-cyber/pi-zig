@@ -144,14 +144,30 @@ fn copyList(scope: *Scope, value: c.JSValue) !c.JSValue {
     };
     return scope.invoke(value, "map", &.{try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Identity.call, &.{}))});
 }
+// Pinned SDK getValueByPath ignores non-object sources and catches TypeError
+// from a field getter. Other thrown values and native allocation failures escape.
+fn sdkField(scope: *Scope, value: c.JSValue, key: [*:0]const u8) !c.JSValue {
+    if (!c.JS_IsObject(value) or c.JS_IsFunction(scope.engine.context, value)) return c.pi_js_undefined();
+    const generation = scope.engine.native_allocation_generation;
+    return scope.get(value, key) catch |err| {
+        if (err != error.JavaScriptException or scope.engine.native_allocation_generation != generation) return err;
+        const reason = @import("native_agent_async.zig").reason(scope.engine, err);
+        defer scope.engine.freeValue(reason);
+        const matches = c.JS_IsInstanceOf(scope.engine.context, reason, try scope.global("TypeError"));
+        if (matches < 0) return v.js.capture(scope.engine);
+        if (matches == 0) return err;
+        try @import("native_ai_partial_json.zig").discard(scope.engine, err, generation);
+        return c.pi_js_undefined();
+    };
+}
 fn candidate(scope: *Scope, value: c.JSValue) !c.JSValue {
     const output = try scope.object();
     inline for (.{ "content", "citationMetadata", "tokenCount", "finishReason", "groundingMetadata", "avgLogprobs", "index", "logprobsResult", "safetyRatings", "urlContextMetadata" }) |key| {
-        const field = try v.optional(scope, value, key);
+        const field = try sdkField(scope, value, key);
         if (!v.nullish(field)) {
             if (@import("std").mem.eql(u8, key, "citationMetadata")) {
                 const citations = try scope.object();
-                const sources = try v.optional(scope, field, "citationSources");
+                const sources = try sdkField(scope, field, "citationSources");
                 if (!v.nullish(sources)) try scope.put(citations, "citations", try copyList(scope, sources));
                 try scope.put(output, key, citations);
             } else if (@import("std").mem.eql(u8, key, "safetyRatings")) {
@@ -163,7 +179,7 @@ fn candidate(scope: *Scope, value: c.JSValue) !c.JSValue {
 }
 pub fn wrap(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_headers: c.JSValue, vertex: bool) !c.JSValue {
     const result = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, 0, null)));
-    const candidates = try scope.get(raw, "candidates");
+    const candidates = try sdkField(scope, raw, "candidates");
     if (!v.nullish(candidates)) {
         var converted = candidates;
         if (vertex) {
@@ -183,15 +199,15 @@ pub fn wrap(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_head
         try scope.put(result, "candidates", converted);
     }
     if (vertex) {
-        const create_time = try scope.get(raw, "createTime");
+        const create_time = try sdkField(scope, raw, "createTime");
         if (!v.nullish(create_time)) try scope.put(result, "createTime", create_time);
     }
     inline for (.{ "modelVersion", "promptFeedback", "responseId", "usageMetadata" }) |key| {
-        const value = try scope.get(raw, key);
+        const value = try sdkField(scope, raw, key);
         if (!v.nullish(value)) try scope.put(result, key, value);
     }
     if (!vertex) {
-        const status = try scope.get(raw, "modelStatus");
+        const status = try sdkField(scope, raw, "modelStatus");
         if (!v.nullish(status)) try scope.put(result, "modelStatus", status);
     }
     const http = try scope.object();
