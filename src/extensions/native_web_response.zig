@@ -16,6 +16,7 @@ const Root = struct {
     class: c.JSClassID = 0,
     constructor: c.JSValue,
     prototype: c.JSValue,
+    object_prototype: c.JSValue,
     interfaces: idl.Interfaces,
 };
 const State = struct {
@@ -38,6 +39,7 @@ fn freeRoot(runtime: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
     const root = rootOf(owner);
     c.JS_FreeValueRT(runtime, root.constructor);
     c.JS_FreeValueRT(runtime, root.prototype);
+    c.JS_FreeValueRT(runtime, root.object_prototype);
     inline for (std.meta.fields(idl.Interfaces)) |field| c.JS_FreeValueRT(runtime, @field(root.interfaces, field.name));
     root.engine.gpa.destroy(root);
 }
@@ -45,6 +47,7 @@ fn markRoot(runtime: ?*c.JSRuntime, owner: c.JSValue, marker: ?*const c.JS_MarkF
     const root = rootOf(owner);
     c.JS_MarkValue(runtime, root.constructor, marker);
     c.JS_MarkValue(runtime, root.prototype, marker);
+    c.JS_MarkValue(runtime, root.object_prototype, marker);
     inline for (std.meta.fields(idl.Interfaces)) |field| c.JS_MarkValue(runtime, @field(root.interfaces, field.name), marker);
 }
 fn freeState(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
@@ -65,11 +68,11 @@ fn classId(engine: *em.Engine, name: [*:0]const u8, finalizer: *const c.JSClassF
     if (c.JS_NewClass(engine.runtime, id, &definition) < 0) return error.OutOfMemory;
     return id;
 }
-fn privateState(scope: *Scope, owner: c.JSValue, receiver: c.JSValue) !*State {
+fn privateState(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, headers_field: bool) !*State {
     const root = rootOf(owner);
     if (!scope.truthy(try scope.call(root.interfaces.has_instance, root.constructor, &.{receiver}))) try web.typeError(scope, try scope.text("Illegal invocation"), "ERR_INVALID_THIS");
     if (c.JS_GetOpaque(receiver, root.class)) |opaque_state| return @ptrCast(@alignCast(opaque_state));
-    try web.typeError(scope, try scope.text("Cannot read private member #state from an object whose class did not declare it"), null);
+    try web.typeError(scope, try scope.text(if (headers_field) "Cannot read private member #headers from an object whose class did not declare it" else "Cannot read private member #state from an object whose class did not declare it"), null);
 }
 fn internalState(owner: c.JSValue, receiver: c.JSValue) *State {
     return @ptrCast(@alignCast(c.JS_GetOpaque(receiver, rootOf(owner).class).?));
@@ -132,7 +135,7 @@ fn create(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captur
     const input = if (args.len == 0 or c.JS_IsUndefined(args[0])) c.pi_js_null() else args[0];
     const converted = if (c.JS_IsNull(input)) input else try idl.bodyInit(&scope, root.interfaces, input, "Response", try scope.text("body"));
     const init = try idl.responseInit(&scope, if (args.len > 1) args[1] else c.pi_js_undefined());
-    const result = try fresh(&scope, owner, if (c.JS_IsObject(prototype)) prototype else root.prototype);
+    const result = try fresh(&scope, owner, if (c.JS_IsObject(prototype)) prototype else root.object_prototype);
     const extracted: ?body.Body = if (c.JS_IsNull(converted)) null else try body.extract(&scope, &root.interfaces, converted, false);
     try initialize(&scope, internalState(owner, result), init, extracted);
     return c.JS_DupValue(engine.context, result);
@@ -152,7 +155,7 @@ fn reject(scope: *Scope, failure: anyerror) !c.JSValue {
 fn clone(scope: *Scope, owner: c.JSValue, state: *State) !c.JSValue {
     if (try body.unusable(scope, state.payload)) try web.typeError(scope, try scope.text("Response.clone: Body has already been consumed."), null);
     const result = try fresh(scope, owner, rootOf(owner).prototype);
-    const copy = try privateState(scope, owner, result);
+    const copy = try privateState(scope, owner, result, false);
     const copied_headers = try scope.own(try headers.fromRecord(scope.engine, state.headers));
     try headers.setGuard(scope.engine, copied_headers, state.guard);
     const cloned = if (state.payload) |payload| try body.clone(scope, payload) else null;
@@ -182,7 +185,7 @@ fn isConsumer(kind: Kind) bool {
 fn operation(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const c.JSValue, kind: Kind) !c.JSValue {
     const engine = scope.engine;
     if (kind == .static_error or kind == .static_json or kind == .static_redirect) return staticOperation(scope, owner, args, kind);
-    const state = privateState(scope, owner, receiver) catch |err| return if (isConsumer(kind)) reject(scope, err) else err;
+    const state = privateState(scope, owner, receiver, kind == .headers) catch |err| return if (isConsumer(kind)) reject(scope, err) else err;
     return switch (kind) {
         .type => scope.text(if (state.network_error) "error" else "default"),
         .url => state.url,
@@ -228,7 +231,7 @@ fn staticOperation(scope: *Scope, owner: c.JSValue, args: []const c.JSValue, kin
         var extracted = try body.extract(scope, &root.interfaces, serialized, false);
         extracted.content_type = try scope.text("application/json");
         const result = try fresh(scope, owner, root.prototype);
-        try initialize(scope, try privateState(scope, owner, result), init, extracted);
+        try initialize(scope, try privateState(scope, owner, result, false), init, extracted);
         return result;
     }
     if (kind == .static_redirect) {
@@ -249,7 +252,7 @@ fn staticOperation(scope: *Scope, owner: c.JSValue, args: []const c.JSValue, kin
         if (c.JS_ToInt32(scope.engine.context, &status, converted) < 0) return js.capture(scope.engine);
         if (status != 301 and status != 302 and status != 303 and status != 307 and status != 308) try rangeError(scope, try scope.concat(try scope.text("Invalid status code "), converted));
         const result = try fresh(scope, owner, root.prototype);
-        const state = try privateState(scope, owner, result);
+        const state = try privateState(scope, owner, result, false);
         state.status = @intCast(status);
         _ = try scope.invoke(state.headers, "append", &.{ try scope.text("location"), try scope.get(parsed, "href") });
         state.guard = .immutable;
@@ -257,7 +260,7 @@ fn staticOperation(scope: *Scope, owner: c.JSValue, args: []const c.JSValue, kin
         return result;
     }
     const result = try fresh(scope, owner, root.prototype);
-    const state = try privateState(scope, owner, result);
+    const state = try privateState(scope, owner, result, false);
     state.status = 0;
     state.network_error = true;
     state.guard = .immutable;
@@ -299,11 +302,12 @@ pub fn install(engine: *em.Engine, interfaces: idl.Interfaces) !void {
     defer scope.deinit();
     const owner = try scope.own(try engine.checked(c.JS_NewObjectClass(engine.context, try classId(engine, "Native Response Owner", freeRoot, markRoot))));
     const root = try engine.gpa.create(Root);
-    root.* = .{ .engine = engine, .constructor = c.pi_js_undefined(), .prototype = c.pi_js_undefined(), .interfaces = interfaces };
+    root.* = .{ .engine = engine, .constructor = c.pi_js_undefined(), .prototype = c.pi_js_undefined(), .object_prototype = c.pi_js_undefined(), .interfaces = interfaces };
     inline for (std.meta.fields(idl.Interfaces)) |field| @field(root.interfaces, field.name) = c.JS_DupValue(engine.context, @field(interfaces, field.name));
     _ = c.JS_SetOpaque(owner, root);
     root.class = try classId(engine, "Response", freeState, markState);
     root.prototype = try js.object(engine);
+    root.object_prototype = try js.get(engine, try scope.global("Object"), "prototype");
     root.constructor = try @import("native_class.zig").constructor(engine, "Response", 0, root.prototype, create, &.{owner});
     inline for (.{ .{ "type", "get type", Kind.type }, .{ "url", "get url", Kind.url }, .{ "redirected", "get redirected", Kind.redirected }, .{ "status", "get status", Kind.status }, .{ "ok", "get ok", Kind.ok }, .{ "statusText", "get statusText", Kind.statusText }, .{ "headers", "get headers", Kind.headers }, .{ "body", "get body", Kind.body }, .{ "bodyUsed", "get bodyUsed", Kind.bodyUsed } }) |spec| try getter(&scope, owner, spec[0], spec[1], spec[2]);
     try scope.set(root.prototype, "clone", try function(&scope, owner, "clone", 0, .clone));
@@ -335,7 +339,7 @@ pub fn fromTransport(engine: *em.Engine, input: Transport) !c.JSValue {
     try scope.set(init, "headers", input.headers);
     var args = [_]c.JSValue{ input.body, init };
     const result = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, root.constructor, args.len, &args)));
-    const state = try privateState(&scope, owner, result);
+    const state = try privateState(&scope, owner, result, false);
     const parsed = try scope.own(try js.builtin(engine, "URL", &.{input.url}));
     try scope.set(parsed, "hash", try scope.text(""));
     const url = try scope.get(parsed, "href");

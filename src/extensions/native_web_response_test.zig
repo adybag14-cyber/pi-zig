@@ -71,6 +71,9 @@ test "Response Source176 actual 114 row projection descriptors WebIDL Body and G
     };
 }
 const ownership_script =
+    \\const target=function Target(){};target.prototype=null;const constructed=Reflect.construct(Response,[null],target);if(Object.getPrototypeOf(constructed)!==Object.prototype)throw Error('Response newTarget intrinsic fallback');
+    \\class DerivedResponse extends Response{};const derived=new DerivedResponse(null,{status:203});if(!(derived instanceof Response)||derived.status!==203)throw Error('Response subclass brand');
+    \\for(const field of ['status','headers']){let failure;try{Object.getOwnPropertyDescriptor(Response.prototype,field).get.call(Object.create(Response.prototype))}catch(e){failure=e}if(!(failure instanceof TypeError)||!failure.message.includes(field==='headers'?'#headers':'#state'))throw Error('Response private field '+field)}
     \\const response=new Response('{"owned":true}',{status:201,statusText:'Created',headers:[['X','one'],['Set-Cookie','a=1'],['Set-Cookie','b=2']]});
     \\const copy=response.clone();copy.headers.set('X','copy');
     \\if(response.headers.get('x')!=='one'||copy.status!==201||copy.statusText!=='Created'||copy.headers.getSetCookie().length!==2)throw Error('Response clone owned fields');
