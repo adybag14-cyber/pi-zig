@@ -1,0 +1,32 @@
+[
+  {
+    "sha256": "043C239621E27E175FBFDDB5488EA76601C7E2FEC2370E652135F22CE63DB51A",
+    "factory": "xml",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\xml.js"
+  },
+  {
+    "sha256": "CF6C5A843A15794B5AE9FC53140E76A9FA1DC9CDA319FE3D2C088A4D5C4623F1",
+    "factory": "css",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\css.js"
+  },
+  {
+    "sha256": "8492E5BACAF95BBFB5B4302DDDC8AC785FA28823E36B791AA1A5C6C18A45D402",
+    "factory": "markdown",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\markdown.js"
+  },
+  {
+    "sha256": "FAD46955162A45E5835E134531A058442FD068F3380EB5CFD8B20C44D4143AE0",
+    "factory": "powershell",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\powershell.js"
+  },
+  {
+    "sha256": "BF56C9B66BEA17EBFB891FB59FA165328468F79D03A60ECBED068C6CAD351590",
+    "factory": "sql",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\sql.js"
+  },
+  {
+    "sha256": "080A35167777EBDAD581A486CA6793F57EF5694AA06BE20258BFA1ACD3334793",
+    "factory": "yaml",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\yaml.js"
+  }
+]

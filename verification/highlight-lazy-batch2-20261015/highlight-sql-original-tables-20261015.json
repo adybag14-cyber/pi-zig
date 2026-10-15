@@ -1,0 +1,15 @@
+{
+  "tables": {
+    "LITERALS": 3,
+    "RESERVED_FUNCTIONS": 85,
+    "MULTI_WORD_TYPES": 4,
+    "RESERVED_WORDS": 366,
+    "TYPES": 27,
+    "NON_RESERVED_WORDS": 8,
+    "POSSIBLE_WITHOUT_PARENS": 15,
+    "COMBOS": 16
+  },
+  "scope": "Exact lexical string tables only; Source iteration/filter/includes/map/coercion behavior remains native body work, no expected fixture generated",
+  "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/sql.js",
+  "source_sha256": "BF56C9B66BEA17EBFB891FB59FA165328468F79D03A60ECBED068C6CAD351590"
+}

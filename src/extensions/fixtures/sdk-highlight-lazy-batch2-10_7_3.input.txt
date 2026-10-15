@@ -1,0 +1,89 @@
+let initTrace=[],originalReverse;
+function graph(root){
+  const seen=new Map();let next=0;
+  function encode(value){
+    if(value===undefined)return{$undefined:true};
+    if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+    if(typeof value==='number')return Number.isFinite(value)?value:{$number:String(value)};
+    if(typeof value==='function')return{$function:{name:value.name,length:value.length,keys:Reflect.ownKeys(value).map(String),prototype:Object.hasOwn(value,'prototype')}};
+    if(typeof value!=='object')return{$other:typeof value,value:String(value)};
+    if(seen.has(value))return{$ref:seen.get(value)};
+    const id=next++;seen.set(value,id);
+    if(value instanceof RegExp)return{$id:id,$regexp:value.source,flags:value.flags,lastIndex:value.lastIndex,frozen:Object.isFrozen(value)};
+    return{$id:id,kind:Array.isArray(value)?'array':'object',frozen:Object.isFrozen(value),properties:Reflect.ownKeys(value).map(key=>{
+      const d=Object.getOwnPropertyDescriptor(value,key);
+      return{key:String(key),enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,value:encode(d.value)}:{get:encode(d.get),set:encode(d.set)})};
+    })};
+  }
+  return encode(root);
+}
+globalThis.highlightLazyBatch2Hooks={
+  beforeLoad(){initTrace=[];originalReverse=Array.prototype.reverse;Array.prototype.reverse=function(...args){initTrace.push({length:this.length,first:this[0],last:this[this.length-1]});return Reflect.apply(originalReverse,this,args)}},
+  afterLoad(){Array.prototype.reverse=originalReverse},
+  run(){
+    const rows=[];const record=(name,run)=>{try{rows.push({name,value:run()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}};
+    const names=['xml','css','markdown','powershell','sql','yaml'];
+    record('actual batch2 factory metadata',()=>names.map(name=>{const fn=highlightLazyFactories[name];return{name,metadata:{name:fn.name,length:fn.length,keys:Reflect.ownKeys(fn).map(String),prototype:Object.hasOwn(fn,'prototype')}}}));
+    record('CSS actual module table reverse executes once during load',()=>initTrace);
+    for(const name of names)record(name+' complete raw grammar graph',()=>graph(highlightLazyFactories[name](highlightCoreAPI)));
+    for(const name of names)record(name+' live helper getter order',()=>{
+      const trace=[];const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){trace.push(String(key));return Reflect.get(target,key,receiver)}});
+      return{grammar:graph(highlightLazyFactories[name](api)),trace};
+    });
+    const firstGet={xml:'inherit',css:'APOS_STRING_MODE',powershell:'inherit',sql:'COMMENT',yaml:'BACKSLASH_ESCAPE'};
+    for(const name of names)record(name+' actual helper getter rejection or no helper access',()=>{
+      const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){if(name==='markdown'||key===firstGet[name])throw new TypeError('actual getter rejected '+name);return Reflect.get(target,key,receiver)}});
+      return graph(highlightLazyFactories[name](api));
+    });
+    record('Markdown actual shared recursive emphasis and header graphs',()=>{
+      const grammar=highlightLazyFactories.markdown(highlightCoreAPI),m=grammar.contains,bold=m[3],italic=m[4];
+      return{boldSharesItalic:bold.contains[0]===italic,italicSharesBold:italic.contains[0]===bold,htmlShared:bold.contains[1]===m[1]&&italic.contains[1]===m[1],linkShared:bold.contains[2]===m[8]&&italic.contains[2]===m[8],headerQuoteShared:m[0].variants[0].contains===m[5].contains};
+    });
+    record('YAML actual shared recursive value container graph',()=>{
+      const grammar=highlightLazyFactories.yaml(highlightCoreAPI),m=grammar.contains,value=m[15].contains[0],last=value.contains[value.contains.length-1];
+      return{shared:value===m[16].contains[0],objectCycle:value.contains[15]===m[15],arrayCycle:value.contains[16]===m[16],containerStringDistinct:last!==m[17],stringContainsShared:last.contains===m[17].contains};
+    });
+    record('CSS actual live module table and regex helper joins',()=>{
+      const trace=[],join=Array.prototype.join;let grammar;
+      Array.prototype.join=function(separator){trace.push({length:this.length,first:this[0],last:this[this.length-1],separator});return Reflect.apply(join,this,arguments)};
+      try{grammar=highlightLazyFactories.css(highlightCoreAPI)}finally{Array.prototype.join=join}
+      return{trace,attributeBegin:grammar.contains[7].begin,tagBegin:grammar.contains[10].begin};
+    });
+    record('SQL actual live spread filter includes and relevance map',()=>{
+      const counts={filter:[],includes:{functions:0,exceptions:0},map:[]},filter=Array.prototype.filter,includes=Array.prototype.includes,map=Array.prototype.map;let grammar;
+      Array.prototype.filter=function(callback,...rest){counts.filter.push({length:this.length,callbackLength:callback.length,callbackPrototype:Object.hasOwn(callback,'prototype')});return Reflect.apply(filter,this,[callback,...rest])};
+      Array.prototype.includes=function(value,...rest){if(this.length===85)counts.includes.functions++;if(this.length===0)counts.includes.exceptions++;return Reflect.apply(includes,this,[value,...rest])};
+      Array.prototype.map=function(callback,...rest){counts.map.push({length:this.length,callbackLength:callback.length,callbackPrototype:Object.hasOwn(callback,'prototype')});return Reflect.apply(map,this,[callback,...rest])};
+      try{grammar=highlightLazyFactories.sql(highlightCoreAPI)}finally{Array.prototype.filter=filter;Array.prototype.includes=includes;Array.prototype.map=map}
+      return{counts,keywordLength:grammar.keywords.keyword.length,zeroRelevance:grammar.keywords.keyword.filter(x=>x.endsWith('|0')),literals:grammar.keywords.literal};
+    });
+    record('PowerShell actual live string concat receiver and arguments',()=>{
+      const trace=[],concat=String.prototype.concat;let grammar;
+      String.prototype.concat=function(...args){trace.push({receiver:String(this),arguments:args});return Reflect.apply(concat,this,args)};
+      try{grammar=highlightLazyFactories.powershell(highlightCoreAPI)}finally{String.prototype.concat=concat}
+      return{trace,rootModes:grammar.contains.length};
+    });
+    record('YAML actual array spread uses iterator without extra pushes',()=>{
+      const trace=[],iterator=Array.prototype[Symbol.iterator],push=Array.prototype.push;let grammar;
+      Array.prototype[Symbol.iterator]=function*(){trace[trace.length]=['iterator',this.length];yield*Reflect.apply(iterator,this,[])};
+      Array.prototype.push=function(...values){trace[trace.length]=['push',this.length,values.length];return Reflect.apply(push,this,values)};
+      try{grammar=highlightLazyFactories.yaml(highlightCoreAPI)}finally{Array.prototype[Symbol.iterator]=iterator;Array.prototype.push=push}
+      return{trace,valueModeCount:grammar.contains[15].contains[0].contains.length};
+    });
+    for(const name of names)highlightCoreAPI.registerLanguage(name,highlightLazyFactories[name]);
+    const samples={
+      xml:['<?xml version="1.0"?><root id="a">&amp;<![CDATA[<>&]]></root>','<!DOCTYPE html><!-- TODO: document --><div data-value=42>text</div>','<style>body { color: #fff; }</style><script>const value = 42;</script>'],
+      css:['body, .item:hover { color: #aabbcc; width: 12px !important; }','@media screen and (min-width: 20em) { #target[data-x="v"]::before { content: "<>&"; } }','@font-face { font-family: demo; src: url("data:font/x;base64,AAA"); }'],
+      markdown:['# Header **strong** and *emphasis*\n\n- item [link](https://example.test/a)\n','Title\n=====\n\n> __bold _nested___ and `code`\n','<span class="value">&amp;</span>\n\n```js\nconst value = 42;\n```\n'],
+      powershell:['function Get-Value($Name) { Write-Output "Hello $Name"; return $true }','class Thing { [string] Name; [int] Count() { return 42 } } # TODO: type','<# .SYNOPSIS demo #>\nusing namespace System.Text\n$values = @(1,2); if ($values -contains 1) { Get-Item . }'],
+      sql:['CREATE TABLE item (id INTEGER PRIMARY KEY, name VARCHAR(80) NOT NULL);','SELECT count(*), current_date FROM item WHERE id >= 42 AND name = \'it\'\'s text\'; -- TODO: query','INSERT INTO item VALUES (1, \'<>&\'); SELECT CAST(1 AS DOUBLE PRECISION), true, unknown;'],
+      yaml:['---\nname: "demo"\nvalues: [true, false, 1_000, { key: value }]\n','defaults: &defaults\n  enabled: yes\ncopy: *defaults\ntext: |\n  first\n  second\n','template: "{{ user }}"\ntime: 2026-10-15T12:30:00Z\nvalue: !!str plain\n# TODO: yaml\n']
+    };
+    for(const[name,codes]of Object.entries(samples))for(const[index,code]of codes.entries())record(name+' actual scanner '+index,()=>{
+      const result=highlightCoreAPI.highlight(code,{language:name,ignoreIllegals:false});return{language:result.language,relevance:result.relevance,illegal:result.illegal,value:result.value,code:result.code,tree:JSON.parse(result.emitter.toJSON()),errorRaised:result.errorRaised?{name:result.errorRaised.name,message:result.errorRaised.message}:undefined};
+    });
+    record('actual batch2 registered aliases and canonical order',()=>({registry:highlightCoreAPI.listLanguages(),xml:['html','rss','svg'].map(name=>highlightCoreAPI.getLanguage(name)===highlightCoreAPI.getLanguage('xml')),markdown:['md','mkdown','mkd'].map(name=>highlightCoreAPI.getLanguage(name)===highlightCoreAPI.getLanguage('markdown')),powershell:['ps','ps1'].map(name=>highlightCoreAPI.getLanguage(name)===highlightCoreAPI.getLanguage('powershell')),yaml:highlightCoreAPI.getLanguage('yml')===highlightCoreAPI.getLanguage('yaml')}));
+    if(rows.length!==45)throw Error('Actual lazy batch2 corpus count '+rows.length);
+    globalThis.sdkHighlightLazyBatch2Rows=rows;
+  }
+};

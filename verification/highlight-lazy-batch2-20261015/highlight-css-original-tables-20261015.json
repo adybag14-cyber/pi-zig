@@ -1,0 +1,12 @@
+{
+  "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/css.js",
+  "tables": {
+    "ATTRIBUTES": 207,
+    "PSEUDO_CLASSES": 59,
+    "MEDIA_FEATURES": 33,
+    "PSEUDO_ELEMENTS": 14,
+    "TAGS": 72
+  },
+  "source_sha256": "CF6C5A843A15794B5AE9FC53140E76A9FA1DC9CDA319FE3D2C088A4D5C4623F1",
+  "scope": "Exact lexical source string tables only; Source reverse/join/spread behavior remains native body work, no expected fixture generated"
+}

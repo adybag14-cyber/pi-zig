@@ -1,0 +1,18 @@
+{
+  "source45_captured": false,
+  "expected_source45_json_exists": false,
+  "native_runtime_qualified": false,
+  "lazy_index_complete": false,
+  "full_pi_qualified": false,
+  "native_compiled": false,
+  "factories": [
+    "xml",
+    "css",
+    "markdown",
+    "powershell",
+    "sql",
+    "yaml"
+  ],
+  "baseline": "733800b8b872d86c5766dc4a30cf44ae8d373254",
+  "prepared_genuine_source_cases": 45
+}
