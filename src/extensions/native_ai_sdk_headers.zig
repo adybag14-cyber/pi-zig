@@ -91,7 +91,7 @@ fn directRows(scope: *Scope, owner: c.JSValue, seen: c.JSValue, rows: c.JSValue,
 fn sourceRows(scope: *Scope, owner: c.JSValue, seen: c.JSValue, source: c.JSValue, module: c.JSValue) !void {
     if (!scope.truthy(source)) return;
     const append = try scope.get(module, "append");
-    if (try v.js.has(scope.engine, source, try scope.get(module, "brand"))) {
+    if (try v.js.hasKey(scope.engine, source, try scope.get(module, "brand"))) {
         const values = try scope.get(source, "values");
         const nulls = try scope.get(source, "nulls");
         try directRows(scope, owner, seen, try scope.invoke(values, "entries", &.{}), append);
