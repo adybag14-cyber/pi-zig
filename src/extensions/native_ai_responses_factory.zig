@@ -111,6 +111,7 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
 fn setup(scope: *Scope, owner: c.JSValue, properties: c.JSValue) !void {
     const options = try scope.get(owner, "options");
     const mode = try getMode(scope, try scope.get(owner, "agent"));
+    if (mode == .codex and !try v.eq(scope, try v.optional(scope, options, "transport"), "sse")) return v.errorText(scope, try scope.text("Native Codex WebSocket integration is not yet qualified"));
     try scope.put(owner, "apiKey", try apiKey(scope, try scope.get(owner, "model"), options, mode));
     const retention = if (mode == .codex) (if (try v.eq(scope, try v.optional(scope, options, "cacheRetention"), "none")) try scope.text("none") else try scope.text("short")) else try @import("native_ai_openai_request.zig").cacheRetention(scope, options);
     try scope.put(owner, "retention", retention);
