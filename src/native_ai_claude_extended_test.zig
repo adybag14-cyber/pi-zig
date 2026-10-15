@@ -98,6 +98,7 @@ test "native Claude5ab extended public Source16 wire federation retry long resul
     const guest = @embedFile("extensions/fixtures/ai-anthropic5ab-extended-native.mjs");
     const result = engine.evalModule(guest ++ "\nexport const compared=await run(extendedSource,extendedStreams,extendedBaseURL,extendedIdentityFile);", "native-claude5ab-extended-source16.mjs") catch |err| {
         std.debug.print("Anthropic extended Source16: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        std.debug.print("Anthropic extended observed requests before failure: {d}/{d}\n", .{ server.captured.items.len, expected_requests });
         return err;
     };
     engine.freeValue(result);

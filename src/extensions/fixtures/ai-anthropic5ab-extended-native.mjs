@@ -71,7 +71,7 @@ export async function run(source, streams, baseUrl, identityFile) {
       syncError = {name: error.name, message: error.message};
     }
     for (const [key, actual] of Object.entries({payloads, callbacks, events, result, syncError})) {
-      if (JSON.stringify(actual) !== JSON.stringify(row[key])) throw Error(JSON.stringify({name: row.name, key, actual, expected: row[key]}));
+      if (JSON.stringify(actual) !== JSON.stringify(row[key])) throw Error(JSON.stringify({name: row.name, key, actual, expected: row[key], terminalResult: result, synchronousError: syncError}));
     }
   }
   return true;
