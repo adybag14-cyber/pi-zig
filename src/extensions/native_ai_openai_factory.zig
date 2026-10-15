@@ -23,7 +23,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
                 return stream(host, roots[0], &values, index == 1);
             }
         };
-        try scope.put(result, name, try scope.own(try @import("native_node_function.zig").create(engine, name, 3, Adapter.call, &.{dependencies})));
+        try scope.put(result, name, try scope.own(try @import("native_node_function.zig").createArrow(engine, name, 3, Adapter.call, &.{dependencies})));
     }
     return c.JS_DupValue(engine.context, result);
 }
@@ -436,9 +436,9 @@ fn sleep(scope: *Scope, delay: c.JSValue, signal: c.JSValue) !c.JSValue {
             return c.pi_js_undefined();
         }
     };
-    const on_abort = try scope.own(try @import("native_node_function.zig").create(engine, "onAbort", 0, Adapter.abort, &.{pending.owner}));
+    const on_abort = try scope.own(try @import("native_node_function.zig").createArrow(engine, "onAbort", 0, Adapter.abort, &.{pending.owner}));
     try scope.put(pending.owner, "onAbort", on_abort);
-    const timer = try scope.own(try @import("native_node_function.zig").create(engine, "", 0, Adapter.timer, &.{pending.owner}));
+    const timer = try scope.own(try @import("native_node_function.zig").createArrow(engine, "", 0, Adapter.timer, &.{pending.owner}));
     const timeout = try scope.call(try scope.global("setTimeout"), c.pi_js_undefined(), &.{ timer, try scope.invoke(try scope.global("Math"), "max", &.{ c.JS_NewInt32(engine.context, 0), delay }) });
     try scope.put(pending.owner, "timeout", timeout);
     if (!v.nullish(signal)) {

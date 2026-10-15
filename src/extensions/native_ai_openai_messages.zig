@@ -12,7 +12,7 @@ fn function(scope: *Scope, comptime kind: Kind, roots: []const c.JSValue) !c.JSV
             return callback(&row, kind, if (args.len > 0) args[0] else c.pi_js_undefined(), data);
         }
     };
-    return scope.own(try @import("native_node_function.zig").create(scope.engine, "", 1, Adapter.call, roots));
+    return scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Adapter.call, roots));
 }
 fn predicate(scope: *Scope, result: bool) c.JSValue {
     return c.pi_js_bool(scope.engine.context, @intFromBool(result));
