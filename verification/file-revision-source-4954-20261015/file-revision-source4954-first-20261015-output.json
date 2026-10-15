@@ -1,0 +1,13 @@
+{
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "runtime": "v24.14.0",
+  "inputSha256": "aaced29384e52f7cb6a52d3de6665f21b50de2f68a13a5f3be400aa1c4aee27f",
+  "ownedFixtureRoot": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-8WAuxX",
+  "fixturesRetained": true,
+  "status": "failed",
+  "error": {
+    "name": "Error",
+    "message": "getFileRevision control failed: mtime-decimal-preserves-integer-precision",
+    "stack": "Error: getFileRevision control failed: mtime-decimal-preserves-integer-precision\n    at row (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/file-revision-source4954-capture-20261015.mjs:18:3), <anonymous>:5:48)\n    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/file-revision-source4954-capture-20261015.mjs:18:3), <anonymous>:40:1)\n    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/file-revision-source4954-capture-20261015.mjs:18:18"
+  }
+}

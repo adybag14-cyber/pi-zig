@@ -117,3 +117,37 @@ test "private allocation failures remain errors rather than Source missing revis
         try std.testing.expectError(error.OutOfMemory, revision.revisionAlloc(failing.allocator(), path));
     }
 }
+
+test "native revisions equal actual Source bigint stat strings on six retained physical paths" {
+    const captured = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, @embedFile("extensions/fixtures/file-revision-source-4954.json"), .{});
+    defer captured.deinit();
+    try std.testing.expectEqualStrings("4954d760504c11df9b2cbdc040346107b6a8153d", captured.value.object.get("sourceHead").?.string);
+    try std.testing.expectEqualStrings("passed", captured.value.object.get("status").?.string);
+    const files = captured.value.object.get("finalFiles").?.array.items;
+    try std.testing.expectEqual(@as(usize, 6), files.len);
+    var present: usize = 0;
+    for (files) |file| {
+        std.Io.Dir.cwd().access(std.testing.io, file.object.get("path").?.string, .{}) catch |err| switch (err) {
+            error.FileNotFound => continue,
+            else => return err,
+        };
+        present += 1;
+    }
+    // These are deliberately retained original Windows physical objects, not
+    // recreated fixtures with invented IDs/times. Other hosts cannot replay
+    // their identity; report that as a skipped test instead of a native pass.
+    if (present == 0) return error.SkipZigTest;
+    try std.testing.expectEqual(files.len, present);
+    for (files) |file| {
+        const path = file.object.get("path").?.string;
+        const actual = (try revision.revisionAlloc(std.testing.allocator, path)) orelse return error.SourcePhysicalFixtureStatFailed;
+        defer std.testing.allocator.free(actual);
+        try std.testing.expectEqualStrings(file.object.get("revision").?.string, actual);
+        const bytes = try std.Io.Dir.cwd().readFileAlloc(std.testing.io, path, std.testing.allocator, .limited(1024 * 1024));
+        defer std.testing.allocator.free(bytes);
+        var digest: [32]u8 = undefined;
+        std.crypto.hash.sha2.Sha256.hash(bytes, &digest, .{});
+        const hex = std.fmt.bytesToHex(digest, .lower);
+        try std.testing.expectEqualStrings(file.object.get("sha256").?.string, &hex);
+    }
+}

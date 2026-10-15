@@ -1,0 +1,119 @@
+{
+  "status": "genuine_Source30_accepted_native_unrun",
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "frozen_candidate": "1f0008ef475b5325ce15192f6a9a20a1b2e64616",
+  "source_packet": "src/extensions/fixtures/file-revision-source-4954.json",
+  "source_packet_sha256": "4F8E890DBB214A3F55493E9AB9FD0090F6776DC60CD8B6F9C72182C41BD96F8A",
+  "source_cases": 30,
+  "raw_rows": 9,
+  "physical_paths_retained": 6,
+  "owned_fixture_root": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ",
+  "symlink": "EPERM_no_success_claim",
+  "native_tests_prepared": 6,
+  "native_tests_executed": 0,
+  "new_native_test": "exact original physical Source revisions and content hashes; explicit skip if all original objects absent on another host",
+  "product_files_unchanged_after_source_capture": true,
+  "proof_files": [
+    {
+      "path": "file-revision-source4954-capture-20261015.mjs",
+      "sha256": "ABDBC59884F6C34F2DC0392B864CA57E870F487C00913CCDD171E83AFCDAA5F5",
+      "bytes": 2014
+    },
+    {
+      "path": "file-revision-source4954-first-20261015-inventory-post.json",
+      "sha256": "5D5A51152C7DAC863AC1F89EC1A8EA36786904FE3D54A3845C1A985075B400D6",
+      "bytes": 255
+    },
+    {
+      "path": "file-revision-source4954-first-20261015-output.json",
+      "sha256": "B63BF3C086F40A26FAE052254964A3D96B414EC2C3667D0F278014B065D12FF4",
+      "bytes": 1002
+    },
+    {
+      "path": "file-revision-source4954-first-20261015-posthash.json",
+      "sha256": "7CA726DB9C55577B9CBBD014DB08A7FC9CC121C867FCB7C3DC2162E8AE4148FE",
+      "bytes": 837
+    },
+    {
+      "path": "file-revision-source4954-first-20261015.json",
+      "sha256": "DD2B1185986D590394E7A0ECADDEB260A41D00A051B8D5D5583BA69875C7963B",
+      "bytes": 1150
+    },
+    {
+      "path": "file-revision-source4954-first-20261015.stderr.log",
+      "sha256": "3C8A572CCB2B158E07D0C58C15697E62DD2129DB5F95BE31191702A5B123D26D",
+      "bytes": 614
+    },
+    {
+      "path": "file-revision-source4954-first-driver-retained-20261015.mjs",
+      "sha256": "C4F13C9B13F927FF42AB44AAD522AA85574860DA3E74D37C09A5E1FF3EA466EF",
+      "bytes": 1961
+    },
+    {
+      "path": "file-revision-source4954-second-20261015-inventory-post.json",
+      "sha256": "B9EBFB0ED78619DA5847AEE6D3D051E6400798EC01864D40D81AB093C60CD823",
+      "bytes": 255
+    },
+    {
+      "path": "file-revision-source4954-second-20261015-posthash.json",
+      "sha256": "6D3CF7D8BA96E8C11AC65F951EEF9EAFB574FC22C653C6184E39164DE6CE841E",
+      "bytes": 837
+    },
+    {
+      "path": "file-revision-source4954-second-20261015-validation.json",
+      "sha256": "7BAA30984772936A42E89FA2BAEC47D39574ED7E8D1806EE5466186570902FF0",
+      "bytes": 213
+    },
+    {
+      "path": "file-revision-source4954-second-20261015.json",
+      "sha256": "C316651E22571475A3FDC437819B28F5D9CAF3CB1FC18B39BF5C92BCF940DCC3",
+      "bytes": 1152
+    },
+    {
+      "path": "file-revision-source4954-second-20261015.stderr.log",
+      "sha256": "351D3B8433E9B40E9985875EF468C69CCAD09A741C7479F31F425A3ED888DE92",
+      "bytes": 178
+    },
+    {
+      "path": "file-revision-source4954-second-20261015.stdout.log",
+      "sha256": "0A6F973B4B78A6CF5E4125E3D203ED58D5E955A717F3F7392CCF76E7C52A23B9",
+      "bytes": 182
+    },
+    {
+      "path": "Run-FileRevisionSource4954-20261015.ps1",
+      "sha256": "8A7459E9041F49FCDC631C2F9CB08501279261D500160B13F419A56F92C0A99E",
+      "bytes": 12149
+    },
+    {
+      "path": "Run-FileRevisionSource4954-first-retained-20261015.ps1",
+      "sha256": "4350044C0D1C64D72658983610F04F65C410DE24CA23808BE3C61340F5BFA397",
+      "bytes": 12143
+    },
+    {
+      "path": "source4954-modules-68708-0-20261015.jsonl",
+      "sha256": "9CF56957F7614653D45B4C8BC6CF5073C634270BC80B89E050E2A3F6BDFF9F94",
+      "bytes": 3713
+    },
+    {
+      "path": "source4954-observe-20261015.mjs",
+      "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3",
+      "bytes": 4698
+    },
+    {
+      "path": "source4954-preparation-readiness-20261015.json",
+      "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7",
+      "bytes": 2788
+    },
+    {
+      "path": "source4954-reference-controls-20261015.json",
+      "sha256": "A11A87511B15B6AEDF4FFC94EA541DE986FCCC4334BA9A47C2BED3ED0A5094D0",
+      "bytes": 1012
+    },
+    {
+      "path": "STATUS.md",
+      "sha256": "E5040E0F19A67EC60273A9CAFAC9AA3091E7168938CD8894C1BE9AEA46A8E09B",
+      "bytes": 3679
+    }
+  ],
+  "raw_byte_archive": "RAW-PROOF.zip"
+}

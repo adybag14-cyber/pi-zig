@@ -1,0 +1,10 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: getFileRevision control failed: mtime-decimal-preserves-integer-precision
+    at row (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/file-revision-source4954-capture-20261015.mjs:18:3), <anonymous>:5:48)
+    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/file-revision-source4954-capture-20261015.mjs:18:3), <anonymous>:40:1)
+    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/file-revision-source4954-capture-20261015.mjs:18:18
+
+Node.js v24.14.0
