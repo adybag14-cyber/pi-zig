@@ -181,14 +181,19 @@ pub fn acquire(engine: *v.em.Engine, input: raw.Input, session: c.JSValue, accou
         }
         break;
     };
-    const reused = connection != null;
-    var ready: c.JSValue = undefined;
     if (connection) |existing| {
+        errdefer {
+            existing.closed = true;
+            existing.busy = false;
+            existing.worker.cancel();
+        }
+        const ready = try scope.own(try engine.checked(c.JS_PiPromiseResolve(engine.context, c.pi_js_undefined())));
+        const output = try createOutput(&scope, existing.id, existing.meta, ready, existing.cached, true);
+        try scope.put(existing.meta, "readTimeoutMs", read_timeout);
         existing.busy = true;
         engine.freeValue(existing.signal);
         existing.signal = c.JS_DupValue(engine.context, signal);
-        try scope.put(existing.meta, "readTimeoutMs", read_timeout);
-        ready = try scope.own(try engine.checked(c.JS_PiPromiseResolve(engine.context, c.pi_js_undefined())));
+        return c.JS_DupValue(engine.context, output);
     } else {
         try state.connections.ensureUnusedCapacity(engine.gpa, 1);
         const meta = try scope.object();
@@ -207,29 +212,27 @@ pub fn acquire(engine: *v.em.Engine, input: raw.Input, session: c.JSValue, accou
         };
         state.next_id +%= 1;
         if (state.next_id == 0) state.next_id = 1;
+        // Finish every fallible owner/VM allocation before starting network I/O.
+        const output = try createOutput(&scope, state.next_id, meta, created.value, cached, false);
         const worker = try raw.Worker.create(io, input, engine, v.em.Engine.notifyOwner);
         fresh.* = .{ .id = state.next_id, .worker = worker, .meta = c.JS_DupValue(engine.context, meta), .signal = c.JS_DupValue(engine.context, signal), .ready = created.waiter, .cached = cached };
         state.connections.appendAssumeCapacity(fresh);
-        connection = fresh;
-        ready = created.value;
+        return c.JS_DupValue(engine.context, output);
     }
-    const chosen = connection.?;
-    errdefer {
-        chosen.closed = true;
-        chosen.busy = false;
-        chosen.worker.cancel();
-    }
-    const id = try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, chosen.id)));
+}
+fn createOutput(scope: *Scope, connection_id: u64, meta: c.JSValue, ready: c.JSValue, cached: bool, reused: bool) !c.JSValue {
+    const engine = scope.engine;
+    const id = try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, connection_id)));
     const output = try scope.object();
     const iterator = try scope.object();
-    try scope.put(iterator, "next", try function(&scope, id, .next));
+    try scope.put(iterator, "next", try function(scope, id, .next));
     try scope.put(output, "ready", ready);
     try scope.put(output, "events", iterator);
-    try scope.put(output, "meta", chosen.meta);
-    try scope.put(output, "cached", c.pi_js_bool(engine.context, @intFromBool(chosen.cached)));
+    try scope.put(output, "meta", meta);
+    try scope.put(output, "cached", c.pi_js_bool(engine.context, @intFromBool(cached)));
     try scope.put(output, "reused", c.pi_js_bool(engine.context, @intFromBool(reused)));
-    inline for (.{ .send, .release, .close }) |method| try scope.put(output, @tagName(method), try function(&scope, id, method));
-    return c.JS_DupValue(engine.context, output);
+    inline for (.{ .send, .release, .close }) |method| try scope.put(output, @tagName(method), try function(scope, id, method));
+    return output;
 }
 pub fn pump(engine: *v.em.Engine) !bool {
     const state = stateMaybe(engine) orelse return false;
