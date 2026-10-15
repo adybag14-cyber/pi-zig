@@ -433,6 +433,15 @@ pub fn isErrored(e: *Engine, value: c.JSValue) !bool {
     if (!try isWritableStream(e, value)) return invalidThis(e, .stream);
     return streamState(value).status == .errored;
 }
+pub fn isErroringNative(e: *Engine, value: c.JSValue) !bool {
+    if (!try isWritableStream(e, value)) return invalidThis(e, .stream);
+    return streamState(value).status == .erroring;
+}
+pub fn isErroringOrErroredNative(e: *Engine, value: c.JSValue) !bool {
+    if (!try isWritableStream(e, value)) return invalidThis(e, .stream);
+    const status = streamState(value).status;
+    return status == .erroring or status == .errored;
+}
 pub fn streamStoredErrorNative(e: *Engine, value: c.JSValue) !c.JSValue {
     if (!try isWritableStream(e, value)) return invalidThis(e, .stream);
     return c.JS_DupValue(e.context, streamState(value).stored_error);

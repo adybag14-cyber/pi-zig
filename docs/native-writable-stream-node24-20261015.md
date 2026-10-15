@@ -18,6 +18,8 @@ The composition APIs return owned JSValues and accept borrowed inputs:
 | `isWritableStream(engine, stream)` | Genuine native brand boolean |
 | `isWritableStreamLocked(engine, stream)` | Actual writer lock boolean |
 | `isErrored(engine, stream)` | Actual terminal errored-state boolean |
+| `isErroringNative(engine, stream)` | Actual transitional erroring-state boolean |
+| `isErroringOrErroredNative(engine, stream)` | Actual combined error-state boolean for transform backpressure continuations |
 | `streamStoredErrorNative(engine, stream)` | Owned stored error |
 | `acquireWriterNative(engine, stream)` | Owned genuine writer |
 | `writerWriteNative(engine, writer, chunk)` | Owned write Promise |
