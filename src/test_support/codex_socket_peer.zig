@@ -2,6 +2,7 @@
 const std = @import("std");
 const socket = @import("../ai/codex_websocket.zig");
 pub const Turn = struct { request: []const u8, replies: []const []const u8 };
+pub const Action = union(enum) { read_text: []const u8, write_raw: []const u8, read_close: []const u8, signal: *std.Io.Event };
 pub const Peer = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
@@ -10,18 +11,22 @@ pub const Peer = struct {
     headers: []const std.http.Header,
     turns: []const Turn,
     wait_for_disconnect: bool = false,
+    actions: []const Action = &.{},
     future: ?std.Io.Future(anyerror!void) = null,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, path: []const u8, headers: []const std.http.Header, turns: []const Turn) !*Peer {
-        return initMode(gpa, io, path, headers, turns, false);
+        return initMode(gpa, io, path, headers, turns, false, &.{});
     }
     pub fn initDisconnect(gpa: std.mem.Allocator, io: std.Io, path: []const u8, headers: []const std.http.Header) !*Peer {
-        return initMode(gpa, io, path, headers, &.{}, true);
+        return initMode(gpa, io, path, headers, &.{}, true, &.{});
     }
-    fn initMode(gpa: std.mem.Allocator, io: std.Io, path: []const u8, headers: []const std.http.Header, turns: []const Turn, wait_for_disconnect: bool) !*Peer {
+    pub fn initActions(gpa: std.mem.Allocator, io: std.Io, path: []const u8, actions: []const Action) !*Peer {
+        return initMode(gpa, io, path, &.{}, &.{}, false, actions);
+    }
+    fn initMode(gpa: std.mem.Allocator, io: std.Io, path: []const u8, headers: []const std.http.Header, turns: []const Turn, wait_for_disconnect: bool, actions: []const Action) !*Peer {
         const self = try gpa.create(Peer);
         errdefer gpa.destroy(self);
         const address = try std.Io.net.IpAddress.parseLiteral("127.0.0.1:0");
-        self.* = .{ .gpa = gpa, .io = io, .listener = try address.listen(io, .{ .reuse_address = true }), .path = path, .headers = headers, .turns = turns, .wait_for_disconnect = wait_for_disconnect };
+        self.* = .{ .gpa = gpa, .io = io, .listener = try address.listen(io, .{ .reuse_address = true }), .path = path, .headers = headers, .turns = turns, .wait_for_disconnect = wait_for_disconnect, .actions = actions };
         errdefer self.listener.deinit(io);
         self.future = try io.concurrent(serve, .{self});
         return self;
@@ -70,6 +75,23 @@ pub const Peer = struct {
         socket.expectedAccept(key orelse return error.MissingWebSocketKey, &accept);
         try writer.interface.print("HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: {s}\r\n\r\n", .{accept});
         try writer.interface.flush();
+        for (self.actions) |action| switch (action) {
+            .read_text => |expected| {
+                const payload = try readClientText(self.gpa, &reader.interface);
+                defer self.gpa.free(payload);
+                if (!std.mem.eql(u8, payload, expected)) return error.FixtureTextMismatch;
+            },
+            .write_raw => |bytes| {
+                try writer.interface.writeAll(bytes);
+                try writer.interface.flush();
+            },
+            .read_close => |expected| {
+                const payload = try readClientFrame(self.gpa, &reader.interface, 0x88);
+                defer self.gpa.free(payload);
+                if (!std.mem.eql(u8, payload, expected)) return error.FixtureCloseMismatch;
+            },
+            .signal => |event| event.set(self.io),
+        };
         for (self.turns) |turn| {
             const payload = try readClientText(self.gpa, &reader.interface);
             defer self.gpa.free(payload);
@@ -89,8 +111,11 @@ pub const Peer = struct {
     }
 };
 fn readClientText(gpa: std.mem.Allocator, reader: *std.Io.Reader) ![]u8 {
+    return readClientFrame(gpa, reader, 0x81);
+}
+fn readClientFrame(gpa: std.mem.Allocator, reader: *std.Io.Reader, expected_opcode: u8) ![]u8 {
     const prefix = try reader.takeArray(2);
-    if (prefix[0] != 0x81 or (prefix[1] & 0x80) == 0) return error.ExpectedMaskedClientText;
+    if (prefix[0] != expected_opcode or (prefix[1] & 0x80) == 0) return error.ExpectedMaskedClientFrame;
     const length: u64 = switch (prefix[1] & 0x7f) {
         126 => try reader.takeInt(u16, .big),
         127 => try reader.takeInt(u64, .big),

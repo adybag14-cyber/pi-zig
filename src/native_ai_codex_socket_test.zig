@@ -24,7 +24,10 @@ const Notice = struct {
 fn next(worker: *raw.Worker, notice: *Notice) !raw.Event {
     while (true) {
         if (worker.pop()) |event| return event;
-        if (worker.finished.load(.acquire)) return worker.failure orelse error.SourceSocketEndedEarly;
+        if (worker.finished.load(.acquire)) {
+            if (worker.pop()) |event| return event;
+            return worker.failure orelse error.SourceSocketEndedEarly;
+        }
         try notice.event.waitTimeout(notice.io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
         notice.event.reset();
     }
@@ -201,6 +204,67 @@ test "native Codex socket close during an awaited read rejects the retained prom
     try checkConcurrentCleanup(.pending_read);
 }
 const CleanupScenario = enum { busy, initial, pending_read };
+
+test "native Codex socket continuously observes idle remote close and actual close acknowledgement metadata" {
+    const io = std.testing.io;
+    const a = std.testing.allocator;
+    const payload = &[_]u8{ 3, 233, 'b', 'y', 'e' };
+    const peer = try fixture.Peer.initActions(a, io, "/idle-close?fixture=1", &.{ .{ .write_raw = &.{ 0x88, 5, 3, 233, 'b', 'y', 'e' } }, .{ .read_close = payload } });
+    defer peer.deinit();
+    const url = try peer.url(a);
+    defer a.free(url);
+    var notice: Notice = .{ .io = io };
+    const worker = try raw.Worker.create(io, .{ .url = url }, &notice, Notice.notify);
+    defer worker.destroy();
+    const opened = try next(worker, &notice);
+    defer opened.deinit();
+    try std.testing.expect(opened == .connected);
+    // No read command is submitted: the idle worker must see this frame.
+    const closed = try next(worker, &notice);
+    defer closed.deinit();
+    try std.testing.expect(closed == .closed);
+    try std.testing.expectEqual(@as(u16, 1001), closed.closed.code);
+    try std.testing.expectEqualStrings("bye", closed.closed.reason);
+    try std.testing.expect(closed.closed.was_clean);
+    try peer.finish();
+}
+
+test "native Codex socket preserves a partial frame while a later send wakes its network reader" {
+    const io = std.testing.io;
+    const a = std.testing.allocator;
+    var partial_written: std.Io.Event = .unset;
+    const actions = [_]fixture.Action{ .{ .read_text = "first" }, .{ .write_raw = &.{ 0x81, 5, 'h', 'e' } }, .{ .signal = &partial_written }, .{ .read_text = "second" }, .{ .write_raw = "llo" } };
+    const peer = try fixture.Peer.initActions(a, io, "/partial-frame?fixture=2", &actions);
+    defer peer.deinit();
+    const url = try peer.url(a);
+    defer a.free(url);
+    var notice: Notice = .{ .io = io };
+    const worker = try raw.Worker.create(io, .{ .url = url }, &notice, Notice.notify);
+    defer worker.destroy();
+    const opened = try next(worker, &notice);
+    defer opened.deinit();
+    try std.testing.expect(opened == .connected);
+    try worker.send("first");
+    const first_sent = try next(worker, &notice);
+    defer first_sent.deinit();
+    try std.testing.expect(first_sent == .sent);
+    try partial_written.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    try worker.send("second");
+    const second_sent = try next(worker, &notice);
+    defer second_sent.deinit();
+    try std.testing.expect(second_sent == .sent);
+    const message = try next(worker, &notice);
+    defer message.deinit();
+    try std.testing.expect(message == .message);
+    try std.testing.expectEqualStrings("hello", message.message);
+    const closed = try next(worker, &notice);
+    defer closed.deinit();
+    try std.testing.expect(closed == .closed);
+    try std.testing.expectEqual(@as(u16, 1006), closed.closed.code);
+    try std.testing.expect(!closed.closed.was_clean);
+    try peer.finish();
+}
+
 fn checkConcurrentCleanup(comptime scenario: CleanupScenario) !void {
     var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
     defer arena.deinit();

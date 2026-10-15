@@ -1,8 +1,9 @@
 //! Owned RFC6455 worker for the native Codex facade. No JS or provider JSON.
-//! The owner requests one read at a time, so a completed response leaves the
-//! connection idle without canceling a read or consuming the next turn's frame.
+//! One network owner pumps complete frames even while idle. Commands race a
+//! non-consuming peek; canceled peeks join before any write or parser mutation.
 const std = @import("std");
 const socket = @import("../ai/codex_websocket.zig");
+const framing = @import("native_ai_codex_frames.zig");
 const a = std.heap.page_allocator;
 pub const Input = struct {
     url: []const u8,
@@ -14,8 +15,10 @@ pub const Event = union(enum) {
     connected,
     sent,
     message: []u8,
+    closed: struct { code: u16, reason: []u8, was_clean: bool },
     pub fn deinit(self: Event) void {
         if (self == .message) a.free(self.message);
+        if (self == .closed) a.free(self.closed.reason);
     }
 };
 const Command = union(enum) { send: []u8, read: u64 };
@@ -39,6 +42,7 @@ pub const Worker = struct {
     events: [16]?Event = @splat(null),
     event_head: usize = 0,
     event_count: usize = 0,
+    read_deadline_ms: ?i64 = null,
 
     pub fn create(io: std.Io, input: Input, context: ?*anyopaque, notify: ?*const fn (?*anyopaque) void) !*Worker {
         // std.http performs the RFC6455 HTTP upgrade on http/https; the public
@@ -105,19 +109,23 @@ pub const Worker = struct {
         self.command_count += 1;
         self.changed.broadcast(self.io);
     }
-    fn nextCommand(self: *Worker) !Command {
+    fn commandAvailable(self: *Worker) !void {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         while (self.command_count == 0) {
             if (@atomicLoad(bool, &self.abort_flag, .acquire)) return error.WebSocketAborted;
             try self.changed.wait(self.io, &self.mutex);
         }
-        if (@atomicLoad(bool, &self.abort_flag, .acquire)) return error.WebSocketAborted;
-        const command_value = self.commands[self.command_head].?;
+    }
+    fn popCommand(self: *Worker) ?Command {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.command_count == 0) return null;
+        const value = self.commands[self.command_head].?;
         self.commands[self.command_head] = null;
         self.command_head = (self.command_head + 1) % self.commands.len;
         self.command_count -= 1;
-        return command_value;
+        return value;
     }
     fn push(self: *Worker, event: Event) !void {
         errdefer event.deinit();
@@ -154,19 +162,145 @@ pub const Worker = struct {
         var connection = try socket.Client.connectWithTimeoutAndAbortProxy(a, self.io, self.url, self.headers, self.connect_timeout_ms, &self.abort_flag, .{ .setting = self.proxy_url });
         defer connection.deinit();
         try self.push(.connected);
+        var decoder: framing.Decoder = .{};
+        defer decoder.deinit(a);
+        var fragments: std.ArrayList(u8) = .empty;
+        defer fragments.deinit(a);
+        var fragment_opcode: ?socket.Opcode = null;
         while (true) {
-            const cmd = try self.nextCommand();
-            switch (cmd) {
+            if (@atomicLoad(bool, &self.abort_flag, .acquire)) return error.WebSocketAborted;
+            while (self.popCommand()) |cmd| switch (cmd) {
                 .send => |payload| {
                     defer a.free(payload);
-                    try connection.sendText(payload);
+                    try self.write(&connection, .text, payload);
                     try self.push(.sent);
                 },
                 .read => |timeout| {
-                    const frame = try connection.readMessageWithControl(a, timeout, &self.abort_flag);
-                    try self.push(.{ .message = frame.data });
+                    self.read_deadline_ms = if (timeout > 0) std.math.add(i64, std.Io.Clock.awake.now(self.io).toMilliseconds(), @intCast(@min(timeout, @as(u64, @intCast(std.math.maxInt(i64)))))) catch std.math.maxInt(i64) else null;
                 },
+            };
+            const reader = connection.connection.reader();
+            const buffered = reader.buffered();
+            if (buffered.len > 0) {
+                try decoder.append(a, buffered);
+                reader.toss(buffered.len);
             }
+            while (try decoder.next(a)) |frame| {
+                switch (frame.opcode) {
+                    .close => {
+                        defer a.free(frame.data);
+                        if (frame.data.len == 1) return error.WebSocketInvalidCloseFrame;
+                        const code: u16 = if (frame.data.len >= 2) std.mem.readInt(u16, frame.data[0..2], .big) else 1005;
+                        if (frame.data.len >= 2 and !(code == 1000 or code == 1001 or code == 1002 or code == 1003 or (code >= 1007 and code <= 1014) or (code >= 3000 and code <= 4999))) return error.WebSocketInvalidCloseCode;
+                        const reason = if (frame.data.len >= 2) frame.data[2..] else "";
+                        if (!std.unicode.utf8ValidateSlice(reason)) return error.WebSocketInvalidCloseReason;
+                        const clean = if (self.write(&connection, .close, frame.data)) |_| true else |_| false;
+                        try self.push(.{ .closed = .{ .code = code, .reason = try a.dupe(u8, reason), .was_clean = clean } });
+                        return;
+                    },
+                    .ping => {
+                        defer a.free(frame.data);
+                        try self.write(&connection, .pong, frame.data);
+                    },
+                    .pong => a.free(frame.data),
+                    .text, .binary => {
+                        if (fragment_opcode != null) {
+                            a.free(frame.data);
+                            return error.WebSocketUnexpectedOpcode;
+                        }
+                        if (frame.fin) {
+                            if (frame.opcode == .text and !std.unicode.utf8ValidateSlice(frame.data)) {
+                                a.free(frame.data);
+                                return error.WebSocketInvalidText;
+                            }
+                            self.read_deadline_ms = null;
+                            try self.push(.{ .message = frame.data });
+                        } else {
+                            defer a.free(frame.data);
+                            fragment_opcode = frame.opcode;
+                            try fragments.appendSlice(a, frame.data);
+                        }
+                    },
+                    .continuation => {
+                        defer a.free(frame.data);
+                        const opcode = fragment_opcode orelse return error.WebSocketUnexpectedOpcode;
+                        try fragments.appendSlice(a, frame.data);
+                        if (frame.fin) {
+                            if (opcode == .text and !std.unicode.utf8ValidateSlice(fragments.items)) return error.WebSocketInvalidText;
+                            fragment_opcode = null;
+                            self.read_deadline_ms = null;
+                            try self.push(.{ .message = try fragments.toOwnedSlice(a) });
+                        }
+                    },
+                    else => {
+                        a.free(frame.data);
+                        return error.WebSocketUnexpectedOpcode;
+                    },
+                }
+            }
+            self.awaitInput(&connection) catch |err| {
+                if (err == error.EndOfStream) {
+                    try self.push(.{ .closed = .{ .code = 1006, .reason = try a.dupe(u8, ""), .was_clean = false } });
+                    return;
+                }
+                return err;
+            };
+        }
+    }
+    fn peek(connection: *socket.Client) !void {
+        _ = try connection.connection.reader().peekGreedy(1);
+    }
+    fn abortAvailable(self: *Worker) !void {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        while (!@atomicLoad(bool, &self.abort_flag, .acquire)) try self.changed.wait(self.io, &self.mutex);
+    }
+    fn writeTask(connection: *socket.Client, opcode: socket.Opcode, payload: []const u8) !void {
+        try socket.writeClientFrame(connection.io, connection.connection.writer(), opcode, payload);
+        try connection.connection.flush();
+    }
+    fn write(self: *Worker, connection: *socket.Client, opcode: socket.Opcode, payload: []const u8) !void {
+        const Race = union(enum) { sent: anyerror!void, aborted: anyerror!void };
+        var queue: [2]Race = undefined;
+        var select = std.Io.Select(Race).init(self.io, &queue);
+        defer while (select.cancel()) |_| {};
+        try select.concurrent(.sent, writeTask, .{ connection, opcode, payload });
+        try select.concurrent(.aborted, abortAvailable, .{self});
+        switch (try select.await()) {
+            .sent => |value| try value,
+            .aborted => return error.WebSocketAborted,
+        }
+    }
+    fn deadline(io: std.Io, milliseconds: i64) bool {
+        const timeout: std.Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(@max(0, milliseconds)), .clock = .awake } };
+        timeout.sleep(io) catch return false;
+        return true;
+    }
+    fn awaitInput(self: *Worker, connection: *socket.Client) !void {
+        const Race = union(enum) { input: anyerror!void, command: anyerror!void, timeout: bool };
+        var queue: [3]Race = undefined;
+        var select = std.Io.Select(Race).init(self.io, &queue);
+        try select.concurrent(.input, peek, .{connection});
+        errdefer while (select.cancel()) |_| {};
+        try select.concurrent(.command, commandAvailable, .{self});
+        if (self.read_deadline_ms) |expires| try select.concurrent(.timeout, deadline, .{ self.io, expires - std.Io.Clock.awake.now(self.io).toMilliseconds() });
+        const winner = try select.await();
+        // In particular, the TLS reader is no longer running when a send
+        // command is processed. No concurrent cipher-state or writer access.
+        var input_failure: ?anyerror = null;
+        while (select.cancel()) |completion| switch (completion) {
+            .input => |value| value catch |err| {
+                if (err != error.Canceled) input_failure = err;
+            },
+            else => {},
+        };
+        switch (winner) {
+            .input => |value| try value,
+            .command => |value| {
+                try value;
+                if (input_failure) |err| return err;
+            },
+            .timeout => |expired| if (expired) return error.WebSocketIdleTimeout,
         }
     }
 };

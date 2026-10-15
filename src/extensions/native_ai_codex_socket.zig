@@ -20,6 +20,7 @@ const Connection = struct {
     busy: bool = true,
     cached: bool = false,
     cache_current: bool = false,
+    receive_active: bool = false,
     fn freeWaiter(engine: *v.em.Engine, waiter: ?Waiter) void {
         if (waiter) |w| {
             engine.freeValue(w.resolve);
@@ -36,7 +37,16 @@ const Connection = struct {
         engine.gpa.destroy(self);
     }
 };
-const State = struct { connections: std.ArrayList(*Connection) = .empty, next_id: u64 = 0, pumping: bool = false };
+const State = struct { connections: std.ArrayList(*Connection) = .empty, next_id: u64 = 0, pumping: bool = false, closing: bool = false, guest_owner: ?c.JSValue = null, guest_cleanup: ?*const fn (*v.em.Engine, c.JSValue) void = null };
+pub fn closing(engine: *v.em.Engine) bool {
+    return if (stateMaybe(engine)) |state| state.closing else false;
+}
+pub fn retainGuestOwner(engine: *v.em.Engine, value: c.JSValue, cleanup: *const fn (*v.em.Engine, c.JSValue) void) !void {
+    const state = try stateFor(engine);
+    if (state.guest_owner != null) return;
+    state.guest_owner = c.JS_DupValue(engine.context, value);
+    state.guest_cleanup = cleanup;
+}
 fn stateFor(engine: *v.em.Engine) !*State {
     if (engine.native_ai_codex_socket_state) |ptr| return @ptrCast(@alignCast(ptr));
     const state = try engine.gpa.create(State);
@@ -62,12 +72,23 @@ pub fn pending(engine: *v.em.Engine) bool {
 }
 pub fn deinit(engine: *v.em.Engine) void {
     const state = stateMaybe(engine) orelse return;
-    engine.native_ai_codex_socket_state = null;
+    state.closing = true;
     engine.native_ai_codex_socket_cleanup = null;
     engine.native_ai_codex_socket_pump = null;
     engine.native_ai_codex_socket_pending = null;
-    for (state.connections.items) |connection| connection.worker.cancel();
+    for (state.connections.items) |connection| {
+        connection.worker.cancel();
+        var scope: Scope = .{ .engine = engine };
+        defer scope.deinit();
+        clearIdleTimer(&scope, connection) catch {};
+        clearReadTimer(&scope, connection) catch {};
+    }
+    if (state.guest_owner) |owner| {
+        if (state.guest_cleanup) |cleanup| cleanup(engine, owner);
+        engine.freeValue(owner);
+    }
     for (state.connections.items) |connection| connection.destroy(engine);
+    engine.native_ai_codex_socket_state = null;
     state.connections.deinit(engine.gpa);
     engine.gpa.destroy(state);
 }
@@ -95,7 +116,7 @@ fn failure(scope: *Scope, err: anyerror) !c.JSValue {
     try scope.put(object, "code", try scope.text(@errorName(err)));
     return object;
 }
-const Method = enum { send, next, release, close, expiry };
+const Method = enum { send, next, release, close, expiry, read_timeout };
 fn function(scope: *Scope, id: c.JSValue, comptime method: Method) !c.JSValue {
     const Adapter = struct {
         fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -109,10 +130,16 @@ fn function(scope: *Scope, id: c.JSValue, comptime method: Method) !c.JSValue {
     return scope.own(try @import("native_node_function.zig").create(scope.engine, @tagName(method), if (method == .send or method == .release) 1 else 0, Adapter.call, &.{id}));
 }
 fn clearIdleTimer(scope: *Scope, connection: *Connection) !void {
-    const timer = try scope.get(connection.meta, "idleTimer");
+    try clearTimer(scope, connection, "idleTimer");
+}
+fn clearReadTimer(scope: *Scope, connection: *Connection) !void {
+    try clearTimer(scope, connection, "readTimer");
+}
+fn clearTimer(scope: *Scope, connection: *Connection, key: [*:0]const u8) !void {
+    const timer = try scope.get(connection.meta, key);
     if (scope.truthy(timer)) {
         _ = try scope.call(try scope.global("clearTimeout"), c.pi_js_undefined(), &.{timer});
-        try scope.put(connection.meta, "idleTimer", c.pi_js_undefined());
+        try scope.put(connection.meta, key, c.pi_js_undefined());
     }
 }
 fn scheduleExpiry(scope: *Scope, connection: *Connection) !void {
@@ -128,46 +155,92 @@ fn operation(scope: *Scope, maybe: ?*Connection, method: Method, argument: c.JSV
         if (method == .send) return error.NativeWebSocketClosed;
         return c.pi_js_undefined();
     };
+    if (method == .read_timeout) {
+        try clearReadTimer(scope, connection);
+        const reason = try scope.own(try v.js.builtin(engine, "Error", &.{try scope.concat(try scope.concat(try scope.text("WebSocket idle timeout after "), try scope.stringify(try scope.get(connection.meta, "readTimeoutMs"))), try scope.text("ms"))}));
+        try scope.put(connection.meta, "closeError", reason);
+        connection.closed = true;
+        connection.cache_current = false;
+        connection.worker.cancel();
+        if (connection.read_waiter) |waiter| {
+            connection.read_waiter = null;
+            try settle(scope, waiter, reason, true);
+        }
+        return c.pi_js_undefined();
+    }
     if (method == .close or method == .expiry or (method == .release and (!scope.truthy(argument) or !connection.cached))) {
         if (method == .expiry and connection.busy) return c.pi_js_undefined();
         try clearIdleTimer(scope, connection);
+        try clearReadTimer(scope, connection);
         connection.closed = true;
+        connection.cache_current = false;
         connection.busy = false;
+        connection.receive_active = false;
         connection.worker.cancel();
         return c.pi_js_undefined();
     }
     if (method == .release) {
+        try clearReadTimer(scope, connection);
         connection.busy = false;
+        connection.receive_active = false;
+        try scope.put(connection.meta, "pendingMessages", try scope.array());
         engine.freeValue(connection.signal);
         connection.signal = c.pi_js_undefined();
-        try scheduleExpiry(scope, connection);
+        if (!connection.closed and !connection.worker.finished.load(.acquire)) try scheduleExpiry(scope, connection);
         return c.pi_js_undefined();
     }
     const created = try promise(scope);
-    errdefer Connection.freeWaiter(engine, created.waiter);
+    var transferred = false;
+    errdefer if (!transferred) Connection.freeWaiter(engine, created.waiter);
     if (method == .send) {
+        if (connection.closed or connection.worker.finished.load(.acquire)) return error.NativeWebSocketClosed;
         if (connection.send_waiter != null) return error.NativeWebSocketSendPending;
         const payload = try engine.toString(argument);
         defer engine.gpa.free(payload);
+        connection.receive_active = true;
         try connection.worker.send(payload);
         connection.send_waiter = created.waiter;
+        transferred = true;
     } else {
         if (connection.read_waiter != null) return error.NativeWebSocketReadPending;
+        const queue = try scope.get(connection.meta, "pendingMessages");
+        if (try v.length(scope, queue) > 0) {
+            const value = try result(scope, try scope.invoke(queue, "shift", &.{}), false);
+            transferred = true;
+            try settle(scope, created.waiter, value, false);
+            return c.JS_DupValue(engine.context, created.value);
+        }
+        const closed = try scope.get(connection.meta, "closeError");
+        if (!v.nullish(closed) or connection.closed or connection.worker.finished.load(.acquire)) {
+            const reason = if (!v.nullish(closed)) closed else try failure(scope, connection.worker.failure orelse error.NativeWebSocketClosed);
+            transferred = true;
+            try settle(scope, created.waiter, reason, true);
+            return c.JS_DupValue(engine.context, created.value);
+        }
         var milliseconds: i64 = 0;
         const configured = try scope.get(connection.meta, "readTimeoutMs");
         if (!v.nullish(configured) and c.JS_ToInt64(engine.context, &milliseconds, configured) < 0) return v.js.capture(engine);
-        try connection.worker.read(@intCast(@max(0, milliseconds)));
+        if (milliseconds > 0) {
+            const id = try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, connection.id)));
+            try scope.put(connection.meta, "readTimer", try scope.call(try scope.global("setTimeout"), c.pi_js_undefined(), &.{ try function(scope, id, .read_timeout), configured }));
+        }
         connection.read_waiter = created.waiter;
+        transferred = true;
     }
     return c.JS_DupValue(engine.context, created.value);
 }
 pub fn acquire(engine: *v.em.Engine, input: raw.Input, session: c.JSValue, account: c.JSValue, signal: c.JSValue, read_timeout: c.JSValue) !c.JSValue {
     const state = try stateFor(engine);
+    if (state.closing) return error.NativeWebSocketOwnerClosing;
     const io = engine.native_io orelse return error.NativeWebSocketIoRequired;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     var connection: ?*Connection = null;
     if (scope.truthy(session)) for (state.connections.items) |candidate| {
+        if (candidate.worker.finished.load(.acquire)) {
+            candidate.cache_current = false;
+            try clearIdleTimer(&scope, candidate);
+        }
         if (!candidate.cache_current or candidate.closed or !scope.equal(try scope.get(candidate.meta, "sessionId"), session) or !scope.equal(try scope.get(candidate.meta, "accountId"), account)) continue;
         try clearIdleTimer(&scope, candidate);
         if (!candidate.busy and !candidate.worker.finished.load(.acquire)) {
@@ -175,6 +248,7 @@ pub fn acquire(engine: *v.em.Engine, input: raw.Input, session: c.JSValue, accou
             const age = try scope.own(try arithmetic.binary(engine, .subtract, now, try scope.get(candidate.meta, "createdAt")));
             if (try arithmetic.compare(engine, .greater_equal, age, c.JS_NewInt32(engine.context, 55 * 60 * 1000))) {
                 candidate.closed = true;
+                candidate.cache_current = false;
                 candidate.worker.cancel();
                 continue;
             }
@@ -202,6 +276,8 @@ pub fn acquire(engine: *v.em.Engine, input: raw.Input, session: c.JSValue, accou
         try scope.put(meta, "sessionId", session);
         try scope.put(meta, "accountId", account);
         try scope.put(meta, "readTimeoutMs", read_timeout);
+        try scope.put(meta, "pendingMessages", try scope.array());
+        inline for (.{ "closeError", "readTimer", "idleTimer" }) |key| try scope.put(meta, key, c.pi_js_undefined());
         const created = try promise(&scope);
         errdefer Connection.freeWaiter(engine, created.waiter);
         const fresh = try engine.gpa.create(Connection);
@@ -278,21 +354,54 @@ pub fn pump(engine: *v.em.Engine) !bool {
                     connection.send_waiter = null;
                     try settle(&scope, waiter, c.pi_js_undefined(), false);
                 },
-                .message => |bytes| if (connection.read_waiter) |waiter| {
-                    connection.read_waiter = null;
-                    try settle(&scope, waiter, try result(&scope, try scope.text(bytes), false), false);
+                .message => |bytes| if (connection.receive_active and !connection.closed) {
+                    const text = try scope.text(bytes);
+                    if (connection.read_waiter) |waiter| {
+                        const value = try result(&scope, text, false);
+                        try clearReadTimer(&scope, connection);
+                        connection.read_waiter = null;
+                        try settle(&scope, waiter, value, false);
+                    } else _ = try scope.invoke(try scope.get(connection.meta, "pendingMessages"), "push", &.{text});
+                },
+                .closed => |closed| {
+                    const reason = try scope.own(try v.js.builtin(engine, "Error", &.{try scope.text("WebSocket closed")}));
+                    try scope.put(reason, "name", try scope.text("WebSocketCloseError"));
+                    try scope.put(reason, "code", c.JS_NewUint32(engine.context, closed.code));
+                    try scope.put(reason, "reason", if (closed.reason.len > 0) try scope.text(closed.reason) else c.pi_js_undefined());
+                    try scope.put(reason, "wasClean", c.pi_js_bool(engine.context, @intFromBool(closed.was_clean)));
+                    try scope.put(connection.meta, "closeError", reason);
+                    connection.closed = true;
+                    connection.cache_current = false;
+                    try clearIdleTimer(&scope, connection);
                 },
             }
         }
         if (connection.worker.finished.load(.acquire)) {
-            const reason = try failure(&scope, connection.worker.failure orelse error.NativeWebSocketClosed);
-            inline for (.{ "ready", "send_waiter", "read_waiter" }) |field| if (@field(connection, field)) |waiter| {
+            connection.closed = true;
+            connection.cache_current = false;
+            try clearIdleTimer(&scope, connection);
+            try clearReadTimer(&scope, connection);
+            var reason = try scope.get(connection.meta, "closeError");
+            if (v.nullish(reason)) {
+                reason = try failure(&scope, connection.worker.failure orelse error.NativeWebSocketClosed);
+                try scope.put(connection.meta, "closeError", reason);
+            }
+            inline for (.{ "ready", "send_waiter" }) |field| if (@field(connection, field)) |waiter| {
                 @field(connection, field) = null;
                 try settle(&scope, waiter, reason, true);
             };
-            _ = state.connections.orderedRemove(index);
-            connection.destroy(engine);
-            progressed = true;
+            if (connection.read_waiter) |waiter| {
+                connection.read_waiter = null;
+                try settle(&scope, waiter, reason, true);
+            }
+            // A whole response can arrive before the owner's first awaited
+            // next resumes. Retain its queued frames through remote EOF and
+            // let the provider drain them before releasing the connection.
+            if (!connection.busy) {
+                _ = state.connections.orderedRemove(index);
+                connection.destroy(engine);
+                progressed = true;
+            } else index += 1;
         } else index += 1;
     }
     return progressed;
@@ -303,7 +412,9 @@ pub fn closeSession(engine: *v.em.Engine, session: c.JSValue) !void {
     defer scope.deinit();
     for (state.connections.items) |connection| if (v.nullish(session) or scope.equal(try scope.get(connection.meta, "sessionId"), session)) {
         try clearIdleTimer(&scope, connection);
+        try clearReadTimer(&scope, connection);
         connection.closed = true;
+        connection.cache_current = false;
         connection.busy = false;
         connection.worker.cancel();
     };

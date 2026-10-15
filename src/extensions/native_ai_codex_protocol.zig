@@ -33,7 +33,10 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
                         const values = try row.get(roots[0], key);
                         _ = try row.invoke(values, if (row.truthy(session)) "delete" else "clear", if (row.truthy(session)) &.{session} else &.{});
                     }
-                } else try @import("native_ai_codex_socket.zig").closeSession(host, if (row.truthy(session)) session else c.pi_js_undefined());
+                } else {
+                    try @import("native_ai_codex_global_socket.zig").closeSession(&row, roots[0], session);
+                    try @import("native_ai_codex_socket.zig").closeSession(host, if (row.truthy(session)) session else c.pi_js_undefined());
+                }
                 return c.pi_js_undefined();
             }
         };

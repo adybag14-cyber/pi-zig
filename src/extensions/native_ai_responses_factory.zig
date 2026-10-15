@@ -361,6 +361,7 @@ fn codexState(scope: *Scope, owner: c.JSValue) !c.JSValue {
     return scope.get(try scope.get(owner, "agent"), "codexState");
 }
 fn beginCodex(scope: *Scope, owner: c.JSValue) !void {
+    if (@import("native_ai_codex_socket.zig").closing(scope.engine)) return error.NativeWebSocketOwnerClosing;
     const options = try scope.get(owner, "options");
     const state = try codexState(scope, owner);
     const supplied = try v.optional(scope, options, "transport");
@@ -388,6 +389,7 @@ fn websocketTryOpen(scope: *Scope, owner: c.JSValue) !void {
     try scope.put(owner, "websocketStarted", c.pi_js_bool(scope.engine.context, 0));
     try scope.put(owner, "websocketEntry", c.pi_js_undefined());
     try scope.put(owner, "websocketConnection", c.pi_js_undefined());
+    try scope.put(owner, "websocketAcquired", c.pi_js_bool(scope.engine.context, 0));
     const generation = scope.engine.native_allocation_generation;
     websocketOpen(scope, owner) catch |err| {
         if (scope.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return err;
@@ -405,7 +407,16 @@ fn websocketOpen(scope: *Scope, owner: c.JSValue) !void {
     const model = try scope.get(owner, "model");
     const session = try scope.get(owner, "codexSession");
     const headers = try scope.get(owner, "codexWebsocketHeaders");
-    const address = try engine.toString(try codex_protocol.url(scope, try scope.get(model, "baseUrl"), true));
+    const url = try codex_protocol.url(scope, try scope.get(model, "baseUrl"), true);
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    if (try v.js.hasKey(engine, global, try scope.text("WebSocket"))) {
+        const constructor = try scope.get(global, "WebSocket");
+        if (!c.JS_IsFunction(engine.context, constructor)) return v.errorText(scope, try scope.text("WebSocket transport is not available in this runtime"));
+        const connection = try scope.own(try @import("native_ai_codex_global_socket.zig").acquire(engine, try codexState(scope, owner), constructor, url, headers, session, try scope.get(owner, "accountId"), try v.optional(scope, options, "signal"), try scope.get(owner, "codexConnectTimeout"), try scope.get(owner, "codexIdleTimeout")));
+        try scope.put(owner, "websocketConnection", connection);
+        return wait(scope, owner, try scope.get(connection, "ready"), .websocket_ready);
+    }
+    const address = try engine.toString(url);
     defer engine.gpa.free(address);
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
@@ -436,6 +447,7 @@ fn websocketOpen(scope: *Scope, owner: c.JSValue) !void {
     try wait(scope, owner, try scope.get(connection, "ready"), .websocket_ready);
 }
 fn websocketReady(scope: *Scope, owner: c.JSValue) !void {
+    try scope.put(owner, "websocketAcquired", c.pi_js_bool(scope.engine.context, 1));
     const connection = try scope.get(owner, "websocketConnection");
     const options = try scope.get(owner, "options");
     const supplied = try v.optional(scope, options, "transport");
@@ -468,7 +480,9 @@ fn websocketReady(scope: *Scope, owner: c.JSValue) !void {
     const frame = try scope.object();
     try scope.put(frame, "type", try scope.text("response.create"));
     try v.js.spreadInto(scope.engine, frame, body);
-    try wait(scope, owner, try scope.invoke(connection, "send", &.{try scope.invoke(try scope.global("JSON"), "stringify", &.{frame})}), .websocket_sent);
+    const sent = try scope.invoke(connection, "send", &.{try scope.invoke(try scope.global("JSON"), "stringify", &.{frame})});
+    if (scope.truthy(try v.optional(scope, connection, "synchronousSend"))) return websocketNext(scope, owner);
+    try wait(scope, owner, sent, .websocket_sent);
 }
 fn websocketNext(scope: *Scope, owner: c.JSValue) !void {
     try wait(scope, owner, try scope.invoke(try scope.get(try scope.get(owner, "websocketConnection"), "events"), "next", &.{}), .websocket_next);
@@ -476,6 +490,10 @@ fn websocketNext(scope: *Scope, owner: c.JSValue) !void {
 fn websocketValue(scope: *Scope, owner: c.JSValue, value: c.JSValue) !void {
     if (scope.truthy(try scope.get(value, "done"))) return v.errorText(scope, try scope.text("WebSocket stream closed before response.completed"));
     const data = try scope.get(value, "value");
+    if (scope.truthy(try v.optional(scope, try scope.get(owner, "websocketConnection"), "parsedEvents"))) {
+        try scope.put(owner, "chunk", data);
+        return wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", data), .websocket_chunk);
+    }
     const generation = scope.engine.native_allocation_generation;
     const event = websocketJSON(scope, data) catch |err| {
         if (scope.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return err;
@@ -540,13 +558,15 @@ fn websocketChunk(scope: *Scope, owner: c.JSValue) !void {
     try flow.settle(scope.engine, owner, false, c.pi_js_undefined());
 }
 fn websocketRejected(scope: *Scope, owner: c.JSValue, original_reason: c.JSValue, _: Stage) !void {
-    const reason = if (try aborted(scope, owner) and try v.eq(scope, try v.optional(scope, original_reason, "name"), "NativeWebSocketError") and try v.eq(scope, try v.optional(scope, original_reason, "code"), "WebSocketAborted")) try codex_http.abortReason(scope) else original_reason;
     const state = try codexState(scope, owner);
     const classes = try scope.get(state, "errors");
+    const raw_connection = try v.optional(scope, owner, "websocketConnection");
+    const native_close = !v.nullish(raw_connection) and !scope.truthy(try v.optional(scope, raw_connection, "parsedEvents")) and try v.eq(scope, try v.optional(scope, original_reason, "name"), "WebSocketCloseError");
+    const reason = if (try aborted(scope, owner) and try v.eq(scope, try v.optional(scope, original_reason, "name"), "NativeWebSocketError") and try v.eq(scope, try v.optional(scope, original_reason, "code"), "WebSocketAborted")) try codex_http.abortReason(scope) else if (native_close) try codex_errors.socketClose(scope, classes, original_reason) else original_reason;
     const entry = try v.optional(scope, owner, "websocketEntry");
     if (!v.nullish(entry)) try scope.put(entry, "continuation", c.pi_js_undefined());
     const connection = try v.optional(scope, owner, "websocketConnection");
-    if (!v.nullish(connection)) _ = try scope.invoke(connection, "release", &.{c.pi_js_bool(scope.engine.context, 0)});
+    if (!v.nullish(connection) and scope.truthy(try v.optional(scope, owner, "websocketAcquired"))) _ = try scope.invoke(connection, "release", &.{c.pi_js_bool(scope.engine.context, 0)});
     const started = scope.truthy(try v.optional(scope, owner, "websocketStarted"));
     const connection_limit = !started and try codex_errors.apiCode(scope, classes, reason, "websocket_connection_limit_reached");
     if (!try aborted(scope, owner)) {
