@@ -1,0 +1,23 @@
+{
+  "executable": "C:\\Users\\adyba\\pi-zig-ai-anthropic-bedrock-20261015\\.zig-cache\\o\\15c19567084855359281dce1e3098a0b\\test.exe",
+  "executable_sha256": "797C3632EF4399BEA5BCF4F22876A7E6F78690404BE7DDD103876791D62A670D",
+  "arguments": [
+    "--listen=-"
+  ],
+  "working_directory": "C:/Users/adyba/pi-zig-ai-anthropic-bedrock-20261015",
+  "pid": 37976,
+  "retained_handle": 1800,
+  "created_utc": "2026-10-15T22:29:10.6743357Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 30,
+  "status": "passed",
+  "live_identity": {
+    "created_utc": "2026-10-15T22:29:10.6743357Z",
+    "pid": 37976,
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-ai-anthropic-bedrock-20261015\\.zig-cache\\o\\15c19567084855359281dce1e3098a0b\\test.exe\" --listen=-",
+    "command_line_method": "Win32_Process.CommandLine",
+    "executable": "C:\\Users\\adyba\\pi-zig-ai-anthropic-bedrock-20261015\\.zig-cache\\o\\15c19567084855359281dce1e3098a0b\\test.exe"
+  },
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T22:29:11.2623737+00:00"
+}

@@ -1,0 +1,41 @@
+{
+  "candidate": "7f2c066d9810b8b834b8a182d11c99e5be83616c",
+  "source": 6486,
+  "source_after": 6486,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "controls": 23,
+  "control_drift": 0,
+  "vendor": 1316,
+  "vendor_after": 1316,
+  "vendor_drift": 0,
+  "references": [
+    {
+      "name": "Source5ab",
+      "changed": [],
+      "files": 1967,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "changed": [],
+      "files": 31064,
+      "drift": 0
+    },
+    {
+      "name": "NodeTools",
+      "changed": [],
+      "files": 1774,
+      "drift": 0
+    }
+  ],
+  "absences": 84,
+  "absence_drift": 0,
+  "source_head_match": true,
+  "admitted": true,
+  "compile": "passed",
+  "runtime": "failed",
+  "failure": null,
+  "completed_utc": "2026-10-15T22:27:08.8124169+00:00"
+}

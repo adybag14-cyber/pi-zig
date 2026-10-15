@@ -1,0 +1,78 @@
+[
+  {
+    "path": "Run-AiClaude5ab7f2Slot3ExtendedPair-20261015.ps1",
+    "sha256": "9E9BA4902F09C4CD921C49B7E39BADFE249156508E610AFE836AB1A34E71EFA6"
+  },
+  {
+    "path": "Read-AiClaude5ab7f2Slot3Metadata-20261015.ps1",
+    "sha256": "3CB90533F75B416701726C52AE1E94D2295CD400A2F169762E9E4303465C03A6"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-compile.json",
+    "sha256": "178D45DDBBFEEDFC2276D7B6AF5FF3BF4819F710A44C4B491321E91F6D024C75"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-compile.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-compile.stderr.log",
+    "sha256": "9A303C8B8E0FD3874DF956B67BA0DE64FE3856DB8D3590169C0584075DE34B8A"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-runtime.json",
+    "sha256": "C03BDA68E43BFD9454114529C6F3D5BB512FEB6335578440EE9AC90345E7E655"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-runtime.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-runtime.stderr.log",
+    "sha256": "66B32E77318F95F1817DC624B150DDC9F911062067A0BA57119DC61A4FED898D"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-posthash.json",
+    "sha256": "19E19291DFE0C64AC0F84EA653F556DD68D45A2055F082D0EDBB4B3AF56C0278"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-compile-admission.json",
+    "sha256": "AA6E5C452C7781854AF25D8CBCD120FB3C73037D4833EFB69289E7529AA0B618"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-runtime-admission.json",
+    "sha256": "5A1AF68456F0A783A04E622EA1ED6C9E914FFC25E675B4460FF320665C8380C2"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-controls-before.json",
+    "sha256": "564353051638B6D37CBA472287498D64704161634CDFFBD360B143645A256F26"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-metadata-qualification.json",
+    "sha256": "9781F82E127552121675A868F54CAB4A789917BC68860D4B72AA00E80F18A40C"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-metadata-extended9.json",
+    "sha256": "187C0B6393315CC108100FA49EEBF91A1C26781F98978D7AA0DAE9DA6C3F4A14"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-metadata-extended9.stdout.bin",
+    "sha256": "6D01003E90FFFD2CF7BF6ADE8AA8E75F9EF38BBE8E8F81D8F9551454343CABBE"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-metadata-extended9.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-metadata-source25-five.json",
+    "sha256": "CEEA55A5E088A3FB08BB8DF4004C3E32E041235FDFB89C38499CE3951CB3ECF2"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-metadata-source25-five.stdout.bin",
+    "sha256": "F1FC4F9A5D9ECC65D860DCE29067B0FEB71D5EA4E5FECB098C77A0C71CDDDD79"
+  },
+  {
+    "path": "native-ai-claude5ab-7f2c066d-debug-extended-third-slot3-20261015-metadata-source25-five.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  }
+]
