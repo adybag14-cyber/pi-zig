@@ -62,8 +62,12 @@ pub const Input = struct {
     headers: []const std.http.Header,
     proxy_url: ?[]const u8 = null,
     timeout_ms: ?u64 = null,
+    headers_timeout_only: bool = false,
     method: std.http.Method = .POST,
     framing: Framing = .sse,
+    /// Bytes-only opt-in for genuine fetch/SDK readers: preserve binary bodies
+    /// for unsuccessful statuses rather than the provider error_body buffer.
+    stream_error_bytes: bool = false,
     prepare: ?@import("native_ai_http_prepare.zig").Callback = null,
     prepare_data: []const u8 = &.{},
 };
@@ -73,8 +77,10 @@ const OwnedInput = struct {
     headers: []std.http.Header,
     proxy_url: ?[]u8,
     timeout_ms: ?u64,
+    headers_timeout_only: bool,
     method: std.http.Method,
     framing: Framing,
+    stream_error_bytes: bool,
     prepare: ?@import("native_ai_http_prepare.zig").Callback,
     prepare_data: []u8,
     fn copy(input: Input) !OwnedInput {
@@ -97,7 +103,7 @@ const OwnedInput = struct {
             destination.* = .{ .name = name, .value = try a.dupe(u8, source.value) };
             count += 1;
         }
-        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms, .method = input.method, .framing = input.framing, .prepare = input.prepare, .prepare_data = try a.dupe(u8, input.prepare_data) };
+        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms, .headers_timeout_only = input.headers_timeout_only, .method = input.method, .framing = input.framing, .stream_error_bytes = input.stream_error_bytes and input.framing == .bytes, .prepare = input.prepare, .prepare_data = try a.dupe(u8, input.prepare_data) };
     }
     fn deinit(self: OwnedInput) void {
         a.free(self.url);
@@ -245,12 +251,14 @@ pub const Worker = struct {
         defer client.deinit();
         _ = try proxy.configureClient(&client, arena.allocator(), url, .{ .setting = self.input.proxy_url });
         const payload: ?[]const u8 = if ((self.input.method == .GET or self.input.method == .HEAD) and self.input.payload.len == 0) null else self.input.payload;
-        _ = try fetch.fetchControlledObserved(&client, .{ .location = .{ .url = url }, .method = self.input.method, .payload = payload, .extra_headers = headers, .keep_alive = false, .response_writer = &self.writer }, timeout_ms, &self.abort_flag, .{ .context = self, .callback = observeHead });
+        const fetch_options: std.http.Client.FetchOptions = .{ .location = .{ .url = url }, .method = self.input.method, .payload = payload, .extra_headers = headers, .keep_alive = false, .response_writer = &self.writer };
+        const observer: fetch.HeadObserver = .{ .context = self, .callback = observeHead };
+        _ = if (self.input.headers_timeout_only) try fetch.fetchHeadersControlledObserved(&client, fetch_options, timeout_ms, &self.abort_flag, observer) else try fetch.fetchControlledObserved(&client, fetch_options, timeout_ms, &self.abort_flag, observer);
         if (self.writer.end != 0) {
             try self.feed(self.writer.buffer[0..self.writer.end]);
             self.writer.end = 0;
         }
-        if (self.status < 200 or self.status >= 300) {
+        if ((self.status < 200 or self.status >= 300) and !self.input.stream_error_bytes) {
             const body = try self.error_body.toOwnedSlice(a);
             try self.push(.{ .error_body = body });
         } else if (self.input.framing == .body) {
@@ -316,7 +324,7 @@ pub const Worker = struct {
     }
     fn feed(self: *Worker, bytes: []const u8) !void {
         if (@atomicLoad(bool, &self.abort_flag, .acquire)) return error.NativeHttpAborted;
-        if (self.status < 200 or self.status >= 300 or self.input.framing == .body) {
+        if (((self.status < 200 or self.status >= 300) and !self.input.stream_error_bytes) or self.input.framing == .body) {
             if (bytes.len > maximum_frame_bytes - self.error_body.items.len) return error.NativeHttpErrorBodyLimit;
             return self.error_body.appendSlice(a, bytes);
         }
