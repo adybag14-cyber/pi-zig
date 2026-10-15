@@ -6,9 +6,8 @@ const Scope = v.Scope;
 const c = v.c;
 const flow = @import("native_agent_async.zig");
 const request = @import("native_ai_anthropic_request.zig");
-const sse = @import("native_ai_anthropic_sse.zig");
 const federation = @import("native_ai_anthropic_federation.zig");
-const Stage = enum(c_int) { payload, ready, response, read, event, raw, rejected_body };
+const Stage = enum(c_int) { payload, ready, response, event, rejected_body, producer_next, producer_closed };
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     const cache_key = "\x00native-anthropic-provider-factory";
     if (engine.native_module_values.get(cache_key)) |existing| return c.JS_DupValue(engine.context, existing);
@@ -97,6 +96,7 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, model: c.JSValue, input
     defer engine.freeValue(pending.owner);
     defer engine.freeValue(pending.promise);
     const owner = pending.owner;
+    if (c.JS_SetPrototype(engine.context, owner, c.pi_js_null()) < 0) return v.js.capture(engine);
     try scope.put(owner, "allocationGeneration", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, engine.native_allocation_generation))));
     try scope.put(owner, "model", model);
     try scope.put(owner, "context", context);
@@ -106,6 +106,8 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, model: c.JSValue, input
     try scope.put(owner, "disabledPreferred", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "sawStart", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "sawStop", c.pi_js_bool(engine.context, 0));
+    try scope.put(owner, "eventIterator", c.pi_js_undefined());
+    try scope.put(owner, "producerClosed", c.pi_js_bool(engine.context, 0));
     const tools = try scope.own(try @import("native_agent_tool_changes.zig").currentTools(engine, try scope.get(context, "messages")));
     const decoder = try scope.own(try @import("native_ai_anthropic_decode.zig").create(engine, model, outer, try scope.get(dependencies, "json"), false, tools));
     try scope.put(owner, "decoder", decoder);
@@ -183,7 +185,12 @@ fn federationConfig(scope: *Scope, model: c.JSValue, options: c.JSValue) !c.JSVa
 fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    if (@as(Stage, @enumFromInt(raw)) == .producer_closed) {
+        if (rejected and try nativeAllocationReason(engine, owner, value)) return retireNativeAllocation(engine, owner, value);
+        return failFinal(&scope, owner, try scope.get(owner, "failureReason")) catch |err| failError(&scope, owner, err);
+    }
     if (rejected) {
+        if (@as(Stage, @enumFromInt(raw)) == .producer_next) try scope.put(owner, "producerClosed", c.pi_js_bool(engine.context, 1));
         if (@as(Stage, @enumFromInt(raw)) == .rejected_body and !try nativeAllocationReason(engine, owner, value)) {
             return rejectedBody(&scope, owner, value) catch |err| failError(&scope, owner, err);
         }
@@ -259,6 +266,21 @@ fn release(scope: *Scope, owner: c.JSValue) !void {
 }
 fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     if (try nativeAllocationReason(scope.engine, owner, reason)) return retireNativeAllocation(scope.engine, owner, reason);
+    const iterator = try scope.get(owner, "eventIterator");
+    if (!v.nullish(iterator) and !scope.truthy(try scope.get(owner, "producerClosed"))) {
+        try scope.put(owner, "producerClosed", c.pi_js_bool(scope.engine.context, 1));
+        try scope.put(owner, "failureReason", reason);
+        const close = scope.invoke(iterator, "return", &.{}) catch |err| {
+            const close_reason = flow.reason(scope.engine, err);
+            defer scope.engine.freeValue(close_reason);
+            if (err == error.OutOfMemory or try nativeAllocationReason(scope.engine, owner, close_reason)) return retireNativeAllocation(scope.engine, owner, close_reason);
+            return failFinal(scope, owner, reason);
+        };
+        return wait(scope, owner, close, .producer_closed);
+    }
+    return failFinal(scope, owner, reason);
+}
+fn failFinal(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     release(scope, owner) catch |err| {
         const release_reason = flow.reason(scope.engine, err);
         defer scope.engine.freeValue(release_reason);
@@ -492,32 +514,6 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     }
     return result;
 }
-fn read(scope: *Scope, owner: c.JSValue) !void {
-    if (scope.truthy(try v.optional(scope, try scope.get(owner, "streamSignal"), "aborted"))) return v.errorText(scope, try scope.text("Request was aborted"));
-    const reader = try scope.get(owner, "reader");
-    if (!v.nullish(reader)) return wait(scope, owner, try scope.invoke(reader, "read", &.{}), .read);
-    return wait(scope, owner, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), .raw);
-}
-fn queued(scope: *Scope, owner: c.JSValue) !void {
-    const queue = try scope.get(owner, "events");
-    while (try v.length(scope, queue) > 0) {
-        const frame = try scope.invoke(queue, "shift", &.{});
-        const decoded = try sse.decode(scope, frame, try scope.get(try scope.get(owner, "agent"), "json"));
-        if (c.JS_IsUndefined(decoded)) continue;
-        const type_value = try scope.get(decoded, "type");
-        if (try v.eq(scope, type_value, "message_start")) try scope.put(owner, "sawStart", c.pi_js_bool(scope.engine.context, 1));
-        if (try v.eq(scope, type_value, "message_stop")) try scope.put(owner, "sawStop", c.pi_js_bool(scope.engine.context, 1));
-        try scope.put(owner, "event", decoded);
-        return wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", decoded), .event);
-    }
-    if (scope.truthy(try scope.get(owner, "eof"))) {
-        try release(scope, owner);
-        if (scope.truthy(try scope.get(owner, "sawStart")) and !scope.truthy(try scope.get(owner, "sawStop"))) return v.errorText(scope, try scope.text("Anthropic stream ended before message_stop"));
-        _ = try scope.invoke(try scope.get(owner, "decoder"), "finish", &.{c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner)))});
-        return flow.settle(scope.engine, owner, false, c.pi_js_undefined());
-    }
-    return read(scope, owner);
-}
 fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
     switch (stage) {
         .payload => {
@@ -538,57 +534,35 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
                 const status = try scope.get(value, "status");
                 if (scope.equal(status, c.JS_NewInt32(scope.engine.context, 401))) try invalidateFederation(scope, owner);
                 const text_method = try scope.get(value, "text");
-                if (!v.nullish(text_method)) return wait(scope, owner, try scope.call(text_method, value, &.{}), .rejected_body);
-                return read(scope, owner);
+                return wait(scope, owner, try scope.call(text_method, value, &.{}), .rejected_body);
             }
             try wait(scope, owner, try responseHook(scope, owner, value), .response);
         },
         .response => {
             _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
             try scope.put(owner, "streamSignal", try v.optional(scope, try scope.get(owner, "options"), "signal"));
-            try scope.put(owner, "events", try scope.array());
-            try scope.put(owner, "sse", try sse.create(scope));
-            try scope.put(owner, "textDecoder", try scope.own(try v.js.builtin(scope.engine, "TextDecoder", &.{})));
-            const http = try scope.get(owner, "http");
-            if (v.nullish(http)) {
-                const body = try scope.get(try scope.get(owner, "response"), "body");
-                if (!scope.truthy(body)) return v.errorText(scope, try scope.text("Attempted to iterate over an Anthropic response with no body"));
-                try scope.put(owner, "reader", try scope.invoke(body, "getReader", &.{}));
-            }
-            try read(scope, owner);
-        },
-        .read => {
-            const eof = scope.truthy(try scope.get(value, "done"));
-            const decoder = try scope.get(owner, "textDecoder");
-            const config = try scope.object();
-            try scope.put(config, "stream", c.pi_js_bool(scope.engine.context, 1));
-            const text = if (eof) try scope.invoke(decoder, "decode", &.{}) else try scope.invoke(decoder, "decode", &.{ try scope.get(value, "value"), config });
-            try scope.put(owner, "events", try sse.feed(scope, try scope.get(owner, "sse"), text, eof));
-            try scope.put(owner, "eof", c.pi_js_bool(scope.engine.context, @intFromBool(eof)));
-            try queued(scope, owner);
+            const iterator = try scope.own(try @import("native_ai_anthropic_events.zig").create(scope.engine, try scope.get(owner, "response"), try scope.get(owner, "http"), try scope.get(owner, "streamSignal"), try scope.get(try scope.get(owner, "agent"), "json")));
+            try scope.put(owner, "eventIterator", iterator);
+            try wait(scope, owner, try scope.invoke(iterator, "next", &.{}), .producer_next);
         },
         .event => {
             _ = try scope.invoke(try scope.get(owner, "decoder"), "event", &.{try scope.get(owner, "event")});
-            try queued(scope, owner);
-        },
-        .raw => {
-            const eof = scope.truthy(try scope.get(value, "done"));
-            if (!eof) {
-                const frame = try scope.get(value, "value");
-                const error_body = try v.eq(scope, try scope.get(frame, "type"), "error_body");
-                if (error_body) return failureBody(scope, owner, try scope.get(frame, "body"));
-                const config = try scope.object();
-                try scope.put(config, "stream", c.pi_js_bool(scope.engine.context, 1));
-                const text = try scope.invoke(try scope.get(owner, "textDecoder"), "decode", &.{ try scope.get(frame, "data"), config });
-                try scope.put(owner, "events", try sse.feed(scope, try scope.get(owner, "sse"), text, false));
-            } else {
-                const text = try scope.invoke(try scope.get(owner, "textDecoder"), "decode", &.{});
-                try scope.put(owner, "events", try sse.feed(scope, try scope.get(owner, "sse"), text, true));
-            }
-            try scope.put(owner, "eof", c.pi_js_bool(scope.engine.context, @intFromBool(eof)));
-            try queued(scope, owner);
+            try wait(scope, owner, try scope.invoke(try scope.get(owner, "eventIterator"), "next", &.{}), .producer_next);
         },
         .rejected_body => try failureBody(scope, owner, value),
+        .producer_next => {
+            if (!c.JS_IsObject(value)) return v.js.typeError(scope.engine, "Iterator result is not an object");
+            if (scope.truthy(try scope.get(value, "done"))) {
+                try scope.put(owner, "producerClosed", c.pi_js_bool(scope.engine.context, 1));
+                _ = try scope.invoke(try scope.get(owner, "decoder"), "finish", &.{c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner)))});
+                try flow.settle(scope.engine, owner, false, c.pi_js_undefined());
+                return;
+            }
+            const event = try scope.get(value, "value");
+            try scope.put(owner, "event", event);
+            try wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", event), .event);
+        },
+        .producer_closed => unreachable,
     }
 }
 fn failureBody(scope: *Scope, owner: c.JSValue, text: c.JSValue) !void {

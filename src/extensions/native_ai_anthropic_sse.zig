@@ -16,7 +16,16 @@ fn flush(scope: *Scope, state: c.JSValue, output: c.JSValue) !void {
     const event = try scope.object();
     try scope.put(event, "event", try scope.get(state, "event"));
     try scope.put(event, "data", try scope.invoke(try scope.get(state, "data"), "join", &.{try scope.text("\n")}));
-    try scope.put(event, "raw", try scope.invoke(try scope.get(state, "raw"), "slice", &.{}));
+    const raw = try scope.array();
+    var rows = try v.iterator(scope, try scope.get(state, "raw"));
+    defer rows.deinit();
+    errdefer rows.closePreserving();
+    var index: u32 = 0;
+    while (try rows.next()) |value| : (index += 1) {
+        defer scope.engine.freeValue(value);
+        try scope.index(raw, index, value);
+    }
+    try scope.put(event, "raw", raw);
     try scope.set(state, "event", c.pi_js_null());
     try scope.set(state, "data", try scope.array());
     try scope.set(state, "raw", try scope.array());
@@ -58,28 +67,68 @@ pub fn feed(scope: *Scope, state: c.JSValue, input: c.JSValue, eof: bool) !c.JSV
     try scope.set(state, "buffer", buffer);
     return output;
 }
+pub fn append(scope: *Scope, state: c.JSValue, input: c.JSValue) !void {
+    try scope.set(state, "buffer", try scope.concat(try scope.get(state, "buffer"), input));
+}
+/// One Source yield boundary at a time. Later buffered lines remain unconsumed
+/// until the real SSE async generator receives its next request.
+pub fn take(engine: *v.em.Engine, state: c.JSValue, eof: bool) !?c.JSValue {
+    var steps: usize = 0;
+    while (true) {
+        try @import("native_ai_budget.zig").step(engine, &steps);
+        var scope: Scope = .{ .engine = engine };
+        defer scope.deinit();
+        const buffer = try scope.get(state, "buffer");
+        const cr = try scope.invoke(buffer, "indexOf", &.{try scope.text("\r")});
+        const lf = try scope.invoke(buffer, "indexOf", &.{try scope.text("\n")});
+        const no_cr = scope.equal(cr, c.JS_NewInt32(engine.context, -1));
+        const no_lf = scope.equal(lf, c.JS_NewInt32(engine.context, -1));
+        const output = try scope.array();
+        if (no_cr and no_lf) {
+            if (!eof) return null;
+            try scope.set(state, "buffer", try scope.text(""));
+            if (try v.length(&scope, buffer) > 0) try line(&scope, state, buffer, output);
+            if (try v.length(&scope, output) == 0) try flush(&scope, state, output);
+            if (try v.length(&scope, output) > 0) return c.JS_DupValue(engine.context, try v.at(&scope, output, 0));
+            return null;
+        }
+        const index = if (no_cr) lf else if (no_lf) cr else try scope.invoke(try scope.global("Math"), "min", &.{ cr, lf });
+        var following = try scope.concat(index, c.JS_NewInt32(engine.context, 1));
+        if (try v.eq(&scope, try scope.invoke(buffer, "charAt", &.{index}), "\r") and try v.eq(&scope, try scope.invoke(buffer, "charAt", &.{following}), "\n")) following = try scope.concat(following, c.JS_NewInt32(engine.context, 1));
+        const current = try scope.invoke(buffer, "slice", &.{ c.JS_NewInt32(engine.context, 0), index });
+        try scope.set(state, "buffer", try scope.invoke(buffer, "slice", &.{following}));
+        try line(&scope, state, current, output);
+        if (try v.length(&scope, output) > 0) return c.JS_DupValue(engine.context, try v.at(&scope, output, 0));
+    }
+}
+pub fn parseFailure(scope: *Scope, sse: c.JSValue, reason: c.JSValue) !c.JSValue {
+    const instance = c.JS_IsInstanceOf(scope.engine.context, reason, try scope.global("Error"));
+    if (instance < 0) return v.js.capture(scope.engine);
+    const description = if (instance == 1) try scope.get(reason, "message") else try scope.call(try scope.global("String"), c.pi_js_undefined(), &.{reason});
+    var text = try scope.concat(try scope.concat(try scope.text("Could not parse Anthropic SSE event "), try scope.stringify(try scope.get(sse, "event"))), try scope.text(": "));
+    text = try scope.concat(try scope.concat(text, description), try scope.text("; data="));
+    text = try scope.concat(try scope.concat(text, try scope.get(sse, "data")), try scope.text("; raw="));
+    text = try scope.concat(text, try scope.invoke(try scope.get(sse, "raw"), "join", &.{try scope.text("\\n")}));
+    return scope.own(try v.js.builtin(scope.engine, "Error", &.{text}));
+}
+pub fn known(scope: *Scope, kind: c.JSValue) !bool {
+    inline for (.{ "message_start", "message_delta", "message_stop", "content_block_start", "content_block_delta", "content_block_stop" }) |candidate| if (try v.eq(scope, kind, candidate)) {
+        return true;
+    };
+    return false;
+}
 pub fn decode(scope: *Scope, sse: c.JSValue, json: c.JSValue) !c.JSValue {
     const kind = try scope.get(sse, "event");
     const data = try scope.get(sse, "data");
     if (try v.eq(scope, kind, "error")) return v.errorText(scope, data);
-    var known = false;
-    inline for (.{ "message_start", "message_delta", "message_stop", "content_block_start", "content_block_delta", "content_block_stop" }) |candidate| if (try v.eq(scope, kind, candidate)) {
-        known = true;
-    };
-    if (!known) return c.pi_js_undefined();
+    if (!try known(scope, kind)) return c.pi_js_undefined();
     const generation = scope.engine.native_allocation_generation;
     return scope.invoke(json, "parseJsonWithRepair", &.{data}) catch |err| {
         const classified = scope.engine.nativeAllocationError(err, generation);
         if (classified == error.OutOfMemory) return classified;
         const reason = @import("native_agent_async.zig").reason(scope.engine, err);
         defer scope.engine.freeValue(reason);
-        const instance = c.JS_IsInstanceOf(scope.engine.context, reason, try scope.global("Error"));
-        if (instance < 0) return v.js.capture(scope.engine);
-        const description = if (instance == 1) try scope.get(reason, "message") else try scope.stringify(reason);
-        var text = try scope.concat(try scope.concat(try scope.text("Could not parse Anthropic SSE event "), try scope.stringify(kind)), try scope.text(": "));
-        text = try scope.concat(try scope.concat(text, description), try scope.text("; data="));
-        text = try scope.concat(try scope.concat(text, data), try scope.text("; raw="));
-        text = try scope.concat(text, try scope.invoke(try scope.get(sse, "raw"), "join", &.{try scope.text("\n")}));
-        return v.errorText(scope, text);
+        const failure = try parseFailure(scope, sse, reason);
+        return scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, failure)));
     };
 }
