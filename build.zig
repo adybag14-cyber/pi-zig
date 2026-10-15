@@ -1571,6 +1571,18 @@ pub fn build(b: *std.Build) void {
     ai_retry_call_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-retry-call", "Compare original assistant retry async behavior and complete native owner graphs").dependOn(&b.addRunArtifact(ai_retry_call_tests).step);
     b.step("build-native-ai-retry-call", "Compile original assistant retry separately from runtime deadlines").dependOn(&ai_retry_call_tests.step);
+    const google_mistral_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_google_mistral_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI Google Mistral"}, .use_llvm = use_llvm });
+    linkQuickJs(b, google_mistral_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(google_mistral_tests.root_module, sqlite_lib_dir, sqlite_library);
+    google_mistral_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-ai-google-mistral", "Compile actual Google Vertex Mistral facades before runtime qualification").dependOn(&google_mistral_tests.step);
+    b.step("test-native-ai-google-mistral", "Compare actual Source Google Vertex Mistral request events callbacks and native ownership").dependOn(&b.addRunArtifact(google_mistral_tests).step);
+    const google_mistral_component_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_google_mistral_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "Source30 request component", "Source30 terminal callback", "retained facade roots", "complete native facade allocation graph", "preflight preserves thrown guest" }, .use_llvm = use_llvm });
+    linkQuickJs(b, google_mistral_component_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(google_mistral_component_tests.root_module, sqlite_lib_dir, sqlite_library);
+    google_mistral_component_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-ai-google-mistral-components", "Compile separate functional Source30 and ownership components without claiming full scheduling").dependOn(&google_mistral_component_tests.step);
+    b.step("test-native-ai-google-mistral-components", "Compare Source30 functional components and strict ownership; full snapshots stay in the full target").dependOn(&b.addRunArtifact(google_mistral_component_tests).step);
     const source_paths_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_source_paths_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Source path cwd"}, .use_llvm = use_llvm });
     linkQuickJs(b, source_paths_tests.root_module, quickjs, sqlite_lib_dir);
     source_paths_tests.root_module.addImport("catalog_tool", catalog_tool);

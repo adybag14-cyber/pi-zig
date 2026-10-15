@@ -1,0 +1,7 @@
+1/6 native_ai_google_mistral_test.test.native AI Google Mistral Source30 request component retains actual payload hook and wire observations...OK
+2/6 native_ai_google_mistral_test.test.native AI Google Mistral Source30 terminal callback auth wire and event shape components...OK
+3/6 native_ai_google_mistral_test.test.native AI Google Mistral preflight preserves thrown guest identity without eager ToString...OK
+4/6 native_ai_google_mistral_test.test.native AI Google Mistral retained facade roots survive collection...OK
+5/6 native_ai_google_mistral_test.test.native AI Google Mistral complete native facade allocation graph...OK
+6/6 extensions.native_durable_storage.test_0...OK
+All 6 tests passed.
