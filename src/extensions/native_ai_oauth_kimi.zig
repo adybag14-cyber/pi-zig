@@ -112,7 +112,7 @@ fn retry(s: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     const error_constructor = try s.global("Error");
     const instance = c.JS_IsInstanceOf(s.engine.context, reason, error_constructor);
     if (instance < 0) return v.js.capture(s.engine);
-    const error_value = if (instance != 0) reason else try s.own(try v.js.builtin(s.engine, "Error", &.{try s.stringify(reason)}));
+    const error_value = if (instance != 0) reason else try s.own(try v.js.builtin(s.engine, "Error", &.{try s.call(try s.global("String"), c.pi_js_undefined(), &.{reason})}));
     try s.put(owner, "lastError", error_value);
     const attempt = try s.get(owner, "attempt");
     if (try arithmetic.compare(s.engine, .greater_equal, attempt, c.JS_NewInt32(s.engine.context, 3))) return flow.settle(s.engine, owner, true, error_value);
