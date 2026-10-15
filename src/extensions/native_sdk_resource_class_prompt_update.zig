@@ -14,6 +14,8 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
 }
 fn dispatch(context: ?*c.JSContext, loader: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     update(engine, loader, if (argc > 0) argv[0] else c.pi_js_undefined(), if (argc > 1) argv[1] else c.pi_js_undefined(), roots[0]) catch |err| return sdk.fail(engine, err);
     return c.pi_js_undefined();
 }
