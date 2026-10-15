@@ -119,6 +119,7 @@ fn setup(scope: *Scope, owner: c.JSValue) !void {
     if (!scope.truthy(try scope.get(owner, "configured"))) {
         const model = try scope.get(owner, "model");
         const supplied = try v.optional(scope, options, "client");
+        try scope.put(owner, "usesSdkClient", c.pi_js_bool(scope.engine.context, @intFromBool(scope.truthy(supplied))));
         const sdk_client = if (scope.truthy(supplied)) try v.optional(scope, options, "client") else c.pi_js_undefined();
         try scope.put(owner, "sdkClient", sdk_client);
         const key = if (scope.truthy(supplied)) c.pi_js_undefined() else try v.optional(scope, options, "apiKey");
@@ -220,7 +221,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
     return wait(scope, owner, try scope.call(retry, c.pi_js_undefined(), &.{ callback, retry_options }), .ready);
 }
 fn perform(scope: *Scope, owner: c.JSValue) !c.JSValue {
-    if (v.nullish(try scope.get(owner, "sdkClient"))) try scope.put(owner, "wire", try @import("native_ai_anthropic_wire.zig").prepare(scope, try scope.get(owner, "payload"), try scope.get(try scope.get(owner, "agent"), "errors")));
+    if (!scope.truthy(try scope.get(owner, "usesSdkClient"))) try scope.put(owner, "wire", try @import("native_ai_anthropic_wire.zig").prepare(scope, try scope.get(owner, "payload"), try scope.get(try scope.get(owner, "agent"), "errors")));
     const client = try scope.get(owner, "federationClient");
     if (c.JS_IsUndefined(client)) return performAuthorized(scope, owner);
     const pending = try flow.create(scope.engine, owner);
@@ -245,7 +246,7 @@ fn performAuthorized(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const request_options = try scope.get(owner, "requestOptions");
     if (scope.truthy(try v.optional(scope, try scope.get(request_options, "signal"), "aborted"))) return v.errorText(scope, try scope.text("Request was aborted"));
     const client = try scope.get(owner, "sdkClient");
-    if (scope.truthy(client)) {
+    if (scope.truthy(try scope.get(owner, "usesSdkClient"))) {
         const created = try scope.invoke(try scope.get(try scope.get(client, "beta"), "messages"), "create", &.{ try scope.get(owner, "payload"), request_options });
         return scope.invoke(created, "asResponse", &.{});
     }
