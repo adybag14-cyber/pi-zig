@@ -1477,7 +1477,8 @@ test "Bedrock adaptive Claude thinking maps effort and omits legacy beta" {
     defer gpa.free(body);
     try std.testing.expect(std.mem.indexOf(u8, body, "\"thinking\":{\"type\":\"adaptive\",\"display\":\"summarized\",\"block_binding\":{\"prefix_mismatch_behavior\":\"drop_block\"}}") != null);
     try std.testing.expect(std.mem.indexOf(u8, body, "\"output_config\":{\"effort\":\"xhigh\"}") != null);
-    try std.testing.expect(std.mem.indexOf(u8, body, "anthropic_beta") == null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "interleaved-thinking-2025-05-14") == null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "thinking-binding-controls-2026-08-01") != null);
 }
 
 test "Source5ab Bedrock retains success tool images and moves only Claude error images after the results" {
