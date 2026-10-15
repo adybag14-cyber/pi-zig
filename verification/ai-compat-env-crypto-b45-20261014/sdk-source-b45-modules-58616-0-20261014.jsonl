@@ -1,0 +1,4 @@
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b45-observe-20261014.mjs","sha256":"277c6ccc272a30c512c9bc18cc1adafe9a3f2a99403704020d9c4ff17d2b8d82"}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-env-keys-b45-source-capture-20261014.mjs","sha256":"0af7be2040ec227541c27f0e75f9b5b18941501e9223facdfd985d815c8506ab"}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\ai\\src\\env-api-keys.ts","sha256":"0bb1945f280a03b0dcb7cd24b9caa7dd59d4bf25ce7bc92699fb27b2eba05426"}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\ai\\src\\utils\\provider-env.ts","sha256":"3829251ae0674cef7ca09800cee9f46d4e305770129b72b822ea2f6f85efe675"}

@@ -100,6 +100,8 @@ pub fn setup(engine: *em.Engine, environment: *std.process.Environ.Map) !void {
     engine.native_io = std.testing.io;
     try @import("extensions/abort_signal.zig").install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/text_encoding.zig").install(engine);
+    try @import("extensions/native_crypto_random.zig").install(engine);
     try @import("extensions/native_process.zig").install(engine, std.testing.io, environment, &.{"native-registry-full-composition"});
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -114,8 +116,8 @@ pub fn setup(engine: *em.Engine, environment: *std.process.Environ.Map) !void {
     try @import("extensions/native_sdk_chat_transport.zig").install(engine, dependencies);
     try scope.put(dependencies, "convertToLlm", try scope.own(try @import("extensions/native_sdk_messages.zig").create(engine)));
     try scope.put(dependencies, "normalizeToolResultImages", try scope.own(try @import("extensions/native_sdk_tool_result_images.zig").create(engine)));
-    const reference_bytes = @embedFile("extensions/fixtures/sdk-session-prototype-original-e622.json");
-    const reference = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, reference_bytes, reference_bytes.len, "sdk-session-prototype-original-e622.json")));
+    const reference_bytes = @embedFile("extensions/fixtures/sdk-session-prototype-original-5ab.json");
+    const reference = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, reference_bytes, reference_bytes.len, "sdk-session-prototype-original-5ab.json")));
     try scope.put(namespace, "AgentSession", try scope.own(try constructor(engine, dependencies, reference)));
     try scope.put(namespace, "createExtensionRuntime", try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, runtime, "createExtensionRuntime", 0))));
     try scope.put(namespace, "createFactoryProviderCallbacks", try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, providerCallbacks, "createFactoryProviderCallbacks", 6))));

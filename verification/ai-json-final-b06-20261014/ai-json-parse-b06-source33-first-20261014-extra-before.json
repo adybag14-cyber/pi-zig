@@ -1,0 +1,38 @@
+[
+  {
+    "sha256": "CE059A7D2CCB1673828797F6C05876970E7AC180A6AC87495F9D06A5059F1936",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-json-parse-b06-caller-20261014.mjs"
+  },
+  {
+    "sha256": "656EBC5B819515539110B545EEED0B5CAD07CC2294692950107CA01BDC5DFB33",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-json-parse-b06-source-capture-20261014.mjs"
+  },
+  {
+    "sha256": "E7472C88CE8B73DD27BC973EA50357B8D0E11AB841A9CAB11E2C09995FF5F96C",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b06-observe-20261014.mjs"
+  },
+  {
+    "sha256": "F92707660EDA10B0ACADBF5435D84B29A5A5B9AA9D719643E3157E2C406387AB",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b06-dependency-contract-audit-20261014.json"
+  },
+  {
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1"
+  },
+  {
+    "sha256": "2620E8660E52FB7CAF67B52BE98EE8DAFFAEAD9ACADC6E0999776F83002BD6A2",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiJsonParseB06Source-20261014.ps1"
+  },
+  {
+    "sha256": "810E220B73299EBFE48BE1E44189758F885BEC8BC7D8150D8D7AF687D7CDEAC4",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b06-full-manifest-20261014.json"
+  },
+  {
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json"
+  },
+  {
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json"
+  }
+]

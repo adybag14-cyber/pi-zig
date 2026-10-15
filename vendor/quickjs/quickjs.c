@@ -634,6 +634,8 @@ struct JSContext {
                              const char *input, size_t input_len,
                              const char *filename, int line, int flags, int scope_idx);
     void *user_opaque;
+    /* Borrowed native callback, temporarily installed by an owner utility. */
+    JSJSONParseErrorHook *pi_json_parse_error_hook;
 };
 
 typedef union JSFloat64Union {
@@ -3007,6 +3009,14 @@ void *JS_GetContextOpaque(JSContext *ctx)
 void JS_SetContextOpaque(JSContext *ctx, void *opaque)
 {
     ctx->user_opaque = opaque;
+}
+
+JSJSONParseErrorHook *JS_PiSetJSONParseErrorHook(JSContext *ctx,
+                                             JSJSONParseErrorHook *hook)
+{
+    JSJSONParseErrorHook *previous = ctx->pi_json_parse_error_hook;
+    ctx->pi_json_parse_error_hook = hook;
+    return previous;
 }
 
 /* set the new value and free the old value after (freeing the value
@@ -51690,16 +51700,52 @@ static JSValue internalize_json_property(JSContext *ctx, JSValueConst holder,
     return JS_EXCEPTION;
 }
 
+static JSValue pi_json_parse_with_error_hook(JSContext *ctx, JSValueConst source,
+                                            const char *str, size_t len,
+                                            JSONParseRecord *record)
+{
+    JSValue result = JS_ParseJSON_internal(ctx, str, len, "<input>", record);
+    JSValue exception, replacement;
+    JSObject *object;
+    if (!JS_IsException(result) || !ctx->pi_json_parse_error_hook)
+        return result;
+    exception = JS_GetException(ctx);
+    /* Fresh intrinsic subtype identity, never a mutable guest name/getter.
+       OOM, interrupts, stack failures and all non-SyntaxErrors pass through. */
+    if (!JS_IsObject(exception) || JS_IsUncatchableError(exception))
+        return JS_Throw(ctx, exception);
+    object = JS_VALUE_GET_OBJ(exception);
+    if (object->class_id != JS_CLASS_ERROR ||
+        object->shape->proto != JS_VALUE_GET_OBJ(ctx->native_error_proto[JS_SYNTAX_ERROR]))
+        return JS_Throw(ctx, exception);
+    replacement = ctx->pi_json_parse_error_hook(ctx, source, exception);
+    JS_FreeValue(ctx, exception);
+    if (JS_IsException(replacement))
+        return replacement;
+    return JS_Throw(ctx, replacement);
+}
+
 static JSValue js_json_parse(JSContext *ctx, JSValueConst this_val,
                              int argc, JSValueConst *argv)
 {
-    JSValue obj;
+    JSValue obj, source;
     const char *str;
     size_t len;
 
-    str = JS_ToCStringLen(ctx, &len, argv[0]);
-    if (!str)
+    source = JS_UNDEFINED;
+    /* With no private hook, retain the original conversion/allocation path.
+       The scoped path retains already-coerced text; object coercion runs once. */
+    if (ctx->pi_json_parse_error_hook) {
+        source = JS_ToString(ctx, argv[0]);
+        if (JS_IsException(source))
+            return JS_EXCEPTION;
+    }
+    str = JS_ToCStringLen(ctx, &len,
+                         JS_IsUndefined(source) ? argv[0] : source);
+    if (!str) {
+        JS_FreeValue(ctx, source);
         return JS_EXCEPTION;
+    }
     if (argc > 1 && JS_IsFunction(ctx, argv[1])) {
         JSONParseRecord pr_s, *pr = &pr_s, *pr1;
         JSValue root;
@@ -51716,7 +51762,10 @@ static JSValue js_json_parse(JSContext *ctx, JSValueConst this_val,
         if (!pr1)
             goto fail1;
 
-        obj = JS_ParseJSON_internal(ctx, str, len, "<input>", pr1);
+        if (ctx->pi_json_parse_error_hook)
+            obj = pi_json_parse_with_error_hook(ctx, source, str, len, pr1);
+        else
+            obj = JS_ParseJSON_internal(ctx, str, len, "<input>", pr1);
         if (JS_IsException(obj))
             goto fail1;
 
@@ -51733,12 +51782,17 @@ static JSValue js_json_parse(JSContext *ctx, JSValueConst this_val,
         json_free_parse_record(ctx, pr);
         JS_FreeValue(ctx, root);
     } else {
-        obj = JS_ParseJSON_internal(ctx, str, len, "<input>", NULL);
+        if (ctx->pi_json_parse_error_hook)
+            obj = pi_json_parse_with_error_hook(ctx, source, str, len, NULL);
+        else
+            obj = JS_ParseJSON_internal(ctx, str, len, "<input>", NULL);
     }
     JS_FreeCString(ctx, str);
+    JS_FreeValue(ctx, source);
     return obj;
  fail:
     JS_FreeCString(ctx, str);
+    JS_FreeValue(ctx, source);
     return JS_EXCEPTION;
 }
 

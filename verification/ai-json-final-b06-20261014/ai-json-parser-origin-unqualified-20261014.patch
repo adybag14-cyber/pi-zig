@@ -1,0 +1,144 @@
+diff --git a/src/extensions/engine.zig b/src/extensions/engine.zig
+index bc7aa671..d06ac3fa 100644
+--- a/src/extensions/engine.zig
++++ b/src/extensions/engine.zig
+@@ -61,6 +61,7 @@ pub const Engine = struct {
+     last_error: ?[]u8 = null,
+     captured_exception: ?c.JSValue = null,
+     native_exception_diagnostics_suppressed: usize = 0,
++    native_json_diagnostic_depth: usize = 0,
+     // Installed only by the interactive application's owned worker. Public
+     // promise state/result queries must never consume a guest rejection.
+     native_application_fatal: ?*anyopaque = null,
+@@ -266,6 +267,8 @@ pub const Engine = struct {
+     }
+ 
+     pub fn deinit(self: *Engine) void {
++        _ = c.JS_PiSetJSONParseErrorHook(self.context, null);
++        self.native_json_diagnostic_depth = 0;
+         if (self.native_ai_http_cleanup) |cleanup| cleanup(self);
+         if (self.native_codemode_deinit) |cleanup| cleanup(self);
+         if (self.native_command_metadata_deinit) |cleanup| cleanup(self);
+diff --git a/vendor/quickjs/quickjs.c b/vendor/quickjs/quickjs.c
+index cce71d9a..2119b771 100644
+--- a/vendor/quickjs/quickjs.c
++++ b/vendor/quickjs/quickjs.c
+@@ -634,6 +634,8 @@ struct JSContext {
+                              const char *input, size_t input_len,
+                              const char *filename, int line, int flags, int scope_idx);
+     void *user_opaque;
++    /* Borrowed native callback, temporarily installed by an owner utility. */
++    JSJSONParseErrorHook *pi_json_parse_error_hook;
+ };
+ 
+ typedef union JSFloat64Union {
+@@ -3009,6 +3011,14 @@ void JS_SetContextOpaque(JSContext *ctx, void *opaque)
+     ctx->user_opaque = opaque;
+ }
+ 
++JSJSONParseErrorHook *JS_PiSetJSONParseErrorHook(JSContext *ctx,
++                                             JSJSONParseErrorHook *hook)
++{
++    JSJSONParseErrorHook *previous = ctx->pi_json_parse_error_hook;
++    ctx->pi_json_parse_error_hook = hook;
++    return previous;
++}
++
+ /* set the new value and free the old value after (freeing the value
+    can reallocate the object data) */
+ static inline void set_value(JSContext *ctx, JSValue *pval, JSValue new_val)
+@@ -51690,16 +51700,48 @@ static JSValue internalize_json_property(JSContext *ctx, JSValueConst holder,
+     return JS_EXCEPTION;
+ }
+ 
++static JSValue pi_json_parse_with_error_hook(JSContext *ctx, JSValueConst source,
++                                            const char *str, size_t len,
++                                            JSONParseRecord *record)
++{
++    JSValue result = JS_ParseJSON_internal(ctx, str, len, "<input>", record);
++    JSValue exception, replacement;
++    JSObject *object;
++    if (!JS_IsException(result) || !ctx->pi_json_parse_error_hook)
++        return result;
++    exception = JS_GetException(ctx);
++    /* Fresh intrinsic subtype identity, never a mutable guest name/getter.
++       OOM, interrupts, stack failures and all non-SyntaxErrors pass through. */
++    if (!JS_IsObject(exception) || JS_IsUncatchableError(exception))
++        return JS_Throw(ctx, exception);
++    object = JS_VALUE_GET_OBJ(exception);
++    if (object->class_id != JS_CLASS_ERROR ||
++        object->shape->proto != JS_VALUE_GET_OBJ(ctx->native_error_proto[JS_SYNTAX_ERROR]))
++        return JS_Throw(ctx, exception);
++    replacement = ctx->pi_json_parse_error_hook(ctx, source, exception);
++    JS_FreeValue(ctx, exception);
++    if (JS_IsException(replacement))
++        return replacement;
++    return JS_Throw(ctx, replacement);
++}
++
+ static JSValue js_json_parse(JSContext *ctx, JSValueConst this_val,
+                              int argc, JSValueConst *argv)
+ {
+-    JSValue obj;
++    JSValue obj, source;
+     const char *str;
+     size_t len;
+ 
+-    str = JS_ToCStringLen(ctx, &len, argv[0]);
+-    if (!str)
++    /* Retain the already-coerced text for diagnostics. Object coercion runs
++       once, including when a caller wrapper delegates to this intrinsic. */
++    source = JS_ToString(ctx, argv[0]);
++    if (JS_IsException(source))
++        return JS_EXCEPTION;
++    str = JS_ToCStringLen(ctx, &len, source);
++    if (!str) {
++        JS_FreeValue(ctx, source);
+         return JS_EXCEPTION;
++    }
+     if (argc > 1 && JS_IsFunction(ctx, argv[1])) {
+         JSONParseRecord pr_s, *pr = &pr_s, *pr1;
+         JSValue root;
+@@ -51716,7 +51758,7 @@ static JSValue js_json_parse(JSContext *ctx, JSValueConst this_val,
+         if (!pr1)
+             goto fail1;
+ 
+-        obj = JS_ParseJSON_internal(ctx, str, len, "<input>", pr1);
++        obj = pi_json_parse_with_error_hook(ctx, source, str, len, pr1);
+         if (JS_IsException(obj))
+             goto fail1;
+ 
+@@ -51733,12 +51775,14 @@ static JSValue js_json_parse(JSContext *ctx, JSValueConst this_val,
+         json_free_parse_record(ctx, pr);
+         JS_FreeValue(ctx, root);
+     } else {
+-        obj = JS_ParseJSON_internal(ctx, str, len, "<input>", NULL);
++        obj = pi_json_parse_with_error_hook(ctx, source, str, len, NULL);
+     }
+     JS_FreeCString(ctx, str);
++    JS_FreeValue(ctx, source);
+     return obj;
+  fail:
+     JS_FreeCString(ctx, str);
++    JS_FreeValue(ctx, source);
+     return JS_EXCEPTION;
+ }
+ 
+diff --git a/vendor/quickjs/quickjs.h b/vendor/quickjs/quickjs.h
+index 9991e5c3..55e6c30c 100644
+--- a/vendor/quickjs/quickjs.h
++++ b/vendor/quickjs/quickjs.h
+@@ -1173,6 +1173,13 @@ typedef enum JSPromiseStateEnum {
+ JS_EXTERN JSValue JS_NewPromiseCapability(JSContext *ctx, JSValue *resolving_funcs);
+ /* Borrowed input, owned intrinsic PromiseResolve result as used by await. */
+ JS_EXTERN JSValue JS_PiPromiseResolve(JSContext *ctx, JSValueConst value);
++/* Scoped native JSON utility diagnostics. Source/error are borrowed; the hook
++   returns an owned replacement error or JS_EXCEPTION with a pending error.
++   Only actual intrinsic parser SyntaxErrors reach this hook, before revivers. */
++typedef JSValue JSJSONParseErrorHook(JSContext *ctx, JSValueConst source,
++                                   JSValueConst error);
++JS_EXTERN JSJSONParseErrorHook *JS_PiSetJSONParseErrorHook(JSContext *ctx,
++                                                        JSJSONParseErrorHook *hook);
+ JS_EXTERN JSValue JS_PromiseThen(JSContext *ctx, JSValueConst promise,
+                                 JSValueConst on_fulfilled,
+                                 JSValueConst on_rejected);

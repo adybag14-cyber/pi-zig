@@ -1,0 +1,730 @@
+{
+  "sourceHead": "b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6",
+  "callerSha256": "ce059a7d2ccb1673828797f6c05876970e7ac180a6ac87495f9d06a5059f1936",
+  "actualNode": {
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.14.0",
+    "pid": 31648
+  },
+  "scope": "Actual official b06 utils/json-parse.ts and actual installed partial-json dependency; complete/final versus streaming parsing and caller dependency observability. Includes unmodified pinned Node JSON.parse diagnostics. No native implementation or normalized exception messages.",
+  "cases": 33,
+  "rows": [
+    {
+      "name": "undefined",
+      "repairJson": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of undefined (reading 'length')"
+        }
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of undefined (reading 'length')"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {}
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {}
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "input": "",
+      "repairJson": {
+        "value": ""
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unexpected end of JSON input"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {}
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {}
+        }
+      }
+    },
+    {
+      "name": "spaces",
+      "input": " \n\r\t",
+      "repairJson": {
+        "value": " \n\r\t"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unexpected end of JSON input"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {}
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {}
+        }
+      }
+    },
+    {
+      "name": "object",
+      "input": "{\"a\":1}",
+      "repairJson": {
+        "value": "{\"a\":1}"
+      },
+      "parseJsonWithRepair": {
+        "value": {
+          "a": 1
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "a": 1
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {
+            "a": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "nested",
+      "input": "{\"a\":{\"b\":[true,null,3]}}",
+      "repairJson": {
+        "value": "{\"a\":{\"b\":[true,null,3]}}"
+      },
+      "parseJsonWithRepair": {
+        "value": {
+          "a": {
+            "b": [
+              true,
+              null,
+              3
+            ]
+          }
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "a": {
+            "b": [
+              true,
+              null,
+              3
+            ]
+          }
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {
+            "a": {
+              "b": [
+                true,
+                null,
+                3
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "invalid-escape",
+      "input": "{\"path\":\"C:\\Users\\file\"}",
+      "repairJson": {
+        "value": "{\"path\":\"C:\\\\Users\\file\"}"
+      },
+      "parseJsonWithRepair": {
+        "value": {
+          "path": "C:\\Users\file"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "path": "C:\\Users\file"
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {
+            "path": "C:\\Users\file"
+          }
+        }
+      }
+    },
+    {
+      "name": "raw-newline",
+      "input": "{\"value\":\"first\nsecond\"}",
+      "repairJson": {
+        "value": "{\"value\":\"first\\nsecond\"}"
+      },
+      "parseJsonWithRepair": {
+        "value": {
+          "value": "first\nsecond"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "value": "first\nsecond"
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {
+            "value": "first\nsecond"
+          }
+        }
+      }
+    },
+    {
+      "name": "raw-control",
+      "input": "{\"value\":\"a\u0000b\"}",
+      "repairJson": {
+        "value": "{\"value\":\"a\\u0000b\"}"
+      },
+      "parseJsonWithRepair": {
+        "value": {
+          "value": "a\u0000b"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "value": "a\u0000b"
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {
+            "value": "a\u0000b"
+          }
+        }
+      }
+    },
+    {
+      "name": "valid-unicode",
+      "input": "{\"value\":\"\\uD800\"}",
+      "repairJson": {
+        "value": "{\"value\":\"\\uD800\"}"
+      },
+      "parseJsonWithRepair": {
+        "value": {
+          "value": "\ud800"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "value": "\ud800"
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {
+            "value": "\ud800"
+          }
+        }
+      }
+    },
+    {
+      "name": "short-unicode",
+      "input": "{\"value\":\"\\u123\"}",
+      "repairJson": {
+        "value": "{\"value\":\"\\\\u123\"}"
+      },
+      "parseJsonWithRepair": {
+        "value": {
+          "value": "\\u123"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "value": "\\u123"
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {
+            "value": "\\u123"
+          }
+        }
+      }
+    },
+    {
+      "name": "bad-unicode",
+      "input": "{\"value\":\"\\u12xz\"}",
+      "repairJson": {
+        "value": "{\"value\":\"\\\\u12xz\"}"
+      },
+      "parseJsonWithRepair": {
+        "value": {
+          "value": "\\u12xz"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "value": "\\u12xz"
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {
+            "value": "\\u12xz"
+          }
+        }
+      }
+    },
+    {
+      "name": "null",
+      "input": "null",
+      "repairJson": {
+        "value": "null"
+      },
+      "parseJsonWithRepair": {
+        "value": null
+      },
+      "parseStreamingJson": {
+        "value": null
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Tool arguments must be a JSON object\n\nReceived arguments:\nnull"
+        }
+      }
+    },
+    {
+      "name": "array",
+      "input": "[1,2]",
+      "repairJson": {
+        "value": "[1,2]"
+      },
+      "parseJsonWithRepair": {
+        "value": [
+          1,
+          2
+        ]
+      },
+      "parseStreamingJson": {
+        "value": [
+          1,
+          2
+        ]
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Tool arguments must be a JSON object\n\nReceived arguments:\n[1,2]"
+        }
+      }
+    },
+    {
+      "name": "string",
+      "input": "\"text\"",
+      "repairJson": {
+        "value": "\"text\""
+      },
+      "parseJsonWithRepair": {
+        "value": "text"
+      },
+      "parseStreamingJson": {
+        "value": "text"
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Tool arguments must be a JSON object\n\nReceived arguments:\n\"text\""
+        }
+      }
+    },
+    {
+      "name": "number",
+      "input": "12",
+      "repairJson": {
+        "value": "12"
+      },
+      "parseJsonWithRepair": {
+        "value": 12
+      },
+      "parseStreamingJson": {
+        "value": 12
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Tool arguments must be a JSON object\n\nReceived arguments:\n12"
+        }
+      }
+    },
+    {
+      "name": "boolean",
+      "input": "false",
+      "repairJson": {
+        "value": "false"
+      },
+      "parseJsonWithRepair": {
+        "value": false
+      },
+      "parseStreamingJson": {
+        "value": false
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Tool arguments must be a JSON object\n\nReceived arguments:\nfalse"
+        }
+      }
+    },
+    {
+      "name": "cutoff",
+      "input": "{\"ok\":1,\"missing\":",
+      "repairJson": {
+        "value": "{\"ok\":1,\"missing\":"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unexpected end of JSON input"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "ok": 1
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Unexpected end of JSON input\n\nReceived arguments:\n{\"ok\":1,\"missing\":"
+        }
+      }
+    },
+    {
+      "name": "cutoff-string",
+      "input": "{\"value\":\"unfinished",
+      "repairJson": {
+        "value": "{\"value\":\"unfinished"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unterminated string in JSON at position 20 (line 1 column 21)"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "value": "unfinished"
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Unterminated string in JSON at position 20 (line 1 column 21)\n\nReceived arguments:\n{\"value\":\"unfinished"
+        }
+      }
+    },
+    {
+      "name": "cutoff-backslash",
+      "input": "{\"value\":\"unfinished\\",
+      "repairJson": {
+        "value": "{\"value\":\"unfinished\\\\"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unterminated string in JSON at position 22 (line 1 column 23)"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "value": "unfinished"
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Unterminated string in JSON at position 22 (line 1 column 23)\n\nReceived arguments:\n{\"value\":\"unfinished\\"
+        }
+      }
+    },
+    {
+      "name": "leading-decimal",
+      "input": "{\"score\":.5}",
+      "repairJson": {
+        "value": "{\"score\":.5}"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unexpected token '.', \"{\"score\":.5}\" is not valid JSON"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {}
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Unexpected token '.', \"{\"score\":.5}\" is not valid JSON\n\nReceived arguments:\n{\"score\":.5}"
+        }
+      }
+    },
+    {
+      "name": "trailing-comma",
+      "input": "{\"ok\":1,}",
+      "repairJson": {
+        "value": "{\"ok\":1,}"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Expected double-quoted property name in JSON at position 8 (line 1 column 9)"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "ok": 1
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Expected double-quoted property name in JSON at position 8 (line 1 column 9)\n\nReceived arguments:\n{\"ok\":1,}"
+        }
+      }
+    },
+    {
+      "name": "extra-text",
+      "input": "{\"ok\":1} extra",
+      "repairJson": {
+        "value": "{\"ok\":1} extra"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unexpected non-whitespace character after JSON at position 9 (line 1 column 10)"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "ok": 1
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Unexpected non-whitespace character after JSON at position 9 (line 1 column 10)\n\nReceived arguments:\n{\"ok\":1} extra"
+        }
+      }
+    },
+    {
+      "name": "single-quotes",
+      "input": "{'ok':1}",
+      "repairJson": {
+        "value": "{'ok':1}"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {}
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Expected property name or '}' in JSON at position 1 (line 1 column 2)\n\nReceived arguments:\n{'ok':1}"
+        }
+      }
+    },
+    {
+      "name": "bad-literal",
+      "input": "{\"ok\":tru}",
+      "repairJson": {
+        "value": "{\"ok\":tru}"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unexpected token '}', \"{\"ok\":tru}\" is not valid JSON"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {}
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Unexpected token '}', \"{\"ok\":tru}\" is not valid JSON\n\nReceived arguments:\n{\"ok\":tru}"
+        }
+      }
+    },
+    {
+      "name": "bad-number",
+      "input": "{\"ok\":01}",
+      "repairJson": {
+        "value": "{\"ok\":01}"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unexpected number in JSON at position 7 (line 1 column 8)"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {}
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Unexpected number in JSON at position 7 (line 1 column 8)\n\nReceived arguments:\n{\"ok\":01}"
+        }
+      }
+    },
+    {
+      "name": "multiline-invalid",
+      "input": "{\n \"ok\": 1,\n \"bad\": .5\n}",
+      "repairJson": {
+        "value": "{\n \"ok\": 1,\n \"bad\": .5\n}"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unexpected token '.', ...\",\n \"bad\": .5\n}\" is not valid JSON"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "ok": 1
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Unexpected token '.', ...\",\n \"bad\": .5\n}\" is not valid JSON\n\nReceived arguments:\n{\n \"ok\": 1,\n \"bad\": .5\n}"
+        }
+      }
+    },
+    {
+      "name": "unicode-key-offset",
+      "input": "{\"😀\":1,\"bad\":.5}",
+      "repairJson": {
+        "value": "{\"😀\":1,\"bad\":.5}"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unexpected token '.', \"{\"😀\":1,\"bad\":.5}\" is not valid JSON"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "😀": 1
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Unexpected token '.', \"{\"😀\":1,\"bad\":.5}\" is not valid JSON\n\nReceived arguments:\n{\"😀\":1,\"bad\":.5}"
+        }
+      }
+    },
+    {
+      "name": "large-invalid",
+      "input": "{\"value\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"bad\":.5}",
+      "repairJson": {
+        "value": "{\"value\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"bad\":.5}"
+      },
+      "parseJsonWithRepair": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unexpected token '.', ...\"xx\",\"bad\":.5}\" is not valid JSON"
+        }
+      },
+      "parseStreamingJson": {
+        "value": {
+          "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      },
+      "parseToolCallArguments": {
+        "value": {
+          "arguments": {},
+          "argumentsError": "Unexpected token '.', ...\"xx\",\"bad\":.5}\" is not valid JSON\n\nReceived arguments:\n{\"value\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"bad\":.5}"
+        }
+      }
+    },
+    {
+      "name": "parse-throws-error",
+      "result": {
+        "arguments": {},
+        "argumentsError": "caller parse\n\nReceived arguments:\n{}"
+      },
+      "events": [
+        [
+          "parse",
+          "{}"
+        ]
+      ]
+    },
+    {
+      "name": "parse-throws-raw",
+      "result": {
+        "arguments": {},
+        "argumentsError": "caller raw\n\nReceived arguments:\n{}"
+      },
+      "events": [
+        [
+          "parse",
+          "{}"
+        ],
+        "raw.string"
+      ]
+    },
+    {
+      "name": "parse-nonobject",
+      "result": {
+        "arguments": {},
+        "argumentsError": "Tool arguments must be a JSON object\n\nReceived arguments:\n{}"
+      },
+      "events": [
+        [
+          "parse",
+          "{}"
+        ]
+      ]
+    },
+    {
+      "name": "parse-array-getter",
+      "result": {
+        "arguments": {},
+        "argumentsError": "caller raw\n\nReceived arguments:\n{}"
+      },
+      "events": [
+        [
+          "isArray",
+          {}
+        ],
+        "raw.string"
+      ]
+    },
+    {
+      "name": "trim-throws",
+      "uncaught": "caller-raw",
+      "events": [
+        "trim.get"
+      ]
+    }
+  ]
+}

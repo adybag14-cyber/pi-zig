@@ -1,0 +1,546 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "inputSha256": "d98989c71ece1db1aab6dc72a7683eb450e551bfcebc3edb128ba7c2f0fec724",
+  "scope": "Actual unchanged env-api-keys and provider-env modules, all39 mapped providers, scoped/process/getter/Bun cache behavior, Bedrock ambient auth and real explicit existing/missing ADC files after original lazy Node dependencies settle. Does not observe startup import-race/default cached ADC paths.",
+  "cases": 72,
+  "rows": [
+    {
+      "name": "provider ant-ling",
+      "value": {
+        "keys": [
+          "ANT_LING_API_KEY"
+        ],
+        "key": "scoped-ant-ling"
+      }
+    },
+    {
+      "name": "provider qwen-token-plan",
+      "value": {
+        "keys": [
+          "QWEN_TOKEN_PLAN_API_KEY"
+        ],
+        "key": "scoped-qwen-token-plan"
+      }
+    },
+    {
+      "name": "provider qwen-token-plan-cn",
+      "value": {
+        "keys": [
+          "QWEN_TOKEN_PLAN_CN_API_KEY"
+        ],
+        "key": "scoped-qwen-token-plan-cn"
+      }
+    },
+    {
+      "name": "provider qwen-token-plan-individual",
+      "value": {
+        "keys": [
+          "QWEN_TOKEN_PLAN_API_KEY"
+        ],
+        "key": "scoped-qwen-token-plan-individual"
+      }
+    },
+    {
+      "name": "provider openai",
+      "value": {
+        "keys": [
+          "OPENAI_API_KEY"
+        ],
+        "key": "scoped-openai"
+      }
+    },
+    {
+      "name": "provider azure",
+      "value": {
+        "keys": [
+          "AZURE_OPENAI_API_KEY"
+        ],
+        "key": "scoped-azure"
+      }
+    },
+    {
+      "name": "provider nvidia",
+      "value": {
+        "keys": [
+          "NVIDIA_API_KEY"
+        ],
+        "key": "scoped-nvidia"
+      }
+    },
+    {
+      "name": "provider deepseek",
+      "value": {
+        "keys": [
+          "DEEPSEEK_API_KEY"
+        ],
+        "key": "scoped-deepseek"
+      }
+    },
+    {
+      "name": "provider google",
+      "value": {
+        "keys": [
+          "GEMINI_API_KEY"
+        ],
+        "key": "scoped-google"
+      }
+    },
+    {
+      "name": "provider google-vertex",
+      "value": {
+        "keys": [
+          "GOOGLE_CLOUD_API_KEY"
+        ],
+        "key": "scoped-google-vertex"
+      }
+    },
+    {
+      "name": "provider groq",
+      "value": {
+        "keys": [
+          "GROQ_API_KEY"
+        ],
+        "key": "scoped-groq"
+      }
+    },
+    {
+      "name": "provider cerebras",
+      "value": {
+        "keys": [
+          "CEREBRAS_API_KEY"
+        ],
+        "key": "scoped-cerebras"
+      }
+    },
+    {
+      "name": "provider xai",
+      "value": {
+        "keys": [
+          "XAI_API_KEY"
+        ],
+        "key": "scoped-xai"
+      }
+    },
+    {
+      "name": "provider typesafe",
+      "value": {
+        "keys": [
+          "TYPESAFE_API_KEY"
+        ],
+        "key": "scoped-typesafe"
+      }
+    },
+    {
+      "name": "provider radius",
+      "value": {
+        "keys": [
+          "RADIUS_API_KEY"
+        ],
+        "key": "scoped-radius"
+      }
+    },
+    {
+      "name": "provider openrouter",
+      "value": {
+        "keys": [
+          "OPENROUTER_API_KEY"
+        ],
+        "key": "scoped-openrouter"
+      }
+    },
+    {
+      "name": "provider vercel-ai-gateway",
+      "value": {
+        "keys": [
+          "AI_GATEWAY_API_KEY"
+        ],
+        "key": "scoped-vercel-ai-gateway"
+      }
+    },
+    {
+      "name": "provider zai",
+      "value": {
+        "keys": [
+          "ZAI_API_KEY"
+        ],
+        "key": "scoped-zai"
+      }
+    },
+    {
+      "name": "provider zai-coding-cn",
+      "value": {
+        "keys": [
+          "ZAI_CODING_CN_API_KEY"
+        ],
+        "key": "scoped-zai-coding-cn"
+      }
+    },
+    {
+      "name": "provider mistral",
+      "value": {
+        "keys": [
+          "MISTRAL_API_KEY"
+        ],
+        "key": "scoped-mistral"
+      }
+    },
+    {
+      "name": "provider minimax",
+      "value": {
+        "keys": [
+          "MINIMAX_API_KEY"
+        ],
+        "key": "scoped-minimax"
+      }
+    },
+    {
+      "name": "provider minimax-cn",
+      "value": {
+        "keys": [
+          "MINIMAX_CN_API_KEY"
+        ],
+        "key": "scoped-minimax-cn"
+      }
+    },
+    {
+      "name": "provider moonshotai",
+      "value": {
+        "keys": [
+          "MOONSHOT_API_KEY"
+        ],
+        "key": "scoped-moonshotai"
+      }
+    },
+    {
+      "name": "provider moonshotai-cn",
+      "value": {
+        "keys": [
+          "MOONSHOT_API_KEY"
+        ],
+        "key": "scoped-moonshotai-cn"
+      }
+    },
+    {
+      "name": "provider huggingface",
+      "value": {
+        "keys": [
+          "HF_TOKEN"
+        ],
+        "key": "scoped-huggingface"
+      }
+    },
+    {
+      "name": "provider fireworks",
+      "value": {
+        "keys": [
+          "FIREWORKS_API_KEY"
+        ],
+        "key": "scoped-fireworks"
+      }
+    },
+    {
+      "name": "provider together",
+      "value": {
+        "keys": [
+          "TOGETHER_API_KEY"
+        ],
+        "key": "scoped-together"
+      }
+    },
+    {
+      "name": "provider baseten",
+      "value": {
+        "keys": [
+          "BASETEN_API_KEY"
+        ],
+        "key": "scoped-baseten"
+      }
+    },
+    {
+      "name": "provider opencode",
+      "value": {
+        "keys": [
+          "OPENCODE_API_KEY"
+        ],
+        "key": "scoped-opencode"
+      }
+    },
+    {
+      "name": "provider opencode-go",
+      "value": {
+        "keys": [
+          "OPENCODE_API_KEY"
+        ],
+        "key": "scoped-opencode-go"
+      }
+    },
+    {
+      "name": "provider kimi-coding",
+      "value": {
+        "keys": [
+          "KIMI_API_KEY"
+        ],
+        "key": "scoped-kimi-coding"
+      }
+    },
+    {
+      "name": "provider meta",
+      "value": {
+        "keys": [
+          "META_API_KEY"
+        ],
+        "key": "scoped-meta"
+      }
+    },
+    {
+      "name": "provider cloudflare-workers-ai",
+      "value": {
+        "keys": [
+          "CLOUDFLARE_API_KEY"
+        ],
+        "key": "scoped-cloudflare-workers-ai"
+      }
+    },
+    {
+      "name": "provider cloudflare-ai-gateway",
+      "value": {
+        "keys": [
+          "CLOUDFLARE_API_KEY"
+        ],
+        "key": "scoped-cloudflare-ai-gateway"
+      }
+    },
+    {
+      "name": "provider xiaomi",
+      "value": {
+        "keys": [
+          "XIAOMI_API_KEY"
+        ],
+        "key": "scoped-xiaomi"
+      }
+    },
+    {
+      "name": "provider xiaomi-token-plan-cn",
+      "value": {
+        "keys": [
+          "XIAOMI_TOKEN_PLAN_CN_API_KEY"
+        ],
+        "key": "scoped-xiaomi-token-plan-cn"
+      }
+    },
+    {
+      "name": "provider xiaomi-token-plan-ams",
+      "value": {
+        "keys": [
+          "XIAOMI_TOKEN_PLAN_AMS_API_KEY"
+        ],
+        "key": "scoped-xiaomi-token-plan-ams"
+      }
+    },
+    {
+      "name": "provider xiaomi-token-plan-sgp",
+      "value": {
+        "keys": [
+          "XIAOMI_TOKEN_PLAN_SGP_API_KEY"
+        ],
+        "key": "scoped-xiaomi-token-plan-sgp"
+      }
+    },
+    {
+      "name": "provider github-copilot",
+      "value": {
+        "keys": [
+          "COPILOT_GITHUB_TOKEN"
+        ],
+        "key": "scoped-github-copilot"
+      }
+    },
+    {
+      "name": "constants",
+      "value": [
+        [
+          "ANTHROPIC_API_KEY_ENV",
+          "ANTHROPIC_API_KEY"
+        ],
+        [
+          "ANTHROPIC_AUTH_TOKEN_ENV",
+          "ANTHROPIC_AUTH_TOKEN"
+        ],
+        [
+          "ANTHROPIC_FEDERATION_RULE_ID_ENV",
+          "ANTHROPIC_FEDERATION_RULE_ID"
+        ],
+        [
+          "ANTHROPIC_IDENTITY_TOKEN_FILE_ENV",
+          "ANTHROPIC_IDENTITY_TOKEN_FILE"
+        ],
+        [
+          "ANTHROPIC_OAUTH_TOKEN_ENV",
+          "ANTHROPIC_OAUTH_TOKEN"
+        ],
+        [
+          "ANTHROPIC_ORGANIZATION_ID_ENV",
+          "ANTHROPIC_ORGANIZATION_ID"
+        ],
+        [
+          "ANTHROPIC_SERVICE_ACCOUNT_ID_ENV",
+          "ANTHROPIC_SERVICE_ACCOUNT_ID"
+        ],
+        [
+          "ANTHROPIC_WORKSPACE_ID_ENV",
+          "ANTHROPIC_WORKSPACE_ID"
+        ]
+      ]
+    },
+    {
+      "name": "missing",
+      "value": true
+    },
+    {
+      "name": "case sensitive",
+      "value": true
+    },
+    {
+      "name": "oauth-only excluded",
+      "value": true
+    },
+    {
+      "name": "anthropic discovery order",
+      "value": [
+        "ANTHROPIC_AUTH_TOKEN",
+        "ANTHROPIC_OAUTH_TOKEN",
+        "ANTHROPIC_API_KEY"
+      ]
+    },
+    {
+      "name": "anthropic key selects oauth",
+      "value": "oauth"
+    },
+    {
+      "name": "anthropic bearer excluded",
+      "value": true
+    },
+    {
+      "name": "anthropic plain fallback",
+      "value": "plain"
+    },
+    {
+      "name": "process fallback",
+      "value": "process-key"
+    },
+    {
+      "name": "empty scoped falls back",
+      "value": "process-key"
+    },
+    {
+      "name": "scoped takes priority",
+      "value": "scoped"
+    },
+    {
+      "name": "inherited scoped key",
+      "value": "inherited"
+    },
+    {
+      "name": "provider env symbol key",
+      "value": "symbol-value"
+    },
+    {
+      "name": "provider env original getter failure",
+      "value": true
+    },
+    {
+      "name": "original env getter read count",
+      "value": {
+        "key": "read-2",
+        "reads": 2
+      }
+    },
+    {
+      "name": "bedrock profile",
+      "value": {
+        "key": "<authenticated>"
+      }
+    },
+    {
+      "name": "bedrock iam",
+      "value": {
+        "key": "<authenticated>"
+      }
+    },
+    {
+      "name": "bedrock bearer",
+      "value": {
+        "key": "<authenticated>"
+      }
+    },
+    {
+      "name": "bedrock relative",
+      "value": {
+        "key": "<authenticated>"
+      }
+    },
+    {
+      "name": "bedrock full",
+      "value": {
+        "key": "<authenticated>"
+      }
+    },
+    {
+      "name": "bedrock web",
+      "value": {
+        "key": "<authenticated>"
+      }
+    },
+    {
+      "name": "partial iam rejected",
+      "value": true
+    },
+    {
+      "name": "vertex explicit existing ADC",
+      "value": "<authenticated>"
+    },
+    {
+      "name": "vertex explicit missing ADC",
+      "value": true
+    },
+    {
+      "name": "vertex requires location",
+      "value": true
+    },
+    {
+      "name": "vertex api key wins",
+      "value": "vertex-key"
+    },
+    {
+      "name": "vertex alternate project",
+      "value": "<authenticated>"
+    },
+    {
+      "name": "browser absent env",
+      "value": true
+    },
+    {
+      "name": "browser scoped works",
+      "value": "browser"
+    },
+    {
+      "name": "bun proc fallback",
+      "value": "proc-key"
+    },
+    {
+      "name": "bun cache reused",
+      "value": {
+        "key": "proc-key",
+        "calls": 1
+      }
+    },
+    {
+      "name": "bun equals preserved",
+      "value": "with=equals"
+    },
+    {
+      "name": "bun nonempty env suppresses proc fallback",
+      "value": true
+    }
+  ]
+}

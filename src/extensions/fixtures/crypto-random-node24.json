@@ -1,0 +1,270 @@
+{
+  "nodeVersion": "v24.14.0",
+  "nodeExecutableSha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "inputSha256": "329ecfded6384c7db60d341dbc04080d20f63e102f30f52daa61153b96e5aa63",
+  "scope": "Actual pinned Node24 global Crypto.getRandomValues, nine integer typed views, rejected types, missing argument, byte quota, receiver brand, detached/resizable views, property getter immunity and CSPRNG slice bounds. Does not qualify other Crypto methods.",
+  "cases": 33,
+  "rows": [
+    {
+      "name": "integer Int8Array",
+      "value": {
+        "identity": true,
+        "bytes": 16
+      }
+    },
+    {
+      "name": "integer Uint8Array",
+      "value": {
+        "identity": true,
+        "bytes": 16
+      }
+    },
+    {
+      "name": "integer Uint8ClampedArray",
+      "value": {
+        "identity": true,
+        "bytes": 16
+      }
+    },
+    {
+      "name": "integer Int16Array",
+      "value": {
+        "identity": true,
+        "bytes": 32
+      }
+    },
+    {
+      "name": "integer Uint16Array",
+      "value": {
+        "identity": true,
+        "bytes": 32
+      }
+    },
+    {
+      "name": "integer Int32Array",
+      "value": {
+        "identity": true,
+        "bytes": 64
+      }
+    },
+    {
+      "name": "integer Uint32Array",
+      "value": {
+        "identity": true,
+        "bytes": 64
+      }
+    },
+    {
+      "name": "integer BigInt64Array",
+      "value": {
+        "identity": true,
+        "bytes": 128
+      }
+    },
+    {
+      "name": "integer BigUint64Array",
+      "value": {
+        "identity": true,
+        "bytes": 128
+      }
+    },
+    {
+      "name": "reject undefined",
+      "value": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17,
+        "dom": true
+      }
+    },
+    {
+      "name": "reject null",
+      "value": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17,
+        "dom": true
+      }
+    },
+    {
+      "name": "reject boolean",
+      "value": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17,
+        "dom": true
+      }
+    },
+    {
+      "name": "reject number",
+      "value": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17,
+        "dom": true
+      }
+    },
+    {
+      "name": "reject string",
+      "value": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17,
+        "dom": true
+      }
+    },
+    {
+      "name": "reject array",
+      "value": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17,
+        "dom": true
+      }
+    },
+    {
+      "name": "reject object",
+      "value": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17,
+        "dom": true
+      }
+    },
+    {
+      "name": "reject buffer",
+      "value": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17,
+        "dom": true
+      }
+    },
+    {
+      "name": "reject dataview",
+      "value": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17,
+        "dom": true
+      }
+    },
+    {
+      "name": "reject float32",
+      "value": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17,
+        "dom": true
+      }
+    },
+    {
+      "name": "reject float64",
+      "value": {
+        "name": "TypeMismatchError",
+        "message": "The data argument must be an integer-type TypedArray",
+        "code": 17,
+        "dom": true
+      }
+    },
+    {
+      "name": "missing argument",
+      "value": {
+        "name": "TypeError",
+        "message": "Failed to execute 'getRandomValues' on 'Crypto': 1 argument required, but only 0 present.",
+        "code": "ERR_MISSING_ARGS",
+        "dom": false
+      }
+    },
+    {
+      "name": "quota bytes",
+      "value": {
+        "name": "QuotaExceededError",
+        "message": "The requested length exceeds 65,536 bytes",
+        "code": 22,
+        "dom": true
+      }
+    },
+    {
+      "name": "quota wide bytes",
+      "value": {
+        "name": "QuotaExceededError",
+        "message": "The requested length exceeds 65,536 bytes",
+        "code": 22,
+        "dom": true
+      }
+    },
+    {
+      "name": "exact quota accepted",
+      "value": true
+    },
+    {
+      "name": "empty accepted",
+      "value": true
+    },
+    {
+      "name": "detached receiver",
+      "value": {
+        "name": "TypeError",
+        "message": "Value of \"this\" must be of type Crypto",
+        "code": "ERR_INVALID_THIS",
+        "dom": false
+      }
+    },
+    {
+      "name": "plain receiver",
+      "value": {
+        "name": "TypeError",
+        "message": "Value of \"this\" must be of type Crypto",
+        "code": "ERR_INVALID_THIS",
+        "dom": false
+      }
+    },
+    {
+      "name": "derived receiver",
+      "value": {
+        "name": "TypeError",
+        "message": "Value of \"this\" must be of type Crypto",
+        "code": "ERR_INVALID_THIS",
+        "dom": false
+      }
+    },
+    {
+      "name": "detached view",
+      "value": {
+        "accepted": true
+      }
+    },
+    {
+      "name": "out of bounds resized view",
+      "value": {
+        "accepted": true
+      }
+    },
+    {
+      "name": "own view getters are observable",
+      "value": {
+        "name": "Error",
+        "message": "must use internal view",
+        "dom": false
+      }
+    },
+    {
+      "name": "CSPRNG offset bounds",
+      "value": {
+        "before": true,
+        "after": true,
+        "mutated": true
+      }
+    },
+    {
+      "name": "method shape",
+      "value": {
+        "name": "getRandomValues",
+        "length": 1,
+        "prototype": true,
+        "tag": "[object Crypto]"
+      }
+    }
+  ]
+}

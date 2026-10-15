@@ -1,0 +1,572 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "inputSha256": "d4e684e1e3f43670ff568ea6edda9ec2eca9268f37c761213cdaebef7d7939ce",
+  "scope": "Actual unchanged AI text/system sections, 3.5-char estimate/context-usage validity, thinking levels/clamping and simple-options bodies with their actual imported Source dependencies. Does not qualify OpenAI private detectCompat or transport.",
+  "cases": 112,
+  "rows": [
+    {
+      "name": "content plain",
+      "value": "hello"
+    },
+    {
+      "name": "content empty",
+      "value": ""
+    },
+    {
+      "name": "content blocks",
+      "value": "one\ntwo"
+    },
+    {
+      "name": "content empty blocks",
+      "value": ""
+    },
+    {
+      "name": "content separator",
+      "value": "one|two"
+    },
+    {
+      "name": "content null separator",
+      "value": "onenulltwo"
+    },
+    {
+      "name": "system 0",
+      "value": "base"
+    },
+    {
+      "name": "system 1",
+      "value": "first\n\nsecond"
+    },
+    {
+      "name": "system 2",
+      "value": "one\ntwo\n\nlast"
+    },
+    {
+      "name": "system 3",
+      "value": "base\n\nnew"
+    },
+    {
+      "name": "update 0",
+      "value": "base"
+    },
+    {
+      "name": "update 1",
+      "value": "Updated system prompt section \"one\":\n\nfirst\n\nRemoved system prompt section \"gone\".\n\nUpdated system prompt section \"two\":\n\nsecond"
+    },
+    {
+      "name": "update 2",
+      "value": "one\ntwo\n\nUpdated system prompt section \"tail\":\n\nlast"
+    },
+    {
+      "name": "update 3",
+      "value": "base\n\nRemoved system prompt section \"one\".\n\nUpdated system prompt section \"two\":\n\n\n\nUpdated system prompt section \"three\":\n\nnew"
+    },
+    {
+      "name": "levels 0",
+      "value": [
+        "off"
+      ]
+    },
+    {
+      "name": "levels 1",
+      "value": [
+        "off",
+        "minimal",
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    {
+      "name": "levels 2",
+      "value": [
+        "minimal",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ]
+    },
+    {
+      "name": "levels 3",
+      "value": []
+    },
+    {
+      "name": "levels 4",
+      "value": [
+        "max"
+      ]
+    },
+    {
+      "name": "clamp 0 off",
+      "value": "off"
+    },
+    {
+      "name": "clamp 0 minimal",
+      "value": "off"
+    },
+    {
+      "name": "clamp 0 low",
+      "value": "off"
+    },
+    {
+      "name": "clamp 0 medium",
+      "value": "off"
+    },
+    {
+      "name": "clamp 0 high",
+      "value": "off"
+    },
+    {
+      "name": "clamp 0 xhigh",
+      "value": "off"
+    },
+    {
+      "name": "clamp 0 max",
+      "value": "off"
+    },
+    {
+      "name": "clamp 1 off",
+      "value": "off"
+    },
+    {
+      "name": "clamp 1 minimal",
+      "value": "minimal"
+    },
+    {
+      "name": "clamp 1 low",
+      "value": "low"
+    },
+    {
+      "name": "clamp 1 medium",
+      "value": "medium"
+    },
+    {
+      "name": "clamp 1 high",
+      "value": "high"
+    },
+    {
+      "name": "clamp 1 xhigh",
+      "value": "high"
+    },
+    {
+      "name": "clamp 1 max",
+      "value": "high"
+    },
+    {
+      "name": "clamp 2 off",
+      "value": "minimal"
+    },
+    {
+      "name": "clamp 2 minimal",
+      "value": "minimal"
+    },
+    {
+      "name": "clamp 2 low",
+      "value": "medium"
+    },
+    {
+      "name": "clamp 2 medium",
+      "value": "medium"
+    },
+    {
+      "name": "clamp 2 high",
+      "value": "high"
+    },
+    {
+      "name": "clamp 2 xhigh",
+      "value": "xhigh"
+    },
+    {
+      "name": "clamp 2 max",
+      "value": "max"
+    },
+    {
+      "name": "clamp 3 off",
+      "value": "off"
+    },
+    {
+      "name": "clamp 3 minimal",
+      "value": "off"
+    },
+    {
+      "name": "clamp 3 low",
+      "value": "off"
+    },
+    {
+      "name": "clamp 3 medium",
+      "value": "off"
+    },
+    {
+      "name": "clamp 3 high",
+      "value": "off"
+    },
+    {
+      "name": "clamp 3 xhigh",
+      "value": "off"
+    },
+    {
+      "name": "clamp 3 max",
+      "value": "off"
+    },
+    {
+      "name": "clamp 4 off",
+      "value": "max"
+    },
+    {
+      "name": "clamp 4 minimal",
+      "value": "max"
+    },
+    {
+      "name": "clamp 4 low",
+      "value": "max"
+    },
+    {
+      "name": "clamp 4 medium",
+      "value": "max"
+    },
+    {
+      "name": "clamp 4 high",
+      "value": "max"
+    },
+    {
+      "name": "clamp 4 xhigh",
+      "value": "max"
+    },
+    {
+      "name": "clamp 4 max",
+      "value": "max"
+    },
+    {
+      "name": "unknown level 0",
+      "value": "off"
+    },
+    {
+      "name": "unknown level 1",
+      "value": "off"
+    },
+    {
+      "name": "unknown level 2",
+      "value": "minimal"
+    },
+    {
+      "name": "unknown level 3",
+      "value": "off"
+    },
+    {
+      "name": "unknown level 4",
+      "value": "max"
+    },
+    {
+      "name": "thinking getter count",
+      "value": {
+        "levels": [
+          "off",
+          "minimal",
+          "low",
+          "medium",
+          "high",
+          "xhigh"
+        ],
+        "reads": 7
+      }
+    },
+    {
+      "name": "text tokens \"\"",
+      "value": 0
+    },
+    {
+      "name": "text tokens \"abc\"",
+      "value": 1
+    },
+    {
+      "name": "text tokens \"abcd\"",
+      "value": 2
+    },
+    {
+      "name": "text tokens \"😀\"",
+      "value": 1
+    },
+    {
+      "name": "text tokens \"wide界\"",
+      "value": 2
+    },
+    {
+      "name": "content tokens 0",
+      "value": 2
+    },
+    {
+      "name": "content tokens 1",
+      "value": 0
+    },
+    {
+      "name": "content tokens 2",
+      "value": 1373
+    },
+    {
+      "name": "content tokens 3",
+      "value": 1372
+    },
+    {
+      "name": "message tokens 0",
+      "value": 22
+    },
+    {
+      "name": "message tokens 1",
+      "value": 2
+    },
+    {
+      "name": "message tokens 2",
+      "value": 1374
+    },
+    {
+      "name": "message tokens 3",
+      "value": 10
+    },
+    {
+      "name": "message tokens 4",
+      "value": 6
+    },
+    {
+      "name": "context 0",
+      "value": {
+        "tokens": 0,
+        "usageTokens": 0,
+        "trailingTokens": 0,
+        "lastUsageIndex": null
+      }
+    },
+    {
+      "name": "context 1",
+      "value": {
+        "tokens": 2,
+        "usageTokens": 0,
+        "trailingTokens": 2,
+        "lastUsageIndex": null
+      }
+    },
+    {
+      "name": "context 2",
+      "value": {
+        "tokens": 21,
+        "usageTokens": 19,
+        "trailingTokens": 2,
+        "lastUsageIndex": 2
+      }
+    },
+    {
+      "name": "context 3",
+      "value": {
+        "tokens": 6,
+        "usageTokens": 0,
+        "trailingTokens": 6,
+        "lastUsageIndex": null
+      }
+    },
+    {
+      "name": "context 4",
+      "value": {
+        "tokens": 6,
+        "usageTokens": 0,
+        "trailingTokens": 6,
+        "lastUsageIndex": null
+      }
+    },
+    {
+      "name": "context 5",
+      "value": {
+        "tokens": 6,
+        "usageTokens": 0,
+        "trailingTokens": 6,
+        "lastUsageIndex": null
+      }
+    },
+    {
+      "name": "usage 0",
+      "value": 19
+    },
+    {
+      "name": "usage 1",
+      "value": 6
+    },
+    {
+      "name": "usage 2",
+      "value": 7
+    },
+    {
+      "name": "sampling lowundefined",
+      "value": {
+        "top_p": 0.8,
+        "temperature": 0.1,
+        "top_k": 4
+      }
+    },
+    {
+      "name": "sampling low{\"top_p\":0.9}",
+      "value": {
+        "top_p": 0.9,
+        "temperature": 0.1,
+        "top_k": 4
+      }
+    },
+    {
+      "name": "sampling max{\"top_k\":8}",
+      "value": {
+        "top_p": 0.8,
+        "temperature": 0.4,
+        "top_k": 8
+      }
+    },
+    {
+      "name": "budget minimal",
+      "value": 1024
+    },
+    {
+      "name": "budget low",
+      "value": 3000
+    },
+    {
+      "name": "budget medium",
+      "value": 8192
+    },
+    {
+      "name": "budget high",
+      "value": 16384
+    },
+    {
+      "name": "budget xhigh",
+      "value": 16384
+    },
+    {
+      "name": "budget max",
+      "value": 16384
+    },
+    {
+      "name": "clamp reasoning undefined"
+    },
+    {
+      "name": "clamp reasoning low",
+      "value": "low"
+    },
+    {
+      "name": "clamp reasoning xhigh",
+      "value": "high"
+    },
+    {
+      "name": "clamp reasoning max",
+      "value": "high"
+    },
+    {
+      "name": "adjust [null,16000,\"low\"]",
+      "value": {
+        "maxTokens": 16000,
+        "thinkingBudget": 2048
+      }
+    },
+    {
+      "name": "adjust [1000,16000,\"low\"]",
+      "value": {
+        "maxTokens": 3048,
+        "thinkingBudget": 2048
+      }
+    },
+    {
+      "name": "adjust [100,1000,\"high\"]",
+      "value": {
+        "maxTokens": 1000,
+        "thinkingBudget": 0
+      }
+    },
+    {
+      "name": "adjust [1000,4000,\"max\",{\"high\":100}]",
+      "value": {
+        "maxTokens": 1100,
+        "thinkingBudget": 100
+      }
+    },
+    {
+      "name": "answer room [2000,3000]",
+      "value": 1976
+    },
+    {
+      "name": "answer room [2000,500]",
+      "value": 0
+    },
+    {
+      "name": "answer room [100,10000]",
+      "value": 100
+    },
+    {
+      "name": "clamp response 0",
+      "value": 1
+    },
+    {
+      "name": "clamp response 4100",
+      "value": 2
+    },
+    {
+      "name": "clamp response 32000",
+      "value": 1000
+    },
+    {
+      "name": "base 0",
+      "value": {
+        "samplingParams": {
+          "top_p": 0.8,
+          "temperature": 0.4
+        },
+        "maxTokens": 8192,
+        "apiKey": "explicit-key"
+      }
+    },
+    {
+      "name": "base 1",
+      "value": {
+        "temperature": 0,
+        "samplingParams": {
+          "top_p": 0.8,
+          "temperature": 0.1,
+          "top_k": 4
+        },
+        "maxTokens": 1000,
+        "apiKey": "explicit-key",
+        "metadata": {
+          "caller": true
+        },
+        "env": {
+          "PI_CACHE_RETENTION": "long"
+        }
+      }
+    },
+    {
+      "name": "base 2",
+      "value": {
+        "samplingParams": {
+          "top_p": 0.95,
+          "temperature": 0.4
+        },
+        "maxTokens": 8192,
+        "apiKey": "explicit-key",
+        "cacheRetention": "none",
+        "sessionId": "session",
+        "headers": {
+          "x": "value"
+        },
+        "timeoutMs": 55,
+        "maxRetries": 2,
+        "maxRetryDelayMs": 4
+      }
+    },
+    {
+      "name": "text getter identity",
+      "value": true
+    },
+    {
+      "name": "system getter identity",
+      "value": true
+    },
+    {
+      "name": "shared budget mutable export",
+      "value": 123
+    }
+  ]
+}
