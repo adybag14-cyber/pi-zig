@@ -34,7 +34,7 @@ fn createWithConstructor(engine: *v.em.Engine, options: c.JSValue, constructor: 
     defer s.deinit();
     const raw = try common.property(&s, options, "gateway");
     const scheme = try literalRegex(&s, "^https?://", "iu");
-    const with_scheme = if (s.truthy(try s.invoke(scheme, "test", &.{raw}))) raw else try s.concat(try s.text("https://"), raw);
+    const with_scheme = if (s.truthy(try s.invoke(scheme, "test", &.{raw}))) raw else try s.concat(try s.text("https://"), try s.stringify(raw));
     const trailing = try literalRegex(&s, "/+$", "u");
     const normalized = try s.invoke(with_scheme, "replace", &.{ trailing, try s.text("") });
     const state = try s.object();

@@ -814,6 +814,11 @@ pub fn build(b: *std.Build) void {
     linkSqlite(oauth_codex_radius_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-ai-oauth-codex-radius", "Compare actual Codex and Radius public OAuth flows with immutable ae7 Source observations").dependOn(&b.addRunArtifact(oauth_codex_radius_tests).step);
     b.step("build-native-ai-oauth-codex-radius", "Compile public Codex and Radius OAuth bodies separately from execution deadlines").dependOn(&oauth_codex_radius_tests.step);
+    const oauth_codex_radius_browser_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_oauth_codex_radius_browser_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native OAuth Codex Radius browser actual ae7"} });
+    linkQuickJs(b, oauth_codex_radius_browser_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(oauth_codex_radius_browser_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-ai-oauth-codex-radius-browser", "Replay genuine original Codex and Radius browser callbacks and complete HTTP pages").dependOn(&b.addRunArtifact(oauth_codex_radius_browser_tests).step);
+    b.step("build-native-ai-oauth-codex-radius-browser", "Compile original Codex and Radius browser OAuth flows separately from execution deadlines").dependOn(&oauth_codex_radius_browser_tests.step);
     const typed_models_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_models_typed_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Models actual Source9", "native Models actual Source10", "native Models actual Source6", "native Models actual typed services credential queues", "native Models actual Source streams10", "native Models actual streaming auth continuations", "native Models actual Source login8", "native Models actual login credential mutation", "native Models actual Source auth mutation3", "native Models actual Source provider factory7", "native Models actual provider factory catalog refresh" } });
     linkQuickJs(b, typed_models_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(typed_models_tests.root_module, sqlite_lib_dir, sqlite_library);
