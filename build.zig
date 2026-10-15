@@ -1592,7 +1592,7 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, session_integration_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_integration_tests.root_module, sqlite_lib_dir, sqlite_library);
     session_integration_tests.root_module.addImport("catalog_tool", catalog_tool);
-    b.step("build-native-sdk-session-integration", "Compile integrated session constructor regression and eleven new method descriptors").dependOn(&session_integration_tests.step);
+    b.step("build-native-sdk-session-integration", "Compile integrated session constructor regression and fourteen new method descriptors").dependOn(&session_integration_tests.step);
     b.step("test-native-sdk-session-integration", "Verify integrated Source64 behavior and installed method descriptors while reporting remaining gaps").dependOn(&b.addRunArtifact(session_integration_tests).step);
 
     const reload_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_reload_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary reload"}, .use_llvm = use_llvm });
