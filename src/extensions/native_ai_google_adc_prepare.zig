@@ -5,8 +5,15 @@ const prep = @import("native_ai_http_prepare.zig");
 const v = @import("native_ai_provider_values.zig");
 pub fn data(scope: *v.Scope, dependencies: v.c.JSValue, options: v.c.JSValue) ![]u8 {
     const environment = try scope.object();
-    inline for (.{ "GOOGLE_APPLICATION_CREDENTIALS", "HOME", "USERPROFILE" }) |name| {
-        const value = try scope.invoke(try scope.get(dependencies, "env"), "getProviderEnvValue", &.{ try scope.text(name), try v.optional(scope, options, "env") });
+    const env_api = try scope.get(dependencies, "env");
+    var credentials = try scope.invoke(env_api, "getProviderEnvValue", &.{ try scope.text("GOOGLE_APPLICATION_CREDENTIALS"), try v.optional(scope, options, "env") });
+    // Pi passes only a truthy credentials path as googleAuthOptions.keyFilename;
+    // otherwise the SDK's GoogleAuth reads its own process environment.
+    if (!scope.truthy(credentials)) credentials = try scope.invoke(env_api, "getProviderEnvValue", &.{ try scope.text("GOOGLE_APPLICATION_CREDENTIALS"), v.c.pi_js_undefined() });
+    if (!scope.truthy(credentials)) credentials = try scope.invoke(env_api, "getProviderEnvValue", &.{ try scope.text("google_application_credentials"), v.c.pi_js_undefined() });
+    if (scope.truthy(credentials)) try scope.put(environment, "GOOGLE_APPLICATION_CREDENTIALS", credentials);
+    inline for (.{ "HOME", "APPDATA" }) |name| {
+        const value = try scope.invoke(env_api, "getProviderEnvValue", &.{ try scope.text(name), v.c.pi_js_undefined() });
         if (scope.truthy(value)) try scope.put(environment, name, value);
     }
     return scope.engine.toString(try scope.invoke(try scope.global("JSON"), "stringify", &.{environment}));
@@ -22,6 +29,14 @@ pub fn prepare(a: std.mem.Allocator, view: prep.View, raw: []const u8, budget: p
     while (fields.next()) |field| {
         if (field.value_ptr.* != .string) return error.InvalidGoogleADCEnvironment;
         try environment.put(field.key_ptr.*, field.value_ptr.string);
+    }
+    if (environment.get("GOOGLE_APPLICATION_CREDENTIALS") == null) {
+        // Match the pinned GoogleAuth well-known-file location, rather than
+        // the legacy typed client's USERPROFILE/.config fallback on Windows.
+        const root = if (@import("builtin").os.tag == .windows) environment.get("APPDATA") else environment.get("HOME");
+        const path = if (root) |base| if (@import("builtin").os.tag == .windows) try std.fs.path.join(a, &.{ base, "gcloud", "application_default_credentials.json" }) else try std.fs.path.join(a, &.{ base, ".config", "gcloud", "application_default_credentials.json" }) else try a.dupe(u8, "");
+        defer a.free(path);
+        try environment.put("GOOGLE_APPLICATION_CREDENTIALS", path);
     }
     var credential = (try adc.load(a, budget.io, &environment)) orelse return error.GoogleApplicationDefaultCredentialsNotFound;
     defer credential.deinit(a);
