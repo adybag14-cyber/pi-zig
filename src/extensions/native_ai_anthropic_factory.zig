@@ -18,6 +18,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     try scope.put(dependencies, "simple", try scope.own(try @import("native_ai_simple_options.zig").create(engine, try scope.get(thinking, "clampThinkingLevel"), try scope.get(estimate, "estimateContextTokens"))));
     try scope.put(dependencies, "json", try scope.own(try @import("native_ai_json_parse.zig").create(engine)));
     try scope.put(dependencies, "errors", try scope.own(try @import("native_ai_anthropic_api_error.zig").create(engine)));
+    try scope.put(dependencies, "userAgentOS", try @import("native_ai_user_agent.zig").load(&scope));
     const result = try scope.object();
     inline for (.{ "stream", "streamSimple" }, 0..) |name, index| {
         const Adapter = struct {
@@ -308,7 +309,7 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
         try scope.put(headers, "user-agent", try scope.text("claude-cli/2.1.280"));
         try scope.put(headers, "x-app", try scope.text("cli"));
     } else {
-        try scope.put(headers, "user-agent", try scope.text(@import("../ai/pi_user_agent.zig").value));
+        try scope.put(headers, "user-agent", try @import("native_ai_user_agent.zig").value(scope, try scope.get(try scope.get(owner, "agent"), "userAgentOS")));
         const session = try v.optional(scope, options, "sessionId");
         if (scope.truthy(session) and !try v.eq(scope, try @import("native_ai_provider_request.zig").retention(scope, options), "none") and scope.truthy(try scope.get(try scope.get(owner, "compat"), "sendSessionAffinityHeaders"))) try scope.put(headers, if (try v.eq(scope, try scope.get(try scope.get(owner, "compat"), "sessionAffinityFormat"), "openrouter")) "x-session-id" else "x-session-affinity", session);
     }
