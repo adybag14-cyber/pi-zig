@@ -126,3 +126,10 @@ verification/web-body-node24-20261015/** whitespace=blank-at-eol,-blank-at-eof,s
 verification/web-body-node24-20261015/receipts/*-bundled-undici.js.txt -whitespace
 # Response projection is retained byte-for-byte with its original CRLF input.
 src/extensions/fixtures/web-response-node24.input.txt whitespace=cr-at-eol
+# Keep original OAuth caller/reference and frozen owner EOF bytes unchanged.
+src/extensions/fixtures/ai-oauth-meta-ae7.input.txt whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+src/extensions/fixtures/ai-oauth-subscriptions-ae7.input.txt whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+src/extensions/fixtures/oauth-codex-radius-ae7-source.json whitespace=cr-at-eol
+verification/native-ai-meta-oauth-source38-20261015/sourceae7-oauth-meta-capture-20261015.mjs whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/oauth-subscriptions-ae7-20261015/*.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/oauth-subscriptions-ae7-20261015/sourceae7-oauth-subscriptions-capture-20261015.mjs whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

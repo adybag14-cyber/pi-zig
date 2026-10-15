@@ -13,6 +13,8 @@ The reviewed upstream target is Pi commit `4954d760504c11df9b2cbdc040346107b6a81
 
 These component results apply to their exact tested source and captured inputs. Merging their files does not qualify this combined branch or transfer earlier six-profile results to the new head. Original failed attempts and raw terminal receipts remain retained.
 
+The nine-flow OAuth graph at `341032147bcfe06edd3d5720612c3586e9d8885b` is also integrated as source, including its actual Response/Body/readable dependency and captured loader/flow fixtures. Whole-graph native qualification remains pending. The QuickJS change is only the independently reviewed additive 42-line C and four-line header borrowed-view helper, retaining the newer native generator. Combined vendor hashes are C `12A7F02AFADA614EE9AED57F8EE87173F95977AD8FE8723177CACFACA7AB855D` and header `F3B6F51DBDA727A8FAECFE275FC13F283CA3C71E3907593E47B4F8B741318062`. The merged Engine retains both Immediate phase scheduling and the separate ChatGPT callback pump; this combined Engine still needs its own native gates.
+
 ## Remaining integration boundaries
 
 The production SDK factory requires actual default ModelRuntime creation, ModelConfig/store classes, provider factories, authentication, resource-loader lifecycle and ordinary AgentSession collaborators. The existing synthetic builtin seeding path is insufficient for default-path parity. The new factory module remains unselected until these real inputs and their native comparisons are complete.
