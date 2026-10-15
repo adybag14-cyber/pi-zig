@@ -1559,6 +1559,12 @@ pub fn build(b: *std.Build) void {
     compaction_text_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-compaction-text", "Compare original summary serialization and failure text with complete native owner graphs").dependOn(&b.addRunArtifact(compaction_text_tests).step);
     b.step("build-native-sdk-compaction-text", "Compile original summary serialization independently of runtime deadlines").dependOn(&compaction_text_tests.step);
+    const ai_one_shot_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_one_shot_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI one shot"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ai_one_shot_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(ai_one_shot_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_one_shot_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-ai-one-shot", "Verify actual image and classifier facades and pure helper ownership").dependOn(&b.addRunArtifact(ai_one_shot_tests).step);
+    b.step("build-native-ai-one-shot", "Compile actual image and classifier provider facades independently").dependOn(&ai_one_shot_tests.step);
     const ai_pi_messages_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_pi_messages_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI pi messages"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_pi_messages_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_pi_messages_tests.root_module, sqlite_lib_dir, sqlite_library);
