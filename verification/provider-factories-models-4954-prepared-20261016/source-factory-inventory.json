@@ -1,0 +1,254 @@
+[
+  {
+    "sha256": "E32611E8D2D4E71EE5D0BA426DA60C0AECF42D1BC34CCC3D0D49CE877C621A8C",
+    "file": "amazon-bedrock.ts",
+    "factory": "amazonBedrockProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\amazon-bedrock.ts"
+  },
+  {
+    "sha256": "20BA100F8A9150F809FC42BF60F1D23840CC358D636793F1EC9FDDF0E9FEB2A7",
+    "file": "ant-ling.ts",
+    "factory": "antLingProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\ant-ling.ts"
+  },
+  {
+    "sha256": "433ED7AD9D512FBFB80553C047FF18F02654E3E43DD6B9723953220077E6220A",
+    "file": "anthropic.ts",
+    "factory": "anthropicProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\anthropic.ts"
+  },
+  {
+    "sha256": "6ECA38C6EF2ADCF814D3FAB93C580A520240D90EAC750609761B3E581D2F8545",
+    "file": "azure.ts",
+    "factory": "azureProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\azure.ts"
+  },
+  {
+    "sha256": "C3833BE0C64C4D5C96810403E23E966BB779BF2C045619B6FBAC18FF27AC92F5",
+    "file": "baseten.ts",
+    "factory": "basetenProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\baseten.ts"
+  },
+  {
+    "sha256": "457FC35499ABEA92BE4AD7ADD4F08502D069293380BE61BF05B11AE5352BCE4F",
+    "file": "cerebras.ts",
+    "factory": "cerebrasProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\cerebras.ts"
+  },
+  {
+    "sha256": "6F19BDCB965750AA1367F1C09EB883DA16526644AD3A3CBCB60DA8B53CA418FF",
+    "file": "cloudflare-ai-gateway.ts",
+    "factory": "cloudflareAIGatewayProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\cloudflare-ai-gateway.ts"
+  },
+  {
+    "sha256": "AD4D97721B01048D10B3E7EA6D2D0755DCD087F6623C1497C6F06C70C8511711",
+    "file": "cloudflare-workers-ai.ts",
+    "factory": "cloudflareWorkersAIProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\cloudflare-workers-ai.ts"
+  },
+  {
+    "sha256": "4D4AC9870D3DCDB13A90627A95598314459F5CC2F8A122F802FAB3B0D2840FEE",
+    "file": "deepseek.ts",
+    "factory": "deepseekProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\deepseek.ts"
+  },
+  {
+    "sha256": "72DBB53E3BB8B0BC6C42DD7937EC11DD0126EFE3176F11153B1D599A0C7776AF",
+    "file": "fireworks.ts",
+    "factory": "fireworksProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\fireworks.ts"
+  },
+  {
+    "sha256": "9F898D669B65E9650009E4E45518FC207416C94CA9570276EF9BD7F13FDE8F3B",
+    "file": "github-copilot.ts",
+    "factory": "githubCopilotProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\github-copilot.ts"
+  },
+  {
+    "sha256": "2D807D5F9273EDE8C23970FE0414883AB362C677DF80E4603D30B621232A2036",
+    "file": "google.ts",
+    "factory": "googleProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\google.ts"
+  },
+  {
+    "sha256": "5E321E6D5B80824752CA96E7C9ABA8A3FCCCE722A1793A40D5341A0406EF4878",
+    "file": "google-vertex.ts",
+    "factory": "googleVertexProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\google-vertex.ts"
+  },
+  {
+    "sha256": "A8BBCED4FBC37370892FEC68FB7F03CF634D08D134D9F003FA63EDB5A8B60873",
+    "file": "groq.ts",
+    "factory": "groqProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\groq.ts"
+  },
+  {
+    "sha256": "51C4AF194C9989AB033C5B3303831EC9E2DF999F51D9FA40AB6D28F632E8FF43",
+    "file": "huggingface.ts",
+    "factory": "huggingfaceProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\huggingface.ts"
+  },
+  {
+    "sha256": "7B74CEAA07C4B90FBAFCCAEFF5085BC6493BCE28A04097540A3589F23CBC14BD",
+    "file": "kimi-coding.ts",
+    "factory": "kimiCodingProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\kimi-coding.ts"
+  },
+  {
+    "sha256": "71FDF9EE2C1CDEDA61913088E019CC8E8618977611B3C5CCBF6219D4817E771C",
+    "file": "meta.ts",
+    "factory": "metaProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\meta.ts"
+  },
+  {
+    "sha256": "D571A6A8B5A47DAF40B034A2DAE4AC902A252FBD44B073C4CAEE8EEB1D7035B5",
+    "file": "minimax.ts",
+    "factory": "minimaxProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\minimax.ts"
+  },
+  {
+    "sha256": "AE3170234556EF355F7CFFCFC666888992AE50CAA8DAF07352F22BAC69CCA0BA",
+    "file": "minimax-cn.ts",
+    "factory": "minimaxCnProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\minimax-cn.ts"
+  },
+  {
+    "sha256": "DFCD087D7317D6A6CD1ACF701547567435F5EAF0C1CC1D8EB89EED7E977C2FB3",
+    "file": "mistral.ts",
+    "factory": "mistralProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\mistral.ts"
+  },
+  {
+    "sha256": "2E269CCA0231EBDBD2A58848AB3D19B0A43697E132B48A679E3C1B0CD4897665",
+    "file": "moonshotai.ts",
+    "factory": "moonshotaiProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\moonshotai.ts"
+  },
+  {
+    "sha256": "DA8EC0ED30A2CF42972CEAD61A93B1FCB64380095F9D062EE4ED9E4807EBD5BC",
+    "file": "moonshotai-cn.ts",
+    "factory": "moonshotaiCnProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\moonshotai-cn.ts"
+  },
+  {
+    "sha256": "73C981D27B364F83A32983D19F4DED346ACF6AF7EB4A653334622F891AEDF860",
+    "file": "nvidia.ts",
+    "factory": "nvidiaProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\nvidia.ts"
+  },
+  {
+    "sha256": "899573159312B94F4AE53A3AF25D3B92C86B583F7635DD3C14D95395B46F4644",
+    "file": "openai.ts",
+    "factory": "openaiProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\openai.ts"
+  },
+  {
+    "sha256": "12814AEDEDC491CAB80A2B66403A06D04BFD6595CEAED6FDA5D79D2991875AE1",
+    "file": "openai-codex.ts",
+    "factory": "openaiCodexProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\openai-codex.ts"
+  },
+  {
+    "sha256": "916C793E3A14E4FCD004E43FCBDD4E0183590F091DFDFC4FDF6C8C7704161076",
+    "file": "opencode.ts",
+    "factory": "opencodeProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\opencode.ts"
+  },
+  {
+    "sha256": "AEE7367398CF29698AF3048A0A8B42CAE4650C2325A9FFAAE047EF60A4F6A8C5",
+    "file": "opencode-go.ts",
+    "factory": "opencodeGoProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\opencode-go.ts"
+  },
+  {
+    "sha256": "42E9F9F45305A9A5D955B81070AA6BEDE77EA04463059ED89BCFE6B07FD4CDF2",
+    "file": "openrouter.ts",
+    "factory": "openrouterProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\openrouter.ts"
+  },
+  {
+    "sha256": "C26B85AB529779C4C2E61F6DD749592B515EC25B121B49DC81989D8A767D51F5",
+    "file": "qwen-token-plan.ts",
+    "factory": "qwenTokenPlanProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\qwen-token-plan.ts"
+  },
+  {
+    "sha256": "1869AABBFF4BAAA12FAEF00071AAB0A5B1B1D38D43F16CE735137FC0E13FA897",
+    "file": "qwen-token-plan-cn.ts",
+    "factory": "qwenTokenPlanCnProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\qwen-token-plan-cn.ts"
+  },
+  {
+    "sha256": "0336ECC9C677D9E295A4832FBC84D9197F58E0468FCD00DAFF3AEC491B896375",
+    "file": "qwen-token-plan-individual.ts",
+    "factory": "qwenTokenPlanIndividualProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\qwen-token-plan-individual.ts"
+  },
+  {
+    "sha256": "40ACCE75F4F5C99CBEB03247CBF0FBDDE9E911B097AF3C25132CDF1F75346C32",
+    "file": "radius.ts",
+    "factory": "radiusProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\radius.ts"
+  },
+  {
+    "sha256": "CBF232B1BFE5753BBA855F0A95E2C4D180DB8155121EFFCBDFFC955FE090738C",
+    "file": "together.ts",
+    "factory": "togetherProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\together.ts"
+  },
+  {
+    "sha256": "24E2B1F19118486E0064E252C3860EBA41FADE01A2E50147BF7406D00C6F4BA8",
+    "file": "typesafe.ts",
+    "factory": "typesafeProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\typesafe.ts"
+  },
+  {
+    "sha256": "F469F498E7DE52915525D3AC645AE8C73BDB6DEE7624E7AB68D139C7E91CC279",
+    "file": "vercel-ai-gateway.ts",
+    "factory": "vercelAIGatewayProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\vercel-ai-gateway.ts"
+  },
+  {
+    "sha256": "841C361FC5EBB2D91C3F6AA46CE008F354EA287CCE36ED2105AE815B7E5E9831",
+    "file": "xai.ts",
+    "factory": "xaiProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\xai.ts"
+  },
+  {
+    "sha256": "D0D20DBCBCECCA8B02948DF1506FFA474461565546F7C24DFCE44AEBEBEF2344",
+    "file": "xiaomi.ts",
+    "factory": "xiaomiProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\xiaomi.ts"
+  },
+  {
+    "sha256": "59D03FC70ECA720F8CA9A9F676AEDAF241524DAC26C179A78E2E30AABE116E0F",
+    "file": "xiaomi-token-plan-ams.ts",
+    "factory": "xiaomiTokenPlanAmsProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\xiaomi-token-plan-ams.ts"
+  },
+  {
+    "sha256": "255528BCA12E929F0F683BCBF5A6B8EF0DE779BB484B128BDDA23BF2FB80CAA8",
+    "file": "xiaomi-token-plan-cn.ts",
+    "factory": "xiaomiTokenPlanCnProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\xiaomi-token-plan-cn.ts"
+  },
+  {
+    "sha256": "536DA73A1588741C6A70809B5E94AB5A1BA2B8E81F24116E3ED734D6BC60B5E8",
+    "file": "xiaomi-token-plan-sgp.ts",
+    "factory": "xiaomiTokenPlanSgpProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\xiaomi-token-plan-sgp.ts"
+  },
+  {
+    "sha256": "489A48539C3ABC291315DAD6F8B7C5554F5F3F9BF8B2A11A60D4AB2CBD3C2F74",
+    "file": "zai.ts",
+    "factory": "zaiProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\zai.ts"
+  },
+  {
+    "sha256": "89FF82B1F7B1A7E3427498598CE03574D76217F1C38B0D1731BE82B6D8FF87A7",
+    "file": "zai-coding-cn.ts",
+    "factory": "zaiCodingCnProvider",
+    "source_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\providers\\zai-coding-cn.ts"
+  }
+]
