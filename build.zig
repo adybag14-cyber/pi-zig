@@ -1622,6 +1622,12 @@ pub fn build(b: *std.Build) void {
     check_compaction_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-check-compaction", "Compile automatic compaction trigger and shared estimate regressions").dependOn(&check_compaction_tests.step);
     b.step("test-native-sdk-check-compaction", "Compare genuine check32 and shared threshold estimates").dependOn(&b.addRunArtifact(check_compaction_tests).step);
+    const custom_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_custom_message_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native custom messages"}, .use_llvm = use_llvm });
+    linkQuickJs(b, custom_message_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(custom_message_tests.root_module, sqlite_lib_dir, sqlite_library);
+    custom_message_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-custom-message", "Compile actual custom-message delivery and GC ownership tests").dependOn(&custom_message_tests.step);
+    b.step("test-native-sdk-custom-message", "Compare actual Source40 custom-message behavior and descriptors").dependOn(&b.addRunArtifact(custom_message_tests).step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);

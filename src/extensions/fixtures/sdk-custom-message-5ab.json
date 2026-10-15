@@ -1,0 +1,1109 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "inputSha256": "6a342185413311ef501c2a8be537adefd1a2dad40fe52f2c3cf6dede670efd20",
+  "cases": 40,
+  "scope": "Actual ordinary custom message methods with caller-owned collaborators and genuine descriptor observations; full factory remains unqualified",
+  "descriptors": [
+    {
+      "name": "sendCustomMessage",
+      "length": 2,
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "ownPrototype": false,
+      "async": true
+    },
+    {
+      "name": "_appendCustomMessage",
+      "length": 1,
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "ownPrototype": false,
+      "async": false
+    },
+    {
+      "name": "_flushPendingCustomMessages",
+      "length": 0,
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "ownPrototype": false,
+      "async": false
+    }
+  ],
+  "rows": [
+    {
+      "label": "idle",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "streaming",
+        [
+          "append",
+          {
+            "role": "custom",
+            "customType": "notice",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello"
+              }
+            ],
+            "display": true,
+            "details": {
+              "detail": 1
+            },
+            "timestamp": 1234
+          }
+        ]
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "array",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "streaming",
+        [
+          "append",
+          {
+            "role": "custom",
+            "customType": "notice",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello"
+              }
+            ],
+            "display": true,
+            "details": {
+              "detail": 1
+            },
+            "timestamp": 1234
+          }
+        ]
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "null",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "streaming",
+        [
+          "append",
+          {
+            "role": "custom",
+            "customType": "notice",
+            "content": [],
+            "display": true,
+            "details": {
+              "detail": 1
+            },
+            "timestamp": 1234
+          }
+        ]
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "undefined",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "streaming",
+        [
+          "append",
+          {
+            "role": "custom",
+            "customType": "notice",
+            "content": [],
+            "display": true,
+            "details": {
+              "detail": 1
+            },
+            "timestamp": 1234
+          }
+        ]
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "string",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "streaming",
+        [
+          "append",
+          {
+            "role": "custom",
+            "customType": "notice",
+            "content": "text",
+            "display": true,
+            "details": {
+              "detail": 1
+            },
+            "timestamp": 1234
+          }
+        ]
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "zero",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "streaming",
+        [
+          "append",
+          {
+            "role": "custom",
+            "customType": "notice",
+            "content": 0,
+            "display": true,
+            "details": {
+              "detail": 1
+            },
+            "timestamp": 1234
+          }
+        ]
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "false",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "streaming",
+        [
+          "append",
+          {
+            "role": "custom",
+            "customType": "notice",
+            "content": false,
+            "display": true,
+            "details": {
+              "detail": 1
+            },
+            "timestamp": 1234
+          }
+        ]
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "nextTurn",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs"
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [
+        {
+          "role": "custom",
+          "customType": "notice",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "display": true,
+          "details": {
+            "detail": 1
+          },
+          "timestamp": 1234
+        }
+      ],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "nextTurn-stream",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs"
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [
+        {
+          "role": "custom",
+          "customType": "notice",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "display": true,
+          "details": {
+            "detail": 1
+          },
+          "timestamp": 1234
+        }
+      ],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "nextTurn-trigger",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs"
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [
+        {
+          "role": "custom",
+          "customType": "notice",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "display": true,
+          "details": {
+            "detail": 1
+          },
+          "timestamp": 1234
+        }
+      ],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "stream-default",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "triggerTurn",
+        "streaming"
+      ],
+      "resultUndefined": true,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "notice",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "display": true,
+          "details": {
+            "detail": 1
+          },
+          "timestamp": 1234
+        }
+      ],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "stream-followUp",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "triggerTurn",
+        "streaming"
+      ],
+      "resultUndefined": true,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "notice",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "display": true,
+          "details": {
+            "detail": 1
+          },
+          "timestamp": 1234
+        }
+      ],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "stream-triggerFalse",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "triggerTurn",
+        "streaming"
+      ],
+      "resultUndefined": true,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "notice",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "display": true,
+          "details": {
+            "detail": 1
+          },
+          "timestamp": 1234
+        }
+      ],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "trigger",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "settling",
+        [
+          "run",
+          {
+            "messageType": "custom",
+            "message": {
+              "role": "custom",
+              "customType": "notice",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "hello"
+                }
+              ],
+              "display": true,
+              "details": {
+                "detail": 1
+              },
+              "timestamp": 1234
+            }
+          }
+        ]
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "trigger-reject",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "settling",
+        [
+          "run",
+          {
+            "messageType": "custom",
+            "message": {
+              "role": "custom",
+              "customType": "notice",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "hello"
+                }
+              ],
+              "display": true,
+              "details": {
+                "detail": 1
+              },
+              "timestamp": 1234
+            }
+          }
+        ]
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "trigger-sync-throw",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "settling",
+        [
+          "run",
+          {
+            "messageType": "custom",
+            "message": {
+              "role": "custom",
+              "customType": "notice",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "hello"
+                }
+              ],
+              "display": true,
+              "details": {
+                "detail": 1
+              },
+              "timestamp": 1234
+            }
+          }
+        ]
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "settled",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "settling",
+        [
+          "deferred",
+          true,
+          true,
+          true
+        ],
+        [
+          "deferred-result",
+          true
+        ]
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 1,
+      "coercions": 0
+    },
+    {
+      "label": "raw-customType",
+      "events": [
+        "message:customType"
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "raw-content",
+      "events": [
+        "message:customType",
+        "message:content"
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "raw-display",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display"
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "raw-details",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details"
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "raw-date",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now"
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "raw-deliverAs",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs"
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "raw-triggerTurn",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn"
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "raw-isStreaming",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming"
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "raw-push",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "push"
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "raw-append",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "streaming",
+        [
+          "append",
+          {
+            "role": "custom",
+            "customType": "notice",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello"
+              }
+            ],
+            "display": true,
+            "details": {
+              "detail": 1
+            },
+            "timestamp": 1234
+          }
+        ]
+      ],
+      "error": "owned",
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "options-null",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "streaming",
+        "streaming",
+        [
+          "append",
+          {
+            "role": "custom",
+            "customType": "notice",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello"
+              }
+            ],
+            "display": true,
+            "details": {
+              "detail": 1
+            },
+            "timestamp": 1234
+          }
+        ]
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "options-undefined",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "streaming",
+        "streaming",
+        [
+          "append",
+          {
+            "role": "custom",
+            "customType": "notice",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello"
+              }
+            ],
+            "display": true,
+            "details": {
+              "detail": 1
+            },
+            "timestamp": 1234
+          }
+        ]
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "trigger-thenable",
+      "events": [
+        "message:customType",
+        "message:content",
+        "message:display",
+        "message:details",
+        "now",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "settling",
+        [
+          "run",
+          {
+            "messageType": "custom",
+            "message": {
+              "role": "custom",
+              "customType": "notice",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "hello"
+                }
+              ],
+              "display": true,
+              "details": {
+                "detail": 1
+              },
+              "timestamp": 1234
+            }
+          }
+        ],
+        "then"
+      ],
+      "resultUndefined": true,
+      "pending": [],
+      "next": [],
+      "actions": 0,
+      "coercions": 0
+    },
+    {
+      "label": "append-normal",
+      "events": [
+        [
+          "persist",
+          [
+            "notice",
+            [],
+            false,
+            {
+              "detail": 2
+            }
+          ]
+        ],
+        "refresh",
+        [
+          "message_start",
+          true
+        ],
+        [
+          "message_end",
+          true
+        ]
+      ],
+      "resultUndefined": true,
+      "coercions": 0
+    },
+    {
+      "label": "append-manager-throws",
+      "events": [
+        [
+          "persist",
+          [
+            "notice",
+            [],
+            false,
+            {
+              "detail": 2
+            }
+          ]
+        ]
+      ],
+      "error": "owned",
+      "coercions": 0
+    },
+    {
+      "label": "append-refresh-throws",
+      "events": [
+        [
+          "persist",
+          [
+            "notice",
+            [],
+            false,
+            {
+              "detail": 2
+            }
+          ]
+        ],
+        "refresh"
+      ],
+      "error": "owned",
+      "coercions": 0
+    },
+    {
+      "label": "append-start-throws",
+      "events": [
+        [
+          "persist",
+          [
+            "notice",
+            [],
+            false,
+            {
+              "detail": 2
+            }
+          ]
+        ],
+        "refresh",
+        [
+          "message_start",
+          true
+        ]
+      ],
+      "error": "owned",
+      "coercions": 0
+    },
+    {
+      "label": "append-end-throws",
+      "events": [
+        [
+          "persist",
+          [
+            "notice",
+            [],
+            false,
+            {
+              "detail": 2
+            }
+          ]
+        ],
+        "refresh",
+        [
+          "message_start",
+          true
+        ],
+        [
+          "message_end",
+          true
+        ]
+      ],
+      "error": "owned",
+      "coercions": 0
+    },
+    {
+      "label": "flush-empty",
+      "events": [],
+      "resultUndefined": true,
+      "same": true,
+      "remaining": [],
+      "coercions": 0
+    },
+    {
+      "label": "flush-two",
+      "events": [
+        [
+          1,
+          false,
+          0
+        ],
+        [
+          2,
+          false,
+          0
+        ]
+      ],
+      "resultUndefined": true,
+      "same": false,
+      "remaining": [],
+      "coercions": 0
+    },
+    {
+      "label": "flush-reentrant",
+      "events": [
+        [
+          1,
+          false,
+          0
+        ],
+        [
+          2,
+          false,
+          1
+        ]
+      ],
+      "resultUndefined": true,
+      "same": false,
+      "remaining": [
+        {
+          "id": 3
+        },
+        {
+          "id": 3
+        }
+      ],
+      "coercions": 0
+    },
+    {
+      "label": "flush-first-throws",
+      "events": [
+        [
+          1,
+          false,
+          0
+        ]
+      ],
+      "error": "owned",
+      "same": false,
+      "remaining": [],
+      "coercions": 0
+    },
+    {
+      "label": "flush-second-throws",
+      "events": [
+        [
+          1,
+          false,
+          0
+        ],
+        [
+          2,
+          false,
+          0
+        ]
+      ],
+      "error": "owned",
+      "same": false,
+      "remaining": [],
+      "coercions": 0
+    }
+  ]
+}
