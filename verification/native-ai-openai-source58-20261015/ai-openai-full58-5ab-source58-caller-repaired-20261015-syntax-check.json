@@ -1,0 +1,16 @@
+{
+  "name": "ai-openai-full58-5ab-source58-caller-repaired-20261015-syntax-check",
+  "pid": 49668,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "C:\\Program Files\\nodejs\\node.exe --check C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-openai-full58-5ab-source-capture-caller-repaired-20261015.mjs",
+  "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+  "created_utc": "2026-10-15T18:49:40.9784165Z",
+  "launched_utc": "2026-10-15T18:49:40.9746147+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T18:49:41.3730713+00:00"
+}

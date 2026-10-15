@@ -1,0 +1,54 @@
+[
+  {
+    "file": "ai-openai-full58-5ab-source58-caller-repaired-20261015-admission.json",
+    "sha256": "91B6F1E7CCF09B9F872F1AAD9151DD9DB3BCDA19CB8A964DBE6525BE4AD2BF1D"
+  },
+  {
+    "file": "ai-openai-full58-5ab-source58-caller-repaired-20261015-extra-before.json",
+    "sha256": "76082892F5A7359E67AEC20E599F556D4EDB5D8C52B28DE5153EF433AFDED4E5"
+  },
+  {
+    "file": "ai-openai-full58-5ab-source58-caller-repaired-20261015-output.json",
+    "sha256": "8CC3C0FDF7FE9F19A2590EEF3B85892123B03EB2403C523BD0C88F71963EAF46"
+  },
+  {
+    "file": "ai-openai-full58-5ab-source58-caller-repaired-20261015-posthash.json",
+    "sha256": "1609445D22122EDC1290FB9A0E8B25545329C04D5E0B1E7D0263FD1CE994D69C"
+  },
+  {
+    "file": "ai-openai-full58-5ab-source58-caller-repaired-20261015-syntax-check.json",
+    "sha256": "B7B5AA32613813FB979CC47E92B957FC7B1E2F181030D5D64575241FFF840301"
+  },
+  {
+    "file": "ai-openai-full58-5ab-source58-caller-repaired-20261015-syntax-check.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "ai-openai-full58-5ab-source58-caller-repaired-20261015-syntax-check.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "ai-openai-full58-5ab-source58-caller-repaired-20261015.json",
+    "sha256": "98A187D57BD7BC57775CC0A19C4799E5474AC82E3F57EC400E66D3402E3BE96F"
+  },
+  {
+    "file": "ai-openai-full58-5ab-source58-caller-repaired-20261015.stderr.log",
+    "sha256": "AFB10D8BA302B92BFBC9211F28C15C9C44C85E7CF15AE93BD97F405422CFA33E"
+  },
+  {
+    "file": "ai-openai-full58-5ab-source58-caller-repaired-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "ai-openai-full58-5ab-source-capture-caller-repaired-20261015.mjs",
+    "sha256": "609CAE08187D1D68CBC8D870C46DD81B1DEA2A2D0F981025166F3830D6F776C5"
+  },
+  {
+    "file": "Run-AiOpenAIFull58CallerRepairedSource-20261015.ps1",
+    "sha256": "9A8C3BC745F114CAA4EE7FB5C0D3F7A5463EE1A38B249D4AC9FC554D88686B2F"
+  },
+  {
+    "file": "source5ab-observe-20261015.mjs",
+    "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017"
+  }
+]
