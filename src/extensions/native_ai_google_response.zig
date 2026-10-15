@@ -10,6 +10,8 @@ fn construct(engine: *v.em.Engine, target: c.JSValue, _: []const c.JSValue, _: [
 }
 fn getter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = v.em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     return get(engine, receiver, @enumFromInt(magic)) catch |err| @import("native_sdk.zig").fail(engine, err);
 }
 pub fn create(engine: *v.em.Engine) !c.JSValue {
@@ -41,9 +43,9 @@ fn select(scope: *Scope, parts: c.JSValue, comptime kind: Kind) !c.JSValue {
     const key: [*:0]const u8 = if (kind == .functionCalls) "functionCall" else if (kind == .executableCode) "executableCode" else "codeExecutionResult";
     const Predicate = struct {
         fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-            var row: Scope = .{ .engine = engine };
-            defer row.deinit();
-            return c.pi_js_bool(engine.context, @intFromBool(row.truthy(try row.get(if (args.len > 0) args[0] else c.pi_js_undefined(), key))));
+            // Source's filter arrow returns the field itself. A caller may
+            // replace Array.prototype.filter and inspect that return value.
+            return v.js.get(engine, if (args.len > 0) args[0] else c.pi_js_undefined(), key);
         }
     };
     const Mapper = struct {
