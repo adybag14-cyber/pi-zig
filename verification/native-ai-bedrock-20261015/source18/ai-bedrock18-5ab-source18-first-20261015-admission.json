@@ -1,0 +1,8 @@
+{
+  "heap_mb": 256,
+  "free_kib": 22656652,
+  "status": "admitted",
+  "required_kib": 2097152,
+  "observed_utc": "2026-10-15T19:42:59.1939652+00:00",
+  "coordinated_with": "Root explicit LIGHT Source slot3 Bedrock18 grant; no launch without grant"
+}

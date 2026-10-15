@@ -1618,6 +1618,12 @@ pub fn build(b: *std.Build) void {
     ai_bedrock_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-bedrock", "Compare actual native Bedrock facade against genuine Source5ab SDK wire and hook traces").dependOn(&b.addRunArtifact(ai_bedrock_tests).step);
     b.step("build-native-ai-bedrock", "Compile private native Bedrock credential and binary EventStream adapters").dependOn(&ai_bedrock_tests.step);
+    const ai_bedrock18_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_bedrock18_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI Bedrock"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ai_bedrock18_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(ai_bedrock18_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_bedrock18_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-ai-bedrock18", "Preserve Source14 gates and compare Source18 exact SDK requests and streamSimple traces").dependOn(&b.addRunArtifact(ai_bedrock18_tests).step);
+    b.step("build-native-ai-bedrock18", "Compile Bedrock Source18 comparison and owned credential process cleanup").dependOn(&ai_bedrock18_tests.step);
     const ai_json_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_json_parse_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI JSON"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_json_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_json_tests.root_module, sqlite_lib_dir, sqlite_library);

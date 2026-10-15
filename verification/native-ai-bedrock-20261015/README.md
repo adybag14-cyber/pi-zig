@@ -104,3 +104,29 @@ the auth value with a presence marker; the native literal fake bearer assertion
 is independent evidence. No method/full-header equivalence is claimed. The
 separate queued Source18 driver records method/URL/path and fake authorization
 verbatim and adds four streamSimple stimuli. It has not run.
+
+## Source18 capture and next native owner
+
+Root granted LIGHT3 for Source18. The actual pinned Source5ab provider and actual
+AWS SDK completed all 18 cases under owned Node PID 52568, exit 0. Each case
+recorded exactly one actual POST in `requests[]`, its full loopback URL, matching
+path/query, JSON body and verbatim fake bearer authorization. Four added cases
+exercise streamSimple defaults, adaptive Claude block binding, Claude budget
+clamping and non-Claude GPT effort. Output fixture SHA256:
+`8BD6BD72C082D1CC13939EA65EFC02CE7F7265D213A94BFB1F857B744413D69A`.
+Source1967/dependencies31064/Node1774, eleven extra controls, the control manifest
+and 84 absence records all had terminal posthash drift zero. LIGHT3 was released.
+The driver, owned receipts, module observation log and control hashes are retained
+in `source18/`; the old Source14 and native negative remain unchanged.
+
+The new `build-native-ai-bedrock18` / `test-native-ai-bedrock18` target retains
+the existing Source14, fragmentation/CRC and cancellation gates and adds the
+Source18 comparison. It binds to the actual captured request target and checks
+captured method, full URL after rebinding only its origin, unchanged path/query,
+body, and every captured functional header including the fake auth value.
+Response diagnostic headers remain explicit in the real guest callbacks. Native
+Source18 compilation/runtime have not run and need Root's native reservation;
+the reviewed C-generator/item-iterator integration remains necessary for the
+retained protocol timing negative. No expected Source observation is synthesized
+or rewritten to accommodate that negative.
+

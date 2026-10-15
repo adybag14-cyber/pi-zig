@@ -1,0 +1,5232 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "cases": 18,
+  "rows": [
+    {
+      "name": "text-usage-stop",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54952/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54952/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "text": "Hello"
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "text": " world"
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockStop": {
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStop": {
+              "stopReason": "end_turn"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "metadata": {
+              "usage": {
+                "inputTokens": 10,
+                "outputTokens": 3,
+                "totalTokens": 13,
+                "cacheReadInputTokens": 2,
+                "cacheWriteInputTokens": 4,
+                "cacheDetails": [
+                  {
+                    "ttl": "1h",
+                    "inputTokens": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Hello",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "Hello",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Hello",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": " world",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Hello world",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "Hello world",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Hello world"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Hello world"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 10,
+              "output": 3,
+              "cacheRead": 2,
+              "cacheWrite": 4,
+              "totalTokens": 13,
+              "cost": {
+                "input": 0.00003,
+                "output": 0.000045,
+                "cacheRead": 6e-7,
+                "cacheWrite": 0.00001725,
+                "total": 0.00009285000000000001
+              },
+              "cacheWrite1h": 1
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 40
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Hello world"
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 10,
+          "output": 3,
+          "cacheRead": 2,
+          "cacheWrite": 4,
+          "totalTokens": 13,
+          "cost": {
+            "input": 0.00003,
+            "output": 0.000045,
+            "cacheRead": 6e-7,
+            "cacheWrite": 0.00001725,
+            "total": 0.00009285000000000001
+          },
+          "cacheWrite1h": 1
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 40
+      }
+    },
+    {
+      "name": "signed-thinking",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54954/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54954/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "reasoningContent": {
+                  "text": "consider",
+                  "signature": "sig-"
+                }
+              },
+              "contentBlockIndex": 2
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "reasoningContent": {
+                  "signature": "tail"
+                }
+              },
+              "contentBlockIndex": 2
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockStop": {
+              "contentBlockIndex": 2
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStop": {
+              "stopReason": "max_tokens"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "thinking_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "consider",
+                "thinkingSignature": "sig-",
+                "index": 2
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "thinking_delta",
+          "contentIndex": 0,
+          "delta": "consider",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "consider",
+                "thinkingSignature": "sig-",
+                "index": 2
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "thinking_end",
+          "contentIndex": 0,
+          "content": "consider",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "consider",
+                "thinkingSignature": "sig-tail"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "length",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "consider",
+                "thinkingSignature": "sig-tail"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "length",
+            "timestamp": 0,
+            "rawStopReason": "max_tokens",
+            "durationMs": 9
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "consider",
+            "thinkingSignature": "sig-tail"
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "length",
+        "timestamp": 0,
+        "rawStopReason": "max_tokens",
+        "durationMs": 9
+      }
+    },
+    {
+      "name": "redacted-thinking",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54956/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54956/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "reasoningContent": {
+                  "redactedContent": [
+                    0,
+                    1,
+                    255
+                  ],
+                  "signature": "discard"
+                }
+              },
+              "contentBlockIndex": 1
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "reasoningContent": {
+                  "redactedContent": [
+                    2,
+                    3
+                  ],
+                  "signature": "ignore"
+                }
+              },
+              "contentBlockIndex": 1
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStop": {
+              "stopReason": "end_turn"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "thinking_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "[Reasoning redacted]",
+                "thinkingSignature": "",
+                "index": 1,
+                "redacted": true,
+                "redactedChunks": [
+                  [
+                    0,
+                    1,
+                    255
+                  ]
+                ]
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "thinking_delta",
+          "contentIndex": 0,
+          "delta": "[Reasoning redacted]",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "[Reasoning redacted]",
+                "thinkingSignature": "",
+                "index": 1,
+                "redacted": true,
+                "redactedChunks": [
+                  [
+                    0,
+                    1,
+                    255
+                  ]
+                ]
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "[Reasoning redacted]",
+                "thinkingSignature": "AAH/AgM=",
+                "redacted": true
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 7
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "[Reasoning redacted]",
+            "thinkingSignature": "AAH/AgM=",
+            "redacted": true
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 7
+      }
+    },
+    {
+      "name": "tool-partial-final",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54958/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54958/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockStart": {
+              "start": {
+                "toolUse": {
+                  "toolUseId": "call-1",
+                  "name": "lookup"
+                }
+              },
+              "contentBlockIndex": 3
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "toolUse": {
+                  "input": "{\"city\":"
+                }
+              },
+              "contentBlockIndex": 3
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "toolUse": {
+                  "input": "\"London\"}"
+                }
+              },
+              "contentBlockIndex": 3
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockStop": {
+              "contentBlockIndex": 3
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStop": {
+              "stopReason": "tool_use"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-1",
+                "name": "lookup",
+                "arguments": {},
+                "partialJson": "",
+                "index": 3
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "{\"city\":",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-1",
+                "name": "lookup",
+                "arguments": {},
+                "partialJson": "{\"city\":",
+                "index": 3
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "\"London\"}",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-1",
+                "name": "lookup",
+                "arguments": {
+                  "city": "London"
+                },
+                "partialJson": "{\"city\":\"London\"}",
+                "index": 3
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 0,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "call-1",
+            "name": "lookup",
+            "arguments": {
+              "city": "London"
+            }
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-1",
+                "name": "lookup",
+                "arguments": {
+                  "city": "London"
+                }
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "toolUse",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-1",
+                "name": "lookup",
+                "arguments": {
+                  "city": "London"
+                }
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": 0,
+            "rawStopReason": "tool_use",
+            "durationMs": 8
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "toolCall",
+            "id": "call-1",
+            "name": "lookup",
+            "arguments": {
+              "city": "London"
+            }
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "toolUse",
+        "timestamp": 0,
+        "rawStopReason": "tool_use",
+        "durationMs": 8
+      }
+    },
+    {
+      "name": "tool-invalid-final",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54960/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54960/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockStart": {
+              "start": {
+                "toolUse": {
+                  "toolUseId": "bad",
+                  "name": "lookup"
+                }
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "toolUse": {
+                  "input": "{bad"
+                }
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockStop": {
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStop": {
+              "stopReason": "tool_use"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "bad",
+                "name": "lookup",
+                "arguments": {},
+                "partialJson": "",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "{bad",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "bad",
+                "name": "lookup",
+                "arguments": {},
+                "partialJson": "{bad",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 0,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "bad",
+            "name": "lookup",
+            "arguments": {},
+            "argumentsError": "Expected property name or '}' in JSON at position 1 (line 1 column 2)\n\nReceived arguments:\n{bad"
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "bad",
+                "name": "lookup",
+                "arguments": {},
+                "argumentsError": "Expected property name or '}' in JSON at position 1 (line 1 column 2)\n\nReceived arguments:\n{bad"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "toolUse",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "bad",
+                "name": "lookup",
+                "arguments": {},
+                "argumentsError": "Expected property name or '}' in JSON at position 1 (line 1 column 2)\n\nReceived arguments:\n{bad"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": 0,
+            "rawStopReason": "tool_use",
+            "durationMs": 8
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "toolCall",
+            "id": "bad",
+            "name": "lookup",
+            "arguments": {},
+            "argumentsError": "Expected property name or '}' in JSON at position 1 (line 1 column 2)\n\nReceived arguments:\n{bad"
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "toolUse",
+        "timestamp": 0,
+        "rawStopReason": "tool_use",
+        "durationMs": 8
+      }
+    },
+    {
+      "name": "unstopped-block-cleanup",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54962/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54962/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "text": "partial"
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStop": {
+              "stopReason": "stop_sequence"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "partial",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "stop_sequence",
+            "durationMs": 7
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "partial"
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "stop_sequence",
+        "durationMs": 7
+      }
+    },
+    {
+      "name": "missing-stop-error",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54964/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54964/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "text": "partial"
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "partial",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 0,
+            "errorMessage": "Bedrock stream ended without a stop reason",
+            "diagnostics": [
+              {
+                "type": "bedrock_response_failure",
+                "timestamp": 0,
+                "details": {
+                  "requestId": "fixture-request-id"
+                }
+              }
+            ],
+            "durationMs": 6
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "partial"
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 0,
+        "errorMessage": "Bedrock stream ended without a stop reason",
+        "diagnostics": [
+          {
+            "type": "bedrock_response_failure",
+            "timestamp": 0,
+            "details": {
+              "requestId": "fixture-request-id"
+            }
+          }
+        ],
+        "durationMs": 6
+      }
+    },
+    {
+      "name": "unknown-stop-error",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54966/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54966/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStop": {
+              "stopReason": "content_filtered"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 0,
+            "rawStopReason": "content_filtered",
+            "errorMessage": "Provider stopped with: content_filtered",
+            "diagnostics": [
+              {
+                "type": "bedrock_response_failure",
+                "timestamp": 0,
+                "details": {
+                  "requestId": "fixture-request-id"
+                }
+              }
+            ],
+            "durationMs": 5
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 0,
+        "rawStopReason": "content_filtered",
+        "errorMessage": "Provider stopped with: content_filtered",
+        "diagnostics": [
+          {
+            "type": "bedrock_response_failure",
+            "timestamp": 0,
+            "details": {
+              "requestId": "fixture-request-id"
+            }
+          }
+        ],
+        "durationMs": 5
+      }
+    },
+    {
+      "name": "stream-exception",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54968/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54968/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 0,
+            "errorMessage": "Internal server error: fixture internal failure",
+            "diagnostics": [
+              {
+                "type": "bedrock_response_failure",
+                "timestamp": 0,
+                "details": {
+                  "errorCode": "InternalServerException",
+                  "requestId": "fixture-request-id"
+                }
+              }
+            ],
+            "durationMs": 7
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 0,
+        "errorMessage": "Internal server error: fixture internal failure",
+        "diagnostics": [
+          {
+            "type": "bedrock_response_failure",
+            "timestamp": 0,
+            "details": {
+              "errorCode": "InternalServerException",
+              "requestId": "fixture-request-id"
+            }
+          }
+        ],
+        "durationMs": 7
+      }
+    },
+    {
+      "name": "payload-replacement",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54971/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          },
+          "requestMetadata": {
+            "fixture": "replacement"
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "x-fixture": "custom",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54971/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            },
+            "requestMetadata": {
+              "fixture": "replacement"
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "x-fixture": "custom",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            },
+            "requestMetadata": {
+              "fixture": "original"
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStop": {
+              "stopReason": "end_turn"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 8
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 8
+      }
+    },
+    {
+      "name": "response-callback-rejection",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54973/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54973/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 0,
+            "errorMessage": "fixture response failure",
+            "durationMs": 4
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 0,
+        "errorMessage": "fixture response failure",
+        "durationMs": 4
+      }
+    },
+    {
+      "name": "event-callback-mutation",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54975/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54975/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "text": "original"
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStop": {
+              "stopReason": "end_turn"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "original changed",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "original changed",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "original changed",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "original changed"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 6
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "original changed"
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 6
+      }
+    },
+    {
+      "name": "event-callback-rejection",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54977/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54977/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "text": "original"
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 0,
+            "errorMessage": "{\"fixture\":\"event rejection\"}",
+            "diagnostics": [
+              {
+                "type": "bedrock_response_failure",
+                "timestamp": 0,
+                "details": {
+                  "requestId": "fixture-request-id"
+                }
+              }
+            ],
+            "durationMs": 5
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 0,
+        "errorMessage": "{\"fixture\":\"event rejection\"}",
+        "diagnostics": [
+          {
+            "type": "bedrock_response_failure",
+            "timestamp": 0,
+            "details": {
+              "requestId": "fixture-request-id"
+            }
+          }
+        ],
+        "durationMs": 5
+      }
+    },
+    {
+      "name": "http-raw-body-error",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54979/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54979/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 403,
+            "headers": {
+              "content-type": "application/json",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 0,
+            "errorMessage": "Unexpected token 'g', \"gateway de\"... is not valid JSON\n  Deserialization error: to see the raw response, inspect the hidden field {error}.$response on this object.",
+            "diagnostics": [
+              {
+                "type": "bedrock_response_failure",
+                "timestamp": 0,
+                "details": {
+                  "status": 403,
+                  "requestId": "fixture-request-id"
+                }
+              }
+            ],
+            "durationMs": 5
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 0,
+        "errorMessage": "Unexpected token 'g', \"gateway de\"... is not valid JSON\n  Deserialization error: to see the raw response, inspect the hidden field {error}.$response on this object.",
+        "diagnostics": [
+          {
+            "type": "bedrock_response_failure",
+            "timestamp": 0,
+            "details": {
+              "status": 403,
+              "requestId": "fixture-request-id"
+            }
+          }
+        ],
+        "durationMs": 5
+      }
+    },
+    {
+      "name": "stream-simple-default",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54981/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54981/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "path": "/model/anthropic.claude-sonnet-4-6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "modelId": "anthropic.claude-sonnet-4-6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "text": "Simple result"
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-sonnet-4-6",
+          "value": {
+            "messageStop": {
+              "stopReason": "end_turn"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "Simple result",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-sonnet-4-6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 6
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Simple result"
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-sonnet-4-6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 6
+      }
+    },
+    {
+      "name": "stream-simple-adaptive-block-binding",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54983/model/anthropic.claude-opus-4-8/converse-stream",
+        "path": "/model/anthropic.claude-opus-4-8/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          },
+          "additionalModelRequestFields": {
+            "thinking": {
+              "type": "adaptive",
+              "display": "summarized",
+              "block_binding": {
+                "prefix_mismatch_behavior": "drop_block"
+              }
+            },
+            "output_config": {
+              "effort": "high"
+            },
+            "anthropic_beta": [
+              "thinking-binding-controls-2026-08-01"
+            ]
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54983/model/anthropic.claude-opus-4-8/converse-stream",
+          "path": "/model/anthropic.claude-opus-4-8/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            },
+            "additionalModelRequestFields": {
+              "thinking": {
+                "type": "adaptive",
+                "display": "summarized",
+                "block_binding": {
+                  "prefix_mismatch_behavior": "drop_block"
+                }
+              },
+              "output_config": {
+                "effort": "high"
+              },
+              "anthropic_beta": [
+                "thinking-binding-controls-2026-08-01"
+              ]
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-opus-4-8",
+          "value": {
+            "modelId": "anthropic.claude-opus-4-8",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            },
+            "additionalModelRequestFields": {
+              "thinking": {
+                "type": "adaptive",
+                "display": "summarized",
+                "block_binding": {
+                  "prefix_mismatch_behavior": "drop_block"
+                }
+              },
+              "output_config": {
+                "effort": "high"
+              },
+              "anthropic_beta": [
+                "thinking-binding-controls-2026-08-01"
+              ]
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-opus-4-8",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-opus-4-8",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-opus-4-8",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "text": "Simple result"
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-opus-4-8",
+          "value": {
+            "messageStop": {
+              "stopReason": "end_turn"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-opus-4-8",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-opus-4-8",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "Simple result",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-opus-4-8",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-opus-4-8",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 6
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Simple result"
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-opus-4-8",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 6
+      }
+    },
+    {
+      "name": "stream-simple-budget-clamp",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54985/model/anthropic.claude-3-7-sonnet/converse-stream",
+        "path": "/model/anthropic.claude-3-7-sonnet/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                },
+                {
+                  "cachePoint": {
+                    "type": "default"
+                  }
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          },
+          "additionalModelRequestFields": {
+            "thinking": {
+              "type": "enabled",
+              "budget_tokens": 7168,
+              "display": "summarized"
+            },
+            "anthropic_beta": [
+              "interleaved-thinking-2025-05-14"
+            ]
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54985/model/anthropic.claude-3-7-sonnet/converse-stream",
+          "path": "/model/anthropic.claude-3-7-sonnet/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            },
+            "additionalModelRequestFields": {
+              "thinking": {
+                "type": "enabled",
+                "budget_tokens": 7168,
+                "display": "summarized"
+              },
+              "anthropic_beta": [
+                "interleaved-thinking-2025-05-14"
+              ]
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "anthropic.claude-3-7-sonnet",
+          "value": {
+            "modelId": "anthropic.claude-3-7-sonnet",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  },
+                  {
+                    "cachePoint": {
+                      "type": "default"
+                    }
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            },
+            "additionalModelRequestFields": {
+              "thinking": {
+                "type": "enabled",
+                "budget_tokens": 7168,
+                "display": "summarized"
+              },
+              "anthropic_beta": [
+                "interleaved-thinking-2025-05-14"
+              ]
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "anthropic.claude-3-7-sonnet",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-3-7-sonnet",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-3-7-sonnet",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "text": "Simple result"
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "anthropic.claude-3-7-sonnet",
+          "value": {
+            "messageStop": {
+              "stopReason": "end_turn"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-3-7-sonnet",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-3-7-sonnet",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "Simple result",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-3-7-sonnet",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "anthropic.claude-3-7-sonnet",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 5
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Simple result"
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "anthropic.claude-3-7-sonnet",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 5
+      }
+    },
+    {
+      "name": "stream-simple-non-claude-effort",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:54987/model/openai.gpt-5.6/converse-stream",
+        "path": "/model/openai.gpt-5.6/converse-stream",
+        "body": {
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "text": "Hello"
+                }
+              ]
+            }
+          ],
+          "inferenceConfig": {
+            "maxTokens": 8192
+          },
+          "additionalModelRequestFields": {
+            "reasoning": {
+              "effort": "xhigh"
+            }
+          }
+        },
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer fixture-placeholder-bearer"
+        }
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:54987/model/openai.gpt-5.6/converse-stream",
+          "path": "/model/openai.gpt-5.6/converse-stream",
+          "body": {
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            },
+            "additionalModelRequestFields": {
+              "reasoning": {
+                "effort": "xhigh"
+              }
+            }
+          },
+          "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer fixture-placeholder-bearer"
+          }
+        }
+      ],
+      "callbacks": [
+        {
+          "type": "payload",
+          "model": "openai.gpt-5.6",
+          "value": {
+            "modelId": "openai.gpt-5.6",
+            "messages": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "text": "Hello"
+                  }
+                ]
+              }
+            ],
+            "inferenceConfig": {
+              "maxTokens": 8192
+            },
+            "additionalModelRequestFields": {
+              "reasoning": {
+                "effort": "xhigh"
+              }
+            }
+          }
+        },
+        {
+          "type": "response",
+          "model": "openai.gpt-5.6",
+          "value": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/vnd.amazon.eventstream",
+              "x-amzn-requestid": "fixture-request-id",
+              "x-fixture-response": "raw-gateway"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "openai.gpt-5.6",
+          "value": {
+            "messageStart": {
+              "role": "assistant"
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "openai.gpt-5.6",
+          "value": {
+            "contentBlockDelta": {
+              "delta": {
+                "text": "Simple result"
+              },
+              "contentBlockIndex": 0
+            }
+          }
+        },
+        {
+          "type": "provider",
+          "model": "openai.gpt-5.6",
+          "value": {
+            "messageStop": {
+              "stopReason": "end_turn"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "openai.gpt-5.6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "openai.gpt-5.6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "Simple result",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result",
+                "index": 0
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "openai.gpt-5.6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Simple result"
+              }
+            ],
+            "api": "bedrock-converse-stream",
+            "provider": "amazon-bedrock",
+            "model": "openai.gpt-5.6",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0,
+            "rawStopReason": "end_turn",
+            "durationMs": 5
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Simple result"
+          }
+        ],
+        "api": "bedrock-converse-stream",
+        "provider": "amazon-bedrock",
+        "model": "openai.gpt-5.6",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0,
+        "rawStopReason": "end_turn",
+        "durationMs": 5
+      }
+    }
+  ]
+}

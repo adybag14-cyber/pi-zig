@@ -13,7 +13,7 @@ pub const Reply = struct {
     request_observed: ?*std.Io.Event = null,
     response_release: ?*std.Io.Event = null,
 };
-pub const Captured = struct { path: []u8, payload: []u8 };
+pub const Captured = struct { path: []u8, payload: []u8, method: std.http.Method = .POST };
 pub const PlanServer = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
@@ -85,7 +85,7 @@ pub const PlanServer = struct {
             const body_reader = request.readerExpectNone(&.{});
             const payload = try body_reader.allocRemaining(self.gpa, .limited(4 * 1024 * 1024));
             errdefer if (!captured) self.gpa.free(payload);
-            try self.captured.append(self.gpa, .{ .path = path, .payload = payload });
+            try self.captured.append(self.gpa, .{ .path = path, .payload = payload, .method = request.head.method });
             captured = true;
             if (!std.mem.eql(u8, path, reply.path)) return error.UnexpectedFixturePath;
             if (reply.payload_contains) |marker| if (std.mem.indexOf(u8, payload, marker) == null) return error.UnexpectedFixturePayload;

@@ -1,0 +1,14 @@
+const normalize=value=>JSON.parse(JSON.stringify(value,(key,item)=>(key==='timestamp'||key==='durationMs')?0:item instanceof Uint8Array?Array.from(item):item));
+const input=bedrockInput,model={id:input.modelId??'anthropic.claude-sonnet-4-6',name:input.modelName??'Claude Sonnet 4.6',api:'bedrock-converse-stream',provider:'amazon-bedrock',baseUrl:bedrockEndpoint,reasoning:true,input:['text','image'],contextWindow:200000,maxTokens:8192,cost:{input:3,output:15,cacheRead:0.3,cacheWrite:3.75}},context=input.context??{messages:[{role:'user',content:'Hello',timestamp:1}]};
+const callbacks=[],controller=new AbortController();
+const options={region:'eu-west-2',bearerToken:'fixture-placeholder-bearer',env:{AWS_BEDROCK_SKIP_AUTH:'0',AWS_BEDROCK_FORCE_HTTP1:'1',AWS_EC2_METADATA_DISABLED:'true'},maxRetries:0,...input.options,signal:controller.signal,
+ async onPayload(payload,m){callbacks.push({type:'payload',model:m.id,value:normalize(payload)});await Promise.resolve();if(input.payloadReplacement)return {...payload,requestMetadata:{fixture:'replacement'}};},
+ async onResponse(value,m){callbacks.push({type:'response',model:m.id,value:{status:value.status,headers:Object.fromEntries(Object.entries(value.headers).filter(([key])=>['x-amzn-requestid','x-fixture-response','content-type'].includes(key)))}});await Promise.resolve();if(input.responseThrow)throw new RangeError('fixture response failure');},
+ async onProviderStreamEvent(value,m){callbacks.push({type:'provider',model:m.id,value:normalize(value)});await Promise.resolve();if(input.eventMutate&&value.contentBlockDelta?.delta?.text!==undefined)value.contentBlockDelta.delta.text+=' changed';if(input.eventThrow&&value.contentBlockDelta)throw {fixture:'event rejection'};if(input.abortOnEvent&&value.contentBlockDelta)controller.abort({fixture:'abort'});}
+};
+const events=[];let result,thrown;
+try{const output=(input.simple?bedrockAPI.streamSimple:bedrockAPI.stream)(model,context,options);for await(const event of output)events.push(normalize(event));result=normalize(await output.result());}catch(error){thrown={name:error?.name,message:error?.message,value:normalize(error)}}
+const actual=normalize({callbacks,events,result,thrown}),expected=normalize({callbacks:bedrockSourceRow.callbacks,events:bedrockSourceRow.events,result:bedrockSourceRow.result,thrown:bedrockSourceRow.thrown});
+if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({case:input.name,actual,expected}));
+export const qualified=true;
+

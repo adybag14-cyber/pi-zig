@@ -11,7 +11,7 @@ fn appendHeader(a: std.mem.Allocator, output: *std.ArrayList(u8), name: []const 
     try output.appendSlice(a, &length);
     try output.appendSlice(a, value);
 }
-fn frames(a: std.mem.Allocator, events: std.json.Value) ![]u8 {
+pub fn frames(a: std.mem.Allocator, events: std.json.Value) ![]u8 {
     var output: std.ArrayList(u8) = .empty;
     errdefer output.deinit(a);
     for (events.array.items) |event| {
@@ -40,7 +40,7 @@ fn frames(a: std.mem.Allocator, events: std.json.Value) ![]u8 {
     }
     return output.toOwnedSlice(a);
 }
-fn parse(engine: *v.em.Engine, value: std.json.Value) !c.JSValue {
+pub fn parse(engine: *v.em.Engine, value: std.json.Value) !c.JSValue {
     const bytes = try std.json.Stringify.valueAlloc(engine.gpa, value, .{});
     defer engine.gpa.free(bytes);
     const terminated = try engine.gpa.dupeZ(u8, bytes);
