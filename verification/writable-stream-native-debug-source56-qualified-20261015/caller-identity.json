@@ -1,0 +1,10 @@
+{
+  "caller_sha256": "F7B0FB40EF6ECF91AA7283E9F2FCB2758B993B0172D4D2BF7F8484335036E3E8",
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "pid": 74420,
+  "parent_pid": 75568,
+  "created_utc": "2026-10-15T22:18:10.6747902Z",
+  "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoProfile -File C:/Users/adyba/pi-zig-update-evidence-20261003/writable-stream-native-debug-fourth-20261015/Run-WritableNativePair.ps1",
+  "owner_sha256": "29E1CE752523A182EFED5B06F3FA16A15379BEDC19CF2A4022A1321F30F84FC6",
+  "external_deadline_utc": "2026-10-15T22:50:11.2560954+00:00"
+}

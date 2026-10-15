@@ -1,0 +1,16 @@
+{
+  "runtime_outer_seconds": 300,
+  "free_kib": 21487564,
+  "other_native_roots": [],
+  "maximum_native_roots": 4,
+  "required_kib": 16777216,
+  "test_timeout_seconds": 120,
+  "status": "admitted",
+  "host_await_seconds": 10,
+  "candidate": "8a782321523917137eeaeeb327000d21562ea109",
+  "slot": 3,
+  "phase": "compile",
+  "observed_utc": "2026-10-15T22:18:29.5589788+00:00",
+  "jobs": 1,
+  "compile_outer_seconds": 1320
+}

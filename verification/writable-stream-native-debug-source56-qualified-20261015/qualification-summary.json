@@ -1,0 +1,25 @@
+{
+  "compiler_files": 19546,
+  "compile_pid": 77448,
+  "full_pi_qualified": false,
+  "allocation_fault_injection_performed": false,
+  "source_cases": 56,
+  "mode": "Debug",
+  "qualified_source_head": "8a782321523917137eeaeeb327000d21562ea109",
+  "test_runner_failed": 0,
+  "artifact": {
+    "sha256": "7ED15EE4BB016F52F42A2ED4FDAD0141D9E198F0F4DBB6B42543DDD3046F75D4",
+    "path": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015\\.zig-cache\\o\\d49751e03759cbfb416b83add11b32dc\\test.exe"
+  },
+  "real_gc_exercised": true,
+  "node_files": 1774,
+  "public_activation": false,
+  "std_testing_allocator_leak_check": true,
+  "candidate_files": 7121,
+  "vendor_files": 1316,
+  "full_factory_qualified": false,
+  "compile_and_runtime_fullpost0": true,
+  "binding": "unique test.exe emitted within recorded successful compile process interval; actual cached runtime target passed; all six artifact hashes unchanged after runtime",
+  "test_runner_passed": 2,
+  "runtime_pid": 66568
+}
