@@ -1,0 +1,158 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\ai-responses-retry14-5ab-source14-first-20261015-admission.json",
+    "sha256": "9234B054639F184D69971A8CD98024D5E767774DFE6B5628BFE96F29E232CC3C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\ai-responses-retry14-5ab-source14-first-20261015-candidate-freeze.json",
+    "sha256": "C8257E4F76D7DA85F042268B9E404B556788B629C3A14AB7A94011A4ECD202DB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\ai-responses-retry14-5ab-source14-first-20261015-candidate-posthash.json",
+    "sha256": "C759D2A0947095CAF477E8CDF45CDDBCDF15A1BDDA91EB7423CA4DA7704DD53F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\ai-responses-retry14-5ab-source14-first-20261015-extra-before.json",
+    "sha256": "86C74015912BCC002C4CB26D9D5CAB5758CA90091EFAE9A7B58087612A0EB87F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\ai-responses-retry14-5ab-source14-first-20261015-output.json",
+    "sha256": "5FBB00BD7EDDFE54B7F757C1703AD5BD66493EDF2AD6E02638E6E76CC9023B80"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\ai-responses-retry14-5ab-source14-first-20261015-owner-absence.json",
+    "sha256": "C68352AD2CCD61D7D55E667CC91DDE81FB2B5564A64040DBE0A85640F952C2F0"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\ai-responses-retry14-5ab-source14-first-20261015-posthash.json",
+    "sha256": "5729DB6F2C8351DDBAFA763BCB0F66DFB68E405672130E59C070B24CD0217AAA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\ai-responses-retry14-5ab-source14-first-20261015.json",
+    "sha256": "7C97E98CDDE5A4C003268ACBC391485C693DD496997E6FB6492002F0FA27AE65"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\ai-responses-retry14-5ab-source14-first-20261015.stderr.log",
+    "sha256": "963CAEC8C1A06C5F001301E1C972E455F39C85D039829BD58585EAFBCDF104CE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\ai-responses-retry14-5ab-source14-first-20261015.stdout.log",
+    "sha256": "DDA524D23E3112BD9EB47D40B8BE5C6303D86A9EEF2795A8FECA8CC36A02C885"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\archive-manifest.json",
+    "sha256": "C106F10A81B51DC87226B21FEDD5C9404BE4B819774E6C8C6E273D6C64C480D2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\Run-AiResponsesRetry14Source-20261015.ps1",
+    "sha256": "9DEF7969FA9425B7A4EC177D3E22B8CF10B8B362465878FB30FA2981368CC97E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\Run-AiResponsesRetry14SourceFrozen-20261015.ps1",
+    "sha256": "409FCBFEB2A27765DDF57F29BD6BCBAB99405D6E0C43C7A48B28E5122C4EE77D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-ai-responses-retry14-source-20261015\\source5ab-responses-retry14-capture-20261015.mjs",
+    "sha256": "15C1AB8F0A21A8B8FC3BB736077EE5E2EF160098E9C416871DC7DEE9F6364907"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-admission.json",
+    "sha256": "5D481C1FA50B265DF3B027A218FD6E743F0DB4FACA14B053A778E0BDB16BC006"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-extra-before.json",
+    "sha256": "781A7F99A8604910E1BA1611A790A4AEFE12580C8A9E92D559993512C45C5B5F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-output.json",
+    "sha256": "ED00FFEF9641555184F3244E68138DF6EDCA4449FC35814E6E0E31E7A61CE1DE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-posthash.json",
+    "sha256": "32CF8766C0BD6AC229145975E9C3ADAEA045C8E54432806FDD44DAF8A8927DAE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015.json",
+    "sha256": "DCF3A9410282A0C8810DABE9D4EAFF7F32E70171562A7EF1D7AFB80B229BA896"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015.stderr.log",
+    "sha256": "E472C2B79E56188E3B8BF4C3B70BD33E1100298F70A538092D6A49D97DB92D97"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015.stdout.log",
+    "sha256": "0862FFD6D8CA77072E837229FA4A5917BA068100A4CBDE60D1DC169497DD5AE2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-owned-timers-source-row-identity-20261015.json",
+    "sha256": "341446C06A4EB3D5B459231C3A0934F785ECB670DF200C3AD75822FF7132E00A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-codex-socket10-source-20261015\\ai-codex-socket10-successor-raw-differences-20261015.json",
+    "sha256": "949A05FCDFBDC885FF80D5FACBA0D00B0C1F9C5C2824F0E88E07792A68CA25FC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-codex-socket10-source-20261015\\Run-AiCodexSocket10OwnedTimersSource-20261015.ps1",
+    "sha256": "8AF906DEB371D88D2C7A3C947349A9D8F6BE0F1F82388D5F8C78D899B09CB0B2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015\\verification\\native-codex-socket10-source-20261015\\source-driver-owned-timers.mjs.txt",
+    "sha256": "3488E3B6345A8B8692F0470F86E337EAB89824F016FC51CE67C4F774C2146E47"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-output.json",
+    "sha256": "ED00FFEF9641555184F3244E68138DF6EDCA4449FC35814E6E0E31E7A61CE1DE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-codex-socket10-owned-timers-5ab-source10-first-20261015-posthash.json",
+    "sha256": "32CF8766C0BD6AC229145975E9C3ADAEA045C8E54432806FDD44DAF8A8927DAE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiCodexSocket10OwnedTimersSource-20261015.ps1",
+    "sha256": "8AF906DEB371D88D2C7A3C947349A9D8F6BE0F1F82388D5F8C78D899B09CB0B2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiResponsesRetry14Native545Slot3Pair-20261015.ps1",
+    "sha256": "B073FD0ED33B66DEB0D77F5663C2EC87D3A310D4ED0E2E3E31DB4BE595C43E8F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiResponsesRetry14Source-20261015.ps1",
+    "sha256": "9DEF7969FA9425B7A4EC177D3E22B8CF10B8B362465878FB30FA2981368CC97E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiResponsesRetry14SourceFrozen-20261015.ps1",
+    "sha256": "409FCBFEB2A27765DDF57F29BD6BCBAB99405D6E0C43C7A48B28E5122C4EE77D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-codex-socket-owned-timers-capture-20261015.mjs",
+    "sha256": "3488E3B6345A8B8692F0470F86E337EAB89824F016FC51CE67C4F774C2146E47"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-responses-retry14-capture-20261015.mjs",
+    "sha256": "15C1AB8F0A21A8B8FC3BB736077EE5E2EF160098E9C416871DC7DEE9F6364907"
+  }
+]

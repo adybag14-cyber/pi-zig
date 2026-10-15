@@ -585,7 +585,8 @@ fn codexCanRetry(scope: *Scope, owner: c.JSValue) !bool {
 }
 fn codexRetry(scope: *Scope, owner: c.JSValue, delay: c.JSValue) !void {
     try scope.put(owner, "attempt", try binary(scope, .add, try scope.get(owner, "attempt"), c.JS_NewInt32(scope.engine.context, 1)));
-    try wait(scope, owner, try sleep(scope, delay, try v.optional(scope, try scope.get(owner, "options"), "signal"), true), .retried);
+    const sleeping = try scope.own(try sleep(scope, delay, try v.optional(scope, try scope.get(owner, "options"), "signal"), true));
+    try wait(scope, owner, sleeping, .retried);
 }
 fn codexCaught(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     if (try codex_http.isAbort(scope, reason)) return fail(scope, owner, try codex_http.abortReason(scope));
@@ -647,7 +648,8 @@ fn retryOrFail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
         const exponential = try binary(scope, .multiply, try scope.invoke(try scope.global("Math"), "min", &.{ try binary(scope, .multiply, c.JS_NewFloat64(scope.engine.context, 0.5), try binary(scope, .power, c.JS_NewInt32(scope.engine.context, 2), attempt)), c.JS_NewInt32(scope.engine.context, 8) }), c.JS_NewInt32(scope.engine.context, 1000));
         delay = try binary(scope, .multiply, exponential, try binary(scope, .subtract, c.JS_NewInt32(scope.engine.context, 1), try binary(scope, .multiply, try scope.invoke(try scope.global("Math"), "random", &.{}), c.JS_NewFloat64(scope.engine.context, 0.25))));
     }
-    try wait(scope, owner, try sleep(scope, delay, try v.optional(scope, options, "signal"), false), .retried);
+    const sleeping = try scope.own(try sleep(scope, delay, try v.optional(scope, options, "signal"), false));
+    try wait(scope, owner, sleeping, .retried);
 }
 fn sleep(scope: *Scope, delay: c.JSValue, signal: c.JSValue, codex: bool) !c.JSValue {
     const engine = scope.engine;
