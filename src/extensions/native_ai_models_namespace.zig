@@ -12,7 +12,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     try @import("native_models.zig").populateExports(engine, core);
     const module_exports = try s.object();
     try s.put(module_exports, "ModelsError", try s.get(core, "ModelsError"));
-    inline for (.{ "createModels", "createProvider", "getModelType", "isModelType" }) |name| {
+    inline for (.{ "createModels", "createProvider" }) |name| {
         const Delegate = struct {
             fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
                 return v.js.call(host, roots[0], c.pi_js_undefined(), args);
@@ -20,6 +20,8 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
         };
         try s.put(module_exports, name, try s.own(try functions.create(engine, name, if (comptime @import("std").mem.eql(u8, name, "isModelType")) 2 else 1, Delegate.call, &.{try s.get(core, name)})));
     }
+    const operation_exports = try s.own(try @import("native_ai_model_operations.zig").create(engine, try s.get(core, "ModelsError")));
+    inline for (.{ "getModelType", "isModelType" }) |name| try s.put(module_exports, name, try s.get(operation_exports, name));
     const Narrow = struct {
         fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
             var local: Scope = .{ .engine = host };
@@ -36,5 +38,12 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     const utilities = try s.own(try @import("native_ai_model_values.zig").bindings(engine));
     inline for (.{ "getSupportedThinkingLevels", "clampThinkingLevel", "modelsAreEqual" }) |name| try s.put(module_exports, name, try s.get(utilities, name));
     engine.native_ai_models_namespace = c.JS_DupValue(engine.context, module_exports);
+    engine.native_ai_model_operations_namespace = c.JS_DupValue(engine.context, operation_exports);
     return c.JS_DupValue(engine.context, module_exports);
+}
+pub fn operations(engine: *v.em.Engine) !c.JSValue {
+    if (engine.native_ai_model_operations_namespace) |cached| return c.JS_DupValue(engine.context, cached);
+    const initialized = try create(engine);
+    defer engine.freeValue(initialized);
+    return c.JS_DupValue(engine.context, engine.native_ai_model_operations_namespace.?);
 }
