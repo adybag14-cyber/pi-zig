@@ -111,6 +111,8 @@ fn continued(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: b
 /// Returns an owned Promise of an actual native Response. The internal owner
 /// retains Request and worker handoff until the real response-head transition.
 pub fn fetch(engine: *em.Engine, input: c.JSValue, init: c.JSValue, options: Options) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const captured = engine.native_module_values.get(key) orelse return error.NativeWebFetchUnavailable;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();

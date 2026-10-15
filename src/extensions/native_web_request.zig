@@ -227,6 +227,8 @@ fn method(scope: *Scope, value: c.JSValue) !c.JSValue {
     return value;
 }
 fn create(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const owner = captures[0];
