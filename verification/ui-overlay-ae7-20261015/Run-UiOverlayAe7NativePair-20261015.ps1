@@ -59,7 +59,12 @@ if($taskAdmission.status -cne 'admitted'){$taskAdmission|ConvertTo-Json -Depth 6
 & $taskOwner -Name "$taskName-compile" -Executable $taskZig -WorkingDirectory $taskPrivate -Arguments @('build',$taskBuildTarget,'-Doptimize=Debug','-Duse-llvm=true','-j1','--test-timeout','120s','--summary','all') -TimeoutSeconds 1320
 $taskCompile=Get-Content -LiteralPath (Join-Path $taskEvidence "$taskName-compile.json") -Raw|ConvertFrom-Json
 $taskRuntime=$null
+$taskProcessArtifacts=@()
 if($taskCompile.status -ceq 'passed'){
+ if($Stage -ceq 'process'){
+  $taskProcessArtifacts=@('pi.exe','pi-conpty-launcher.exe','pi-terminal-probe.exe'|ForEach-Object{[ordered]@{path=(Join-Path $taskPrivate "zig-out/bin/$_");sha256=(Get-FileHash -LiteralPath (Join-Path $taskPrivate "zig-out/bin/$_")).Hash}})
+  $taskProcessArtifacts|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-process-artifacts-before.json") -Encoding utf8NoBOM
+ }
  $taskBetween=Source-Rows
  if(@(Compare-Object ($taskBefore|ForEach-Object{"$($_.path):$($_.sha256)"}) ($taskBetween|ForEach-Object{"$($_.path):$($_.sha256)"})).Count -or @(Tool-Drift $taskTools).Count -or @(Tool-Drift $taskControls).Count){throw 'Frozen pair drift before runtime'}
  foreach($taskReference in $taskReferences){if(@(Tool-Drift $taskReference.rows).Count){throw "Latest Source full manifest drift before runtime $($taskReference.name)"}}
@@ -73,6 +78,7 @@ $taskSourceDrift=@(Compare-Object ($taskBefore|ForEach-Object{"$($_.path):$($_.s
 $taskToolDrift=@(Tool-Drift $taskTools)
 $taskControlDrift=@(Tool-Drift $taskControls)
 $taskReferencePost=@($taskReferences|ForEach-Object{@{name=$_.name;files=$_.rows.Count;drift=@(Tool-Drift $_.rows).Count}})
-[ordered]@{candidate=$taskExpectedHead;source=$taskBefore.Count;source_after=$taskAfter.Count;source_drift=$taskSourceDrift.Count;tools=$taskTools.Count;tool_drift=$taskToolDrift.Count;controls=$taskControls.Count;control_drift=$taskControlDrift.Count;latest_source_references=$taskReferencePost;compile=$taskCompile.status;runtime=if($taskRuntime){$taskRuntime.status}else{'not_run'};completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 6|Tee-Object -FilePath (Join-Path $taskEvidence "$taskName-posthash.json")
-if($taskSourceDrift.Count -or $taskToolDrift.Count -or $taskControlDrift.Count -or @($taskReferencePost|Where-Object drift -ne 0).Count){throw 'Frozen pair terminal posthash mismatch'}
+$taskArtifactDrift=@(Tool-Drift $taskProcessArtifacts)
+[ordered]@{candidate=$taskExpectedHead;source=$taskBefore.Count;source_after=$taskAfter.Count;source_drift=$taskSourceDrift.Count;tools=$taskTools.Count;tool_drift=$taskToolDrift.Count;controls=$taskControls.Count;control_drift=$taskControlDrift.Count;latest_source_references=$taskReferencePost;process_artifacts=$taskProcessArtifacts;process_artifact_drift=$taskArtifactDrift.Count;compile=$taskCompile.status;runtime=if($taskRuntime){$taskRuntime.status}else{'not_run'};completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 6|Tee-Object -FilePath (Join-Path $taskEvidence "$taskName-posthash.json")
+if($taskSourceDrift.Count -or $taskToolDrift.Count -or $taskControlDrift.Count -or $taskArtifactDrift.Count -or @($taskReferencePost|Where-Object drift -ne 0).Count){throw 'Frozen pair terminal posthash mismatch'}
 if($taskCompile.status -cne 'passed' -or !$taskRuntime -or $taskRuntime.status -cne 'passed'){exit 1}
