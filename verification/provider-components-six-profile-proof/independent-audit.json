@@ -1,0 +1,864 @@
+{
+  "status": "independent_provider_components_failed_six_profile_evidence_audited",
+  "hosted_components_qualified": false,
+  "run_id": 38797102262,
+  "run_url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38797102262",
+  "head": "373ae068491053eeeb1743baa0a09cd16e842262",
+  "product_base": "4b6d46d4226c8f49fec120132847c0904786ebbc",
+  "profile_count": 6,
+  "planned_tests_per_profile": 43,
+  "aggregate_executed_tests": 132,
+  "boundaries": {
+    "anthropic_query_beta_qualified": false,
+    "full_pi_qualified": false,
+    "fresh_posix_source_recapture": false,
+    "funded_provider_requests": 0,
+    "full_factory_qualified": false,
+    "default_responses_websocket_qualified": false,
+    "user_agent": "Native Zig/QuickJS runtime; SDK Node metadata excluded by existing fixture comparator",
+    "public_activation": false
+  },
+  "component_profile_outcomes": [
+    {
+      "id": "headers",
+      "selected_tests_per_profile": 5,
+      "passed_profiles": 6,
+      "failed_profiles": 0,
+      "not_reached_profiles": 0,
+      "all_six_selected_tests_passed": true
+    },
+    {
+      "id": "pi-messages",
+      "selected_tests_per_profile": 5,
+      "passed_profiles": 6,
+      "failed_profiles": 0,
+      "not_reached_profiles": 0,
+      "all_six_selected_tests_passed": true
+    },
+    {
+      "id": "responses",
+      "selected_tests_per_profile": 4,
+      "passed_profiles": 6,
+      "failed_profiles": 0,
+      "not_reached_profiles": 0,
+      "all_six_selected_tests_passed": true
+    },
+    {
+      "id": "anthropic",
+      "selected_tests_per_profile": 5,
+      "passed_profiles": 6,
+      "failed_profiles": 0,
+      "not_reached_profiles": 0,
+      "all_six_selected_tests_passed": true
+    },
+    {
+      "id": "anthropic-allocation",
+      "selected_tests_per_profile": 3,
+      "passed_profiles": 0,
+      "failed_profiles": 6,
+      "not_reached_profiles": 0,
+      "all_six_selected_tests_passed": false
+    },
+    {
+      "id": "generator",
+      "selected_tests_per_profile": 19,
+      "passed_profiles": 0,
+      "failed_profiles": 0,
+      "not_reached_profiles": 6,
+      "all_six_selected_tests_passed": false
+    },
+    {
+      "id": "generator-gpa",
+      "selected_tests_per_profile": 2,
+      "passed_profiles": 0,
+      "failed_profiles": 0,
+      "not_reached_profiles": 6,
+      "all_six_selected_tests_passed": false
+    }
+  ],
+  "profiles": [
+    {
+      "artifact_id": 12004820214,
+      "artifact_name": "native-provider-components-ubuntu-latest-ReleaseSafe-373ae068491053eeeb1743baa0a09cd16e842262",
+      "zip_sha256": "sha256:cb9786e0721aaa24f4c549ebf264afaa102fc471a42b9e5b40e7118c8c5479c4",
+      "zip_bytes": 2592918,
+      "mode": "ReleaseSafe",
+      "os": "Ubuntu 24.04.5 LTS",
+      "planned_tests": 43,
+      "executed_tests": 22,
+      "planned_substantive_tests": 35,
+      "planned_declaration_tests": 8,
+      "source_files": 6528,
+      "compiler_files": 19546,
+      "checkout_newline_conversions": 0,
+      "source_tool_posthash_drift": 0,
+      "components": [
+        {
+          "id": "headers",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "4C3CC546C2583FCE66950C3FF4B4FB1C5A1436571AFD8D89198A0897CAB813DB",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_headers_source_test.test_0",
+            "extensions.native_headers_source_test.test.Headers Source189 genuine Node24 descriptors WebIDL live iterators callbacks and actual GC",
+            "extensions.native_headers_source_test.test.Headers native helper authentic brand idempotent install and immutable guard",
+            "extensions.native_headers_source_test.test.Headers native helper selected actual operation allocation failures release all bytes",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Five selected operation offsets; full-engine exhaustive Headers target remains outside this cohort"
+        },
+        {
+          "id": "pi-messages",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "9422D84C32A2F4F3C062002B6B7E7819784D883ABC19FE0C2CA042CE779E1762",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_pi_messages_test.test.native AI pi messages literal requests awaited callbacks event identity sparse tools and failures",
+            "native_ai_pi_messages_test.test.native AI pi messages retained ordinary native functions keep dependencies across GC",
+            "native_ai_pi_messages_test.test.native AI pi messages owned HTTP bytes worker matches four original default fetch wire controls",
+            "native_ai_pi_messages_test.test.native AI pi messages every allocation releases request codec converter roots and pending callbacks",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures provider request-owner test"
+        },
+        {
+          "id": "responses",
+          "status": "passed",
+          "planned_tests": 4,
+          "binary_sha256": "C44E71082AFBC1D0DE00890C067DB458EF885B755F6331772036658429A63A3F",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_responses_test.test.native Responses actual factory requests callbacks push snapshots consumer snapshots and alias identity against Source18",
+            "native_ai_responses_test.test.native Responses retained factory graph survives collection before actual request",
+            "native_ai_responses_test.test.native Responses every host allocation releases factory dependencies and closure roots",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 4,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures factory-owner test"
+        },
+        {
+          "id": "anthropic",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "CBDD5FC5354324383F2AF928E61AB662AE7205A50CB5D47281AF33064A565D90",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic request bodies match25 actual public Source observations",
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic real wire stream events callbacks and results match actual Source",
+            "native_ai_claude_request_test.test.native Claude5ab request owner graphs preserve error images unsupported off effort and actual Bedrock bytes",
+            "native_ai_claude_request_test.test.native Claude5ab request owner pending hook survives collection and retains terminal result identity",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Pending/retained request and codec owner assertions; exhaustive owners in separate target"
+        },
+        {
+          "id": "anthropic-allocation",
+          "status": "failed",
+          "planned_tests": 3,
+          "binary_sha256": "20099C0D2F09303F33F6E8B28303E6AABC73DD96C0C07FE72CD1BB9098C37920",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 1,
+          "tests_failed": 2,
+          "failed_tests": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output"
+          ],
+          "exit_code": 1,
+          "failure_log_sha256": "3b9d6560bd700f502c260553c7e9de55dd1719a74f91968121155add73c5e62e"
+        },
+        {
+          "id": "generator",
+          "status": "not_reached",
+          "planned_tests": 19
+        },
+        {
+          "id": "generator-gpa",
+          "status": "not_reached",
+          "planned_tests": 2
+        }
+      ]
+    },
+    {
+      "artifact_id": 12004382139,
+      "artifact_name": "native-provider-components-windows-latest-ReleaseFast-373ae068491053eeeb1743baa0a09cd16e842262",
+      "zip_sha256": "sha256:c3f98b4d4c72436c55973131342c40fa89c7e773b038b61871e48129135d8260",
+      "zip_bytes": 2625027,
+      "mode": "ReleaseFast",
+      "os": "Microsoft Windows 10.0.26100",
+      "planned_tests": 43,
+      "executed_tests": 22,
+      "planned_substantive_tests": 35,
+      "planned_declaration_tests": 8,
+      "source_files": 6528,
+      "compiler_files": 19546,
+      "checkout_newline_conversions": 0,
+      "source_tool_posthash_drift": 0,
+      "components": [
+        {
+          "id": "headers",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "F7779E0435BF6D873D8319E53BE106F171C9693AD54461F81FD6C205E4F212CD",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_headers_source_test.test_0",
+            "extensions.native_headers_source_test.test.Headers Source189 genuine Node24 descriptors WebIDL live iterators callbacks and actual GC",
+            "extensions.native_headers_source_test.test.Headers native helper authentic brand idempotent install and immutable guard",
+            "extensions.native_headers_source_test.test.Headers native helper selected actual operation allocation failures release all bytes",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Five selected operation offsets; full-engine exhaustive Headers target remains outside this cohort"
+        },
+        {
+          "id": "pi-messages",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "036139480D2F04CC6F898554982D92FBD74591376FA3FEA43A58009B912CFF64",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_pi_messages_test.test.native AI pi messages literal requests awaited callbacks event identity sparse tools and failures",
+            "native_ai_pi_messages_test.test.native AI pi messages retained ordinary native functions keep dependencies across GC",
+            "native_ai_pi_messages_test.test.native AI pi messages owned HTTP bytes worker matches four original default fetch wire controls",
+            "native_ai_pi_messages_test.test.native AI pi messages every allocation releases request codec converter roots and pending callbacks",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures provider request-owner test"
+        },
+        {
+          "id": "responses",
+          "status": "passed",
+          "planned_tests": 4,
+          "binary_sha256": "96F43EA39B5086D9939A127C62B4458EFC26B86F2DDC65CC3C44C96312BCA68B",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_responses_test.test.native Responses actual factory requests callbacks push snapshots consumer snapshots and alias identity against Source18",
+            "native_ai_responses_test.test.native Responses retained factory graph survives collection before actual request",
+            "native_ai_responses_test.test.native Responses every host allocation releases factory dependencies and closure roots",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 4,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures factory-owner test"
+        },
+        {
+          "id": "anthropic",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "3BC0051B9D4B19FBA427E506783BF0A5C478C1840E413C004457525B30A8A155",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic request bodies match25 actual public Source observations",
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic real wire stream events callbacks and results match actual Source",
+            "native_ai_claude_request_test.test.native Claude5ab request owner graphs preserve error images unsupported off effort and actual Bedrock bytes",
+            "native_ai_claude_request_test.test.native Claude5ab request owner pending hook survives collection and retains terminal result identity",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Pending/retained request and codec owner assertions; exhaustive owners in separate target"
+        },
+        {
+          "id": "anthropic-allocation",
+          "status": "failed",
+          "planned_tests": 3,
+          "binary_sha256": "ED58613CE1C436704DB5EA3EE9D8ABE365CAC5952E975F0A0D2590C06E6CE0BD",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 1,
+          "tests_failed": 2,
+          "failed_tests": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output"
+          ],
+          "exit_code": 1,
+          "failure_log_sha256": "1775e1652b83fc9e2482567ec3bb75602ec7a141ade524b8d67b40c17418f80a"
+        },
+        {
+          "id": "generator",
+          "status": "not_reached",
+          "planned_tests": 19
+        },
+        {
+          "id": "generator-gpa",
+          "status": "not_reached",
+          "planned_tests": 2
+        }
+      ]
+    },
+    {
+      "artifact_id": 12003724323,
+      "artifact_name": "native-provider-components-ubuntu-latest-ReleaseFast-373ae068491053eeeb1743baa0a09cd16e842262",
+      "zip_sha256": "sha256:ded845d131e4f7580aec0f49e9c7a52fa47c5315371ea908df9a9ba91d68a60a",
+      "zip_bytes": 2593091,
+      "mode": "ReleaseFast",
+      "os": "Ubuntu 24.04.5 LTS",
+      "planned_tests": 43,
+      "executed_tests": 22,
+      "planned_substantive_tests": 35,
+      "planned_declaration_tests": 8,
+      "source_files": 6528,
+      "compiler_files": 19546,
+      "checkout_newline_conversions": 0,
+      "source_tool_posthash_drift": 0,
+      "components": [
+        {
+          "id": "headers",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "533CC4941821C31554D69DB64AEBA57F40D0E6724FB2DA6012F81AA26D7ADA8A",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_headers_source_test.test_0",
+            "extensions.native_headers_source_test.test.Headers Source189 genuine Node24 descriptors WebIDL live iterators callbacks and actual GC",
+            "extensions.native_headers_source_test.test.Headers native helper authentic brand idempotent install and immutable guard",
+            "extensions.native_headers_source_test.test.Headers native helper selected actual operation allocation failures release all bytes",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Five selected operation offsets; full-engine exhaustive Headers target remains outside this cohort"
+        },
+        {
+          "id": "pi-messages",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "8A74DF7930323D7CC5BA2AB4971EE45DD9962E2363869FC4C3F85069FA3B91A3",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_pi_messages_test.test.native AI pi messages literal requests awaited callbacks event identity sparse tools and failures",
+            "native_ai_pi_messages_test.test.native AI pi messages retained ordinary native functions keep dependencies across GC",
+            "native_ai_pi_messages_test.test.native AI pi messages owned HTTP bytes worker matches four original default fetch wire controls",
+            "native_ai_pi_messages_test.test.native AI pi messages every allocation releases request codec converter roots and pending callbacks",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures provider request-owner test"
+        },
+        {
+          "id": "responses",
+          "status": "passed",
+          "planned_tests": 4,
+          "binary_sha256": "D3E5D75D664150638EA0944ED45C97A1E620875816758AAB8CE0E968AC8EC204",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_responses_test.test.native Responses actual factory requests callbacks push snapshots consumer snapshots and alias identity against Source18",
+            "native_ai_responses_test.test.native Responses retained factory graph survives collection before actual request",
+            "native_ai_responses_test.test.native Responses every host allocation releases factory dependencies and closure roots",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 4,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures factory-owner test"
+        },
+        {
+          "id": "anthropic",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "81A9F4F332DA129114B04F26CA9B321BF22ABAB946E0554FA5CDB440D151427A",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic request bodies match25 actual public Source observations",
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic real wire stream events callbacks and results match actual Source",
+            "native_ai_claude_request_test.test.native Claude5ab request owner graphs preserve error images unsupported off effort and actual Bedrock bytes",
+            "native_ai_claude_request_test.test.native Claude5ab request owner pending hook survives collection and retains terminal result identity",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Pending/retained request and codec owner assertions; exhaustive owners in separate target"
+        },
+        {
+          "id": "anthropic-allocation",
+          "status": "failed",
+          "planned_tests": 3,
+          "binary_sha256": "C0626E09FABC54D4F58EDB82B963D42500068861B5E96B980BDA1CE5ADE997C4",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 1,
+          "tests_failed": 2,
+          "failed_tests": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output"
+          ],
+          "exit_code": 1,
+          "failure_log_sha256": "48a108e8595cc6eaee15b3a105e3012033114339d67d960a5780f9c052800da1"
+        },
+        {
+          "id": "generator",
+          "status": "not_reached",
+          "planned_tests": 19
+        },
+        {
+          "id": "generator-gpa",
+          "status": "not_reached",
+          "planned_tests": 2
+        }
+      ]
+    },
+    {
+      "artifact_id": 12003697224,
+      "artifact_name": "native-provider-components-windows-latest-ReleaseSafe-373ae068491053eeeb1743baa0a09cd16e842262",
+      "zip_sha256": "sha256:e2b6ca7ada2f72797e7172d6d9fdf0899e0c4b5830daf3a3e48063a06f62e320",
+      "zip_bytes": 2625166,
+      "mode": "ReleaseSafe",
+      "os": "Microsoft Windows 10.0.26100",
+      "planned_tests": 43,
+      "executed_tests": 22,
+      "planned_substantive_tests": 35,
+      "planned_declaration_tests": 8,
+      "source_files": 6528,
+      "compiler_files": 19546,
+      "checkout_newline_conversions": 0,
+      "source_tool_posthash_drift": 0,
+      "components": [
+        {
+          "id": "headers",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "B6E4C6C834FFB1D0BD91891CBE0D9AA3244920A39A83922ACC166CC6D01EC2AA",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_headers_source_test.test_0",
+            "extensions.native_headers_source_test.test.Headers Source189 genuine Node24 descriptors WebIDL live iterators callbacks and actual GC",
+            "extensions.native_headers_source_test.test.Headers native helper authentic brand idempotent install and immutable guard",
+            "extensions.native_headers_source_test.test.Headers native helper selected actual operation allocation failures release all bytes",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Five selected operation offsets; full-engine exhaustive Headers target remains outside this cohort"
+        },
+        {
+          "id": "pi-messages",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "E6D9BD56F021C55E0D8F9A4FC7D27A62D60A7FF9078EBBA5F85D27215B088FEC",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_pi_messages_test.test.native AI pi messages literal requests awaited callbacks event identity sparse tools and failures",
+            "native_ai_pi_messages_test.test.native AI pi messages retained ordinary native functions keep dependencies across GC",
+            "native_ai_pi_messages_test.test.native AI pi messages owned HTTP bytes worker matches four original default fetch wire controls",
+            "native_ai_pi_messages_test.test.native AI pi messages every allocation releases request codec converter roots and pending callbacks",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures provider request-owner test"
+        },
+        {
+          "id": "responses",
+          "status": "passed",
+          "planned_tests": 4,
+          "binary_sha256": "61ED8D9A15A712137E15CA3016A13EEF3AA2F768B146B03DC191AB803E410EA9",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_responses_test.test.native Responses actual factory requests callbacks push snapshots consumer snapshots and alias identity against Source18",
+            "native_ai_responses_test.test.native Responses retained factory graph survives collection before actual request",
+            "native_ai_responses_test.test.native Responses every host allocation releases factory dependencies and closure roots",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 4,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures factory-owner test"
+        },
+        {
+          "id": "anthropic",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "C8E2471DC3C922F98480F074210E0FC3737C9B3FC4290C0B9E94981D03D20569",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic request bodies match25 actual public Source observations",
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic real wire stream events callbacks and results match actual Source",
+            "native_ai_claude_request_test.test.native Claude5ab request owner graphs preserve error images unsupported off effort and actual Bedrock bytes",
+            "native_ai_claude_request_test.test.native Claude5ab request owner pending hook survives collection and retains terminal result identity",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Pending/retained request and codec owner assertions; exhaustive owners in separate target"
+        },
+        {
+          "id": "anthropic-allocation",
+          "status": "failed",
+          "planned_tests": 3,
+          "binary_sha256": "F2F5FFB0FAFE1FF1B7F540DEEB211F770A626311F62F86920F1457EB184B9137",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 1,
+          "tests_failed": 2,
+          "failed_tests": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output"
+          ],
+          "exit_code": 1,
+          "failure_log_sha256": "d0eeaa5a497ad1e22f1208ac2800736dc87a3e175c01f7e48b1455c524021fa3"
+        },
+        {
+          "id": "generator",
+          "status": "not_reached",
+          "planned_tests": 19
+        },
+        {
+          "id": "generator-gpa",
+          "status": "not_reached",
+          "planned_tests": 2
+        }
+      ]
+    },
+    {
+      "artifact_id": 12003132181,
+      "artifact_name": "native-provider-components-ubuntu-latest-Debug-373ae068491053eeeb1743baa0a09cd16e842262",
+      "zip_sha256": "sha256:cc63bc764e42f47d358d666d6cb0dad2a68db852c6a108f4fd012dd2c1015430",
+      "zip_bytes": 2593355,
+      "mode": "Debug",
+      "os": "Ubuntu 24.04.5 LTS",
+      "planned_tests": 43,
+      "executed_tests": 22,
+      "planned_substantive_tests": 35,
+      "planned_declaration_tests": 8,
+      "source_files": 6528,
+      "compiler_files": 19546,
+      "checkout_newline_conversions": 0,
+      "source_tool_posthash_drift": 0,
+      "components": [
+        {
+          "id": "headers",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "46C784F91D8341EBFECE62129CFB797ADFC698AFF7D08CFF6162B7939821ED22",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_headers_source_test.test_0",
+            "extensions.native_headers_source_test.test.Headers Source189 genuine Node24 descriptors WebIDL live iterators callbacks and actual GC",
+            "extensions.native_headers_source_test.test.Headers native helper authentic brand idempotent install and immutable guard",
+            "extensions.native_headers_source_test.test.Headers native helper selected actual operation allocation failures release all bytes",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Five selected operation offsets; full-engine exhaustive Headers target remains outside this cohort"
+        },
+        {
+          "id": "pi-messages",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "E9F90160D17CCA66110F94F5EBEBFCE617C175642E1856D06D6ED7646477EA61",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_pi_messages_test.test.native AI pi messages literal requests awaited callbacks event identity sparse tools and failures",
+            "native_ai_pi_messages_test.test.native AI pi messages retained ordinary native functions keep dependencies across GC",
+            "native_ai_pi_messages_test.test.native AI pi messages owned HTTP bytes worker matches four original default fetch wire controls",
+            "native_ai_pi_messages_test.test.native AI pi messages every allocation releases request codec converter roots and pending callbacks",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures provider request-owner test"
+        },
+        {
+          "id": "responses",
+          "status": "passed",
+          "planned_tests": 4,
+          "binary_sha256": "9F803810ADB17E540D7843D1B2531021C3E9534234D0CE88DF322E5423B8165A",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_responses_test.test.native Responses actual factory requests callbacks push snapshots consumer snapshots and alias identity against Source18",
+            "native_ai_responses_test.test.native Responses retained factory graph survives collection before actual request",
+            "native_ai_responses_test.test.native Responses every host allocation releases factory dependencies and closure roots",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 4,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures factory-owner test"
+        },
+        {
+          "id": "anthropic",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "42E4E228B49415E515CD3B9A744158FA6A55E401474C3E78444B0B215E45FA95",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic request bodies match25 actual public Source observations",
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic real wire stream events callbacks and results match actual Source",
+            "native_ai_claude_request_test.test.native Claude5ab request owner graphs preserve error images unsupported off effort and actual Bedrock bytes",
+            "native_ai_claude_request_test.test.native Claude5ab request owner pending hook survives collection and retains terminal result identity",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Pending/retained request and codec owner assertions; exhaustive owners in separate target"
+        },
+        {
+          "id": "anthropic-allocation",
+          "status": "failed",
+          "planned_tests": 3,
+          "binary_sha256": "5F4D76827385066182CA7F889BBD047395BE7149B7CAB642DC14496290E66E8E",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 1,
+          "tests_failed": 2,
+          "failed_tests": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output"
+          ],
+          "exit_code": 1,
+          "failure_log_sha256": "c70e1da19a3de1c2ce400ca251334cede1476fd0d4e599d64e7250346857d520"
+        },
+        {
+          "id": "generator",
+          "status": "not_reached",
+          "planned_tests": 19
+        },
+        {
+          "id": "generator-gpa",
+          "status": "not_reached",
+          "planned_tests": 2
+        }
+      ]
+    },
+    {
+      "artifact_id": 12002963450,
+      "artifact_name": "native-provider-components-windows-latest-Debug-373ae068491053eeeb1743baa0a09cd16e842262",
+      "zip_sha256": "sha256:d60ee21f8fab4bb25b20e041a8c1cc32c59eec3cf8bcdb82e1dda4c77b3f714c",
+      "zip_bytes": 2625427,
+      "mode": "Debug",
+      "os": "Microsoft Windows 10.0.26100",
+      "planned_tests": 43,
+      "executed_tests": 22,
+      "planned_substantive_tests": 35,
+      "planned_declaration_tests": 8,
+      "source_files": 6528,
+      "compiler_files": 19546,
+      "checkout_newline_conversions": 0,
+      "source_tool_posthash_drift": 0,
+      "components": [
+        {
+          "id": "headers",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "EDC554E8EC7F726BC183DF293889AA0B7E083347043ACB2E751AA9D3944FD9B4",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_headers_source_test.test_0",
+            "extensions.native_headers_source_test.test.Headers Source189 genuine Node24 descriptors WebIDL live iterators callbacks and actual GC",
+            "extensions.native_headers_source_test.test.Headers native helper authentic brand idempotent install and immutable guard",
+            "extensions.native_headers_source_test.test.Headers native helper selected actual operation allocation failures release all bytes",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Five selected operation offsets; full-engine exhaustive Headers target remains outside this cohort"
+        },
+        {
+          "id": "pi-messages",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "47DF5A28455260ECA01258C24499AD403A01C78DAED2A8B7D2D57FA9BFFEE0A7",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_pi_messages_test.test.native AI pi messages literal requests awaited callbacks event identity sparse tools and failures",
+            "native_ai_pi_messages_test.test.native AI pi messages retained ordinary native functions keep dependencies across GC",
+            "native_ai_pi_messages_test.test.native AI pi messages owned HTTP bytes worker matches four original default fetch wire controls",
+            "native_ai_pi_messages_test.test.native AI pi messages every allocation releases request codec converter roots and pending callbacks",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures provider request-owner test"
+        },
+        {
+          "id": "responses",
+          "status": "passed",
+          "planned_tests": 4,
+          "binary_sha256": "4C84543B62C34A836CF3B5A637A866054218C7157B3FEBDEC11BAFB85C9A2D20",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_responses_test.test.native Responses actual factory requests callbacks push snapshots consumer snapshots and alias identity against Source18",
+            "native_ai_responses_test.test.native Responses retained factory graph survives collection before actual request",
+            "native_ai_responses_test.test.native Responses every host allocation releases factory dependencies and closure roots",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 4,
+          "tests_failed": 0,
+          "allocation_scope": "Complete unchanged checkAllAllocationFailures factory-owner test"
+        },
+        {
+          "id": "anthropic",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "BA7F446F58517E1AAACECF2A42C0BE62EEED03719AB368C525AA7386FB923AAB",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic request bodies match25 actual public Source observations",
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic real wire stream events callbacks and results match actual Source",
+            "native_ai_claude_request_test.test.native Claude5ab request owner graphs preserve error images unsupported off effort and actual Bedrock bytes",
+            "native_ai_claude_request_test.test.native Claude5ab request owner pending hook survives collection and retains terminal result identity",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Pending/retained request and codec owner assertions; exhaustive owners in separate target"
+        },
+        {
+          "id": "anthropic-allocation",
+          "status": "failed",
+          "planned_tests": 3,
+          "binary_sha256": "F9DCB28A28238136C673605B6C8AADBDEE669A8058883BE86B0222107B4FFB32",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 1,
+          "tests_failed": 2,
+          "failed_tests": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output"
+          ],
+          "exit_code": 1,
+          "failure_log_sha256": "5e4d21c051d82ca3a61a6f1b7a678372585cd3f754d203e84c5a1ec4f5221a1d"
+        },
+        {
+          "id": "generator",
+          "status": "not_reached",
+          "planned_tests": 19
+        },
+        {
+          "id": "generator-gpa",
+          "status": "not_reached",
+          "planned_tests": 2
+        }
+      ]
+    }
+  ],
+  "aggregate_passed_tests": 120,
+  "aggregate_failed_tests": 12,
+  "aggregate_not_reached_tests": 126
+}
