@@ -1,0 +1,16 @@
+{
+  "name": "catalog-ae7-ffa3-native-projection-first-20261015-check",
+  "pid": 60816,
+  "executable": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\.zig-cache\\o\\52406646a4a1987391f327026a7fd80a\\pi-maintenance.exe",
+  "executable_sha256": "68C8C4E6D623D4B18D745D7A4FAEE61B2542529913222CF8D4403008650738AE",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\.zig-cache\\o\\52406646a4a1987391f327026a7fd80a\\pi-maintenance.exe\" catalog --check",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T20:06:18.2858654Z",
+  "launched_utc": "2026-10-15T20:06:18.2852528+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-upstream-catalog-ae7-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T20:06:18.9550885+00:00"
+}

@@ -1,0 +1,126 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-CatalogAe7PinnedNativeProjection-20261015.ps1",
+    "sha256": "B44B90D31A266438C64B1F5F1BBEC3CD768B70B7952A6EC68E02D8A47D81EBA1"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\.zig-cache\\o\\52406646a4a1987391f327026a7fd80a\\pi-maintenance.exe",
+    "sha256": "68C8C4E6D623D4B18D745D7A4FAEE61B2542529913222CF8D4403008650738AE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog-ae7-preparation-20261015\\official-pinned-models.all.json",
+    "sha256": "FFA3E98626230F378F80200DEBB736C4A2238B5F2BA246A92CFC7D8E19604678"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\pi-upstream-ae7b16d-immutable-20261015.tar",
+    "sha256": "CC12DEECB13CC85CC52CE19806BD45BD6264911E3BB2BF7ADD5775E09A18EF37"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\src\\ai\\catalog_builtin_manifest.json",
+    "sha256": "05A7F9B7D8FC9A28018F38C6EBB4B0321E3C3685FD6BED191730D5B32D9E60AF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog-ae7-preparation-20261015\\source-full-after-hydration.json",
+    "sha256": "11D8B47D45731FA91BD179D841AE8CB4D3AD34EA540D8349CB17F963937F88E2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog-ae7-preparation-20261015\\independent-audit.json",
+    "sha256": "AAAE0830F6DB0A54C50FC532B41250A3DE29B50011F702F3FB12A5722BB65208"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\tools\\maintenance.zig",
+    "sha256": "C04B6A8BCB719721D658742DD8122BA91B8592DB250758D2A523F32513B85EF9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\tools\\maintenance.zig",
+    "sha256": "C04B6A8BCB719721D658742DD8122BA91B8592DB250758D2A523F32513B85EF9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\tools\\catalog.zig",
+    "sha256": "81AA67B5526B81AF1991B3C84ADE5634E58465E75D8936C8DFBA02AA78646EE5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\tools\\catalog.zig",
+    "sha256": "81AA67B5526B81AF1991B3C84ADE5634E58465E75D8936C8DFBA02AA78646EE5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\tools\\projections.zig",
+    "sha256": "2D852A9C510CFF21AEB6147EE905265C93C1AD355436AFFC4673B29D61D51019"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\tools\\projections.zig",
+    "sha256": "2D852A9C510CFF21AEB6147EE905265C93C1AD355436AFFC4673B29D61D51019"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\tools\\config_schemas.zig",
+    "sha256": "D3C1DAEBFB1A224FE7DBF1EB2E87B74F2174C9E20B7C58AFF25DB76CA86C87B6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\tools\\config_schemas.zig",
+    "sha256": "D3C1DAEBFB1A224FE7DBF1EB2E87B74F2174C9E20B7C58AFF25DB76CA86C87B6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\tools\\artifacts.zig",
+    "sha256": "67575A0A5921EC9B480A80F3FDB32967E1E5C80CB9CC986FBF9E69E5574974B2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\tools\\artifacts.zig",
+    "sha256": "67575A0A5921EC9B480A80F3FDB32967E1E5C80CB9CC986FBF9E69E5574974B2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\tools\\release.zig",
+    "sha256": "C296EF18F67AFDF3D11C70E7C5B97B34995A0FF7060291CED8D418F47FF5E0BB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\tools\\release.zig",
+    "sha256": "C296EF18F67AFDF3D11C70E7C5B97B34995A0FF7060291CED8D418F47FF5E0BB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\tools\\upstream_contract.zig",
+    "sha256": "0EA06389C413A1D866E9151E02CAC234DBA236B4B9638276EC252AAC9FBFFC2B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\tools\\upstream_contract.zig",
+    "sha256": "0EA06389C413A1D866E9151E02CAC234DBA236B4B9638276EC252AAC9FBFFC2B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\tools\\native_composed_coverage.zig",
+    "sha256": "7DBF193751CF779F2CCD4D435183282083EC22DC987A6F18F388A03A93431AAA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\tools\\native_composed_coverage.zig",
+    "sha256": "7DBF193751CF779F2CCD4D435183282083EC22DC987A6F18F388A03A93431AAA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\tools\\native_composed_scope.zig",
+    "sha256": "BA660A7ADFFCAEE05EF90B53CA0EB06B08BE3A3E9DFEC24F3B1D800FCB4F500B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\tools\\native_composed_scope.zig",
+    "sha256": "BA660A7ADFFCAEE05EF90B53CA0EB06B08BE3A3E9DFEC24F3B1D800FCB4F500B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\tools\\agent_allocation_coverage.zig",
+    "sha256": "E8D65E4202828A1136D8F7DA822BEE76B6EFAFBDE764EC8911A582B2510B53ED"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\tools\\agent_allocation_coverage.zig",
+    "sha256": "E8D65E4202828A1136D8F7DA822BEE76B6EFAFBDE764EC8911A582B2510B53ED"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\tools\\exhaustive_allocation_coverage.zig",
+    "sha256": "DA6D1883FD28CDFCF24750E502A199E95D8F3BD6A4BCE539A5F9C51BA843634D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\tools\\exhaustive_allocation_coverage.zig",
+    "sha256": "DA6D1883FD28CDFCF24750E502A199E95D8F3BD6A4BCE539A5F9C51BA843634D"
+  }
+]

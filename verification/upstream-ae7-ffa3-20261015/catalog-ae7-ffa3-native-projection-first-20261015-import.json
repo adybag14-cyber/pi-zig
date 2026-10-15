@@ -1,0 +1,16 @@
+{
+  "name": "catalog-ae7-ffa3-native-projection-first-20261015-import",
+  "pid": 66556,
+  "executable": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\.zig-cache\\o\\52406646a4a1987391f327026a7fd80a\\pi-maintenance.exe",
+  "executable_sha256": "68C8C4E6D623D4B18D745D7A4FAEE61B2542529913222CF8D4403008650738AE",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015\\.zig-cache\\o\\52406646a4a1987391f327026a7fd80a\\pi-maintenance.exe\" import-catalog C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog-ae7-preparation-20261015\\official-pinned-models.all.json 1.3.0 ae7b16d43b7c78c5b6fa3213fdd1215bb339729d C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\pi-upstream-ae7b16d-immutable-20261015.tar sha256-ffa3e98626230f378f80200debb736c4a2238b5f2ba246a92cfc7d8e19604678 src/ai/catalog_source.json",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T20:06:16.7334070Z",
+  "launched_utc": "2026-10-15T20:06:16.7315748+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-upstream-catalog-ae7-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T20:06:17.5691549+00:00"
+}

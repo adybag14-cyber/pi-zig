@@ -1,0 +1,51 @@
+{
+  "chat": 1608,
+  "manifest_sha256": "05A7F9B7D8FC9A28018F38C6EBB4B0321E3C3685FD6BED191730D5B32D9E60AF",
+  "providers": 42,
+  "raw_sha256": "FFA3E98626230F378F80200DEBB736C4A2238B5F2BA246A92CFC7D8E19604678",
+  "raw_native_metadata_mismatches": 0,
+  "added": [
+    "opencode-go/chat/grok-4.6",
+    "opencode-go/chat/minimax-m2.7",
+    "openrouter/chat/unbiased/pareto-26.10-preview"
+  ],
+  "classifier": 38,
+  "generatedAt": "1970-01-01T00:00:00.000Z",
+  "chat_apis": [
+    "anthropic-messages",
+    "azure-openai-responses",
+    "bedrock-converse-stream",
+    "google-generative-ai",
+    "google-vertex",
+    "mistral-conversations",
+    "openai-codex-responses",
+    "openai-completions",
+    "openai-responses",
+    "pi-messages"
+  ],
+  "raw_typed_models": 1705,
+  "full_pi": false,
+  "observed_utc": "2026-10-15T20:10:11.3092417+00:00",
+  "removed": [
+    "nvidia/chat/nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "opencode/chat/nemotron-3.5-super-vl-free",
+    "openrouter/chat/nvidia/nemotron-3.5-super-vl:free",
+    "vercel-ai-gateway/classifier/typesafe-ai/jev-1.13.0",
+    "vercel-ai-gateway/classifier/typesafe-ai/jev-1.14.0"
+  ],
+  "image": 59,
+  "native_source_sha256": "AE489E497F78C88566DC7FD50BB5AE34A359550C3BA81D50D0D3B2E3A11852DB",
+  "source": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "structureHash": "0269b76c00ffa005620a06979655e04f46c6fb9ab34b1b6f90a9323947eb0cff",
+  "changed": [
+    "openrouter/chat/~deepseek/deepseek-pro-latest",
+    "openrouter/chat/~moonshotai/kimi-latest",
+    "openrouter/chat/deepseek/deepseek-v4-pro",
+    "openrouter/chat/mistralai/mistral-small-3.2-24b-instruct",
+    "openrouter/chat/moonshotai/kimi-k3",
+    "openrouter/chat/qwen/qwen3.6-27b",
+    "openrouter/chat/tencent/hy3",
+    "openrouter/chat/tencent/hy4-preview",
+    "openrouter/chat/z-ai/glm-5.3"
+  ]
+}

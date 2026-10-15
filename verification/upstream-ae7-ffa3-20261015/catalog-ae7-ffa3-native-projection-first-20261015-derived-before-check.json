@@ -1,0 +1,10 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\src\\ai\\catalog_source.json",
+    "sha256": "AE489E497F78C88566DC7FD50BB5AE34A359550C3BA81D50D0D3B2E3A11852DB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015\\src\\ai\\catalog_generated.zig",
+    "sha256": "6B661CEFB933D9B09F5A716781DFC43FE3505E9A960B121899BDFAEE4EC59C85"
+  }
+]
