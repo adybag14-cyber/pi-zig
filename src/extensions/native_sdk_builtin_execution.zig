@@ -231,6 +231,14 @@ pub fn createDefinitionWithOperations(engine: *Engine, name: []const u8, cwd: []
     transferred = true;
     const result = try templates.getTemplate(engine, name);
     errdefer engine.freeValue(result);
+    if (std.mem.eql(u8, name, "edit")) {
+        // Preserve the ordinary Source object literal's data and insertion
+        // order: renderShell, prepareArguments, execute, then render callbacks.
+        try vm.put(engine, result, "renderShell", try vm.text(engine, "self"));
+        const state = try stateFor(engine);
+        if (state.edit_prepare == null) state.edit_prepare = try @import("native_sdk_edit_arguments.zig").create(engine);
+        try vm.put(engine, result, "prepareArguments", c.JS_DupValue(engine.context, state.edit_prepare.?));
+    }
     var data = [_]c.JSValue{owner};
     const execute = try engine.checked(c.JS_NewCFunctionData2(engine.context, executeCallback, "execute", 5, 0, data.len, &data));
     defer engine.freeValue(execute);
@@ -238,11 +246,6 @@ pub fn createDefinitionWithOperations(engine: *Engine, name: []const u8, cwd: []
     defer engine.freeValue(async_prototype);
     if (c.JS_SetPrototype(engine.context, execute, async_prototype) < 0) return js.capture(engine);
     try vm.put(engine, result, "execute", c.JS_DupValue(engine.context, execute));
-    if (std.mem.eql(u8, name, "edit")) {
-        const state = try stateFor(engine);
-        if (state.edit_prepare == null) state.edit_prepare = try @import("native_sdk_edit_arguments.zig").create(engine);
-        try vm.put(engine, result, "prepareArguments", c.JS_DupValue(engine.context, state.edit_prepare.?));
-    }
     try @import("native_sdk_builtin_presentation.zig").attach(engine, result, name);
     return result;
 }
