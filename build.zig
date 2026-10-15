@@ -1577,6 +1577,12 @@ pub fn build(b: *std.Build) void {
     google_mistral60_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-ai-google-mistral60", "Compile broader actual Google Vertex Mistral replay and SDK callback algorithms").dependOn(&google_mistral60_tests.step);
     b.step("test-native-ai-google-mistral60", "Compare genuine Source60 replay schema auth and SDK callback observations").dependOn(&b.addRunArtifact(google_mistral60_tests).step);
+    const google_mistral60_component_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_google_mistral_source60_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "Source60 request component", "Source60 terminal callback", "retained facade roots", "complete native facade allocation graph", "pending payload continuations", "typed tool ID matches genuine Source60", "ADC preparation cancels" }, .use_llvm = use_llvm });
+    linkQuickJs(b, google_mistral60_component_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(google_mistral60_component_tests.root_module, sqlite_lib_dir, sqlite_library);
+    google_mistral60_component_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-ai-google-mistral60-components", "Compile broader Source60 functional SDK callback and ownership components").dependOn(&google_mistral60_component_tests.step);
+    b.step("test-native-ai-google-mistral60-components", "Compare actual Source60 components with strict snapshots retained separately").dependOn(&b.addRunArtifact(google_mistral60_component_tests).step);
     const google_mistral_component_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_google_mistral_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "Source30 request component", "Source30 terminal callback", "retained facade roots", "complete native facade allocation graph", "preflight preserves thrown guest" }, .use_llvm = use_llvm });
     linkQuickJs(b, google_mistral_component_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(google_mistral_component_tests.root_module, sqlite_lib_dir, sqlite_library);
