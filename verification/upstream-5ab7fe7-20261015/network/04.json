@@ -1,0 +1,28 @@
+{
+  "url": "https://openrouter.ai/api/v1/models",
+  "started": "2026-10-15T16:17:46.525Z",
+  "completed": "2026-10-15T16:17:46.576Z",
+  "status": 200,
+  "headers": {
+    "access-control-allow-origin": "*",
+    "access-control-expose-headers": "X-Generation-Id,X-Provider-Name,request-id,cf-ray",
+    "age": "28",
+    "cache-control": "public, max-age=120, stale-while-revalidate=3600, stale-if-error=3600",
+    "cf-cache-status": "HIT",
+    "cf-ray": "a4b022ca8f212f8e-MAN",
+    "connection": "keep-alive",
+    "content-encoding": "gzip",
+    "content-type": "application/json",
+    "date": "Thu, 15 Oct 2026 16:17:46 GMT",
+    "permissions-policy": "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")",
+    "referrer-policy": "no-referrer, strict-origin-when-cross-origin",
+    "server": "cloudflare",
+    "set-cookie": "__cf_bm=9n0vy.rsXPE7BWbiGNKY_C8pZjFSIDw.WkP.W9HSV70-1792081066.641715-1.0.1.1-VHVyludifI1Hz6goCzc1rmnGKD49ljPkHQx3bZgfStn1b49GIskcK9ESQ.SdQ8bYnoUcSTgDCk7qE6DEcQAgo7jBvcoiHPeIkSYWjj1rlok5UfAFG56lKzKwZoz_h75x; HttpOnly; SameSite=None; Secure; Path=/; Domain=openrouter.ai; Expires=Thu, 15 Oct 2026 16:47:46 GMT",
+    "transfer-encoding": "chunked",
+    "vary": "Host, User-Agent, Originator, Anthropic-Version",
+    "x-content-type-options": "nosniff"
+  },
+  "body": "04-e5e423426367c61a54b7f9c9ebadc36207dba67096c00b6e3a1db8a979a90f96.body",
+  "bytes": 771985,
+  "sha256": "e5e423426367c61a54b7f9c9ebadc36207dba67096c00b6e3a1db8a979a90f96"
+}

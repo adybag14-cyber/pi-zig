@@ -1,0 +1,14 @@
+{
+  "hydrated": 43,
+  "platform_optional_absent": 80,
+  "full_pi_qualified": false,
+  "unchanged_stale_absent": 4,
+  "installed_pins": 281,
+  "public_activation": false,
+  "source_path_drift": 0,
+  "full_source": 1967,
+  "head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "external_npm_identical": 365,
+  "tracked": 1924,
+  "catalog_sha256": "4334227667568186DF17628973E890A2582A44C4EF67F16621704387AE73C8C9"
+}

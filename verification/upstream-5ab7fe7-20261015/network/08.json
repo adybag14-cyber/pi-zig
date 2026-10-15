@@ -1,0 +1,23 @@
+{
+  "url": "https://radius.pi.dev/v1/config",
+  "started": "2026-10-15T16:17:46.688Z",
+  "completed": "2026-10-15T16:17:46.740Z",
+  "status": 200,
+  "headers": {
+    "access-control-allow-origin": "*",
+    "access-control-expose-headers": "*",
+    "alt-svc": "h3=\":443\"; ma=86400",
+    "cf-ray": "a4b022cb9bb03aad-MAN",
+    "connection": "keep-alive",
+    "content-encoding": "br",
+    "content-type": "application/json",
+    "date": "Thu, 15 Oct 2026 16:17:46 GMT",
+    "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+    "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=SywwDNQ3aSqW954q9C9nobfd7OyowIYMpgF0kwAiy0rSv3U4eBIsLv0WuYD0Q%2BbSQj0j61F60nE%2BaSlNS0ihGnjuEJUDNH8AFwvmWlRdt6Xa%2BrDQEbISaroI5lSh1a1fAr0TwXBETJ8nVbkX\"}]}",
+    "server": "cloudflare",
+    "transfer-encoding": "chunked"
+  },
+  "body": "08-f929791ba086614c60b39cc2b91687c72a93e0275e6733cf03a91ad910efb093.body",
+  "bytes": 21294,
+  "sha256": "f929791ba086614c60b39cc2b91687c72a93e0275e6733cf03a91ad910efb093"
+}
