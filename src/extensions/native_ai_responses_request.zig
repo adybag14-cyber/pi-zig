@@ -200,9 +200,6 @@ fn assistant(scope: *Scope, model: c.JSValue, message: c.JSValue, grammar: c.JSV
             const item = try row.object();
             try row.put(item, "type", try row.text("message"));
             try row.put(item, "role", try row.text("assistant"));
-            try row.put(item, "status", try row.text("completed"));
-            try row.put(item, "id", id);
-            try row.put(item, "phase", try v.optional(&row, signed, "phase"));
             const part = try row.object();
             try row.put(part, "type", try row.text("output_text"));
             try row.put(part, "text", try v.sanitize(&row, try row.get(block, "text")));
@@ -210,6 +207,9 @@ fn assistant(scope: *Scope, model: c.JSValue, message: c.JSValue, grammar: c.JSV
             const content = try row.array();
             try push(&row, content, part);
             try row.put(item, "content", content);
+            try row.put(item, "status", try row.text("completed"));
+            try row.put(item, "id", id);
+            try row.put(item, "phase", try v.optional(&row, signed, "phase"));
             try push(&row, result, item);
         } else if (try v.eq(&row, typ, "toolCall")) {
             const ids = try row.invoke(try row.get(block, "id"), "split", &.{try row.text("|")});
