@@ -120,25 +120,25 @@ fn google(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
             const function = try row.get(part, "functionCall");
             if (!row.truthy(function)) continue;
             try close(&row, owner);
-            var id = try row.get(function, "id");
+            var id = try row.get(try row.get(part, "functionCall"), "id");
             const ids = try row.get(owner, "tools");
-            if (!row.truthy(id) or row.truthy(try row.invoke(ids, "has", &.{id}))) {
+            if (!row.truthy(id) or try hasGoogleTool(&row, owner, id)) {
                 const counter_owner = try row.get(owner, "counterOwner");
                 const counter = try binary(&row, .add, try row.get(counter_owner, "counter"), c.JS_NewInt32(scope.engine.context, 1));
                 try row.put(counter_owner, "counter", counter);
-                id = try row.concat(try row.concat(try row.stringify(try row.get(function, "name")), try row.text("_")), try row.stringify(try row.invoke(try row.global("Date"), "now", &.{})));
+                id = try row.concat(try row.concat(try row.stringify(try row.get(try row.get(part, "functionCall"), "name")), try row.text("_")), try row.stringify(try row.invoke(try row.global("Date"), "now", &.{})));
                 id = try row.concat(try row.concat(id, try row.text("_")), try row.stringify(counter));
             }
             _ = try row.invoke(ids, "set", &.{ id, c.pi_js_bool(scope.engine.context, 1) });
             const block = try row.object();
             try row.put(block, "type", try row.text("toolCall"));
             try row.put(block, "id", id);
-            const name = try row.get(function, "name");
+            const name = try row.get(try row.get(part, "functionCall"), "name");
             try row.put(block, "name", if (row.truthy(name)) name else try row.text(""));
-            const args = try row.get(function, "args");
+            const args = try row.get(try row.get(part, "functionCall"), "args");
             try row.put(block, "arguments", if (v.nullish(args)) try row.object() else args);
             const sig = try row.get(part, "thoughtSignature");
-            if (row.truthy(sig)) try row.put(block, "thoughtSignature", sig);
+            if (row.truthy(sig)) try row.put(block, "thoughtSignature", try row.get(part, "thoughtSignature"));
             _ = try row.invoke(try row.get(output, "content"), "push", &.{block});
             try emit(&row, owner, "toolcall_start", block, null, c.pi_js_undefined());
             try emit(&row, owner, "toolcall_delta", block, "delta", try row.invoke(try row.global("JSON"), "stringify", &.{try row.get(block, "arguments")}));
@@ -153,7 +153,8 @@ fn google(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
             if (try v.eq(scope, reason, known)) handled = true;
         }
         if (!handled) return v.errorText(scope, try scope.concat(try scope.text("Unhandled stop reason: "), try scope.stringify(reason)));
-        try scope.set(output, "stopReason", try scope.text(if (try v.eq(scope, reason, "MAX_TOKENS")) "length" else if (try v.eq(scope, reason, "STOP")) (if (scope.truthy(try scope.get(try scope.get(owner, "tools"), "size"))) "toolUse" else "stop") else "error"));
+        try scope.set(output, "stopReason", try scope.text(if (try v.eq(scope, reason, "MAX_TOKENS")) "length" else if (try v.eq(scope, reason, "STOP")) "stop" else "error"));
+        if (try hasGoogleTool(scope, owner, null) and try v.eq(scope, try scope.get(output, "stopReason"), "stop")) try scope.set(output, "stopReason", try scope.text("toolUse"));
     }
     const raw = try scope.get(chunk, "usageMetadata");
     if (scope.truthy(raw)) {
@@ -168,6 +169,20 @@ fn google(scope: *Scope, owner: c.JSValue, chunk: c.JSValue) !void {
         try scope.put(usage, "totalTokens", zero(scope, try scope.get(raw, "totalTokenCount")));
         try setUsage(scope, owner, usage);
     }
+}
+fn hasGoogleTool(scope: *Scope, owner: c.JSValue, id: ?c.JSValue) !bool {
+    const Predicate = struct {
+        fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            var row: Scope = .{ .engine = engine };
+            defer row.deinit();
+            const block = if (args.len > 0) args[0] else c.pi_js_undefined();
+            const found = try v.eq(&row, try row.get(block, "type"), "toolCall") and (roots.len == 0 or row.equal(try row.get(block, "id"), roots[0]));
+            return c.pi_js_bool(engine.context, @intFromBool(found));
+        }
+    };
+    var roots = [_]c.JSValue{id orelse c.pi_js_undefined()};
+    const predicate = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Predicate.call, if (id != null) &roots else &.{}));
+    return scope.truthy(try scope.invoke(try scope.get(try scope.get(owner, "output"), "content"), "some", &.{predicate}));
 }
 fn setUsage(scope: *Scope, owner: c.JSValue, usage: c.JSValue) !void {
     try scope.put(usage, "cost", try emptyCost(scope));
