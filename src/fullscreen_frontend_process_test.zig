@@ -420,7 +420,7 @@ test "ae7 overlay process real native worker preserves concurrent overlays and o
             \\pi.registerCommand('overlays',{async handler(_,ctx){const close={},refresh={},disposed=[];let stage='AE7_TOP_READY';
             \\const open=(id,row)=>ctx.ui.custom((t,theme,keys,done)=>{close[id]=done;refresh[id]=()=>t.requestRender();return{render(){return[id==='top'?stage:'AE7_'+id.toUpperCase()+'_READY']},handleInput(key){if(id==='top'&&key==='m')close.middle('middle');else if(id==='top'&&key==='l')close.lower('lower');else if(id==='top'&&key==='a'){close.middle('middle');close.lower('lower');close.top('top')}else if(key==='\x1b')done(id)},dispose(){disposed.push(id)}}},{overlay:true,overlayOptions:{width:40,height:1,row,col:4}}).then(value=>{if(id!=='top'){stage='AE7_TOP_AFTER_'+id.toUpperCase();refresh.top()}return value});
             \\const results=await Promise.all([open('lower',3),open('middle',5),open('top',7)]);return{message:'AE7_CLOSED:'+JSON.stringify({results,disposed})}}});
-            \\pi.registerCommand('async-overlays',{async handler(_,ctx){let release;const slow=ctx.ui.custom((t,theme,keys,done)=>new Promise(resolve=>{release=()=>resolve({render(){return['AE7_SLOW_READY']},handleInput(key){if(key==='\x1b')done('slow')}})}),{overlay:true,overlayOptions:{width:40,height:1,row:3,col:4}});let stage='AE7_FAST_READY';const fast=ctx.ui.custom((t,theme,keys,done)=>({render(){return[stage]},handleInput(key){if(key==='r'){release();stage='AE7_FAST_RELEASED';t.requestRender()}else if(key==='\x1b')done('fast')}}),{overlay:true,overlayOptions:{width:40,height:1,row:7,col:4}});return{message:'AE7_ASYNC_CLOSED:'+JSON.stringify(await Promise.all([slow,fast]))}}});
+            \\pi.registerCommand('async-overlays',{async handler(_,ctx){let release,redrawFast;let stage='AE7_FAST_READY';const slow=ctx.ui.custom((t,theme,keys,done)=>new Promise(resolve=>{release=()=>resolve({render(){return['AE7_SLOW_READY']},handleInput(key){if(key==='\x1b')done('slow')}})}),{overlay:true,overlayOptions:{width:40,height:1,row:3,col:4}}).then(value=>{stage='AE7_FAST_AFTER_SLOW';redrawFast();return value});const fast=ctx.ui.custom((t,theme,keys,done)=>(redrawFast=()=>t.requestRender(),{render(){return[stage]},handleInput(key){if(key==='r'){release();stage='AE7_FAST_RELEASED';t.requestRender()}else if(key==='\x1b')done('fast')}}),{overlay:true,overlayOptions:{width:40,height:1,row:7,col:4}});return{message:'AE7_ASYNC_CLOSED:'+JSON.stringify(await Promise.all([slow,fast]))}}});
             \\}
         ;
         var child = try fixture.spawnExtension(errors, source);
@@ -443,7 +443,7 @@ test "ae7 overlay process real native worker preserves concurrent overlays and o
         try std.testing.expect(!try observed.screen.contains("AE7_SLOW_READY"));
         try observed.send(&child, "r", "AE7_SLOW_READY");
         try observed.waitAny(&child, "AE7_FAST_RELEASED");
-        try observed.send(&child, "\x1b", "AE7_FAST_RELEASED");
+        try observed.send(&child, "\x1b", "AE7_FAST_AFTER_SLOW");
         try std.testing.expect(!try observed.screen.contains("AE7_SLOW_READY"));
         try observed.send(&child, "\x1b", "AE7_ASYNC_CLOSED:[\"slow\",\"fast\"]");
         try observed.send(&child, "after-ae7", "> after-ae7");
