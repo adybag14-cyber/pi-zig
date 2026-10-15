@@ -41,7 +41,9 @@ pub const Worker = struct {
     event_count: usize = 0,
 
     pub fn create(io: std.Io, input: Input, context: ?*anyopaque, notify: ?*const fn (?*anyopaque) void) !*Worker {
-        const url = try a.dupe(u8, input.url);
+        // std.http performs the RFC6455 HTTP upgrade on http/https; the public
+        // WebSocket URL uses the corresponding ws/wss scheme.
+        const url = if (std.ascii.startsWithIgnoreCase(input.url, "wss://")) try std.mem.concat(a, u8, &.{ "https://", input.url[6..] }) else if (std.ascii.startsWithIgnoreCase(input.url, "ws://")) try std.mem.concat(a, u8, &.{ "http://", input.url[5..] }) else try a.dupe(u8, input.url);
         errdefer a.free(url);
         const proxy = if (input.proxy_url) |value| try a.dupe(u8, value) else null;
         errdefer if (proxy) |value| a.free(value);
