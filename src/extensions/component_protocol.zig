@@ -117,6 +117,10 @@ pub const Scene = struct {
     focus_mode: FocusMode = .custom,
     target_id: u64 = 0,
     target_generation: u64 = 0,
+    /// Host-local first-frame order. This is assigned by the authenticated
+    /// reader before independent presenter tasks run, and is never accepted
+    /// from extension JSON.
+    presentation_order: u64 = 0,
     pub fn deinit(self: *Scene) void {
         self.frame.deinit();
     }

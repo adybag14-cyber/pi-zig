@@ -234,7 +234,7 @@ pub const Controller = struct {
     component_scene_fn: ?ComponentSceneFn = null,
     component_close_fn: ?ComponentCloseFn = null,
     component_scene_ctx: ?*anyopaque = null,
-    component_fence: ?component_protocol.Fence = null,
+    component_fences: std.ArrayList(struct { fence: component_protocol.Fence, closing: bool = false }) = .empty,
     renderer_record_fn: ?RendererRecordFn = null,
     renderer_closed_fn: ?RendererClosedFn = null,
     renderer_context: ?*anyopaque = null,
@@ -294,6 +294,7 @@ pub const Controller = struct {
 
     pub fn deinit(self: *Controller) void {
         self.bindRendererFrontend(null, null, null);
+        self.component_fences.deinit(self.gpa);
         for (self.notifications.items) |*item| item.deinit(self.gpa);
         self.notifications.deinit(self.gpa);
         for (self.statuses.items) |*item| item.deinit(self.gpa);
@@ -417,10 +418,26 @@ pub const Controller = struct {
     pub fn componentScene(raw: ?*anyopaque, scene: component_protocol.Scene, controls: *component_protocol.ControlQueue) !void {
         const self: *Controller = @ptrCast(@alignCast(raw.?));
         const sink = self.component_scene_fn orelse return error.NativeComponentFrontendUnavailable;
-        const first = self.component_fence == null;
-        if (self.component_fence) |active| if (!active.matches(scene.fence)) return error.StaleNativeComponentScene;
-        try sink(self.component_scene_ctx, scene, controls);
-        self.component_fence = scene.fence;
+        const first = blk: {
+            self.state_mutex.lockUncancelable(self.io);
+            defer self.state_mutex.unlock(self.io);
+            const existing = for (self.component_fences.items) |*entry| {
+                if (entry.fence.matches(scene.fence)) break entry;
+            } else null;
+            if (existing) |entry| {
+                if (entry.closing) return error.StaleNativeComponentScene;
+            } else {
+                if (self.component_fences.items.len >= 128) return error.NativeComponentFrontendLimit;
+                try self.component_fences.ensureUnusedCapacity(self.gpa, 1);
+            }
+            // The scene sink only admits owned frame bytes to the frontend.
+            // Serialize admission so independent presenter tasks cannot lose
+            // each other's fences or duplicate the first lifecycle event.
+            try sink(self.component_scene_ctx, scene, controls);
+            const first = self.component_fences.items.len == 0;
+            if (existing == null) self.component_fences.appendAssumeCapacity(.{ .fence = scene.fence });
+            break :blk first;
+        };
         // Custom scenes retain the frontend's sole stdin/paint ownership.
         // Extension lifecycle fanout is still deferred by the integration.
         if (first) if (self.prompt_event_fn) |notify| notify(self.prompt_event_ctx, .start, "custom");
@@ -429,14 +446,28 @@ pub const Controller = struct {
     pub fn componentClose(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
         const self: *Controller = @ptrCast(@alignCast(raw.?));
         // Runtime validates the admitted close fence before calling this
-        // boundary. A scene may have closed before its first delivery, or while
-        // another FIFO scene owns the frontend. Neither case borrowed our queue.
-        const active = self.component_fence orelse return;
-        if (!active.matches(fence)) return;
-        const close = self.component_close_fn orelse return error.NativeComponentFrontendUnavailable;
+        // boundary. A scene may close before first delivery. A sibling fence
+        // must never detach its channel or end its active lifecycle.
+        const close = blk: {
+            self.state_mutex.lockUncancelable(self.io);
+            defer self.state_mutex.unlock(self.io);
+            const entry = for (self.component_fences.items) |*entry| {
+                if (entry.fence.matches(fence)) break entry;
+            } else return;
+            if (entry.closing) return;
+            const close = self.component_close_fn orelse return error.NativeComponentFrontendUnavailable;
+            entry.closing = true;
+            break :blk close;
+        };
         defer {
-            self.component_fence = null;
-            if (self.prompt_event_fn) |notify| notify(self.prompt_event_ctx, .end, "custom");
+            self.state_mutex.lockUncancelable(self.io);
+            for (self.component_fences.items, 0..) |entry, index| if (entry.fence.matches(fence)) {
+                _ = self.component_fences.orderedRemove(index);
+                break;
+            };
+            const last = self.component_fences.items.len == 0;
+            self.state_mutex.unlock(self.io);
+            if (last) if (self.prompt_event_fn) |notify| notify(self.prompt_event_ctx, .end, "custom");
         }
         // Success means the scene is gone and the restored editor was painted.
         // The sink must detach the borrowed channel even when paint fails.
@@ -1682,7 +1713,7 @@ test "component close error detaches foreground lifecycle and permits a new fenc
     try std.testing.expectEqual(@as(usize, 1), fake.starts);
     try std.testing.expectEqual(@as(usize, 0), fake.ends);
     try std.testing.expectError(error.Canceled, Controller.componentClose(&controller, fence));
-    try std.testing.expect(fake.borrowed == null and controller.component_fence == null);
+    try std.testing.expect(fake.borrowed == null and controller.component_fences.items.len == 0);
     fake.fail_close = false;
     var second = try component_protocol.readScene(gpa, &parsed.value.object);
     Controller.componentScene(&controller, second, &queue) catch |err| {

@@ -101,7 +101,7 @@ pub fn callMethod(engine: *engine_mod.Engine, component: c.JSValue, name: [*:0]c
     return try engine.checked(c.JS_Call(engine.context, function, component, @intCast(args.len), if (args.len == 0) null else args.ptr));
 }
 
-const Handle = struct { engine: *engine_mod.Engine, manager: ?*Manager, id: u64, generation: u64, ui_service: ?c.JSValue = null };
+const Handle = struct { engine: *engine_mod.Engine, manager: ?*Manager, id: u64, generation: u64, ui_service: ?c.JSValue = null, ignore_late_factory: bool = false };
 const Entry = struct {
     id: u64,
     generation: u64,
@@ -142,7 +142,7 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVal
     defer if (service_guard) |*guard| guard.restore();
     const value = if (argc == 0) c.pi_js_undefined() else argv[0];
     const manager = handle.manager orelse {
-        if (magic == 2 and c.JS_IsObject(value)) {
+        if (magic == 2 and !handle.ignore_late_factory and c.JS_IsObject(value)) {
             // A factory may settle after close/reload or manager destruction.
             // Its native callback needs no manager pointer to release it.
             if (callMethod(engine, value, "dispose", &.{}, true) catch null) |result| engine.freeValue(result);
@@ -152,7 +152,7 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVal
     const entry = manager.entries.get(handle.id) orelse return c.pi_js_undefined();
     if (entry.generation != handle.generation or manager.generation != handle.generation or manager.retiring) return c.pi_js_undefined();
     if (magic == 2 or magic == 3) {
-        if (magic == 2) manager.finishFactory(handle.id, handle.generation, value) catch |err| {
+        if (magic == 2) manager.finishFactory(handle.id, handle.generation, value, handle.ignore_late_factory) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
             return c.JS_ThrowOutOfMemory(context);
         } else manager.rejectFactory(handle.id, handle.generation, value) catch |err| {
@@ -265,9 +265,9 @@ pub const Manager = struct {
         self.close(id, generation, reason) catch {};
     }
 
-    fn finishFactory(self: *Manager, id: u64, generation: u64, component: c.JSValue) !void {
+    fn finishFactory(self: *Manager, id: u64, generation: u64, component: c.JSValue, ignore_closed: bool) !void {
         const entry = self.entries.get(id) orelse {
-            self.discardComponent(component);
+            if (!ignore_closed) self.discardComponent(component);
             return;
         };
         if (entry.generation != generation or generation != self.generation or self.retiring) {
@@ -349,7 +349,7 @@ pub const Manager = struct {
         if (state_value == c.JS_PROMISE_FULFILLED or state_value == c.JS_PROMISE_REJECTED) {
             const component = c.JS_PromiseResult(engine.context, pending);
             defer engine.freeValue(component);
-            if (state_value == c.JS_PROMISE_FULFILLED) try self.finishFactory(id, generation, component) else try self.rejectFactory(id, generation, component);
+            if (state_value == c.JS_PROMISE_FULFILLED) try self.finishFactory(id, generation, component, state.ignore_late_factory) else try self.rejectFactory(id, generation, component);
         } else {
             const resolved = try self.function(handle, "factoryReady", 2);
             defer engine.freeValue(resolved);
@@ -379,6 +379,12 @@ pub const Manager = struct {
         if (generation != self.generation or self.retiring) return;
         const entry = self.entries.get(id) orelse return;
         if (entry.generation != generation or entry.settled or entry.pending_completion != null) return;
+        if (entry.creating) {
+            const handle: *Handle = @ptrCast(@alignCast(c.JS_GetOpaque(entry.handle, self.handle_class) orelse return error.InvalidNativeComponentHandle));
+            // Source's closed guard ignores a factory that returns after
+            // done(). Retirement remains a separate cleanup boundary.
+            handle.ignore_late_factory = true;
+        }
         if (self.completion_bridge) |bridge| {
             entry.pending_completion = c.JS_DupValue(self.engine.context, value);
             // The owner transport requests scene closure; no raw JS value
@@ -787,6 +793,37 @@ test "native custom done resolves before an unresolved factory and ignores late 
         try std.testing.expectEqual(@as(usize, 0), manager.entries.count());
     }
     c.JS_RunGC(engine.runtime);
+}
+
+test "native custom early done ignores synchronous and asynchronous late components without disposal" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var manager = try Manager.init(engine);
+    defer manager.deinit();
+    const module = try engine.evalModule(
+        \\export let disposed=0;
+        \\const component=()=>({render(){return ['unmounted']},dispose(){disposed++}});
+        \\export const synchronous=(t,theme,keys,done)=>{done('early');return component()};
+        \\export const asynchronous=async(t,theme,keys,done)=>{done('early');await Promise.resolve();return component()};
+    , "ae7-early-done.js");
+    defer engine.freeValue(module);
+    inline for (.{ "synchronous", "asynchronous" }) |name| {
+        const factory = try engine.checked(c.JS_GetPropertyStr(engine.context, module, name));
+        defer engine.freeValue(factory);
+        const opened = try manager.open(factory, c.pi_js_undefined(), c.pi_js_undefined());
+        defer engine.freeValue(opened.result);
+        const value = try engine.awaitValue(opened.result);
+        defer engine.freeValue(value);
+        const text = try engine.toString(value);
+        defer engine.gpa.free(text);
+        try std.testing.expectEqualStrings("early", text);
+        try std.testing.expectEqual(@as(usize, 0), manager.entries.count());
+    }
+    const disposed = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "disposed"));
+    defer engine.freeValue(disposed);
+    var count: i32 = 0;
+    _ = c.JS_ToInt32(engine.context, &count, disposed);
+    try std.testing.expectEqual(@as(i32, 0), count);
 }
 
 test "native asynchronous and thenable factory completion remains owner-thread ready and preserves rejection identity" {

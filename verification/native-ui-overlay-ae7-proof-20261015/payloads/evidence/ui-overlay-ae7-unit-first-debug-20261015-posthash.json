@@ -1,0 +1,30 @@
+{
+  "candidate": "0a9e72d1b669a54733893f308bf2bf8b2cf3ebf5",
+  "source": 6323,
+  "source_after": 6323,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "controls": 9,
+  "control_drift": 0,
+  "latest_source_references": [
+    {
+      "files": 1968,
+      "name": "source",
+      "drift": 0
+    },
+    {
+      "files": 31064,
+      "name": "dependencies",
+      "drift": 0
+    },
+    {
+      "files": 1774,
+      "name": "node_tools",
+      "drift": 0
+    }
+  ],
+  "compile": "passed",
+  "runtime": "failed",
+  "completed_utc": "2026-10-15T19:57:50.5063080+00:00"
+}

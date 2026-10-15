@@ -319,10 +319,14 @@ const NativeComponentSession = struct {
     controls: component_protocol.ControlQueue,
     mutex: Io.Mutex = .init,
     wake: Io.Event = .unset,
+    presenter_idle: Io.Condition = .init,
+    presenting: bool = false,
     frames: std.ArrayList(component_protocol.Scene) = .empty,
     closing: bool = false,
+    reader_closing: bool = false,
     stopping: bool = false,
     presented: std.atomic.Value(bool) = .init(false),
+    presentation_order: u64 = 0,
     close_attempted: std.atomic.Value(bool) = .init(false),
     failure: ?anyerror = null,
     service_header: ?@import("native_ui_service_protocol.zig").Header = null,
@@ -337,10 +341,19 @@ const NativeComponentSession = struct {
         } else try component_protocol.writeControl(writer, control);
     }
 
-    fn push(self: *@This(), scene: component_protocol.Scene) !void {
+    fn push(self: *@This(), received: component_protocol.Scene) !void {
         self.mutex.lockUncancelable(self.runtime.io);
         defer self.mutex.unlock(self.runtime.io);
-        if (!component_protocol.Fence.matches(scene.fence, self.fence) or self.closing or self.stopping) return error.StaleNativeComponentScene;
+        if (!component_protocol.Fence.matches(received.fence, self.fence) or self.closing or self.stopping) return error.StaleNativeComponentScene;
+        // push is called by the one authenticated native reader. Presenter
+        // scheduling must not change the order in which overlays opened.
+        if (self.presentation_order == 0) {
+            if (self.runtime.component_presentation_clock == std.math.maxInt(u64)) return error.NativeComponentPresentationLimit;
+            self.runtime.component_presentation_clock += 1;
+            self.presentation_order = self.runtime.component_presentation_clock;
+        }
+        var scene = received;
+        scene.presentation_order = self.presentation_order;
         // Coalesce queued paint frames; the latest viewport supersedes earlier
         // owned copies without changing input ordering.
         for (self.frames.items) |*frame| frame.deinit();
@@ -349,12 +362,25 @@ const NativeComponentSession = struct {
         self.wake.set(self.runtime.io);
     }
 
-    fn requestClose(self: *@This()) void {
+    fn requestClose(self: *@This()) !void {
         self.mutex.lockUncancelable(self.runtime.io);
+        if (self.closing) {
+            self.mutex.unlock(self.runtime.io);
+            return;
+        }
         self.closing = true;
+        self.reader_closing = true;
+        // A scene callback may already be posting its owned bytes. Detach
+        // only after it returns, so no late frame can resurrect a closed
+        // frontend owner with a borrowed control queue.
+        while (self.presenting) self.presenter_idle.waitUncancelable(self.runtime.io, &self.mutex);
         self.mutex.unlock(self.runtime.io);
         self.controls.reset(null);
-        self.wake.set(self.runtime.io);
+        defer self.wake.set(self.runtime.io);
+        // The one authenticated reader observes Source's done() order.
+        // Complete its close/ACK boundary before admitting the next close;
+        // independently scheduled presenters must not reorder disposers.
+        try self.acknowledgeClose();
     }
 
     fn controlTask(self: *@This()) Io.Cancelable!void {
@@ -396,8 +422,9 @@ const NativeComponentSession = struct {
             }
             if (self.closing or self.stopping) {
                 const stopping = self.stopping;
+                const reader_closing = self.reader_closing;
                 self.mutex.unlock(self.runtime.io);
-                if (stopping) return;
+                if (stopping or reader_closing) return;
                 break;
             }
             if (self.frames.items.len == 0) {
@@ -407,7 +434,14 @@ const NativeComponentSession = struct {
                 continue;
             }
             var frame = self.frames.orderedRemove(0);
+            self.presenting = true;
             self.mutex.unlock(self.runtime.io);
+            defer {
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.presenting = false;
+                self.presenter_idle.broadcast(self.runtime.io);
+                self.mutex.unlock(self.runtime.io);
+            }
             var consumed = false;
             defer if (!consumed) frame.deinit();
             if (self.bridge) |bridge| if (bridge.component_scene_fn) |callback| {
@@ -423,6 +457,10 @@ const NativeComponentSession = struct {
                 try self.runtime.writeLine(record.written());
             };
         }
+        try self.acknowledgeClose();
+    }
+
+    fn acknowledgeClose(self: *@This()) !void {
         const outcome = try self.closeBoundary(std.heap.page_allocator);
         defer if (outcome.error_message) |message| std.heap.page_allocator.free(message);
         var record: Io.Writer.Allocating = .init(std.heap.page_allocator);
@@ -704,7 +742,7 @@ const NativeUiServices = struct {
                     };
                 } else if (std.mem.eql(u8, kind, "native_ui_service_component_close")) {
                     const fence = component_protocol.readFence(&payload.object) catch return true;
-                    if (component_protocol.Fence.matches(component.fence, fence)) component.requestClose();
+                    if (component_protocol.Fence.matches(component.fence, fence)) try component.requestClose();
                 } else {
                     const outcome = component_protocol.readMouseOutcome(&payload.object) catch return true;
                     if (!component_protocol.Fence.matches(component.fence, outcome.fence)) return true;
@@ -766,8 +804,10 @@ const NativeDialogs = struct {
     bridge: ?UiBridge = null,
     queued: std.ArrayList(*NativeDialog) = .empty,
     active: ?*NativeDialog = null,
+    components: std.ArrayList(*NativeDialog) = .empty,
 
     fn humanWait(self: *@This()) bool {
+        for (self.components.items) |dialog| if (dialog.component.?.presented.load(.acquire)) return true;
         const dialog = self.active orelse return false;
         const component = dialog.component orelse return true;
         return component.presented.load(.acquire);
@@ -777,9 +817,23 @@ const NativeDialogs = struct {
         if (self.active) |dialog| dialog.deinit();
         for (self.queued.items) |dialog| dialog.deinit();
         self.queued.deinit(std.heap.page_allocator);
+        for (self.components.items) |dialog| dialog.deinit();
+        self.components.deinit(std.heap.page_allocator);
     }
 
     fn progress(self: *@This()) !void {
+        var index: usize = 0;
+        while (index < self.components.items.len) {
+            const dialog = self.components.items[index];
+            if (!dialog.done.load(.acquire)) {
+                index += 1;
+                continue;
+            }
+            _ = self.components.orderedRemove(index);
+            const failure = dialog.failure;
+            dialog.deinit();
+            if (failure) |err| return err;
+        }
         if (self.active) |dialog| if (dialog.done.load(.acquire)) {
             const failure = dialog.failure;
             self.active = null;
@@ -806,7 +860,8 @@ const NativeDialogs = struct {
         const id = try self.fencedId(object);
         if (self.active) |dialog| if (dialog.id == id) return error.DuplicateNativeUiIdentity;
         for (self.queued.items) |dialog| if (dialog.id == id) return error.DuplicateNativeUiIdentity;
-        if (self.queued.items.len >= 128) return error.NativeDialogLimit;
+        for (self.components.items) |dialog| if (dialog.id == id) return error.DuplicateNativeUiIdentity;
+        if (self.queued.items.len + self.components.items.len >= 128) return error.NativeDialogLimit;
         const method = object.get("method") orelse return error.InvalidNativeUiRequest;
         const args = object.get("args") orelse std.json.Value{ .object = .empty };
         if (method != .string or method.string.len == 0 or args != .object) return error.InvalidNativeUiRequest;
@@ -827,6 +882,15 @@ const NativeDialogs = struct {
             component.* = .{ .runtime = self.runtime, .bridge = self.bridge, .fence = fence, .controls = component_protocol.ControlQueue.init(allocator, self.runtime.io) };
             component.controls.reset(fence);
             dialog.component = component;
+            // Each custom owns a distinct control channel and close fence.
+            // A pending lower factory must not queue a visible sibling behind
+            // itself. Ordinary prompt dialogs retain their FIFO below.
+            try self.components.ensureUnusedCapacity(allocator, 1);
+            try dialog.group.concurrent(self.runtime.io, NativeDialog.run, .{dialog});
+            dialog.started = true;
+            self.components.appendAssumeCapacity(dialog);
+            published = true;
+            return;
         }
         try self.queued.append(allocator, dialog);
         published = true;
@@ -835,6 +899,11 @@ const NativeDialogs = struct {
 
     fn cancel(self: *@This(), object: *const std.json.ObjectMap) !void {
         const id = try self.fencedId(object);
+        for (self.components.items, 0..) |dialog, index| if (dialog.id == id) {
+            _ = self.components.orderedRemove(index);
+            dialog.deinit();
+            return;
+        };
         if (self.active) |dialog| if (dialog.id == id) {
             self.active = null;
             dialog.deinit();
@@ -852,6 +921,7 @@ const NativeDialogs = struct {
 
     fn componentSession(self: *@This(), fence: component_protocol.Fence) ?*NativeComponentSession {
         if (fence.invocation_id != self.invocation_id) return null;
+        for (self.components.items) |dialog| if (dialog.component) |session| if (component_protocol.Fence.matches(session.fence, fence)) return session;
         if (self.active) |dialog| if (dialog.component) |session| if (component_protocol.Fence.matches(session.fence, fence)) return session;
         for (self.queued.items) |dialog| if (dialog.component) |session| if (component_protocol.Fence.matches(session.fence, fence)) return session;
         return null;
@@ -872,7 +942,7 @@ const NativeDialogs = struct {
     fn closeComponent(self: *@This(), object: *const std.json.ObjectMap) !void {
         const fence = try component_protocol.readFence(object);
         const session = self.componentSession(fence) orelse return;
-        session.requestClose();
+        try session.requestClose();
     }
     fn mouseOutcome(self: *@This(), object: *const std.json.ObjectMap) !void {
         const value = try component_protocol.readMouseOutcome(object);
@@ -918,6 +988,7 @@ pub const Runtime = struct {
     service_open_invocation_id: u64 = 0,
     service_open_extension_id: u64 = 0,
     ui_bridge_revision: u64 = 1,
+    component_presentation_clock: u64 = 0,
     service_epoch_sent_revision: u64 = 0,
     owner_generation: u64 = 1,
     renderer_mutex: Io.Mutex = .init,

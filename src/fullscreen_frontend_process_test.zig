@@ -408,6 +408,49 @@ fn originalModuleInput(gpa: std.mem.Allocator, bytes: []const u8) ![]const u8 {
     return gpa.dupe(u8, parsed.value.input);
 }
 
+test "ae7 overlay process real native worker preserves concurrent overlays and own fence closes in both terminal modes" {
+    if (!pty.supported()) return error.SkipZigTest;
+    for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
+        var fixture = try Fixture.init(mode);
+        defer fixture.deinit();
+        const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+        defer errors.close(std.testing.io);
+        const source =
+            \\export default pi=>{let overlayRuns=0;
+            \\pi.registerCommand('overlays',{async handler(_,ctx){const call=++overlayRuns,close={},refresh={},disposed=[];let stage='AE7_TOP_READY';
+            \\const open=(id,row)=>ctx.ui.custom((t,theme,keys,done)=>{close[id]=done;refresh[id]=()=>t.requestRender();return{render(){return[(id==='top'?stage:'AE7_'+id.toUpperCase()+'_READY')+':'+call]},handleInput(key){if(id==='top'&&key==='m')close.middle('middle');else if(id==='top'&&key==='l')close.lower('lower');else if(id==='top'&&key==='a'){close.middle('middle');close.lower('lower');close.top('top')}else if(key==='\x1b')done(id)},dispose(){disposed.push(id)}}},{overlay:true,overlayOptions:{width:40,height:1,row,col:4}}).then(value=>{if(id!=='top'){stage='AE7_TOP_AFTER_'+id.toUpperCase();refresh.top()}return value});
+            \\const results=await Promise.all([open('lower',3),open('middle',5),open('top',7)]);return{message:'AE7_CLOSED:'+call+':'+JSON.stringify({results,disposed})}}});
+            \\pi.registerCommand('async-overlays',{async handler(_,ctx){let release,redrawFast;let stage='AE7_FAST_READY';const slow=ctx.ui.custom((t,theme,keys,done)=>new Promise(resolve=>{release=()=>resolve({render(){return['AE7_SLOW_READY']},handleInput(key){if(key==='\x1b')done('slow')}})}),{overlay:true,overlayOptions:{width:40,height:1,row:3,col:4}}).then(value=>{stage='AE7_FAST_AFTER_SLOW';redrawFast();return value});const fast=ctx.ui.custom((t,theme,keys,done)=>(redrawFast=()=>t.requestRender(),{render(){return[stage]},handleInput(key){if(key==='r'){release();stage='AE7_FAST_RELEASED';t.requestRender()}else if(key==='\x1b')done('fast')}}),{overlay:true,overlayOptions:{width:40,height:1,row:7,col:4}});return{message:'AE7_ASYNC_CLOSED:'+JSON.stringify(await Promise.all([slow,fast]))}}});
+            \\}
+        ;
+        var child = try fixture.spawnExtension(errors, source);
+        defer child.deinit();
+        var observed = try Observer.init();
+        defer observed.deinit();
+        try observed.waitInitialStartup(&child, ">");
+        try observed.send(&child, "/overlays\r", "AE7_TOP_READY:1");
+        try observed.waitAny(&child, "AE7_LOWER_READY");
+        try observed.waitAny(&child, "AE7_MIDDLE_READY");
+        try observed.send(&child, "m", "AE7_TOP_AFTER_MIDDLE");
+        try std.testing.expect(!try observed.screen.contains("AE7_MIDDLE_READY"));
+        try std.testing.expect(try observed.screen.contains("AE7_LOWER_READY"));
+        try observed.send(&child, "l", "AE7_TOP_AFTER_LOWER");
+        try std.testing.expect(!try observed.screen.contains("AE7_LOWER_READY"));
+        try observed.send(&child, "\x1b", "AE7_CLOSED:1:{\"results\":[\"lower\",\"middle\",\"top\"],\"disposed\":[\"middle\",\"lower\",\"top\"]}");
+        try observed.send(&child, "/overlays\r", "AE7_TOP_READY:2");
+        try observed.send(&child, "a", "AE7_CLOSED:2:{\"results\":[\"lower\",\"middle\",\"top\"],\"disposed\":[\"middle\",\"lower\",\"top\"]}");
+        try observed.send(&child, "/async-overlays\r", "AE7_FAST_READY");
+        try std.testing.expect(!try observed.screen.contains("AE7_SLOW_READY"));
+        try observed.send(&child, "r", "AE7_SLOW_READY");
+        try observed.waitAny(&child, "AE7_FAST_RELEASED");
+        try observed.send(&child, "\x1b", "AE7_FAST_AFTER_SLOW");
+        try std.testing.expect(!try observed.screen.contains("AE7_SLOW_READY"));
+        try observed.send(&child, "\x1b", "AE7_ASYNC_CLOSED:[\"slow\",\"fast\"]");
+        try observed.send(&child, "after-ae7", "> after-ae7");
+        try cleanExit(&fixture, &child, &observed);
+    }
+}
+
 test "native MouseRegion real terminal pointer ACK precedes keyboard capture crosses overlay bounds and owner close restores input" {
     if (!pty.supported()) return error.SkipZigTest;
     for ([_][]const u8{ "regular", "fullscreen" }) |mode| {

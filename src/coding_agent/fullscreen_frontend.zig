@@ -258,9 +258,11 @@ fn componentOwnershipCase(gpa: std.mem.Allocator) !void {
     try std.testing.expectEqualStrings("saved component draft", frontend.editor.slice());
     var stale = dto.fence;
     stale.invocation_id += 1;
-    try std.testing.expectError(error.StaleNativeComponentScene, frontend.removeCustomComponent(stale));
+    // An unpresented/rejected sibling can close without touching this scene.
+    try frontend.removeCustomComponent(stale);
+    try std.testing.expectEqual(@as(usize, 1), frontend.components.items.len);
     try frontend.removeCustomComponent(dto.fence);
-    try std.testing.expect(frontend.component_controls == null);
+    try std.testing.expectEqual(@as(usize, 0), frontend.components.items.len);
     try std.testing.expect(frontend.closed_component == null);
     try frontend.draw(.{ .columns = 80, .rows = 24 }, false);
     try std.testing.expect(frontend.closed_component.?.matches(dto.fence));
@@ -269,6 +271,229 @@ fn componentOwnershipCase(gpa: std.mem.Allocator) !void {
 
 test "fullscreen native component scene input and restored frame release every failed allocation" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, componentOwnershipCase, .{});
+}
+
+test "ae7 extension overlays actual Manager frontend Application close middle lower top and async factory independently" {
+    const engine_mod = @import("../extensions/engine.zig");
+    const native_ui = @import("../extensions/native_ui.zig");
+    const c = engine_mod.c;
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var environ: std.process.Environ.Map = .init(gpa);
+    defer environ.deinit();
+    var bindings = keybindings.Manager.init(gpa);
+    defer bindings.deinit();
+    var buffer: [128]u8 = undefined;
+    var reader = Io.File.Reader.initStreaming(.stdin(), io, &buffer);
+    const frontend = try Frontend.create(gpa, io, &environ, &reader, &bindings, .{});
+    defer frontend.deinit();
+    try frontend.editor.setText("preserved draft");
+    var controller = try ui.Controller.init(gpa, io, true, 80);
+    defer controller.deinit();
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    try @import("../extensions/abort_signal.zig").install(engine);
+    const manager = try native_ui.Manager.init(engine);
+    defer manager.deinit();
+    const Receiver = struct {
+        frontend: *Frontend,
+        controller: *ui.Controller,
+        queues: [16]component_protocol.ControlQueue,
+        fences: [16]component_protocol.Fence = undefined,
+        count: usize = 0,
+        closes: [16]component_protocol.Fence = undefined,
+        close_count: usize = 0,
+        fn request(_: ?*anyopaque, _: u32, _: []const u8, _: []const u8) !void {}
+        fn action(raw: ?*anyopaque, method: []const u8, encoded: []const u8) !void {
+            if (!std.mem.eql(u8, method, "setEditorText")) return;
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            const parsed = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, encoded, .{});
+            defer parsed.deinit();
+            try self.frontend.setEditorText(parsed.value.object.get("text").?.string, null, null);
+        }
+        fn cancel(_: ?*anyopaque, _: u32) !void {}
+        fn scene(raw: ?*anyopaque, value: component_protocol.Scene) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            const index = for (self.fences[0..self.count], 0..) |fence, i| {
+                if (fence.matches(value.fence)) break i;
+            } else index: {
+                const i = self.count;
+                self.count += 1;
+                self.fences[i] = value.fence;
+                self.queues[i].reset(value.fence);
+                break :index i;
+            };
+            try ui.Controller.componentScene(self.controller, value, &self.queues[index]);
+        }
+        fn close(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.closes[self.close_count] = fence;
+            self.close_count += 1;
+        }
+        fn frontendClose(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
+            const frontend_owner: *Frontend = @ptrCast(@alignCast(raw.?));
+            try frontend_owner.removeCustomComponent(fence);
+            try frontend_owner.draw(.{ .columns = 80, .rows = 24 }, false);
+        }
+        fn pump(self: *@This(), ui_manager: *native_ui.Manager) !void {
+            _ = try ui_manager.engine.drainReadyJobs();
+            _ = try ui_manager.poll();
+            try self.frontend.applyUpdates();
+            for (self.closes[0..self.close_count]) |fence| {
+                try ui.Controller.componentClose(self.controller, fence);
+                const ack: component_protocol.Control = .{ .gpa = std.testing.allocator, .fence = fence, .kind = .{ .close_ack = true } };
+                try std.testing.expect(try ui_manager.componentControl(&ack));
+            }
+            self.close_count = 0;
+            _ = try ui_manager.engine.drainReadyJobs();
+            _ = try ui_manager.poll();
+            try self.frontend.applyUpdates();
+            try self.frontend.draw(.{ .columns = 80, .rows = 24 }, false);
+        }
+        fn evaluate(ui_engine: *engine_mod.Engine, source: [:0]const u8) !void {
+            const result = ui_engine.eval(source, "ae7-overlay-caller.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+                if (ui_engine.captured_exception) |exception| {
+                    const detail = try ui_engine.toString(exception);
+                    defer ui_engine.gpa.free(detail);
+                    std.debug.print("ae7 overlay caller failed: {s}\n", .{detail});
+                }
+                return err;
+            };
+            ui_engine.freeValue(result);
+        }
+        fn compareOriginal(self: *@This(), ui_engine: *engine_mod.Engine, step: std.json.Value) !void {
+            const stack = step.object.get("stack").?.array.items;
+            try std.testing.expectEqual(stack.len, self.frontend.components.items.len);
+            for (stack, self.frontend.components.items) |name, owner| try std.testing.expectEqualStrings(name.string, owner.scene.frame.lines[0]);
+            const global_object = c.JS_GetGlobalObject(ui_engine.context);
+            defer ui_engine.freeValue(global_object);
+            if (c.JS_DefinePropertyValueStr(ui_engine.context, global_object, "originalOverlayStep", try ui_engine.fromJsonValue(step), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+            try evaluate(ui_engine,
+                \\{
+                \\const nativeState=Object.fromEntries(Object.keys(originalOverlayStep.state).map(id=>[id,id in results?['resolved',results[id]]:id in rejections?['rejected',rejections[id]]:'pending']));
+                \\if(JSON.stringify(nativeState)!==JSON.stringify(originalOverlayStep.state))throw Error('original ae7 result states differ');
+                \\const originalDisposed=originalOverlayStep.log.filter(row=>row[0]==='dispose');
+                \\if(JSON.stringify(log)!==JSON.stringify(originalDisposed))throw Error('original ae7 disposer order differs');
+                \\}
+            );
+        }
+    };
+    var receiver: Receiver = .{ .frontend = frontend, .controller = &controller, .queues = undefined };
+    controller.bindComponentScenes(Frontend.componentSink, Receiver.frontendClose, frontend);
+    for (&receiver.queues) |*queue| queue.* = component_protocol.ControlQueue.init(gpa, io);
+    defer for (&receiver.queues) |*queue| queue.deinit();
+    // Retire the Manager before its test bridge/queues leave scope.
+    defer manager.bridge = null;
+    manager.bridge = .{ .context = &receiver, .request = Receiver.request, .action = Receiver.action, .cancel = Receiver.cancel, .component_scene = Receiver.scene, .component_close = Receiver.close };
+    try manager.ensureServiceFrontendOwner();
+    const snapshot = try engine.eval("({hasUI:true,width:80,height:24})", "ae7-overlay-context.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(snapshot);
+    try manager.begin(1, snapshot, null);
+    manager.invocation_id = 1;
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    if (c.JS_DefinePropertyValueStr(engine.context, global, "nativeUi", try manager.createObject(), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    try Receiver.evaluate(engine,
+        \\globalThis.done={};globalThis.handles={};globalThis.results={};globalThis.rejections={};globalThis.log=[];globalThis.redraw={};
+        \\globalThis.open=(id,row,deferred=false)=>nativeUi.custom((t,theme,keys,close)=>{
+        \\  done[id]=close; redraw[id]=()=>t.requestRender(); const c={render(){return [id]},handleInput(s){log.push(['input',id,s])},dispose(){log.push(['dispose',id])}};
+        \\  return deferred?new Promise(resolve=>globalThis.release=()=>resolve(c)):c;
+        \\},{overlay:true,overlayOptions:{width:20,anchor:'top-left',row},onHandle(h){handles[id]=h}}).then(v=>{results[id]=v});
+    );
+    const oracle = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("../extensions/fixtures/ui-overlay-ae7-original.json"), .{});
+    defer oracle.deinit();
+    try std.testing.expectEqualStrings("ae7b16d43b7c78c5b6fa3213fdd1215bb339729d", oracle.value.object.get("sourceCommit").?.string);
+    const original_rows = oracle.value.object.get("rows").?.array.items;
+    for (original_rows[0..3]) |original_order| {
+        try Receiver.evaluate(engine, "globalThis.results={};globalThis.log=[];open('lower',0);open('middle',2);open('top',4);");
+        try receiver.pump(manager);
+        const original_steps = original_order.object.get("steps").?.array.items;
+        try receiver.compareOriginal(engine, original_steps[0]);
+        try std.testing.expectEqual(@as(usize, 3), frontend.app.overlays.items.len);
+        const top = frontend.components.items[2].scene.fence;
+        try std.testing.expect(frontend.focusedComponent().?.scene.fence.matches(top));
+        // A lower repaint preserves z-order and the top input target.
+        try Receiver.evaluate(engine, "redraw.lower();");
+        try receiver.pump(manager);
+        try std.testing.expect(frontend.focusedComponent().?.scene.fence.matches(top));
+        for (original_order.object.get("order").?.array.items, 0..) |id, index| {
+            const fence = for (frontend.components.items) |owner| {
+                if (std.mem.eql(u8, owner.scene.frame.lines[0], id.string)) break owner.scene.fence;
+            } else return error.MissingOriginalOverlay;
+            const source: [:0]const u8 = if (std.mem.eql(u8, id.string, "lower")) "done.lower('lower-result');done.lower('duplicate');" else if (std.mem.eql(u8, id.string, "middle")) "done.middle('middle-result');done.middle('duplicate');" else "done.top('top-result');done.top('duplicate');";
+            try Receiver.evaluate(engine, source);
+            try std.testing.expectEqual(@as(usize, 1), receiver.close_count);
+            try std.testing.expect(receiver.closes[0].matches(fence));
+            try receiver.pump(manager);
+            try receiver.compareOriginal(engine, original_steps[index + 1]);
+            try std.testing.expectEqual(@as(usize, 2) - index, frontend.app.overlays.items.len);
+            try std.testing.expectEqualStrings("preserved draft", frontend.editor.slice());
+        }
+    }
+    try Receiver.evaluate(engine, "globalThis.results={};globalThis.log=[];open('slow',0,true);open('fast',4);");
+    try receiver.pump(manager);
+    const asynchronous_steps = original_rows[3].object.get("steps").?.array.items;
+    try receiver.compareOriginal(engine, asynchronous_steps[0]);
+    try Receiver.evaluate(engine, "release();");
+    try receiver.pump(manager);
+    try receiver.compareOriginal(engine, asynchronous_steps[1]);
+    try Receiver.evaluate(engine, "done.fast('fast-result');");
+    try receiver.pump(manager);
+    try receiver.compareOriginal(engine, asynchronous_steps[2]);
+    try Receiver.evaluate(engine, "done.slow('slow-result');");
+    try receiver.pump(manager);
+    try receiver.compareOriginal(engine, asynchronous_steps[3]);
+    try std.testing.expectEqual(@as(usize, 0), frontend.components.items.len);
+    try std.testing.expectEqual(@as(usize, 0), manager.components.entries.count());
+    try std.testing.expectEqual(@as(usize, 0), engine.host_ui_pending);
+    const edge_cases = [_]struct { row: usize, source: [:0]const u8, finish: ?[:0]const u8 = null }{
+        .{ .row = 4, .source = "nativeUi.custom((t,theme,keys,done)=>{done('subject-early');return{dispose(){log.push(['dispose','subject'])}}},{overlay:true}).then(v=>results.subject=v);" },
+        .{ .row = 5, .source = "nativeUi.custom((t,theme,keys,done)=>{done('subject-early');return new Promise(resolve=>globalThis.edgeRelease=()=>resolve({dispose(){log.push(['dispose','subject'])}}))},{overlay:true}).then(v=>results.subject=v);", .finish = "edgeRelease();" },
+        .{ .row = 6, .source = "globalThis.edgeFailure=Error('reject');nativeUi.custom(()=>Promise.reject(edgeFailure),{overlay:true}).then(v=>results.subject=v,e=>{if(e!==edgeFailure)throw Error('factory rejection identity');rejections.subject=e.message});" },
+        .{ .row = 7, .source = "globalThis.edgeFailure=Error('throw');nativeUi.custom(()=>{throw edgeFailure},{overlay:true}).then(v=>results.subject=v,e=>{if(e!==edgeFailure)throw Error('factory throw identity');rejections.subject=e.message});" },
+        .{ .row = 8, .source = "nativeUi.custom((t,theme,keys,done)=>{globalThis.edgeDone=done;return{render(){return['subject']},dispose(){log.push(['dispose','subject']);throw Error('dispose-error')}}},{overlay:true}).then(v=>results.subject=v);", .finish = "edgeDone('result');edgeDone('duplicate');" },
+    };
+    for (edge_cases) |edge| {
+        try Receiver.evaluate(engine, "globalThis.results={};globalThis.rejections={};globalThis.log=[];");
+        try Receiver.evaluate(engine, edge.source);
+        try receiver.pump(manager);
+        if (edge.finish) |finish| {
+            try Receiver.evaluate(engine, finish);
+            try receiver.pump(manager);
+        }
+        const steps = original_rows[edge.row].object.get("steps").?.array.items;
+        try receiver.compareOriginal(engine, steps[steps.len - 1]);
+    }
+    try Receiver.evaluate(engine, "globalThis.results={};globalThis.rejections={};globalThis.log=[];nativeUi.setEditorText('saved draft');");
+    try receiver.pump(manager);
+    try Receiver.evaluate(engine, "nativeUi.custom((t,theme,keys,done)=>{globalThis.edgeDone=done;return{render(){return['subject']},dispose(){log.push(['dispose','subject'])}}},{overlay:false}).then(v=>results.subject=v);");
+    try receiver.pump(manager);
+    try Receiver.evaluate(engine, "nativeUi.setEditorText('edited while open');edgeDone('result');");
+    try receiver.pump(manager);
+    const restored = original_rows[10].object.get("steps").?.array.items[1];
+    try receiver.compareOriginal(engine, restored);
+    try std.testing.expectEqualStrings(restored.object.get("editor").?.string, frontend.editor.slice());
+    try Receiver.evaluate(engine, "globalThis.results={};globalThis.rejections={};globalThis.log=[];globalThis.edgeFailure=Error('normal-reject');nativeUi.custom(()=>Promise.reject(edgeFailure),{overlay:false}).then(v=>results.subject=v,e=>{if(e!==edgeFailure)throw Error('normal rejection identity');rejections.subject=e.message});");
+    try receiver.pump(manager);
+    try receiver.compareOriginal(engine, original_rows[11].object.get("steps").?.array.items[0]);
+    try std.testing.expectEqualStrings("saved draft", frontend.editor.slice());
+    // Original Source12's raw hide failure closes the guard before invoking
+    // the saved exposed handle. It preserves identity and leaves the custom
+    // promise/scene pending without calling dispose or a host close.
+    try Receiver.evaluate(engine,
+        \\globalThis.hideFailure={identity:'original-hide'};globalThis.hideDisposed=0;globalThis.hideSettled=false;
+        \\nativeUi.custom((t,theme,keys,done)=>{globalThis.hideDone=done;return{render(){return ['raw-hide-error']},dispose(){hideDisposed++}}},{overlay:true,onHandle(handle){handle.hide=()=>{throw hideFailure}}}).then(()=>hideSettled=true,()=>hideSettled=true);
+    );
+    try receiver.pump(manager);
+    try Receiver.evaluate(engine, "let caught=false;try{hideDone('result')}catch(error){caught=error===hideFailure}if(!caught)throw Error('hide identity lost');hideDone('duplicate');");
+    try receiver.pump(manager);
+    try std.testing.expectEqual(@as(usize, 0), receiver.close_count);
+    try std.testing.expectEqual(@as(usize, 1), frontend.components.items.len);
+    try std.testing.expectEqual(@as(usize, 1), engine.host_ui_pending);
+    try Receiver.evaluate(engine, "if(hideDisposed!==0||hideSettled)throw Error('raw hide failure must remain pending');");
+    const original_hide = oracle.value.object.get("rows").?.array.items[9].object.get("steps").?.array.items[1];
+    try std.testing.expectEqualStrings("pending", original_hide.object.get("state").?.object.get("subject").?.string);
+    try std.testing.expectEqual(@as(usize, 1), original_hide.object.get("stack").?.array.items.len);
 }
 
 test "fullscreen startup failure joins owner without holding its cleanup mutex" {
@@ -491,18 +716,16 @@ pub const Frontend = struct {
     shortcuts: [][]u8 = &.{},
     working_frame: usize = 0,
     title_dirty: bool = false,
-    component: ?component_protocol.Scene = null,
-    component_controls: ?*component_protocol.ControlQueue = null,
+    // Stable owners are required because Application retains their component
+    // contexts while siblings can be appended, repainted or removed.
+    components: std.ArrayList(*NativeComponent) = .empty,
     mouse_sequence: u64 = 0,
-    mouse_gesture_active: bool = false,
     wheel: wheel_scroll.Accelerator = .{},
-    component_overlay_id: ?u64 = null,
     close_pending: ?component_protocol.Fence = null,
     closed_component: ?component_protocol.Fence = null,
     custom_alternate_screen: bool = false,
     alternate_transition: enum { none, enter, leave } = .none,
-    component_close_request: ?component_protocol.Fence = null,
-    component_dimensions: ?terminal.Dimensions = null,
+    component_close_waiters: ?*ComponentCloseWaiter = null,
     observed_dimensions: terminal.Dimensions = .{ .columns = 0, .rows = 0 },
     editor_observer: ?ui.EditorSinkFn = null,
     editor_observer_context: ?*anyopaque = null,
@@ -929,14 +1152,27 @@ pub const Frontend = struct {
         const self: *Frontend = @ptrCast(@alignCast(raw.?));
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
-        // Allocation-free close admission also works under mailbox OOM/full.
-        self.component_close_request = fence;
+        // Each blocked owner lends one stable stack node until its own ACK.
+        // This stays allocation-free under mailbox OOM/full and concurrent
+        // middle/lower/top closures cannot overwrite each other's admission.
+        var waiter: ComponentCloseWaiter = .{ .fence = fence, .next = self.component_close_waiters };
+        self.component_close_waiters = &waiter;
+        defer {
+            var link = &self.component_close_waiters;
+            while (link.*) |node| {
+                if (node == &waiter) {
+                    link.* = node.next;
+                    break;
+                }
+                link = &node.next;
+            }
+        }
         self.changed.broadcast(self.io);
         while (true) {
-            if (self.closed_component) |closed| if (closed.matches(fence)) {
+            if (waiter.state == .closed) {
                 if (self.failure) |err| return err;
                 return;
-            };
+            }
             // A terminal failure still requires the UI owner to detach the
             // borrowed queue before Runtime can release the custom session.
             if (self.worker_finished) return error.NativeComponentFrontendStopped;
@@ -1074,7 +1310,11 @@ pub const Frontend = struct {
         self.bindings.deinit();
         self.environ.deinit();
         self.surfaces.deinit();
-        if (self.component) |*scene| scene.deinit();
+        for (self.components.items) |owner| {
+            owner.scene.deinit();
+            self.gpa.destroy(owner);
+        }
+        self.components.deinit(self.gpa);
         self.gpa.free(self.editor_text);
         self.gpa.free(self.header);
         self.gpa.free(self.status);
@@ -1111,34 +1351,63 @@ pub const Frontend = struct {
     fn editorComponent(self: *Frontend) layout.Component {
         return .{ .context = self, .vtable = &.{ .render = renderEditor, .handle_input = editorInput, .handle_paste = editorPaste } };
     }
-    fn customComponent(self: *Frontend) layout.Component {
-        return .{ .context = self, .vtable = &.{ .render = renderCustomComponent } };
+    const NativeComponent = struct {
+        scene: component_protocol.Scene,
+        controls: *component_protocol.ControlQueue,
+        overlay_id: ?u64 = null,
+        dimensions: ?terminal.Dimensions = null,
+        mouse_gesture_active: bool = false,
+        fn component(self: *@This()) layout.Component {
+            return .{ .context = self, .vtable = &.{ .render = render } };
+        }
+        fn render(raw: *anyopaque, gpa: std.mem.Allocator, _: usize) !layout.RenderedLines {
+            const self: *@This() = @ptrCast(@alignCast(raw));
+            return layout.RenderedLines.clone(gpa, self.scene.frame.lines);
+        }
+    };
+    const ComponentCloseWaiter = struct {
+        fence: component_protocol.Fence,
+        next: ?*ComponentCloseWaiter = null,
+        processing_next: ?*ComponentCloseWaiter = null,
+        state: enum { requested, processing, detached, closed } = .requested,
+    };
+    fn findComponent(self: *Frontend, fence: component_protocol.Fence) ?*NativeComponent {
+        for (self.components.items) |owner| if (owner.scene.fence.matches(fence)) return owner;
+        return null;
     }
-    fn renderCustomComponent(raw: *anyopaque, gpa: std.mem.Allocator, _: usize) !layout.RenderedLines {
-        const self: *Frontend = @ptrCast(@alignCast(raw));
-        const scene = self.component orelse return .{};
-        return layout.RenderedLines.clone(gpa, scene.frame.lines);
+    fn focusedComponent(self: *Frontend) ?*NativeComponent {
+        const focused = self.app.focused orelse return null;
+        for (self.components.items) |owner| if (focused.eql(owner.component())) return owner;
+        return null;
+    }
+    fn restoreComponentRoot(self: *Frontend) void {
+        self.app.root = self.stack.component();
+        for (self.components.items) |owner| if (owner.scene.overlay == null) {
+            self.app.root = owner.component();
+        };
+        // removeOverlay restores the surviving focus chain. Only a last close
+        // restores the editor; closing a lower overlay preserves the top one.
+        if (self.components.items.len == 0) self.app.setFocus(if (self.custom_editor_frame != null and !self.custom_editor_focused) null else self.editorComponent());
     }
     fn removeCustomComponent(self: *Frontend, fence: component_protocol.Fence) !void {
-        if (self.component) |scene| {
-            if (!scene.fence.matches(fence)) return error.StaleNativeComponentScene;
-            if (self.component_overlay_id) |id| _ = self.app.removeOverlay(id);
-            self.component_overlay_id = null;
-            self.app.root = self.stack.component();
-            self.app.setFocus(if (self.custom_editor_frame != null and !self.custom_editor_focused) null else self.editorComponent());
-            var owned = scene;
-            owned.deinit();
-            self.component = null;
-            self.mouse_gesture_active = false;
-            if (self.custom_alternate_screen) {
+        const index: ?usize = for (self.components.items, 0..) |owner, i| {
+            if (owner.scene.fence.matches(fence)) break i;
+        } else null;
+        if (index) |i| {
+            const owner = self.components.orderedRemove(i);
+            if (owner.overlay_id) |id| _ = self.app.removeOverlay(id) else if (self.app.focused) |focused| {
+                if (focused.eql(owner.component())) self.app.setFocus(self.editorComponent());
+            }
+            owner.scene.deinit();
+            self.gpa.destroy(owner);
+            self.restoreComponentRoot();
+            if (self.components.items.len == 0 and self.custom_alternate_screen) {
                 self.app.alternate_screen = false;
                 self.custom_alternate_screen = false;
                 self.alternate_transition = .leave;
             }
         }
         self.mutex.lockUncancelable(self.io);
-        self.component_controls = null;
-        self.component_dimensions = null;
         self.close_pending = fence;
         self.mutex.unlock(self.io);
         self.app.invalidatePaint();
@@ -1208,8 +1477,13 @@ pub const Frontend = struct {
         self.custom_editor_retire_pending = null;
         const retire_renderers = self.renderer_retire_pending;
         self.renderer_retire_pending = false;
-        const requested_close = self.component_close_request;
-        self.component_close_request = null;
+        var requested_closes: ?*ComponentCloseWaiter = null;
+        var waiter = self.component_close_waiters;
+        while (waiter) |node| : (waiter = node.next) if (node.state == .requested) {
+            node.state = .processing;
+            node.processing_next = requested_closes;
+            requested_closes = node;
+        };
         self.mutex.unlock(self.io);
         defer {
             for (updates.items) |*update| update.deinit(self.gpa);
@@ -1299,35 +1573,46 @@ pub const Frontend = struct {
                 update.* = .{ .busy = self.busy };
             },
             .component => |value| {
-                if (self.component) |scene| if (!scene.fence.matches(value.scene.fence)) return error.StaleNativeComponentScene;
-                // A custom regular-mode session keeps the established private
-                // alternate buffer while the continuous base stays primary.
+                const old = self.findComponent(value.scene.fence);
+                const focus_changed = if (old) |previous| previous.scene.focus_mode != value.scene.focus_mode or previous.scene.target_generation != value.scene.target_generation else false;
+                const owner = old orelse try self.gpa.create(NativeComponent);
+                if (old == null) {
+                    errdefer self.gpa.destroy(owner);
+                    const index = if (value.scene.presentation_order == 0) self.components.items.len else for (self.components.items, 0..) |existing, i| {
+                        if (existing.scene.presentation_order > value.scene.presentation_order) break i;
+                    } else self.components.items.len;
+                    try self.components.insert(self.gpa, index, owner);
+                    owner.* = .{ .scene = value.scene, .controls = value.controls };
+                } else {
+                    if (owner.controls != value.controls) return error.StaleNativeComponentChannel;
+                    const previous = owner.scene;
+                    owner.scene = value.scene;
+                    var owned = previous;
+                    owned.deinit();
+                }
+                // Ownership transfers before rendering/pushOverlay can fail.
+                update.* = .{ .busy = self.busy };
                 if (!self.app.alternate_screen) {
                     self.app.alternate_screen = true;
                     self.custom_alternate_screen = true;
                     self.alternate_transition = .enter;
                 }
-                if (self.component_overlay_id) |id| _ = self.app.removeOverlay(id);
-                self.component_overlay_id = null;
-                if (self.component) |*scene| scene.deinit();
-                self.component = value.scene;
-                self.mutex.lockUncancelable(self.io);
-                self.component_controls = value.controls;
-                self.closed_component = null;
-                self.mutex.unlock(self.io);
-                update.* = .{ .busy = self.busy };
+                self.restoreComponentRoot();
                 if (value.scene.overlay) |overlay| {
-                    self.app.root = self.stack.component();
-                    self.app.setFocus(if (value.scene.focus_mode == .none) null else self.editorComponent());
-                    if (!overlay.hidden) self.component_overlay_id = try self.app.pushOverlay(self.customComponent(), .{ .width = overlay.width, .height = overlay.height, .placement = .{ .absolute = .{ .x = @intCast(overlay.column), .y = @intCast(overlay.row) } }, .modal = value.scene.focused });
-                } else {
-                    self.app.root = self.customComponent();
-                    self.app.setFocus(switch (value.scene.focus_mode) {
-                        .custom => self.customComponent(),
+                    const options: application.OverlayOptions = .{ .width = overlay.width, .height = overlay.height, .placement = .{ .absolute = .{ .x = @intCast(overlay.column), .y = @intCast(overlay.row) } }, .modal = value.scene.focused, .hidden = overlay.hidden, .presentation_order = value.scene.presentation_order };
+                    if (owner.overlay_id) |id| {
+                        _ = self.app.updateOverlay(id, options);
+                    } else owner.overlay_id = try self.app.pushOverlay(owner.component(), options);
+                    if (focus_changed and !overlay.hidden) self.app.setFocus(switch (value.scene.focus_mode) {
+                        .custom => owner.component(),
                         .editor => self.editorComponent(),
                         .none => null,
                     });
-                }
+                } else if (old == null) self.app.setFocus(switch (value.scene.focus_mode) {
+                    .custom => owner.component(),
+                    .editor => self.editorComponent(),
+                    .none => null,
+                });
                 self.app.invalidatePaint();
                 try self.resizeComponent(terminal.terminalDimensions(&self.environ, .{ .columns = 80, .rows = 24 }));
             },
@@ -1362,7 +1647,7 @@ pub const Frontend = struct {
                         }
                         self.custom_editor_width = value.width;
                         self.custom_editor_focused = value.focused;
-                        if (self.component == null) self.app.setFocus(if (value.focused) self.editorComponent() else null);
+                        if (self.components.items.len == 0) self.app.setFocus(if (value.focused) self.editorComponent() else null);
                     },
                     .submit => |value| {
                         try self.editor.setText(value);
@@ -1381,7 +1666,7 @@ pub const Frontend = struct {
                         if (self.custom_editor_frame) |*old| old.deinit();
                         self.custom_editor_frame = null;
                         self.custom_editor_focused = true;
-                        if (self.component == null) self.app.setFocus(self.editorComponent());
+                        if (self.components.items.len == 0) self.app.setFocus(self.editorComponent());
                         try self.editor.setText(value);
                         self.revision += 1;
                         try self.publishEditor();
@@ -1394,12 +1679,18 @@ pub const Frontend = struct {
             if (self.custom_editor_frame) |*old| old.deinit();
             self.custom_editor_frame = null;
             self.custom_editor_focused = true;
-            if (self.component == null) self.app.setFocus(self.editorComponent());
+            if (self.components.items.len == 0) self.app.setFocus(self.editorComponent());
             self.custom_editor_fence = null;
             self.revision += 1;
             try self.publishEditor();
         };
-        if (requested_close) |fence| try self.removeCustomComponent(fence);
+        while (requested_closes) |node| {
+            try self.removeCustomComponent(node.fence);
+            self.mutex.lockUncancelable(self.io);
+            node.state = .detached;
+            self.mutex.unlock(self.io);
+            requested_closes = node.processing_next;
+        }
         try self.publishProgramStatus();
         if (updates.items.len > 0) self.dirty = true;
     }
@@ -1416,16 +1707,17 @@ pub const Frontend = struct {
         try self.draw(dimensions, true);
     }
     fn resizeComponent(self: *Frontend, size: terminal.Dimensions) !void {
-        const scene = self.component orelse return;
-        const queue = self.component_controls orelse return;
-        if (self.component_dimensions) |previous| {
-            if (previous.columns == size.columns and previous.rows == size.rows) return;
-        } else if (scene.width == size.columns and scene.height == size.rows) {
-            self.component_dimensions = size;
-            return;
+        for (self.components.items) |owner| {
+            const scene = owner.scene;
+            if (owner.dimensions) |previous| {
+                if (previous.columns == size.columns and previous.rows == size.rows) continue;
+            } else if (scene.width == size.columns and scene.height == size.rows) {
+                owner.dimensions = size;
+                continue;
+            }
+            try owner.controls.send(.{ .gpa = self.gpa, .fence = scene.fence, .kind = .{ .resize = .{ .width = size.columns, .height = size.rows } } });
+            owner.dimensions = size;
         }
-        try queue.send(.{ .gpa = self.gpa, .fence = scene.fence, .kind = .{ .resize = .{ .width = size.columns, .height = size.rows } } });
-        self.component_dimensions = size;
     }
     fn draw(self: *Frontend, dimensions: terminal.Dimensions, write: bool) !void {
         self.widget_dimensions.store(@as(u64, @intCast(@min(dimensions.columns, 16384))) | (@as(u64, @intCast(@min(dimensions.rows, 16384))) << 32), .release);
@@ -1510,6 +1802,11 @@ pub const Frontend = struct {
         if (write) try application.writeAll(self.io, bytes);
         self.dirty = false;
         self.mutex.lockUncancelable(self.io);
+        var waiter = self.component_close_waiters;
+        while (waiter) |node| : (waiter = node.next) if (node.state == .detached) {
+            node.state = .closed;
+            self.changed.broadcast(self.io);
+        };
         if (self.close_pending) |fence| {
             self.closed_component = fence;
             self.close_pending = null;
@@ -1531,7 +1828,7 @@ pub const Frontend = struct {
             self.changed.broadcast(self.io);
             self.mutex.unlock(self.io);
         };
-        if (self.component) |scene| self.removeCustomComponent(scene.fence) catch {};
+        while (self.components.items.len > 0) self.removeCustomComponent(self.components.items[self.components.items.len - 1].scene.fence) catch break;
         self.mutex.lockUncancelable(self.io);
         // No borrowed Runtime queue survives a worker stop, including a frame
         // admitted immediately before shutdown but not yet presented.
@@ -1539,7 +1836,6 @@ pub const Frontend = struct {
             update.deinit(self.gpa);
             update.* = .{ .busy = false };
         };
-        self.component_controls = null;
         self.custom_editor_controls = null;
         self.custom_editor_closed = true;
         for (self.renderer_owners.items) |*owner| {
@@ -1551,6 +1847,8 @@ pub const Frontend = struct {
             self.close_pending = null;
         }
         self.worker_finished = true;
+        var waiter = self.component_close_waiters;
+        while (waiter) |node| : (waiter = node.next) node.state = .closed;
         self.changed.broadcast(self.io);
         self.mutex.unlock(self.io);
     }
@@ -1610,11 +1908,12 @@ pub const Frontend = struct {
     }
     fn inputFiltered(self: *Frontend, packet: line_editor.InputDecoder.Input) !void {
         if (packet == .key) if (mouse_input.parse(packet.key)) |event| {
-            if (self.component != null) return self.componentMouse(event, packet.key);
+            if (self.components.items.len > 0) return self.componentMouse(event, packet.key);
         };
-        if (self.component) |scene| if (scene.focus_mode == .none) return;
-        if (self.component) |scene| if (scene.focused and (scene.overlay == null or !scene.overlay.?.hidden)) {
-            const queue = self.component_controls orelse return error.NativeComponentChannelClosed;
+        if (self.components.items.len > 0 and self.app.focused == null) return;
+        if (self.focusedComponent()) |owner| {
+            const scene = owner.scene;
+            const queue = owner.controls;
             const owned = switch (packet) {
                 .key => |value| blk: {
                     if (keys.parseKeyWithOptions(value, .{ .kitty_active = true })) |key| {
@@ -1630,7 +1929,7 @@ pub const Frontend = struct {
             errdefer self.gpa.free(owned);
             try queue.send(.{ .gpa = self.gpa, .fence = scene.fence, .target_id = scene.target_id, .target_generation = scene.target_generation, .kind = .{ .input = owned } });
             return;
-        };
+        }
         switch (packet) {
             .paste => |value| try self.app.handlePaste(value),
             .key => |sequence| {
@@ -1657,8 +1956,32 @@ pub const Frontend = struct {
         self.dirty = true;
     }
     fn componentMouse(self: *Frontend, raw: mouse_input.Event, bytes: []const u8) !void {
-        const scene = self.component orelse return;
-        const queue = self.component_controls orelse return error.NativeComponentChannelClosed;
+        // Captured drags stay with their owner; otherwise hit-test the actual
+        // visible stack from top to bottom independently of keyboard focus.
+        var selected: ?*NativeComponent = null;
+        for (self.components.items) |owner| if (owner.mouse_gesture_active) {
+            selected = owner;
+            break;
+        };
+        if (selected == null) {
+            var index = self.components.items.len;
+            while (index > 0) {
+                index -= 1;
+                const candidate = self.components.items[index];
+                if (candidate.scene.overlay) |overlay| {
+                    if (overlay.hidden or raw.x < overlay.column or raw.y < overlay.row or raw.x - overlay.column >= overlay.width or raw.y - overlay.row >= overlay.height) continue;
+                }
+                selected = candidate;
+                break;
+            }
+        }
+        const owner = selected orelse {
+            try self.app.handleInput(bytes);
+            self.dirty = true;
+            return;
+        };
+        const scene = owner.scene;
+        const queue = owner.controls;
         var row: i64 = 0;
         var column: i64 = 0;
         var width = scene.width;
@@ -1671,7 +1994,7 @@ pub const Frontend = struct {
             height = overlay.height;
             const visible = !overlay.hidden and raw.x >= overlay.column and raw.y >= overlay.row and raw.x - overlay.column < overlay.width and raw.y - overlay.row < overlay.height;
             overlay_hit = visible;
-            if (!self.mouse_gesture_active and !visible) {
+            if (!owner.mouse_gesture_active and !visible) {
                 try self.app.handleInput(bytes);
                 self.dirty = true;
                 return;
@@ -1723,18 +2046,22 @@ pub const Frontend = struct {
             // Drain them while the pointer ACK is pending, without retaining a
             // borrowed queue after that scene's lifetime boundary completes.
             try self.applyUpdates();
-            const active = self.component orelse return;
-            if (!active.fence.matches(scene.fence)) return;
+            const active = self.findComponent(scene.fence) orelse return;
             const outcome = queue.takeMouseOutcome(scene.fence, self.mouse_sequence) catch |err| {
                 if (err == error.NativeComponentChannelClosed) return;
                 return err;
             };
             if (outcome) |value| {
-                self.mouse_gesture_active = value.capture;
-                self.component.?.focus_mode = value.focus_mode;
-                self.component.?.focused = value.focus_mode == .custom;
-                self.component.?.target_id = value.target_id;
-                self.component.?.target_generation = value.target_generation;
+                active.mouse_gesture_active = value.capture;
+                active.scene.focus_mode = value.focus_mode;
+                active.scene.focused = value.focus_mode == .custom;
+                active.scene.target_id = value.target_id;
+                active.scene.target_generation = value.target_generation;
+                self.app.setFocus(switch (value.focus_mode) {
+                    .custom => active.component(),
+                    .editor => self.editorComponent(),
+                    .none => null,
+                });
                 if (!value.handled and !overlay_hit) try self.app.handleInput(bytes);
                 self.dirty = self.dirty or value.render or (!value.handled and !overlay_hit);
                 return;
