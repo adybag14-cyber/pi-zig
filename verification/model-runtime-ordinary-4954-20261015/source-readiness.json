@@ -26,7 +26,7 @@
     },
     {
       "path": "src/extensions/fixtures/model-runtime-ordinary-4954.input.mjs",
-      "sha256": "026DA24546ED81373D0DA9794B2E7568BA631F98D5D917575B539986DA58F995"
+      "sha256": "58D281A08033FBA860CC6EA08B87982907949AC525EF221AAB71BB991C17EBF6"
     },
     {
       "path": "verification/model-runtime-ordinary-4954-20261015/source-model-runtime-ordinary-capture.mjs",

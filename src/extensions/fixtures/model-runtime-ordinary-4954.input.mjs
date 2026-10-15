@@ -35,13 +35,12 @@ export async function observe({ModelRuntime,CredentialSynchronizationError,opera
   const full=instance.queueAvailabilityRefresh();const scoped=instance.refreshProviderAvailability('caller',operationSignal());
   providerRelease([second]);await scoped;fullRelease([first]);await full;
   rows.push({case:'stale-availability',ids:instance.getAvailableSnapshot().map(model=>model.id),configured:instance.hasConfiguredAuth('caller'),stored:instance.snapshot.storedProviders.has('caller'),auth:instance.snapshot.auth.get('caller')});
-  let finishFirst;instance.synchronizeCredentialState=()=>new Promise(resolve=>{finishFirst=resolve});
+  let finishFirst;instance.models.getAvailable=async()=>[second];instance.models.refresh=()=>new Promise(resolve=>{finishFirst=()=>resolve({aborted:false,errors:new Map()})});
   const firstKey=instance.setRuntimeApiKey('caller','first-key');await tick();
   const controller=new AbortController(),reason={identity:'queued-abort'};const secondKey=instance.setRuntimeApiKey('caller','second-key',{signal:controller.signal});controller.abort(reason);
   let abortIdentity=false;try{await secondKey}catch(error){abortIdentity=error===reason}
   finishFirst();await firstKey;await tick();
   rows.push({case:'credential-queue',commits:[...commits],abortIdentity,remainingQueues:instance.credentialOperations.size});
-  delete instance.synchronizeCredentialState;
   const original=Error('caller-refresh-failure');instance.models.refresh=async()=>({aborted:false,errors:new Map([['caller',original]])});
   let synchronization;try{await instance.setRuntimeApiKey('caller','committed-key')}catch(error){synchronization=error}
   rows.push({case:'committed-error',classIdentity:synchronization instanceof CredentialSynchronizationError,causeIdentity:synchronization?.cause===original,name:synchronization?.name,message:synchronization?.message,providerId:synchronization?.providerId,operation:synchronization?.operation,credential:synchronization?.credential,keys:Object.keys(synchronization),committed:runtimeKeys.get('caller')});
