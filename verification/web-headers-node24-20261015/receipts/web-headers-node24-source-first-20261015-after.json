@@ -1,0 +1,27 @@
+[
+  {
+    "manifest": "source5ab-full-manifest-20261015.json",
+    "count": 1967,
+    "drift": 0
+  },
+  {
+    "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "count": 31064,
+    "drift": 0
+  },
+  {
+    "manifest": "root-current8a-npm-tools-before.json",
+    "count": 1774,
+    "drift": 0
+  },
+  {
+    "manifest": "web-headers-node24-source-first-20261015-candidate.json",
+    "count": 5954,
+    "drift": 0
+  },
+  {
+    "manifest": "web-headers-node24-source-first-20261015-controls.json",
+    "count": 5,
+    "drift": 0
+  }
+]

@@ -113,7 +113,10 @@ fn scanDir(gpa: std.mem.Allocator, io: Io, dir_path: []const u8, out: *std.Array
 }
 
 fn loadFile(gpa: std.mem.Allocator, io: Io, path: []const u8, out: *std.ArrayList(PromptTemplate)) !void {
-    const raw = std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(512 * 1024)) catch return;
+    const raw = std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(512 * 1024)) catch |err| switch (err) {
+        error.OutOfMemory => return err,
+        else => return,
+    };
     defer gpa.free(raw);
     const filename = std.fs.path.basename(path);
     const name = if (std.mem.endsWith(u8, filename, ".md")) filename[0 .. filename.len - 3] else filename;
@@ -127,12 +130,18 @@ fn loadFile(gpa: std.mem.Allocator, io: Io, path: []const u8, out: *std.ArrayLis
     const hint = if (document.argument_hint) |value| try gpa.dupe(u8, value) else null;
     errdefer if (hint) |value| gpa.free(value);
 
+    const name_copy = try gpa.dupe(u8, name);
+    errdefer gpa.free(name_copy);
+    const path_copy = try gpa.dupe(u8, path);
+    errdefer gpa.free(path_copy);
+    const content_copy = try gpa.dupe(u8, document.body);
+    errdefer gpa.free(content_copy);
     try out.append(gpa, .{
-        .name = try gpa.dupe(u8, name),
-        .path = try gpa.dupe(u8, path),
+        .name = name_copy,
+        .path = path_copy,
         .description = description,
         .argument_hint = hint,
-        .content = try gpa.dupe(u8, document.body),
+        .content = content_copy,
     });
 }
 

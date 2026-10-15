@@ -1,0 +1,13 @@
+{
+  "candidate": "b8ceb619518c01c8f486b224f6f4033aa717bb89",
+  "source": 5954,
+  "source_after": 5954,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "controls": 3,
+  "control_drift": 0,
+  "compile": "passed",
+  "runtime": "failed",
+  "completed_utc": "2026-10-15T18:46:03.7202939+00:00"
+}

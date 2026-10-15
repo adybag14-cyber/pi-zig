@@ -1437,15 +1437,20 @@ fn initResources(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     }
     try put(engine, data, "agentsFiles", try jsonObject(engine, "{\"agentsFiles\":[]}"));
     try put(engine, data, "appendSystemPrompt", try array(engine));
+    try @import("native_sdk_resource_paths.zig").initialize(engine, data);
     return new(engine, .resource_loader, data);
 }
-fn resourcesReload(self: *State) !c.JSValue {
+fn resourcesReload(self: *State, receiver: c.JSValue) !c.JSValue {
     const engine = self.engine;
     try @import("native_sdk_resources.zig").reload(engine, self.data);
     try @import("native_sdk_resources.zig").factories(engine, self.data);
     const options = try get(engine, self.data, "options");
     defer engine.freeValue(options);
     inline for (.{ .{ "skills", "skillsOverride" }, .{ "prompts", "promptsOverride" }, .{ "themes", "themesOverride" }, .{ "agentsFiles", "agentsFilesOverride" } }) |names| {
+        if (comptime std.mem.eql(u8, names[0], "themes")) {
+            try @import("native_sdk_resource_paths.zig").finishThemeReload(engine, receiver, self.data);
+            continue;
+        }
         const function = try get(engine, options, names[1]);
         defer engine.freeValue(function);
         if (c.JS_IsFunction(engine.context, function)) {
@@ -2130,7 +2135,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         return modelDispatch(self, operation, args);
     }
     if (self.kind == .resource_loader) {
-        if (operation == .reload) return resourcesReload(self);
+        if (operation == .reload) return resourcesReload(self, receiver);
         const key: ?[*:0]const u8 = switch (operation) {
             .getExtensions => "extensions",
             .getSkills => "skills",
@@ -2141,10 +2146,22 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             .getAppendSystemPrompt => "appendSystemPrompt",
             else => null,
         };
-        if (key) |name| return get(engine, self.data, name);
+        if (key) |name| {
+            const current = try get(engine, self.data, name);
+            if (operation != .getSkills and operation != .getPrompts and operation != .getThemes) return current;
+            defer engine.freeValue(current);
+            const fresh = try object(engine);
+            errdefer engine.freeValue(fresh);
+            try put(engine, fresh, name, try get(engine, current, name));
+            try put(engine, fresh, "diagnostics", try get(engine, current, "diagnostics"));
+            return fresh;
+        }
         if (operation == .getSystemPromptSource) return get(engine, self.data, "systemPromptSource");
         if (operation == .getAppendSystemPromptSources) return get(engine, self.data, "appendSystemPromptSources");
-        if (operation == .extendResources) return error.NativeSDKResourcePathExtensionsNotYetSupported;
+        if (operation == .extendResources) {
+            try @import("native_sdk_resource_paths.zig").extend(engine, receiver, self.data, first);
+            return c.pi_js_undefined();
+        }
         return error.NativeSDKMethodUnavailable;
     }
     if (self.kind == .session_manager) {

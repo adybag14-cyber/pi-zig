@@ -1,374 +1,53 @@
-//! Native pi-ai event streams and acknowledged provider iteration. No host JS.
+//! Actual public pi-ai streams and acknowledged provider iteration. No host JS.
 const std = @import("std");
 const typebox = @import("typebox.zig");
 const native_models = @import("native_models.zig");
 const engine_mod = @import("engine.zig");
 const providers_mod = @import("native_providers.zig");
+const core = @import("native_event_stream_core.zig");
 const c = engine_mod.c;
 pub const maximum_event_bytes = 512 * 1024;
 pub const maximum_total_bytes = 16 * 1024 * 1024;
-
-const Queued = struct { value: c.JSValue, bytes: usize };
-const Waiter = struct { iterator: c.JSValue, resolve: c.JSValue, reject: c.JSValue };
-/// Native failure retirement does not allocate host memory. This is needed
-/// when a host OOM prevents serializing a terminal event into the public queue.
+/// Native host-fatal retirement uses the actual live Source resolvers and real
+/// Promise assimilation. Stream instances no longer contain the old opaque queue.
 pub fn reject(engine: *engine_mod.Engine, value: c.JSValue, failure: c.JSValue) !void {
-    const self: *Stream = @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, value, engine.event_stream_class) orelse return error.InvalidNativeEventStream));
-    self.done = true;
-    try callOne(engine, self.result_reject, failure);
-    while (self.waiting.items.len > 0) {
-        const waiter = self.waiting.orderedRemove(0);
-        defer for ([_]c.JSValue{ waiter.iterator, waiter.resolve, waiter.reject }) |item| engine.freeValue(item);
-        try callOne(engine, waiter.reject, failure);
-    }
+    return core.reject(engine, value, failure);
 }
-const Stream = struct {
-    engine: *engine_mod.Engine,
-    assistant: bool,
-    started_wall: f64 = 0,
-    started_monotonic: f64 = 0,
-    complete: c.JSValue,
-    extract: c.JSValue,
-    result: c.JSValue,
-    result_resolve: c.JSValue,
-    result_reject: c.JSValue,
-    done: bool = false,
-    queued_bytes: usize = 0,
-    events: std.ArrayList(Queued) = .empty,
-    waiting: std.ArrayList(Waiter) = .empty,
-};
-const Iterator = struct { engine: *engine_mod.Engine, stream: c.JSValue, closed: bool = false };
-
-fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
-    if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
-    return c.JS_ThrowTypeError(engine.context, "Native provider stream: %s", @as([*:0]const u8, @errorName(err)));
-}
-
 fn property(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, object, name, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
 }
-
 fn callOne(engine: *engine_mod.Engine, function: c.JSValue, value: c.JSValue) !void {
     var args = [_]c.JSValue{value};
     const result = try engine.checked(c.JS_Call(engine.context, function, c.pi_js_undefined(), 1, &args));
     engine.freeValue(result);
 }
-
-fn iterationResult(engine: *engine_mod.Engine, value: c.JSValue, done: bool) !c.JSValue {
-    const object = try engine.checked(c.JS_NewObject(engine.context));
-    errdefer engine.freeValue(object);
-    try property(engine, object, "value", c.JS_DupValue(engine.context, value));
-    try property(engine, object, "done", c.pi_js_bool(engine.context, @intFromBool(done)));
-    return object;
-}
-
-fn streamFinalizer(runtime: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
-    const engine: *engine_mod.Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
-    const self: *Stream = @ptrCast(@alignCast(c.JS_GetOpaque(object, engine.event_stream_class) orelse return));
-    for ([_]c.JSValue{ self.complete, self.extract, self.result, self.result_resolve, self.result_reject }) |value| c.JS_FreeValueRT(runtime, value);
-    for (self.events.items) |event| c.JS_FreeValueRT(runtime, event.value);
-    for (self.waiting.items) |waiter| {
-        for ([_]c.JSValue{ waiter.iterator, waiter.resolve, waiter.reject }) |value| c.JS_FreeValueRT(runtime, value);
-    }
-    self.events.deinit(engine.gpa);
-    self.waiting.deinit(engine.gpa);
-    engine.gpa.destroy(self);
-}
-
-fn streamMark(runtime: ?*c.JSRuntime, object: c.JSValue, mark: ?*const c.JS_MarkFunc) callconv(.c) void {
-    const engine: *engine_mod.Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
-    const self: *Stream = @ptrCast(@alignCast(c.JS_GetOpaque(object, engine.event_stream_class) orelse return));
-    for ([_]c.JSValue{ self.complete, self.extract, self.result, self.result_resolve, self.result_reject }) |value| c.JS_MarkValue(runtime, value, mark);
-    for (self.events.items) |event| c.JS_MarkValue(runtime, event.value, mark);
-    for (self.waiting.items) |waiter| for ([_]c.JSValue{ waiter.iterator, waiter.resolve, waiter.reject }) |value| c.JS_MarkValue(runtime, value, mark);
-}
-
-fn iteratorFinalizer(runtime: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
-    const engine: *engine_mod.Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
-    const self: *Iterator = @ptrCast(@alignCast(c.JS_GetOpaque(object, engine.event_stream_iterator_class) orelse return));
-    c.JS_FreeValueRT(runtime, self.stream);
-    engine.gpa.destroy(self);
-}
-
-fn iteratorMark(runtime: ?*c.JSRuntime, object: c.JSValue, mark: ?*const c.JS_MarkFunc) callconv(.c) void {
-    const engine: *engine_mod.Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
-    const self: *Iterator = @ptrCast(@alignCast(c.JS_GetOpaque(object, engine.event_stream_iterator_class) orelse return));
-    c.JS_MarkValue(runtime, self.stream, mark);
-}
-
-fn construct(context: ?*c.JSContext, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = engine_mod.Engine.fromContext(context.?);
-    return constructValue(engine, target, false, if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
-}
-
-fn constructAssistant(context: ?*c.JSContext, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = engine_mod.Engine.fromContext(context.?);
-    return constructValue(engine, target, true, if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
-}
-
-fn constructValue(engine: *engine_mod.Engine, target: c.JSValue, assistant: bool, args: []c.JSValue) !c.JSValue {
-    var capabilities: [2]c.JSValue = undefined;
-    const result = try engine.checked(c.JS_NewPromiseCapability(engine.context, &capabilities));
-    errdefer engine.freeValue(result);
-    errdefer for (capabilities) |value| engine.freeValue(value);
-    const prototype = try engine.checked(c.JS_GetPropertyStr(engine.context, target, "prototype"));
-    defer engine.freeValue(prototype);
-    const object = try engine.checked(c.JS_NewObjectProtoClass(engine.context, prototype, engine.event_stream_class));
-    errdefer engine.freeValue(object);
-    const started_wall = if (assistant) try clockNumber(engine, "Date") else 0;
-    const started_monotonic = if (assistant) try clockNumber(engine, "performance") else 0;
-    const self = try engine.gpa.create(Stream);
-    self.* = .{ .engine = engine, .assistant = assistant, .started_wall = started_wall, .started_monotonic = started_monotonic, .complete = c.JS_DupValue(engine.context, if (args.len > 0) args[0] else c.pi_js_undefined()), .extract = c.JS_DupValue(engine.context, if (args.len > 1) args[1] else c.pi_js_undefined()), .result = result, .result_resolve = capabilities[0], .result_reject = capabilities[1] };
-    _ = c.JS_SetOpaque(object, self);
-    return object;
-}
-
-fn clockNumber(engine: *engine_mod.Engine, name: [*:0]const u8) !f64 {
-    var scope: @import("native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const value = try scope.invoke(try scope.global(name), "now", &.{});
-    var number: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &number, value) < 0) return @import("native_js_values.zig").capture(engine);
-    return number;
-}
-fn timeMessage(self: *Stream, message: c.JSValue) !void {
-    if (self.done) return;
-    var scope: @import("native_sdk_prompt_scope.zig").Scope = .{ .engine = self.engine };
-    defer scope.deinit();
-    if (!c.JS_IsUndefined(try scope.get(message, "durationMs"))) return;
-    const timestamp = try scope.get(message, "timestamp");
-    // Source's relational comparison coerces the message timestamp.
-    var number: f64 = 0;
-    if (c.JS_ToFloat64(self.engine.context, &number, timestamp) < 0) return @import("native_js_values.zig").capture(self.engine);
-    if (number < self.started_wall) return;
-    const elapsed = try clockNumber(self.engine, "performance") - self.started_monotonic;
-    const rounded = if (std.math.isNan(elapsed)) elapsed else @max(0, @floor(elapsed + 0.5));
-    try scope.set(message, "durationMs", c.JS_NewFloat64(self.engine.context, rounded));
-}
-
-fn streamCall(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
-    const engine = engine_mod.Engine.fromContext(context.?);
-    const self: *Stream = @ptrCast(@alignCast(c.JS_GetOpaque(this, engine.event_stream_class) orelse return c.JS_ThrowTypeError(context, "Illegal EventStream receiver")));
-    return streamOperation(self, this, magic, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| fail(engine, err);
-}
-
-fn streamOperation(self: *Stream, receiver: c.JSValue, method: c_int, value: c.JSValue) !c.JSValue {
-    const engine = self.engine;
-    if (method == 2) return c.JS_DupValue(engine.context, self.result);
-    if (method == 3) {
-        const iterator = try engine.checked(c.JS_NewObjectClass(engine.context, engine.event_stream_iterator_class));
-        errdefer engine.freeValue(iterator);
-        const state = try engine.gpa.create(Iterator);
-        state.* = .{ .engine = engine, .stream = c.JS_DupValue(engine.context, value) };
-        _ = c.JS_SetOpaque(iterator, state);
-        return iterator;
-    }
-    if (method == 1) {
-        if (self.assistant and !c.JS_IsUndefined(value)) try timeMessage(self, value);
-        self.done = true;
-        if (!c.JS_IsUndefined(value)) try callOne(engine, self.result_resolve, value);
-        while (self.waiting.items.len > 0) {
-            const waiter = self.waiting.orderedRemove(0);
-            defer for ([_]c.JSValue{ waiter.iterator, waiter.resolve, waiter.reject }) |item| engine.freeValue(item);
-            const result = try iterationResult(engine, c.pi_js_undefined(), true);
-            defer engine.freeValue(result);
-            try callOne(engine, waiter.resolve, result);
-        }
-        return c.pi_js_undefined();
-    }
-    if (self.done) return c.pi_js_undefined();
-    if (self.assistant) {
-        var scope: @import("native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
-        defer scope.deinit();
-        const kind = try scope.get(value, "type");
-        if (scope.equal(kind, try scope.text("done"))) try timeMessage(self, try scope.get(value, "message")) else if (scope.equal(kind, try scope.text("error"))) try timeMessage(self, try scope.get(value, "error"));
-    }
-    // A generic Source EventStream queues arbitrary raw JS values. Inspecting
-    // them through JSON would invoke caller toJSON/getters and reject cycles
-    // before the actual completion predicate ever sees the event.
-    const encoded: []const u8 = if (self.assistant) try engine.stringify(value) else &.{};
-    defer if (self.assistant) engine.gpa.free(encoded);
-    if (encoded.len > maximum_event_bytes) {
-        _ = c.JS_ThrowRangeError(engine.context, "assistant stream event exceeds the native byte limit");
-        _ = engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context))) catch {};
-        return error.JavaScriptException;
-    }
-    if (self.assistant and self.waiting.items.len == 0 and (self.events.items.len >= 64 or encoded.len > 1024 * 1024 - self.queued_bytes)) {
-        _ = c.JS_ThrowRangeError(engine.context, "assistant stream producer exceeded the bounded pending queue");
-        const failure = c.JS_GetException(engine.context);
-        defer engine.freeValue(failure);
-        self.done = true;
-        try callOne(engine, self.result_reject, failure);
-        _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, failure))) catch {};
-        return error.JavaScriptException;
-    }
-    const complete = if (self.assistant) blk: {
-        const kind = try engine.checked(c.JS_GetPropertyStr(engine.context, value, "type"));
-        defer engine.freeValue(kind);
-        const text = try engine.toString(kind);
-        defer engine.gpa.free(text);
-        break :blk std.mem.eql(u8, text, "done") or std.mem.eql(u8, text, "error");
-    } else blk: {
-        var args = [_]c.JSValue{value};
-        const result = try engine.checked(c.JS_Call(engine.context, self.complete, receiver, 1, &args));
-        defer engine.freeValue(result);
-        break :blk c.JS_ToBool(engine.context, result) != 0;
-    };
-    const terminal = if (complete) blk: {
-        // The generic Source class marks itself done before calling the
-        // extractor. A caller extractor failure therefore closes admission.
-        if (!self.assistant) self.done = true;
-        break :blk if (self.assistant) assistant: {
-            const kind = try engine.checked(c.JS_GetPropertyStr(engine.context, value, "type"));
-            defer engine.freeValue(kind);
-            const text = try engine.toString(kind);
-            defer engine.gpa.free(text);
-            break :assistant try engine.checked(c.JS_GetPropertyStr(engine.context, value, if (std.mem.eql(u8, text, "done")) "message" else "error"));
-        } else extract: {
-            var args = [_]c.JSValue{value};
-            break :extract try engine.checked(c.JS_Call(engine.context, self.extract, receiver, 1, &args));
-        };
-    } else c.pi_js_undefined();
-    defer engine.freeValue(terminal);
-    // Prepare native queue/delivery ownership before publishing terminal state.
-    const delivery = try iterationResult(engine, value, false);
-    defer engine.freeValue(delivery);
-    try self.events.ensureUnusedCapacity(engine.gpa, 1);
-    if (complete) {
-        self.done = true;
-        try callOne(engine, self.result_resolve, terminal);
-    }
-    if (self.waiting.items.len > 0) {
-        const waiter = self.waiting.orderedRemove(0);
-        defer for ([_]c.JSValue{ waiter.iterator, waiter.resolve, waiter.reject }) |item| engine.freeValue(item);
-        try callOne(engine, waiter.resolve, delivery);
-    } else {
-        const retained = c.JS_DupValue(engine.context, value);
-        errdefer engine.freeValue(retained);
-        self.events.appendAssumeCapacity(.{ .value = retained, .bytes = encoded.len });
-        self.queued_bytes += encoded.len;
-    }
-    return c.pi_js_undefined();
-}
-
-fn streamIterator(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = engine_mod.Engine.fromContext(context.?);
-    const self: *Stream = @ptrCast(@alignCast(c.JS_GetOpaque(this, engine.event_stream_class) orelse return c.JS_ThrowTypeError(context, "Illegal EventStream receiver")));
-    return streamOperation(self, this, 3, this) catch |err| fail(engine, err);
-}
-
-fn iteratorSelf(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
-    return c.JS_DupValue(context, this);
-}
-
-fn iteratorCall(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
-    const engine = engine_mod.Engine.fromContext(context.?);
-    const self: *Iterator = @ptrCast(@alignCast(c.JS_GetOpaque(this, engine.event_stream_iterator_class) orelse return c.JS_ThrowTypeError(context, "Illegal EventStream iterator")));
-    return nextIterator(self, this, magic != 0) catch |err| fail(engine, err);
-}
-
-fn nextIterator(self: *Iterator, this: c.JSValue, close: bool) !c.JSValue {
-    const engine = self.engine;
-    const stream: *Stream = @ptrCast(@alignCast(c.JS_GetOpaque(self.stream, engine.event_stream_class).?));
-    var capabilities: [2]c.JSValue = undefined;
-    const promise = try engine.checked(c.JS_NewPromiseCapability(engine.context, &capabilities));
-    errdefer engine.freeValue(promise);
-    var transferred = false;
-    defer if (!transferred) for (capabilities) |value| engine.freeValue(value);
-    if (close) {
-        self.closed = true;
-        var index: usize = 0;
-        while (index < stream.waiting.items.len) {
-            if (!c.JS_IsStrictEqual(engine.context, stream.waiting.items[index].iterator, this)) {
-                index += 1;
-                continue;
-            }
-            const waiter = stream.waiting.orderedRemove(index);
-            defer for ([_]c.JSValue{ waiter.iterator, waiter.resolve, waiter.reject }) |value| engine.freeValue(value);
-            const result = try iterationResult(engine, c.pi_js_undefined(), true);
-            defer engine.freeValue(result);
-            try callOne(engine, waiter.resolve, result);
-        }
-    }
-    if (!self.closed and stream.events.items.len > 0) {
-        const event = stream.events.orderedRemove(0);
-        defer engine.freeValue(event.value);
-        stream.queued_bytes -= event.bytes;
-        const result = try iterationResult(engine, event.value, false);
-        defer engine.freeValue(result);
-        try callOne(engine, capabilities[0], result);
-    } else if (self.closed or stream.done) {
-        const result = try iterationResult(engine, c.pi_js_undefined(), true);
-        defer engine.freeValue(result);
-        try callOne(engine, capabilities[0], result);
-    } else {
-        if (stream.waiting.items.len >= 64) return error.NativeEventStreamWaiterLimit;
-        const retained = c.JS_DupValue(engine.context, this);
-        errdefer engine.freeValue(retained);
-        try stream.waiting.append(engine.gpa, .{ .iterator = retained, .resolve = capabilities[0], .reject = capabilities[1] });
-        transferred = true;
-    }
-    return promise;
-}
-
-fn assistantFactory(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
-    return c.JS_CallConstructor(context, data[0], 0, null);
-}
-
 pub fn install(engine: *engine_mod.Engine) !void {
     if (engine.event_stream_class != 0) return;
-    const global = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(global);
-    const symbol = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "Symbol"));
-    defer engine.freeValue(symbol);
-    const async_symbol = try engine.checked(c.JS_GetPropertyStr(engine.context, symbol, "asyncIterator"));
-    defer engine.freeValue(async_symbol);
-    engine.event_stream_async_atom = c.JS_ValueToAtom(engine.context, async_symbol);
-    if (engine.event_stream_async_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
-    _ = c.JS_NewClassID(engine.runtime, &engine.event_stream_class);
-    _ = c.JS_NewClassID(engine.runtime, &engine.event_stream_iterator_class);
-    const stream_definition: c.JSClassDef = .{ .class_name = "EventStream", .finalizer = streamFinalizer, .gc_mark = streamMark, .call = null, .exotic = null };
-    const iterator_definition: c.JSClassDef = .{ .class_name = "EventStream Iterator", .finalizer = iteratorFinalizer, .gc_mark = iteratorMark, .call = null, .exotic = null };
-    if (c.JS_NewClass(engine.runtime, engine.event_stream_class, &stream_definition) < 0 or c.JS_NewClass(engine.runtime, engine.event_stream_iterator_class, &iterator_definition) < 0) return error.JavaScriptException;
-    const prototype = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(prototype);
-    inline for (.{ .{ "push", 0 }, .{ "end", 1 }, .{ "result", 2 } }) |operation| try property(engine, prototype, operation[0], try engine.checked(c.pi_js_function_magic(engine.context, streamCall, operation[0], if (operation[1] == 2) 0 else 1, operation[1])));
-    if (c.JS_DefinePropertyValue(engine.context, prototype, engine.event_stream_async_atom, c.JS_NewCFunction(engine.context, streamIterator, "asyncIterator", 0), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
-    c.JS_SetClassProto(engine.context, engine.event_stream_class, c.JS_DupValue(engine.context, prototype));
-    const iterator_prototype = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(iterator_prototype);
-    try property(engine, iterator_prototype, "next", try engine.checked(c.pi_js_function_magic(engine.context, iteratorCall, "next", 0, 0)));
-    try property(engine, iterator_prototype, "return", try engine.checked(c.pi_js_function_magic(engine.context, iteratorCall, "return", 0, 1)));
-    if (c.JS_DefinePropertyValue(engine.context, iterator_prototype, engine.event_stream_async_atom, c.JS_NewCFunction(engine.context, iteratorSelf, "asyncIterator", 0), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
-    c.JS_SetClassProto(engine.context, engine.event_stream_iterator_class, c.JS_DupValue(engine.context, iterator_prototype));
-    const constructor = try engine.checked(c.JS_NewCFunction2(engine.context, construct, "EventStream", 2, c.JS_CFUNC_constructor, 0));
-    defer engine.freeValue(constructor);
-    if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
-    const assistant_prototype = try engine.checked(c.JS_NewObjectProto(engine.context, prototype));
-    defer engine.freeValue(assistant_prototype);
-    const assistant = try engine.checked(c.JS_NewCFunction2(engine.context, constructAssistant, "AssistantMessageEventStream", 0, c.JS_CFUNC_constructor, 0));
-    defer engine.freeValue(assistant);
-    if (c.JS_SetConstructor(engine.context, assistant, assistant_prototype) < 0 or c.JS_SetPrototype(engine.context, assistant, constructor) < 0) return error.JavaScriptException;
-    const module = try engine.checked(c.JS_NewObject(engine.context));
+    const module = try @import("native_event_stream_assistant.zig").create(engine);
     defer engine.freeValue(module);
-    // Register the shared schema object before immutable module export names
-    // are declared. All pi-ai and Typebox aliases retain its exact identity.
+    const async_symbol = try engine.checked(c.JS_GetAsyncIteratorSymbol(engine.context));
+    defer engine.freeValue(async_symbol);
+    const async_atom = c.JS_ValueToAtom(engine.context, async_symbol);
+    if (async_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+    errdefer c.JS_FreeAtom(engine.context, async_atom);
     try typebox.install(engine);
     const schema_exports = c.JS_DupValue(engine.context, engine.native_module_values.get("typebox").?);
     defer engine.freeValue(schema_exports);
     try property(engine, module, "Type", try engine.checked(c.JS_GetPropertyStr(engine.context, schema_exports, "Type")));
-    try property(engine, module, "EventStream", c.JS_DupValue(engine.context, constructor));
-    try property(engine, module, "AssistantMessageEventStream", c.JS_DupValue(engine.context, assistant));
     try native_models.populateExports(engine, module);
     try @import("native_tool_arguments.zig").install(engine, module);
-    var factory_data = [_]c.JSValue{assistant};
-    try property(engine, module, "createAssistantMessageEventStream", try engine.checked(c.JS_NewCFunctionData2(engine.context, assistantFactory, "createAssistantMessageEventStream", 0, 0, 1, &factory_data)));
     try engine.registerValueModule("@earendil-works/pi-ai", module);
     try engine.registerValueModule("@mariozechner/pi-ai", module);
     try engine.registerValueModule("pi-ai", module);
+    // Keep the existing installation sentinel without applying its old opaque
+    // class to public ordinary-field stream instances or actual generators.
+    var installed: c.JSClassID = 0;
+    _ = c.JS_NewClassID(engine.runtime, &installed);
+    const definition: c.JSClassDef = .{ .class_name = "Native EventStream Installation" };
+    if (c.JS_NewClass(engine.runtime, installed, &definition) < 0) return error.OutOfMemory;
+    engine.event_stream_async_atom = async_atom;
+    engine.event_stream_class = installed;
 }
-
 const BlockKind = enum { text, thinking, toolcall };
 const Block = struct { kind: BlockKind, bytes: std.ArrayList(u8) = .empty, high: ?u16 = null, saw_delta: bool = false };
 const Validator = struct {
@@ -746,98 +425,53 @@ test "native pi-ai EventStream exports preserve queue terminal result receiver a
     defer engine.deinit();
     try install(engine);
     const module = try engine.evalModule(
-        "import {EventStream,AssistantMessageEventStream,createAssistantMessageEventStream} from '@earendil-works/pi-ai';import {EventStream as alias} from '@mariozechner/pi-ai';if(alias!==EventStream)throw Error('alias');const s=new EventStream(function(e){if(this!==s)throw Error('predicate receiver');return e.final},function(e){if(this!==s)throw Error('extract receiver');return e.value});s.push({value:1});s.push({final:true,value:2});s.push({value:3});let values=[];for await(const item of s)values.push(item.value);if(values.join(',')!=='1,2'||await s.result()!==2)throw Error('generic stream');const a=createAssistantMessageEventStream();if(!(a instanceof EventStream)||!(a instanceof AssistantMessageEventStream))throw Error('stream brand');const message={role:'assistant',content:[]};a.push({type:'done',message});if(await a.result()!==message)throw Error('result identity');const iterator=a[Symbol.asyncIterator]();if((await iterator.next()).value.message!==message||!(await iterator.next()).done)throw Error('terminal iteration');const open=new EventStream(()=>false,x=>x),waiting=open[Symbol.asyncIterator](),pending=waiting.next();await waiting.return();if(!(await pending).done)throw Error('return pending iterator');open.end(7);if(await open.result()!==7)throw Error('end result');",
+        "import {EventStream,AssistantMessageEventStream,createAssistantMessageEventStream} from '@earendil-works/pi-ai';import {EventStream as alias} from '@mariozechner/pi-ai';if(alias!==EventStream)throw Error('alias');const s=new EventStream(function(e){if(this!==s)throw Error('predicate receiver');return e.final},function(e){if(this!==s)throw Error('extract receiver');return e.value});s.push({value:1});s.push({final:true,value:2});s.push({value:3});let values=[];for await(const item of s)values.push(item.value);if(values.join(',')!=='1,2'||await s.result()!==2)throw Error('generic stream');const a=createAssistantMessageEventStream();if(!(a instanceof EventStream)||!(a instanceof AssistantMessageEventStream))throw Error('stream brand');const message={role:'assistant',content:[]};a.push({type:'done',message});if(await a.result()!==message)throw Error('result identity');const iterator=a[Symbol.asyncIterator]();if((await iterator.next()).value.message!==message||!(await iterator.next()).done)throw Error('terminal iteration');const open=new EventStream(()=>false,x=>x),waiting=open[Symbol.asyncIterator](),pending=waiting.next(),returned=waiting.return();open.end(7);if(!(await pending).done||!(await returned).done||await open.result()!==7)throw Error('Source pending return queues behind next');",
         "native-event-stream.mjs",
     );
     defer engine.freeValue(module);
 }
 
 fn streamAllocationProbe(gpa: std.mem.Allocator) !void {
-    const engine = try engine_mod.Engine.init(gpa, .{});
+    const engine = try engine_mod.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
-    try install(engine);
-    const target = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(target);
-    try property(engine, target, "prototype", try engine.checked(c.JS_NewObject(engine.context)));
-    const value = try constructValue(engine, target, true, &.{});
-    defer engine.freeValue(value);
-    const state: *Stream = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.event_stream_class).?));
-    const event = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(event);
-    try property(engine, event, "type", try engine.checked(c.JS_NewString(engine.context, "start")));
-    _ = try streamOperation(state, value, 0, event);
-    const iterator = try streamOperation(state, value, 3, value);
-    defer engine.freeValue(iterator);
-    const iterator_state: *Iterator = @ptrCast(@alignCast(c.JS_GetOpaque(iterator, engine.event_stream_iterator_class).?));
-    const queued = try nextIterator(iterator_state, iterator, false);
-    defer engine.freeValue(queued);
-    const waiting = try nextIterator(iterator_state, iterator, false);
-    defer engine.freeValue(waiting);
-    c.JS_RunGC(engine.runtime);
-    _ = try streamOperation(state, value, 1, event);
-    const settled = try engine.awaitValue(waiting);
-    defer engine.freeValue(settled);
+    const generation = engine.native_allocation_generation;
+    install(engine) catch |err| return engine.nativeAllocationError(err, generation);
+    const module = engine.evalModule("import {AssistantMessageEventStream} from 'pi-ai';const stream=new AssistantMessageEventStream(),message={role:'assistant',content:[],timestamp:5000000000000},iterator=stream[Symbol.asyncIterator](),pending=iterator.next();stream.push({type:'start',partial:message});if((await pending).value.partial!==message)throw Error('waiter identity');const waiting=iterator.next();stream.end(message);if(!(await waiting).done||await stream.result()!==message)throw Error('retirement');export const done=true;", "native-stream-allocation-public.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+    engine.freeValue(module);
     c.JS_RunGC(engine.runtime);
 }
-
 test "native EventStream allocation failures release queued values pending capabilities and iterator cycles" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, streamAllocationProbe, .{});
 }
-test "native terminal admission allocation failure preserves original pending result and iterator for retry" {
-    for (0..4) |fail_index| {
-        const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
-        defer engine.deinit();
-        try install(engine);
-        const target = try engine.checked(c.JS_NewObject(engine.context));
-        defer engine.freeValue(target);
-        try property(engine, target, "prototype", try engine.checked(c.JS_NewObject(engine.context)));
-        const stream = try constructValue(engine, target, true, &.{});
-        defer engine.freeValue(stream);
-        const state: *Stream = @ptrCast(@alignCast(c.JS_GetOpaque(stream, engine.event_stream_class).?));
-        const iterator = try streamOperation(state, stream, 3, stream);
-        defer engine.freeValue(iterator);
-        const iterator_state: *Iterator = @ptrCast(@alignCast(c.JS_GetOpaque(iterator, engine.event_stream_iterator_class).?));
-        const waiting = try nextIterator(iterator_state, iterator, false);
-        defer engine.freeValue(waiting);
-        const original = try engine.checked(c.JS_NewObject(engine.context));
-        defer engine.freeValue(original);
-        const event = try engine.checked(c.JS_NewObject(engine.context));
-        defer engine.freeValue(event);
-        try property(engine, event, "type", try engine.checked(c.JS_NewString(engine.context, "done")));
-        try property(engine, event, "message", c.JS_DupValue(engine.context, original));
-        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = fail_index });
-        engine.gpa = failing.allocator();
-        const failed = streamOperation(state, stream, 0, event);
-        engine.gpa = std.testing.allocator;
-        try std.testing.expectError(error.OutOfMemory, failed);
-        try std.testing.expect(!state.done);
-        try std.testing.expectEqual(@as(usize, 1), state.waiting.items.len);
-        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, state.result));
-        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, waiting));
-        _ = try streamOperation(state, stream, 0, event);
-        const result = try engine.awaitValue(state.result);
-        defer engine.freeValue(result);
-        try std.testing.expect(c.JS_IsStrictEqual(engine.context, result, original));
-        const step = try engine.awaitValue(waiting);
-        defer engine.freeValue(step);
-        const delivered = try engine.checked(c.JS_GetPropertyStr(engine.context, step, "value"));
-        defer engine.freeValue(delivered);
-        try std.testing.expect(c.JS_IsStrictEqual(engine.context, delivered, event));
-    }
-}
-
-test "native AssistantMessageEventStream producer queue overflow rejects its original result and closes after queued values" {
-    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+test "native terminal admission host-fatal rejection retains original result and pending iterator" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try install(engine);
-    const module = try engine.evalModule(
-        "import {AssistantMessageEventStream} from 'pi-ai';const stream=new AssistantMessageEventStream();const failure=stream.result().catch(e=>e);for(let i=0;i<64;i++)stream.push(i);let original;try{stream.push(65)}catch(e){original=e}if(!(original instanceof RangeError)||await failure!==original)throw Error('queue failure identity');let count=0;for await(const event of stream)count++;if(count!==64)throw Error('queue cleanup');stream.push(66);",
-        "native-event-queue-limit.mjs",
-    );
-    defer engine.freeValue(module);
+    const prepared = try engine.evalModule("import {AssistantMessageEventStream} from 'pi-ai';globalThis.fatalReason={};globalThis.fatalStream=new AssistantMessageEventStream();globalThis.fatalResult=fatalStream.result().catch(error=>error);globalThis.fatalNext=fatalStream[Symbol.asyncIterator]().next().catch(error=>error);export const done=true;", "native-stream-fatal-prepare.mjs");
+    engine.freeValue(prepared);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const stream = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "fatalStream"));
+    defer engine.freeValue(stream);
+    const reason = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "fatalReason"));
+    defer engine.freeValue(reason);
+    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = 0 });
+    engine.gpa = failing.allocator();
+    const retired = reject(engine, stream, reason);
+    engine.gpa = std.testing.allocator;
+    try retired;
+    const checked = try engine.evalModule("if(await fatalResult!==fatalReason||await fatalNext!==fatalReason)throw Error('fatal raw identity');if(!fatalStream.done)throw Error('fatal closure');delete globalThis.fatalStream;delete globalThis.fatalResult;delete globalThis.fatalNext;delete globalThis.fatalReason;export const done=true;", "native-stream-fatal-check.mjs");
+    engine.freeValue(checked);
     c.JS_RunGC(engine.runtime);
 }
-
+test "native AssistantMessageEventStream genuine Source result-only producer retains more than64 events" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    try install(engine);
+    const module = try engine.evalModule("import {AssistantMessageEventStream} from 'pi-ai';const stream=new AssistantMessageEventStream(),message={role:'assistant',content:[],timestamp:5000000000000};const result=stream.result();for(let i=0;i<128;i++)stream.push({type:'text_delta',delta:String(i),partial:message});stream.push({type:'done',message});if(await result!==message||stream.queue.length!==129)throw Error('Source result-only queue');let count=0;for await(const event of stream){if((event.partial??event.message)!==message)throw Error('shared identity');count++}if(count!==129||stream.queue.length!==0)throw Error('complete Source drain');export const done=true;", "native-stream-long-source27.mjs");
+    engine.freeValue(module);
+    c.JS_RunGC(engine.runtime);
+}
 test "native provider validation accepts only exact event names numeric indices and JavaScript JSON number equality" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
