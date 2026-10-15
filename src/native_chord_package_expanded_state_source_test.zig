@@ -17,9 +17,11 @@ fn setup(gpa: std.mem.Allocator) !*em.Engine {
     const classes = try @import("extensions/native_chord_full_v4.zig").classes(engine);
     _ = try s.keep(classes.exports);
     _ = try s.keep(classes.bindings);
-    const api = classes.exports;
-    // Context is a genuine separate Source module; expose it to this caller
-    // alongside the complete actual package factories, preserving identity.
+    // The actual Source caller combines package and context imports. Keep that
+    // caller namespace separate so its context imports cannot mutate the real
+    // package exports. Both spreads retain the original value identities.
+    const api = try s.record();
+    try js.spreadInto(engine, api, classes.exports);
     try js.spreadInto(engine, api, context);
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
