@@ -27,29 +27,30 @@ pub fn text(scope: *Scope, input: c.JSValue) !c.JSValue {
     return result;
 }
 pub fn content(scope: *Scope, input: c.JSValue) !c.JSValue {
-    // Tool-result text-only content is a joined string. Images retain block order.
-    const parts = try scope.array();
-    const texts = try scope.array();
-    var has_image = false;
-    var has_text = false;
-    var rows = try v.iterator(scope, input);
-    defer rows.deinit();
-    errdefer rows.closePreserving();
-    while (try rows.next()) |part| {
-        defer scope.engine.freeValue(part);
-        if (try v.eq(scope, try scope.get(part, "type"), "image")) {
-            has_image = true;
-            _ = try scope.invoke(parts, "push", &.{try image(scope, part)});
-        } else {
-            has_text = true;
-            const value = try scope.get(part, "text");
-            _ = try scope.invoke(texts, "push", &.{value});
-            _ = try scope.invoke(parts, "push", &.{try text(scope, value)});
-        }
+    // Preserve Source's some/map calls, including caller replacements and getter order.
+    const has_image = try scope.invoke(input, "some", &.{try contentCallback(scope, .is_image)});
+    if (!scope.truthy(has_image)) {
+        const texts = try scope.invoke(input, "map", &.{try contentCallback(scope, .text_value)});
+        return v.sanitize(scope, try scope.invoke(texts, "join", &.{try scope.text("\n")}));
     }
-    if (!has_image) return v.sanitize(scope, try scope.invoke(texts, "join", &.{try scope.text("\n")}));
-    if (!has_text) _ = try scope.invoke(parts, "unshift", &.{try text(scope, try scope.text("(see attached image)"))});
+    const parts = try scope.invoke(input, "map", &.{try contentCallback(scope, .convert)});
+    const has_text = try scope.invoke(parts, "some", &.{try contentCallback(scope, .is_text)});
+    if (!scope.truthy(has_text)) _ = try scope.invoke(parts, "unshift", &.{try text(scope, try scope.text("(see attached image)"))});
     return parts;
+}
+const ContentCallback = enum { is_image, text_value, convert, is_text };
+fn contentCallback(scope: *Scope, comptime kind: ContentCallback) !c.JSValue {
+    const Adapter = struct {
+        fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            var row: Scope = .{ .engine = host };
+            defer row.deinit();
+            const value = if (args.len > 0) args[0] else c.pi_js_undefined();
+            if (kind == .text_value) return v.js.get(host, value, "text");
+            if (kind == .is_image or kind == .is_text) return c.pi_js_bool(host.context, @intFromBool(try v.eq(&row, try row.get(value, "type"), if (kind == .is_image) "image" else "text")));
+            return c.JS_DupValue(host.context, if (try v.eq(&row, try row.get(value, "type"), "text")) try text(&row, try row.get(value, "text")) else try image(&row, value));
+        }
+    };
+    return scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Adapter.call, &.{}));
 }
 fn message(scope: *Scope, role: []const u8, blocks: c.JSValue) !c.JSValue {
     const result = try scope.object();
