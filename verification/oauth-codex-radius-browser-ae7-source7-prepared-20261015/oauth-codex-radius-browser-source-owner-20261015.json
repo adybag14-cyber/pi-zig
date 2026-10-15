@@ -1,0 +1,17 @@
+{
+  "component": "oauth-codex-radius-browser",
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "nativeHead": "d0d83ce6",
+  "caseCount": 7,
+  "internalDeadlineMs": 30000,
+  "externalDeadlineSeconds": 300,
+  "callbackPorts": [
+    1455,
+    1456
+  ],
+  "callbackOrigin": "127.0.0.1",
+  "network": "fake token/config fetch plus explicit owned loopback callbacks only",
+  "entropy": "fixed getRandomValues input, real WebCrypto SHA256; nondeterministic Codex state only masked in captured auth_url",
+  "expectedPolicy": "immutable Source emits first, publish only after natural terminal and fullpost0",
+  "status": "prepared-not-run"
+}
