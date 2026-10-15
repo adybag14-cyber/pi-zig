@@ -2,12 +2,13 @@ const std = @import("std");
 const em = @import("extensions/engine.zig");
 const js = @import("extensions/native_js_values.zig");
 const sdk = @import("extensions/native_sdk.zig");
-const subject = @import("extensions/native_event_stream_assistant.zig");
 const c = em.c;
 fn install(engine: *em.Engine) !void {
+    try @import("extensions/native_stream.zig").install(engine);
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
-    try sdk.put(engine, global, "__subject", try subject.create(engine));
+    const namespace = engine.native_module_values.get("@earendil-works/pi-ai") orelse return error.NativePiAiModuleUnavailable;
+    try sdk.put(engine, global, "__subject", c.JS_DupValue(engine.context, namespace));
 }
 fn evaluate(engine: *em.Engine, source: []const u8, name: [:0]const u8) !c.JSValue {
     return engine.evalModule(source, name) catch |err| {
@@ -78,4 +79,5 @@ test "native live EventStream every host allocation retains ownership and origin
 comptime {
     _ = @import("native_node_function_exception_test.zig");
     _ = @import("native_async_generator_test.zig");
+    _ = @import("native_agent_loop_test.zig");
 }
