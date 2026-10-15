@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "status": "scoped_native_sqlite_prefix_and_administration_qualified",
+  "qualified_source_head": "5386eedf545d023efe82696a514040ebfb65a0d1",
+  "qualified_source_tree": "12d170673ae3594438402fcc3bdefc92cf47d8cd",
+  "base": "dc974f891ede2f2b87e21b7f852da00deef19fb3",
+  "original_source": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "zig_version": "0.16.0",
+  "zig_executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "genuine_source": {
+    "source_files": 1967,
+    "dependencies": 31064,
+    "node_tools": 1774,
+    "controls": 8,
+    "namespace_capture": "passed",
+    "coercion_capture": "passed",
+    "drift": 0
+  },
+  "native": {
+    "source_files": 5599,
+    "compiler_files": 19546,
+    "controls": 3,
+    "compile": "passed",
+    "runtime": "passed",
+    "drift": 0,
+    "debug_sqlite_tests": 6,
+    "debug_vm_tests": 8,
+    "release_safe_sqlite_tests_before_coercion": 5,
+    "gpa_sweeps": "namespace backend and resolved identifier clone ownership",
+    "scope": "Default/alpha/beta isolation, migration/index names, reopen, validation errors, boxed strings, per-identifier coercion order, option getters and raw failure replay"
+  },
+  "standalone_admin": {
+    "release_safe_sha256": "919AAACEC3610EAE88F1DDE062290CBCDE7FE92055BED9BCCA0F30EEE4FA02F9",
+    "final_debug_sha256": "C3FD0592371925AAEF16E50B006A1FCB46996A92E5E0EBED7A72035DE38D3E1D",
+    "copied_executable_only": true,
+    "fresh_working_directory": true,
+    "path": "C:\\Windows\\System32;C:\\Windows",
+    "pe_external_sqlite_import": false,
+    "init": "passed",
+    "doctor": "passed",
+    "sqlite_version": "3.53.4",
+    "missing_tables": 0,
+    "integrity": "ok",
+    "binary_drift": 0
+  },
+  "recycle": {
+    "status": "four exact retired caches recycled; independent absence and recovery entries verified",
+    "bytes": 43175633183,
+    "gib": 40.210442,
+    "files": 3604,
+    "targets": [
+      "C:\\Users\\adyba\\pi-zig-composition225-20261009\\.zig-cache\\o",
+      "C:\\Users\\adyba\\pi-zig-composition210-20261008\\.zig-cache\\o",
+      "C:\\Users\\adyba\\pi-zig-composition222-20261009\\.zig-cache\\o",
+      "C:\\Users\\adyba\\pi-zig-composition203-20261007\\.zig-cache\\o"
+    ],
+    "source_and_raw_proofs_preserved": true,
+    "needed_maintenance_preserved": true,
+    "permanent_deletion_performed": false,
+    "space_reclamation_claimed": false
+  },
+  "full_pi_standalone_qualified": false,
+  "full_application_parity_qualified": false,
+  "default_node_bridge_removal_in_scope": false,
+  "linux_macos_runtime_qualified_here": false,
+  "hosted_ci_run": false,
+  "main_intake": false,
+  "public_activation": false,
+  "raw_evidence_archive": "raw-evidence.zip",
+  "raw_evidence_sha256": "C9206997B32BBBCAA90757AB82D71FEEE9DD1768FFF0E253C2FC0C8BDFAA9355",
+  "raw_artifact_count": 85,
+  "captured_utc": "2026-10-15T17:08:23.4117145Z",
+  "frozen_control_aliases": [
+    {
+      "phases": [
+        "source-first",
+        "sqlite-first"
+      ],
+      "sha256": "C27F2C6BD350678E2EA832089AA779E0E9D5EEDDB1DF1154122D7710F65EC658",
+      "archive": "Run-PlatformNativePrefix-source-first-frozen-20261015.ps1",
+      "original": "Run-PlatformNativePrefix-20261015.ps1"
+    },
+    {
+      "phases": [
+        "source-coercion"
+      ],
+      "sha256": "175D646906C0D1654C8E0E72CA587E732CA985FF2EF8994C71C7109A680B4246",
+      "archive": "Run-PlatformNativePrefix-source-coercion-frozen-20261015.ps1",
+      "original": "Run-PlatformNativePrefix-20261015.ps1"
+    }
+  ]
+}
