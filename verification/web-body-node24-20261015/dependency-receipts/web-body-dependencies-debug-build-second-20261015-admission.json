@@ -1,0 +1,29 @@
+{
+  "minimum_free_bytes": 17179869184,
+  "available_bytes": 18722414592,
+  "existing_native_roots": 1,
+  "existing_native_processes": [
+    {
+      "ProcessId": 59544,
+      "ParentProcessId": 68952,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-highlight-core-b45 -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+      "CreationDate": "2026-10-15T21:31:01.197215+01:00"
+    },
+    {
+      "ProcessId": 68856,
+      "ParentProcessId": 59544,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\.zig-cache\\o\\8829c4f43b87d5412ccedab28cdd6c9b\\build.exe",
+      "CommandLine": ".zig-cache\\o\\8829c4f43b87d5412ccedab28cdd6c9b\\build.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013 .zig-cache C:\\Users\\adyba\\AppData\\Local\\zig --seed 0x43b3d0c0 -Zacd0aeb2cb1407e7 test-native-highlight-core-b45 -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+      "CreationDate": "2026-10-15T21:31:01.283327+01:00"
+    },
+    {
+      "ProcessId": 46904,
+      "ParentProcessId": 68856,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\.zig-cache\\o\\72b4f7398c5113b87282c3322445770a\\test.exe",
+      "CommandLine": ".\\.zig-cache\\o\\72b4f7398c5113b87282c3322445770a\\test.exe --cache-dir=.\\.zig-cache --seed=0x43b3d0c0 --listen=-",
+      "CreationDate": "2026-10-15T21:31:08.240076+01:00"
+    }
+  ],
+  "checked_utc": "2026-10-15T20:31:35.8779365+00:00"
+}
