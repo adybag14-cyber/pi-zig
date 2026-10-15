@@ -8,6 +8,7 @@ const Scope = temp.Scope;
 const raw = @import("native_ai_http_worker.zig");
 const c = em.c;
 pub const maximum_requests = 16;
+pub const Options = struct { raw_header_pairs: bool = false };
 const Waiter = struct { resolve: c.JSValue, reject: c.JSValue };
 const Job = struct {
     id: u64,
@@ -16,6 +17,7 @@ const Job = struct {
     ready_resolve: c.JSValue,
     ready_reject: c.JSValue,
     ready_settled: bool = false,
+    raw_header_pairs: bool = false,
     closed: bool = false,
     waiters: std.ArrayList(Waiter) = .empty,
     fn destroy(self: *Job, engine: *em.Engine) void {
@@ -91,6 +93,11 @@ fn function(scope: *Scope, id: c.JSValue, method: Method) !c.JSValue {
     }, 0, @intFromEnum(method), roots.len, &roots)));
 }
 pub fn open(engine: *em.Engine, input: raw.Input, signal: c.JSValue) !c.JSValue {
+    return openWithOptions(engine, input, signal, .{});
+}
+/// Optional raw header pairs are for genuine Response construction. Existing
+/// provider ready/onResponse records retain their original property surface.
+pub fn openWithOptions(engine: *em.Engine, input: raw.Input, signal: c.JSValue, options: Options) !c.JSValue {
     const io = engine.native_io orelse return error.NativeHttpIoRequired;
     const state = try stateFor(engine);
     if (state.jobs.items.len == maximum_requests) return error.NativeHttpRequestLimit;
@@ -123,7 +130,7 @@ pub fn open(engine: *em.Engine, input: raw.Input, signal: c.JSValue) !c.JSValue 
     errdefer engine.gpa.destroy(job);
     // All fallible VM/owner allocations finish before the worker can notify.
     const worker = try raw.Worker.create(io, input, engine, em.Engine.notifyOwner);
-    job.* = .{ .id = state.next_id, .worker = worker, .signal = c.JS_DupValue(engine.context, signal), .ready_resolve = c.JS_DupValue(engine.context, caps[0]), .ready_reject = c.JS_DupValue(engine.context, caps[1]) };
+    job.* = .{ .id = state.next_id, .worker = worker, .signal = c.JS_DupValue(engine.context, signal), .ready_resolve = c.JS_DupValue(engine.context, caps[0]), .ready_reject = c.JS_DupValue(engine.context, caps[1]), .raw_header_pairs = options.raw_header_pairs };
     state.jobs.appendAssumeCapacity(job);
     return c.JS_DupValue(engine.context, output);
 }
@@ -151,7 +158,7 @@ fn operation(engine: *em.Engine, receiver: c.JSValue, method: Method, id_value: 
     attached = true;
     return promise;
 }
-fn headValue(scope: *Scope, head: raw.Head) !c.JSValue {
+fn headValue(scope: *Scope, head: raw.Head, raw_header_pairs: bool) !c.JSValue {
     const value = try scope.object();
     const headers = try scope.object();
     try scope.put(value, "status", c.JS_NewInt32(scope.engine.context, head.status));
@@ -169,6 +176,18 @@ fn headValue(scope: *Scope, head: raw.Head) !c.JSValue {
         try js.setKey(scope.engine, headers, key, combined);
     }
     try scope.put(value, "headers", headers);
+    if (raw_header_pairs) {
+        const pairs = try scope.array();
+        for (head.headers, 0..) |entry, index| {
+            var row: Scope = .{ .engine = scope.engine };
+            defer row.deinit();
+            const pair = try row.array();
+            try row.index(pair, 0, try row.text(entry.name));
+            try row.index(pair, 1, try row.text(entry.value));
+            try scope.index(pairs, @intCast(index), pair);
+        }
+        try scope.put(value, "rawHeaders", pairs);
+    }
     return value;
 }
 fn frameValue(scope: *Scope, event: raw.Event) !c.JSValue {
@@ -227,7 +246,7 @@ pub fn pump(engine: *em.Engine) !bool {
             if (job.closed) continue;
             if (kind == .head) {
                 if (!job.ready_settled) {
-                    const head = try headValue(&scope, event.head);
+                    const head = try headValue(&scope, event.head, job.raw_header_pairs);
                     try call(&scope, job.ready_resolve, head);
                     job.ready_settled = true;
                 }
