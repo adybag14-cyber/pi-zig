@@ -97,12 +97,21 @@ const Peer = struct {
         var writer = stream.writer(self.io, &output);
         var server = std.http.Server.init(&reader.interface, &writer.interface);
         var request = try server.receiveHead();
-        const target = request.head.target;
+        // The body reader may refill its storage; retain the actual head data
+        // before reading payload bytes rather than holding borrowed slices.
+        const target = try self.gpa.dupe(u8, request.head.target);
+        defer self.gpa.free(target);
+        const authorization = if (header(&request, "authorization")) |value| try self.gpa.dupe(u8, value) else null;
+        defer if (authorization) |value| self.gpa.free(value);
+        const custom = if (header(&request, "x-custom")) |value| try self.gpa.dupe(u8, value) else null;
+        defer if (custom) |value| self.gpa.free(value);
+        const content_type = if (header(&request, "content-type")) |value| try self.gpa.dupe(u8, value) else null;
+        defer if (content_type) |value| self.gpa.free(value);
         const bytes = try request.readerExpectNone(&.{}).allocRemaining(self.gpa, .limited(4 * 1024 * 1024));
         defer self.gpa.free(bytes);
         _ = self.requests.fetchAdd(1, .monotonic);
         if (std.mem.startsWith(u8, target, "/echo")) {
-            const payload = try std.json.Stringify.valueAlloc(self.gpa, Echo{ .method = @tagName(request.head.method), .path = target, .authorization = header(&request, "authorization"), .custom = header(&request, "x-custom"), .content_type = header(&request, "content-type"), .bytes = bytes }, .{});
+            const payload = try std.json.Stringify.valueAlloc(self.gpa, Echo{ .method = @tagName(request.head.method), .path = target, .authorization = authorization, .custom = custom, .content_type = content_type, .bytes = bytes }, .{});
             defer self.gpa.free(payload);
             return request.respond(payload, .{ .keep_alive = false, .extra_headers = &.{.{ .name = "Content-Type", .value = "application/json" }} });
         }
