@@ -1003,7 +1003,7 @@
       "sha256": "942a1107cc8097c048ddfd28cf1ec7b0eec2d9eb1decd5acdeda8913e03ec4da"
     }
   ],
-  "declarations": 878,
+  "declarations": 880,
   "publicRoots": [
     "Instantiate",
     "Priority",
@@ -1099,6 +1099,10 @@
     "IsKind",
     "IsSchema",
     "IsEnum",
+    "IsLiteralBigInt",
+    "IsLiteralBoolean",
+    "IsLiteralNumber",
+    "IsLiteralString",
     "CapitalizeDeferred",
     "Capitalize",
     "ConditionalDeferred",
@@ -1160,18 +1164,18 @@
     "RemoveReadonly"
   ],
   "syntax": {
-    "FunctionDeclaration": 725,
-    "Identifier": 13152,
-    "BlockStatement": 771,
-    "ReturnStatement": 761,
-    "CallExpression": 3130,
+    "FunctionDeclaration": 727,
+    "Identifier": 13168,
+    "BlockStatement": 773,
+    "ReturnStatement": 763,
+    "CallExpression": 3134,
     "ArrayExpression": 816,
     "VariableDeclaration": 375,
     "VariableDeclarator": 375,
     "ConditionalExpression": 495,
-    "MemberExpression": 1582,
+    "MemberExpression": 1586,
     "Literal": 865,
-    "LogicalExpression": 88,
+    "LogicalExpression": 90,
     "UnaryExpression": 21,
     "BinaryExpression": 32,
     "ObjectExpression": 299,
@@ -1201,7 +1205,7 @@
     "ChainExpression": 1
   },
   "operators": {
-    "&&": 63,
+    "&&": 65,
     "typeof": 4,
     "!": 15,
     "===": 5,
