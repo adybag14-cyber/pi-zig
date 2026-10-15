@@ -106,7 +106,11 @@ fn fields(scope: *Scope, model: c.JSValue, options: c.JSValue) !c.JSValue {
             const clamped = if (try v.eq(scope, level, "xhigh") or try v.eq(scope, level, "max")) try scope.text("high") else level;
             const budgets = try v.optional(scope, options, "thinkingBudgets");
             var budget = if (v.nullish(budgets)) c.pi_js_undefined() else try scope.own(try v.js.getKey(scope.engine, budgets, clamped));
-            if (v.nullish(budget)) budget = c.JS_NewInt32(scope.engine.context, if (try v.eq(scope, level, "minimal")) 1024 else if (try v.eq(scope, level, "low")) 2048 else if (try v.eq(scope, level, "medium")) 8192 else 16384);
+            if (v.nullish(budget)) {
+                const defaults = try scope.object();
+                inline for (.{ .{ "minimal", 1024 }, .{ "low", 2048 }, .{ "medium", 8192 }, .{ "high", 16384 }, .{ "xhigh", 16384 }, .{ "max", 16384 } }) |pair| try scope.put(defaults, pair[0], c.JS_NewInt32(scope.engine.context, pair[1]));
+                budget = try scope.own(try v.js.getKey(scope.engine, defaults, level));
+            }
             try scope.put(thinking, "budget_tokens", budget);
             const interleaved = try v.optional(scope, options, "interleavedThinking");
             if (v.nullish(interleaved) or scope.truthy(interleaved)) {
@@ -120,14 +124,18 @@ fn fields(scope: *Scope, model: c.JSValue, options: c.JSValue) !c.JSValue {
     }
     const refs = try candidates(scope, model);
     if (try contains(scope, refs, "gpt-oss")) {
-        try scope.put(result, "reasoning_effort", try scope.text(if (try v.eq(scope, level, "minimal") or try v.eq(scope, level, "low")) "low" else if (try v.eq(scope, level, "medium")) "medium" else "high"));
+        const levels = try scope.object();
+        inline for (.{ .{ "minimal", "low" }, .{ "low", "low" }, .{ "medium", "medium" }, .{ "high", "high" }, .{ "xhigh", "high" }, .{ "max", "high" } }) |pair| try scope.put(levels, pair[0], try scope.text(pair[1]));
+        try scope.put(result, "reasoning_effort", try scope.own(try v.js.getKey(scope.engine, levels, level)));
         return result;
     }
     if (try contains(scope, refs, "gpt-")) {
         const reasoning = try scope.object();
         const map = try scope.get(model, "thinkingLevelMap");
         const mapped = if (v.nullish(map)) c.pi_js_undefined() else try scope.own(try v.js.getKey(scope.engine, map, level));
-        try scope.put(reasoning, "effort", if (c.JS_IsString(mapped)) mapped else if (try v.eq(scope, level, "minimal")) try scope.text("low") else level);
+        const levels = try scope.object();
+        inline for (.{ .{ "minimal", "low" }, .{ "low", "low" }, .{ "medium", "medium" }, .{ "high", "high" }, .{ "xhigh", "xhigh" }, .{ "max", "max" } }) |pair| try scope.put(levels, pair[0], try scope.text(pair[1]));
+        try scope.put(reasoning, "effort", if (c.JS_IsString(mapped)) mapped else try scope.own(try v.js.getKey(scope.engine, levels, level)));
         try scope.put(result, "reasoning", reasoning);
         return result;
     }
@@ -202,7 +210,9 @@ pub fn build(engine: *v.em.Engine, model: c.JSValue, context: c.JSValue, options
         const prompt = try scope.own(try @import("native_ai_text.zig").system(engine, first, false));
         if (scope.truthy(prompt)) {
             system = try scope.array();
-            _ = try scope.invoke(system, "push", &.{try codec.text(&scope, prompt, true)});
+            const block = try scope.object();
+            try scope.put(block, "text", try v.sanitize(&scope, prompt));
+            _ = try scope.invoke(system, "push", &.{block});
             if (!try v.eq(&scope, retained, "none") and caching) _ = try scope.invoke(system, "push", &.{try codec.cachePoint(&scope, retained)});
         }
     }
