@@ -1,0 +1,8 @@
+{
+  "source_capture_commit": "499289b08151364dcbef7019f2c1a5193271ab1f",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "source_posthash_sha256": "29B77CBADC8CC20870D7CA36E3A12E8466124C1DFE0D027B3F020F4AA874A7F3",
+  "fixture_root": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e",
+  "forward_slash_fixture_root": "C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e",
+  "purpose": "Exact genuine Source-owned fixture root, needed only to normalize four temporary-path case labels for an eventual native comparison. Resource values are already normalized by the caller. Source67 golden bytes remain unchanged."
+}

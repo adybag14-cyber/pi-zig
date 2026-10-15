@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "status": "source_observed_native_unqualified",
+  "source_capture_caller_commit": "499289b08151364dcbef7019f2c1a5193271ab1f",
+  "source_capture_caller_tree": "69375de2ec7b2a834c9fa3cf59fe95421b677042",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "source_cases": 67,
+  "prototype_members": 38,
+  "actual_reload_scenarios": 6,
+  "input_sha256": "6A1AD5CC594DD678B726BB79DA57D108B02475D718C91D286649D19AD8EF521F",
+  "golden_sha256": "4FDCFE214F20ECE9ADBFFD3F349785195E8E25A027CAC5515B5993356ABA12E8",
+  "source_owner_pid": 66684,
+  "source_owner_exit": 0,
+  "retained_negative": {
+    "exit": 1,
+    "caller_commit": "9230b5ebb09246b9f43cb5e58f7816c0c42f95ad",
+    "pid": 47584,
+    "posthash_drift": 0,
+    "message": "Project is not trusted; refusing to write project settings"
+  },
+  "source_files": 1967,
+  "dependency_files": 31064,
+  "node_tool_files": 1774,
+  "controls": 39,
+  "fixture_files": 28,
+  "historical_absences": 84,
+  "ambient_absences": 39,
+  "all_posthash_drift": 0,
+  "native_compiled": false,
+  "native_qualified": false,
+  "scope": "Genuine Source constructor/class reflection/callback/path/source-info/theme/extend/conflict behavior and actual default/package/filter/temporary/untrusted/trust-bootstrap reloads. Private native loader bodies and package adapter remain uncompiled and unqualified. No CI or activation.",
+  "source_bounds": {
+    "heap_mib": 256,
+    "fresh_kib": 2097152,
+    "owner_seconds": 300
+  },
+  "root_metadata_sha256": "289ADB68DA2EF3ADD4AC65A232F28C9AC164EA04D07291A4BE15B88BFA09B7A0",
+  "recorded_utc": "2026-10-15T20:57:17.1437035+01:00",
+  "archive_manifest_path": "verification/sdk-resource-class-source67-20261015/manifest.json"
+}

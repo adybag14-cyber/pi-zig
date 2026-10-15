@@ -1,0 +1,3178 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "inputSha256": "6a1ad5cc594dd678b726bb79da57d108b02475d718c91d286649d19ad8ef521f",
+  "cases": 67,
+  "scope": "Actual DefaultResourceLoader class reflection, constructor/getter/path/source-info behavior, raw callback exceptions and package/default/trust discovery through genuine SettingsManager, DefaultPackageManager, extension loader and resource parsers. Native agreement is a separate qualification.",
+  "rows": [
+    {
+      "case": "class-metadata",
+      "name": "DefaultResourceLoader",
+      "length": 1,
+      "prototypeWritable": false,
+      "methods": [
+        {
+          "key": "constructor",
+          "name": "DefaultResourceLoader",
+          "length": 1,
+          "async": false,
+          "ownPrototype": true,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "getExtensions",
+          "name": "getExtensions",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "getSkills",
+          "name": "getSkills",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "getPrompts",
+          "name": "getPrompts",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "getThemes",
+          "name": "getThemes",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "getAgentsFiles",
+          "name": "getAgentsFiles",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "getSystemPrompt",
+          "name": "getSystemPrompt",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "getSystemPromptSource",
+          "name": "getSystemPromptSource",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "getAppendSystemPrompt",
+          "name": "getAppendSystemPrompt",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "getAppendSystemPromptSources",
+          "name": "getAppendSystemPromptSources",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "extendResources",
+          "name": "extendResources",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "loadProjectTrustExtensions",
+          "name": "loadProjectTrustExtensions",
+          "length": 0,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "reload",
+          "name": "reload",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "loadCurrentExtensionSet",
+          "name": "loadCurrentExtensionSet",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "resolveExtensionLoadPath",
+          "name": "resolveExtensionLoadPath",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "loadExtensionPaths",
+          "name": "loadExtensionPaths",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "loadFinalExtensionSet",
+          "name": "loadFinalExtensionSet",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "addExtensionConflictDiagnostics",
+          "name": "addExtensionConflictDiagnostics",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "mapSkillPath",
+          "name": "mapSkillPath",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "normalizeExtensionPaths",
+          "name": "normalizeExtensionPaths",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "updateSkillsFromPaths",
+          "name": "updateSkillsFromPaths",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "updatePromptsFromPaths",
+          "name": "updatePromptsFromPaths",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "updateThemesFromPaths",
+          "name": "updateThemesFromPaths",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "applyExtensionSourceInfo",
+          "name": "applyExtensionSourceInfo",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "findSourceInfoForPath",
+          "name": "findSourceInfoForPath",
+          "length": 3,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "getDefaultSourceInfoForPath",
+          "name": "getDefaultSourceInfoForPath",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "mergePaths",
+          "name": "mergePaths",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "resolveResourcePath",
+          "name": "resolveResourcePath",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "loadThemes",
+          "name": "loadThemes",
+          "length": 3,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "loadThemesFromDir",
+          "name": "loadThemesFromDir",
+          "length": 4,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "loadThemeFromFile",
+          "name": "loadThemeFromFile",
+          "length": 4,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "loadExtensionFactories",
+          "name": "loadExtensionFactories",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "dedupePrompts",
+          "name": "dedupePrompts",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "dedupeThemes",
+          "name": "dedupeThemes",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "discoverSystemPromptFile",
+          "name": "discoverSystemPromptFile",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "discoverAppendSystemPromptFile",
+          "name": "discoverAppendSystemPromptFile",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "isUnderPath",
+          "name": "isUnderPath",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "key": "detectExtensionConflicts",
+          "name": "detectExtensionConflicts",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "configurable": true,
+          "writable": true
+        }
+      ]
+    },
+    {
+      "case": "constructor-snapshots",
+      "keys": [
+        "cwd",
+        "agentDir",
+        "settingsManager",
+        "eventBus",
+        "packageManager",
+        "additionalExtensionPaths",
+        "additionalSkillPaths",
+        "additionalPromptTemplatePaths",
+        "additionalThemePaths",
+        "extensionFactories",
+        "builtinExtensions",
+        "noExtensions",
+        "disabledBuiltinExtensions",
+        "noSkills",
+        "noPromptTemplates",
+        "noThemes",
+        "noContextFiles",
+        "systemPromptSource",
+        "appendSystemPromptSource",
+        "extensionsOverride",
+        "skillsOverride",
+        "promptsOverride",
+        "themesOverride",
+        "agentsFilesOverride",
+        "systemPromptOverride",
+        "appendSystemPromptOverride",
+        "extensionsResult",
+        "skills",
+        "skillDiagnostics",
+        "prompts",
+        "promptDiagnostics",
+        "themes",
+        "themeDiagnostics",
+        "agentsFiles",
+        "systemPrompt",
+        "systemPromptSourcePath",
+        "appendSystemPrompt",
+        "appendSystemPromptSourcePaths",
+        "lastSkillPaths",
+        "extensionSkillSourceInfos",
+        "extensionPromptSourceInfos",
+        "extensionThemeSourceInfos",
+        "resourceMetadataByPath",
+        "lastPromptPaths",
+        "lastThemePaths",
+        "loaded"
+      ],
+      "packageKeys": [
+        "cwd",
+        "agentDir",
+        "settingsManager",
+        "builtinExtensions",
+        "globalNpmRoot",
+        "globalNpmRootCommandKey",
+        "progressCallback"
+      ],
+      "cwd": "<fixture>/project",
+      "agentDir": "<fixture>/agent",
+      "settingsSame": true,
+      "busSame": true,
+      "inline": [
+        "inline",
+        "named"
+      ],
+      "builtinKeys": [
+        "builtin"
+      ],
+      "lastBuiltinWins": true,
+      "packageBuiltins": [
+        "builtin"
+      ],
+      "pathsSame": true,
+      "disabled": [
+        "builtin"
+      ],
+      "flags": [
+        0,
+        "truthy",
+        false,
+        false,
+        false
+      ],
+      "loaded": false,
+      "caches": {
+        "extensions": [],
+        "errors": [],
+        "skills": {
+          "skills": [],
+          "diagnostics": []
+        },
+        "prompts": {
+          "prompts": [],
+          "diagnostics": []
+        },
+        "themes": {
+          "themes": [],
+          "diagnostics": []
+        },
+        "agents": {
+          "agentsFiles": []
+        },
+        "append": [],
+        "sources": []
+      },
+      "runtimeKeys": [
+        "sendMessage",
+        "sendUserMessage",
+        "appendEntry",
+        "setSessionName",
+        "getSessionName",
+        "setLabel",
+        "getActiveTools",
+        "getAllTools",
+        "getSettings",
+        "setActiveTools",
+        "refreshTools",
+        "getCommands",
+        "setModel",
+        "getThinkingLevel",
+        "setThinkingLevel",
+        "flagValues",
+        "pendingProviderRegistrations",
+        "pendingNativeProviderRegistrations",
+        "mcpServers",
+        "pendingVirtualModelRegistrations",
+        "createContext",
+        "assertActive",
+        "invalidate",
+        "trackEventBusSubscription",
+        "registerProvider",
+        "registerNativeProvider",
+        "unregisterProvider",
+        "registerVirtualModel",
+        "unregisterVirtualModel"
+      ]
+    },
+    {
+      "case": "constructor-option-evaluation-order",
+      "log": [
+        "cwd",
+        "agentDir",
+        "settingsManager",
+        "eventBus",
+        "extensionFactories",
+        "additionalExtensionPaths",
+        "additionalSkillPaths",
+        "additionalPromptTemplatePaths",
+        "additionalThemePaths",
+        "noExtensions",
+        "disabledBuiltinExtensions",
+        "noSkills",
+        "noPromptTemplates",
+        "noThemes",
+        "noContextFiles",
+        "systemPrompt",
+        "appendSystemPrompt",
+        "extensionsOverride",
+        "skillsOverride",
+        "promptsOverride",
+        "themesOverride",
+        "agentsFilesOverride",
+        "systemPromptOverride",
+        "appendSystemPromptOverride"
+      ],
+      "loaded": false
+    },
+    {
+      "case": "constructor-raw-failure:cwd",
+      "same": true
+    },
+    {
+      "case": "constructor-raw-failure:agentDir",
+      "same": true
+    },
+    {
+      "case": "constructor-raw-failure:settingsManager",
+      "same": true
+    },
+    {
+      "case": "constructor-raw-failure:eventBus",
+      "same": true
+    },
+    {
+      "case": "constructor-raw-failure:extensionFactories",
+      "same": true
+    },
+    {
+      "case": "constructor-raw-failure:additionalSkillPaths",
+      "same": true
+    },
+    {
+      "case": "constructor-raw-failure:disabledBuiltinExtensions",
+      "same": true
+    },
+    {
+      "case": "constructor-raw-failure:systemPromptOverride",
+      "same": true
+    },
+    {
+      "case": "fresh-public-cache-wrappers",
+      "extensionsSame": true,
+      "skillsFresh": true,
+      "skillRowsSame": true,
+      "promptsFresh": true,
+      "promptRowsSame": true,
+      "themesFresh": true,
+      "themeRowsSame": true,
+      "agentsFresh": true,
+      "agentRowsSame": true,
+      "appendSame": true
+    },
+    {
+      "case": "fresh-source-wrappers",
+      "system": {
+        "path": "source"
+      },
+      "systemFresh": true,
+      "a": [
+        {
+          "path": "one"
+        },
+        {
+          "path": "two"
+        }
+      ],
+      "b": [
+        {
+          "path": "one"
+        },
+        {
+          "path": "two"
+        }
+      ],
+      "fresh": true,
+      "entriesFresh": true
+    },
+    {
+      "case": "system-prompt-source-getter-order",
+      "value": {
+        "path": "one"
+      },
+      "log": [
+        "source",
+        "source"
+      ]
+    },
+    {
+      "case": "resolve-path:builtin:tool",
+      "resource": "builtin:tool",
+      "extension": "builtin:tool"
+    },
+    {
+      "case": "resolve-path:<inline:hello>",
+      "resource": "<inline:hello>",
+      "extension": "<inline:hello>"
+    },
+    {
+      "case": "resolve-path:<unfinished",
+      "resource": "<unfinished",
+      "extension": "<unfinished"
+    },
+    {
+      "case": "resolve-path: relative.md ",
+      "resource": "<fixture>/project/relative.md",
+      "extension": "<fixture>/project/ relative.md "
+    },
+    {
+      "case": "resolve-path:sub folder/file.md",
+      "resource": "<fixture>/project/sub folder/file.md",
+      "extension": "<fixture>/project/sub folder/file.md"
+    },
+    {
+      "case": "normalize-live-metadata",
+      "value": [
+        {
+          "path": "resolved: path ",
+          "metadata": {
+            "source": "extension:x",
+            "scope": "temporary",
+            "origin": "top-level",
+            "baseDir": "resolved: base ",
+            "tag": 7
+          }
+        }
+      ],
+      "log": [
+        "metadata",
+        "baseDir",
+        "metadata",
+        "baseDir",
+        "tag",
+        "metadata",
+        "baseDir",
+        [
+          "resolve",
+          " base ",
+          true
+        ],
+        "path",
+        [
+          "resolve",
+          " path ",
+          true
+        ]
+      ]
+    },
+    {
+      "case": "merge-spreads-before-resolution",
+      "value": [
+        "<one>",
+        "<two>"
+      ],
+      "log": [
+        "primary-start",
+        "primary-end",
+        "additional-start",
+        "additional-end",
+        [
+          "resolve",
+          "one"
+        ],
+        [
+          "resolve",
+          "one"
+        ],
+        [
+          "resolve",
+          "two"
+        ]
+      ]
+    },
+    {
+      "case": "source-info-extra-first-match",
+      "value": {
+        "source": "extra-first",
+        "scope": "temporary",
+        "origin": "top-level",
+        "extra": 7,
+        "path": "<fixture>/project/nested/file.md"
+      }
+    },
+    {
+      "case": "source-info-exact-metadata",
+      "value": {
+        "path": "<fixture>/project/nested/file.md",
+        "source": "exact",
+        "scope": "user",
+        "origin": "package",
+        "baseDir": "<fixture>"
+      }
+    },
+    {
+      "case": "source-info-prefix-boundary"
+    },
+    {
+      "case": "source-info-synthetic:builtin:x",
+      "value": {
+        "path": "builtin:x",
+        "source": "builtin",
+        "scope": "temporary",
+        "origin": "top-level"
+      }
+    },
+    {
+      "case": "source-info-synthetic:<inline:hello>",
+      "value": {
+        "path": "<inline:hello>",
+        "source": "inline",
+        "scope": "temporary",
+        "origin": "top-level"
+      }
+    },
+    {
+      "case": "source-info-synthetic:<>",
+      "value": {
+        "path": "<>",
+        "source": "temporary",
+        "scope": "temporary",
+        "origin": "top-level"
+      }
+    },
+    {
+      "case": "source-info-synthetic:<hello",
+      "error": {
+        "name": "Error",
+        "code": "ENOENT"
+      }
+    },
+    {
+      "case": "source-info-synthetic:"
+    },
+    {
+      "case": "default-source-info:C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e/agent/skills/missing.md",
+      "value": {
+        "path": "<fixture>/agent/skills/missing.md",
+        "source": "local",
+        "scope": "user",
+        "origin": "top-level",
+        "baseDir": "<fixture>/agent/skills"
+      }
+    },
+    {
+      "case": "default-source-info:C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e/project/.pi/prompts/missing.md",
+      "value": {
+        "path": "<fixture>/project/.pi/prompts/missing.md",
+        "source": "local",
+        "scope": "project",
+        "origin": "top-level",
+        "baseDir": "<fixture>/project/.pi/prompts"
+      }
+    },
+    {
+      "case": "default-source-info:C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e/shared/custom.md",
+      "value": {
+        "path": "<fixture>/shared/custom.md",
+        "source": "local",
+        "scope": "temporary",
+        "origin": "top-level",
+        "baseDir": "<fixture>/shared"
+      }
+    },
+    {
+      "case": "default-source-info:C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-resource-class-assets-second-063bb65cbd504254aed935011cf5357e/shared",
+      "value": {
+        "path": "<fixture>/shared",
+        "source": "local",
+        "scope": "temporary",
+        "origin": "top-level",
+        "baseDir": "<fixture>/shared"
+      }
+    },
+    {
+      "case": "actual-skill-directory-mapping",
+      "value": "<fixture>/agent/skills/shared/SKILL.md",
+      "metadata": [
+        [
+          "<fixture>/agent/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ]
+      ]
+    },
+    {
+      "case": "skill-path-getter-caught-inside-stat",
+      "value": "after-catch",
+      "log": [
+        "path",
+        "path"
+      ]
+    },
+    {
+      "case": "extension-command-tool-source-identity",
+      "info": {
+        "path": "<inline:unit>",
+        "source": "inline",
+        "scope": "temporary",
+        "origin": "top-level"
+      },
+      "commandSame": true,
+      "toolSame": true
+    },
+    {
+      "case": "prompt-first-name-wins",
+      "value": {
+        "prompts": [
+          {
+            "name": "same",
+            "filePath": "winner"
+          },
+          {
+            "name": "other",
+            "filePath": "other"
+          }
+        ],
+        "diagnostics": [
+          {
+            "type": "collision",
+            "message": "name \"/same\" collision",
+            "path": "loser",
+            "collision": {
+              "resourceType": "prompt",
+              "name": "same",
+              "winnerPath": "winner",
+              "loserPath": "loser"
+            }
+          }
+        ]
+      },
+      "firstSame": true
+    },
+    {
+      "case": "theme-unnamed-and-builtin-collision",
+      "value": {
+        "themes": [
+          {
+            "name": null
+          },
+          {
+            "name": "other",
+            "sourcePath": "other"
+          }
+        ],
+        "diagnostics": [
+          {
+            "type": "collision",
+            "message": "name \"unnamed\" collision",
+            "path": "loser",
+            "collision": {
+              "resourceType": "theme",
+              "name": "unnamed",
+              "winnerPath": "<builtin>",
+              "loserPath": "loser"
+            }
+          }
+        ]
+      },
+      "firstSame": true
+    },
+    {
+      "case": "actual-prompt-discovery-trust:false",
+      "system": "<fixture>/agent/SYSTEM.md",
+      "append": "<fixture>/agent/APPEND_SYSTEM.md"
+    },
+    {
+      "case": "actual-prompt-discovery-trust:true",
+      "system": "<fixture>/project/.pi/SYSTEM.md",
+      "append": "<fixture>/project/.pi/APPEND_SYSTEM.md"
+    },
+    {
+      "case": "actual-tool-and-flag-conflicts",
+      "value": [
+        {
+          "path": "second",
+          "message": "Tool \"read\" conflicts with first"
+        },
+        {
+          "path": "second",
+          "message": "Flag \"--flag\" conflicts with first"
+        }
+      ],
+      "errors": [
+        {
+          "path": "second",
+          "error": "Tool \"read\" conflicts with first"
+        },
+        {
+          "path": "second",
+          "error": "Flag \"--flag\" conflicts with first"
+        }
+      ],
+      "undefined": true
+    },
+    {
+      "case": "conflict-callback-raw-identity",
+      "same": true
+    },
+    {
+      "case": "ordinary-extend-field-and-callback-flow",
+      "undefined": true,
+      "log": [
+        {
+          "method": "updateSkillsFromPaths",
+          "receiver": true,
+          "paths": [
+            "<fixture>/extra/SKILL.md"
+          ],
+          "metadataSame": true
+        },
+        {
+          "method": "updatePromptsFromPaths",
+          "receiver": true,
+          "paths": [
+            "<fixture>/shared/custom.md"
+          ],
+          "metadataSame": true
+        },
+        {
+          "method": "updateThemesFromPaths",
+          "receiver": true,
+          "paths": [
+            "<fixture>/extra/theme.json"
+          ],
+          "metadataSame": true
+        }
+      ],
+      "last": [
+        [
+          "<fixture>/extra/SKILL.md"
+        ],
+        [
+          "<fixture>/shared/custom.md"
+        ],
+        [
+          "<fixture>/extra/theme.json"
+        ]
+      ],
+      "infos": [
+        [
+          [
+            "<fixture>/extra/SKILL.md",
+            {
+              "path": "<fixture>/extra/SKILL.md",
+              "source": "extension:unit",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>"
+            }
+          ]
+        ],
+        [
+          [
+            "<fixture>/shared/custom.md",
+            {
+              "path": "<fixture>/shared/custom.md",
+              "source": "extension:unit",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>"
+            }
+          ]
+        ],
+        [
+          [
+            "<fixture>/extra/theme.json",
+            {
+              "path": "<fixture>/extra/theme.json",
+              "source": "extension:unit",
+              "scope": "temporary",
+              "origin": "top-level",
+              "baseDir": "<fixture>"
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "case": "extend-normalizes-all-before-mutation",
+      "same": true,
+      "log": [
+        [
+          {
+            "path": "skill",
+            "metadata": {}
+          }
+        ],
+        []
+      ],
+      "skillMetadataSize": 0,
+      "last": []
+    },
+    {
+      "case": "trust-bootstrap-await-and-return-adoption",
+      "log": [
+        [
+          "trusted",
+          false,
+          true
+        ],
+        "reload",
+        "returned",
+        [
+          "load",
+          {
+            "includeInlineFactories": true
+          },
+          true
+        ]
+      ],
+      "same": true
+    },
+    {
+      "case": "trust-bootstrap-raw-failure:trusted-call",
+      "same": true,
+      "promise": true,
+      "log": [
+        "trusted"
+      ]
+    },
+    {
+      "case": "trust-bootstrap-raw-failure:reload-getter",
+      "same": true,
+      "promise": true,
+      "log": [
+        "trusted",
+        "get reload"
+      ]
+    },
+    {
+      "case": "trust-bootstrap-raw-failure:reload-call",
+      "same": true,
+      "promise": true,
+      "log": [
+        "trusted",
+        "get reload",
+        "reload"
+      ]
+    },
+    {
+      "case": "trust-bootstrap-raw-failure:reload-rejection",
+      "same": true,
+      "promise": true,
+      "log": [
+        "trusted",
+        "get reload",
+        "reload"
+      ]
+    },
+    {
+      "case": "trust-bootstrap-raw-failure:load-getter",
+      "same": true,
+      "promise": true,
+      "log": [
+        "trusted",
+        "get reload",
+        "reload",
+        "get load"
+      ]
+    },
+    {
+      "case": "trust-bootstrap-raw-failure:load-call",
+      "same": true,
+      "promise": true,
+      "log": [
+        "trusted",
+        "get reload",
+        "reload",
+        "get load",
+        "load"
+      ]
+    },
+    {
+      "case": "trust-bootstrap-raw-failure:return-rejection",
+      "same": true,
+      "promise": true,
+      "log": [
+        "trusted",
+        "get reload",
+        "reload",
+        "get load",
+        "load"
+      ]
+    },
+    {
+      "case": "actual-theme-loading-methods",
+      "themes": [
+        {
+          "name": "fixture-user",
+          "sourcePath": "<fixture>/agent/themes/user.json",
+          "accent": "\u001b[38;2;167;152;215m"
+        },
+        {
+          "name": "fixture-project",
+          "sourcePath": "<fixture>/project/.pi/themes/project.json",
+          "accent": "\u001b[38;2;167;152;215m"
+        },
+        {
+          "name": "fixture-extra",
+          "sourcePath": "<fixture>/extra/theme.json",
+          "accent": "\u001b[38;2;167;152;215m"
+        }
+      ],
+      "diagnostics": [
+        {
+          "type": "warning",
+          "message": "theme path does not exist",
+          "path": "<fixture>/missing.json"
+        },
+        {
+          "type": "warning",
+          "message": "theme path is not a json file",
+          "path": "<fixture>/shared/custom.md"
+        }
+      ]
+    },
+    {
+      "case": "theme-file-catches-push-getter",
+      "undefined": true,
+      "diagnostics": [
+        {
+          "type": "warning",
+          "message": "failed to load theme",
+          "path": "<fixture>/extra/theme.json"
+        }
+      ]
+    },
+    {
+      "case": "theme-directory-catches-file-callback",
+      "undefined": true,
+      "themes": [],
+      "diagnostics": [
+        {
+          "type": "warning",
+          "message": "file callback failed",
+          "path": "<fixture>/agent/themes"
+        }
+      ]
+    },
+    {
+      "case": "theme-default-directory-callback-outside-catch",
+      "same": true
+    },
+    {
+      "case": "actual-package-accumulator-first-wins",
+      "keys": [
+        "extensions",
+        "skills",
+        "prompts",
+        "themes"
+      ],
+      "sameTarget": true,
+      "undefined": true,
+      "entries": [
+        [
+          "one",
+          {
+            "metadata": {
+              "source": "local",
+              "scope": "user",
+              "origin": "top-level"
+            },
+            "enabled": false
+          }
+        ]
+      ]
+    },
+    {
+      "case": "actual-package-resource-precedence",
+      "value": {
+        "extensions": [
+          {
+            "path": "local-project",
+            "enabled": true,
+            "metadata": {
+              "source": "local",
+              "scope": "project",
+              "origin": "top-level"
+            }
+          },
+          {
+            "path": "auto-project",
+            "enabled": true,
+            "metadata": {
+              "source": "auto",
+              "scope": "project",
+              "origin": "top-level"
+            }
+          },
+          {
+            "path": "local-user",
+            "enabled": true,
+            "metadata": {
+              "source": "local",
+              "scope": "user",
+              "origin": "top-level"
+            }
+          },
+          {
+            "path": "auto-user",
+            "enabled": true,
+            "metadata": {
+              "source": "auto",
+              "scope": "user",
+              "origin": "top-level"
+            }
+          },
+          {
+            "path": "package",
+            "enabled": true,
+            "metadata": {
+              "source": "pkg",
+              "scope": "project",
+              "origin": "package"
+            }
+          },
+          {
+            "path": "builtin:x",
+            "enabled": true,
+            "metadata": {
+              "source": "builtin",
+              "scope": "user",
+              "origin": "top-level"
+            }
+          }
+        ],
+        "skills": [],
+        "prompts": [],
+        "themes": []
+      }
+    },
+    {
+      "case": "actual-package-canonical-dedupe-after-precedence",
+      "value": {
+        "extensions": [],
+        "skills": [],
+        "prompts": [
+          {
+            "path": "<fixture>/shared/../shared/custom.md",
+            "enabled": false,
+            "metadata": {
+              "source": "local",
+              "scope": "project",
+              "origin": "top-level"
+            }
+          }
+        ],
+        "themes": []
+      }
+    },
+    {
+      "case": "package-invalid-resource-type",
+      "message": "Unknown resource type: unknown"
+    },
+    {
+      "case": "actual-reload-discovery:defaults",
+      "events": [
+        "inline"
+      ],
+      "trustLog": [],
+      "preTrustRuntimeSame": false,
+      "loaded": true,
+      "extensions": [
+        {
+          "path": "<fixture>/project/.pi/extensions/project.js",
+          "resolvedPath": "<fixture>/project/.pi/extensions/project.js",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/extensions/project.js",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          },
+          "commands": [
+            "fixture-project-command"
+          ]
+        },
+        {
+          "path": "<fixture>/agent/extensions/user.js",
+          "resolvedPath": "<fixture>/agent/extensions/user.js",
+          "sourceInfo": {
+            "path": "<fixture>/agent/extensions/user.js",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          },
+          "commands": [
+            "fixture-user-command"
+          ]
+        },
+        {
+          "path": "<fixture>/pkg-user/extensions/packaged.js",
+          "resolvedPath": "<fixture>/pkg-user/extensions/packaged.js",
+          "sourceInfo": {
+            "path": "<fixture>/pkg-user/extensions/packaged.js",
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user"
+          },
+          "commands": [
+            "fixture-package-command"
+          ]
+        },
+        {
+          "path": "<inline:inline-unit>",
+          "resolvedPath": "<inline:inline-unit>",
+          "sourceInfo": {
+            "path": "<inline:inline-unit>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          },
+          "commands": [
+            "inline-unit"
+          ]
+        }
+      ],
+      "errors": [],
+      "warnings": [],
+      "skills": [
+        {
+          "name": "shared",
+          "filePath": "<fixture>/project/.pi/skills/shared/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/skills/shared/SKILL.md",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "packaged",
+          "filePath": "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project"
+          }
+        }
+      ],
+      "skillDiagnostics": [
+        {
+          "type": "collision",
+          "message": "name \"shared\" collision",
+          "path": "<fixture>/agent/skills/shared/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "shared",
+            "winnerPath": "<fixture>/project/.pi/skills/shared/SKILL.md",
+            "loserPath": "<fixture>/agent/skills/shared/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"packaged\" collision",
+          "path": "<fixture>/pkg-user/skills/packaged/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "packaged",
+            "winnerPath": "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+            "loserPath": "<fixture>/pkg-user/skills/packaged/SKILL.md"
+          }
+        }
+      ],
+      "prompts": [
+        {
+          "name": "review",
+          "filePath": "<fixture>/project/.pi/prompts/review.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/prompts/review.md",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "custom",
+          "filePath": "<fixture>/shared/custom.md",
+          "sourceInfo": {
+            "path": "<fixture>/shared/custom.md",
+            "source": "local",
+            "scope": "user",
+            "origin": "top-level"
+          }
+        },
+        {
+          "name": "greet",
+          "filePath": "<fixture>/agent/prompts/greet.md",
+          "sourceInfo": {
+            "path": "<fixture>/agent/prompts/greet.md",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        },
+        {
+          "name": "package",
+          "filePath": "<fixture>/project/pkg-project/prompts/package.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/pkg-project/prompts/package.md",
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project"
+          }
+        }
+      ],
+      "promptDiagnostics": [
+        {
+          "type": "collision",
+          "message": "name \"/package\" collision",
+          "path": "<fixture>/pkg-user/prompts/package.md",
+          "collision": {
+            "resourceType": "prompt",
+            "name": "package",
+            "winnerPath": "<fixture>/project/pkg-project/prompts/package.md",
+            "loserPath": "<fixture>/pkg-user/prompts/package.md"
+          }
+        }
+      ],
+      "themes": [
+        {
+          "name": "fixture-project",
+          "sourcePath": "<fixture>/project/.pi/themes/project.json",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/themes/project.json",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "fixture-user",
+          "sourcePath": "<fixture>/agent/themes/user.json",
+          "sourceInfo": {
+            "path": "<fixture>/agent/themes/user.json",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        }
+      ],
+      "themeDiagnostics": [],
+      "agents": [
+        {
+          "path": "<fixture>/agent/AGENTS.md",
+          "content": "User AGENTS\n"
+        },
+        {
+          "path": "<fixture>/project/AGENTS.override.md",
+          "content": "Project override AGENTS\n"
+        }
+      ],
+      "system": "Project system prompt\n",
+      "systemSource": {
+        "path": "<fixture>/project/.pi/SYSTEM.md"
+      },
+      "append": [
+        "Project append prompt\n"
+      ],
+      "appendSources": [
+        {
+          "path": "<fixture>/project/.pi/APPEND_SYSTEM.md"
+        }
+      ],
+      "lastSkillPaths": [
+        "<fixture>/project/.pi/skills/shared/SKILL.md",
+        "<fixture>/agent/skills/shared/SKILL.md",
+        "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+        "<fixture>/pkg-user/skills/packaged/SKILL.md"
+      ],
+      "metadata": [
+        [
+          "<fixture>/project/.pi/extensions/project.js",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/extensions/user.js",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/extensions/packaged.js",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+          {
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project",
+            "packageRoot": "<fixture>/project/pkg-project"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/skills/packaged/SKILL.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/prompts/review.md",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/shared/custom.md",
+          {
+            "source": "local",
+            "scope": "user",
+            "origin": "top-level"
+          }
+        ],
+        [
+          "<fixture>/agent/prompts/greet.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/project/pkg-project/prompts/package.md",
+          {
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project",
+            "packageRoot": "<fixture>/project/pkg-project"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/prompts/package.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/themes/project.json",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/themes/user.json",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ]
+      ]
+    },
+    {
+      "case": "actual-reload-discovery:flags",
+      "events": [
+        "inline"
+      ],
+      "trustLog": [],
+      "preTrustRuntimeSame": false,
+      "loaded": true,
+      "extensions": [
+        {
+          "path": "<inline:inline-unit>",
+          "resolvedPath": "<inline:inline-unit>",
+          "sourceInfo": {
+            "path": "<inline:inline-unit>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          },
+          "commands": [
+            "inline-unit"
+          ]
+        }
+      ],
+      "errors": [],
+      "warnings": [],
+      "skills": [],
+      "skillDiagnostics": [],
+      "prompts": [],
+      "promptDiagnostics": [],
+      "themes": [],
+      "themeDiagnostics": [],
+      "agents": [
+        {
+          "path": "<fixture>/agent/AGENTS.md",
+          "content": "User AGENTS\n"
+        },
+        {
+          "path": "<fixture>/project/AGENTS.override.md",
+          "content": "Project override AGENTS\n"
+        }
+      ],
+      "system": "Project system prompt\n",
+      "systemSource": {
+        "path": "<fixture>/project/.pi/SYSTEM.md"
+      },
+      "append": [
+        "Project append prompt\n"
+      ],
+      "appendSources": [
+        {
+          "path": "<fixture>/project/.pi/APPEND_SYSTEM.md"
+        }
+      ],
+      "lastSkillPaths": [],
+      "metadata": [
+        [
+          "<fixture>/project/.pi/extensions/project.js",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/extensions/user.js",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/extensions/packaged.js",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+          {
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project",
+            "packageRoot": "<fixture>/project/pkg-project"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/skills/packaged/SKILL.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/prompts/review.md",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/shared/custom.md",
+          {
+            "source": "local",
+            "scope": "user",
+            "origin": "top-level"
+          }
+        ],
+        [
+          "<fixture>/agent/prompts/greet.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/project/pkg-project/prompts/package.md",
+          {
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project",
+            "packageRoot": "<fixture>/project/pkg-project"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/prompts/package.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/themes/project.json",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/themes/user.json",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ]
+      ]
+    },
+    {
+      "case": "actual-reload-discovery:temporary",
+      "events": [
+        "inline"
+      ],
+      "trustLog": [],
+      "preTrustRuntimeSame": false,
+      "loaded": true,
+      "extensions": [
+        {
+          "path": "<fixture>/project/.pi/extensions/project.js",
+          "resolvedPath": "<fixture>/project/.pi/extensions/project.js",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/extensions/project.js",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          },
+          "commands": [
+            "fixture-project-command"
+          ]
+        },
+        {
+          "path": "<fixture>/agent/extensions/user.js",
+          "resolvedPath": "<fixture>/agent/extensions/user.js",
+          "sourceInfo": {
+            "path": "<fixture>/agent/extensions/user.js",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          },
+          "commands": [
+            "fixture-user-command"
+          ]
+        },
+        {
+          "path": "<fixture>/pkg-user/extensions/packaged.js",
+          "resolvedPath": "<fixture>/pkg-user/extensions/packaged.js",
+          "sourceInfo": {
+            "path": "<fixture>/pkg-user/extensions/packaged.js",
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user"
+          },
+          "commands": [
+            "fixture-package-command"
+          ]
+        },
+        {
+          "path": "<inline:inline-unit>",
+          "resolvedPath": "<inline:inline-unit>",
+          "sourceInfo": {
+            "path": "<inline:inline-unit>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          },
+          "commands": [
+            "inline-unit"
+          ]
+        }
+      ],
+      "errors": [],
+      "warnings": [],
+      "skills": [
+        {
+          "name": "temporary",
+          "filePath": "<fixture>/pkg-temporary/skills/temporary/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/pkg-temporary/skills/temporary/SKILL.md",
+            "source": "cli",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        },
+        {
+          "name": "shared",
+          "filePath": "<fixture>/project/.pi/skills/shared/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/skills/shared/SKILL.md",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "packaged",
+          "filePath": "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project"
+          }
+        },
+        {
+          "name": "extra",
+          "filePath": "<fixture>/extra/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/extra/SKILL.md",
+            "source": "local",
+            "scope": "temporary",
+            "origin": "top-level",
+            "baseDir": "<fixture>/extra"
+          }
+        }
+      ],
+      "skillDiagnostics": [
+        {
+          "type": "collision",
+          "message": "name \"shared\" collision",
+          "path": "<fixture>/agent/skills/shared/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "shared",
+            "winnerPath": "<fixture>/project/.pi/skills/shared/SKILL.md",
+            "loserPath": "<fixture>/agent/skills/shared/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"packaged\" collision",
+          "path": "<fixture>/pkg-user/skills/packaged/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "packaged",
+            "winnerPath": "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+            "loserPath": "<fixture>/pkg-user/skills/packaged/SKILL.md"
+          }
+        }
+      ],
+      "prompts": [
+        {
+          "name": "temporary",
+          "filePath": "<fixture>/pkg-temporary/prompts/temporary.md",
+          "sourceInfo": {
+            "path": "<fixture>/pkg-temporary/prompts/temporary.md",
+            "source": "<fixture>/pkg-temporary",
+            "scope": "temporary",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-temporary"
+          }
+        },
+        {
+          "name": "review",
+          "filePath": "<fixture>/project/.pi/prompts/review.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/prompts/review.md",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "custom",
+          "filePath": "<fixture>/shared/custom.md",
+          "sourceInfo": {
+            "path": "<fixture>/shared/custom.md",
+            "source": "local",
+            "scope": "user",
+            "origin": "top-level"
+          }
+        },
+        {
+          "name": "greet",
+          "filePath": "<fixture>/agent/prompts/greet.md",
+          "sourceInfo": {
+            "path": "<fixture>/agent/prompts/greet.md",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        },
+        {
+          "name": "package",
+          "filePath": "<fixture>/project/pkg-project/prompts/package.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/pkg-project/prompts/package.md",
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project"
+          }
+        }
+      ],
+      "promptDiagnostics": [
+        {
+          "type": "collision",
+          "message": "name \"/package\" collision",
+          "path": "<fixture>/pkg-user/prompts/package.md",
+          "collision": {
+            "resourceType": "prompt",
+            "name": "package",
+            "winnerPath": "<fixture>/project/pkg-project/prompts/package.md",
+            "loserPath": "<fixture>/pkg-user/prompts/package.md"
+          }
+        }
+      ],
+      "themes": [
+        {
+          "name": "fixture-project",
+          "sourcePath": "<fixture>/project/.pi/themes/project.json",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/themes/project.json",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "fixture-user",
+          "sourcePath": "<fixture>/agent/themes/user.json",
+          "sourceInfo": {
+            "path": "<fixture>/agent/themes/user.json",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        },
+        {
+          "name": "fixture-extra",
+          "sourcePath": "<fixture>/extra/theme.json",
+          "sourceInfo": {
+            "path": "<fixture>/extra/theme.json",
+            "source": "local",
+            "scope": "temporary",
+            "origin": "top-level",
+            "baseDir": "<fixture>/extra"
+          }
+        }
+      ],
+      "themeDiagnostics": [],
+      "agents": [
+        {
+          "path": "<fixture>/agent/AGENTS.md",
+          "content": "User AGENTS\n"
+        },
+        {
+          "path": "<fixture>/project/AGENTS.override.md",
+          "content": "Project override AGENTS\n"
+        }
+      ],
+      "system": "Project system prompt\n",
+      "systemSource": {
+        "path": "<fixture>/project/.pi/SYSTEM.md"
+      },
+      "append": [
+        "Project append prompt\n"
+      ],
+      "appendSources": [
+        {
+          "path": "<fixture>/project/.pi/APPEND_SYSTEM.md"
+        }
+      ],
+      "lastSkillPaths": [
+        "<fixture>/pkg-temporary/skills/temporary/SKILL.md",
+        "<fixture>/project/.pi/skills/shared/SKILL.md",
+        "<fixture>/agent/skills/shared/SKILL.md",
+        "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+        "<fixture>/pkg-user/skills/packaged/SKILL.md",
+        "<fixture>/extra/SKILL.md"
+      ],
+      "metadata": [
+        [
+          "<fixture>/project/.pi/extensions/project.js",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/extensions/user.js",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/extensions/packaged.js",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+          {
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project",
+            "packageRoot": "<fixture>/project/pkg-project"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/skills/packaged/SKILL.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/prompts/review.md",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/shared/custom.md",
+          {
+            "source": "local",
+            "scope": "user",
+            "origin": "top-level"
+          }
+        ],
+        [
+          "<fixture>/agent/prompts/greet.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/project/pkg-project/prompts/package.md",
+          {
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project",
+            "packageRoot": "<fixture>/project/pkg-project"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/prompts/package.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/themes/project.json",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/themes/user.json",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/pkg-temporary/skills/temporary/SKILL.md",
+          {
+            "source": "cli",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        ],
+        [
+          "<fixture>/pkg-temporary/prompts/temporary.md",
+          {
+            "source": "<fixture>/pkg-temporary",
+            "scope": "temporary",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-temporary",
+            "packageRoot": "<fixture>/pkg-temporary"
+          }
+        ]
+      ]
+    },
+    {
+      "case": "actual-reload-discovery:package-filter",
+      "events": [
+        "inline"
+      ],
+      "trustLog": [],
+      "preTrustRuntimeSame": false,
+      "loaded": true,
+      "extensions": [
+        {
+          "path": "<fixture>/project/.pi/extensions/project.js",
+          "resolvedPath": "<fixture>/project/.pi/extensions/project.js",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/extensions/project.js",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          },
+          "commands": [
+            "fixture-project-command"
+          ]
+        },
+        {
+          "path": "<fixture>/agent/extensions/user.js",
+          "resolvedPath": "<fixture>/agent/extensions/user.js",
+          "sourceInfo": {
+            "path": "<fixture>/agent/extensions/user.js",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          },
+          "commands": [
+            "fixture-user-command"
+          ]
+        },
+        {
+          "path": "<inline:inline-unit>",
+          "resolvedPath": "<inline:inline-unit>",
+          "sourceInfo": {
+            "path": "<inline:inline-unit>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          },
+          "commands": [
+            "inline-unit"
+          ]
+        }
+      ],
+      "errors": [],
+      "warnings": [],
+      "skills": [
+        {
+          "name": "shared",
+          "filePath": "<fixture>/project/.pi/skills/shared/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/skills/shared/SKILL.md",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "packaged",
+          "filePath": "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project"
+          }
+        }
+      ],
+      "skillDiagnostics": [
+        {
+          "type": "collision",
+          "message": "name \"shared\" collision",
+          "path": "<fixture>/agent/skills/shared/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "shared",
+            "winnerPath": "<fixture>/project/.pi/skills/shared/SKILL.md",
+            "loserPath": "<fixture>/agent/skills/shared/SKILL.md"
+          }
+        },
+        {
+          "type": "collision",
+          "message": "name \"packaged\" collision",
+          "path": "<fixture>/pkg-user/skills/packaged/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "packaged",
+            "winnerPath": "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+            "loserPath": "<fixture>/pkg-user/skills/packaged/SKILL.md"
+          }
+        }
+      ],
+      "prompts": [
+        {
+          "name": "review",
+          "filePath": "<fixture>/project/.pi/prompts/review.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/prompts/review.md",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "custom",
+          "filePath": "<fixture>/shared/custom.md",
+          "sourceInfo": {
+            "path": "<fixture>/shared/custom.md",
+            "source": "local",
+            "scope": "user",
+            "origin": "top-level"
+          }
+        },
+        {
+          "name": "greet",
+          "filePath": "<fixture>/agent/prompts/greet.md",
+          "sourceInfo": {
+            "path": "<fixture>/agent/prompts/greet.md",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        },
+        {
+          "name": "package",
+          "filePath": "<fixture>/project/pkg-project/prompts/package.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/pkg-project/prompts/package.md",
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project"
+          }
+        }
+      ],
+      "promptDiagnostics": [
+        {
+          "type": "collision",
+          "message": "name \"/package\" collision",
+          "path": "<fixture>/pkg-user/prompts/package.md",
+          "collision": {
+            "resourceType": "prompt",
+            "name": "package",
+            "winnerPath": "<fixture>/project/pkg-project/prompts/package.md",
+            "loserPath": "<fixture>/pkg-user/prompts/package.md"
+          }
+        }
+      ],
+      "themes": [
+        {
+          "name": "fixture-project",
+          "sourcePath": "<fixture>/project/.pi/themes/project.json",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/themes/project.json",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "fixture-user",
+          "sourcePath": "<fixture>/agent/themes/user.json",
+          "sourceInfo": {
+            "path": "<fixture>/agent/themes/user.json",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        }
+      ],
+      "themeDiagnostics": [],
+      "agents": [
+        {
+          "path": "<fixture>/agent/AGENTS.md",
+          "content": "User AGENTS\n"
+        },
+        {
+          "path": "<fixture>/project/AGENTS.override.md",
+          "content": "Project override AGENTS\n"
+        }
+      ],
+      "system": "Project system prompt\n",
+      "systemSource": {
+        "path": "<fixture>/project/.pi/SYSTEM.md"
+      },
+      "append": [
+        "Project append prompt\n"
+      ],
+      "appendSources": [
+        {
+          "path": "<fixture>/project/.pi/APPEND_SYSTEM.md"
+        }
+      ],
+      "lastSkillPaths": [
+        "<fixture>/project/.pi/skills/shared/SKILL.md",
+        "<fixture>/agent/skills/shared/SKILL.md",
+        "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+        "<fixture>/pkg-user/skills/packaged/SKILL.md"
+      ],
+      "metadata": [
+        [
+          "<fixture>/project/.pi/extensions/project.js",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/extensions/user.js",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/project/pkg-project/skills/packaged/SKILL.md",
+          {
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project",
+            "packageRoot": "<fixture>/project/pkg-project"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/skills/packaged/SKILL.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/prompts/review.md",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/shared/custom.md",
+          {
+            "source": "local",
+            "scope": "user",
+            "origin": "top-level"
+          }
+        ],
+        [
+          "<fixture>/agent/prompts/greet.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/project/pkg-project/prompts/package.md",
+          {
+            "source": "<fixture>/project/pkg-project",
+            "scope": "project",
+            "origin": "package",
+            "baseDir": "<fixture>/project/pkg-project",
+            "packageRoot": "<fixture>/project/pkg-project"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/prompts/package.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/themes/project.json",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/themes/user.json",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ]
+      ]
+    },
+    {
+      "case": "actual-untrusted-settings-write-rejection",
+      "message": "Project is not trusted; refusing to write project settings"
+    },
+    {
+      "case": "actual-reload-discovery:untrusted",
+      "events": [
+        "inline"
+      ],
+      "trustLog": [],
+      "preTrustRuntimeSame": false,
+      "loaded": true,
+      "extensions": [
+        {
+          "path": "<fixture>/agent/extensions/user.js",
+          "resolvedPath": "<fixture>/agent/extensions/user.js",
+          "sourceInfo": {
+            "path": "<fixture>/agent/extensions/user.js",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          },
+          "commands": [
+            "fixture-user-command"
+          ]
+        },
+        {
+          "path": "<fixture>/pkg-user/extensions/packaged.js",
+          "resolvedPath": "<fixture>/pkg-user/extensions/packaged.js",
+          "sourceInfo": {
+            "path": "<fixture>/pkg-user/extensions/packaged.js",
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user"
+          },
+          "commands": [
+            "fixture-package-command"
+          ]
+        },
+        {
+          "path": "<inline:inline-unit>",
+          "resolvedPath": "<inline:inline-unit>",
+          "sourceInfo": {
+            "path": "<inline:inline-unit>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          },
+          "commands": [
+            "inline-unit"
+          ]
+        }
+      ],
+      "errors": [],
+      "warnings": [],
+      "skills": [
+        {
+          "name": "shared",
+          "filePath": "<fixture>/agent/skills/shared/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/agent/skills/shared/SKILL.md",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        },
+        {
+          "name": "packaged",
+          "filePath": "<fixture>/pkg-user/skills/packaged/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/pkg-user/skills/packaged/SKILL.md",
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user"
+          }
+        }
+      ],
+      "skillDiagnostics": [],
+      "prompts": [
+        {
+          "name": "custom",
+          "filePath": "<fixture>/shared/custom.md",
+          "sourceInfo": {
+            "path": "<fixture>/shared/custom.md",
+            "source": "local",
+            "scope": "user",
+            "origin": "top-level"
+          }
+        },
+        {
+          "name": "greet",
+          "filePath": "<fixture>/agent/prompts/greet.md",
+          "sourceInfo": {
+            "path": "<fixture>/agent/prompts/greet.md",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        },
+        {
+          "name": "package",
+          "filePath": "<fixture>/pkg-user/prompts/package.md",
+          "sourceInfo": {
+            "path": "<fixture>/pkg-user/prompts/package.md",
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user"
+          }
+        }
+      ],
+      "promptDiagnostics": [],
+      "themes": [
+        {
+          "name": "fixture-user",
+          "sourcePath": "<fixture>/agent/themes/user.json",
+          "sourceInfo": {
+            "path": "<fixture>/agent/themes/user.json",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        }
+      ],
+      "themeDiagnostics": [],
+      "agents": [
+        {
+          "path": "<fixture>/agent/AGENTS.md",
+          "content": "User AGENTS\n"
+        },
+        {
+          "path": "<fixture>/project/AGENTS.override.md",
+          "content": "Project override AGENTS\n"
+        }
+      ],
+      "system": "User system prompt\n",
+      "systemSource": {
+        "path": "<fixture>/agent/SYSTEM.md"
+      },
+      "append": [
+        "User append prompt\n"
+      ],
+      "appendSources": [
+        {
+          "path": "<fixture>/agent/APPEND_SYSTEM.md"
+        }
+      ],
+      "lastSkillPaths": [
+        "<fixture>/agent/skills/shared/SKILL.md",
+        "<fixture>/pkg-user/skills/packaged/SKILL.md"
+      ],
+      "metadata": [
+        [
+          "<fixture>/agent/extensions/user.js",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/extensions/packaged.js",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/agent/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/skills/packaged/SKILL.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/shared/custom.md",
+          {
+            "source": "local",
+            "scope": "user",
+            "origin": "top-level"
+          }
+        ],
+        [
+          "<fixture>/agent/prompts/greet.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/prompts/package.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/agent/themes/user.json",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ]
+      ]
+    },
+    {
+      "case": "actual-reload-discovery:trust-bootstrap",
+      "events": [
+        "inline"
+      ],
+      "trustLog": [
+        {
+          "paths": [
+            "<fixture>/agent/extensions/user.js",
+            "<fixture>/pkg-user/extensions/packaged.js",
+            "<inline:inline-unit>"
+          ],
+          "inlineEvents": [
+            "inline"
+          ]
+        }
+      ],
+      "preTrustRuntimeSame": true,
+      "loaded": true,
+      "extensions": [
+        {
+          "path": "<fixture>/project/.pi/extensions/project.js",
+          "resolvedPath": "<fixture>/project/.pi/extensions/project.js",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/extensions/project.js",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          },
+          "commands": [
+            "fixture-project-command"
+          ]
+        },
+        {
+          "path": "<fixture>/agent/extensions/user.js",
+          "resolvedPath": "<fixture>/agent/extensions/user.js",
+          "sourceInfo": {
+            "path": "<fixture>/agent/extensions/user.js",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          },
+          "commands": [
+            "fixture-user-command"
+          ]
+        },
+        {
+          "path": "<fixture>/pkg-user/extensions/packaged.js",
+          "resolvedPath": "<fixture>/pkg-user/extensions/packaged.js",
+          "sourceInfo": {
+            "path": "<fixture>/pkg-user/extensions/packaged.js",
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user"
+          },
+          "commands": [
+            "fixture-package-command"
+          ]
+        },
+        {
+          "path": "<inline:inline-unit>",
+          "resolvedPath": "<inline:inline-unit>",
+          "sourceInfo": {
+            "path": "<inline:inline-unit>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          },
+          "commands": [
+            "inline-unit"
+          ]
+        }
+      ],
+      "errors": [],
+      "warnings": [],
+      "skills": [
+        {
+          "name": "shared",
+          "filePath": "<fixture>/project/.pi/skills/shared/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/skills/shared/SKILL.md",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "packaged",
+          "filePath": "<fixture>/pkg-user/skills/packaged/SKILL.md",
+          "sourceInfo": {
+            "path": "<fixture>/pkg-user/skills/packaged/SKILL.md",
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user"
+          }
+        }
+      ],
+      "skillDiagnostics": [
+        {
+          "type": "collision",
+          "message": "name \"shared\" collision",
+          "path": "<fixture>/agent/skills/shared/SKILL.md",
+          "collision": {
+            "resourceType": "skill",
+            "name": "shared",
+            "winnerPath": "<fixture>/project/.pi/skills/shared/SKILL.md",
+            "loserPath": "<fixture>/agent/skills/shared/SKILL.md"
+          }
+        }
+      ],
+      "prompts": [
+        {
+          "name": "review",
+          "filePath": "<fixture>/project/.pi/prompts/review.md",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/prompts/review.md",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "custom",
+          "filePath": "<fixture>/shared/custom.md",
+          "sourceInfo": {
+            "path": "<fixture>/shared/custom.md",
+            "source": "local",
+            "scope": "user",
+            "origin": "top-level"
+          }
+        },
+        {
+          "name": "greet",
+          "filePath": "<fixture>/agent/prompts/greet.md",
+          "sourceInfo": {
+            "path": "<fixture>/agent/prompts/greet.md",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        },
+        {
+          "name": "package",
+          "filePath": "<fixture>/pkg-user/prompts/package.md",
+          "sourceInfo": {
+            "path": "<fixture>/pkg-user/prompts/package.md",
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user"
+          }
+        }
+      ],
+      "promptDiagnostics": [],
+      "themes": [
+        {
+          "name": "fixture-project",
+          "sourcePath": "<fixture>/project/.pi/themes/project.json",
+          "sourceInfo": {
+            "path": "<fixture>/project/.pi/themes/project.json",
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        },
+        {
+          "name": "fixture-user",
+          "sourcePath": "<fixture>/agent/themes/user.json",
+          "sourceInfo": {
+            "path": "<fixture>/agent/themes/user.json",
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        }
+      ],
+      "themeDiagnostics": [],
+      "agents": [
+        {
+          "path": "<fixture>/agent/AGENTS.md",
+          "content": "User AGENTS\n"
+        },
+        {
+          "path": "<fixture>/project/AGENTS.override.md",
+          "content": "Project override AGENTS\n"
+        }
+      ],
+      "system": "Project system prompt\n",
+      "systemSource": {
+        "path": "<fixture>/project/.pi/SYSTEM.md"
+      },
+      "append": [
+        "Project append prompt\n"
+      ],
+      "appendSources": [
+        {
+          "path": "<fixture>/project/.pi/APPEND_SYSTEM.md"
+        }
+      ],
+      "lastSkillPaths": [
+        "<fixture>/project/.pi/skills/shared/SKILL.md",
+        "<fixture>/agent/skills/shared/SKILL.md",
+        "<fixture>/pkg-user/skills/packaged/SKILL.md"
+      ],
+      "metadata": [
+        [
+          "<fixture>/project/.pi/extensions/project.js",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/extensions/user.js",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/extensions/packaged.js",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/skills/shared/SKILL.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/skills/packaged/SKILL.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/prompts/review.md",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/shared/custom.md",
+          {
+            "source": "local",
+            "scope": "user",
+            "origin": "top-level"
+          }
+        ],
+        [
+          "<fixture>/agent/prompts/greet.md",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ],
+        [
+          "<fixture>/pkg-user/prompts/package.md",
+          {
+            "source": "<fixture>/pkg-user",
+            "scope": "user",
+            "origin": "package",
+            "baseDir": "<fixture>/pkg-user",
+            "packageRoot": "<fixture>/pkg-user"
+          }
+        ],
+        [
+          "<fixture>/project/.pi/themes/project.json",
+          {
+            "source": "auto",
+            "scope": "project",
+            "origin": "top-level",
+            "baseDir": "<fixture>/project/.pi"
+          }
+        ],
+        [
+          "<fixture>/agent/themes/user.json",
+          {
+            "source": "auto",
+            "scope": "user",
+            "origin": "top-level",
+            "baseDir": "<fixture>/agent"
+          }
+        ]
+      ]
+    }
+  ]
+}
