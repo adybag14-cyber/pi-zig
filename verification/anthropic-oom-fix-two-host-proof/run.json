@@ -1,0 +1,158 @@
+{
+  "conclusion": "success",
+  "headSha": "86f5be0f495c776e56fb95f589ee507c019ff0cd",
+  "jobs": [
+    {
+      "completedAt": "2026-10-15T20:47:19Z",
+      "conclusion": "success",
+      "databaseId": 116655587245,
+      "name": "qualify (windows-latest)",
+      "startedAt": "2026-10-15T20:32:00Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T20:32:08Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T20:32:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:32:21Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 2,
+          "startedAt": "2026-10-15T20:32:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:32:34Z",
+          "conclusion": "success",
+          "name": "Run mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29",
+          "number": 3,
+          "startedAt": "2026-10-15T20:32:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:47:12Z",
+          "conclusion": "success",
+          "name": "Original Source25 and22 wire controls plus both complete host sweeps",
+          "number": 4,
+          "startedAt": "2026-10-15T20:32:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:47:13Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "number": 5,
+          "startedAt": "2026-10-15T20:47:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:47:14Z",
+          "conclusion": "success",
+          "name": "Post Run mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29",
+          "number": 9,
+          "startedAt": "2026-10-15T20:47:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:47:16Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 10,
+          "startedAt": "2026-10-15T20:47:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:47:16Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-10-15T20:47:16Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38802701752/job/116655587245"
+    },
+    {
+      "completedAt": "2026-10-15T20:41:05Z",
+      "conclusion": "success",
+      "databaseId": 116655587611,
+      "name": "qualify (ubuntu-latest)",
+      "startedAt": "2026-10-15T20:32:01Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T20:32:04Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T20:32:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:32:09Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 2,
+          "startedAt": "2026-10-15T20:32:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:32:20Z",
+          "conclusion": "success",
+          "name": "Run mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29",
+          "number": 3,
+          "startedAt": "2026-10-15T20:32:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:41:01Z",
+          "conclusion": "success",
+          "name": "Original Source25 and22 wire controls plus both complete host sweeps",
+          "number": 4,
+          "startedAt": "2026-10-15T20:32:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:41:02Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "number": 5,
+          "startedAt": "2026-10-15T20:41:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:41:02Z",
+          "conclusion": "success",
+          "name": "Post Run mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29",
+          "number": 9,
+          "startedAt": "2026-10-15T20:41:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:41:03Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 10,
+          "startedAt": "2026-10-15T20:41:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T20:41:03Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-10-15T20:41:03Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38802701752/job/116655587611"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38802701752"
+}

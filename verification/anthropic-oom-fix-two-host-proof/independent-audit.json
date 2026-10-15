@@ -1,0 +1,190 @@
+{
+  "status": "independent_anthropic_fix_two_host_audit_passed",
+  "anthropic_fix_two_host_scope_qualified": true,
+  "full_provider_cohort_qualified": false,
+  "run_id": 38802701752,
+  "run_url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38802701752",
+  "head": "86f5be0f495c776e56fb95f589ee507c019ff0cd",
+  "product_base": "b6589631553bf5f5d3218e47b08cef5e277dd04f",
+  "profile_count": 2,
+  "planned_tests_per_profile": 8,
+  "aggregate_executed_tests": 16,
+  "boundaries": {
+    "funded_provider_requests": 0,
+    "default_responses_websocket_qualified": false,
+    "full_factory_qualified": false,
+    "full_pi_qualified": false,
+    "anthropic_query_beta_qualified": false,
+    "fresh_posix_source_recapture": false,
+    "public_activation": false,
+    "user_agent": "Native Zig/QuickJS runtime; SDK Node metadata excluded by existing fixture comparator"
+  },
+  "component_profile_outcomes": [
+    {
+      "id": "anthropic",
+      "selected_tests_per_profile": 5,
+      "passed_profiles": 2,
+      "failed_profiles": 0,
+      "not_reached_profiles": 0,
+      "both_selected_test_arrays_passed": true
+    },
+    {
+      "id": "anthropic-allocation",
+      "selected_tests_per_profile": 3,
+      "passed_profiles": 2,
+      "failed_profiles": 0,
+      "not_reached_profiles": 0,
+      "both_selected_test_arrays_passed": true
+    }
+  ],
+  "profiles": [
+    {
+      "artifact_id": 12006635279,
+      "artifact_name": "native-anthropic-oom-fix-windows-latest-86f5be0f495c776e56fb95f589ee507c019ff0cd",
+      "zip_sha256": "sha256:3e0058fb14be39ae2afb25b589ee02cb152852c872496ca97c5ad91d2cfb4313",
+      "zip_bytes": 2610180,
+      "mode": "Debug",
+      "os": "Microsoft Windows 10.0.26100",
+      "planned_tests": 8,
+      "executed_tests": 8,
+      "planned_substantive_tests": 6,
+      "planned_declaration_tests": 2,
+      "source_files": 6533,
+      "compiler_files": 19546,
+      "checkout_newline_conversions": 0,
+      "source_tool_posthash_drift": 0,
+      "components": [
+        {
+          "id": "anthropic",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "8D40E97637A9DDF7CA8156F8A712C3A66D936AA391F7B428A3ACBE81CEA2A98B",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic request bodies match25 actual public Source observations",
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic real wire stream events callbacks and results match actual Source",
+            "native_ai_claude_request_test.test.native Claude5ab request owner graphs preserve error images unsupported off effort and actual Bedrock bytes",
+            "native_ai_claude_request_test.test.native Claude5ab request owner pending hook survives collection and retains terminal result identity",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Pending/retained request and codec owner assertions; exhaustive owners in separate target"
+        },
+        {
+          "id": "anthropic-allocation",
+          "status": "passed",
+          "planned_tests": 3,
+          "binary_sha256": "60FBD5AF2A7E2D3C47401FD9BC5C068CD14ECD511ECEADD360934EE3D6C3BC41",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 3,
+          "tests_failed": 0,
+          "allocation_scope": "Both complete measured request and pending callback owner universes, existing strict helper in full0/1 mode with every ordered index retained",
+          "complete_measured_sweeps": [
+            {
+              "duplicates": 0,
+              "completed": 226,
+              "gaps": 0,
+              "baseline": 226,
+              "label": "anthropic-request"
+            },
+            {
+              "duplicates": 0,
+              "completed": 162,
+              "gaps": 0,
+              "baseline": 162,
+              "label": "anthropic-pending"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "artifact_id": 12005177182,
+      "artifact_name": "native-anthropic-oom-fix-ubuntu-latest-86f5be0f495c776e56fb95f589ee507c019ff0cd",
+      "zip_sha256": "sha256:3f9b3dd364348b06834aa7930b86eb390e344329b9ec66b352824ed46e669a77",
+      "zip_bytes": 2577009,
+      "mode": "Debug",
+      "os": "Ubuntu 24.04.5 LTS",
+      "planned_tests": 8,
+      "executed_tests": 8,
+      "planned_substantive_tests": 6,
+      "planned_declaration_tests": 2,
+      "source_files": 6533,
+      "compiler_files": 19546,
+      "checkout_newline_conversions": 0,
+      "source_tool_posthash_drift": 0,
+      "components": [
+        {
+          "id": "anthropic",
+          "status": "passed",
+          "planned_tests": 5,
+          "binary_sha256": "58F3DEDC04446EDEFC10D821AAD5D26E0058C6E04B48795AE9F107BD5B46BCC7",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic request bodies match25 actual public Source observations",
+            "native_ai_claude_request_test.test.native Claude5ab Anthropic real wire stream events callbacks and results match actual Source",
+            "native_ai_claude_request_test.test.native Claude5ab request owner graphs preserve error images unsupported off effort and actual Bedrock bytes",
+            "native_ai_claude_request_test.test.native Claude5ab request owner pending hook survives collection and retains terminal result identity",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 5,
+          "tests_failed": 0,
+          "allocation_scope": "Pending/retained request and codec owner assertions; exhaustive owners in separate target"
+        },
+        {
+          "id": "anthropic-allocation",
+          "status": "passed",
+          "planned_tests": 3,
+          "binary_sha256": "E905CB09116636DDDEBB5705C280D87BEBC9B5B92143BEF64879AAD7A18FDADC",
+          "metadata_tags": [
+            0,
+            3
+          ],
+          "exact_selected_names": [
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation releases request schemas transcript images and getter exceptions",
+            "native_ai_claude_request_test.test.native Claude5ab every host allocation in pending callback releases continuation roots and terminal output",
+            "extensions.native_durable_storage.test_0"
+          ],
+          "tests_passed": 3,
+          "tests_failed": 0,
+          "allocation_scope": "Both complete measured request and pending callback owner universes, existing strict helper in full0/1 mode with every ordered index retained",
+          "complete_measured_sweeps": [
+            {
+              "duplicates": 0,
+              "label": "anthropic-request",
+              "baseline": 226,
+              "gaps": 0,
+              "completed": 226
+            },
+            {
+              "duplicates": 0,
+              "label": "anthropic-pending",
+              "baseline": 162,
+              "gaps": 0,
+              "completed": 162
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "aggregate_passed_tests": 16,
+  "aggregate_failed_tests": 0,
+  "aggregate_not_reached_tests": 0,
+  "added_callback_regression_file_executed_in_this_cohort": false
+}
