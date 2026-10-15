@@ -1,0 +1,8 @@
+{
+  "current_head": "051d921bbcd1aeff34cd6db21af73ad274d7920a",
+  "original_candidate_drift": 0,
+  "new_files_scope": "Only append-only verification/ai-pi-messages-native-20261015 proof artifacts; supplementalSource6 data is not yet wired to native tests.",
+  "original_candidate_files": 6109,
+  "tested_head": "051d921bbcd1aeff34cd6db21af73ad274d7920a",
+  "changed": []
+}

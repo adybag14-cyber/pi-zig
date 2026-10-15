@@ -1,0 +1,4626 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "actualNode": {
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.14.0",
+    "pid": 51072
+  },
+  "driverSha256": "501fc8eaa3e031d994929c6d7a584858d1d00ccf8d4f7cbd2ec17ce30bc0950e",
+  "inputSha256": "8f7058c824cdeac1bcfe83c5c8802d56a11f9b1a9e75a49e16a85a35259fea88",
+  "scope": "Actual original Pi messages module: 18 supplied-fetch controls plus 4 owned-loopback default-fetch controls. Stack and numeric duration values normalized with property presence preserved; mutable partial and terminal aliases checked live.",
+  "cases": 22,
+  "rows": [
+    {
+      "name": "basic-bytewise",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages?debug=1",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "hello 😀",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello 😀"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "hello 😀",
+          "contentSignature": "sig",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello 😀",
+                "textSignature": "sig"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello 😀",
+                "textSignature": "sig"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 2,
+              "output": 3,
+              "cacheRead": 4,
+              "cacheWrite": 5,
+              "totalTokens": 14,
+              "cost": {
+                "input": 0.2,
+                "output": 0.3,
+                "cacheRead": 0.4,
+                "cacheWrite": 0.5,
+                "total": 1.4
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 123456789,
+            "responseId": "response-1",
+            "providerThinkingLevel": "native-high",
+            "diagnostics": [
+              {
+                "type": "pi_messages_rewrite",
+                "timestamp": 123456789,
+                "details": {
+                  "policyId": "p",
+                  "policyVersion": 2,
+                  "changed": true,
+                  "tokenCountChange": -2,
+                  "messageCountChange": 0,
+                  "systemPromptChanged": false
+                }
+              }
+            ],
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "hello 😀",
+            "textSignature": "sig"
+          }
+        ],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 2,
+          "output": 3,
+          "cacheRead": 4,
+          "cacheWrite": 5,
+          "totalTokens": 14,
+          "cost": {
+            "input": 0.2,
+            "output": 0.3,
+            "cacheRead": 0.4,
+            "cacheWrite": 0.5,
+            "total": 1.4
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 123456789,
+        "responseId": "response-1",
+        "providerThinkingLevel": "native-high",
+        "diagnostics": [
+          {
+            "type": "pi_messages_rewrite",
+            "timestamp": 123456789,
+            "details": {
+              "policyId": "p",
+              "policyVersion": 2,
+              "changed": true,
+              "tokenCountChange": -2,
+              "messageCountChange": 0,
+              "systemPromptChanged": false
+            }
+          }
+        ],
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "reader",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "provider:start",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "provider:text_start",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "provider:text_delta",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "provider:text_end",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "provider:done",
+        "release"
+      ],
+      "releases": 1
+    },
+    {
+      "name": "tool-and-thinking",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "thinking_start",
+          "contentIndex": 2,
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              null,
+              null,
+              {
+                "type": "thinking",
+                "thinking": ""
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "thinking_delta",
+          "contentIndex": 2,
+          "delta": "why",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              null,
+              null,
+              {
+                "type": "thinking",
+                "thinking": "why"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "thinking_end",
+          "contentIndex": 2,
+          "content": "why",
+          "contentSignature": "think",
+          "redacted": true,
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              null,
+              null,
+              {
+                "type": "thinking",
+                "thinking": "why",
+                "thinkingSignature": "think",
+                "redacted": true
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 4,
+          "id": "tool-1",
+          "toolName": "read",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              null,
+              null,
+              {
+                "type": "thinking",
+                "thinking": "why",
+                "thinkingSignature": "think",
+                "redacted": true
+              },
+              null,
+              {
+                "type": "toolCall",
+                "id": "tool-1",
+                "name": "read",
+                "arguments": {}
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 4,
+          "delta": "{\"file\":\"par",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              null,
+              null,
+              {
+                "type": "thinking",
+                "thinking": "why",
+                "thinkingSignature": "think",
+                "redacted": true
+              },
+              null,
+              {
+                "type": "toolCall",
+                "id": "tool-1",
+                "name": "read",
+                "arguments": {
+                  "file": "par"
+                }
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 4,
+          "delta": "tial\"}",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              null,
+              null,
+              {
+                "type": "thinking",
+                "thinking": "why",
+                "thinkingSignature": "think",
+                "redacted": true
+              },
+              null,
+              {
+                "type": "toolCall",
+                "id": "tool-1",
+                "name": "read",
+                "arguments": {
+                  "file": "partial"
+                }
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 4,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "tool-final",
+            "name": "read",
+            "arguments": {
+              "file": "final"
+            },
+            "extra": 7
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              null,
+              null,
+              {
+                "type": "thinking",
+                "thinking": "why",
+                "thinkingSignature": "think",
+                "redacted": true
+              },
+              null,
+              {
+                "type": "toolCall",
+                "id": "tool-final",
+                "name": "read",
+                "arguments": {
+                  "file": "final"
+                },
+                "extra": 7
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "done",
+          "reason": "toolUse",
+          "message": {
+            "role": "assistant",
+            "content": [
+              null,
+              null,
+              {
+                "type": "thinking",
+                "thinking": "why",
+                "thinkingSignature": "think",
+                "redacted": true
+              },
+              null,
+              {
+                "type": "toolCall",
+                "id": "tool-final",
+                "name": "read",
+                "arguments": {
+                  "file": "final"
+                },
+                "extra": 7
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 2,
+              "output": 3,
+              "cacheRead": 4,
+              "cacheWrite": 5,
+              "totalTokens": 14,
+              "cost": {
+                "input": 0.2,
+                "output": 0.3,
+                "cacheRead": 0.4,
+                "cacheWrite": 0.5,
+                "total": 1.4
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": 123456789,
+            "responseId": "response-1",
+            "providerThinkingLevel": "native-high",
+            "diagnostics": [
+              {
+                "type": "pi_messages_rewrite",
+                "timestamp": 123456789,
+                "details": {
+                  "policyId": "p",
+                  "policyVersion": 2,
+                  "changed": true,
+                  "tokenCountChange": -2,
+                  "messageCountChange": 0,
+                  "systemPromptChanged": false
+                }
+              }
+            ],
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          null,
+          null,
+          {
+            "type": "thinking",
+            "thinking": "why",
+            "thinkingSignature": "think",
+            "redacted": true
+          },
+          null,
+          {
+            "type": "toolCall",
+            "id": "tool-final",
+            "name": "read",
+            "arguments": {
+              "file": "final"
+            },
+            "extra": 7
+          }
+        ],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 2,
+          "output": 3,
+          "cacheRead": 4,
+          "cacheWrite": 5,
+          "totalTokens": 14,
+          "cost": {
+            "input": 0.2,
+            "output": 0.3,
+            "cacheRead": 0.4,
+            "cacheWrite": 0.5,
+            "total": 1.4
+          }
+        },
+        "stopReason": "toolUse",
+        "timestamp": 123456789,
+        "responseId": "response-1",
+        "providerThinkingLevel": "native-high",
+        "diagnostics": [
+          {
+            "type": "pi_messages_rewrite",
+            "timestamp": 123456789,
+            "details": {
+              "policyId": "p",
+              "policyVersion": 2,
+              "changed": true,
+              "tokenCountChange": -2,
+              "messageCountChange": 0,
+              "systemPromptChanged": false
+            }
+          }
+        ],
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "reader",
+        "read",
+        "provider:start",
+        "provider:thinking_start",
+        "provider:thinking_delta",
+        "provider:thinking_end",
+        "provider:toolcall_start",
+        "provider:toolcall_delta",
+        "provider:toolcall_delta",
+        "provider:toolcall_end",
+        "provider:done",
+        "release"
+      ],
+      "releases": 1
+    },
+    {
+      "name": "terminal-error",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 2,
+              "output": 3,
+              "cacheRead": 4,
+              "cacheWrite": 5,
+              "totalTokens": 14,
+              "cost": {
+                "input": 0.2,
+                "output": 0.3,
+                "cacheRead": 0.4,
+                "cacheWrite": 0.5,
+                "total": 1.4
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 123456789,
+            "errorMessage": "backend rejected",
+            "responseId": "err-id",
+            "providerThinkingLevel": "server",
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 2,
+          "output": 3,
+          "cacheRead": 4,
+          "cacheWrite": 5,
+          "totalTokens": 14,
+          "cost": {
+            "input": 0.2,
+            "output": 0.3,
+            "cacheRead": 0.4,
+            "cacheWrite": 0.5,
+            "total": 1.4
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 123456789,
+        "errorMessage": "backend rejected",
+        "responseId": "err-id",
+        "providerThinkingLevel": "server",
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "reader",
+        "read",
+        "provider:start",
+        "provider:error",
+        "release"
+      ],
+      "releases": 1
+    },
+    {
+      "name": "eof-terminal",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 2,
+              "output": 3,
+              "cacheRead": 4,
+              "cacheWrite": 5,
+              "totalTokens": 14,
+              "cost": {
+                "input": 0.2,
+                "output": 0.3,
+                "cacheRead": 0.4,
+                "cacheWrite": 0.5,
+                "total": 1.4
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 123456789,
+            "responseId": "response-1",
+            "providerThinkingLevel": "native-high",
+            "diagnostics": [
+              {
+                "type": "pi_messages_rewrite",
+                "timestamp": 123456789,
+                "details": {
+                  "policyId": "p",
+                  "policyVersion": 2,
+                  "changed": true,
+                  "tokenCountChange": -2,
+                  "messageCountChange": 0,
+                  "systemPromptChanged": false
+                }
+              }
+            ],
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 2,
+          "output": 3,
+          "cacheRead": 4,
+          "cacheWrite": 5,
+          "totalTokens": 14,
+          "cost": {
+            "input": 0.2,
+            "output": 0.3,
+            "cacheRead": 0.4,
+            "cacheWrite": 0.5,
+            "total": 1.4
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 123456789,
+        "responseId": "response-1",
+        "providerThinkingLevel": "native-high",
+        "diagnostics": [
+          {
+            "type": "pi_messages_rewrite",
+            "timestamp": 123456789,
+            "details": {
+              "policyId": "p",
+              "policyVersion": 2,
+              "changed": true,
+              "tokenCountChange": -2,
+              "messageCountChange": 0,
+              "systemPromptChanged": false
+            }
+          }
+        ],
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "reader",
+        "read",
+        "provider:start",
+        "read",
+        "provider:done",
+        "release"
+      ],
+      "releases": 1
+    },
+    {
+      "name": "first-data-only",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 2,
+              "output": 3,
+              "cacheRead": 4,
+              "cacheWrite": 5,
+              "totalTokens": 14,
+              "cost": {
+                "input": 0.2,
+                "output": 0.3,
+                "cacheRead": 0.4,
+                "cacheWrite": 0.5,
+                "total": 1.4
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 123456789,
+            "responseId": "response-1",
+            "providerThinkingLevel": "native-high",
+            "diagnostics": [
+              {
+                "type": "pi_messages_rewrite",
+                "timestamp": 123456789,
+                "details": {
+                  "policyId": "p",
+                  "policyVersion": 2,
+                  "changed": true,
+                  "tokenCountChange": -2,
+                  "messageCountChange": 0,
+                  "systemPromptChanged": false
+                }
+              }
+            ],
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 2,
+          "output": 3,
+          "cacheRead": 4,
+          "cacheWrite": 5,
+          "totalTokens": 14,
+          "cost": {
+            "input": 0.2,
+            "output": 0.3,
+            "cacheRead": 0.4,
+            "cacheWrite": 0.5,
+            "total": 1.4
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 123456789,
+        "responseId": "response-1",
+        "providerThinkingLevel": "native-high",
+        "diagnostics": [
+          {
+            "type": "pi_messages_rewrite",
+            "timestamp": 123456789,
+            "details": {
+              "policyId": "p",
+              "policyVersion": 2,
+              "changed": true,
+              "tokenCountChange": -2,
+              "messageCountChange": 0,
+              "systemPromptChanged": false
+            }
+          }
+        ],
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "reader",
+        "read",
+        "provider:done",
+        "release"
+      ],
+      "releases": 1
+    },
+    {
+      "name": "missing-terminal",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "test-pi stream ended without a terminal event",
+            "timestamp": 123456789,
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "test-pi stream ended without a terminal event",
+        "timestamp": 123456789,
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "reader",
+        "read",
+        "provider:start",
+        "read",
+        "release"
+      ],
+      "releases": 1
+    },
+    {
+      "name": "malformed-json",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+            "timestamp": 123456789,
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+        "timestamp": 123456789,
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "reader",
+        "read",
+        "release"
+      ],
+      "releases": 1
+    },
+    {
+      "name": "missing-api-key",
+      "requests": [],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "No API key provided for provider \"test-pi\"",
+            "timestamp": 123456789,
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "No API key provided for provider \"test-pi\"",
+        "timestamp": 123456789,
+        "durationMs": "<duration>"
+      },
+      "order": [],
+      "releases": 0
+    },
+    {
+      "name": "http-structured",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "429 Slow Down: busy (quota)",
+            "timestamp": 123456789,
+            "diagnostics": [
+              {
+                "type": "pi_messages_response_failure",
+                "timestamp": 123456789,
+                "error": {
+                  "name": "PiMessagesResponseError",
+                  "message": "429 Slow Down: busy (quota)",
+                  "stack": "<stack>",
+                  "code": "quota"
+                },
+                "details": {
+                  "version": 1,
+                  "provider": "test-pi",
+                  "model": "wire-model",
+                  "url": "https://example.invalid/v1/messages",
+                  "status": 429,
+                  "statusText": "Slow Down",
+                  "error": {
+                    "message": "busy",
+                    "code": "quota",
+                    "details": {
+                      "retry": true
+                    }
+                  },
+                  "timestampMs": 123456789
+                }
+              }
+            ],
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "429 Slow Down: busy (quota)",
+        "timestamp": 123456789,
+        "diagnostics": [
+          {
+            "type": "pi_messages_response_failure",
+            "timestamp": 123456789,
+            "error": {
+              "name": "PiMessagesResponseError",
+              "message": "429 Slow Down: busy (quota)",
+              "stack": "<stack>",
+              "code": "quota"
+            },
+            "details": {
+              "version": 1,
+              "provider": "test-pi",
+              "model": "wire-model",
+              "url": "https://example.invalid/v1/messages",
+              "status": 429,
+              "statusText": "Slow Down",
+              "error": {
+                "message": "busy",
+                "code": "quota",
+                "details": {
+                  "retry": true
+                }
+              },
+              "timestampMs": 123456789
+            }
+          }
+        ],
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "text"
+      ],
+      "releases": 0
+    },
+    {
+      "name": "http-empty-message",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "400 Bad Request: ",
+            "timestamp": 123456789,
+            "diagnostics": [
+              {
+                "type": "pi_messages_response_failure",
+                "timestamp": 123456789,
+                "error": {
+                  "name": "PiMessagesResponseError",
+                  "message": "400 Bad Request: ",
+                  "stack": "<stack>",
+                  "code": ""
+                },
+                "details": {
+                  "version": 1,
+                  "provider": "test-pi",
+                  "model": "wire-model",
+                  "url": "https://example.invalid/v1/messages",
+                  "status": 400,
+                  "statusText": "Bad Request",
+                  "error": {
+                    "message": "",
+                    "code": ""
+                  },
+                  "timestampMs": 123456789
+                }
+              }
+            ],
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "400 Bad Request: ",
+        "timestamp": 123456789,
+        "diagnostics": [
+          {
+            "type": "pi_messages_response_failure",
+            "timestamp": 123456789,
+            "error": {
+              "name": "PiMessagesResponseError",
+              "message": "400 Bad Request: ",
+              "stack": "<stack>",
+              "code": ""
+            },
+            "details": {
+              "version": 1,
+              "provider": "test-pi",
+              "model": "wire-model",
+              "url": "https://example.invalid/v1/messages",
+              "status": 400,
+              "statusText": "Bad Request",
+              "error": {
+                "message": "",
+                "code": ""
+              },
+              "timestampMs": 123456789
+            }
+          }
+        ],
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "text"
+      ],
+      "releases": 0
+    },
+    {
+      "name": "http-unstructured",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "503 Unavailable: bad gateway",
+            "timestamp": 123456789,
+            "diagnostics": [
+              {
+                "type": "pi_messages_response_failure",
+                "timestamp": 123456789,
+                "error": {
+                  "name": "PiMessagesResponseError",
+                  "message": "503 Unavailable: bad gateway",
+                  "stack": "<stack>"
+                },
+                "details": {
+                  "version": 1,
+                  "provider": "test-pi",
+                  "model": "wire-model",
+                  "url": "https://example.invalid/v1/messages",
+                  "status": 503,
+                  "statusText": "Unavailable",
+                  "body": "bad gateway",
+                  "timestampMs": 123456789
+                }
+              }
+            ],
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "503 Unavailable: bad gateway",
+        "timestamp": 123456789,
+        "diagnostics": [
+          {
+            "type": "pi_messages_response_failure",
+            "timestamp": 123456789,
+            "error": {
+              "name": "PiMessagesResponseError",
+              "message": "503 Unavailable: bad gateway",
+              "stack": "<stack>"
+            },
+            "details": {
+              "version": 1,
+              "provider": "test-pi",
+              "model": "wire-model",
+              "url": "https://example.invalid/v1/messages",
+              "status": 503,
+              "statusText": "Unavailable",
+              "body": "bad gateway",
+              "timestampMs": 123456789
+            }
+          }
+        ],
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "text"
+      ],
+      "releases": 0
+    },
+    {
+      "name": "http-array-error",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "500 Internal Error: {\"error\":[1,2]}",
+            "timestamp": 123456789,
+            "diagnostics": [
+              {
+                "type": "pi_messages_response_failure",
+                "timestamp": 123456789,
+                "error": {
+                  "name": "PiMessagesResponseError",
+                  "message": "500 Internal Error: {\"error\":[1,2]}",
+                  "stack": "<stack>"
+                },
+                "details": {
+                  "version": 1,
+                  "provider": "test-pi",
+                  "model": "wire-model",
+                  "url": "https://example.invalid/v1/messages",
+                  "status": 500,
+                  "statusText": "Internal Error",
+                  "body": "{\"error\":[1,2]}",
+                  "timestampMs": 123456789
+                }
+              }
+            ],
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "500 Internal Error: {\"error\":[1,2]}",
+        "timestamp": 123456789,
+        "diagnostics": [
+          {
+            "type": "pi_messages_response_failure",
+            "timestamp": 123456789,
+            "error": {
+              "name": "PiMessagesResponseError",
+              "message": "500 Internal Error: {\"error\":[1,2]}",
+              "stack": "<stack>"
+            },
+            "details": {
+              "version": 1,
+              "provider": "test-pi",
+              "model": "wire-model",
+              "url": "https://example.invalid/v1/messages",
+              "status": 500,
+              "statusText": "Internal Error",
+              "body": "{\"error\":[1,2]}",
+              "timestampMs": 123456789
+            }
+          }
+        ],
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "text"
+      ],
+      "releases": 0
+    },
+    {
+      "name": "http-aborted",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "aborted",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "aborted",
+            "errorMessage": "401 Unauthorized: denied",
+            "timestamp": 123456789,
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "aborted",
+        "errorMessage": "401 Unauthorized: denied",
+        "timestamp": 123456789,
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "text"
+      ],
+      "releases": 0
+    },
+    {
+      "name": "no-body",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "test-pi response has no body",
+            "timestamp": 123456789,
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "test-pi response has no body",
+        "timestamp": 123456789,
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited"
+      ],
+      "releases": 0
+    },
+    {
+      "name": "payload-replacement",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "custom": true
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "hello 😀",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello 😀"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "hello 😀",
+          "contentSignature": "sig",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello 😀",
+                "textSignature": "sig"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello 😀",
+                "textSignature": "sig"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 2,
+              "output": 3,
+              "cacheRead": 4,
+              "cacheWrite": 5,
+              "totalTokens": 14,
+              "cost": {
+                "input": 0.2,
+                "output": 0.3,
+                "cacheRead": 0.4,
+                "cacheWrite": 0.5,
+                "total": 1.4
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 123456789,
+            "responseId": "response-1",
+            "providerThinkingLevel": "native-high",
+            "diagnostics": [
+              {
+                "type": "pi_messages_rewrite",
+                "timestamp": 123456789,
+                "details": {
+                  "policyId": "p",
+                  "policyVersion": 2,
+                  "changed": true,
+                  "tokenCountChange": -2,
+                  "messageCountChange": 0,
+                  "systemPromptChanged": false
+                }
+              }
+            ],
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "hello 😀",
+            "textSignature": "sig"
+          }
+        ],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 2,
+          "output": 3,
+          "cacheRead": 4,
+          "cacheWrite": 5,
+          "totalTokens": 14,
+          "cost": {
+            "input": 0.2,
+            "output": 0.3,
+            "cacheRead": 0.4,
+            "cacheWrite": 0.5,
+            "total": 1.4
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 123456789,
+        "responseId": "response-1",
+        "providerThinkingLevel": "native-high",
+        "diagnostics": [
+          {
+            "type": "pi_messages_rewrite",
+            "timestamp": 123456789,
+            "details": {
+              "policyId": "p",
+              "policyVersion": 2,
+              "changed": true,
+              "tokenCountChange": -2,
+              "messageCountChange": 0,
+              "systemPromptChanged": false
+            }
+          }
+        ],
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "reader",
+        "read",
+        "provider:start",
+        "provider:text_start",
+        "provider:text_delta",
+        "provider:text_end",
+        "provider:done",
+        "release"
+      ],
+      "releases": 1
+    },
+    {
+      "name": "response-hook-failure",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "hook rejected",
+            "timestamp": 123456789,
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "hook rejected",
+        "timestamp": 123456789,
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited"
+      ],
+      "releases": 0
+    },
+    {
+      "name": "provider-hook-failure",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "event hook rejected",
+            "timestamp": 123456789,
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "event hook rejected",
+        "timestamp": 123456789,
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "reader",
+        "read",
+        "provider:start",
+        "release"
+      ],
+      "releases": 1
+    },
+    {
+      "name": "simple-options",
+      "requests": [
+        {
+          "url": "https://example.invalid/v1/messages",
+          "urlObject": true,
+          "method": "POST",
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "new"
+          },
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "literal"
+                    },
+                    {
+                      "type": "image",
+                      "data": "AAAA",
+                      "mimeType": "image/png"
+                    }
+                  ],
+                  "timestamp": 9
+                }
+              ],
+              "systemPrompt": "legacy context remains literal",
+              "tools": [
+                {
+                  "name": "read",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "temperature": 0,
+              "maxTokens": 0,
+              "reasoning": "low",
+              "cacheRetention": "long",
+              "sessionId": "session",
+              "toolChoice": {
+                "type": "function",
+                "function": {
+                  "name": "read"
+                }
+              }
+            }
+          },
+          "signalIdentity": true
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "hello 😀",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello 😀"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "hello 😀",
+          "contentSignature": "sig",
+          "observed": true,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello 😀",
+                "textSignature": "sig"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello 😀",
+                "textSignature": "sig"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 2,
+              "output": 3,
+              "cacheRead": 4,
+              "cacheWrite": 5,
+              "totalTokens": 14,
+              "cost": {
+                "input": 0.2,
+                "output": 0.3,
+                "cacheRead": 0.4,
+                "cacheWrite": 0.5,
+                "total": 1.4
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 123456789,
+            "responseId": "response-1",
+            "providerThinkingLevel": "native-high",
+            "diagnostics": [
+              {
+                "type": "pi_messages_rewrite",
+                "timestamp": 123456789,
+                "details": {
+                  "policyId": "p",
+                  "policyVersion": 2,
+                  "changed": true,
+                  "tokenCountChange": -2,
+                  "messageCountChange": 0,
+                  "systemPromptChanged": false
+                }
+              }
+            ],
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "hello 😀",
+            "textSignature": "sig"
+          }
+        ],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 2,
+          "output": 3,
+          "cacheRead": 4,
+          "cacheWrite": 5,
+          "totalTokens": 14,
+          "cost": {
+            "input": 0.2,
+            "output": 0.3,
+            "cacheRead": 0.4,
+            "cacheWrite": 0.5,
+            "total": 1.4
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 123456789,
+        "responseId": "response-1",
+        "providerThinkingLevel": "native-high",
+        "diagnostics": [
+          {
+            "type": "pi_messages_rewrite",
+            "timestamp": 123456789,
+            "details": {
+              "policyId": "p",
+              "policyVersion": 2,
+              "changed": true,
+              "tokenCountChange": -2,
+              "messageCountChange": 0,
+              "systemPromptChanged": false
+            }
+          }
+        ],
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "payload-awaited",
+        "fetch",
+        "response",
+        "response-awaited",
+        "reader",
+        "read",
+        "provider:start",
+        "provider:text_start",
+        "provider:text_delta",
+        "provider:text_end",
+        "provider:done",
+        "release"
+      ],
+      "releases": 1
+    },
+    {
+      "name": "wire-default-success",
+      "requests": [
+        {
+          "path": "/v1/messages",
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "wire request",
+                  "timestamp": 9
+                }
+              ]
+            },
+            "options": {
+              "maxTokens": 0,
+              "cacheRetention": "none"
+            }
+          },
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "yes"
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "wire",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "wire"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 123456789
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "wire"
+              }
+            ],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 2,
+              "output": 3,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 5,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 123456789,
+            "responseId": "wire-response",
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "wire"
+          }
+        ],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 2,
+          "output": 3,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 5,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 123456789,
+        "responseId": "wire-response",
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "response:200:source-only",
+        "provider:start",
+        "provider:text_start",
+        "provider:text_delta",
+        "provider:done"
+      ]
+    },
+    {
+      "name": "wire-http-structured",
+      "requests": [
+        {
+          "path": "/v1/messages",
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "wire request",
+                  "timestamp": 9
+                }
+              ]
+            },
+            "options": {
+              "maxTokens": 0,
+              "cacheRetention": "none"
+            }
+          },
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "yes"
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "403 Fixture Denied: denied (fixture)",
+            "timestamp": 123456789,
+            "diagnostics": [
+              {
+                "type": "pi_messages_response_failure",
+                "timestamp": 123456789,
+                "error": {
+                  "name": "PiMessagesResponseError",
+                  "message": "403 Fixture Denied: denied (fixture)",
+                  "stack": "<stack>",
+                  "code": "fixture"
+                },
+                "details": {
+                  "version": 1,
+                  "provider": "test-pi",
+                  "model": "wire-model",
+                  "url": "http://127.0.0.1:43652/v1/messages",
+                  "status": 403,
+                  "statusText": "Fixture Denied",
+                  "error": {
+                    "message": "denied",
+                    "code": "fixture"
+                  },
+                  "timestampMs": 123456789
+                }
+              }
+            ],
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "403 Fixture Denied: denied (fixture)",
+        "timestamp": 123456789,
+        "diagnostics": [
+          {
+            "type": "pi_messages_response_failure",
+            "timestamp": 123456789,
+            "error": {
+              "name": "PiMessagesResponseError",
+              "message": "403 Fixture Denied: denied (fixture)",
+              "stack": "<stack>",
+              "code": "fixture"
+            },
+            "details": {
+              "version": 1,
+              "provider": "test-pi",
+              "model": "wire-model",
+              "url": "http://127.0.0.1:43652/v1/messages",
+              "status": 403,
+              "statusText": "Fixture Denied",
+              "error": {
+                "message": "denied",
+                "code": "fixture"
+              },
+              "timestampMs": 123456789
+            }
+          }
+        ],
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "response:403:source-only"
+      ]
+    },
+    {
+      "name": "wire-eof-terminal",
+      "requests": [
+        {
+          "path": "/v1/messages",
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "wire request",
+                  "timestamp": 9
+                }
+              ]
+            },
+            "options": {
+              "maxTokens": 0,
+              "cacheRetention": "none"
+            }
+          },
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "yes"
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 2,
+              "output": 3,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 5,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 123456789,
+            "responseId": "wire-response",
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 2,
+          "output": 3,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 5,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 123456789,
+        "responseId": "wire-response",
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "response:200:source-only",
+        "provider:done"
+      ]
+    },
+    {
+      "name": "wire-no-body204",
+      "requests": [
+        {
+          "path": "/v1/messages",
+          "body": {
+            "model": "wire-model",
+            "context": {
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "wire request",
+                  "timestamp": 9
+                }
+              ]
+            },
+            "options": {
+              "maxTokens": 0,
+              "cacheRetention": "none"
+            }
+          },
+          "headers": {
+            "authorization": "Bearer fixture-key",
+            "accept": "text/event-stream",
+            "content-type": "application/json",
+            "x-test": "yes"
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "pi-messages",
+            "provider": "test-pi",
+            "model": "wire-model",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "test-pi response has no body",
+            "timestamp": 123456789,
+            "durationMs": "<duration>"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "pi-messages",
+        "provider": "test-pi",
+        "model": "wire-model",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "test-pi response has no body",
+        "timestamp": 123456789,
+        "durationMs": "<duration>"
+      },
+      "order": [
+        "payload",
+        "response:204:source-only"
+      ]
+    }
+  ]
+}

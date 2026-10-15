@@ -45,7 +45,7 @@ fn encode(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSVa
 
 fn failure(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     _ = c.JS_ThrowTypeError(engine.context, "Native TextEncoder failed: %s", @as([*:0]const u8, @errorName(err)));
     const exception = c.JS_GetException(engine.context);
     const code: [*:0]const u8 = if (err == error.IllegalTextEncoderInvocation) "ERR_INVALID_THIS" else "ERR_INVALID_ARG_TYPE";

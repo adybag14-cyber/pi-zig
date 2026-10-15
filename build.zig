@@ -1559,6 +1559,12 @@ pub fn build(b: *std.Build) void {
     compaction_text_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-compaction-text", "Compare original summary serialization and failure text with complete native owner graphs").dependOn(&b.addRunArtifact(compaction_text_tests).step);
     b.step("build-native-sdk-compaction-text", "Compile original summary serialization independently of runtime deadlines").dependOn(&compaction_text_tests.step);
+    const ai_pi_messages_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_pi_messages_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI pi messages"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ai_pi_messages_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(ai_pi_messages_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_pi_messages_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-ai-pi-messages", "Verify literal Pi messages requests event conversion awaited callbacks and ownership").dependOn(&b.addRunArtifact(ai_pi_messages_tests).step);
+    b.step("build-native-ai-pi-messages", "Compile the actual native Pi messages provider separately").dependOn(&ai_pi_messages_tests.step);
     const ai_retry_call_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_retry_call_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI retry call"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_retry_call_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_retry_call_tests.root_module, sqlite_lib_dir, sqlite_library);

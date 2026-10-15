@@ -1,0 +1,55 @@
+// Shared control program: evaluated against the immutable original module and
+// the native facade. This is test input, never a provider runtime or host shim.
+const originalNow = Date.now;
+Date.now = () => 123456789;
+const piMessagesRows = [];
+const usage = {input:2,output:3,cacheRead:4,cacheWrite:5,totalTokens:14,cost:{input:.2,output:.3,cacheRead:.4,cacheWrite:.5,total:1.4}};
+const model = {id:'wire-model',api:'pi-messages',provider:'test-pi',baseUrl:'https://example.invalid/v1///',headers:{'ignored-model-header':'yes'}};
+const context = {messages:[{role:'user',content:[{type:'text',text:'literal'},{type:'image',data:'AAAA',mimeType:'image/png'}],timestamp:9}],systemPrompt:'legacy context remains literal',tools:[{name:'read',parameters:{type:'object'}}]};
+const encode = value => 'data: '+JSON.stringify(value)+'\r\n\r\n';
+const terminal = {type:'done',reason:'stop',usage,responseId:'response-1',providerThinkingLevel:'native-high',rewrite:{policyId:'p',policyVersion:2,changed:true,tokenCountChange:-2,messageCountChange:0,systemPromptChanged:false}};
+const clean = value => JSON.parse(JSON.stringify(value,(key,item)=>key==='stack'&&typeof item==='string'?'<stack>':key==='durationMs'&&typeof item==='number'?'<duration>':item));
+async function runCase(name, config={}) {
+  const order=[], requests=[], events=[];
+  const frames=config.frames??[{type:'start'},{type:'text_start',contentIndex:0},{type:'text_delta',contentIndex:0,delta:'hello 😀'},{type:'text_end',contentIndex:0,content:'hello 😀',contentSignature:'sig'},terminal];
+  const wire=config.wire??frames.map(encode).join('');
+  const bytes=new TextEncoder().encode(wire);
+  const chunks=config.bytewise?Array.from(bytes,byte=>new Uint8Array([byte])):[bytes];
+  let readIndex=0, releases=0;
+  const fetch=async (url,init)=>{
+    order.push('fetch');requests.push({url:String(url),urlObject:url instanceof URL,method:init.method,headers:init.headers,body:JSON.parse(init.body),signalIdentity:init.signal===config.signal});
+    return {status:config.status??200,statusText:config.statusText??'OK',ok:(config.status??200)<300,headers:{entries(){return [['x-fixture','yes']][Symbol.iterator]();}},text:async()=>{order.push('text');return config.errorBody??'';},body:config.noBody?null:{getReader(){order.push('reader');return {async read(){order.push('read');return readIndex<chunks.length?{done:false,value:chunks[readIndex++]}:{done:true};},releaseLock(){order.push('release');releases++;}};}}};
+  };
+  const options={apiKey:config.missingKey?undefined:'fixture-key',fetch,signal:config.signal,headers:{'X-Test':'old','x-test':'new','x-null':null,'x-undefined':undefined},env:{PI_CACHE_RETENTION:'long'},reasoning:'low',temperature:0,maxTokens:0,sessionId:'session',toolChoice:{type:'function',function:{name:'read'}},debug:config.debug,
+    async onPayload(payload,seenModel){order.push('payload');if(seenModel!==model||payload.context!==context)throw Error('identity');await Promise.resolve();order.push('payload-awaited');return config.replacement;},
+    async onResponse(response,seenModel){order.push('response');if(seenModel!==model||Object.keys(response).join(',')!=='status,headers')throw Error('response shape');await Promise.resolve();order.push('response-awaited');if(config.responseThrow)throw config.responseThrow;},
+    async onProviderStreamEvent(event,seenModel){order.push('provider:'+event.type);await Promise.resolve();if(seenModel!==model)throw Error('model identity');if(config.providerThrow)throw config.providerThrow;event.observed=true;}
+  };
+  const stream=(config.simple?piMessagesAPI.streamSimple:piMessagesAPI.stream)(model,context,options);
+  let partial;
+  for await(const event of stream){if(event.partial){if(partial&&partial!==event.partial)throw Error('partial identity');partial=event.partial;}events.push(clean(event));}
+  const result=await stream.result();
+  if(partial&&result.content.length&&result!==partial)throw Error('terminal partial identity');
+  piMessagesRows.push(clean({name,requests,events,result,order,releases}));
+}
+try {
+  await runCase('basic-bytewise',{bytewise:true,debug:true});
+  await runCase('tool-and-thinking',{frames:[{type:'start'},{type:'thinking_start',contentIndex:2},{type:'thinking_delta',contentIndex:2,delta:'why'},{type:'thinking_end',contentIndex:2,content:'why',contentSignature:'think',redacted:true},{type:'toolcall_start',contentIndex:4,id:'tool-1',toolName:'read'},{type:'toolcall_delta',contentIndex:4,delta:'{"file":"par'},{type:'toolcall_delta',contentIndex:4,delta:'tial"}'},{type:'toolcall_end',contentIndex:4,toolCall:{type:'toolCall',id:'tool-final',name:'read',arguments:{file:'final'},extra:7}},{...terminal,reason:'toolUse'}]});
+  await runCase('terminal-error',{frames:[{type:'start'},{type:'error',reason:'error',usage,errorMessage:'backend rejected',responseId:'err-id',providerThinkingLevel:'server'}]});
+  await runCase('eof-terminal',{wire:encode({type:'start'})+'data: '+JSON.stringify(terminal)});
+  await runCase('first-data-only',{wire:': comment\n\ndata: [DONE]\ndata: '+JSON.stringify({type:'start'})+'\n\ndata: '+JSON.stringify(terminal)+'\ndata: invalid JSON\n\n'});
+  await runCase('missing-terminal',{frames:[{type:'start'}]});
+  await runCase('malformed-json',{wire:'data: {invalid}\n\n'});
+  await runCase('missing-api-key',{missingKey:true});
+  await runCase('http-structured',{status:429,statusText:'Slow Down',errorBody:'{"error":{"message":"busy","code":"quota","details":{"retry":true}}}'});
+  await runCase('http-empty-message',{status:400,statusText:'Bad Request',errorBody:'{"error":{"message":"","code":""}}'});
+  await runCase('http-unstructured',{status:503,statusText:'Unavailable',errorBody:'bad gateway'});
+  await runCase('http-array-error',{status:500,statusText:'Internal Error',errorBody:'{"error":[1,2]}'});
+  await runCase('http-aborted',{status:401,statusText:'Unauthorized',errorBody:'denied',signal:{aborted:true}});
+  await runCase('no-body',{noBody:true});
+  await runCase('payload-replacement',{replacement:{custom:true}});
+  await runCase('response-hook-failure',{responseThrow:'hook rejected'});
+  await runCase('provider-hook-failure',{providerThrow:new Error('event hook rejected')});
+  await runCase('simple-options',{simple:true});
+  globalThis.piMessagesRows=piMessagesRows;
+} finally { Date.now=originalNow; }

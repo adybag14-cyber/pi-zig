@@ -1,0 +1,17 @@
+{
+  "candidate_head": "ad12dd974ba35ec5e20276fb6d13e6eb0ca12fb9",
+  "candidate_head_after": "ad12dd974ba35ec5e20276fb6d13e6eb0ca12fb9",
+  "controls": 4,
+  "control_drift": 0,
+  "vendor": 1316,
+  "vendor_drift": 0,
+  "source": 6109,
+  "source_after": 6109,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "admitted_free_kib": 19166408,
+  "threshold_kib": 16777216,
+  "admission_policy": "normal16GiB with coordinated maximum four native reservations",
+  "completed_utc": "2026-10-15T18:25:15.6786052+00:00"
+}
