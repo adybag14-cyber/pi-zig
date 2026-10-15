@@ -1,0 +1,14 @@
+{
+  "public_activation": false,
+  "source_authored_lazy_total": 30,
+  "lazy_index_complete": false,
+  "full_pi_qualified": false,
+  "source102_captured": false,
+  "native_runtime_qualified": false,
+  "new_actual_factories": 20,
+  "expected_source102_exists": false,
+  "remaining_unported_lazy": 140,
+  "native_compiled": false,
+  "prepared_genuine_source_cases": 102,
+  "base": "fed244fe58017fa539f999d1abb661875c5b0bd1"
+}

@@ -1,0 +1,13 @@
+# Actual lazy grammar batch 3, source-only
+
+This follow-up tree starts at the frozen first-ten checkpoint `fed244fe58017fa539f999d1abb661875c5b0bd1`. The first-ten worktree and its Source29/Source45 inputs are unchanged.
+
+Twenty further canonical factories from the actual highlight.js 10.7.3 missing-factory inventory are ported: BNF, FIX, Shell Session, LDIF, CSP, Golo, Python profiler output, Clean, Tagger Script, SubUnit, EBNF, Flix, Leaf, Mizar, TAP, Gherkin, Thrift, dsconfig, Awk, and STEP Part 21. The shared native value helper only centralizes the existing Scope, intrinsic RegExp construction, arrays, booleans, and legacy factory adapter. Each grammar has its actual separate create/build body and Source factory identity; no grammar is implemented by forwarding to plaintext or another language.
+
+The ports retain Source field order, string-versus-RegExp values, shared common modes, live helper access, actual helper receiver calls, nested graphs, aliases, case flags, relevance, and sublanguage declarations. Source quirks are retained: dsconfig omits its raw grammar name; SubUnit's JavaScript string non-escape before a dot evaluates to a plain dot; Gherkin's escaped spaces evaluate to ordinary spaces; STEP's inherited string modes explicitly retain `illegal: null`.
+
+The canonical inventory now has thirty source-authored lazy factories across the three batches, leaving 140 of the original missing 170 without authored bodies. These are implementation inventory counts, not native validation or application availability counts. The complete 191-factory lazy import is still unbound and unqualified.
+
+The shared Source102 fixture is prepared with factory metadata, all twenty complete raw mode graphs, live getter traces, helper rejection or helper-free execution, forty scanner samples, and actual alias/registration behavior. Its capture driver loads the genuine installed original core and factory modules. Previously authored languages are loaded from their original modules to supply actual Bash and YAML sublanguages. No expected Source102 output exists or has been inferred from native code.
+
+Checks performed are Zig formatting, Git whitespace, and actual Node parse-only checks of the shared fixture and capture driver. No Source102 capture, native compilation, runtime comparator, exhaustive allocation qualification, public activation, or full Pi qualification has run for this batch. The prepared capture owner requires a separately granted Light slot, normal 2 GiB admission, pinned Node with a 128 MiB heap, 300-second operation deadline, and full Source/dependency/Node/control verification.

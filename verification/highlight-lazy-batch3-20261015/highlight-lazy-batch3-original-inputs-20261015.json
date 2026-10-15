@@ -1,0 +1,102 @@
+[
+  {
+    "factory": "bnf",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\bnf.js",
+    "sha256": "22DA8CF0DD5203F688077CD1020C2D5BA4236D15FC1374547593BE155313E536"
+  },
+  {
+    "factory": "fix",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\fix.js",
+    "sha256": "F3218423410A1EB206809BCA28CB302F78B3CDF0C360868A93B154FB8A633A09"
+  },
+  {
+    "factory": "shell",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\shell.js",
+    "sha256": "65DB5AEBAFAFD4D3DBDCE1102943CD1528D5B7192C69EE0BB28A1B6A3C0390B5"
+  },
+  {
+    "factory": "ldif",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\ldif.js",
+    "sha256": "AE2545B9747CBCC5F34386C9A79BBCE46D47CE5114CB30B5220CD599D33F268E"
+  },
+  {
+    "factory": "csp",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\csp.js",
+    "sha256": "33CC6E1B4F744BB41A813206F4F1FA15343A9AAD03AA02B0A35AA5AB1BFC0DB0"
+  },
+  {
+    "factory": "golo",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\golo.js",
+    "sha256": "D243E3D862905C28A3706AC478C638FD7940D0295A88D58EFEF808A727191418"
+  },
+  {
+    "factory": "profile",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\profile.js",
+    "sha256": "2AA92603F874E5D2454B10261AC4B05661B3E79BD212071CCD3CDFE801338766"
+  },
+  {
+    "factory": "clean",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\clean.js",
+    "sha256": "6D70ED8BF5956D119BF70C2DCDCB65DF228066005A77AF13D092F29FED50D861"
+  },
+  {
+    "factory": "taggerscript",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\taggerscript.js",
+    "sha256": "F8EE8738FAE06B6052F1BC6ABF5EA4565345F5A5AE5A3C49EEC5CE52550114C0"
+  },
+  {
+    "factory": "subunit",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\subunit.js",
+    "sha256": "C3132F6C8CC5F697DEEAD4B7B5A7D98D0C8558114243BA844E9C2A5DAE1E6F20"
+  },
+  {
+    "factory": "ebnf",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\ebnf.js",
+    "sha256": "73C1C2C8F472B1F087D2746F07DDD3DE3452BF534FA0118E8F9B9914A76C2027"
+  },
+  {
+    "factory": "flix",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\flix.js",
+    "sha256": "6F49AA0970296A18B77C22921A87F363F3ADF7D81CA58526D47D9BACE435937B"
+  },
+  {
+    "factory": "leaf",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\leaf.js",
+    "sha256": "0240573D84E309343400D4B6FB5A43BC6C291C9371008F05AB47BE2F02F5C211"
+  },
+  {
+    "factory": "mizar",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\mizar.js",
+    "sha256": "EEB0AC6F31CCA95DAE7E0A51CDA08AB721ACF82FC02926091B7749E0FCF31EAC"
+  },
+  {
+    "factory": "tap",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\tap.js",
+    "sha256": "60F7ABB9C16E3262A9471BDE7CC50A07E369CE4B035E27D44681C4AB641A5858"
+  },
+  {
+    "factory": "gherkin",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\gherkin.js",
+    "sha256": "90A8E789E6BE0EBDE93B0F7F02E0886C8B639002204670FC22A64CBFC4416716"
+  },
+  {
+    "factory": "thrift",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\thrift.js",
+    "sha256": "717AA55E1FFA024B6FCD8220843097839F636A66E6D9A503917D852A6369F4BA"
+  },
+  {
+    "factory": "dsconfig",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\dsconfig.js",
+    "sha256": "F94607999D432A998AC01F14F1AE9BC634AA069E26E39D1808910470B725D106"
+  },
+  {
+    "factory": "awk",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\awk.js",
+    "sha256": "14D46A4172B4FB062CCEA493BA2CC49DCAD3E08B331304BAB18A467893FB2579"
+  },
+  {
+    "factory": "step21",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\step21.js",
+    "sha256": "6A409D6B4BAAABB21434D6E0AABA0358E85488998B8EBB6E6305585F39BC5648"
+  }
+]
