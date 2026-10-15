@@ -56,8 +56,13 @@ fn run(gpa: std.mem.Allocator) !void {
     try scope.put(global, "resourceParserAPI", api);
     try scope.put(global, "resourceParserFixtureRoot", try scope.text(path_buffer[0..length]));
     const evaluated = engine.evalModule(@embedFile("extensions/fixtures/sdk-resource-parsers-5ab.input.txt"), "resource-parsers-original-5ab.mjs") catch |err| {
+        const original = engine.nativeAllocationError(err, generation);
+        if (original == error.OutOfMemory) return original;
         std.debug.print("Native real resource parser caller failed: {s}\n", .{engine.last_error orelse @errorName(err)});
-        return engine.nativeAllocationError(err, generation);
+        const partial = try engine.stringify(try scope.get(global, "resourceParserRows"));
+        defer gpa.free(partial);
+        std.debug.print("NATIVE_RESOURCE_PARSER_PARTIAL_ROWS={s}\n", .{partial});
+        return original;
     };
     engine.freeValue(evaluated);
     if (generation != engine.native_allocation_generation) return error.OutOfMemory;
