@@ -1,0 +1,6150 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "sourceModule": "packages/ai/src/api/openai-responses.ts + azure-openai-responses.ts + openai-codex-responses.ts",
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "cases": 14,
+  "fixedTime": 1792080000123,
+  "inputs": {
+    "model": {
+      "id": "gpt-5.5",
+      "api": "openai-responses",
+      "provider": "openai",
+      "baseUrl": "https://api.openai.com/v1",
+      "reasoning": true,
+      "input": [
+        "text",
+        "image"
+      ],
+      "contextWindow": 32000,
+      "maxTokens": 8192,
+      "cost": {
+        "input": 2,
+        "output": 8,
+        "cacheRead": 0.5,
+        "cacheWrite": 1
+      }
+    },
+    "context": {
+      "messages": [
+        {
+          "role": "system",
+          "content": "system",
+          "timestamp": 0
+        },
+        {
+          "role": "user",
+          "content": "hello",
+          "timestamp": 1
+        }
+      ]
+    },
+    "specs": [
+      {
+        "name": "standard-http-retry-zero",
+        "mode": "standard",
+        "maxRetries": 1,
+        "plans": [
+          {
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "busy",
+                "type": "rate_limit_error"
+              }
+            },
+            "headers": {
+              "retry-after-ms": "0"
+            }
+          },
+          {}
+        ]
+      },
+      {
+        "name": "azure-http-retry-zero",
+        "mode": "azure",
+        "maxRetries": 1,
+        "plans": [
+          {
+            "status": 503,
+            "body": {
+              "error": {
+                "message": "busy",
+                "type": "server_error"
+              }
+            },
+            "headers": {
+              "retry-after-ms": "0"
+            }
+          },
+          {}
+        ]
+      },
+      {
+        "name": "codex-http-retry-zero",
+        "mode": "codex",
+        "maxRetries": 1,
+        "plans": [
+          {
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "busy",
+                "type": "rate_limit_error"
+              }
+            },
+            "headers": {
+              "retry-after-ms": "0"
+            }
+          },
+          {}
+        ]
+      },
+      {
+        "name": "codex-terminal-usage-limit",
+        "mode": "codex",
+        "maxRetries": 1,
+        "plans": [
+          {
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "usage limit reached",
+                "type": "usage_limit_reached",
+                "code": "insufficient_quota"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "codex-terminal-quota-catch",
+        "mode": "codex",
+        "maxRetries": 1,
+        "plans": [
+          {
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "quota exceeded",
+                "type": "quota_exceeded",
+                "code": "insufficient_quota"
+              }
+            }
+          },
+          {}
+        ]
+      },
+      {
+        "name": "codex-network-raw-object-retry",
+        "mode": "codex",
+        "maxRetries": 1,
+        "plans": [
+          {
+            "reject": {
+              "fixture": "network-object"
+            }
+          },
+          {}
+        ]
+      },
+      {
+        "name": "codex-response-hook-retry",
+        "mode": "codex",
+        "maxRetries": 1,
+        "rejectResponseAt": 0,
+        "plans": [
+          {},
+          {}
+        ]
+      },
+      {
+        "name": "codex-retry-hint-invalid-number",
+        "mode": "codex",
+        "maxRetries": 1,
+        "plans": [
+          {
+            "status": 503,
+            "body": {
+              "error": {
+                "message": "busy"
+              }
+            },
+            "headers": {
+              "retry-after-ms": "0junk"
+            }
+          },
+          {}
+        ]
+      },
+      {
+        "name": "codex-retry-delay-exceeded",
+        "mode": "codex",
+        "maxRetries": 1,
+        "maxRetryDelayMs": 1,
+        "plans": [
+          {
+            "status": 503,
+            "body": {
+              "error": {
+                "message": "busy"
+              }
+            },
+            "headers": {
+              "retry-after-ms": "5000"
+            }
+          }
+        ]
+      },
+      {
+        "name": "standard-entered-reader-raw-object",
+        "mode": "standard",
+        "plans": [
+          {
+            "readerReject": {
+              "fixture": "reader-object"
+            }
+          }
+        ]
+      },
+      {
+        "name": "codex-entered-reader-raw-object",
+        "mode": "codex",
+        "plans": [
+          {
+            "readerReject": {
+              "fixture": "reader-object"
+            }
+          }
+        ]
+      },
+      {
+        "name": "standard-pre-aborted",
+        "mode": "standard",
+        "preAborted": true,
+        "plans": []
+      },
+      {
+        "name": "codex-pre-aborted",
+        "mode": "codex",
+        "preAborted": true,
+        "plans": []
+      },
+      {
+        "name": "codex-invalid-timeout",
+        "mode": "codex",
+        "invalidTimeout": true,
+        "plans": []
+      }
+    ]
+  },
+  "rows": [
+    {
+      "name": "standard-http-retry-zero",
+      "requests": [
+        {
+          "url": "https://api.openai.com/v1/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "application/json",
+            "authorization": "Bearer sk-fixture",
+            "content-type": "application/json",
+            "session_id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller",
+            "x-stainless-arch": "x64",
+            "x-stainless-lang": "js",
+            "x-stainless-os": "Windows",
+            "x-stainless-package-version": "6.40.0",
+            "x-stainless-retry-count": "0",
+            "x-stainless-runtime": "node",
+            "x-stainless-runtime-version": "v24.14.0"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "input": [
+              {
+                "role": "developer",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "stream": true,
+            "prompt_cache_key": "retry-fixture-session",
+            "store": false,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        },
+        {
+          "url": "https://api.openai.com/v1/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "application/json",
+            "authorization": "Bearer sk-fixture",
+            "content-type": "application/json",
+            "session_id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller",
+            "x-stainless-arch": "x64",
+            "x-stainless-lang": "js",
+            "x-stainless-os": "Windows",
+            "x-stainless-package-version": "6.40.0",
+            "x-stainless-retry-count": "0",
+            "x-stainless-runtime": "node",
+            "x-stainless-runtime-version": "v24.14.0"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "input": [
+              {
+                "role": "developer",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "stream": true,
+            "prompt_cache_key": "retry-fixture-session",
+            "store": false,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        }
+      ],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ],
+        [
+          "fetch",
+          0,
+          false
+        ],
+        [
+          "fetch",
+          1,
+          false
+        ],
+        [
+          "response-enter",
+          0,
+          true,
+          {
+            "status": 200,
+            "headers": {
+              "content-type": "text/event-stream",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          0,
+          true,
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_fixture"
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          1,
+          true,
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": []
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          1,
+          true
+        ],
+        [
+          "provider-enter",
+          2,
+          true,
+          {
+            "type": "response.output_text.delta",
+            "output_index": 0,
+            "delta": "answer"
+          }
+        ],
+        [
+          "provider-leave",
+          2,
+          true
+        ],
+        [
+          "provider-enter",
+          3,
+          true,
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "answer",
+                  "annotations": []
+                }
+              ]
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          3,
+          true
+        ],
+        [
+          "provider-enter",
+          4,
+          true,
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_fixture",
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_fixture",
+                  "role": "assistant",
+                  "status": "completed",
+                  "phase": "final_answer",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "answer",
+                      "annotations": []
+                    }
+                  ]
+                }
+              ],
+              "usage": {
+                "input_tokens": 8,
+                "output_tokens": 2,
+                "total_tokens": 10
+              },
+              "service_tier": "default"
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          4,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "rawStopReason": "completed"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "rawStopReason": "completed",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "start",
+          true
+        ],
+        [
+          "text_start",
+          true
+        ],
+        [
+          "text_delta",
+          true
+        ],
+        [
+          "text_end",
+          true
+        ],
+        [
+          "done",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer",
+            "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+          }
+        ],
+        "api": "openai-responses",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 8,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 10,
+          "cost": {
+            "input": 0.000016,
+            "output": 0.000016,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.000032
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 1792080000123,
+        "responseId": "resp_fixture",
+        "rawStopReason": "completed",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "azure-http-retry-zero",
+      "requests": [
+        {
+          "url": "https://resource.openai.azure.com/openai/v1/responses?api-version=2026-01-01",
+          "method": "POST",
+          "headers": {
+            "accept": "application/json",
+            "api-key": "sk-fixture",
+            "content-type": "application/json",
+            "user-agent": "pi-fixture",
+            "x-fixture": "retry-caller",
+            "x-stainless-arch": "x64",
+            "x-stainless-lang": "js",
+            "x-stainless-os": "Windows",
+            "x-stainless-package-version": "6.40.0",
+            "x-stainless-retry-count": "0",
+            "x-stainless-runtime": "node",
+            "x-stainless-runtime-version": "v24.14.0"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "input": [
+              {
+                "role": "developer",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "stream": true,
+            "prompt_cache_key": "retry-fixture-session",
+            "store": false,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        },
+        {
+          "url": "https://resource.openai.azure.com/openai/v1/responses?api-version=2026-01-01",
+          "method": "POST",
+          "headers": {
+            "accept": "application/json",
+            "api-key": "sk-fixture",
+            "content-type": "application/json",
+            "user-agent": "pi-fixture",
+            "x-fixture": "retry-caller",
+            "x-stainless-arch": "x64",
+            "x-stainless-lang": "js",
+            "x-stainless-os": "Windows",
+            "x-stainless-package-version": "6.40.0",
+            "x-stainless-retry-count": "0",
+            "x-stainless-runtime": "node",
+            "x-stainless-runtime-version": "v24.14.0"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "input": [
+              {
+                "role": "developer",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "stream": true,
+            "prompt_cache_key": "retry-fixture-session",
+            "store": false,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        }
+      ],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ],
+        [
+          "fetch",
+          0,
+          false
+        ],
+        [
+          "fetch",
+          1,
+          false
+        ],
+        [
+          "response-enter",
+          0,
+          true,
+          {
+            "status": 200,
+            "headers": {
+              "content-type": "text/event-stream",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          0,
+          true,
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_fixture"
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          1,
+          true,
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": []
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          1,
+          true
+        ],
+        [
+          "provider-enter",
+          2,
+          true,
+          {
+            "type": "response.output_text.delta",
+            "output_index": 0,
+            "delta": "answer"
+          }
+        ],
+        [
+          "provider-leave",
+          2,
+          true
+        ],
+        [
+          "provider-enter",
+          3,
+          true,
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "answer",
+                  "annotations": []
+                }
+              ]
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          3,
+          true
+        ],
+        [
+          "provider-enter",
+          4,
+          true,
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_fixture",
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_fixture",
+                  "role": "assistant",
+                  "status": "completed",
+                  "phase": "final_answer",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "answer",
+                      "annotations": []
+                    }
+                  ]
+                }
+              ],
+              "usage": {
+                "input_tokens": 8,
+                "output_tokens": 2,
+                "total_tokens": 10
+              },
+              "service_tier": "default"
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          4,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "azure-openai-responses",
+            "provider": "azure",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "azure-openai-responses",
+            "provider": "azure",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "azure-openai-responses",
+            "provider": "azure",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "azure-openai-responses",
+            "provider": "azure",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "azure-openai-responses",
+            "provider": "azure",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "rawStopReason": "completed"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "azure-openai-responses",
+            "provider": "azure",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "azure-openai-responses",
+            "provider": "azure",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "azure-openai-responses",
+            "provider": "azure",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "azure-openai-responses",
+            "provider": "azure",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "azure-openai-responses",
+            "provider": "azure",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "rawStopReason": "completed",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "start",
+          true
+        ],
+        [
+          "text_start",
+          true
+        ],
+        [
+          "text_delta",
+          true
+        ],
+        [
+          "text_end",
+          true
+        ],
+        [
+          "done",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer",
+            "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+          }
+        ],
+        "api": "azure-openai-responses",
+        "provider": "azure",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 8,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 10,
+          "cost": {
+            "input": 0.000016,
+            "output": 0.000016,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.000032
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 1792080000123,
+        "responseId": "resp_fixture",
+        "rawStopReason": "completed",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "codex-http-retry-zero",
+      "requests": [
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        },
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        }
+      ],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ],
+        [
+          "fetch",
+          0,
+          false
+        ],
+        [
+          "response-enter",
+          0,
+          true,
+          {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json",
+              "retry-after-ms": "0",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          0,
+          true
+        ],
+        [
+          "fetch",
+          1,
+          false
+        ],
+        [
+          "response-enter",
+          1,
+          true,
+          {
+            "status": 200,
+            "headers": {
+              "content-type": "text/event-stream",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          1,
+          true
+        ],
+        [
+          "provider-enter",
+          0,
+          true,
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_fixture"
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          1,
+          true,
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": []
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          1,
+          true
+        ],
+        [
+          "provider-enter",
+          2,
+          true,
+          {
+            "type": "response.output_text.delta",
+            "output_index": 0,
+            "delta": "answer"
+          }
+        ],
+        [
+          "provider-leave",
+          2,
+          true
+        ],
+        [
+          "provider-enter",
+          3,
+          true,
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "answer",
+                  "annotations": []
+                }
+              ]
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          3,
+          true
+        ],
+        [
+          "provider-enter",
+          4,
+          true,
+          {
+            "type": "response.done",
+            "response": {
+              "id": "resp_fixture",
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_fixture",
+                  "role": "assistant",
+                  "status": "completed",
+                  "phase": "final_answer",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "answer",
+                      "annotations": []
+                    }
+                  ]
+                }
+              ],
+              "usage": {
+                "input_tokens": 8,
+                "output_tokens": 2,
+                "total_tokens": 10
+              },
+              "service_tier": "default",
+              "end_turn": true
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          4,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "endTurn": true,
+            "rawStopReason": "completed"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "endTurn": true,
+            "rawStopReason": "completed",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "start",
+          true
+        ],
+        [
+          "text_start",
+          true
+        ],
+        [
+          "text_delta",
+          true
+        ],
+        [
+          "text_end",
+          true
+        ],
+        [
+          "done",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer",
+            "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+          }
+        ],
+        "api": "openai-codex-responses",
+        "provider": "openai-codex",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 8,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 10,
+          "cost": {
+            "input": 0.000016,
+            "output": 0.000016,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.000032
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 1792080000123,
+        "responseId": "resp_fixture",
+        "endTurn": true,
+        "rawStopReason": "completed",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "codex-terminal-usage-limit",
+      "requests": [
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        }
+      ],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ],
+        [
+          "fetch",
+          0,
+          false
+        ],
+        [
+          "response-enter",
+          0,
+          true,
+          {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          0,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "errorMessage": "You have hit your ChatGPT usage limit."
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "errorMessage": "You have hit your ChatGPT usage limit.",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "error",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "openai-codex-responses",
+        "provider": "openai-codex",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 1792080000123,
+        "errorMessage": "You have hit your ChatGPT usage limit.",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "codex-terminal-quota-catch",
+      "requests": [
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        }
+      ],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ],
+        [
+          "fetch",
+          0,
+          false
+        ],
+        [
+          "response-enter",
+          0,
+          true,
+          {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          0,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "errorMessage": "You have hit your ChatGPT usage limit."
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "errorMessage": "You have hit your ChatGPT usage limit.",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "error",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "openai-codex-responses",
+        "provider": "openai-codex",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 1792080000123,
+        "errorMessage": "You have hit your ChatGPT usage limit.",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "codex-network-raw-object-retry",
+      "requests": [
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        },
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        }
+      ],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ],
+        [
+          "fetch",
+          0,
+          false
+        ],
+        [
+          "fetch",
+          1,
+          false
+        ],
+        [
+          "response-enter",
+          0,
+          true,
+          {
+            "status": 200,
+            "headers": {
+              "content-type": "text/event-stream",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          0,
+          true,
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_fixture"
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          1,
+          true,
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": []
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          1,
+          true
+        ],
+        [
+          "provider-enter",
+          2,
+          true,
+          {
+            "type": "response.output_text.delta",
+            "output_index": 0,
+            "delta": "answer"
+          }
+        ],
+        [
+          "provider-leave",
+          2,
+          true
+        ],
+        [
+          "provider-enter",
+          3,
+          true,
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "answer",
+                  "annotations": []
+                }
+              ]
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          3,
+          true
+        ],
+        [
+          "provider-enter",
+          4,
+          true,
+          {
+            "type": "response.done",
+            "response": {
+              "id": "resp_fixture",
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_fixture",
+                  "role": "assistant",
+                  "status": "completed",
+                  "phase": "final_answer",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "answer",
+                      "annotations": []
+                    }
+                  ]
+                }
+              ],
+              "usage": {
+                "input_tokens": 8,
+                "output_tokens": 2,
+                "total_tokens": 10
+              },
+              "service_tier": "default",
+              "end_turn": true
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          4,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "endTurn": true,
+            "rawStopReason": "completed"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "endTurn": true,
+            "rawStopReason": "completed",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "start",
+          true
+        ],
+        [
+          "text_start",
+          true
+        ],
+        [
+          "text_delta",
+          true
+        ],
+        [
+          "text_end",
+          true
+        ],
+        [
+          "done",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer",
+            "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+          }
+        ],
+        "api": "openai-codex-responses",
+        "provider": "openai-codex",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 8,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 10,
+          "cost": {
+            "input": 0.000016,
+            "output": 0.000016,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.000032
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 1792080000123,
+        "responseId": "resp_fixture",
+        "endTurn": true,
+        "rawStopReason": "completed",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "codex-response-hook-retry",
+      "requests": [
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        },
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        }
+      ],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ],
+        [
+          "fetch",
+          0,
+          false
+        ],
+        [
+          "response-enter",
+          0,
+          true,
+          {
+            "status": 200,
+            "headers": {
+              "content-type": "text/event-stream",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          0,
+          true
+        ],
+        [
+          "fetch",
+          1,
+          false
+        ],
+        [
+          "response-enter",
+          1,
+          true,
+          {
+            "status": 200,
+            "headers": {
+              "content-type": "text/event-stream",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          1,
+          true
+        ],
+        [
+          "provider-enter",
+          0,
+          true,
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_fixture"
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          1,
+          true,
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": []
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          1,
+          true
+        ],
+        [
+          "provider-enter",
+          2,
+          true,
+          {
+            "type": "response.output_text.delta",
+            "output_index": 0,
+            "delta": "answer"
+          }
+        ],
+        [
+          "provider-leave",
+          2,
+          true
+        ],
+        [
+          "provider-enter",
+          3,
+          true,
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "answer",
+                  "annotations": []
+                }
+              ]
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          3,
+          true
+        ],
+        [
+          "provider-enter",
+          4,
+          true,
+          {
+            "type": "response.done",
+            "response": {
+              "id": "resp_fixture",
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_fixture",
+                  "role": "assistant",
+                  "status": "completed",
+                  "phase": "final_answer",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "answer",
+                      "annotations": []
+                    }
+                  ]
+                }
+              ],
+              "usage": {
+                "input_tokens": 8,
+                "output_tokens": 2,
+                "total_tokens": 10
+              },
+              "service_tier": "default",
+              "end_turn": true
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          4,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "endTurn": true,
+            "rawStopReason": "completed"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "endTurn": true,
+            "rawStopReason": "completed",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "start",
+          true
+        ],
+        [
+          "text_start",
+          true
+        ],
+        [
+          "text_delta",
+          true
+        ],
+        [
+          "text_end",
+          true
+        ],
+        [
+          "done",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer",
+            "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+          }
+        ],
+        "api": "openai-codex-responses",
+        "provider": "openai-codex",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 8,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 10,
+          "cost": {
+            "input": 0.000016,
+            "output": 0.000016,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.000032
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 1792080000123,
+        "responseId": "resp_fixture",
+        "endTurn": true,
+        "rawStopReason": "completed",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "codex-retry-hint-invalid-number",
+      "requests": [
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        },
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        }
+      ],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ],
+        [
+          "fetch",
+          0,
+          false
+        ],
+        [
+          "response-enter",
+          0,
+          true,
+          {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json",
+              "retry-after-ms": "0junk",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          0,
+          true
+        ],
+        [
+          "fetch",
+          1,
+          false
+        ],
+        [
+          "response-enter",
+          1,
+          true,
+          {
+            "status": 200,
+            "headers": {
+              "content-type": "text/event-stream",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          1,
+          true
+        ],
+        [
+          "provider-enter",
+          0,
+          true,
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_fixture"
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          1,
+          true,
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": []
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          1,
+          true
+        ],
+        [
+          "provider-enter",
+          2,
+          true,
+          {
+            "type": "response.output_text.delta",
+            "output_index": 0,
+            "delta": "answer"
+          }
+        ],
+        [
+          "provider-leave",
+          2,
+          true
+        ],
+        [
+          "provider-enter",
+          3,
+          true,
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "answer",
+                  "annotations": []
+                }
+              ]
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          3,
+          true
+        ],
+        [
+          "provider-enter",
+          4,
+          true,
+          {
+            "type": "response.done",
+            "response": {
+              "id": "resp_fixture",
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_fixture",
+                  "role": "assistant",
+                  "status": "completed",
+                  "phase": "final_answer",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "answer",
+                      "annotations": []
+                    }
+                  ]
+                }
+              ],
+              "usage": {
+                "input_tokens": 8,
+                "output_tokens": 2,
+                "total_tokens": 10
+              },
+              "service_tier": "default",
+              "end_turn": true
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          4,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "endTurn": true,
+            "rawStopReason": "completed"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 8,
+              "output": 2,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 10,
+              "cost": {
+                "input": 0.000016,
+                "output": 0.000016,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000032
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "endTurn": true,
+            "rawStopReason": "completed",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "start",
+          true
+        ],
+        [
+          "text_start",
+          true
+        ],
+        [
+          "text_delta",
+          true
+        ],
+        [
+          "text_end",
+          true
+        ],
+        [
+          "done",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer",
+            "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+          }
+        ],
+        "api": "openai-codex-responses",
+        "provider": "openai-codex",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 8,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 10,
+          "cost": {
+            "input": 0.000016,
+            "output": 0.000016,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.000032
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 1792080000123,
+        "responseId": "resp_fixture",
+        "endTurn": true,
+        "rawStopReason": "completed",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "codex-retry-delay-exceeded",
+      "requests": [
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        }
+      ],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ],
+        [
+          "fetch",
+          0,
+          false
+        ],
+        [
+          "response-enter",
+          0,
+          true,
+          {
+            "status": 503,
+            "headers": {
+              "content-type": "application/json",
+              "retry-after-ms": "5000",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          0,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "errorMessage": "Server requested 5s retry delay (max: 1s)"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "errorMessage": "Server requested 5s retry delay (max: 1s)",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "error",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "openai-codex-responses",
+        "provider": "openai-codex",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 1792080000123,
+        "errorMessage": "Server requested 5s retry delay (max: 1s)",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "standard-entered-reader-raw-object",
+      "requests": [
+        {
+          "url": "https://api.openai.com/v1/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "application/json",
+            "authorization": "Bearer sk-fixture",
+            "content-type": "application/json",
+            "session_id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller",
+            "x-stainless-arch": "x64",
+            "x-stainless-lang": "js",
+            "x-stainless-os": "Windows",
+            "x-stainless-package-version": "6.40.0",
+            "x-stainless-retry-count": "0",
+            "x-stainless-runtime": "node",
+            "x-stainless-runtime-version": "v24.14.0"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "input": [
+              {
+                "role": "developer",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "stream": true,
+            "prompt_cache_key": "retry-fixture-session",
+            "store": false,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        }
+      ],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ],
+        [
+          "fetch",
+          0,
+          false
+        ],
+        [
+          "response-enter",
+          0,
+          true,
+          {
+            "status": 200,
+            "headers": {
+              "content-type": "text/event-stream",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          0,
+          true,
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_fixture"
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          1,
+          true,
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": []
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          1,
+          true
+        ],
+        [
+          "provider-enter",
+          2,
+          true,
+          {
+            "type": "response.output_text.delta",
+            "output_index": 0,
+            "delta": "answer"
+          }
+        ],
+        [
+          "provider-leave",
+          2,
+          true
+        ],
+        [
+          "provider-enter",
+          3,
+          true,
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "answer",
+                  "annotations": []
+                }
+              ]
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          3,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "errorMessage": "{\"fixture\":\"reader-object\"}"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "errorMessage": "{\"fixture\":\"reader-object\"}",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "start",
+          true
+        ],
+        [
+          "text_start",
+          true
+        ],
+        [
+          "text_delta",
+          true
+        ],
+        [
+          "text_end",
+          true
+        ],
+        [
+          "error",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer",
+            "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+          }
+        ],
+        "api": "openai-responses",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 1792080000123,
+        "responseId": "resp_fixture",
+        "errorMessage": "{\"fixture\":\"reader-object\"}",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "codex-entered-reader-raw-object",
+      "requests": [
+        {
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "method": "POST",
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjb3VudC1maXh0dXJlIn19.sig",
+            "chatgpt-account-id": "account-fixture",
+            "content-encoding": "zstd",
+            "content-type": "application/json",
+            "openai-beta": "responses=experimental",
+            "originator": "pi",
+            "session-id": "retry-fixture-session",
+            "user-agent": "pi-fixture",
+            "x-client-request-id": "retry-fixture-session",
+            "x-fixture": "retry-caller"
+          },
+          "body": {
+            "model": "gpt-5.5",
+            "store": false,
+            "stream": true,
+            "instructions": "system",
+            "input": [
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "input_text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ],
+            "text": {
+              "verbosity": "low"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ],
+            "prompt_cache_key": "retry-fixture-session",
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "reasoning": {
+              "effort": "none"
+            }
+          }
+        }
+      ],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ],
+        [
+          "fetch",
+          0,
+          false
+        ],
+        [
+          "response-enter",
+          0,
+          true,
+          {
+            "status": 200,
+            "headers": {
+              "content-type": "text/event-stream",
+              "x-fixture-response": "source"
+            }
+          }
+        ],
+        [
+          "response-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          0,
+          true,
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_fixture"
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          0,
+          true
+        ],
+        [
+          "provider-enter",
+          1,
+          true,
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": []
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          1,
+          true
+        ],
+        [
+          "provider-enter",
+          2,
+          true,
+          {
+            "type": "response.output_text.delta",
+            "output_index": 0,
+            "delta": "answer"
+          }
+        ],
+        [
+          "provider-leave",
+          2,
+          true
+        ],
+        [
+          "provider-enter",
+          3,
+          true,
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_fixture",
+              "role": "assistant",
+              "status": "completed",
+              "phase": "final_answer",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "answer",
+                  "annotations": []
+                }
+              ]
+            }
+          }
+        ],
+        [
+          "provider-leave",
+          3,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "errorMessage": "{\"fixture\":\"reader-object\"}"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": 1792080000123
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture"
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer",
+                "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+              }
+            ],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "responseId": "resp_fixture",
+            "errorMessage": "{\"fixture\":\"reader-object\"}",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "start",
+          true
+        ],
+        [
+          "text_start",
+          true
+        ],
+        [
+          "text_delta",
+          true
+        ],
+        [
+          "text_end",
+          true
+        ],
+        [
+          "error",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer",
+            "textSignature": "{\"v\":1,\"id\":\"msg_fixture\",\"phase\":\"final_answer\"}"
+          }
+        ],
+        "api": "openai-codex-responses",
+        "provider": "openai-codex",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 1792080000123,
+        "responseId": "resp_fixture",
+        "errorMessage": "{\"fixture\":\"reader-object\"}",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "standard-pre-aborted",
+      "requests": [],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "aborted",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "aborted",
+            "timestamp": 1792080000123,
+            "errorMessage": "Request aborted"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "error",
+          "reason": "aborted",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-responses",
+            "provider": "openai",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "aborted",
+            "timestamp": 1792080000123,
+            "errorMessage": "Request aborted",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "error",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "openai-responses",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "aborted",
+        "timestamp": 1792080000123,
+        "errorMessage": "Request aborted",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "codex-pre-aborted",
+      "requests": [],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "aborted",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "aborted",
+            "timestamp": 1792080000123,
+            "errorMessage": "Request was aborted"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "error",
+          "reason": "aborted",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "aborted",
+            "timestamp": 1792080000123,
+            "errorMessage": "Request was aborted",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "error",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "openai-codex-responses",
+        "provider": "openai-codex",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "aborted",
+        "timestamp": 1792080000123,
+        "errorMessage": "Request was aborted",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "codex-invalid-timeout",
+      "requests": [],
+      "trace": [
+        [
+          "payload-enter",
+          true
+        ],
+        [
+          "payload-leave",
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "errorMessage": "Invalid timeoutMs: NaN"
+          }
+        }
+      ],
+      "consumerEvents": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "openai-codex-responses",
+            "provider": "openai-codex",
+            "model": "gpt-5.5",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": 1792080000123,
+            "errorMessage": "Invalid timeoutMs: NaN",
+            "durationMs": 0
+          }
+        }
+      ],
+      "consumerAliases": [
+        [
+          "error",
+          true
+        ],
+        [
+          "result",
+          true
+        ]
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "openai-codex-responses",
+        "provider": "openai-codex",
+        "model": "gpt-5.5",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": 1792080000123,
+        "errorMessage": "Invalid timeoutMs: NaN",
+        "durationMs": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "checked_utc": "2026-10-15T21:31:58.6586389+00:00",
+  "owners": [
+    {
+      "phase": "compile",
+      "owner_pid": 72104,
+      "owner_created_utc": "2026-10-15T21:25:10.5922788Z",
+      "owner_status": "passed",
+      "completed_utc_recorded": "2026-10-15T22:25:42.2023981+01:00",
+      "completed_utc_normalized": "2026-10-15T21:25:42.2023981Z",
+      "original_owner_live": false,
+      "current": null,
+      "process_action": "none"
+    },
+    {
+      "phase": "runtime",
+      "owner_pid": 59036,
+      "owner_created_utc": "2026-10-15T21:26:19.4101665Z",
+      "owner_status": "passed",
+      "completed_utc_recorded": "2026-10-15T22:26:34.9644782+01:00",
+      "completed_utc_normalized": "2026-10-15T21:26:34.9644782Z",
+      "original_owner_live": false,
+      "current": null,
+      "process_action": "none"
+    }
+  ]
+}

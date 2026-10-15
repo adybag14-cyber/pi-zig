@@ -7,6 +7,7 @@ const c = v.c;
 const flow = @import("native_agent_async.zig");
 const http = @import("native_ai_http.zig");
 const request = @import("native_ai_responses_request.zig");
+const codex_http = @import("native_ai_codex_http.zig");
 const Stage = enum(c_int) { payload, ready, response, next, chunk, retried };
 fn getMode(scope: *Scope, dependencies: c.JSValue) !request.Mode {
     const value = try scope.get(dependencies, "mode");
@@ -139,11 +140,15 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     defer scope.deinit();
     if (rejected) {
         const stage: Stage = @enumFromInt(raw);
+        const mode = try getMode(&scope, try scope.get(owner, "agent"));
+        if (mode == .codex and (stage == .ready or stage == .response or (stage == .next and scope.truthy(try v.optional(&scope, owner, "httpError"))))) {
+            handleCodexRejection(&scope, owner, value, stage) catch |err| try failError(&scope, owner, err);
+            return;
+        }
         if (stage == .ready) {
-            // The SDK wraps request-establishment failures; Codex's direct
-            // fetch path and every entered response reader retain raw errors.
-            const mode = try getMode(&scope, try scope.get(owner, "agent"));
-            retryOrFail(&scope, owner, if (mode == .codex) value else try transportError(&scope, owner, value)) catch |err| try failError(&scope, owner, err);
+            // The SDK wraps request-establishment failures. Entered response
+            // readers and Codex's direct HTTP catch are handled separately.
+            retryOrFail(&scope, owner, try transportError(&scope, owner, value)) catch |err| try failError(&scope, owner, err);
         } else fail(&scope, owner, value) catch |err| try flow.rejectError(engine, owner, err);
         return;
     }
@@ -188,6 +193,9 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const initial = try scope.object();
     try scope.put(initial, "accept", try scope.text(if (mode == .codex) "text/event-stream" else "application/json"));
     try scope.put(initial, "content-type", try scope.text("application/json"));
+    // Source disables SDK retries and invokes a fresh SDK request through
+    // retryProviderRequest, so this SDK header stays zero on every attempt.
+    if (mode != .codex) try scope.put(initial, "x-stainless-retry-count", try scope.text("0"));
     try scope.put(initial, if (mode == .azure) "api-key" else "authorization", if (mode == .azure) try scope.get(owner, "apiKey") else try scope.concat(try scope.text("Bearer "), try scope.stringify(try scope.get(owner, "apiKey"))));
     var header_args = [_]c.JSValue{initial};
     const result = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("Headers"), header_args.len, &header_args)));
@@ -273,8 +281,8 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
     const engine = scope.engine;
     const options = try scope.get(owner, "options");
     const mode = try getMode(scope, try scope.get(owner, "agent"));
+    if (mode == .codex) return openCodex(scope, owner);
     const header_object = try buildHeaders(scope, owner);
-    if (mode == .codex) _ = try scope.invoke(header_object, "set", &.{ try scope.text("content-encoding"), try scope.text("zstd") });
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
         for (fields.items) |field| {
@@ -296,38 +304,139 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         errdefer engine.gpa.free(text);
         try fields.append(engine.gpa, .{ .name = name, .value = text });
     }
-    var base = try scope.get(try scope.get(owner, "model"), "baseUrl");
-    if (mode == .codex and (!scope.truthy(base) or try v.length(scope, try scope.invoke(base, "trim", &.{})) == 0)) base = try scope.text("https://chatgpt.com/backend-api");
+    const base = try scope.get(try scope.get(owner, "model"), "baseUrl");
     const trimmed = if (scope.truthy(try scope.invoke(base, "endsWith", &.{try scope.text("/")}))) try scope.invoke(base, "slice", &.{ c.JS_NewInt32(engine.context, 0), c.JS_NewInt32(engine.context, -1) }) else base;
-    const url_value = if (mode == .azure) try @import("native_ai_responses_azure.zig").endpoint(scope, try scope.get(owner, "azure")) else if (mode == .codex and scope.truthy(try scope.invoke(trimmed, "endsWith", &.{try scope.text("/codex/responses")}))) trimmed else try scope.concat(trimmed, try scope.text(if (mode == .codex and !scope.truthy(try scope.invoke(trimmed, "endsWith", &.{try scope.text("/codex")}))) "/codex/responses" else "/responses"));
+    const url_value = if (mode == .azure) try @import("native_ai_responses_azure.zig").endpoint(scope, try scope.get(owner, "azure")) else try scope.concat(trimmed, try scope.text("/responses"));
     const url = try engine.toString(url_value);
     defer engine.gpa.free(url);
     const payload = try engine.toString(try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")}));
     defer engine.gpa.free(payload);
-    const compressed = if (mode == .codex) try @import("../ai/openai_responses.zig").encodeZstdRequestBody(engine.gpa, payload) else null;
-    defer if (compressed) |bytes| engine.gpa.free(bytes);
-    const body_bytes = compressed orelse payload;
     const timeout = try v.optional(scope, options, "timeoutMs");
     var milliseconds: i64 = 600000;
     if (!c.JS_IsUndefined(timeout) and c.JS_ToInt64(engine.context, &milliseconds, timeout) < 0) return v.js.capture(engine);
+    if (try aborted(scope, owner)) return fail(scope, owner, try abortError(scope));
     const fetch = try v.optional(scope, options, "fetch");
     var transport: c.JSValue = undefined;
     if (!v.nullish(fetch)) {
         const init = try scope.object();
         try scope.put(init, "method", try scope.text("POST"));
         try scope.put(init, "headers", header_object);
-        const body = if (compressed) |bytes| encoded: {
-            const buffer = try scope.own(try engine.checked(c.JS_NewArrayBufferCopy(engine.context, bytes.ptr, bytes.len)));
-            var args = [_]c.JSValue{buffer};
-            break :encoded try scope.own(try engine.checked(c.JS_NewTypedArray(engine.context, args.len, &args, c.JS_TYPED_ARRAY_UINT8)));
-        } else try scope.text(payload);
-        try scope.put(init, "body", body);
+        try scope.put(init, "body", try scope.text(payload));
         try scope.put(init, "signal", try v.optional(scope, options, "signal"));
         transport = try scope.own(try @import("native_ai_responses_fetch.zig").open(engine, fetch, url_value, init));
-    } else transport = try scope.own(try http.open(engine, .{ .url = url, .payload = body_bytes, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)) }, try v.optional(scope, options, "signal")));
+    } else transport = try scope.own(try http.open(engine, .{ .url = url, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)) }, try v.optional(scope, options, "signal")));
     try scope.put(owner, "http", transport);
     try scope.put(owner, "iterator", try scope.get(transport, "events"));
     try wait(scope, owner, try scope.get(transport, "ready"), .ready);
+}
+fn prepareCodex(scope: *Scope, owner: c.JSValue) !void {
+    if (scope.truthy(try v.optional(scope, owner, "codexPrepared"))) return;
+    const engine = scope.engine;
+    const options = try scope.get(owner, "options");
+    const headers = try buildHeaders(scope, owner);
+    const payload = try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")});
+    // These validations precede compression and the retry loop in Source.
+    const timeout = try codex_http.timeout(scope, try v.optional(scope, options, "timeoutMs"));
+    _ = try codex_http.timeout(scope, try v.optional(scope, options, "websocketConnectTimeoutMs"));
+    const text = try engine.toString(payload);
+    defer engine.gpa.free(text);
+    const encoded = try @import("../ai/openai_responses.zig").encodeZstdRequestBody(engine.gpa, text);
+    defer engine.gpa.free(encoded);
+    const buffer = try scope.own(try engine.checked(c.JS_NewArrayBufferCopy(engine.context, encoded.ptr, encoded.len)));
+    var args = [_]c.JSValue{buffer};
+    const body = try scope.own(try engine.checked(c.JS_NewTypedArray(engine.context, args.len, &args, c.JS_TYPED_ARRAY_UINT8)));
+    _ = try scope.invoke(headers, "set", &.{ try scope.text("content-encoding"), try scope.text("zstd") });
+    try scope.put(owner, "codexHeaders", headers);
+    try scope.put(owner, "codexBody", body);
+    try scope.put(owner, "codexTimeout", timeout);
+    const configured = try v.optional(scope, options, "maxRetries");
+    try scope.put(owner, "codexMaxRetries", if (v.nullish(configured)) c.JS_NewInt32(engine.context, 0) else configured);
+    try scope.put(owner, "codexPrepared", c.pi_js_bool(engine.context, 1));
+}
+fn openCodex(scope: *Scope, owner: c.JSValue) !void {
+    try prepareCodex(scope, owner);
+    const engine = scope.engine;
+    const options = try scope.get(owner, "options");
+    if (!try @import("native_image_arithmetic.zig").compare(engine, .less_equal, try scope.get(owner, "attempt"), try scope.get(owner, "codexMaxRetries"))) {
+        const last = try v.optional(scope, owner, "codexLastError");
+        return fail(scope, owner, if (scope.truthy(last)) last else try scope.own(try v.js.builtin(engine, "Error", &.{try scope.text("Failed after retries")})));
+    }
+    if (try aborted(scope, owner)) return fail(scope, owner, try codex_http.abortReason(scope));
+    var base = try scope.get(try scope.get(owner, "model"), "baseUrl");
+    if (!scope.truthy(base) or try v.length(scope, try scope.invoke(base, "trim", &.{})) == 0) base = try scope.text("https://chatgpt.com/backend-api");
+    const trimmed = if (scope.truthy(try scope.invoke(base, "endsWith", &.{try scope.text("/")}))) try scope.invoke(base, "slice", &.{ c.JS_NewInt32(engine.context, 0), c.JS_NewInt32(engine.context, -1) }) else base;
+    const url = if (scope.truthy(try scope.invoke(trimmed, "endsWith", &.{try scope.text("/codex/responses")}))) trimmed else try scope.concat(trimmed, try scope.text(if (scope.truthy(try scope.invoke(trimmed, "endsWith", &.{try scope.text("/codex")}))) "/responses" else "/codex/responses"));
+    const headers = try scope.get(owner, "codexHeaders");
+    const body = try scope.get(owner, "codexBody");
+    const fetch = try v.optional(scope, options, "fetch");
+    const configured_timeout = try scope.get(owner, "codexTimeout");
+    const header_timeout = if (!c.JS_IsUndefined(configured_timeout) and try @import("native_image_arithmetic.zig").compare(engine, .greater, configured_timeout, c.JS_NewInt32(engine.context, 0))) try scope.invoke(try scope.global("AbortSignal"), "timeout", &.{configured_timeout}) else c.pi_js_undefined();
+    const combined = try @import("native_ai_responses_abort.zig").combine(scope, &.{ try v.optional(scope, options, "signal"), header_timeout });
+    try scope.put(owner, "codexHeaderTimeoutSignal", header_timeout);
+    try scope.put(owner, "codexAttemptSignal", combined);
+    const signal = try v.optional(scope, combined, "signal");
+    const transport = if (!v.nullish(fetch)) supplied: {
+        const init = try scope.object();
+        try scope.put(init, "method", try scope.text("POST"));
+        try scope.put(init, "headers", headers);
+        try scope.put(init, "body", body);
+        try scope.put(init, "signal", signal);
+        break :supplied try scope.own(try @import("native_ai_responses_fetch.zig").open(engine, fetch, url, init));
+    } else network: {
+        var fields: std.ArrayList(std.http.Header) = .empty;
+        defer {
+            for (fields.items) |field| {
+                engine.gpa.free(field.name);
+                engine.gpa.free(field.value);
+            }
+            fields.deinit(engine.gpa);
+        }
+        var entries = try v.iterator(scope, try scope.invoke(headers, "entries", &.{}));
+        defer entries.deinit();
+        errdefer entries.closePreserving();
+        while (try entries.next()) |entry| {
+            defer engine.freeValue(entry);
+            const name = try engine.toString(try v.at(scope, entry, 0));
+            errdefer engine.gpa.free(name);
+            const value = try engine.toString(try v.at(scope, entry, 1));
+            errdefer engine.gpa.free(value);
+            try fields.append(engine.gpa, .{ .name = name, .value = value });
+        }
+        var offset: usize = 0;
+        var length: usize = 0;
+        var element_size: usize = 0;
+        const buffer = try scope.own(try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, body, &offset, &length, &element_size)));
+        var buffer_length: usize = 0;
+        const bytes = c.JS_GetArrayBuffer(engine.context, &buffer_length, buffer) orelse return v.js.capture(engine);
+        if (element_size != 1 or offset > buffer_length or length > buffer_length - offset) return error.NativeCodexBodyRange;
+        const address = try engine.toString(url);
+        defer engine.gpa.free(address);
+        const timeout = try scope.get(owner, "codexTimeout");
+        var milliseconds: i64 = 600000;
+        if (!c.JS_IsUndefined(timeout) and c.JS_ToInt64(engine.context, &milliseconds, timeout) < 0) return v.js.capture(engine);
+        break :network try scope.own(try http.open(engine, .{ .url = address, .payload = bytes[offset..][0..length], .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)) }, signal));
+    };
+    try scope.put(owner, "http", transport);
+    try scope.put(owner, "iterator", try scope.get(transport, "events"));
+    try wait(scope, owner, try scope.get(transport, "ready"), .ready);
+}
+fn cleanupCodexAttempt(scope: *Scope, owner: c.JSValue) !void {
+    const combined = try v.optional(scope, owner, "codexAttemptSignal");
+    if (!v.nullish(combined)) _ = try scope.invoke(combined, "cleanup", &.{});
+}
+fn handleCodexRejection(scope: *Scope, owner: c.JSValue, reason: c.JSValue, stage: Stage) !void {
+    var caught = reason;
+    if (stage == .ready) {
+        // Source's fetch finally removes composition listeners before invoking
+        // onResponse or entering its outer HTTP catch.
+        try cleanupCodexAttempt(scope, owner);
+        const timed = try v.optional(scope, owner, "codexHeaderTimeoutSignal");
+        if (scope.truthy(try v.optional(scope, timed, "aborted")) and !try aborted(scope, owner)) {
+            const message = try scope.concat(try scope.concat(try scope.text("Codex SSE response headers timed out after "), try scope.stringify(try scope.get(owner, "codexTimeout"))), try scope.text("ms"));
+            caught = try scope.own(try v.js.builtin(scope.engine, "Error", &.{message}));
+        }
+    }
+    return codexCaught(scope, owner, caught);
 }
 fn next(scope: *Scope, owner: c.JSValue) !void {
     try wait(scope, owner, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), .next);
@@ -339,20 +448,20 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             try open(scope, owner);
         },
         .ready => {
+            if (try getMode(scope, try scope.get(owner, "agent")) == .codex) try cleanupCodexAttempt(scope, owner);
             try scope.put(owner, "response", value);
             const status = try scope.get(value, "status");
             const arithmetic = @import("native_image_arithmetic.zig");
-            if (try arithmetic.compare(scope.engine, .less, status, c.JS_NewInt32(scope.engine.context, 200)) or try arithmetic.compare(scope.engine, .greater_equal, status, c.JS_NewInt32(scope.engine.context, 300))) {
-                try scope.put(owner, "httpError", c.pi_js_bool(scope.engine.context, 1));
-                return next(scope, owner);
-            }
-            try scope.put(owner, "httpError", c.pi_js_bool(scope.engine.context, 0));
+            const is_error = try arithmetic.compare(scope.engine, .less, status, c.JS_NewInt32(scope.engine.context, 200)) or try arithmetic.compare(scope.engine, .greater_equal, status, c.JS_NewInt32(scope.engine.context, 300));
+            try scope.put(owner, "httpError", c.pi_js_bool(scope.engine.context, @intFromBool(is_error)));
+            if (is_error and try getMode(scope, try scope.get(owner, "agent")) != .codex) return next(scope, owner);
             const observed = try scope.object();
             try scope.put(observed, "status", status);
             try scope.put(observed, "headers", try scope.get(value, "headers"));
             try wait(scope, owner, try hook(scope, owner, "onResponse", observed), .response);
         },
         .response => {
+            if (scope.truthy(try scope.get(owner, "httpError"))) return next(scope, owner);
             _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
             try next(scope, owner);
         },
@@ -363,6 +472,7 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             }
             const frame = try scope.get(value, "value");
             if (try v.eq(scope, try scope.get(frame, "type"), "error_body")) {
+                if (try getMode(scope, try scope.get(owner, "agent")) == .codex) return codexErrorBody(scope, owner, try scope.get(frame, "body"));
                 const reason = try sdkError(scope, try scope.get(try scope.get(owner, "response"), "status"), try scope.get(frame, "body"));
                 try scope.put(reason, "headers", try scope.get(try scope.get(owner, "response"), "headers"));
                 return retryOrFail(scope, owner, reason);
@@ -470,6 +580,31 @@ fn transportError(scope: *Scope, owner: c.JSValue, value: c.JSValue) !c.JSValue 
 fn binary(scope: *Scope, operation: @import("native_image_arithmetic.zig").Operation, left: c.JSValue, right: c.JSValue) !c.JSValue {
     return scope.own(try @import("native_image_arithmetic.zig").binary(scope.engine, operation, left, right));
 }
+fn codexCanRetry(scope: *Scope, owner: c.JSValue) !bool {
+    return @import("native_image_arithmetic.zig").compare(scope.engine, .less, try scope.get(owner, "attempt"), try scope.get(owner, "codexMaxRetries"));
+}
+fn codexRetry(scope: *Scope, owner: c.JSValue, delay: c.JSValue) !void {
+    try scope.put(owner, "attempt", try binary(scope, .add, try scope.get(owner, "attempt"), c.JS_NewInt32(scope.engine.context, 1)));
+    const sleeping = try scope.own(try sleep(scope, delay, try v.optional(scope, try scope.get(owner, "options"), "signal"), true));
+    try wait(scope, owner, sleeping, .retried);
+}
+fn codexCaught(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
+    if (try codex_http.isAbort(scope, reason)) return fail(scope, owner, try codex_http.abortReason(scope));
+    const last = try codex_http.caught(scope, reason);
+    try scope.put(owner, "codexLastError", last);
+    if (try codexCanRetry(scope, owner) and try codex_http.caughtRetryable(scope, last)) return codexRetry(scope, owner, try codex_http.backoff(scope, try scope.get(owner, "attempt")));
+    return fail(scope, owner, last);
+}
+fn codexErrorBody(scope: *Scope, owner: c.JSValue, body: c.JSValue) !void {
+    const response = try scope.get(owner, "response");
+    const status = try scope.get(response, "status");
+    if (try codexCanRetry(scope, owner) and try codex_http.retryable(scope, status, body)) {
+        const hint = try codex_http.retryAfter(scope, try scope.get(response, "headers"));
+        const delay = if (c.JS_IsUndefined(hint)) try codex_http.backoff(scope, try scope.get(owner, "attempt")) else try codex_http.validateDelay(scope, hint, try scope.get(owner, "options"));
+        return codexRetry(scope, owner, delay);
+    }
+    return codexCaught(scope, owner, try codex_http.responseError(scope, status, try scope.get(response, "statusText"), body));
+}
 fn retryOrFail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     if (try aborted(scope, owner)) return fail(scope, owner, try abortError(scope));
     const options = try scope.get(owner, "options");
@@ -513,15 +648,17 @@ fn retryOrFail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
         const exponential = try binary(scope, .multiply, try scope.invoke(try scope.global("Math"), "min", &.{ try binary(scope, .multiply, c.JS_NewFloat64(scope.engine.context, 0.5), try binary(scope, .power, c.JS_NewInt32(scope.engine.context, 2), attempt)), c.JS_NewInt32(scope.engine.context, 8) }), c.JS_NewInt32(scope.engine.context, 1000));
         delay = try binary(scope, .multiply, exponential, try binary(scope, .subtract, c.JS_NewInt32(scope.engine.context, 1), try binary(scope, .multiply, try scope.invoke(try scope.global("Math"), "random", &.{}), c.JS_NewFloat64(scope.engine.context, 0.25))));
     }
-    try wait(scope, owner, try sleep(scope, delay, try v.optional(scope, options, "signal")), .retried);
+    const sleeping = try scope.own(try sleep(scope, delay, try v.optional(scope, options, "signal"), false));
+    try wait(scope, owner, sleeping, .retried);
 }
-fn sleep(scope: *Scope, delay: c.JSValue, signal: c.JSValue) !c.JSValue {
+fn sleep(scope: *Scope, delay: c.JSValue, signal: c.JSValue, codex: bool) !c.JSValue {
     const engine = scope.engine;
     const pending = try flow.create(engine, signal);
     defer engine.freeValue(pending.owner);
     errdefer engine.freeValue(pending.promise);
+    try scope.put(pending.owner, "codex", c.pi_js_bool(engine.context, @intFromBool(codex)));
     if (scope.truthy(try v.optional(scope, signal, "aborted"))) {
-        try flow.settle(engine, pending.owner, true, try abortError(scope));
+        try flow.settle(engine, pending.owner, true, if (codex) try codex_http.abortReason(scope) else try abortError(scope));
         return pending.promise;
     }
     const Adapter = struct {
@@ -529,7 +666,7 @@ fn sleep(scope: *Scope, delay: c.JSValue, signal: c.JSValue) !c.JSValue {
             var row: Scope = .{ .engine = host };
             defer row.deinit();
             const signal_value = try row.get(roots[0], "agent");
-            if (!v.nullish(signal_value)) _ = try row.invoke(signal_value, "removeEventListener", &.{ try row.text("abort"), try row.get(roots[0], "onAbort") });
+            if (!row.truthy(try row.get(roots[0], "codex")) and !v.nullish(signal_value)) _ = try row.invoke(signal_value, "removeEventListener", &.{ try row.text("abort"), try row.get(roots[0], "onAbort") });
             try flow.settle(host, roots[0], false, c.pi_js_undefined());
             return c.pi_js_undefined();
         }
@@ -537,19 +674,19 @@ fn sleep(scope: *Scope, delay: c.JSValue, signal: c.JSValue) !c.JSValue {
             var row: Scope = .{ .engine = host };
             defer row.deinit();
             _ = try row.call(try row.global("clearTimeout"), c.pi_js_undefined(), &.{try row.get(roots[0], "timeout")});
-            try flow.settle(host, roots[0], true, try abortError(&row));
+            try flow.settle(host, roots[0], true, if (row.truthy(try row.get(roots[0], "codex"))) try codex_http.abortReason(&row) else try abortError(&row));
             return c.pi_js_undefined();
         }
     };
-    const on_abort = try scope.own(try @import("native_node_function.zig").create(engine, "onAbort", 0, Adapter.abort, &.{pending.owner}));
+    const on_abort = try scope.own(try @import("native_node_function.zig").create(engine, if (codex) "" else "onAbort", 0, Adapter.abort, &.{pending.owner}));
     try scope.put(pending.owner, "onAbort", on_abort);
-    const timer = try scope.own(try @import("native_node_function.zig").create(engine, "", 0, Adapter.timer, &.{pending.owner}));
-    const timeout = try scope.call(try scope.global("setTimeout"), c.pi_js_undefined(), &.{ timer, try scope.invoke(try scope.global("Math"), "max", &.{ c.JS_NewInt32(engine.context, 0), delay }) });
+    const timer = if (codex) try scope.get(pending.owner, "resolve") else try scope.own(try @import("native_node_function.zig").create(engine, "", 0, Adapter.timer, &.{pending.owner}));
+    const timeout = try scope.call(try scope.global("setTimeout"), c.pi_js_undefined(), &.{ timer, if (codex) delay else try scope.invoke(try scope.global("Math"), "max", &.{ c.JS_NewInt32(engine.context, 0), delay }) });
     try scope.put(pending.owner, "timeout", timeout);
     if (!v.nullish(signal)) {
         const once = try scope.object();
         try scope.put(once, "once", c.pi_js_bool(engine.context, 1));
-        _ = try scope.invoke(signal, "addEventListener", &.{ try scope.text("abort"), on_abort, once });
+        _ = try scope.invoke(signal, "addEventListener", if (codex) &.{ try scope.text("abort"), on_abort } else &.{ try scope.text("abort"), on_abort, once });
     }
     return pending.promise;
 }

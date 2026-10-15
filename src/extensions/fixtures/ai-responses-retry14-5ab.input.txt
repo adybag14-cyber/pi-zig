@@ -1,0 +1,51 @@
+// Differential transport controls. Provider algorithms run in the native factory.
+if(responsesRetrySource.sourceHead!=='5ab7fe74c400097b386662205cd93900695b8a71'||responsesRetrySource.cases!==14||responsesRetrySource.rows.length!==14)throw Error('genuine SourceRetry14 required');
+Date.now=()=>responsesRetrySource.fixedTime;
+const snapshot=value=>JSON.parse(JSON.stringify(value,(key,value)=>key==='durationMs'&&typeof value==='number'?0:value));
+const token='e30.'+btoa(JSON.stringify({'https://api.openai.com/auth':{chatgpt_account_id:'account-fixture'}}))+'.sig';
+const runtimeDiagnosticHeaders=new Set(['x-stainless-arch','x-stainless-lang','x-stainless-os','x-stainless-package-version','x-stainless-runtime','x-stainless-runtime-version']);
+const functionalHeaders=headers=>Object.fromEntries(Object.entries(headers).filter(([key])=>!runtimeDiagnosticHeaders.has(key)));
+const originalPush=AssistantMessageEventStream.prototype.push;let currentEvents;
+const collect=()=>{if(globalThis.responsesRetryGcBetweenHooks)collectResponsesRetryGraph()};
+AssistantMessageEventStream.prototype.push=function(event){currentEvents?.push(snapshot(event));return Reflect.apply(originalPush,this,arguments)};
+globalThis.responsesRetryNativeRows=[];
+try{for(let caseIndex=0;caseIndex<responsesRetrySource.inputs.specs.length;caseIndex++){
+ const spec=responsesRetrySource.inputs.specs[caseIndex],expected=responsesRetrySource.rows[caseIndex],selected={...responsesRetrySource.inputs.model};
+ if(spec.mode==='azure'){selected.api='azure-openai-responses';selected.provider='azure';selected.baseUrl='https://resource.openai.azure.com/openai/v1'}
+ if(spec.mode==='codex'){selected.api='openai-codex-responses';selected.provider='openai-codex';selected.baseUrl='https://chatgpt.com/backend-api'}
+ const capturedProviderEvents=expected.trace.filter(row=>row[0]==='provider-enter').map(row=>row[3]);
+ const trace=[],requests=[],events=[],consumerEvents=[],consumerAliases=[];let providerIndex=0,responseIndex=0,firstOutput;
+ const controller=new AbortController();if(spec.preAborted)controller.abort();
+ const options={apiKey:spec.mode==='codex'?token:'sk-fixture',transport:'sse',sessionId:'retry-fixture-session',maxRetries:spec.maxRetries??0,headers:{'user-agent':'pi-fixture','x-fixture':'retry-caller'},signal:controller.signal,
+  ...(spec.mode==='azure'?{env:{AZURE_OPENAI_BASE_URL:selected.baseUrl,AZURE_OPENAI_API_VERSION:'2026-01-01'}}:{}),...(spec.maxRetryDelayMs!==undefined?{maxRetryDelayMs:spec.maxRetryDelayMs}:{}),...(spec.invalidTimeout?{timeoutMs:NaN}:{}),
+  onPayload:async(payload,m)=>{trace.push(['payload-enter',m===selected]);collect();await Promise.resolve();collect();trace.push(['payload-leave',m===selected])},
+  onResponse:async(response,m)=>{const index=responseIndex++;trace.push(['response-enter',index,m===selected,snapshot(response)]);collect();await Promise.resolve();collect();trace.push(['response-leave',index,m===selected]);if(index===spec.rejectResponseAt)throw {fixture:'response-hook-object'}},
+  onProviderStreamEvent:async(event,m)=>{const index=providerIndex++;trace.push(['provider-enter',index,m===selected,snapshot(event)]);collect();await Promise.resolve();collect();trace.push(['provider-leave',index,m===selected])},
+  fetch:async(url,init)=>{
+   if(!(init.headers instanceof Headers))throw Error('actual Headers required');
+   const headers=Object.fromEntries(init.headers);const body=headers['content-encoding']==='zstd'?decodeCodexFixtureBody(init.body):init.body;
+   const index=requests.length,plan=spec.plans[index];requests.push({url:String(url),method:init.method,headers,body:JSON.parse(body)});trace.push(['fetch',index,Boolean(init.signal?.aborted)]);
+   if(!plan)throw Error('Unexpected extra fixture request '+index);if(plan.reject)throw plan.reject;
+   const status=plan.status??200,responseHeaders=new Headers({'content-type':status===200?'text/event-stream':'application/json','x-fixture-response':'source',...plan.headers});
+   if(status!==200)return {status,statusText:status===429?'Too Many Requests':'Service Unavailable',ok:false,headers:responseHeaders,async text(){return JSON.stringify(plan.body)}};
+   // Every replayed event comes from the genuine Source provider callback trace.
+   const bytes=new TextEncoder().encode(capturedProviderEvents.map(event=>'data: '+JSON.stringify(event)+'\n\n').join(''));let offset=0;
+   return {status,statusText:'',ok:true,headers:responseHeaders,body:{getReader(){return {async read(){if(offset===bytes.length){if(plan.readerReject)throw plan.readerReject;return {done:true,value:undefined}}const next=Math.min(offset+17,bytes.length),value=bytes.slice(offset,next);offset=next;return {done:false,value}},async cancel(){offset=bytes.length},releaseLock(){}}}}};
+  },
+ };
+ let result,thrown;currentEvents=events;
+ const api=spec.mode==='azure'?azureResponsesAPI:spec.mode==='codex'?codexResponsesAPI:responsesAPI;
+ try{const stream=api.stream(selected,responsesRetrySource.inputs.context,options);for await(const event of stream){const output=event.partial??event.message??event.error;firstOutput??=output;consumerAliases.push([event.type,output===firstOutput]);consumerEvents.push(snapshot(event))}result=await stream.result();consumerAliases.push(['result',result===firstOutput])}catch(error){thrown={string:String(error),...(error?.stack?{stack:error.stack}:{})}}
+ currentEvents=undefined;
+ const actual={name:spec.name,requests,trace,events,consumerEvents,consumerAliases,result:result?snapshot(result):null,...(thrown?{thrown}:{})};responsesRetryNativeRows.push(actual);
+ function equal(key,a,b){if(JSON.stringify(a)!==JSON.stringify(b))throw Error(JSON.stringify({case:spec.name,key,actual:a,expected:b}))}
+ equal('request-count',actual.requests.length,expected.requests.length);
+ for(let index=0;index<actual.requests.length;index++){
+  for(const key of ['url','method','body'])equal('request-'+key,actual.requests[index][key],expected.requests[index][key]);
+  // All actual SDK headers remain in the fixture. These six fields identify
+  // the Source SDK/runtime and must not be fabricated in the native runtime.
+  equal('functional-headers',functionalHeaders(actual.requests[index].headers),functionalHeaders(expected.requests[index].headers));
+ }
+ for(const key of ['trace','events','consumerEvents','consumerAliases','result','thrown'])equal(key,actual[key],expected[key]);
+}}finally{AssistantMessageEventStream.prototype.push=originalPush}
+export const proof=true;

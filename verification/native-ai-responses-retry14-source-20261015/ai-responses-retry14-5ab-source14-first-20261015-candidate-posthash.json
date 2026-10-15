@@ -1,0 +1,15 @@
+{
+  "slot": "LIGHT5",
+  "candidate": 6164,
+  "candidate_after": 6164,
+  "candidate_drift": 0,
+  "candidate_path_drift": 0,
+  "qualified": 6161,
+  "qualified_after": 6161,
+  "qualified_drift": 0,
+  "qualified_path_drift": 0,
+  "controls": 3,
+  "control_drift": 0,
+  "failure": null,
+  "completed_utc": "2026-10-15T20:39:52.9411150+00:00"
+}

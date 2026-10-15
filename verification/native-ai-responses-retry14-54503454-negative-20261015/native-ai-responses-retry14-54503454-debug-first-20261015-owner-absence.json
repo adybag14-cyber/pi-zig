@@ -1,0 +1,23 @@
+{
+  "checked_utc": "2026-10-15T21:17:16.5245220+00:00",
+  "owners": [
+    {
+      "phase": "compile",
+      "owner_pid": 61052,
+      "owner_created_utc": "2026-10-15T21:06:06.9386768Z",
+      "owner_status": "passed",
+      "original_owner_live": false,
+      "current": null,
+      "process_action": "none"
+    },
+    {
+      "phase": "runtime",
+      "owner_pid": 70752,
+      "owner_created_utc": "2026-10-15T21:13:04.7186502Z",
+      "owner_status": "failed",
+      "original_owner_live": false,
+      "current": null,
+      "process_action": "none"
+    }
+  ]
+}

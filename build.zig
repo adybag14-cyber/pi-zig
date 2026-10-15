@@ -1673,7 +1673,7 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, ai_responses_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_responses_tests.root_module, sqlite_lib_dir, sqlite_library);
     ai_responses_tests.root_module.addImport("catalog_tool", catalog_tool);
-    b.step("test-native-ai-responses", "Compare actual Responses API factories with Source18 request and stream observations").dependOn(&b.addRunArtifact(ai_responses_tests).step);
+    b.step("test-native-ai-responses", "Compare actual Responses factories with Source18 and SourceRetry14 request and stream observations").dependOn(&b.addRunArtifact(ai_responses_tests).step);
     b.step("build-native-ai-responses", "Compile ordered Responses factories before bounded runtime checks").dependOn(&ai_responses_tests.step);
     const ai_codex_socket_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_codex_socket_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Codex socket"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_codex_socket_tests.root_module, quickjs, sqlite_lib_dir);

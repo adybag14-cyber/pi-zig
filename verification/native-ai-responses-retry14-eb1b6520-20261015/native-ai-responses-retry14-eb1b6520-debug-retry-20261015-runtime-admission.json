@@ -1,0 +1,9 @@
+{
+  "slot": 3,
+  "free_kib": 20251808,
+  "minimum_kib": 16777216,
+  "other_native_roots": 1,
+  "maximum_native_roots": 4,
+  "between_drift": 0,
+  "status": "admitted"
+}
