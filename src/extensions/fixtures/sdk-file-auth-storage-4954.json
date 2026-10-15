@@ -1,0 +1,820 @@
+{
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "runtime": "v24.14.0",
+  "count": 32,
+  "inputSha256": "3a32cdf3e68f3c850c7bee5ad3aeb75342624755de640659e310a1f3ff11748c",
+  "rows": [
+    {
+      "name": "ordinary class metadata",
+      "result": {
+        "name": "FileAuthStorageBackend",
+        "length": 0,
+        "instance": true,
+        "own": [
+          "authPath"
+        ],
+        "fields": {
+          "authPath": {
+            "value": "[owned-root]\\case-1\\auth.json",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "prototype": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 0,
+            "prototype": true,
+            "async": false
+          },
+          {
+            "name": "ensureParentDir",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 0,
+            "prototype": false,
+            "async": false
+          },
+          {
+            "name": "ensureFileExists",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 0,
+            "prototype": false,
+            "async": false
+          },
+          {
+            "name": "acquireLockSyncWithRetry",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 1,
+            "prototype": false,
+            "async": false
+          },
+          {
+            "name": "withLock",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 1,
+            "prototype": false,
+            "async": false
+          },
+          {
+            "name": "acquireLockAsync",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 2,
+            "prototype": false,
+            "async": true
+          },
+          {
+            "name": "withLockAsync",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 2,
+            "prototype": false,
+            "async": true
+          }
+        ]
+      },
+      "trace": []
+    },
+    {
+      "name": "default constructor uses genuine config",
+      "result": "[owned-root]\\auth.json",
+      "trace": []
+    },
+    {
+      "name": "normalization file URL",
+      "result": "[owned-root]\\case-3\\auth.json",
+      "trace": []
+    },
+    {
+      "name": "sync fresh bootstrap",
+      "result": {
+        "result": "returned",
+        "content": "{}",
+        "lock": false
+      },
+      "trace": [
+        "{}"
+      ]
+    },
+    {
+      "name": "sync write next",
+      "result": {
+        "result": 17,
+        "content": "{\"owned\":true}"
+      },
+      "trace": []
+    },
+    {
+      "name": "sync undefined next retains content",
+      "result": "initial",
+      "trace": []
+    },
+    {
+      "name": "sync callback exception identity",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "lock": false,
+        "content": "{}"
+      },
+      "trace": []
+    },
+    {
+      "name": "sync destructuring getter order",
+      "result": {
+        "result": true,
+        "content": "next-content"
+      },
+      "trace": [
+        "result",
+        "next"
+      ]
+    },
+    {
+      "name": "sync result getter rejection releases",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "lock": false
+      },
+      "trace": []
+    },
+    {
+      "name": "sync release error replaces callback error",
+      "result": {
+        "marker": true
+      },
+      "trace": []
+    },
+    {
+      "name": "sync dynamic method receiver",
+      "result": "{}",
+      "trace": [
+        "get ensureParentDir",
+        "call ensureParentDir:true",
+        "get ensureFileExists",
+        "call ensureFileExists:true",
+        "get acquireLockSyncWithRetry",
+        "call acquireLockSyncWithRetry:true"
+      ]
+    },
+    {
+      "name": "sync file removed after acquire gives undefined",
+      "result": true,
+      "trace": []
+    },
+    {
+      "name": "async fresh bootstrap",
+      "result": {
+        "result": "async-returned",
+        "content": "{}",
+        "lock": false
+      },
+      "trace": [
+        "{}"
+      ]
+    },
+    {
+      "name": "async write next",
+      "result": {
+        "result": 23,
+        "content": "async-content"
+      },
+      "trace": []
+    },
+    {
+      "name": "async no next",
+      "result": "preserved",
+      "trace": []
+    },
+    {
+      "name": "async callback rejection identity",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "lock": false
+      },
+      "trace": []
+    },
+    {
+      "name": "async outcome destructuring order",
+      "result": {
+        "result": true,
+        "content": "async-next"
+      },
+      "trace": [
+        "result",
+        "next"
+      ]
+    },
+    {
+      "name": "async outcome getter failure releases",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "lock": false
+      },
+      "trace": []
+    },
+    {
+      "name": "pre-abort creates no file",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "file": false,
+        "lock": false
+      },
+      "trace": []
+    },
+    {
+      "name": "active cancellation retains lock until callback settles",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "second": "second",
+        "content": "committed"
+      },
+      "trace": [
+        "before-finish:0",
+        "competing"
+      ]
+    },
+    {
+      "name": "real lock contention serialization",
+      "result": {
+        "results": [
+          1,
+          2
+        ],
+        "content": "second",
+        "lock": false
+      },
+      "trace": [
+        "first",
+        "held:true",
+        "first"
+      ]
+    },
+    {
+      "name": "cancellation while another real owner holds lock",
+      "result": {
+        "error": {
+          "name": "AbortError",
+          "code": "ABORT_ERR",
+          "cause": true
+        },
+        "content": "{}",
+        "lock": false
+      },
+      "trace": []
+    },
+    {
+      "name": "compromised acquisition callback gates mutation",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "content": "{}"
+      },
+      "trace": []
+    },
+    {
+      "name": "async unlock errors ignored",
+      "result": {
+        "result": 42,
+        "content": "unlocked"
+      },
+      "trace": [
+        "release"
+      ]
+    },
+    {
+      "name": "options signal getters remain live",
+      "result": "live",
+      "trace": [
+        "signal",
+        "signal",
+        "signal",
+        "signal"
+      ]
+    },
+    {
+      "name": "async ensure exception rejects instead of throws",
+      "result": {
+        "async": {
+          "marker": true
+        }
+      },
+      "trace": []
+    },
+    {
+      "name": "acquired concurrently with abort releases before throw",
+      "result": {
+        "marker": true
+      },
+      "trace": [
+        "released"
+      ]
+    },
+    {
+      "name": "sync retryable lock error",
+      "result": "retried",
+      "trace": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "async retryable lock error",
+      "result": "retried",
+      "trace": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "Windows EPERM has separate retry cap",
+      "result": {
+        "name": "Error",
+        "code": "EPERM",
+        "message": "owned EPERM"
+      },
+      "trace": [
+        "attempt",
+        "attempt",
+        "attempt",
+        "attempt",
+        "attempt",
+        "attempt"
+      ]
+    },
+    {
+      "name": "async non-Error lock value not retried",
+      "result": {
+        "marker": true
+      },
+      "trace": [
+        "attempt"
+      ]
+    },
+    {
+      "name": "sync non-Error lock value not retried",
+      "result": {
+        "marker": true
+      },
+      "trace": [
+        "attempt"
+      ]
+    }
+  ],
+  "rawRows": [
+    {
+      "name": "ordinary class metadata",
+      "result": {
+        "name": "FileAuthStorageBackend",
+        "length": 0,
+        "instance": true,
+        "own": [
+          "authPath"
+        ],
+        "fields": {
+          "authPath": {
+            "value": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-file-auth-4954-orGkiK\\case-1\\auth.json",
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        "prototype": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 0,
+            "prototype": true,
+            "async": false
+          },
+          {
+            "name": "ensureParentDir",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 0,
+            "prototype": false,
+            "async": false
+          },
+          {
+            "name": "ensureFileExists",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 0,
+            "prototype": false,
+            "async": false
+          },
+          {
+            "name": "acquireLockSyncWithRetry",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 1,
+            "prototype": false,
+            "async": false
+          },
+          {
+            "name": "withLock",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 1,
+            "prototype": false,
+            "async": false
+          },
+          {
+            "name": "acquireLockAsync",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 2,
+            "prototype": false,
+            "async": true
+          },
+          {
+            "name": "withLockAsync",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "length": 2,
+            "prototype": false,
+            "async": true
+          }
+        ]
+      },
+      "trace": []
+    },
+    {
+      "name": "default constructor uses genuine config",
+      "result": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-file-auth-4954-orGkiK\\auth.json",
+      "trace": []
+    },
+    {
+      "name": "normalization file URL",
+      "result": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-file-auth-4954-orGkiK\\case-3\\auth.json",
+      "trace": []
+    },
+    {
+      "name": "sync fresh bootstrap",
+      "result": {
+        "result": "returned",
+        "content": "{}",
+        "lock": false
+      },
+      "trace": [
+        "{}"
+      ]
+    },
+    {
+      "name": "sync write next",
+      "result": {
+        "result": 17,
+        "content": "{\"owned\":true}"
+      },
+      "trace": []
+    },
+    {
+      "name": "sync undefined next retains content",
+      "result": "initial",
+      "trace": []
+    },
+    {
+      "name": "sync callback exception identity",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "lock": false,
+        "content": "{}"
+      },
+      "trace": []
+    },
+    {
+      "name": "sync destructuring getter order",
+      "result": {
+        "result": true,
+        "content": "next-content"
+      },
+      "trace": [
+        "result",
+        "next"
+      ]
+    },
+    {
+      "name": "sync result getter rejection releases",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "lock": false
+      },
+      "trace": []
+    },
+    {
+      "name": "sync release error replaces callback error",
+      "result": {
+        "marker": true
+      },
+      "trace": []
+    },
+    {
+      "name": "sync dynamic method receiver",
+      "result": "{}",
+      "trace": [
+        "get ensureParentDir",
+        "call ensureParentDir:true",
+        "get ensureFileExists",
+        "call ensureFileExists:true",
+        "get acquireLockSyncWithRetry",
+        "call acquireLockSyncWithRetry:true"
+      ]
+    },
+    {
+      "name": "sync file removed after acquire gives undefined",
+      "result": true,
+      "trace": []
+    },
+    {
+      "name": "async fresh bootstrap",
+      "result": {
+        "result": "async-returned",
+        "content": "{}",
+        "lock": false
+      },
+      "trace": [
+        "{}"
+      ]
+    },
+    {
+      "name": "async write next",
+      "result": {
+        "result": 23,
+        "content": "async-content"
+      },
+      "trace": []
+    },
+    {
+      "name": "async no next",
+      "result": "preserved",
+      "trace": []
+    },
+    {
+      "name": "async callback rejection identity",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "lock": false
+      },
+      "trace": []
+    },
+    {
+      "name": "async outcome destructuring order",
+      "result": {
+        "result": true,
+        "content": "async-next"
+      },
+      "trace": [
+        "result",
+        "next"
+      ]
+    },
+    {
+      "name": "async outcome getter failure releases",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "lock": false
+      },
+      "trace": []
+    },
+    {
+      "name": "pre-abort creates no file",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "file": false,
+        "lock": false
+      },
+      "trace": []
+    },
+    {
+      "name": "active cancellation retains lock until callback settles",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "second": "second",
+        "content": "committed"
+      },
+      "trace": [
+        "before-finish:0",
+        "competing"
+      ]
+    },
+    {
+      "name": "real lock contention serialization",
+      "result": {
+        "results": [
+          1,
+          2
+        ],
+        "content": "second",
+        "lock": false
+      },
+      "trace": [
+        "first",
+        "held:true",
+        "first"
+      ]
+    },
+    {
+      "name": "cancellation while another real owner holds lock",
+      "result": {
+        "error": {
+          "name": "AbortError",
+          "code": "ABORT_ERR",
+          "cause": true
+        },
+        "content": "{}",
+        "lock": false
+      },
+      "trace": []
+    },
+    {
+      "name": "compromised acquisition callback gates mutation",
+      "result": {
+        "error": {
+          "marker": true
+        },
+        "content": "{}"
+      },
+      "trace": []
+    },
+    {
+      "name": "async unlock errors ignored",
+      "result": {
+        "result": 42,
+        "content": "unlocked"
+      },
+      "trace": [
+        "release"
+      ]
+    },
+    {
+      "name": "options signal getters remain live",
+      "result": "live",
+      "trace": [
+        "signal",
+        "signal",
+        "signal",
+        "signal"
+      ]
+    },
+    {
+      "name": "async ensure exception rejects instead of throws",
+      "result": {
+        "async": {
+          "marker": true
+        }
+      },
+      "trace": []
+    },
+    {
+      "name": "acquired concurrently with abort releases before throw",
+      "result": {
+        "marker": true
+      },
+      "trace": [
+        "released"
+      ]
+    },
+    {
+      "name": "sync retryable lock error",
+      "result": "retried",
+      "trace": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "async retryable lock error",
+      "result": "retried",
+      "trace": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "Windows EPERM has separate retry cap",
+      "result": {
+        "name": "Error",
+        "code": "EPERM",
+        "message": "owned EPERM"
+      },
+      "trace": [
+        "attempt",
+        "attempt",
+        "attempt",
+        "attempt",
+        "attempt",
+        "attempt"
+      ]
+    },
+    {
+      "name": "async non-Error lock value not retried",
+      "result": {
+        "marker": true
+      },
+      "trace": [
+        "attempt"
+      ]
+    },
+    {
+      "name": "sync non-Error lock value not retried",
+      "result": {
+        "marker": true
+      },
+      "trace": [
+        "attempt"
+      ]
+    }
+  ],
+  "rawErrors": [
+    {
+      "marker": true
+    },
+    {
+      "marker": true
+    },
+    {
+      "marker": true
+    },
+    {
+      "marker": true
+    },
+    {
+      "marker": true
+    },
+    {
+      "marker": true
+    },
+    {
+      "marker": true
+    },
+    {
+      "marker": true
+    },
+    {
+      "marker": true
+    },
+    {
+      "marker": true
+    },
+    {
+      "name": "Error",
+      "message": "owned EPERM",
+      "stack": "Error: owned EPERM\n    at fileAuthLockfile.lock (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/file-auth-storage-source4954-capture-20261015.mjs:23:9), <anonymous>:52:199)\n    at FileAuthStorageBackend.acquireLockAsync (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\src\\core\\auth-storage.ts:130:30)\n    at async FileAuthStorageBackend.withLockAsync (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\src\\core\\auth-storage.ts:176:14)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/file-auth-storage-source4954-capture-20261015.mjs:23:9), <anonymous>:52:246)\n    at async fileAuthCase (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/file-auth-storage-source4954-capture-20261015.mjs:23:9), <anonymous>:19:25)\n    at async eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/file-auth-storage-source4954-capture-20261015.mjs:23:9), <anonymous>:52:1)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/file-auth-storage-source4954-capture-20261015.mjs:23:3",
+      "code": "EPERM"
+    },
+    {
+      "marker": true
+    },
+    {
+      "marker": true
+    }
+  ],
+  "ownedTempRoot": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-file-auth-4954-orGkiK",
+  "ownedTemporaryRemovedAndAbsenceVerified": true
+}

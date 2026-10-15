@@ -57,12 +57,27 @@ contention cases use genuine default lock/file collaborators.
 The capture owner requires original Source1970/runtime31064/Node1774 and all 84
 retained absences plus exact caller/input/new-native/control pre/post hashes. It
 publishes no expected fixture until terminal success and zero-drift posthash.
-The capture and native Source32/GC harness are authored, not executed. Native
-semantic compilation, Source32 qualification, POSIX filesystem/mode coverage,
+The admitted genuine Source32 capture passed on PID 41664, exit zero, with full
+posthash completed `2026-10-15T22:34:24.7466642Z`: candidate7261, compiler19546,
+Source1970, runtime31064, Node1774, controls and all 84 absences had zero digest
+drift; candidate/compiler/Source path inventories were unchanged. The owned
+temporary root was removed and independently verified absent, as was the Source
+process. Expected JSON was created only after all terminal and posthash checks;
+SHA256 `32FC19F9835DEFA68E747D4A4AE4C9101C821703738C9D908478800584CD1280`.
+All 32 raw rows and 13 complete original Error diagnostics remain in the packet.
+
+The frozen native authoring control head was `06055ee2`. After capture, static
+dependency review corrected the synchronous proper-lockfile adapter's precision
+cache: each sync call probes independently because the Source adapter shallow
+copies a filesystem object with a nonenumerable precision cache. Async calls
+retain the shared cache. This successor has formatting/AST verification only.
+
+Native semantic compilation, native Source32 replay, POSIX filesystem/mode coverage,
 heartbeat/stale/compromise differential coverage, complete proper-lockfile
 qualification, full SDK, full Pi, and activation remain false.
 
 No Root/shared SDK/Engine/build file was modified. An assembler may add a narrow
 test target for `src/native_file_auth_storage_backend_test.zig`, filtered on
 `native FileAuthStorageBackend`, using the existing actual QuickJS/SQLite/catalog
-link setup. The expected JSON is deliberately absent pending Root LIGHT grant.
+link setup. The expected JSON is the genuine admitted Source32 packet; no native
+replay or ordinary production-default qualification is claimed from its existence.

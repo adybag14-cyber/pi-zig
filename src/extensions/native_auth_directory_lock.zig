@@ -117,7 +117,7 @@ fn number(scope: *Scope, options: c.JSValue, key: [*:0]const u8, fallback: i64) 
     if (c.JS_ToInt64(scope.engine.context, &result, value) < 0) return v.js.capture(scope.engine);
     return result;
 }
-fn acquire(scope: *Scope, owner: c.JSValue, file: c.JSValue, options: c.JSValue) !c.JSValue {
+fn acquire(scope: *Scope, owner: c.JSValue, file: c.JSValue, options: c.JSValue, synchronous: bool) !c.JSValue {
     // FileAuthStorageBackend always selects realpath:false; resolve the actual
     // path just as proper-lockfile's non-realpath branch does.
     const path_module = scope.engine.native_module_values.get("node:path") orelse return error.NativeAuthLockRequiresPath;
@@ -151,14 +151,17 @@ fn acquire(scope: *Scope, owner: c.JSValue, file: c.JSValue, options: c.JSValue)
     }
     var attached = false;
     errdefer if (!attached) std.Io.Dir.cwd().deleteDir(io, lock_path) catch {};
-    const precision = try scope.get(owner, "precision");
+    // proper-lockfile's sync adapter shallow-copies graceful-fs for every call.
+    // Its nonenumerable precision symbol is consequently absent on each copy;
+    // async acquisitions alone share the module's cached precision probe.
+    const precision = if (synchronous) c.pi_js_undefined() else try scope.get(owner, "precision");
     if (c.JS_IsUndefined(precision)) {
         const probe_ms = @divFloor(try now(scope) + 999, 1000) * 1000 + 5;
         @import("native_auth_file_io.zig").setTimestamp(scope.engine.gpa, io, lock_path, .{ .nanoseconds = @as(i96, probe_ms) * std.time.ns_per_ms }) catch |err| return ioFailure(scope, err, "utime", lock_path);
     }
     const stat = std.Io.Dir.cwd().statFile(io, lock_path, .{}) catch |err| return ioFailure(scope, err, "stat", lock_path);
     const seconds = if (c.JS_IsUndefined(precision)) @mod(stat.mtime.toMilliseconds(), 1000) == 0 else scope.truthy(precision);
-    if (c.JS_IsUndefined(precision)) try scope.put(owner, "precision", c.pi_js_bool(scope.engine.context, @intFromBool(seconds)));
+    if (!synchronous and c.JS_IsUndefined(precision)) try scope.put(owner, "precision", c.pi_js_bool(scope.engine.context, @intFromBool(seconds)));
     var class: u32 = 0;
     if (c.JS_ToUint32(scope.engine.context, &class, try scope.get(owner, "class")) < 0) return v.js.capture(scope.engine);
     const value = try scope.own(try scope.engine.checked(c.JS_NewObjectClass(scope.engine.context, class)));
@@ -262,7 +265,7 @@ fn releaseAsync(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots:
 fn syncLock(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const lease = try acquire(&scope, roots[0], arg(args, 0), arg(args, 1));
+    const lease = try acquire(&scope, roots[0], arg(args, 0), arg(args, 1), true);
     return funcs.createArrow(engine, "", 0, releaseSync, &.{lease});
 }
 fn asyncLock(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -271,7 +274,7 @@ fn asyncLock(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots:
     const pending = try flow.create(engine, c.pi_js_undefined());
     defer engine.freeValue(pending.owner);
     errdefer engine.freeValue(pending.promise);
-    const lease = acquire(&scope, roots[0], arg(args, 0), arg(args, 1)) catch |err| {
+    const lease = acquire(&scope, roots[0], arg(args, 0), arg(args, 1), false) catch |err| {
         try flow.rejectError(engine, pending.owner, err);
         return pending.promise;
     };
