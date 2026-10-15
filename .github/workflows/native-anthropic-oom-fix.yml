@@ -1,0 +1,38 @@
+name: Checkpoint Anthropic allocation fix and real functional regression
+on:
+  push:
+    branches: [work/native-anthropic-oom-fix-20261015]
+permissions:
+  contents: read
+concurrency:
+  group: native-anthropic-oom-fix-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  qualify:
+    if: github.ref == 'refs/heads/work/native-anthropic-oom-fix-20261015'
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Original Source25 and22 wire controls plus both complete host sweeps
+        shell: pwsh
+        timeout-minutes: 45
+        run: |
+          & ./tools/ci/qualify_anthropic_oom_fix.ps1 -Mode Debug -ExpectedHead '${{ github.sha }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-anthropic-oom-fix-${{ matrix.os }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-anthropic-oom-fix/
