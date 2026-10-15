@@ -1,0 +1,62 @@
+{
+  "status": "narrow_helper_static_pass_with_candidate_baseline_mismatch",
+  "candidate_head": "ebee02450a244a2e22a497234f7a423f179dedd2",
+  "candidate_root": "C:\\Users\\adyba\\pi-zig-web-response-qualification-20261015",
+  "patch_sha256": "ED69C338C2CBDCF779352FAA1552AC4820DAA391AAEA77397C7610A9FE472576",
+  "patch_bytes": 3246,
+  "additive_hunks": 2,
+  "identities": {
+    "vendor/quickjs/quickjs.c": {
+      "older_candidate_baseline_sha256": "4516E7F8DB30FAB38CE192B166C2F55174D1E70EC95DDB0FB0B8F8CD8D42BB85",
+      "root_baseline_sha256": "ED1F3A59AD13DE57B32CCA164FC42D347C463632F0B8A1921DC79621E79DE69E",
+      "frozen_candidate_sha256": "96004D12A3459B33A51D825565A134EA13E92B60C7B294E3CA4F5CFC8AF81391",
+      "root_plus_additive_span_sha256": "12A7F02AFADA614EE9AED57F8EE87173F95977AD8FE8723177CACFACA7AB855D",
+      "inserted_lines": 42,
+      "candidate_remaining_file_exact_to_older_baseline": true,
+      "root_reconstruction_remaining_file_exact_to_newer_root": true
+    },
+    "vendor/quickjs/quickjs.h": {
+      "older_candidate_baseline_sha256": "1CB4AD321004E65B00E113601E93CA7CE4C8373D2E074DDABAB9F73C1C5E0847",
+      "root_baseline_sha256": "91A39801056D4B4DA6A1B357AD09A20BA61AD3C669D3EEE219F781B4A56ACA28",
+      "frozen_candidate_sha256": "AA21CA1B03FC4109C381ACA9AB9DBFD2E3D5C1986E2B5D7402912F9B60B6BD62",
+      "root_plus_additive_span_sha256": "F3B6F51DBDA727A8FAECFE275FC13F283CA3C71E3907593E47B4F8B741318062",
+      "inserted_lines": 4,
+      "candidate_remaining_file_exact_to_older_baseline": true,
+      "root_reconstruction_remaining_file_exact_to_newer_root": true
+    }
+  },
+  "review": {
+    "brand": "DataView uses actual class identity, get_dataview and dataview_is_oob. Non-DataView delegates to the unchanged typed-array brand/bounds accessor, rejecting primitives, ordinary objects and proxies without property lookup.",
+    "typed_array_live_rab": "The new API retains existing offset/element-width handling, replacing only its own length output for track_rab with live p->u.array.count shifted by element size. Existing resize bookkeeping resets and recomputes count/pointer; zero-length and partial-element cases follow the interpreter byteLength getter.",
+    "dataview_bounds": "dataview_is_oob rejects detached buffers, offset beyond current byte length and fixed-length views extending past the current buffer before metadata subtraction. Tracking views use current backing length minus validated offset, avoiding underflow.",
+    "null_outputs": "Each DataView output pointer is checked. Typed-array delegation supports null output pointers; a null length pointer returns the owned backing without dereferencing or adjusting the absent length.",
+    "ownership": "Input view is borrowed; success returns exactly one owned duplicated backing-buffer JSValue. No input is consumed, no extra duplicate is leaked, and the existing accessor implementation/ABI is byte-identical.",
+    "getter_boundary": "Successful helper paths use internal class/metadata checks and refcount duplication only; no JS property getters or JS callbacks are invoked internally.",
+    "pointer_lifetime_limit": "An owned backing JSValue retains the object, not its allocation address. Guest transfer/detach/resize can invalidate previously obtained bytes and metadata; reacquire and revalidate after such reentry.",
+    "current_core_callers": "copyBytes obtains JS_GetArrayBuffer after the new helper and immediately performs bounded JS_NewArrayBufferCopy with no intervening guest call. copyQueue reacquires both pointers and current lengths after prior transfer/callback work, validates source/destination spans, and memcpy follows with no intervening guest call. Other helper consumers retain JSValues/offsets/lengths rather than caching raw pointers across transfer; later copyQueue/view construction performs fresh storage checks. This is a static pointer-lifetime inspection, not complete BYOB semantic qualification."
+  },
+  "caller_files": [
+    {
+      "relative": "src/extensions/native_readable_stream.zig",
+      "sha256": "3CD2DEB1E706F20B7EF8570887109286D73629756B1D3B41ACF864681E43AC86",
+      "new_helper_call_sites": 3
+    },
+    {
+      "relative": "src/extensions/native_readable_byte_stream.zig",
+      "sha256": "E1A9D1406F32129C4E60B9D10582CD7E8B9EED4FCB2A1F9F41D0FF735C0AB7BB",
+      "new_helper_call_sites": 3
+    }
+  ],
+  "existing_root_native_async_generator_preserved": "Only in separate in-memory Root ED1F plus additive span reconstruction; absent from older Response candidate",
+  "existing_json_operator_interpreter_bodies_preserved": true,
+  "shared_all191_dispatch_proposal_included": false,
+  "build_or_source_job_launched": false,
+  "candidate_or_root_files_modified": false,
+  "runtime_qualification_claimed": false,
+  "observed_utc": "2026-10-15T21:16:37.838118+00:00",
+  "observed_successor_head": "aea1001f72c5ca06e000b865ddfedf0101fc3936",
+  "successor_c_helper_and_callers_unchanged": true,
+  "candidate_contains_newer_native_async_generator": false,
+  "whole_candidate_vendor_intake_blocked": true,
+  "intake_requirement": "Apply only the exact additive span hunk onto the newer Root C/H baseline. Do not replace newer vendor files with the older Response candidate files; qualify the intended composed VM graph separately."
+}

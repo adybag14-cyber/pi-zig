@@ -1,0 +1,19 @@
+{
+  "candidate_head": "aea1001f72c5ca06e000b865ddfedf0101fc3936",
+  "scope": "source",
+  "phase": "test",
+  "case_scope": "Strict unchanged Body176 Response114 plus genuine OAuth header-gated wire, transport clone/GC, selected5 OOM; actual native stream graph incomplete shared prototypes/BYOB tee; no full Body qualification",
+  "source_authority": "Node24.14.0 bundledUndici7.21.0 Body176 immutable",
+  "compile_targets": [
+    "source",
+    "transport",
+    "oom"
+  ],
+  "build_attempt": "second",
+  "max_native_roots": 4,
+  "minimum_free_gib": 16,
+  "slot": "NATIVE1",
+  "host_await_seconds": 10,
+  "test_timeout_seconds": 120,
+  "owner_settle_seconds": 10
+}

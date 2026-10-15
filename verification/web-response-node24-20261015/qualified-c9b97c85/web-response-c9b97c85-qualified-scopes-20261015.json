@@ -1,0 +1,570 @@
+{
+  "schema": "native-response-qualified-scope-v1",
+  "tested_source_head": "c9b97c857fb5b1724bc9c5c55a0d0be052739b83",
+  "platform": "Windows x86_64 Debug Zig0.16.0",
+  "node": "v24.14.0 bundledUndici7.21.0",
+  "qualified_scope": [
+    "actual Response class/Headers/ReadableStream transport at gated HTTP403 headers before body EOF and basic type",
+    "constructor/private/subclass/clone/body identity and guest exception no-premature-ToString controls",
+    "five selected trusted native operation OOM probes with all host bytes freed",
+    "real tee permanent-host-OOM retirement regression",
+    "unchanged genuine SourceByte12 regression",
+    "unchanged genuine Headers189 plus identity/GC and selected Headers OOM controls"
+  ],
+  "selected_operation_allocations": 230,
+  "selected_offsets": [
+    0,
+    57,
+    115,
+    172,
+    229
+  ],
+  "all_selected_trusted_oom_and_bytes_freed": true,
+  "source_response114": {
+    "mapped": 114,
+    "matched": 110,
+    "mismatches": [
+      {
+        "index": 73,
+        "actual": {
+          "name": "Response stream locked input",
+          "value": {}
+        },
+        "expected": {
+          "name": "Response stream locked input",
+          "error": {
+            "name": "TypeError",
+            "message": "Response body object should not be disturbed or locked",
+            "typeError": true
+          }
+        }
+      },
+      {
+        "index": 74,
+        "actual": {
+          "name": "Response stream disturbed input",
+          "value": {}
+        },
+        "expected": {
+          "name": "Response stream disturbed input",
+          "error": {
+            "name": "TypeError",
+            "message": "Response body object should not be disturbed or locked",
+            "typeError": true
+          }
+        }
+      },
+      {
+        "index": 89,
+        "actual": {
+          "name": "Response redirect invalid URL",
+          "error": {
+            "name": "TypeError",
+            "message": "Failed to parse URL from /relative",
+            "typeError": true,
+            "cause": {
+              "name": "TypeError",
+              "message": "Native URL: InvalidURL",
+              "code": "ERR_INVALID_URL"
+            }
+          }
+        },
+        "expected": {
+          "name": "Response redirect invalid URL",
+          "error": {
+            "name": "TypeError",
+            "message": "Failed to parse URL from /relative",
+            "typeError": true,
+            "cause": {
+              "name": "TypeError",
+              "message": "Invalid URL",
+              "code": "ERR_INVALID_URL"
+            }
+          }
+        }
+      },
+      {
+        "index": 91,
+        "actual": {
+          "name": "Response FormData actual multipart roundtrip",
+          "error": {
+            "name": "TypeError",
+            "message": "Native _Response: NativeWebMultipartEncodingUnavailable",
+            "typeError": true
+          }
+        },
+        "expected": {
+          "name": "Response FormData actual multipart roundtrip",
+          "value": {
+            "actualMultipart": true,
+            "entries": [
+              [
+                "a",
+                "one"
+              ],
+              [
+                "a",
+                "é"
+              ],
+              [
+                "file",
+                {
+                  "name": "sample.txt",
+                  "type": "text/plain",
+                  "size": 11,
+                  "text": "owned bytes"
+                }
+              ]
+            ],
+            "bodyUsed": true
+          }
+        }
+      }
+    ],
+    "passed": false
+  },
+  "full_body_qualified": false,
+  "full_pi_qualified": false,
+  "release": false,
+  "activation": false,
+  "source_original233_116_unsettled_negative_preserved": true,
+  "source_original233_232_optional_diagnostic_negative_preserved": true,
+  "engine_classifier_and_captureValue_semantics_unchanged": true,
+  "root_newer_interpreter_intake": "Apply additive ED69 span patch only; this isolated older Header base must not overwrite newer Root C/H or native async-generator support",
+  "phases": [
+    {
+      "scope": "compile",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 64128,
+      "created_utc": "2026-10-15T22:37:00.397909Z",
+      "completed_utc": "2026-10-15T23:37:49.5287942+01:00",
+      "owned_identity_absent": true,
+      "full_post_zero": true,
+      "counts": [
+        {
+          "manifest": "source5ab-full-manifest-20261015.json",
+          "count": 1967,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-build-all-original-oom-20261015-candidate.json",
+          "count": 6054,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-build-all-original-oom-20261015-vendor.json",
+          "count": 1316,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-build-all-original-oom-20261015-tools.json",
+          "count": 19546,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-build-all-original-oom-20261015-controls.json",
+          "count": 12,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-build-all-original-oom-20261015-authorities.json",
+          "count": 17,
+          "drift": 0
+        },
+        {
+          "manifest": "actual-Body176-Node369-entry-authority",
+          "count": 368,
+          "enumerated_entries": 369,
+          "undefined_configs_entries": 1,
+          "source_cases": 176,
+          "actual_gc_calls": 6,
+          "drift": 0
+        }
+      ],
+      "receipt_prefix": "web-response-debug-build-all-original-oom-20261015"
+    },
+    {
+      "scope": "oom",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 44520,
+      "created_utc": "2026-10-15T22:41:03.3080987Z",
+      "completed_utc": "2026-10-15T23:41:11.3555591+01:00",
+      "owned_identity_absent": true,
+      "full_post_zero": true,
+      "counts": [
+        {
+          "manifest": "source5ab-full-manifest-20261015.json",
+          "count": 1967,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-oom-original-oom-20261015-candidate.json",
+          "count": 6054,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-oom-original-oom-20261015-vendor.json",
+          "count": 1316,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-oom-original-oom-20261015-tools.json",
+          "count": 19546,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-oom-original-oom-20261015-controls.json",
+          "count": 12,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-oom-original-oom-20261015-authorities.json",
+          "count": 17,
+          "drift": 0
+        },
+        {
+          "manifest": "actual-Body176-Node369-entry-authority",
+          "count": 368,
+          "enumerated_entries": 369,
+          "undefined_configs_entries": 1,
+          "source_cases": 176,
+          "actual_gc_calls": 6,
+          "drift": 0
+        }
+      ],
+      "receipt_prefix": "web-response-debug-test-oom-original-oom-20261015"
+    },
+    {
+      "scope": "headers",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 51440,
+      "created_utc": "2026-10-15T22:42:33.5131386Z",
+      "completed_utc": "2026-10-15T23:42:41.0447235+01:00",
+      "owned_identity_absent": true,
+      "full_post_zero": true,
+      "counts": [
+        {
+          "manifest": "source5ab-full-manifest-20261015.json",
+          "count": 1967,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-headers-original-oom-20261015-candidate.json",
+          "count": 6054,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-headers-original-oom-20261015-vendor.json",
+          "count": 1316,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-headers-original-oom-20261015-tools.json",
+          "count": 19546,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-headers-original-oom-20261015-controls.json",
+          "count": 12,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-headers-original-oom-20261015-authorities.json",
+          "count": 17,
+          "drift": 0
+        },
+        {
+          "manifest": "actual-Body176-Node369-entry-authority",
+          "count": 368,
+          "enumerated_entries": 369,
+          "undefined_configs_entries": 1,
+          "source_cases": 176,
+          "actual_gc_calls": 6,
+          "drift": 0
+        }
+      ],
+      "receipt_prefix": "web-response-debug-test-headers-original-oom-20261015"
+    },
+    {
+      "scope": "stream-oom",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 63596,
+      "created_utc": "2026-10-15T22:43:51.3654802Z",
+      "completed_utc": "2026-10-15T23:43:59.013504+01:00",
+      "owned_identity_absent": true,
+      "full_post_zero": true,
+      "counts": [
+        {
+          "manifest": "source5ab-full-manifest-20261015.json",
+          "count": 1967,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-stream-oom-original-oom-20261015-candidate.json",
+          "count": 6054,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-stream-oom-original-oom-20261015-vendor.json",
+          "count": 1316,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-stream-oom-original-oom-20261015-tools.json",
+          "count": 19546,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-stream-oom-original-oom-20261015-controls.json",
+          "count": 12,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-stream-oom-original-oom-20261015-authorities.json",
+          "count": 17,
+          "drift": 0
+        },
+        {
+          "manifest": "actual-Body176-Node369-entry-authority",
+          "count": 368,
+          "enumerated_entries": 369,
+          "undefined_configs_entries": 1,
+          "source_cases": 176,
+          "actual_gc_calls": 6,
+          "drift": 0
+        }
+      ],
+      "receipt_prefix": "web-response-debug-test-stream-oom-original-oom-20261015"
+    },
+    {
+      "scope": "byte",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 75472,
+      "created_utc": "2026-10-15T22:45:00.7254754Z",
+      "completed_utc": "2026-10-15T23:45:07.2443812+01:00",
+      "owned_identity_absent": true,
+      "full_post_zero": true,
+      "counts": [
+        {
+          "manifest": "source5ab-full-manifest-20261015.json",
+          "count": 1967,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-byte-original-oom-20261015-candidate.json",
+          "count": 6054,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-byte-original-oom-20261015-vendor.json",
+          "count": 1316,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-byte-original-oom-20261015-tools.json",
+          "count": 19546,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-byte-original-oom-20261015-controls.json",
+          "count": 12,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-byte-original-oom-20261015-authorities.json",
+          "count": 17,
+          "drift": 0
+        },
+        {
+          "manifest": "actual-Body176-Node369-entry-authority",
+          "count": 368,
+          "enumerated_entries": 369,
+          "undefined_configs_entries": 1,
+          "source_cases": 176,
+          "actual_gc_calls": 6,
+          "drift": 0
+        }
+      ],
+      "receipt_prefix": "web-response-debug-test-byte-original-oom-20261015"
+    },
+    {
+      "scope": "transport",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 73840,
+      "created_utc": "2026-10-15T22:46:10.7910665Z",
+      "completed_utc": "2026-10-15T23:46:19.2305873+01:00",
+      "owned_identity_absent": true,
+      "full_post_zero": true,
+      "counts": [
+        {
+          "manifest": "source5ab-full-manifest-20261015.json",
+          "count": 1967,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-transport-original-oom-20261015-candidate.json",
+          "count": 6054,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-transport-original-oom-20261015-vendor.json",
+          "count": 1316,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-transport-original-oom-20261015-tools.json",
+          "count": 19546,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-transport-original-oom-20261015-controls.json",
+          "count": 12,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-transport-original-oom-20261015-authorities.json",
+          "count": 17,
+          "drift": 0
+        },
+        {
+          "manifest": "actual-Body176-Node369-entry-authority",
+          "count": 368,
+          "enumerated_entries": 369,
+          "undefined_configs_entries": 1,
+          "source_cases": 176,
+          "actual_gc_calls": 6,
+          "drift": 0
+        }
+      ],
+      "receipt_prefix": "web-response-debug-test-transport-original-oom-20261015"
+    },
+    {
+      "scope": "source",
+      "status": "failed",
+      "exit_code": 1,
+      "pid": 61396,
+      "created_utc": "2026-10-15T22:47:32.8454482Z",
+      "completed_utc": "2026-10-15T23:47:40.1628925+01:00",
+      "owned_identity_absent": true,
+      "full_post_zero": true,
+      "counts": [
+        {
+          "manifest": "source5ab-full-manifest-20261015.json",
+          "count": 1967,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "count": 1774,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-source-original-oom-20261015-candidate.json",
+          "count": 6054,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-source-original-oom-20261015-vendor.json",
+          "count": 1316,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-source-original-oom-20261015-tools.json",
+          "count": 19546,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-source-original-oom-20261015-controls.json",
+          "count": 12,
+          "drift": 0
+        },
+        {
+          "manifest": "web-response-debug-test-source-original-oom-20261015-authorities.json",
+          "count": 17,
+          "drift": 0
+        },
+        {
+          "manifest": "actual-Body176-Node369-entry-authority",
+          "count": 368,
+          "enumerated_entries": 369,
+          "undefined_configs_entries": 1,
+          "source_cases": 176,
+          "actual_gc_calls": 6,
+          "drift": 0
+        }
+      ],
+      "receipt_prefix": "web-response-debug-test-source-original-oom-20261015"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "pid": 65320,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "argv": [
+    "build",
+    "test-native-web-response-oom",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-web-response-oom -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+  "created_utc": "2026-10-15T21:49:52.1380805Z",
+  "launched_utc": "2026-10-15T21:49:52.1356065+00:00",
+  "working_directory": "C:/Users/adyba/pi-zig-web-response-qualification-20261015",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "failed",
+  "exit_code": 1,
+  "completed_utc": "2026-10-15T21:49:59.4373699+00:00",
+  "owned_identity_absent": true
+}

@@ -1,0 +1,19 @@
+{
+  "candidate_head": "f382ab078fed9dae5f0540bd8c0175db07da38d5",
+  "owner_script_sha256": "9EFEA1BA866E89755AB6F96393AB9DDA4840394337428F8C93FD8F987989BC4C",
+  "runner_sha256": "68E45DFEDDFFFA731FE6221788035FADA564B983B19EE5AFD521D5067DBC4120",
+  "compiler_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "frozen_registry_sha256": "D66721E9AC8E45B374384BBB04048E67B6FC427F93CFB5C2243090928E94A7E0",
+  "argv": [
+    "build",
+    "test-native-web-response-oom",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "launch_intent_utc": "2026-10-15T21:49:51.9501435+00:00"
+}
