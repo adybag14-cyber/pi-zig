@@ -154,7 +154,7 @@ fn headers(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !c.JSValue {
     }
     const result = try scope.object();
     try scope.put(result, "user-agent", try scope.text(@import("../ai/pi_user_agent.zig").value));
-    try scope.put(result, "accept", try scope.text("text/event-stream"));
+    try scope.put(result, "accept", try scope.text("*/*"));
     try scope.put(result, "content-type", try scope.text("application/json"));
     if (kind == .mistral) try scope.put(result, "authorization", try scope.concat(try scope.text("Bearer "), try scope.stringify(try scope.get(owner, "apiKey")))) else {
         const credentials = try scope.get(owner, "auth");
