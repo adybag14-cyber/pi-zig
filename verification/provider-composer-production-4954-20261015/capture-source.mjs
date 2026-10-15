@@ -1,0 +1,22 @@
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+import {resolve,dirname} from 'node:path';
+const root='C:/Users/adyba/pi-upstream-source-4954d76-20261015';
+const composer=await import(pathToFileURL(root+'/packages/coding-agent/src/core/provider-composer.ts'));
+const values=await import(pathToFileURL(root+'/packages/coding-agent/src/core/resolve-config-value.ts'));
+const {ModelConfig}=await import(pathToFileURL(root+'/packages/coding-agent/src/core/model-config.ts'));
+const {openaiProvider}=await import(pathToFileURL(root+'/packages/ai/src/providers/openai.ts'));
+const {defaultProviderAuthContext}=await import(pathToFileURL(root+'/packages/ai/src/auth/context.ts'));
+const output=resolve(process.argv[2]),inputPath=resolve(process.argv[3]);
+mkdirSync(dirname(output),{recursive:true});
+const configPath=resolve(dirname(output),'models.json');
+writeFileSync(configPath,JSON.stringify({providers:{openai:{name:'Configured OpenAI',baseUrl:'https://configured.invalid/v1',apiKey:'$PI_COMPOSER_A',authHeader:true,headers:{Provider:'$PI_COMPOSER_B',Shared:'provider'},compat:{chatTemplateKwargs:{base:true}},models:[{id:'owned-composer',api:'openai-responses',headers:{Definition:'$PI_COMPOSER_A',Shared:'definition'},contextWindow:1000,maxTokens:200}],modelOverrides:{'owned-composer':{name:'User override',reasoning:true,cost:{input:0.25},inputLimits:{images:{resize:{maxWidth:200}}},samplingParamsByThinkingLevel:{high:{temperature:0.2}},headers:{Override:'$PI_COMPOSER_B',Shared:'override'},compat:{chatTemplateKwargs:{override:true}}}}}}}));
+const envNames=['PI_COMPOSER_A','PI_COMPOSER_B','PI_COMPOSER_MISSING','PI_COMPOSER_OTHER'];const saved=envNames.map(n=>[n,process.env[n]]);
+process.env.PI_COMPOSER_A='source-A';process.env.PI_COMPOSER_B='source-B';delete process.env.PI_COMPOSER_MISSING;delete process.env.PI_COMPOSER_OTHER;
+globalThis.composerAPI={composer,values,ModelConfig,openaiProvider,defaultProviderAuthContext,configPath};
+const input=readFileSync(inputPath);let timer;
+try{await Promise.race([import('data:text/javascript,'+encodeURIComponent(input.toString('utf8'))),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Composer Source28 15s settle deadline')),15000)})]);}finally{clearTimeout(timer);for(const [n,v]of saved){if(v===undefined)delete process.env[n];else process.env[n]=v;}}
+const errors=new Set(['or-throw-one-missing','or-throw-two-missing','or-throw-command-failed','headers-throw-missing','validate-stream-api-required','validate-model-baseurl-required','validate-model-api-required','structural-config-error']);
+if(composerRows.length!==28)throw Error('Expected Source28');for(const row of composerRows)if(Boolean(row.error)!==errors.has(row.name))throw Error('Unexpected Source outcome '+JSON.stringify(row));
+writeFileSync(output,JSON.stringify({sourceHead:'4954d760504c11df9b2cbdc040346107b6a8153d',inputSha256:createHash('sha256').update(input).digest('hex'),cases:composerRows.length,scope:'Original complete composer/config-value namespaces with actual ModelConfig, actual OpenAI factory/auth/context. Source-only. No provider network calls or native qualification.',rows:composerRows},null,2));
