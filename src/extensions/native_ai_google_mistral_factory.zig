@@ -253,7 +253,8 @@ fn open(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
         }
     }
     const prepared = try scope.get(owner, "mistralPrepared");
-    const fields_object = if (kind == .mistral) try scope.invoke(try scope.global("Object"), "fromEntries", &.{try scope.invoke(try scope.get(try scope.get(prepared, "init"), "headers"), "entries", &.{})}) else try scope.get(owner, "googleHeaders");
+    const actual_headers = if (kind == .mistral) try scope.get(try scope.get(prepared, "init"), "headers") else try scope.own(try v.js.builtin(engine, "Headers", &.{try scope.get(owner, "googleHeaders")}));
+    const fields_object = try scope.invoke(try scope.global("Object"), "fromEntries", &.{try scope.invoke(actual_headers, "entries", &.{})});
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
         for (fields.items) |field| {
