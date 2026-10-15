@@ -1,0 +1,66 @@
+const rows=[];
+function record(name,run){try{rows.push({name,value:run()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}}
+function graph(root){
+  const seen=new Map();let next=0;
+  function encode(value){
+    if(value===undefined)return{$undefined:true};
+    if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+    if(typeof value==='number')return Number.isFinite(value)?value:{$number:String(value)};
+    if(typeof value==='function')return{$function:{name:value.name,length:value.length,keys:Reflect.ownKeys(value).map(String),prototype:Object.hasOwn(value,'prototype')}};
+    if(typeof value!=='object')return{$other:typeof value,value:String(value)};
+    if(seen.has(value))return{$ref:seen.get(value)};
+    const id=next++;seen.set(value,id);
+    if(value instanceof RegExp)return{$id:id,$regexp:value.source,flags:value.flags,lastIndex:value.lastIndex,frozen:Object.isFrozen(value)};
+    return{$id:id,kind:Array.isArray(value)?'array':'object',frozen:Object.isFrozen(value),properties:Reflect.ownKeys(value).map(key=>{
+      const d=Object.getOwnPropertyDescriptor(value,key);return{key:String(key),enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,value:encode(d.value)}:{get:encode(d.get),set:encode(d.set)})};
+    })};
+  }
+  return encode(root);
+}
+const names=['1c','ada','arduino','asciidoc','autoit','c-like','coffeescript','crystal','d','fortran','gauss','glsl','gml','handlebars','htmlbars','irpf90','isbl','julia','latex','less'];
+record('actual batch9 twenty factory metadata',()=>names.map(name=>{const fn=highlightLazyFactories[name];return{name,metadata:{name:fn.name,length:fn.length,keys:Reflect.ownKeys(fn).map(String),prototype:Object.hasOwn(fn,'prototype')}}}));
+for(const name of names)record(name+' complete raw grammar graph',()=>graph(highlightLazyFactories[name](highlightCoreAPI)));
+for(const name of names)record(name+' actual live helper getter order',()=>{
+ const trace=[];const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){trace.push(String(key));return Reflect.get(target,key,receiver)}});
+ return{graph:graph(highlightLazyFactories[name](api)),trace};
+});
+for(const name of names)record(name+' actual throwing helper or helper-free factory',()=>{
+ const api=new Proxy(highlightCoreAPI,{get(){throw new TypeError('actual batch9 getter rejected '+name)}});
+ return graph(highlightLazyFactories[name](api));
+});
+for(const name of names)highlightCoreAPI.registerLanguage(name,highlightLazyFactories[name]);
+const samples={
+ '1c':['Процедура Привет(Знач Имя)\nСообщить("Привет " + Имя);\nКонецПроцедуры\n','#Если Клиент Тогда\n// TODO: 1C\nДата = \'20261015\';\n#КонецЕсли\n'],
+ ada:['procedure Hello is\nbegin\n Put_Line("Hello");\nend Hello;\n','-- TODO: Ada\nValue : Integer := 16#FF#;\nReady : Boolean := True;\n'],
+ arduino:['void setup() { pinMode(LED_BUILTIN, OUTPUT); }\nvoid loop() { digitalWrite(LED_BUILTIN, HIGH); delay(1000); }\n','#include <Arduino.h>\n// TODO: sensor\nString text = "hello"; Serial.println(text);\n'],
+ asciidoc:['= Document\n\n== Section\n*bold* _emphasis_ `code`\n','NOTE: read this\n\n[source,java]\n----\nint value = 42;\n----\nhttps://example.com[Example]\n'],
+ autoit:['#include <MsgBoxConstants.au3>\nLocal $value = 42\nMsgBox($MB_OK, "Title", $value)\n','; TODO: automation\nFunc Square($x)\n Return $x * $x\nEndFunc\n'],
+ 'c-like':['int main(void) { return 42; }\n','template<typename T> T square(T value) { return value * value; }\n// TODO: legacy\n'],
+ coffeescript:['square = (x) -> x * x\nconsole.log square 42\n','class Item extends Base\n constructor: (@name) ->\n value: "hello #{@name}"\n### TODO: block ###\n'],
+ crystal:['def square(value : Int32)\n value * value\nend\n','class Item\n getter name : String\n def initialize(@name)\n end\nend\nputs "Hello #{name}"\n'],
+ d:['module demo;\nimport std.stdio;\nvoid main() { writeln("hello"); }\n','/+ outer /+ inner +/ comment +/\nauto value = 0xFFu;\nauto text = q{ nested { braces } };\n'],
+ fortran:['program hello\n print *, "hello"\nend program hello\n','! TODO: science\nreal(kind=8) :: value = 1.25d+3_8\nC = 42\n'],
+ gauss:['proc square(x);\n retp(x*x);\nendp;\n','// TODO: matrix\nnew;\nlet x = 1 2 3;\nprint sqrt(x);\n'],
+ glsl:['#version 330 core\nlayout(location=0) in vec3 position;\nvoid main() { gl_Position = vec4(position, 1.0); }\n','uniform sampler2D texture0;\n// TODO: fragment\nvec4 color = texture(texture0, uv);\n'],
+ gml:['var value = 42;\nif (keyboard_check(vk_space)) { instance_create_layer(x, y, "Instances", obj_player); }\n','// TODO: game\ndraw_text(x, y, "hello");\nimage_angle += 1;\n'],
+ handlebars:['<h1>{{title}}</h1>\n{{#each items}}{{name}}{{/each}}\n','{{! TODO: template }}\n{{#if ready}}{{helper (lookup item "name")}}{{else}}waiting{{/if}}\n'],
+ htmlbars:['<div>{{component-name value=model}}</div>\n','{{#each items as |item index|}}<p>{{item.name}}</p>{{/each}}\n'],
+ irpf90:['BEGIN_PROVIDER [ double precision, energy ]\n energy = 1.0d0\nEND_PROVIDER\n','! TODO: provider\nsubroutine square(x)\n implicit none\n real :: x\nend\n'],
+ isbl:['если True\n Result = CreateObject("Demo")\nконецесли\n','// TODO: DIRECTUM\nforeach Item in List\n MessageBox(Item)\nendforeach\n'],
+ julia:['function square(x)\n x * x\nend\nprintln(square(42))\n','# TODO: Julia\nstruct Item\n name::String\nend\nvalue = "hello $name"\n'],
+ latex:['\\documentclass{article}\n\\begin{document}\nHello \\textbf{world}. $x^2$\n\\end{document}\n','% TODO: TeX\n\\verb|literal|\n\\begin{verbatim}\n{raw} $text$\n\\end{verbatim}\n'],
+ less:['@color: #f00;\n.box { color: @color; &:hover { opacity: .5; } }\n','// TODO: style\n.rounded(@r: 5px) { border-radius: @r; }\n@media screen and (min-width: 600px) { #main { .rounded(10px); } }\n']
+};
+for(const[name,codes]of Object.entries(samples))for(const[index,code]of codes.entries())record(name+' actual scanner '+index,()=>{
+ const result=highlightCoreAPI.highlight(code,{language:name,ignoreIllegals:false});return{language:result.language,relevance:result.relevance,illegal:result.illegal,value:result.value,code:result.code,tree:JSON.parse(result.emitter.toJSON()),errorRaised:result.errorRaised?{name:result.errorRaised.name,message:result.errorRaised.message}:undefined};
+});
+record('actual batch9 canonical registration and aliases',()=>({registry:highlightCoreAPI.listLanguages(),aliases:[['ino','arduino'],['coffee','coffeescript'],['cr','crystal'],['f90','fortran'],['f95','fortran'],['hbs','handlebars'],['tex','latex']].map(([alias,name])=>({alias,name,same:highlightCoreAPI.getLanguage(alias)===highlightCoreAPI.getLanguage(name)}))}));
+record('actual c-like conditional alias registration',()=>[[],['c'],['cpp'],['c','cpp']].map(loaded=>{const api=Object.create(highlightCoreAPI);api.getLanguage=name=>loaded.includes(name)?{}:undefined;const g=highlightLazyFactories['c-like'](api);return{loaded,aliases:g.aliases,disableAutodetect:g.disableAutodetect}}));
+record('actual HTMLbars conditional autodetection',()=>[false,true].map(loaded=>{const api=Object.create(highlightCoreAPI);api.getLanguage=()=>loaded?{}:undefined;const g=highlightLazyFactories.htmlbars(api);return{loaded,name:g.name,disableAutodetect:g.disableAutodetect}}));
+record('actual asciidoc spread iterator calls',()=>{const trace=[],original=Array.prototype[Symbol.iterator],push=Array.prototype.push;Array.prototype[Symbol.iterator]=function(){Reflect.apply(push,trace,[this.length]);return Reflect.apply(original,this,[])};let grammar;try{grammar=highlightLazyFactories.asciidoc(highlightCoreAPI)}finally{Array.prototype[Symbol.iterator]=original}return{trace,graph:graph(grammar)}});
+record('actual Fortran regex helper live map join order',()=>{const trace=[],map=Array.prototype.map,join=Array.prototype.join,push=Array.prototype.push;Array.prototype.map=function(fn,...args){Reflect.apply(push,trace,[['map',this.length,fn.name,fn.length,Object.hasOwn(fn,'prototype')]]);return Reflect.apply(map,this,[fn,...args])};Array.prototype.join=function(...args){Reflect.apply(push,trace,[['join',this.length,args[0]]]);return Reflect.apply(join,this,args)};let grammar;try{grammar=highlightLazyFactories.fortran(highlightCoreAPI)}finally{Array.prototype.map=map;Array.prototype.join=join}return{trace,graph:graph(grammar)}});
+record('actual LaTeX map callback metadata and iterator order',()=>{const trace=[],map=Array.prototype.map,iterator=Array.prototype[Symbol.iterator],push=Array.prototype.push;Array.prototype.map=function(fn,...args){Reflect.apply(push,trace,[['map',this.length,fn.name,fn.length,Object.hasOwn(fn,'prototype')]]);return Reflect.apply(map,this,[fn,...args])};Array.prototype[Symbol.iterator]=function(){Reflect.apply(push,trace,[['iterator',this.length]]);return Reflect.apply(iterator,this,[])};let grammar;try{grammar=highlightLazyFactories.latex(highlightCoreAPI)}finally{Array.prototype.map=map;Array.prototype[Symbol.iterator]=iterator}return{trace,graph:graph(grammar)}});
+record('actual CoffeeScript module arrays remain shared between factory calls',()=>{const calls=[],concat=Array.prototype.concat,push=Array.prototype.push;Array.prototype.concat=function(...args){Reflect.apply(push,calls,[this]);return Reflect.apply(concat,this,args)};let first,second;try{first=highlightLazyFactories.coffeescript(highlightCoreAPI);const split=calls.length;second=highlightLazyFactories.coffeescript(highlightCoreAPI);return{split,total:calls.length,firstReceiverShared:calls[0]===calls[split],keywordsEqual:JSON.stringify(first.keywords)===JSON.stringify(second.keywords)}}finally{Array.prototype.concat=concat}});
+record('actual Less module selector arrays remain shared between factory calls',()=>{const calls=[],join=Array.prototype.join,push=Array.prototype.push;Array.prototype.join=function(...args){Reflect.apply(push,calls,[this]);return Reflect.apply(join,this,args)};try{highlightLazyFactories.less(highlightCoreAPI);const split=calls.length;highlightLazyFactories.less(highlightCoreAPI);return{split,total:calls.length,shared:calls.slice(0,split).map((receiver,i)=>receiver===calls[split+i])}}finally{Array.prototype.join=join}});
+if(rows.length!==109)throw Error('Actual lazy batch9 corpus count '+rows.length);
+globalThis.sdkHighlightLazyBatch9Rows=rows;

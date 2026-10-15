@@ -611,6 +611,7 @@ struct JSContext {
     JSValue async_iterator_proto;
     JSValue array_proto_values;
     JSValue throw_type_error;
+    JSValue pi_legacy_arguments_poison; /* private Source host helper only */
     JSValue eval_obj;
 
     JSValue global_obj; /* global object */
@@ -2958,6 +2959,7 @@ JSContext *JS_NewContextRaw(JSRuntime *rt)
     ctx->error_back_trace = JS_UNDEFINED;
     ctx->error_prepare_stack = JS_UNDEFINED;
     ctx->error_stack_trace_limit = js_int32(10);
+    ctx->pi_legacy_arguments_poison = JS_UNDEFINED;
     init_list_head(&ctx->loaded_modules);
     // TODO(bnoordhuis) use getrandom() etc.
     ctx->random_state = rt->pi_deterministic_time
@@ -3113,6 +3115,7 @@ static void JS_MarkContext(JSRuntime *rt, JSContext *ctx,
     JS_MarkValue(rt, ctx->global_var_obj, mark_func);
 
     JS_MarkValue(rt, ctx->throw_type_error, mark_func);
+    JS_MarkValue(rt, ctx->pi_legacy_arguments_poison, mark_func);
     JS_MarkValue(rt, ctx->eval_obj, mark_func);
 
     JS_MarkValue(rt, ctx->array_proto_values, mark_func);
@@ -3197,6 +3200,7 @@ void JS_FreeContext(JSContext *ctx)
     JS_FreeValue(ctx, ctx->global_var_obj);
 
     JS_FreeValue(ctx, ctx->throw_type_error);
+    JS_FreeValue(ctx, ctx->pi_legacy_arguments_poison);
     JS_FreeValue(ctx, ctx->eval_obj);
 
     JS_FreeValue(ctx, ctx->array_proto_values);
@@ -16970,6 +16974,92 @@ static JSValue js_build_arguments(JSContext *ctx, int argc, JSValueConst *argv)
     return JS_EXCEPTION;
 }
 
+/* Pi private legacy-function draft. Existing VM poison/opcodes stay unchanged. */
+static JSValue pi_legacy_arguments_poison(JSContext *ctx,
+                                        JSValueConst this_val,
+                                        int argc, JSValueConst *argv)
+{
+    (void)this_val;
+    (void)argc;
+    (void)argv;
+    return JS_ThrowTypeError(ctx, "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them");
+}
+
+/* Borrow argv; return a fresh owned actual unmapped Arguments value. */
+JSValue JS_PiUnmappedArguments(JSContext *ctx, int argc,
+                              JSValueConst *argv)
+{
+    JSValue value = js_build_arguments(ctx, argc, argv);
+    JSValue poison;
+    JSProperty *property;
+    JSShapeProperty *shape;
+    if (JS_IsException(value))
+        return value;
+    if (JS_IsUndefined(ctx->pi_legacy_arguments_poison)) {
+        poison = JS_NewCFunction(ctx, pi_legacy_arguments_poison, "", 0);
+        if (JS_IsException(poison)) {
+            JS_FreeValue(ctx, value);
+            return poison;
+        }
+        /* Publish only after all immutable Source descriptors are complete. */
+        if (JS_DefineProperty(ctx, poison, JS_ATOM_length, JS_UNDEFINED,
+                              JS_UNDEFINED, JS_UNDEFINED,
+                              JS_PROP_HAS_CONFIGURABLE | JS_PROP_THROW) < 0 ||
+            JS_DefineProperty(ctx, poison, JS_ATOM_name, JS_UNDEFINED,
+                              JS_UNDEFINED, JS_UNDEFINED,
+                              JS_PROP_HAS_CONFIGURABLE | JS_PROP_THROW) < 0 ||
+            JS_PreventExtensions(ctx, poison) < 0) {
+            JS_FreeValue(ctx, poison);
+            JS_FreeValue(ctx, value);
+            return JS_EXCEPTION;
+        }
+        ctx->pi_legacy_arguments_poison = poison;
+    }
+    poison = JS_DupValue(ctx, ctx->pi_legacy_arguments_poison);
+    /* Only this newly owned value receives the Source host diagnostic. */
+    shape = find_own_property(&property, JS_VALUE_GET_OBJ(value), JS_ATOM_callee);
+    assert(shape && (shape->flags & JS_PROP_TMASK) == JS_PROP_GETSET);
+    JS_FreeValue(ctx, JS_MKPTR(JS_TAG_OBJECT, property->u.getset.getter));
+    JS_FreeValue(ctx, JS_MKPTR(JS_TAG_OBJECT, property->u.getset.setter));
+    property->u.getset.getter = JS_VALUE_GET_OBJ(poison);
+    property->u.getset.setter = JS_VALUE_GET_OBJ(JS_DupValue(ctx, poison));
+    return value;
+}
+
+static JSValue js_function_call(JSContext *ctx, JSValueConst this_val,
+                               int argc, JSValueConst *argv);
+static JSValue js_reflect_apply(JSContext *ctx, JSValueConst this_val,
+                               int argc, JSValueConst *argv);
+static JSValue js_reflect_construct(JSContext *ctx, JSValueConst this_val,
+                                   int argc, JSValueConst *argv);
+
+/* Read-only Source host caller observation. Skip only the three explicit
+ * forwarding builtins; an ordinary native callback boundary yields null. */
+JSValue JS_PiObserveCallFrame(JSContext *ctx, uintptr_t *identity)
+{
+    JSStackFrame *frame = ctx->rt->current_stack_frame;
+    while (frame && JS_IsObject(frame->cur_func)) {
+        JSObject *function = JS_VALUE_GET_OBJ(frame->cur_func);
+        bool forwarding = false;
+        if (function->class_id == JS_CLASS_C_FUNCTION) {
+            if (function->u.cfunc.cproto == JS_CFUNC_generic)
+                forwarding = function->u.cfunc.c_function.generic == js_function_call ||
+                    function->u.cfunc.c_function.generic == js_reflect_apply ||
+                    function->u.cfunc.c_function.generic == js_reflect_construct;
+            else if (function->u.cfunc.cproto == JS_CFUNC_generic_magic)
+                forwarding = function->u.cfunc.c_function.generic_magic == js_function_apply;
+        }
+        if (!forwarding)
+            break;
+        frame = frame->prev_frame;
+    }
+    *identity = (uintptr_t)frame;
+    if (!frame || frame->is_strict_mode ||
+        !JS_GetFunctionBytecode(frame->cur_func))
+        return JS_NULL;
+    return JS_DupValue(ctx, frame->cur_func);
+}
+
 #define GLOBAL_VAR_OFFSET 0x40000000
 #define ARGUMENT_VAR_OFFSET 0x20000000
 
@@ -18353,10 +18443,34 @@ static bool needs_backtrace(JSValue exc)
     return can_store_error_stack(exc) || can_add_backtrace(exc);
 }
 
-/* argv[] is modified if (flags & JS_CALL_FLAG_COPY_ARGV) = 0. */
+/* Keep native class calls out of the bytecode interpreter's large C frame.
+ * Poll once, before inspecting the target, as the original entry did. */
+static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst func_obj,
+                                       JSValueConst this_obj, JSValueConst new_target,
+                                       int argc, JSValueConst *argv, int flags);
+
 static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
                                JSValueConst this_obj, JSValueConst new_target,
                                int argc, JSValueConst *argv, int flags)
+{
+    if (js_poll_interrupts(caller_ctx))
+        return JS_EXCEPTION;
+    if (JS_VALUE_GET_TAG(func_obj) == JS_TAG_OBJECT) {
+        JSObject *p = JS_VALUE_GET_OBJ(func_obj);
+        if (unlikely(p->class_id != JS_CLASS_BYTECODE_FUNCTION)) {
+            JSClassCall *call_func = caller_ctx->rt->class_array[p->class_id].call;
+            if (!call_func)
+                return JS_ThrowTypeErrorNotAFunction(caller_ctx);
+            return call_func(caller_ctx, func_obj, this_obj, argc, argv, flags);
+        }
+    }
+    return JS_CallBytecode(caller_ctx, func_obj, this_obj, new_target, argc, argv, flags);
+}
+
+/* argv[] is modified if (flags & JS_CALL_FLAG_COPY_ARGV) = 0. */
+static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst func_obj,
+                                       JSValueConst this_obj, JSValueConst new_target,
+                                       int argc, JSValueConst *argv, int flags)
 {
     JSRuntime *rt = caller_ctx->rt;
     JSContext *ctx;
@@ -18394,8 +18508,6 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
 #define BREAK           SWITCH(pc)
 #endif
 
-    if (js_poll_interrupts(caller_ctx))
-        return JS_EXCEPTION;
     if (unlikely(JS_VALUE_GET_TAG(func_obj) != JS_TAG_OBJECT)) {
         if (flags & JS_CALL_FLAG_GENERATOR) {
             JSAsyncFunctionState *s = JS_VALUE_GET_PTR(func_obj);
@@ -18419,20 +18531,10 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
             else
                 goto restart;
         } else {
-            goto not_a_function;
+            return JS_ThrowTypeErrorNotAFunction(caller_ctx);
         }
     }
     p = JS_VALUE_GET_OBJ(func_obj);
-    if (unlikely(p->class_id != JS_CLASS_BYTECODE_FUNCTION)) {
-        JSClassCall *call_func;
-        call_func = rt->class_array[p->class_id].call;
-        if (!call_func) {
-        not_a_function:
-            return JS_ThrowTypeErrorNotAFunction(caller_ctx);
-        }
-        return call_func(caller_ctx, func_obj, this_obj, argc,
-                         argv, flags);
-    }
     b = p->u.func.function_bytecode;
 
     if (unlikely(argc < b->arg_count || (flags & JS_CALL_FLAG_COPY_ARGV))) {

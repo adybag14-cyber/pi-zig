@@ -1,0 +1,61 @@
+//! Actual highlight.js 10.7.3 static keyword inputs; native factory follows.
+const b = @import("native_highlight_lazy_batch3_values.zig");
+pub fn create(e: *b.Engine) !b.c.JSValue {
+    return b.factory(e, "oxygene", build);
+}
+pub fn build(e: *b.Engine, h: b.c.JSValue) !b.c.JSValue {
+    var s: b.Scope = .{ .engine = e };
+    defer s.deinit();
+    const kw = try s.object();
+    try s.put(kw, "$pattern", try b.rx(&s, "\\.?\\w+"));
+    try s.put(kw, "keyword", try s.text(source_keyword));
+    const cf = try s.get(h, "COMMENT");
+    const cb = try b.rx(&s, "\\{");
+    const ce = try b.rx(&s, "\\}");
+    const co = try s.object();
+    try s.put(co, "relevance", b.c.JS_NewInt32(e.context, 0));
+    const curly = try s.call(cf, h, &.{ cb, ce, co });
+    const pf = try s.get(h, "COMMENT");
+    const pb = try s.text("\\(\\*");
+    const pe = try s.text("\\*\\)");
+    const po = try s.object();
+    try s.put(po, "relevance", b.c.JS_NewInt32(e.context, 10));
+    const paren = try s.call(pf, h, &.{ pb, pe, po });
+    const str = try b.mode(&s, "string");
+    try s.put(str, "begin", try s.text("'"));
+    try s.put(str, "end", try s.text("'"));
+    const escaped = try s.object();
+    try s.put(escaped, "begin", try s.text("''"));
+    try s.put(str, "contains", try b.list(&s, &.{escaped}));
+    const char = try b.mode(&s, "string");
+    try s.put(char, "begin", try s.text("(#\\d+)+"));
+    const fun = try b.mode(&s, "function");
+    try s.put(fun, "beginKeywords", try s.text("function constructor destructor procedure method"));
+    try s.put(fun, "end", try s.text("[:;]"));
+    try s.put(fun, "keywords", try s.text("function constructor|10 destructor|10 procedure|10 method|10"));
+    const fc = try b.list(&s, &.{try s.get(h, "TITLE_MODE")});
+    const params = try b.mode(&s, "params");
+    try s.put(params, "begin", try s.text("\\("));
+    try s.put(params, "end", try s.text("\\)"));
+    try s.put(params, "keywords", kw);
+    try s.put(params, "contains", try b.list(&s, &.{ str, char }));
+    try s.index(fc, 1, params);
+    try s.index(fc, 2, curly);
+    try s.index(fc, 3, paren);
+    try s.put(fun, "contains", fc);
+    const l = try s.object();
+    try s.put(l, "name", try s.text("Oxygene"));
+    try s.put(l, "case_insensitive", b.boolean(&s, true));
+    try s.put(l, "keywords", kw);
+    try s.put(l, "illegal", try s.text("(\"|\\$[G-Zg-z]|\\/\\*|</|=>|->)"));
+    const a = try b.list(&s, &.{ curly, paren, try s.get(h, "C_LINE_COMMENT_MODE"), str, char, try s.get(h, "NUMBER_MODE"), fun });
+    const cls = try b.mode(&s, "class");
+    try s.put(cls, "begin", try s.text("=\\bclass\\b"));
+    try s.put(cls, "end", try s.text("end;"));
+    try s.put(cls, "keywords", kw);
+    try s.put(cls, "contains", try b.list(&s, &.{ str, char, curly, paren, try s.get(h, "C_LINE_COMMENT_MODE"), fun }));
+    try s.index(a, 7, cls);
+    try s.put(l, "contains", a);
+    return b.c.JS_DupValue(e.context, l);
+}
+const source_keyword = "abstract add and array as asc aspect assembly async begin break block by case class concat const copy constructor continue create default delegate desc distinct div do downto dynamic each else empty end ensure enum equals event except exit extension external false final finalize finalizer finally flags for forward from function future global group has if implementation implements implies in index inherited inline interface into invariants is iterator join locked locking loop matching method mod module namespace nested new nil not notify nullable of old on operator or order out override parallel params partial pinned private procedure property protected public queryable raise read readonly record reintroduce remove repeat require result reverse sealed select self sequence set shl shr skip static step soft take then to true try tuple type union unit unsafe until uses using var virtual raises volatile where while with write xor yield await mapped deprecated stdcall cdecl pascal register safecall overload library platform reference packed strict published autoreleasepool selector strong weak unretained";
