@@ -62,8 +62,12 @@ fn methodCall(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: 
     };
 }
 pub fn install(engine: *em.Engine, exports: c.JSValue, cache: c.JSValue) !void {
-    var data = [_]c.JSValue{cache};
-    try js.define(engine, exports, "createProvider", try engine.checked(c.JS_NewCFunctionData2(engine.context, construct, "createProvider", 1, 0, data.len, &data)));
+    const Factory = struct {
+        fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            return create(host, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined());
+        }
+    };
+    try js.define(engine, exports, "createProvider", try functions.create(engine, "createProvider", 1, Factory.call, &.{cache}));
 }
 fn construct(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);

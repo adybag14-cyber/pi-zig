@@ -271,6 +271,24 @@ fn typeCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.J
 }
 
 pub fn populateExports(engine: *engine_mod.Engine, exports: c.JSValue) !void {
+    const initialized = if (engine.native_models_core_namespace) |value| c.JS_DupValue(engine.context, value) else initialize: {
+        const value = try engine.checked(c.JS_NewObject(engine.context));
+        errdefer engine.freeValue(value);
+        try populateModule(engine, value);
+        engine.native_models_core_namespace = c.JS_DupValue(engine.context, value);
+        break :initialize value;
+    };
+    defer engine.freeValue(initialized);
+    var names: [*c]c.JSPropertyEnum = null;
+    var count: u32 = 0;
+    if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, initialized, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+    defer c.JS_FreePropertyEnum(engine.context, names, count);
+    for (names[0..count]) |entry| {
+        const value = try engine.checked(c.JS_GetProperty(engine.context, initialized, entry.atom));
+        if (c.JS_DefinePropertyValue(engine.context, exports, entry.atom, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    }
+}
+fn populateModule(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try @import("native_models_store.zig").install(engine, exports);
     try @import("native_credentials_store.zig").install(engine, exports);
     if (engine.abort_signal_class == 0) try abort_signal.install(engine);
@@ -302,11 +320,17 @@ pub fn populateExports(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try put(engine, cache, "models_error_prototype", try get(engine, models_error, "prototype"));
     try put(engine, cache, "models_error_constructor", c.JS_DupValue(engine.context, models_error));
     try put(engine, exports, "ModelsError", c.JS_DupValue(engine.context, models_error));
-    var data = [_]c.JSValue{cache};
-    try put(engine, exports, "createModels", try engine.checked(c.JS_NewCFunctionData2(engine.context, createCallback, "createModels", 1, 0, 1, &data)));
-    try put(engine, exports, "getModelType", try engine.checked(c.pi_js_function_magic(engine.context, typeCallback, "getModelType", 1, 0)));
-    try put(engine, exports, "isModelType", try engine.checked(c.pi_js_function_magic(engine.context, typeCallback, "isModelType", 2, 1)));
+    const Create = struct {
+        fn call(host: *engine_mod.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            return create(host, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined());
+        }
+    };
+    try put(engine, exports, "createModels", try @import("native_node_function.zig").create(engine, "createModels", 1, Create.call, &.{cache}));
+    const operations = try @import("native_ai_model_operations.zig").create(engine, models_error);
+    defer engine.freeValue(operations);
+    inline for (.{ "getModelType", "isModelType" }) |name| try put(engine, exports, name, try get(engine, operations, name));
     try @import("native_provider_factory.zig").install(engine, exports, cache);
+    engine.native_ai_model_operations_namespace = c.JS_DupValue(engine.context, operations);
 }
 
 // Availability is completed by native Promise callbacks, never by blocking a
@@ -872,6 +896,36 @@ test "native Models typed catalogs preserve identity order availability filterin
     defer engine.gpa.free(text);
     try std.testing.expectEqualStrings("native-models-ok", text);
     c.JS_RunGC(engine.runtime);
+}
+
+test "native public Models exports share lexical constructors and callbacks across graph installation and GC" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const first = try newObject(engine);
+    defer engine.freeValue(first);
+    try populateExports(engine, first);
+    try engine.registerValueModule("native:first-models-exports", first);
+    c.JS_RunGC(engine.runtime);
+    const second = try @import("native_ai_models_namespace.zig").create(engine);
+    defer engine.freeValue(second);
+    inline for (.{ "ModelsError", "createModels", "createProvider", "getModelType", "isModelType" }) |name| {
+        const left = try get(engine, first, name);
+        defer engine.freeValue(left);
+        const right = try get(engine, second, name);
+        defer engine.freeValue(right);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, left, right));
+    }
+    const operations = try @import("native_ai_models_namespace.zig").operations(engine);
+    defer engine.freeValue(operations);
+    try engine.registerValueModule("native:actual-model-operations", operations);
+    const pending = try engine.evalModule(
+        \\import {ModelsError} from 'native:first-models-exports';import {assertChatModel} from 'native:actual-model-operations';
+        \\let actual;try{assertChatModel({type:'image',provider:'owned',id:'owned'})}catch(error){actual=error}
+        \\if(!(actual instanceof ModelsError)||actual.constructor!==ModelsError)throw Error('Shared lexical ModelsError family');
+    , "native-shared-model-error-family.mjs");
+    defer engine.freeValue(pending);
+    const settled = try engine.awaitValue(pending);
+    engine.freeValue(settled);
 }
 
 test "native Models installation catalog async queries and signal ownership release every failed host allocation" {
