@@ -14,7 +14,7 @@ const server=createServer(async(req,res)=>{
   if(url.pathname==='/binary'){res.setHeader('Content-Type','application/octet-stream');res.end(Buffer.from([0,65,128,255,13,10]));return}
   if(url.pathname==='/error'){res.writeHead(403,{'Content-Type':'application/json'});res.end('{"error":{"type":"permission","message":"denied"}}');return}
   if(url.pathname==='/cookies'){res.setHeader('Set-Cookie',['one=1; Expires=Wed, 21 Oct 2026 07:28:00 GMT','two=2']);res.setHeader('X-Duplicate',['one','two']);res.end('cookies');return}
-  if(url.pathname==='/latin1'){res.writeHead(201,'Cr\xe9\xe9',{'X-Latin1':'caf\xe9','__proto__':'own','constructor':'wire'});res.end('latin1');return}
+  if(url.pathname==='/latin1'){res.setHeader('__proto__','own');res.writeHead(201,'Cr\xe9\xe9',{'X-Latin1':'caf\xe9','constructor':'wire'});res.end('latin1');return}
   if(url.pathname==='/redirect'){res.writeHead(302,{Location:'/json'});res.end();return}
   if(url.pathname==='/null204'){res.writeHead(204);res.end();return}
   if(url.pathname==='/empty'){res.writeHead(200);res.end();return}
