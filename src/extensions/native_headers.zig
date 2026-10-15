@@ -310,6 +310,8 @@ fn operate(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const c
 }
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const result = operate(&scope, captures[0], receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, @enumFromInt(magic)) catch |err| {
@@ -320,6 +322,8 @@ fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]
     return c.JS_DupValue(context, result);
 }
 fn create(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const owner = captures[0];
@@ -369,6 +373,8 @@ fn convert(scope: *Scope, owner: c.JSValue, init: c.JSValue, prefix: []const u8,
 /// or pair lengths. ResponseInit and RequestInit convert before fill does so.
 /// The result is owned by the supplied scope.
 pub fn convertInit(scope: *Scope, init: c.JSValue, prefix: []const u8, argument: c.JSValue) !c.JSValue {
+    scope.engine.native_exception_diagnostics_suppressed += 1;
+    defer scope.engine.native_exception_diagnostics_suppressed -= 1;
     try install(scope.engine);
     return convert(scope, scope.engine.native_module_values.get(cache_key).?, init, prefix, argument);
 }
@@ -407,6 +413,8 @@ fn function(scope: *Scope, owner: c.JSValue, name: [*:0]const u8, length: c_int,
     return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, callback, name, length, @intFromEnum(kind), 1, &captures)));
 }
 fn ordinary(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     var kind: i32 = 0;
@@ -450,6 +458,8 @@ pub fn install(engine: *em.Engine) !void {
 /// Standard HeadersInit conversion, despite the convenience name. Caller owns
 /// the genuine Headers result. SDK nullable tombstones belong to SDK callers.
 pub fn fromRecord(engine: *em.Engine, init: c.JSValue) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     try install(engine);
     const root = rootOf(engine.native_module_values.get(cache_key).?);
     var args = [_]c.JSValue{init};
