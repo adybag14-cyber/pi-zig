@@ -276,7 +276,16 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             try scope.put(owner, "response", value);
             const metadata = try scope.object();
             try scope.put(metadata, "status", try scope.get(value, "status"));
-            const headers = try scope.invoke(try scope.global("Object"), "fromEntries", &.{try scope.invoke(try scope.get(value, "headers"), "entries", &.{})});
+            const headers = try scope.object();
+            var entries = try v.iterator(scope, try scope.invoke(try scope.get(value, "headers"), "entries", &.{}));
+            defer entries.deinit();
+            errdefer entries.closePreserving();
+            while (try entries.next()) |entry| {
+                defer scope.engine.freeValue(entry);
+                var row: Scope = .{ .engine = scope.engine };
+                defer row.deinit();
+                try v.js.setKey(scope.engine, headers, try v.at(&row, entry, 0), try v.at(&row, entry, 1));
+            }
             try scope.put(metadata, "headers", headers);
             try wait(scope, owner, try hook(scope, owner, "onResponse", metadata), .response);
         },
