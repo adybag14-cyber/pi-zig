@@ -235,7 +235,9 @@ pub fn convert(engine: *v.em.Engine, context: c.JSValue, model: c.JSValue, reten
                 try row.put(block, "toolResult", tool);
                 _ = try row.invoke(blocks, "push", &.{block});
                 if (!c.JS_IsUndefined(split)) {
-                    _ = try row.invoke(siblings, "push", &.{try text(&row, try row.get(split, "caption"), true)});
+                    const caption = try row.object();
+                    try row.put(caption, "text", try row.get(split, "caption"));
+                    _ = try row.invoke(siblings, "push", &.{caption});
                     var images = try v.iterator(&row, try row.get(split, "images"));
                     defer images.deinit();
                     errdefer images.closePreserving();
