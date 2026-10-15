@@ -1,0 +1,54 @@
+[
+  {
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-admission.json",
+    "sha256": "78A0726106D51FA16B275AE322B05F253F2D4FB7384A30F25AD35BD411BB7618"
+  },
+  {
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-extra-before.json",
+    "sha256": "2E5C36E649839404F65179075E69F207CEEFB1CAB362C170EEF02332DFF22BAA"
+  },
+  {
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-output.json",
+    "sha256": "CA3EB48A9A7097EFDBBB19F24953B91402B8F4351E9F2AFDB3C6756DDA76B009"
+  },
+  {
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-posthash.json",
+    "sha256": "459E4AD877D58A8F0177D10AF029A711B9033305F6C3AD0EB55004718E334362"
+  },
+  {
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-syntax-check.json",
+    "sha256": "DDCC52C8A43C5E2D14335F435533A08A5123C947B2A72049933DDDE24535FC28"
+  },
+  {
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-syntax-check.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015-syntax-check.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015.json",
+    "sha256": "69366EB6FB077ED9DCCDFF60435501B4F9C0772F1E0D9179C369FC0FCF7D0D49"
+  },
+  {
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "ai-openai-sdk-producer16-ae7-source-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "ai-openai-sdk-producer16-ae7-source-observe-20261015.mjs",
+    "sha256": "40DC226309E24C3C714846991B1C619F6AEA8246658501FEA3D81B818A796BFD"
+  },
+  {
+    "file": "README.md",
+    "sha256": "07C76C8E862AD71FF099E64E17BCA2BEE5A92204BBBD2CFF5A397119BC4B51FE"
+  },
+  {
+    "file": "Run-AIOpenAISDKProducer16Ae7Source-20261015.ps1",
+    "sha256": "0BFF8C2F3C7856E94E0155FCC4104CD5F4DF458B0556D9ED965B747EA08DDE60"
+  }
+]

@@ -126,9 +126,20 @@ fn finish(scope: *Scope, owner: c.JSValue, action: gen.Action) !gen.Action {
     errdefer switch (result) {
         inline else => |value| scope.engine.freeValue(value),
     };
-    if (action == .thrown and try isAbortError(scope, action.thrown)) {
-        scope.engine.freeValue(action.thrown);
-        result = .{ .complete = c.pi_js_undefined() };
+    if (action == .thrown) {
+        const suppress = isAbortError(scope, action.thrown) catch |err| {
+            const reason = try captured(scope, err);
+            scope.engine.freeValue(result.thrown);
+            result = .{ .thrown = c.JS_DupValue(scope.engine.context, reason) };
+            // The literal finally runs even if isAbortError's guest property
+            // probes throw. Do not recursively classify that replacement.
+            if (!scope.truthy(try scope.get(owner, "done"))) _ = try scope.invoke(try scope.get(owner, "controller"), "abort", &.{});
+            return result;
+        };
+        if (suppress) {
+            scope.engine.freeValue(action.thrown);
+            result = .{ .complete = c.pi_js_undefined() };
+        }
     }
     if (!scope.truthy(try scope.get(owner, "done"))) _ = try scope.invoke(try scope.get(owner, "controller"), "abort", &.{});
     return result;

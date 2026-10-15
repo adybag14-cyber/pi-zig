@@ -1,0 +1,7 @@
+# Actual pinned OpenAI SDK producer Source16 observation
+
+Unmodified openai6.40.0 core/streaming.mjs runs actual iterSSEChunks, _iterSSEMessages and Stream.fromSSEResponse iterator bodies. Caller-owned byte async iterables expose exact framing, chunk demand, EOF, queued next, returned/thrown completion, yielded thenable assimilation/rejection, logger arguments and Pi-relevant API error fields. No Source or SDK function body replacement or synthetic pacing is used. This component does not claim realHTTP transport, SDK constructor/prototype identity, fullclient behavior, all42/all10 factory parity or fullPi parity.
+
+Node69520 born2026-10-15T22:00:34.5151131Z exited0 at22:00:52.4331180Z; all16 rows passed. Fullpost22:01:09.3641114Z SHA459E4AD877D58A8F0177D10AF029A711B9033305F6C3AD0EB55004718E334362 found zero drift1968Source/31064dependencies/1774Node/tools/10controls/prep5/84absences. Fresh2GiB/256MiB/300s owned execution bounds held. Raw output SHA is CA3EB48A9A7097EFDBBB19F24953B91402B8F4351E9F2AFDB3C6756DDA76B009.
+
+The new native SDK three-layer bodies and native two-test replay/GC harness are source-only, AST/fmt checked, not compiled or qualified. The native caller fixture only replaces the Source Stream.fromSSEResponse call with the real native producer entry; the caller case bodies, exact raw expected traces and chunk boundaries remain unchanged. The included body byte-record adapter and factory setup repair are outside this component test selection; actual factory wiring and Source58/HTTP gates remain pending.

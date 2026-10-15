@@ -1,0 +1,52 @@
+import {Stream} from 'file:///C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/openai/core/streaming.mjs';
+import {writeFileSync,readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+const cases=[
+ {name:'joined',chunks:['data: {"n":1}\n\ndata: {"n":2}\n\ndata: [DONE]\n\n']},
+ {name:'split-crlf',chunks:['data: {"n":1}\r','\n\r','\ndata: {"n":2}\r\n\r\n']},
+ {name:'carriage-pairs',chunks:['data: {"n":1}\r\rdata: {"n":2}\r\r']},
+ {name:'single-terminal-newline',chunks:['data: {"n":1}\n']},
+ {name:'unterminated-data',chunks:['data: {"n":1}']},
+ {name:'event-only-invalid-json',chunks:['event: ping\n\n']},
+ {name:'multiline-data',chunks:['data: {\ndata: "n":1}\n\n']},
+ {name:'comments-and-colons',chunks:[':comment\nid: ignored\nfoo: ignored\ndata:{"n":"a:b"}\n\n']},
+ {name:'done-prefix',chunks:['data: [DONE] suffix\n\ndata: definitely invalid\n\n']},
+ {name:'thread-envelope',chunks:['event: thread.message\ndata: {"error":{"message":"kept"},"n":1}\n\n']},
+ {name:'api-error-fields',chunks:['data: {"error":{"message":"denied","code":"blocked","param":"field","type":"fixture"}}\n\n']},
+ {name:'return-closes-inner',chunks:['data: {"n":1}\n\ndata: {"n":2}\n\n'],operation:'return'},
+ {name:'throw-closes-inner',chunks:['data: {"n":1}\n\ndata: {"n":2}\n\n'],operation:'throw'},
+ {name:'queued-next',chunks:['data: {"n":1}\n\ndata: {"n":2}\n\n'],operation:'queued'},
+ {name:'yield-assimilates-thenable',chunks:['data: {"n":1}\n\n'],parse:'thenable'},
+ {name:'yield-rejects-thenable',chunks:['data: {"n":1}\n\n'],parse:'rejected'},
+];
+const rows=[];
+for(const input of cases){
+ const trace=[],marker={raw:'marker'},encoder=new TextEncoder(),controller=new AbortController(),headers=new Headers({'x-request-id':'fixture-request'});
+ controller.signal.addEventListener('abort',()=>trace.push('abort'));
+ let index=0;
+ const body={
+  [Symbol.asyncIterator](){trace.push('body.iterator');return this},
+  async next(){trace.push(['body.next',index]);return index<input.chunks.length?{value:encoder.encode(input.chunks[index++]),done:false}:{value:undefined,done:true}},
+  async return(){trace.push('body.return');return {value:undefined,done:true}},
+ };
+ const originalParse=JSON.parse,originalError=console.error;
+ try{
+  console.error=(...args)=>trace.push(['log',...args]);
+  JSON.parse=function(text){trace.push(['parse',text]);const value=Reflect.apply(originalParse,this,[text]);if(input.parse)return {then(resolve,reject){trace.push('yield.then');if(input.parse==='rejected')reject(marker);else resolve(value)}};return value};
+  const stream=Stream.fromSSEResponse({body,headers},controller);
+  const iterator=stream[Symbol.asyncIterator](),values=[];
+  let error;
+  try{
+   if(input.operation==='queued'){
+    const pending=[iterator.next(),iterator.next(),iterator.next()];
+    for(const result of await Promise.all(pending))values.push(result);
+   }else if(input.operation==='return'||input.operation==='throw'){
+    values.push(await iterator.next());
+    values.push(await iterator[input.operation](input.operation==='throw'?marker:'returned'));
+   }else for await(const value of {[Symbol.asyncIterator]:()=>iterator})values.push(value);
+  }catch(failure){error={sameMarker:failure===marker,name:failure?.name,message:failure?.message,status:failure?.status,error:failure?.error,requestID:failure?.requestID,code:failure?.code,param:failure?.param,type:failure?.type,headersRequestID:failure?.headers?.get?.('x-request-id')}}
+  rows.push({name:input.name,input,trace,values,aborted:controller.signal.aborted,...(error?{error}:{})});
+ }finally{JSON.parse=originalParse;console.error=originalError}
+}
+if(rows.length!==16)throw Error('All16 genuine SDK producer controls mandatory');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'ae7b16d43b7c78c5b6fa3213fdd1215bb339729d',sdk:'openai6.40.0',runtime:process.version,actualNode:{execPath:process.execPath,pid:process.pid},driverSha256:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),scope:'Unmodified pinned OpenAI Stream.fromSSEResponse actual three producer AsyncGenerators. Caller byte-iterator inputs expose demand/return/throw/thenable/log/error-field observations; no Source/SDK body replacement. Component scope excludes SDK class prototype identity, real HTTP transport and provider factory.',count:rows.length,rows},null,2));
