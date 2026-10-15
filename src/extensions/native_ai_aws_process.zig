@@ -55,7 +55,7 @@ fn terminateOwned(handle: windows.HANDLE) !void {
         .SUCCESS, .PROCESS_IS_TERMINATING => {},
         .ACCESS_DENIED => {
             const timeout: windows.LARGE_INTEGER = 0;
-            if (windows.ntdll.NtWaitForSingleObject(handle, .FALSE, &timeout) != .WAIT_0) return error.OwnedCredentialProcessTerminationFailed;
+            if (windows.ntdll.NtWaitForSingleObject(handle, .FALSE, &timeout) != windows.NTSTATUS.WAIT_0) return error.OwnedCredentialProcessTerminationFailed;
         },
         else => |status| return windows.unexpectedStatus(status),
     }
@@ -63,7 +63,7 @@ fn terminateOwned(handle: windows.HANDLE) !void {
 fn observeExit(handle: windows.HANDLE, io: std.Io) !void {
     const timeout: windows.LARGE_INTEGER = 0;
     while (true) switch (windows.ntdll.NtWaitForSingleObject(handle, .FALSE, &timeout)) {
-        .WAIT_0 => return,
+        windows.NTSTATUS.WAIT_0 => return,
         .TIMEOUT => try io.sleep(.fromMilliseconds(20), .awake),
         else => |status| return windows.unexpectedStatus(status),
     };
