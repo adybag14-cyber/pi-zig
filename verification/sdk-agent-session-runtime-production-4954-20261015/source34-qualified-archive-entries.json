@@ -1,0 +1,278 @@
+[
+  {
+    "entry": "controls/capture-source.mjs",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\capture-source.mjs",
+    "sha256": "B49D428611412139D03D886D5474818E698B74F73FAE2B535BD63EC733A1D2C7",
+    "bytes": 1705
+  },
+  {
+    "entry": "controls/run-source-qualified.ps1",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\run-source-qualified.ps1",
+    "sha256": "90B610E22453661741ECDF7A2DD965F7DD6EBA91A17AEB70A53ACA6E02ED001E",
+    "bytes": 10885
+  },
+  {
+    "entry": "controls/runtime-source34-light6-fb97-first-20261016-20261015-absence.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\runtime-source34-light6-fb97-first-20261016-20261015-absence.json",
+    "sha256": "16908BB8690B59191D298904F8866E3D96FF9D514A85A811B9D78212807BF604",
+    "bytes": 99
+  },
+  {
+    "entry": "controls/runtime-source34-light6-fb97-first-20261016-20261015-admission.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\runtime-source34-light6-fb97-first-20261016-20261015-admission.json",
+    "sha256": "E7AA73B9E40B327513FBCB8BD3E2CDD38C99DCB7740E27C9EB74234BB1C9FEE9",
+    "bytes": 305
+  },
+  {
+    "entry": "controls/runtime-source34-light6-fb97-first-20261016-20261015-launch-identity.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\runtime-source34-light6-fb97-first-20261016-20261015-launch-identity.json",
+    "sha256": "E03A485DF2FEBCBED0C2BCCF9482755D68470E5CEAEA9E59AACB9CE42F0B52B5",
+    "bytes": 6384
+  },
+  {
+    "entry": "controls/runtime-source34-light6-fb97-first-20261016-20261015-oracle-controls.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\runtime-source34-light6-fb97-first-20261016-20261015-oracle-controls.json",
+    "sha256": "90861F1F25FD60320F9B8CFEBB15A7559325939F741B45C2308AFA899E1CF308",
+    "bytes": 2366
+  },
+  {
+    "entry": "controls/runtime-source34-light6-fb97-first-20261016-20261015-output.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\runtime-source34-light6-fb97-first-20261016-20261015-output.json",
+    "sha256": "B0E79FC2D40DA6CF2E8CC6B39558C394ABB969E080E169E02B75E4F5914C59CE",
+    "bytes": 38711
+  },
+  {
+    "entry": "controls/runtime-source34-light6-fb97-first-20261016-20261015-output.json.metadata.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\runtime-source34-light6-fb97-first-20261016-20261015-output.json.metadata.json",
+    "sha256": "3A998DC587B9CF5B51BA0803F682E2A3EEBD028A99AF26308C23420067C33AAB",
+    "bytes": 700
+  },
+  {
+    "entry": "controls/runtime-source34-light6-fb97-first-20261016-20261015-posthash.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\runtime-source34-light6-fb97-first-20261016-20261015-posthash.json",
+    "sha256": "FDC6DC7A53F6C9C0FB7B18BDAFC2D57A1025FF9EC1DE18EE8C13A64021ECD4B1",
+    "bytes": 624
+  },
+  {
+    "entry": "controls/runtime-source34-light6-fb97-first-20261016-20261015-prehash.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\runtime-source34-light6-fb97-first-20261016-20261015-prehash.json",
+    "sha256": "21A06305E2C15DFA1F6926C8B6999842991139B478999028BE23E2960B2A53A4",
+    "bytes": 14809953
+  },
+  {
+    "entry": "controls/strict-caller-input-seals.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\strict-caller-input-seals.json",
+    "sha256": "599A0F1CD1D56FED011D210D3D6C39D9123145D0BBC7AC3F536A6ACB52FF48B7",
+    "bytes": 3782
+  },
+  {
+    "entry": "owned-sandbox/case-23/sessions/original.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-23\\sessions\\original.jsonl",
+    "sha256": "CDA80CEBF98CB5ED4D02EED318E77D90697FECE6EBA8652A48CA449CBC78D8F5",
+    "bytes": 1180
+  },
+  {
+    "entry": "owned-sandbox/case-24/sessions/2026-10-15T23-19-15-734Z_01a141dc-dc16-759e-902e-90c6a79faaa5.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-24\\sessions\\2026-10-15T23-19-15-734Z_01a141dc-dc16-759e-902e-90c6a79faaa5.jsonl",
+    "sha256": "6CCD836859AE9CADB2E3C64FC00B1282B96AE8C4AF88C44BF5172F20F62AD935",
+    "bytes": 1201
+  },
+  {
+    "entry": "owned-sandbox/case-24/sessions/original.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-24\\sessions\\original.jsonl",
+    "sha256": "3329A5A680471A3C2E4C82DFC4C43F80CD34E573653A4D001928E9FDC411E9F4",
+    "bytes": 1180
+  },
+  {
+    "entry": "owned-sandbox/case-25/resume.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-25\\resume.jsonl",
+    "sha256": "8CD9B2E8085501AC2498FC4803AE6001B48FDE811D0520323A5C437FD75FC1E7",
+    "bytes": 1180
+  },
+  {
+    "entry": "owned-sandbox/case-26/missing-cwd.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-26\\missing-cwd.jsonl",
+    "sha256": "59DDA51926A4C44FE00019B781FBE80F5C7C29EDA7BAD20313010F3EE61E4203",
+    "bytes": 1063
+  },
+  {
+    "entry": "owned-sandbox/case-27/override.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-27\\override.jsonl",
+    "sha256": "84E7A483B46F130CF0FD4CAE9592065E5303226E2520F391CFB6308E28B0AEEE",
+    "bytes": 1189
+  },
+  {
+    "entry": "owned-sandbox/case-28/sessions/original.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-28\\sessions\\original.jsonl",
+    "sha256": "6748B814464476BABCD3A93A9DC9B3888804D1CEB6123C44541443F0D085F0F8",
+    "bytes": 1180
+  },
+  {
+    "entry": "owned-sandbox/case-29/incoming.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-29\\incoming.jsonl",
+    "sha256": "6CEF53BEE32E4152C7967A25BF55CBEF5EEDA17381A4BA9E99FA2AA4FA258B1F",
+    "bytes": 1054
+  },
+  {
+    "entry": "owned-sandbox/case-29/sessions/incoming.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-29\\sessions\\incoming.jsonl",
+    "sha256": "C966D62B5C157545049B17445A2D98D772860D7C1BB47A4059BF28CDA6455AA2",
+    "bytes": 1180
+  },
+  {
+    "entry": "owned-sandbox/case-29/sessions/original.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-29\\sessions\\original.jsonl",
+    "sha256": "55AD642E3981E5A7018549E7B884B537C10538621FD516EA24082139F1CD20D1",
+    "bytes": 1180
+  },
+  {
+    "entry": "owned-sandbox/case-30/incoming.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-30\\incoming.jsonl",
+    "sha256": "3CDBA980D1E79E7AF0266F08B2F25E4A139BEB169B898F44E0438BCE9675B6CB",
+    "bytes": 1054
+  },
+  {
+    "entry": "owned-sandbox/case-30/sessions/incoming-1.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-30\\sessions\\incoming-1.jsonl",
+    "sha256": "3CDBA980D1E79E7AF0266F08B2F25E4A139BEB169B898F44E0438BCE9675B6CB",
+    "bytes": 1054
+  },
+  {
+    "entry": "owned-sandbox/case-30/sessions/incoming-2.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-30\\sessions\\incoming-2.jsonl",
+    "sha256": "25F63340B3082DC23739E3B37DFB84062E67EF892B0D5C591D4EAF40F70CB82C",
+    "bytes": 1180
+  },
+  {
+    "entry": "owned-sandbox/case-30/sessions/incoming.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-30\\sessions\\incoming.jsonl",
+    "sha256": "3CDBA980D1E79E7AF0266F08B2F25E4A139BEB169B898F44E0438BCE9675B6CB",
+    "bytes": 1054
+  },
+  {
+    "entry": "owned-sandbox/case-30/sessions/original.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-30\\sessions\\original.jsonl",
+    "sha256": "0EDAE5F405068E8187D9F741F585593BF0319EAD624A97C227725201B740295B",
+    "bytes": 1180
+  },
+  {
+    "entry": "owned-sandbox/case-31/sessions/original.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-31\\sessions\\original.jsonl",
+    "sha256": "644C5FE8095FBC0768AF4C7B1B0A798FC8CD0B1E93881AB84B6EB387560CF825",
+    "bytes": 1180
+  },
+  {
+    "entry": "owned-sandbox/case-32/incoming.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-32\\incoming.jsonl",
+    "sha256": "4F2CCD5D3EBA75D147CF415BB543D7078EE577D9842F6EC82196D427613C8DFF",
+    "bytes": 1054
+  },
+  {
+    "entry": "owned-sandbox/case-32/sessions/original.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\sandbox\\case-32\\sessions\\original.jsonl",
+    "sha256": "E48D49317C53A77BBB3F78AB3550FCB922720DF2E98BDB766FD81123142595FE",
+    "bytes": 1180
+  },
+  {
+    "entry": "owner/runtime-source34-light6-fb97-first-20261016-20261015.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-fb97-first-20261016-20261015.json",
+    "sha256": "71E53E75910C44F2A3CD040B3C00B6BE26512B3DCDB81536ED8BF63AE2953325",
+    "bytes": 1313
+  },
+  {
+    "entry": "owner/runtime-source34-light6-fb97-first-20261016-20261015.stdout.log",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-fb97-first-20261016-20261015.stdout.log",
+    "sha256": "BB9256588F5538823192E728004BB8BA3FF70268388B4DF434C04F9528F472FF",
+    "bytes": 951
+  },
+  {
+    "entry": "owner/runtime-source34-light6-fb97-first-20261016-20261015.stderr.log",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-fb97-first-20261016-20261015.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "entry": "observed/source4954-modules-76072-0-20261015.jsonl",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-modules-76072-0-20261015.jsonl",
+    "sha256": "441CF4D3549E6597722CB4DBA8137724EA420A7EC28A420894DEC1A53C3833B4",
+    "bytes": 343691
+  },
+  {
+    "entry": "sealed-origins/00-run-source-qualified.ps1",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\run-source-qualified.ps1",
+    "sha256": "90B610E22453661741ECDF7A2DD965F7DD6EBA91A17AEB70A53ACA6E02ED001E",
+    "bytes": 10885
+  },
+  {
+    "entry": "sealed-origins/01-capture-source.mjs",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\runtime-source34-light6-controls-20261016\\capture-source.mjs",
+    "sha256": "B49D428611412139D03D886D5474818E698B74F73FAE2B535BD63EC733A1D2C7",
+    "bytes": 1705
+  },
+  {
+    "entry": "sealed-origins/02-run-source-qualified.ps1",
+    "path": "C:/Users/adyba/pi-zig-session-runtime-production-20261015/verification/sdk-agent-session-runtime-production-4954-20261015/run-source-qualified.ps1",
+    "sha256": "835EB4DE0F223C03B086175CC0315B51557559E02199944BF5F80BE911A253D6",
+    "bytes": 8885
+  },
+  {
+    "entry": "sealed-origins/03-capture-source.mjs",
+    "path": "C:/Users/adyba/pi-zig-session-runtime-production-20261015/verification/sdk-agent-session-runtime-production-4954-20261015/capture-source.mjs",
+    "sha256": "7287A250565BDF7DF6BB4D442F051C10B0F624841543D87F0656316BC462A6C6",
+    "bytes": 2866
+  },
+  {
+    "entry": "sealed-origins/04-sdk-agent-session-runtime-production-4954.input.txt",
+    "path": "C:/Users/adyba/pi-zig-session-runtime-production-20261015/src/extensions/fixtures/sdk-agent-session-runtime-production-4954.input.txt",
+    "sha256": "EB2BE616AEB8F712D3AFB6FDCB2369202064522DB1C0E2C3D83ED0086F9EFDB6",
+    "bytes": 13472
+  },
+  {
+    "entry": "sealed-origins/05-Invoke-OwnedEeSourceJob-20261012.ps1",
+    "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "entry": "sealed-origins/06-package.json",
+    "path": "C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/coding-agent/package.json",
+    "sha256": "83C3BB7619F590C213CC96A24216EB29A819A3EF6DC548607CC037ED276E8DC5",
+    "bytes": 3762
+  },
+  {
+    "entry": "sealed-origins/07-config.ts",
+    "path": "C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/coding-agent/src/config.ts",
+    "sha256": "B3B77644910D3FAC28A06625E90F993A8C1BC6C9458F148C723E64E0C99EB23E",
+    "bytes": 23328
+  },
+  {
+    "entry": "sealed-origins/08-source4954-observe-20261015.mjs",
+    "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-observe-20261015.mjs",
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3",
+    "bytes": 4698
+  },
+  {
+    "entry": "sealed-origins/09-source4954-full-manifest-20261015.json",
+    "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-full-manifest-20261015.json",
+    "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C",
+    "bytes": 556967
+  },
+  {
+    "entry": "sealed-origins/10-source4954-runtime-manifest-20261015.json",
+    "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-runtime-manifest-20261015.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "bytes": 7153406
+  },
+  {
+    "entry": "sealed-origins/11-source4954-node-tools-before-20261015.json",
+    "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-node-tools-before-20261015.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "bytes": 352993
+  },
+  {
+    "entry": "sealed-origins/12-source4954-dependency-contract-audit-20261015.json",
+    "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-dependency-contract-audit-20261015.json",
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745",
+    "bytes": 211596
+  }
+]

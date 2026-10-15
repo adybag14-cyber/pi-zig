@@ -1,0 +1,1631 @@
+{
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "inputSha256": "eb2be616aeb8f712d3afb6fdcb2369202064522db1c0e2c3d83ed0086f9efdb6",
+  "scope": "Actual standalone AgentSessionRuntime class with actual Source SDK factory/services/full AgentSession/SessionManager/SettingsManager/ModelRuntime and extension runner. Caller-owned native provider and credentials; no provider network or class-body overrides. Focused replacement, cancellation, shutdown, invalidation, import, descriptor and owner observations; no native/default application qualification.",
+  "cases": 34,
+  "rows": [
+    {
+      "name": "prototype-and-fields",
+      "value": {
+        "constructor": {
+          "name": "AgentSessionRuntime",
+          "length": 3,
+          "async": false,
+          "ownPrototype": true
+        },
+        "prototype": [
+          {
+            "key": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "AgentSessionRuntime",
+              "length": 3,
+              "async": false,
+              "ownPrototype": true
+            }
+          },
+          {
+            "key": "services",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "get services",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            },
+            "set": true
+          },
+          {
+            "key": "session",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "get session",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            },
+            "set": true
+          },
+          {
+            "key": "cwd",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "get cwd",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            },
+            "set": true
+          },
+          {
+            "key": "diagnostics",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "get diagnostics",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            },
+            "set": true
+          },
+          {
+            "key": "modelFallbackMessage",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "get modelFallbackMessage",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            },
+            "set": true
+          },
+          {
+            "key": "setRebindSession",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "setRebindSession",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "key": "setBeforeSessionInvalidate",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "setBeforeSessionInvalidate",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "key": "emitBeforeSwitch",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "emitBeforeSwitch",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "key": "emitBeforeFork",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "emitBeforeFork",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "key": "teardownCurrent",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "teardownCurrent",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "key": "apply",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "apply",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "key": "finishSessionReplacement",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "finishSessionReplacement",
+              "length": 1,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "key": "switchSession",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "switchSession",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "key": "newSession",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "newSession",
+              "length": 1,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "key": "fork",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "fork",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "key": "importFromJsonl",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "importFromJsonl",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "key": "dispose",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "function": {
+              "name": "dispose",
+              "length": 0,
+              "async": true,
+              "ownPrototype": false
+            }
+          }
+        ],
+        "fields": [
+          {
+            "key": "rebindSession",
+            "enumerable": true,
+            "writable": true,
+            "configurable": true
+          },
+          {
+            "key": "beforeSessionInvalidate",
+            "enumerable": true,
+            "writable": true,
+            "configurable": true
+          },
+          {
+            "key": "_session",
+            "enumerable": true,
+            "writable": true,
+            "configurable": true
+          },
+          {
+            "key": "_services",
+            "enumerable": true,
+            "writable": true,
+            "configurable": true
+          },
+          {
+            "key": "createRuntime",
+            "enumerable": true,
+            "writable": true,
+            "configurable": true
+          },
+          {
+            "key": "_diagnostics",
+            "enumerable": true,
+            "writable": true,
+            "configurable": true
+          },
+          {
+            "key": "_modelFallbackMessage",
+            "enumerable": true,
+            "writable": true,
+            "configurable": true
+          }
+        ],
+        "servicesIdentity": true,
+        "sessionIdentity": true,
+        "diagnosticsIdentity": true,
+        "factoryIdentity": true
+      }
+    },
+    {
+      "name": "constructor-defaults-and-fallback",
+      "value": {
+        "distinctDefaults": true,
+        "defaultLength": 0,
+        "customIdentity": true,
+        "fallback": "fallback",
+        "undefinedFallback": true
+      }
+    },
+    {
+      "name": "setter-identities",
+      "value": {
+        "rebindReturn": true,
+        "rebind": true,
+        "beforeReturn": true,
+        "before": true,
+        "reset": true
+      }
+    },
+    {
+      "name": "switch-cancel-true-boolean",
+      "value": {
+        "result": {
+          "cancelled": true
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": true,
+        "oldActive": true,
+        "cwd": "ROOT\\case-4",
+        "persisted": false,
+        "messages": [
+          [
+            {
+              "type": "text",
+              "text": "first "
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "Ω"
+            }
+          ],
+          "second"
+        ],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "new",
+            "target": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "switch-cancel-true-string",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-5",
+        "persisted": false,
+        "messages": [],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "new",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-5",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "switch-cancel-1-number",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-6",
+        "persisted": false,
+        "messages": [],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "new",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-6",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "switch-cancel-false-boolean",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-7",
+        "persisted": false,
+        "messages": [],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "new",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-7",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-handler-new",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-8",
+        "persisted": false,
+        "messages": [],
+        "trace": [
+          {
+            "type": "factory",
+            "reason": "new",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-8",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "new-order-setup-rebind-context",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-9",
+        "persisted": false,
+        "messages": [
+          "setup-body"
+        ],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "before-invalidate",
+            "oldActive": true
+          },
+          {
+            "type": "factory",
+            "reason": "new",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-9",
+            "oldActive": true,
+            "manager": true
+          },
+          {
+            "type": "setup",
+            "manager": true
+          },
+          {
+            "type": "rebind",
+            "newSession": true,
+            "oldActive": true
+          },
+          {
+            "type": "rebind-settled"
+          },
+          {
+            "type": "with-session",
+            "cwd": "ROOT\\case-9",
+            "idMatches": true
+          }
+        ],
+        "parent": "parent-file"
+      }
+    },
+    {
+      "name": "new-factory-raw-rejection",
+      "error": {
+        "message": "RAW",
+        "raw": true
+      },
+      "state": {
+        "sameSession": true,
+        "oldActive": true
+      },
+      "trace": [
+        {
+          "type": "session_before_switch",
+          "reason": "new",
+          "target": false
+        },
+        {
+          "type": "session_shutdown",
+          "reason": "new",
+          "target": false
+        },
+        {
+          "type": "shutdown-settled"
+        },
+        {
+          "type": "factory",
+          "reason": "new",
+          "keys": [
+            "cwd",
+            "agentDir",
+            "sessionManager",
+            "sessionStartEvent"
+          ],
+          "cwd": "ROOT\\case-10",
+          "oldActive": true,
+          "manager": true
+        }
+      ]
+    },
+    {
+      "name": "new-setup-raw-rejection",
+      "error": {
+        "message": "RAW",
+        "raw": true
+      },
+      "state": {
+        "sameSession": false,
+        "oldActive": true
+      },
+      "trace": [
+        {
+          "type": "session_before_switch",
+          "reason": "new",
+          "target": false
+        },
+        {
+          "type": "session_shutdown",
+          "reason": "new",
+          "target": false
+        },
+        {
+          "type": "shutdown-settled"
+        },
+        {
+          "type": "factory",
+          "reason": "new",
+          "keys": [
+            "cwd",
+            "agentDir",
+            "sessionManager",
+            "sessionStartEvent"
+          ],
+          "cwd": "ROOT\\case-11",
+          "oldActive": true,
+          "manager": true
+        }
+      ]
+    },
+    {
+      "name": "new-rebind-raw-rejection",
+      "error": {
+        "message": "RAW",
+        "raw": true
+      },
+      "state": {
+        "sameSession": false,
+        "oldActive": true
+      },
+      "trace": [
+        {
+          "type": "session_before_switch",
+          "reason": "new",
+          "target": false
+        },
+        {
+          "type": "session_shutdown",
+          "reason": "new",
+          "target": false
+        },
+        {
+          "type": "shutdown-settled"
+        },
+        {
+          "type": "factory",
+          "reason": "new",
+          "keys": [
+            "cwd",
+            "agentDir",
+            "sessionManager",
+            "sessionStartEvent"
+          ],
+          "cwd": "ROOT\\case-12",
+          "oldActive": true,
+          "manager": true
+        }
+      ]
+    },
+    {
+      "name": "new-with-session-raw-rejection",
+      "error": {
+        "message": "RAW",
+        "raw": true
+      },
+      "state": {
+        "sameSession": false,
+        "oldActive": true
+      },
+      "trace": [
+        {
+          "type": "session_before_switch",
+          "reason": "new",
+          "target": false
+        },
+        {
+          "type": "session_shutdown",
+          "reason": "new",
+          "target": false
+        },
+        {
+          "type": "shutdown-settled"
+        },
+        {
+          "type": "factory",
+          "reason": "new",
+          "keys": [
+            "cwd",
+            "agentDir",
+            "sessionManager",
+            "sessionStartEvent"
+          ],
+          "cwd": "ROOT\\case-13",
+          "oldActive": true,
+          "manager": true
+        }
+      ]
+    },
+    {
+      "name": "before-invalidate-raw-rejection",
+      "error": {
+        "message": "RAW",
+        "raw": true
+      },
+      "state": {
+        "sameSession": true,
+        "oldActive": true
+      },
+      "trace": [
+        {
+          "type": "session_before_switch",
+          "reason": "new",
+          "target": false
+        },
+        {
+          "type": "session_shutdown",
+          "reason": "new",
+          "target": false
+        },
+        {
+          "type": "shutdown-settled"
+        }
+      ]
+    },
+    {
+      "name": "invalidate-callback-not-awaited",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-15",
+        "persisted": false,
+        "messages": [],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "before-pending"
+          },
+          {
+            "type": "factory",
+            "reason": "new",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-15",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "apply-captured-before-factory-await",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "reads": 1,
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-16",
+        "persisted": false,
+        "messages": [],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "new",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-16",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalidate-getter-once",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "reads": 1,
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-17",
+        "persisted": false,
+        "messages": [],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "new",
+            "target": false
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "before-getter-callback"
+          },
+          {
+            "type": "factory",
+            "reason": "new",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-17",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "fork-cancel",
+      "value": {
+        "result": {
+          "cancelled": true
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": true,
+        "oldActive": true,
+        "cwd": "ROOT\\case-18",
+        "persisted": false,
+        "messages": [
+          [
+            {
+              "type": "text",
+              "text": "first "
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "Ω"
+            }
+          ],
+          "second"
+        ],
+        "trace": [
+          {
+            "type": "session_before_fork",
+            "entryId": "u1",
+            "position": "before"
+          }
+        ]
+      }
+    },
+    {
+      "name": "fork-before-memory",
+      "value": {
+        "result": {
+          "cancelled": false,
+          "selectedText": "first Ω"
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-19",
+        "persisted": false,
+        "messages": [],
+        "trace": [
+          {
+            "type": "session_before_fork",
+            "entryId": "u1",
+            "position": "before"
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "fork",
+            "target": false
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "fork",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-19",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "fork-at-memory",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-20",
+        "persisted": false,
+        "messages": [
+          [
+            {
+              "type": "text",
+              "text": "first "
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "Ω"
+            }
+          ]
+        ],
+        "trace": [
+          {
+            "type": "session_before_fork",
+            "entryId": "a1",
+            "position": "at"
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "fork",
+            "target": false
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "fork",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-20",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "fork-invalid-id",
+      "error": {
+        "name": "Error",
+        "message": "Invalid entry ID for forking",
+        "raw": false
+      },
+      "state": {
+        "sameSession": true,
+        "oldActive": true
+      },
+      "trace": [
+        {
+          "type": "session_before_fork",
+          "entryId": "absent",
+          "position": "before"
+        }
+      ]
+    },
+    {
+      "name": "fork-invalid-before-assistant",
+      "error": {
+        "name": "Error",
+        "message": "Invalid entry ID for forking",
+        "raw": false
+      },
+      "state": {
+        "sameSession": true,
+        "oldActive": true
+      },
+      "trace": [
+        {
+          "type": "session_before_fork",
+          "entryId": "a1",
+          "position": "before"
+        }
+      ]
+    },
+    {
+      "name": "fork-before-persisted",
+      "value": {
+        "result": {
+          "cancelled": false,
+          "selectedText": "first Ω"
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-23",
+        "persisted": true,
+        "messages": [],
+        "trace": [
+          {
+            "type": "session_before_fork",
+            "entryId": "u1",
+            "position": "before"
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "fork",
+            "target": true
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "fork",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-23",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "fork-at-persisted",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-24",
+        "persisted": true,
+        "messages": [
+          [
+            {
+              "type": "text",
+              "text": "first "
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "Ω"
+            }
+          ]
+        ],
+        "trace": [
+          {
+            "type": "session_before_fork",
+            "entryId": "a1",
+            "position": "at"
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "fork",
+            "target": true
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "fork",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-24",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "switch-real-file",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-25",
+        "persisted": true,
+        "messages": [
+          [
+            {
+              "type": "text",
+              "text": "first "
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "Ω"
+            }
+          ],
+          "second"
+        ],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "resume",
+            "target": true
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "resume",
+            "target": true
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "trust-factory",
+            "cwd": "ROOT\\case-25"
+          },
+          {
+            "type": "factory",
+            "reason": "resume",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent",
+              "projectTrustContext"
+            ],
+            "cwd": "ROOT\\case-25",
+            "oldActive": true,
+            "manager": true,
+            "projectTrust": {
+              "owned": true
+            }
+          },
+          {
+            "type": "with-session",
+            "cwd": "ROOT\\case-25"
+          }
+        ]
+      }
+    },
+    {
+      "name": "switch-missing-stored-cwd",
+      "error": {
+        "name": "MissingSessionCwdError",
+        "message": "Stored session working directory does not exist: ROOT\\case-26\\missing\nSession file: ROOT\\case-26\\missing-cwd.jsonl\nCurrent working directory: ROOT\\case-26",
+        "raw": false,
+        "issue": {
+          "sessionFile": "ROOT\\case-26\\missing-cwd.jsonl",
+          "sessionCwd": "ROOT\\case-26\\missing",
+          "fallbackCwd": "ROOT\\case-26"
+        }
+      },
+      "state": {
+        "sameSession": true,
+        "oldActive": true
+      },
+      "trace": [
+        {
+          "type": "session_before_switch",
+          "reason": "resume",
+          "target": true
+        }
+      ]
+    },
+    {
+      "name": "switch-cwd-override",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-27",
+        "persisted": true,
+        "messages": [
+          [
+            {
+              "type": "text",
+              "text": "first "
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "Ω"
+            }
+          ],
+          "second"
+        ],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "resume",
+            "target": true
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "resume",
+            "target": true
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "resume",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent",
+              "projectTrustContext"
+            ],
+            "cwd": "ROOT\\case-27",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "import-missing-path",
+      "error": {
+        "name": "SessionImportFileNotFoundError",
+        "message": "File not found: ROOT\\case-28\\absent.jsonl",
+        "raw": false,
+        "filePath": "ROOT\\case-28\\absent.jsonl"
+      },
+      "state": {
+        "sameSession": true,
+        "oldActive": true
+      },
+      "trace": []
+    },
+    {
+      "name": "import-real-copy",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "basename": "incoming.jsonl",
+        "exactBytes": false,
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-29",
+        "persisted": true,
+        "messages": [
+          [
+            {
+              "type": "text",
+              "text": "first "
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "Ω"
+            }
+          ],
+          "second"
+        ],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "resume",
+            "target": true
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "resume",
+            "target": true
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "resume",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-29",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "import-collision-suffix",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "basename": "incoming-2.jsonl",
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-30",
+        "persisted": true,
+        "messages": [
+          [
+            {
+              "type": "text",
+              "text": "first "
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "Ω"
+            }
+          ],
+          "second"
+        ],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "resume",
+            "target": true
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "resume",
+            "target": true
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "resume",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-30",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "import-already-stored",
+      "value": {
+        "result": {
+          "cancelled": false
+        },
+        "sameFile": true,
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": false,
+        "oldActive": true,
+        "cwd": "ROOT\\case-31",
+        "persisted": true,
+        "messages": [
+          [
+            {
+              "type": "text",
+              "text": "first "
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "Ω"
+            }
+          ],
+          "second"
+        ],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "resume",
+            "target": true
+          },
+          {
+            "type": "session_shutdown",
+            "reason": "resume",
+            "target": true
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "factory",
+            "reason": "resume",
+            "keys": [
+              "cwd",
+              "agentDir",
+              "sessionManager",
+              "sessionStartEvent"
+            ],
+            "cwd": "ROOT\\case-31",
+            "oldActive": true,
+            "manager": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "import-cancel-before-copy",
+      "value": {
+        "result": {
+          "cancelled": true
+        },
+        "copied": false,
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": true,
+        "oldActive": true,
+        "cwd": "ROOT\\case-32",
+        "persisted": true,
+        "messages": [
+          [
+            {
+              "type": "text",
+              "text": "first "
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "Ω"
+            }
+          ],
+          "second"
+        ],
+        "trace": [
+          {
+            "type": "session_before_switch",
+            "reason": "resume",
+            "target": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "dispose-order",
+      "value": {
+        "ordinary": true,
+        "sessionOrdinary": true,
+        "sameSession": true,
+        "oldActive": true,
+        "cwd": "ROOT\\case-33",
+        "persisted": false,
+        "messages": [
+          [
+            {
+              "type": "text",
+              "text": "first "
+            },
+            {
+              "type": "image",
+              "data": "unused",
+              "mimeType": "image/png"
+            },
+            {
+              "type": "text",
+              "text": "Ω"
+            }
+          ],
+          "second"
+        ],
+        "trace": [
+          {
+            "type": "session_shutdown",
+            "reason": "quit",
+            "target": false
+          },
+          {
+            "type": "shutdown-settled"
+          },
+          {
+            "type": "before-invalidate",
+            "active": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "dispose-before-hook-raw",
+      "error": {
+        "message": "RAW",
+        "raw": true
+      },
+      "state": {
+        "sameSession": true,
+        "oldActive": true
+      },
+      "trace": [
+        {
+          "type": "session_shutdown",
+          "reason": "quit",
+          "target": false
+        },
+        {
+          "type": "shutdown-settled"
+        }
+      ]
+    }
+  ]
+}
