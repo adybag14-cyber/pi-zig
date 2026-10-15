@@ -17,6 +17,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     const estimate = try scope.own(try @import("native_ai_estimate.zig").create(engine));
     try scope.put(dependencies, "simple", try scope.own(try @import("native_ai_simple_options.zig").create(engine, try scope.get(thinking, "clampThinkingLevel"), try scope.get(estimate, "estimateContextTokens"))));
     try scope.put(dependencies, "json", try scope.own(try @import("native_ai_json_parse.zig").create(engine)));
+    try scope.put(dependencies, "errors", try scope.own(try @import("native_ai_anthropic_api_error.zig").create(engine)));
     const result = try scope.object();
     inline for (.{ "stream", "streamSimple" }, 0..) |name, index| {
         const Adapter = struct {
@@ -129,6 +130,10 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     advance(&scope, owner, value, @enumFromInt(raw)) catch |err| try failError(&scope, owner, err);
 }
 fn fallback(scope: *Scope, owner: c.JSValue, failure: c.JSValue) !bool {
+    const api_error = try scope.get(try scope.get(try scope.get(owner, "agent"), "errors"), "APIError");
+    const branded = c.JS_IsInstanceOf(scope.engine.context, failure, api_error);
+    if (branded < 0) return v.js.capture(scope.engine);
+    if (branded != 1) return false;
     if (try aborted(scope, owner) or scope.truthy(try scope.get(owner, "disabledPreferred")) or !scope.truthy(try scope.get(try scope.get(owner, "built"), "hasPreferredStrictTools")) or !scope.equal(try v.optional(scope, failure, "status"), c.JS_NewInt32(scope.engine.context, 400)) or !try v.eq(scope, try v.optional(scope, failure, "type"), "invalid_request_error")) return false;
     const message = try scope.get(failure, "message");
     inline for (.{ "The compiled grammar is too large", "Too many strict tools (", "Schemas contains too many parameters with union types (" }) |prefix| {
@@ -378,14 +383,9 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
 fn failureBody(scope: *Scope, owner: c.JSValue, text: c.JSValue) !void {
     const json = try scope.get(try scope.get(owner, "agent"), "json");
     const body = try scope.invoke(json, "parseJsonWithRepair", &.{text});
-    const error_body = try v.optional(scope, body, "error");
-    const description = try v.optional(scope, error_body, "message");
     const status = try scope.get(try scope.get(owner, "response"), "status");
-    _ = description;
-    const message = try scope.concat(try scope.concat(try scope.stringify(status), try scope.text(" ")), try scope.invoke(try scope.global("JSON"), "stringify", &.{body}));
-    const reason = try scope.own(try v.js.builtin(scope.engine, "Error", &.{message}));
-    try scope.put(reason, "status", status);
-    try scope.put(reason, "type", try v.optional(scope, error_body, "type"));
-    try scope.put(reason, "error", error_body);
+    const header_values = try scope.get(try scope.get(owner, "response"), "headers");
+    const headers = try scope.own(try v.js.builtin(scope.engine, "Headers", &.{header_values}));
+    const reason = try @import("native_ai_anthropic_api_error.zig").generateValue(scope, try scope.get(try scope.get(owner, "agent"), "errors"), status, body, text, headers);
     if (!try fallback(scope, owner, reason)) try fail(scope, owner, reason);
 }
