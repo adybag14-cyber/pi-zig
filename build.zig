@@ -812,6 +812,13 @@ pub fn build(b: *std.Build) void {
     const chord_state_run = b.addRunArtifact(chord_state_tests);
     chord_state_run.has_side_effects = true;
     b.step("test-native-chord-replicated-state-source", "Diagnose actual Source16 replicated state GC and complete allocation baseline; failure sweep remains separately required").dependOn(&chord_state_run.step);
+    const chord_output_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_output_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord5ab7fe7 output"} });
+    linkQuickJs(b, chord_output_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_output_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("build-native-chord-output-source", "Compile actual relocated Chord output module observations without runtime").dependOn(&chord_output_tests.step);
+    const chord_output_run = b.addRunArtifact(chord_output_tests);
+    chord_output_run.has_side_effects = true;
+    b.step("test-native-chord-output-source", "Observe actual native output factory with optional Buffer skips Progress and fresh baseline").dependOn(&chord_output_run.step);
     const chord_foreign_context_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_foreign_context_review_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord5ab7fe7 foreign"} });
     linkQuickJs(b, chord_foreign_context_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_foreign_context_tests.root_module, sqlite_lib_dir, sqlite_library);

@@ -1,0 +1,51 @@
+{
+  "completed_utc": "2026-10-15T16:43:44.6091971+00:00",
+  "scope": "selected source-only actual module factory and shared caller syntax",
+  "candidate_base": "bf381eb9753efa79b4824d6d68564cc37641ef48",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "source_file": "packages/chord/src/output.ts",
+  "source_sha256": "43F158BD71CAA4A64E62426C4EF7B93EA3C71CCF3B7033EFC675669E69287BFB",
+  "selected_candidate_files": [
+    {
+      "path": "build.zig",
+      "sha256": "C2170AE5E286AE21285E9EC5E9D164842F3B7602587D108351AA0CCCE1B1418C"
+    },
+    {
+      "path": "src/extensions/native_chord_output.zig",
+      "sha256": "E4D7014D9CA37ABC4540BB9BC797E25516777F05B7D53DF7A8146F13E01C8EA7"
+    },
+    {
+      "path": "src/extensions/native_durable_output_buffer.zig",
+      "sha256": "9FBF73E2B4F44E0BCAD3187564F260764B6969F2789567BAAA42D10531E3786E"
+    },
+    {
+      "path": "src/native_chord_output_source_test.zig",
+      "sha256": "0D9EC10B998B80C840E26D137BB885ECA099A38F1852447B154999C64595F170"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-output-5ab7fe7.input.txt",
+      "sha256": "C6BD224BE8539AD0F343510B545E0CBD8DC2614D1298F79DDCFFC0F9A089C24D"
+    },
+    {
+      "path": "verification/chord-foreign-context-5ab7fe7-20261015/Capture-ChordOutput5ab7fe7.mjs",
+      "sha256": "BD1682C817095E5356240B4C81161AD2A5B224F13BC0F99BC35B1F5642A9BC76"
+    }
+  ],
+  "shared_caller_cases": 14,
+  "authored_runtime_exports": 7,
+  "OutputSkip_runtime_export": false,
+  "zig_fmt_check": "passed",
+  "javascript_caller_syntax": "passed",
+  "source_capture_wrapper_syntax": "passed",
+  "git_diff_check": "passed",
+  "source_executed": false,
+  "source_captured": false,
+  "full_frozen_inputs_verified": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "host_baseline": null,
+  "complete_host_failure_coverage": false,
+  "full_chord_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}

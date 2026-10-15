@@ -33,6 +33,19 @@ fn put(engine: *Engine, state: c.JSValue, key: [:0]const u8, value: c.JSValue) !
     try @import("native_tool_info.zig").putData(engine, state, key, c.JS_DupValue(engine.context, value));
 }
 fn numeric(engine: *Engine, state: c.JSValue, key: [:0]const u8) !f64 {
+    if (std.mem.eql(u8, key, "maxBytes") or std.mem.eql(u8, key, "maxLines")) {
+        const reference_enabled = try vm.get(engine, state, "sourceLimitsEnabled");
+        defer engine.freeValue(reference_enabled);
+        if (c.JS_ToBool(engine.context, reference_enabled) != 0) {
+            const reference = try vm.get(engine, state, "sourceLimits");
+            defer engine.freeValue(reference);
+            const limit = try vm.get(engine, reference, key);
+            defer engine.freeValue(limit);
+            var result: f64 = 0;
+            if (c.JS_ToFloat64(engine.context, &result, limit) < 0) return js.capture(engine);
+            return result;
+        }
+    }
     const value = try vm.get(engine, state, key);
     defer engine.freeValue(value);
     var result: f64 = 0;
@@ -40,6 +53,19 @@ fn numeric(engine: *Engine, state: c.JSValue, key: [:0]const u8) !f64 {
     return result;
 }
 fn flag(engine: *Engine, state: c.JSValue, key: [:0]const u8) !bool {
+    if (std.mem.eql(u8, key, "head") or std.mem.eql(u8, key, "tail")) {
+        const reference_enabled = try vm.get(engine, state, "sourceLimitsEnabled");
+        defer engine.freeValue(reference_enabled);
+        if (c.JS_ToBool(engine.context, reference_enabled) != 0) {
+            const reference = try vm.get(engine, state, "sourceLimits");
+            defer engine.freeValue(reference);
+            const retain = try vm.get(engine, reference, "retain");
+            defer engine.freeValue(retain);
+            const expected = try engine.checked(c.JS_NewString(engine.context, key.ptr));
+            defer engine.freeValue(expected);
+            return c.JS_IsStrictEqual(engine.context, retain, expected);
+        }
+    }
     const value = try vm.get(engine, state, key);
     defer engine.freeValue(value);
     return c.JS_ToBool(engine.context, value) != 0;
