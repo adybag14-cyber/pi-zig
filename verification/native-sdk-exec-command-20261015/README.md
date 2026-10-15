@@ -1,0 +1,13 @@
+# Actual core execCommand continuation
+
+This independent source continuation starts at Root `3b479da0a86a20c5fd1baf15969777733ded95c9` and owns only new files. It does not replace Env, Bash, Engine, SDK initialization, or shared C helpers. The Bedrock candidates and evidence are separate.
+
+Authority is immutable Source `4954d760504c11df9b2cbdc040346107b6a8153d`, `packages/coding-agent/src/core/exec.ts` and `utils/child-process.ts`. `create(engine)` returns the core `execCommand(command,args,cwd,options)` callable for the initializer owner to capture. Its wrapper selects `options?.cwd ?? capturedCwd`; the core implementation itself does not read `options.cwd`.
+
+The production draft directly spawns executable/argv with ignored stdin and separate stdout/stderr pipes. Each raw channel chunk becomes an actual Buffer and calls its `toString` method before string concatenation. It does not sanitize, spill, combine channels, decode across chunks with StringDecoder, or impose an invented maxBuffer option. Only the Source signal and millisecond timeout options are read. Guest signal methods, timer calls, getters, and wait-promise then/catch callbacks run on the VM owner. The worker receives only a private child handle, atomic control, owned bytes, and an output acknowledgment path.
+
+The lower adapter retains the exact direct-child handle until readers retire. On Windows it records process ID and creation FILETIME from that handle; on POSIX it retains the unreaped direct-child identity. A successful SIGTERM request sets the equivalent of `proc.killed`, even if POSIX user code ignores the signal. The Source five-second callback consequently does not force SIGKILL after a successfully sent SIGTERM. Shutdown can kill only that owned direct child. It does not enumerate or terminate descendants.
+
+After exit, both pipe EOFs finish immediately. Otherwise the adapter drains until a 100ms idle period, rearmed by every channel chunk. Quiet inherited descendant pipe handles are closed without waiting for or killing the descendant. Continuous descendant output continues to rearm the idle grace, as in Source.
+
+Qualification is **false**. Only pinned Zig formatting/AST and source review have run. No Source child fixture, semantic compile, native real-child execution, callback-error/uncaught-error comparison, GC/OOM, Windows argv/PATH/error diagnostics, or POSIX execution has been qualified. In particular, Node spawn validation and platform PATH resolution need genuine controlled Source captures before claiming exact diagnostics or complete platform parity. The public initializer is not assembled here and full Pi remains unqualified.
