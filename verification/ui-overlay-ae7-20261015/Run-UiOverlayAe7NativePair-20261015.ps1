@@ -12,6 +12,11 @@ $taskToolReference=Join-Path $taskEvidence 'durable-latest89-full-inspect-53ae-t
 $taskOriginal=Join-Path $taskEvidence 'ui-overlay-ae7-source12-first-20261015-output.json'
 $taskSourcePost=Join-Path $taskEvidence 'ui-overlay-ae7-source12-first-20261015-posthash.json'
 $taskSourceOwner=Join-Path $taskEvidence 'ui-overlay-ae7-source12-first-20261015.json'
+$taskSourceManifests=@(
+ @{name='source';file='sourceae7-full-manifest-20261015.json';count=1968},
+ @{name='dependencies';file='sourceae7-runtime-manifest-20261015.json';count=31064},
+ @{name='node_tools';file='sourceae7-node-tools-before-20261015.json';count=1774}
+)
 function Source-Rows {
  @(git -C $taskPrivate ls-files --cached --others --exclude-standard|Sort-Object -Unique|Where-Object{Test-Path -LiteralPath (Join-Path $taskPrivate $_) -PathType Leaf}|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath (Join-Path $taskPrivate $_)).Hash}})
 }
@@ -32,7 +37,13 @@ if(@($taskProof.manifests|Where-Object drift -ne 0).Count -or @($taskProof.extra
 $taskBefore=Source-Rows
 $taskTools=(Get-Content -LiteralPath $taskToolReference -Raw|ConvertFrom-Json).inputs
 if($taskTools.Count -ne 19546){throw 'Full compiler manifest required'}
-$taskControls=@($PSCommandPath,$taskOwner,$taskToolReference,$taskOriginal,$taskSourcePost,$taskSourceOwner)|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}}
+$taskReferences=@()
+foreach($taskSpec in $taskSourceManifests){
+ $taskRows=@(Get-Content -LiteralPath (Join-Path $taskEvidence $taskSpec.file) -Raw|ConvertFrom-Json)
+ if($taskRows.Count -ne $taskSpec.count -or @(Tool-Drift $taskRows).Count){throw "Latest Source full manifest prehash mismatch $($taskSpec.name)"}
+ $taskReferences+=@{name=$taskSpec.name;rows=$taskRows}
+}
+$taskControls=@(@($PSCommandPath,$taskOwner,$taskToolReference,$taskOriginal,$taskSourcePost,$taskSourceOwner)+@($taskSourceManifests|ForEach-Object{Join-Path $taskEvidence $_.file}))|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}}
 if((Get-FileHash -LiteralPath $taskZig).Hash -cne '086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864'){throw 'Pinned Zig SHA256 changed'}
 $taskBefore|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-source-before.json") -Encoding utf8NoBOM
 $taskControls|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-controls-before.json") -Encoding utf8NoBOM
@@ -51,6 +62,7 @@ $taskRuntime=$null
 if($taskCompile.status -ceq 'passed'){
  $taskBetween=Source-Rows
  if(@(Compare-Object ($taskBefore|ForEach-Object{"$($_.path):$($_.sha256)"}) ($taskBetween|ForEach-Object{"$($_.path):$($_.sha256)"})).Count -or @(Tool-Drift $taskTools).Count -or @(Tool-Drift $taskControls).Count){throw 'Frozen pair drift before runtime'}
+ foreach($taskReference in $taskReferences){if(@(Tool-Drift $taskReference.rows).Count){throw "Latest Source full manifest drift before runtime $($taskReference.name)"}}
  $taskRuntimeFree=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory
  if($taskRuntimeFree -lt 16MB){throw 'Fresh runtime admission below normal16GiB'}
  & $taskOwner -Name "$taskName-runtime" -Executable $taskZig -WorkingDirectory $taskPrivate -Arguments @('build',$taskTestTarget,'-Doptimize=Debug','-Duse-llvm=true','-j1','--test-timeout','120s','--summary','all') -TimeoutSeconds 300
@@ -60,6 +72,7 @@ $taskAfter=Source-Rows
 $taskSourceDrift=@(Compare-Object ($taskBefore|ForEach-Object{"$($_.path):$($_.sha256)"}) ($taskAfter|ForEach-Object{"$($_.path):$($_.sha256)"}))
 $taskToolDrift=@(Tool-Drift $taskTools)
 $taskControlDrift=@(Tool-Drift $taskControls)
-[ordered]@{candidate=$taskExpectedHead;source=$taskBefore.Count;source_after=$taskAfter.Count;source_drift=$taskSourceDrift.Count;tools=$taskTools.Count;tool_drift=$taskToolDrift.Count;controls=$taskControls.Count;control_drift=$taskControlDrift.Count;compile=$taskCompile.status;runtime=if($taskRuntime){$taskRuntime.status}else{'not_run'};completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Tee-Object -FilePath (Join-Path $taskEvidence "$taskName-posthash.json")
-if($taskSourceDrift.Count -or $taskToolDrift.Count -or $taskControlDrift.Count){throw 'Frozen pair terminal posthash mismatch'}
+$taskReferencePost=@($taskReferences|ForEach-Object{@{name=$_.name;files=$_.rows.Count;drift=@(Tool-Drift $_.rows).Count}})
+[ordered]@{candidate=$taskExpectedHead;source=$taskBefore.Count;source_after=$taskAfter.Count;source_drift=$taskSourceDrift.Count;tools=$taskTools.Count;tool_drift=$taskToolDrift.Count;controls=$taskControls.Count;control_drift=$taskControlDrift.Count;latest_source_references=$taskReferencePost;compile=$taskCompile.status;runtime=if($taskRuntime){$taskRuntime.status}else{'not_run'};completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 6|Tee-Object -FilePath (Join-Path $taskEvidence "$taskName-posthash.json")
+if($taskSourceDrift.Count -or $taskToolDrift.Count -or $taskControlDrift.Count -or @($taskReferencePost|Where-Object drift -ne 0).Count){throw 'Frozen pair terminal posthash mismatch'}
 if($taskCompile.status -cne 'passed' -or !$taskRuntime -or $taskRuntime.status -cne 'passed'){exit 1}
