@@ -164,7 +164,7 @@ fn mergeHeaders(scope: *Scope, target: c.JSValue, source: c.JSValue) !void {
         try v.js.setKey(scope.engine, target, name, try v.at(scope, entry, 1));
     }
 }
-fn headers(scope: *Scope, owner: c.JSValue) !c.JSValue {
+fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const result = try scope.object();
     try scope.put(result, "accept", try scope.text("application/json"));
     try scope.put(result, "content-type", try scope.text("application/json"));
@@ -222,7 +222,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
     const engine = scope.engine;
     const options = try scope.get(owner, "options");
     if (!v.nullish(try v.optional(scope, options, "fetch"))) return v.errorText(scope, try scope.text("Native OpenAI custom fetch adapter is not yet qualified"));
-    const header_object = try headers(scope, owner);
+    const header_object = try buildHeaders(scope, owner);
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
         for (fields.items) |field| {

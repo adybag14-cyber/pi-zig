@@ -26,10 +26,10 @@ pub fn declared(engine: *v.em.Engine, messages: c.JSValue) !c.JSValue {
         defer row.deinit();
         if (!try v.eq(&row, try row.get(message, "role"), "system")) continue;
         const added = try row.get(message, "toolsAdded");
-        var tools = try v.iterator(&row, if (v.nullish(added)) try row.array() else added);
-        defer tools.deinit();
-        errdefer tools.closePreserving();
-        while (try tools.next()) |tool| {
+        var declarations = try v.iterator(&row, if (v.nullish(added)) try row.array() else added);
+        defer declarations.deinit();
+        errdefer declarations.closePreserving();
+        while (try declarations.next()) |tool| {
             defer engine.freeValue(tool);
             const setter = try row.get(definitions, "set");
             _ = try row.call(setter, definitions, &.{ try row.get(tool, "name"), tool });
