@@ -44,7 +44,7 @@ runtime/package identities are not fabricated. The prepared control records
 retain original raw headers separately and compare functional headers strictly;
 explicit caller overrides remain part of the strict comparison.
 
-`ai-one-shot-5ab.input.txt` prepares 80 controls across all five APIs and their
+`ai-one-shot-5ab.input.txt` contains 80 controls across all five APIs and their
 public helpers, including auth, hooks, replacement payloads, retries, malformed
 billed answers, Cloudflare envelopes, Decisions 504/refusal/image inputs, llama
 readout escalation, token fallback/duplicates, cache reuse and label identity.
@@ -73,8 +73,16 @@ the old 512 KiB aggregation limit with the documented explicit Engine-grounded
 budget. Supplied guest fetch responses retain their actual `json()`/`text()`
 methods and ownership. Large real-wire image and limit controls remain pending.
 
-This follow-up is source-only. No original expected JSON has been fabricated.
-Source capture, native compilation, runtime, broader timeout/abort controls,
-complete provider registration and full factory/application qualification are
-pending the respective coordinated grants and dependency intake. Nothing in
-this audit qualifies the complete Pi application or activates a release.
+Actual original Source100 capture passed on Node24.14.0 with owned PID60324,
+exit0, and full Source1967/dependency31064/Node1774/control posthash drift0.
+The fixture is verbatim original output: 80 operation/helper observations and
+20 separate image registry/dispatch observations. Raw SDK headers remain in the
+fixture alongside strictly recorded functional headers, method, full URL,
+path/query, raw body, parsed payload, hooks and results. Native tests compare
+every complete row without floating-point or ordering normalization.
+
+This follow-up remains a native source-only candidate. No expected JSON was
+fabricated. Native compilation/runtime, broader timeout/abort controls, complete
+provider assembly and full factory/application qualification are pending their
+respective coordinated grants. Nothing in this audit qualifies the complete Pi
+application or activates a release.

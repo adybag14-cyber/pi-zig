@@ -43,8 +43,9 @@ pub fn buildPrepared(scope: *Scope, overrides: c.JSValue, api_key: c.JSValue, co
     try scope.put(base, "x-pi-runtime-version", try scope.text(builtin.zig_version_string));
     try scope.put(base, "x-pi-engine", try scope.text("quickjs-ng"));
     try scope.put(base, "x-stainless-retry-count", try scope.text("0"));
-    const timeout = if (c.JS_IsUndefined(configured_timeout)) c.JS_NewInt32(scope.engine.context, 600000) else configured_timeout;
-    if (scope.truthy(timeout)) try scope.put(base, "x-stainless-timeout", try scope.stringify(try scope.invoke(try scope.global("Math"), "trunc", &.{try @import("native_ai_classifier_values.zig").binary(scope, .divide, timeout, c.JS_NewInt32(scope.engine.context, 1000))})));
+    // SDK buildHeaders receives inputOptions, before the client's default
+    // timeout is merged into the request. Only an explicit option emits this.
+    if (scope.truthy(configured_timeout)) try scope.put(base, "x-stainless-timeout", try scope.stringify(try scope.invoke(try scope.global("Math"), "trunc", &.{try @import("native_ai_classifier_values.zig").binary(scope, .divide, configured_timeout, c.JS_NewInt32(scope.engine.context, 1000))})));
     try scope.put(base, "authorization", try scope.concat(try scope.text("Bearer "), try scope.stringify(api_key)));
     const result = try scope.own(try @import("native_headers.zig").fromRecord(scope.engine, base));
     var iterator = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{if (c.JS_IsUndefined(overrides)) try scope.object() else overrides}));
