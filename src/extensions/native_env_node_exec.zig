@@ -257,7 +257,8 @@ const Task = struct {
             const set = try scope.get(self.receiver, "activeChildPids");
             if (!h.nullish(set)) _ = try scope.invoke(set, "delete", &.{c.JS_NewUint32(scope.engine.context, self.pid.load(.acquire))});
         }
-        if (self.allocation_failed.load(.acquire) or self.failure == error.OutOfMemory) return error.OutOfMemory;
+        if (self.allocation_failed.load(.acquire)) return error.OutOfMemory;
+        if (self.failure) |failure| if (failure == error.OutOfMemory) return error.OutOfMemory;
         var returned: c.JSValue = undefined;
         var successful = false;
         if (!c.JS_IsUndefined(self.callback_reason) and self.mode == .raw) return task.settled(true, self.callback_reason);

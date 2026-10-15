@@ -68,11 +68,18 @@ pub const Hub = struct {
     fn pump(engine: *js.Engine) anyerror!bool {
         const self: *Hub = @ptrCast(@alignCast(engine.native_env_context orelse return false));
         try self.assertOwner();
+        // Native I/O callbacks enter at a microtask checkpoint. A completed
+        // worker must not overtake queued Promise continuations from the
+        // current callback, even if its OS operation already finished.
+        if (c.JS_IsJobPending(engine.runtime)) return false;
         var worked = false;
         var index: usize = 0;
         while (index < self.tasks.items.len) {
             const task = self.tasks.items[index];
-            if (task.poll) |poll| worked = (try poll(task)) or worked;
+            if (task.poll) |poll| {
+                worked = (try poll(task)) or worked;
+                if (c.JS_IsJobPending(engine.runtime)) return worked;
+            }
             if (!task.done.load(.acquire)) {
                 index += 1;
                 continue;
@@ -86,6 +93,7 @@ pub const Hub = struct {
                 try task.settled(true, reason);
             };
             worked = true;
+            if (c.JS_IsJobPending(engine.runtime)) return worked;
         }
         return worked;
     }
