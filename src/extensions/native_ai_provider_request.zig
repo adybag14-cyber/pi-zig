@@ -7,7 +7,8 @@ pub fn normalizeId(engine: *v.em.Engine) !c.JSValue {
         fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
             var scope: Scope = .{ .engine = host };
             defer scope.deinit();
-            const regex = try scope.own(try v.js.builtin(host, "RegExp", &.{ try scope.text("[^a-zA-Z0-9_-]"), try scope.text("g") }));
+            var args_regex = [_]c.JSValue{ try scope.text("[^a-zA-Z0-9_-]"), try scope.text("g") };
+            const regex = try scope.own(try host.checked(c.JS_CallConstructor(host.context, host.intrinsic_regexp_constructor, args_regex.len, &args_regex)));
             const sanitized = try scope.invoke(if (args.len > 0) args[0] else c.pi_js_undefined(), "replace", &.{ regex, try scope.text("_") });
             return v.js.invoke(host, sanitized, "slice", &.{ c.JS_NewInt32(host.context, 0), c.JS_NewInt32(host.context, 64) });
         }
