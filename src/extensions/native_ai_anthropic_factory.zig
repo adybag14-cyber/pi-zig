@@ -10,6 +10,8 @@ const sse = @import("native_ai_anthropic_sse.zig");
 const federation = @import("native_ai_anthropic_federation.zig");
 const Stage = enum(c_int) { payload, ready, response, read, event, raw, rejected_body };
 pub fn create(engine: *v.em.Engine) !c.JSValue {
+    const cache_key = "\x00native-anthropic-provider-factory";
+    if (engine.native_module_values.get(cache_key)) |existing| return c.JS_DupValue(engine.context, existing);
     try @import("native_stream.zig").install(engine);
     try @import("native_ai_sdk_headers.zig").install(engine);
     var scope: Scope = .{ .engine = engine };
@@ -31,6 +33,11 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
         };
         try scope.put(result, name, try scope.own(try @import("native_node_function.zig").createArrow(engine, name, 3, Adapter.call, &.{dependencies})));
     }
+    const retained = c.JS_DupValue(engine.context, result);
+    engine.native_module_values.put(engine.gpa, cache_key, retained) catch |err| {
+        engine.freeValue(retained);
+        return err;
+    };
     return c.JS_DupValue(engine.context, result);
 }
 fn auth(scope: *Scope, model: c.JSValue, options: c.JSValue) !void {
