@@ -321,10 +321,11 @@ fn formatError(scope: *Scope, value: c.JSValue, kind: Kind) !c.JSValue {
     const instance = c.JS_IsInstanceOf(scope.engine.context, value, try scope.global("Error"));
     if (instance < 0) return v.js.capture(scope.engine);
     if (instance == 0) return @import("native_ai_provider_error.zig").safeJson(scope, value);
-    const status = try scope.get(value, "statusCode");
-    if (!c.JS_IsNumber(status)) return scope.get(value, "message");
-    const body = try scope.get(value, "body");
-    var text = if (c.JS_IsString(body)) try scope.invoke(body, "trim", &.{}) else c.pi_js_undefined();
+    const initial_status = try scope.get(value, "statusCode");
+    const status = if (c.JS_IsNumber(initial_status)) try scope.get(value, "statusCode") else c.pi_js_undefined();
+    const initial_body = try scope.get(value, "body");
+    var text = if (c.JS_IsString(initial_body)) try scope.invoke(try scope.get(value, "body"), "trim", &.{}) else c.pi_js_undefined();
+    if (c.JS_IsUndefined(status)) return scope.get(value, "message");
     if (scope.truthy(text) and try v.length(scope, text) > 4000) {
         const count = try binary(scope, .subtract, try scope.get(text, "length"), c.JS_NewInt32(scope.engine.context, 4000));
         text = try scope.concat(try scope.invoke(text, "slice", &.{ c.JS_NewInt32(scope.engine.context, 0), c.JS_NewInt32(scope.engine.context, 4000) }), try scope.text("... [truncated "));
