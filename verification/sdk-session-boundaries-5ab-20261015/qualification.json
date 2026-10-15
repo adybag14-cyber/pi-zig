@@ -1,0 +1,61 @@
+{
+  "status": "component-qualified-windows-debug",
+  "base_head": "dc974f891ede2f2b87e21b7f852da00deef19fb3",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "toolchain": "Zig 0.16.0",
+  "toolchain_executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "source_fixture_sha256": "7B50AF094724ED4E377A2628CFA2DFD0CE1BEB7D2D3F046CA985E5F6B1D1E087",
+  "native_executable_sha256": "38E48EDCED22CD1D71B680A1D62721508FDECFC27F95C3752AC9C927661380B1",
+  "source_cases": 47,
+  "substantive_native_tests": 3,
+  "import_test_controls": 8,
+  "native_test_total": 11,
+  "actual_methods": [
+    "_executeNestedToolCall",
+    "_applyBoundaryDrafts",
+    "_createBoundaryPreviewManager",
+    "_getPendingBoundaryMessages",
+    "_buildBoundaryContext",
+    "_commitBoundaryDrafts",
+    "_reportInvalidBoundaryContinuation"
+  ],
+  "genuine_added_collaborators": [
+    "NestedToolCallRunner",
+    "NestedCallRecorder",
+    "runToolCall over existing actual prepare/execute/finalize pipeline"
+  ],
+  "source_scope": "Actual Source methods and imported collaborators on caller-owned receivers; real in-memory manager draft/context projection, continuation matrix, callee/getter/iterator order, raw rejections, record limits, usage, recursive sequential queue and retained host callback metadata. Durations and timestamps normalized to zero.",
+  "gc_scope": "Pending extension emission retains session through fulfillment or raw rejection, then releases session/runner/callback graph after job completion and GC.",
+  "accepted_source_owner": "final-source-owner.json",
+  "accepted_compile_owner": "final-compile-owner.json",
+  "accepted_runtime_owner": "final-runtime-owner.json",
+  "source_posthash": "final-source-posthash.json",
+  "compile_posthash": "final-compile-posthash.json",
+  "runtime_posthash": "final-runtime-posthash.json",
+  "matching_artifacts": "final-artifacts.json",
+  "full_prehash_location": "C:/Users/adyba/pi-zig-sdk-boundaries-20261015/verification/sdk-session-boundaries-5ab-20261015/sdk-boundaries-{source-third,compile-second,runtime-second}-20261015-prehash.json",
+  "frozen_counts": {
+    "candidate": 5604,
+    "source": 1967,
+    "dependencies": 31064,
+    "node_tools": 1774,
+    "compiler": 19546,
+    "source_compile_controls": 9,
+    "runtime_controls_including_compiled_exe_pdb_manifest": 12
+  },
+  "all_final_input_drift": 0,
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "first_next_action": "Root intake: install native_sdk_session_boundaries into the private class staging prototype with private captured dependencies SessionManager, native_nested_tool_calls.constructor, native_agent_single_tool.create, convertToLlm and estimateProjectedContextTokens; requalify the integrated latest-Source class/factory candidate.",
+  "remaining_integration": [
+    "Root private class assembler wiring is deliberately not changed by this isolated component commit.",
+    "Other ordinary AgentSession bodies and full factory/application behavior remain Root's integration gates.",
+    "POSIX oracle and remaining five host/optimization profiles are not qualified; preview cwd fixture currently records Windows authority.",
+    "Public Agent/core module activation, complete native application qualification and final Node host removal are not certified by this component."
+  ],
+  "attempt_history": [
+    "Source first: failed syntax in fixture; full posthash zero; corrected after terminal audit.",
+    "Source second, compile first, runtime first: passed with full posthash zero; then added Source host callback metadata and corrected inferred callback names.",
+    "Source third, compile second, matching runtime second: final accepted passes with full posthash zero."
+  ]
+}

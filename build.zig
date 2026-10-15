@@ -1602,6 +1602,12 @@ pub fn build(b: *std.Build) void {
     bindings_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-session-bindings", "Compile ordinary session extension binding and resource discovery bodies").dependOn(&bindings_tests.step);
     b.step("test-native-sdk-session-bindings", "Compare actual upstream extension binding and discovered resource ordering").dependOn(&b.addRunArtifact(bindings_tests).step);
+    const boundary_tests = b.addTest(.{ .name = "sdk-boundaries-test", .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_boundaries_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK boundaries"}, .use_llvm = use_llvm });
+    linkQuickJs(b, boundary_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(boundary_tests.root_module, sqlite_lib_dir, sqlite_library);
+    boundary_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-boundaries", "Compile actual session boundary and nested tool bodies").dependOn(&b.addInstallArtifact(boundary_tests, .{}).step);
+    b.step("test-native-sdk-boundaries", "Compare latest Source session boundary and nested pipeline behavior").dependOn(&b.addRunArtifact(boundary_tests).step);
 
     const manual_compaction_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_compaction_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary compaction"}, .use_llvm = use_llvm });
     linkQuickJs(b, manual_compaction_tests.root_module, quickjs, sqlite_lib_dir);

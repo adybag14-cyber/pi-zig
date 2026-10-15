@@ -1,0 +1,2051 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "inputSha256": "ca2f6ad454e0000627c8883f83d3b59694fe3b4714551537ecb30110892eada1",
+  "cases": 47,
+  "scope": "Seven actual AgentSession boundary/nested methods, genuine SessionManager/NestedToolCallRunner/NestedCallRecorder and Agent runToolCall pipeline on caller-owned receivers. Durations/timestamps normalized to zero; no factory or public runtime activation qualification.",
+  "rows": [
+    {
+      "name": "seven-descriptors",
+      "value": [
+        {
+          "key": "_executeNestedToolCall",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "_executeNestedToolCall",
+          "length": 4,
+          "async": true,
+          "ownPrototype": false
+        },
+        {
+          "key": "_applyBoundaryDrafts",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "_applyBoundaryDrafts",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false
+        },
+        {
+          "key": "_createBoundaryPreviewManager",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "_createBoundaryPreviewManager",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false
+        },
+        {
+          "key": "_getPendingBoundaryMessages",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "_getPendingBoundaryMessages",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false
+        },
+        {
+          "key": "_buildBoundaryContext",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "_buildBoundaryContext",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false
+        },
+        {
+          "key": "_commitBoundaryDrafts",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "_commitBoundaryDrafts",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false
+        },
+        {
+          "key": "_reportInvalidBoundaryContinuation",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "_reportInvalidBoundaryContinuation",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false
+        }
+      ]
+    },
+    {
+      "name": "apply-real-four-drafts",
+      "value": {
+        "entries": [
+          {
+            "type": "custom",
+            "customType": "one",
+            "data": {
+              "x": 1
+            }
+          },
+          {
+            "type": "custom_message",
+            "customType": "two",
+            "content": [
+              {
+                "type": "text",
+                "text": "injected"
+              }
+            ],
+            "display": false,
+            "details": {
+              "marker": 1
+            }
+          },
+          {
+            "type": "context_edit",
+            "replacement": {
+              "content": "changed"
+            }
+          },
+          {
+            "type": "compaction",
+            "details": {
+              "why": "fixture"
+            },
+            "summary": "summary",
+            "tokensBefore": 4,
+            "usage": {
+              "input": 2,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "fromHook": true
+          }
+        ],
+        "branch": [
+          "message",
+          "custom",
+          "custom_message",
+          "context_edit",
+          "compaction"
+        ],
+        "customIdentity": true,
+        "detailsIdentity": true
+      }
+    },
+    {
+      "name": "preview-real-manager-isolation",
+      "value": {
+        "original": [
+          "message"
+        ],
+        "preview": [
+          "message",
+          "custom_message"
+        ],
+        "cwd": "C:\\boundary",
+        "same": false
+      }
+    },
+    {
+      "name": "preview-missing-header",
+      "error": {
+        "name": "Error",
+        "message": "Session header is missing"
+      }
+    },
+    {
+      "name": "pending-iterable-order-identity",
+      "value": {
+        "trace": [
+          "queued",
+          "queued-iterate",
+          "custom",
+          "custom-iterate"
+        ],
+        "same": [
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "context--turn_end-false",
+      "value": {
+        "roles": [],
+        "canContinue": false,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context--turn_end-true",
+      "value": {
+        "roles": [],
+        "canContinue": true,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context--agent_before_settle-false",
+      "value": {
+        "roles": [],
+        "canContinue": false,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context--agent_before_settle-true",
+      "value": {
+        "roles": [],
+        "canContinue": false,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-system-turn_end-false",
+      "value": {
+        "roles": [
+          "system"
+        ],
+        "canContinue": false,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-system-turn_end-true",
+      "value": {
+        "roles": [
+          "system"
+        ],
+        "canContinue": true,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-system-agent_before_settle-false",
+      "value": {
+        "roles": [
+          "system"
+        ],
+        "canContinue": false,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-system-agent_before_settle-true",
+      "value": {
+        "roles": [
+          "system"
+        ],
+        "canContinue": false,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-user-turn_end-false",
+      "value": {
+        "roles": [
+          "user"
+        ],
+        "canContinue": true,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-user-turn_end-true",
+      "value": {
+        "roles": [
+          "user"
+        ],
+        "canContinue": true,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-user-agent_before_settle-false",
+      "value": {
+        "roles": [
+          "user"
+        ],
+        "canContinue": true,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-user-agent_before_settle-true",
+      "value": {
+        "roles": [
+          "user"
+        ],
+        "canContinue": true,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-assistant-turn_end-false",
+      "value": {
+        "roles": [
+          "assistant"
+        ],
+        "canContinue": false,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-assistant-turn_end-true",
+      "value": {
+        "roles": [
+          "assistant"
+        ],
+        "canContinue": true,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-assistant-agent_before_settle-false",
+      "value": {
+        "roles": [
+          "assistant"
+        ],
+        "canContinue": false,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-assistant-agent_before_settle-true",
+      "value": {
+        "roles": [
+          "assistant"
+        ],
+        "canContinue": true,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-system,assistant-turn_end-false",
+      "value": {
+        "roles": [
+          "system",
+          "assistant"
+        ],
+        "canContinue": false,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-system,assistant-turn_end-true",
+      "value": {
+        "roles": [
+          "system",
+          "assistant"
+        ],
+        "canContinue": true,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-system,assistant-agent_before_settle-false",
+      "value": {
+        "roles": [
+          "system",
+          "assistant"
+        ],
+        "canContinue": false,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-system,assistant-agent_before_settle-true",
+      "value": {
+        "roles": [
+          "system",
+          "assistant"
+        ],
+        "canContinue": true,
+        "calls": 1,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-assistant,user-turn_end-false",
+      "value": {
+        "roles": [
+          "assistant",
+          "user"
+        ],
+        "canContinue": true,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-assistant,user-turn_end-true",
+      "value": {
+        "roles": [
+          "assistant",
+          "user"
+        ],
+        "canContinue": true,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-assistant,user-agent_before_settle-false",
+      "value": {
+        "roles": [
+          "assistant",
+          "user"
+        ],
+        "canContinue": true,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "context-assistant,user-agent_before_settle-true",
+      "value": {
+        "roles": [
+          "assistant",
+          "user"
+        ],
+        "canContinue": true,
+        "calls": 0,
+        "identities": [
+          true,
+          true
+        ],
+        "pending": [
+          "pending"
+        ]
+      }
+    },
+    {
+      "name": "custom-pending-short-circuit",
+      "value": {
+        "can": true,
+        "pending": [
+          "custom"
+        ],
+        "calls": 0
+      }
+    },
+    {
+      "name": "context-real-custom-and-edit",
+      "value": {
+        "entries": [
+          "message",
+          "context_edit",
+          "custom_message"
+        ],
+        "messages": [
+          [
+            "user",
+            "replacement"
+          ],
+          [
+            "custom",
+            "extra"
+          ]
+        ],
+        "llm": [
+          {
+            "role": "user",
+            "content": "replacement",
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "extra"
+              }
+            ],
+            "timestamp": 0
+          }
+        ],
+        "can": true
+      }
+    },
+    {
+      "name": "commit-refresh-before-events",
+      "value": {
+        "trace": [
+          [
+            "apply",
+            true,
+            true
+          ],
+          [
+            "refresh",
+            true
+          ],
+          [
+            "emit",
+            "entry_appended",
+            "a"
+          ],
+          [
+            "emit",
+            "entry_appended",
+            "b"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "commit-raw-error-stops",
+      "value": {
+        "same": true,
+        "trace": [
+          "refresh",
+          1
+        ]
+      }
+    },
+    {
+      "name": "apply-live-callee-and-draft-getters",
+      "value": {
+        "trace": [
+          "type",
+          "append-get",
+          "customType",
+          "data",
+          [
+            "append-call",
+            true,
+            "x",
+            3
+          ],
+          [
+            "get",
+            "id"
+          ]
+        ],
+        "same": true
+      }
+    },
+    {
+      "name": "apply-iterator-close-raw",
+      "value": {
+        "same": true,
+        "trace": [
+          "closed"
+        ]
+      }
+    },
+    {
+      "name": "invalid-event-format-and-identity",
+      "value": {
+        "events": [
+          "callee",
+          "coerce",
+          {
+            "same": true,
+            "extensionPath": "<boundary>",
+            "event": "identity",
+            "error": "turn_end requested continuation without runnable model context"
+          }
+        ]
+      }
+    },
+    {
+      "name": "nested-normal",
+      "value": {
+        "outcome": {
+          "toolCall": {
+            "type": "toolCall",
+            "id": "parent/1",
+            "name": "echo",
+            "arguments": {
+              "value": "hello"
+            }
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "hello"
+              }
+            ],
+            "details": {
+              "ok": true
+            },
+            "usage": {
+              "input": 2,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            }
+          },
+          "isError": false,
+          "durationMs": 0
+        },
+        "trace": [
+          [
+            "extension",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_start"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          "tools",
+          "assistant",
+          "tools",
+          [
+            "before",
+            "parent",
+            "parent/1"
+          ],
+          [
+            "tool",
+            "parent/1",
+            {
+              "value": "hello"
+            },
+            true
+          ],
+          [
+            "caller-update",
+            "partial",
+            true
+          ],
+          [
+            "extension",
+            {
+              "type": "tool_execution_update",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "partialResult": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "partial"
+                  }
+                ],
+                "details": {}
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_update"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_update",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "partialResult": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "partial"
+                  }
+                ],
+                "details": {}
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "after",
+            "parent",
+            "parent/1"
+          ],
+          [
+            "extension",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "hello"
+                  }
+                ],
+                "details": {
+                  "ok": true
+                },
+                "usage": {
+                  "input": 2,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 2,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              },
+              "isError": false,
+              "durationMs": 0,
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_end"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "hello"
+                  }
+                ],
+                "details": {
+                  "ok": true
+                },
+                "usage": {
+                  "input": 2,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 2,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              },
+              "isError": false,
+              "durationMs": 0,
+              "parentToolCallId": "parent"
+            }
+          ]
+        ],
+        "record": {
+          "calls": {
+            "calls": [
+              {
+                "id": "parent/1",
+                "name": "echo",
+                "status": "ok",
+                "arguments": {
+                  "value": "hello"
+                },
+                "durationMs": 0
+              }
+            ],
+            "complete": true
+          },
+          "usage": {
+            "input": 2,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 2,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "nested-missing",
+      "value": {
+        "outcome": {
+          "toolCall": {
+            "type": "toolCall",
+            "id": "parent/1",
+            "name": "echo",
+            "arguments": {
+              "value": "hello"
+            }
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "No assistant message issued this call"
+              }
+            ],
+            "details": {}
+          },
+          "isError": true
+        },
+        "trace": [
+          [
+            "extension",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_start"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          "tools",
+          "assistant",
+          [
+            "extension",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "No assistant message issued this call"
+                  }
+                ],
+                "details": {}
+              },
+              "isError": true,
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_end"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "No assistant message issued this call"
+                  }
+                ],
+                "details": {}
+              },
+              "isError": true,
+              "parentToolCallId": "parent"
+            }
+          ]
+        ],
+        "record": {
+          "calls": {
+            "calls": [
+              {
+                "id": "parent/1",
+                "name": "echo",
+                "status": "error",
+                "arguments": {
+                  "value": "hello"
+                },
+                "durationMs": 0,
+                "error": "No assistant message issued this call"
+              }
+            ],
+            "complete": true
+          }
+        }
+      }
+    },
+    {
+      "name": "nested-blocked",
+      "value": {
+        "outcome": {
+          "toolCall": {
+            "type": "toolCall",
+            "id": "parent/1",
+            "name": "echo",
+            "arguments": {
+              "value": "hello"
+            }
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "blocked"
+              }
+            ],
+            "details": {}
+          },
+          "isError": true
+        },
+        "trace": [
+          [
+            "extension",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_start"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          "tools",
+          "assistant",
+          "tools",
+          [
+            "before",
+            "parent",
+            "parent/1"
+          ],
+          [
+            "extension",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "blocked"
+                  }
+                ],
+                "details": {}
+              },
+              "isError": true,
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_end"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "blocked"
+                  }
+                ],
+                "details": {}
+              },
+              "isError": true,
+              "parentToolCallId": "parent"
+            }
+          ]
+        ],
+        "record": {
+          "calls": {
+            "calls": [
+              {
+                "id": "parent/1",
+                "name": "echo",
+                "status": "error",
+                "arguments": {
+                  "value": "hello"
+                },
+                "durationMs": 0,
+                "error": "blocked"
+              }
+            ],
+            "complete": true
+          }
+        }
+      }
+    },
+    {
+      "name": "nested-tool-throw",
+      "value": {
+        "outcome": {
+          "toolCall": {
+            "type": "toolCall",
+            "id": "parent/1",
+            "name": "echo",
+            "arguments": {
+              "value": "hello"
+            }
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "[object Object]"
+              }
+            ],
+            "details": {}
+          },
+          "isError": true,
+          "durationMs": 0
+        },
+        "trace": [
+          [
+            "extension",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_start"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          "tools",
+          "assistant",
+          "tools",
+          [
+            "before",
+            "parent",
+            "parent/1"
+          ],
+          [
+            "tool",
+            "parent/1",
+            {
+              "value": "hello"
+            },
+            true
+          ],
+          [
+            "caller-update",
+            "partial",
+            true
+          ],
+          [
+            "extension",
+            {
+              "type": "tool_execution_update",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "partialResult": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "partial"
+                  }
+                ],
+                "details": {}
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_update"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_update",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "partialResult": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "partial"
+                  }
+                ],
+                "details": {}
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "after",
+            "parent",
+            "parent/1"
+          ],
+          [
+            "extension",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "[object Object]"
+                  }
+                ],
+                "details": {}
+              },
+              "isError": true,
+              "durationMs": 0,
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_end"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "[object Object]"
+                  }
+                ],
+                "details": {}
+              },
+              "isError": true,
+              "durationMs": 0,
+              "parentToolCallId": "parent"
+            }
+          ]
+        ],
+        "record": {
+          "calls": {
+            "calls": [
+              {
+                "id": "parent/1",
+                "name": "echo",
+                "status": "error",
+                "arguments": {
+                  "value": "hello"
+                },
+                "durationMs": 0,
+                "error": "[object Object]"
+              }
+            ],
+            "complete": true
+          }
+        }
+      }
+    },
+    {
+      "name": "nested-start-reject",
+      "value": {
+        "same": true,
+        "trace": [
+          [
+            "extension",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_start"
+          ]
+        ],
+        "record": {
+          "calls": {
+            "calls": [
+              {
+                "id": "parent/1",
+                "name": "echo",
+                "status": "unfinished",
+                "arguments": {
+                  "value": "hello"
+                }
+              }
+            ],
+            "complete": false
+          }
+        }
+      }
+    },
+    {
+      "name": "nested-end-reject",
+      "value": {
+        "same": true,
+        "trace": [
+          [
+            "extension",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_start"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          "tools",
+          "assistant",
+          "tools",
+          [
+            "before",
+            "parent",
+            "parent/1"
+          ],
+          [
+            "tool",
+            "parent/1",
+            {
+              "value": "hello"
+            },
+            true
+          ],
+          [
+            "caller-update",
+            "partial",
+            true
+          ],
+          [
+            "extension",
+            {
+              "type": "tool_execution_update",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "partialResult": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "partial"
+                  }
+                ],
+                "details": {}
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_update"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_update",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "args": {
+                "value": "hello"
+              },
+              "partialResult": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "partial"
+                  }
+                ],
+                "details": {}
+              },
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "after",
+            "parent",
+            "parent/1"
+          ],
+          [
+            "extension",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "hello"
+                  }
+                ],
+                "details": {
+                  "ok": true
+                },
+                "usage": {
+                  "input": 2,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 2,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              },
+              "isError": false,
+              "durationMs": 0,
+              "parentToolCallId": "parent"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_end"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "parent/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "hello"
+                  }
+                ],
+                "details": {
+                  "ok": true
+                },
+                "usage": {
+                  "input": 2,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 2,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              },
+              "isError": false,
+              "durationMs": 0,
+              "parentToolCallId": "parent"
+            }
+          ]
+        ],
+        "record": {
+          "calls": {
+            "calls": [
+              {
+                "id": "parent/1",
+                "name": "echo",
+                "status": "ok",
+                "arguments": {
+                  "value": "hello"
+                },
+                "durationMs": 0
+              }
+            ],
+            "complete": true
+          },
+          "usage": {
+            "input": 2,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 2,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "nested-live-host-callbacks",
+      "value": {
+        "trace": [
+          [
+            "extension",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "p/1",
+              "toolName": "echo",
+              "args": {},
+              "parentToolCallId": "p"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_start"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "p/1",
+              "toolName": "echo",
+              "args": {},
+              "parentToolCallId": "p"
+            }
+          ],
+          "tools",
+          "assistant",
+          [
+            "extension",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "p/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "No assistant message issued this call"
+                  }
+                ],
+                "details": {}
+              },
+              "isError": true,
+              "parentToolCallId": "p"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_end"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "p/1",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "No assistant message issued this call"
+                  }
+                ],
+                "details": {}
+              },
+              "isError": true,
+              "parentToolCallId": "p"
+            }
+          ],
+          [
+            "extension",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "p/2",
+              "toolName": "echo",
+              "args": {},
+              "parentToolCallId": "p"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_start"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_start",
+              "toolCallId": "p/2",
+              "toolName": "echo",
+              "args": {},
+              "parentToolCallId": "p"
+            }
+          ],
+          "late-tools",
+          "late-assistant",
+          [
+            "extension",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "p/2",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "No assistant message issued this call"
+                  }
+                ],
+                "details": {}
+              },
+              "isError": true,
+              "parentToolCallId": "p"
+            }
+          ],
+          [
+            "extension-done",
+            "tool_execution_end"
+          ],
+          [
+            "listener",
+            {
+              "type": "tool_execution_end",
+              "toolCallId": "p/2",
+              "toolName": "echo",
+              "result": {
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "No assistant message issued this call"
+                  }
+                ],
+                "details": {}
+              },
+              "isError": true,
+              "parentToolCallId": "p"
+            }
+          ]
+        ],
+        "metadata": [
+          {
+            "key": "getTools",
+            "name": "getTools",
+            "length": 0,
+            "async": false,
+            "ownPrototype": false
+          },
+          {
+            "key": "isSequential",
+            "name": "isSequential",
+            "length": 0,
+            "async": false,
+            "ownPrototype": false
+          },
+          {
+            "key": "runToolCall",
+            "name": "runToolCall",
+            "length": 4,
+            "async": false,
+            "ownPrototype": false
+          },
+          {
+            "key": "emit",
+            "name": "emit",
+            "length": 1,
+            "async": true,
+            "ownPrototype": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "nested-existing-runner-raw-rejection",
+      "value": {
+        "same": true,
+        "trace": [
+          [
+            true,
+            "p",
+            "t",
+            1,
+            2
+          ],
+          [
+            "promise",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "runner-sequential-recursive-no-deadlock",
+      "value": {
+        "trace": [
+          [
+            "tool_execution_start",
+            "a/1"
+          ],
+          [
+            "tool_execution_start",
+            "b/1"
+          ],
+          "sequential",
+          "sequential",
+          [
+            "run",
+            "a/1",
+            "a"
+          ],
+          [
+            "tool_execution_start",
+            "a/1/1"
+          ],
+          [
+            "run",
+            "a/1/1",
+            "a/1"
+          ],
+          [
+            "tool_execution_update",
+            "a/1/1"
+          ],
+          [
+            "tool_execution_end",
+            "a/1/1"
+          ],
+          [
+            "tool_execution_update",
+            "a/1"
+          ],
+          [
+            "tool_execution_end",
+            "a/1"
+          ],
+          [
+            "run",
+            "b/1",
+            "b"
+          ],
+          [
+            "tool_execution_update",
+            "b/1"
+          ],
+          [
+            "tool_execution_end",
+            "b/1"
+          ]
+        ],
+        "a": {
+          "calls": {
+            "calls": [
+              {
+                "id": "a/1",
+                "name": "outer",
+                "status": "ok",
+                "arguments": {},
+                "durationMs": 0
+              },
+              {
+                "id": "a/1/1",
+                "name": "inner",
+                "status": "ok",
+                "arguments": {},
+                "durationMs": 0
+              }
+            ],
+            "complete": true
+          },
+          "usage": {
+            "input": 2,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 2,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "b": {
+          "calls": {
+            "calls": [
+              {
+                "id": "b/1",
+                "name": "other",
+                "status": "ok",
+                "arguments": {},
+                "durationMs": 0
+              }
+            ],
+            "complete": true
+          },
+          "usage": {
+            "input": 1,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 1,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "scopes": 0
+      }
+    },
+    {
+      "name": "runner-finally-release-after-raw-reject",
+      "value": {
+        "same": true,
+        "second": {
+          "toolCall": {
+            "type": "toolCall",
+            "id": "b/1",
+            "name": "echo",
+            "arguments": {}
+          },
+          "result": {
+            "content": [],
+            "details": {}
+          },
+          "isError": false
+        },
+        "trace": [
+          "tool_execution_start",
+          "tool_execution_start",
+          "tool_execution_end"
+        ],
+        "scopes": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    {
+      "name": "recorder-limits-copy-and-usage",
+      "value": {
+        "first": {
+          "calls": [
+            {
+              "id": "a",
+              "name": "mutated",
+              "status": "error",
+              "arguments": {
+                "value": "é"
+              },
+              "durationMs": 0,
+              "error": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            },
+            {
+              "id": "large",
+              "name": "t",
+              "status": "unfinished",
+              "argumentsBytes": 9012
+            }
+          ],
+          "complete": false
+        },
+        "final": {
+          "complete": false,
+          "count": 256,
+          "first": {
+            "id": "a",
+            "name": "t",
+            "status": "error",
+            "arguments": {
+              "value": "é"
+            },
+            "durationMs": 0,
+            "error": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        },
+        "usage": {
+          "input": 3,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        }
+      }
+    }
+  ]
+}

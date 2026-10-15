@@ -1,0 +1,17 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+const root='C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/coding-agent/src/core/';
+const {AgentSession}=await import(pathToFileURL(root+'agent-session.ts'));
+const {SessionManager}=await import(pathToFileURL(root+'session-manager.ts'));
+const {NestedToolCallRunner,NestedCallRecorder}=await import(pathToFileURL(root+'nested-tool-calls.ts'));
+const names=['_executeNestedToolCall','_applyBoundaryDrafts','_createBoundaryPreviewManager','_getPendingBoundaryMessages','_buildBoundaryContext','_commitBoundaryDrafts','_reportInvalidBoundaryContinuation'];
+const prototype={};
+for(const name of names)Object.defineProperty(prototype,name,Object.getOwnPropertyDescriptor(AgentSession.prototype,name));
+globalThis.boundaryAPI={prototype,SessionManager,NestedToolCallRunner,NestedCallRecorder};
+const input=readFileSync(process.argv[3]);
+await import('data:text/javascript,'+encodeURIComponent(input.toString('utf8')));
+if(boundaryRows.length!==47)throw Error('Expected47 actual Source cases, got '+boundaryRows.length);
+for(const row of boundaryRows)if(row.error&&row.name!=='preview-missing-header')throw Error('Unexpected fixture failure '+JSON.stringify(row));
+if(boundaryRows.find(row=>row.name==='nested-normal').value.outcome.isError)throw Error('Real nested pipeline did not execute');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'5ab7fe74c400097b386662205cd93900695b8a71',inputSha256:createHash('sha256').update(input).digest('hex'),cases:47,scope:'Seven actual AgentSession boundary/nested methods, genuine SessionManager/NestedToolCallRunner/NestedCallRecorder and Agent runToolCall pipeline on caller-owned receivers. Durations/timestamps normalized to zero; no factory or public runtime activation qualification.',rows:boundaryRows},null,2));
