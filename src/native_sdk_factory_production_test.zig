@@ -38,6 +38,30 @@ pub fn compareActualSourceCases(engine: *em.Engine, api: c.JSValue, reference_by
     }
 }
 
+/// Source-only pending-graph target. Requires the genuine complete extension
+/// initializer/cache/loader, not a replacement reload method or mocked class.
+pub fn pendingActualOwnership(engine: *em.Engine, api: c.JSValue) !void {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const root = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(root, "factoryAPI", api);
+    const prepared = try engine.evalModule(@embedFile("extensions/fixtures/sdk-factory-production-ownership.input.txt") ++ "\nawait prepareProductionFactoryOwnership(factoryAPI);export const prepared=true;", "actual-factory-pending-prepare.mjs");
+    engine.freeValue(prepared);
+    engine.finishJob();
+    c.JS_RunGC(engine.runtime);
+    const retained = try engine.eval("productionFactoryOptionsWeak.deref()!==undefined&&productionFactoryRuntimeWeak.deref()!==undefined", "actual-factory-pending-retained.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(retained);
+    try std.testing.expect(c.JS_ToBool(engine.context, retained) == 1);
+    engine.finishJob();
+    const completed = try engine.evalModule("await completeProductionFactoryOwnership();export const completed=true;", "actual-factory-pending-complete.mjs");
+    engine.freeValue(completed);
+    engine.finishJob();
+    c.JS_RunGC(engine.runtime);
+    const released = try engine.eval("productionFactoryOptionsWeak.deref()===undefined", "actual-factory-pending-released.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(released);
+    try std.testing.expect(c.JS_ToBool(engine.context, released) == 1);
+}
+
 test "production factory requires actual imports instead of manufacturing defaults" {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
