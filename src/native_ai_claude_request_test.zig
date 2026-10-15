@@ -6,6 +6,14 @@ fn install(engine: *v.em.Engine) !void {
     defer scope.deinit();
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
     try scope.put(global, "anthropicStreams", try scope.own(try @import("extensions/native_ai_anthropic_factory.zig").create(engine)));
+    const Decoder = struct {
+        fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            const json = try @import("extensions/native_ai_json_parse.zig").create(host);
+            defer host.freeValue(json);
+            return @import("extensions/native_ai_anthropic_decode.zig").create(host, args[0], args[1], json, false, args[2]);
+        }
+    };
+    try scope.put(global, "anthropicDecoder", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "anthropicDecoder", 3, Decoder.call, &.{})));
     inline for (.{ "anthropic", "bedrock" }, 0..) |name, index| {
         const Adapter = struct {
             fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
