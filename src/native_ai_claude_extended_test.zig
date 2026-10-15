@@ -31,6 +31,7 @@ test "native Claude5ab extended public Source16 wire federation retry long resul
     var arena = std.heap.ArenaAllocator.init(gpa);
     defer arena.deinit();
     const plan_gpa = arena.allocator();
+    const native_user_agent = try std.fmt.allocPrint(plan_gpa, "pi-zig/Zig-{s} QuickJS-{s} ({s}; {s})", .{ @import("builtin").zig_version_string, std.mem.span(c.JS_GetVersion()), @tagName(@import("builtin").os.tag), @tagName(@import("builtin").cpu.arch) });
     var replies: std.ArrayList(fixture.Reply) = .empty;
     var expected_requests: usize = 0;
     for (source.value.object.get("rows").?.array.items) |row| {
@@ -41,6 +42,9 @@ test "native Claude5ab extended public Source16 wire federation retry long resul
             const expected = request.object;
             const reply = response.object;
             var request_headers: std.ArrayList(std.http.Header) = .empty;
+            // Source runtime diagnostics remain raw and immutable. Native
+            // requests independently identify their real compiler/VM/host.
+            try request_headers.append(plan_gpa, .{ .name = "User-Agent", .value = native_user_agent });
             var absent_headers: std.ArrayList([]const u8) = .empty;
             for ([_][]const u8{ "authorization", "x-api-key", "content-type", "accept", "anthropic-beta", "anthropic-version", "anthropic-dangerous-direct-browser-access", "x-app", "x-session-id", "x-session-affinity", "anthropic-user-profile-id", "anthropic-workspace-id", "x-captured", "x-option" }) |name| {
                 if (functionalHeader(expected, name)) |value| try request_headers.append(plan_gpa, .{ .name = name, .value = value }) else try absent_headers.append(plan_gpa, name);

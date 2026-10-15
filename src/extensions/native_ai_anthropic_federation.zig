@@ -4,7 +4,6 @@
 //! VM callbacks and cached values remain on the owner. HTTP uses the shared
 //! owned native worker; a request signal must never cancel a shared exchange.
 const std = @import("std");
-const builtin = @import("builtin");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
@@ -14,9 +13,7 @@ const Stage = enum(c_int) { identity, response, text, raw, read, cancel };
 const maximum_response_bytes = 1 << 20;
 
 fn diagnosticUserAgent(scope: *Scope) !c.JSValue {
-    const value = try std.fmt.allocPrint(scope.engine.gpa, "pi-zig/Zig-{s} QuickJS-{s} ({s}; {s})", .{ builtin.zig_version_string, std.mem.span(c.JS_GetVersion()), @tagName(builtin.os.tag), @tagName(builtin.cpu.arch) });
-    defer scope.engine.gpa.free(value);
-    return scope.text(value);
+    return @import("native_ai_user_agent.zig").runtime(scope);
 }
 
 fn envValue(scope: *Scope, env: c.JSValue, name: []const u8) !c.JSValue {

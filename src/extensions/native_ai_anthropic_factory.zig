@@ -412,7 +412,7 @@ fn captureClientHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const model_headers = try scope.get(model, "headers");
     const option_headers = try v.optional(scope, options, "headers");
     const user_agent = try scope.object();
-    try scope.put(user_agent, "User-Agent", try @import("native_ai_user_agent.zig").value(scope, try scope.get(try scope.get(owner, "agent"), "userAgentOS")));
+    try scope.put(user_agent, "User-Agent", try @import("native_ai_user_agent.zig").runtime(scope));
     const result = try scope.object();
     for ([_]c.JSValue{ user_agent, identity, affinity, model_headers, dynamic, option_headers }) |source| {
         if (scope.truthy(source)) _ = try scope.invoke(try scope.global("Object"), "assign", &.{ result, source });
