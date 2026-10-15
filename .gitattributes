@@ -144,3 +144,14 @@ verification/native-ai-http-shared-successor-negatives-20261015/*.log whitespace
 verification/native-ai-http-shared-33bf-debug-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 # Preserve original Response transport terminal EOF bytes in the proof bundle.
 verification/web-response-node24-20261015/qualified-c9b97c85/*.log whitespace=-blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+# Native qualification archives retain original control/terminal EOF bytes.
+src/extensions/fixtures/ai-anthropic5ab-sdk-boundaries-native.mjs whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+src/extensions/fixtures/url-errors-node24.input.txt whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/ai-anthropic5ab-20261015/native-3f8-negative/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/ai-anthropic5ab-20261015/native-7f2-negative/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/ai-anthropic5ab-20261015/native-7f2-negative/*.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/ai-anthropic5ab-20261015/native-b608-qualified/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/ai-anthropic5ab-20261015/native-b608-qualified/*.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-url-constructor-node24-qualified-20261016/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-url-constructor-node24-qualified-20261016/*.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-url-constructor-node24-source40-20261015/Run-URLConstructorNode24Source-20261015.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
