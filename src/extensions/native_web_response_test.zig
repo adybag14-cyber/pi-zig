@@ -192,12 +192,13 @@ test "Response native actual OAuth HTTP returns genuine headers before gated bod
 }
 test "Response native selected operation OOM preserves ownership" {
     var measured = std.testing.FailingAllocator.init(std.testing.allocator, .{});
-    const measured_engine = try setup(measured.allocator());
-    errdefer measured_engine.deinit();
-    const beginning = measured.alloc_index;
-    try ownershipOperation(measured_engine);
-    const allocations = measured.alloc_index - beginning;
-    measured_engine.deinit();
+    const allocations = measurement: {
+        const measured_engine = try setup(measured.allocator());
+        defer measured_engine.deinit();
+        const beginning = measured.alloc_index;
+        try ownershipOperation(measured_engine);
+        break :measurement measured.alloc_index - beginning;
+    };
     try std.testing.expect(allocations > 0);
     try std.testing.expectEqual(measured.allocated_bytes, measured.freed_bytes);
     for ([_]usize{ 0, allocations / 4, allocations / 2, allocations * 3 / 4, allocations - 1 }) |offset| {
