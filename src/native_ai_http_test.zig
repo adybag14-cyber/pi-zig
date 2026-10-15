@@ -6,6 +6,28 @@ const http = @import("extensions/native_ai_http.zig");
 const raw = @import("extensions/native_ai_http_worker.zig");
 const fixture = @import("ai/http_fixture.zig");
 const c = em.c;
+test "native AI HTTP fetch opt-ins preserve non-2xx binary bodies and repeated raw header pairs" {
+    const body = "denied\x00\xff";
+    const first = "first=one; Expires=Thu, 01 Jan 2037 00:00:00 GMT";
+    const second = "second=two; Path=/";
+    const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, &.{.{ .path = "/binary-error?original=query", .status = .forbidden, .body = body, .headers = &.{ .{ .name = "Set-Cookie", .value = first }, .{ .name = "Set-Cookie", .value = second } } }});
+    defer server.deinit();
+    const url = try server.url(std.testing.allocator, "/binary-error?original=query");
+    defer std.testing.allocator.free(url);
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "rawRequest", try http.openWithOptions(engine, .{ .url = url, .payload = "{}", .headers = &.{}, .timeout_ms = 2000, .framing = .bytes, .stream_error_bytes = true }, c.pi_js_undefined(), .{ .raw_header_pairs = true }));
+    const checked = try engine.evalModule(
+        \\const head=await rawRequest.ready;if(head.status!==403||head.statusText!=='Forbidden')throw Error('unsuccessful head');const pairs=head.rawHeaders.filter(([name])=>name.toLowerCase()==='set-cookie');if(pairs.length!==2||pairs[0][1]!=='first=one; Expires=Thu, 01 Jan 2037 00:00:00 GMT'||pairs[1][1]!=='second=two; Path=/')throw Error('cookie boundaries');const bytes=[];for await(const event of rawRequest.events){if(event.type!=='bytes')throw Error('binary error incorrectly decoded');bytes.push(...event.data)}if(JSON.stringify(bytes)!==JSON.stringify([100,101,110,105,101,100,0,255]))throw Error('non-2xx raw bytes changed');export const done=true;
+    , "native-ai-http-fetch-opt-ins.mjs");
+    engine.freeValue(checked);
+    c.JS_RunGC(engine.runtime);
+    try std.testing.expect(!http.pending(engine));
+    try server.finish();
+}
 test "native AI HTTP opt-in byte and JSON body framing preserves exact bytes and real status text" {
     const byte_body = "data: first\r\ndata: second\r\n\r\nunterminated\x00\xff";
     const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, &.{ .{ .path = "/bytes", .body = byte_body, .status = .created }, .{ .path = "/json", .body = "{\"token\":\"fixture-placeholder\"}" } });
