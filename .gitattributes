@@ -94,3 +94,4 @@ verification/native-ai-google-mistral-source30-20261015/Run-AiGoogleMistral30Sou
 verification/native-ai-google-mistral-source30-20261015/ai-google-mistral30-5ab-source-capture-20261015.mjs whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-ai-google-mistral-source60-20261015/Run-AiGoogleMistral60Source-20261015.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-ai-google-mistral-source60-20261015/ai-google-mistral60-5ab-source-capture-20261015.mjs whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-ai-google-mistral-acb9-first-20261015/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
