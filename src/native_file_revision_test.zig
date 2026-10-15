@@ -1,0 +1,104 @@
+//! Focused real-filesystem tests. Root's native lane must execute these before
+//! this Source-only checkpoint is described as native validated.
+const std = @import("std");
+const builtin = @import("builtin");
+const revision = @import("extensions/native_file_revision.zig");
+const file_stat = @import("extensions/native_file_stat.zig");
+
+fn absolute(tmp: std.Io.Dir, leaf: []const u8) ![]u8 {
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try tmp.realPath(std.testing.io, &buffer);
+    return std.fs.path.join(std.testing.allocator, &.{ buffer[0..length], leaf });
+}
+fn create(dir: std.Io.Dir, name: []const u8, text: []const u8) !void {
+    const file = try dir.createFile(std.testing.io, name, .{});
+    defer file.close(std.testing.io);
+    try file.writePositionalAll(std.testing.io, text, 0);
+}
+
+test "file revision rejects missing and embedded NUL paths without truncating an existing file" {
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try create(tmp.dir, "present", "retained");
+    const path = try absolute(tmp.dir, "present");
+    defer std.testing.allocator.free(path);
+    const missing = try absolute(tmp.dir, "missing");
+    defer std.testing.allocator.free(missing);
+    try std.testing.expectEqual(null, try revision.revisionAlloc(std.testing.allocator, missing));
+    const invalid = try std.mem.concat(std.testing.allocator, u8, &.{ path, "\x00suffix" });
+    defer std.testing.allocator.free(invalid);
+    try std.testing.expectEqual(null, try revision.revisionAlloc(std.testing.allocator, invalid));
+    const valid = (try revision.revisionAlloc(std.testing.allocator, path)).?;
+    defer std.testing.allocator.free(valid);
+    try std.testing.expectEqual(@as(usize, 4), std.mem.count(u8, valid, ":"));
+}
+
+test "file revision retains full kernel integer fields and observes same inode mutation" {
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try create(tmp.dir, "precision-\xc3\xa9", "old");
+    const path = try absolute(tmp.dir, "precision-\xc3\xa9");
+    defer std.testing.allocator.free(path);
+    const before = try file_stat.read(std.testing.allocator, path);
+    const before_revision = (try revision.revisionAlloc(std.testing.allocator, path)).?;
+    defer std.testing.allocator.free(before_revision);
+    const expected = try std.fmt.allocPrint(std.testing.allocator, "{d}:{d}:{d}:{d}:{d}", .{ before.dev, before.ino, before.size, before.mtime_ns, before.ctime_ns });
+    defer std.testing.allocator.free(expected);
+    try std.testing.expectEqualStrings(expected, before_revision);
+    try create(tmp.dir, "precision-\xc3\xa9", "a longer mutation");
+    const after = try file_stat.read(std.testing.allocator, path);
+    try std.testing.expectEqual(before.dev, after.dev);
+    try std.testing.expectEqual(before.ino, after.ino);
+    try std.testing.expectEqual(@as(u64, 17), after.size);
+    const after_revision = (try revision.revisionAlloc(std.testing.allocator, path)).?;
+    defer std.testing.allocator.free(after_revision);
+    try std.testing.expect(!std.mem.eql(u8, before_revision, after_revision));
+    // Current real timestamps exceed exact IEEE754 integer precision. A
+    // decimal revision must preserve their final digits instead of rounding.
+    try std.testing.expect(after.mtime_ns > 9007199254740991);
+}
+
+test "replacement and identical cross directory basenames keep real file identities" {
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try create(tmp.dir, "entry", "same");
+    try create(tmp.dir, "replacement", "same");
+    const path = try absolute(tmp.dir, "entry");
+    defer std.testing.allocator.free(path);
+    const first = try file_stat.read(std.testing.allocator, path);
+    // Preserve the old object while replacing its original pathname. This
+    // avoids inode-reuse ambiguity in the identity assertion.
+    try tmp.dir.rename("entry", tmp.dir, "retained-old", std.testing.io);
+    try tmp.dir.rename("replacement", tmp.dir, "entry", std.testing.io);
+    const replaced = try file_stat.read(std.testing.allocator, path);
+    try std.testing.expect(first.dev != replaced.dev or first.ino != replaced.ino);
+    try tmp.dir.createDir(std.testing.io, "other", .default_dir);
+    try create(tmp.dir, "other/entry", "same");
+    const other = try absolute(tmp.dir, "other/entry");
+    defer std.testing.allocator.free(other);
+    const separate = try file_stat.read(std.testing.allocator, other);
+    try std.testing.expect(replaced.dev != separate.dev or replaced.ino != separate.ino);
+    const directory = try absolute(tmp.dir, "other");
+    defer std.testing.allocator.free(directory);
+    const directory_stat = try file_stat.read(std.testing.allocator, directory);
+    if (builtin.os.tag == .windows) try std.testing.expectEqual(@as(u64, 0), directory_stat.size);
+}
+
+test "file revision follows a real symlink when the host permits creating one" {
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try create(tmp.dir, "target", "symlink target");
+    tmp.dir.symLink(std.testing.io, "target", "link", .{}) catch |err| switch (err) {
+        error.AccessDenied => return error.SkipZigTest,
+        else => return err,
+    };
+    const target = try absolute(tmp.dir, "target");
+    defer std.testing.allocator.free(target);
+    const link = try absolute(tmp.dir, "link");
+    defer std.testing.allocator.free(link);
+    const target_revision = (try revision.revisionAlloc(std.testing.allocator, target)).?;
+    defer std.testing.allocator.free(target_revision);
+    const link_revision = (try revision.revisionAlloc(std.testing.allocator, link)).?;
+    defer std.testing.allocator.free(link_revision);
+    try std.testing.expectEqualStrings(target_revision, link_revision);
+}
