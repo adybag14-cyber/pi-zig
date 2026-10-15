@@ -141,10 +141,12 @@ fn advance(s: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
             try wait(s, owner, try hook(s, owner, "onResponse", response), .response);
         },
         .response => {
-            try s.put(owner, "requestId", try s.get(owner, "pendingRequestId"));
-            try wait(s, owner, try s.own(try @import("native_ai_bedrock_items.zig").create(s.engine, try s.get(owner, "http"), try s.get(owner, "response"), try s.get(owner, "requestId"))), .prepared);
+            try wait(s, owner, try s.own(try @import("native_ai_bedrock_items.zig").create(s.engine, try s.get(owner, "http"), try s.get(owner, "response"), try s.get(owner, "pendingRequestId"))), .prepared);
         },
         .prepared => {
+            // Source assigns responseRequestId only after client.send resolves;
+            // first-event deserialization can reject before that assignment.
+            try s.put(owner, "requestId", try s.get(owner, "pendingRequestId"));
             try s.put(owner, "iterator", value);
             try next(s, owner);
         },

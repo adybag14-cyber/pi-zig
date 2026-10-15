@@ -50,6 +50,22 @@ pub fn resolveResult(a: std.mem.Allocator, io: std.Io, env: *const std.process.E
     };
     return .{ .credentials = credentials };
 }
+/// The standalone fromIni boundary is separately observable in Source25;
+/// defaultProvider consumes its tryNextLink failures before trying later links.
+pub fn resolveIniResult(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ.Map, profile: []const u8, region: []const u8, now: i64, budget: Budget) !Result {
+    var failure: ?types.Failure = null;
+    errdefer if (failure) |*value| value.deinit(a);
+    var chain: [32]?[]const u8 = @splat(null);
+    const result = resolveProfile(a, io, env, profile, region, now, &chain, 0, budget, &failure) catch |err| {
+        _ = try budget.remaining();
+        if (err == error.AwsModeledCredentialFailure) return .{ .failure = failure.? };
+        return err;
+    };
+    if (result) |value| return .{ .credentials = value };
+    const message = try std.fmt.allocPrint(a, "Could not resolve credentials using profile: [{s}] in configuration/credentials file(s).", .{profile});
+    defer a.free(message);
+    return types.failure(a, "CredentialsProviderError", message, true);
+}
 fn resolveInner(a: std.mem.Allocator, io: std.Io, env: *const std.process.Environ.Map, profile: ?[]const u8, region: []const u8, now: i64, budget: Budget, failure: *?types.Failure) !Credentials {
     _ = try budget.remaining();
     // An explicitly configured options.profile/scoped AWS_PROFILE wins over env keys.
@@ -57,7 +73,29 @@ fn resolveInner(a: std.mem.Allocator, io: std.Io, env: *const std.process.Enviro
     if (profile == null) if (envCredentials(env)) |credentials| return copy(a, credentials, null, now);
     var chain: [32]?[]const u8 = @splat(null);
     const name = profile orelse env.get("AWS_PROFILE") orelse "default";
-    if (try resolveProfile(a, io, env, name, region, now, &chain, 0, budget, failure)) |credentials| return credentials;
+    const from_ini = resolveProfile(a, io, env, name, region, now, &chain, 0, budget, failure) catch |err| failed: {
+        _ = try budget.remaining();
+        if (err != error.AwsModeledCredentialFailure or failure.* == null or failure.*.?.try_next_link != true) return err;
+        failure.*.?.deinit(a);
+        failure.* = null;
+        break :failed null;
+    };
+    if (from_ini) |credentials| return credentials;
+    // SDK defaultProvider invokes fromProcess again after a recoverable
+    // fromIni failure. Keep that actual subprocess/provider boundary.
+    var process_profile = try shared.loadProfileByName(a, io, env, name);
+    defer if (process_profile) |*value| value.deinit(a);
+    if (process_profile) |value| if (value.credential_process) |command| {
+        var temporary: ?process.OwnedProcessCredentials = runProcess(a, io, command, budget) catch |err| failed: {
+            _ = try budget.remaining();
+            if (err == error.OutOfMemory or err == error.Canceled or err == error.ProviderRequestAborted or err == error.ProviderRequestTimeout) return err;
+            break :failed null;
+        };
+        if (temporary) |*credentials| {
+            defer credentials.deinit(a);
+            if (credentials.expiration_unix == null or credentials.expiration_unix.? >= now) return copy(a, credentials.borrowed(), credentials.expiration_unix, if (credentials.expiration_unix == now) now - 1 else now);
+        }
+    };
     if (web.resolveConfig(env, null)) |config| {
         var resolved = config;
         const generated = try std.fmt.allocPrint(a, "aws-sdk-js-session-{d}", .{std.Io.Clock.real.now(io).toMilliseconds()});
