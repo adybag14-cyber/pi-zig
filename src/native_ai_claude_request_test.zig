@@ -101,6 +101,11 @@ test "native Claude5ab Anthropic real wire stream events callbacks and results m
         };
         engine.freeValue(result);
         c.JS_RunGC(engine.runtime);
+        var retirement_polls: usize = 0;
+        while (@import("extensions/native_ai_http.zig").pending(engine) and retirement_polls < 200) : (retirement_polls += 1) {
+            _ = try engine.pumpControls();
+            if (@import("extensions/native_ai_http.zig").pending(engine)) try std.Io.sleep(std.testing.io, .fromMilliseconds(5), .awake);
+        }
         try std.testing.expect(!@import("extensions/native_ai_http.zig").pending(engine));
         try server.finish();
         exercised += 1;

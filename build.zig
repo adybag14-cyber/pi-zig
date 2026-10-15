@@ -1556,12 +1556,15 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, transcript_context_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(transcript_context_tests.root_module, sqlite_lib_dir, sqlite_library);
     transcript_context_tests.root_module.addImport("catalog_tool", catalog_tool);
-    const claude5ab_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_claude_request_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Claude5ab"} });
+    const claude5ab_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_claude_request_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Claude5ab Anthropic", "native Claude5ab request owner" } });
     linkQuickJs(b, claude5ab_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(claude5ab_tests.root_module, sqlite_lib_dir, sqlite_library);
     claude5ab_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-ai-claude5ab", "Compile actual Anthropic and Converse request codecs").dependOn(&claude5ab_tests.step);
-    b.step("test-native-ai-claude5ab", "Check actual Claude request owner graphs byte blobs and allocation cleanup").dependOn(&b.addRunArtifact(claude5ab_tests).step);
+    b.step("test-native-ai-claude5ab", "Compare actual Source Claude requests streams callbacks and retained owner graphs").dependOn(&b.addRunArtifact(claude5ab_tests).step);
+    const claude5ab_allocations = b.addTest(.{ .root_module = claude5ab_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native Claude5ab every host allocation"} });
+    b.step("build-native-ai-claude5ab-allocation", "Compile exhaustive Claude request allocation cleanup separately").dependOn(&claude5ab_allocations.step);
+    b.step("test-native-ai-claude5ab-allocation", "Exercise every native host allocation failure in Claude request owner graphs").dependOn(&b.addRunArtifact(claude5ab_allocations).step);
     b.step("test-native-ai-transcript-context", "Compare original context normalization and complete native owner graphs").dependOn(&b.addRunArtifact(transcript_context_tests).step);
     b.step("build-native-ai-transcript-context", "Compile original context normalization independently of runtime deadlines").dependOn(&transcript_context_tests.step);
     const session_restore_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_restore_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK transcript restore"}, .use_llvm = use_llvm });
