@@ -1,0 +1,94 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiClaude5ab7f2Slot3ExtendedPair-20261015.ps1",
+    "sha256": "9E9BA4902F09C4CD921C49B7E39BADFE249156508E610AFE836AB1A34E71EFA6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "C:/Program Files/nodejs/node.exe",
+    "sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-observe-20261015.mjs",
+    "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-anthropic25-5ab-source-capture-20261015.mjs",
+    "sha256": "8F682DE1B5B146FED551447FFF90021EA07F6F881F0934E1B5FCEF7D09AB09EC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiAnthropic25Source-20261015.ps1",
+    "sha256": "D99C1C17E92C880165F71F06B871BC0C621799B85B81917D36D19816EB322742"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-anthropic25-5ab-source25-first-20261015-output.json",
+    "sha256": "2B189725271DED510340599DEAC4DEC37E7AB7CE22458F35571A2B6434380DBE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-anthropic25-5ab-source25-first-20261015-posthash.json",
+    "sha256": "6C81A973C92B3FB5173855B3528F9414D05EA89C10757CA0E40C826E572DC0AB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-anthropic16-extended-5ab-source-capture-20261015.mjs",
+    "sha256": "AB891A884AB8BC91DCAD06E80E7AD7587AF574E7431CC386A5A96C8F3A271E95"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiAnthropic16ExtendedSource-20261015.ps1",
+    "sha256": "DC0E7AA21DA12A0E02BEE99DEE34BE89F96E053D815FB4B8659206D3218AD2F4"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-anthropic16-extended-5ab-source16-first-20261015-output.json",
+    "sha256": "E2FA67CE930C77660DF95A45E8219760B5895C12FAAFE41B3353F36782FCFA34"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-anthropic16-extended-5ab-source16-first-20261015-posthash.json",
+    "sha256": "EF55EC39A63AB986F29F913F8C7B94AA0AAC38160D1BCB856DB7964A1E021374"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-anthropic14-sdk-boundaries-5ab-source-capture-20261015.mjs",
+    "sha256": "80B7F881085420B883C3F34EB52FAB2B37BD2891EBFCB15792182BAC53BC9FE9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiAnthropic14SdkBoundariesSource-20261015.ps1",
+    "sha256": "F05171ED98464568DBC432EF6FA0A1AEB0899148D306F4299743334AA153F8E0"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-AiAnthropic14SourceCandidate-1b1ec5c1-20261015.ps1",
+    "sha256": "5AC7034F129DCD769F857B481967AE6B86DB63AB61CF12921E9F3C46A03E35C8"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-anthropic14-sdk-boundaries-5ab-source14-first-20261015-output.json",
+    "sha256": "11DB0369FF96B0CBB0EBFBF69AF7BFE645160C541387B1EE8E0ECC3CDF074A0E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-anthropic14-sdk-boundaries-5ab-source14-first-20261015-posthash.json",
+    "sha256": "E5E1EBD4FEBAF4675853B87E956CC55D1D7861A7B9FF3549C40AFD93FB2AEE23"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-anthropic14-sdk-boundaries-5ab-source14-first-20261015-candidate-caller-posthash.json",
+    "sha256": "8A4252BEF28677F11929F2C85D23ED9238AC3B9D41BEE7E0C23A91E88F7DA666"
+  }
+]

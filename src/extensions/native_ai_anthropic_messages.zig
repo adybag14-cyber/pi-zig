@@ -209,7 +209,10 @@ pub fn convert(engine: *v.em.Engine, messages: c.JSValue, oauth: bool, cache: c.
                 try row.put(block, "is_error", try row.get(tool, "isError"));
                 _ = try row.invoke(blocks, "push", &.{block});
                 if (!c.JS_IsUndefined(split)) {
-                    _ = try row.invoke(siblings, "push", &.{try text(&row, try row.get(split, "caption"))});
+                    const caption = try row.object();
+                    try row.put(caption, "type", try row.text("text"));
+                    try row.put(caption, "text", try row.get(split, "caption"));
+                    _ = try row.invoke(siblings, "push", &.{caption});
                     var images = try v.iterator(&row, try row.get(split, "images"));
                     defer images.deinit();
                     errdefer images.closePreserving();

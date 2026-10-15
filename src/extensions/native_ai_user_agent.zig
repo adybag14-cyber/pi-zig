@@ -1,7 +1,16 @@
 //! Source getPiUserAgent over a captured actual OS module; no synthetic Node identity.
 const v = @import("native_ai_provider_values.zig");
+const std = @import("std");
+const builtin = @import("builtin");
 const Scope = v.Scope;
 const c = v.c;
+/// Runtime diagnostic metadata for native provider wire requests. Keep this
+/// separate from the literal Source helper below and caller-owned headers.
+pub fn runtime(scope: *Scope) !c.JSValue {
+    const text = try std.fmt.allocPrint(scope.engine.gpa, "pi-zig/Zig-{s} QuickJS-{s} ({s}; {s})", .{ builtin.zig_version_string, std.mem.span(c.JS_GetVersion()), @tagName(builtin.os.tag), @tagName(builtin.cpu.arch) });
+    defer scope.engine.gpa.free(text);
+    return scope.text(text);
+}
 pub fn load(scope: *Scope) !c.JSValue {
     const process = try scope.global("process");
     const versions = try v.optional(scope, process, "versions");

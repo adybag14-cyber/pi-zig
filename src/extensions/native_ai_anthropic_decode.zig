@@ -28,7 +28,7 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
     try scope.put(output, "timestamp", try scope.invoke(try scope.global("Date"), "now", &.{}));
     try scope.put(owner, "output", output);
     const result = try scope.object();
-    inline for (.{ "event", "start", "finish", "fail", "thinkingLevel", "strictFallback" }) |name| {
+    inline for (.{ "event", "start", "finish", "fail", "thinkingLevel", "strictFallback", "oauthMode" }) |name| {
         const Adapter = struct {
             fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
                 var row: Scope = .{ .engine = host };
@@ -39,10 +39,15 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
                     try push(&row, owner_value, "start", null, null, c.pi_js_undefined());
                 } else if (comptime @import("std").mem.eql(u8, name, "thinkingLevel")) {
                     if (row.truthy(input)) try row.set(try row.get(owner_value, "output"), "providerThinkingLevel", input);
+                } else if (comptime @import("std").mem.eql(u8, name, "oauthMode")) {
+                    try row.set(owner_value, "oauth", input);
                 } else if (comptime @import("std").mem.eql(u8, name, "strictFallback")) {
                     try strictFallback(&row, owner_value, input);
                 } else if (comptime @import("std").mem.eql(u8, name, "finish")) {
+                    const generation = host.native_allocation_generation;
                     finish(&row, owner_value, row.truthy(input)) catch |err| {
+                        const classified = host.nativeAllocationError(err, generation);
+                        if (classified == error.OutOfMemory) return classified;
                         const reason = @import("native_agent_async.zig").reason(host, err);
                         defer host.freeValue(reason);
                         try fail(&row, owner_value, reason, row.truthy(input));
@@ -237,12 +242,12 @@ fn strictFallback(scope: *Scope, owner: c.JSValue, failure: c.JSValue) !void {
     const item = try scope.object();
     try scope.put(item, "type", try scope.text("anthropic_strict_tools_fallback"));
     try scope.put(item, "timestamp", try scope.invoke(try scope.global("Date"), "now", &.{}));
-    const details = try scope.object();
-    try scope.put(details, "reason", try scope.text("strict_tool_limits_exceeded"));
-    try scope.put(item, "details", details);
     const error_value = try scope.object();
     try scope.put(error_value, "message", try scope.get(failure, "message"));
     try scope.put(item, "error", error_value);
+    const details = try scope.object();
+    try scope.put(details, "reason", try scope.text("strict_tool_limits_exceeded"));
+    try scope.put(item, "details", details);
     try diagnostic(scope, owner, item);
 }
 fn finish(scope: *Scope, owner: c.JSValue, aborted: bool) !void {

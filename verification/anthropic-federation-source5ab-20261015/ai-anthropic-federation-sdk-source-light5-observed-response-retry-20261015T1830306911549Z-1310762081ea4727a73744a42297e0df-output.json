@@ -1,0 +1,261 @@
+{
+  "authority": "actual installed SDK credential-chain and TokenCache with explicit Pi-shaped config",
+  "sdkDirectory": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@anthropic-ai\\sdk",
+  "sdkVersion": "0.129.0",
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "versions": {
+      "node": "24.14.0",
+      "acorn": "8.15.0",
+      "ada": "3.4.2",
+      "amaro": "1.1.7",
+      "ares": "1.34.6",
+      "brotli": "1.2.0",
+      "cldr": "48.0",
+      "icu": "78.2",
+      "llhttp": "9.3.0",
+      "merve": "1.0.0",
+      "modules": "137",
+      "napi": "10",
+      "nbytes": "0.1.1",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.68.0",
+      "openssl": "3.5.5",
+      "simdjson": "4.2.4",
+      "simdutf": "6.4.0",
+      "sqlite": "3.51.2",
+      "tz": "2025c",
+      "undici": "7.21.0",
+      "unicode": "17.0",
+      "uv": "1.51.0",
+      "uvwasi": "0.0.23",
+      "v8": "13.6.233.17-node.41",
+      "zlib": "1.3.1-e00f703",
+      "zstd": "1.5.7"
+    }
+  },
+  "fixtureDirectory": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-owned-fixture",
+  "diagnosticPolicy": {
+    "sourceHeaders": "raw unmodified SDK headers",
+    "nativeUserAgent": "pi-zig/Zig-<actual compiler> QuickJS-<actual linked runtime> (<host OS>; <arch>)",
+    "comparison": "User-Agent diagnostic value asserted separately; auth/beta/content/session/grant/cache/error fields compared strictly"
+  },
+  "dependencyCapture": {
+    "captures": [
+      {
+        "case": "coalesced-first",
+        "results": [
+          {
+            "token": "owned-access-first"
+          },
+          {
+            "token": "owned-access-first"
+          }
+        ],
+        "count": 1
+      },
+      {
+        "case": "fresh-cache",
+        "result": {
+          "token": "owned-access-first"
+        },
+        "count": 1
+      },
+      {
+        "case": "advisory-stale",
+        "result": {
+          "token": "owned-access-first"
+        }
+      },
+      {
+        "case": "mandatory-joins-advisory-error",
+        "result": {
+          "error": {
+            "name": "Error",
+            "message": "Failed to reach token endpoint http://127.0.0.1:1/v1/oauth/token: Error: owned endpoint offline",
+            "statusCode": null,
+            "body": null,
+            "requestId": null
+          }
+        }
+      },
+      {
+        "case": "force-refresh-rereads-file",
+        "result": {
+          "token": "owned-access-rotated"
+        },
+        "count": 3
+      },
+      {
+        "case": "same-config-fetch-shares",
+        "result": {
+          "token": "owned-access-rotated"
+        },
+        "count": 3
+      },
+      {
+        "case": "advisory-backoff",
+        "result": {
+          "token": "owned-access-rotated"
+        },
+        "count": 4
+      },
+      {
+        "case": "workspace-change-replaces-cache",
+        "result": {
+          "error": {
+            "name": "Error",
+            "message": "Token exchange failed with status 401 (request-id request-owned-fixture): {\"error\":\"invalid_grant\",\"error_description\":\"owned mismatch\"} Ensure your federation rule matches your identity token. View your authentication events in the Workload identity page of Claude Console for more details.",
+            "statusCode": 401,
+            "body": "{\"error\":\"invalid_grant\",\"error_description\":\"owned mismatch\"}",
+            "requestId": "request-owned-fixture"
+          }
+        },
+        "count": 5
+      },
+      {
+        "case": "empty-identity-file",
+        "result": {
+          "error": {
+            "name": "Error",
+            "message": "Identity token file at C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-owned-fixture\\owned-source-identity.jwt is empty"
+          }
+        },
+        "count": 5
+      },
+      {
+        "case": "oversize-assertion",
+        "result": {
+          "error": {
+            "name": "Error",
+            "message": "Identity token is 17 KiB, exceeds the 16 KiB assertion limit",
+            "statusCode": null,
+            "body": null,
+            "requestId": null
+          }
+        },
+        "count": 5
+      },
+      {
+        "case": "unsupported-token-type",
+        "result": {
+          "error": {
+            "name": "Error",
+            "message": "Token endpoint response: unsupported token_type \"MAC\" (want Bearer)",
+            "statusCode": 200,
+            "body": {},
+            "requestId": "request-owned-fixture"
+          }
+        },
+        "count": 6
+      },
+      {
+        "case": "secure-endpoint-before-file",
+        "result": {
+          "error": {
+            "name": "Error",
+            "message": "Refusing to send credential over non-https token endpoint \"http://owned.example.invalid\"",
+            "statusCode": null,
+            "body": null,
+            "requestId": null
+          }
+        },
+        "count": 6
+      }
+    ],
+    "exchanges": [
+      {
+        "url": "http://127.0.0.1:1/v1/oauth/token",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "anthropic-beta": "oauth-2025-04-20,oidc-federation-2026-04-01",
+          "User-Agent": "Anthropic/JS 0.129.0"
+        },
+        "body": "{\"grant_type\":\"urn:ietf:params:oauth:grant-type:jwt-bearer\",\"assertion\":\"owned.fixture.jwt.first\",\"federation_rule_id\":\"rule-owned-fixture\",\"organization_id\":\"org-owned-fixture\",\"service_account_id\":\"service-owned-fixture\",\"workspace_id\":\"workspace-owned-fixture\"}",
+        "hasSignal": false
+      },
+      {
+        "url": "http://127.0.0.1:1/v1/oauth/token",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "anthropic-beta": "oauth-2025-04-20,oidc-federation-2026-04-01",
+          "User-Agent": "Anthropic/JS 0.129.0"
+        },
+        "body": "{\"grant_type\":\"urn:ietf:params:oauth:grant-type:jwt-bearer\",\"assertion\":\"owned.fixture.jwt.first\",\"federation_rule_id\":\"rule-owned-fixture\",\"organization_id\":\"org-owned-fixture\",\"service_account_id\":\"service-owned-fixture\",\"workspace_id\":\"workspace-owned-fixture\"}",
+        "hasSignal": false
+      },
+      {
+        "url": "http://127.0.0.1:1/v1/oauth/token",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "anthropic-beta": "oauth-2025-04-20,oidc-federation-2026-04-01",
+          "User-Agent": "Anthropic/JS 0.129.0"
+        },
+        "body": "{\"grant_type\":\"urn:ietf:params:oauth:grant-type:jwt-bearer\",\"assertion\":\"owned.fixture.jwt.rotated\",\"federation_rule_id\":\"rule-owned-fixture\",\"organization_id\":\"org-owned-fixture\",\"service_account_id\":\"service-owned-fixture\",\"workspace_id\":\"workspace-owned-fixture\"}",
+        "hasSignal": false
+      },
+      {
+        "url": "http://127.0.0.1:1/v1/oauth/token",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "anthropic-beta": "oauth-2025-04-20,oidc-federation-2026-04-01",
+          "User-Agent": "Anthropic/JS 0.129.0"
+        },
+        "body": "{\"grant_type\":\"urn:ietf:params:oauth:grant-type:jwt-bearer\",\"assertion\":\"owned.fixture.jwt.rotated\",\"federation_rule_id\":\"rule-owned-fixture\",\"organization_id\":\"org-owned-fixture\",\"service_account_id\":\"service-owned-fixture\",\"workspace_id\":\"workspace-owned-fixture\"}",
+        "hasSignal": false
+      },
+      {
+        "url": "http://127.0.0.1:1/v1/oauth/token",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "anthropic-beta": "oauth-2025-04-20,oidc-federation-2026-04-01",
+          "User-Agent": "Anthropic/JS 0.129.0"
+        },
+        "body": "{\"grant_type\":\"urn:ietf:params:oauth:grant-type:jwt-bearer\",\"assertion\":\"owned.fixture.jwt.rotated\",\"federation_rule_id\":\"rule-owned-fixture\",\"organization_id\":\"org-owned-fixture\",\"service_account_id\":\"service-owned-fixture\",\"workspace_id\":\"workspace-owned-other\"}",
+        "hasSignal": false
+      },
+      {
+        "url": "http://127.0.0.1:1/v1/oauth/token",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "anthropic-beta": "oauth-2025-04-20,oidc-federation-2026-04-01",
+          "User-Agent": "Anthropic/JS 0.129.0"
+        },
+        "body": "{\"grant_type\":\"urn:ietf:params:oauth:grant-type:jwt-bearer\",\"assertion\":\"owned.fixture.jwt.final\",\"federation_rule_id\":\"rule-owned-fixture\",\"organization_id\":\"org-owned-fixture\",\"service_account_id\":\"service-owned-fixture\",\"workspace_id\":\"workspace-owned-fixture\"}",
+        "hasSignal": false
+      }
+    ]
+  },
+  "loopback": {
+    "tokens": [
+      "owned-source-loopback-access",
+      "owned-source-loopback-access"
+    ],
+    "received": [
+      {
+        "path": "/v1/oauth/token",
+        "method": "POST",
+        "headers": {
+          "host": "127.0.0.1:6157",
+          "connection": "keep-alive",
+          "content-type": "application/json",
+          "anthropic-beta": "oauth-2025-04-20,oidc-federation-2026-04-01",
+          "user-agent": "Anthropic/JS 0.129.0",
+          "accept": "*/*",
+          "accept-language": "*",
+          "sec-fetch-mode": "cors",
+          "accept-encoding": "gzip, deflate",
+          "content-length": "218"
+        },
+        "body": "{\"grant_type\":\"urn:ietf:params:oauth:grant-type:jwt-bearer\",\"assertion\":\"owned.source.loopback.jwt\",\"federation_rule_id\":\"owned-source-rule\",\"organization_id\":\"owned-source-org\",\"workspace_id\":\"owned-source-workspace\"}"
+      }
+    ]
+  }
+}

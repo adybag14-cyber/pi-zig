@@ -1,0 +1,34 @@
+{
+  "manifests": [
+    {
+      "changed": [],
+      "drift": 0,
+      "name": "source",
+      "files": 1967
+    },
+    {
+      "changed": [],
+      "drift": 0,
+      "name": "dependencies",
+      "files": 31064
+    },
+    {
+      "changed": [],
+      "drift": 0,
+      "name": "node_tools",
+      "files": 1774
+    }
+  ],
+  "absent_dependency_drift": [],
+  "source_head_after": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "output_path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-output.json",
+  "control_manifest_drift": false,
+  "driver_sha256": "829CB5A5BA9628FF48ABEBE350FA0C6766F2CA86429029CD5971A315C7660D62",
+  "owned_fake_fixture_directory": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-owned-fixture",
+  "guest_fixture_sha256": "4C9F1DEDC7F33AF2CAED3562119097521782F35C2771811E7504291793B9B6BF",
+  "native_candidate_sha256": "EC4FD8D2B8988AD2264A65C77C755EA3E88E96F69DD0222388BFBF3D2AEDC9BE",
+  "extra_control_drift": [],
+  "historical_absence_records": 84,
+  "completed_utc": "2026-10-15T18:31:44.7010050+00:00",
+  "source_head_before": "5ab7fe74c400097b386662205cd93900695b8a71"
+}

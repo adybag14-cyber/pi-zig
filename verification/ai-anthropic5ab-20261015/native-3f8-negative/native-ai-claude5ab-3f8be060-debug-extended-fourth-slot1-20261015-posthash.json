@@ -1,0 +1,81 @@
+{
+  "candidate": "3f8be060ad40b3e13ad445366cbd26c46c3c6eed",
+  "source": 6507,
+  "source_after": 6507,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "controls": 23,
+  "control_drift": 0,
+  "vendor": 1316,
+  "vendor_after": 1316,
+  "vendor_drift": 0,
+  "references": [
+    {
+      "files": 1967,
+      "name": "Source5ab",
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "files": 31064,
+      "name": "dependencies",
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "files": 1774,
+      "name": "NodeTools",
+      "drift": 0,
+      "changed": []
+    }
+  ],
+  "absences": 84,
+  "absence_drift": 0,
+  "source_head_match": true,
+  "admitted": true,
+  "compile": "passed",
+  "runtime": "failed",
+  "metadata_selected": [
+    {
+      "metadata": {
+        "tests": [
+          "native_ai_claude_request_test.test.native Claude5ab Anthropic request bodies match25 actual public Source observations",
+          "native_ai_claude_request_test.test.native Claude5ab Anthropic real wire stream events callbacks and results match actual Source",
+          "native_ai_claude_request_test.test.native Claude5ab request owner graphs preserve error images unsupported off effort and actual Bedrock bytes",
+          "native_ai_claude_request_test.test.native Claude5ab request owner pending hook survives collection and retains terminal result identity",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "binary": "C:\\Users\\adyba\\pi-zig-ai-anthropic-bedrock-20261015\\.zig-cache\\o\\3e45dd6f3b836b46d0161b87010ff184\\test.exe",
+        "binary_sha256": "F221668E619A5742AC2325A77862D2A02BDE87476BF475617CDF6DFBD0B8815E",
+        "version": "0.16.0",
+        "method": "Actual metadata-only Zig0.16 protocol; query and clean exit, no unit run command"
+      },
+      "count": 5,
+      "id": "source25-five"
+    },
+    {
+      "metadata": {
+        "tests": [
+          "native_ai_claude_extended_test.test.native Claude5ab extended public Source16 wire federation retry long result-only and callback ownership",
+          "native_ai_claude_extended_test.test.native Claude5ab extended fresh native allocation identity survives stream delivery while stale and user errors remain caller failures",
+          "extensions.native_durable_storage.test_0",
+          "native_ai_constrained_sampling_test.test.native constrained sampling uses configured VM guard for both recursive schema walks",
+          "native_ai_constrained_sampling_test.test.native constrained sampling keeps guest predicate and getter exceptions distinct from unsupported schemas",
+          "native_ai_sdk_headers_test.test.native SDK nullable headers preserve real brands removals multiple values and guest iterator ownership",
+          "native_node_function_exception_test.test.native node function preserves caught getter exception without diagnostic coercion",
+          "native_ai_anthropic_api_error_test.test.native Anthropic SDK errors preserve genuine class Headers and constructor coercion semantics",
+          "native_ai_anthropic_sdk_boundary_test.test.native Claude5ab extended actual Source14 seven supplied SDK client traces with identical whole-byte reader and awaited cleanup"
+        ],
+        "binary": "C:\\Users\\adyba\\pi-zig-ai-anthropic-bedrock-20261015\\.zig-cache\\o\\4a04e455b67706a793b5144ffe43308d\\test.exe",
+        "binary_sha256": "230F45567B4143CE77E386A28F3713D84B770E423F1CAE479CF964955FB7D25F",
+        "version": "0.16.0",
+        "method": "Actual metadata-only Zig0.16 protocol; query and clean exit, no unit run command"
+      },
+      "count": 9,
+      "id": "extended9"
+    }
+  ],
+  "failure": null,
+  "completed_utc": "2026-10-15T23:05:03.3609675+00:00"
+}

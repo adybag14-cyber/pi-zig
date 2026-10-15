@@ -3,10 +3,33 @@ const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
 pub const KeywordCheck = *const fn (*Scope, c.JSValue, c.JSValue) anyerror!bool;
+fn stackGuard(scope: *Scope) !void {
+    const engine = scope.engine;
+    const cache_key = "\x00native-strict-schema-stack-guard";
+    const function = if (engine.native_module_values.get(cache_key)) |existing| existing else created: {
+        const Guard = struct {
+            fn call(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+                return c.pi_js_undefined();
+            }
+        };
+        // QuickJS checks its actual configured C stack limit when padding a
+        // missing argument. Calling this at each native recursive entry checks
+        // the accumulated native stack too; no schema depth limit is invented.
+        const result = try engine.checked(c.JS_NewCFunctionData2(engine.context, Guard.call, "", 1, 0, 0, null));
+        engine.native_module_values.put(engine.gpa, cache_key, result) catch |err| {
+            engine.freeValue(result);
+            return err;
+        };
+        break :created result;
+    };
+    const result = try v.js.call(engine, function, c.pi_js_undefined(), &.{});
+    engine.freeValue(result);
+}
 fn object(scope: *Scope, value: c.JSValue) !bool {
     return c.JS_IsObject(value) and !c.JS_IsFunction(scope.engine.context, value) and !try v.array(scope, value);
 }
 fn schemaNull(scope: *Scope, schema: c.JSValue, steps: *usize) anyerror!bool {
+    try stackGuard(scope);
     try @import("native_ai_budget.zig").step(scope.engine, steps);
     if (!try object(scope, schema)) return false;
     const kind = try scope.get(schema, "type");
@@ -31,6 +54,7 @@ fn structured(scope: *Scope, schema: c.JSValue) !bool {
     return (try v.array(scope, kind) and (scope.truthy(try scope.invoke(kind, "includes", &.{try scope.text("object")})) or scope.truthy(try scope.invoke(kind, "includes", &.{try scope.text("array")})))) or !c.JS_IsUndefined(try scope.get(schema, "properties")) or !c.JS_IsUndefined(try scope.get(schema, "items"));
 }
 fn strictNode(scope: *Scope, schema: c.JSValue, reason: *c.JSValue, steps: *usize, predicate: ?KeywordCheck) anyerror!void {
+    try stackGuard(scope);
     try @import("native_ai_budget.zig").step(scope.engine, steps);
     if (!try object(scope, schema)) {
         reason.* = try scope.text("boolean schemas are unsupported");

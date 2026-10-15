@@ -1,0 +1,8 @@
+{
+  "heap_mb": 256,
+  "coordinated_with": "Root explicit LIGHT Source slot5 Anthropic16 extended grant; no launch without grant",
+  "required_kib": 2097152,
+  "observed_utc": "2026-10-15T19:42:36.6338336+00:00",
+  "free_kib": 23268844,
+  "status": "admitted"
+}

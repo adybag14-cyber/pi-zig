@@ -1,0 +1,52 @@
+[
+  {
+    "sha256": "AB891A884AB8BC91DCAD06E80E7AD7587AF574E7431CC386A5A96C8F3A271E95",
+    "bytes": 9346,
+    "path": "ai-anthropic16-extended-5ab-source-capture-20261015.mjs"
+  },
+  {
+    "sha256": "DC0E7AA21DA12A0E02BEE99DEE34BE89F96E053D815FB4B8659206D3218AD2F4",
+    "bytes": 6888,
+    "path": "Run-AiAnthropic16ExtendedSource-20261015.ps1"
+  },
+  {
+    "sha256": "98B604EA700F5FB16BA6759EA4EBA121AD5DEDDAC493443AA2B4086AB1470F89",
+    "bytes": 269,
+    "path": "ai-anthropic16-extended-5ab-source16-first-20261015-admission.json"
+  },
+  {
+    "sha256": "080C7149AAEFBBE66617EAF3CED139E70C1B418CE1E98EDFF78A8A28799970B0",
+    "bytes": 1637,
+    "path": "ai-anthropic16-extended-5ab-source16-first-20261015-extra-before.json"
+  },
+  {
+    "sha256": "EF55EC39A63AB986F29F913F8C7B94AA0AAC38160D1BCB856DB7964A1E021374",
+    "bytes": 627,
+    "path": "ai-anthropic16-extended-5ab-source16-first-20261015-posthash.json"
+  },
+  {
+    "sha256": "97B0087A40E9E55ADDEA1945E7AFAF0B7DEFDA8D36D5B636843B82CF0220B51F",
+    "bytes": 1171,
+    "path": "ai-anthropic16-extended-5ab-source16-first-20261015.json"
+  },
+  {
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0,
+    "path": "ai-anthropic16-extended-5ab-source16-first-20261015.stdout.log"
+  },
+  {
+    "sha256": "A35AFD852CDE8E5B9109F3A87D9B1325945226D734911586C338333E1B3D0498",
+    "bytes": 178,
+    "path": "ai-anthropic16-extended-5ab-source16-first-20261015.stderr.log"
+  },
+  {
+    "sha256": "E6EF6D0C551D9F471A49A1ECDCF5FA9B6EB63906290904F9B030ADF02C9428DA",
+    "bytes": 39486,
+    "path": "source5ab-modules-32144-0-20261015.jsonl"
+  },
+  {
+    "sha256": "E2FA67CE930C77660DF95A45E8219760B5895C12FAAFE41B3353F36782FCFA34",
+    "bytes": 446750,
+    "path": "../../../src/extensions/fixtures/ai-anthropic5ab-extended.json"
+  }
+]
