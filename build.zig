@@ -1990,6 +1990,16 @@ pub fn build(b: *std.Build) void {
     const tui_public_slice_run = b.addRunArtifact(tui_public_slice_tests);
     b.step("test-native-tui-public-source", "Replay implemented Source public TUI behavior slices").dependOn(&tui_public_slice_run.step);
     test_step.dependOn(&tui_public_slice_run.step);
+    const headers_source_module = b.createModule(.{ .root_source_file = b.path("src/native_headers_source_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, headers_source_module, quickjs, sqlite_lib_dir);
+    headers_source_module.addImport("catalog_tool", catalog_tool);
+    const headers_source_tests = b.addTest(.{ .root_module = headers_source_module, .use_llvm = use_llvm, .filters = &.{ "Headers Source189", "Headers native helper" } });
+    b.step("build-native-headers-source", "Compile native actual Node24 Headers contract replay").dependOn(&headers_source_tests.step);
+    const headers_source_run = b.addRunArtifact(headers_source_tests);
+    b.step("test-native-headers-source", "Replay actual Node24 Headers contracts and ownership").dependOn(&headers_source_run.step);
+    const headers_oom_tests = b.addTest(.{ .root_module = headers_source_module, .use_llvm = use_llvm, .filters = &.{"Headers full-engine exhaustive"} });
+    const headers_oom_run = b.addRunArtifact(headers_oom_tests);
+    b.step("test-native-headers-oom", "Exhaust native Headers full-engine allocation failures").dependOn(&headers_oom_run.step);
     const tui_base_source_module = b.createModule(.{ .root_source_file = b.path("src/native_tui_base_source_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, tui_base_source_module, quickjs, sqlite_lib_dir);
     tui_base_source_module.addImport("catalog_tool", catalog_tool);
