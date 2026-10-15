@@ -1,0 +1,142 @@
+[
+  {
+    "native": "src\\extensions\\native_highlight_grammar_plaintext.zig",
+    "native_sha256": "5F6553FB21FDC897685F290909A2C7035EDAA9F7C3394BFF68639AF14A071F90",
+    "factory": "plaintext",
+    "source_sha256": "74A42662F49D0093DEE501A4E46DB9F36C1F8752BFF4F86BDCB26C88362854BD",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/plaintext.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_clojure_repl.zig",
+    "native_sha256": "8076E67BD0873A8C419017BE5DFC2A1F57E538DACAF1E6C6C5D433433409666C",
+    "factory": "clojure-repl",
+    "source_sha256": "672A77671BEA526608487CB1A172ECC2A1538DB8C065023A399EE2A64E3C3F0F",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/clojure-repl.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_vbscript_html.zig",
+    "native_sha256": "11830FE1CC7DB2BA8A3669EDA6F28B484F36B10E9E436EB90E1759893B1AE93E",
+    "factory": "vbscript-html",
+    "source_sha256": "37EFB4641038A9E97D67E528682948F51C8718CAC95E5DD6FE1F45D471B83C23",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/vbscript-html.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_julia_repl.zig",
+    "native_sha256": "AAD324DAD17735882377CA3868AEC54221E017897CD8CAE14D90FB1239502EE1",
+    "factory": "julia-repl",
+    "source_sha256": "1D1C4E5FBD151C7F52ADC3CEB62155721FAEB0CF6BBBC53A8DF4E8E748CFE7D2",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/julia-repl.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_erlang_repl.zig",
+    "native_sha256": "8EA8333CEBF316F6264A7591681814D0331D07205026175697EDCA33A09F3CAC",
+    "factory": "erlang-repl",
+    "source_sha256": "0D855BEA24B82FE5CA69D4B44BA2946B505D47E8018DA928222495B4703053BC",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/erlang-repl.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_oxygene.zig",
+    "native_sha256": "A389F7072D27678C620CD3790619FA1E86343E90A1402F7C593B4D3910C96406",
+    "factory": "oxygene",
+    "source_sha256": "A48FD3BFA0158F1C499B05CEAB870E4B98618071ACCDABC2211405047C0B62B3",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/oxygene.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_angelscript.zig",
+    "native_sha256": "ED579167B161707F936924B1A7F49BB536FB40C566B98047E19DA7DB0850623C",
+    "factory": "angelscript",
+    "source_sha256": "A083C7102A33872CA6AF2E0E19FAA46F5EC1850D55BB6F7DB5E4FA9C9FBBB028",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/angelscript.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_vbscript.zig",
+    "native_sha256": "B317BDBE8569B8115645125EE8F521898099CCD6FCA38192312F56E441EBC9A2",
+    "factory": "vbscript",
+    "source_sha256": "372E77457C66557FDFA6ADBDD6C0218B7C97E3A6E1CBDAE91B598E6C7BE9BBFE",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/vbscript.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_delphi.zig",
+    "native_sha256": "7F6DBE10222086FC0FBCCA0DE51C275247FCCE5BDB1F3C7D0DFED820E7FC19C0",
+    "factory": "delphi",
+    "source_sha256": "171AC7E82CA790C251313FB0E3513095962932AEC227161656BBC9DD387DE790",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/delphi.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_mercury.zig",
+    "native_sha256": "DBA19A88FAAEB198C489E0C365B97F7AACA76535E0E02BF81A6C3DCA47355EAD",
+    "factory": "mercury",
+    "source_sha256": "11540A74EB9B18A6081D6A375270B9D5BE565CC7166E855EEE890B8083883A3C",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/mercury.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_haskell.zig",
+    "native_sha256": "0A274A8EC7FBB7043AD054C8FC96DBDA3992D03918FF48A56F1F2AC9FBC68B51",
+    "factory": "haskell",
+    "source_sha256": "00D35E3A34F733547AEE39E256816AB966AF9D9381910E0D17EEBFC052B19F5E",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/haskell.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_zephir.zig",
+    "native_sha256": "1472ED6B251F86EBB937D711101B82BB734A43326EB7F28E45E27E1174CBDD70",
+    "factory": "zephir",
+    "source_sha256": "5517CD886872D8D4DEA29DF3E8D9E457B2B0D92122394F086646D8238B6984EF",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/zephir.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_matlab.zig",
+    "native_sha256": "61EBD47252C08775A93CC177A1ABDB6ACD82DA01A583CFEF2D7BA8CDAB9B5153",
+    "factory": "matlab",
+    "source_sha256": "092FAD6393A9FFC8143950F8B34CF6E4BD54E5351812D671183262F55FDA18A5",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/matlab.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_moonscript.zig",
+    "native_sha256": "71112880B75A21CC0E725973F15A817EC3863EC992CF0C4E6C53ADC726BCAD3C",
+    "factory": "moonscript",
+    "source_sha256": "1380B57E5F95E72308E525B82877ACDC4136973B4E0C51FF094D033B8484A1D3",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/moonscript.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_processing.zig",
+    "native_sha256": "D7CC6C28FCF4B6C45CCFF0E577C8DADB4EC9F8EBD343150C359F9400E8F095A5",
+    "factory": "processing",
+    "source_sha256": "DF5F73E50458D95E99CB2EBCE0137C00E2A26037E040A024A78AE1404C93882B",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/processing.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_haxe.zig",
+    "native_sha256": "CB906E0237D5945874D886C2FC4D27934DC292C4CC698A08920E2767A4BF110D",
+    "factory": "haxe",
+    "source_sha256": "29A47B306EAE88E8D775BCC63F1EAF2382248A1B673C74DE40D50C92A91DCD40",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/haxe.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_hsp.zig",
+    "native_sha256": "3CFA00D797A1C9A070525E046A2BD174F90589DB0C8379EC71E47B4024D8E660",
+    "factory": "hsp",
+    "source_sha256": "D5845FB9BF845E5AAA766645FD5EB10123EEFE4BCE8B02E8D34E3DDF569B1938",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/hsp.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_objectivec.zig",
+    "native_sha256": "A309D74C17983F946ACF684E151BF5530A0B2075F9B31B7887C6D7D1500F4D68",
+    "factory": "objectivec",
+    "source_sha256": "AC167C556B2A5C9ECF8034F7249682947402C7E56D5C755D6782EEE16FB4D921",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/objectivec.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_hy.zig",
+    "native_sha256": "8EDF0A0A9369F856942E02A72A6E019FE2E78E4628A45550BDBEF2441C1B4E7D",
+    "factory": "hy",
+    "source_sha256": "2D1D3A55B784FBABC198C729F4EC24C0B7C911F6D6CEC136BE868A600C7AA997",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/hy.js"
+  },
+  {
+    "native": "src\\extensions\\native_highlight_grammar_erlang.zig",
+    "native_sha256": "924AE55F7D580E3840DD1A044D422A23928089D71770C506CCBE27758B6EF682",
+    "factory": "erlang",
+    "source_sha256": "48153D67FC4B03BDB23D2F03735687227D789737ADAC5F57824909B61B63BC41",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/erlang.js"
+  }
+]

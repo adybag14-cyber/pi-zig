@@ -1,0 +1,151 @@
+[
+  {
+    "source_sha256": "A48FD3BFA0158F1C499B05CEAB870E4B98618071ACCDABC2211405047C0B62B3",
+    "factory": "oxygene",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\oxygene.js",
+    "fields": {
+      "keyword": 8
+    }
+  },
+  {
+    "source_sha256": "A083C7102A33872CA6AF2E0E19FAA46F5EC1850D55BB6F7DB5E4FA9C9FBBB028",
+    "factory": "angelscript",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\angelscript.js",
+    "fields": {
+      "text": 4
+    }
+  },
+  {
+    "source_sha256": "372E77457C66557FDFA6ADBDD6C0218B7C97E3A6E1CBDAE91B598E6C7BE9BBFE",
+    "factory": "vbscript",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\vbscript.js",
+    "fields": {
+      "keyword": 4,
+      "literal": 1
+    }
+  },
+  {
+    "source_sha256": "171AC7E82CA790C251313FB0E3513095962932AEC227161656BBC9DD387DE790",
+    "factory": "delphi",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\delphi.js",
+    "fields": {
+      "text": 11
+    }
+  },
+  {
+    "source_sha256": "11540A74EB9B18A6081D6A375270B9D5BE565CC7166E855EEE890B8083883A3C",
+    "factory": "mercury",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\mercury.js",
+    "fields": {
+      "built_in": 2,
+      "keyword": 7,
+      "meta": 12
+    }
+  },
+  {
+    "source_sha256": "00D35E3A34F733547AEE39E256816AB966AF9D9381910E0D17EEBFC052B19F5E",
+    "factory": "haskell",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\haskell.js",
+    "fields": {
+      "text": 4
+    }
+  },
+  {
+    "source_sha256": "5517CD886872D8D4DEA29DF3E8D9E457B2B0D92122394F086646D8238B6984EF",
+    "factory": "zephir",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\zephir.js",
+    "fields": {
+      "text": 14
+    }
+  },
+  {
+    "source_sha256": "092FAD6393A9FFC8143950F8B34CF6E4BD54E5351812D671183262F55FDA18A5",
+    "factory": "matlab",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\matlab.js",
+    "fields": {
+      "keyword": 2,
+      "built_in": 16
+    }
+  },
+  {
+    "source_sha256": "1380B57E5F95E72308E525B82877ACDC4136973B4E0C51FF094D033B8484A1D3",
+    "factory": "moonscript",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\moonscript.js",
+    "fields": {
+      "built_in": 4,
+      "keyword": 2,
+      "literal": 1
+    }
+  },
+  {
+    "source_sha256": "DF5F73E50458D95E99CB2EBCE0137C00E2A26037E040A024A78AE1404C93882B",
+    "factory": "processing",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\processing.js",
+    "fields": {
+      "title": 1,
+      "built_in": 24,
+      "keyword": 7,
+      "literal": 1
+    }
+  },
+  {
+    "source_sha256": "29A47B306EAE88E8D775BCC63F1EAF2382248A1B673C74DE40D50C92A91DCD40",
+    "factory": "haxe",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\haxe.js",
+    "fields": {
+      "built_in": 1,
+      "keyword": 3,
+      "literal": 1
+    }
+  },
+  {
+    "source_sha256": "D5845FB9BF845E5AAA766645FD5EB10123EEFE4BCE8B02E8D34E3DDF569B1938",
+    "factory": "hsp",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\hsp.js",
+    "fields": {
+      "keyword": 1
+    }
+  },
+  {
+    "source_sha256": "AC167C556B2A5C9ECF8034F7249682947402C7E56D5C755D6782EEE16FB4D921",
+    "factory": "objectivec",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\objectivec.js",
+    "fields": {
+      "built_in": 1,
+      "keyword": 22,
+      "literal": 1
+    }
+  },
+  {
+    "source_sha256": "2D1D3A55B784FBABC198C729F4EC24C0B7C911F6D6CEC136BE868A600C7AA997",
+    "factory": "hy",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\hy.js",
+    "fields": {
+      "builtin-name": 29
+    }
+  },
+  {
+    "source_sha256": "48153D67FC4B03BDB23D2F03735687227D789737ADAC5F57824909B61B63BC41",
+    "factory": "erlang",
+    "scope": "Original static keyword inputs only; no grammar execution or expected result generation",
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\erlang.js",
+    "fields": {
+      "keyword": 2,
+      "literal": 1
+    }
+  }
+]
