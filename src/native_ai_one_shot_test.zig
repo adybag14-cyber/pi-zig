@@ -60,7 +60,7 @@ test "native AI one shot owned image HTTP consumes large success and error bodie
     defer gpa.free(error_body);
     const fixture = @import("ai/http_fixture.zig");
     for ([_][]const u8{ image_body, error_body }, [_]std.http.Status{ .ok, .bad_request }, 0..) |body, status, index| {
-        const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{ .path = "/v1/chat/completions", .body = body, .status = status, .payload_contains = "\"model\":\"wire-image\"", .expected_request_headers = &.{ .{ .name = "authorization", .value = "Bearer fixture-key" }, .{ .name = "content-type", .value = "application/json" } } }});
+        const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{ .path = "/v1/chat/completions", .body = body, .status = status, .payload_contains = "\"model\":\"wire-image\"", .headers = &.{ .{ .name = "set-cookie", .value = "a=1" }, .{ .name = "set-cookie", .value = "b=2" } }, .expected_request_headers = &.{ .{ .name = "authorization", .value = "Bearer fixture-key" }, .{ .name = "content-type", .value = "application/json" } } }});
         defer server.deinit();
         const url = try server.url(gpa, "/v1");
         defer gpa.free(url);
@@ -73,7 +73,7 @@ test "native AI one shot owned image HTTP consumes large success and error bodie
         try scope.put(global, "wireImageBase", try scope.text(url));
         try scope.put(global, "wireImageSuccess", c.pi_js_bool(engine.context, @intFromBool(index == 0)));
         try evaluate(engine,
-            \\const model={id:'wire-image',api:'openrouter-images',provider:'wire',baseUrl:wireImageBase,output:['image'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0}};let responseStatus;const result=await oneShotAPIs.image.generateImages(model,{input:[{type:'text',text:'large native image'}]},{apiKey:'fixture-key',maxRetries:0,onResponse(head){responseStatus=head.status}});if(wireImageSuccess){if(responseStatus!==200||result.stopReason!=='stop'||result.responseId!=='large-image'||result.output.length!==1||result.output[0].data.length!==700000||result.output[0].data[699999]!=='A')throw Error('large native image was not fully collected')}else if(responseStatus!==undefined||result.stopReason!=='error'||!result.errorMessage.startsWith('400 ')||!result.errorMessage.endsWith('END')||result.errorMessage.length!==700007)throw Error('large native error body was not fully collected');
+            \\const model={id:'wire-image',api:'openrouter-images',provider:'wire',baseUrl:wireImageBase,output:['image'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0}};let responseStatus;const result=await oneShotAPIs.image.generateImages(model,{input:[{type:'text',text:'large native image'}]},{apiKey:'fixture-key',maxRetries:0,onResponse(head){responseStatus=head.status;if(head.headers['set-cookie']!=='b=2')throw Error('repeated cookies must reach original headersToRecord separately')}});if(wireImageSuccess){if(responseStatus!==200||result.stopReason!=='stop'||result.responseId!=='large-image'||result.output.length!==1||result.output[0].data.length!==700000||result.output[0].data[699999]!=='A')throw Error('large native image was not fully collected')}else if(responseStatus!==undefined||result.stopReason!=='error'||!result.errorMessage.startsWith('400 ')||!result.errorMessage.endsWith('END')||result.errorMessage.length!==700007)throw Error('large native error body was not fully collected');
         , "native-ai-one-shot-large-image-wire.mjs");
         try server.finish();
         try std.testing.expectEqual(@as(usize, 1), server.captured.items.len);
