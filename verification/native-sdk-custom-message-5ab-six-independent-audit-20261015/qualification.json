@@ -1,0 +1,76 @@
+{
+  "status": "independent_custom_message40_six_profile_audit_passed",
+  "qualified_source_head": "0c5dad6539d42617afe0035348c8e3b852069387",
+  "product_base": "d0da323437529a19fbb05bb3d3de7855be7f0b93",
+  "run_id": 38780046188,
+  "run_url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38780046188",
+  "profiles": 6,
+  "native_tests_per_profile": 4,
+  "substantive_tests_per_profile": 3,
+  "genuine_linux_source40_qualified": true,
+  "original_source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "source_files": 1967,
+  "tracked_source_files": 1924,
+  "frozen_typed_catalog_files": 43,
+  "full_reference_entries": 28294,
+  "reference_links": 47,
+  "node_tool_files": 4562,
+  "fresh_linux_captures": 2,
+  "both_match_original_windows40_rows_and3descriptors": true,
+  "actual_profile_allocations": [
+    {
+      "os": "Ubuntu 24.04.5 LTS",
+      "mode": "ReleaseSafe",
+      "baseline": 87,
+      "completed": 87
+    },
+    {
+      "os": "Ubuntu 24.04.5 LTS",
+      "mode": "Debug",
+      "baseline": 87,
+      "completed": 87
+    },
+    {
+      "os": "macOS 26.6.2",
+      "mode": "Debug",
+      "baseline": 87,
+      "completed": 87
+    },
+    {
+      "os": "macOS 26.6.2",
+      "mode": "ReleaseSafe",
+      "baseline": 87,
+      "completed": 87
+    },
+    {
+      "os": "Microsoft Windows 10.0.26100",
+      "mode": "ReleaseSafe",
+      "baseline": 87,
+      "completed": 87
+    },
+    {
+      "os": "Microsoft Windows 10.0.26100",
+      "mode": "Debug",
+      "baseline": 87,
+      "completed": 87
+    }
+  ],
+  "runtime_measured_baseline_authoritative": true,
+  "candidate_files_exact_git_sha256_per_profile": 5611,
+  "compiler_files_per_profile": 19546,
+  "all_post_inventory_hash_drift": 0,
+  "metadata_response_tags": [
+    0,
+    3
+  ],
+  "inventory_query_tag": 4,
+  "inventory_exit_tag": 0,
+  "inventory_executes_unit_tests": false,
+  "allocation_scope": "Complete measured native allocator universe per profile; no exhaustive C malloc claim",
+  "latest_catalog_qualified": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "proof_only": true,
+  "product_changes": false
+}

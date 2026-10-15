@@ -1,0 +1,55 @@
+{
+  "status": "independent_genuine_linux_custom_message40_audit_passed",
+  "run_id": 38780046188,
+  "head": "0c5dad6539d42617afe0035348c8e3b852069387",
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "artifact_id": 11995316523,
+  "zip_digest": "sha256:a08800663ee3288e68ba5ef60e772f923f0a9bd03236f9b7c61a1f4c22a6b8f3",
+  "source_checkout_eol_authority": "Official .gitattributes CRLF only for Windows script files; remaining source blobs unchanged",
+  "source_files": 1967,
+  "tracked_source_files": 1924,
+  "frozen_typed_catalog_files": 43,
+  "latest_catalog_qualified": false,
+  "inventories": {
+    "source_dependencies_links": 28294,
+    "candidate": 5611,
+    "node_tools": 4562,
+    "temporary_controls": 4565
+  },
+  "reference_links": 47,
+  "official_node_version": "v24.14.0",
+  "all_node_files_match_official_archive": true,
+  "exact_source_lock_npm_ci_passed": true,
+  "npm_install_raw_process_title_preserved": "npm ci",
+  "captures": [
+    {
+      "capture": 1,
+      "pid": 2641,
+      "created_utc": "2026-10-15T17:46:56.2916620Z",
+      "cases": 40,
+      "descriptors": 3,
+      "raw_sha256": "d26f5b205fb6797357705d126c400cebaf8cc778d39afd03778022c85fe79e9c",
+      "loaded_default_modules": 1253,
+      "workspace_mappings": 32,
+      "matched_windows_original": true
+    },
+    {
+      "capture": 2,
+      "pid": 2650,
+      "created_utc": "2026-10-15T17:46:59.0216620Z",
+      "cases": 40,
+      "descriptors": 3,
+      "raw_sha256": "d26f5b205fb6797357705d126c400cebaf8cc778d39afd03778022c85fe79e9c",
+      "loaded_default_modules": 1253,
+      "workspace_mappings": 32,
+      "matched_windows_original": true
+    }
+  ],
+  "raw_double_capture_equal": true,
+  "both_match_original_windows40_rows_and_descriptors": true,
+  "all_post_inventory_hash_drift": 0,
+  "genuine_linux_source40_qualified": true,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}
