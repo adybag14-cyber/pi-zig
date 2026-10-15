@@ -125,16 +125,6 @@ fn fail(s: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
 fn next(s: *Scope, owner: c.JSValue) !void {
     return wait(s, owner, try s.invoke(try s.get(owner, "iterator"), "next", &.{}), .next);
 }
-fn chunk(s: *Scope, owner: c.JSValue) !void {
-    const queue = try s.get(owner, "queue");
-    var index: u32 = 0;
-    if (c.JS_ToUint32(s.engine.context, &index, try s.get(owner, "queueIndex")) < 0) return v.js.capture(s.engine);
-    if (index >= try v.length(s, queue)) return next(s, owner);
-    const item = try wire.decode(s, try v.at(s, queue, index));
-    try s.put(owner, "item", item);
-    try s.put(owner, "queueIndex", c.JS_NewUint32(s.engine.context, index + 1));
-    return wait(s, owner, try hook(s, owner, "onProviderStreamEvent", item), .chunk);
-}
 fn advance(s: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
     switch (stage) {
         .payload => {
@@ -152,56 +142,23 @@ fn advance(s: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
         },
         .response => {
             try s.put(owner, "requestId", try s.get(owner, "pendingRequestId"));
+            try s.put(owner, "iterator", try s.own(try @import("native_ai_bedrock_items.zig").create(s.engine, try s.get(owner, "http"), try s.get(owner, "response"), try s.get(owner, "requestId"))));
             try next(s, owner);
         },
         .next => {
             if (s.truthy(try s.get(value, "done"))) {
-                try wire.finish(s, owner);
                 try decoder.finish(s, try s.get(owner, "decoder"), try aborted(s, owner));
                 return flow.settle(s.engine, owner, false, c.pi_js_undefined());
             }
-            const event = try s.get(value, "value");
-            if (try v.eq(s, try s.get(event, "type"), "error_body")) return fail(s, owner, try httpError(s, owner, try s.get(event, "body")));
-            try s.put(owner, "queue", try wire.feed(s, owner, try s.get(event, "data")));
-            try s.put(owner, "queueIndex", c.JS_NewInt32(s.engine.context, 0));
-            try chunk(s, owner);
+            const item = try s.get(value, "value");
+            try s.put(owner, "item", item);
+            try wait(s, owner, try hook(s, owner, "onProviderStreamEvent", item), .chunk);
         },
         .chunk => {
             try decoder.item(s, try s.get(owner, "decoder"), try s.get(owner, "item"));
-            try chunk(s, owner);
+            try next(s, owner);
         },
     }
-}
-fn httpError(s: *Scope, owner: c.JSValue, body: c.JSValue) !c.JSValue {
-    const response = try s.get(owner, "response");
-    var guard = @import("native_ai_json_scope.zig").Guard.enter(s.engine);
-    defer guard.deinit();
-    var parse_failure = false;
-    const parsed = s.invoke(try s.global("JSON"), "parse", &.{body}) catch |err| blk: {
-        parse_failure = true;
-        const reason = try s.own(flow.reason(s.engine, err));
-        if (s.engine.captured_exception) |captured| {
-            s.engine.captured_exception = null;
-            s.engine.freeValue(captured);
-        }
-        const message = try s.get(reason, "message");
-        try s.set(reason, "message", try s.concat(message, try s.text("\n  Deserialization error: to see the raw response, inspect the hidden field {error}.$response on this object.")));
-        break :blk reason;
-    };
-    const error_value = if (parse_failure) parsed else blk: {
-        var code = try v.optional(s, parsed, "code");
-        if (!s.truthy(code)) code = try v.optional(s, parsed, "__type");
-        if (!s.truthy(code)) code = try s.text("Unknown");
-        const raw = try s.engine.toString(code);
-        defer s.engine.gpa.free(raw);
-        const name = if (std.mem.lastIndexOfScalar(u8, raw, '#')) |i| raw[i + 1 ..] else raw;
-        break :blk try wire.serviceError(s, name, parsed);
-    };
-    const metadata = try s.object();
-    try s.put(metadata, "httpStatusCode", try s.get(response, "status"));
-    try s.put(metadata, "requestId", try s.get(owner, "requestId"));
-    try s.put(error_value, "$metadata", metadata);
-    return error_value;
 }
 fn replacer(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     if (args.len < 2) return c.pi_js_undefined();
