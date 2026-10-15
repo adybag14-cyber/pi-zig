@@ -1,0 +1,41 @@
+{
+  "actual_node": {
+    "name": "transform-compression-node24-source-second-20261015",
+    "pid": 38036,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+    "command_line": "C:\\Program Files\\nodejs\\node.exe --max-old-space-size=256 --expose-gc C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\capture-transform-compression-configs-companion-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\transform-compression-node24-source-second-20261015-output.json C:\\Users\\adyba\\pi-zig-native-transform-compression-20261015\\src\\extensions\\fixtures\\web-transform-compression-node24.input.txt C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-node-builtin-authorities.json",
+    "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+    "created_utc": "2026-10-15T21:59:33.6285248Z",
+    "launched_utc": "2026-10-15T22:59:33.6260843+01:00",
+    "identity_captured": true,
+    "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+    "working_directory": "C:/Users/adyba/pi-zig-native-transform-compression-20261015",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-15T22:59:34.0717658+01:00"
+  },
+  "prepared_owner_sha256": "DBCA5EEC8D2A582BD7AA937E44F02DE3001E4830F44E194C46457C46F726FD0C",
+  "original_caller_sha256": "0D495E2955618945C17940DFF3FEC43C78B6EDFD985E216A64E69A98233E59D9",
+  "candidate_head": "c3b080eca310a74900ba3e557572c09d4941ecbb",
+  "companion_caller_sha256": "16D1925A7C707B2C62A3BBC6261DF6140BD5DCD739149080163C629540C14FBD",
+  "configs": {
+    "pid": 38036,
+    "nodeVersion": "v24.14.0",
+    "totalEntries": 369,
+    "sourceBodies": 368,
+    "configs": {
+      "own": true,
+      "type": "undefined",
+      "undefined": true
+    }
+  },
+  "owner_sha256": "CE023B30A7E4046D78B3AFA27C4C31184EEA0E5983F2BA17FB1DEBF20EC240EF",
+  "full_pi_qualified": false,
+  "output_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\transform-compression-node24-source-second-20261015-output.json",
+  "output_sha256": "B833D944D0C99C9F0C3AAA6F7CB37F8EE6CE8010262F515F64BCE5F40CF78078",
+  "status": "genuine_source66_captured",
+  "native_qualified": false,
+  "expected_still_absent": true,
+  "source_cases": 66
+}

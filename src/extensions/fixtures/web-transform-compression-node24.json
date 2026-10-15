@@ -1,0 +1,2511 @@
+{
+  "source": "actual Node24 WHATWG TransformStream and compression builtins",
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "versions": {
+      "node": "24.14.0",
+      "acorn": "8.15.0",
+      "ada": "3.4.2",
+      "amaro": "1.1.7",
+      "ares": "1.34.6",
+      "brotli": "1.2.0",
+      "cldr": "48.0",
+      "icu": "78.2",
+      "llhttp": "9.3.0",
+      "merve": "1.0.0",
+      "modules": "137",
+      "napi": "10",
+      "nbytes": "0.1.1",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.68.0",
+      "openssl": "3.5.5",
+      "simdjson": "4.2.4",
+      "simdutf": "6.4.0",
+      "sqlite": "3.51.2",
+      "tz": "2025c",
+      "undici": "7.21.0",
+      "unicode": "17.0",
+      "uv": "1.51.0",
+      "uvwasi": "0.0.23",
+      "v8": "13.6.233.17-node.41",
+      "zlib": "1.3.1-e00f703",
+      "zstd": "1.5.7"
+    }
+  },
+  "builtinAuthoritySha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+  "builtinCount": 368,
+  "cases": 66,
+  "vectors": {
+    "payload": [
+      123,
+      34,
+      109,
+      101,
+      115,
+      115,
+      97,
+      103,
+      101,
+      34,
+      58,
+      34,
+      115,
+      116,
+      114,
+      101,
+      97,
+      109,
+      105,
+      110,
+      103,
+      32,
+      207,
+      128,
+      34,
+      44,
+      34,
+      118,
+      97,
+      108,
+      117,
+      101,
+      115,
+      34,
+      58,
+      91,
+      49,
+      44,
+      50,
+      44,
+      51,
+      93,
+      125
+    ],
+    "gzip": [
+      31,
+      139,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      10,
+      171,
+      86,
+      202,
+      77,
+      45,
+      46,
+      78,
+      76,
+      79,
+      85,
+      178,
+      82,
+      42,
+      46,
+      41,
+      74,
+      77,
+      204,
+      205,
+      204,
+      75,
+      87,
+      56,
+      223,
+      160,
+      164,
+      163,
+      84,
+      150,
+      152,
+      83,
+      154,
+      90,
+      172,
+      100,
+      21,
+      109,
+      168,
+      99,
+      164,
+      99,
+      28,
+      91,
+      11,
+      0,
+      26,
+      74,
+      143,
+      216,
+      43,
+      0,
+      0,
+      0
+    ],
+    "deflate": [
+      120,
+      156,
+      171,
+      86,
+      202,
+      77,
+      45,
+      46,
+      78,
+      76,
+      79,
+      85,
+      178,
+      82,
+      42,
+      46,
+      41,
+      74,
+      77,
+      204,
+      205,
+      204,
+      75,
+      87,
+      56,
+      223,
+      160,
+      164,
+      163,
+      84,
+      150,
+      152,
+      83,
+      154,
+      90,
+      172,
+      100,
+      21,
+      109,
+      168,
+      99,
+      164,
+      99,
+      28,
+      91,
+      11,
+      0,
+      83,
+      178,
+      14,
+      185
+    ],
+    "deflate-raw": [
+      171,
+      86,
+      202,
+      77,
+      45,
+      46,
+      78,
+      76,
+      79,
+      85,
+      178,
+      82,
+      42,
+      46,
+      41,
+      74,
+      77,
+      204,
+      205,
+      204,
+      75,
+      87,
+      56,
+      223,
+      160,
+      164,
+      163,
+      84,
+      150,
+      152,
+      83,
+      154,
+      90,
+      172,
+      100,
+      21,
+      109,
+      168,
+      99,
+      164,
+      99,
+      28,
+      91,
+      11,
+      0
+    ],
+    "largeGzip": [
+      31,
+      139,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      10,
+      237,
+      193,
+      49,
+      1,
+      0,
+      0,
+      0,
+      194,
+      160,
+      172,
+      235,
+      95,
+      194,
+      195,
+      26,
+      64,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      220,
+      0,
+      48,
+      81,
+      151,
+      202,
+      0,
+      0,
+      2,
+      0
+    ]
+  },
+  "rows": [
+    {
+      "name": "actual standard constructor and prototype metadata",
+      "value": {
+        "constructors": [
+          {
+            "name": "TransformStream",
+            "length": 0,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "prototype": true
+          },
+          {
+            "name": "TransformStreamDefaultController",
+            "length": 0,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "prototype": true
+          },
+          {
+            "name": "CompressionStream",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "prototype": true
+          },
+          {
+            "name": "DecompressionStream",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "prototype": true
+          }
+        ],
+        "prototypes": [
+          {
+            "keys": [
+              "constructor",
+              "readable",
+              "writable"
+            ],
+            "descriptors": {
+              "constructor": {
+                "enumerable": false,
+                "configurable": true,
+                "writable": true,
+                "method": {
+                  "name": "TransformStream",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name",
+                    "prototype"
+                  ],
+                  "prototype": true
+                }
+              },
+              "readable": {
+                "enumerable": true,
+                "configurable": true,
+                "get": {
+                  "name": "get readable",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name"
+                  ],
+                  "prototype": false
+                },
+                "set": true
+              },
+              "writable": {
+                "enumerable": true,
+                "configurable": true,
+                "get": {
+                  "name": "get writable",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name"
+                  ],
+                  "prototype": false
+                },
+                "set": true
+              }
+            },
+            "tag": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": false,
+              "method": "TransformStream"
+            }
+          },
+          {
+            "keys": [
+              "constructor",
+              "desiredSize",
+              "enqueue",
+              "error",
+              "terminate"
+            ],
+            "descriptors": {
+              "constructor": {
+                "enumerable": false,
+                "configurable": true,
+                "writable": true,
+                "method": {
+                  "name": "TransformStreamDefaultController",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name",
+                    "prototype"
+                  ],
+                  "prototype": true
+                }
+              },
+              "desiredSize": {
+                "enumerable": true,
+                "configurable": true,
+                "get": {
+                  "name": "get desiredSize",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name"
+                  ],
+                  "prototype": false
+                },
+                "set": true
+              },
+              "enqueue": {
+                "enumerable": true,
+                "configurable": true,
+                "writable": true,
+                "method": {
+                  "name": "enqueue",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name"
+                  ],
+                  "prototype": false
+                }
+              },
+              "error": {
+                "enumerable": true,
+                "configurable": true,
+                "writable": true,
+                "method": {
+                  "name": "error",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name"
+                  ],
+                  "prototype": false
+                }
+              },
+              "terminate": {
+                "enumerable": true,
+                "configurable": true,
+                "writable": true,
+                "method": {
+                  "name": "terminate",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name"
+                  ],
+                  "prototype": false
+                }
+              }
+            },
+            "tag": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": false,
+              "method": "TransformStreamDefaultController"
+            }
+          },
+          {
+            "keys": [
+              "constructor",
+              "readable",
+              "writable"
+            ],
+            "descriptors": {
+              "constructor": {
+                "enumerable": false,
+                "configurable": true,
+                "writable": true,
+                "method": {
+                  "name": "CompressionStream",
+                  "length": 1,
+                  "keys": [
+                    "length",
+                    "name",
+                    "prototype"
+                  ],
+                  "prototype": true
+                }
+              },
+              "readable": {
+                "enumerable": true,
+                "configurable": true,
+                "get": {
+                  "name": "get readable",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name"
+                  ],
+                  "prototype": false
+                },
+                "set": true
+              },
+              "writable": {
+                "enumerable": true,
+                "configurable": true,
+                "get": {
+                  "name": "get writable",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name"
+                  ],
+                  "prototype": false
+                },
+                "set": true
+              }
+            },
+            "tag": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": false,
+              "method": "CompressionStream"
+            }
+          },
+          {
+            "keys": [
+              "constructor",
+              "readable",
+              "writable"
+            ],
+            "descriptors": {
+              "constructor": {
+                "enumerable": false,
+                "configurable": true,
+                "writable": true,
+                "method": {
+                  "name": "DecompressionStream",
+                  "length": 1,
+                  "keys": [
+                    "length",
+                    "name",
+                    "prototype"
+                  ],
+                  "prototype": true
+                }
+              },
+              "readable": {
+                "enumerable": true,
+                "configurable": true,
+                "get": {
+                  "name": "get readable",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name"
+                  ],
+                  "prototype": false
+                },
+                "set": true
+              },
+              "writable": {
+                "enumerable": true,
+                "configurable": true,
+                "get": {
+                  "name": "get writable",
+                  "length": 0,
+                  "keys": [
+                    "length",
+                    "name"
+                  ],
+                  "prototype": false
+                },
+                "set": true
+              }
+            },
+            "tag": {
+              "enumerable": false,
+              "configurable": true,
+              "writable": false,
+              "method": "DecompressionStream"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual default streams brands locks and identity",
+      "value": [
+        {
+          "tag": "[object TransformStream]",
+          "readable": true,
+          "writable": true,
+          "sameReadable": true,
+          "sameWritable": true,
+          "locked": [
+            false,
+            false
+          ]
+        },
+        {
+          "tag": "[object CompressionStream]",
+          "readable": true,
+          "writable": true,
+          "sameReadable": true,
+          "sameWritable": true,
+          "locked": [
+            false,
+            false
+          ]
+        },
+        {
+          "tag": "[object DecompressionStream]",
+          "readable": true,
+          "writable": true,
+          "sameReadable": true,
+          "sameWritable": true,
+          "locked": [
+            false,
+            false
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Transform class requires new",
+      "error": {
+        "name": "TypeError",
+        "message": "Class constructor TransformStream cannot be invoked without 'new'"
+      }
+    },
+    {
+      "name": "Transform controller illegal constructor",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_ILLEGAL_CONSTRUCTOR",
+        "message": "Illegal constructor"
+      }
+    },
+    {
+      "name": "Transform getter rejects prototype receiver",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type TransformStream"
+      }
+    },
+    {
+      "name": "Transform controller desiredSize rejects fake receiver",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type TransformStreamDefaultController"
+      }
+    },
+    {
+      "name": "Transform controller enqueue rejects fake receiver",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type TransformStreamDefaultController"
+      }
+    },
+    {
+      "name": "Compression getter rejects wrong class",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #transform from an object whose class did not declare it"
+      }
+    },
+    {
+      "name": "Decompression getter rejects wrong class",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #transform from an object whose class did not declare it"
+      }
+    },
+    {
+      "name": "Compression invalid format",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_ARG_VALUE",
+        "message": "Failed to construct 'CompressionStream': 1st argument value 'GZIP' is not a valid enum value of type CompressionFormat."
+      }
+    },
+    {
+      "name": "Decompression invalid format",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_ARG_VALUE",
+        "message": "Failed to construct 'DecompressionStream': 1st argument value 'unknown' is not a valid enum value of type CompressionFormat."
+      }
+    },
+    {
+      "name": "Compression missing format",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_ARG_VALUE",
+        "message": "Failed to construct 'CompressionStream': 1st argument value 'undefined' is not a valid enum value of type CompressionFormat."
+      }
+    },
+    {
+      "name": "Transform rejects readableType",
+      "error": {
+        "name": "RangeError",
+        "code": "ERR_INVALID_ARG_VALUE",
+        "message": "The property 'transformer.readableType' is invalid. Received 'bytes'"
+      }
+    },
+    {
+      "name": "Transform rejects writableType",
+      "error": {
+        "name": "RangeError",
+        "code": "ERR_INVALID_ARG_VALUE",
+        "message": "The property 'transformer.writableType' is invalid. Received 'bytes'"
+      }
+    },
+    {
+      "name": "Transform rejects negative HWM",
+      "error": {
+        "name": "RangeError",
+        "code": "ERR_INVALID_ARG_VALUE",
+        "message": "The property 'strategy.highWaterMark' is invalid. Received -1"
+      }
+    },
+    {
+      "name": "Transform rejects nonfunction size",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_ARG_TYPE",
+        "message": "The \"strategy.size\" property must be of type function. Received type number (42)"
+      }
+    },
+    {
+      "name": "Transform rejects nonfunction transform",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_ARG_TYPE",
+        "message": "The \"transformer.transform\" property must be of type function. Received type boolean (true)"
+      }
+    },
+    {
+      "name": "Transform rejects null transformer",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_ARG_TYPE",
+        "message": "The \"transformer\" argument must be of type object. Received null"
+      }
+    },
+    {
+      "name": "actual transformer strategy getter and conversion order",
+      "value": [
+        "transformer.readableType",
+        "transformer.writableType",
+        "transformer.start",
+        "readable.highWaterMark",
+        "readable.size",
+        "writable.highWaterMark",
+        "writable.size",
+        "readable.number",
+        "writable.number",
+        "transformer.transform",
+        "transformer.flush",
+        "transformer.cancel",
+        "call start",
+        2
+      ]
+    },
+    {
+      "name": "actual start thrown identity stays synchronous",
+      "value": {
+        "trace": [
+          "start",
+          "caught"
+        ],
+        "same": true
+      }
+    },
+    {
+      "name": "actual getter rejection identity stays synchronous",
+      "value": {
+        "trace": [
+          "readableType",
+          "writableType",
+          "start"
+        ],
+        "same": true
+      }
+    },
+    {
+      "name": "actual default transform preserves raw object identity",
+      "value": {
+        "same": true,
+        "done": false,
+        "end": true
+      }
+    },
+    {
+      "name": "actual default transform preserves undefined and null",
+      "value": [
+        "undefined",
+        null
+      ]
+    },
+    {
+      "name": "actual start transform and flush receivers controller identity",
+      "value": {
+        "trace": [
+          [
+            "start",
+            true,
+            0
+          ],
+          [
+            "transform",
+            true,
+            true,
+            4
+          ],
+          [
+            "flush",
+            true,
+            true
+          ]
+        ],
+        "values": [
+          5,
+          99
+        ]
+      }
+    },
+    {
+      "name": "actual HWM0 write waits for read demand",
+      "value": {
+        "trace": [
+          [
+            "before read",
+            0,
+            0
+          ],
+          [
+            "transform",
+            7
+          ],
+          [
+            "written"
+          ]
+        ],
+        "value": 7
+      }
+    },
+    {
+      "name": "actual readable size algorithm receiver and negative queue size",
+      "value": {
+        "trace": [
+          {
+            "sameThis": false,
+            "value": "a"
+          },
+          {
+            "sameThis": false,
+            "value": "b"
+          }
+        ],
+        "desired": -1,
+        "writerDesired": 2
+      }
+    },
+    {
+      "name": "actual transform rejection preserves reason on both sides",
+      "value": [
+        {
+          "status": "rejected",
+          "same": true
+        },
+        {
+          "status": "rejected",
+          "same": true
+        },
+        {
+          "status": "rejected",
+          "same": true
+        },
+        {
+          "status": "rejected",
+          "same": true
+        }
+      ]
+    },
+    {
+      "name": "actual async start rejection preserves reason on both sides",
+      "value": [
+        {
+          "status": "rejected",
+          "same": true
+        },
+        {
+          "status": "rejected",
+          "same": true
+        },
+        {
+          "status": "rejected",
+          "same": true
+        },
+        {
+          "status": "rejected",
+          "same": true
+        }
+      ]
+    },
+    {
+      "name": "actual controller error preserves reason and null desiredSize",
+      "value": {
+        "desired": null,
+        "results": [
+          {
+            "status": "rejected",
+            "same": true
+          },
+          {
+            "status": "rejected",
+            "same": true
+          },
+          {
+            "status": "rejected",
+            "same": true
+          },
+          {
+            "status": "rejected",
+            "same": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual terminate closes readable and errors writable",
+      "value": {
+        "done": true,
+        "desired": 0,
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_STATE",
+          "message": "Invalid state: TransformStream has been terminated"
+        }
+      }
+    },
+    {
+      "name": "actual flush rejection propagates to close and readable",
+      "value": [
+        {
+          "status": "rejected",
+          "same": true
+        },
+        {
+          "status": "rejected",
+          "same": true
+        }
+      ]
+    },
+    {
+      "name": "actual readable cancellation invokes transformer cancel and unblocks write",
+      "value": {
+        "trace": [
+          {
+            "sameThis": true,
+            "sameReason": true
+          }
+        ],
+        "result": [
+          {
+            "status": "rejected",
+            "same": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual writable abort invokes transformer cancel and errors readable",
+      "value": {
+        "trace": [
+          {
+            "sameThis": true,
+            "sameReason": true
+          }
+        ],
+        "result": [
+          {
+            "status": "rejected",
+            "same": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual cancel callback rejection identity",
+      "value": [
+        {
+          "status": "rejected",
+          "same": true
+        },
+        {
+          "status": "rejected",
+          "same": true
+        }
+      ]
+    },
+    {
+      "name": "actual transform property reads happen once and callback is retained",
+      "value": {
+        "reads": 1,
+        "values": [
+          8
+        ]
+      }
+    },
+    {
+      "name": "actual subclass prototypes and borrowed controller methods",
+      "value": {
+        "subclass": true,
+        "base": true,
+        "values": [
+          "manual"
+        ]
+      }
+    },
+    {
+      "name": "gzip actual streaming decompression split header body trailer",
+      "value": {
+        "bytes": [
+          123,
+          34,
+          109,
+          101,
+          115,
+          115,
+          97,
+          103,
+          101,
+          34,
+          58,
+          34,
+          115,
+          116,
+          114,
+          101,
+          97,
+          109,
+          105,
+          110,
+          103,
+          32,
+          207,
+          128,
+          34,
+          44,
+          34,
+          118,
+          97,
+          108,
+          117,
+          101,
+          115,
+          34,
+          58,
+          91,
+          49,
+          44,
+          50,
+          44,
+          51,
+          93,
+          125
+        ],
+        "chunks": [
+          [
+            123,
+            34,
+            109,
+            101,
+            115,
+            115,
+            97,
+            103,
+            101,
+            34,
+            58,
+            34,
+            115,
+            116,
+            114,
+            101,
+            97,
+            109,
+            105,
+            110,
+            103,
+            32,
+            207,
+            128,
+            34,
+            44,
+            34,
+            118,
+            97,
+            108,
+            117,
+            101,
+            115,
+            34,
+            58,
+            91,
+            49,
+            44,
+            50,
+            44,
+            51,
+            93,
+            125
+          ]
+        ],
+        "types": [
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 43
+          }
+        ]
+      }
+    },
+    {
+      "name": "gzip actual native compression bytes and roundtrip input",
+      "value": {
+        "bytes": [
+          31,
+          139,
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          10,
+          171,
+          86,
+          202,
+          77,
+          45,
+          46,
+          78,
+          76,
+          79,
+          85,
+          178,
+          82,
+          42,
+          46,
+          41,
+          74,
+          77,
+          204,
+          205,
+          204,
+          75,
+          87,
+          56,
+          223,
+          160,
+          164,
+          163,
+          84,
+          150,
+          152,
+          83,
+          154,
+          90,
+          172,
+          100,
+          21,
+          109,
+          168,
+          99,
+          164,
+          99,
+          28,
+          91,
+          11,
+          0,
+          26,
+          74,
+          143,
+          216,
+          43,
+          0,
+          0,
+          0
+        ],
+        "chunks": [
+          [
+            31,
+            139,
+            8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10
+          ],
+          [
+            171,
+            86,
+            202,
+            77,
+            45,
+            46,
+            78,
+            76,
+            79,
+            85,
+            178,
+            82,
+            42,
+            46,
+            41,
+            74,
+            77,
+            204,
+            205,
+            204,
+            75,
+            87,
+            56,
+            223,
+            160,
+            164,
+            163,
+            84,
+            150,
+            152,
+            83,
+            154,
+            90,
+            172,
+            100,
+            21,
+            109,
+            168,
+            99,
+            164,
+            99,
+            28,
+            91,
+            11,
+            0,
+            26,
+            74,
+            143,
+            216,
+            43,
+            0,
+            0,
+            0
+          ]
+        ],
+        "types": [
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 10
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 53
+          }
+        ]
+      }
+    },
+    {
+      "name": "gzip actual empty compressed input is rejected",
+      "error": {
+        "name": "TypeError",
+        "code": "Z_BUF_ERROR",
+        "message": ""
+      }
+    },
+    {
+      "name": "gzip actual truncated trailer is rejected",
+      "error": {
+        "name": "TypeError",
+        "code": "Z_BUF_ERROR",
+        "message": ""
+      }
+    },
+    {
+      "name": "gzip actual DataView window ignores public byte getters",
+      "error": {
+        "name": "Error",
+        "message": "public buffer"
+      }
+    },
+    {
+      "name": "gzip actual trailing garbage policy",
+      "error": {
+        "name": "TypeError",
+        "code": "Z_DATA_ERROR",
+        "message": ""
+      }
+    },
+    {
+      "name": "deflate actual streaming decompression split header body trailer",
+      "value": {
+        "bytes": [
+          123,
+          34,
+          109,
+          101,
+          115,
+          115,
+          97,
+          103,
+          101,
+          34,
+          58,
+          34,
+          115,
+          116,
+          114,
+          101,
+          97,
+          109,
+          105,
+          110,
+          103,
+          32,
+          207,
+          128,
+          34,
+          44,
+          34,
+          118,
+          97,
+          108,
+          117,
+          101,
+          115,
+          34,
+          58,
+          91,
+          49,
+          44,
+          50,
+          44,
+          51,
+          93,
+          125
+        ],
+        "chunks": [
+          [
+            123
+          ],
+          [
+            34,
+            109,
+            101,
+            115,
+            115,
+            97,
+            103,
+            101,
+            34,
+            58,
+            34,
+            115,
+            116,
+            114,
+            101,
+            97,
+            109,
+            105,
+            110,
+            103,
+            32,
+            207,
+            128,
+            34,
+            44,
+            34,
+            118,
+            97,
+            108,
+            117,
+            101,
+            115,
+            34,
+            58,
+            91,
+            49,
+            44,
+            50,
+            44,
+            51,
+            93,
+            125
+          ]
+        ],
+        "types": [
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 1
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 42
+          }
+        ]
+      }
+    },
+    {
+      "name": "deflate actual native compression bytes and roundtrip input",
+      "value": {
+        "bytes": [
+          120,
+          156,
+          171,
+          86,
+          202,
+          77,
+          45,
+          46,
+          78,
+          76,
+          79,
+          85,
+          178,
+          82,
+          42,
+          46,
+          41,
+          74,
+          77,
+          204,
+          205,
+          204,
+          75,
+          87,
+          56,
+          223,
+          160,
+          164,
+          163,
+          84,
+          150,
+          152,
+          83,
+          154,
+          90,
+          172,
+          100,
+          21,
+          109,
+          168,
+          99,
+          164,
+          99,
+          28,
+          91,
+          11,
+          0,
+          83,
+          178,
+          14,
+          185
+        ],
+        "chunks": [
+          [
+            120,
+            156
+          ],
+          [
+            171,
+            86,
+            202,
+            77,
+            45,
+            46,
+            78,
+            76,
+            79,
+            85,
+            178,
+            82,
+            42,
+            46,
+            41,
+            74,
+            77,
+            204,
+            205,
+            204,
+            75,
+            87,
+            56,
+            223,
+            160,
+            164,
+            163,
+            84,
+            150,
+            152,
+            83,
+            154,
+            90,
+            172,
+            100,
+            21,
+            109,
+            168,
+            99,
+            164,
+            99,
+            28,
+            91,
+            11,
+            0,
+            83,
+            178,
+            14,
+            185
+          ]
+        ],
+        "types": [
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 2
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 49
+          }
+        ]
+      }
+    },
+    {
+      "name": "deflate actual empty compressed input is rejected",
+      "error": {
+        "name": "TypeError",
+        "code": "Z_BUF_ERROR",
+        "message": ""
+      }
+    },
+    {
+      "name": "deflate actual truncated trailer is rejected",
+      "error": {
+        "name": "TypeError",
+        "code": "Z_BUF_ERROR",
+        "message": ""
+      }
+    },
+    {
+      "name": "deflate actual DataView window ignores public byte getters",
+      "error": {
+        "name": "Error",
+        "message": "public buffer"
+      }
+    },
+    {
+      "name": "deflate actual trailing garbage policy",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_TRAILING_JUNK_AFTER_STREAM_END",
+        "message": "Trailing junk found after the end of the compressed stream"
+      }
+    },
+    {
+      "name": "deflate-raw actual streaming decompression split header body trailer",
+      "value": {
+        "bytes": [
+          123,
+          34,
+          109,
+          101,
+          115,
+          115,
+          97,
+          103,
+          101,
+          34,
+          58,
+          34,
+          115,
+          116,
+          114,
+          101,
+          97,
+          109,
+          105,
+          110,
+          103,
+          32,
+          207,
+          128,
+          34,
+          44,
+          34,
+          118,
+          97,
+          108,
+          117,
+          101,
+          115,
+          34,
+          58,
+          91,
+          49,
+          44,
+          50,
+          44,
+          51,
+          93,
+          125
+        ],
+        "chunks": [
+          [
+            123,
+            34,
+            109
+          ],
+          [
+            101,
+            115,
+            115,
+            97,
+            103,
+            101,
+            34,
+            58,
+            34,
+            115,
+            116,
+            114,
+            101,
+            97,
+            109,
+            105,
+            110,
+            103,
+            32,
+            207,
+            128,
+            34,
+            44,
+            34,
+            118,
+            97,
+            108,
+            117,
+            101,
+            115,
+            34,
+            58,
+            91,
+            49,
+            44,
+            50,
+            44,
+            51,
+            93,
+            125
+          ]
+        ],
+        "types": [
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 3
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 40
+          }
+        ]
+      }
+    },
+    {
+      "name": "deflate-raw actual native compression bytes and roundtrip input",
+      "value": {
+        "bytes": [
+          171,
+          86,
+          202,
+          77,
+          45,
+          46,
+          78,
+          76,
+          79,
+          85,
+          178,
+          82,
+          42,
+          46,
+          41,
+          74,
+          77,
+          204,
+          205,
+          204,
+          75,
+          87,
+          56,
+          223,
+          160,
+          164,
+          163,
+          84,
+          150,
+          152,
+          83,
+          154,
+          90,
+          172,
+          100,
+          21,
+          109,
+          168,
+          99,
+          164,
+          99,
+          28,
+          91,
+          11,
+          0
+        ],
+        "chunks": [
+          [
+            171,
+            86,
+            202,
+            77,
+            45,
+            46,
+            78,
+            76,
+            79,
+            85,
+            178,
+            82,
+            42,
+            46,
+            41,
+            74,
+            77,
+            204,
+            205,
+            204,
+            75,
+            87,
+            56,
+            223,
+            160,
+            164,
+            163,
+            84,
+            150,
+            152,
+            83,
+            154,
+            90,
+            172,
+            100,
+            21,
+            109,
+            168,
+            99,
+            164,
+            99,
+            28,
+            91,
+            11,
+            0
+          ]
+        ],
+        "types": [
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 45
+          }
+        ]
+      }
+    },
+    {
+      "name": "deflate-raw actual empty compressed input is rejected",
+      "error": {
+        "name": "TypeError",
+        "code": "Z_BUF_ERROR",
+        "message": ""
+      }
+    },
+    {
+      "name": "deflate-raw actual truncated trailer is rejected",
+      "error": {
+        "name": "TypeError",
+        "code": "Z_BUF_ERROR",
+        "message": ""
+      }
+    },
+    {
+      "name": "deflate-raw actual DataView window ignores public byte getters",
+      "error": {
+        "name": "Error",
+        "message": "public buffer"
+      }
+    },
+    {
+      "name": "deflate-raw actual trailing garbage policy",
+      "value": {
+        "bytes": [
+          123,
+          34,
+          109,
+          101,
+          115,
+          115,
+          97,
+          103,
+          101,
+          34,
+          58,
+          34,
+          115,
+          116,
+          114,
+          101,
+          97,
+          109,
+          105,
+          110,
+          103,
+          32,
+          207,
+          128,
+          34,
+          44,
+          34,
+          118,
+          97,
+          108,
+          117,
+          101,
+          115,
+          34,
+          58,
+          91,
+          49,
+          44,
+          50,
+          44,
+          51,
+          93,
+          125
+        ],
+        "chunks": [
+          [
+            123,
+            34,
+            109,
+            101,
+            115,
+            115,
+            97,
+            103,
+            101,
+            34,
+            58,
+            34,
+            115,
+            116,
+            114,
+            101,
+            97,
+            109,
+            105,
+            110,
+            103,
+            32,
+            207,
+            128,
+            34,
+            44,
+            34,
+            118,
+            97,
+            108,
+            117,
+            101,
+            115,
+            34,
+            58,
+            91,
+            49,
+            44,
+            50,
+            44,
+            51,
+            93,
+            125
+          ]
+        ],
+        "types": [
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 43
+          }
+        ]
+      }
+    },
+    {
+      "name": "gzip actual concatenated members",
+      "value": {
+        "bytes": [
+          123,
+          34,
+          109,
+          101,
+          115,
+          115,
+          97,
+          103,
+          101,
+          34,
+          58,
+          34,
+          115,
+          116,
+          114,
+          101,
+          97,
+          109,
+          105,
+          110,
+          103,
+          32,
+          207,
+          128,
+          34,
+          44,
+          34,
+          118,
+          97,
+          108,
+          117,
+          101,
+          115,
+          34,
+          58,
+          91,
+          49,
+          44,
+          50,
+          44,
+          51,
+          93,
+          125,
+          123,
+          34,
+          109,
+          101,
+          115,
+          115,
+          97,
+          103,
+          101,
+          34,
+          58,
+          34,
+          115,
+          116,
+          114,
+          101,
+          97,
+          109,
+          105,
+          110,
+          103,
+          32,
+          207,
+          128,
+          34,
+          44,
+          34,
+          118,
+          97,
+          108,
+          117,
+          101,
+          115,
+          34,
+          58,
+          91,
+          49,
+          44,
+          50,
+          44,
+          51,
+          93,
+          125
+        ],
+        "chunks": [
+          [
+            123,
+            34,
+            109,
+            101,
+            115,
+            115,
+            97,
+            103,
+            101,
+            34,
+            58,
+            34,
+            115,
+            116,
+            114,
+            101,
+            97,
+            109,
+            105,
+            110,
+            103,
+            32,
+            207,
+            128,
+            34,
+            44,
+            34,
+            118,
+            97,
+            108,
+            117,
+            101,
+            115,
+            34,
+            58,
+            91,
+            49,
+            44,
+            50,
+            44,
+            51,
+            93,
+            125
+          ],
+          [
+            123,
+            34,
+            109,
+            101,
+            115,
+            115,
+            97,
+            103,
+            101,
+            34,
+            58,
+            34,
+            115,
+            116,
+            114,
+            101,
+            97,
+            109,
+            105,
+            110,
+            103,
+            32,
+            207,
+            128,
+            34,
+            44,
+            34,
+            118,
+            97,
+            108,
+            117,
+            101,
+            115,
+            34,
+            58,
+            91,
+            49,
+            44,
+            50,
+            44,
+            51,
+            93,
+            125
+          ]
+        ],
+        "types": [
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 43
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 43
+          }
+        ]
+      }
+    },
+    {
+      "name": "gzip actual checksum rejection",
+      "error": {
+        "name": "TypeError",
+        "code": "Z_DATA_ERROR",
+        "message": ""
+      }
+    },
+    {
+      "name": "deflate actual checksum rejection",
+      "error": {
+        "name": "TypeError",
+        "code": "Z_DATA_ERROR",
+        "message": ""
+      }
+    },
+    {
+      "name": "gzip actual trailing zero padding",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_TRAILING_JUNK_AFTER_STREAM_END",
+        "message": "Trailing junk found after the end of the compressed stream"
+      }
+    },
+    {
+      "name": "gzip actual string writes encode UTF8",
+      "value": {
+        "bytes": [
+          31,
+          139,
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          10,
+          203,
+          72,
+          205,
+          201,
+          201,
+          87,
+          56,
+          223,
+          0,
+          0,
+          92,
+          187,
+          132,
+          102,
+          8,
+          0,
+          0,
+          0
+        ],
+        "chunks": [
+          [
+            31,
+            139,
+            8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10
+          ],
+          [
+            203,
+            72,
+            205,
+            201,
+            201,
+            87,
+            56,
+            223,
+            0,
+            0,
+            92,
+            187,
+            132,
+            102,
+            8,
+            0,
+            0,
+            0
+          ]
+        ],
+        "types": [
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 10
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 18
+          }
+        ]
+      }
+    },
+    {
+      "name": "gzip actual invalid chunk rejects write and read",
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_ARG_TYPE",
+        "message": "The \"chunk\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (42)"
+      }
+    },
+    {
+      "name": "raw actual decoded JSON through real public pipeThrough",
+      "value": {
+        "json": {
+          "message": "streaming π",
+          "values": [
+            1,
+            2,
+            3
+          ]
+        },
+        "sourceLocked": true,
+        "outputTag": "[object ReadableStream]"
+      }
+    },
+    {
+      "name": "actual Chord browser Blob stream Decompression Response text JSON path",
+      "value": {
+        "json": {
+          "message": "streaming π",
+          "values": [
+            1,
+            2,
+            3
+          ]
+        },
+        "used": true,
+        "bodyTag": "[object ReadableStream]"
+      }
+    },
+    {
+      "name": "actual format String conversion is captured and getter rejection is synchronous",
+      "value": {
+        "trace": [
+          "toString"
+        ],
+        "tag": "[object CompressionStream]"
+      }
+    },
+    {
+      "name": "gzip actual output crosses bounded native codec chunks",
+      "value": {
+        "length": 131072,
+        "checksum": 12713984,
+        "types": [
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 16384
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 16384
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 16384
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 16384
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 16384
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 16384
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 16384
+          },
+          {
+            "tag": "[object Uint8Array]",
+            "view": true,
+            "buffer": false,
+            "byteLength": 16384
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual compression cancellation preserves raw reason",
+      "value": [
+        {
+          "status": "rejected",
+          "same": true
+        },
+        {
+          "status": "rejected",
+          "same": true
+        }
+      ]
+    },
+    {
+      "name": "actual captured intrinsic constructors survive public replacements",
+      "value": {
+        "readable": true,
+        "writable": true
+      }
+    }
+  ]
+}
