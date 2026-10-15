@@ -1,0 +1,178 @@
+[
+  {
+    "sha256": "3F2DC9A20E828F44B85DF5EBE8FAD7F0F5FA64DE4EC80376229B701867205C7A",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\verification\\oauth-loader-graph-ae7-prepared-20261015\\source-observer.mjs"
+  },
+  {
+    "sha256": "1891342A814F6949D3DF384D83B738159D52851FD41DF240F9F160EB3E34D8C2",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-observe-20261015.mjs"
+  },
+  {
+    "sha256": "B67885F76310D14C75505EC5EF8A61821BCF6D57136474419BB65C4AF7AF0035",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-dependency-contract-audit-20261015.json"
+  },
+  {
+    "sha256": "3C84A2C828A906617A50E5C568BA9DA9CAEC7FD79D202C20CA7D6087DD02637C",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-preparation-controls-20261015.json"
+  },
+  {
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1"
+  },
+  {
+    "sha256": "32F7004BD49610B07E1406CED1921D5F02C464589CC712B8BC23E9F9D1D94195",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\verification\\oauth-loader-graph-ae7-prepared-20261015\\Run-OAuthLoaderGraphSource18-20261015.ps1"
+  },
+  {
+    "sha256": "2E55B9005C201E52F433EBF309113F03197B39AE5842153050B3229796116A72",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\build.zig"
+  },
+  {
+    "sha256": "CB52899FBCE142BAAF42F4E342FA23514100535BA1FA85C260253A563E388A8A",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\engine.zig"
+  },
+  {
+    "sha256": "7F9D0987ED35A579A2F6BCC172A081FEDAA21128C8A84DE9F4479C47C05725B2",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_auth_helpers.zig"
+  },
+  {
+    "sha256": "4022AA1E97DE968077F07048D74EF7DF060ED755214BAC257BB4B89AA8A7DDE8",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_catalog_values.zig"
+  },
+  {
+    "sha256": "2C0FF84D75ECD612F0A4AA9EC2BB75A4E91902A4220F33CF9F6A75BD88603FB2",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_anthropic.zig"
+  },
+  {
+    "sha256": "6705CB0683390C2E27A8295A3194EF459073E3377A68167BD18C78FE7D9BC020",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_callback_page.html"
+  },
+  {
+    "sha256": "D9802FE26673C63C0AF150C9F893442630FA518CD6572CA31C1E0C4929926C10",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_callback_server.zig"
+  },
+  {
+    "sha256": "348F637922839CFDD2DDE7A255B5C507F400738E9640DCE1B27D3087B9D517FC",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_chatgpt_callback.zig"
+  },
+  {
+    "sha256": "6705CB0683390C2E27A8295A3194EF459073E3377A68167BD18C78FE7D9BC020",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_chatgpt_page.html"
+  },
+  {
+    "sha256": "EF03D26981B651F00734F837D6E36F1988DFBE161F59E3F619C09043D938CFF0",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_codex.zig"
+  },
+  {
+    "sha256": "4FDD44E1A7179829B50C0AAD973C54E2DF714175C6BFA09897642DBB94E17CB5",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_copilot.zig"
+  },
+  {
+    "sha256": "93583358EA688749458E660071F050A7A1C5CF7FEACE0C11BB9F071F17829F16",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_device_code.zig"
+  },
+  {
+    "sha256": "BC6A8CA0E7E5D779652EE2BFE2523CCA564B4EE9D1CD589B8361BC73EB52E75F",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_http.zig"
+  },
+  {
+    "sha256": "615E661EEB693F15A766EEF9C49126C8E3309EFBADAD7365FD0A1333A3C8AF86",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_kimi.zig"
+  },
+  {
+    "sha256": "7215738BF9D8F81127A49008694EB3B6F1B34C36F54286D6EEC6ED080DD42BBE",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_loader.zig"
+  },
+  {
+    "sha256": "ADEE1C473F34B5B59DC3569B0E0827B49D407863E50AC8355EF7A9EF82FDCEF9",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_loader_fixture.mjs"
+  },
+  {
+    "sha256": "8C29422A7DD870B93114CE14B14C88C66B803C14985D25BD7DE75D8A2D1B4716",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_meta.zig"
+  },
+  {
+    "sha256": "7732CAE98AC3D3410BCF748C78C1EBBD952DA7766E840C2D0E5AC5DC713E18BA",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_openai_chatgpt.zig"
+  },
+  {
+    "sha256": "9CF7F19CEF36714FFF50608D2BAE27CE47C3E2CC1CCABAD8756C394CB4F2B5BA",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_openrouter.zig"
+  },
+  {
+    "sha256": "DD7AE7DC7FD5B0318572A99D3DCE422390F7CDC66C49A374842EEA66A131EC68",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_pkce.zig"
+  },
+  {
+    "sha256": "566A21CE819EE81C1C267629B33F906A56E2BAD60958A19A9D66180F2DC29E34",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_radius.zig"
+  },
+  {
+    "sha256": "5DC12988AA5A961455CD77AAC7C4F19F99F45C76AF0648027B2D70D7AC7B1BB8",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_subscription_values.zig"
+  },
+  {
+    "sha256": "687FC99FB1406959BFC6A7F2D553D85379A8C3FD7ECCEE01AE050E6122A9E303",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_ai_oauth_xai.zig"
+  },
+  {
+    "sha256": "E1A9D1406F32129C4E60B9D10582CD7E8B9EED4FCB2A1F9F41D0FF735C0AB7BB",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_readable_byte_stream.zig"
+  },
+  {
+    "sha256": "3CD2DEB1E706F20B7EF8570887109286D73629756B1D3B41ACF864681E43AC86",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_readable_stream.zig"
+  },
+  {
+    "sha256": "2DA61234EA480D11E108DCD980D4641CA8FEBA01A21A43646E9764447DD9BB89",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_web_blob.zig"
+  },
+  {
+    "sha256": "B103BA3D97707B2E022AD186BFC6F1D300ED9D4DD0DE1DB0DD9E0C4A13210A72",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_web_body.zig"
+  },
+  {
+    "sha256": "DEB274BC39C1BED76436DA40155B921BEC141DE0C1303C4F29CC6488FEB2076A",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_web_crypto.zig"
+  },
+  {
+    "sha256": "7A7DFCA7D1B03427A67AEB035B108C46B5210CA2EB648742B7E06B7FB309BC38",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_web_form_data.zig"
+  },
+  {
+    "sha256": "22A97C8C5ED8AFA72D4DB3BE0F8892FF6093F56ED251BDBAD4CD9F622B893E48",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_web_idl.zig"
+  },
+  {
+    "sha256": "3690DEE7BF8C874C86A16652793E4F860F29CE2B56327FFEFD98B75C7EEFD750",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_web_response.zig"
+  },
+  {
+    "sha256": "FD2CFB8C007902696F1C0A5A7CEDD2C6F3DB9C27CCA33EDA57330A11CEADE90B",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\extensions\\native_web_response_test.zig"
+  },
+  {
+    "sha256": "D0A45CF15DD60C9817392FDC060BC3B4D17E916ADF38E81750D46C704CB5EDA4",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\src\\native_ai_oauth_loader_graph_test.zig"
+  },
+  {
+    "sha256": "12A7F02AFADA614EE9AED57F8EE87173F95977AD8FE8723177CACFACA7AB855D",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\vendor\\quickjs\\quickjs.c"
+  },
+  {
+    "sha256": "F3B6F51DBDA727A8FAECFE275FC13F283CA3C71E3907593E47B4F8B741318062",
+    "path": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015\\vendor\\quickjs\\quickjs.h"
+  },
+  {
+    "sha256": "C4637B7060AAB20542C7FB41DE4450245D61E0268DFBEBB38860D03B4EA00144",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-full-manifest-20261015.json"
+  },
+  {
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-runtime-manifest-20261015.json"
+  },
+  {
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sourceae7-node-tools-before-20261015.json"
+  }
+]

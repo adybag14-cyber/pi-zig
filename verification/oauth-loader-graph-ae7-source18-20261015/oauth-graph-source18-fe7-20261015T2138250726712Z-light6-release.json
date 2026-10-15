@@ -1,0 +1,18 @@
+{
+  "historical_absences": 84,
+  "slot": 6,
+  "syntax_receipt": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\oauth-graph-source18-fe7-20261015T2138250726712Z-syntax.json",
+  "source_message_sender": "/root/ai_bedrock_facade_15",
+  "wire_post_drift": 0,
+  "observed_utc": "2026-10-15T21:38:25.7760186+00:00",
+  "lifecycle_node_absent": true,
+  "lifecycle_created_utc": "2026-10-15T21:35:13.4692723Z",
+  "released": true,
+  "lifecycle_post_drift": 0,
+  "wire_terminal": "passed",
+  "lifecycle_completed_utc": "2026-10-15T21:35:42.4391069Z",
+  "lifecycle_post_utc": "2026-10-15T21:36:08.8923183Z",
+  "fakefiles_post_drift": 0,
+  "lifecycle_node_pid": 59472,
+  "lifecycle_terminal": "passed"
+}

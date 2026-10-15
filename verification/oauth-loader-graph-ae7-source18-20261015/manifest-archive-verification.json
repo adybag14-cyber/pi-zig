@@ -1,0 +1,24 @@
+{
+  "drift": 0,
+  "verified_utc": "2026-10-15T21:43:01.6587549+00:00",
+  "entries": [
+    {
+      "name": "sourceae7-full-manifest-20261015.json",
+      "sha256": "C4637B7060AAB20542C7FB41DE4450245D61E0268DFBEBB38860D03B4EA00144",
+      "bytes": 556435,
+      "matched": true
+    },
+    {
+      "name": "sourceae7-runtime-manifest-20261015.json",
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+      "bytes": 7153406,
+      "matched": true
+    },
+    {
+      "name": "sourceae7-node-tools-before-20261015.json",
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+      "bytes": 352993,
+      "matched": true
+    }
+  ]
+}

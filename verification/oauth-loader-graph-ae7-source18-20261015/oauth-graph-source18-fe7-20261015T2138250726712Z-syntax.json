@@ -1,0 +1,22 @@
+{
+  "checks": [
+    {
+      "exit": 0,
+      "path": "C:/Users/adyba/pi-zig-ai-oauth-source-graph-20261015/src/extensions/native_ai_oauth_loader_fixture.mjs"
+    },
+    {
+      "exit": 0,
+      "path": "C:/Users/adyba/pi-zig-ai-oauth-source-graph-20261015/verification/oauth-loader-graph-ae7-prepared-20261015/source-observer.mjs"
+    },
+    {
+      "parse_errors": 0,
+      "path": "C:/Users/adyba/pi-zig-ai-oauth-source-graph-20261015/verification/oauth-loader-graph-ae7-prepared-20261015/Run-OAuthLoaderGraphSource18-20261015.ps1"
+    },
+    {
+      "parse_errors": 0,
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Run-OAuthGraphSource18OuterFreeze-20261015.ps1"
+    }
+  ],
+  "completed_utc": "2026-10-15T21:38:25.2302615+00:00",
+  "status": "passed"
+}

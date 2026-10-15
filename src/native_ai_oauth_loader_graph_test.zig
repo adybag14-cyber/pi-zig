@@ -23,10 +23,18 @@ fn setup() !*v.em.Engine {
 test "native OAuth loader graph actual nine modules singleton and bundled delegation" {
     const engine = try setup();
     defer engine.deinit();
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const source = @embedFile("extensions/fixtures/ai-oauth-loader-graph-ae7-source18.json");
+    const expected = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, source.ptr, source.len, "genuine-ae7-oauth-loader-Source18.json")));
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "ownedOAuthGraphSource", expected);
     const result = engine.evalModule(@embedFile("extensions/native_ai_oauth_loader_fixture.mjs") ++
         \\import * as api from 'native:oauth-load';import {lazyOAuth} from 'native:oauth-helpers';
         \\export const rows=await run(api,lazyOAuth);
         \\if(rows.length!==18||new Set(rows.map(row=>row.case)).size!==18)throw Error('OAuth graph inventory');
+        \\if(ownedOAuthGraphSource.sourceHead!=='ae7b16d43b7c78c5b6fa3213fdd1215bb339729d'||ownedOAuthGraphSource.cases!==18||ownedOAuthGraphSource.rows.length!==18)throw Error('genuine Source18 authority required');
+        \\for(let i=0;i<rows.length;i++)if(JSON.stringify(rows[i])!==JSON.stringify(ownedOAuthGraphSource.rows[i]))throw Error(JSON.stringify({case:rows[i].case,actual:rows[i],source:ownedOAuthGraphSource.rows[i]}));
         \\for(const row of rows.filter(row=>row.case.startsWith('load')))if(!row.same)throw Error('module singleton '+row.case);
         \\const byCase=Object.fromEntries(rows.map(row=>[row.case,row]));
         \\if(!byCase['radius-fresh-factory'].fresh||!byCase['radius-fresh-factory'].accessIdentity)throw Error('Radius factory identity');
