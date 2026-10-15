@@ -1,0 +1,19 @@
+# Native AI central assembly source checkpoint
+
+This checkpoint is source-only. No native compile/runtime, all-provider qualification, production activation, or complete Pi claim is attached.
+
+The implementation uses the real fourteen builtin API constructors in native_ai_builtin_apis.zig. The ten chat APIs capture actual native implementation modules behind retained initialization promises; the other four constructors call the actual image/classifier implementations. Each constructor returns fresh lazy wrappers. This does not make the separate raw provider implementations fully qualified.
+
+native_ai_lazy_api.namespace(engine) exposes the actual lazyStream and lazyApi helpers. Forwarding retains event identity, captures iterator.next once, awaits each advance, and awaits abrupt iterator return. Real synchronous-iterator adaptation and genuine native async-function class branding remain outside this draft's verified scope.
+
+native_ai_env_keys.namespace(engine) binds the original lookup algorithm to installed node:fs.existsSync and node:path.join. It captures node:os.homedir when available, otherwise calls the existing native_env_node_path.home implementation. Missing platform modules produce explicit dependency errors; native process identity is not changed to claim Node. create(engine, explicitDependencies) retains pre-load/browser algorithm behavior.
+
+native_ai_compat.namespace(engine, actualBuiltinModelsFunction) assembles the ten API dispatch registry, captures real getEnvApiKey, registers all ten APIs, then invokes the actual builtinModels export once. The provider/Models owner supplies that real function. The module does not expose a placeholder Models object. Registry resets retain the original module-constant lazy wrapper table, matching compat.ts. complete/completeSimple and wrapStream use the captured native callable engine and nonconstructor functions; setting AsyncFunctionPrototype does not establish QuickJS JS_CLASS_ASYNC_FUNCTION identity.
+
+The existing shared catalog graph uses canonical ae7 FFA3 data: 1608 chat, 59 image, 38 classifier models across 42 providers, 1705 total. Its original matching schema6 manifest yields timestamp0. Historical 5ab data with 40 classifiers is a different cohort and is not presented as current.
+
+The parent lineage includes Root463bb453 and qualified shared HTTP f193b0b2/product33bf. Production HTTP worker/owner/fetch files were preserved exactly at that shared checkpoint; Root's vendor closure was retained. The immutable Bedrock/AWS source leaves came from b31a6a72 in isolated commit9365400f, with no worker or C rollback. The later OpenAI SDK producer dc3d5106 candidate belongs to a separate frozen worktree and is not silently substituted here.
+
+Local checks: Zig0.16 fmt and Git diff --check passed. Static import/embed scan covered1473 tracked Zig paths with no missing production dependency; the unrelated oauth-codex-radius-browser test fixture is absent from this base. Added production Env namespace tests cover real temporary ADC file existence, missing platform modules, one retained namespace, GC, engine isolation, and raw guest getter exception identity. They are authored but unrun.
+
+Remaining production dependencies include the actual configurable Models implementation/provider factory namespace, complete index/compat reexports and extension module installation, full lazy helper Source/native traces, SDK producer HTTP integration qualification, real native async-function brand, and Web fetch demand-driven concurrent upload/response ownership. No empty registry, generic provider alias, fake SDK brand, synthetic scheduling delay, or altered golden is a substitute for these dependencies.
