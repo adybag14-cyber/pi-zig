@@ -243,7 +243,7 @@ fn attempt(scope: *Scope, pending: c.JSValue) !void {
     defer scope.engine.gpa.free(url);
     const body = try scope.engine.toString(payload);
     defer scope.engine.gpa.free(body);
-    const http = try scope.own(try @import("native_ai_http.zig").open(scope.engine, .{ .url = url, .payload = body, .headers = headers_list.items, .framing = if (sdk) .bytes else .body, .stream_error_bytes = sdk }, signal));
+    const http = try scope.own(try @import("native_ai_http.zig").openWithOptions(scope.engine, .{ .url = url, .payload = body, .headers = headers_list.items, .framing = if (sdk) .bytes else .body, .stream_error_bytes = sdk }, signal, .{ .raw_header_pairs = true }));
     try scope.put(pending, "http", http);
     try flow.wait(attemptContinued, scope.engine, pending, try scope.get(http, "ready"), @intFromEnum(Stage.head));
 }
@@ -352,7 +352,7 @@ fn attemptAdvance(scope: *Scope, pending: c.JSValue, value: c.JSValue, stage: St
             if (c.JS_ToInt32(scope.engine.context, &code, status) < 0) return v.js.capture(scope.engine);
             try scope.put(response, "status", status);
             try scope.put(response, "ok", c.pi_js_bool(scope.engine.context, @intFromBool(code >= 200 and code < 300)));
-            try scope.put(response, "headers", try scope.own(try @import("native_headers.zig").fromRecord(scope.engine, try scope.get(value, "headers"))));
+            try scope.put(response, "headers", try scope.own(try @import("native_headers.zig").fromRecord(scope.engine, try scope.get(value, "rawHeaders"))));
             try scope.put(pending, "response", response);
             const http = try scope.get(pending, "http");
             if (scope.truthy(try scope.get(try scope.get(pending, "agent"), "sdk"))) {
