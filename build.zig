@@ -2498,7 +2498,7 @@ pub fn build(b: *std.Build) void {
 
     const ui_overlay_ae7_tests = b.addTest(.{
         .root_module = test_mod,
-        .filters = &.{ "ae7 extension overlays", "ae7 overlay identity", "native custom early done ignores", "fullscreen native component scene input" },
+        .filters = &.{ "ae7 extension overlays", "ae7 overlay identity", "native custom early done ignores", "fullscreen native component scene input", "component close error" },
         .use_llvm = use_llvm,
     });
     b.step("build-ui-overlay-ae7", "Compile exact original ae7 overlay contract regression without executing it").dependOn(&ui_overlay_ae7_tests.step);

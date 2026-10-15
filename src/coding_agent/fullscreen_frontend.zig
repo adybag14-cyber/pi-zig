@@ -288,6 +288,8 @@ test "ae7 extension overlays actual Manager frontend Application close middle lo
     const frontend = try Frontend.create(gpa, io, &environ, &reader, &bindings, .{});
     defer frontend.deinit();
     try frontend.editor.setText("preserved draft");
+    var controller = try ui.Controller.init(gpa, io, true, 80);
+    defer controller.deinit();
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();
     try @import("../extensions/abort_signal.zig").install(engine);
@@ -295,6 +297,7 @@ test "ae7 extension overlays actual Manager frontend Application close middle lo
     defer manager.deinit();
     const Receiver = struct {
         frontend: *Frontend,
+        controller: *ui.Controller,
         queues: [16]component_protocol.ControlQueue,
         fences: [16]component_protocol.Fence = undefined,
         count: usize = 0,
@@ -320,20 +323,24 @@ test "ae7 extension overlays actual Manager frontend Application close middle lo
                 self.queues[i].reset(value.fence);
                 break :index i;
             };
-            try Frontend.componentSink(self.frontend, value, &self.queues[index]);
+            try ui.Controller.componentScene(self.controller, value, &self.queues[index]);
         }
         fn close(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             self.closes[self.close_count] = fence;
             self.close_count += 1;
         }
+        fn frontendClose(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
+            const frontend_owner: *Frontend = @ptrCast(@alignCast(raw.?));
+            try frontend_owner.removeCustomComponent(fence);
+            try frontend_owner.draw(.{ .columns = 80, .rows = 24 }, false);
+        }
         fn pump(self: *@This(), ui_manager: *native_ui.Manager) !void {
             _ = try ui_manager.engine.drainReadyJobs();
             _ = try ui_manager.poll();
             try self.frontend.applyUpdates();
             for (self.closes[0..self.close_count]) |fence| {
-                try self.frontend.removeCustomComponent(fence);
-                try self.frontend.draw(.{ .columns = 80, .rows = 24 }, false);
+                try ui.Controller.componentClose(self.controller, fence);
                 const ack: component_protocol.Control = .{ .gpa = std.testing.allocator, .fence = fence, .kind = .{ .close_ack = true } };
                 try std.testing.expect(try ui_manager.componentControl(&ack));
             }
@@ -371,7 +378,8 @@ test "ae7 extension overlays actual Manager frontend Application close middle lo
             );
         }
     };
-    var receiver: Receiver = .{ .frontend = frontend, .queues = undefined };
+    var receiver: Receiver = .{ .frontend = frontend, .controller = &controller, .queues = undefined };
+    controller.bindComponentScenes(Frontend.componentSink, Receiver.frontendClose, frontend);
     for (&receiver.queues) |*queue| queue.* = component_protocol.ControlQueue.init(gpa, io);
     defer for (&receiver.queues) |*queue| queue.deinit();
     // Retire the Manager before its test bridge/queues leave scope.
