@@ -1,0 +1,75 @@
+// Actual original/native control input. Expected observations are intentionally
+// absent until the immutable Source capture is granted and completed.
+const oneShotRows=[];
+const originalNow=Date.now;Date.now=()=>123456789;
+const prices={input:2,output:4,cacheRead:1,cacheWrite:3,tiers:[{inputTokensAbove:10,input:5,output:6,cacheRead:2,cacheWrite:4}]};
+const questions={bool:{type:'bool',instructions:'Accept?',criteria:{true:'good',false:'bad'}},score:{type:'score',instructions:'How good?',criteria:['low','high']},choice:{type:'choice',instructions:'Which?',criteria:{a:'Alpha',b:''}}};
+const context={state:{value:42,note:'judge this data'},questions};
+const nativeDiagnostics=new Set(['user-agent','x-stainless-lang','x-stainless-package-version','x-stainless-os','x-stainless-arch','x-stainless-runtime','x-stainless-runtime-version','x-pi-runtime','x-pi-runtime-version','x-pi-engine']);
+const clean=value=>JSON.parse(JSON.stringify(value,(key,item)=>key==='stack'&&typeof item==='string'?'<stack>':item));
+function answerBody(kind){const answers={bool:{type:'noul',noul:.8},score:{type:'score',score:.6,confidence:.4},choice:{type:'choice',choice:'a',probabilities:{a:.7,b:.3},confidence:.4}},usage={input_tokens:12,output_tokens:3};if(kind==='decisions')return {answers:[{name:'bool',type:'predicate',probability:.8},{name:'score',...answers.score},{name:'choice',...answers.choice,probabilities:[{value:'a',probability:.7},{value:'b',probability:.3}]}],usage};if(kind==='cloudflare')return {success:true,result:{state:'Completed',result:{answers,usage}}};return {answers,usage};}
+async function runOneShot(kind,mode){
+  const requests=[],order=[],payloads=[],rawHeaders=[];let count=0;
+  const model={type:kind==='image'?'image':'classifier',id:kind+'-'+(mode==='cache-reuse'?'valid':mode),api:{image:'openrouter-images',typesafe:'typesafe-system-one',cloudflare:'cloudflare-workers-ai-system-one',decisions:'openai-decisions',llama:'llama-cpp-classify'}[kind],provider:'fixture-'+kind,baseUrl:'https://fixture.invalid/v1/',input:['text','image'],output:mode==='image-only'?['image']:['text','image'],cost:prices};
+  let selectedContext=kind==='image'?{input:[{type:'text',text:'draw a\ud800b'},{type:'image',mimeType:'image/png',data:'AA=='}]}:kind==='llama'?{state:context.state,questions:{bool:questions.bool}}:context;
+  if(mode==='images-rejected')selectedContext={...selectedContext,images:[{mimeType:'image/png',data:'AA=='}]};
+  if(mode==='refusal')selectedContext={state:context.state,questions:{bool:questions.bool}};
+  if(mode==='choice-question')selectedContext={state:context.state,questions:{choice:questions.choice}};
+  if(mode==='score-question')selectedContext={state:context.state,questions:{score:questions.score}};
+  if(mode==='multi-questions')selectedContext=context;
+  const callerHeaders={'x-custom':'yes','X-Remove':null};if(mode==='header-override')callerHeaders['User-Agent']='explicit-caller';
+  const fetch=async(url,init)=>{
+    const headers=new Headers(init.headers);const explicit=new Set(Object.keys(callerHeaders).map(key=>key.toLowerCase()));
+    const functional=Object.fromEntries([...headers].filter(([key])=>!nativeDiagnostics.has(key)||explicit.has(key)));
+    const body=JSON.parse(init.body),address=new URL(String(url));requests.push({url:String(url),path:address.pathname+address.search,method:init.method,rawBody:init.body,body,headers:functional,urlObject:url instanceof URL});rawHeaders.push([...headers]);order.push('fetch');count++;
+    let status=200,responseBody;
+    if(mode==='http-error')status=400;
+    if(mode==='gateway504')status=504;
+    if(mode==='retry'&&count===1)status=429;
+    if(status!==200)responseBody={error:{message:'fixture denied',code:'fixture'}};
+    else if(kind==='image')responseBody={id:'image-response',choices:[{message:{content:'rendered',images:[{image_url:'data:image/png;base64,AA=='},{image_url:{url:'data:image/webp;base64,BB=='}},{image_url:'https://skip.invalid/a'},{image_url:'data:image/png;base64,'},{image_url:'data:image/png;base64,A\nB'}]}}],usage:{prompt_tokens:20,completion_tokens:4,prompt_tokens_details:{cached_tokens:8,cache_write_tokens:3}}};
+    else if(kind==='llama'){
+      if(String(url).endsWith('/tokenize')){const content=body.content,label=content.startsWith('\n')?content.slice(1):content,token=mode==='shared-token'?20:label==='Yes'?20:label==='No'?21:/^[0-9]$/.test(label)?100+Number(label):30+label.charCodeAt(0)-65;responseBody={tokens:content==='\n'?[10]:mode==='multi-token'?(content.startsWith('\n')?[10,20,21]:[20,21]):content.startsWith('\n')?(mode==='fallback-token'?[99,token]:[10,token]):[token]};}
+      else if(String(url).endsWith('/apply-template'))responseBody={prompt:body.messages[1].content+'<think>'};
+      else {const missing=(mode==='escalate'&&body.n_probs===256)||mode==='missing-label',underflow=mode==='underflow',tokens=body.prompt.includes('Answer with one letter.')?[30,31]:body.prompt.includes('Answer with one level number.')?[100,101]:[20,21];responseBody={completion_probabilities:[{top_logprobs:[{id:tokens[0],logprob:underflow?-1e31:-.2},...(missing?[]:[{id:tokens[1],logprob:underflow?-1e31:-1.5}])]}]};}
+    }else responseBody=answerBody(kind);
+    if(mode==='malformed-answer'){
+      if(kind==='decisions')responseBody.answers[0].probability='invalid';
+      else if(kind==='cloudflare')responseBody.result.result.answers.bool.noul='invalid';
+      else responseBody.answers.bool.noul='invalid';
+    }
+    if(mode==='refusal'&&kind==='decisions')responseBody.answers=[{name:'bool',type:'refusal'}];
+    if(mode==='cloudflare-error'&&kind==='cloudflare')responseBody={success:false,errors:[{message:'one'},{message:'two'},{}]};
+    if(mode==='cloudflare-running'&&kind==='cloudflare')responseBody={success:true,result:{state:'Running'}};
+    if(mode==='cloudflare-direct'&&kind==='cloudflare')responseBody={success:true,result:responseBody.result.result};
+    const responseHeaders=new Headers({'content-type':'application/json','x-fixture':'yes','retry-after-ms':'0'});
+    return {status,statusText:status===200?'OK':'Fixture Error',ok:status===200,headers:responseHeaders,url:String(url),body:null,async json(){order.push('json');return responseBody},async text(){order.push('text');return JSON.stringify(responseBody)}};
+  };
+  const options={apiKey:mode==='no-key'?'':'fixture-key',fetch,headers:callerHeaders,maxRetries:mode==='retry'||mode==='gateway504'?2:0,temperature:mode==='invalid-temperature'?0:1,
+    async onPayload(payload,seen){if(seen!==model)throw Error('model identity');order.push('payload');payloads.push(clean(payload));await Promise.resolve();order.push('payload-awaited');if(mode==='payload-replace'){if(kind==='image'){options.timeoutMs=1234;options.headers['x-custom']='mutated-after-client';options.fetch=()=>{throw Error('must use captured fetch')};}return {...payload,custom:true};}},
+    async onResponse(response,seen){if(seen!==model||Object.keys(response).join(',')!=='status,headers')throw Error('response identity/shape');order.push('response:'+response.status);await Promise.resolve();order.push('response-awaited');if(mode==='response-throw')throw Error('caller response rejected')}
+  };
+  const api=oneShotAPIs[kind];const result=await (kind==='image'?api.generateImages(model,selectedContext,options):api.classify(model,selectedContext,options));
+  oneShotRows.push(clean({kind,mode,requests,payloads,order,result}));
+  oneShotRawHeaders.push({kind,mode,requests:rawHeaders});
+}
+const oneShotRawHeaders=[];
+try{
+  for(const mode of ['valid','image-only','no-key','http-error','retry','payload-replace','response-throw','header-override'])await runOneShot('image',mode);
+  for(const kind of ['typesafe','cloudflare','decisions'])for(const mode of ['valid','no-key','http-error','retry','payload-replace','response-throw','malformed-answer'])await runOneShot(kind,mode);
+  await runOneShot('typesafe','images-rejected');await runOneShot('cloudflare','images-rejected');
+  for(const mode of ['cloudflare-error','cloudflare-running','cloudflare-direct'])await runOneShot('cloudflare',mode);
+  await runOneShot('decisions','images-rejected');await runOneShot('decisions','refusal');await runOneShot('decisions','gateway504');
+  for(const mode of ['valid','no-key','invalid-temperature','images-rejected','fallback-token','escalate','missing-label','underflow','response-throw'])await runOneShot('llama',mode);
+  for(const mode of ['choice-question','score-question','multi-questions','shared-token','multi-token','cache-reuse'])await runOneShot('llama',mode);
+  const helpers=oneShotAPIs.llama;
+  for(const type of ['bool','score','choice']){const ctx={state:{a:1},questions:{q:questions[type]}};oneShotRows.push(clean({kind:'helpers',mode:'render-'+type,value:helpers.renderQuestion(ctx,'q')}));}
+  for(const [values,temperature]of [[[0,0],1],[[-1,-2],.5],[[],1],[[1],1]])oneShotRows.push(clean({kind:'helpers',mode:'probabilities',values,temperature,value:helpers.labelProbabilities(values,temperature)}));
+  for(const values of [[],[1],[.5,.5],[.75,.25]])oneShotRows.push(clean({kind:'helpers',mode:'confidence',values,value:helpers.peakConfidence(values)}));
+  for(const type of ['bool','score','choice'])oneShotRows.push(clean({kind:'helpers',mode:'answer-'+type,value:helpers.answerFromProbabilities(questions[type],type==='choice'?['a','b']:type==='bool'?['true','false']:['0','1'],[.75,.25])}));
+  for(const value of [undefined,null,{},[],()=>{},new Date(0)])oneShotRows.push(clean({kind:'helpers',mode:'record',value:oneShotAPIs.shared.isRecord(value)}));
+  for(const value of [undefined,{}, {input_tokens:-2,output_tokens:Infinity},{input_tokens:12,output_tokens:3}])oneShotRows.push(clean({kind:'helpers',mode:'usage',value:oneShotAPIs.shared.parseClassifierUsage(value,{cost:prices})}));
+  for(const [mode,ctx,id]of [['choice-limit',{state:{},questions:{q:{type:'choice',instructions:'pick',criteria:{a:'one'}}}},'q'],['score-limit',{state:{},questions:{q:{type:'score',instructions:'rate',criteria:Array(11).fill('level')}}},'q'],['unknown',{state:{},questions:{}},'missing']]){let value;try{helpers.renderQuestion(ctx,id)}catch(error){value={name:error.name,message:error.message}}oneShotRows.push(clean({kind:'helpers',mode,value}));}
+  const boolContext={state:{},questions:{q:questions.bool}};oneShotRows.push({kind:'helpers',mode:'shared-bool-labels',value:helpers.renderQuestion(boolContext,'q').labels===helpers.renderQuestion(boolContext,'q').labels});
+  globalThis.oneShotRows=oneShotRows;globalThis.oneShotRawHeaders=oneShotRawHeaders;
+}finally{Date.now=originalNow}

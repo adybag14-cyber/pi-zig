@@ -1,0 +1,21 @@
+{
+  "upstream_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "original_node_version": "v24.14.0",
+  "original_owner_pid": 60324,
+  "original_exit_code": 0,
+  "original_cases": 100,
+  "original_provider_helper_rows": 80,
+  "original_registry_rows": 20,
+  "original_raw_header_rows": 52,
+  "source_files": 1967,
+  "dependency_files": 31064,
+  "node_tool_files": 1774,
+  "original_full_posthash_drift": 0,
+  "original_capture_qualified": true,
+  "native_compile_qualified": false,
+  "native_runtime_qualified": false,
+  "large_body_qualified": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}

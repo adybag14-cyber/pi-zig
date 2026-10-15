@@ -1,0 +1,28 @@
+{
+  "manifests": [
+    {
+      "changed": [],
+      "name": "source5ab",
+      "files": 1967,
+      "drift": 0
+    },
+    {
+      "changed": [],
+      "name": "dependencies",
+      "files": 31064,
+      "drift": 0
+    },
+    {
+      "changed": [],
+      "name": "node_tools",
+      "files": 1774,
+      "drift": 0
+    }
+  ],
+  "head_drift": false,
+  "head_after": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "absent_records": 84,
+  "completed_utc": "2026-10-15T20:13:11.6292876+00:00",
+  "absent_drift": [],
+  "head": "5ab7fe74c400097b386662205cd93900695b8a71"
+}

@@ -1,0 +1,18 @@
+import { readFileSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import * as image from 'file:///C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/ai/src/api/openrouter-images.ts';
+import * as typesafe from 'file:///C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/ai/src/api/typesafe-system-one.ts';
+import * as cloudflare from 'file:///C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/ai/src/api/cloudflare-workers-ai-system-one.ts';
+import * as decisions from 'file:///C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/ai/src/api/openai-decisions.ts';
+import * as llama from 'file:///C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/ai/src/api/llama-cpp-classify.ts';
+import * as shared from 'file:///C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/ai/src/api/classifier-shared.ts';
+import * as registry from 'file:///C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/ai/src/images-api-registry.ts';
+import * as builtins from 'file:///C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/ai/src/providers/images/register-builtins.ts';
+import * as images from 'file:///C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/ai/src/images.ts';
+const base='C:/Users/adyba/pi-zig-ai-images-classifiers-20261015/src/extensions/fixtures/';
+const controls=['ai-one-shot-5ab.input.txt','ai-images-registry-5ab.input.txt'].map(name=>({path:base+name,input:readFileSync(base+name,'utf8')}));
+const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;
+await new AsyncFunction('oneShotAPIs',controls[0].input)({image,typesafe,cloudflare,decisions,llama,shared});
+await new AsyncFunction('imageRegistryAPI',controls[1].input)({...registry,...builtins,...images});
+if(globalThis.oneShotRows.length!==80||globalThis.imageRegistryRows.length!==20)throw Error('all100 original controls required');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'5ab7fe74c400097b386662205cd93900695b8a71',actualNode:{execPath:process.execPath,version:process.version,pid:process.pid},driverSha256:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),controls:controls.map(({path,input})=>({path,sha256:createHash('sha256').update(input).digest('hex')})),scope:'Actual original five image/classifier APIs and public helpers:80 supplied-fetch/pure controls; original separate images registry/global dispatcher:20 live value/error/identity controls. Original raw headers retained separately, functional headers/fullURL/path/query/method/raw JSON payload strictly retained.',cases:100,rows:globalThis.oneShotRows,registryRows:globalThis.imageRegistryRows,originalRawHeaders:globalThis.oneShotRawHeaders},null,2));

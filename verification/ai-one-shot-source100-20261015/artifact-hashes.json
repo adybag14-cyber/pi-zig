@@ -1,0 +1,62 @@
+[
+  {
+    "path": "ai-one-shot100-5ab-source-capture-20261015.mjs",
+    "sha256": "7D061C5A55811B978DC6BC44E72A7651A126900870282F11C907A9A883488BFB",
+    "bytes": 2749
+  },
+  {
+    "path": "ai-one-shot100-5ab-source100-first-20261015-admission.json",
+    "sha256": "67A29A6E0740E07649FF27A44265BB2ABA2E928FC74D7785BA6E12D495FE6D5C",
+    "bytes": 256
+  },
+  {
+    "path": "ai-one-shot100-5ab-source100-first-20261015-extra-before.json",
+    "sha256": "4687A274AB8335F59EAF0E2F8F8F80C45BAD5242BCDB13133B4186BF6DA7E927",
+    "bytes": 2050
+  },
+  {
+    "path": "ai-one-shot100-5ab-source100-first-20261015-posthash.json",
+    "sha256": "5CA583775280B84E76798F9134062DAD42D4FCC65F3D6CFFE5296627385E020C",
+    "bytes": 627
+  },
+  {
+    "path": "ai-one-shot100-5ab-source100-first-20261015.json",
+    "sha256": "2A3164BF316D588ED5CE26D80C10B4CBAC854AAA84443CA150852A292CB75165",
+    "bytes": 1146
+  },
+  {
+    "path": "ai-one-shot100-5ab-source100-first-20261015.stderr.log",
+    "sha256": "B2E01F161F3B09C46D28505BE7CF9D2B31DDC60FDA7E1BA51D33AC7BA763646A",
+    "bytes": 178
+  },
+  {
+    "path": "ai-one-shot100-5ab-source100-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "qualification.json",
+    "sha256": "C07E85ADF2923A856BD6E7770D173F55839D7FB40A32553FD6914A06C6347E20",
+    "bytes": 650
+  },
+  {
+    "path": "README.md",
+    "sha256": "315E013FE13586FFE70EB671A2E05F75CB5ECB4459021FFF2804961AD650EB84",
+    "bytes": 1687
+  },
+  {
+    "path": "Run-AiOneShot100Source-20261015.ps1",
+    "sha256": "61AFDC776DECC46CBA214B17711E18E376759FEAC40E2CD9C7DCBBD2EE1B10E5",
+    "bytes": 6464
+  },
+  {
+    "path": "source5ab-modules-60324-0-20261015.jsonl",
+    "sha256": "4F0389E4692E5E24E29E2B59C26581789B7154044E08E84702B9E9BF1067F7EC",
+    "bytes": 42823
+  },
+  {
+    "path": "../../src/extensions/fixtures/ai-one-shot-source100-5ab.json",
+    "sha256": "9B02EC7B38F582DEA1DA2761BE2A65B2F8BD74267EF2CCB5E11F3D1FFD044944",
+    "bytes": 285396
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "status": "admitted",
+  "free_kib": 22526140,
+  "required_kib": 2097152,
+  "observed_utc": "2026-10-15T19:46:14.7477531+00:00",
+  "heap_mb": 256,
+  "coordinated_with": "Root explicit LIGHT5 OneShotSource100 grant after Anthropic16 fullpost0"
+}

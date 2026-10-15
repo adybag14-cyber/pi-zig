@@ -148,6 +148,14 @@ const State = struct {
     }
 };
 
+/// Body consumption uses the same UTF-8 replacement, BOM and EOF rules as the
+/// native TextDecoder, without consulting a replaceable JavaScript global.
+/// The caller owns the returned allocation.
+pub fn decodeUtf8(engine: *engine_mod.Engine, bytes: []const u8) ![]u8 {
+    var state: State = .{ .engine = engine };
+    return state.decode(bytes, false);
+}
+
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
     if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();

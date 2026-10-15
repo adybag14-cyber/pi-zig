@@ -1,0 +1,22 @@
+{
+  "attempt": "third",
+  "reservation": "Root NATIVE1 explicit b0 isolated retry-sleep ownership fix",
+  "candidate": "b0b97b2dea55700aca6746c074aa37d0ae5095c8",
+  "recorded_utc": "2026-10-15T20:49:53.8937148+00:00",
+  "previous_candidate": "eb74136ffd546cbc8787ef1358cb7112ec24714b",
+  "runners": [
+    {
+      "sha256": "E0C0F3937ECC908B7D1B3C34DF93BB4A99AE056CEE6578A3802E98D06F44FE62",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiOneShotBodyCompile-20261015.ps1"
+    },
+    {
+      "sha256": "9413878451D685477D50D9DCBB0D3CF04F681EF9E492B45E22BB5BAEC19C13F4",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-AiOneShotBodyRuntime-20261015.ps1"
+    },
+    {
+      "sha256": "0CB2C6527485FEBB9A02164FCB76CA773348D6A7DFBD0E7D3DA1790D8A2EE2AD",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\OneShotNativeReferences-20261015.ps1"
+    }
+  ],
+  "candidate_clean": true
+}

@@ -1,0 +1,137 @@
+[
+  {
+    "path": "native-ai-one-shot-body-compile-debug-third-20261015-admission.json",
+    "sha256": "58EDEC16CBDB558F8F38E6BA0FA94BD0164F72B1CED1DE06DFDEACFB877334DD",
+    "bytes": 12482
+  },
+  {
+    "path": "native-ai-one-shot-body-compile-debug-third-20261015-controls-before.json",
+    "sha256": "C9CFF2079F487BFF066E647594BB0AE8FB1F0C689273984153EF791225CC9B14",
+    "bytes": 1804
+  },
+  {
+    "path": "native-ai-one-shot-body-compile-debug-third-20261015-owned-wrapper-gc.json",
+    "sha256": "B26622F8EA4E659983148A3E8174419FDA54F05FB8FE40316FD5121981FF2966",
+    "bytes": 297
+  },
+  {
+    "path": "native-ai-one-shot-body-compile-debug-third-20261015-posthash.json",
+    "sha256": "6ECE155174DB6FFD6CFE72F0F28354CDFC6062B6F5B2AEE56FF1F89B5D0549F9",
+    "bytes": 537
+  },
+  {
+    "path": "native-ai-one-shot-body-compile-debug-third-20261015-references-posthash.json",
+    "sha256": "D02DC5521F2B22130B8127F5845BA2E09F94678E0BA708992509729F7AC90928",
+    "bytes": 593
+  },
+  {
+    "path": "native-ai-one-shot-body-compile-debug-third-20261015-source-before.json",
+    "sha256": "3EFBDCDFA55B07C1CBD0221825643B228C317274C7E26B9A2E54625D71E6A00B",
+    "bytes": 1034057
+  },
+  {
+    "path": "native-ai-one-shot-body-compile-debug-third-20261015-vendor-before.json",
+    "sha256": "F72971B76B01A96400B87E4A3EB9F813B210966DE441E24AE76C760398CC7166",
+    "bytes": 199150
+  },
+  {
+    "path": "native-ai-one-shot-body-compile-debug-third-20261015.json",
+    "sha256": "4FC062475979420335AFA71C135AFFAD5688D3B4E521490A1968F2362B36143F",
+    "bytes": 997
+  },
+  {
+    "path": "native-ai-one-shot-body-compile-debug-third-20261015.stderr.log",
+    "sha256": "88643796566E68818CE2440F2CBD04817944D6AF94367992D661DC9FC9D0D0B6",
+    "bytes": 13905
+  },
+  {
+    "path": "native-ai-one-shot-body-compile-debug-third-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "native-ai-one-shot-body-runtime-debug-third-20261015-admission.json",
+    "sha256": "E3938164CBDAA695F191BE4CDA2F469C775C07503F5E077CC5D3D3EE4C0A6E5C",
+    "bytes": 12478
+  },
+  {
+    "path": "native-ai-one-shot-body-runtime-debug-third-20261015-controls-before.json",
+    "sha256": "C9CFF2079F487BFF066E647594BB0AE8FB1F0C689273984153EF791225CC9B14",
+    "bytes": 1804
+  },
+  {
+    "path": "native-ai-one-shot-body-runtime-debug-third-20261015-owned-wrapper-gc.json",
+    "sha256": "8F6FA7E2449612FEA5CB98AB7C16DEE53FAB3D8ABE9BB013580D891442584B20",
+    "bytes": 297
+  },
+  {
+    "path": "native-ai-one-shot-body-runtime-debug-third-20261015-posthash.json",
+    "sha256": "6649B60C01AC84DD8740329AE99475DAD048A93F6543200A6DFBFEA178D8F016",
+    "bytes": 537
+  },
+  {
+    "path": "native-ai-one-shot-body-runtime-debug-third-20261015-references-posthash.json",
+    "sha256": "154E86EC82BEEA6619C805D94A4F6D9967DE5538B37082B70F002E4785F262B8",
+    "bytes": 593
+  },
+  {
+    "path": "native-ai-one-shot-body-runtime-debug-third-20261015-source-before.json",
+    "sha256": "3EFBDCDFA55B07C1CBD0221825643B228C317274C7E26B9A2E54625D71E6A00B",
+    "bytes": 1034057
+  },
+  {
+    "path": "native-ai-one-shot-body-runtime-debug-third-20261015-vendor-before.json",
+    "sha256": "F72971B76B01A96400B87E4A3EB9F813B210966DE441E24AE76C760398CC7166",
+    "bytes": 199150
+  },
+  {
+    "path": "native-ai-one-shot-body-runtime-debug-third-20261015.json",
+    "sha256": "CCB194CAD0E71C9FF9DB9467A5CDB9BC1A97F3DC0FD12A56155EBF0ED5B1DFE8",
+    "bytes": 995
+  },
+  {
+    "path": "native-ai-one-shot-body-runtime-debug-third-20261015.stderr.log",
+    "sha256": "75CC2CFDA1A8D924F77EF3623D5BA24AC951F635CC2A95DBC1F5DBEB8B629E4C",
+    "bytes": 14745
+  },
+  {
+    "path": "native-ai-one-shot-body-runtime-debug-third-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "native-ai-one-shot-body-third-pre-freeze-20261015.json",
+    "sha256": "35121D2E0BAE2C8616E23F2D6C8A061746DDC66D2CCD1B6E5DE73029E019C4E6",
+    "bytes": 960
+  },
+  {
+    "path": "OneShotNativeReferences-20261015.ps1",
+    "sha256": "0CB2C6527485FEBB9A02164FCB76CA773348D6A7DFBD0E7D3DA1790D8A2EE2AD",
+    "bytes": 3135
+  },
+  {
+    "path": "qualification.json",
+    "sha256": "615FC76012677EC53E7239942438A2208ED326D15E05A69401C5E540249C8944",
+    "bytes": 1623
+  },
+  {
+    "path": "README.md",
+    "sha256": "EAD6D19B29C825F2D803F8ECEA2DA7E432F9087077CD193549C06659E8667470",
+    "bytes": 3167
+  },
+  {
+    "path": "Run-AiOneShotBodyCompile-20261015.ps1",
+    "sha256": "E0C0F3937ECC908B7D1B3C34DF93BB4A99AE056CEE6578A3802E98D06F44FE62",
+    "bytes": 7922
+  },
+  {
+    "path": "Run-AiOneShotBodyRuntime-20261015.ps1",
+    "sha256": "9413878451D685477D50D9DCBB0D3CF04F681EF9E492B45E22BB5BAEC19C13F4",
+    "bytes": 9284
+  },
+  {
+    "path": "tested-code-match.json",
+    "sha256": "422A3D8C5EEC929A9654CFCCD472AA9919D203859AD186D2B19C7FD975E42355",
+    "bytes": 274
+  }
+]

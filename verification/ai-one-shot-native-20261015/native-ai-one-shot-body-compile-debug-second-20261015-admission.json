@@ -1,0 +1,27 @@
+{
+  "status": "admitted",
+  "free_kib": 19025884,
+  "threshold_kib": 16777216,
+  "single_job_threshold_kib": 16777216,
+  "concurrent_job_threshold_kib": 16777216,
+  "policy_authority": "Root normal16GiB admission; maximum four coordinated native reservations",
+  "calibration": "Normal16GiB floor; no calibrated8GiB fallback",
+  "calibration_evidence": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-rs-install-compile-20261013.stderr.log",
+  "other_native": [
+    {
+      "ProcessId": 72864,
+      "ParentProcessId": 60992,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-highlight-core-b45 -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-15T20:11:54.4492910Z"
+    }
+  ],
+  "source": 6147,
+  "tools": 19546,
+  "native_launched": false,
+  "llvm": "true",
+  "jobs": 1,
+  "test_timeout_seconds": 120,
+  "outer_timeout_seconds": 1320,
+  "observed_utc": "2026-10-15T20:12:33.4999987+00:00"
+}

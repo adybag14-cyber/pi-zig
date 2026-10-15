@@ -1,0 +1,28 @@
+{
+  "extra_control_drift": [],
+  "absent_dependency_drift": [],
+  "driver_sha256": "7D061C5A55811B978DC6BC44E72A7651A126900870282F11C907A9A883488BFB",
+  "manifests": [
+    {
+      "files": 1967,
+      "drift": 0,
+      "name": "source",
+      "changed": []
+    },
+    {
+      "files": 31064,
+      "drift": 0,
+      "name": "dependencies",
+      "changed": []
+    },
+    {
+      "files": 1774,
+      "drift": 0,
+      "name": "node_tools",
+      "changed": []
+    }
+  ],
+  "control_manifest_drift": false,
+  "completed_utc": "2026-10-15T19:46:57.5327003+00:00",
+  "historical_absence_records": 84
+}
