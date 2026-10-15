@@ -15,7 +15,7 @@ for(let index=0;index<responsesInput.cases.length;index++){
   onPayload:async(payload,m)=>{trace.push(['payload-enter',m===selected]);await Promise.resolve();trace.push(['payload-leave',m===selected]);return input.replacePayload?{...payload,metadata:{fixture:'replacement'}}:undefined},
   onResponse:async(response,m)=>{trace.push(['response-enter',m===selected,snapshot(response)]);await Promise.resolve();trace.push(['response-leave',m===selected])},
   onProviderStreamEvent:async(event,m)=>{trace.push(['provider-enter',providerIndex,m===selected,snapshot(event)]);await Promise.resolve();trace.push(['provider-leave',providerIndex,m===selected]);if(providerIndex++===input.rejectProviderAt)throw {fixture:'callback-reject'}},
-  fetch:async(url,init)=>{requests.push({url:String(url),method:init.method,headers:init.headers,body:JSON.parse(init.body)});const bytes=new TextEncoder().encode(input.events.map(e=>'data: '+JSON.stringify(e)+'\n\n').join(''));let offset=0;return {status:200,statusText:'',ok:true,headers:{entries(){return Object.entries({'content-type':'text/event-stream','x-fixture-response':'source'})[Symbol.iterator]()}},body:{getReader(){return {async read(){if(offset===bytes.length)return {done:true,value:undefined};const n=Math.min(bytes.length,offset+17),value=bytes.slice(offset,n);offset=n;return {done:false,value}},async cancel(){offset=bytes.length},releaseLock(){}}}}}}
+  fetch:async(url,init)=>{requests.push({url:String(url),method:init.method,headers:init.headers,body:JSON.parse(init.headers["content-encoding"]==="zstd"?decodeCodexFixtureBody(init.body):init.body)});const bytes=new TextEncoder().encode(input.events.map(e=>'data: '+JSON.stringify(e)+'\n\n').join(''));let offset=0;return {status:200,statusText:'',ok:true,headers:{entries(){return Object.entries({'content-type':'text/event-stream','x-fixture-response':'source'})[Symbol.iterator]()}},body:{getReader(){return {async read(){if(offset===bytes.length)return {done:true,value:undefined};const n=Math.min(bytes.length,offset+17),value=bytes.slice(offset,n);offset=n;return {done:false,value}},async cancel(){offset=bytes.length},releaseLock(){}}}}}}
  };
  liveEvents=events;
  const api=input.mode==='azure'?azureResponsesAPI:input.mode==='codex'?codexResponsesAPI:responsesAPI;
@@ -30,7 +30,7 @@ for(let index=0;index<responsesInput.cases.length;index++){
   equal('request-url',actual.requests[i].url,expected.requests[i].url);equal('request-method',actual.requests[i].method,expected.requests[i].method);equal('request-body',actual.requests[i].body,expected.requests[i].body);
   // Source fixture retains all actual SDK headers. Runtime metadata belongs to
   // the native runtime, and is explicitly outside this request-codec test.
-  for(const key of ['accept','authorization','api-key','content-type','session_id','session-id','x-client-request-id','user-agent','originator','openai-beta','chatgpt-account-id','x-fixture'])equal('request-header:'+key,actual.requests[i].headers[key],expected.requests[i].headers[key]);
+  for(const key of ['accept','authorization','api-key','content-type','session_id','session-id','x-client-request-id','user-agent','originator','openai-beta','chatgpt-account-id','x-fixture','content-encoding'])equal('request-header:'+key,actual.requests[i].headers[key],expected.requests[i].headers[key]);
  }
  for(const key of ['trace','events','consumerEvents','consumerAliases','result','thrown'])equal(key,actual[key],expected[key]);
 }

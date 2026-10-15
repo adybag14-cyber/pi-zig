@@ -264,7 +264,9 @@ fn accountIdBody(scope: *Scope, token: c.JSValue) !c.JSValue {
 fn open(scope: *Scope, owner: c.JSValue) !void {
     const engine = scope.engine;
     const options = try scope.get(owner, "options");
+    const mode = try getMode(scope, try scope.get(owner, "agent"));
     const header_object = try buildHeaders(scope, owner);
+    if (mode == .codex) try scope.put(header_object, "content-encoding", try scope.text("zstd"));
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
         for (fields.items) |field| {
@@ -286,7 +288,6 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         errdefer engine.gpa.free(text);
         try fields.append(engine.gpa, .{ .name = name, .value = text });
     }
-    const mode = try getMode(scope, try scope.get(owner, "agent"));
     var base = try scope.get(try scope.get(owner, "model"), "baseUrl");
     if (mode == .codex and (!scope.truthy(base) or try v.length(scope, try scope.invoke(base, "trim", &.{})) == 0)) base = try scope.text("https://chatgpt.com/backend-api");
     const trimmed = if (scope.truthy(try scope.invoke(base, "endsWith", &.{try scope.text("/")}))) try scope.invoke(base, "slice", &.{ c.JS_NewInt32(engine.context, 0), c.JS_NewInt32(engine.context, -1) }) else base;
@@ -295,6 +296,9 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
     defer engine.gpa.free(url);
     const payload = try engine.toString(try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")}));
     defer engine.gpa.free(payload);
+    const compressed = if (mode == .codex) try @import("../ai/openai_responses.zig").encodeZstdRequestBody(engine.gpa, payload) else null;
+    defer if (compressed) |bytes| engine.gpa.free(bytes);
+    const body_bytes = compressed orelse payload;
     const timeout = try v.optional(scope, options, "timeoutMs");
     var milliseconds: i64 = 600000;
     if (!c.JS_IsUndefined(timeout) and c.JS_ToInt64(engine.context, &milliseconds, timeout) < 0) return v.js.capture(engine);
@@ -304,10 +308,15 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         const init = try scope.object();
         try scope.put(init, "method", try scope.text("POST"));
         try scope.put(init, "headers", header_object);
-        try scope.put(init, "body", try scope.text(payload));
+        const body = if (compressed) |bytes| encoded: {
+            const buffer = try scope.own(try engine.checked(c.JS_NewArrayBufferCopy(engine.context, bytes.ptr, bytes.len)));
+            var args = [_]c.JSValue{buffer};
+            break :encoded try scope.own(try engine.checked(c.JS_NewTypedArray(engine.context, args.len, &args, c.JS_TYPED_ARRAY_UINT8)));
+        } else try scope.text(payload);
+        try scope.put(init, "body", body);
         try scope.put(init, "signal", try v.optional(scope, options, "signal"));
         transport = try scope.own(try @import("native_ai_responses_fetch.zig").open(engine, fetch, url_value, init));
-    } else transport = try scope.own(try http.open(engine, .{ .url = url, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)) }, try v.optional(scope, options, "signal")));
+    } else transport = try scope.own(try http.open(engine, .{ .url = url, .payload = body_bytes, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)) }, try v.optional(scope, options, "signal")));
     try scope.put(owner, "http", transport);
     try scope.put(owner, "iterator", try scope.get(transport, "events"));
     try wait(scope, owner, try scope.get(transport, "ready"), .ready);

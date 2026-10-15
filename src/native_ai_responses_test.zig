@@ -18,6 +18,26 @@ fn install(engine: *em.Engine) !void {
     defer scope.deinit();
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
     try @import("extensions/node_base64.zig").install(engine, try scope.object());
+    const DecodeFixture = struct {
+        fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            if (args.len == 0) return error.ExpectedCompressedFixtureBody;
+            var offset: usize = 0;
+            var length: usize = 0;
+            var element_size: usize = 0;
+            const buffer = try host.checked(c.JS_GetTypedArrayBuffer(host.context, args[0], &offset, &length, &element_size));
+            defer host.freeValue(buffer);
+            var buffer_length: usize = 0;
+            const data = c.JS_GetArrayBuffer(host.context, &buffer_length, buffer);
+            if (data == null or offset > buffer_length or length > buffer_length - offset) return error.InvalidCompressedFixtureBody;
+            var input: std.Io.Reader = .fixed(data[offset..][0..length]);
+            var decoder: std.compress.zstd.Decompress = .init(&input, &.{}, .{});
+            var output: std.Io.Writer.Allocating = .init(host.gpa);
+            defer output.deinit();
+            _ = try decoder.reader.streamRemaining(&output.writer);
+            return sdk.text(host, output.written());
+        }
+    };
+    try scope.put(global, "decodeCodexFixtureBody", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "decodeCodexFixtureBody", 1, DecodeFixture.call, &.{})));
     try scope.put(global, "responsesAPI", try scope.own(try @import("extensions/native_ai_responses_factory.zig").create(engine)));
     try scope.put(global, "azureResponsesAPI", try scope.own(try @import("extensions/native_ai_responses_factory.zig").createMode(engine, .azure)));
     try scope.put(global, "codexResponsesAPI", try scope.own(try @import("extensions/native_ai_responses_factory.zig").createMode(engine, .codex)));
