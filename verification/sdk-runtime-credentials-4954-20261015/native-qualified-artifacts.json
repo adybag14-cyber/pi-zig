@@ -1,0 +1,13 @@
+{
+  "candidate_head": "9ceb22363539021b215601a56458b62216afab55",
+  "files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\verification\\sdk-runtime-credentials-4954-20261015\\native-debug\\9ceb22363539021b215601a56458b62216afab55\\bin\\sdk-runtime-credentials-production-test.exe",
+      "sha256": "2D85FC038AE65850F1E07669B4900DC4FA24F06620462E0AE96470A696604005"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015\\verification\\sdk-runtime-credentials-4954-20261015\\native-debug\\9ceb22363539021b215601a56458b62216afab55\\bin\\sdk-runtime-credentials-production-test.pdb",
+      "sha256": "3F6484B3D9BD3BF0B887D03A18D8A994F44A68C27C8B47BAEB2BAAB01F8FCE41"
+    }
+  ]
+}
