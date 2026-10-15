@@ -736,6 +736,13 @@ pub fn build(b: *std.Build) void {
     if (diagnostic_tests) readable_byte_source_run.stdio = .inherit;
     b.step("test-native-readable-byte-source", "Compare real native byte stream state and ownership with twelve genuine Node24 packets").dependOn(&readable_byte_source_run.step);
     addCompileOnlyGroup(b, "build-hosted-native-readable-byte-source", &.{"test-native-readable-byte-source"});
+    const readable_public_source_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_readable_public_graph_source_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native readable public Source"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
+    linkQuickJs(b, readable_public_source_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(readable_public_source_tests.root_module, sqlite_lib_dir, sqlite_library);
+    const readable_public_source_run = b.addRunArtifact(readable_public_source_tests);
+    if (diagnostic_tests) readable_public_source_run.stdio = .inherit;
+    b.step("test-native-readable-public-source", "Compare actual native public stream graph and borrowed brands against all nine genuine Node24 packets").dependOn(&readable_public_source_run.step);
+    addCompileOnlyGroup(b, "build-hosted-native-readable-public-source", &.{"test-native-readable-public-source"});
     const capability_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     const native_durable_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native durable VM"}, .use_llvm = use_llvm });
     linkQuickJs(b, native_durable_tests.root_module, quickjs, sqlite_lib_dir);

@@ -1,0 +1,1596 @@
+{
+  "byte-graph": {
+    "stream": {
+      "tag": "[object ReadableStream]",
+      "own": [
+        {
+          "key": {
+            "symbol": "kType"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": "ReadableStream"
+        },
+        {
+          "key": {
+            "symbol": "kState"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "objectTag": "[object Object]"
+        },
+        {
+          "key": {
+            "symbol": "nodejs.webstream.isClosedPromise"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "objectTag": "[object Object]"
+        },
+        {
+          "key": {
+            "symbol": "nodejs.webstream.controllerErrorFunction"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        }
+      ],
+      "prototype": [
+        {
+          "key": {
+            "string": "constructor"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "ReadableStream",
+            "length": 0,
+            "ownPrototype": true,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "locked"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get locked",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "string": "cancel"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "cancel",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "getReader"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "getReader",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "pipeThrough"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "pipeThrough",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "pipeTo"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "pipeTo",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "tee"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "tee",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "values"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "values",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "nodejs.stream.disturbed"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get [nodejs.stream.disturbed]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "symbol": "nodejs.stream.errored"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get [nodejs.stream.errored]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "symbol": "nodejs.stream.readable"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get [nodejs.stream.readable]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "symbol": "nodejs.util.inspect.custom"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[nodejs.util.inspect.custom]",
+            "length": 2,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "messaging_transfer_symbol"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[messaging_transfer_symbol]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "messaging_transfer_list_symbol"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[messaging_transfer_list_symbol]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "messaging_deserialize_symbol"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[messaging_deserialize_symbol]",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "Symbol.asyncIterator"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "values",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "Symbol.toStringTag"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "ReadableStream"
+        }
+      ],
+      "prototypeConstructor": "ReadableStream",
+      "parentConstructor": "Object"
+    },
+    "controller": {
+      "tag": "[object ReadableByteStreamController]",
+      "own": [
+        {
+          "key": {
+            "symbol": "kType"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": "ReadableByteStreamController"
+        },
+        {
+          "key": {
+            "symbol": "kState"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "objectTag": "[object Object]"
+        }
+      ],
+      "prototype": [
+        {
+          "key": {
+            "string": "constructor"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "ReadableByteStreamController",
+            "length": 0,
+            "ownPrototype": true,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "byobRequest"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get byobRequest",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "string": "desiredSize"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get desiredSize",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "string": "close"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "close",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "enqueue"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "enqueue",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "error"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "error",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "kCancel"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[kCancel]",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "kPull"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[kPull]",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "kRelease"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[kRelease]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "nodejs.util.inspect.custom"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[nodejs.util.inspect.custom]",
+            "length": 2,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "Symbol.toStringTag"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "ReadableByteStreamController"
+        }
+      ],
+      "prototypeConstructor": "ReadableByteStreamController",
+      "parentConstructor": "Object"
+    },
+    "constructor": [
+      {
+        "key": {
+          "string": "length"
+        },
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "value": 0
+      },
+      {
+        "key": {
+          "string": "name"
+        },
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "value": "ReadableStream"
+      },
+      {
+        "key": {
+          "string": "prototype"
+        },
+        "enumerable": false,
+        "configurable": false,
+        "writable": false,
+        "objectTag": "[object ReadableStream]"
+      },
+      {
+        "key": {
+          "string": "from"
+        },
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "function": {
+          "name": "from",
+          "length": 1,
+          "ownPrototype": false,
+          "prototypeConstructor": "Function"
+        }
+      }
+    ]
+  },
+  "default-graph": {
+    "stream": {
+      "tag": "[object ReadableStream]",
+      "own": [
+        {
+          "key": {
+            "symbol": "kType"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": "ReadableStream"
+        },
+        {
+          "key": {
+            "symbol": "kState"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "objectTag": "[object Object]"
+        },
+        {
+          "key": {
+            "symbol": "nodejs.webstream.isClosedPromise"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "objectTag": "[object Object]"
+        },
+        {
+          "key": {
+            "symbol": "nodejs.webstream.controllerErrorFunction"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "bound error",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        }
+      ],
+      "prototype": [
+        {
+          "key": {
+            "string": "constructor"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "ReadableStream",
+            "length": 0,
+            "ownPrototype": true,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "locked"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get locked",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "string": "cancel"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "cancel",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "getReader"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "getReader",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "pipeThrough"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "pipeThrough",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "pipeTo"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "pipeTo",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "tee"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "tee",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "values"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "values",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "nodejs.stream.disturbed"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get [nodejs.stream.disturbed]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "symbol": "nodejs.stream.errored"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get [nodejs.stream.errored]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "symbol": "nodejs.stream.readable"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get [nodejs.stream.readable]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "symbol": "nodejs.util.inspect.custom"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[nodejs.util.inspect.custom]",
+            "length": 2,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "messaging_transfer_symbol"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[messaging_transfer_symbol]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "messaging_transfer_list_symbol"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[messaging_transfer_list_symbol]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "messaging_deserialize_symbol"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[messaging_deserialize_symbol]",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "Symbol.asyncIterator"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "values",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "Symbol.toStringTag"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "ReadableStream"
+        }
+      ],
+      "prototypeConstructor": "ReadableStream",
+      "parentConstructor": "Object"
+    },
+    "controller": {
+      "tag": "[object ReadableStreamDefaultController]",
+      "own": [
+        {
+          "key": {
+            "symbol": "kType"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": "ReadableStreamDefaultController"
+        },
+        {
+          "key": {
+            "symbol": "kState"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "objectTag": "[object Object]"
+        }
+      ],
+      "prototype": [
+        {
+          "key": {
+            "string": "constructor"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "ReadableStreamDefaultController",
+            "length": 0,
+            "ownPrototype": true,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "desiredSize"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get desiredSize",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "string": "close"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "close",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "enqueue"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "enqueue",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "error"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "error",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "kCancel"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[kCancel]",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "kPull"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[kPull]",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "kRelease"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[kRelease]",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "nodejs.util.inspect.custom"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[nodejs.util.inspect.custom]",
+            "length": 2,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "Symbol.toStringTag"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "ReadableStreamDefaultController"
+        }
+      ],
+      "prototypeConstructor": "ReadableStreamDefaultController",
+      "parentConstructor": "Object"
+    },
+    "constructor": [
+      {
+        "key": {
+          "string": "length"
+        },
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "value": 0
+      },
+      {
+        "key": {
+          "string": "name"
+        },
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "value": "ReadableStreamDefaultController"
+      },
+      {
+        "key": {
+          "string": "prototype"
+        },
+        "enumerable": false,
+        "configurable": false,
+        "writable": false,
+        "objectTag": "[object ReadableStreamDefaultController]"
+      }
+    ]
+  },
+  "default-reader-graph": {
+    "reader": {
+      "tag": "[object ReadableStreamDefaultReader]",
+      "own": [
+        {
+          "key": {
+            "symbol": "kType"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": "ReadableStreamDefaultReader"
+        },
+        {
+          "key": {
+            "symbol": "kState"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "objectTag": "[object Object]"
+        }
+      ],
+      "prototype": [
+        {
+          "key": {
+            "string": "constructor"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "ReadableStreamDefaultReader",
+            "length": 1,
+            "ownPrototype": true,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "read"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "read",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "releaseLock"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "releaseLock",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "closed"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get closed",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "string": "cancel"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "cancel",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "nodejs.util.inspect.custom"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[nodejs.util.inspect.custom]",
+            "length": 2,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "Symbol.toStringTag"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "ReadableStreamDefaultReader"
+        }
+      ],
+      "prototypeConstructor": "ReadableStreamDefaultReader",
+      "parentConstructor": "Object"
+    },
+    "constructor": [
+      {
+        "key": {
+          "string": "length"
+        },
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "value": 1
+      },
+      {
+        "key": {
+          "string": "name"
+        },
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "value": "ReadableStreamDefaultReader"
+      },
+      {
+        "key": {
+          "string": "prototype"
+        },
+        "enumerable": false,
+        "configurable": false,
+        "writable": false,
+        "objectTag": "[object ReadableStreamDefaultReader]"
+      }
+    ]
+  },
+  "byob-request-graph": {
+    "reader": {
+      "tag": "[object ReadableStreamBYOBReader]",
+      "own": [
+        {
+          "key": {
+            "symbol": "kType"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": "ReadableStreamBYOBReader"
+        },
+        {
+          "key": {
+            "symbol": "kState"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "objectTag": "[object Object]"
+        }
+      ],
+      "prototype": [
+        {
+          "key": {
+            "string": "constructor"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "ReadableStreamBYOBReader",
+            "length": 1,
+            "ownPrototype": true,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "read"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "read",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "AsyncFunction"
+          }
+        },
+        {
+          "key": {
+            "string": "releaseLock"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "releaseLock",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "closed"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get closed",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "string": "cancel"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "cancel",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "nodejs.util.inspect.custom"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[nodejs.util.inspect.custom]",
+            "length": 2,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "Symbol.toStringTag"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "ReadableStreamBYOBReader"
+        }
+      ],
+      "prototypeConstructor": "ReadableStreamBYOBReader",
+      "parentConstructor": "Object"
+    },
+    "request": {
+      "tag": "[object ReadableStreamBYOBRequest]",
+      "own": [
+        {
+          "key": {
+            "symbol": "kType"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": "ReadableStreamBYOBRequest"
+        },
+        {
+          "key": {
+            "symbol": "kState"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "objectTag": "[object Object]"
+        }
+      ],
+      "prototype": [
+        {
+          "key": {
+            "string": "constructor"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "ReadableStreamBYOBRequest",
+            "length": 0,
+            "ownPrototype": true,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "view"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "get view",
+            "length": 0,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          },
+          "set": null
+        },
+        {
+          "key": {
+            "string": "respond"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "respond",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "string": "respondWithNewView"
+          },
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "respondWithNewView",
+            "length": 1,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "nodejs.util.inspect.custom"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "function": {
+            "name": "[nodejs.util.inspect.custom]",
+            "length": 2,
+            "ownPrototype": false,
+            "prototypeConstructor": "Function"
+          }
+        },
+        {
+          "key": {
+            "symbol": "Symbol.toStringTag"
+          },
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "ReadableStreamBYOBRequest"
+        }
+      ],
+      "prototypeConstructor": "ReadableStreamBYOBRequest",
+      "parentConstructor": "Object"
+    },
+    "readerConstructor": [
+      {
+        "key": {
+          "string": "length"
+        },
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "value": 1
+      },
+      {
+        "key": {
+          "string": "name"
+        },
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "value": "ReadableStreamBYOBReader"
+      },
+      {
+        "key": {
+          "string": "prototype"
+        },
+        "enumerable": false,
+        "configurable": false,
+        "writable": false,
+        "objectTag": "[object ReadableStreamBYOBReader]"
+      }
+    ],
+    "requestConstructor": [
+      {
+        "key": {
+          "string": "length"
+        },
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "value": 0
+      },
+      {
+        "key": {
+          "string": "name"
+        },
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "value": "ReadableStreamBYOBRequest"
+      },
+      {
+        "key": {
+          "string": "prototype"
+        },
+        "enumerable": false,
+        "configurable": false,
+        "writable": false,
+        "objectTag": "[object ReadableStreamBYOBRequest]"
+      }
+    ],
+    "invalidated": true
+  },
+  "illegal-constructors": {
+    "rows": [
+      {
+        "name": "ReadableByteStreamController",
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_ILLEGAL_CONSTRUCTOR",
+          "message": "Illegal constructor"
+        }
+      },
+      {
+        "name": "ReadableStreamDefaultController",
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_ILLEGAL_CONSTRUCTOR",
+          "message": "Illegal constructor"
+        }
+      },
+      {
+        "name": "ReadableStreamBYOBRequest",
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_ILLEGAL_CONSTRUCTOR",
+          "message": "Illegal constructor"
+        }
+      }
+    ]
+  },
+  "stream-borrow": {
+    "getReader": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStream"
+      }
+    },
+    "cancel": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStream"
+      }
+    },
+    "tee": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStream"
+      }
+    },
+    "locked": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStream"
+      }
+    }
+  },
+  "default-reader-borrow": {
+    "read": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStreamDefaultReader"
+      }
+    },
+    "cancel": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStreamDefaultReader"
+      }
+    },
+    "releaseLock": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStreamDefaultReader"
+      }
+    },
+    "closed": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStreamDefaultReader"
+      }
+    }
+  },
+  "byob-reader-borrow": {
+    "read": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStreamBYOBReader"
+      }
+    },
+    "cancel": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStreamBYOBReader"
+      }
+    },
+    "releaseLock": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStreamBYOBReader"
+      }
+    },
+    "closed": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStreamBYOBReader"
+      }
+    }
+  },
+  "controller-request-borrow": {
+    "close": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableByteStreamController"
+      }
+    },
+    "enqueue": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableByteStreamController"
+      }
+    },
+    "error": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableByteStreamController"
+      }
+    },
+    "desiredSize": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableByteStreamController"
+      }
+    },
+    "byobRequest": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableByteStreamController"
+      }
+    },
+    "view": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStreamBYOBRequest"
+      }
+    },
+    "respond": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStreamBYOBRequest"
+      }
+    },
+    "respondWithNewView": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStreamBYOBRequest"
+      }
+    }
+  }
+}

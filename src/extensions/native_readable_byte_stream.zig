@@ -886,19 +886,19 @@ pub fn preparePublicGraph(scope: *Scope, bindings: c.JSValue) !void {
         if (c.JS_DefinePropertyValue(scope.engine.context, prototype, tag, c.JS_DupValue(scope.engine.context, try scope.text(publicName(group))), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(scope.engine);
         if (is_reader) {
             try publicFunction(scope, bindings, prototype, group, "read", .readerRead, if (group == .byobReader) 1 else 0, false);
-            try publicFunction(scope, bindings, prototype, group, "cancel", .readerCancel, 0, false);
             try publicFunction(scope, bindings, prototype, group, "releaseLock", .releaseLock, 0, false);
             try publicFunction(scope, bindings, prototype, group, "closed", .readerClosed, 0, true);
+            try publicFunction(scope, bindings, prototype, group, "cancel", .readerCancel, 0, false);
         } else if (group == .request) {
             try publicFunction(scope, bindings, prototype, group, "view", .requestView, 0, true);
             try publicFunction(scope, bindings, prototype, group, "respond", .respond, 1, false);
             try publicFunction(scope, bindings, prototype, group, "respondWithNewView", .respondWithNewView, 1, false);
         } else {
-            try publicFunction(scope, bindings, prototype, group, "enqueue", .enqueue, if (group == .byteController) 1 else 0, false);
-            try publicFunction(scope, bindings, prototype, group, "close", .close, 0, false);
-            try publicFunction(scope, bindings, prototype, group, "error", .errorValue, 0, false);
-            try publicFunction(scope, bindings, prototype, group, "desiredSize", .desiredSize, 0, true);
             if (group == .byteController) try publicFunction(scope, bindings, prototype, group, "byobRequest", .byobRequest, 0, true);
+            try publicFunction(scope, bindings, prototype, group, "desiredSize", .desiredSize, 0, true);
+            try publicFunction(scope, bindings, prototype, group, "close", .close, 0, false);
+            try publicFunction(scope, bindings, prototype, group, "enqueue", .enqueue, if (group == .byteController) 1 else 0, false);
+            try publicFunction(scope, bindings, prototype, group, "error", .errorValue, 0, false);
         }
     }
 }

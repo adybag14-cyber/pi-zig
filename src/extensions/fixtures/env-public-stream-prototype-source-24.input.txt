@@ -1,0 +1,28 @@
+const packet={};
+const keyValue=key=>typeof key==='symbol'?{symbol:key.description??null}:{string:key};
+const functionValue=value=>({name:value.name,length:value.length,ownPrototype:Object.hasOwn(value,'prototype'),prototypeConstructor:Object.getPrototypeOf(value).constructor.name});
+const fieldValue=value=>typeof value==='function'?{function:functionValue(value)}:value===null||typeof value!=='object'?{value:typeof value==='symbol'?keyValue(value):value}:{objectTag:Object.prototype.toString.call(value)};
+const properties=object=>Reflect.ownKeys(object).map(key=>{const descriptor=Object.getOwnPropertyDescriptor(object,key);return{key:keyValue(key),enumerable:descriptor.enumerable,configurable:descriptor.configurable,...('value'in descriptor?{writable:descriptor.writable,...fieldValue(descriptor.value)}:{get:descriptor.get?functionValue(descriptor.get):null,set:descriptor.set?functionValue(descriptor.set):null})}});
+const graph=object=>({tag:Object.prototype.toString.call(object),own:properties(object),prototype:properties(Object.getPrototypeOf(object)),prototypeConstructor:Object.getPrototypeOf(object).constructor.name,parentConstructor:Object.getPrototypeOf(Object.getPrototypeOf(object))?.constructor?.name??null});
+const errorValue=error=>({name:error.name,code:error.code??null,message:error.message});
+const observe=async operation=>{try{const value=operation();if(value instanceof Promise){await value;return{fulfilled:true}}return{value:value===undefined?null:value}}catch(error){return{error:errorValue(error)}}};
+if(caseName==='byte-graph'){
+ let controller;const stream=new web.ReadableStream({type:'bytes',start(value){controller=value}});packet.stream=graph(stream);packet.controller=graph(controller);packet.constructor=properties(web.ReadableStream);await stream.cancel();
+}else if(caseName==='default-graph'){
+ let controller;const stream=new web.ReadableStream({start(value){controller=value}});packet.stream=graph(stream);packet.controller=graph(controller);packet.constructor=properties(web.ReadableStreamDefaultController);await stream.cancel();
+}else if(caseName==='default-reader-graph'){
+ const stream=new web.ReadableStream(),reader=stream.getReader();packet.reader=graph(reader);packet.constructor=properties(web.ReadableStreamDefaultReader);await reader.cancel();reader.releaseLock();
+}else if(caseName==='byob-request-graph'){
+ let controller;const stream=new web.ReadableStream({type:'bytes',start(value){controller=value}}),reader=stream.getReader({mode:'byob'});const pending=reader.read(new Uint8Array(4));const request=controller.byobRequest;packet.reader=graph(reader);packet.request=graph(request);packet.readerConstructor=properties(web.ReadableStreamBYOBReader);packet.requestConstructor=properties(web.ReadableStreamBYOBRequest);await reader.cancel();await pending;packet.invalidated=request.view===null;reader.releaseLock();
+}else if(caseName==='illegal-constructors'){
+ packet.rows=[];for(const name of ['ReadableByteStreamController','ReadableStreamDefaultController','ReadableStreamBYOBRequest'])packet.rows.push({name,...await observe(()=>new web[name]())});
+}else if(caseName==='stream-borrow'){
+ const prototype=web.ReadableStream.prototype;packet.getReader=await observe(()=>prototype.getReader.call({}));packet.cancel=await observe(()=>prototype.cancel.call({}));packet.tee=await observe(()=>prototype.tee.call({}));packet.locked=await observe(()=>Object.getOwnPropertyDescriptor(prototype,'locked').get.call({}));
+}else if(caseName==='default-reader-borrow'){
+ const prototype=web.ReadableStreamDefaultReader.prototype;packet.read=await observe(()=>prototype.read.call({}));packet.cancel=await observe(()=>prototype.cancel.call({}));packet.releaseLock=await observe(()=>prototype.releaseLock.call({}));packet.closed=await observe(()=>Object.getOwnPropertyDescriptor(prototype,'closed').get.call({}));
+}else if(caseName==='byob-reader-borrow'){
+ const prototype=web.ReadableStreamBYOBReader.prototype;packet.read=await observe(()=>prototype.read.call({},new Uint8Array(1)));packet.cancel=await observe(()=>prototype.cancel.call({}));packet.releaseLock=await observe(()=>prototype.releaseLock.call({}));packet.closed=await observe(()=>Object.getOwnPropertyDescriptor(prototype,'closed').get.call({}));
+}else if(caseName==='controller-request-borrow'){
+ const controller=web.ReadableByteStreamController.prototype,request=web.ReadableStreamBYOBRequest.prototype;packet.close=await observe(()=>controller.close.call({}));packet.enqueue=await observe(()=>controller.enqueue.call({},new Uint8Array(1)));packet.error=await observe(()=>controller.error.call({}));packet.desiredSize=await observe(()=>Object.getOwnPropertyDescriptor(controller,'desiredSize').get.call({}));packet.byobRequest=await observe(()=>Object.getOwnPropertyDescriptor(controller,'byobRequest').get.call({}));packet.view=await observe(()=>Object.getOwnPropertyDescriptor(request,'view').get.call({}));packet.respond=await observe(()=>request.respond.call({},1));packet.respondWithNewView=await observe(()=>request.respondWithNewView.call({},new Uint8Array(1)));
+}else throw Error('Unknown genuine public stream graph case');
+nativeCollect();
