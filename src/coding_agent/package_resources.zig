@@ -171,9 +171,15 @@ const Resolver = struct {
     fn collectNestedPiExtensions(self: *Resolver, dir_path: []const u8, depth: usize) anyerror!bool {
         const package_json = try std.fs.path.join(self.gpa, &.{ dir_path, "package.json" });
         defer self.gpa.free(package_json);
-        const raw = std.Io.Dir.cwd().readFileAlloc(self.io, package_json, self.gpa, .limited(1024 * 1024)) catch return false;
+        const raw = std.Io.Dir.cwd().readFileAlloc(self.io, package_json, self.gpa, .limited(1024 * 1024)) catch |cause| {
+            if (cause == error.OutOfMemory) return cause;
+            return false;
+        };
         defer self.gpa.free(raw);
-        var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{}) catch return false;
+        var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{}) catch |cause| {
+            if (cause == error.OutOfMemory) return cause;
+            return false;
+        };
         defer parsed.deinit();
         if (parsed.value != .object) return false;
         const pi_value = parsed.value.object.get("pi") orelse return false;
@@ -279,7 +285,10 @@ const Resolver = struct {
             if (entry.name.len > 0 and entry.name[0] == '.' and !patternAllowsDot(pattern)) continue;
             const full = try std.fs.path.join(self.gpa, &.{ dir_path, entry.name });
             defer self.gpa.free(full);
-            const relative = std.fs.path.relative(self.gpa, ".", null, root, full) catch continue;
+            const relative = std.fs.path.relative(self.gpa, ".", null, root, full) catch |cause| {
+                if (cause == error.OutOfMemory) return cause;
+                continue;
+            };
             defer self.gpa.free(relative);
             if (try globMatchAlloc(self.gpa, pattern, relative)) try self.collectSourcePath(full, depth + 1);
 
@@ -330,7 +339,10 @@ fn isIgnoredByAncestorFiles(
         for (ignore_names) |ignore_name| {
             const ignore_path = try std.fs.path.join(gpa, &.{ scope_dir, ignore_name });
             defer gpa.free(ignore_path);
-            const raw = std.Io.Dir.cwd().readFileAlloc(io, ignore_path, gpa, .limited(1024 * 1024)) catch continue;
+            const raw = std.Io.Dir.cwd().readFileAlloc(io, ignore_path, gpa, .limited(1024 * 1024)) catch |cause| {
+                if (cause == error.OutOfMemory) return cause;
+                continue;
+            };
             defer gpa.free(raw);
             var lines = std.mem.splitScalar(u8, raw, '\n');
             while (lines.next()) |line_raw| {
@@ -778,7 +790,10 @@ fn markDirectory(gpa: std.mem.Allocator, io: Io, map: *std.StringHashMap(void), 
     // realPathFileAbsoluteAlloc returns a sentinel-terminated allocation. Store an
     // exact-length duplicate in the string map so the later allocator free uses
     // the same size that was originally allocated.
-    const canonical_z = std.Io.Dir.realPathFileAbsoluteAlloc(io, path, gpa) catch null;
+    const canonical_z = std.Io.Dir.realPathFileAbsoluteAlloc(io, path, gpa) catch |cause| failed: {
+        if (cause == error.OutOfMemory) return cause;
+        break :failed null;
+    };
     const canonical = if (canonical_z) |resolved| blk: {
         defer gpa.free(resolved);
         break :blk try gpa.dupe(u8, resolved);
