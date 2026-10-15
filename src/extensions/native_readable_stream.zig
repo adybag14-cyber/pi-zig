@@ -57,7 +57,7 @@ fn startFunction(scope: *Scope, data: c.JSValue, branch: c_int) !c.JSValue {
 }
 fn byteSource(scope: *Scope, data: c.JSValue, pull: Operation, cancel: Operation, branch: c_int) !c.JSValue {
     const source = try scope.object();
-    if ((branch == 0 and !try flagged(scope, data, "generic")) or try flagged(scope, data, "byteSource")) try scope.put(source, "type", try scope.text("bytes"));
+    if (branch == 0 or try flagged(scope, data, "byteSource")) try scope.put(source, "type", try scope.text("bytes"));
     try scope.put(source, "start", try startFunction(scope, data, branch));
     try scope.put(source, "pull", try callback(scope, data, "pull", pull, 1));
     try scope.put(source, "cancel", try callback(scope, data, "cancel", cancel, 1));
@@ -71,15 +71,7 @@ fn finish(scope: *Scope, data: c.JSValue, owner: c.JSValue) !void {
 }
 fn next(scope: *Scope, data: c.JSValue, owner: c.JSValue) !void {
     const pending = try scope.call(try scope.get(data, "next"), try scope.get(data, "iterator"), &.{});
-    if (try flagged(scope, data, "generic") and !c.JS_IsObject(pending)) return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_STATE", "The iterator.next() method must return an object");
     try async_value.wait(continued, scope.engine, owner, pending, @intFromEnum(Stage.iteratorNext));
-}
-fn valueStep(scope: *Scope, data: c.JSValue, owner: c.JSValue, value: c.JSValue, done: bool) !void {
-    if (done) {
-        try flag(scope, data, "done");
-        try core.closeController(scope, try bindings(scope.engine), try scope.get(data, "controller"));
-    } else try core.enqueueNative(scope, try bindings(scope.engine), try scope.get(data, "controller"), value);
-    try async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
 }
 fn continueValue(scope: *Scope, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: Stage) !void {
     const data = try scope.get(owner, "agent");
@@ -90,21 +82,11 @@ fn continueValue(scope: *Scope, owner: c.JSValue, value: c.JSValue, rejected: bo
         return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
     }
     if (stage == .iteratorReturn) {
-        if (!c.JS_IsObject(value)) {
-            if (try flagged(scope, data, "generic")) return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_STATE", "The promise returned by the iterator.return() method must fulfill with an object");
-            return error.NativeAsyncIteratorReturnNotObject;
-        }
+        if (!c.JS_IsObject(value)) return error.NativeAsyncIteratorReturnNotObject;
         return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
     }
     if (try flagged(scope, data, "cancelled")) return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
-    if (!c.JS_IsObject(value)) {
-        if (try flagged(scope, data, "generic")) return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_STATE", "The promise returned by the iterator.next() method must fulfill with an object");
-        return error.NativeAsyncIteratorResultNotObject;
-    }
-    if (try flagged(scope, data, "generic")) {
-        const done = scope.truthy(try scope.get(value, "done"));
-        return valueStep(scope, data, owner, if (done) c.pi_js_undefined() else try scope.get(value, "value"), done);
-    }
+    if (!c.JS_IsObject(value)) return error.NativeAsyncIteratorResultNotObject;
     if (scope.truthy(try scope.get(value, "done"))) {
         try flag(scope, data, "done");
         return finish(scope, data, owner);
@@ -162,7 +144,7 @@ fn begin(scope: *Scope, data: c.JSValue, owner: c.JSValue, args: []const c.JSVal
         const iterator = try scope.get(data, "iterator");
         if (nullish(iterator)) return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
         const return_method = try scope.get(iterator, "return");
-        if (c.JS_IsUndefined(return_method) or (c.JS_IsNull(return_method) and !try flagged(scope, data, "generic"))) return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
+        if (nullish(return_method)) return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
         const pending = try scope.call(return_method, iterator, &.{argument(args, 0)});
         return async_value.wait(continued, scope.engine, owner, pending, @intFromEnum(Stage.iteratorReturn));
     }
@@ -254,6 +236,7 @@ fn teeContinued(scope: *Scope, data: c.JSValue, owner: c.JSValue, value: c.JSVal
     if (try flagged(scope, data, "closed")) return async_value.settle(scope.engine, owner, false, c.pi_js_undefined());
     if (scope.truthy(try scope.get(value, "done"))) {
         try scope.put(data, "reading", c.pi_js_bool(scope.engine.context, 0));
+        try flag(scope, data, "closed");
         inline for (.{ .{ "cancelled1", "controller1" }, .{ "cancelled2", "controller2" } }) |entry| if (!try flagged(scope, data, entry[0])) {
             const controller = try scope.get(data, entry[1]);
             try core.closeController(scope, try bindings(scope.engine), controller);
@@ -268,9 +251,6 @@ fn teeContinued(scope: *Scope, data: c.JSValue, owner: c.JSValue, value: c.JSVal
                 try core.respondZeroNative(scope, try bindings(scope.engine), try scope.get(data, entry[1]));
             };
         }
-        // A controller close can reject a partial typed element. Keep the
-        // error path able to retire the other branch and actual source.
-        try flag(scope, data, "closed");
         try async_value.settle(scope.engine, try scope.get(data, "cancelOwner"), false, c.pi_js_undefined());
     } else {
         const chunk = try scope.get(value, "value");
@@ -512,7 +492,7 @@ pub fn fromAsyncIterator(engine: *js.Engine, supplied: c.JSValue) !c.JSValue {
     try install(engine);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const symbol = try scope.own(try engine.checked(c.JS_GetAsyncIteratorSymbol(engine.context)));
+    const symbol = try scope.get(try scope.global("Symbol"), "asyncIterator");
     const method = try scope.own(try js.getKey(engine, supplied, symbol));
     const iterator = if (nullish(method)) supplied else try scope.call(method, supplied, &.{});
     const next_method = try scope.get(iterator, "next");
