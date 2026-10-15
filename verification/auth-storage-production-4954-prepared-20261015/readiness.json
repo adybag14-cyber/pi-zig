@@ -1,0 +1,35 @@
+{
+  "ordinaryAuthStorageBody": "authored",
+  "ordinaryInMemoryBackend": "authored",
+  "constructorFields": [
+    "storage",
+    "authPath",
+    "readState"
+  ],
+  "prototypeMethods": [
+    "parseStorageData",
+    "updateReadState",
+    "reload",
+    "reloadFromStorageAsync",
+    "readLatestData",
+    "read",
+    "modify",
+    "delete",
+    "list"
+  ],
+  "mandatoryActualImports": [
+    "FileAuthStorageBackend",
+    "getAgentDir",
+    "getFileRevision",
+    "resolveConfigValue"
+  ],
+  "actualFileBackend": "06055ee2+1128df3e Source32qualified/nativeunrun",
+  "actualRevision": "5789f135+90ae8e2e Source/nativeunrun",
+  "actualConfigResolver": "mandatory Root binding, producer pending",
+  "source47": "prepared, unrun",
+  "expected": "absent intentionally",
+  "native": "uncompiled, unrun",
+  "fullPiQualified": false,
+  "publicActivation": false,
+  "rootSdkEngineModified": false
+}
