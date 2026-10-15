@@ -3,6 +3,9 @@ const em = @import("extensions/engine.zig");
 const sdk = @import("extensions/native_sdk.zig");
 const facade = @import("extensions/native_ai_google_mistral_factory.zig");
 const c = em.c;
+comptime {
+    _ = @import("ai/mistral.zig");
+}
 fn install(engine: *em.Engine) !void {
     const imported = try engine.evalModule("import 'pi-ai';export const loaded=true;", "native-google-mistral-stream-install.mjs");
     engine.freeValue(imported);
@@ -152,10 +155,27 @@ test "native AI Google Mistral complete native facade allocation graph" {
             defer engine.deinit();
             const generation = engine.native_allocation_generation;
             install(engine) catch |err| return engine.nativeAllocationError(err, generation);
-            const checked = engine.evalModule("for(const f of [google.streamSimple,mistral.streamSimple]){try{f({provider:'fixture'},{messages:[]},{});throw Error('missing key accepted')}catch(error){if(error.message!=='No API key for provider: fixture')throw error}}export const checked=true;", "native-google-mistral-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+            const checked = engine.evalModule(
+                \\const tool={name:'read',description:'read file',parameters:{type:'object',properties:{path:{type:'string'}},required:['path']}},context={messages:[{role:'system',content:'system',toolsAdded:[tool],timestamp:0},{role:'user',content:[{type:'text',text:'hello'},{type:'image',mimeType:'image/png',data:'AA=='}],timestamp:1}]};for(const [kind,api]of [['google','google-generative-ai'],['vertex','google-vertex'],['mistral','mistral-conversations']]){const model={id:kind==='mistral'?'mistral-fixture':'gemini-3.1-pro-preview',provider:kind,api,baseUrl:'http://127.0.0.1/v1',reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192};const stream=globalThis[kind].stream(model,context,{apiKey:'fixture-placeholder',onPayload(){throw Error('stop before HTTP')}}),result=await stream.result();if(result.stopReason!=='error'||result.errorMessage!=='stop before HTTP')throw Error('owner failure retirement');for await(const event of stream){if(event.type!=='error')throw Error('unexpected owned terminal event')}}export const checked=true;
+            , "native-google-mistral-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
             engine.freeValue(checked);
             c.JS_RunGC(engine.runtime);
         }
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}
+test "native AI Google Mistral pending payload continuations retain complete provider graphs through GC" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    try install(engine);
+    const prepared = try engine.evalModule(
+        \\globalThis.gates=[];globalThis.pendingStreams=[];for(const [kind,api]of [['google','google-generative-ai'],['vertex','google-vertex'],['mistral','mistral-conversations']]){const model={id:kind==='mistral'?'mistral-fixture':'gemini-3.1-pro-preview',provider:kind,api,baseUrl:'http://127.0.0.1/v1',reasoning:false,input:['text'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192};pendingStreams.push(globalThis[kind].stream(model,{messages:[{role:'user',content:'hello',timestamp:0}]},{apiKey:'fixture-placeholder',onPayload(){return new Promise((_,reject)=>gates.push(reject))}}));delete globalThis[kind]}if(gates.length!==3)throw Error('actual pending payload continuations required');export const prepared=true;
+    , "native-google-mistral-pending-gc-prepare.mjs");
+    engine.freeValue(prepared);
+    c.JS_RunGC(engine.runtime);
+    const checked = try engine.evalModule(
+        \\for(const reject of gates)reject(Error('stop before HTTP'));for(const stream of pendingStreams){const result=await stream.result();if(result.stopReason!=='error'||result.errorMessage!=='stop before HTTP')throw Error('pending callback graph lost');const events=[];for await(const event of stream)events.push(event.type);if(JSON.stringify(events)!=='["error"]')throw Error('owned terminal event lost')}delete globalThis.gates;delete globalThis.pendingStreams;export const checked=true;
+    , "native-google-mistral-pending-gc-complete.mjs");
+    engine.freeValue(checked);
+    c.JS_RunGC(engine.runtime);
 }
