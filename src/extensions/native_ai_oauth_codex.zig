@@ -102,35 +102,42 @@ fn refresh(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []con
     const pending = try flow.create(engine, c.pi_js_undefined());
     defer engine.freeValue(pending.owner);
     errdefer engine.freeValue(pending.promise);
-    startRefresh(&s, pending.owner, refresh_token, arg(args, 1)) catch |err| try flow.rejectError(engine, pending.owner, err);
+    const generation = engine.native_allocation_generation;
+    startRefresh(&s, pending.owner, refresh_token, arg(args, 1)) catch |err| {
+        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) {
+            try flow.rejectError(engine, pending.owner, err);
+            return pending.promise;
+        }
+        const reason = try s.own(flow.reason(engine, err));
+        continued(engine, pending.owner, reason, true, @intFromEnum(Stage.token)) catch |failure_err| try flow.rejectError(engine, pending.owner, failure_err);
+    };
     return pending.promise;
 }
 fn startRefresh(s: *Scope, owner: c.JSValue, refresh_token: c.JSValue, signal: c.JSValue) !void {
     try s.put(owner, "signal", signal);
     try s.put(owner, "operation", try s.text("refresh"));
     const fetch = try http.captureFetch(s);
-    const init = try tokenInit(s, signal);
+    const init = try tokenInit(s);
     try s.put(init, "body", try form(s, &.{ .{ "grant_type", try s.text("refresh_token") }, .{ "refresh_token", refresh_token }, .{ "client_id", try s.text(protocol.CLIENT_ID) } }));
+    try s.put(init, "signal", signal);
     return flow.wait(continued, s.engine, owner, try s.own(try http.requestWithFetch(s.engine, fetch, try s.text(protocol.TOKEN_URL), init)), @intFromEnum(Stage.token));
 }
-fn tokenInit(s: *Scope, signal: c.JSValue) !c.JSValue {
+fn tokenInit(s: *Scope) !c.JSValue {
     const init = try s.object();
     try s.put(init, "method", try s.text("POST"));
     const headers = try s.object();
     try s.put(headers, "Content-Type", try s.text("application/x-www-form-urlencoded"));
     try s.put(init, "headers", headers);
-    try s.put(init, "signal", signal);
     return init;
 }
 fn exchange(s: *Scope, owner: c.JSValue, code: c.JSValue, verifier: c.JSValue, redirect: []const u8) !void {
     try s.put(owner, "operation", try s.text("exchange"));
-    const fetch = try http.captureFetch(s);
-    const init = try tokenInit(s, try s.get(owner, "signal"));
+    const init = try tokenInit(s);
     try s.put(init, "body", try form(s, &.{ .{ "grant_type", try s.text("authorization_code") }, .{ "client_id", try s.text(protocol.CLIENT_ID) }, .{ "code", code }, .{ "code_verifier", verifier }, .{ "redirect_uri", try s.text(redirect) } }));
-    return flow.wait(continued, s.engine, owner, try s.own(try http.requestWithFetch(s.engine, fetch, try s.text(protocol.TOKEN_URL), init)), @intFromEnum(Stage.token));
+    try s.put(init, "signal", try s.get(owner, "signal"));
+    return loginFetch(s, owner, protocol.TOKEN_URL, init, .token);
 }
 fn requestDevice(s: *Scope, owner: c.JSValue, poll: bool) !void {
-    const fetch = try http.captureFetch(s);
     const init = try s.object();
     try s.put(init, "method", try s.text("POST"));
     const headers = try s.object();
@@ -144,7 +151,19 @@ fn requestDevice(s: *Scope, owner: c.JSValue, poll: bool) !void {
     } else try s.put(body, "client_id", try s.text(protocol.CLIENT_ID));
     try s.put(init, "body", try jsonString(s, body));
     try s.put(init, "signal", try s.get(owner, "signal"));
-    return flow.wait(continued, s.engine, owner, try s.own(try http.requestWithFetch(s.engine, fetch, try s.text(if (poll) protocol.DEVICE_TOKEN_URL else protocol.DEVICE_USER_CODE_URL), init)), @intFromEnum(if (poll) Stage.poll else Stage.device));
+    return loginFetch(s, owner, if (poll) protocol.DEVICE_TOKEN_URL else protocol.DEVICE_USER_CODE_URL, init, if (poll) .poll else .device);
+}
+fn loginFetch(s: *Scope, owner: c.JSValue, url: []const u8, init: c.JSValue, stage: Stage) !void {
+    const generation = s.engine.native_allocation_generation;
+    loginFetchBody(s, owner, url, init, stage) catch |err| {
+        if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return flow.rejectError(s.engine, owner, err);
+        const reason = try s.own(flow.reason(s.engine, err));
+        return continued(s.engine, owner, reason, true, @intFromEnum(stage));
+    };
+}
+fn loginFetchBody(s: *Scope, owner: c.JSValue, url: []const u8, init: c.JSValue, stage: Stage) !void {
+    const fetch = try http.captureFetch(s);
+    return flow.wait(continued, s.engine, owner, try s.own(try http.requestWithFetch(s.engine, fetch, try s.text(url), init)), @intFromEnum(stage));
 }
 fn closeCallback(s: *Scope, owner: c.JSValue) !void {
     const server = try s.get(owner, "callback");
@@ -154,7 +173,7 @@ fn finish(s: *Scope, owner: c.JSValue, rejected: bool, value: c.JSValue) !void {
     closeCallback(s, owner) catch |err| return flow.rejectError(s.engine, owner, err);
     return flow.settle(s.engine, owner, rejected, value);
 }
-fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) !void {
+fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) anyerror!void {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const stage: Stage = @enumFromInt(raw);
@@ -165,7 +184,7 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
             const branded = c.JS_IsInstanceOf(engine.context, value, try s.global("Error"));
             if (branded < 0) return flow.rejectError(engine, owner, v.js.capture(engine));
             const message = if (branded != 0) try s.get(value, "message") else try s.stringify(value);
-            return finish(&s, owner, true, try s.own(try v.js.builtin(engine, "Error", &.{try s.concat(try s.text("OpenAI Codex token refresh error: "), message)})));
+            return finish(&s, owner, true, try s.own(try v.js.builtin(engine, "Error", &.{try s.concat(try s.text("OpenAI Codex token refresh error: "), try s.stringify(message))})));
         }
         if ((stage == .token or stage == .device or stage == .poll) and s.truthy(try v.optional(&s, try s.get(owner, "signal"), "aborted"))) return finish(&s, owner, true, try s.own(try v.js.builtin(engine, "Error", &.{try s.text("Login cancelled")})));
         return finish(&s, owner, true, value);

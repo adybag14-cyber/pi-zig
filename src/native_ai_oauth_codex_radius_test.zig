@@ -7,7 +7,7 @@ const durable = @import("extensions/native_durable.zig");
 const json = @import("durable/backend/json.zig");
 const c = em.c;
 
-fn install(engine: *em.Engine) !void {
+pub fn install(engine: *em.Engine) !void {
     engine.native_io = std.testing.io;
     try @import("extensions/timers.zig").install(engine, std.testing.io);
     try @import("extensions/abort_signal.zig").install(engine);
@@ -18,12 +18,7 @@ fn install(engine: *em.Engine) !void {
     const exports = try sdk.object(engine);
     defer engine.freeValue(exports);
     try sdk.put(engine, exports, "openaiCodexOAuth", try @import("extensions/native_ai_oauth_codex.zig").create(engine));
-    const Adapter = struct {
-        fn create(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-            return @import("extensions/native_ai_oauth_radius.zig").create(host, if (args.len > 0) args[0] else c.pi_js_undefined());
-        }
-    };
-    try sdk.put(engine, exports, "createRadiusOAuth", try functions.create(engine, "createRadiusOAuth", 1, Adapter.create, &.{}));
+    try sdk.put(engine, exports, "createRadiusOAuth", try @import("extensions/native_ai_oauth_radius.zig").factory(engine));
     try engine.registerValueModule("native-oauth-codex-radius", exports);
 }
 
@@ -68,15 +63,15 @@ test "native OAuth Codex Radius actual ae7 pending roots retain credential ident
     try sdk.put(engine, global, "ownedRadiusFactory", try sdk.get(engine, exports, "createRadiusOAuth"));
     const started = try engine.eval(
         \\globalThis.ownedAccess={identity:'owned'};globalThis.ownedSignal=new AbortController().signal;
-        \\globalThis.fetch=async()=>({ok:true,async json(){return{access_token:'e30.'+btoa(JSON.stringify({'https://api.openai.com/auth':{chatgpt_account_id:'owned-account'}}))+'.sig',refresh_token:'owned-refresh',expires_in:120,scope:ownedAccess}}});
+        \\globalThis.fetch=async(url,init)=>init.body.get('refresh_token')==='fail'?{ok:false,status:400,async text(){return'{"error":"invalid_client"}'}}:{ok:true,async json(){return{access_token:'e30.'+btoa(JSON.stringify({'https://api.openai.com/auth':{chatgpt_account_id:'owned-account'}}))+'.sig',refresh_token:'owned-refresh',expires_in:120,scope:ownedAccess}}};
         \\globalThis.ownedRadius=ownedRadiusFactory({name:'Owned',gateway:'owned.example'});
-        \\globalThis.ownedPending=[ownedCodex.refresh({refresh:'owned'},ownedSignal),ownedRadius.refresh({refresh:'owned'},ownedSignal),ownedCodex.toAuth({access:ownedAccess}),ownedRadius.toAuth({access:ownedAccess})];
+        \\globalThis.ownedPending=[ownedCodex.refresh({refresh:'owned'},ownedSignal),ownedRadius.refresh({refresh:'owned'},ownedSignal),ownedCodex.toAuth({access:ownedAccess}),ownedRadius.toAuth({access:ownedAccess}),ownedRadius.refresh({refresh:'fail'},ownedSignal).catch(e=>e),ownedRadiusFactory({name:'Second',gateway:'owned.example'}).refresh({refresh:'fail'},ownedSignal).catch(e=>e)];
         \\undefined;
     , "native-oauth-gc-start", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(started);
     c.JS_RunGC(engine.runtime);
     const completed = try engine.evalModule(
-        \\const values=await Promise.all(globalThis.ownedPending);if(values[0].accountId!=='owned-account'||values[1].scope!==ownedAccess||values[2].apiKey!==ownedAccess||values[3].apiKey!==ownedAccess)throw Error('OAuth owned graph lost identity');
+        \\const values=await Promise.all(globalThis.ownedPending);if(values[0].accountId!=='owned-account'||values[1].scope!==ownedAccess||values[2].apiKey!==ownedAccess||values[3].apiKey!==ownedAccess||values[4].constructor!==values[5].constructor||values[4].constructor.name!=='OAuthResponseError'||values[4].constructor.length!==4||!(values[4] instanceof Error)||values[4].status!==400)throw Error('OAuth owned graph lost identity');
         \\delete globalThis.fetch;delete globalThis.ownedPending;export const proof=true;
     , "native-oauth-gc-complete");
     defer engine.freeValue(completed);

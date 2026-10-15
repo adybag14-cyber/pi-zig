@@ -15,6 +15,23 @@ const Stage = enum(c_int) { method, discovery, discovery_json, discovery_text, p
 pub fn create(engine: *v.em.Engine, options: c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
+    return createWithConstructor(engine, options, try errorConstructor(&s));
+}
+/// Module-local Error subclass identity belongs to the exported factory, so all
+/// OAuth objects created from one module share the same captured constructor.
+pub fn factory(engine: *v.em.Engine) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    const Adapter = struct {
+        fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            return createWithConstructor(host, common.arg(args, 0), roots[0]);
+        }
+    };
+    return functions.create(engine, "createRadiusOAuth", 1, Adapter.call, &.{try errorConstructor(&s)});
+}
+fn createWithConstructor(engine: *v.em.Engine, options: c.JSValue, constructor: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
     const raw = try common.property(&s, options, "gateway");
     const scheme = try literalRegex(&s, "^https?://", "iu");
     const with_scheme = if (s.truthy(try s.invoke(scheme, "test", &.{raw}))) raw else try s.concat(try s.text("https://"), raw);
@@ -23,7 +40,7 @@ pub fn create(engine: *v.em.Engine, options: c.JSValue) !c.JSValue {
     const state = try s.object();
     try s.put(state, "options", options);
     try s.put(state, "gateway", normalized);
-    try s.put(state, "errorConstructor", try errorConstructor(&s));
+    try s.put(state, "errorConstructor", constructor);
     const result = try s.object();
     try s.put(result, "name", try s.get(options, "name"));
     try s.put(result, "login", try s.own(try helpers.asyncArrow(engine, "login", 1, login, &.{state})));
@@ -82,6 +99,14 @@ fn startRefresh(s: *Scope, owner: c.JSValue, credential: c.JSValue, signal: c.JS
     return tokenRequest(s, owner, body);
 }
 fn request(s: *Scope, owner: c.JSValue, path: []const u8, body: c.JSValue, stage: Stage) !void {
+    const generation = s.engine.native_allocation_generation;
+    requestBody(s, owner, path, body, stage) catch |err| {
+        if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return flow.rejectError(s.engine, owner, err);
+        const reason = try s.own(flow.reason(s.engine, err));
+        return continued(s.engine, owner, reason, true, @intFromEnum(stage));
+    };
+}
+fn requestBody(s: *Scope, owner: c.JSValue, path: []const u8, body: c.JSValue, stage: Stage) !void {
     // Source evaluates fetch and URL before the init object and its signal.
     const fetch = try http.captureFetch(s);
     const url = try s.own(try v.js.builtin(s.engine, "URL", &.{ try s.text(path), try gateway(s, owner) }));
@@ -106,7 +131,7 @@ fn finish(s: *Scope, owner: c.JSValue, rejected: bool, value: c.JSValue) !void {
     close(s, owner) catch |err| return flow.rejectError(s.engine, owner, err);
     return flow.settle(s.engine, owner, rejected, value);
 }
-fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) !void {
+fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) anyerror!void {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const stage: Stage = @enumFromInt(raw);
@@ -230,8 +255,8 @@ fn errorConstructor(s: *Scope) !c.JSValue {
             const status = common.arg(args, 0);
             const oauth_error = common.arg(args, 1);
             const description = common.arg(args, 2);
-            const detail = if (local.truthy(oauth_error)) if (local.truthy(description)) try local.concat(try local.concat(oauth_error, try local.text(": ")), description) else oauth_error else if (local.truthy(description)) description else try local.stringify(status);
-            const message = try local.concat(try local.concat(try local.stringify(common.arg(args, 3)), try local.text(": ")), detail);
+            const detail = if (local.truthy(oauth_error)) if (local.truthy(description)) try local.concat(try local.concat(try local.stringify(oauth_error), try local.text(": ")), try local.stringify(description)) else oauth_error else if (local.truthy(description)) description else try local.call(try local.global("String"), c.pi_js_undefined(), &.{status});
+            const message = try local.concat(try local.concat(try local.stringify(common.arg(args, 3)), try local.text(": ")), try local.stringify(detail));
             const result = try local.own(try engine.checked(c.JS_CallConstructor(engine.context, roots[0], 1, @constCast(&[_]c.JSValue{message}))));
             if (c.JS_SetPrototype(engine.context, result, try local.get(target, "prototype")) < 0) return v.js.capture(engine);
             try local.put(result, "status", status);
