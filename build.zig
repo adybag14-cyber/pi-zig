@@ -1605,6 +1605,20 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-sdk-resource-paths", "Compile real discovered skill prompt and theme path loading").dependOn(&resource_paths_tests.step);
     b.step("test-native-sdk-resource-paths", "Compare actual upstream loader path merging overrides and filesystem resources").dependOn(&b.addRunArtifact(resource_paths_tests).step);
 
+    const resource_parser_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_resource_parsers_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native real resource parsers match", "native real resource parsers allocation measurement" }, .use_llvm = use_llvm });
+    linkQuickJs(b, resource_parser_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(resource_parser_tests.root_module, sqlite_lib_dir, sqlite_library);
+    resource_parser_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-resource-parsers", "Compile actual full YAML skill and prompt parser bodies").dependOn(&resource_parser_tests.step);
+    b.step("test-native-sdk-resource-parsers", "Compare genuine Source33 parser callbacks and native filesystem discovery").dependOn(&b.addRunArtifact(resource_parser_tests).step);
+
+    const resource_parser_allocation_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_resource_parsers_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native real resource parsers complete"}, .use_llvm = use_llvm });
+    linkQuickJs(b, resource_parser_allocation_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(resource_parser_allocation_tests.root_module, sqlite_lib_dir, sqlite_library);
+    resource_parser_allocation_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-resource-parsers-allocations", "Compile complete native Source33 parser allocation checker").dependOn(&resource_parser_allocation_tests.step);
+    b.step("test-native-sdk-resource-parsers-allocations", "Check every declared parser allocation failure index in a bounded shard").dependOn(&b.addRunArtifact(resource_parser_allocation_tests).step);
+
     const manual_compaction_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_compaction_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native ordinary compaction"}, .use_llvm = use_llvm });
     linkQuickJs(b, manual_compaction_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(manual_compaction_tests.root_module, sqlite_lib_dir, sqlite_library);
