@@ -143,6 +143,7 @@ pub const Engine = struct {
     buffer_prototype: ?c.JSValue = null,
     buffer_ready: bool = false,
     native_readable_stream_bindings: ?c.JSValue = null,
+    native_readable_stream_classes: ?[3]c.JSClassID = null,
     abort_signal_class: c.JSClassID = 0,
     abort_controller_class: c.JSClassID = 0,
     abort_signals_ready: bool = false,

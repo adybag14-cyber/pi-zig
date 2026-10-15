@@ -358,6 +358,9 @@ fn function(scope: *Scope, object: c.JSValue, name: [*:0]const u8, method: Metho
     defer c.JS_FreeAtom(scope.engine.context, atom);
     if (c.JS_DefinePropertyGetSet(scope.engine.context, object, atom, c.JS_DupValue(scope.engine.context, callback), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(scope.engine);
 }
+fn publicBindings(engine: *js.Engine, bindings: c.JSValue) bool {
+    return if (engine.native_readable_stream_bindings) |retained| c.JS_IsStrictEqual(engine.context, retained, bindings) else false;
+}
 fn classId(scope: *Scope, bindings: c.JSValue, name: [*:0]const u8) !c.JSClassID {
     var id: u32 = undefined;
     if (c.JS_ToUint32(scope.engine.context, &id, try scope.get(bindings, name)) < 0) return js.capture(scope.engine);
@@ -437,7 +440,9 @@ fn getReader(scope: *Scope, object: c.JSValue, self: *State, options: c.JSValue)
     const kind: ReaderKind = if (c.JS_IsUndefined(mode)) .default else if (scope.equal(mode, try scope.text("byob"))) .byob else return typeError(scope, "Invalid reader mode");
     if (kind == .byob and !self.byte_source) return typeError(scope, "ReadableStream does not support BYOB readers");
     if (!c.JS_IsUndefined(self.reader)) return typeError(scope, "ReadableStream is locked");
-    const result_object = try scope.own(try scope.engine.checked(c.JS_NewObjectClass(scope.engine.context, try classId(scope, self.bindings, "byteReaderClass"))));
+    const shared = publicBindings(scope.engine, self.bindings);
+    const reader_class = try classId(scope, self.bindings, "byteReaderClass");
+    const result_object = try scope.own(try scope.engine.checked(if (shared) c.JS_NewObjectProtoClass(scope.engine.context, try scope.get(self.bindings, if (kind == .byob) "byobReaderPrototype" else "defaultReaderPrototype"), reader_class) else c.JS_NewObjectClass(scope.engine.context, reader_class)));
     const closed_pending = try closedPromise(scope, object);
     var attached = false;
     errdefer if (!attached) {
@@ -449,7 +454,7 @@ fn getReader(scope: *Scope, object: c.JSValue, self: *State, options: c.JSValue)
     _ = c.JS_SetOpaque(result_object, owned);
     attached = true;
     var roots = [_]c.JSValue{ object, result_object };
-    inline for (.{ .{ "read", Method.readerRead }, .{ "cancel", Method.readerCancel }, .{ "releaseLock", Method.releaseLock }, .{ "closed", Method.readerClosed } }) |entry| try function(scope, result_object, entry[0], entry[1], &roots, entry[1] == .readerClosed);
+    if (!shared) inline for (.{ .{ "read", Method.readerRead }, .{ "cancel", Method.readerCancel }, .{ "releaseLock", Method.releaseLock }, .{ "closed", Method.readerClosed } }) |entry| try function(scope, result_object, entry[0], entry[1], &roots, entry[1] == .readerClosed);
     self.reader = c.JS_DupValue(scope.engine.context, result_object);
     if (self.status == .closed) try async_value.settle(scope.engine, owned.closed.owner, false, c.pi_js_undefined());
     if (self.status == .errored) try async_value.settle(scope.engine, owned.closed.owner, true, self.stored_error);
@@ -505,9 +510,15 @@ fn getRequest(scope: *Scope, object: c.JSValue, self: *State) !c.JSValue {
     invalidate(self);
     const into = self.pending.items[0];
     self.request_view = c.JS_DupValue(scope.engine.context, try view(scope, into.backing, into.offset + into.filled, into.capacity - into.filled, c.JS_TYPED_ARRAY_UINT8, 1));
-    const request = try scope.object();
+    const shared = publicBindings(scope.engine, self.bindings);
+    const request = if (shared) try scope.own(try scope.engine.checked(c.JS_NewObjectProtoClass(scope.engine.context, try scope.get(self.bindings, "byobRequestPrototype"), try classId(scope, self.bindings, "byteRequestClass")))) else try scope.object();
+    if (shared) {
+        const owned = try scope.engine.gpa.create(Controller);
+        owned.* = .{ .engine = scope.engine, .stream_value = c.JS_DupValue(scope.engine.context, object) };
+        _ = c.JS_SetOpaque(request, owned);
+    }
     var roots = [_]c.JSValue{ object, c.pi_js_undefined() };
-    inline for (.{ .{ "view", Method.requestView }, .{ "respond", Method.respond }, .{ "respondWithNewView", Method.respondWithNewView } }) |entry| try function(scope, request, entry[0], entry[1], &roots, entry[1] == .requestView);
+    if (!shared) inline for (.{ .{ "view", Method.requestView }, .{ "respond", Method.respond }, .{ "respondWithNewView", Method.respondWithNewView } }) |entry| try function(scope, request, entry[0], entry[1], &roots, entry[1] == .requestView);
     self.request = c.JS_DupValue(scope.engine.context, request);
     return request;
 }
@@ -716,7 +727,7 @@ fn construct(engine: *js.Engine, target: c.JSValue, args: []const c.JSValue, con
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const bindings = constants[0];
-    const public_binding = if (engine.native_readable_stream_bindings) |retained| c.JS_IsStrictEqual(engine.context, retained, bindings) else false;
+    const public_binding = publicBindings(engine, bindings);
     const provided = h.arg(args, 0);
     const source = if (c.JS_IsUndefined(provided)) try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()))) else provided;
     if (!c.JS_IsObject(source)) return typeError(&scope, "The source must be an object");
@@ -740,7 +751,8 @@ fn construct(engine: *js.Engine, target: c.JSValue, args: []const c.JSValue, con
     const self = try engine.gpa.create(State);
     self.* = .{ .engine = engine, .bindings = c.JS_DupValue(engine.context, bindings), .source = c.JS_DupValue(engine.context, source), .pull = c.pi_js_undefined(), .cancel = c.pi_js_undefined(), .controller = c.pi_js_undefined(), .reader = c.pi_js_undefined(), .request = c.pi_js_undefined(), .request_view = c.pi_js_undefined(), .stored_error = c.pi_js_undefined(), .size_algorithm = c.JS_DupValue(engine.context, size_value), .byte_source = byte_source, .auto_allocate = auto_allocate, .high_water_mark = high };
     _ = c.JS_SetOpaque(object, self);
-    const controller = try scope.own(try engine.checked(c.JS_NewObjectClass(engine.context, try classId(&scope, bindings, "byteControllerClass"))));
+    const controller_class = try classId(&scope, bindings, "byteControllerClass");
+    const controller = try scope.own(try engine.checked(if (public_binding) c.JS_NewObjectProtoClass(engine.context, try scope.get(bindings, if (byte_source) "byteControllerPrototype" else "defaultControllerPrototype"), controller_class) else c.JS_NewObjectClass(engine.context, controller_class)));
     const controller_owner = try engine.gpa.create(Controller);
     controller_owner.* = .{ .engine = engine, .stream_value = c.JS_DupValue(engine.context, object) };
     _ = c.JS_SetOpaque(controller, controller_owner);
@@ -754,7 +766,7 @@ fn construct(engine: *js.Engine, target: c.JSValue, args: []const c.JSValue, con
     var roots = [_]c.JSValue{ object, c.pi_js_undefined() };
     if (!public_binding) inline for (.{ .{ "getReader", Method.getReader }, .{ "cancel", Method.cancel }, .{ "locked", Method.locked } }) |entry| try function(&scope, object, entry[0], entry[1], &roots, entry[1] == .locked);
     inline for (.{ .{ "enqueue", Method.enqueue }, .{ "close", Method.close }, .{ "error", Method.errorValue }, .{ "desiredSize", Method.desiredSize }, .{ "byobRequest", Method.byobRequest } }) |entry| {
-        if (byte_source or entry[1] != .byobRequest) try function(&scope, controller, entry[0], entry[1], &roots, entry[1] == .desiredSize or entry[1] == .byobRequest);
+        if (!public_binding and (byte_source or entry[1] != .byobRequest)) try function(&scope, controller, entry[0], entry[1], &roots, entry[1] == .desiredSize or entry[1] == .byobRequest);
     }
     const pending = if (!scope.truthy(start)) c.pi_js_undefined() else try scope.call(start, source, &.{controller});
     try awaitAlgorithm(&scope, object, pending, c.pi_js_undefined(), .start);
@@ -771,6 +783,125 @@ fn privateCancel(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
     const returned = cancel(&scope, argv[0], self, if (argc > 1) argv[1] else c.pi_js_undefined()) catch |err| return @import("native_durable.zig").rejectedPromise(engine, err);
     return c.JS_DupValue(context, returned);
 }
+const PublicGroup = enum(c_int) { defaultReader, byobReader, defaultController, byteController, request };
+fn publicName(group: PublicGroup) [:0]const u8 {
+    return switch (group) {
+        .defaultReader => "ReadableStreamDefaultReader",
+        .byobReader => "ReadableStreamBYOBReader",
+        .defaultController => "ReadableStreamDefaultController",
+        .byteController => "ReadableByteStreamController",
+        .request => "ReadableStreamBYOBRequest",
+    };
+}
+fn invalidPublicReceiver(scope: *Scope, group: PublicGroup) anyerror {
+    const message = std.fmt.allocPrint(scope.engine.gpa, "Value of \"this\" must be of type {s}", .{publicName(group)}) catch return error.OutOfMemory;
+    defer scope.engine.gpa.free(message);
+    return codedTypeError(scope, "ERR_INVALID_THIS", message);
+}
+fn publicOperate(scope: *Scope, receiver: c.JSValue, bindings: c.JSValue, group: PublicGroup, method: Method, args: []const c.JSValue) !c.JSValue {
+    const class = try classId(scope, bindings, switch (group) {
+        .defaultReader, .byobReader => "byteReaderClass",
+        .defaultController, .byteController => "byteControllerClass",
+        .request => "byteRequestClass",
+    });
+    const raw = c.JS_GetOpaque(receiver, class) orelse return invalidPublicReceiver(scope, group);
+    const object = switch (group) {
+        .defaultReader, .byobReader => blk: {
+            const owned: *Reader = @ptrCast(@alignCast(raw));
+            if ((owned.kind == .byob) != (group == .byobReader)) return invalidPublicReceiver(scope, group);
+            break :blk owned.stream;
+        },
+        else => @as(*Controller, @ptrCast(@alignCast(raw))).stream_value,
+    };
+    if (group == .defaultController or group == .byteController) {
+        if ((try nativeState(scope, bindings, object)).byte_source != (group == .byteController)) return invalidPublicReceiver(scope, group);
+    }
+    var roots = [_]c.JSValue{ object, receiver };
+    return operate(scope, receiver, &roots, method, args);
+}
+fn publicDispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = js.Engine.fromContext(context.?);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const method: Method = @enumFromInt(@mod(raw, 100));
+    const group: PublicGroup = @enumFromInt(@divTrunc(raw, 100));
+    const returned = publicOperate(&scope, receiver, roots[0], group, method, if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| {
+        if (method == .readerRead or method == .readerCancel or method == .readerClosed) return @import("native_durable.zig").rejectedPromise(engine, err);
+        return @import("native_durable.zig").reject(engine, err);
+    };
+    return c.JS_DupValue(context, returned);
+}
+fn publicFunction(scope: *Scope, bindings: c.JSValue, prototype: c.JSValue, group: PublicGroup, name: [:0]const u8, method: Method, length: c_int, getter: bool) !void {
+    var roots = [_]c.JSValue{bindings};
+    const function_name = if (getter) try std.fmt.allocPrintSentinel(scope.engine.gpa, "get {s}", .{name}, 0) else null;
+    defer if (function_name) |allocated| scope.engine.gpa.free(allocated);
+    const callback = try scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, publicDispatch, if (function_name) |allocated| allocated.ptr else name.ptr, length, @intFromEnum(group) * 100 + @intFromEnum(method), roots.len, &roots)));
+    if (!getter) {
+        if (c.JS_DefinePropertyValueStr(scope.engine.context, prototype, name.ptr, c.JS_DupValue(scope.engine.context, callback), c.JS_PROP_C_W_E) < 0) return js.capture(scope.engine);
+        return;
+    }
+    const atom = c.JS_NewAtom(scope.engine.context, name.ptr);
+    defer c.JS_FreeAtom(scope.engine.context, atom);
+    if (c.JS_DefinePropertyGetSet(scope.engine.context, prototype, atom, c.JS_DupValue(scope.engine.context, callback), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(scope.engine);
+}
+fn constructReader(engine: *js.Engine, target: c.JSValue, args: []const c.JSValue, constants: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const prototype = try scope.get(target, "prototype");
+    const stream_value = h.arg(args, 0);
+    if (!try isReadableStream(&scope, constants[0], stream_value)) return codedTypeError(&scope, "ERR_INVALID_ARG_TYPE", "The \"stream\" argument must be an instance of ReadableStream");
+    const options = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
+    if (scope.truthy(constants[1])) try scope.put(options, "mode", try scope.text("byob"));
+    const object = try getReaderNative(&scope, constants[0], stream_value, options);
+    if (c.JS_IsObject(prototype) and c.JS_SetPrototype(engine.context, object, prototype) < 0) return js.capture(engine);
+    return c.JS_DupValue(engine.context, object);
+}
+fn illegalConstruct(engine: *js.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    return @import("node_events.zig").codedError(engine, "TypeError", "ERR_ILLEGAL_CONSTRUCTOR", "Illegal constructor");
+}
+/// Install shared public prototypes over real private state. Private FileHandle
+/// bindings retain their already-qualified instance methods and ownership.
+pub fn preparePublicGraph(scope: *Scope, bindings: c.JSValue) !void {
+    var request_class: c.JSClassID = 0;
+    _ = c.JS_NewClassID(scope.engine.runtime, &request_class);
+    const definition: c.JSClassDef = .{ .class_name = "ReadableStreamBYOBRequest", .finalizer = controllerFinalize, .gc_mark = controllerMark };
+    if (c.JS_NewClass(scope.engine.runtime, request_class, &definition) < 0) return error.OutOfMemory;
+    try scope.put(bindings, "byteRequestClass", c.JS_NewUint32(scope.engine.context, request_class));
+    const global = try scope.own(c.JS_GetGlobalObject(scope.engine.context));
+    const tag = c.JS_ValueToAtom(scope.engine.context, try scope.get(try scope.global("Symbol"), "toStringTag"));
+    defer c.JS_FreeAtom(scope.engine.context, tag);
+    inline for (.{ PublicGroup.defaultReader, .byobReader, .defaultController, .byteController, .request }) |group| {
+        const prototype = try scope.object();
+        const key = switch (group) {
+            .defaultReader => "defaultReaderPrototype",
+            .byobReader => "byobReaderPrototype",
+            .defaultController => "defaultControllerPrototype",
+            .byteController => "byteControllerPrototype",
+            .request => "byobRequestPrototype",
+        };
+        try scope.put(bindings, key, prototype);
+        const is_reader = group == .defaultReader or group == .byobReader;
+        const constructor = try scope.own(try @import("native_class.zig").constructor(scope.engine, publicName(group), if (is_reader) 1 else 0, prototype, if (is_reader) constructReader else illegalConstruct, &.{ bindings, c.pi_js_bool(scope.engine.context, @intFromBool(group == .byobReader)) }));
+        try scope.put(global, publicName(group).ptr, constructor);
+        if (c.JS_DefinePropertyValue(scope.engine.context, prototype, tag, c.JS_DupValue(scope.engine.context, try scope.text(publicName(group))), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(scope.engine);
+        if (is_reader) {
+            try publicFunction(scope, bindings, prototype, group, "read", .readerRead, if (group == .byobReader) 1 else 0, false);
+            try publicFunction(scope, bindings, prototype, group, "cancel", .readerCancel, 0, false);
+            try publicFunction(scope, bindings, prototype, group, "releaseLock", .releaseLock, 0, false);
+            try publicFunction(scope, bindings, prototype, group, "closed", .readerClosed, 0, true);
+        } else if (group == .request) {
+            try publicFunction(scope, bindings, prototype, group, "view", .requestView, 0, true);
+            try publicFunction(scope, bindings, prototype, group, "respond", .respond, 1, false);
+            try publicFunction(scope, bindings, prototype, group, "respondWithNewView", .respondWithNewView, 1, false);
+        } else {
+            try publicFunction(scope, bindings, prototype, group, "enqueue", .enqueue, if (group == .byteController) 1 else 0, false);
+            try publicFunction(scope, bindings, prototype, group, "close", .close, 0, false);
+            try publicFunction(scope, bindings, prototype, group, "error", .errorValue, 0, false);
+            try publicFunction(scope, bindings, prototype, group, "desiredSize", .desiredSize, 0, true);
+            if (group == .byteController) try publicFunction(scope, bindings, prototype, group, "byobRequest", .byobRequest, 0, true);
+        }
+    }
+}
 /// Private FileHandle integration only. No global or node:stream export is
 /// installed until the complete stream graph and real Source cases qualify.
 pub fn prepare(scope: *Scope, bindings: c.JSValue) !void {
@@ -778,13 +909,20 @@ pub fn prepare(scope: *Scope, bindings: c.JSValue) !void {
     var stream_class: c.JSClassID = 0;
     var reader_class: c.JSClassID = 0;
     var controller_class: c.JSClassID = 0;
-    _ = c.JS_NewClassID(scope.engine.runtime, &stream_class);
-    _ = c.JS_NewClassID(scope.engine.runtime, &reader_class);
-    _ = c.JS_NewClassID(scope.engine.runtime, &controller_class);
-    const definition: c.JSClassDef = .{ .class_name = "ReadableStream", .finalizer = finalize, .gc_mark = mark };
-    const reader_definition: c.JSClassDef = .{ .class_name = "ReadableStreamReader", .finalizer = readerFinalize, .gc_mark = readerMark };
-    const controller_definition: c.JSClassDef = .{ .class_name = "ReadableByteStreamController", .finalizer = controllerFinalize, .gc_mark = controllerMark };
-    if (c.JS_NewClass(scope.engine.runtime, stream_class, &definition) < 0 or c.JS_NewClass(scope.engine.runtime, reader_class, &reader_definition) < 0 or c.JS_NewClass(scope.engine.runtime, controller_class, &controller_definition) < 0) return error.OutOfMemory;
+    if (scope.engine.native_readable_stream_classes) |classes| {
+        stream_class = classes[0];
+        reader_class = classes[1];
+        controller_class = classes[2];
+    } else {
+        _ = c.JS_NewClassID(scope.engine.runtime, &stream_class);
+        _ = c.JS_NewClassID(scope.engine.runtime, &reader_class);
+        _ = c.JS_NewClassID(scope.engine.runtime, &controller_class);
+        const definition: c.JSClassDef = .{ .class_name = "ReadableStream", .finalizer = finalize, .gc_mark = mark };
+        const reader_definition: c.JSClassDef = .{ .class_name = "ReadableStreamReader", .finalizer = readerFinalize, .gc_mark = readerMark };
+        const controller_definition: c.JSClassDef = .{ .class_name = "ReadableByteStreamController", .finalizer = controllerFinalize, .gc_mark = controllerMark };
+        if (c.JS_NewClass(scope.engine.runtime, stream_class, &definition) < 0 or c.JS_NewClass(scope.engine.runtime, reader_class, &reader_definition) < 0 or c.JS_NewClass(scope.engine.runtime, controller_class, &controller_definition) < 0) return error.OutOfMemory;
+        scope.engine.native_readable_stream_classes = .{ stream_class, reader_class, controller_class };
+    }
     try scope.put(bindings, "byteStreamClass", c.JS_NewUint32(scope.engine.context, stream_class));
     try scope.put(bindings, "byteReaderClass", c.JS_NewUint32(scope.engine.context, reader_class));
     try scope.put(bindings, "byteControllerClass", c.JS_NewUint32(scope.engine.context, controller_class));

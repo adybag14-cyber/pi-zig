@@ -281,6 +281,7 @@ pub fn install(engine: *js.Engine) !void {
     defer scope.deinit();
     const retained = try scope.object();
     try core.prepare(&scope, retained);
+    try core.preparePublicGraph(&scope, retained);
     const constructor = try scope.get(retained, "fileHandleReadableStream");
     const prototype = try scope.get(constructor, "prototype");
     inline for (.{ .{ "getReader", Operation.getReader }, .{ "cancel", Operation.cancel }, .{ "tee", Operation.tee } }) |entry| {

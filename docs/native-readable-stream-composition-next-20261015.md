@@ -36,8 +36,12 @@ switching and detached replacement-buffer ownership remain outstanding.
 The core intrinsic helpers inspect native stream/reader/controller classes and
 invoke real state operations without consulting mutable public methods. Public
 isReadableStream/isDisturbed/isErrored/closeController use the same private
-binding root. The per-binding class IDs have not yet been unified for streams
-created by a private FileHandle assembly before public bootstrap.
+binding root. Stream/reader/controller class IDs are registered once per engine
+and reused by private FileHandle and public bindings, including FileHandle
+streams created before public bootstrap. Public reader/controller/request
+prototypes dispatch through native class/state checks. Reader constructors
+acquire the genuine stream lock; controller and BYOB request constructors reject
+external creation.
 
 The underlying byte core's earlier unchanged candidate passed actual Source12
 and FileHandle Source8 comparators:24 actual tests,0 skips, compile233/233 and
@@ -47,8 +51,7 @@ That qualification does not extend to these new public/composition changes.
 Genuine public graph Source9 subsequently captured all9 cases with full post0;
 batch SHA256 DB0777CAD8CB59E957F51C0BFD79DDB95EC19392D9F95A0BBC59A426A385DEF7.
 
-The complete shared reader/controller/request constructor/prototype graph,
-source-compatible branding and
+The complete source-compatible graph metadata and constructor validation,
 metadata, byte tee BYOB switching, public async iteration, pipe behavior and
 allocation sweeps still need implementation and genuine native gates. Current
 install supports genuine byte and default queues; it must not be presented as complete
