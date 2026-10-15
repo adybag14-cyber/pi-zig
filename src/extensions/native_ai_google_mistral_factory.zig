@@ -188,6 +188,10 @@ fn url(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !c.JSValue {
 fn open(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
     const engine = scope.engine;
     const options = try scope.get(owner, "options");
+    if (kind != .mistral) {
+        const key = try scope.get(try scope.get(owner, "auth"), "apiKey");
+        if (scope.truthy(key) and scope.truthy(try scope.invoke(key, "startsWith", &.{try scope.text("auth_tokens/")}))) return v.errorText(scope, try scope.text("Ephemeral tokens are only supported by the live API."));
+    }
     // The injectable fetch path requires its own live Response/reader adapter.
     // Keep this failure explicit until that path is implemented and qualified.
     if (kind == .mistral and !v.nullish(try v.optional(scope, options, "fetch")) and !scope.equal(try scope.get(options, "fetch"), try scope.global("fetch"))) return v.errorText(scope, try scope.text("Native Mistral custom fetch transport is not yet qualified"));
