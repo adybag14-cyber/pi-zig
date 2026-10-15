@@ -91,7 +91,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     };
     const make_message = try scope.own(try @import("native_node_function.zig").createArrow(engine, "makeMessage", 3, Static.message, &.{}));
     const generate = try scope.own(try @import("native_node_function.zig").createArrow(engine, "generate", 4, Static.generate, &.{result}));
-    if (c.JS_DefinePropertyValueStr(engine.context, api, "makeMessage", c.JS_DupValue(engine.context, make_message), c.JS_PROP_C_W) < 0 or c.JS_DefinePropertyValueStr(engine.context, api, "generate", c.JS_DupValue(engine.context, generate), c.JS_PROP_C_W) < 0) return v.js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, api, "makeMessage", c.JS_DupValue(engine.context, make_message), (c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE)) < 0 or c.JS_DefinePropertyValueStr(engine.context, api, "generate", c.JS_DupValue(engine.context, generate), (c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE)) < 0) return v.js.capture(engine);
     const cached = c.JS_DupValue(engine.context, result);
     engine.native_module_values.put(engine.gpa, cache_key, cached) catch |err| {
         engine.freeValue(cached);
