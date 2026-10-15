@@ -1,0 +1,32 @@
+{
+  "source25_request_observations": 25,
+  "source25_http_replays": 23,
+  "authored_tests": 12,
+  "full_factory_qualified": false,
+  "runner_selected": 14,
+  "native_gpa_exhaustive_successor": false,
+  "tested_candidate": "b6080f3164c85fd4f199548e867afff6485df542",
+  "declaration_tests": 2,
+  "sdk_custom_fetch_successor_qualified": false,
+  "source_fixture_sha256": {
+    "source16": "E2FA67CE930C77660DF95A45E8219760B5895C12FAAFE41B3353F36782FCFA34",
+    "source14": "11DB0369FF96B0CBB0EBFBF69AF7BFE645160C541387B1EE8E0ECC3CDF074A0E",
+    "source25": "2B189725271DED510340599DEAC4DEC37E7AB7CE22458F35571A2B6434380DBE"
+  },
+  "source16_rows": 16,
+  "source16_token_exchanges": 2,
+  "long_queued_events": 204,
+  "source16_http_requests": 18,
+  "optimize": "Debug",
+  "metadata_before_runtime": true,
+  "long_text_deltas": 200,
+  "zig": "0.16.0",
+  "source14_rows_captured": 14,
+  "os": "Windows",
+  "architecture": "x86_64",
+  "source14_default_fetch_rows_native": 0,
+  "full_pi_qualified": false,
+  "source14_supplied_client_rows_native": 7,
+  "public_activation": false,
+  "status": "qualified_component"
+}
