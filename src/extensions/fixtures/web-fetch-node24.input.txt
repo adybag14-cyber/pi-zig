@@ -1,7 +1,7 @@
-const rows=[];
+const rows=globalThis.nativeFetch39ProgressRows=[];
 const descriptor=(object,key)=>{const d=Object.getOwnPropertyDescriptor(object,key);return{key:typeof key==='symbol'?String(key):key,enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,value:typeof d.value==='function'?{type:'function',name:d.value.name,length:d.value.length}:typeof d.value==='symbol'?String(d.value):d.value!==null&&typeof d.value==='object'?{type:'object',tag:Object.prototype.toString.call(d.value)}:d.value}:{get:d.get?{name:d.get.name,length:d.get.length}:undefined,set:d.set?{name:d.set.name,length:d.set.length}:undefined})}};
 const errorShape=e=>({name:e?.name,message:e?.message,code:e?.code,typeError:e instanceof TypeError,cause:e?.cause?{name:e.cause.name,message:e.cause.message,code:e.cause.code}:undefined});
-const record=async(name,operation)=>{try{rows.push({name,value:await operation()})}catch(error){rows.push({name,error:errorShape(error)})}};
+const record=async(name,operation)=>{globalThis.nativeFetch39ActiveCase=name;nativeTraceFetch39Case(name);try{rows.push({name,value:await operation()})}catch(error){rows.push({name,error:errorShape(error)})}};
 const origin=nativeFetch39Origin;
 const shape=r=>({status:r.status,statusText:r.statusText,ok:r.ok,type:r.type,url:r.url.replace(origin,'<origin>'),redirected:r.redirected,headers:[...r.headers].filter(([name])=>!['date','connection','keep-alive','transfer-encoding','content-length'].includes(name)),actualHeaders:r.headers instanceof Headers,body:r.body===null?null:{actualStream:r.body instanceof ReadableStream,locked:r.body.locked},bodyUsed:r.bodyUsed,actualResponse:r instanceof Response,tag:Object.prototype.toString.call(r)});
 const gate=(id,status=200)=>nativeFetch39Gate(id,status);
