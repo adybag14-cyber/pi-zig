@@ -286,7 +286,7 @@ fn open(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
     const use_adc = kind == .vertex and scope.truthy(try scope.get(try scope.get(owner, "auth"), "adc"));
     const adc_data = if (use_adc) try @import("native_ai_google_adc_prepare.zig").data(scope, try scope.get(owner, "agent"), options) else null;
     defer if (adc_data) |value| engine.gpa.free(value);
-    const transport = try scope.own(try @import("native_ai_http.zig").open(engine, .{ .url = target, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)), .framing = if (kind == .mistral) .bytes else .sse, .prepare = if (use_adc) @import("native_ai_google_adc_prepare.zig").prepare else null, .prepare_data = adc_data orelse &.{} }, try v.optional(scope, options, "signal")));
+    const transport = try scope.own(try @import("native_ai_http.zig").openWithOptions(engine, .{ .url = target, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)), .headers_timeout_only = kind == .mistral, .framing = if (kind == .mistral) .bytes else .sse, .prepare = if (use_adc) @import("native_ai_google_adc_prepare.zig").prepare else null, .prepare_data = adc_data orelse &.{} }, try v.optional(scope, options, "signal"), .{ .raw_header_pairs = true }));
     try scope.put(owner, "http", transport);
     try scope.put(owner, "iterator", try scope.get(transport, "events"));
     try wait(scope, owner, try scope.get(transport, "ready"), .ready, kind);
@@ -322,6 +322,19 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
         },
         .ready => {
             if (kind == .mistral) _ = try retireMistralHeaders(scope, owner, c.pi_js_undefined());
+            const raw_headers = try v.optional(scope, value, "rawHeaders");
+            if (!c.JS_IsUndefined(raw_headers)) {
+                const actual = try scope.own(try @import("native_headers.zig").fromRecord(scope.engine, raw_headers));
+                const normalized = try scope.object();
+                var entries = try v.iterator(scope, try scope.invoke(actual, "entries", &.{}));
+                defer entries.deinit();
+                errdefer entries.closePreserving();
+                while (try entries.next()) |entry| {
+                    defer scope.engine.freeValue(entry);
+                    try v.js.setKey(scope.engine, normalized, try v.at(scope, entry, 0), try v.at(scope, entry, 1));
+                }
+                try scope.put(value, "headers", normalized);
+            }
             try scope.put(owner, "response", value);
             const observed = try scope.object();
             inline for (.{ "status", "headers" }) |key| try scope.put(observed, key, try scope.get(value, key));
@@ -371,7 +384,9 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
                 return next(scope, owner, kind);
             }
             const raw = try scope.invoke(try scope.global("JSON"), "parse", &.{data});
-            const chunk = if (kind == .mistral) raw else try @import("native_ai_google_response.zig").wrap(scope, try scope.get(try scope.get(owner, "agent"), "googleResponse"), raw, try scope.get(try scope.get(owner, "response"), "headers"), kind == .vertex);
+            const response = try scope.get(owner, "response");
+            const raw_headers = try v.optional(scope, response, "rawHeaders");
+            const chunk = if (kind == .mistral) raw else try @import("native_ai_google_response.zig").wrap(scope, try scope.get(try scope.get(owner, "agent"), "googleResponse"), raw, if (c.JS_IsUndefined(raw_headers)) try scope.get(response, "headers") else raw_headers, kind == .vertex);
             try scope.put(owner, "chunk", chunk);
             try wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", chunk), .chunk, kind);
         },
