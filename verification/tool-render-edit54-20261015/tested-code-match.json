@@ -1,0 +1,8 @@
+{
+  "tested_snapshot": "receipts/tool-render-edit54-debug-test-file-first-20261015-candidate.json",
+  "native_source_tool_vendor_build_inputs": 3790,
+  "native_input_drift": 0,
+  "staged_files": 138,
+  "staged_blob_byte_drift": 0,
+  "scope": "Product source, tools, vendor and build inputs are byte-identical to the terminal passed Source28/native comparator. Added verification packet and scoped Git whitespace attributes are outside the native VM identity input trees."
+}

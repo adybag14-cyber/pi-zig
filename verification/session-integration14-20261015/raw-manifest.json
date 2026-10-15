@@ -1,0 +1,362 @@
+[
+  {
+    "name": "diagnose-registry64-difference-20261015.mjs",
+    "sha256": "C9C74025D9BDDA1458E39C75E7407B23BE95F546E7DC8B4D31FD7C92660F8534",
+    "bytes": 1439
+  },
+  {
+    "name": "root-integration14-edit-order-registry64-field-differences-20261015.json",
+    "sha256": "1F5C3E9995B9D07ADF75BBB17E596F4046C34FD01824FB2BB4709CD976BA216B",
+    "bytes": 1024
+  },
+  {
+    "name": "root-integration14-registry64-first-field-differences-20261015.json",
+    "sha256": "9EE7E5448705F83FBC60B1CC827ECCB5F34B585342A94B622215C90ACBA81741",
+    "bytes": 1604
+  },
+  {
+    "name": "root-integration14-renderers-registry64-field-differences-20261015.json",
+    "sha256": "F644997EB448D08D7DA73FCAF9953D6F337BB93B36AF7DA3A0F4E01142169D64",
+    "bytes": 3636
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-compile-debug-first-shard0-of8-20261014-admission.json",
+    "sha256": "028180495A79E1A78EBCCDC1DFFF08A8666DF0E0B4CFC06E232E50C8BEEC8095",
+    "bytes": 12161
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-compile-debug-first-shard0-of8-20261014-controls-before.json",
+    "sha256": "543E6697172A7E4C0EE7FC250F740C8679D9B096F546AE8D4DF6D09F6BBF8A74",
+    "bytes": 1262
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-compile-debug-first-shard0-of8-20261014-posthash.json",
+    "sha256": "A1B88083A892D39613D39036D6C2638E663945AAE7757E4CB6B2DB52CE443B40",
+    "bytes": 469
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-compile-debug-first-shard0-of8-20261014-references-before.json",
+    "sha256": "E926016CAE33A73E479D4B2440BC7BA22B90915C0EBE50E2DCE6ADAE76D53991",
+    "bytes": 7506394
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-compile-debug-first-shard0-of8-20261014-source-before.json",
+    "sha256": "D66C32F6A5A2AC3F6CFEEBB9E2A8885362F6A72FA840F4EF153EF1EA8A64EE07",
+    "bytes": 979127
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-compile-debug-first-shard0-of8-20261014.json",
+    "sha256": "9516F8B8A84158287B986A5CA3A64DB5861C858B6C14FEF4B6FEBD49044E9820",
+    "bytes": 1060
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-compile-debug-first-shard0-of8-20261014.stderr.log",
+    "sha256": "332DA4D98E1CC2F4F38D94E1C9B3E4F2F84C4A4601FB4FBA6E37B02BA1702F09",
+    "bytes": 13929
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-compile-debug-first-shard0-of8-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-runtime-debug-first-shard0-of1-20261014-admission.json",
+    "sha256": "92A16C7FAE684B840468FB047F1EBE634ED945E9EFAF07EA90D92A8D7CBCE577",
+    "bytes": 69552
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-runtime-debug-first-shard0-of1-20261014-controls-before.json",
+    "sha256": "543E6697172A7E4C0EE7FC250F740C8679D9B096F546AE8D4DF6D09F6BBF8A74",
+    "bytes": 1262
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-runtime-debug-first-shard0-of1-20261014-posthash.json",
+    "sha256": "644C44CD7A7B93B13D0418350194E51C41D1AC9A5EBDE3C5C271836A6320AAD6",
+    "bytes": 469
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-runtime-debug-first-shard0-of1-20261014-references-before.json",
+    "sha256": "E926016CAE33A73E479D4B2440BC7BA22B90915C0EBE50E2DCE6ADAE76D53991",
+    "bytes": 7506394
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-runtime-debug-first-shard0-of1-20261014-source-before.json",
+    "sha256": "D66C32F6A5A2AC3F6CFEEBB9E2A8885362F6A72FA840F4EF153EF1EA8A64EE07",
+    "bytes": 979127
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-runtime-debug-first-shard0-of1-20261014.json",
+    "sha256": "097B27B81B7053F9CF52F4D45B1765E73F9A4BA80BC560EFF83425B7F26E5114",
+    "bytes": 1021
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-runtime-debug-first-shard0-of1-20261014.stderr.log",
+    "sha256": "766AE7E29AFF296504B44B505870DA31053ED837B7D3813BB0C22DB094A41005",
+    "bytes": 1078025
+  },
+  {
+    "name": "root-session-integration-5ab-builtin-renderers-runtime-debug-first-shard0-of1-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "name": "root-session-integration-5ab-compile-debug-first-shard0-of8-20261014-admission.json",
+    "sha256": "3DD2C33F39C6589EDB0284D5F6D5C13B39E7832DB501BDE3FFD4034315F49ECC",
+    "bytes": 3178
+  },
+  {
+    "name": "root-session-integration-5ab-compile-debug-first-shard0-of8-20261014-controls-before.json",
+    "sha256": "B3AAE5A5C8810AA159646DC0C2F74D15B22C0C5905F35E99980C97001918E315",
+    "bytes": 831
+  },
+  {
+    "name": "root-session-integration-5ab-compile-debug-first-shard0-of8-20261014-posthash.json",
+    "sha256": "1B546C28EF562F95C9B7FD429C3F2CFE4CFD05D8C20FF6745D1F0127AC6E0A81",
+    "bytes": 469
+  },
+  {
+    "name": "root-session-integration-5ab-compile-debug-first-shard0-of8-20261014-references-before.json",
+    "sha256": "E926016CAE33A73E479D4B2440BC7BA22B90915C0EBE50E2DCE6ADAE76D53991",
+    "bytes": 7506394
+  },
+  {
+    "name": "root-session-integration-5ab-compile-debug-first-shard0-of8-20261014-source-before.json",
+    "sha256": "86F8CFB5CF70C1A9EB93DFDF6FBE70B4D5B04BE8BD9BA5379CAB656B72B99A72",
+    "bytes": 950044
+  },
+  {
+    "name": "root-session-integration-5ab-compile-debug-first-shard0-of8-20261014.json",
+    "sha256": "C1A4BE5428CA5489D3C65094ABB644885683EEA3D2079226F87E3B320B036E77",
+    "bytes": 1042
+  },
+  {
+    "name": "root-session-integration-5ab-compile-debug-first-shard0-of8-20261014.stderr.log",
+    "sha256": "F3727CF9FD53DBA7D89D498AA1391CEAF985A97CFE71086276BCE80C7FC0573C",
+    "bytes": 13914
+  },
+  {
+    "name": "root-session-integration-5ab-compile-debug-first-shard0-of8-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-compile-debug-first-shard0-of8-20261014-admission.json",
+    "sha256": "7B945C727CBA129D4124B52FDE0455B72D950A9937EDE8D438DB66553D632816",
+    "bytes": 800
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-compile-debug-first-shard0-of8-20261014-controls-before.json",
+    "sha256": "155B686782FCD5E74857BF06DEEF17215A7DBD15778D686DC044C68401549FB9",
+    "bytes": 1255
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-compile-debug-first-shard0-of8-20261014-posthash.json",
+    "sha256": "FB041D1278840D4A145BF4F661DBE1AB8291883AB13DE80BF387992B6993337F",
+    "bytes": 469
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-compile-debug-first-shard0-of8-20261014-references-before.json",
+    "sha256": "E926016CAE33A73E479D4B2440BC7BA22B90915C0EBE50E2DCE6ADAE76D53991",
+    "bytes": 7506394
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-compile-debug-first-shard0-of8-20261014-source-before.json",
+    "sha256": "2329635DEE1F05E739595319B9630A2F65B76B55D0F727880F593692180D4FB8",
+    "bytes": 979127
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-compile-debug-first-shard0-of8-20261014.json",
+    "sha256": "E2D6B999A91CA1EAC345A179A3FAA683C32BFB4032105EFAD66C25C21303F882",
+    "bytes": 1053
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-compile-debug-first-shard0-of8-20261014.stderr.log",
+    "sha256": "D1BA7F8D4259A37A2B66E013F9D62C4F63F8A2E4F842E952F2A420EB6490CFB6",
+    "bytes": 13926
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-compile-debug-first-shard0-of8-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-runtime-debug-first-shard0-of1-20261014-admission.json",
+    "sha256": "8D319D5A5C969BA2144BDE73236C898464A0467F07E2276D8735064FFB86C6CC",
+    "bytes": 172389
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-runtime-debug-first-shard0-of1-20261014-controls-before.json",
+    "sha256": "155B686782FCD5E74857BF06DEEF17215A7DBD15778D686DC044C68401549FB9",
+    "bytes": 1255
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-runtime-debug-first-shard0-of1-20261014-posthash.json",
+    "sha256": "535F4AE4FDA94B6202F98822BBB6548B1A5FDD6862AC79DF6AAA7D5D1525ADC9",
+    "bytes": 469
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-runtime-debug-first-shard0-of1-20261014-references-before.json",
+    "sha256": "E926016CAE33A73E479D4B2440BC7BA22B90915C0EBE50E2DCE6ADAE76D53991",
+    "bytes": 7506394
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-runtime-debug-first-shard0-of1-20261014-source-before.json",
+    "sha256": "2329635DEE1F05E739595319B9630A2F65B76B55D0F727880F593692180D4FB8",
+    "bytes": 979127
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-runtime-debug-first-shard0-of1-20261014.json",
+    "sha256": "35F8448E216F2F0E51D8B359702E870BAF97972C4A14FC4052A49B94F7EDF057",
+    "bytes": 1014
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-runtime-debug-first-shard0-of1-20261014.stderr.log",
+    "sha256": "56813C3B400348E216CB367ED05FB71C78ACF3C2B4DAF01F85EE3233D5070005",
+    "bytes": 1078094
+  },
+  {
+    "name": "root-session-integration-5ab-edit-order-runtime-debug-first-shard0-of1-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-compile-debug-first-shard0-of8-20261014-admission.json",
+    "sha256": "DC41596B8825A05B7D34153B15BF0A1C2463B02B78E15263F3130C69AEA39FA6",
+    "bytes": 360
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-compile-debug-first-shard0-of8-20261014-controls-before.json",
+    "sha256": "373A21779937BAC1C0AFE2295479D9C4A10515677F02B2E9604E7E97C41DA910",
+    "bytes": 1262
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-compile-debug-first-shard0-of8-20261014-posthash.json",
+    "sha256": "AE582AE659A2A5ACD4079915E2C539D995F88177594BB26293CD8C8545E0D132",
+    "bytes": 469
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-compile-debug-first-shard0-of8-20261014-references-before.json",
+    "sha256": "E926016CAE33A73E479D4B2440BC7BA22B90915C0EBE50E2DCE6ADAE76D53991",
+    "bytes": 7506394
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-compile-debug-first-shard0-of8-20261014-source-before.json",
+    "sha256": "2E4437B61B9470F12C0807A74ACEB436365474EF9E66BF13F56B725BCE4C38F3",
+    "bytes": 951525
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-compile-debug-first-shard0-of8-20261014.json",
+    "sha256": "14BBB368D087BD5974642DE159370EAAC5DA88A27090C6528AA9FBD5B35ACC42",
+    "bytes": 1060
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-compile-debug-first-shard0-of8-20261014.stderr.log",
+    "sha256": "EDDEFAE39FC4F8B03B6D52A8425BBBDC8FF080F69FC42338F54BEFBA6EFEB576",
+    "bytes": 13929
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-compile-debug-first-shard0-of8-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-runtime-debug-first-shard0-of1-20261014-admission.json",
+    "sha256": "05D1BD91CFFA6B289C4F5D3B5513933502747448ADA8722A6FC4078EE2D3A030",
+    "bytes": 360
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-runtime-debug-first-shard0-of1-20261014-controls-before.json",
+    "sha256": "373A21779937BAC1C0AFE2295479D9C4A10515677F02B2E9604E7E97C41DA910",
+    "bytes": 1262
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-runtime-debug-first-shard0-of1-20261014-posthash.json",
+    "sha256": "2BAA48E79AB28987364600DCBE9362ED33207FFE50033BC690546A1852359448",
+    "bytes": 469
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-runtime-debug-first-shard0-of1-20261014-references-before.json",
+    "sha256": "E926016CAE33A73E479D4B2440BC7BA22B90915C0EBE50E2DCE6ADAE76D53991",
+    "bytes": 7506394
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-runtime-debug-first-shard0-of1-20261014-source-before.json",
+    "sha256": "2E4437B61B9470F12C0807A74ACEB436365474EF9E66BF13F56B725BCE4C38F3",
+    "bytes": 951525
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-runtime-debug-first-shard0-of1-20261014.json",
+    "sha256": "CB602E033AAD7DCF834D51CB58DC572497C055364D9CCAB6C519288C23E32A9F",
+    "bytes": 1021
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-runtime-debug-first-shard0-of1-20261014.stderr.log",
+    "sha256": "6388DD4BFCD2B43A7FA0B0ACA2169E0B3FF84B3B05065AA5FC8139F16DE5FBDE",
+    "bytes": 1077017
+  },
+  {
+    "name": "root-session-integration-5ab-environment-retry-runtime-debug-first-shard0-of1-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "name": "root-session-integration-5ab-runtime-debug-first-shard0-of1-20261014-admission.json",
+    "sha256": "7662BB293545C1BEBA0E2A2E8D2D56844E102A1B9CE0962812FBC49E4B3DF522",
+    "bytes": 360
+  },
+  {
+    "name": "root-session-integration-5ab-runtime-debug-first-shard0-of1-20261014-controls-before.json",
+    "sha256": "B3AAE5A5C8810AA159646DC0C2F74D15B22C0C5905F35E99980C97001918E315",
+    "bytes": 831
+  },
+  {
+    "name": "root-session-integration-5ab-runtime-debug-first-shard0-of1-20261014-posthash.json",
+    "sha256": "D30A1C486942892A9201C84A4B505C2C4DC0B6B619903AC09D17198DFFE92B13",
+    "bytes": 469
+  },
+  {
+    "name": "root-session-integration-5ab-runtime-debug-first-shard0-of1-20261014-references-before.json",
+    "sha256": "E926016CAE33A73E479D4B2440BC7BA22B90915C0EBE50E2DCE6ADAE76D53991",
+    "bytes": 7506394
+  },
+  {
+    "name": "root-session-integration-5ab-runtime-debug-first-shard0-of1-20261014-source-before.json",
+    "sha256": "86F8CFB5CF70C1A9EB93DFDF6FBE70B4D5B04BE8BD9BA5379CAB656B72B99A72",
+    "bytes": 950044
+  },
+  {
+    "name": "root-session-integration-5ab-runtime-debug-first-shard0-of1-20261014.json",
+    "sha256": "7CE687F57DFFAE75B6513F17921956FCDF678D94693CF37F92A447E54A1F5A66",
+    "bytes": 1003
+  },
+  {
+    "name": "root-session-integration-5ab-runtime-debug-first-shard0-of1-20261014.stderr.log",
+    "sha256": "81D20FAC4B58D1B4D6BD24BB6241ECC7E39139911897FD8E68FC26292F2A61AC",
+    "bytes": 19388
+  },
+  {
+    "name": "root-session-integration-5ab-runtime-debug-first-shard0-of1-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "name": "Run-RootSessionIntegration5abBuiltinRenderersNative-20261015.ps1",
+    "sha256": "F021705A465F7A18DD507A3FE13F3020DB514FACEF93174C65BE5DD83515482C",
+    "bytes": 7803
+  },
+  {
+    "name": "Run-RootSessionIntegration5abEditOrderNative-20261015.ps1",
+    "sha256": "B59BF7ED12FB85379F74EB5930BBE1EDB68753172958BED22F5A8B4A82DF8ADD",
+    "bytes": 7789
+  },
+  {
+    "name": "Run-RootSessionIntegration5abEnvironmentRetryNative-20261015.ps1",
+    "sha256": "C27CD8A6082B624E8ACF0D684B8EF2DC60F3E9988EA9E7DA7907B71CBA6672A0",
+    "bytes": 7803
+  },
+  {
+    "name": "Run-RootSessionIntegration5abNative-20261015.ps1",
+    "sha256": "684F3C648AA6BF405881EE696F6709F2602E9056C040F69D2593BCBC133FDEBB",
+    "bytes": 7616
+  }
+]

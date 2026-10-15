@@ -1,0 +1,34 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-ToolFileRenderers28Source-20261015.ps1",
+    "sha256": "EA15B99AC43348355C0621F91B0386392AD45AEEA2D294C4817F4559800A2C30"
+  },
+  {
+    "path": "C:/Users/adyba/pi-zig-tool-render-20261015/verification/tool-render-edit54-20261015/run-owner.ps1",
+    "sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-file-renderers28.input.txt",
+    "sha256": "47BBB2C18B25DBD3452460FB652861A9942B1967132D46DB0F30714FF97C9ECF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-file-renderers28-source-capture-20261015.mjs",
+    "sha256": "30DCCD26BDDA6F5E2CEEE45A564B3D4888AFEEC6454CF30A80A45B80696C4659"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b45-observe-20261014.mjs",
+    "sha256": "277C6CCC272A30C512C9BC18CC1ADAFE9A3F2A99403704020D9C4FF17D2B8D82"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-file-renderers28-real-fs-20261015\\one.txt",
+    "sha256": "93862B8F30E3B375E8A4EBFC514BAB781F8E817FB28CC8E6774C4D116E73F0CD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-file-renderers28-real-fs-20261015\\bom.txt",
+    "sha256": "6209E0A30AAD546F253A2E3A506867A4B1DF621C26BC67048D11AEEFF0CB31A4"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tool-file-renderers28-real-fs-20261015\\duplicate.txt",
+    "sha256": "DBA50090A2A8A732FAA11A51398FF4CA9B0F1AC68D894D8326ED271433B304E4"
+  }
+]

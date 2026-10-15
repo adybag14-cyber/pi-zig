@@ -1,0 +1,762 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "inputSha256": "0695e7457307012d69fe4a595d25ed31ba620cb9c4bf5410ead4ec268c4681c5",
+  "cases": 54,
+  "actualNodeGcExecuted": true,
+  "scope": "Unchanged actual jsdiff8.0.4 words/lines and actual b45 edit diff display, rendering with genuine dark Theme and normalized multi-edits, actual Node GC. No Source body rewriting. Historical typed catalog metadata only; latest generated catalog unqualified.",
+  "rows": [
+    {
+      "name": "actual diffWords 0",
+      "value": []
+    },
+    {
+      "name": "actual diffWords 1",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "a"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "b"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 2",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "foo "
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "bar "
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "baz"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 3",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "foo "
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "bar "
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "baz"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 4",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "foo "
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "bar"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "qux"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": " baz"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 5",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "foo"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "\nbar"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": " baz"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 6",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "foo  "
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": " bar "
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "baz"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 7",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "  old"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": " new"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": " word "
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 8",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": " \n"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 9",
+      "value": [
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "word"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 10",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "word"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 11",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "Café "
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "déjà"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "encore"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": " vu"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 12",
+      "value": [
+        {
+          "count": 2,
+          "added": false,
+          "removed": false,
+          "value": "a b"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 13",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "emoji "
+        },
+        {
+          "count": 2,
+          "added": false,
+          "removed": true,
+          "value": "😀 one"
+        },
+        {
+          "count": 2,
+          "added": true,
+          "removed": false,
+          "value": "😎 two"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 14",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "漢"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "字"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "語"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": " 中"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "文"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "間"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 15",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "one"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": ","
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "."
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "two"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": ";"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": ":"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "three"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 16",
+      "value": [
+        {
+          "count": 2,
+          "added": false,
+          "removed": false,
+          "value": "a\nb"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 17",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "repeat "
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "repeat "
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "one "
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "repeat"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 18",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "soft­hyphen"
+        },
+        {
+          "count": 3,
+          "added": true,
+          "removed": false,
+          "value": "soft-hyphen"
+        }
+      ]
+    },
+    {
+      "name": "actual diffWords 19",
+      "value": [
+        {
+          "count": 3,
+          "added": false,
+          "removed": true,
+          "value": "é x"
+        },
+        {
+          "count": 2,
+          "added": true,
+          "removed": false,
+          "value": "é y"
+        }
+      ]
+    },
+    {
+      "name": "actual diffLines 0",
+      "value": []
+    },
+    {
+      "name": "actual diffLines 1",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "a"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "b"
+        }
+      ]
+    },
+    {
+      "name": "actual diffLines 2",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "a\n"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "a"
+        }
+      ]
+    },
+    {
+      "name": "actual diffLines 3",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "a\r\n"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "b\r\n"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "c\r\n"
+        }
+      ]
+    },
+    {
+      "name": "actual diffLines 4",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "\n"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "\n"
+        }
+      ]
+    },
+    {
+      "name": "actual diffLines 5",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "a\n"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "b\n"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "x\n"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "c"
+        }
+      ]
+    },
+    {
+      "name": "actual diffLines 6",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "same\n"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "more\n"
+        }
+      ]
+    },
+    {
+      "name": "actual diffLines 7",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "before\n"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "same\n"
+        }
+      ]
+    },
+    {
+      "name": "actual diffLines 8",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "x\ry"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "x\rz"
+        }
+      ]
+    },
+    {
+      "name": "actual diffLines 9",
+      "value": [
+        {
+          "count": 1,
+          "added": false,
+          "removed": true,
+          "value": "😀\n"
+        },
+        {
+          "count": 1,
+          "added": true,
+          "removed": false,
+          "value": "😎\n"
+        },
+        {
+          "count": 1,
+          "added": false,
+          "removed": false,
+          "value": "漢字\n"
+        }
+      ]
+    },
+    {
+      "name": "actual generateDiffString 0",
+      "value": {
+        "diff": ""
+      }
+    },
+    {
+      "name": "actual generateDiffString 1",
+      "value": {
+        "diff": "-1 old\n+1 new",
+        "firstChangedLine": 1
+      }
+    },
+    {
+      "name": "actual generateDiffString 2",
+      "value": {
+        "diff": " 1 same\n-2 old\n+2 new\n 3 same",
+        "firstChangedLine": 2
+      }
+    },
+    {
+      "name": "actual generateDiffString 3",
+      "value": {
+        "diff": "    ...\n  9 line 8\n 10 line 9\n 11 line 10\n 12 line 11\n-13 line 12\n+13 changed\n 14 line 13\n 15 line 14\n 16 line 15\n 17 line 16\n    ...",
+        "firstChangedLine": 13
+      }
+    },
+    {
+      "name": "actual generateDiffString 4",
+      "value": {
+        "diff": "  1 line 0\n  2 line 1\n- 3 line 2\n+ 3 changed 2\n  4 line 3\n  5 line 4\n  6 line 5\n  7 line 6\n    ...\n 19 line 18\n 20 line 19\n 21 line 20\n 22 line 21\n-23 line 22\n+23 changed 22\n 24 line 23\n 25 line 24",
+        "firstChangedLine": 3
+      }
+    },
+    {
+      "name": "actual generateDiffString 5",
+      "value": {
+        "diff": " 1 one\n-2 last\n+2 last",
+        "firstChangedLine": 2
+      }
+    },
+    {
+      "name": "actual renderDiff 0",
+      "value": "\u001b[38;2;157;165;169m\u001b[39m"
+    },
+    {
+      "name": "actual renderDiff 1",
+      "value": "\u001b[38;2;234;127;129m-1 old word\u001b[39m\n\u001b[38;2;104;183;141m+1 new word\u001b[39m"
+    },
+    {
+      "name": "actual renderDiff 2",
+      "value": "\u001b[38;2;157;165;169m 1 kept\u001b[39m\n\u001b[38;2;234;127;129m-2  old   value\u001b[39m\n\u001b[38;2;104;183;141m+2  new   value\u001b[39m\n\u001b[38;2;157;165;169m 3 kept\u001b[39m"
+    },
+    {
+      "name": "actual renderDiff 3",
+      "value": "\u001b[38;2;234;127;129m-1 first\u001b[39m\n\u001b[38;2;234;127;129m-2 second\u001b[39m\n\u001b[38;2;104;183;141m+1 third\u001b[39m\n\u001b[38;2;104;183;141m+2 fourth\u001b[39m"
+    },
+    {
+      "name": "actual renderDiff 4",
+      "value": "\u001b[38;2;104;183;141m+10 added only\u001b[39m\n\u001b[38;2;157;165;169m 11 context\u001b[39m"
+    },
+    {
+      "name": "actual renderDiff 5",
+      "value": "\u001b[38;2;157;165;169mmalformed\tline\u001b[39m\n\u001b[38;2;157;165;169m     ...\u001b[39m"
+    },
+    {
+      "name": "actual applyEdits 0",
+      "value": {
+        "baseContent": "one two",
+        "newContent": "one THREE"
+      }
+    },
+    {
+      "name": "actual applyEdits 1",
+      "value": {
+        "baseContent": "a\nb\nc\n",
+        "newContent": "A\nb\nC\n"
+      }
+    },
+    {
+      "name": "actual applyEdits 2",
+      "value": {
+        "baseContent": "one “two”  \nkeep  \nlast",
+        "newContent": "one \"THREE\"\nkeep  \nlast"
+      }
+    },
+    {
+      "name": "actual applyEdits 3",
+      "error": {
+        "name": "Error",
+        "message": "Found 4 occurrences of the text in demo.txt. The text must be unique. Please provide more context to make it unique."
+      }
+    },
+    {
+      "name": "actual applyEdits 4",
+      "error": {
+        "name": "Error",
+        "message": "edits[0] and edits[1] overlap in demo.txt. Merge them into one edit or target disjoint regions."
+      }
+    },
+    {
+      "name": "actual applyEdits 5",
+      "error": {
+        "name": "Error",
+        "message": "Found 2 occurrences of the text in demo.txt. The text must be unique. Please provide more context to make it unique."
+      }
+    },
+    {
+      "name": "actual applyEdits 6",
+      "error": {
+        "name": "Error",
+        "message": "Could not find the exact text in demo.txt. The old text must match exactly including all whitespace and newlines."
+      }
+    },
+    {
+      "name": "actual applyEdits 7",
+      "error": {
+        "name": "Error",
+        "message": "oldText must not be empty in demo.txt."
+      }
+    },
+    {
+      "name": "actual applyEdits 8",
+      "error": {
+        "name": "Error",
+        "message": "No changes made to demo.txt. The replacement produced identical content. This might indicate an issue with special characters or the text not existing as expected."
+      }
+    },
+    {
+      "name": "actual applyEdits 9",
+      "value": {
+        "baseContent": "A\nB\n",
+        "newContent": "C\nD\n"
+      }
+    },
+    {
+      "name": "actual applyEdits 10",
+      "value": {
+        "baseContent": "fullwidth Ａ\nkeep  \n",
+        "newContent": "fullwidth B\nkeep  \n"
+      }
+    },
+    {
+      "name": "actual applyEdits 11",
+      "value": {
+        "baseContent": "one two three",
+        "newContent": "ONE two THREE"
+      }
+    }
+  ]
+}
