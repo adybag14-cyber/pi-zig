@@ -86,14 +86,13 @@ fn fields(scope: *Scope, model: c.JSValue, options: c.JSValue) !c.JSValue {
         const gov = try govCloud(scope, model, options);
         const adaptive = try supportsAdaptive(scope, model);
         const binding = !gov and try nativeXhigh(scope, model);
+        const configured_display = if (gov) c.pi_js_undefined() else try v.optional(scope, options, "thinkingDisplay");
+        const display = if (gov) c.pi_js_undefined() else if (v.nullish(configured_display)) try scope.text("summarized") else configured_display;
         const thinking = try scope.object();
         try scope.put(thinking, "type", try scope.text(if (adaptive) "adaptive" else "enabled"));
-        if (!gov) {
-            const display = try v.optional(scope, options, "thinkingDisplay");
-            try scope.put(thinking, "display", if (v.nullish(display)) try scope.text("summarized") else display);
-        }
         try scope.put(result, "thinking", thinking);
         if (adaptive) {
+            if (!c.JS_IsUndefined(display)) try scope.put(thinking, "display", display);
             if (binding) {
                 const controls = try scope.object();
                 try scope.put(controls, "prefix_mismatch_behavior", try scope.text("drop_block"));
@@ -117,6 +116,7 @@ fn fields(scope: *Scope, model: c.JSValue, options: c.JSValue) !c.JSValue {
                 budget = try scope.own(try v.js.getKey(scope.engine, defaults, level));
             }
             try scope.put(thinking, "budget_tokens", budget);
+            if (!c.JS_IsUndefined(display)) try scope.put(thinking, "display", display);
             const interleaved = try v.optional(scope, options, "interleavedThinking");
             if (v.nullish(interleaved) or scope.truthy(interleaved)) {
                 const features = try scope.array();
