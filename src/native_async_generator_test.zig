@@ -64,7 +64,7 @@ fn makeBody(engine: *em.Engine, args: []const c.JSValue) !c.JSValue {
 fn install(engine: *em.Engine) !void {
     try engine.bindFunction("makeNativeGenerator", make, 4);
 }
-fn run(engine: *em.Engine, code: []const u8, filename: []const u8) !void {
+fn run(engine: *em.Engine, code: []const u8, filename: [:0]const u8) !void {
     const result = engine.evalModule(code, filename) catch |err| {
         std.debug.print("native generator: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
