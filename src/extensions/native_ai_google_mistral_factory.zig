@@ -266,7 +266,10 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage, comp
             const status = try scope.get(try scope.get(owner, "response"), "status");
             const arithmetic = @import("native_image_arithmetic.zig");
             const bad = try arithmetic.compare(scope.engine, .less, status, c.JS_NewInt32(scope.engine.context, 200)) or try arithmetic.compare(scope.engine, .greater_equal, status, c.JS_NewInt32(scope.engine.context, 300));
-            if (!bad) _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
+            if (!bad) {
+                _ = try scope.invoke(try scope.get(owner, "decoder"), "start", &.{});
+                if (kind == .mistral) try @import("native_ai_mistral_sse.zig").start(scope, owner);
+            }
             try next(scope, owner, kind);
         },
         .next => {

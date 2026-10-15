@@ -5,9 +5,13 @@ const c = v.c;
 pub fn init(scope: *Scope, owner: c.JSValue) !void {
     try scope.put(owner, "mistralBuffer", try scope.text(""));
     try scope.put(owner, "mistralEof", c.pi_js_bool(scope.engine.context, 0));
-    try scope.put(owner, "mistralDecoder", try scope.own(try v.js.builtin(scope.engine, "TextDecoder", &.{})));
     try scope.put(owner, "mistralBoundary", try scope.own(try v.js.builtin(scope.engine, "RegExp", &.{try scope.text("\\r\\n\\r\\n|\\r\\n\\r|\\r\\n\\n|\\r\\r\\n|\\n\\r\\n|\\r\\r|\\n\\r|\\n\\n")})));
     try scope.put(owner, "mistralLine", try scope.own(try v.js.builtin(scope.engine, "RegExp", &.{try scope.text("\\r\\n|\\r|\\n")})));
+}
+// Source constructs the decoder when consumption starts, after the start event.
+// A payload/onResponse failure must not invoke the realm's TextDecoder constructor.
+pub fn start(scope: *Scope, owner: c.JSValue) !void {
+    try scope.put(owner, "mistralDecoder", try scope.own(try v.js.builtin(scope.engine, "TextDecoder", &.{})));
 }
 pub fn feed(scope: *Scope, owner: c.JSValue, bytes: c.JSValue, eof: bool) !void {
     const options = try scope.object();
