@@ -1,0 +1,16 @@
+{
+  "owned_http_requests": 14,
+  "earlier_receipts_preserved": [
+    "first import failure",
+    "second actual SDK token auth failure before HTTP",
+    "third Source execution passed and post0 but wrapper verifier typo"
+  ],
+  "full_posthash": "zero drift 1967/31064/1774 plus controls and84 absent records",
+  "observations": 14,
+  "source_execution": "passed",
+  "observed_utc": "2026-10-15T17:51:29.2810353+00:00",
+  "native_qualification": false,
+  "source_pid": 36552,
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "output_sha256": "C53E30358BA4414FF692EE45557EC2DDCCC546AC92B66A4244BAD62E76566545"
+}
