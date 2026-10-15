@@ -1,0 +1,30 @@
+const rows=[];
+const capture=async(name,fn)=>{try{rows.push({name,value:await fn()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}};
+const options=(extra={})=>({providerName:'Fixture <&>',host:'127.0.0.1',port:0,path:'/callback',state:'owned-state',complete:async code=>({code}),...extra});
+const pageRow=response=>({status:response.status,contentType:response.contentType,cacheControl:response.cacheControl,body:response.body});
+await capture('invalid-route-state-missing-retry-success-and-duplicate',async()=>{
+ const s=await A.startOAuthCallbackServer(options()), out=[];
+ try{
+  for(const suffix of ['/wrong','/callback?state=wrong&code=x','/callback?state=owned-state'])out.push(pageRow(await request(s.redirectUri.replace('/callback',suffix))));
+  out.push(pageRow(await request(s.redirectUri+'?state=owned-state&code=a%2Bb')));
+  const value=await s.wait();
+  out.push(pageRow(await request(s.redirectUri+'?state=owned-state&code=again')));
+  return {out,value,waitIdentity:s.wait()===s.wait()};
+ }finally{s.close()}
+});
+await capture('method-rejected-before-state',async()=>{const s=await A.startOAuthCallbackServer(options());try{return pageRow(await request(s.redirectUri,'POST'))}finally{s.close()}});
+await capture('provider-error-empty-description',async()=>{const s=await A.startOAuthCallbackServer(options());try{const response=pageRow(await request(s.redirectUri+'?state=owned-state&error=denied&error_description='));let error;try{await s.wait()}catch(e){error=e.message}return{response,error}}finally{s.close()}});
+await capture('async-complete-rejection-error-identity',async()=>{const reason=new Error('exchange <&> failed');const s=await A.startOAuthCallbackServer(options({complete:async()=>{await Promise.resolve();throw reason}}));try{const response=pageRow(await request(s.redirectUri+'?state=owned-state&code=x'));let same;try{await s.wait()}catch(e){same=e===reason}return{response,same}}finally{s.close()}});
+await capture('sync-complete-throw-string',async()=>{const s=await A.startOAuthCallbackServer(options({complete(){throw 'non-error <failure>'}}));try{const response=pageRow(await request(s.redirectUri+'?state=owned-state&code=x'));let error;try{await s.wait()}catch(e){error={name:e.name,message:e.message}}return{response,error}}finally{s.close()}});
+await capture('cancel-before-claimed',async()=>{const s=await A.startOAuthCallbackServer(options());try{s.cancel();return{undefined:await s.wait()===undefined,response:pageRow(await request(s.redirectUri+'?state=owned-state&code=x'))}}finally{s.close()}});
+await capture('close-rejects',async()=>{const s=await A.startOAuthCallbackServer(options());s.close();try{await s.wait()}catch(e){return e.message}});
+await capture('already-aborted',async()=>{const signal=new AbortController();signal.abort();return A.startOAuthCallbackServer(options({signal:signal.signal}))});
+await capture('abort-during-wait',async()=>{const signal=new AbortController();const s=await A.startOAuthCallbackServer(options({signal:signal.signal}));try{signal.abort();try{await s.wait()}catch(e){return e.message}}finally{s.close()}});
+await capture('controlled-timeout',async()=>{const original=globalThis.setTimeout,clear=globalThis.clearTimeout;let expire;globalThis.setTimeout=fn=>(expire=fn,11);globalThis.clearTimeout=()=>{};let s;try{s=await A.startOAuthCallbackServer(options({timeoutMs:123}));expire();try{await s.wait()}catch(e){return e.message}}finally{s?.close();globalThis.setTimeout=original;globalThis.clearTimeout=clear}});
+await capture('manual-no-callback-shape-and-abort',async()=>{let prompt,aborted=false;const result=await A.waitForCallbackOrManualInput({prompt(p){prompt={type:p.type,message:p.message,placeholder:p.placeholder};p.signal.addEventListener('abort',()=>aborted=true);return Promise.resolve(' pasted ')}},undefined,{message:'enter',placeholder:'code'});return{result,prompt,aborted}});
+await capture('manual-error-preserves-identity',async()=>{const reason=new Error('manual failure');try{await A.waitForCallbackOrManualInput({prompt:()=>Promise.reject(reason)},undefined,{message:'m',placeholder:'p'})}catch(e){return e===reason}});
+await capture('manual-error-string-normalization',async()=>{try{await A.waitForCallbackOrManualInput({prompt:()=>Promise.reject('manual text')},undefined,{message:'m',placeholder:'p'})}catch(e){return{name:e.name,message:e.message}}});
+await capture('callback-result-aborts-manual',async()=>{let aborted=false;const result=await A.waitForCallbackOrManualInput({prompt:p=>{p.signal.addEventListener('abort',()=>aborted=true);return new Promise(()=>{})}},{wait:()=>Promise.resolve({owned:42}),cancel(){throw Error('must not cancel')}},{message:'m',placeholder:'p'});return{result,aborted}});
+await capture('manual-first-cancels-and-waits',async()=>{let resolveWait,cancels=0;const waited=new Promise(r=>resolveWait=r);const result=await A.waitForCallbackOrManualInput({prompt:()=>Promise.resolve('manual-code')},{wait:()=>waited,cancel(){cancels++;resolveWait(undefined)}},{message:'m',placeholder:'p'});return{result,cancels}});
+await capture('callback-rejection-precedes-manual-error',async()=>{const callback=new Error('callback failure');let aborted=false;try{await A.waitForCallbackOrManualInput({prompt:p=>{p.signal.addEventListener('abort',()=>aborted=true);return Promise.reject(new Error('manual failure'))}},{wait:()=>Promise.reject(callback),cancel(){}},{message:'m',placeholder:'p'})}catch(e){return{same:e===callback,aborted}}});
+globalThis.callbackRows=rows;
