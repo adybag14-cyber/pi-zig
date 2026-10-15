@@ -90,8 +90,8 @@ pub fn convert(engine: *v.em.Engine, model: c.JSValue, context: c.JSValue) !c.JS
                     const sig = try item.get(block, if (thinking) "thinkingSignature" else "textSignature");
                     const signed = same and try signature(&item, sig);
                     if ((!item.truthy(value) or try v.length(&item, try item.invoke(value, "trim", &.{})) == 0) and !signed) continue;
-                    try item.put(part, "text", try v.sanitize(&item, value));
                     if (thinking and same) try item.put(part, "thought", c.pi_js_bool(engine.context, 1));
+                    try item.put(part, "text", try v.sanitize(&item, value));
                     if (signed) try item.put(part, "thoughtSignature", sig);
                 } else if (try v.eq(&item, kind, "toolCall")) {
                     const call = try item.object();
@@ -123,8 +123,8 @@ pub fn convert(engine: *v.em.Engine, model: c.JSValue, context: c.JSValue) !c.JS
             const call = try row.object();
             try row.put(call, "name", try row.get(message, "toolName"));
             try row.put(call, "response", response);
-            if (features.ids) try row.put(call, "id", try row.get(message, "toolCallId"));
             if (has_images and features.multimodal) try row.put(call, "parts", images);
+            if (features.ids) try row.put(call, "id", try row.get(message, "toolCallId"));
             const part = try row.object();
             try row.put(part, "functionResponse", call);
             const count = try v.length(&row, result);

@@ -219,10 +219,10 @@ pub fn build(engine: *v.em.Engine, dependencies: c.JSValue, model: c.JSValue, co
             if (try v.length(&row, joined) > 0 and has_images and !supports_images) value = try row.concat(value, try row.text("\n[tool image omitted: model does not support images]"));
             const parts = try row.array();
             _ = try row.invoke(parts, "push", &.{try text(&row, value)});
-            try row.put(outgoing, "content", try row.invoke(parts, "concat", &.{images}));
             try row.put(outgoing, "role", try row.text("tool"));
             try row.put(outgoing, "toolCallId", try row.get(message, "toolCallId"));
             try row.put(outgoing, "name", try row.get(message, "toolName"));
+            try row.put(outgoing, "content", try row.invoke(parts, "concat", &.{images}));
         }
         _ = try row.invoke(messages, "push", &.{outgoing});
     }
@@ -242,7 +242,7 @@ pub fn build(engine: *v.em.Engine, dependencies: c.JSValue, model: c.JSValue, co
         }
         try scope.put(result, "tools", converted);
     }
-    inline for (.{ "temperature", "maxTokens", "promptMode", "reasoningEffort" }) |key| {
+    inline for (.{ "temperature", "maxTokens" }) |key| {
         const value = try v.optional(&scope, options, key);
         if (!c.JS_IsUndefined(value)) try scope.put(result, key, value);
     }
@@ -256,6 +256,10 @@ pub fn build(engine: *v.em.Engine, dependencies: c.JSValue, model: c.JSValue, co
             try scope.put(selected, "function", function);
             try scope.put(result, "toolChoice", selected);
         }
+    }
+    inline for (.{ "promptMode", "reasoningEffort" }) |key| {
+        const value = try v.optional(&scope, options, key);
+        if (scope.truthy(value)) try scope.put(result, key, value);
     }
     if (try cache(&scope, options)) try scope.put(result, "promptCacheKey", try scope.get(options, "sessionId"));
     return c.JS_DupValue(engine.context, result);
