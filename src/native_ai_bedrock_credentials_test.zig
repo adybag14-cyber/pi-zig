@@ -233,3 +233,166 @@ test "native AI Bedrock empty ambient bearer preparation preserves the genuine S
     try std.testing.expectEqualStrings("Error", prepared.failure.?.name);
     try std.testing.expectEqual(@as(?bool, null), prepared.failure.?.try_next_link);
 }
+test "native AI Bedrock SigV4 matches3 genuine SDK original-case header bags and preserves the captured wire negative" {
+    var source = try std.json.parseFromSlice(std.json.Value, a, @embedFile("extensions/fixtures/ai-bedrock-wire3-5ab.json"), .{});
+    defer source.deinit();
+    const rows = field(source.value, "rows").array.items;
+    try std.testing.expectEqual(@as(usize, 3), rows.len);
+    for (rows) |row| {
+        const request = field(row, "requests").array.items[0];
+        const bag = field(field(request, "sdkRequestOptions"), "headers");
+        var headers: std.ArrayList(std.http.Header) = .empty;
+        defer headers.deinit(a);
+        var entries = bag.object.iterator();
+        while (entries.next()) |entry| try headers.append(a, .{ .name = entry.key_ptr.*, .value = entry.value_ptr.string });
+        // Credential input is parsed from the actual fake initial file used by
+        // Source, not derived from a synthesized expected signature.
+        var profile = @import("ai/aws_credentials.zig").OwnedProfile{ .profile_name = try a.dupe(u8, "fixture") };
+        defer profile.deinit(a);
+        try std.testing.expect(try @import("ai/aws_credentials.zig").mergeIni(a, text(field(row, "beforeFiles"), "credentials"), "fixture", false, &profile));
+        const actual_credentials = profile.staticCredentials().?;
+        const region = text(field(request, "sigv4SdkHeaderBag"), "region");
+        const now = @divFloor(field(row, "now").integer, 1000);
+        var signed = try @import("extensions/native_ai_aws_sigv4.zig").sign(a, text(request, "method"), text(request, "url"), text(request, "rawBody"), headers.items, actual_credentials, region, now);
+        defer signed.deinit(a);
+        try std.testing.expectEqualStrings(text(field(request, "headers"), "authorization"), signed.authorization);
+        try std.testing.expectEqualStrings(text(field(request, "headers"), "x-amz-date"), &signed.amz_date);
+        headers.clearRetainingCapacity();
+        entries = field(request, "headers").object.iterator();
+        while (entries.next()) |entry| try headers.append(a, .{ .name = entry.key_ptr.*, .value = entry.value_ptr.string });
+        var wire = try @import("extensions/native_ai_aws_sigv4.zig").sign(a, text(request, "method"), text(request, "url"), text(request, "rawBody"), headers.items, actual_credentials, region, now);
+        defer wire.deinit(a);
+        const equal = std.mem.eql(u8, wire.authorization, signed.authorization);
+        try std.testing.expectEqual(field(field(request, "sigv4Wire"), "signatureValid").bool, equal);
+    }
+}
+fn guestValue(engine: *@import("extensions/engine.zig").Engine, value: std.json.Value) !@import("extensions/engine.zig").c.JSValue {
+    const raw = try std.json.Stringify.valueAlloc(a, value, .{});
+    defer a.free(raw);
+    const terminated = try a.dupeZ(u8, raw);
+    defer a.free(terminated);
+    return engine.checked(@import("extensions/engine.zig").c.JS_ParseJSON(engine.context, terminated.ptr, raw.len, "genuine-sdk-lifecycle-input.json"));
+}
+fn guestEnv(s: *@import("extensions/native_ai_provider_values.zig").Scope, value: std.json.Value, original_home: []const u8, home: []const u8) !@import("extensions/engine.zig").c.JSValue {
+    const env = try s.object();
+    var fields = value.object.iterator();
+    while (fields.next()) |entry| {
+        const name = try s.text(entry.key_ptr.*);
+        const contents = try replace(entry.value_ptr.string, original_home, home);
+        defer a.free(contents);
+        try @import("extensions/native_js_values.zig").setKey(s.engine, env, name, try s.text(contents));
+    }
+    try s.put(env, "HOME", try s.text(home));
+    try s.put(env, "USERPROFILE", try s.text(home));
+    try s.put(env, "AWS_EC2_METADATA_DISABLED", try s.text("true"));
+    return env;
+}
+test "native AI Bedrock lifecycle helper boundaries match8 genuine SDK post-payload auth and pre-payload header observations" {
+    const v = @import("extensions/native_ai_provider_values.zig");
+    const auth = @import("extensions/native_ai_bedrock_auth.zig");
+    var source = try std.json.parseFromSlice(std.json.Value, a, @embedFile("extensions/fixtures/ai-bedrock-lifecycle8-5ab.json"), .{});
+    defer source.deinit();
+    var input = try std.json.parseFromSlice(std.json.Value, a, @embedFile("extensions/fixtures/ai-bedrock-lifecycle8-5ab.input.json"), .{});
+    defer input.deinit();
+    const rows = field(source.value, "rows").array.items;
+    try std.testing.expectEqual(@as(usize, 8), rows.len);
+    for (rows, field(input.value, "cases").array.items) |row, spec| {
+        var temporary = std.testing.tmpDir(.{});
+        defer temporary.cleanup();
+        const home = try temporary.dir.realPathFileAlloc(std.testing.io, ".", a);
+        defer a.free(home);
+        const original_home = text(row, "home");
+        for (field(row, "beforeOwnedFiles").array.items) |initial| {
+            const destination = try replace(text(initial, "path"), original_home, home);
+            defer a.free(destination);
+            const contents = try replace(text(initial, "contents"), original_home, home);
+            defer {
+                @memset(contents, 0);
+                a.free(contents);
+            }
+            if (std.fs.path.dirname(destination)) |parent| try std.Io.Dir.cwd().createDirPath(std.testing.io, parent);
+            try std.Io.Dir.cwd().writeFile(std.testing.io, .{ .sub_path = destination, .data = contents });
+        }
+        const engine = try v.em.Engine.init(a, .{ .host_await_timeout_ms = 10000 });
+        defer engine.deinit();
+        var s: v.Scope = .{ .engine = engine };
+        defer s.deinit();
+        const global = try s.own(v.c.JS_GetGlobalObject(engine.context));
+        const process = try s.object();
+        const versions = try s.object();
+        try s.put(versions, "node", try s.text("24.14.0"));
+        try s.put(process, "versions", versions);
+        const callback = field(row, "callbackState");
+        try s.put(process, "env", try guestEnv(&s, field(callback, "beforeAmbient"), original_home, home));
+        try s.put(global, "process", process);
+        const dependencies = try s.object();
+        try s.put(dependencies, "env", try s.own(try @import("extensions/native_ai_env_keys.zig").create(engine, .{})));
+        const model = try s.object();
+        try s.put(model, "id", try s.text("anthropic.claude-sonnet-4-6"));
+        try s.put(model, "baseUrl", try s.text(text(row, "endpoint")));
+        const options = try s.object();
+        if (field(spec, "clearRegion") != .bool or !field(spec, "clearRegion").bool) try s.put(options, "region", try s.text("eu-west-2"));
+        try s.put(options, "env", try s.own(try guestValue(engine, field(callback, "beforeScoped"))));
+        if (field(spec, "profile") == .string) try s.put(options, "profile", try s.text(text(spec, "profile")));
+        if (field(spec, "bearerToken") == .string) try s.put(options, "bearerToken", try s.text(text(spec, "bearerToken")));
+        if (field(spec, "headers") != .null) try s.put(options, "headers", try s.own(try guestValue(engine, field(spec, "headers"))));
+        const config = try auth.configure(&s, dependencies, model, options);
+        const selected_headers = try @import("extensions/native_ai_bedrock_factory.zig").prepareHeaders(&s, options);
+        // Reproduce the captured fixture mutation at the two component
+        // boundaries. Actual callback-await/event timing remains the separate
+        // unchanged full-facade Source14/18 gate.
+        try s.put(process, "env", try guestEnv(&s, field(callback, "afterAmbient"), original_home, home));
+        try s.put(options, "env", try s.own(try guestValue(engine, field(callback, "afterScoped"))));
+        if (field(callback, "afterHeaders") != .null) try s.put(options, "headers", try s.own(try guestValue(engine, field(callback, "afterHeaders"))));
+        try auth.snapshotDefaultChain(&s, config);
+        var headers: std.ArrayList(std.http.Header) = .empty;
+        defer {
+            for (headers.items) |header| {
+                a.free(header.name);
+                a.free(header.value);
+            }
+            headers.deinit(a);
+        }
+        var iterator = try v.iterator(&s, try s.invoke(try s.global("Object"), "entries", &.{selected_headers}));
+        defer iterator.deinit();
+        errdefer iterator.closePreserving();
+        while (try iterator.next()) |entry| {
+            defer engine.freeValue(entry);
+            const name = try engine.toString(try v.at(&s, entry, 0));
+            errdefer a.free(name);
+            const value = try engine.toString(try v.at(&s, entry, 1));
+            errdefer a.free(value);
+            try headers.append(a, .{ .name = name, .value = value });
+        }
+        const actual_request = field(row, "requests").array.items[0];
+        for (headers.items) |header| try std.testing.expectEqualStrings(field(actual_request, "headers").object.get(header.name).?.string, header.value);
+        try std.testing.expect(v.c.JS_IsUndefined(try s.get(selected_headers, "x-after")));
+        const data = try engine.toString(try s.invoke(try s.global("JSON"), "stringify", &.{config}));
+        defer {
+            @memset(data, 0);
+            a.free(data);
+        }
+        var aborted = false;
+        var prepared = try auth.prepare(a, .{ .method = .POST, .url = text(row, "endpoint"), .payload = "{}", .headers = headers.items }, data, .{ .io = std.testing.io, .abort_flag = &aborted, .deadline_ms = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() + 10000 });
+        defer prepared.deinit(a);
+        try std.testing.expect(prepared.failure == null);
+        const authorization = for (prepared.headers) |header| {
+            if (std.ascii.eqlIgnoreCase(header.name, "authorization")) break header.value;
+        } else return error.MissingPreparedAuthorization;
+        const expected_auth = text(field(actual_request, "headers"), "authorization");
+        if (std.mem.startsWith(u8, expected_auth, "Bearer ")) try std.testing.expectEqualStrings(expected_auth, authorization) else {
+            const audit = field(actual_request, "sigv4SdkHeaderBag");
+            const prefix = try std.fmt.allocPrint(a, "AWS4-HMAC-SHA256 Credential={s}/", .{text(audit, "accessKeyId")});
+            defer a.free(prefix);
+            try std.testing.expect(std.mem.startsWith(u8, authorization, prefix));
+            const region = try std.fmt.allocPrint(a, "/{s}/bedrock/aws4_request", .{text(audit, "region")});
+            defer a.free(region);
+            try std.testing.expect(std.mem.indexOf(u8, authorization, region) != null);
+        }
+        const path = text(actual_request, "path");
+        const expected_url = try std.fmt.allocPrint(a, "{s}{s}", .{ text(row, "endpoint"), path });
+        defer a.free(expected_url);
+        try std.testing.expectEqualStrings(expected_url, prepared.url.?);
+        v.c.JS_RunGC(engine.runtime);
+    }
+}

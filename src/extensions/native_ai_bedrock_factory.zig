@@ -83,6 +83,7 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
 fn setup(s: *Scope, owner: c.JSValue) !void {
     const options = try s.get(owner, "options");
     try s.put(owner, "auth", try auth.configure(s, try s.get(owner, "agent"), try s.get(owner, "model"), options));
+    try s.put(owner, "requestHeaders", try prepareHeaders(s, options));
     const payload = try s.own(try request.build(s.engine, try s.get(owner, "model"), try s.get(owner, "context"), options));
     try s.put(owner, "payload", payload);
     try wait(s, owner, try hook(s, owner, "onPayload", payload), .payload);
@@ -177,9 +178,8 @@ fn replacer(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []co
     }
     return c.JS_DupValue(engine.context, args[1]);
 }
-fn open(s: *Scope, owner: c.JSValue) !void {
+pub fn prepareHeaders(s: *Scope, options: c.JSValue) !c.JSValue {
     const engine = s.engine;
-    const options = try s.get(owner, "options");
     const headers = try s.object();
     try s.put(headers, "content-type", try s.text("application/json"));
     const custom = try v.optional(s, options, "headers");
@@ -203,9 +203,17 @@ fn open(s: *Scope, owner: c.JSValue) !void {
             const lower = try v.at(s, row, 0);
             const entry = try v.at(s, row, 1);
             if (try v.eq(s, lower, "authorization") or try v.eq(s, lower, "host") or s.truthy(try s.invoke(lower, "startsWith", &.{try s.text("x-amz-")}))) continue;
-            try v.js.setKey(engine, headers, lower, try v.at(s, entry, 1));
+            // Preserve the original last-source name like Source's record and
+            // SDK bag; Wire3 retains the resulting mixed-case signing negative.
+            try v.js.setKey(engine, headers, try v.at(s, entry, 0), try v.at(s, entry, 1));
         }
     }
+    return headers;
+}
+fn open(s: *Scope, owner: c.JSValue) !void {
+    const engine = s.engine;
+    const options = try s.get(owner, "options");
+    const headers = try s.get(owner, "requestHeaders");
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
         for (fields.items) |field| {
@@ -237,6 +245,7 @@ fn open(s: *Scope, owner: c.JSValue) !void {
     const payload = try engine.toString(try s.invoke(try s.global("JSON"), "stringify", &.{ body, replacement }));
     defer engine.gpa.free(payload);
     const config = try s.get(owner, "auth");
+    try auth.snapshotDefaultChain(s, config);
     try s.put(config, "modelId", try s.get(command, "modelId"));
     const prepare_data = try engine.toString(try s.invoke(try s.global("JSON"), "stringify", &.{config}));
     defer {

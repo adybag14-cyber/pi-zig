@@ -48,7 +48,17 @@ pub fn sign(a: std.mem.Allocator, method: []const u8, url: []const u8, payload: 
         }
         canonical.deinit();
     }
-    for (headers) |header| {
+    // SDK canonicalization sorts the original case-sensitive names before
+    // folding them. WireSource3 proves that duplicate case spellings can sign
+    // a different value than Node eventually sends; retain that actual rule.
+    const ordered = try a.dupe(std.http.Header, headers);
+    defer a.free(ordered);
+    std.mem.sort(std.http.Header, ordered, {}, struct {
+        fn less(_: void, left: std.http.Header, right: std.http.Header) bool {
+            return std.mem.lessThan(u8, left.name, right.name);
+        }
+    }.less);
+    for (ordered) |header| {
         if (unsigned(header.name)) continue;
         const name = try std.ascii.allocLowerString(a, header.name);
         errdefer a.free(name);
