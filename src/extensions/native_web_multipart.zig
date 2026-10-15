@@ -43,49 +43,6 @@ fn escapeName(scope: *Scope, value: c.JSValue) !c.JSValue {
 fn add(scope: *Scope, left: c.JSValue, right: c.JSValue) !c.JSValue {
     return scope.own(try scope.engine.checked(c.JS_PiBinaryOperator(scope.engine.context, 0, left, right)));
 }
-fn closeIterator(scope: *Scope, iterator: c.JSValue) !void {
-    const method = try scope.get(iterator, "return");
-    if (c.JS_IsNull(method) or c.JS_IsUndefined(method)) return;
-    const result = try scope.call(method, iterator, &.{});
-    if (!c.JS_IsObject(result)) try web.typeError(scope, try scope.text("Iterator result is not an object"), null);
-}
-fn closeThrown(scope: *Scope, iterator: c.JSValue) void {
-    const engine = scope.engine;
-    const original = if (engine.captured_exception) |reason| c.JS_DupValue(engine.context, reason) else null;
-    defer if (original) |reason| engine.freeValue(reason);
-    closeIterator(scope, iterator) catch {};
-    if (engine.captured_exception) |reason| engine.freeValue(reason);
-    engine.captured_exception = if (original) |reason| c.JS_DupValue(engine.context, reason) else null;
-}
-const Iterator = struct { value: c.JSValue, next: c.JSValue, done: bool = false };
-fn getIterator(scope: *Scope, object: c.JSValue) !Iterator {
-    const method = try scope.own(try js.getKey(scope.engine, object, try web.iteratorSymbol(scope)));
-    const iterator = try scope.call(method, object, &.{});
-    if (!c.JS_IsObject(iterator)) try web.typeError(scope, try scope.text("Result of the Symbol.iterator method is not an object"), null);
-    return .{ .value = iterator, .next = try scope.get(iterator, "next") };
-}
-fn iteratorValue(scope: *Scope, iterator: *Iterator) !?c.JSValue {
-    if (iterator.done) return null;
-    errdefer iterator.done = true;
-    const row = try scope.call(iterator.next, iterator.value, &.{});
-    if (!c.JS_IsObject(row)) try web.typeError(scope, try scope.text("Iterator result is not an object"), null);
-    if (scope.truthy(try scope.get(row, "done"))) {
-        iterator.done = true;
-        return null;
-    }
-    return scope.get(row, "value");
-}
-fn destructure(scope: *Scope, object: c.JSValue) !struct { name: c.JSValue, value: c.JSValue } {
-    var iterator = try getIterator(scope, object);
-    errdefer if (!iterator.done) closeThrown(scope, iterator.value);
-    const name = (try iteratorValue(scope, &iterator)) orelse c.pi_js_undefined();
-    const value = (try iteratorValue(scope, &iterator)) orelse c.pi_js_undefined();
-    if (!iterator.done) {
-        iterator.done = true;
-        try closeIterator(scope, iterator.value);
-    }
-    return .{ .name = name, .value = value };
-}
 /// Builds the synchronous snapshot of actual for-of entries. File streams are
 /// intentionally deferred to the async action, retaining public stream lookup.
 pub fn encode(scope: *Scope, object: c.JSValue, encoder: c.JSValue) !Encoded {
@@ -107,13 +64,15 @@ pub fn encode(scope: *Scope, object: c.JSValue, encoder: c.JSValue) !Encoded {
     const rn = try scope.own(try scope.engine.checked(c.JS_NewUint8ArrayCopy(scope.engine.context, "\r\n", 2)));
     var length = c.JS_NewInt32(scope.engine.context, 0);
     var unknown = false;
-    var iterator = try getIterator(scope, object);
-    while (true) {
-        const pair = (try iteratorValue(scope, &iterator)) orelse break;
-        errdefer closeThrown(scope, iterator.value);
-        const entry = try destructure(scope, pair);
-        const name = entry.name;
-        const value = entry.value;
+    var iterator = try js.Iterator.init(scope.engine, object, try web.iteratorSymbol(scope));
+    defer iterator.deinit();
+    errdefer iterator.closePreserving();
+    while (try iterator.next()) |pair| {
+        defer scope.engine.freeValue(pair);
+        const entry = try js.pair(scope.engine, pair, try web.iteratorSymbol(scope));
+        defer for (entry) |item| scope.engine.freeValue(item);
+        const name = entry[0];
+        const value = entry[1];
         var header = try scope.concat(try scope.concat(prefix, try scope.text("; name=\"")), try newline(scope, name, true));
         header = try scope.concat(header, try scope.text("\""));
         if (c.JS_IsString(value)) {
