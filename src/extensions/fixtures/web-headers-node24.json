@@ -1,0 +1,2856 @@
+{
+  "authority": "Actual global Headers from pinned Node v24.14.0 bundled Undici; npm undici is not substituted",
+  "actualNode": {
+    "version": "v24.14.0",
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "undici": "7.21.0",
+    "execArgv": [
+      "--expose-gc",
+      "--max-old-space-size=256"
+    ]
+  },
+  "bundledUndici": {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-headers-node24-source-first-20261015-bundled-undici.js.txt",
+    "sha256": "c62030f1e505a4010d9972ecbf40155eddeb355f2a53a9f019a447214e1a9600",
+    "bytes": 728836
+  },
+  "inputSha256": "8f3be8d9c250eec0048331c461490704207b6e9375fb45c4d4e47ede9bc0b83b",
+  "cases": 189,
+  "actualGcCalls": 6,
+  "before": [
+    {
+      "name": "source5ab-full-manifest-20261015.json",
+      "count": 1967,
+      "drift": 0
+    },
+    {
+      "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "name": "web-headers-node24-source-first-20261015-candidate.json",
+      "count": 5954,
+      "drift": 0
+    },
+    {
+      "name": "web-headers-node24-source-first-20261015-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "name": "source5ab-full-manifest-20261015.json",
+      "count": 1967,
+      "drift": 0
+    },
+    {
+      "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "name": "web-headers-node24-source-first-20261015-candidate.json",
+      "count": 5954,
+      "drift": 0
+    },
+    {
+      "name": "web-headers-node24-source-first-20261015-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "rows": [
+    {
+      "name": "global before first Headers read",
+      "value": {
+        "key": "Headers",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "value": {
+          "type": "function",
+          "name": "Headers",
+          "length": 0
+        }
+      }
+    },
+    {
+      "name": "constructor descriptors",
+      "value": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": 0
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "Headers"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "value": {}
+        }
+      ]
+    },
+    {
+      "name": "prototype descriptors",
+      "value": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "Headers",
+            "length": 0
+          }
+        },
+        {
+          "key": "append",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "append",
+            "length": 2
+          }
+        },
+        {
+          "key": "delete",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "delete",
+            "length": 1
+          }
+        },
+        {
+          "key": "get",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "get",
+            "length": 1
+          }
+        },
+        {
+          "key": "has",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "has",
+            "length": 1
+          }
+        },
+        {
+          "key": "set",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "set",
+            "length": 2
+          }
+        },
+        {
+          "key": "getSetCookie",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "getSetCookie",
+            "length": 0
+          }
+        },
+        {
+          "key": "keys",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "keys",
+            "length": 0
+          }
+        },
+        {
+          "key": "values",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "values",
+            "length": 0
+          }
+        },
+        {
+          "key": "entries",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "entries",
+            "length": 0
+          }
+        },
+        {
+          "key": "forEach",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "forEach",
+            "length": 1
+          }
+        },
+        {
+          "key": "Symbol(nodejs.util.inspect.custom)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "[nodejs.util.inspect.custom]",
+            "length": 2
+          }
+        },
+        {
+          "key": "Symbol(Symbol.iterator)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "entries",
+            "length": 0
+          }
+        },
+        {
+          "key": "Symbol(Symbol.toStringTag)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "value": "Headers"
+        }
+      ]
+    },
+    {
+      "name": "instance and global descriptors",
+      "value": {
+        "instance": [],
+        "global": {
+          "key": "Headers",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "type": "function",
+            "name": "Headers",
+            "length": 0
+          }
+        },
+        "entriesAlias": true,
+        "protoObject": true
+      }
+    },
+    {
+      "name": "iterator descriptors",
+      "value": {
+        "own": [],
+        "prototype": [
+          {
+            "key": "next",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "value": {
+              "type": "function",
+              "name": "next",
+              "length": 0
+            }
+          },
+          {
+            "key": "Symbol(Symbol.toStringTag)",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "value": "Headers Iterator"
+          }
+        ],
+        "baseMatches": true,
+        "tag": "[object Headers Iterator]",
+        "self": true,
+        "next": {
+          "value": [
+            "x",
+            "y"
+          ],
+          "done": false
+        },
+        "done": {
+          "done": true
+        }
+      }
+    },
+    {
+      "name": "constructor input 0",
+      "value": {
+        "entries": [],
+        "cookies": [],
+        "keys": [],
+        "values": [],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "constructor input 1",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "constructor input 2",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "constructor input 3",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "constructor input 4",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "constructor input 5",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "constructor input 6",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "constructor input 7",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "constructor input 8",
+      "value": {
+        "entries": [],
+        "cookies": [],
+        "keys": [],
+        "values": [],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "constructor input 9",
+      "value": {
+        "entries": [
+          [
+            "cookie",
+            "a=1"
+          ],
+          [
+            "x",
+            "1, 2"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "cookie",
+          "x"
+        ],
+        "values": [
+          "a=1",
+          "1, 2"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "constructor input 10",
+      "value": {
+        "entries": [
+          [
+            "x",
+            "one, two"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          "one, two"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "constructor input 11",
+      "value": {
+        "entries": [
+          [
+            "a",
+            "one"
+          ],
+          [
+            "b",
+            "two"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "a",
+          "b"
+        ],
+        "values": [
+          "one",
+          "two"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "constructor input 12",
+      "value": {
+        "entries": [
+          [
+            "a",
+            "one"
+          ],
+          [
+            "b",
+            "two"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "a",
+          "b"
+        ],
+        "values": [
+          "one",
+          "two"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "constructor input 13",
+      "value": {
+        "entries": [
+          [
+            "own",
+            "value"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "own"
+        ],
+        "values": [
+          "value"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "constructor input 14",
+      "value": {
+        "entries": [
+          [
+            "a",
+            "v"
+          ],
+          [
+            "hidden",
+            "secret"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "a",
+          "hidden"
+        ],
+        "values": [
+          "v",
+          "secret"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "constructor input 15",
+      "value": {
+        "entries": [
+          [
+            "length",
+            "0"
+          ],
+          [
+            "name",
+            "named"
+          ],
+          [
+            "prototype",
+            "[object Object]"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "values": [
+          "0",
+          "named",
+          "[object Object]"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "constructor input 16",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: init[0] (\"a\") is not iterable.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "constructor input 17",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: init[0] (1) is not iterable.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "constructor input 18",
+      "value": {
+        "entries": [],
+        "cookies": [],
+        "keys": [],
+        "values": [],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "normal append set delete and get",
+      "value": {
+        "before": {
+          "entries": [
+            [
+              "b",
+              "null"
+            ],
+            [
+              "x-a",
+              "one, two"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "b",
+            "x-a"
+          ],
+          "values": [
+            "null",
+            "one, two"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        },
+        "got": "one, two",
+        "has": true,
+        "missing": null,
+        "after": {
+          "entries": [
+            [
+              "b",
+              "null"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "b"
+          ],
+          "values": [
+            "null"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "cookies sorting and cookie delimiter",
+      "value": {
+        "before": {
+          "entries": [
+            [
+              "a",
+              "A"
+            ],
+            [
+              "cookie",
+              "a=1; b=2"
+            ],
+            [
+              "set-cookie",
+              "a=1"
+            ],
+            [
+              "set-cookie",
+              "b=2"
+            ],
+            [
+              "z",
+              "Z"
+            ]
+          ],
+          "cookies": [
+            "a=1",
+            "b=2"
+          ],
+          "keys": [
+            "a",
+            "cookie",
+            "set-cookie",
+            "set-cookie",
+            "z"
+          ],
+          "values": [
+            "A",
+            "a=1; b=2",
+            "a=1",
+            "b=2",
+            "Z"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        },
+        "combined": "a=1, b=2",
+        "copy": [
+          "a=1",
+          "b=2",
+          "caller"
+        ],
+        "replaced": {
+          "entries": [
+            [
+              "a",
+              "A"
+            ],
+            [
+              "cookie",
+              "a=1; b=2"
+            ],
+            [
+              "set-cookie",
+              "c=3"
+            ],
+            [
+              "z",
+              "Z"
+            ]
+          ],
+          "cookies": [
+            "c=3"
+          ],
+          "keys": [
+            "a",
+            "cookie",
+            "set-cookie",
+            "z"
+          ],
+          "values": [
+            "A",
+            "a=1; b=2",
+            "c=3",
+            "Z"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        },
+        "after": {
+          "entries": [
+            [
+              "a",
+              "A"
+            ],
+            [
+              "cookie",
+              "a=1; b=2"
+            ],
+            [
+              "z",
+              "Z"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "a",
+            "cookie",
+            "z"
+          ],
+          "values": [
+            "A",
+            "a=1; b=2",
+            "Z"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "clone subclass and freeze",
+      "value": {
+        "child": true,
+        "a": {
+          "entries": [
+            [
+              "x",
+              "one, two"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "one, two"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        },
+        "b": {
+          "entries": [
+            [
+              "x",
+              "one"
+            ],
+            [
+              "y",
+              "three"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x",
+            "y"
+          ],
+          "values": [
+            "one",
+            "three"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        },
+        "own": []
+      }
+    },
+    {
+      "name": "constructor custom iterator and cloned independence",
+      "value": {
+        "a": {
+          "entries": [
+            [
+              "Z",
+              "two"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "one"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        },
+        "b": {
+          "entries": [
+            [
+              "z",
+              "two"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "z"
+          ],
+          "values": [
+            "two"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 0/get",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.get: \"\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 0/has",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.has: \"\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 0/delete",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.delete: \"\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 0/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: \"\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 1/get",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.get: \"bad name\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 1/has",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.has: \"bad name\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 1/delete",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.delete: \"bad name\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 1/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: \"bad name\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 2/get",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.get: \"bad:\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 2/has",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.has: \"bad:\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 2/delete",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.delete: \"bad:\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 2/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: \"bad:\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 3/get",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.get: \"x\u0000\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 3/has",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.has: \"x\u0000\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 3/delete",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.delete: \"x\u0000\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 3/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: \"x\u0000\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 4/get",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.get: \"x\t\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 4/has",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.has: \"x\t\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 4/delete",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.delete: \"x\t\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 4/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: \"x\t\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 5/get",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.get: \"é\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 5/has",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.has: \"é\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 5/delete",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.delete: \"é\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 5/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: \"é\" is an invalid header name.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 6/get",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 256 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 6/has",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 256 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 6/delete",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 256 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 6/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 256 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 7/get",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 55357 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 7/has",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 55357 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 7/delete",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 55357 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 7/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 55357 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 8/get",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.get: name is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 8/has",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.has: name is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 8/delete",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.delete: name is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 8/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: name is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "name 9/get",
+      "value": {
+        "value": null,
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 9/has",
+      "value": {
+        "value": false,
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 9/delete",
+      "value": {
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 9/append",
+      "value": {
+        "state": {
+          "entries": [
+            [
+              "null",
+              "v"
+            ],
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "null",
+            "x"
+          ],
+          "values": [
+            "v",
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 10/get",
+      "value": {
+        "value": null,
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 10/has",
+      "value": {
+        "value": false,
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 10/delete",
+      "value": {
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 10/append",
+      "value": {
+        "state": {
+          "entries": [
+            [
+              "undefined",
+              "v"
+            ],
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "undefined",
+            "x"
+          ],
+          "values": [
+            "v",
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 11/get",
+      "value": {
+        "value": null,
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 11/has",
+      "value": {
+        "value": false,
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 11/delete",
+      "value": {
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 11/append",
+      "value": {
+        "state": {
+          "entries": [
+            [
+              "0",
+              "v"
+            ],
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "0",
+            "x"
+          ],
+          "values": [
+            "v",
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 12/get",
+      "value": {
+        "value": "initial",
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 12/has",
+      "value": {
+        "value": true,
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 12/delete",
+      "value": {
+        "state": {
+          "entries": [],
+          "cookies": [],
+          "keys": [],
+          "values": [],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "name 12/append",
+      "value": {
+        "state": {
+          "entries": [
+            [
+              "x",
+              "initial, v"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "initial, v"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "value 0/append",
+      "value": {
+        "entries": [
+          [
+            "x",
+            "old, plain"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          "old, plain"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "value 0/set",
+      "value": {
+        "entries": [
+          [
+            "x",
+            "plain"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          "plain"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "value 1/append",
+      "value": {
+        "entries": [
+          [
+            "x",
+            "old, value"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          "old, value"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "value 1/set",
+      "value": {
+        "entries": [
+          [
+            "x",
+            "value"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          "value"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "value 2/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: \"a\nb\" is an invalid header value.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 2/set",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.set: \"a\nb\" is an invalid header value.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 3/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: \"a\rb\" is an invalid header value.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 3/set",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.set: \"a\rb\" is an invalid header value.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 4/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: \"a\u0000b\" is an invalid header value.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 4/set",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.set: \"a\u0000b\" is an invalid header value.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 5/append",
+      "value": {
+        "entries": [
+          [
+            "x",
+            "old, "
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          "old, "
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "value 5/set",
+      "value": {
+        "entries": [
+          [
+            "x",
+            ""
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          ""
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "value 6/append",
+      "value": {
+        "entries": [
+          [
+            "x",
+            "old, "
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          "old, "
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "value 6/set",
+      "value": {
+        "entries": [
+          [
+            "x",
+            ""
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          ""
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "value 7/append",
+      "value": {
+        "entries": [
+          [
+            "x",
+            "old, ÿ"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          "old, ÿ"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "value 7/set",
+      "value": {
+        "entries": [
+          [
+            "x",
+            "ÿ"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          "ÿ"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "value 8/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 256 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 8/set",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 256 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 9/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 55357 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 9/set",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert argument to a ByteString because the character at index 0 has a value of 55357 which is greater than 255.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 10/append",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: value is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 10/set",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.set: value is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "value 11/append",
+      "value": {
+        "entries": [
+          [
+            "x",
+            "old, null"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          "old, null"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "value 11/set",
+      "value": {
+        "entries": [
+          [
+            "x",
+            "null"
+          ]
+        ],
+        "cookies": [],
+        "keys": [
+          "x"
+        ],
+        "values": [
+          "null"
+        ],
+        "tag": "[object Headers]",
+        "instanceofHeaders": true
+      }
+    },
+    {
+      "name": "arity 0",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.append: 2 arguments required, but 0 found.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "arity 1",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.set: 2 arguments required, but 0 found.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "arity 2",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.get: 1 argument required, but 0 found.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "arity 3",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.has: 1 argument required, but 0 found.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "arity 4",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.delete: 1 argument required, but 0 found.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "arity 5",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers.forEach: 1 argument required, but 0 found.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "arity 6",
+      "value": []
+    },
+    {
+      "name": "arity 7",
+      "value": []
+    },
+    {
+      "name": "arity 8",
+      "value": []
+    },
+    {
+      "name": "arity 9",
+      "value": []
+    },
+    {
+      "name": "arity 10",
+      "value": []
+    },
+    {
+      "name": "brand 0/0",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 0/1",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 0/2",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 0/3",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 0/4",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 0/5",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 0/6",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 0/7",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 0/8",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 0/9",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 0/10",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 1/0",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #guard from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 1/1",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #guard from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 1/2",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #headersList from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 1/3",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #headersList from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 1/4",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #guard from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 1/5",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #headersList from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 1/6",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #headersList from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 1/7",
+      "value": {}
+    },
+    {
+      "name": "brand 1/8",
+      "value": {}
+    },
+    {
+      "name": "brand 1/9",
+      "value": {}
+    },
+    {
+      "name": "brand 1/10",
+      "value": {}
+    },
+    {
+      "name": "brand 2/0",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #guard from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 2/1",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #guard from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 2/2",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #headersList from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 2/3",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #headersList from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 2/4",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #guard from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 2/5",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #headersList from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 2/6",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #headersList from an object whose class did not declare it",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 2/7",
+      "value": {}
+    },
+    {
+      "name": "brand 2/8",
+      "value": {}
+    },
+    {
+      "name": "brand 2/9",
+      "value": {}
+    },
+    {
+      "name": "brand 2/10",
+      "value": {}
+    },
+    {
+      "name": "brand 3/0",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 3/1",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 3/2",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 3/3",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 3/4",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 3/5",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 3/6",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 3/7",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 3/8",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 3/9",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "brand 3/10",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "sequence 0",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: expected name/value pair to be length 2, found 1.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "sequence 1",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: expected name/value pair to be length 2, found 3.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "sequence 2",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: init[0] (\"ab\") is not iterable.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "sequence 3",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: init[0] (1) is not iterable.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "sequence 4",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: init[0] (null) is not iterable.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "sequence 5",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: init[0][0] is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "sequence 6",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: init[0] (undefined) is not iterable.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "sequence 7",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of null (reading 'next')",
+        "typeError": true
+      }
+    },
+    {
+      "name": "sequence 8",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: Key Symbol(Symbol.iterator) in init is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "sequence 9",
+      "error": {
+        "name": "TypeError",
+        "message": "Headers constructor: Key Symbol(hidden) in init is a symbol, which cannot be converted to a ByteString.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "coercion append reentry order",
+      "value": {
+        "trace": [
+          "name",
+          "value"
+        ],
+        "state": {
+          "entries": [
+            [
+              "inner",
+              "I"
+            ],
+            [
+              "x",
+              "V"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "inner",
+            "x"
+          ],
+          "values": [
+            "I",
+            "V"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "coercion invalid name before value error",
+      "value": {
+        "same": true,
+        "trace": [
+          "value"
+        ],
+        "state": {
+          "entries": [],
+          "cookies": [],
+          "keys": [],
+          "values": [],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "constructor conversion before validation and iterator close",
+      "value": {
+        "same": true,
+        "trace": [
+          "value"
+        ]
+      }
+    },
+    {
+      "name": "ByteString primitive coercion hints",
+      "value": {
+        "trace": [
+          "name:string",
+          "value:string"
+        ],
+        "state": {
+          "entries": [
+            [
+              "x",
+              "123"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "x"
+          ],
+          "values": [
+            "123"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "record proxy ownkeys descriptors getters",
+      "value": {
+        "trace": [
+          "get:Symbol(Symbol.iterator)",
+          "keys",
+          "desc:a",
+          "get:a",
+          "desc:hidden"
+        ],
+        "state": {
+          "entries": [
+            [
+              "a",
+              "A"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "a"
+          ],
+          "values": [
+            "A"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "subclass newtarget prototype before initialization",
+      "error": {
+        "name": "TypeError",
+        "message": "Illegal invocation",
+        "code": "ERR_INVALID_THIS",
+        "typeError": true
+      }
+    },
+    {
+      "name": "iterator append earlier and later keys",
+      "value": {
+        "out": [
+          {
+            "value": [
+              "b",
+              "B"
+            ],
+            "done": false
+          },
+          {
+            "value": [
+              "b",
+              "B"
+            ],
+            "done": false
+          },
+          {
+            "value": [
+              "d",
+              "D"
+            ],
+            "done": false
+          },
+          {
+            "value": [
+              "z",
+              "Z"
+            ],
+            "done": false
+          },
+          {
+            "done": true
+          }
+        ],
+        "state": {
+          "entries": [
+            [
+              "a",
+              "A"
+            ],
+            [
+              "b",
+              "B"
+            ],
+            [
+              "d",
+              "D"
+            ],
+            [
+              "z",
+              "Z"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "a",
+            "b",
+            "d",
+            "z"
+          ],
+          "values": [
+            "A",
+            "B",
+            "D",
+            "Z"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "iterator delete current and set future",
+      "value": {
+        "out": [
+          {
+            "value": [
+              "a",
+              "A"
+            ],
+            "done": false
+          },
+          {
+            "value": [
+              "c",
+              "CHANGED"
+            ],
+            "done": false
+          },
+          {
+            "done": true
+          }
+        ],
+        "state": {
+          "entries": [
+            [
+              "b",
+              "B"
+            ],
+            [
+              "c",
+              "CHANGED"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "b",
+            "c"
+          ],
+          "values": [
+            "B",
+            "CHANGED"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "iterator after completion then append",
+      "value": {
+        "first": {
+          "done": true
+        },
+        "second": {
+          "value": [
+            "x",
+            "X"
+          ],
+          "done": false
+        },
+        "third": {
+          "done": true
+        }
+      }
+    },
+    {
+      "name": "iterator cookie expansion and copied result pairs",
+      "value": {
+        "first": {
+          "value": [
+            "set-cookie",
+            "caller"
+          ],
+          "done": false
+        },
+        "rest": [
+          [
+            "set-cookie",
+            "b=2"
+          ]
+        ],
+        "state": {
+          "entries": [
+            [
+              "set-cookie",
+              "a=1"
+            ],
+            [
+              "set-cookie",
+              "b=2"
+            ]
+          ],
+          "cookies": [
+            "a=1",
+            "b=2"
+          ],
+          "keys": [
+            "set-cookie",
+            "set-cookie"
+          ],
+          "values": [
+            "a=1",
+            "b=2"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "iterator next brand",
+      "error": {
+        "name": "TypeError",
+        "message": "'next' called on an object that does not implement interface Headers Iterator.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "iterator owner and result descriptors",
+      "value": {
+        "value": [
+          {
+            "key": "value",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "value": "A"
+          },
+          {
+            "key": "done",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "value": false
+          }
+        ],
+        "done": [
+          {
+            "key": "value",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "key": "done",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "value": true
+          }
+        ],
+        "iterator": []
+      }
+    },
+    {
+      "name": "forEach sorted and default strict this",
+      "value": [
+        {
+          "value": "A",
+          "key": "a",
+          "same": true,
+          "global": true,
+          "undefined": false
+        },
+        {
+          "value": "B",
+          "key": "b",
+          "same": true,
+          "global": true,
+          "undefined": false
+        }
+      ]
+    },
+    {
+      "name": "forEach explicit null and object this",
+      "value": [
+        {
+          "null": true,
+          "object": false,
+          "global": false,
+          "undefined": false
+        },
+        {
+          "null": false,
+          "object": true,
+          "global": false,
+          "undefined": false
+        },
+        {
+          "null": false,
+          "object": false,
+          "global": true,
+          "undefined": false
+        }
+      ]
+    },
+    {
+      "name": "forEach live mutation",
+      "value": {
+        "out": [
+          [
+            "b",
+            "B"
+          ],
+          [
+            "b",
+            "B"
+          ],
+          [
+            "z",
+            "Z"
+          ]
+        ],
+        "state": {
+          "entries": [
+            [
+              "a",
+              "A"
+            ],
+            [
+              "b",
+              "B"
+            ],
+            [
+              "z",
+              "Z"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "a",
+            "b",
+            "z"
+          ],
+          "values": [
+            "A",
+            "B",
+            "Z"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "forEach callback thrown identity",
+      "value": {
+        "same": true,
+        "state": {
+          "entries": [
+            [
+              "a",
+              "A"
+            ],
+            [
+              "b",
+              "B"
+            ]
+          ],
+          "cookies": [],
+          "keys": [
+            "a",
+            "b"
+          ],
+          "values": [
+            "A",
+            "B"
+          ],
+          "tag": "[object Headers]",
+          "instanceofHeaders": true
+        }
+      }
+    },
+    {
+      "name": "forEach callback call property",
+      "value": [
+        [
+          "call",
+          true,
+          "A",
+          "a",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "forEach bad callback",
+      "error": {
+        "name": "TypeError",
+        "message": "Failed to execute 'forEach' on 'Headers': parameter 1 is not of type 'Function'.",
+        "typeError": true
+      }
+    },
+    {
+      "name": "actual GC iterator retains Headers",
+      "value": {
+        "alive": true,
+        "next": {
+          "value": [
+            "alive",
+            "value"
+          ],
+          "done": false
+        }
+      }
+    },
+    {
+      "name": "actual GC released Headers",
+      "value": {
+        "alive": false
+      }
+    }
+  ]
+}
