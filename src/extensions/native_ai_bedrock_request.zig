@@ -92,18 +92,21 @@ fn fields(scope: *Scope, model: c.JSValue, options: c.JSValue) !c.JSValue {
             const display = try v.optional(scope, options, "thinkingDisplay");
             try scope.put(thinking, "display", if (v.nullish(display)) try scope.text("summarized") else display);
         }
+        try scope.put(result, "thinking", thinking);
         if (adaptive) {
             if (binding) {
                 const controls = try scope.object();
                 try scope.put(controls, "prefix_mismatch_behavior", try scope.text("drop_block"));
                 try scope.put(thinking, "block_binding", controls);
-                const features = try scope.array();
-                _ = try scope.invoke(features, "push", &.{try scope.text("thinking-binding-controls-2026-08-01")});
-                try scope.put(result, "anthropic_beta", features);
             }
             const output = try scope.object();
             try scope.put(output, "effort", try effort(scope, model, level));
             try scope.put(result, "output_config", output);
+            if (binding) {
+                const features = try scope.array();
+                try scope.index(features, 0, try scope.text("thinking-binding-controls-2026-08-01"));
+                try scope.put(result, "anthropic_beta", features);
+            }
         } else {
             const clamped = if (try v.eq(scope, level, "xhigh") or try v.eq(scope, level, "max")) try scope.text("high") else level;
             const budgets = try v.optional(scope, options, "thinkingBudgets");
@@ -117,11 +120,10 @@ fn fields(scope: *Scope, model: c.JSValue, options: c.JSValue) !c.JSValue {
             const interleaved = try v.optional(scope, options, "interleavedThinking");
             if (v.nullish(interleaved) or scope.truthy(interleaved)) {
                 const features = try scope.array();
-                _ = try scope.invoke(features, "push", &.{try scope.text("interleaved-thinking-2025-05-14")});
+                try scope.index(features, 0, try scope.text("interleaved-thinking-2025-05-14"));
                 try scope.put(result, "anthropic_beta", features);
             }
         }
-        try scope.put(result, "thinking", thinking);
         return result;
     }
     const refs = try candidates(scope, model);
