@@ -10,6 +10,8 @@ The reviewed upstream target is Pi commit `4954d760504c11df9b2cbdc040346107b6a81
 | JSON and thinking conversion | `928121f0ffd112f3c6173ca6aebbe17390ac0e7e` | `e94845320ab0652220df1259fc242df0efde89b1` | Windows Debug: 2 tests comparing all genuine 51 observations, preserving lone UTF-16 surrogates |
 | Responses HTTP retries | `eb1b6520a6306dc3dc199b50fb0374ad6f35ab5d` | `cdceb00262999deca1e02b531266227b5ad61588` | Windows Debug: 12 tests; Source18, SourceRetry14 and owned socket infrastructure |
 | Ordinary SDK factory bodies | Source capture candidate `c65ead97c787df9ecefe72dae5beacf4132efe91` | `a32671c058833cc8d965d6325a02c68a0911df49` | Genuine latest-upstream Source27 passed. Native factory code and subsequent promise-ownership corrections have not been compiled or replayed. |
+| WritableStream | `8a782321523917137eeaeeb327000d21562ea109` | `6fce4363495bc56b7b1c1fc572aab7c318456f73` | Windows Debug: 2 tests, all 56 genuine Node observations, real GC and allocator leak checks. No allocation fault injection claim. |
+| Codex/Radius browser OAuth observations | Source capture candidate `c4a5eb027ceb71402aee5bdf88c5f01b99ef3460` | `b7fc16e00cc16196542bc071093a57042bbc2aed` | Genuine upstream seven-case capture with seven owned listeners and both accepted sockets closed. Native replay remains pending. |
 
 These component results apply to their exact tested source and captured inputs. Merging their files does not qualify this combined branch or transfer earlier six-profile results to the new head. Original failed attempts and raw terminal receipts remain retained.
 

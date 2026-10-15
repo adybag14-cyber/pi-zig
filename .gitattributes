@@ -136,3 +136,6 @@ src/extensions/fixtures/oauth-codex-radius-ae7-source.json whitespace=cr-at-eol
 verification/native-ai-meta-oauth-source38-20261015/sourceae7-oauth-meta-capture-20261015.mjs whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/oauth-subscriptions-ae7-20261015/*.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/oauth-subscriptions-ae7-20261015/sourceae7-oauth-subscriptions-capture-20261015.mjs whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+# Writable native terminal receipts retain their captured EOF bytes.
+verification/writable-stream-native-debug-third-failed-20261015/compile.stderr.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/writable-stream-native-debug-source56-qualified-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
