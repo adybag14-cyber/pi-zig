@@ -1,0 +1,22 @@
+{
+  "source_path_drift": 0,
+  "completed_utc": "2026-10-15T19:52:53.4920465+00:00",
+  "manifests": [
+    {
+      "name": "source",
+      "drift": 0,
+      "files": 1967
+    },
+    {
+      "name": "dependencies",
+      "drift": 0,
+      "files": 31064
+    },
+    {
+      "name": "node_tools",
+      "drift": 0,
+      "files": 1774
+    }
+  ],
+  "control_drift": 0
+}

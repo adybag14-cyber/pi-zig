@@ -1,0 +1,10 @@
+{
+  "native_compile": "unrun",
+  "source_rows": 102,
+  "full_pi": false,
+  "source_capture": "passed",
+  "native_runtime": "unrun",
+  "expected_sha256": "E82721AF0DB61E9BC7C0D763A8A32634FCC7D88D1D133E25BEF22EBBCDC971E5",
+  "public_activation": false,
+  "candidate_head": "aff26143e45fcdc79d10c541a2d209aeab67087f"
+}
