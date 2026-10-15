@@ -1,0 +1,142 @@
+[
+  {
+    "native_sha256": "AF82FABAC45334ED5D8B68FBE9664CBBA0D57E7EFF251EDBB10FB6A2DCD39D6F",
+    "factory": "dust",
+    "source_sha256": "09ADD1154A2EA9D5BC2A158BD739E20B3328FF3B6F6C7F03BA6591646369583F",
+    "native": "src\\extensions\\native_highlight_grammar_dust.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/dust.js"
+  },
+  {
+    "native_sha256": "AC7E8EC3ACCA4B4CBCE63364A9856BFDD5BE53EE34CBAD47BD95AB00517F5EED",
+    "factory": "autohotkey",
+    "source_sha256": "25F0CF980B155A5A58798DDADA7478D6D3357FE4DD56A348A485CA8FD228960E",
+    "native": "src\\extensions\\native_highlight_grammar_autohotkey.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/autohotkey.js"
+  },
+  {
+    "native_sha256": "3A334405F9395F0152CFBE0122A393FA54F287BC5B2031FFAAE444E23CE1E868",
+    "factory": "sml",
+    "source_sha256": "2E428A7770DE6487676038D44D3A20BCF1B198BAC1289C34B89697929BBBED21",
+    "native": "src\\extensions\\native_highlight_grammar_sml.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/sml.js"
+  },
+  {
+    "native_sha256": "62C59D4D748EDE6CD723BE957539E2A504BAA73E2E137E1556C9DD77CB00D866",
+    "factory": "smali",
+    "source_sha256": "22F94B0F7B93D3EDDF24F9881627939D7CA12CF3EB83C1DEBB8194ABFF29C35E",
+    "native": "src\\extensions\\native_highlight_grammar_smali.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/smali.js"
+  },
+  {
+    "native_sha256": "32006D695409FBA7F60041DE0DF37D4A42FD3502F400CF063D548CF9D113500F",
+    "factory": "apache",
+    "source_sha256": "8939AC3E0FED8980705A50DAE191B8E67BD0DA0C1F3C7E921E907425B2F83632",
+    "native": "src\\extensions\\native_highlight_grammar_apache.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/apache.js"
+  },
+  {
+    "native_sha256": "FA63DEE089A6B6D59BA94360F52F809CB5A95AF776525E1598937A43972AAEBB",
+    "factory": "basic",
+    "source_sha256": "075C3F31581EB71D270D13DA84E05E0D6FAF14AB2C37DBDD524D059F8A00BED2",
+    "native": "src\\extensions\\native_highlight_grammar_basic.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/basic.js"
+  },
+  {
+    "native_sha256": "60A728A986001CE661CF84E149854953F0E483BA88AF5CBA567B418407C98E95",
+    "factory": "lisp",
+    "source_sha256": "549586226EE7589757B88674E2F7764643BFDB309777455E017D07C79D72199B",
+    "native": "src\\extensions\\native_highlight_grammar_lisp.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/lisp.js"
+  },
+  {
+    "native_sha256": "E5D114AB4DB1D71F6212A60F7D1A13C7ECA25116BA78626AB61CF4F5A47BD75C",
+    "factory": "elm",
+    "source_sha256": "C58E2E327490E26DA72B447CDA193B54594D27AEFF9FD34BDFC800CB74F734BC",
+    "native": "src\\extensions\\native_highlight_grammar_elm.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/elm.js"
+  },
+  {
+    "native_sha256": "3D07149D01A6BE696BB1FD26B2BFB6D21973D8CDDF2C08E991B22E269B314401",
+    "factory": "ocaml",
+    "source_sha256": "A35A07AAFAA2BA4FA5E21877E08864A9B3FBCD253C8DF4C7FAFF53E2AE53AB03",
+    "native": "src\\extensions\\native_highlight_grammar_ocaml.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/ocaml.js"
+  },
+  {
+    "native_sha256": "88BA0B3D96EFCFF1815A956A320A1A9298C87428341481A5293A00FE8D6214DC",
+    "factory": "tp",
+    "source_sha256": "DC4079AA683C1F8E48D09D0035D2537B313B37D4E96114858E30982CA15012BD",
+    "native": "src\\extensions\\native_highlight_grammar_tp.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/tp.js"
+  },
+  {
+    "native_sha256": "83AF87385B4B1AE439B71C859DDD03102DE3632FDC1352CD5CB14827FFF04ED5",
+    "factory": "crmsh",
+    "source_sha256": "BC6B30058E81632B3206830EABDED0CD8BB2AE731580E86E396D7EB55EE89607",
+    "native": "src\\extensions\\native_highlight_grammar_crmsh.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/crmsh.js"
+  },
+  {
+    "native_sha256": "40F001FB87544ADA98D3FBB458908DB3A549E9A89887A681620BA9851CB95976",
+    "factory": "xl",
+    "source_sha256": "3629549EC89D6D2EA88BA87191750461C0BE53C43CCA2EAE6506F98C74AD2B2D",
+    "native": "src\\extensions\\native_highlight_grammar_xl.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/xl.js"
+  },
+  {
+    "native_sha256": "2511C657369D848364305415F12664C9843D1DE07EF54598EC61E5E4C68ABB34",
+    "factory": "haml",
+    "source_sha256": "73D8E3F2F01F9FFD92FB71DDE2F33E3A2F3494D798DD70DF422E70FB5FA71F7F",
+    "native": "src\\extensions\\native_highlight_grammar_haml.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/haml.js"
+  },
+  {
+    "native_sha256": "AB49D81198DCCCF9EAD3BE88552D8B774ACEFB6439FD010E4E38B6502A3591AB",
+    "factory": "actionscript",
+    "source_sha256": "B778A7A57D9CBB472E92AE33B28B300F71634C87F9366921C551CC763BB52236",
+    "native": "src\\extensions\\native_highlight_grammar_actionscript.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/actionscript.js"
+  },
+  {
+    "native_sha256": "90145D2A56B5C8C18CEA412D18C0ECD7B41B2BACC8B3687BBE4EB77B4737E890",
+    "factory": "django",
+    "source_sha256": "446CE62F97AFCDE37F6814F08C7AE1ADDC3E5FEBCE88BA9478BA0F8BD0E2A62B",
+    "native": "src\\extensions\\native_highlight_grammar_django.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/django.js"
+  },
+  {
+    "native_sha256": "CAE464B4A225A8900C2BA47EF9449CE9E3446B2E9140A63845B1426E80B731B7",
+    "factory": "vhdl",
+    "source_sha256": "454A86E475876489FD095F317F473B38CFC22CBC9351061DB12B2F72DECCDD56",
+    "native": "src\\extensions\\native_highlight_grammar_vhdl.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/vhdl.js"
+  },
+  {
+    "native_sha256": "B5D837654E94DB733625D64F859DC6B2FBD225A48EB71065468661296E65B10E",
+    "factory": "nginx",
+    "source_sha256": "A4995844C5AA2543C08B1C044A7B655FDC2E9B9C3072C0D42F09B357AFA84E46",
+    "native": "src\\extensions\\native_highlight_grammar_nginx.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/nginx.js"
+  },
+  {
+    "native_sha256": "583854231B6DB1AF94553034357EB3B9B67398A349F10A51A24F9E1F286022E1",
+    "factory": "axapta",
+    "source_sha256": "F39DB17268B442D45B44E36814FC65AE2071E9DAD95D8CAE5A265F20BFB4B7FA",
+    "native": "src\\extensions\\native_highlight_grammar_axapta.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/axapta.js"
+  },
+  {
+    "native_sha256": "CB98E81CD3B2FDF49C4FE70F394212A98D3E567193F1938175123018449CED10",
+    "factory": "avrasm",
+    "source_sha256": "AC6043EF023D5E9839512BE11E1B1A5073AE1A3320BC9F7244FCA6EE3482257C",
+    "native": "src\\extensions\\native_highlight_grammar_avrasm.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/avrasm.js"
+  },
+  {
+    "native_sha256": "594F841552FEB578227E85675624B1F1FE6D0BCC251EB1C89FF5963D1D9C7502",
+    "factory": "tcl",
+    "source_sha256": "2BCC0D24A05D80F5D1A135E86DD700377805234CA1295151D14495A3BE48FEE9",
+    "native": "src\\extensions\\native_highlight_grammar_tcl.zig",
+    "source": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/languages/tcl.js"
+  }
+]

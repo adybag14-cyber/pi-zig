@@ -1,0 +1,13 @@
+# Actual lazy grammar batch 6, source-only
+
+This isolated follow-up starts at published checkpoint `303d078ea69482957fff831cbec53709b3cac3b2`. Twenty further canonical highlight.js 10.7.3 factories now have actual native bodies: Dust, AutoHotkey, SML, Smali, Apache, BASIC, Lisp, Elm, OCaml, TP, crmsh, XL, HAML, ActionScript, Django, VHDL, Nginx, X++, AVR assembly, and Tcl.
+
+Their factory identities, aliases, complete keyword inputs, graph cycles and sharing, mode order, regular-expression versus string inputs, comments, inheritance, relevance and live helper reads follow the original installed modules. SML and OCaml share a private constructor with explicit original differences. Tcl and ActionScript use the native implementation of the original regex source/map/join helpers. crmsh retains actual live string split/join operations; Nginx retains regular-expression/string concatenation and the shared variable graph. Template modes preserve actual sublanguage structures.
+
+Static keyword tables for VHDL, AVR assembly, Tcl and X++ were transcribed lexically from the original files, with their paths, hashes and literal-fragment counts retained. X++ keeps real keyword arrays and their duplicate entries. This operation does not execute a grammar or generate expected output. Source quirks remain intact, including BASIC's identity-escaped illegal string and Smali's newline-bearing classname input.
+
+The source-authored inventory reaches ninety of the original missing 170 factories, leaving eighty canonical bodies without authored implementations. These are inventory counts only. The actual 191-language index import, including re-registration of all eager factories, remains unbound and unqualified.
+
+The genuine Source102 batch6 capture is prepared with twenty raw graphs, helper getter traces/rejections, forty scanner samples, actual factory metadata and aliases. Its baseline uses actual original eager21 plus the prior seventy lazy factories. The shared input and original-module driver passed actual Node parse-only checks. No expected batch6 JSON exists and no capture has run. The prepared owner retains normal 2 GiB admission, 128 MiB heap, a 300-second bound, and full Source/dependency/Node/control/path verification.
+
+Only source review, Zig formatting, whitespace checks, lexical transcription and actual Node parse checks have run for this batch. No native compilation, differential runtime or exhaustive allocation qualification has run. The separate genuine batch3 Source102 capture is retained in its own preceding commit. Existing core, compiler, common modes, eager registration and frontend implementations remain unchanged.

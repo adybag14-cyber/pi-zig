@@ -1,0 +1,44 @@
+[
+  {
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\vhdl.js",
+    "fields": {
+      "keyword": 9,
+      "literal": 2,
+      "built_in": 6
+    },
+    "scope": "Lexical static inputs only; no factory evaluation, no expected results generated",
+    "factory": "vhdl",
+    "source_sha256": "454A86E475876489FD095F317F473B38CFC22CBC9351061DB12B2F72DECCDD56"
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\avrasm.js",
+    "fields": {
+      "keyword": 7,
+      "meta": 2,
+      "built_in": 10
+    },
+    "scope": "Lexical static inputs only; no factory evaluation, no expected results generated",
+    "factory": "avrasm",
+    "source_sha256": "AC6043EF023D5E9839512BE11E1B1A5073AE1A3320BC9F7244FCA6EE3482257C"
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\tcl.js",
+    "fields": {
+      "keyword": 12
+    },
+    "scope": "Lexical static inputs only; no factory evaluation, no expected results generated",
+    "factory": "tcl",
+    "source_sha256": "2BCC0D24A05D80F5D1A135E86DD700377805234CA1295151D14495A3BE48FEE9"
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\axapta.js",
+    "fields": {
+      "LITERAL_KEYWORDS": 4,
+      "BUILT_IN_KEYWORDS": 17,
+      "NORMAL_KEYWORDS": 100
+    },
+    "scope": "Lexical static inputs only; no factory evaluation, no expected results generated",
+    "factory": "axapta",
+    "source_sha256": "F39DB17268B442D45B44E36814FC65AE2071E9DAD95D8CAE5A265F20BFB4B7FA"
+  }
+]
