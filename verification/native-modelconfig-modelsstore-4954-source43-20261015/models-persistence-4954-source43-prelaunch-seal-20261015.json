@@ -1,0 +1,44 @@
+{
+  "candidate_head": "828e0f3e9bb196d17483de778b25679887ff611d",
+  "candidate_clean": true,
+  "expected_absent": true,
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "compiler_distribution_files_required": 19546,
+  "compiler_executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "light_lane": "RootLIGHT3",
+  "files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-modelconfig-modelsstore-4954-20261015\\src\\extensions\\native_sdk_model_config_production.zig",
+      "sha256": "A09D001479875694B278264E161951B3D1C0FAA9C3F732BC107A3C30AF140002"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-modelconfig-modelsstore-4954-20261015\\src\\extensions\\native_sdk_model_config_schema_production.zig",
+      "sha256": "7D8C8AC2A9A0097F615E6E96CDA46F69C8B6EB0A165D72D4CC373C6DA04B95D8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-modelconfig-modelsstore-4954-20261015\\src\\extensions\\native_sdk_models_store_production.zig",
+      "sha256": "FEF575C3944D0A9D83E6C8EB686EA28B834F6F159CD4D35C563A2680928873B3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-modelconfig-modelsstore-4954-20261015\\src\\native_sdk_models_config_store_production_test.zig",
+      "sha256": "9AC493989EAB2E4128A15C9417B152797BE724D219D29FE96156F1D101DA83AE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-modelconfig-modelsstore-4954-20261015\\src\\extensions\\fixtures\\sdk-model-config-stores-4954.input.mjs",
+      "sha256": "85F1FAA65CC8CCADE4C1B212461408CC6426D820E6B897702596CED90F8ACBF4"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Run-ModelsPersistence4954Source43-20261015.ps1",
+      "sha256": "3B35819390EF54D8A75718E6F08E70247FC36BC3309C987EDC1D7BA9BA46666B"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+      "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-models-persistence-capture-20261015.mjs",
+      "sha256": "B941D9A71B885AB40597F50B878234D5574C977CDDFE3E54157008DB0B974FCB"
+    }
+  ],
+  "sealed_utc": "2026-10-15T22:24:50.0443748+00:00"
+}

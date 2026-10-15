@@ -1,0 +1,9 @@
+{
+  "source_cases": 43,
+  "full_pi_qualified": false,
+  "expected_sha256": "73F249332783BCA14D706659A10E5A4B9F3A7C8417D80AA115F530F3CDCFD434",
+  "expected_published_after_terminal_and_full_posthash": true,
+  "source_pid": 71032,
+  "native_qualified": false,
+  "public_activation": false
+}

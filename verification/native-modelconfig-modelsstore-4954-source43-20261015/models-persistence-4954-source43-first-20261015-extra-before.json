@@ -1,0 +1,46 @@
+[
+  {
+    "sha256": "85F1FAA65CC8CCADE4C1B212461408CC6426D820E6B897702596CED90F8ACBF4",
+    "path": "C:\\Users\\adyba\\pi-zig-native-modelconfig-modelsstore-4954-20261015\\src\\extensions\\fixtures\\sdk-model-config-stores-4954.input.mjs"
+  },
+  {
+    "sha256": "B941D9A71B885AB40597F50B878234D5574C977CDDFE3E54157008DB0B974FCB",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-models-persistence-capture-20261015.mjs"
+  },
+  {
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs"
+  },
+  {
+    "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-preparation-readiness-20261015.json"
+  },
+  {
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json"
+  },
+  {
+    "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedModelsPersistenceSource-20261015.ps1"
+  },
+  {
+    "sha256": "3B35819390EF54D8A75718E6F08E70247FC36BC3309C987EDC1D7BA9BA46666B",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-ModelsPersistence4954Source43-20261015.ps1"
+  },
+  {
+    "sha256": "B8CBB2F0E696633ACCA856F0EE29A92642FDDDA96B575CBFB975C08F458E790E",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015-candidate-compiler-before.json"
+  },
+  {
+    "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-full-manifest-20261015.json"
+  },
+  {
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-runtime-manifest-20261015.json"
+  },
+  {
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json"
+  }
+]

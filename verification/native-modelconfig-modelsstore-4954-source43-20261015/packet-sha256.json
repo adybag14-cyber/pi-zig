@@ -1,0 +1,200 @@
+[
+  {
+    "path": "models-persistence-4954-source43-first-20261015-admission.json",
+    "sha256": "6F8B2A00C640F3E2F1445B920E2E4F181377585C98D76673D0FB8A2EA05DDDC3",
+    "bytes": 356,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015-admission.json"
+  },
+  {
+    "path": "models-persistence-4954-source43-first-20261015-extra-before.json",
+    "sha256": "59D60FB28502D78B306E8B8DD1BB238B8A8A32A0D142519B2027D05E08D34FDA",
+    "bytes": 2331,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015-extra-before.json"
+  },
+  {
+    "path": "models-persistence-4954-source43-first-20261015-output.json",
+    "sha256": "73F249332783BCA14D706659A10E5A4B9F3A7C8417D80AA115F530F3CDCFD434",
+    "bytes": 161618,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015-output.json"
+  },
+  {
+    "path": "models-persistence-4954-source43-first-20261015-posthash.json",
+    "sha256": "88C954C6A4A3B0A2BB833DD6826578B1BB8A519AE7ABED3B9215CB97992A8BB2",
+    "bytes": 751,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015-posthash.json"
+  },
+  {
+    "path": "models-persistence-4954-source43-first-20261015-syntax.json",
+    "sha256": "01EB9FB70420749E80F0F1B1847BA1659BFD6681C20E6CB4270EEC3F87BBD733",
+    "bytes": 950,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015-syntax.json"
+  },
+  {
+    "path": "models-persistence-4954-source43-first-20261015-syntax.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015-syntax.stderr.log"
+  },
+  {
+    "path": "models-persistence-4954-source43-first-20261015-syntax.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015-syntax.stdout.log"
+  },
+  {
+    "path": "models-persistence-4954-source43-first-20261015-validation.json",
+    "sha256": "BC905C8DEB758B9F076E3D94FB9DEBD8F685950611BBAE160C4CCA1B0D90B647",
+    "bytes": 298,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015-validation.json"
+  },
+  {
+    "path": "models-persistence-4954-source43-first-20261015.json",
+    "sha256": "5231B36F896C61545E7BFDD36BE7F51B600B83C034B6B01DD590F69320AAE5EB",
+    "bytes": 1269,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015.json"
+  },
+  {
+    "path": "models-persistence-4954-source43-first-20261015.stderr.log",
+    "sha256": "D7A0AC499535F9849528CD814482C46BE1F03994A89A5CE7F838C9E007D375F1",
+    "bytes": 178,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015.stderr.log"
+  },
+  {
+    "path": "models-persistence-4954-source43-first-20261015.stdout.log",
+    "sha256": "95A0DA4B50D226A2570396B9617F0081B3C0136FB315920EBAB51A1D0AB6D436",
+    "bytes": 104,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015.stdout.log"
+  },
+  {
+    "path": "source4954-models-persistence-capture-20261015.mjs",
+    "sha256": "B941D9A71B885AB40597F50B878234D5574C977CDDFE3E54157008DB0B974FCB",
+    "bytes": 1961,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-models-persistence-capture-20261015.mjs"
+  },
+  {
+    "path": "source4954-observe-20261015.mjs",
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3",
+    "bytes": 4698,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs"
+  },
+  {
+    "path": "Run-ModelsPersistence4954Source43-20261015.ps1",
+    "sha256": "3B35819390EF54D8A75718E6F08E70247FC36BC3309C987EDC1D7BA9BA46666B",
+    "bytes": 9593,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-ModelsPersistence4954Source43-20261015.ps1"
+  },
+  {
+    "path": "Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+    "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45",
+    "bytes": 3813,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedModelsPersistenceSource-20261015.ps1"
+  },
+  {
+    "path": "source4954-preparation-readiness-20261015.json",
+    "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7",
+    "bytes": 2788,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-preparation-readiness-20261015.json"
+  },
+  {
+    "path": "source4954-dependency-contract-audit-20261015.json",
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745",
+    "bytes": 211596,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json"
+  },
+  {
+    "path": "models-persistence-4954-source43-prelaunch-seal-20261015.json",
+    "sha256": "A90EAB747F90960EF59D62FDE782808E0C9F25E726B1DE1A026240DD9355CA78",
+    "bytes": 2319,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-prelaunch-seal-20261015.json"
+  },
+  {
+    "path": "Retain-ModelsPersistenceSource43Packet-20261015.ps1",
+    "sha256": "7B9902E858A9005BA68194EA1204A1A499411FB807B9E493CCB6F010AD033CED",
+    "bytes": 8251,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Retain-ModelsPersistenceSource43Packet-20261015.ps1"
+  },
+  {
+    "path": "sdk-model-config-stores-4954.input.mjs",
+    "sha256": "85F1FAA65CC8CCADE4C1B212461408CC6426D820E6B897702596CED90F8ACBF4",
+    "bytes": 8671,
+    "original_path": "C:\\Users\\adyba\\pi-zig-native-modelconfig-modelsstore-4954-20261015\\src\\extensions\\fixtures\\sdk-model-config-stores-4954.input.mjs"
+  },
+  {
+    "path": "sdk-model-config-stores-4954.json",
+    "sha256": "73F249332783BCA14D706659A10E5A4B9F3A7C8417D80AA115F530F3CDCFD434",
+    "bytes": 161618,
+    "original_path": "C:\\Users\\adyba\\pi-zig-native-modelconfig-modelsstore-4954-20261015\\src\\extensions\\fixtures\\sdk-model-config-stores-4954.json"
+  },
+  {
+    "path": "source4954-modules-71032-0-20261015.jsonl",
+    "sha256": "3AFDCD7271E90D2F923C8E15103E1DBF81D47CDE6DDDE3E8C8CE5CE9B1C42FDD",
+    "bytes": 179362,
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-modules-71032-0-20261015.jsonl"
+  },
+  {
+    "path": "original-source/packages/coding-agent/src/core/model-config.ts",
+    "sha256": "9F2CF2DE7B8DD503CA4BC68119163C1D9BC8A3BF16CACCFB1207E55B6E1CD97E",
+    "bytes": 6728,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\src\\core\\model-config.ts"
+  },
+  {
+    "path": "original-source/packages/coding-agent/src/core/models-store.ts",
+    "sha256": "9A93AFB3AD9123E59CB61606E77D431B38BBEB3063AFC0E2974341109F23DB02",
+    "bytes": 5231,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\src\\core\\models-store.ts"
+  },
+  {
+    "path": "original-source/packages/coding-agent/src/core/auth-storage.ts",
+    "sha256": "163626F5ABC34099A9AFB2803D0CC49B9C66D0FEACD605165E88063C328CEF68",
+    "bytes": 16670,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\src\\core\\auth-storage.ts"
+  },
+  {
+    "path": "original-source/packages/ai/src/models-store.ts",
+    "sha256": "34EE433CA1501E98D19F31E0E5ADF8D1721902E9F35E46C270626E32D7F711CC",
+    "bytes": 1698,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\models-store.ts"
+  },
+  {
+    "path": "original-source/packages/coding-agent/src/utils/paths.ts",
+    "sha256": "64C3EBEF724FA21ED0042E127908B4323A5D2F1B8AAA91EEE550442332FE8502",
+    "bytes": 4950,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\src\\utils\\paths.ts"
+  },
+  {
+    "path": "original-source/packages/coding-agent/src/utils/json.ts",
+    "sha256": "7EE95EE422ABCC3610033E27D1E1DA08EBADAC0502B6326A1540B64843A084DD",
+    "bytes": 341,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\src\\utils\\json.ts"
+  },
+  {
+    "path": "original-source/packages/coding-agent/src/utils/text.ts",
+    "sha256": "BB323F9607C499115B532021F4F0163C6DF04D834AEE9C32C3C77B273BD2D7C6",
+    "bytes": 404,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\src\\utils\\text.ts"
+  },
+  {
+    "path": "original-source/packages/coding-agent/src/utils/abort.ts",
+    "sha256": "F3A3265A2FB2B577BF32334AE8849C1F3DD1AC1487B81D7BC2D5007897FB5790",
+    "bytes": 1340,
+    "original_path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\src\\utils\\abort.ts"
+  },
+  {
+    "path": "original-frozen-input-inventories.zip",
+    "sha256": "069C96EBEB85CC3EF8B063BC39F95ED8820A8E1BAF786857EFA4F34CCD52EF5A",
+    "bytes": 2660997,
+    "original_path": "four original frozen manifests; ZIP entries independently rehashed"
+  },
+  {
+    "path": "retention-verification.json",
+    "sha256": "2F7E67C113F43148C1F5BF61C7A4D598ADC91D02344939E708AF560B5CFB6339",
+    "bytes": 1019,
+    "original_path": "new retrospective original receipt verification"
+  },
+  {
+    "path": "README.md",
+    "sha256": "7A5A92EF19AAD8FAFA1A3B9E922585453B863730F4F60184EC1E50C240F3DB70",
+    "bytes": 4309,
+    "original_path": "new retrospective Source43/integration documentation"
+  }
+]

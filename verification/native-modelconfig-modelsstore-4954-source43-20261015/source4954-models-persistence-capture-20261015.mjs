@@ -1,0 +1,17 @@
+import {readFileSync,writeFileSync,mkdirSync,readdirSync} from 'node:fs';
+import {readFile,writeFile} from 'node:fs/promises';
+import {join,resolve,sep} from 'node:path';
+import {ModelConfig,ModelsConfigSchema} from 'file:///C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/coding-agent/src/core/model-config.ts';
+import {FileModelsStore,InMemoryCodingAgentModelsStore} from 'file:///C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/coding-agent/src/core/models-store.ts';
+import {InMemoryModelsStore} from 'file:///C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/ai/src/models-store.ts';
+const fixture=resolve(process.argv[3]);
+if(!fixture.startsWith(resolve('C:/Users/adyba/pi-zig-update-evidence-20261003')+sep)||!fixture.includes('models-persistence-4954-fixture-'))throw Error('Owned fixture containment');
+mkdirSync(fixture,{recursive:false});
+globalThis.modelsPersistenceClasses={ModelConfig,ModelsConfigSchema,FileModelsStore,InMemoryCodingAgentModelsStore,InMemoryModelsStore};
+globalThis.modelsPersistenceIO={join,readFile,writeFile};globalThis.modelsPersistenceDir=fixture;
+const input=readFileSync('C:/Users/adyba/pi-zig-native-modelconfig-modelsstore-4954-20261015/src/extensions/fixtures/sdk-model-config-stores-4954.input.mjs','utf8');
+await(new Function('return(async()=>{'+input+'\n})()'))();
+const locks=readdirSync(fixture).filter(name=>name.endsWith('.lock'));
+if(locks.length)throw Error('Owned source lock remains');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'4954d760504c11df9b2cbdc040346107b6a8153d',runtime:process.version,count:globalThis.modelsPersistenceObservation.rows.length,fixtureDirectory:fixture,ownedLockDirectoriesRemaining:locks,...globalThis.modelsPersistenceObservation},null,2)+'\n');
+console.log(JSON.stringify({rows:globalThis.modelsPersistenceObservation.rows.length,filesystem:'real owned files and actual FileAuthStorageBackend',locks:locks.length,network:false}));

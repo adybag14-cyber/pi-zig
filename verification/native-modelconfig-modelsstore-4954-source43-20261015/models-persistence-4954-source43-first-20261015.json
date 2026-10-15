@@ -1,0 +1,16 @@
+{
+  "name": "models-persistence-4954-source43-first-20261015",
+  "pid": 71032,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --expose-gc --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-models-persistence-capture-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-source43-first-20261015-output.json C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-persistence-4954-fixture-first-20261015",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T22:25:28.6880268Z",
+  "launched_utc": "2026-10-15T22:25:28.6863248+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-4954d76-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T22:25:51.7866629+00:00"
+}
