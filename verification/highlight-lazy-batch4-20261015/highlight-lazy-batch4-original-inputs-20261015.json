@@ -1,0 +1,102 @@
+[
+  {
+    "factory": "brainfuck",
+    "sha256": "BFC38EF3AA88EE0C2F5AA9043344F820C95B58EC15D2AD032B2D4F57D5E0433E",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\brainfuck.js"
+  },
+  {
+    "factory": "diff",
+    "sha256": "A07B6EF91351B65B8660F093EE93337FBD29FD6C8E94B7889C1755A261E23251",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\diff.js"
+  },
+  {
+    "factory": "roboconf",
+    "sha256": "10C594BC159EDB44E7D182693A010D2CE6DF60E52D58C1AC8CA22715DE8340F1",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\roboconf.js"
+  },
+  {
+    "factory": "capnproto",
+    "sha256": "EA260838C909F24E64DA130727FA95BB884261158EEA2FBF3669665A0B4F17AA",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\capnproto.js"
+  },
+  {
+    "factory": "smalltalk",
+    "sha256": "D885FF684D76CEFCA576A79244956115BA60DF30CC89C74330612B7EEC93F6B6",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\smalltalk.js"
+  },
+  {
+    "factory": "q",
+    "sha256": "FE634064EDACE06B5497DDEDABBB41AC35287029F265D7611DBB6CF6D982165F",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\q.js"
+  },
+  {
+    "factory": "rsl",
+    "sha256": "3D6470F4D026D979E10F8DDAF696458780F3638DA315CD2B4B2448F3CCD63BA0",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\rsl.js"
+  },
+  {
+    "factory": "inform7",
+    "sha256": "1616DEFE72D9FF7D8B7E42A4335F801B245CEA8419948373183C9A42DECE9000",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\inform7.js"
+  },
+  {
+    "factory": "prolog",
+    "sha256": "502DAFA3BD9BC8BC7E88BCF9DB7512567279243E2031B560938E4C768C2E2A88",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\prolog.js"
+  },
+  {
+    "factory": "rib",
+    "sha256": "019011243B7EAE92F8A667C5B9F68055E9495A13634F031B91397B7005BAAC01",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\rib.js"
+  },
+  {
+    "factory": "vala",
+    "sha256": "F3D9D48664D34665A4E896E8502C437BA6E1A71BE9E61C762FB4ED5EE3B5E3B4",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\vala.js"
+  },
+  {
+    "factory": "dos",
+    "sha256": "A500D9065C941A8D86CC09221C957460D13D205F2DAC23B8A6DF947E45CF5BD8",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\dos.js"
+  },
+  {
+    "factory": "abnf",
+    "sha256": "AA4FB3DF83E4D3E3A5230769F5AA620D880D388275061CF56A938EE62E71C14E",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\abnf.js"
+  },
+  {
+    "factory": "pf",
+    "sha256": "06AB86A3B2F6CCE5B8DA639338C33B065812D274E5344990B6C0F17DE52D1312",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\pf.js"
+  },
+  {
+    "factory": "ceylon",
+    "sha256": "93D4572BA0A1A9E8591DFF2D2E02CC55E004701F9A90ECE2E81CCDF107E9AE28",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\ceylon.js"
+  },
+  {
+    "factory": "fsharp",
+    "sha256": "EE65066CAB67C998F355EB53D75103C14FA0C34EE10DFF817D9E949124D733E5",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\fsharp.js"
+  },
+  {
+    "factory": "openscad",
+    "sha256": "3CF07BFC2A8C30361DE55147004EDE9BF10072CFA8C495660E30620AC7080164",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\openscad.js"
+  },
+  {
+    "factory": "pony",
+    "sha256": "A5A4E028BB411B29274C410E4C40FC40669C5726E9AADF2EA57AC9B1D284A775",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\pony.js"
+  },
+  {
+    "factory": "gcode",
+    "sha256": "2E86EC1D5CC7128874CC530F7CF2305D021AD30627AE74750F7E196EB03C2B86",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\gcode.js"
+  },
+  {
+    "factory": "cal",
+    "sha256": "297116A469ADF18CCA5B20305DCC5443AD79B4835DBE1D01706381566A4846AA",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\lib\\languages\\cal.js"
+  }
+]
