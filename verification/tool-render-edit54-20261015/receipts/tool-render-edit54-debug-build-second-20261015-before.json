@@ -1,0 +1,37 @@
+[
+  {
+    "manifest": "sdk-source-b45-full-manifest-20261014.json",
+    "count": 1965,
+    "drift": 0
+  },
+  {
+    "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "count": 31064,
+    "drift": 0
+  },
+  {
+    "manifest": "root-current8a-npm-tools-before.json",
+    "count": 1774,
+    "drift": 0
+  },
+  {
+    "manifest": "tool-render-edit54-debug-build-second-20261015-candidate.json",
+    "count": 5616,
+    "drift": 0
+  },
+  {
+    "manifest": "tool-render-edit54-debug-build-second-20261015-vendor.json",
+    "count": 1316,
+    "drift": 0
+  },
+  {
+    "manifest": "tool-render-edit54-debug-build-second-20261015-tools.json",
+    "count": 19546,
+    "drift": 0
+  },
+  {
+    "manifest": "tool-render-edit54-debug-build-second-20261015-controls.json",
+    "count": 3,
+    "drift": 0
+  }
+]
