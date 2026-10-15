@@ -81,7 +81,7 @@ pub fn build(engine: *v.em.Engine, dependencies: c.JSValue, model: c.JSValue, co
     defer scope.deinit();
     const id_map = try scope.own(try v.js.builtin(engine, "Map", &.{}));
     const reverse = try scope.own(try v.js.builtin(engine, "Map", &.{}));
-    const normalizer = try scope.own(try @import("native_node_function.zig").create(engine, "", 1, normalize, &.{ id_map, reverse }));
+    const normalizer = try scope.own(try @import("native_node_function.zig").createArrow(engine, "", 1, normalize, &.{ id_map, reverse }));
     const transformed = try scope.own(try @import("native_ai_transform_messages.zig").transform(engine, try scope.get(context, "messages"), model, normalizer));
     const result = try scope.object();
     try scope.put(result, "model", try scope.get(model, "id"));
