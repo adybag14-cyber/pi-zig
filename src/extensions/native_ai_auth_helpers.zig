@@ -68,8 +68,22 @@ fn fileExists(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []
 }
 fn startFileExists(scope: *Scope, owner: c.JSValue, path: c.JSValue) !void {
     try scope.put(owner, "path", path);
-    const module = try scope.call(try scope.global("require"), c.pi_js_undefined(), &.{try scope.text("node:fs/promises")});
+    // Source imports the builtin module; global require is not involved.
+    const module = scope.engine.native_module_values.get("node:fs/promises") orelse return error.NativeAuthFilesystemUnavailable;
     return flow.wait(continued, scope.engine, owner, module, @intFromEnum(Stage.file_module));
+}
+fn osModule(scope: *Scope) !c.JSValue {
+    if (scope.engine.native_module_values.get("node:os")) |module| return module;
+    // A private homedir binding implements only this imported dependency. It
+    // does not register or advertise an incomplete public node:os namespace.
+    const Adapter = struct {
+        fn call(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            return @import("native_home.zig").get(engine);
+        }
+    };
+    const module = try scope.object();
+    try scope.put(module, "homedir", try scope.own(try functions.create(scope.engine, "homedir", 0, Adapter.call, &.{})));
+    return module;
 }
 fn accessFile(scope: *Scope, owner: c.JSValue, path: c.JSValue) !void {
     return flow.wait(continued, scope.engine, owner, try scope.invoke(try scope.get(owner, "fs"), "access", &.{path}), @intFromEnum(Stage.file_access));
@@ -261,7 +275,7 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             try scope.put(owner, "fs", value);
             const path = try scope.get(owner, "path");
             if (scope.truthy(try scope.invoke(path, "startsWith", &.{try scope.text("~")}))) {
-                const os = try scope.call(try scope.global("require"), c.pi_js_undefined(), &.{try scope.text("node:os")});
+                const os = try osModule(scope);
                 return flow.wait(continued, scope.engine, owner, os, @intFromEnum(Stage.file_os));
             }
             return accessFile(scope, owner, path);
