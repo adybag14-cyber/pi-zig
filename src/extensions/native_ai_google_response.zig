@@ -191,6 +191,12 @@ fn candidate(scope: *Scope, value: c.JSValue) !c.JSValue {
     return output;
 }
 pub fn wrap(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_headers: c.JSValue, vertex: bool) !c.JSValue {
+    return wrapMode(scope, constructor, raw, response_headers, vertex, true);
+}
+pub fn wrapSdk(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_headers: c.JSValue, vertex: bool) !c.JSValue {
+    return wrapMode(scope, constructor, raw, response_headers, vertex, false);
+}
+fn wrapMode(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_headers: c.JSValue, vertex: bool, normalize_headers: bool) !c.JSValue {
     const converted_response = try scope.object();
     const supplied_http = try sdkField(scope, raw, "sdkHttpResponse");
     if (!v.nullish(supplied_http)) try sdkSet(scope, converted_response, "sdkHttpResponse", supplied_http);
@@ -226,14 +232,17 @@ pub fn wrap(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_head
         if (!v.nullish(status)) try sdkSet(scope, converted_response, "modelStatus", status);
     }
     const http = try scope.object();
-    const headers = try scope.object();
-    const normalized = try scope.own(try @import("native_headers.zig").fromRecord(scope.engine, response_headers));
-    var entries = try v.iterator(scope, try scope.invoke(normalized, "entries", &.{}));
-    defer entries.deinit();
-    errdefer entries.closePreserving();
-    while (try entries.next()) |entry| {
-        defer scope.engine.freeValue(entry);
-        try v.js.setKey(scope.engine, headers, try v.at(scope, entry, 0), try v.at(scope, entry, 1));
+    var headers = response_headers;
+    if (normalize_headers) {
+        headers = try scope.object();
+        const normalized = try scope.own(try @import("native_headers.zig").fromRecord(scope.engine, response_headers));
+        var entries = try v.iterator(scope, try scope.invoke(normalized, "entries", &.{}));
+        defer entries.deinit();
+        errdefer entries.closePreserving();
+        while (try entries.next()) |entry| {
+            defer scope.engine.freeValue(entry);
+            try v.js.setKey(scope.engine, headers, try v.at(scope, entry, 0), try v.at(scope, entry, 1));
+        }
     }
     try scope.put(http, "headers", headers);
     try scope.set(converted_response, "sdkHttpResponse", http);
