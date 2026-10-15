@@ -82,10 +82,29 @@ pub fn streamConstructor(scope: *Scope) !c.JSValue {
     return scope.own(c.JS_DupValue(scope.engine.context, rootOf(try ownerOf(scope.engine)).streams.constructor));
 }
 pub fn closeController(scope: *Scope, controller: c.JSValue) !void {
-    const root = rootOf(try ownerOf(scope.engine));
-    return root.streams.close_controller(scope, root.streams.bindings, controller);
+    try require(scope.engine);
+    scope.engine.native_exception_diagnostics_suppressed += 1;
+    defer scope.engine.native_exception_diagnostics_suppressed -= 1;
+    sourceClose(scope, controller) catch |err| {
+        if (err != error.JavaScriptException) return err;
+        const reason = try scope.own(c.JS_DupValue(scope.engine.context, scope.engine.captured_exception orelse return err));
+        const message = try scope.get(reason, "message");
+        const already_closed = scope.truthy(try scope.invoke(message, "includes", &.{try scope.text("Controller is already closed")})) or scope.truthy(try scope.invoke(message, "includes", &.{try scope.text("ReadableStream is already closed")}));
+        if (!already_closed) return err;
+        if (scope.engine.captured_exception) |captured| {
+            scope.engine.captured_exception = null;
+            scope.engine.freeValue(captured);
+        }
+    };
+}
+fn sourceClose(scope: *Scope, controller: c.JSValue) !void {
+    _ = try scope.invoke(controller, "close", &.{});
+    const request = try scope.get(controller, "byobRequest");
+    if (!c.JS_IsNull(request) and !c.JS_IsUndefined(request)) _ = try scope.invoke(request, "respond", &.{c.JS_NewInt32(scope.engine.context, 0)});
 }
 fn responseCollected(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     if (args.len == 0) return c.pi_js_undefined();
@@ -134,8 +153,8 @@ fn closeJob(context: ?*c.JSContext, _: c_int, captures: [*c]c.JSValue) callconv(
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const root = rootOf(captures[0]);
-    root.streams.close_controller(&scope, root.streams.bindings, captures[1]) catch |err| return fail(engine, err);
+    _ = captures[0];
+    closeController(&scope, captures[1]) catch |err| return fail(engine, err);
     return c.pi_js_undefined();
 }
 fn byteStream(scope: *Scope) !struct { stream: c.JSValue, controller: c.JSValue } {
@@ -165,6 +184,8 @@ fn copiedBytes(scope: *Scope, input: c.JSValue) !c.JSValue {
     return bytes;
 }
 pub fn extract(scope: *Scope, interfaces: *const idl.Interfaces, converted: c.JSValue, keepalive: bool) !Body {
+    scope.engine.native_exception_diagnostics_suppressed += 1;
+    defer scope.engine.native_exception_diagnostics_suppressed -= 1;
     const owner = try ownerOf(scope.engine);
     const root = rootOf(owner);
     var source = c.pi_js_null();
@@ -252,6 +273,8 @@ fn complete(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bo
     try flow.settle(engine, owner, false, result);
 }
 pub fn consume(engine: *em.Engine, body: ?Body, mode: Mode, mime: c.JSValue) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const pending = try flow.create(engine, c.pi_js_undefined());
