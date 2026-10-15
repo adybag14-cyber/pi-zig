@@ -6,7 +6,7 @@ const c = v.c;
 const flow = @import("native_agent_async.zig");
 const errors = @import("native_ai_codex_errors.zig");
 const math = @import("native_image_arithmetic.zig");
-const Method = enum { open, connect_error, connect_close, connect_abort, connect_timeout, send, next, release, close, expiry, message, parse_error, parse_close, parse_abort, idle_timeout };
+const Method = enum { open, connect_error, connect_close, connect_abort, connect_timeout, send, next, release, close, expiry, message, parse_error, parse_close, parse_abort, idle_timeout, wait_cleanup };
 fn callback(scope: *Scope, owner: c.JSValue, comptime method: Method) !c.JSValue {
     const Adapter = struct {
         fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -313,13 +313,15 @@ fn advanceNext(scope: *Scope, pending: c.JSValue) !void {
     try scope.put(parser, "pending", waiting.owner);
     const timeout = try scope.get(turn, "idleTimeout");
     if (!c.JS_IsUndefined(timeout) and try math.compare(scope.engine, .greater, timeout, c.JS_NewInt32(scope.engine.context, 0))) try scope.put(parser, "timer", try scope.call(try scope.global("setTimeout"), c.pi_js_undefined(), &.{ try callback(scope, parser, .idle_timeout), timeout }));
-    try flow.wait(nextAwake, scope.engine, pending, promise, 0);
+    // Source awaits the genuine promise returned by finally, rather than a
+    // synthetic additional tick. Preserve its actual promise adoption jobs.
+    const cleaned = try scope.invoke(promise, "finally", &.{try callback(scope, parser, .wait_cleanup)});
+    try flow.wait(nextAwake, scope.engine, pending, cleaned, 0);
 }
 fn nextAwake(engine: *v.em.Engine, pending: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const parser = try scope.get(pending, "agent");
-    try clearTimer(&scope, parser, "timer");
     if (rejected) {
         try cleanupParser(&scope, parser);
         return flow.settle(engine, pending, true, value);
@@ -394,6 +396,10 @@ fn startMessage(scope: *Scope, parser: c.JSValue, event: c.JSValue) !void {
 }
 fn invoke(scope: *Scope, owner: c.JSValue, comptime method: Method, value: c.JSValue) !c.JSValue {
     const engine = scope.engine;
+    if (method == .wait_cleanup) {
+        try clearTimer(scope, owner, "timer");
+        return c.pi_js_undefined();
+    }
     if (method == .send) {
         _ = try scope.invoke(try scope.get(owner, "socket"), "send", &.{value});
         return c.pi_js_undefined();
@@ -459,8 +465,14 @@ fn invoke(scope: *Scope, owner: c.JSValue, comptime method: Method, value: c.JSV
         };
         try scope.put(owner, "failed", reason);
         try scope.put(owner, "done", c.pi_js_bool(engine.context, 1));
-        if (method == .idle_timeout) try closeSilently(scope, try scope.get(turn, "socket"), "idle_timeout");
-        try wake(scope, owner, method == .idle_timeout, if (method == .idle_timeout) reason else c.pi_js_undefined());
+        if (method == .idle_timeout) {
+            // Clear the wake callback before close, as Source does. A caller
+            // constructor may dispatch its close event synchronously.
+            const waiting = try scope.get(owner, "pending");
+            try scope.put(owner, "pending", c.pi_js_null());
+            try closeSilently(scope, try scope.get(turn, "socket"), "idle_timeout");
+            if (!v.nullish(waiting)) try flow.settle(engine, waiting, true, reason);
+        } else try wake(scope, owner, false, c.pi_js_undefined());
         return c.pi_js_undefined();
     }
     if (scope.truthy(try scope.get(owner, "settled"))) return c.pi_js_undefined();
