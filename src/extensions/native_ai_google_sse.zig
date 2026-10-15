@@ -19,9 +19,9 @@ fn streamedError(scope: *Scope, chunk: c.JSValue) !void {
     const error_json = try scope.invoke(json, "parse", &.{try scope.invoke(json, "stringify", &.{try scope.get(parsed, "error")})});
     const status = try scope.get(error_json, "status");
     const code = try scope.get(error_json, "code");
+    const message = try scope.concat(try scope.concat(try scope.concat(try scope.text("got status: "), try scope.stringify(status)), try scope.text(". ")), try scope.invoke(json, "stringify", &.{parsed}));
     const arithmetic = @import("native_image_arithmetic.zig");
     if (try arithmetic.compare(scope.engine, .greater_equal, code, c.JS_NewInt32(scope.engine.context, 400)) and try arithmetic.compare(scope.engine, .less, code, c.JS_NewInt32(scope.engine.context, 600))) {
-        const message = try scope.concat(try scope.concat(try scope.concat(try scope.text("got status: "), try scope.stringify(status)), try scope.text(". ")), try scope.invoke(json, "stringify", &.{parsed}));
         const reason = try scope.own(try v.js.builtin(scope.engine, "Error", &.{message}));
         try scope.set(reason, "name", try scope.text("ApiError"));
         try scope.set(reason, "status", code);

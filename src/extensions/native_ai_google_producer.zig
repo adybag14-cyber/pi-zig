@@ -21,7 +21,8 @@ pub fn create(engine: *v.em.Engine, transport: c.JSValue, head: c.JSValue, url: 
     var status: u32 = 0;
     if (c.JS_ToUint32(engine.context, &status, try scope.get(head, "status")) < 0) return v.js.capture(engine);
     if (status > 65535) return error.NativeGoogleStatusLimit;
-    const stream = try scope.own(try @import("native_web_byte_source.zig").fromEvents(engine, try scope.get(transport, "events"), .{ .cancel = try scope.get(transport, "cancel") }));
+    const empty = status == 101 or status == 103 or status == 204 or status == 205 or status == 304;
+    const stream = if (empty) c.pi_js_null() else try scope.own(try @import("native_web_byte_source.zig").fromEvents(engine, try scope.get(transport, "events"), .{ .cancel = try scope.get(transport, "cancel") }));
     const response = try scope.own(try @import("native_web_response.zig").fromTransport(engine, .{ .body = stream, .status = @intCast(status), .status_text = try scope.get(head, "statusText"), .headers = try scope.get(head, "rawHeaders"), .url = url }));
     const process_owner = try scope.object();
     try scope.put(process_owner, "response", response);
