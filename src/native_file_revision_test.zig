@@ -89,7 +89,7 @@ test "file revision follows a real symlink when the host permits creating one" {
     defer tmp.cleanup();
     try create(tmp.dir, "target", "symlink target");
     tmp.dir.symLink(std.testing.io, "target", "link", .{}) catch |err| switch (err) {
-        error.AccessDenied => return error.SkipZigTest,
+        error.AccessDenied, error.PermissionDenied => return error.SkipZigTest,
         else => return err,
     };
     const target = try absolute(tmp.dir, "target");
@@ -101,4 +101,19 @@ test "file revision follows a real symlink when the host permits creating one" {
     const link_revision = (try revision.revisionAlloc(std.testing.allocator, link)).?;
     defer std.testing.allocator.free(link_revision);
     try std.testing.expectEqualStrings(target_revision, link_revision);
+}
+
+test "private allocation failures remain errors rather than Source missing revisions" {
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try create(tmp.dir, "allocation", "present");
+    const path = try absolute(tmp.dir, "allocation");
+    defer std.testing.allocator.free(path);
+    // The native path conversion allocates before the kernel stat, and the
+    // returned decimal string allocates afterward. Both boundaries must keep
+    // a private host OOM distinct from Source's ordinary stat failure result.
+    for (0..2) |index| {
+        var failing: std.testing.FailingAllocator = .init(std.testing.allocator, .{ .fail_index = index });
+        try std.testing.expectError(error.OutOfMemory, revision.revisionAlloc(failing.allocator(), path));
+    }
 }
