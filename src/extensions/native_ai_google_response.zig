@@ -211,7 +211,16 @@ pub fn wrap(scope: *Scope, constructor: c.JSValue, raw: c.JSValue, response_head
         if (!v.nullish(status)) try scope.put(result, "modelStatus", status);
     }
     const http = try scope.object();
-    try scope.put(http, "headers", try v.spread(scope, response_headers));
+    const headers = try scope.object();
+    const normalized = try scope.own(try @import("native_headers.zig").fromRecord(scope.engine, response_headers));
+    var entries = try v.iterator(scope, try scope.invoke(normalized, "entries", &.{}));
+    defer entries.deinit();
+    errdefer entries.closePreserving();
+    while (try entries.next()) |entry| {
+        defer scope.engine.freeValue(entry);
+        try v.js.setKey(scope.engine, headers, try v.at(scope, entry, 0), try v.at(scope, entry, 1));
+    }
+    try scope.put(http, "headers", headers);
     try scope.put(result, "sdkHttpResponse", http);
     return result;
 }
