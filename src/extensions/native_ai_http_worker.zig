@@ -216,7 +216,7 @@ pub const Worker = struct {
         const prep = @import("native_ai_http_prepare.zig");
         const now_ms = std.Io.Clock.awake.now(self.io).toMilliseconds();
         const budget: prep.Budget = .{ .io = self.io, .abort_flag = &self.abort_flag, .deadline_ms = if (self.input.timeout_ms) |ms| now_ms +| @as(i64, @intCast(@min(ms, std.math.maxInt(i64)))) else null };
-        var prepared: ?prep.Prepared = if (self.input.prepare) |callback| try callback(a, .{ .method = self.input.method, .url = self.input.url, .payload = self.input.payload, .headers = self.input.headers }, self.input.prepare_data, budget) else null;
+        var prepared: ?prep.Prepared = if (self.input.prepare) |callback| try @import("native_ai_http_prepare_run.zig").run(a, callback, .{ .method = self.input.method, .url = self.input.url, .payload = self.input.payload, .headers = self.input.headers }, self.input.prepare_data, budget) else null;
         defer if (prepared) |*value| value.deinit(a);
         const url = if (prepared) |value| value.url orelse self.input.url else self.input.url;
         const headers = if (prepared) |value| merged: {
