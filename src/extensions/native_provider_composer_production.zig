@@ -64,8 +64,8 @@ fn entries(s: *Scope, object: c.JSValue, method: [*:0]const u8) !c.JSValue {
 fn isChat(s: *Scope, imports: c.JSValue, row: c.JSValue) !bool {
     return s.truthy(try s.call(try s.get(imports, "isModelType"), u(), &.{ row, try s.text("chat") }));
 }
-fn errorMessage(s: *Scope, message: c.JSValue) anyerror {
-    const exception = js.builtin(s.engine, "Error", &.{message}) catch |err| return err;
+fn errorMessage(s: *Scope, text: c.JSValue) anyerror {
+    const exception = js.builtin(s.engine, "Error", &.{text}) catch |err| return err;
     _ = s.engine.checked(c.JS_Throw(s.engine.context, exception)) catch |err| return err;
     unreachable;
 }

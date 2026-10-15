@@ -4,7 +4,7 @@ const {composer,values,ModelConfig,openaiProvider,defaultProviderAuthContext,con
 const rows=[];globalThis.composerRows=rows;
 const observe=async(name,body)=>{try{rows.push({name,value:await body()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}};
 const shape=f=>({name:f.name,length:f.length,async:Object.getPrototypeOf(f)===Object.getPrototypeOf(async()=>{}),ownPrototype:Object.hasOwn(f,'prototype')});
-const base=openaiProvider(),config=await ModelConfig.load(configPath),ctx=defaultProviderAuthContext();
+const base=openaiProvider(),config=await ModelConfig.load(configPath),ctx=defaultProviderAuthContext(),signal=new AbortController().signal;
 if(config.getError())throw Error(config.getError());
 const provider=composer.composeModelProvider('openai',base,config,undefined);
 const model=provider.getModels().find(m=>m.id==='owned-composer');
@@ -27,9 +27,9 @@ await observe('live-getter-recomposes',()=>{const first=provider.getModels(),sec
 await observe('configured-model-headers',()=>composer.resolveConfiguredModelHeaders(model,config.getProvider('openai'),undefined));
 await observe('compatibility-headers',()=>composer.resolveCompatibilityRequestConfig({...model,headers:{Existing:'preserved',Shared:'model'}},config.getProvider('openai'),undefined));
 await observe('configured-statuses',()=>[composer.configuredRequestAuthStatus(undefined,undefined),composer.configuredRequestAuthStatus({apiKey:'literal'},undefined),composer.configuredRequestAuthStatus(undefined,{apiKey:'literal'}),composer.configuredRequestAuthStatus({apiKey:'$PI_COMPOSER_A'},undefined),composer.configuredRequestAuthStatus({apiKey:'$PI_COMPOSER_MISSING'},undefined),composer.configuredRequestAuthStatus({apiKey:'!false'},undefined)]);
-await observe('actual-inherited-check-configured',()=>provider.auth.apiKey.check({ctx}));
-await observe('actual-inherited-resolve-configured',()=>provider.auth.apiKey.resolve({ctx}));
-await observe('actual-inherited-resolve-credential',()=>provider.auth.apiKey.resolve({ctx,credential:{type:'api_key',key:'stored-fixture',env:{PI_COMPOSER_A:'stored-env'}}}));
+await observe('actual-inherited-check-configured',()=>provider.auth.apiKey.check({ctx,signal}));
+await observe('actual-inherited-resolve-configured',()=>provider.auth.apiKey.resolve({ctx,signal}));
+await observe('actual-inherited-resolve-credential',()=>provider.auth.apiKey.resolve({ctx,signal,credential:{type:'api_key',key:'stored-fixture',env:{PI_COMPOSER_A:'stored-env'}}}));
 await observe('actual-filter-all-models',()=>({all:provider.filterAllModels(provider.getAllModels(),undefined).length,oauth:provider.filterAllModels(provider.getAllModels(),{type:'oauth',access:'fixture',refresh:'fixture',expires:0}).length}));
 await observe('extension-replacement-and-override',()=>{const extension={api:'openai-responses',baseUrl:'https://extension.invalid/v1',models:[{id:'owned-composer',name:'Extension',reasoning:false,input:['text'],cost:{input:1,output:2,cacheRead:3,cacheWrite:4},contextWindow:4000,maxTokens:500,headers:{Extension:'$PI_COMPOSER_B',Shared:'extension'}}]};const p=composer.composeModelProvider('openai',base,config,extension);return{models:p.getModels(),headers:composer.resolveConfiguredModelHeaders(p.getModels()[0],config.getProvider('openai'),extension)}});
 await observe('validate-stream-api-required',()=>composer.validateExtensionProvider('openai',base,undefined,{streamSimple:base.streamSimple}));

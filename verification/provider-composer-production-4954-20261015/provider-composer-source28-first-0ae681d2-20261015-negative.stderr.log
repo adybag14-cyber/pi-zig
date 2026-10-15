@@ -1,0 +1,8 @@
+file:///C:/Users/adyba/pi-zig-sdk-provider-composer-production-20261015/verification/provider-composer-production-4954-20261015/capture-source.mjs:21
+if(composerRows.length!==28)throw Error('Expected Source28');for(const row of composerRows)if(Boolean(row.error)!==errors.has(row.name))throw Error('Unexpected Source outcome '+JSON.stringify(row));
+                                                                                                                                              ^
+
+Error: Unexpected Source outcome {"name":"actual-inherited-resolve-configured","error":{"name":"TypeError","message":"Cannot read properties of undefined (reading 'throwIfAborted')"}}
+    at file:///C:/Users/adyba/pi-zig-sdk-provider-composer-production-20261015/verification/provider-composer-production-4954-20261015/capture-source.mjs:21:143
+
+Node.js v24.14.0
