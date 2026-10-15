@@ -409,10 +409,12 @@ fn websocketOpen(scope: *Scope, owner: c.JSValue) !void {
     const headers = try scope.get(owner, "codexWebsocketHeaders");
     const url = try codex_protocol.url(scope, try scope.get(model, "baseUrl"), true);
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
-    if (try v.js.hasKey(engine, global, try scope.text("WebSocket"))) {
-        const constructor = try scope.get(global, "WebSocket");
-        if (!c.JS_IsFunction(engine.context, constructor)) return v.errorText(scope, try scope.text("WebSocket transport is not available in this runtime"));
-        const connection = try scope.own(try @import("native_ai_codex_global_socket.zig").acquire(engine, try codexState(scope, owner), constructor, url, headers, session, try scope.get(owner, "accountId"), try v.optional(scope, options, "signal"), try scope.get(owner, "codexConnectTimeout"), try scope.get(owner, "codexIdleTimeout")));
+    const protocol = try codexState(scope, owner);
+    const global_socket = @import("native_ai_codex_global_socket.zig");
+    if (try v.js.hasKey(engine, global, try scope.text("WebSocket")) or try global_socket.hasCached(scope, protocol, session, try scope.get(owner, "accountId"))) {
+        // Source checks its cached connection before reading the constructor.
+        // A caller can change or delete that global between cached turns.
+        const connection = try scope.own(try global_socket.acquire(engine, protocol, url, headers, session, try scope.get(owner, "accountId"), try v.optional(scope, options, "signal"), try scope.get(owner, "codexConnectTimeout"), try scope.get(owner, "codexIdleTimeout")));
         try scope.put(owner, "websocketConnection", connection);
         return wait(scope, owner, try scope.get(connection, "ready"), .websocket_ready);
     }

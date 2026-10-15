@@ -92,7 +92,14 @@ fn cleanupOwned(engine: *v.em.Engine, state: c.JSValue) void {
         closeSilently(&scope, socket, "owned_cleanup") catch {};
     }
 }
-pub fn acquire(engine: *v.em.Engine, protocol: c.JSValue, constructor: c.JSValue, url: c.JSValue, headers: c.JSValue, session: c.JSValue, account: c.JSValue, signal: c.JSValue, connect_timeout: c.JSValue, idle_timeout: c.JSValue) !c.JSValue {
+pub fn hasCached(scope: *Scope, protocol: c.JSValue, session: c.JSValue, account: c.JSValue) !bool {
+    if (!scope.truthy(session)) return false;
+    const state = try v.optional(scope, protocol, "globalSockets");
+    if (v.nullish(state)) return false;
+    const accounts = try scope.invoke(try scope.get(state, "cache"), "get", &.{session});
+    return scope.truthy(accounts) and scope.truthy(try scope.invoke(accounts, "get", &.{account}));
+}
+pub fn acquire(engine: *v.em.Engine, protocol: c.JSValue, url: c.JSValue, headers: c.JSValue, session: c.JSValue, account: c.JSValue, signal: c.JSValue, connect_timeout: c.JSValue, idle_timeout: c.JSValue) !c.JSValue {
     if (@import("native_ai_codex_socket.zig").closing(engine)) return error.NativeWebSocketOwnerClosing;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -101,7 +108,7 @@ pub fn acquire(engine: *v.em.Engine, protocol: c.JSValue, constructor: c.JSValue
     defer engine.freeValue(pending.owner);
     defer engine.freeValue(pending.promise);
     const turn = pending.owner;
-    inline for (.{ "constructor", "url", "headers", "session", "account", "signal", "connectTimeout", "idleTimeout" }, .{ constructor, url, headers, session, account, signal, connect_timeout, idle_timeout }) |key, value| try scope.put(turn, key, value);
+    inline for (.{ "url", "headers", "session", "account", "signal", "connectTimeout", "idleTimeout" }, .{ url, headers, session, account, signal, connect_timeout, idle_timeout }) |key, value| try scope.put(turn, key, value);
     try scope.put(turn, "settled", c.pi_js_bool(engine.context, 0));
     try scope.put(turn, "timer", c.pi_js_undefined());
     try scope.put(turn, "parser", c.pi_js_undefined());
@@ -156,7 +163,20 @@ fn startAcquire(scope: *Scope, turn: c.JSValue) !void {
     try scope.put(turn, "connectCompletion", connecting.owner);
     try flow.wait(publishConnected, scope.engine, turn, promise, 0);
     // This is Source's actual awaited getWebSocketConstructor boundary.
-    try flow.wait(connectStart, scope.engine, turn, try scope.get(turn, "constructor"), 0);
+    try flow.wait(connectStart, scope.engine, turn, try scope.own(try getConstructor(scope.engine)), 0);
+}
+fn getConstructor(engine: *v.em.Engine) !c.JSValue {
+    const pending = try flow.create(engine, c.pi_js_undefined());
+    defer engine.freeValue(pending.owner);
+    errdefer engine.freeValue(pending.promise);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const constructor = scope.global("WebSocket") catch |err| {
+        try flow.rejectError(engine, pending.owner, err);
+        return pending.promise;
+    };
+    try flow.settle(engine, pending.owner, false, if (c.JS_IsFunction(engine.context, constructor)) constructor else c.pi_js_null());
+    return pending.promise;
 }
 fn connectStart(engine: *v.em.Engine, turn: c.JSValue, constructor: c.JSValue, rejected: bool, _: c_int) !void {
     if (rejected) {
@@ -177,6 +197,7 @@ fn connectStart(engine: *v.em.Engine, turn: c.JSValue, constructor: c.JSValue, r
     };
 }
 fn connect(scope: *Scope, turn: c.JSValue, constructor: c.JSValue) !void {
+    if (v.nullish(constructor)) return errors.raise(scope, try plainError(scope, "WebSocket transport is not available in this runtime"));
     const fields = try scope.invoke(try scope.global("Object"), "fromEntries", &.{try scope.invoke(try scope.get(turn, "headers"), "entries", &.{})});
     try v.remove(scope, fields, "OpenAI-Beta");
     const options = try scope.object();
