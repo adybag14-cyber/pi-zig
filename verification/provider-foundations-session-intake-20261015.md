@@ -88,3 +88,26 @@ renamed genuine long-queue test explicitly, preserving its selected coverage.
 Provider SDK producer generators still require their own layered timing gates.
 The application factory, the complete public stream/HTTP surface, all providers
 together, latest full-version qualification and public activation remain open.
+
+## Hosted selected-component qualification
+
+Product head `c629f791976fa117aafd0cc449e2d13971d1bb1c` passed the
+seven-artifact matrix on Windows and Linux in Debug, ReleaseSafe and ReleaseFast:
+43 selected tests per profile, 258 successful executions, with no failed,
+skipped or unreached selected tests. The actual complete Anthropic allocation
+universes were 226 request and 162 pending indices in each profile. The selected
+native C generator functional and GPA gates also executed and passed.
+
+The tested CI-only successor was `087858aad7c3425dab083ec2dc0a3dda5f93835f`,
+run `38806198483`. Independent online and offline audits verified metadata,
+executable identities, all six artifact digests, exact Git source blobs and
+unchanged 19546-file compiler distributions. Retained proof and raw artifacts
+are published at `0d9f859b4a5252451900dad85aacc7b095c70a85` under
+`verification/provider-successor-six-profile-proof`.
+
+Later integration commits, including the installed live stream replacement,
+UI, WebCrypto, callback and additional one-shot components, are outside that
+exact product-head proof. The passing matrix does not establish qualification
+of this later combined head, all provider families, the complete factory, or
+the complete application. Earlier failing matrices and their minimal repairs
+remain preserved rather than rewritten as successful runs.
