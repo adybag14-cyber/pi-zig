@@ -14,7 +14,10 @@ pub fn revision(engine: *em.Engine, path: []const u8) !?[]u8 {
     return revisionAlloc(engine.gpa, path);
 }
 pub fn revisionAlloc(gpa: std.mem.Allocator, path: []const u8) !?[]u8 {
-    const info = fs.read(gpa, path) catch return null;
+    const info = fs.read(gpa, path) catch |err| {
+        if (err == error.OutOfMemory) return err;
+        return null;
+    };
     return format(gpa, info);
 }
 pub fn format(gpa: std.mem.Allocator, info: fs.Stat) ![]u8 {
