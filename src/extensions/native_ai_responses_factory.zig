@@ -17,6 +17,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
 }
 pub fn createMode(engine: *v.em.Engine, mode: request.Mode) !c.JSValue {
     try @import("native_stream.zig").install(engine);
+    try @import("native_headers.zig").install(engine);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const dependencies = try scope.own(try @import("native_ai_openai_dependencies.zig").create(engine));
@@ -177,16 +178,19 @@ fn mergeHeaders(scope: *Scope, target: c.JSValue, source: c.JSValue) !void {
     errdefer rows.closePreserving();
     while (try rows.next()) |entry| {
         defer scope.engine.freeValue(entry);
-        const name = try scope.invoke(try v.at(scope, entry, 0), "toLowerCase", &.{});
-        try v.js.setKey(scope.engine, target, name, try v.at(scope, entry, 1));
+        const name = try v.at(scope, entry, 0);
+        const value = try v.at(scope, entry, 1);
+        _ = try scope.invoke(target, if (c.JS_IsNull(value)) "delete" else "set", if (c.JS_IsNull(value)) &.{name} else &.{ name, value });
     }
 }
 fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const mode = try getMode(scope, try scope.get(owner, "agent"));
-    const result = try scope.object();
-    try scope.put(result, "accept", try scope.text(if (mode == .codex) "text/event-stream" else "application/json"));
-    try scope.put(result, "content-type", try scope.text("application/json"));
-    try scope.put(result, if (mode == .azure) "api-key" else "authorization", if (mode == .azure) try scope.get(owner, "apiKey") else try scope.concat(try scope.text("Bearer "), try scope.stringify(try scope.get(owner, "apiKey"))));
+    const initial = try scope.object();
+    try scope.put(initial, "accept", try scope.text(if (mode == .codex) "text/event-stream" else "application/json"));
+    try scope.put(initial, "content-type", try scope.text("application/json"));
+    try scope.put(initial, if (mode == .azure) "api-key" else "authorization", if (mode == .azure) try scope.get(owner, "apiKey") else try scope.concat(try scope.text("Bearer "), try scope.stringify(try scope.get(owner, "apiKey"))));
+    var header_args = [_]c.JSValue{initial};
+    const result = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("Headers"), header_args.len, &header_args)));
     const defaults = try scope.object();
     try scope.put(defaults, "User-Agent", try userAgent(scope, try scope.get(owner, "agent")));
     if (mode == .codex) try scope.put(defaults, "originator", try scope.text("pi"));
@@ -236,15 +240,15 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     try mergeHeaders(scope, result, defaults);
     if (mode == .codex) {
         // Codex reapplies identity headers after nullable caller overrides.
-        try scope.put(result, "authorization", try scope.concat(try scope.text("Bearer "), try scope.get(owner, "apiKey")));
-        try scope.put(result, "chatgpt-account-id", try scope.get(owner, "accountId"));
-        try scope.put(result, "openai-beta", try scope.text("responses=experimental"));
-        try scope.put(result, "accept", try scope.text("text/event-stream"));
-        try scope.put(result, "content-type", try scope.text("application/json"));
+        _ = try scope.invoke(result, "set", &.{ try scope.text("authorization"), try scope.concat(try scope.text("Bearer "), try scope.get(owner, "apiKey")) });
+        _ = try scope.invoke(result, "set", &.{ try scope.text("chatgpt-account-id"), try scope.get(owner, "accountId") });
+        _ = try scope.invoke(result, "set", &.{ try scope.text("openai-beta"), try scope.text("responses=experimental") });
+        _ = try scope.invoke(result, "set", &.{ try scope.text("accept"), try scope.text("text/event-stream") });
+        _ = try scope.invoke(result, "set", &.{ try scope.text("content-type"), try scope.text("application/json") });
         if (scope.truthy(session)) {
             const clamped = try request.cacheKey(scope, session);
-            try scope.put(result, "session-id", clamped);
-            try scope.put(result, "x-client-request-id", clamped);
+            _ = try scope.invoke(result, "set", &.{ try scope.text("session-id"), clamped });
+            _ = try scope.invoke(result, "set", &.{ try scope.text("x-client-request-id"), clamped });
         }
     }
     return result;
@@ -270,7 +274,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
     const options = try scope.get(owner, "options");
     const mode = try getMode(scope, try scope.get(owner, "agent"));
     const header_object = try buildHeaders(scope, owner);
-    if (mode == .codex) try scope.put(header_object, "content-encoding", try scope.text("zstd"));
+    if (mode == .codex) _ = try scope.invoke(header_object, "set", &.{ try scope.text("content-encoding"), try scope.text("zstd") });
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
         for (fields.items) |field| {
@@ -279,7 +283,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         }
         fields.deinit(engine.gpa);
     }
-    var rows = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{header_object}));
+    var rows = try v.iterator(scope, try scope.invoke(header_object, "entries", &.{}));
     defer rows.deinit();
     errdefer rows.closePreserving();
     while (try rows.next()) |entry| {
