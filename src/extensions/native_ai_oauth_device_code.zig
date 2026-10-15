@@ -83,9 +83,13 @@ fn startPoll(scope: *Scope, owner: c.JSValue) !void {
     const options = try scope.get(owner, "agent");
     const deadline = if (c.JS_IsNumber(try scope.get(options, "expiresInSeconds"))) try binary(scope, .add, try now(scope), try binary(scope, .multiply, try scope.get(options, "expiresInSeconds"), c.JS_NewInt32(scope.engine.context, 1000))) else try scope.get(try scope.global("Number"), "POSITIVE_INFINITY");
     try scope.put(owner, "deadline", deadline);
+    const outer_math = try scope.global("Math");
+    const maximum = try scope.get(outer_math, "max");
+    const inner_math = try scope.global("Math");
+    const floor = try scope.get(inner_math, "floor");
     const interval = try scope.get(options, "intervalSeconds");
-    const initial = try scope.invoke(try scope.global("Math"), "floor", &.{try binary(scope, .multiply, if (v.nullish(interval)) c.JS_NewInt32(scope.engine.context, 5) else interval, c.JS_NewInt32(scope.engine.context, 1000))});
-    try scope.put(owner, "interval", try scope.invoke(try scope.global("Math"), "max", &.{ c.JS_NewInt32(scope.engine.context, 1000), initial }));
+    const initial = try scope.call(floor, inner_math, &.{try binary(scope, .multiply, if (v.nullish(interval)) c.JS_NewInt32(scope.engine.context, 5) else interval, c.JS_NewInt32(scope.engine.context, 1000))});
+    try scope.put(owner, "interval", try scope.call(maximum, outer_math, &.{ c.JS_NewInt32(scope.engine.context, 1000), initial }));
     try scope.put(owner, "slowDownResponses", c.JS_NewInt32(scope.engine.context, 0));
     if (scope.truthy(try scope.get(options, "waitBeforeFirstPoll"))) {
         const remaining = try binary(scope, .subtract, deadline, try now(scope));
@@ -120,8 +124,14 @@ fn afterPoll(scope: *Scope, owner: c.JSValue, result: c.JSValue) !void {
     if (try v.eq(scope, try scope.get(result, "status"), "slow_down")) {
         try scope.put(owner, "slowDownResponses", try binary(scope, .add, try scope.get(owner, "slowDownResponses"), c.JS_NewInt32(scope.engine.context, 1)));
         const server_interval = c.JS_IsNumber(try scope.get(result, "intervalSeconds")) and scope.truthy(try scope.invoke(try scope.global("Number"), "isFinite", &.{try scope.get(result, "intervalSeconds")})) and try arithmetic.compare(scope.engine, .greater, try scope.get(result, "intervalSeconds"), c.JS_NewInt32(scope.engine.context, 0));
-        const minimum = if (server_interval) try scope.invoke(try scope.global("Math"), "floor", &.{try binary(scope, .multiply, try scope.get(result, "intervalSeconds"), c.JS_NewInt32(scope.engine.context, 1000))}) else try binary(scope, .add, try scope.get(owner, "interval"), c.JS_NewInt32(scope.engine.context, 5000));
-        try scope.put(owner, "interval", try scope.invoke(try scope.global("Math"), "max", &.{ c.JS_NewInt32(scope.engine.context, 1000), minimum }));
+        const outer_math = try scope.global("Math");
+        const maximum = try scope.get(outer_math, "max");
+        const minimum = if (server_interval) blk: {
+            const inner_math = try scope.global("Math");
+            const floor = try scope.get(inner_math, "floor");
+            break :blk try scope.call(floor, inner_math, &.{try binary(scope, .multiply, try scope.get(result, "intervalSeconds"), c.JS_NewInt32(scope.engine.context, 1000))});
+        } else try binary(scope, .add, try scope.get(owner, "interval"), c.JS_NewInt32(scope.engine.context, 5000));
+        try scope.put(owner, "interval", try scope.call(maximum, outer_math, &.{ c.JS_NewInt32(scope.engine.context, 1000), minimum }));
     }
     const remaining = try binary(scope, .subtract, try scope.get(owner, "deadline"), try now(scope));
     if (try arithmetic.compare(scope.engine, .less_equal, remaining, c.JS_NewInt32(scope.engine.context, 0))) return timedOut(scope, owner);
