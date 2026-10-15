@@ -98,7 +98,7 @@ pub fn families(engine: *em.Engine) !c.JSValue {
 fn define(engine: *em.Engine, error_value: c.JSValue, key: [*:0]const u8, value: c.JSValue, enumerable: bool) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, error_value, key, c.JS_DupValue(engine.context, value), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE | (if (enumerable) @as(c_int, c.JS_PROP_ENUMERABLE) else 0)) < 0) return js.capture(engine);
 }
-fn nodeError(engine: *em.Engine, family: c.JSValue, key: [*:0]const u8, code: [:0]const u8, message: [:0]const u8, input: ?c.JSValue) anyerror {
+fn nodeError(engine: *em.Engine, family: c.JSValue, key: [*:0]const u8, code: []const u8, message: []const u8, input: ?c.JSValue) anyerror {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const value = scope.own(typeError(engine, "") catch |err| return err) catch |err| return err;
