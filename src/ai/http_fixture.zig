@@ -94,7 +94,12 @@ pub const PlanServer = struct {
             if (reply.delay_ms > 0) try self.io.sleep(.fromMilliseconds(reply.delay_ms), .awake);
             var headers: std.ArrayList(std.http.Header) = .empty;
             defer headers.deinit(self.gpa);
-            try headers.append(self.gpa, .{ .name = "content-type", .value = "application/json" });
+            var has_content_type = false;
+            for (reply.headers) |header| if (std.ascii.eqlIgnoreCase(header.name, "content-type")) {
+                has_content_type = true;
+                break;
+            };
+            if (!has_content_type) try headers.append(self.gpa, .{ .name = "content-type", .value = "application/json" });
             try headers.appendSlice(self.gpa, reply.headers);
             if (reply.body_delay_ms > 0) {
                 var buffer: [256]u8 = undefined;

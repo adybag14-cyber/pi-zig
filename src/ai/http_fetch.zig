@@ -24,9 +24,16 @@ pub fn fetchObserved(client: *std.http.Client, options: std.http.Client.FetchOpt
     const redirect_behavior: std.http.Client.Request.RedirectBehavior = options.redirect_behavior orelse
         if (options.payload == null) @enumFromInt(3) else .unhandled;
 
+    var standard_headers = options.headers;
+    if (standard_headers.user_agent == .default) {
+        for (options.extra_headers) |header| if (std.ascii.eqlIgnoreCase(header.name, "user-agent")) {
+            standard_headers.user_agent = .omit;
+            break;
+        };
+    }
     var req = try client.request(method, uri, .{
         .redirect_behavior = redirect_behavior,
-        .headers = options.headers,
+        .headers = standard_headers,
         .extra_headers = options.extra_headers,
         .privileged_headers = options.privileged_headers,
         .keep_alive = options.keep_alive,
@@ -80,6 +87,24 @@ pub fn fetchObserved(client: *std.http.Client, options: std.http.Client.FetchOpt
 
     return .{ .status = status, .provider = provider };
 }
+test "native AI HTTP explicit mixed-case and empty user agents suppress duplicate implicit standard user agent" {
+    const fixture = @import("http_fixture.zig");
+    const gpa = std.testing.allocator;
+    const headers = [_]std.http.Header{ .{ .name = "UsEr-AgEnT", .value = "fixture-native-runtime" }, .{ .name = "user-agent", .value = "" } };
+    const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{ .{ .path = "/extra", .body = "ok", .expected_request_headers = headers[0..1] }, .{ .path = "/empty-agent", .body = "ok", .expected_request_headers = headers[1..2] } });
+    defer server.deinit();
+    var client: std.http.Client = .{ .allocator = gpa, .io = std.testing.io };
+    defer client.deinit();
+    for ([_][]const u8{ "/extra", "/empty-agent" }, 0..) |path, index| {
+        const url = try server.url(gpa, path);
+        defer gpa.free(url);
+        var output: std.Io.Writer.Allocating = .init(gpa);
+        defer output.deinit();
+        const response = try fetchControlledObserved(&client, .{ .location = .{ .url = url }, .extra_headers = headers[index .. index + 1], .response_writer = &output.writer }, 2000, null, null);
+        try std.testing.expectEqual(@as(u16, 200), response.status);
+        try std.testing.expectEqualStrings("ok", output.written());
+    }
+}
 
 pub fn fetch(client: *std.http.Client, options: std.http.Client.FetchOptions) !Result {
     return fetchObserved(client, options, null);
@@ -121,6 +146,11 @@ pub fn fetchControlledObserved(
 /// continues to cover the body, and every branch is joined before return.
 pub fn fetchHeadersControlled(client: *std.http.Client, options: std.http.Client.FetchOptions, timeout_ms: ?u64, abort_flag: ?*bool) !Result {
     return fetchControlledScoped(client, options, timeout_ms, abort_flag, null, true);
+}
+/// The observed form retains the actual header boundary for streaming owners.
+/// Only the deadline retires at headers; cancellation still covers the body.
+pub fn fetchHeadersControlledObserved(client: *std.http.Client, options: std.http.Client.FetchOptions, timeout_ms: ?u64, abort_flag: ?*bool, observer: ?HeadObserver) !Result {
+    return fetchControlledScoped(client, options, timeout_ms, abort_flag, observer, true);
 }
 const HeaderState = struct {
     ready: std.atomic.Value(bool) = .init(false),

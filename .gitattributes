@@ -139,3 +139,6 @@ verification/oauth-subscriptions-ae7-20261015/sourceae7-oauth-subscriptions-capt
 # Writable native terminal receipts retain their captured EOF bytes.
 verification/writable-stream-native-debug-third-failed-20261015/compile.stderr.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/writable-stream-native-debug-source56-qualified-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-ai-http-shared-adc-compile-negative-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-ai-http-shared-successor-negatives-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/native-ai-http-shared-33bf-debug-20261015/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
