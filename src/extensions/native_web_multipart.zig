@@ -78,13 +78,13 @@ pub fn encode(scope: *Scope, object: c.JSValue, encoder: c.JSValue) !Encoded {
             length = try add(scope, length, try scope.get(bytes, "byteLength"));
         } else {
             const filename = try scope.get(value, "name");
-            if (scope.truthy(filename)) header = try scope.concat(try scope.concat(try scope.concat(header, try scope.text("; filename=\"")), try escapeName(scope, filename)), try scope.text("\""));
+            if (scope.truthy(filename)) header = try scope.concat(try scope.concat(try scope.concat(header, try scope.text("; filename=\"")), try escapeName(scope, try scope.get(value, "name"))), try scope.text("\""));
             const mime = try scope.get(value, "type");
             header = try scope.concat(try scope.concat(try scope.concat(header, try scope.text("\r\nContent-Type: ")), if (scope.truthy(mime)) mime else try scope.text("application/octet-stream")), try scope.text("\r\n\r\n"));
             const bytes = try scope.invoke(encoder, "encode", &.{header});
             _ = try scope.invoke(parts, "push", &.{ bytes, value, rn });
             const size = try scope.get(value, "size");
-            if (c.JS_IsNumber(size)) length = try add(scope, length, try add(scope, try add(scope, try scope.get(bytes, "byteLength"), size), try scope.get(rn, "byteLength"))) else unknown = true;
+            if (c.JS_IsNumber(size)) length = try add(scope, length, try add(scope, try add(scope, try scope.get(bytes, "byteLength"), try scope.get(value, "size")), try scope.get(rn, "byteLength"))) else unknown = true;
         }
     }
     const end = try scope.invoke(encoder, "encode", &.{try scope.concat(try scope.concat(try scope.text("--"), boundary), try scope.text("--\r\n"))});
