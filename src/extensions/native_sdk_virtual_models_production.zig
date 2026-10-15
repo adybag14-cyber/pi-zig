@@ -201,6 +201,16 @@ fn physicalPredicate(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, 
 fn virtualPredicate(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     return c.pi_js_bool(engine.context, @intFromBool(try isVirtualModel(engine, arg(args, 0))));
 }
+fn physicalFilter(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    const predicate = try functions.createArrow(engine, "", 1, physicalPredicate, roots);
+    defer engine.freeValue(predicate);
+    return js.invoke(engine, arg(args, 0), "filter", &.{predicate});
+}
+fn virtualFilter(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    const predicate = try functions.createArrow(engine, "", 1, virtualPredicate, &.{});
+    defer engine.freeValue(predicate);
+    return js.invoke(engine, arg(args, 0), "filter", &.{predicate});
+}
 fn appendIterable(s: *Scope, result: c.JSValue, iterable: c.JSValue) !void {
     const symbol = try s.get(try s.global("Symbol"), "iterator");
     var iterator = try js.Iterator.init(s.engine, iterable, symbol);
@@ -235,16 +245,16 @@ fn method(comptime kind: ProviderMethod) functions.Callback {
                     models = if (scopes.nullish(getter)) c.pi_js_undefined() else try s.call(getter, provider, &.{});
                     if (scopes.nullish(models)) models = try s.invoke(provider, "getModels", &.{});
                 } else models = try s.invoke(provider, "getModels", &.{});
-                const real = try s.invoke(models, "filter", &.{physical});
+                const real = try s.call(physical, c.pi_js_undefined(), &.{models});
                 try appendIterable(&s, result, real);
                 try appendIterable(&s, result, virtual);
             } else {
-                const real = try s.invoke(arg(args, 0), "filter", &.{physical});
+                const real = try s.call(physical, c.pi_js_undefined(), &.{arg(args, 0)});
                 const filter = roots[3];
                 var filtered = if (kind == .filterModels and scopes.nullish(filter)) c.pi_js_undefined() else try s.call(filter, c.pi_js_undefined(), &.{ real, arg(args, 1) });
                 if (kind == .filterModels and scopes.nullish(filtered)) filtered = real;
                 try appendIterable(&s, result, filtered);
-                const virtual_rows = try s.invoke(arg(args, 0), "filter", &.{virtual});
+                const virtual_rows = try s.call(virtual, c.pi_js_undefined(), &.{arg(args, 0)});
                 try appendIterable(&s, result, virtual_rows);
             }
             return c.JS_DupValue(engine.context, result);
@@ -276,8 +286,8 @@ fn withVirtualModels(engine: *em.Engine, imports: c.JSValue, provider_id: c.JSVa
     }
     const id_mapper = try s.own(try functions.createArrow(engine, "", 1, modelId, &.{}));
     const ids = try s.own(try js.builtin(engine, "Set", &.{try s.invoke(virtual_models, "map", &.{id_mapper})}));
-    const physical = try s.own(try functions.createArrow(engine, "", 1, physicalPredicate, &.{ try s.get(imports, "isModelType"), ids }));
-    const virtual = try s.own(try functions.createArrow(engine, "", 1, virtualPredicate, &.{}));
+    const physical = try s.own(try functions.createArrow(engine, "physical", 1, physicalFilter, &.{ try s.get(imports, "isModelType"), ids }));
+    const virtual = try s.own(try functions.createArrow(engine, "virtual", 1, virtualFilter, &.{}));
     // Destructure before spread, exactly as the source. The filters are plain
     // calls, whereas catalog and physical stream methods retain the provider.
     const filter_models = try s.get(provider, "filterModels");

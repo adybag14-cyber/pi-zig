@@ -68,3 +68,20 @@ Native namespace qualification and whole-Pi qualification remain false. Actual
 Models namespace and Codecs lazyStream integration dependencies must be present
 before native controls can run. Source pass is not a native pass, factory pass,
 release or live activation.
+
+Clean sealed recapture `sdk-virtual-models-source36-sealed-e216a3c9-20261015`
+completed at candidate e216a3c9 with actual Node PID 68520, exit zero and every
+posthash/inventory/absence/caller drift count zero. Candidate files 7534, Source
+1970, dependencies 31064, Node 1774, compiler 19546 and controls 9 were frozen.
+The output matched the preserved genuine expected byte-for-byte. Its child was
+independently checked absent after completion.
+
+Subsequent source inspection corrected physical/virtual filter callback lifetime:
+the source creates a fresh predicate on every filter call, so native closures now
+do the same. A comparison helper in
+`src/native_sdk_virtual_models_production_test.zig` takes actual imports from the
+real assembler and genuine reference bytes. It adds no substitute namespace.
+Neither this latest native source adjustment nor the test helper has undergone
+native semantic compilation/runtime qualification. The genuine Source36 fixture
+and capture caller remain unchanged; their accepted observation is the sealed
+e216a3c9 run, not a claim that later native source was executed.

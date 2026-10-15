@@ -1,0 +1,38 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-virtual-models-production-20261015\\src\\extensions\\fixtures\\sdk-virtual-models-production-4954.input.txt",
+    "sha256": "01DB0E94CE06DC77FB7DEC1ED9236668DDD1C178C144DE5DF658DB00857919A1"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-virtual-models-production-20261015\\verification\\sdk-virtual-models-production-4954-20261015\\capture-source.mjs",
+    "sha256": "E35EF6B855B0557C96B2AF6DBFB3FF1BA72E752B453D568AA2CC2E6F61254095"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-virtual-models-production-20261015\\verification\\sdk-virtual-models-production-4954-20261015\\run-source-qualified.ps1",
+    "sha256": "49E936440540AE2A04F9CAAEA1CEB7F4696C6B4BA41F3E9FE0BF3F4B4C073A18"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json",
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-full-manifest-20261015.json",
+    "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs",
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-runtime-manifest-20261015.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  }
+]

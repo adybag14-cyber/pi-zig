@@ -1,0 +1,10 @@
+{
+  "status": "admitted",
+  "free_kib": 20650460,
+  "required_kib": 2097152,
+  "source_only": true,
+  "observed_utc": "2026-10-15T22:33:25.0218543+00:00",
+  "heap_mb": 256,
+  "slot": 6,
+  "deadline_seconds": 300
+}
