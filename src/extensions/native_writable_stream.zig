@@ -786,6 +786,9 @@ pub fn exports(e: *Engine) !c.JSValue {
 }
 pub fn install(e: *Engine) !void {
     if (e.native_writable_stream_bindings != null) return;
+    // Node's writable module requires its real AbortController dependency.
+    // Engine.init is intentionally smaller than the complete web API graph.
+    if (e.abort_signal_class == 0) try @import("abort_signal.zig").install(e);
     var s: Scope = .{ .engine = e };
     defer s.deinit();
     const bindings = try s.object();
