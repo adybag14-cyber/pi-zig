@@ -417,7 +417,7 @@ fn installFixtureBridge(engine: *v.em.Engine) !void {
     defer scope.deinit();
     const slot = try scope.own(try createSlot(engine));
     const exports = try scope.object();
-    inline for (.{ "make", "token", "invalidate", "resolve" }, 0..) |name, index| {
+    inline for (.{ "make", "token", "invalidate", "resolve", "pending" }, 0..) |name, index| {
         const Adapter = struct {
             fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
                 var local: Scope = .{ .engine = host };
@@ -435,6 +435,7 @@ fn installFixtureBridge(engine: *v.em.Engine) !void {
                         return c.pi_js_undefined();
                     },
                     3 => return resolve(host, first, if (args.len > 1) args[1] else c.pi_js_undefined(), if (args.len > 2) args[2] else c.pi_js_undefined(), if (args.len > 3) args[3] else c.pi_js_undefined()),
+                    4 => return c.JS_DupValue(host.context, try local.get(first, "pendingRefresh")),
                     else => unreachable,
                 }
             }

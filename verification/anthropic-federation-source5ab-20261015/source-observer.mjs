@@ -31,6 +31,7 @@ const adapter = {
   },
   token(client) { return client._authState.tokenCache.getToken(); },
   invalidate(client) { client._authState.tokenCache.invalidate(); },
+  pending(client) { return client._authState.tokenCache.pendingRefresh; },
 };
 const dependencyCapture = await run(adapter, { path: identityPath, write: value => fs.writeFileSync(identityPath, value) });
 

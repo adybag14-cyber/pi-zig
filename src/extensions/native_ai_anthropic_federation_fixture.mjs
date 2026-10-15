@@ -7,6 +7,16 @@ export async function run(adapter, fixture) {
   const captures = [];
   const exchanges = [];
   const responses = [];
+  const deferredResponse = () => {
+    let release, fail, entered;
+    const promise = new Promise((resolve, reject) => { release = resolve; fail = reject; });
+    // This promise belongs to the fake endpoint queue. Observe it immediately,
+    // including while the actual SDK is still doing asynchronous file I/O.
+    promise.catch(() => {});
+    const observed = new Promise(resolve => { entered = resolve; });
+    responses.push({ promise, entered });
+    return { release, fail, observed };
+  };
   const config = {
     organization_id: "org-owned-fixture",
     workspace_id: "workspace-owned-fixture",
@@ -37,6 +47,7 @@ export async function run(adapter, fixture) {
     exchanges.push({ url, method: init.method, headers: init.headers, body: init.body, hasSignal: Object.hasOwn(init, "signal") });
     const next = responses.shift();
     if (!next) throw Error("owned fixture did not schedule a token response");
+    if (next.promise) { next.entered(); return await next.promise; }
     return await next;
   };
   const tokenResponse = value => response(JSON.stringify({ access_token: value, token_type: "Bearer", expires_in: 180 }));
@@ -47,21 +58,20 @@ export async function run(adapter, fixture) {
   try {
     fixture.write("  owned.fixture.jwt.first\n");
     const first = adapter.make(config, fetch);
-    let release;
-    responses.push(new Promise(resolve => { release = resolve; }));
+    const initial = deferredResponse();
     const a = adapter.token(first);
     const b = adapter.token(first);
-    release(tokenResponse("owned-access-first"));
+    initial.release(tokenResponse("owned-access-first"));
     captures.push({ case: "coalesced-first", results: await Promise.all([outcome(a), outcome(b)]), count: exchanges.length });
     captures.push({ case: "fresh-cache", result: await outcome(adapter.token(first)), count: exchanges.length });
 
     clock = 1060000; // Exactly 120 seconds remaining enters advisory refresh.
-    let failAdvisory;
-    responses.push(new Promise((_, reject) => { failAdvisory = reject; }));
+    const advisory = deferredResponse();
     captures.push({ case: "advisory-stale", result: await outcome(adapter.token(first)) });
+    await advisory.observed;
     clock = 1151000; // 29 seconds remaining requires the same pending refresh.
     const mandatory = outcome(adapter.token(first));
-    failAdvisory(Error("owned endpoint offline"));
+    advisory.fail(Error("owned endpoint offline"));
     captures.push({ case: "mandatory-joins-advisory-error", result: await mandatory });
 
     fixture.write("owned.fixture.jwt.rotated");
@@ -71,11 +81,12 @@ export async function run(adapter, fixture) {
     captures.push({ case: "same-config-fetch-shares", result: await outcome(adapter.token(adapter.make(config, fetch))), count: exchanges.length });
 
     clock = 1211000; // Rotated token has exactly 120 seconds remaining.
-    let failBackground;
-    responses.push(new Promise((_, reject) => { failBackground = reject; }));
+    const background = deferredResponse();
     await adapter.token(first);
-    failBackground(Error("owned advisory failure"));
-    for (let n = 0; n < 16; n++) await Promise.resolve();
+    await background.observed;
+    const backgroundFinished = outcome(adapter.pending(first));
+    background.fail(Error("owned advisory failure"));
+    await backgroundFinished;
     clock = 1212000;
     captures.push({ case: "advisory-backoff", result: await outcome(adapter.token(first)), count: exchanges.length });
 
