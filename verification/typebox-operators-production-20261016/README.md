@@ -19,8 +19,8 @@ The authority is the installed TypeBox **1.3.27** at
 `C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox`.
 Its package manifest SHA256 is
 `C59DDFD977CE941F1E8EE8B0A0B14396C332FA27CC5FA6FA165227FFD5A3992F`.
-`reachable-closure.json` identifies all **250 reachable modules**, **878 selected
-declarations** and **153 exported bindings**. `lowering-map.json` maps all **1,667
+`reachable-closure.json` identifies all **250 reachable modules**, **880 selected
+declarations** and **157 exported bindings**. `lowering-map.json` maps all **1,669
 compiled native callbacks** to original file spans, source hashes, names,
 arities and arrow status. The TypeBox MIT license is retained alongside them.
 
