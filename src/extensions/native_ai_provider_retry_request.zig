@@ -124,7 +124,7 @@ fn failed(scope: *Scope, owner: c.JSValue, failure: c.JSValue, owned: bool) !voi
     }
     const index = try binary(scope, .subtract, try scope.get(owner, "maximum"), remaining);
     try scope.set(owner, "remaining", try binary(scope, .subtract, remaining, c.JS_NewInt32(scope.engine.context, 1)));
-    try flow.wait(continued, scope.engine, owner, try sleep(scope, try retryDelay(scope, failure, index, try scope.get(options, "maxRetryDelayMs")), abort_signal), 1);
+    try flow.wait(continued, scope.engine, owner, try scope.own(try sleep(scope, try retryDelay(scope, failure, index, try scope.get(options, "maxRetryDelayMs")), abort_signal)), 1);
 }
 fn sleep(scope: *Scope, duration: c.JSValue, abort_signal: c.JSValue) !c.JSValue {
     const pending = try flow.create(scope.engine, abort_signal);
