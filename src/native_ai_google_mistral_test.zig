@@ -5,6 +5,7 @@ const facade = @import("extensions/native_ai_google_mistral_factory.zig");
 const c = em.c;
 fn install(engine: *em.Engine) !void {
     try @import("extensions/native_stream.zig").install(engine);
+    try @import("extensions/node_url.zig").install(engine);
     const imported = try engine.evalModule("import 'pi-ai';export const loaded=true;", "native-google-mistral-stream-install.mjs");
     engine.freeValue(imported);
     const global = c.JS_GetGlobalObject(engine.context);
@@ -190,6 +191,8 @@ test "native AI Google Mistral complete native facade allocation graph" {
             const checked = engine.evalModule("for(const f of [google.streamSimple,mistral.streamSimple]){try{f({provider:'fixture'},{messages:[]},{});throw Error('missing key accepted')}catch(error){if(error.message!=='No API key for provider: fixture')throw error}}export const checked=true;", "native-google-mistral-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
             engine.freeValue(checked);
             c.JS_RunGC(engine.runtime);
+            const failure: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+            if (failure.has_induced_failure) std.debug.print("Google/Mistral swallowed allocation {d}: {f}\n", .{ failure.fail_index, std.debug.FormatStackTrace{ .stack_trace = failure.getStackTrace() } });
         }
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
