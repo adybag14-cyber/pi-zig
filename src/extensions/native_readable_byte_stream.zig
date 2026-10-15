@@ -893,7 +893,7 @@ pub fn preparePublicGraph(scope: *Scope, bindings: c.JSValue) !void {
     const global = try scope.own(c.JS_GetGlobalObject(scope.engine.context));
     const tag = c.JS_ValueToAtom(scope.engine.context, try scope.get(try scope.global("Symbol"), "toStringTag"));
     defer c.JS_FreeAtom(scope.engine.context, tag);
-    inline for (.{ PublicGroup.defaultReader, .byobReader, .defaultController, .byteController, .request }) |group| {
+    inline for ([_]PublicGroup{ .defaultReader, .byobReader, .defaultController, .byteController, .request }) |group| {
         const prototype = try scope.object();
         const key = switch (group) {
             .defaultReader => "defaultReaderPrototype",
