@@ -1,0 +1,26 @@
+{
+  "inherits": "sdk-resource-class-5ab.files.json",
+  "files": [
+    {"path":"parser-skills/valid/SKILL.md","content":"---\nname: valid\ndescription: Full parser skill\ndisable-model-invocation: true\n---\nBody\n"},
+    {"path":"parser-skills/no-description/SKILL.md","content":"---\nname: no-description\n---\nBody\n"},
+    {"path":"parser-skills/warning-name/SKILL.md","content":"---\nname: -bad--name-\ndescription: Warning remains loadable\n---\nBody\n"},
+    {"path":"parser-skills/yaml-bad/SKILL.md","content":"---\ndescription: [unfinished\n---\nBody\n"},
+    {"path":"parser-skills/typed-root/SKILL.md","content":"---\n[false, true]\n---\nBody\n"},
+    {"path":"parser-skills/quoted-flag/SKILL.md","content":"---\nname: quoted-flag\ndescription: Quoted true is a string\ndisable-model-invocation: 'true'\n---\nBody\n"},
+    {"path":"parser-skills/alias/SKILL.md","content":"---\nname: &name alias\ndescription: *name\n---\nBody\n"},
+    {"path":"parser-skills/merge/SKILL.md","content":"---\nbase: &base {name: merge, description: Merged description}\n<<: *base\n---\nBody\n"},
+    {"path":"parser-skills/loose/described.md","content":"---\nname: loose\ndescription: Direct markdown skill\n---\nBody\n"},
+    {"path":"parser-skills/loose/ignored.md","content":"---\ndescription: [unfinished\n---\nNot a declared skill\n"},
+    {"path":"parser-skills/loose/plain.md","content":"Plain markdown without a description\n"},
+    {"path":"parser-skills/loose/UPPER.MD","content":"---\nname: upper\ndescription: Upper-case extension is not a skill path\n---\nBody\n"},
+    {"path":"parser-prompts/plain.md","content":"\n  First non-empty prompt line\nSecond line\n"},
+    {"path":"parser-prompts/alias.md","content":"---\ndescription: &description Aliased prompt\nargument-hint: *description\n---\nUse $1\n"},
+    {"path":"parser-prompts/typed.md","content":"---\ndescription: [not, text]\nargument-hint: 7\n---\nFallback prompt description\n"},
+    {"path":"parser-prompts/empty-hint.md","content":"---\ndescription: '   '\nargument-hint: ''\n---\nBody\n"},
+    {"path":"parser-prompts/yaml-bad.md","content":"---\ndescription: [unfinished\n---\nBody\n"},
+    {"path":"parser-prompts/UPPER.MD","content":"Upper-case prompt extension\n"},
+    {"path":"parser-prompts/nested/inside.md","content":"Nested prompt must not be scanned by the directory loader\n"},
+    {"path":"parser-prompts/.hidden.md","content":"Explicit directory scan includes dot markdown files\n"}
+  ],
+  "themes": []
+}

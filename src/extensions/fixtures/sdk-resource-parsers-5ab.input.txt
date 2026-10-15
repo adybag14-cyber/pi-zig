@@ -1,0 +1,33 @@
+const {loadSkills,loadPromptTemplates,prototype:p,parseFrontmatter}=resourceParserAPI,root=resourceParserFixtureRoot.replaceAll('\\','/'),cwd=root+'/project',agentDir=root+'/agent',rows=[];
+globalThis.resourceParserRows=rows;
+function clean(value){return JSON.parse(JSON.stringify(value,(_key,v)=>typeof v==='string'?v.replaceAll('\\','/').replaceAll(root,'<fixture>'):v))}
+function row(name,value){rows.push({case:name,...clean(value)})}
+for(const name of ['valid','no-description','warning-name','yaml-bad','typed-root','quoted-flag','alias','merge'])row('actual-skill-file:'+name,{value:loadSkills({cwd,agentDir,skillPaths:[root+'/parser-skills/'+name+'/SKILL.md'],includeDefaults:false})});
+for(const name of ['described.md','ignored.md','plain.md','UPPER.MD'])row('actual-loose-skill-file:'+name,{value:loadSkills({cwd,agentDir,skillPaths:[root+'/parser-skills/loose/'+name],includeDefaults:false})});
+row('actual-skill-directory',{value:loadSkills({cwd,agentDir,skillPaths:[root+'/parser-skills'],includeDefaults:false})});
+row('actual-skill-defaults-plus-explicit',{value:loadSkills({cwd,agentDir,skillPaths:[root+'/parser-skills/valid/SKILL.md'],includeDefaults:true})});
+row('actual-skill-missing-and-canonical-repeat',{value:loadSkills({cwd,agentDir,skillPaths:[root+'/missing/SKILL.md',root+'/parser-skills/valid/SKILL.md',root+'/parser-skills/valid/../valid/SKILL.md'],includeDefaults:false})});
+for(const name of ['plain.md','alias.md','typed.md','empty-hint.md','yaml-bad.md','UPPER.MD'])row('actual-prompt-file:'+name,{value:loadPromptTemplates({cwd,agentDir,promptPaths:[root+'/parser-prompts/'+name],includeDefaults:false})});
+row('actual-prompt-nonrecursive-directory',{value:loadPromptTemplates({cwd,agentDir,promptPaths:[root+'/parser-prompts'],includeDefaults:false})});
+row('actual-prompt-defaults-plus-explicit',{value:loadPromptTemplates({cwd,agentDir,promptPaths:[root+'/parser-prompts/plain.md'],includeDefaults:true})});
+row('actual-prompt-missing-and-repeat',{value:loadPromptTemplates({cwd,agentDir,promptPaths:[root+'/missing.md',root+'/parser-prompts/plain.md',root+'/parser-prompts/plain.md'],includeDefaults:false})});
+function receiver(){const s=Object.create(p);Object.assign(s,{cwd,agentDir,noSkills:false,noPromptTemplates:false,skills:[],skillDiagnostics:[],prompts:[],promptDiagnostics:[],extensionSkillSourceInfos:new Map(),extensionPromptSourceInfos:new Map()});return s}
+for(const kind of ['skills','prompts']){
+ const method=kind==='skills'?'updateSkillsFromPaths':'updatePromptsFromPaths',path=root+(kind==='skills'?'/parser-skills/valid/SKILL.md':'/parser-prompts/alias.md'),s=receiver(),log=[];
+ Object.defineProperty(s,kind+'Override',{configurable:true,get(){log.push('get override');return function(base){log.push({receiver:this===s,names:base[kind].map(v=>v.name)});return base}}});s[method]([path],new Map());row('ordinary-update-real-parser:'+kind,{log,value:s[kind],diagnostics:s[kind==='skills'?'skillDiagnostics':'promptDiagnostics']});
+}
+for(const kind of ['skills','prompts']){
+ const method=kind==='skills'?'updateSkillsFromPaths':'updatePromptsFromPaths',path=root+(kind==='skills'?'/parser-skills/valid/SKILL.md':'/parser-prompts/alias.md'),s=receiver(),marker={},log=[];
+ s[kind+'Override']=function(base){log.push('override');return{[kind]:base[kind],get diagnostics(){log.push('diagnostics');throw marker}}};let same=false;try{s[method]([path],new Map())}catch(e){same=e===marker}row('update-cache-before-diagnostics-failure:'+kind,{same,log,value:s[kind],oldDiagnostics:s[kind==='skills'?'skillDiagnostics':'promptDiagnostics']});
+}
+for(const kind of ['skills','prompts']){
+ const method=kind==='skills'?'updateSkillsFromPaths':'updatePromptsFromPaths',path=root+(kind==='skills'?'/parser-skills/valid/SKILL.md':'/parser-prompts/alias.md'),s=receiver();s[kind+'Override']=()=>Promise.resolve({[kind]:[],diagnostics:[]});let sync=false,error;try{s[method]([path],new Map())}catch(e){sync=true;error=e.name}row('update-promise-override-remains-synchronous:'+kind,{sync,error});
+}
+for(const kind of ['skills','prompts']){
+ const method=kind==='skills'?'updateSkillsFromPaths':'updatePromptsFromPaths',s=receiver(),marker={};s[kind==='skills'?'noSkills':'noPromptTemplates']=true;s[kind+'Override']=()=>{throw marker};let same=false;try{s[method]([],new Map())}catch(e){same=e===marker}row('disabled-empty-update-still-calls-override:'+kind,{same});
+}
+{
+ const parsed=parseFrontmatter('---\nroot: &root {self: *root, value: 7}\ncopy: *root\nquoted: "\\ud83e"\n---\nBody\n');row('actual-YAML-graph-identity',{body:parsed.body,sameAlias:parsed.frontmatter.root===parsed.frontmatter.copy,self:parsed.frontmatter.root.self===parsed.frontmatter.root,value:parsed.frontmatter.root.value,quotedUnits:Array.from({length:parsed.frontmatter.quoted.length},(_,i)=>parsed.frontmatter.quoted.charCodeAt(i))});
+}
+if(!rows.some(r=>r.case==='actual-skill-file:yaml-bad'&&r.value.diagnostics.length>0)||!rows.some(r=>r.case==='actual-loose-skill-file:ignored.md'&&r.value.skills.length===0&&r.value.diagnostics.length===0))throw Error('Declared and loose YAML failure semantics must both execute');
+export const proof=true;

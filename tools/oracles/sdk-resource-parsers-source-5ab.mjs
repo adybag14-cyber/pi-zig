@@ -1,0 +1,14 @@
+import {readFileSync,writeFileSync,realpathSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+const base=pathToFileURL('C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/coding-agent/src/').href;
+const {loadSkills}=await import(base+'core/skills.ts');
+const {loadPromptTemplates}=await import(base+'core/prompt-templates.ts');
+const {DefaultResourceLoader}=await import(base+'core/resource-loader.ts');
+const {parseFrontmatter}=await import(base+'utils/frontmatter.ts');
+globalThis.resourceParserAPI={loadSkills,loadPromptTemplates,prototype:DefaultResourceLoader.prototype,parseFrontmatter};
+globalThis.resourceParserFixtureRoot=realpathSync(process.argv[4]);
+const input=readFileSync(process.argv[3]);
+await import('data:text/javascript,'+encodeURIComponent(input.toString('utf8')));
+if(resourceParserRows.length!==33)throw Error('All33 actual parser and ordinary update callers required; got '+resourceParserRows.length);
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'5ab7fe74c400097b386662205cd93900695b8a71',inputSha256:createHash('sha256').update(input).digest('hex'),cases:resourceParserRows.length,scope:'Genuine skill and prompt parsers, declared/loose YAML failures, schema warnings, aliases/merge/UTF16 graph identity, default/explicit discovery and ordinary synchronous cache/override callbacks. Native parser and full-loader qualification remain separate gates.',rows:resourceParserRows},null,2));

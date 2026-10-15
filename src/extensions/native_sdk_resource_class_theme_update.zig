@@ -7,10 +7,10 @@ const Scope = temp.Scope;
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
+    try @import("native_tui.zig").install(engine);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const terminal = try scope.object();
-    try @import("native_terminal_image.zig").install(engine, terminal);
+    const terminal = engine.native_module_values.get("pi-tui") orelse return error.ActualNativeTerminalExportsRequired;
     var roots = [_]c.JSValue{ try scope.get(terminal, "detectCapabilities"), try scope.get(terminal, "getTerminalColorMode") };
     const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, "updateThemesFromPaths", 2, 0, roots.len, &roots));
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "updateThemesFromPaths", function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
