@@ -8,11 +8,12 @@ $taskRuntime='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012'
 $taskDriver=Join-Path $taskEvidence 'sourceae7-oauth-subscriptions-capture-20261015.mjs'
 $taskObserver=Join-Path $taskEvidence 'sourceae7-observe-20261015.mjs'
 $taskAudit=Join-Path $taskEvidence 'sourceae7-dependency-contract-audit-20261015.json'
-$taskJobOwner=Join-Path $taskEvidence 'Invoke-OwnedEeSourceJob-20261012.ps1'
+$taskJobOwner=Join-Path $taskEvidence 'Invoke-OwnedOAuthSubscriptionsSourceJob-20261015.ps1'
 if((Get-FileHash -LiteralPath $taskNode).Hash -cne '63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088'){throw 'Pinned Node changed before syntax check'}
 & $taskJobOwner -Name "$taskName-syntax-check" -Executable $taskNode -WorkingDirectory $taskSource -Arguments @('--check',$taskDriver) -TimeoutSeconds 30
 $taskSyntax=Get-Content -LiteralPath (Join-Path $taskEvidence "$taskName-syntax-check.json") -Raw|ConvertFrom-Json
 if($taskSyntax.status -cne 'passed'){throw 'Source84 driver syntax check failed before prehash'}
+$taskSealedHead=(git -c gc.auto=0 -c maintenance.auto=false -c pack.threads=2 -c pack.windowMemory=64m -C C:/Users/adyba/pi-zig-native-oauth-copilot-kimi-xai-20261015 rev-parse HEAD)
 $taskSpecs=@(
  @{name='source';file='sourceae7-full-manifest-20261015.json';count=1968},
  @{name='dependencies';file='sourceae7-runtime-manifest-20261015.json';count=31064},
@@ -51,7 +52,7 @@ $taskExtra|ConvertTo-Json -Depth 4|Set-Content -LiteralPath $taskControlManifest
 $taskControlManifestHash=(Get-FileHash -LiteralPath $taskControlManifest).Hash
 $taskFree=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory
 if($taskFree -lt 2MB){@{status='admission_denied';free_kib=$taskFree;required_kib=2MB;node_launched=$false}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-admission.json");exit 2}
-@{status='admitted';free_kib=$taskFree;required_kib=2MB;heap_mb=256;coordinated_with='Root grant pending: no prehash or Source execution before explicit LIGHT admission';observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-admission.json")
+@{status='admitted';free_kib=$taskFree;required_kib=2MB;heap_mb=256;coordinated_with='Root explicit LIGHT3 Source84 grant; no native launch';observed_utc=[DateTimeOffset]::UtcNow.ToString('o');sealed_candidate_head=$taskSealedHead;owner_sha256=(Get-FileHash -LiteralPath $PSCommandPath).Hash;copilot_catalog_scope='actual original ae7Source 36 chat models; byte-identical official FFA3 hydrated Copilot data; no central namespace identity claim';copilot_catalog_sha256='1C7D77A4C320081BB0A80B2C8E185B34F07B73D38E67D20F3DCABCF72F2F8FCD'}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-admission.json")
 $taskOutput=Join-Path $taskEvidence "$taskName-output.json"
 & $taskJobOwner -Name $taskName -Executable $taskNode -WorkingDirectory $taskSource -Arguments @('--max-old-space-size=256','--expose-gc','--conditions=source','--experimental-transform-types','--import',([Uri]$taskObserver).AbsoluteUri,$taskDriver,$taskOutput) -TimeoutSeconds 300 -EnvironmentOverrides @{NODE_OPTIONS='';NODE_PATH='';PI_SOURCE_ORACLE_CONTROL_MANIFEST=$taskControlManifest;NODE_USE_ENV_PROXY='';HTTP_PROXY='';HTTPS_PROXY='';ALL_PROXY='';NO_PROXY='127.0.0.1,localhost';OPENAI_API_KEY='';OPENAI_ORG_ID='';OPENAI_PROJECT_ID='';OPENAI_BASE_URL='';KIMI_API_KEY='';PI_PACKAGE_DIR='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/packages/coding-agent'}
 $taskPost=@()
@@ -70,5 +71,6 @@ $taskExpected='C:/Users/adyba/pi-zig-native-oauth-copilot-kimi-xai-20261015/src/
 if(Test-Path -LiteralPath $taskExpected){throw 'Refuse expected replay'}
 Copy-Item -LiteralPath $taskOutput -Destination $taskExpected
 @{source_cases=84;expected_sha256=(Get-FileHash -LiteralPath $taskExpected).Hash;expected_published_after_terminal_and_full_posthash=$true;full_pi_qualified=$false}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-validation.json") -Encoding utf8NoBOM
+
 
 

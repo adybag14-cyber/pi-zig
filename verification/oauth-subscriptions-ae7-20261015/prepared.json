@@ -2,16 +2,28 @@
   "source_head": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
   "controls": [
     {
-      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs",
-      "sha256": "9ED686A35C9345449189596DCA7034E5CDCEC907BAFF18FF1941C5F13FEFEC2D"
+      "sha256": "462802E2B6FBD87F7C01B0F2770CAD4F9F8B3D2123A48C06CFC9B374CAF0B54A",
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Run-OAuthSubscriptionsAe7Source84-20261015.ps1"
     },
     {
-      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Run-OAuthSubscriptionsAe7Source84-20261015.ps1",
-      "sha256": "D1D7933A685C628A4C0A0F40239BE457EE88CB053C5DB5ECB71FA234FF7EF956"
+      "sha256": "A730BF4D619CFFCF83FA053ADB135BA54542640DED11D203FD2438A3D4D21EC8",
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Invoke-OwnedOAuthSubscriptionsSourceJob-20261015.ps1"
     },
     {
-      "path": "C:\\Users\\adyba\\pi-zig-native-oauth-copilot-kimi-xai-20261015\\src\\extensions\\fixtures\\ai-oauth-subscriptions-ae7.input.txt",
-      "sha256": "75CB137CAF477044D5A97B17D631CAFEE4147BFE855F5A85D439C640E9EC4F2A"
+      "sha256": "9ED686A35C9345449189596DCA7034E5CDCEC907BAFF18FF1941C5F13FEFEC2D",
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/sourceae7-oauth-subscriptions-capture-20261015.mjs"
+    },
+    {
+      "sha256": "75CB137CAF477044D5A97B17D631CAFEE4147BFE855F5A85D439C640E9EC4F2A",
+      "path": "C:/Users/adyba/pi-zig-native-oauth-copilot-kimi-xai-20261015/src/extensions/fixtures/ai-oauth-subscriptions-ae7.input.txt"
+    },
+    {
+      "sha256": "1C7D77A4C320081BB0A80B2C8E185B34F07B73D38E67D20F3DCABCF72F2F8FCD",
+      "path": "C:/Users/adyba/pi-upstream-source-ae7b16d-20261015/packages/ai/src/providers/data/github-copilot.json"
+    },
+    {
+      "sha256": "1C7D77A4C320081BB0A80B2C8E185B34F07B73D38E67D20F3DCABCF72F2F8FCD",
+      "path": "C:/Users/adyba/pi-upstream-catalog-source-ae7b16d-20261015/packages/ai/src/providers/data/github-copilot.json"
     }
   ],
   "authored_cases": 84,
@@ -26,5 +38,12 @@
   "expected_exists": false,
   "public_activation": false,
   "native_compiled": false,
-  "source_executed": false
+  "source_executed": false,
+  "root_light_slot": 3,
+  "source_grant": "Root explicit LIGHT3 Source84; no native grant",
+  "copilot_catalog": {
+    "central_namespace_identity_qualified": false,
+    "models": 36,
+    "source_and_official_hydration_raw_sha256": "1C7D77A4C320081BB0A80B2C8E185B34F07B73D38E67D20F3DCABCF72F2F8FCD"
+  }
 }
