@@ -2208,11 +2208,12 @@ pub fn build(b: *std.Build) void {
     path_test_step.dependOn(&run_path_tests.step);
     test_step.dependOn(&run_path_tests.step);
     const url_tests = b.addTest(.{
-        .filters = &.{"extensions.node_url."},
+        .filters = &.{ "extensions.node_url.", "extensions.native_url.", "extensions.url_parser.", "extensions.url_search_params.", "extensions.file_urls." },
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extension_node_url_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, url_tests.root_module, quickjs, sqlite_lib_dir);
+    b.step("build-extension-url", "Compile every native URL file-URL parser parameter and constructor regression without execution").dependOn(&url_tests.step);
     const run_url_tests = b.addRunArtifact(url_tests);
     const url_test_step = b.step("test-extension-url", "Test native file URL conversion for extensions");
     url_test_step.dependOn(&run_url_tests.step);

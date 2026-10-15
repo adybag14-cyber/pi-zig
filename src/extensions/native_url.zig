@@ -499,7 +499,7 @@ test "native URL setter coercion reentrancy original exceptions brands and faile
 }
 
 test "native URL actual Node24 constructor errors match focused forty Source observations" {
-    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try install(engine);
     const global = c.JS_GetGlobalObject(engine.context);
@@ -517,7 +517,7 @@ test "native URL actual Node24 constructor errors match focused forty Source obs
 }
 
 test "native URL constructor error family roots preserve prototypes coercion identity and retained setters across GC" {
-    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     try install(engine);
     const prepared = try engine.eval(
