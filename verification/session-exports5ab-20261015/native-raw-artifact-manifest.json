@@ -1,0 +1,677 @@
+[
+  {
+    "path": "Audit-SessionExportsFrozenGitBlobs-20261015.ps1",
+    "sha256": "1C157DE833CA67962EDABAD26BBE5C7BBC54B28AD584A37874838AD696097850",
+    "bytes": 3484
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-absence.json",
+    "sha256": "433196216668DC5D269E44C29E32DD19D077B7267E81407D995DC7041106A8FF",
+    "bytes": 196
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-admission.json",
+    "sha256": "C91B2292FDA6D3265EC685E2C7A9975BD0D5D3E5BBD1C23FF8AACE8A27E286A1",
+    "bytes": 332
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-controls-before.json",
+    "sha256": "E258A73BB8EB7B2A871D651A75087EB67EF79935DEB9304B62FD9B740E00B365",
+    "bytes": 2843
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-native-before.json",
+    "sha256": "DFCFC1F0BC98AB30E92CEA32DA5A93C9661D1BDB8DF18FCCEF5E57844E606176",
+    "bytes": 1708863
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-posthash.json",
+    "sha256": "9A0D378B353B58C4A474B819DD3A0292C96F827EF99E41A21E42135D1A7C74B8",
+    "bytes": 878
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015.json",
+    "sha256": "D5A5AC090049CFCDBFCED9EF6AC663B88B6FAA255EA53074581F81E2846C9A18",
+    "bytes": 965
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015.stderr.log",
+    "sha256": "7BC7849B24C5E76F11106B3569752A529F79EAFACA4461F9FAD90732F4DB976C",
+    "bytes": 17797
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-preflight-reject-20261015.json",
+    "sha256": "C6A896EA31C61912ECCC77AE708FF39B565157F5840BE9BD94D76343E592A686",
+    "bytes": 417
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-preflight-wrapper-20261015.ps1",
+    "sha256": "C3A0E928856470C3CB276BA6374A1EB9175E3E56F3482E6242E67DD724B78A80",
+    "bytes": 9909
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-absence.json",
+    "sha256": "37C6DDBAB0CCAC668126622F54499EE91C0131CC31580F14607E8BAB59EECC00",
+    "bytes": 196
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-admission.json",
+    "sha256": "A9FF068EA5AACF3DDE7EDF32565DE0EDA36A10578F9B445D8954ED0BD663EF77",
+    "bytes": 332
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-artifacts.json",
+    "sha256": "042654075196674D68649A64A9640776A052A00BC2EA4F6D1FF10C1368A93787",
+    "bytes": 460
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-controls-before.json",
+    "sha256": "BABF0BAE4913DE5A2DD6CC168B8D72F15AE3906844ED1747EA7A9E282CC2C0B9",
+    "bytes": 3571
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-native-before.json",
+    "sha256": "CA75A14277FB37A83D0E069B2A21F02B2DF8C634D4414063768FC26E1D53B513",
+    "bytes": 1708863
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-posthash.json",
+    "sha256": "21C28E595170548860C7CD3903A2F202244DE0C6A282CD3EF4829A1BF2010828",
+    "bytes": 878
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015.json",
+    "sha256": "7DAF6E5EEDE5E184DFFA0112E2352694FFF6D14D117703A882AD6542BCF44BB5",
+    "bytes": 966
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015.stderr.log",
+    "sha256": "9F717AFB651689FA52FFDA410DCED7133702DA89C950BF02048C2EEAE057152C",
+    "bytes": 14105
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-absence.json",
+    "sha256": "3AF4B5E471B3BEC63EB7D56B26976E6DD1F6E09C19DEE11246267EE414385927",
+    "bytes": 196
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-admission.json",
+    "sha256": "E54EE2FA21C8B352911E031EFF9273CB422CECE2D803CFB23EF025D25314715D",
+    "bytes": 332
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-artifacts.json",
+    "sha256": "5A1DDBDFC337A6766B098CD9C1050EB7D3E8898027B339D2A500AA0150C1D7BA",
+    "bytes": 460
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-controls-before.json",
+    "sha256": "F70E857E6900BB6AA439BAEBBAA6B64348009EF3018DBB538CB554C9BF5DB81E",
+    "bytes": 3570
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-native-before.json",
+    "sha256": "5DB1B39B8E169F538392A9BE93EA7C50DBF4CE913025D6383C043F3EF1956AC7",
+    "bytes": 1709190
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-posthash.json",
+    "sha256": "9E9EA67831FB3CAA7A592A5D5E8F3BD03588E5B7977FFD482F2B8FE867DCC342",
+    "bytes": 878
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015.json",
+    "sha256": "9812B12BE7C7D0CA1621926077F77AC25B8F6592057B0BFB37FAD85695BF2683",
+    "bytes": 965
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015.stderr.log",
+    "sha256": "47FF08B13F93820B81CF4E477317AB319A546FF3B91DEEC5CC0BBBC7B5A94F02",
+    "bytes": 14111
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-git-blob-audit-20261015.json",
+    "sha256": "D604AD5762E1A6060DBDAF18FAD8CA130A5FE5111D2B2689A2E273CFD14C525D",
+    "bytes": 462
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-git-blob-audit-files-20261015.json",
+    "sha256": "FAAA64448547A76FEBCCE34F6E8795C958797F0927AD8D8C0D3A4CDE29053A09",
+    "bytes": 1446665
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-absence.json",
+    "sha256": "64BBA6844B33D983FEA30CB23A4094449180018F8B4DB964D81491D3011C31B3",
+    "bytes": 196
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-admission.json",
+    "sha256": "37564EC85136CD64A5D736A9BE12442FB5A6E7B24A381B44702BA8658D079593",
+    "bytes": 332
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-controls-before.json",
+    "sha256": "BABF0BAE4913DE5A2DD6CC168B8D72F15AE3906844ED1747EA7A9E282CC2C0B9",
+    "bytes": 3571
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-native-before.json",
+    "sha256": "CA75A14277FB37A83D0E069B2A21F02B2DF8C634D4414063768FC26E1D53B513",
+    "bytes": 1708863
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-posthash.json",
+    "sha256": "2650AE5CB608D790277DFCF46B13B3909A16DA9F05F757368081646777ABBE49",
+    "bytes": 878
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015.json",
+    "sha256": "C2DCF4A2A975EF670F9BB93FBF94ABAE1171E63C7EF1F1907C296B9155F535EF",
+    "bytes": 964
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015.stderr.log",
+    "sha256": "A44924A9D565A4BE023C86042D2DA446E1305780F50D803E5F75C412D702F601",
+    "bytes": 20833
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-absence.json",
+    "sha256": "44BADF48E350F1FA3DA888FF0EEA72F6CC70FBD0ACE382EC72E5B32FC2F2069F",
+    "bytes": 196
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-admission.json",
+    "sha256": "710A9421DC8DAA4D7B63B08F89F81A74B74D1CB494AE020703DAF4F62B8E5069",
+    "bytes": 332
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-controls-before.json",
+    "sha256": "F70E857E6900BB6AA439BAEBBAA6B64348009EF3018DBB538CB554C9BF5DB81E",
+    "bytes": 3570
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-native-before.json",
+    "sha256": "5DB1B39B8E169F538392A9BE93EA7C50DBF4CE913025D6383C043F3EF1956AC7",
+    "bytes": 1709190
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-posthash.json",
+    "sha256": "AF8FE492C6CB25B488210E577B7250C2421438F45F69F61F1A30B8D0C2777D19",
+    "bytes": 878
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-runtime-artifacts.json",
+    "sha256": "B2B67363301DDB4049B17195D03A45A42768C86711DDFAB042164FE3E757953A",
+    "bytes": 1060
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-spill-retention.json",
+    "sha256": "063E5C5FC67D85F2AE35B324CE3C94818052966AB0649C81B7B804E77F02B885",
+    "bytes": 1598
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015.json",
+    "sha256": "4686E2CFAA78C7FFB9125542E6070967F75CEA14AB4467A9A86222F550C4BE41",
+    "bytes": 965
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015.stderr.log",
+    "sha256": "B4EB428A29F91DD4336596BA65487792E1BC01016C4E0289A2DE30F54F2EE530",
+    "bytes": 14153
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-second-prerequisite-closure-20261015.json",
+    "sha256": "A99204054ACC25DD38F498A4A099A9B93B4A66A8C421CC0FC8C0AD7EC58548AF",
+    "bytes": 2512
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-third-prerequisite-closure-20261015.json",
+    "sha256": "3EB80CEEE0653BC8BF9AC44C803ECF2C6B749E33CE5B45700E5BBA95CDC7EA4D",
+    "bytes": 3891
+  },
+  {
+    "path": "native-retained-spills/execute-byte-spill.log",
+    "sha256": "D9D7AD3942E280F6A350712AC79AFA3F92BC36D2209046B329E93736A010671E",
+    "bytes": 54000
+  },
+  {
+    "path": "native-retained-spills/execute-line-spill.log",
+    "sha256": "BC530969D22627A984FB58A1BF51E5FB940A7DA7DA16AD791158D62EFFF3C9FE",
+    "bytes": 4002
+  },
+  {
+    "path": "native-retained-spills/execute-rolling-spill.log",
+    "sha256": "F1CB6C2DDC3F670C0235D25DDD139F3EA71342D418E16FF050AE1EFFE93D6A08",
+    "bytes": 252000
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "bytes": 7153406
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+    "bytes": 4665338
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/engine-hub-lifecycle-dc434339.patch",
+    "sha256": "243B5B8FA42D47A8223B88C3AB9C5B8DB4BF045ED1FDA5F470C6D50196F8A0F9",
+    "bytes": 3104
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-artifacts.json",
+    "sha256": "53D70E38C2C07825B79C4435F933976D46F7A702FCDB0DFF6B4743E116AE6336",
+    "bytes": 270
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-posthash.json",
+    "sha256": "D2A05FBD7679F00BDEE5B162E4ACD6CA08A62C26B7481A10D132154F28739E8A",
+    "bytes": 535
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-shell-tools-before.json",
+    "sha256": "7BF462582B14762B529488BA3C76534F758A164DC372F93F9DDAC27D94D011DB",
+    "bytes": 57058
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/ordinary-session-exports5ab-source-first-20261015-artifacts.json",
+    "sha256": "F24F800A95DFE6646598F60EF4B5E01A77470F6CF593AC8286C29FA70975CC0D",
+    "bytes": 1518
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/ordinary-session-exports5ab-source-first-20261015-posthash.json",
+    "sha256": "854591A8BAF743BF617D8DA9834444C913FB2DA2A638189C3521EBE2696EF1D4",
+    "bytes": 455
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "bytes": 352993
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/Run-SessionExportsNative-20261015.ps1",
+    "sha256": "FECBE239AD46A7B2E6549D9561EA5CDCFBDDA136A4CA70720882E60E71670535",
+    "bytes": 10233
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/source-leaves.json",
+    "sha256": "97BC9ED1DB3F9A0398FD89B192DAB4E0BE8A7EC3F1B4D8055F786F856E9B2AAC",
+    "bytes": 1784
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-first-20261015-frozen-controls/source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE",
+    "bytes": 556118
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "bytes": 7153406
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+    "bytes": 4665338
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/engine-hub-lifecycle-dc434339.patch",
+    "sha256": "243B5B8FA42D47A8223B88C3AB9C5B8DB4BF045ED1FDA5F470C6D50196F8A0F9",
+    "bytes": 3104
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-artifacts.json",
+    "sha256": "53D70E38C2C07825B79C4435F933976D46F7A702FCDB0DFF6B4743E116AE6336",
+    "bytes": 270
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-posthash.json",
+    "sha256": "D2A05FBD7679F00BDEE5B162E4ACD6CA08A62C26B7481A10D132154F28739E8A",
+    "bytes": 535
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-shell-tools-before.json",
+    "sha256": "7BF462582B14762B529488BA3C76534F758A164DC372F93F9DDAC27D94D011DB",
+    "bytes": 57058
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/ordinary-session-exports5ab-native-second-prerequisite-closure-20261015.json",
+    "sha256": "A99204054ACC25DD38F498A4A099A9B93B4A66A8C421CC0FC8C0AD7EC58548AF",
+    "bytes": 2512
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/ordinary-session-exports5ab-source-first-20261015-artifacts.json",
+    "sha256": "F24F800A95DFE6646598F60EF4B5E01A77470F6CF593AC8286C29FA70975CC0D",
+    "bytes": 1518
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/ordinary-session-exports5ab-source-first-20261015-posthash.json",
+    "sha256": "854591A8BAF743BF617D8DA9834444C913FB2DA2A638189C3521EBE2696EF1D4",
+    "bytes": 455
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/qualification-audit.json",
+    "sha256": "1C97BE0B24C1774EE9225401CBD6E4F54D904A71A78E4F754455DAA189122A05",
+    "bytes": 4801
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/qualified-leaves.json",
+    "sha256": "B7003D127866D8D93EB72070D4E612E0F51DCD1EFD4EAB1B56A6A4F0C07C6C34",
+    "bytes": 1325
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "bytes": 352993
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/Run-SessionExportsNative-20261015.ps1",
+    "sha256": "70645A86F29FB09212B11CD94ED9EDBB13E8B1B4A17361B72A9A8B98B6CF2DD1",
+    "bytes": 10551
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/source-leaves.json",
+    "sha256": "97BC9ED1DB3F9A0398FD89B192DAB4E0BE8A7EC3F1B4D8055F786F856E9B2AAC",
+    "bytes": 1784
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-second-20261015-frozen-controls/source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE",
+    "bytes": 556118
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "bytes": 7153406
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+    "bytes": 4665338
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/engine-hub-lifecycle-dc434339.patch",
+    "sha256": "243B5B8FA42D47A8223B88C3AB9C5B8DB4BF045ED1FDA5F470C6D50196F8A0F9",
+    "bytes": 3104
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-artifacts.json",
+    "sha256": "53D70E38C2C07825B79C4435F933976D46F7A702FCDB0DFF6B4743E116AE6336",
+    "bytes": 270
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-posthash.json",
+    "sha256": "D2A05FBD7679F00BDEE5B162E4ACD6CA08A62C26B7481A10D132154F28739E8A",
+    "bytes": 535
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-shell-tools-before.json",
+    "sha256": "7BF462582B14762B529488BA3C76534F758A164DC372F93F9DDAC27D94D011DB",
+    "bytes": 57058
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/ordinary-session-exports5ab-native-third-prerequisite-closure-20261015.json",
+    "sha256": "3EB80CEEE0653BC8BF9AC44C803ECF2C6B749E33CE5B45700E5BBA95CDC7EA4D",
+    "bytes": 3891
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/ordinary-session-exports5ab-source-first-20261015-artifacts.json",
+    "sha256": "F24F800A95DFE6646598F60EF4B5E01A77470F6CF593AC8286C29FA70975CC0D",
+    "bytes": 1518
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/ordinary-session-exports5ab-source-first-20261015-posthash.json",
+    "sha256": "854591A8BAF743BF617D8DA9834444C913FB2DA2A638189C3521EBE2696EF1D4",
+    "bytes": 455
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/qualification-audit.json",
+    "sha256": "1C97BE0B24C1774EE9225401CBD6E4F54D904A71A78E4F754455DAA189122A05",
+    "bytes": 4801
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/qualified-leaves.json",
+    "sha256": "B7003D127866D8D93EB72070D4E612E0F51DCD1EFD4EAB1B56A6A4F0C07C6C34",
+    "bytes": 1325
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "bytes": 352993
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/Run-SessionExportsNative-20261015.ps1",
+    "sha256": "D8504DDDF78E54BBB062A9BC4BC45DAEF917358F92657060B489B80FF1D74D76",
+    "bytes": 10717
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/source-leaves.json",
+    "sha256": "97BC9ED1DB3F9A0398FD89B192DAB4E0BE8A7EC3F1B4D8055F786F856E9B2AAC",
+    "bytes": 1784
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-compile-third-20261015-frozen-controls/source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE",
+    "bytes": 556118
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "bytes": 7153406
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+    "bytes": 4665338
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/engine-hub-lifecycle-dc434339.patch",
+    "sha256": "243B5B8FA42D47A8223B88C3AB9C5B8DB4BF045ED1FDA5F470C6D50196F8A0F9",
+    "bytes": 3104
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-artifacts.json",
+    "sha256": "53D70E38C2C07825B79C4435F933976D46F7A702FCDB0DFF6B4743E116AE6336",
+    "bytes": 270
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-posthash.json",
+    "sha256": "D2A05FBD7679F00BDEE5B162E4ACD6CA08A62C26B7481A10D132154F28739E8A",
+    "bytes": 535
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-shell-tools-before.json",
+    "sha256": "7BF462582B14762B529488BA3C76534F758A164DC372F93F9DDAC27D94D011DB",
+    "bytes": 57058
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/ordinary-session-exports5ab-native-second-prerequisite-closure-20261015.json",
+    "sha256": "A99204054ACC25DD38F498A4A099A9B93B4A66A8C421CC0FC8C0AD7EC58548AF",
+    "bytes": 2512
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/ordinary-session-exports5ab-source-first-20261015-artifacts.json",
+    "sha256": "F24F800A95DFE6646598F60EF4B5E01A77470F6CF593AC8286C29FA70975CC0D",
+    "bytes": 1518
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/ordinary-session-exports5ab-source-first-20261015-posthash.json",
+    "sha256": "854591A8BAF743BF617D8DA9834444C913FB2DA2A638189C3521EBE2696EF1D4",
+    "bytes": 455
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/qualification-audit.json",
+    "sha256": "1C97BE0B24C1774EE9225401CBD6E4F54D904A71A78E4F754455DAA189122A05",
+    "bytes": 4801
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/qualified-leaves.json",
+    "sha256": "B7003D127866D8D93EB72070D4E612E0F51DCD1EFD4EAB1B56A6A4F0C07C6C34",
+    "bytes": 1325
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "bytes": 352993
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/Run-SessionExportsNative-20261015.ps1",
+    "sha256": "70645A86F29FB09212B11CD94ED9EDBB13E8B1B4A17361B72A9A8B98B6CF2DD1",
+    "bytes": 10551
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/source-leaves.json",
+    "sha256": "97BC9ED1DB3F9A0398FD89B192DAB4E0BE8A7EC3F1B4D8055F786F856E9B2AAC",
+    "bytes": 1784
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-first-20261015-frozen-controls/source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE",
+    "bytes": 556118
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "bytes": 7153406
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+    "bytes": 4665338
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/engine-hub-lifecycle-dc434339.patch",
+    "sha256": "243B5B8FA42D47A8223B88C3AB9C5B8DB4BF045ED1FDA5F470C6D50196F8A0F9",
+    "bytes": 3104
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-artifacts.json",
+    "sha256": "53D70E38C2C07825B79C4435F933976D46F7A702FCDB0DFF6B4743E116AE6336",
+    "bytes": 270
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-posthash.json",
+    "sha256": "D2A05FBD7679F00BDEE5B162E4ACD6CA08A62C26B7481A10D132154F28739E8A",
+    "bytes": 535
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/ordinary-session-exports5ab-more-source-first-20261015-shell-tools-before.json",
+    "sha256": "7BF462582B14762B529488BA3C76534F758A164DC372F93F9DDAC27D94D011DB",
+    "bytes": 57058
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/ordinary-session-exports5ab-native-third-prerequisite-closure-20261015.json",
+    "sha256": "3EB80CEEE0653BC8BF9AC44C803ECF2C6B749E33CE5B45700E5BBA95CDC7EA4D",
+    "bytes": 3891
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/ordinary-session-exports5ab-source-first-20261015-artifacts.json",
+    "sha256": "F24F800A95DFE6646598F60EF4B5E01A77470F6CF593AC8286C29FA70975CC0D",
+    "bytes": 1518
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/ordinary-session-exports5ab-source-first-20261015-posthash.json",
+    "sha256": "854591A8BAF743BF617D8DA9834444C913FB2DA2A638189C3521EBE2696EF1D4",
+    "bytes": 455
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/qualification-audit.json",
+    "sha256": "1C97BE0B24C1774EE9225401CBD6E4F54D904A71A78E4F754455DAA189122A05",
+    "bytes": 4801
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/qualified-leaves.json",
+    "sha256": "B7003D127866D8D93EB72070D4E612E0F51DCD1EFD4EAB1B56A6A4F0C07C6C34",
+    "bytes": 1325
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "bytes": 352993
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/Run-SessionExportsNative-20261015.ps1",
+    "sha256": "D8504DDDF78E54BBB062A9BC4BC45DAEF917358F92657060B489B80FF1D74D76",
+    "bytes": 10717
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/source-leaves.json",
+    "sha256": "97BC9ED1DB3F9A0398FD89B192DAB4E0BE8A7EC3F1B4D8055F786F856E9B2AAC",
+    "bytes": 1784
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-runtime-second-20261015-frozen-controls/source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE",
+    "bytes": 556118
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-state-8bf50d9f3c17342b/export.html",
+    "sha256": "4C516E9807A2E862B9216F869E5611BA15BCE33AB2B628C50F15CC9A0F49FC41",
+    "bytes": 274284
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-state-8bf50d9f3c17342b/session-2023-11-14T22-13-20-000Z.jsonl",
+    "sha256": "11102FD54FB65A82A3761F9086CE6BD9A1B7F22ADCD88F9D894774AFC340379B",
+    "bytes": 1600
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-state-8bf50d9f3c17342b/source-session.jsonl",
+    "sha256": "C751DF84EE6859E033376934E61947DA62E9A9CEE12D46D1FB8D5A5B732CB643",
+    "bytes": 1657
+  },
+  {
+    "path": "ordinary-session-exports5ab-native-state-8bf50d9f3c17342b/nested/session Ω.jsonl",
+    "sha256": "11102FD54FB65A82A3761F9086CE6BD9A1B7F22ADCD88F9D894774AFC340379B",
+    "bytes": 1600
+  }
+]
