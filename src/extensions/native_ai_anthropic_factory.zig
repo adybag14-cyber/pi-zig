@@ -245,7 +245,39 @@ fn perform(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const http = try scope.own(try @import("native_ai_http.zig").open(scope.engine, .{ .url = address, .payload = bytes, .headers = fields.items, .framing = .bytes, .timeout_ms = @intCast(@max(0, milliseconds)) }, try v.optional(scope, options, "signal")));
     try scope.put(owner, "http", http);
     try scope.put(owner, "iterator", try scope.get(http, "events"));
-    return scope.get(http, "ready");
+    const pending = try flow.create(scope.engine, owner);
+    defer scope.engine.freeValue(pending.owner);
+    errdefer scope.engine.freeValue(pending.promise);
+    try flow.wait(wireReady, scope.engine, pending.owner, try scope.get(http, "ready"), 0);
+    return scope.own(pending.promise);
+}
+fn wireReady(engine: *v.em.Engine, pending: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const owner = try scope.get(pending, "agent");
+    wireAdvance(&scope, pending, owner, value, rejected, stage) catch |err| try flow.rejectError(engine, pending, err);
+}
+fn wireAdvance(scope: *Scope, pending: c.JSValue, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
+    if (rejected) {
+        const errors = try scope.get(try scope.get(owner, "agent"), "errors");
+        const code = try v.optional(scope, value, "code");
+        const constructor = try scope.get(errors, if (try aborted(scope, owner)) "APIUserAbortError" else if (try v.eq(scope, code, "ProviderRequestTimeout")) "APIConnectionTimeoutError" else "APIConnectionError");
+        const options = try scope.object();
+        try scope.put(options, "cause", value);
+        var args = [_]c.JSValue{options};
+        const failure = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, 1, &args)));
+        return flow.settle(scope.engine, pending, true, failure);
+    }
+    if (stage == 0) {
+        const status = try scope.get(value, "status");
+        if (try @import("native_image_arithmetic.zig").compare(scope.engine, .greater_equal, status, c.JS_NewInt32(scope.engine.context, 200)) and try @import("native_image_arithmetic.zig").compare(scope.engine, .less, status, c.JS_NewInt32(scope.engine.context, 300))) return flow.settle(scope.engine, pending, false, value);
+        try scope.put(owner, "response", value);
+        return flow.wait(wireReady, scope.engine, pending, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), 1);
+    }
+    const frame = try scope.get(value, "value");
+    const body = if (scope.truthy(try scope.get(value, "done"))) try scope.text("") else try scope.get(frame, "body");
+    const failure = try sdkFailure(scope, owner, body);
+    return flow.settle(scope.engine, pending, true, failure);
 }
 fn merge(scope: *Scope, target: c.JSValue, source: c.JSValue) !void {
     if (v.nullish(source)) return;
@@ -381,11 +413,17 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
     }
 }
 fn failureBody(scope: *Scope, owner: c.JSValue, text: c.JSValue) !void {
-    const json = try scope.get(try scope.get(owner, "agent"), "json");
-    const body = try scope.invoke(json, "parseJsonWithRepair", &.{text});
+    const reason = try sdkFailure(scope, owner, text);
+    if (!try fallback(scope, owner, reason)) try fail(scope, owner, reason);
+}
+fn sdkFailure(scope: *Scope, owner: c.JSValue, text: c.JSValue) !c.JSValue {
+    const generation = scope.engine.native_allocation_generation;
+    const body = scope.invoke(try scope.global("JSON"), "parse", &.{text}) catch |err| missing: {
+        try @import("native_ai_partial_json.zig").discard(scope.engine, err, generation);
+        break :missing c.pi_js_undefined();
+    };
     const status = try scope.get(try scope.get(owner, "response"), "status");
     const header_values = try scope.get(try scope.get(owner, "response"), "headers");
     const headers = try scope.own(try v.js.builtin(scope.engine, "Headers", &.{header_values}));
-    const reason = try @import("native_ai_anthropic_api_error.zig").generateValue(scope, try scope.get(try scope.get(owner, "agent"), "errors"), status, body, text, headers);
-    if (!try fallback(scope, owner, reason)) try fail(scope, owner, reason);
+    return @import("native_ai_anthropic_api_error.zig").generateValue(scope, try scope.get(try scope.get(owner, "agent"), "errors"), status, body, text, headers);
 }
