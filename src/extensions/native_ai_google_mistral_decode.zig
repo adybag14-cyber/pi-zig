@@ -31,7 +31,7 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
     try scope.put(owner, "stream", stream);
     try scope.put(owner, "json", json);
     try scope.put(owner, "current", c.pi_js_null());
-    try scope.put(owner, "tools", try scope.own(try v.js.builtin(engine, "Map", &.{})));
+    try scope.put(owner, "tools", c.pi_js_undefined());
     try scope.put(owner, "finished", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "counterOwner", counter_owner);
     const output = try scope.object();
@@ -58,7 +58,10 @@ pub fn create(engine: *v.em.Engine, model: c.JSValue, stream: c.JSValue, json: c
                 defer row.deinit();
                 if (row.truthy(try row.get(roots[0], "finished"))) return error.ProviderDecoderAlreadyFinished;
                 switch (index) {
-                    0 => try emit(&row, roots[0], "start", null, null, c.pi_js_undefined()),
+                    0 => {
+                        try emit(&row, roots[0], "start", null, null, c.pi_js_undefined());
+                        if (kind == .mistral) try row.put(roots[0], "tools", try row.own(try v.js.builtin(host, "Map", &.{})));
+                    },
                     1 => if (kind != .mistral) try google(&row, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined()) else try mistral(&row, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined()),
                     2 => try finish(&row, roots[0], args.len > 0 and row.truthy(args[0]), kind),
                     3 => try fail(&row, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined(), args.len > 1 and row.truthy(args[1]), kind),
