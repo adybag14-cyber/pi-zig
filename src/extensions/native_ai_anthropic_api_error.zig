@@ -126,10 +126,11 @@ fn crossRealm(scope: *Scope, value: c.JSValue) !c.JSValue {
     const prototype = try scope.get(try scope.global("Object"), "prototype");
     const tag = try scope.call(try scope.get(prototype, "toString"), value, &.{});
     if (!try v.eq(scope, tag, "[object Error]") and !try v.eq(scope, tag, "[object DOMException]")) return c.pi_js_undefined();
+    const message = try scope.get(value, "message");
     const cause = try scope.get(value, "cause");
     const options = try scope.object();
-    if (scope.truthy(cause)) try scope.put(options, "cause", cause);
-    const result = try scope.own(try v.js.builtin(scope.engine, "Error", &.{ try scope.get(value, "message"), options }));
+    if (scope.truthy(cause)) try scope.put(options, "cause", try scope.get(value, "cause"));
+    const result = try scope.own(try v.js.builtin(scope.engine, "Error", &.{ message, options }));
     if (scope.truthy(try scope.get(value, "stack"))) try scope.set(result, "stack", try scope.get(value, "stack"));
     if (scope.truthy(try scope.get(value, "cause")) and !scope.truthy(try scope.get(result, "cause"))) try scope.set(result, "cause", try scope.get(value, "cause"));
     if (scope.truthy(try scope.get(value, "name"))) try scope.set(result, "name", try scope.get(value, "name"));
