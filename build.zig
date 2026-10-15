@@ -1711,6 +1711,12 @@ pub fn build(b: *std.Build) void {
     ai_oauth_chatgpt_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-oauth-chatgpt", "Compare ChatGPT dynamic client OAuth facade and owned callback/HTTP behavior").dependOn(&b.addRunArtifact(ai_oauth_chatgpt_tests).step);
     b.step("build-native-ai-oauth-chatgpt", "Compile ChatGPT native OAuth facade independently").dependOn(&ai_oauth_chatgpt_tests.step);
+    const oauth_nine_flow_build = b.step("build-native-ai-oauth-nine-flow", "Compile the actual nine OAuth flow replays and shared loader graph");
+    const oauth_nine_flow_test = b.step("test-native-ai-oauth-nine-flow", "Replay genuine Source224 provider observations plus Source18 loader identity and owned GC/wire checks");
+    inline for (.{ "loader-graph", "anthropic-openrouter", "chatgpt", "codex-radius", "meta", "subscriptions" }) |suffix| {
+        oauth_nine_flow_build.dependOn(&b.top_level_steps.get("build-native-ai-oauth-" ++ suffix).?.step);
+        oauth_nine_flow_test.dependOn(&b.top_level_steps.get("test-native-ai-oauth-" ++ suffix).?.step);
+    }
     linkQuickJs(b, ai_http_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_http_tests.root_module, sqlite_lib_dir, sqlite_library);
     ai_http_tests.root_module.addImport("catalog_tool", catalog_tool);
