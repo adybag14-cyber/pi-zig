@@ -308,11 +308,15 @@ fn authorized(engine: *v.em.Engine, pending: c.JSValue, value: c.JSValue, reject
 }
 fn performAuthorized(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const request_options = try scope.get(owner, "requestOptions");
-    if (scope.truthy(try v.optional(scope, try scope.get(request_options, "signal"), "aborted"))) return v.errorText(scope, try scope.text("Request was aborted"));
     const client = try scope.get(owner, "sdkClient");
     if (scope.truthy(try scope.get(owner, "usesSdkClient"))) {
         const created = try scope.invoke(try scope.get(try scope.get(client, "beta"), "messages"), "create", &.{ try scope.get(owner, "payload"), request_options });
         return scope.invoke(created, "asResponse", &.{});
+    }
+    if (scope.truthy(try v.optional(scope, try scope.get(request_options, "signal"), "aborted"))) {
+        const constructor = try scope.get(try scope.get(try scope.get(owner, "agent"), "errors"), "APIUserAbortError");
+        const failure = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, 0, null)));
+        return scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, failure)));
     }
     // Guest-supplied fetch is called with a real native-built request body.
     const fetch = try scope.get(owner, "fetch");
