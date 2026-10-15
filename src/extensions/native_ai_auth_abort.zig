@@ -8,11 +8,13 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue {
     return if (args.len > index) args[index] else c.pi_js_undefined();
 }
 pub fn create(engine: *v.em.Engine) !c.JSValue {
+    if (engine.native_ai_auth_abort_namespace) |cached| return c.JS_DupValue(engine.context, cached);
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const exports = try s.object();
     try s.put(exports, "operationSignal", try s.own(try functions.create(engine, "operationSignal", 1, operationSignal, &.{})));
     try s.put(exports, "raceWithAbortSignal", try s.own(try functions.create(engine, "raceWithAbortSignal", 2, raceWithAbortSignal, &.{})));
+    engine.native_ai_auth_abort_namespace = c.JS_DupValue(engine.context, exports);
     return c.JS_DupValue(engine.context, exports);
 }
 fn noop(_: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
