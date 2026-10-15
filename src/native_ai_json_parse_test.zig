@@ -17,6 +17,101 @@ fn identity(input: []const u8, expected: []const u8) !void {
     std.crypto.hash.sha2.Sha256.hash(input, &digest, .{});
     try std.testing.expectEqualStrings(expected, &std.fmt.bytesToHex(digest, .lower));
 }
+test "native AI JSON actual OpenAI factory owned HTTP20 matches full intermediate snapshots and callbacks" {
+    const gpa = std.testing.allocator;
+    const input = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("extensions/fixtures/ai-openai-http-b06.input.json"), .{});
+    defer input.deinit();
+    const original = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("extensions/fixtures/ai-openai-http-b06.json"), .{});
+    defer original.deinit();
+    const cases = input.value.array.items;
+    const observations = original.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 20), cases.len);
+    try std.testing.expectEqual(cases.len, observations.len);
+    try std.testing.expectEqualStrings("b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6", original.value.object.get("sourceHead").?.string);
+    for (cases, observations) |item, expected| {
+        const payload = try std.json.Stringify.valueAlloc(gpa, expected.object.get("request").?.object.get("body").?, .{});
+        defer gpa.free(payload);
+        var body: std.ArrayList(u8) = .empty;
+        defer body.deinit(gpa);
+        for (item.object.get("chunks").?.array.items) |chunk| {
+            const encoded = try std.json.Stringify.valueAlloc(gpa, chunk, .{});
+            defer gpa.free(encoded);
+            try body.appendSlice(gpa, "data: ");
+            try body.appendSlice(gpa, encoded);
+            try body.appendSlice(gpa, "\n\n");
+        }
+        try body.appendSlice(gpa, "data: [DONE]\n\n");
+        const fixture = @import("ai/http_fixture.zig");
+        const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{ .path = "/v1/chat/completions", .body = body.items, .payload_contains = payload, .expected_request_headers = &.{ .{ .name = "authorization", .value = "Bearer fixture-placeholder-key" }, .{ .name = "content-type", .value = "application/json" } }, .headers = &.{.{ .name = "x-fixture", .value = "source-only" }} }});
+        defer server.deinit();
+        const url = try server.url(gpa, "/v1");
+        defer gpa.free(url);
+        const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
+        defer engine.deinit();
+        engine.native_io = std.testing.io;
+        const global = c.JS_GetGlobalObject(engine.context);
+        defer engine.freeValue(global);
+        try sdk.put(engine, global, "nativeOpenAI", try @import("extensions/native_ai_openai_factory.zig").create(engine));
+        try sdk.put(engine, global, "fixtureBase", try sdk.text(engine, url));
+        const serialized_item = try std.json.Stringify.valueAlloc(gpa, item, .{});
+        defer gpa.free(serialized_item);
+        const serialized_expected = try std.json.Stringify.valueAlloc(gpa, expected, .{});
+        defer gpa.free(serialized_expected);
+        const item_z = try gpa.dupeZ(u8, serialized_item);
+        defer gpa.free(item_z);
+        const expected_z = try gpa.dupeZ(u8, serialized_expected);
+        defer gpa.free(expected_z);
+        try source(engine, "item", item_z);
+        try source(engine, "expected", expected_z);
+        const checked = engine.evalModule(
+            \\function snapshot(value){if(Array.isArray(value))return value.map(snapshot);if(value&&typeof value==='object'){const out={};for(const [key,item]of Object.entries(value)){if(value.role==='assistant'&&key==='timestamp')out[key]='$TIMESTAMP';else if(value.role==='assistant'&&key==='durationMs')out[key]='$DURATION';else out[key]=snapshot(item)}return out}return value}
+            \\const tool={name:'read',description:'read file',parameters:{type:'object',properties:{path:{type:'string'}},required:['path'],additionalProperties:false}},context={messages:[{role:'system',content:'system',timestamp:0,...(item.tools?{toolsAdded:[tool]}:{})},{role:'user',content:'hello',timestamp:1}]},model={id:item.kimiModel??'fixture-model',name:'fixture model',provider:item.provider??'openai',api:'openai-completions',baseUrl:fixtureBase,reasoning:item.reasoning??false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:4096,...(item.compat?{compat:item.compat}:{})};if(item.kimiModel){const k3=item.kimiModel!=='kimi-for-coding-highspeed';model.compat={supportsStore:false,supportsDeveloperRole:false,supportsReasoningEffort:k3,maxTokensField:'max_tokens',supportsStrictMode:false,thinkingFormat:k3?'openai':'deepseek',supportsMidConvoSystemMessages:true,...(k3?{requiresReasoningContentOnAssistantMessages:true,supportsMidConvoToolAdditions:true}:{})};model.thinkingLevelMap={off:null,...(k3?{low:'low',high:'high'}:{})};context.messages.push({role:'assistant',content:[{type:'thinking',thinking:'prior reasoning'},{type:'text',text:'prior answer'}],api:model.api,provider:model.provider,model:model.id,usage:{input:0,output:0,cacheRead:0,cacheWrite:0,totalTokens:0,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}},stopReason:'stop',timestamp:2},{role:'system',content:'late instructions',toolsAdded:[{name:'search',description:'search',parameters:{type:'object',properties:{query:{type:'string'}}}}],timestamp:3},{role:'user',content:'continue',timestamp:4})}
+            \\const callbacks=[],stream=nativeOpenAI.streamSimple(model,context,{apiKey:'fixture-placeholder-key',env:{PI_CACHE_RETENTION:'short'},maxTokens:1000,maxRetries:0,reasoning:item.reasoning?'low':undefined,onPayload(){callbacks.push('payload')},onResponse(response){callbacks.push('response:'+response.status+':'+response.headers['x-fixture'])},onProviderStreamEvent(){callbacks.push('chunk')}}),events=[];for await(const event of stream)events.push(snapshot(event));const result=snapshot(await stream.result());if(JSON.stringify(events)!==JSON.stringify(expected.events)||JSON.stringify(result)!==JSON.stringify(expected.result)||JSON.stringify(callbacks)!==JSON.stringify(expected.callbacks))throw Error(JSON.stringify({case:item.name,events,expectedEvents:expected.events,result,expectedResult:expected.result,callbacks,expectedCallbacks:expected.callbacks}));export const done=true;
+        , "native-ai-openai-owned-source20.mjs") catch |err| {
+            std.debug.print("OpenAI native HTTP case {s}: {s}\n", .{ item.object.get("name").?.string, engine.last_error orelse "no diagnostic" });
+            return err;
+        };
+        engine.freeValue(checked);
+        try server.finish();
+        try std.testing.expectEqual(@as(usize, 1), server.captured.items.len);
+        try std.testing.expectEqualStrings(payload, server.captured.items[0].payload);
+        c.JS_RunGC(engine.runtime);
+    }
+}
+test "native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    try source(engine, "openAIInput", @embedFile("extensions/fixtures/ai-openai-http-b06.input.json"));
+    try source(engine, "openAISource", @embedFile("extensions/fixtures/ai-openai-http-b06.json"));
+    const dependencies = try @import("extensions/native_ai_openai_dependencies.zig").create(engine);
+    defer engine.freeValue(dependencies);
+    const Adapter = struct {
+        fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            const v = @import("extensions/native_ai_provider_values.zig");
+            var row: v.Scope = .{ .engine = host };
+            defer row.deinit();
+            if (args.len != 3) return error.OpenAIRequestTestArguments;
+            const options = try @import("extensions/native_ai_openai_dependencies.zig").options(&row, roots[0], args[0], args[1], args[2]);
+            const compat = try row.own(try @import("extensions/native_ai_openai_compat_options.zig").resolve(host, args[0]));
+            const context = try row.own(try @import("extensions/native_ai_provider_transcript.zig").resolve(host, args[1], row.truthy(try row.get(compat, "supportsMidConvoSystemMessages"))));
+            const declared = try row.own(try @import("extensions/native_ai_provider_transcript.zig").declared(host, try row.get(context, "messages")));
+            const properties = try row.own(try @import("extensions/native_ai_openai_tools.zig").grammarProperties(host, declared, row.truthy(try row.get(compat, "supportsOpenAIGrammarTools"))));
+            return @import("extensions/native_ai_openai_request.zig").build(host, args[0], context, options, compat, try @import("extensions/native_ai_openai_request.zig").cacheRetention(&row, options), properties, try row.get(roots[0], "simple"));
+        }
+    };
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "buildNativeOpenAIRequest", try @import("extensions/native_node_function.zig").create(engine, "buildNativeOpenAIRequest", 3, Adapter.call, &.{dependencies}));
+    const checked = engine.evalModule(
+        \\if(openAISource.sourceHead!=='b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6'||openAISource.rows.length!==20)throw Error('genuine requestHTTP20 required');
+        \\for(let i=0;i<openAIInput.length;i++){const item=openAIInput[i],expected=openAISource.rows[i],tool={name:'read',description:'read file',parameters:{type:'object',properties:{path:{type:'string'}},required:['path'],additionalProperties:false}},context={messages:[{role:'system',content:'system',timestamp:0,...(item.tools?{toolsAdded:[tool]}:{})},{role:'user',content:'hello',timestamp:1}]},model={id:item.kimiModel??'fixture-model',name:'fixture model',provider:item.provider??'openai',api:'openai-completions',baseUrl:'http://127.0.0.1/v1',reasoning:item.reasoning??false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:4096,...(item.compat?{compat:item.compat}:{})};if(item.kimiModel){const k3=item.kimiModel!=='kimi-for-coding-highspeed';model.compat={supportsStore:false,supportsDeveloperRole:false,supportsReasoningEffort:k3,maxTokensField:'max_tokens',supportsStrictMode:false,thinkingFormat:k3?'openai':'deepseek',supportsMidConvoSystemMessages:true,...(k3?{requiresReasoningContentOnAssistantMessages:true,supportsMidConvoToolAdditions:true}:{})};model.thinkingLevelMap={off:null,...(k3?{low:'low',high:'high'}:{})};context.messages.push({role:'assistant',content:[{type:'thinking',thinking:'prior reasoning'},{type:'text',text:'prior answer'}],api:model.api,provider:model.provider,model:model.id,usage:{input:0,output:0,cacheRead:0,cacheWrite:0,totalTokens:0,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}},stopReason:'stop',timestamp:2},{role:'system',content:'late instructions',toolsAdded:[{name:'search',description:'search',parameters:{type:'object',properties:{query:{type:'string'}}}}],timestamp:3},{role:'user',content:'continue',timestamp:4})}const actual=buildNativeOpenAIRequest(model,context,{apiKey:'fixture-placeholder-key',env:{PI_CACHE_RETENTION:'short'},maxTokens:1000,maxRetries:0,reasoning:item.reasoning?'low':undefined});if(JSON.stringify(actual)!==JSON.stringify(expected.request.body))throw Error(JSON.stringify({case:item.name,actual,expected:expected.request.body}));}export const done=true;
+    , "native-ai-openai-request-source20.mjs") catch |err| {
+        std.debug.print("OpenAI request: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(checked);
+    c.JS_RunGC(engine.runtime);
+}
 test "native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes" {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();

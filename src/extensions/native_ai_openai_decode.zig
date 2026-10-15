@@ -7,7 +7,7 @@ const temp = @import("native_models_stream_scope.zig");
 const Scope = temp.Scope;
 const arithmetic = @import("native_image_arithmetic.zig");
 const c = em.c;
-const Method = enum { start, push, finish };
+const Method = enum { start, push, finish, fail };
 fn eq(scope: *Scope, value: c.JSValue, text: []const u8) !bool {
     return scope.equal(value, try scope.text(text));
 }
@@ -79,6 +79,7 @@ pub fn create(engine: *em.Engine, model: c.JSValue, compat: c.JSValue, stream: c
                     .start => try emit(&row, roots[0], "start", null, null, c.pi_js_undefined()),
                     .push => try chunk(&row, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined()),
                     .finish => try finish(&row, roots[0], args.len > 0 and row.truthy(args[0])),
+                    .fail => try failure(&row, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined(), args.len > 1 and row.truthy(args[1])),
                 }
                 return c.pi_js_undefined();
             }
@@ -86,6 +87,28 @@ pub fn create(engine: *em.Engine, model: c.JSValue, compat: c.JSValue, stream: c
         try scope.put(exported, field.name, try scope.own(try @import("native_node_function.zig").create(engine, field.name, if (field.value == 0) 0 else 1, Adapter.call, &.{owner})));
     }
     return c.JS_DupValue(engine.context, exported);
+}
+fn failure(scope: *Scope, owner: c.JSValue, reason: c.JSValue, aborted: bool) !void {
+    const output = try scope.get(owner, "output");
+    var rows = try @import("native_ai_provider_values.zig").iterator(scope, try scope.get(output, "content"));
+    defer rows.deinit();
+    errdefer rows.closePreserving();
+    while (try rows.next()) |block| {
+        defer scope.engine.freeValue(block);
+        var row: Scope = .{ .engine = scope.engine };
+        defer row.deinit();
+        if (try eq(&row, try row.get(block, "type"), "thinking")) {
+            const details = try row.get(owner, "details");
+            if (!c.JS_IsUndefined(details)) try row.put(block, "thinkingSignature", try row.invoke(try row.global("JSON"), "stringify", &.{details}));
+        }
+        inline for (.{ "index", "partialArgs", "customInput", "streamIndex" }) |key| try remove(&row, block, key);
+    }
+    const stop_reason = try scope.text(if (aborted) "aborted" else "error");
+    try scope.put(output, "stopReason", stop_reason);
+    try scope.put(output, "errorMessage", try @import("native_ai_provider_error.zig").message(scope, reason));
+    try emit(scope, owner, "error", null, "reason", stop_reason);
+    _ = try scope.invoke(try scope.get(owner, "stream"), "end", &.{});
+    try scope.put(owner, "finished", c.pi_js_bool(scope.engine.context, 1));
 }
 fn ensure(scope: *Scope, owner: c.JSValue, thinking: bool, signature: c.JSValue) !c.JSValue {
     const key: [*:0]const u8 = if (thinking) "thinking" else "text";
@@ -193,7 +216,7 @@ fn chunk(scope: *Scope, owner: c.JSValue, value: c.JSValue) !void {
         }
     }
 }
-fn validDetail(scope: *Scope, value: c.JSValue) !bool {
+pub fn validDetail(scope: *Scope, value: c.JSValue) !bool {
     if (!c.JS_IsObject(value) or c.JS_IsFunction(scope.engine.context, value) or scope.truthy(try scope.invoke(try scope.global("Array"), "isArray", &.{value}))) return false;
     const id = try scope.get(value, "id");
     if (!temp.nullish(id) and !c.JS_IsString(id)) return false;

@@ -25,16 +25,73 @@ pub fn parse(engine: *em.Engine, input: c.JSValue) !c.JSValue {
     var size: i64 = 0;
     if (c.JS_ToInt64(engine.context, &size, try scope.get(text, "length")) < 0) return js.capture(engine);
     if (size == 0) return error.PartialJSONEmpty;
-    var parser: Parser = .{ .engine = engine, .text = text, .length = @intCast(size) };
-    return parser.any();
+    const owner = try scope.object();
+    try scope.put(owner, "text", text);
+    try scope.put(owner, "length", c.JS_NewFloat64(engine.context, @floatFromInt(size)));
+    try scope.put(owner, "index", c.JS_NewInt32(engine.context, 0));
+    try scope.put(owner, "steps", c.JS_NewInt32(engine.context, 0));
+    var roots = [_]c.JSValue{owner};
+    // Deliberately declare one argument and call with zero. QuickJS's native
+    // C-function-data call path checks its configured stack guard when padding
+    // missing arguments. Every recursive value therefore crosses that real VM
+    // guard, rather than imposing an unrelated fixed depth on the JSON tree.
+    const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, recurse, "", 1, 0, roots.len, &roots)));
+    try scope.put(owner, "parse", function);
+    return js.call(engine, function, c.pi_js_undefined(), &.{});
+}
+fn recurse(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    return recurseBody(engine, roots[0]) catch |err| @import("native_sdk.zig").fail(engine, err);
+}
+fn integer(scope: *Scope, owner: c.JSValue, key: [*:0]const u8) !usize {
+    var result: i64 = 0;
+    if (c.JS_ToInt64(scope.engine.context, &result, try scope.get(owner, key)) < 0) return js.capture(scope.engine);
+    return @intCast(result);
+}
+fn recurseBody(engine: *em.Engine, owner: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    var parser: Parser = .{ .engine = engine, .owner = owner, .function = try scope.get(owner, "parse"), .text = try scope.get(owner, "text"), .length = try integer(&scope, owner, "length"), .index = try integer(&scope, owner, "index"), .steps = try integer(&scope, owner, "steps") };
+    const result = parser.any() catch |err| {
+        const saved = engine.captured_exception;
+        engine.captured_exception = null;
+        parser.save() catch |save_error| {
+            if (saved) |value| engine.freeValue(value);
+            return save_error;
+        };
+        engine.captured_exception = saved;
+        return err;
+    };
+    errdefer engine.freeValue(result);
+    try parser.save();
+    return result;
 }
 const Parser = struct {
     engine: *em.Engine,
+    owner: c.JSValue,
+    function: c.JSValue,
     text: c.JSValue,
     length: usize,
     index: usize = 0,
-    depth: usize = 0,
     steps: usize = 0,
+    fn save(self: *Parser) !void {
+        if (c.JS_SetPropertyStr(self.engine.context, self.owner, "index", self.number(self.index)) < 0) return js.capture(self.engine);
+        if (c.JS_SetPropertyStr(self.engine.context, self.owner, "steps", self.number(self.steps)) < 0) return js.capture(self.engine);
+    }
+    fn nested(self: *Parser) !c.JSValue {
+        try self.save();
+        var scope: Scope = .{ .engine = self.engine };
+        defer scope.deinit();
+        const result = js.call(self.engine, self.function, c.pi_js_undefined(), &.{}) catch |err| {
+            self.index = try integer(&scope, self.owner, "index");
+            self.steps = try integer(&scope, self.owner, "steps");
+            return err;
+        };
+        errdefer self.engine.freeValue(result);
+        self.index = try integer(&scope, self.owner, "index");
+        self.steps = try integer(&scope, self.owner, "steps");
+        return result;
+    }
     fn number(self: *Parser, value: usize) c.JSValue {
         return c.JS_NewFloat64(self.engine.context, @floatFromInt(value));
     }
@@ -73,9 +130,6 @@ const Parser = struct {
     }
     fn any(self: *Parser) anyerror!c.JSValue {
         try @import("native_ai_budget.zig").step(self.engine, &self.steps);
-        if (self.depth >= 256) return error.PartialJSONDepthLimit;
-        self.depth += 1;
-        defer self.depth -= 1;
         try self.blank();
         if (self.index >= self.length) return error.PartialJSONUnexpectedEnd;
         if (try self.char(self.index, "\"")) return self.string();
@@ -161,7 +215,7 @@ const Parser = struct {
             const key = try scope.own(try self.string());
             try self.blank();
             self.index += 1; // Dependency intentionally does not validate colon.
-            const value = try scope.own(try self.any());
+            const value = try scope.own(try self.nested());
             try js.setKey(self.engine, output, key, value);
             try self.blank();
             if (try self.char(self.index, ",")) self.index += 1;
@@ -179,7 +233,7 @@ const Parser = struct {
     }
     fn arrayItems(self: *Parser, output: c.JSValue) !void {
         while (!(try self.char(self.index, "]"))) {
-            const value = try self.any();
+            const value = try self.nested();
             defer self.engine.freeValue(value);
             try js.push(self.engine, output, value);
             try self.blank();
