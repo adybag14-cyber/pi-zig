@@ -1,0 +1,107 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc.stderr.log",
+    "relative": "ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc.stderr.log",
+    "sha256": "354C83984AAA654D8F223288F0A8326BDA1C3B6D9C506E5523AF3024BE2A86E8"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\source5ab-modules-66316-0-20261015.jsonl",
+    "relative": "source5ab-modules-66316-0-20261015.jsonl",
+    "sha256": "6B42F2DD47ACBBC458047A979BC5330D53636BF440E35235CEF27B931D3A58F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\source5ab-modules-46360-0-20261015.jsonl",
+    "relative": "source5ab-modules-46360-0-20261015.jsonl",
+    "sha256": "3E76FC8F3C625879CF28A93221BD59B48653F0A30607862537CE6366C8375C9A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc.json",
+    "relative": "ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc.json",
+    "sha256": "39BDCAB4CCC4E818C0223ABCF578DADBBE2535D402D4A9534B2A12B2E74C0C0F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\source-observer.mjs",
+    "relative": "source-observer.mjs",
+    "sha256": "829CB5A5BA9628FF48ABEBE350FA0C6766F2CA86429029CD5971A315C7660D62"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\sdk-source-capture-proof-20261015.json",
+    "relative": "sdk-source-capture-proof-20261015.json",
+    "sha256": "E2B68ECB5247448C95593902161FC07499B553616B507A95F835F9A1CAE74D29"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc-posthash.json",
+    "relative": "ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc-posthash.json",
+    "sha256": "818DD84D21C17A0FB51B9B657F1FC8936A0A86FFCD3D48C2E02E534651B746EE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\Run-AnthropicFederationSdkSource-20261015.ps1",
+    "relative": "Run-AnthropicFederationSdkSource-20261015.ps1",
+    "sha256": "0C752D43EBB19CCB4A8D140D80F68263FC7718D2F3CD1B4600A92A393779AADD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\README.md",
+    "relative": "README.md",
+    "sha256": "3A696A40CA8032EFEB2D39EE78997D541E2F3C4A422AB0EAE9D5A4BD7B950E5D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df.stdout.log",
+    "relative": "ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df.stderr.log",
+    "relative": "ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df.json",
+    "relative": "ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df.json",
+    "sha256": "2460E570B903C0A2B59BB12E10D9EA49BA6E123A14CAEA67FA1910959D8FA969"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-posthash.json",
+    "relative": "ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-posthash.json",
+    "sha256": "6C5EF51F149DB3E6DE1D6C858782D6A2C1F53DDED83B324016AC13ED3455D2F5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-admission.json",
+    "relative": "ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-admission.json",
+    "sha256": "EE7109E656F1C9A9D297BD96FF18CC14E965A2D05BBF2F63A14FF609E007828F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc.stdout.log",
+    "relative": "ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-extra-before.json",
+    "relative": "ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-extra-before.json",
+    "sha256": "F8F77E515AE43BE65172DEE144A851365188CBB6006F963842ECDF9DC50EF0E5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-output.json",
+    "relative": "ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-output.json",
+    "sha256": "95CB3BDB7B3667DFBDBA54198946E5A123EF8A4DBF41A362028EE549E28DBEB3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc-admission.json",
+    "relative": "ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc-admission.json",
+    "sha256": "C48F1048F56921DF2E95098EDE8FC5CBF3A53FA8A442A716BC92963E5596075C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc-extra-before.json",
+    "relative": "ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc-extra-before.json",
+    "sha256": "9F274E6000CAAF1B7F4879771DB665B299B1A5378574415F22D8F68F34188CC7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc-owned-fixture\\owned-source-identity.jwt",
+    "relative": "ai-anthropic-federation-sdk-source-light5-first-20261015T1827502051107Z-2905ad34a40048c39a33de593b27c5cc-owned-fixture\\owned-source-identity.jwt",
+    "sha256": "75B6CE7DDB78B2773DFCD37871A22A93FF587582F028EAFD0494073AEE504ABC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015\\verification\\anthropic-federation-source5ab-20261015\\ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-owned-fixture\\owned-source-identity.jwt",
+    "relative": "ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df-owned-fixture\\owned-source-identity.jwt",
+    "sha256": "5FE5982638AC855E15F83BB5900F460AD308DCB03DA2A1402B6CA13A1282D412"
+  }
+]

@@ -1,0 +1,9 @@
+file:///C:/Users/adyba/pi-zig-ai-anthropic-federation-20261015/src/extensions/native_ai_anthropic_federation_fixture.mjs:64
+    failAdvisory(Error("owned endpoint offline"));
+                 ^
+
+Error: owned endpoint offline
+    at run (file:///C:/Users/adyba/pi-zig-ai-anthropic-federation-20261015/src/extensions/native_ai_anthropic_federation_fixture.mjs:64:18)
+    at async file:///C:/Users/adyba/pi-zig-ai-anthropic-federation-20261015/verification/anthropic-federation-source5ab-20261015/source-observer.mjs:35:27
+
+Node.js v24.14.0
