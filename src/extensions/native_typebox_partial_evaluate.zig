@@ -170,10 +170,13 @@ fn broadenTypes(scope: *Scope, graph: c.JSValue, values: c.JSValue, result: c.JS
 }
 pub fn unionValue(scope: *Scope, graph: c.JSValue, values: c.JSValue) anyerror!c.JSValue {
     const broad = try flatten(scope, try broadenTypes(scope, graph, values, try scope.array()), try scope.array());
-    const length = try scope.get(broad, "length");
-    if (scope.equal(length, c.JS_NewInt32(scope.engine.context, 1))) return head(scope, broad);
+    return fastUnion(scope, graph, broad);
+}
+pub fn fastUnion(scope: *Scope, graph: c.JSValue, values: c.JSValue) anyerror!c.JSValue {
+    const length = try scope.get(values, "length");
+    if (scope.equal(length, c.JS_NewInt32(scope.engine.context, 1))) return head(scope, values);
     if (scope.equal(length, c.JS_NewInt32(scope.engine.context, 0))) return core.never(scope, graph);
-    return core.unionType(scope, graph, broad);
+    return core.unionType(scope, graph, values);
 }
 pub fn intersection(scope: *Scope, graph: c.JSValue, values: c.JSValue) anyerror!c.JSValue {
     const distribution = try distribute(scope, graph, values, try scope.array());
@@ -196,21 +199,23 @@ pub fn dependent(scope: *Scope, graph: c.JSValue, if_value: c.JSValue, then_valu
     const excluded = try exclude(scope, graph, else_value, if_value);
     return unionValue(scope, graph, try core.list(scope, &.{ intersected, excluded }));
 }
-fn enumEvaluate(scope: *Scope, graph: c.JSValue, values: c.JSValue, result: c.JSValue) anyerror!c.JSValue {
+pub fn enumeration(scope: *Scope, graph: c.JSValue, values: c.JSValue, result: c.JSValue) anyerror!c.JSValue {
     if (try empty(scope, values)) return unionValue(scope, graph, result);
     const first = try head(scope, values);
     const rest = try tail(scope, values);
-    return enumEvaluate(scope, graph, rest, try append(scope, result, try core.literal(scope, graph, first)));
+    return enumeration(scope, graph, rest, try append(scope, result, try core.literal(scope, graph, first)));
+}
+pub fn template(scope: *Scope, graph: c.JSValue, pattern: c.JSValue) anyerror!c.JSValue {
+    const decoder = try scope.get(try scope.get(graph, "Type"), "TemplateLiteralDecode");
+    if (!c.JS_IsFunction(scope.engine.context, decoder)) return error.MissingActualTypeBoxTemplateLiteralDecode;
+    return evaluate(scope, graph, try scope.call(decoder, c.pi_js_undefined(), &.{pattern}));
 }
 pub fn evaluate(scope: *Scope, graph: c.JSValue, value: c.JSValue) anyerror!c.JSValue {
     if (try core.kind(scope, value, "Dependent")) return dependent(scope, graph, try scope.get(value, "if"), try scope.get(value, "then"), try scope.get(value, "else"));
-    if (try core.kind(scope, value, "Enum")) return enumEvaluate(scope, graph, try scope.get(value, "enum"), try scope.array());
+    if (try core.kind(scope, value, "Enum")) return enumeration(scope, graph, try scope.get(value, "enum"), try scope.array());
     if (try core.kind(scope, value, "Intersect")) return intersection(scope, graph, try scope.get(value, "allOf"));
     if (try core.kind(scope, value, "TemplateLiteral")) {
-        const decoder = try scope.get(try scope.get(graph, "Type"), "TemplateLiteralDecode");
-        if (!c.JS_IsFunction(scope.engine.context, decoder)) return error.MissingActualTypeBoxTemplateLiteralDecode;
-        const decoded = try scope.call(decoder, c.pi_js_undefined(), &.{try scope.get(value, "pattern")});
-        return evaluate(scope, graph, decoded);
+        return template(scope, graph, try scope.get(value, "pattern"));
     }
     if (try core.kind(scope, value, "Union")) return unionValue(scope, graph, try scope.get(value, "anyOf"));
     return value;
