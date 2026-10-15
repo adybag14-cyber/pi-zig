@@ -1591,6 +1591,12 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-ai-claude5ab-allocation", "Exercise every native host allocation failure in Claude request owner graphs").dependOn(&b.addRunArtifact(claude5ab_allocations).step);
     b.step("test-native-ai-transcript-context", "Compare original context normalization and complete native owner graphs").dependOn(&b.addRunArtifact(transcript_context_tests).step);
     b.step("build-native-ai-transcript-context", "Compile original context normalization independently of runtime deadlines").dependOn(&transcript_context_tests.step);
+    const meta_oauth_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_oauth_meta_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI Meta OAuth"}, .use_llvm = use_llvm });
+    linkQuickJs(b, meta_oauth_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(meta_oauth_tests.root_module, sqlite_lib_dir, sqlite_library);
+    meta_oauth_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-ai-oauth-meta", "Compare actual Source Meta device flow identity mint errors callbacks and ownership").dependOn(&b.addRunArtifact(meta_oauth_tests).step);
+    b.step("build-native-ai-oauth-meta", "Compile the native Meta OAuth facade independently of runtime deadlines").dependOn(&meta_oauth_tests.step);
     const session_restore_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_restore_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK transcript restore"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_restore_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_restore_tests.root_module, sqlite_lib_dir, sqlite_library);

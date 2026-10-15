@@ -1,0 +1,1501 @@
+{
+  "runtime": "v24.14.0",
+  "count": 38,
+  "clock": "controlled Date.now and microtask sleep only; owner deadline uses wall clock",
+  "sourceHead": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "rows": [
+    {
+      "name": "metadata",
+      "result": {
+        "value": {
+          "keys": [
+            "name",
+            "isSubscription",
+            "loginLabel",
+            "login",
+            "refresh",
+            "toAuth"
+          ],
+          "name": "Meta (Muse subscription)",
+          "isSubscription": true,
+          "loginLabel": "Sign in with Meta",
+          "methods": [
+            {
+              "key": "login",
+              "name": "loginMeta",
+              "length": 1,
+              "ownPrototype": false,
+              "prototype": "[object AsyncFunction]",
+              "constructible": false
+            },
+            {
+              "key": "refresh",
+              "name": "refresh",
+              "length": 2,
+              "ownPrototype": false,
+              "prototype": "[object Function]",
+              "constructible": false
+            },
+            {
+              "key": "toAuth",
+              "name": "toAuth",
+              "length": 1,
+              "ownPrototype": false,
+              "prototype": "[object AsyncFunction]",
+              "constructible": false
+            }
+          ]
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "toAuth-object-access-identity",
+      "result": {
+        "value": true
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "toAuth-unknown",
+      "result": {
+        "value": {}
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "toAuth-null-async-error",
+      "result": {
+        "value": {
+          "async": true,
+          "name": "TypeError"
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "toAuth-getter-async-identity",
+      "result": {
+        "value": true
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-getter-sync-identity",
+      "result": {
+        "value": true
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-key",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "refresh-identity",
+          "access": "controlled-api-key",
+          "expires": 1700086400000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer refresh-identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-unknown-string-coercion",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "access": "controlled-api-key",
+          "expires": 1700086400000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer undefined",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-dead-session-401",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta session expired (status 401). Run `/login meta` to sign in again.: reauthenticate"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-dead-session-403",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta session expired (status 403). Run `/login meta` to sign in again.: forbidden"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-error-detail-priority",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta API key mint failed with status 500: broken"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-invalid-json",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta API key mint failed with status 500"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-setup-http",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta did not issue an API key. Complete setup at https://example.com/setup?q=1"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-setup-untrusted",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta did not issue an API key."
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-json-null",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta did not issue an API key."
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-json-primitive",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta did not issue an API key."
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "login-success",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "controlled-identity",
+          "access": "controlled-api-key",
+          "expires": 1700086401000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer controlled-identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        },
+        {
+          "type": "progress",
+          "message": "Enabling Meta Model API access..."
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "time": 1700000001000
+    },
+    {
+      "name": "login-complete-uri",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "controlled-identity",
+          "access": "controlled-api-key",
+          "expires": 1700086401000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer controlled-identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.org/auth?q=code",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        },
+        {
+          "type": "progress",
+          "message": "Enabling Meta Model API access..."
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "time": 1700000001000
+    },
+    {
+      "name": "login-fallback-uri",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "controlled-identity",
+          "access": "controlled-api-key",
+          "expires": 1700086401000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer controlled-identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "http://example.org/auth",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        },
+        {
+          "type": "progress",
+          "message": "Enabling Meta Model API access..."
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "time": 1700000001000
+    },
+    {
+      "name": "login-default-interval-no-expiry",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "controlled-identity",
+          "access": "controlled-api-key",
+          "expires": 1700086405000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer controlled-identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/"
+        },
+        {
+          "type": "progress",
+          "message": "Enabling Meta Model API access..."
+        }
+      ],
+      "sleeps": [
+        5000
+      ],
+      "time": 1700000005000
+    },
+    {
+      "name": "login-pending",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "controlled-identity",
+          "access": "controlled-api-key",
+          "expires": 1700086402000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer controlled-identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        },
+        {
+          "type": "progress",
+          "message": "Enabling Meta Model API access..."
+        }
+      ],
+      "sleeps": [
+        1000,
+        1000
+      ],
+      "time": 1700000002000
+    },
+    {
+      "name": "login-slow-down-increment",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "controlled-identity",
+          "access": "controlled-api-key",
+          "expires": 1700086407000
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer controlled-identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        },
+        {
+          "type": "progress",
+          "message": "Enabling Meta Model API access..."
+        }
+      ],
+      "sleeps": [
+        1000,
+        6000
+      ],
+      "time": 1700000007000
+    },
+    {
+      "name": "login-slow-down-explicit",
+      "result": {
+        "value": {
+          "type": "oauth",
+          "refresh": "controlled-identity",
+          "access": "controlled-api-key",
+          "expires": 1700086403500
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer controlled-identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        },
+        {
+          "type": "progress",
+          "message": "Enabling Meta Model API access..."
+        }
+      ],
+      "sleeps": [
+        1000,
+        2500
+      ],
+      "time": 1700000003500
+    },
+    {
+      "name": "login-denied",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta login was denied."
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "time": 1700000001000
+    },
+    {
+      "name": "login-expired-token",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta device authorization expired. Please restart login."
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "time": 1700000001000
+    },
+    {
+      "name": "login-token-error",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta device token request failed with status 503: wait"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "time": 1700000001000
+    },
+    {
+      "name": "login-deadline-before-first-poll",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Device flow timed out"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 0.5
+        }
+      ],
+      "sleeps": [
+        500
+      ],
+      "time": 1700000000500
+    },
+    {
+      "name": "login-deadline-slow-down",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Device flow timed out after one or more slow_down responses. This is often caused by clock drift in WSL or VM environments. Please sync or restart the VM clock and try again."
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 2
+        }
+      ],
+      "sleeps": [
+        1000,
+        1000
+      ],
+      "time": 1700000002000
+    },
+    {
+      "name": "login-authorization-error",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Meta device authorization failed with status 400: bad_request"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "login-authorization-invalid-json",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid Meta device authorization response: null"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "login-invalid-device-fields",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid Meta device authorization response: {\"device_code\":\"device +/Ω\",\"user_code\":3,\"verification_uri\":\"https://EXAMPLE.com\",\"interval\":0.001,\"expires_in\":30}"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "login-invalid-verification-uri",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Invalid Meta device authorization response: {\"device_code\":\"device +/Ω\",\"user_code\":\"ABCD-EFGH\",\"verification_uri\":\"data:text/plain,bad\",\"interval\":0.001,\"expires_in\":30}"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "login-abort-after-device-notification",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Login cancelled"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "login-abort-before-mint",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Login cancelled"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://auth.meta.com/oidc/device/token/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=device+%2B%2F%CE%A9&client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        },
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer controlled-identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        },
+        {
+          "type": "progress",
+          "message": "Enabling Meta Model API access..."
+        }
+      ],
+      "sleeps": [
+        1000
+      ],
+      "time": 1700000001000
+    },
+    {
+      "name": "login-notification-error",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "controlled notification failed"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "login-notification-error-abort-normalized",
+      "result": {
+        "error": {
+          "name": "Error",
+          "message": "Login cancelled"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://auth.meta.com/oidc/device/authorization/",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
+          "body": "client_id=1031625952748946",
+          "signal": {
+            "aborted": false,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [
+        {
+          "type": "device_code",
+          "userCode": "ABCD-EFGH",
+          "verificationUri": "https://example.com/",
+          "intervalSeconds": 0.001,
+          "expiresInSeconds": 30
+        }
+      ],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "login-signal-getter-error-catch-rereads",
+      "result": {
+        "value": {
+          "identity": true,
+          "reads": 2
+        }
+      },
+      "calls": [],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    },
+    {
+      "name": "refresh-preaborted-preserves-abort",
+      "result": {
+        "error": {
+          "name": "AbortError",
+          "message": "This operation was aborted"
+        }
+      },
+      "calls": [
+        {
+          "url": "https://api.meta.ai/muse-code/key",
+          "method": "POST",
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer identity",
+            "Content-Type": "application/json",
+            "x-api-version": "1.0.0"
+          },
+          "body": "{}",
+          "signal": {
+            "aborted": true,
+            "brand": "[object AbortSignal]"
+          }
+        }
+      ],
+      "notifications": [],
+      "sleeps": [],
+      "time": 1700000000000
+    }
+  ]
+}
