@@ -17,6 +17,7 @@ pub const Prepared = struct {
     /// Additional headers own both the name and value. Original headers remain borrowed.
     headers: []std.http.Header,
     url: ?[]u8 = null,
+    failure: ?@import("native_ai_http_failure.zig").Owned = null,
     pub fn deinit(self: *Prepared, a: std.mem.Allocator) void {
         for (self.headers) |header| {
             @memset(@constCast(header.value), 0);
@@ -25,6 +26,7 @@ pub const Prepared = struct {
         }
         a.free(self.headers);
         if (self.url) |url| a.free(url);
+        if (self.failure) |*failure| failure.deinit(a);
         self.* = undefined;
     }
 };
