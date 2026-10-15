@@ -17,19 +17,22 @@ fn construct(comptime kind: Kind) @import("native_class.zig").Construct {
             var error_type = arg(args, 4);
             var cause = c.pi_js_undefined();
             if (kind == .abort or kind == .connection or kind == .timeout) {
-                const options = if (args.len == 0 or c.JS_IsUndefined(args[0])) try scope.object() else args[0];
+                const options = if (kind != .connection and (args.len == 0 or c.JS_IsUndefined(args[0]))) try scope.object() else arg(args, 0);
                 message = try scope.get(options, "message");
+                cause = if (kind == .connection) try scope.get(options, "cause") else c.pi_js_undefined();
                 if (kind == .timeout) {
                     if (v.nullish(message)) message = try scope.text("Request timed out.");
+                    // The timeout subclass delegates through the connection
+                    // constructor, whose fallback uses || rather than ??.
+                    if (!scope.truthy(message)) message = try scope.text("Connection error.");
                 } else if (!scope.truthy(message)) message = try scope.text(if (kind == .abort) "Request was aborted." else "Connection error.");
-                cause = if (kind == .connection) try scope.get(options, "cause") else c.pi_js_undefined();
                 status = c.pi_js_undefined();
                 body = c.pi_js_undefined();
                 headers = c.pi_js_undefined();
                 error_type = c.pi_js_undefined();
             }
             const text = try scope.invoke(try scope.get(roots[1], "api"), "makeMessage", &.{ status, body, message });
-            var error_args = [_]c.JSValue{text};
+            var error_args = [_]c.JSValue{try scope.stringify(text)};
             const result = try scope.own(try engine.checked(c.JS_CallConstructor2(engine.context, roots[0], target, 1, &error_args)));
             try scope.set(result, "status", status);
             try scope.set(result, "headers", headers);
