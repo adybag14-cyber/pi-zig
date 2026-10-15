@@ -1,0 +1,10 @@
+{
+  "free_kib": 19478788,
+  "required_kib": 2097152,
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "status": "admitted",
+  "heap_mb": 256,
+  "observed_utc": "2026-10-15T18:28:14.3841032+00:00",
+  "coordinated_with": "Root explicitly granted queued LIGHT5 after Navigate56",
+  "timeout_seconds": 300
+}

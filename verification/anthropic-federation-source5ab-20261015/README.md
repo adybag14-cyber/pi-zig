@@ -29,9 +29,10 @@ OAuth/auth fields, beta identities, content headers, session headers, JSON grant
 fields, error bodies, cache state, or refresh behavior.
 
 Source-only checkpoint checks: pinned Zig 0.16.0 formatting, AST checking, and
-`git diff --check`. Native tests and Node captures have not been executed until
-Root grants their bounded validation slots. No completion or parity claim is
-made by preparing an observer.
+`git diff --check`. Native tests remain unexecuted. Root granted LIGHT5 and the
+actual SDK Source capture passed after correcting an owned fake endpoint queue
+race. This is dependency credential evidence, not native runtime parity or
+public Pi facade qualification.
 
 After Root grants a Source slot, execute `source-observer.mjs` with the actual
 SDK directory, a newly owned fixture directory and an output receipt path,
@@ -57,5 +58,22 @@ dependency / 1,774 Node-tool manifests, and all 84 retained absent dependency
 records. Extra controls freeze the driver, guest fixture, native candidate,
 module observer, audit, process owner, wrapper and manifest files. Every attempt
 uses a timestamp and GUID for its output, logs and fake-credential directory.
-The posthash phase runs even when the observer fails. No runner invocation or
-full prehash has been performed at this source-only checkpoint.
+The posthash phase runs even when the observer fails.
+
+The passing actual SDK attempt is
+`ai-anthropic-federation-sdk-source-light5-observed-response-retry-20261015T1830306911549Z-1310762081ea4727a73744a42297e0df`.
+Its owned Node PID 46360 exited 0 at 18:31:24Z; the complete posthash finished
+at 18:31:44Z with zero drift in all three manifests and all extra controls.
+All 84 retained absent dependencies remain absent. It captured 12 SDK credential
+cases, six fake-fetch exchanges, and one actual owned loopback POST shared by
+two token callers. The raw Source SDK User-Agent is retained unchanged.
+
+The first attempt's PID 66316 exited 1 because the guest fake endpoint queue
+rejected a deferred response before Node's asynchronous file read reached
+fetch. Its zero-drift posthash, actual stderr and module observations are
+retained. Commit `4c23ecbb140a00a78691027089efd2534cc7fda7` fixes only guest
+test scheduling and the test bridge: observe the queue promise immediately,
+wait for fakefetch entry before rejection, and observe the actual pending
+refresh before recording backoff. SDK implementation bodies and captured
+request/response data were not changed. `sdk-source-capture-proof-20261015.json`
+records the terminal qualification boundary.
