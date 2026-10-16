@@ -327,7 +327,7 @@ fn populateModule(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     defer engine.freeValue(known_types);
     inline for (.{ "chat", "image", "classifier" }) |name| try put(engine, known_types, name, c.JS_NewBool(engine.context, true));
     try put(engine, cache, "known_model_types", c.JS_DupValue(engine.context, known_types));
-    try put(engine, exports, "createModels", try @import("native_ai_models_assembly.zig").create(engine, exports, operations));
+    try put(engine, exports, "createModels", try @import("native_ai_models_assembly.zig").create(engine, exports, operations, known_types));
     inline for (.{ "getModelType", "isModelType" }) |name| try put(engine, exports, name, try get(engine, operations, name));
     try @import("native_provider_factory.zig").install(engine, exports, cache);
     engine.native_ai_model_operations_namespace = c.JS_DupValue(engine.context, operations);
