@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "upstream_head": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+  "inputs": [
+    {
+      "path": "packages/ai/src/providers/compat-schema.ts",
+      "bytes": 27607,
+      "sha256": "5D8899A9D1292669BCCF5E2021B23428F6D0551F1E998A241877941526177594"
+    },
+    {
+      "path": "packages/ai/src/providers/model-schema.ts",
+      "bytes": 4435,
+      "sha256": "1229CA9E0B4489D8D5BD095788608D5C86F42A6E2A66E75F504D0045D05CC671"
+    },
+    {
+      "path": "packages/coding-agent/src/core/model-config.ts",
+      "bytes": 8736,
+      "sha256": "BF9D7ED5D2724272D31CE749287B8517FADC29240844D3A1669B61F45E5988F5"
+    },
+    {
+      "path": "packages/coding-agent/scripts/generate-references.ts",
+      "bytes": 7736,
+      "sha256": "80CBC9B6B6896D80225EA6B8CC7EE338EFCC2D2A7978D9F41115E06A1422B34A"
+    },
+    {
+      "path": "packages/coding-agent/schemas/models.schema.json",
+      "bytes": 44684,
+      "sha256": "ECFDCFE9AF7470466ED2EDABDA81531C40FD80C261BDED52019A0D32B4FC2F63"
+    },
+    {
+      "path": "packages/ai/src/models.generated.ts",
+      "bytes": 18114,
+      "sha256": "8CD91FA7EAE8E9B219B8F50ED7581D7C31FE6DF29B5A07A0A672589BB7323C21"
+    },
+    {
+      "path": "packages/coding-agent/src/core/model-resolver.ts",
+      "bytes": 25183,
+      "sha256": "D624526FA0B8D66A5208C868097B8E724308130C9B5137D8ED7156DAE5548A91"
+    },
+    {
+      "path": "packages/durable/src/harness/harness.ts",
+      "bytes": 18264,
+      "sha256": "9FE5125208C20B1CC5A5740EF828168DFC2F8D5ACA2DAF6A2E20C71BD91ABE58"
+    },
+    {
+      "path": "packages/durable/src/harness/scheduler.ts",
+      "bytes": 84767,
+      "sha256": "96460ABAF8956C84E3391434F5EA687EB5932BA319BD70B1F3FA8B59F4397366"
+    },
+    {
+      "path": "packages/durable/src/harness/tool.ts",
+      "bytes": 40267,
+      "sha256": "FAB9C10E97E81E5A121DCEDAB68A860A2C44ED4D56EE4C3242310A7E3721CB0E"
+    },
+    {
+      "path": "packages/durable/test/harness-host-inputs.test.ts",
+      "bytes": 4183,
+      "sha256": "8D6DF8AEBAB45D9DB82A5C8197F626E3DA1077BF54E3A7BA5D7A2088AA21C91F"
+    }
+  ],
+  "generation_executed": false,
+  "generated_bytes_edited": false,
+  "requirements": [
+    "ModelsJsonSchemas exports provider/model/modelOverride exact entry identities",
+    "CompatSchemasByApi is exported; Azure/Codex aliases share OpenAIResponsesCompatSchema identity",
+    "Identity Set deduplication precedes properties map and duplicate override merge",
+    "Descriptions/default annotations match exact8efd declarations; overrides do not gain model defaults",
+    "ModelConfig.load remains Check/Errors then clone/freeze, without default insertion"
+  ],
+  "owner_coordination": "TypeBox compiler owner notified; Root generator grant required"
+}

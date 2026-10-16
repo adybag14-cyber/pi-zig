@@ -386,17 +386,18 @@ pub fn resolveConversation(engine: *Engine, session: c.JSValue, options: c.JSVal
     defer engine.freeValue(token);
     const pending = try @import("native_durable_documents.zig").snapshot(engine, session, &.{ token, id, context });
     defer engine.freeValue(pending);
-    var captures = [_]c.JSValue{ snapshot, options };
+    var captures = [_]c.JSValue{ snapshot, options, session };
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, resolvedConversation, 1, 0, captures.len, &captures));
     defer engine.freeValue(callback);
     return sdk.invoke(engine, pending, "then", &.{callback});
 }
 fn resolvedConversation(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
-    return resolvedConversationOwned(engine, if (argc == 0) c.pi_js_undefined() else argv[0], data[0], data[1]) catch |err| durable.reject(engine, err);
+    const generation = engine.native_allocation_generation;
+    return resolvedConversationOwned(engine, if (argc == 0) c.pi_js_undefined() else argv[0], data[0], data[1], data[2]) catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
 }
-fn resolvedConversationOwned(engine: *Engine, state: c.JSValue, snapshot: c.JSValue, options: c.JSValue) !c.JSValue {
-    const resolved_settings = try runtimeSettings(engine, options);
+fn resolvedConversationOwned(engine: *Engine, state: c.JSValue, snapshot: c.JSValue, options: c.JSValue, session: c.JSValue) !c.JSValue {
+    const resolved_settings = try runtimeSettingsForSession(engine, session, options);
     defer engine.freeValue(resolved_settings);
     const reporter = try sdk.get(engine, options, "onReport");
     defer engine.freeValue(reporter);
@@ -405,7 +406,17 @@ fn resolvedConversationOwned(engine: *Engine, state: c.JSValue, snapshot: c.JSVa
 pub fn runtimeSettings(engine: *Engine, options: c.JSValue) !c.JSValue {
     const input = try sdk.get(engine, options, "settings");
     defer engine.freeValue(input);
-    return settings(engine, input);
+    return settingsFromSupplier(engine, input);
+}
+pub fn runtimeSettingsForSession(engine: *Engine, session: c.JSValue, options: c.JSValue) !c.JSValue {
+    const input = try @import("native_durable_host_inputs.zig").captured(engine, session, options, "settings");
+    defer engine.freeValue(input);
+    return settingsFromSupplier(engine, input);
+}
+fn settingsFromSupplier(engine: *Engine, input: c.JSValue) !c.JSValue {
+    const value = try @import("native_durable_host_inputs.zig").resolve(engine, input);
+    defer engine.freeValue(value);
+    return settings(engine, value);
 }
 fn initialAgent(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);

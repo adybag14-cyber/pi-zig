@@ -952,21 +952,24 @@ pub const Manager = struct {
         }
         return json.Owned.empty(std.heap.page_allocator);
     }
-    fn reportContextFailure(self: *Manager, err: anyerror) void {
-        _ = durable.reject(self.engine, err);
+    fn reportContextFailure(self: *Manager, err: anyerror, generation: u64) !void {
+        try @import("native_durable_host_inputs.zig").escapeFatal(self.engine, err, generation);
+        _ = @import("native_durable_host_inputs.zig").getterFailure(self.engine, err, generation);
         const reason = c.JS_GetException(self.engine.context);
         defer self.engine.freeValue(reason);
         const native = self.native_owner orelse return;
         if (native.creation_owner) |harness| @import("native_durable_harness.zig").reportFailure(self.engine, harness, reason);
     }
-    fn contextRetentionValue(self: *Manager) c.JSValue {
-        const value = @import("native_durable_agent.zig").runtimeSettings(self.engine, self.options) catch |err| {
-            self.reportContextFailure(err);
+    fn contextRetentionValue(self: *Manager) !c.JSValue {
+        const generation = self.engine.native_allocation_generation;
+        const value = @import("native_durable_agent.zig").runtimeSettingsForSession(self.engine, self.session, self.options) catch |err| {
+            try self.reportContextFailure(err, generation);
             return c.JS_NewInt32(self.engine.context, 0);
         };
         defer self.engine.freeValue(value);
+        const get_generation = self.engine.native_allocation_generation;
         return sdk.get(self.engine, value, "contextRetentionMs") catch |err| {
-            self.reportContextFailure(err);
+            try self.reportContextFailure(err, get_generation);
             return c.JS_NewInt32(self.engine.context, 0);
         };
     }
@@ -989,7 +992,7 @@ pub const Manager = struct {
         try settleWaitersMode(self, true);
         try self.updateClock();
         const now = Manager.nativeClock(self);
-        const retention = self.contextRetentionValue();
+        const retention = try self.contextRetentionValue();
         defer self.engine.freeValue(retention);
         var contexts = self.contexts.iterator();
         while (contexts.next()) |entry| if (entry.value_ptr.*) |*cached| {
@@ -1016,7 +1019,7 @@ pub const Manager = struct {
         if (ownerGlobal(self.engine, "clearTimeout", &.{expiry.timer})) |value| self.engine.freeValue(value) else |_| {}
     }
     fn scheduleContextExpiry(self: *Manager) !void {
-        const retention = self.contextRetentionValue();
+        const retention = try self.contextRetentionValue();
         defer self.engine.freeValue(retention);
         var at: ?f64 = null;
         var values = self.contexts.valueIterator();
@@ -1825,7 +1828,10 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     if (native.session_lease.?.adapter) |adapter| adapter.setBackgroundContext(context);
     const self = try engine.gpa.create(Manager);
     errdefer engine.gpa.destroy(self);
-    const registry = try sdk.get(engine, options, "registry");
+    const registry = if (native.creation_owner) |harness| registry: {
+        const host = try @import("native_durable_harness.zig").state(engine, harness);
+        break :registry if (host.scheduler_registry) |captured| c.JS_DupValue(engine.context, captured) else try sdk.get(engine, options, "registry");
+    } else try sdk.get(engine, options, "registry");
     errdefer engine.freeValue(registry);
     const snapshot = try sdk.invoke(engine, registry, "snapshot", &.{});
     errdefer engine.freeValue(snapshot);
@@ -2066,10 +2072,17 @@ fn runtimeObject(self: *Manager, entry: *Entry, record: json.Value) !c.JSValue {
     var registry_data = [_]c.JSValue{self.snapshot};
     const registry_getter = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeRegistryGetter, 0, 0, registry_data.len, &registry_data));
     if (c.JS_DefinePropertyGetSet(engine.context, object, registry_atom, registry_getter, c.pi_js_undefined(), c.JS_PROP_ENUMERABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
-    try sdk.put(engine, object, "models", try sdk.get(engine, self.options, "models"));
+    const models_atom = c.JS_NewAtom(engine.context, "models");
+    if (models_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+    defer c.JS_FreeAtom(engine.context, models_atom);
+    const host_models = try @import("native_durable_host_inputs.zig").captured(engine, self.session, self.options, "models");
+    defer engine.freeValue(host_models);
+    var models_data = [_]c.JSValue{host_models};
+    const models_getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, runtimeModelsGetter, "get models", 0, 0, models_data.len, &models_data));
+    if (c.JS_DefinePropertyGetSet(engine.context, object, models_atom, models_getter, c.pi_js_undefined(), c.JS_PROP_ENUMERABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     const settings_atom = c.JS_NewAtom(engine.context, "settings");
     defer c.JS_FreeAtom(engine.context, settings_atom);
-    var settings_data = [_]c.JSValue{self.options};
+    var settings_data = [_]c.JSValue{ self.session, self.options };
     const settings_getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, runtimeSettingsGetter, "get settings", 0, 0, settings_data.len, &settings_data));
     var bound_data = [_]c.JSValue{object};
     if (c.JS_DefinePropertyGetSet(engine.context, object, settings_atom, settings_getter, c.pi_js_undefined(), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
@@ -2098,7 +2111,13 @@ fn runtimeRegistryGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]
 }
 fn runtimeSettingsGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
-    return @import("native_durable_agent.zig").runtimeSettings(engine, data[0]) catch |err| durable.reject(engine, err);
+    const generation = engine.native_allocation_generation;
+    return @import("native_durable_agent.zig").runtimeSettingsForSession(engine, data[0], data[1]) catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
+}
+fn runtimeModelsGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const generation = engine.native_allocation_generation;
+    return @import("native_durable_host_inputs.zig").resolve(engine, data[0]) catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
 }
 fn active(self: *Runtime) !void {
     if (!self.entry.runtime.isActive() or self.entry.manager.closed) {

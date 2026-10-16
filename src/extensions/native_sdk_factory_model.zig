@@ -1,5 +1,5 @@
 //! Factory initial-model subset of the original findInitialModel algorithm.
-//! Provider defaults follow actual model-resolver.ts at upstream4dd2b149.
+//! Provider defaults follow actual model-resolver.ts at upstream8efd314f.
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
@@ -14,7 +14,7 @@ const defaults = .{
     .{ "azure", "gpt-5.4" },
     .{ "openai-codex", "gpt-6.1-sol" },
     .{ "radius", "balanced" },
-    .{ "nvidia", "nvidia/nemotron-3-ultra-550b-a55b" },
+    .{ "nvidia", "nvidia/nemotron-3.5-super-vl-120b-a12b" },
     .{ "deepseek", "deepseek-v4-pro" },
     .{ "google", "gemini-3.1-pro-preview" },
     .{ "google-vertex", "gemini-3.1-pro-preview" },

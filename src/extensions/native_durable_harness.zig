@@ -8,7 +8,7 @@ const scans = @import("../durable/backend/source_scan.zig");
 const json = backend.json;
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
-pub const State = struct { engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64 = null, on_report: ?c.JSValue = null };
+pub const State = struct { engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64 = null, on_report: ?c.JSValue = null, host_settings: ?c.JSValue = null, host_models: ?c.JSValue = null, scheduler_registry: ?c.JSValue = null };
 const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose, @"resume", waitForTask, waitForIdle, abortTask, snapshot, snapshotAsOf, unloadDocuments, watchDoc, documentState, resolveAgent, agent, configure, context, submit, submission, compact, reset, viewState, watch, taskGraph, watchTaskGraph, inspect };
 pub fn state(engine: *Engine, receiver: c.JSValue) !*State {
     return @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, receiver, engine.native_durable_harness_class) orelse return error.InvalidHarnessReceiver));
@@ -19,6 +19,7 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     c.JS_FreeValueRT(runtime, self.session);
     c.JS_FreeValueRT(runtime, self.options);
     if (self.on_report) |callback| c.JS_FreeValueRT(runtime, callback);
+    inline for (.{ "host_settings", "host_models", "scheduler_registry" }) |name| if (@field(self, name)) |value| c.JS_FreeValueRT(runtime, value);
     engine.gpa.destroy(self);
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
@@ -27,6 +28,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
     c.JS_MarkValue(runtime, self.session, marker);
     c.JS_MarkValue(runtime, self.options, marker);
     if (self.on_report) |callback| c.JS_MarkValue(runtime, callback, marker);
+    inline for (.{ "host_settings", "host_models", "scheduler_registry" }) |name| if (@field(self, name)) |value| c.JS_MarkValue(runtime, value, marker);
 }
 pub fn install(engine: *Engine, exports: c.JSValue) !void {
     if (engine.native_durable_harness_class == 0) _ = c.JS_NewClassID(engine.runtime, &engine.native_durable_harness_class);
@@ -124,11 +126,21 @@ fn prepareOpen(engine: *Engine, args: []const c.JSValue) !c.JSValue {
     defer engine.freeValue(supplied_clock);
     const clock = try @import("native_durable_document_retention.zig").captureClock(engine, supplied_clock);
     defer engine.freeValue(clock);
+    const host_settings = try sdk.get(engine, options, "settings");
+    defer engine.freeValue(host_settings);
     const session = try durable.sessionObjectWithClock(engine, argument(args, 0), clock, !c.JS_IsUndefined(supplied_clock));
     defer engine.freeValue(session);
+    const scheduler_registry = try sdk.get(engine, options, "registry");
+    defer engine.freeValue(scheduler_registry);
+    const host_models = try sdk.get(engine, options, "models");
+    defer engine.freeValue(host_models);
     const result = try object(engine, session, options, null);
     errdefer engine.freeValue(result);
     (try state(engine, result)).on_report = c.JS_DupValue(engine.context, on_report);
+    const host = try state(engine, result);
+    host.host_settings = c.JS_DupValue(engine.context, host_settings);
+    host.host_models = c.JS_DupValue(engine.context, host_models);
+    host.scheduler_registry = c.JS_DupValue(engine.context, scheduler_registry);
     const owner = try durable.state(engine, session);
     owner.creation_owner = c.JS_DupValue(engine.context, result);
     owner.creation_hook = created;

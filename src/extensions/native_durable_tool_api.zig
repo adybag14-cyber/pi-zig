@@ -43,7 +43,12 @@ pub fn create(engine: *Engine, state: c.JSValue, limits: window.Limits, operatio
     try put(engine, api, "taskId", try scope.get(runtime, "taskId"));
     try put(engine, api, "conversationId", try scope.get(runtime, "conversationId"));
     try put(engine, api, "callId", try scope.get(call, "id"));
-    inline for (.{ "registry", "agent", "models" }) |name| try put(engine, api, name, try scope.get(runtime, name));
+    inline for (.{ "registry", "agent" }) |name| try put(engine, api, name, try scope.get(runtime, name));
+    try installGetter(engine, api, "models", modelsGetter, runtime);
+    const environment = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
+    try put(engine, environment, "value", c.pi_js_undefined());
+    try put(engine, state, "nativeHostEnvironment", environment);
+    try installGetter(engine, api, "env", environmentGetter, environment);
     try installAction(engine, api, state, .output);
     const output_window = if (limits.retain == .tail) output_window: {
         const result = try scope.own(try vm.object(engine));
@@ -63,6 +68,24 @@ pub fn create(engine: *Engine, state: c.JSValue, limits: window.Limits, operatio
     inline for (.{ "getTask", "waitForTask", "conversation", "snapshot", "snapshotAsOf", "watchDoc" }) |name| try put(engine, api, name, try scope.get(runtime, name));
     try put(engine, api, "executeTool", operations.execute_tool);
     return api;
+}
+fn installGetter(engine: *Engine, api: c.JSValue, comptime name: [:0]const u8, callback: c.JSCFunctionData, capture: c.JSValue) !void {
+    const atom = c.JS_NewAtom(engine.context, name.ptr);
+    if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+    defer c.JS_FreeAtom(engine.context, atom);
+    var data = [_]c.JSValue{capture};
+    const getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, callback, "get " ++ name, 0, 0, data.len, &data));
+    if (c.JS_DefinePropertyGetSet(engine.context, api, atom, getter, c.pi_js_undefined(), c.JS_PROP_ENUMERABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+}
+fn modelsGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const generation = engine.native_allocation_generation;
+    return vm.get(engine, data[0], "models") catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
+}
+fn environmentGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const generation = engine.native_allocation_generation;
+    return vm.get(engine, data[0], "value") catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
 }
 fn installAction(engine: *Engine, api: c.JSValue, state: c.JSValue, action: Action) !void {
     var captures = [_]c.JSValue{state};

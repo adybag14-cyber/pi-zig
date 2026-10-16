@@ -80,14 +80,15 @@ pub fn submit(engine: *Engine, session: c.JSValue, options: c.JSValue, conversat
 }
 fn admitCommit(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
-    return admitDraft(engine, data[0], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| durable.reject(engine, err);
+    const generation = engine.native_allocation_generation;
+    return admitDraft(engine, data[0], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
 }
 fn admitDraft(engine: *Engine, state: c.JSValue, tx: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const exports = engine.native_module_values.get("@earendil-works/pi-durable") orelse return error.DurableModuleUnavailable;
     const options = try scope.get(state, "options");
-    const settings = try scope.own(try @import("native_durable_agent.zig").runtimeSettings(engine, options));
+    const settings = try scope.own(try @import("native_durable_agent.zig").runtimeSettingsForSession(engine, try scope.get(state, "session"), options));
     const clock = try scope.get(options, "now");
     const now = if (c.JS_IsFunction(engine.context, clock)) try scope.own(try engine.checked(c.JS_Call(engine.context, clock, c.pi_js_undefined(), 0, null))) else now: {
         const date = try scope.own(try js.global(engine, "Date"));

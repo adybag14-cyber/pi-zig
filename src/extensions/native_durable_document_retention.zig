@@ -44,10 +44,10 @@ fn index(owner: *durable.State) *retention.Index {
     if (owner.cache_policy.index == null) owner.cache_policy.index = retention.Index.init(owner.engine.gpa);
     return &owner.cache_policy.index.?;
 }
-fn milliseconds(owner: *durable.State) f64 {
+fn milliseconds(owner: *durable.State) !f64 {
     if (owner.creation_owner) |harness| {
         const state = @import("native_durable_harness.zig").state(owner.engine, harness) catch return retention.default_ms;
-        return readSettings(owner.engine, state.options);
+        return if (state.host_settings) |captured| readCapturedSettings(owner.engine, captured) else readSettings(owner.engine, state.options);
     }
     return owner.cache_policy.plain_ms;
 }
@@ -97,9 +97,9 @@ pub fn touch(owner: *durable.State, address: json.Value, record_id: u64) !void {
     const values = index(owner);
     if (values.isPinned(record_id)) return;
     const stamp = now(owner);
-    if (values.lastUse(address)) |since| if (stamp - since < @min(1_000, milliseconds(owner) / 10)) return;
+    if (values.lastUse(address)) |since| if (stamp - since < @min(1_000, (try milliseconds(owner)) / 10)) return;
     try values.move(address, record_id, stamp);
-    if (owner.cache_policy.at == null or owner.cache_policy.at.? > stamp + milliseconds(owner)) try schedule(owner);
+    if (owner.cache_policy.at == null or owner.cache_policy.at.? > stamp + (try milliseconds(owner))) try schedule(owner);
 }
 pub fn drop(owner: *durable.State, address: json.Value) void {
     if (owner.cache_policy.index) |*values| values.drop(address);
@@ -125,7 +125,7 @@ pub fn sweepReserved(owner: *durable.State) !void {
     if (std.Thread.getCurrentId() != owner.owner_thread or owner.session.?.ownerThread.load(.acquire) == 0) return error.DocumentSweepOutsideReservedLine;
     if (owner.closing) return;
     const stamp = now(owner);
-    const duration_ms = milliseconds(owner);
+    const duration_ms = try milliseconds(owner);
     const values = index(owner);
     while (values.oldestExpired(stamp, duration_ms)) |oldest| {
         docs.dropCached(owner, oldest.address.value);
@@ -149,7 +149,7 @@ fn schedule(owner: *durable.State) !void {
     if (owner.closing) return;
     const values = index(owner);
     if (values.idle.items.len == 0) return;
-    const at = values.nextDeadline(milliseconds(owner)) orelse return;
+    const at = values.nextDeadline(try milliseconds(owner)) orelse return;
     if (owner.cache_policy.at) |pending| if (pending <= at) return;
     clearTimer(owner);
     owner.cache_policy.generation +%= 1;
@@ -251,6 +251,57 @@ pub fn readSettings(engine: *Engine, options: c.JSValue) f64 {
     }
     defer engine.freeValue(selected);
     return duration(engine, selected);
+}
+pub fn readCapturedSettings(engine: *Engine, captured: c.JSValue) !f64 {
+    // Ordinary bookkeeping failures preserve the operation's captured cause.
+    // Trusted fatal reasons are rethrown exactly through the fallible callers.
+    // A supplier can reenter native callbacks and replace Engine's capture even
+    // though this guard itself uses raw C operations. Detach the prior ownership
+    // before running any guest code; ordinary completion restores it by value.
+    const previous = engine.captured_exception;
+    const previous_message = engine.last_error;
+    engine.captured_exception = null;
+    engine.last_error = null;
+    var restore_previous = true;
+    defer {
+        if (restore_previous) {
+            if (engine.captured_exception) |value| engine.freeValue(value);
+            if (engine.last_error) |message| engine.gpa.free(message);
+            engine.captured_exception = previous;
+            engine.last_error = previous_message;
+        } else {
+            if (previous) |value| engine.freeValue(value);
+            if (previous_message) |message| engine.gpa.free(message);
+        }
+    }
+    errdefer restore_previous = false;
+    const call_generation = engine.native_allocation_generation;
+    const settings = if (c.JS_IsFunction(engine.context, captured)) c.JS_Call(engine.context, captured, c.pi_js_undefined(), 0, null) else c.JS_DupValue(engine.context, captured);
+    if (c.JS_IsException(settings)) {
+        try discardOrdinarySettingFailure(engine, call_generation);
+        return retention.default_ms;
+    }
+    defer engine.freeValue(settings);
+    if (c.JS_IsUndefined(settings) or c.JS_IsNull(settings)) return retention.default_ms;
+    const get_generation = engine.native_allocation_generation;
+    const selected = c.JS_GetPropertyStr(engine.context, settings, "documentRetentionMs");
+    if (c.JS_IsException(selected)) {
+        try discardOrdinarySettingFailure(engine, get_generation);
+        return retention.default_ms;
+    }
+    defer engine.freeValue(selected);
+    return duration(engine, selected);
+}
+fn discardOrdinarySettingFailure(engine: *Engine, generation: u64) !void {
+    const reason = c.JS_GetException(engine.context);
+    defer engine.freeValue(reason);
+    try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, reason, generation);
+    if (c.JS_IsUncatchableError(reason)) {
+        engine.native_exception_diagnostics_suppressed += 1;
+        defer engine.native_exception_diagnostics_suppressed -= 1;
+        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
+        unreachable;
+    }
 }
 
 test "native document retention reads exact numeric types without coercion" {

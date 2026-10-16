@@ -120,11 +120,10 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
             const started = try performanceNow(&scope);
             try put(engine, state, "startedAt", started);
             const api = try scope.get(state, "api");
-            const projected = try scope.own(try js.spread(engine, api));
-            try put(engine, projected, "env", value);
+            try put(engine, try scope.get(state, "nativeHostEnvironment"), "value", value);
             const tool = try scope.get(state, "tool");
             const args = try scope.get(state, "arguments");
-            const pending = vm.invoke(engine, tool, "execute", &.{ args, projected, context }) catch |err| {
+            const pending = vm.invoke(engine, tool, "execute", &.{ args, api, context }) catch |err| {
                 try duration(engine, state);
                 return failure(engine, state, err);
             };

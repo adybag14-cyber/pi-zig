@@ -465,7 +465,7 @@ pub fn defaultModel(provider: Provider) []const u8 {
         .cerebras => "gpt-oss-120b",
         .lmstudio, .vllm => "local-model",
         .perplexity => "sonar",
-        .nvidia => "nvidia/nemotron-3-ultra-550b-a55b",
+        .nvidia => "nvidia/nemotron-3.5-super-vl-120b-a12b",
         .radius => "balanced",
         .cloudflare_workers_ai => "@cf/moonshotai/kimi-k2.6",
         .cloudflare_ai_gateway => "workers-ai/@cf/moonshotai/kimi-k2.6",
