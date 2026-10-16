@@ -3,32 +3,40 @@ const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
 const flow = @import("native_agent_async.zig");
+const asynchronous = @import("native_async_function.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
 pub fn create(engine: *v.em.Engine) !c.JSValue {
-    const Adapter = struct {
-        fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-            var scope: Scope = .{ .engine = host };
-            defer scope.deinit();
-            const pending = try flow.create(host, c.pi_js_undefined());
-            defer host.freeValue(pending.owner);
-            errdefer host.freeValue(pending.promise);
-            try scope.put(pending.owner, "request", if (args.len > 0) args[0] else c.pi_js_undefined());
-            const options = if (args.len > 1 and !c.JS_IsUndefined(args[1])) args[1] else try scope.object();
-            try scope.put(pending.owner, "options", options);
-            const max = try scope.get(options, "maxRetries");
-            const maximum = if (v.nullish(max)) c.JS_NewInt32(host.context, 0) else max;
-            try scope.put(pending.owner, "maximum", maximum);
-            try scope.put(pending.owner, "remaining", maximum);
-            request(&scope, pending.owner) catch |err| try failed(&scope, pending.owner, flow.reason(host, err), true);
-            return pending.promise;
-        }
-    };
-    const result = try @import("native_node_function.zig").createArrow(engine, "retryProviderRequest", 1, Adapter.call, &.{});
-    errdefer engine.freeValue(result);
-    const prototype = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
-    defer engine.freeValue(prototype);
-    if (c.JS_SetPrototype(engine.context, result, prototype) < 0) return v.js.capture(engine);
-    return result;
+    return asynchronous.createResumable(engine, "retryProviderRequest", 1, retryBody, &.{});
+}
+fn retryBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, slot: *c.JSValue, completion: asynchronous.Completion, value: c.JSValue) !asynchronous.Action {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    if (completion == .start) {
+        const owner = try scope.object();
+        asynchronous.replaceState(engine, slot, c.JS_DupValue(engine.context, owner));
+        try scope.put(owner, "generation", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, engine.native_allocation_generation))));
+        try scope.put(owner, "request", if (args.len > 0) args[0] else c.pi_js_undefined());
+        const options = if (args.len > 1 and !c.JS_IsUndefined(args[1])) args[1] else try scope.object();
+        try scope.put(owner, "options", options);
+        const max = try scope.get(options, "maxRetries");
+        const maximum = if (v.nullish(max)) c.JS_NewInt32(engine.context, 0) else max;
+        try scope.put(owner, "maximum", maximum);
+        try scope.put(owner, "remaining", maximum);
+        return request(&scope, owner);
+    }
+    const owner = slot.*;
+    if (completion == .rejected) {
+        var generation: u64 = 0;
+        if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(owner, "generation")) < 0) return v.js.capture(engine);
+        try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, value, generation);
+    }
+    if (scope.truthy(try scope.get(owner, "sleeping"))) {
+        if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, value) };
+        try scope.put(owner, "sleeping", c.JS_NewBool(engine.context, false));
+        return request(&scope, owner);
+    }
+    if (completion == .rejected) return failed(&scope, owner, value);
+    return .{ .returned = c.JS_DupValue(engine.context, value) };
 }
 fn binary(scope: *Scope, operation: arithmetic.Operation, left: c.JSValue, right: c.JSValue) !c.JSValue {
     return scope.own(try arithmetic.binary(scope.engine, operation, left, right));
@@ -41,20 +49,18 @@ fn abort(scope: *Scope) !c.JSValue {
 fn signal(scope: *Scope, owner: c.JSValue) !c.JSValue {
     return scope.get(try scope.get(owner, "options"), "signal");
 }
-fn request(scope: *Scope, owner: c.JSValue) !void {
+fn request(scope: *Scope, owner: c.JSValue) !asynchronous.Action {
+    const generation = scope.engine.native_allocation_generation;
     const value = scope.call(try scope.get(owner, "request"), c.pi_js_undefined(), &.{}) catch |err| {
-        const reason = flow.reason(scope.engine, err);
-        defer scope.engine.freeValue(reason);
-        return failed(scope, owner, reason, false);
+        if (scope.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
+        const reason = try scope.own(flow.reason(scope.engine, err));
+        if (scope.engine.captured_exception) |captured| {
+            scope.engine.captured_exception = null;
+            scope.engine.freeValue(captured);
+        }
+        return failed(scope, owner, reason);
     };
-    try flow.wait(continued, scope.engine, owner, value, 0);
-}
-fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    if (rejected) {
-        if (stage == 0) failed(&scope, owner, value, false) catch |err| try flow.rejectError(engine, owner, err) else try flow.settle(engine, owner, true, value);
-    } else if (stage == 0) try flow.settle(engine, owner, false, value) else request(&scope, owner) catch |err| try flow.rejectError(engine, owner, err);
+    return .{ .awaited = c.JS_DupValue(scope.engine.context, value) };
 }
 fn property(scope: *Scope, value: c.JSValue, name: [*:0]const u8) !bool {
     const atom = c.JS_NewAtom(scope.engine.context, name);
@@ -111,20 +117,21 @@ fn retryDelay(scope: *Scope, failure: c.JSValue, index: c.JSValue, max: c.JSValu
     const exponential = try binary(scope, .multiply, try scope.invoke(try scope.global("Math"), "min", &.{ try binary(scope, .multiply, c.JS_NewFloat64(scope.engine.context, 0.5), try binary(scope, .power, c.JS_NewInt32(scope.engine.context, 2), index)), c.JS_NewInt32(scope.engine.context, 8) }), c.JS_NewInt32(scope.engine.context, 1000));
     return binary(scope, .multiply, exponential, try binary(scope, .subtract, c.JS_NewInt32(scope.engine.context, 1), try binary(scope, .multiply, try scope.invoke(try scope.global("Math"), "random", &.{}), c.JS_NewFloat64(scope.engine.context, 0.25))));
 }
-fn failed(scope: *Scope, owner: c.JSValue, failure: c.JSValue, owned: bool) !void {
-    defer if (owned) scope.engine.freeValue(failure);
+fn failed(scope: *Scope, owner: c.JSValue, failure: c.JSValue) !asynchronous.Action {
     const abort_signal = try signal(scope, owner);
-    if (scope.truthy(try v.optional(scope, abort_signal, "aborted"))) return flow.settle(scope.engine, owner, true, try abort(scope));
+    if (scope.truthy(try v.optional(scope, abort_signal, "aborted"))) return .{ .thrown = c.JS_DupValue(scope.engine.context, try abort(scope)) };
     const remaining = try scope.get(owner, "remaining");
-    if (try arithmetic.compare(scope.engine, .less_equal, remaining, c.JS_NewInt32(scope.engine.context, 0)) or !try providerError(scope, failure) or !try retryable(scope, failure)) return flow.settle(scope.engine, owner, true, failure);
+    if (try arithmetic.compare(scope.engine, .less_equal, remaining, c.JS_NewInt32(scope.engine.context, 0)) or !try providerError(scope, failure) or !try retryable(scope, failure)) return .{ .thrown = c.JS_DupValue(scope.engine.context, failure) };
     const options = try scope.get(owner, "options");
     if (!c.JS_IsUndefined(try scope.get(failure, "status"))) {
         const statuses = try scope.get(options, "noRetryStatuses");
-        if (!v.nullish(statuses) and scope.truthy(try scope.invoke(statuses, "includes", &.{try scope.get(failure, "status")}))) return flow.settle(scope.engine, owner, true, failure);
+        if (!v.nullish(statuses) and scope.truthy(try scope.invoke(statuses, "includes", &.{try scope.get(failure, "status")}))) return .{ .thrown = c.JS_DupValue(scope.engine.context, failure) };
     }
     const index = try binary(scope, .subtract, try scope.get(owner, "maximum"), remaining);
     try scope.set(owner, "remaining", try binary(scope, .subtract, remaining, c.JS_NewInt32(scope.engine.context, 1)));
-    try flow.wait(continued, scope.engine, owner, try scope.own(try sleep(scope, try retryDelay(scope, failure, index, try scope.get(options, "maxRetryDelayMs")), abort_signal)), 1);
+    const pending = try scope.own(try sleep(scope, try retryDelay(scope, failure, index, try scope.get(options, "maxRetryDelayMs")), abort_signal));
+    try scope.put(owner, "sleeping", c.JS_NewBool(scope.engine.context, true));
+    return .{ .awaited = c.JS_DupValue(scope.engine.context, pending) };
 }
 fn sleep(scope: *Scope, duration: c.JSValue, abort_signal: c.JSValue) !c.JSValue {
     const pending = try flow.create(scope.engine, abort_signal);

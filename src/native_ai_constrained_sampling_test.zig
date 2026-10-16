@@ -21,11 +21,37 @@ fn install(engine: *v.em.Engine) !void {
             };
             return c.JS_DupValue(host.context, value);
         }
+        fn tools(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            var scope: v.Scope = .{ .engine = host };
+            defer scope.deinit();
+            const compat = try scope.object();
+            try scope.put(compat, "supportsStrictMode", c.pi_js_bool(host.context, 1));
+            return @import("extensions/native_ai_openai_tools.zig").convert(host, if (args.len > 0) args[0] else c.pi_js_undefined(), compat);
+        }
     };
     var scope: v.Scope = .{ .engine = engine };
     defer scope.deinit();
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
     try scope.put(global, "strictSchema", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "strictSchema", 1, Adapter.call, &.{})));
+    try scope.put(global, "openAIStrictTools", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "openAIStrictTools", 1, Adapter.tools, &.{})));
+}
+
+test "native constrained sampling OpenAI tool conversion delegates to guarded shared schema without swallowing guest errors" {
+    const engine = try v.em.Engine.init(std.testing.allocator, .{ .stack_limit = 128 * 1024 });
+    defer engine.deinit();
+    try install(engine);
+    const result = try engine.evalModule(
+        \\globalThis.structuredClone=x=>x;const sampling={type:'json_schema',strict:'require'};
+        \\const tool={name:'fixture',description:'fixture',constrainedSampling:sampling,parameters:{type:'object',properties:{ok:{type:'boolean'}}}};
+        \\const output=openAIStrictTools([tool])[0];if(output.function.strict!==true||output.function.parameters.additionalProperties!==false)throw Error('OpenAI strict delegation');
+        \\const cycle={type:'object',properties:{},required:['loop']};cycle.properties.loop=cycle;tool.parameters=cycle;
+        \\try{openAIStrictTools([tool]);throw Error('cycle accepted')}catch(error){if(!(error instanceof RangeError))throw error}
+        \\const marker={toString(){throw Error('raw reason formatted')}};tool.parameters={type:'object',get properties(){throw marker}};
+        \\try{openAIStrictTools([tool]);throw Error('getter accepted')}catch(error){if(error!==marker)throw error}
+        \\export const delegated=true;
+    , "native-openai-strict-delegation.mjs");
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
 }
 
 test "native constrained sampling uses configured VM guard for both recursive schema walks" {

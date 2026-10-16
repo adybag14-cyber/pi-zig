@@ -1,0 +1,812 @@
+{
+  "authority": "Actual unchanged original ModelsImpl and createProvider bodies; owned callback inputs only",
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "sourcePackage": {
+    "version": "1.3.0",
+    "packageDir": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent",
+    "packageJsonPath": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent\\package.json"
+  },
+  "actualNode": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "packageOverrideAbsent": true,
+  "network": false,
+  "cases": 18,
+  "rows": [
+    {
+      "case": "ordinary class and shared prototype",
+      "value": {
+        "fields": [
+          "providers",
+          "credentials",
+          "modelsStore",
+          "authContext",
+          "refreshGenerations",
+          "refreshControllers",
+          "publicationChains"
+        ],
+        "prototype": [
+          "constructor",
+          "setProvider",
+          "deleteProvider",
+          "clearProviders",
+          "getProviders",
+          "getProvider",
+          "getModels",
+          "getAllModels",
+          "getModelsOfType",
+          "getModel",
+          "getModelOfType",
+          "supersedeProviderRefresh",
+          "beginProviderRefresh",
+          "publishProviderModels",
+          "runProviderRefreshPhase",
+          "refresh",
+          "resolveRefreshCredential",
+          "readCredential",
+          "checkProviderAuth",
+          "checkAuth",
+          "getAuthenticatedProviders",
+          "getAvailable",
+          "getAvailableOfType",
+          "getAllAvailable",
+          "getAuth",
+          "login",
+          "logout",
+          "requireProvider",
+          "requireChatProvider",
+          "applyAuth",
+          "stream",
+          "complete",
+          "streamSimple",
+          "completeSimple",
+          "streamDeferred",
+          "fetchDeferred",
+          "cancelDeferred",
+          "generateImages",
+          "classify"
+        ],
+        "constructor": {
+          "name": "ModelsImpl",
+          "length": 1,
+          "tag": "[object Function]",
+          "ownPrototype": true,
+          "constructible": true
+        },
+        "sharedPrototype": true,
+        "sharedMethods": true,
+        "ownMethod": false,
+        "ordinaryPrototype": true,
+        "fieldsIndependent": true,
+        "descriptors": {
+          "constructor": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "setProvider": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "deleteProvider": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "clearProviders": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getProviders": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getProvider": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getModels": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getAllModels": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getModelsOfType": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getModel": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getModelOfType": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "supersedeProviderRefresh": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "beginProviderRefresh": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "publishProviderModels": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "runProviderRefreshPhase": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "refresh": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "resolveRefreshCredential": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "readCredential": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "checkProviderAuth": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "checkAuth": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getAuthenticatedProviders": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getAvailable": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getAvailableOfType": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getAllAvailable": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "getAuth": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "login": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "logout": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "requireProvider": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "requireChatProvider": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "applyAuth": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "stream": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "complete": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "streamSimple": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "completeSimple": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "streamDeferred": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "fetchDeferred": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "cancelDeferred": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "generateImages": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          },
+          "classify": {
+            "enumerable": false,
+            "writable": true,
+            "configurable": true
+          }
+        },
+        "methods": {
+          "setProvider": {
+            "name": "setProvider",
+            "length": 1,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "deleteProvider": {
+            "name": "deleteProvider",
+            "length": 1,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "clearProviders": {
+            "name": "clearProviders",
+            "length": 0,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getProviders": {
+            "name": "getProviders",
+            "length": 0,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getProvider": {
+            "name": "getProvider",
+            "length": 1,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getModels": {
+            "name": "getModels",
+            "length": 1,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getAllModels": {
+            "name": "getAllModels",
+            "length": 1,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getModelsOfType": {
+            "name": "getModelsOfType",
+            "length": 2,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getModel": {
+            "name": "getModel",
+            "length": 2,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getModelOfType": {
+            "name": "getModelOfType",
+            "length": 3,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "supersedeProviderRefresh": {
+            "name": "supersedeProviderRefresh",
+            "length": 1,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "beginProviderRefresh": {
+            "name": "beginProviderRefresh",
+            "length": 1,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "publishProviderModels": {
+            "name": "publishProviderModels",
+            "length": 4,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "runProviderRefreshPhase": {
+            "name": "runProviderRefreshPhase",
+            "length": 6,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "refresh": {
+            "name": "refresh",
+            "length": 0,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "resolveRefreshCredential": {
+            "name": "resolveRefreshCredential",
+            "length": 3,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "readCredential": {
+            "name": "readCredential",
+            "length": 2,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "checkProviderAuth": {
+            "name": "checkProviderAuth",
+            "length": 3,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "checkAuth": {
+            "name": "checkAuth",
+            "length": 2,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getAuthenticatedProviders": {
+            "name": "getAuthenticatedProviders",
+            "length": 2,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getAvailable": {
+            "name": "getAvailable",
+            "length": 2,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getAvailableOfType": {
+            "name": "getAvailableOfType",
+            "length": 3,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getAllAvailable": {
+            "name": "getAllAvailable",
+            "length": 2,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "getAuth": {
+            "name": "getAuth",
+            "length": 2,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "login": {
+            "name": "login",
+            "length": 4,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "logout": {
+            "name": "logout",
+            "length": 2,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "requireProvider": {
+            "name": "requireProvider",
+            "length": 1,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "requireChatProvider": {
+            "name": "requireChatProvider",
+            "length": 1,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "applyAuth": {
+            "name": "applyAuth",
+            "length": 2,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "stream": {
+            "name": "stream",
+            "length": 3,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "complete": {
+            "name": "complete",
+            "length": 3,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "streamSimple": {
+            "name": "streamSimple",
+            "length": 3,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "completeSimple": {
+            "name": "completeSimple",
+            "length": 3,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "streamDeferred": {
+            "name": "streamDeferred",
+            "length": 3,
+            "tag": "[object Function]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "fetchDeferred": {
+            "name": "fetchDeferred",
+            "length": 3,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "cancelDeferred": {
+            "name": "cancelDeferred",
+            "length": 3,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "generateImages": {
+            "name": "generateImages",
+            "length": 3,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          },
+          "classify": {
+            "name": "classify",
+            "length": 3,
+            "tag": "[object AsyncFunction]",
+            "ownPrototype": false,
+            "constructible": false
+          }
+        }
+      }
+    },
+    {
+      "case": "constructor live getters and raw failure",
+      "value": {
+        "trace": [
+          "credentials",
+          "modelsStore"
+        ],
+        "same": true
+      }
+    },
+    {
+      "case": "setProvider borrowed live receiver and evaluation order",
+      "value": {
+        "trace": [
+          "get supersede",
+          "id",
+          [
+            "supersede",
+            true,
+            "owned"
+          ],
+          "providers",
+          "get set",
+          "id",
+          [
+            "set",
+            true,
+            "owned",
+            true
+          ]
+        ],
+        "undefinedResult": true
+      }
+    },
+    {
+      "case": "query fields remain live",
+      "value": {
+        "provider": true,
+        "models": true,
+        "providers": true
+      }
+    },
+    {
+      "case": "best effort catalog getter preserves working sibling",
+      "value": {
+        "trace": [
+          "bad",
+          "good"
+        ],
+        "selected": true,
+        "missing": 0
+      }
+    },
+    {
+      "case": "query push lookup precedes provider callback",
+      "value": {
+        "trace": [
+          "push getter",
+          "push getter",
+          "catalog"
+        ],
+        "result": [
+          "owned"
+        ]
+      }
+    },
+    {
+      "case": "all models optional method receiver and fallback",
+      "value": {
+        "result": [
+          "owned"
+        ],
+        "trace": [
+          "all getter",
+          [
+            "all call",
+            true
+          ],
+          [
+            "chat call",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "case": "requireProvider missing error shared family no cause",
+      "value": {
+        "trace": [
+          "provider",
+          "provider",
+          "string"
+        ],
+        "family": true,
+        "code": "provider",
+        "message": "Unknown provider: owned",
+        "cause": false
+      }
+    },
+    {
+      "case": "complete fresh intrinsic promise and live receiver",
+      "value": {
+        "fresh": true,
+        "value": {
+          "owned": "complete"
+        },
+        "trace": [
+          "get delegate",
+          [
+            "delegate",
+            true,
+            [
+              "model",
+              "context",
+              "options"
+            ]
+          ],
+          "get result",
+          [
+            "result",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "case": "completeSimple fresh intrinsic promise and live receiver",
+      "value": {
+        "fresh": true,
+        "value": {
+          "owned": "completeSimple"
+        },
+        "trace": [
+          "get delegate",
+          [
+            "delegate",
+            true,
+            [
+              "model",
+              "context",
+              "options"
+            ]
+          ],
+          "get result",
+          [
+            "result",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "case": "fetchDeferred fresh intrinsic promise and live receiver",
+      "value": {
+        "fresh": true,
+        "value": {
+          "owned": "fetchDeferred"
+        },
+        "trace": [
+          "get delegate",
+          [
+            "delegate",
+            true,
+            [
+              "model",
+              "context",
+              "options"
+            ]
+          ],
+          "get result",
+          [
+            "result",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "case": "complete raw getter failure is asynchronous",
+      "value": {
+        "sync": false,
+        "same": true
+      }
+    },
+    {
+      "case": "cancel deferred live getter order and awaited result",
+      "value": {
+        "undefinedResult": true,
+        "trace": [
+          [
+            "require",
+            true
+          ],
+          "cancel getter",
+          "apply getter",
+          [
+            "apply call",
+            true,
+            true,
+            true
+          ],
+          "requestModel",
+          "requestOptions",
+          "cancel getter",
+          [
+            "cancel call",
+            true,
+            true,
+            true,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "case": "generateImages provider rejection becomes actual result",
+      "value": {
+        "stopReason": "error",
+        "errorMessage": "Owned image failure",
+        "provider": "owned",
+        "model": "image"
+      }
+    },
+    {
+      "case": "classify unsupported kind uses shared model assertion",
+      "value": {
+        "stopReason": "error",
+        "errorMessage": "Model owned/image is not a classifier model",
+        "provider": "owned",
+        "model": "image"
+      }
+    },
+    {
+      "case": "createProvider lexical known type coercion and hasOwn",
+      "value": {
+        "trace": [
+          "hasOwn",
+          [
+            "type",
+            "string"
+          ],
+          "hasOwn"
+        ],
+        "ids": [
+          "coerced"
+        ]
+      }
+    },
+    {
+      "case": "createProvider missing image error has no cause",
+      "value": {
+        "stopReason": "error",
+        "errorMessage": "Provider owned has no image generation implementation for \"missing\""
+      }
+    },
+    {
+      "case": "class and factory share lexical known model types",
+      "value": {
+        "calls": 2,
+        "same": true
+      }
+    }
+  ]
+}

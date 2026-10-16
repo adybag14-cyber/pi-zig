@@ -39,6 +39,9 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
             const cause = if (v.nullish(options)) c.pi_js_undefined() else try local.get(options, "cause");
             var values = [_]c.JSValue{ try detail(&local, arg(args, 1), cause), options };
             const result = try local.own(try host.checked(c.JS_CallConstructor2(host.context, super, target, values.len, &values)));
+            // The declared public TS field initializes after super(), before
+            // the constructor's name/code assignments.
+            try local.put(result, "code", c.pi_js_undefined());
             // Assignment follows super(), including inherited setters.
             try local.set(result, "name", try local.text("ModelsError"));
             try local.set(result, "code", arg(args, 0));

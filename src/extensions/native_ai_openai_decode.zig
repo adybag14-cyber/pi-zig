@@ -41,7 +41,19 @@ fn emit(scope: *Scope, owner: c.JSValue, kind: []const u8, block: ?c.JSValue, ke
     try scope.put(event, if (@import("std").mem.eql(u8, kind, "done")) "message" else if (@import("std").mem.eql(u8, kind, "error")) "error" else "partial", output);
     _ = try scope.invoke(try scope.get(owner, "stream"), "push", &.{event});
 }
+pub const Created = struct { namespace: c.JSValue, owner: c.JSValue };
 pub fn create(engine: *em.Engine, model: c.JSValue, compat: c.JSValue, stream: c.JSValue, json_api: c.JSValue, grammar_properties: c.JSValue) !c.JSValue {
+    const result = try createDetailed(engine, model, compat, stream, json_api, grammar_properties);
+    engine.freeValue(result.owner);
+    return result.namespace;
+}
+pub fn configure(engine: *em.Engine, owner: c.JSValue, compat: c.JSValue, grammar_properties: c.JSValue) !void {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    try scope.put(owner, "compat", compat);
+    try scope.put(owner, "grammar", grammar_properties);
+}
+pub fn createDetailed(engine: *em.Engine, model: c.JSValue, compat: c.JSValue, stream: c.JSValue, json_api: c.JSValue, grammar_properties: c.JSValue) !Created {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const owner = try scope.object();
@@ -86,7 +98,7 @@ pub fn create(engine: *em.Engine, model: c.JSValue, compat: c.JSValue, stream: c
         };
         try scope.put(exported, field.name, try scope.own(try @import("native_node_function.zig").create(engine, field.name, if (field.value == 0) 0 else 1, Adapter.call, &.{owner})));
     }
-    return c.JS_DupValue(engine.context, exported);
+    return .{ .namespace = c.JS_DupValue(engine.context, exported), .owner = c.JS_DupValue(engine.context, owner) };
 }
 fn failure(scope: *Scope, owner: c.JSValue, reason: c.JSValue, aborted: bool) !void {
     const output = try scope.get(owner, "output");

@@ -1,0 +1,17 @@
+{
+  "free_kib": 21363024,
+  "observed_utc": "2026-10-16T11:12:21.6306988+00:00",
+  "timeout_seconds": 300,
+  "executed_ae7_files": 1968,
+  "heap_mb": 256,
+  "source4954_files": 1970,
+  "status": "admitted",
+  "candidate": 9217,
+  "grant": "Root LIGHT6 producer58",
+  "dependencies": 31064,
+  "compiler": 19546,
+  "node_tools": 1774,
+  "historical_absences": 84,
+  "candidate_head": "8382d3984304bc86fa73c976d89e030b27ccd4b0",
+  "required_kib": 2097152
+}

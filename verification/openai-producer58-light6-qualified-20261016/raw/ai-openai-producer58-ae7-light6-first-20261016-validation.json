@@ -1,0 +1,12 @@
+{
+  "producer_native_qualified": false,
+  "published_after_terminal_and_full_posthash": true,
+  "expected_sha256": "CF5274301199C7FA86E670A387D1549ACD4805395C67A4034A88C337537D7650",
+  "native_qualified": false,
+  "source_cases": 58,
+  "full_pi_qualified": false,
+  "original_consumer58_unchanged": true,
+  "source_authority": "actual ae7; full4954 parallel seal and runtime closure equivalence",
+  "producer_cases": 58,
+  "status": "accepted"
+}
