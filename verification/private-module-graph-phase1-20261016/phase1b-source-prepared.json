@@ -1,0 +1,29 @@
+{
+  "status": "phase1b_private_compile_and_static_lookup_source_only_incomplete",
+  "prior": "c8e544340ef2cf5921e320cf3d62456956b51335",
+  "files": [
+    "vendor/quickjs/quickjs.c"
+  ],
+  "implemented": [
+    "explicitprivateCOMPILE_ONLY entry withoriginbeforechildresolution",
+    "contextownedimmutableattribute snapshots inOrigin+ModuleDefduplicate",
+    "selectorafterphysicalnormalizebeforelookup",
+    "cachekeyphysical+attrs+samegraph; legacyshared0excludesprivate",
+    "private/sharedcallbackreturnedModuleDef contextmembershipbeforefieldaccess",
+    "preservependingcallbackexceptions; legacyatomlifetimewhenfeatureunused",
+    "compile-attemptnewunevaluatedOrigin quarantine; no globalfree/no sharedoldgraphteardown",
+    "deserializationlookup explicitNULLorigin"
+  ],
+  "pending": [
+    "exactprivate import.meta currentbytecodeorigin",
+    "dynamicjob origin capture beforeAwait",
+    "link-failure attemptaccounting",
+    "private serialization rejection",
+    "preparednative tests"
+  ],
+  "c_sha256": "A54ACE400D3DCE20766D8935BB1E36A930BEF783DA4BCF6682432ED603B29C7C",
+  "h_sha256": "FC5192DE3671CA8CE10111F2059B7CC7F2BE533B43E79A909A90B0319A43276B",
+  "compiler_or_runtime_executed": false,
+  "engine_changed": false,
+  "default_selected": false
+}
