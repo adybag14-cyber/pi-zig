@@ -1,0 +1,31 @@
+{
+  "kind": "source-only-unexecuted",
+  "base": "7bf652e57c2bd5928e1ab2e357a8dc868ddc8c51",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "60CDC2A50655385F15161E40F238A442E52B7F7BE5CF29940EF995C82C8FE4FA"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "path": "src/native_tla_fatal_delivery_test.zig",
+      "sha256": "E058956E403B07D643D812E724F943807BC583577812EFFE1AB6E02A8A711BE5"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/DESIGN.md",
+      "sha256": "1278FF687471CCAF756E89A60DAFB5F1F05D941FBF4328CE7B8D9B6511945EC6"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/build-snippet.zig.txt",
+      "sha256": "B2BE63537BC2C8D8C94A3FDE4EC2459B646BAE8BBFD7E629A4621F71A20C9E08"
+    }
+  ],
+  "checks": [
+    "git diff --check only"
+  ],
+  "execution": "No compiler, Zig, Node, Source or native jobs",
+  "review": "Root and independent C-owner required before execution"
+}
