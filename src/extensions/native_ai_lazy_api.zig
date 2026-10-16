@@ -5,16 +5,12 @@ const Scope = v.Scope;
 const c = v.c;
 const flow = @import("native_agent_async.zig");
 const functions = @import("native_node_function.zig");
+const asynchronous = @import("native_async_function.zig");
 fn argument(args: []const c.JSValue, index: usize) c.JSValue {
     return if (args.len > index) args[index] else c.pi_js_undefined();
 }
 fn state(scope: *Scope) !c.JSValue {
     return scope.own(try scope.engine.checked(c.JS_NewObjectProto(scope.engine.context, c.pi_js_null())));
-}
-fn asyncArrow(scope: *Scope, name: [*:0]const u8, length: c_int, comptime callback: functions.Callback, roots: []const c.JSValue) !c.JSValue {
-    const result = try scope.own(try functions.createArrow(scope.engine, name, length, callback, roots));
-    if (c.JS_SetPrototype(scope.engine.context, result, try scope.own(try scope.engine.checked(c.JS_GetAsyncFunctionPrototype(scope.engine.context)))) < 0) return v.js.capture(scope.engine);
-    return result;
 }
 fn setupError(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     const model = try scope.get(owner, "model");
@@ -43,73 +39,83 @@ fn setupError(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     _ = try scope.invoke(outer, "push", &.{event});
     _ = try scope.invoke(outer, "end", &.{output});
 }
-fn next(scope: *Scope, owner: c.JSValue) !void {
-    try flow.wait(forwarded, scope.engine, owner, try scope.call(try scope.get(owner, "nextMethod"), try scope.get(owner, "iterator"), &.{}), 0);
+fn forwardAwait(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: i32) !asynchronous.Action {
+    try scope.put(owner, "stage", c.JS_NewInt32(scope.engine.context, stage));
+    return .{ .awaited = c.JS_DupValue(scope.engine.context, value) };
 }
-fn closeFailure(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
-    try scope.put(owner, "closeReason", reason);
-    const iterator = try scope.get(owner, "iterator");
-    const method = scope.get(iterator, "return") catch |err| return flow.rejectError(scope.engine, owner, err);
-    if (v.nullish(method)) return flow.settle(scope.engine, owner, true, reason);
-    const closing = scope.call(method, iterator, &.{}) catch |err| {
-        if (err != error.JavaScriptException) return err;
-        if (scope.engine.captured_exception) |captured| {
-            scope.engine.captured_exception = null;
-            scope.engine.freeValue(captured);
-        }
-        return flow.settle(scope.engine, owner, true, reason);
-    };
-    try flow.wait(forwarded, scope.engine, owner, closing, 2);
+fn forwardNext(scope: *Scope, owner: c.JSValue) !asynchronous.Action {
+    return forwardAwait(scope, owner, try scope.call(try scope.get(owner, "nextMethod"), try scope.get(owner, "iterator"), &.{}), 0);
 }
-fn forwarded(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
+fn forwardBody(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, slot: *c.JSValue, completion: asynchronous.Completion, value: c.JSValue) !asynchronous.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    if (stage == 2) return flow.settle(engine, owner, true, try scope.get(owner, "closeReason"));
-    if (rejected) return flow.settle(engine, owner, true, value);
+    if (completion == .start) {
+        const owner = try state(&scope);
+        asynchronous.replaceState(engine, slot, c.JS_DupValue(engine.context, owner));
+        try scope.put(owner, "outer", roots[0]);
+        try scope.put(owner, "source", roots[1]);
+        const symbol = try scope.own(try engine.checked(c.JS_GetAsyncIteratorSymbol(engine.context)));
+        const method = try scope.own(try v.js.getKey(engine, roots[1], symbol));
+        const iterator = try scope.call(method, roots[1], &.{});
+        if (!c.JS_IsObject(iterator)) return v.js.typeError(engine, "Async iterator is not an object");
+        try scope.put(owner, "iterator", iterator);
+        try scope.put(owner, "nextMethod", try scope.get(iterator, "next"));
+        return forwardNext(&scope, owner);
+    }
+    const owner = slot.*;
+    var stage: i32 = 0;
+    if (c.JS_ToInt32(engine.context, &stage, try scope.get(owner, "stage")) < 0) return v.js.capture(engine);
+    if (stage == 2) return .{ .thrown = c.JS_DupValue(engine.context, try scope.get(owner, "closeReason")) };
+    if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, value) };
     if (stage == 1) {
         _ = try scope.invoke(try scope.get(owner, "outer"), "end", &.{value});
-        return flow.settle(engine, owner, false, c.pi_js_undefined());
+        return .{ .returned = c.pi_js_undefined() };
     }
-    if (!c.JS_IsObject(value)) return flow.rejectError(engine, owner, v.js.typeError(engine, "Iterator result is not an object"));
+    if (!c.JS_IsObject(value)) return v.js.typeError(engine, "Iterator result is not an object");
     if (scope.truthy(try scope.get(value, "done"))) {
         const source = try scope.get(owner, "source");
-        if (c.JS_IsFunction(engine.context, try scope.get(source, "result"))) return flow.wait(forwarded, engine, owner, try scope.invoke(source, "result", &.{}), 1);
+        if (c.JS_IsFunction(engine.context, try scope.get(source, "result"))) return forwardAwait(&scope, owner, try scope.invoke(source, "result", &.{}), 1);
         _ = try scope.invoke(try scope.get(owner, "outer"), "end", &.{c.pi_js_undefined()});
-        return flow.settle(engine, owner, false, c.pi_js_undefined());
+        return .{ .returned = c.pi_js_undefined() };
     }
     const event = try scope.get(value, "value");
+    const generation = engine.native_allocation_generation;
     _ = scope.invoke(try scope.get(owner, "outer"), "push", &.{event}) catch |err| {
-        const reason = flow.reason(engine, err);
-        defer engine.freeValue(reason);
+        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
+        const reason = try scope.own(flow.reason(engine, err));
+        try scope.put(owner, "closeReason", reason);
         if (engine.captured_exception) |captured| {
             engine.captured_exception = null;
             engine.freeValue(captured);
         }
-        return closeFailure(&scope, owner, reason);
+        const iterator = try scope.get(owner, "iterator");
+        const closing_generation = engine.native_allocation_generation;
+        const method = scope.get(iterator, "return") catch |closing_error| {
+            if (engine.nativeAllocationError(closing_error, closing_generation) == error.OutOfMemory) return error.OutOfMemory;
+            if (engine.captured_exception) |captured| {
+                engine.captured_exception = null;
+                engine.freeValue(captured);
+            }
+            return .{ .thrown = c.JS_DupValue(engine.context, reason) };
+        };
+        if (v.nullish(method)) return .{ .thrown = c.JS_DupValue(engine.context, reason) };
+        const closing = scope.call(method, iterator, &.{}) catch |closing_error| {
+            if (engine.nativeAllocationError(closing_error, closing_generation) == error.OutOfMemory) return error.OutOfMemory;
+            if (engine.captured_exception) |captured| {
+                engine.captured_exception = null;
+                engine.freeValue(captured);
+            }
+            return .{ .thrown = c.JS_DupValue(engine.context, reason) };
+        };
+        return forwardAwait(&scope, owner, closing, 2);
     };
-    try next(&scope, owner);
+    return forwardNext(&scope, owner);
 }
 fn forward(engine: *v.em.Engine, outer: c.JSValue, source: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    try scope.put(pending.owner, "outer", outer);
-    try scope.put(pending.owner, "source", source);
-    const Start = struct {
-        fn run(row: *Scope, owner: c.JSValue, iterable: c.JSValue) !void {
-            const symbol = try row.own(try row.engine.checked(c.JS_GetAsyncIteratorSymbol(row.engine.context)));
-            const method = try row.own(try v.js.getKey(row.engine, iterable, symbol));
-            const iterator = try row.call(method, iterable, &.{});
-            if (!c.JS_IsObject(iterator)) return v.js.typeError(row.engine, "Async iterator is not an object");
-            try row.put(owner, "iterator", iterator);
-            try row.put(owner, "nextMethod", try row.get(iterator, "next"));
-            try next(row, owner);
-        }
-    };
-    Start.run(&scope, pending.owner, source) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+    const function = try scope.own(try asynchronous.createResumable(engine, "forwardStream", 2, forwardBody, &.{ outer, source }));
+    return v.js.call(engine, function, c.pi_js_undefined(), &.{ outer, source });
 }
 pub fn lazyStream(engine: *v.em.Engine, model: c.JSValue, setup: c.JSValue) !c.JSValue {
     try @import("native_stream.zig").install(engine);
@@ -141,62 +147,59 @@ pub fn lazyStream(engine: *v.em.Engine, model: c.JSValue, setup: c.JSValue) !c.J
     _ = try scope.invoke(following, "catch", &.{try scope.own(try functions.createArrow(engine, "", 1, Adapter.failed, &.{owner}))});
     return c.JS_DupValue(engine.context, outer);
 }
-fn setupReady(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
-    if (rejected) return flow.settle(engine, owner, true, value);
-    if (stage == 1) return flow.settle(engine, owner, false, c.pi_js_undefined());
+// The VM owns each invocation Promise and each actual Source await boundary.
+fn setupBody(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, slot: *c.JSValue, completion: asynchronous.Completion, value: c.JSValue) !asynchronous.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const input = try scope.get(owner, "agent");
+    const input = roots[0];
+    if (completion == .start) {
+        asynchronous.replaceState(engine, slot, c.JS_DupValue(engine.context, input));
+        return .{ .awaited = c.JS_DupValue(engine.context, try scope.call(try scope.get(input, "load"), c.pi_js_undefined(), &.{})) };
+    }
+    if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, value) };
+    if (scope.truthy(try scope.get(input, "awaitingDiscard"))) return .{ .returned = c.pi_js_undefined() };
     const method = try scope.get(input, "method");
     const function = try scope.own(try v.js.getKey(engine, value, method));
     if (scope.truthy(try scope.get(input, "guard")) and !scope.truthy(function)) {
         const text = if (try v.eq(&scope, method, "cancelDeferred")) "API cannot cancel deferred responses" else "API does not support deferred responses";
-        _ = try engine.checked(c.JS_Throw(engine.context, try v.js.builtin(engine, "Error", &.{try scope.text(text)})));
-        unreachable;
+        return .{ .thrown = try v.js.builtin(engine, "Error", &.{try scope.text(text)}) };
     }
     const invoked = if (scope.truthy(try scope.get(input, "guard"))) try scope.own(try v.js.getKey(engine, value, method)) else function;
     const result = try scope.call(invoked, value, &.{ try scope.get(input, "model"), try scope.get(input, "context"), try scope.get(input, "options") });
-    if (scope.truthy(try scope.get(input, "discard"))) return flow.wait(setupReady, engine, owner, result, 1);
-    try flow.settle(engine, owner, false, result);
+    if (scope.truthy(try scope.get(input, "discard"))) {
+        try scope.put(input, "awaitingDiscard", c.JS_NewBool(engine.context, true));
+        return .{ .awaited = c.JS_DupValue(engine.context, result) };
+    }
+    return .{ .returned = c.JS_DupValue(engine.context, result) };
 }
-fn setupCall(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const pending = try flow.create(engine, roots[0]);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    const Start = struct {
-        fn run(row: *Scope, owner: c.JSValue, input: c.JSValue) !void {
-            const loaded = try row.call(try row.get(input, "load"), c.pi_js_undefined(), &.{});
-            try flow.wait(setupReady, row.engine, owner, loaded, 0);
-        }
-    };
-    Start.run(&scope, pending.owner, roots[0]) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
-}
-fn operation(engine: *v.em.Engine, args: []const c.JSValue, roots: []const c.JSValue, streaming: bool, guarded: bool, discard: bool) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const input = try state(&scope);
+fn operationInput(scope: *Scope, args: []const c.JSValue, roots: []const c.JSValue, guarded: bool, discard: bool) !c.JSValue {
+    const input = try state(scope);
     try scope.put(input, "load", roots[0]);
     try scope.put(input, "method", roots[1]);
     try scope.put(input, "model", argument(args, 0));
     try scope.put(input, "context", argument(args, 1));
     try scope.put(input, "options", argument(args, 2));
-    try scope.put(input, "guard", c.pi_js_bool(engine.context, @intFromBool(guarded)));
-    try scope.put(input, "discard", c.pi_js_bool(engine.context, @intFromBool(discard)));
-    const setup = try asyncArrow(&scope, "", 0, setupCall, &.{input});
+    try scope.put(input, "guard", c.JS_NewBool(scope.engine.context, guarded));
+    try scope.put(input, "discard", c.JS_NewBool(scope.engine.context, discard));
+    return input;
+}
+fn operationBody(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, slot: *c.JSValue, completion: asynchronous.Completion, value: c.JSValue) !asynchronous.Action {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const input = if (completion == .start) try operationInput(&scope, args, roots, scope.truthy(roots[2]), scope.truthy(roots[3])) else slot.*;
+    return setupBody(engine, receiver, &.{}, &.{input}, slot, completion, value);
+}
+fn operation(engine: *v.em.Engine, args: []const c.JSValue, roots: []const c.JSValue, streaming: bool, guarded: bool, discard: bool) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const input = try operationInput(&scope, args, roots, guarded, discard);
+    const setup = try scope.own(try asynchronous.createResumableArrow(engine, "", 0, setupBody, &.{input}, c.pi_js_undefined()));
     return if (streaming) lazyStream(engine, argument(args, 0), setup) else v.js.call(engine, setup, c.pi_js_undefined(), &.{});
 }
 pub fn asyncOperation(engine: *v.em.Engine, load: c.JSValue, name: [*:0]const u8) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const Adapter = struct {
-        fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-            return operation(host, args, roots, false, false, false);
-        }
-    };
-    return c.JS_DupValue(engine.context, try asyncArrow(&scope, name, 3, Adapter.call, &.{ load, try scope.text(std.mem.span(name)) }));
+    return asynchronous.createResumableArrow(engine, name, 3, operationBody, &.{ load, try scope.text(std.mem.span(name)), c.JS_NewBool(engine.context, false), c.JS_NewBool(engine.context, false) }, c.pi_js_undefined());
 }
 const std = @import("std");
 pub fn create(engine: *v.em.Engine, load: c.JSValue, capabilities: c.JSValue) !c.JSValue {
@@ -211,7 +214,7 @@ pub fn create(engine: *v.em.Engine, load: c.JSValue, capabilities: c.JSValue) !c
             }
         };
         const roots = [_]c.JSValue{ load, try scope.text(method) };
-        const function = if (index == 3) try asyncArrow(&scope, method, 3, Adapter.call, &roots) else try scope.own(try functions.createArrow(engine, method, 3, Adapter.call, &roots));
+        const function = if (index == 3) try scope.own(try asynchronous.createResumableArrow(engine, method, 3, operationBody, &.{ roots[0], roots[1], c.JS_NewBool(engine.context, true), c.JS_NewBool(engine.context, true) }, c.pi_js_undefined())) else try scope.own(try functions.createArrow(engine, method, 3, Adapter.call, &roots));
         try scope.put(output, method, function);
     }
     return c.JS_DupValue(engine.context, output);
