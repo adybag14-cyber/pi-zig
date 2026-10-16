@@ -42,6 +42,11 @@
       "file": "internal/utils/log.mjs",
       "sha256": "69A97A0F32E3D5B0707E222D54C04AAD9BE2388E58B82C9E9B1624DB07312AD0",
       "bytes": 2687
+    },
+    {
+      "file": "resources/chat/completions/completions.mjs",
+      "sha256": "E06E96CD2288E7E53C572224E0F6704E2A9981AB708EF398004749FCB8B527D2",
+      "bytes": 4677
     }
   ],
   "qualified_af_helper_sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",

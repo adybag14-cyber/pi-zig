@@ -458,6 +458,11 @@ pub fn withResponse(scope: *Scope, client: c.JSValue, payload: c.JSValue, reques
     const options = try scope.object();
     try scope.put(options, "body", payload);
     try v.js.spreadInto(scope.engine, options, request_options);
+    const streamed = try scope.get(payload, "stream");
+    try scope.put(options, "stream", if (v.nullish(streamed)) c.JS_NewBool(scope.engine.context, false) else streamed);
+    const security = try scope.object();
+    try scope.put(security, "bearerAuth", c.JS_NewBool(scope.engine.context, true));
+    try scope.put(options, "__security", security);
     const Mapper = struct {
         fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
             var row: Scope = .{ .engine = engine };
