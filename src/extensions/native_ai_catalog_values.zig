@@ -4,6 +4,7 @@ const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
 const Scope = @import("native_models_stream_scope.zig").Scope;
 const c = em.c;
+const group_order = @import("native_ai_catalog_group_order.zig");
 pub const provider_ids = [_][]const u8{ "amazon-bedrock", "ant-ling", "anthropic", "azure", "baseten", "cerebras", "cloudflare-ai-gateway", "cloudflare-workers-ai", "deepseek", "fireworks", "github-copilot", "google", "google-vertex", "groq", "huggingface", "kimi-coding", "meta", "minimax", "minimax-cn", "mistral", "moonshotai", "moonshotai-cn", "nvidia", "openai", "openai-codex", "opencode", "opencode-go", "openrouter", "qwen-token-plan", "qwen-token-plan-cn", "qwen-token-plan-individual", "radius", "together", "typesafe", "vercel-ai-gateway", "xai", "xiaomi", "xiaomi-token-plan-ams", "xiaomi-token-plan-cn", "xiaomi-token-plan-sgp", "zai", "zai-coding-cn" };
 const Method = enum {
     getBuiltinModel,
@@ -120,12 +121,30 @@ fn build(engine: *em.Engine) !c.JSValue {
         defer engine.freeValue(model);
         var row: Scope = .{ .engine = engine };
         defer row.deinit();
-        const kind = try row.get(model, "type");
-        const table = try row.own(try js.getKey(engine, owner, kind));
-        const provider = try row.get(model, "provider");
-        const target = try row.own(try js.getKey(engine, table, provider));
-        if (!c.JS_IsObject(target)) return error.InvalidCanonicalBuiltinCatalogProvider;
-        try property(&row, target, try row.get(model, "id"), model);
+        const provider = try engine.toString(try row.get(model, "provider"));
+        defer engine.gpa.free(provider);
+        if (!group_order.grouped(provider)) try insertModel(&row, owner, model);
+    }
+    // The normalized document sorts IDs across APIs. Source flattens each
+    // provider's declared API groups in order; retain the same actual model
+    // objects and last-group replacement behavior for duplicate IDs.
+    for (group_order.entries) |entry| {
+        for (entry.apis) |api| {
+            var ordered = try js.Iterator.init(engine, models, symbol);
+            defer ordered.deinit();
+            errdefer ordered.closePreserving();
+            while (try ordered.next()) |model| {
+                defer engine.freeValue(model);
+                var row: Scope = .{ .engine = engine };
+                defer row.deinit();
+                const provider = try engine.toString(try row.get(model, "provider"));
+                defer engine.gpa.free(provider);
+                if (!@import("std").mem.eql(u8, provider, entry.provider)) continue;
+                const model_api = try engine.toString(try row.get(model, "api"));
+                defer engine.gpa.free(model_api);
+                if (@import("std").mem.eql(u8, model_api, api)) try insertModel(&row, owner, model);
+            }
+        }
     }
     const image_map = try scope.own(try js.builtin(engine, "Map", &.{}));
     try scope.put(owner, "imageMap", image_map);
@@ -165,6 +184,14 @@ fn build(engine: *em.Engine) !c.JSValue {
     }
     inline for (.{ .{ "getModel", "getBuiltinModel" }, .{ "getModels", "getBuiltinModels" }, .{ "getProviders", "getBuiltinProviders" } }) |alias| try scope.put(exports, alias[0], try scope.get(exports, alias[1]));
     return c.JS_DupValue(engine.context, owner);
+}
+fn insertModel(scope: *Scope, owner: c.JSValue, model: c.JSValue) !void {
+    const kind = try scope.get(model, "type");
+    const table = try scope.own(try js.getKey(scope.engine, owner, kind));
+    const provider = try scope.get(model, "provider");
+    const target = try scope.own(try js.getKey(scope.engine, table, provider));
+    if (!c.JS_IsObject(target)) return error.InvalidCanonicalBuiltinCatalogProvider;
+    try property(scope, target, try scope.get(model, "id"), model);
 }
 pub fn bindings(engine: *em.Engine) !c.JSValue {
     if (engine.native_ai_catalog_values) |cached| return c.JS_DupValue(engine.context, cached);

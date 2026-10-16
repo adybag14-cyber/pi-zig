@@ -20,7 +20,8 @@ observations and assertions remain unchanged. The five failures are:
    allocation positions, then JavaScriptPromiseUnsettled during an induced
    failure. The baseline is not an allocation-sweep pass.
 5. Factory Source92 row18, azureProvider: native deepseek-v4-pro precedes
-   Azure response models; Source concatenates that model after them.
+   Azure response models; Source flattens its declared response API group
+   before the completions API group containing that model.
 
 The first stack for all observation failures reaches Engine.awaitValueImpl,
 Engine.awaitValue, Engine.evalModule and the respective strict replay test.
