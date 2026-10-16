@@ -1,0 +1,55 @@
+{
+  "compiler_files": 19546,
+  "driver_sha256": "97A2A90A401DE8E5A587C0EB7F9E8E0083C2D14FAB015F5A2EFF54BEF3BBC5CA",
+  "control_manifest_drift": false,
+  "candidate_files": 7561,
+  "compiler_drift": [],
+  "owner_failure": null,
+  "manifests": [
+    {
+      "files": 1970,
+      "name": "source",
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "files": 31064,
+      "name": "dependencies",
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "files": 1774,
+      "name": "node_tools",
+      "drift": 0,
+      "changed": []
+    }
+  ],
+  "compiler_inventory_drift": [],
+  "path_inventories": [
+    {
+      "drift": [],
+      "name": "source",
+      "count": 1970
+    },
+    {
+      "drift": [],
+      "name": "dependencies",
+      "count": 31064
+    },
+    {
+      "drift": [],
+      "name": "node_tools",
+      "count": 1774
+    }
+  ],
+  "candidate_drift": [],
+  "expected_still_absent": true,
+  "extra_control_drift": [],
+  "completed_utc": "2026-10-16T09:52:38.8830031+00:00",
+  "historical_absence_records": 84,
+  "source_head_drift": false,
+  "candidate_head_drift": false,
+  "candidate_inventory_drift": [],
+  "absent_dependency_drift": []
+}

@@ -1,0 +1,7 @@
+{
+  "native_qualified": false,
+  "source_cases": 18,
+  "full_pi_qualified": false,
+  "expected_sha256": "9441AC8EE1F656351942F1EA138D4111C8ECF1777BBBD09AF8CCCE53128F99F4",
+  "expected_published_after_terminal_and_full_posthash": true
+}

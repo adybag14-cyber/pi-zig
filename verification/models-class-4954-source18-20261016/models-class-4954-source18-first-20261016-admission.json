@@ -1,0 +1,11 @@
+{
+  "compiler_files": 19546,
+  "free_kib": 15046776,
+  "required_kib": 2097152,
+  "observed_utc": "2026-10-16T09:51:42.3199680+00:00",
+  "coordinated_with": "Root explicit ModelsClass69 LIGHT grant required",
+  "status": "admitted",
+  "candidate_files": 7561,
+  "heap_mb": 256,
+  "native_head": "f879ce2885d79b603f73c9d6b5bd23ecbee2d37e"
+}
