@@ -80,7 +80,7 @@ fn create(engine: *em.Engine, cache: c.JSValue, input: c.JSValue) !c.JSValue {
     try scope.put(store, "cache", cache);
     try scope.put(state, "store", store);
     try scope.put(state, "input", input);
-    try scope.put(state, "knownTypes", try scope.get(cache, "known_model_types"));
+    try scope.put(state, "hasKnownModelType", try scope.get(cache, "has_known_model_type"));
     // Preserve Source's repeated input.api reads, including short circuiting.
     const first_api = try scope.get(input, "api");
     const single = if (scope.truthy(first_api) and c.JS_IsFunction(engine.context, try scope.get(try scope.get(input, "api"), "stream"))) try scope.get(input, "api") else c.pi_js_undefined();
@@ -322,17 +322,7 @@ fn advance(engine: *em.Engine, job: c.JSValue, value: c.JSValue, rejected: bool,
             const context = try scope.get(job, "context");
             if (scope.truthy(try scope.get(try scope.get(context, "signal"), "aborted"))) return c.pi_js_undefined();
             const state = try scope.get(job, "state");
-            const Known = struct {
-                fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-                    var row: Scope = .{ .engine = host };
-                    defer row.deinit();
-                    const object = try row.global("Object");
-                    const has_own = try row.get(object, "hasOwn");
-                    const model_kind = try row.call(roots[0], c.pi_js_undefined(), &.{if (args.len > 0) args[0] else c.pi_js_undefined()});
-                    return c.JS_DupValue(host.context, try row.call(has_own, object, &.{ roots[1], model_kind }));
-                }
-            };
-            const models = try scope.invoke(value, "filter", &.{try scope.own(try functions.createArrow(engine, "hasKnownModelType", 1, Known.call, &.{ try scope.get(try operations(&scope, state), "getModelType"), try scope.get(state, "knownTypes") }))});
+            const models = try scope.invoke(value, "filter", &.{try scope.get(state, "hasKnownModelType")});
             return c.JS_DupValue(engine.context, try wait(&scope, job, try scope.invoke(context, "publish", &.{try publication(&scope, job, models, true)}), .published));
         },
     }

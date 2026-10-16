@@ -9,11 +9,11 @@ const authentication = @import("native_ai_models_auth_methods.zig");
 const refresh = @import("native_ai_models_refresh_methods.zig");
 const requests = @import("native_ai_models_request_methods.zig");
 
-pub fn create(engine: *v.em.Engine, core: c.JSValue, operations: c.JSValue, known_model_types: c.JSValue) !c.JSValue {
+pub fn create(engine: *v.em.Engine, core: c.JSValue, operations: c.JSValue, cache: c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const imports = try s.object();
-    try s.put(imports, "knownModelTypes", known_model_types);
+    try s.put(imports, "hasKnownModelType", try s.get(cache, "has_known_model_type"));
     const models_error = try s.get(core, "ModelsError");
     try s.put(imports, "ModelsError", models_error);
     inline for (.{ "getModelType", "isModelType", "assertChatModel", "assertImageModel", "assertClassifierModel", "assertClassifierInputSupported", "imageErrorResult", "classifierErrorResult" }) |name| try s.put(imports, name, try s.get(operations, name));

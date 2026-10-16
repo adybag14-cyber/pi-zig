@@ -27,10 +27,9 @@ pub fn create(engine: *em.Engine, comptime kind: Kind, imports: c.JSValue) !c.JS
         try scope.put(captured, name, value);
     }
     if (kind == .runProviderRefreshPhase) {
-        const known = try scope.get(imports, "knownModelTypes");
-        if (!c.JS_IsObject(known)) return error.RequiredActualKnownModelTypes;
-        try scope.put(captured, "knownModelTypes", known);
-        try publication.prepareKnownTypes(engine, captured);
+        const predicate = try scope.get(imports, "hasKnownModelType");
+        if (!c.JS_IsFunction(engine.context, predicate)) return error.RequiredActualKnownModelTypePredicate;
+        try scope.put(captured, "hasKnownModelType", predicate);
     }
     const Adapter = struct {
         fn call(host: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
