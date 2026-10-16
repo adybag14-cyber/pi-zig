@@ -1,0 +1,27 @@
+{
+  "native_before": 5822,
+  "completed_utc": "2026-10-15T20:33:16.6128386+00:00",
+  "native_after": 5822,
+  "source_path_drift": 0,
+  "native_drift": 0,
+  "manifests": [
+    {
+      "name": "source",
+      "drift": 0,
+      "files": 1967
+    },
+    {
+      "name": "dependencies",
+      "drift": 0,
+      "files": 31064
+    },
+    {
+      "name": "node_tools",
+      "drift": 0,
+      "files": 1774
+    }
+  ],
+  "control_drift": 0,
+  "absence_drift": 0,
+  "absence_records": 84
+}

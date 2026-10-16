@@ -1,0 +1,63 @@
+const rows=[];
+function record(name,run){try{rows.push({name,value:run()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}}
+function graph(root){
+  const seen=new Map();let next=0;
+  function encode(value){
+    if(value===undefined)return{$undefined:true};
+    if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+    if(typeof value==='number')return Number.isFinite(value)?value:{$number:String(value)};
+    if(typeof value==='function')return{$function:{name:value.name,length:value.length,keys:Reflect.ownKeys(value).map(String),prototype:Object.hasOwn(value,'prototype')}};
+    if(typeof value!=='object')return{$other:typeof value,value:String(value)};
+    if(seen.has(value))return{$ref:seen.get(value)};
+    const id=next++;seen.set(value,id);
+    if(value instanceof RegExp)return{$id:id,$regexp:value.source,flags:value.flags,lastIndex:value.lastIndex,frozen:Object.isFrozen(value)};
+    return{$id:id,kind:Array.isArray(value)?'array':'object',frozen:Object.isFrozen(value),properties:Reflect.ownKeys(value).map(key=>{
+      const d=Object.getOwnPropertyDescriptor(value,key);return{key:String(key),enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,value:encode(d.value)}:{get:encode(d.get),set:encode(d.set)})};
+    })};
+  }
+  return encode(root);
+}
+const names=['coq','mipsasm','n1ql','purebasic','llvm','applescript','arcade','armasm','ruleslanguage','aspectj','sas','lasso','cos','clojure','elixir','excel','routeros','scheme','puppet','qml'];
+record('actual batch8 twenty factory metadata',()=>names.map(name=>{const fn=highlightLazyFactories[name];return{name,metadata:{name:fn.name,length:fn.length,keys:Reflect.ownKeys(fn).map(String),prototype:Object.hasOwn(fn,'prototype')}}}));
+for(const name of names)record(name+' complete raw grammar graph',()=>graph(highlightLazyFactories[name](highlightCoreAPI)));
+for(const name of names)record(name+' actual live helper getter order',()=>{
+  const trace=[];const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){trace.push(String(key));return Reflect.get(target,key,receiver)}});
+  return{graph:graph(highlightLazyFactories[name](api)),trace};
+});
+for(const name of names)record(name+' actual throwing helper or helper-free factory',()=>{
+  const api=new Proxy(highlightCoreAPI,{get(){throw new TypeError('actual batch8 getter rejected '+name)}});
+  return graph(highlightLazyFactories[name](api));
+});
+for(const name of names)highlightCoreAPI.registerLanguage(name,highlightLazyFactories[name]);
+const samples={
+ coq:['Theorem identity : forall P : Prop, P -> P.\nProof. intros P H. exact H. Qed.\n','(* TODO: proof *)\nInductive item : Type := Empty | Value : nat -> item.\n'],
+ mipsasm:['.text\nmain:\n addiu $sp, $sp, -16\n li $v0, 1\n syscall\n','# TODO: MIPS\n.data\nvalue: .word 42\n lw $t0, value\n'],
+ n1ql:["SELECT name, COUNT(*) FROM bucket WHERE active = true GROUP BY name;\n",'CREATE INDEX idx ON bucket(name); /* TODO */\nSELECT ARRAY_LENGTH(values) FROM bucket;\n'],
+ purebasic:['Procedure.i Square(value.i)\n ProcedureReturn value * value\nEndProcedure\n','; TODO: PB\n#NAME = "hello"\nDebug #NAME\n'],
+ llvm:['define i32 @square(i32 %x) {\nentry:\n %result = mul i32 %x, %x\n ret i32 %result\n}\n','; TODO: IR\n@message = private constant [6 x i8] c"hello\\00"\n'],
+ applescript:['tell application "Finder"\n activate\nend tell\n','-- TODO: script\non greet(name)\n display dialog "Hello " & name\nend greet\n'],
+ arcade:['var value = Abs(-42);\nreturn Text(value);\n','// TODO: GIS\nvar item = Feature($feature);\nreturn AreaGeodetic(item, "square-meters");\n'],
+ armasm:['.text\nmain:\n mov r0, #42\n bx lr\n','; TODO: ARM\n.align 4\nloop:\n add r1, r1, #1\n bne loop\n'],
+ ruleslanguage:['IF HASVALUE(NUMBER) THEN\n SET TOTAL = ROUND(NUMBER);\nEND\n','// TODO: rules\nFOR EACH ACCOUNT IN LIST\n CALL INTDLOAD;\nNEXT\n'],
+ aspectj:['public aspect Logging { before(): execution(* demo.*(..)) { System.out.println("hello"); } }\n','/** @author demo */\npointcut calls(): call(* *(..));\n// TODO: AspectJ\n'],
+ sas:['data demo;\n input name $ value;\n datalines;\nhello 42\n;\nrun;\n','%let value = 42;\nproc print data=demo;\nrun; /* TODO */\n'],
+ lasso:['<?lasso local(name = "hello"); #name ?>\n','[noprocess]<p>text</p>[/noprocess]\n[define greet(name) => { return #name }]\n'],
+ cos:['Class Demo.Item Extends %RegisteredObject\n{\n ClassMethod Run() { write "hello" quit }\n}\n','; TODO: COS\nset value = 42\nwrite $ztime(60), ^globalName\n'],
+ clojure:['(ns demo.core)\n(defn square [x] (* x x))\n','; TODO: Clojure\n(let [value {:name "hello" :ready true}] (println value))\n'],
+ elixir:['defmodule Demo do\n def square(x), do: x * x\nend\n','name = "world"\nIO.puts("hello #{name}")\nvalue = ~r/demo/i # TODO\n'],
+ excel:['=SUM(A1:B10) + ROUND(AVERAGE(C1:C4), 2)\n','=IF(A1>0, "yes", "no") + N("TODO: formula")\n'],
+ routeros:[':local name "demo"\n:put $name\n/ip address print\n','# TODO: RouterOS\n:foreach item in=[/interface find] do={ :put $item }\n'],
+ scheme:['(define (square x) (* x x))\n(display (square 42))\n',"; TODO: Scheme\n(let ([value '(one two #t)]) (write value))\n"],
+ puppet:['class demo { file { "/tmp/demo": ensure => present, content => "hello", } }\n','# TODO: config\n$owner = "demo"\npackage { "git": ensure => installed, }\n'],
+ qml:['import QtQuick 2.0\nRectangle { id: root; width: 100; property string title: "Hello" }\n','Item { signal ready(int value); function square(x) { return x*x; } } // TODO\n']
+};
+for(const[name,codes]of Object.entries(samples))for(const[index,code]of codes.entries())record(name+' actual scanner '+index,()=>{
+  const result=highlightCoreAPI.highlight(code,{language:name,ignoreIllegals:false});return{language:result.language,relevance:result.relevance,illegal:result.illegal,value:result.value,code:result.code,tree:JSON.parse(result.emitter.toJSON()),errorRaised:result.errorRaised?{name:result.errorRaised.name,message:result.errorRaised.message}:undefined};
+});
+record('actual batch8 canonical registration and aliases',()=>({registry:highlightCoreAPI.listLanguages(),aliases:[['mips','mipsasm'],['pb','purebasic'],['pbi','purebasic'],['osascript','applescript'],['arm','armasm'],['ls','lasso'],['lassoscript','lasso'],['cls','cos'],['clj','clojure'],['xlsx','excel'],['xls','excel'],['mikrotik','routeros'],['pp','puppet'],['qt','qml']].map(([alias,name])=>({alias,name,same:highlightCoreAPI.getLanguage(alias)===highlightCoreAPI.getLanguage(name)}))}));
+record('AppleScript actual spread operations use live array iterator',()=>{const trace=[],original=Array.prototype[Symbol.iterator];Array.prototype[Symbol.iterator]=function(){trace.push(this.length);return Reflect.apply(original,this,[])};let grammar;try{grammar=highlightLazyFactories.applescript(highlightCoreAPI)}finally{Array.prototype[Symbol.iterator]=original}return{trace,graph:graph(grammar)}});
+record('RouterOS actual dynamic keyword split and join calls',()=>{const trace=[],split=String.prototype.split,join=Array.prototype.join;String.prototype.split=function(...args){trace.push(['split',String(this),args]);return Reflect.apply(split,this,args)};Array.prototype.join=function(...args){trace.push(['join',this.length,args]);return Reflect.apply(join,this,args)};let grammar;try{grammar=highlightLazyFactories.routeros(highlightCoreAPI)}finally{String.prototype.split=split;Array.prototype.join=join}return{trace,graph:graph(grammar)}});
+record('Elixir actual substitution shares complete language modes',()=>{const g=highlightLazyFactories.elixir(highlightCoreAPI);return{shared:g.contains[0].contains[1].contains===g.contains,rawOverrides:g.contains[0].variants.slice(2,6).map(mode=>mode.contains.length),lowerShared:g.contains[2].contains[0].contains[0].contains[1]===g.contains[0].contains[1]}});
+record('Arcade actual template substitution shares parameter mode elements',()=>{const g=highlightLazyFactories.arcade(highlightCoreAPI),subst=g.contains[2].contains[1],params=g.contains[9].contains[1].contains;return{templateCycle:subst.contains[2]===g.contains[2],parameterNumber:params[3]===g.contains[6],sharedComment:params[5]===g.contains[4],graph:graph(subst)}});
+if(rows.length!==106)throw Error('Actual lazy batch8 corpus count '+rows.length);
+globalThis.sdkHighlightLazyBatch8Rows=rows;

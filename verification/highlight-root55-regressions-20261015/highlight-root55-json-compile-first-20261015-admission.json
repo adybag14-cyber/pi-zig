@@ -1,0 +1,11 @@
+{
+  "slot": 4,
+  "free_kib": 21700244,
+  "candidate": "8685fd09298955e1f2fbae41e7677141b07e7b14",
+  "observed_utc": "2026-10-15T22:20:11.3793356+00:00",
+  "required_kib": 16777216,
+  "roots": [],
+  "phase": "compile",
+  "max_native_roots": 4,
+  "target": "json"
+}

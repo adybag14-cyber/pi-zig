@@ -1,0 +1,62 @@
+{
+  "target": "foundation",
+  "inventories": [
+    {
+      "count": 1968,
+      "drift": [],
+      "name": "source"
+    },
+    {
+      "count": 31064,
+      "drift": [],
+      "name": "dependencies"
+    },
+    {
+      "count": 19546,
+      "drift": [],
+      "name": "compiler"
+    },
+    {
+      "count": 1774,
+      "drift": [],
+      "name": "node"
+    }
+  ],
+  "phase": "compile",
+  "absence_drift": [],
+  "controls": 35,
+  "head": "8685fd09298955e1f2fbae41e7677141b07e7b14",
+  "absences": 84,
+  "candidate_drift": [],
+  "completed_utc": "2026-10-15T22:09:02.8605689+00:00",
+  "candidate_after": 6979,
+  "candidate_before": 6979,
+  "manifests": [
+    {
+      "count": 1967,
+      "drift": [],
+      "name": "source"
+    },
+    {
+      "count": 31064,
+      "drift": [],
+      "name": "dependencies"
+    },
+    {
+      "count": 1774,
+      "drift": [],
+      "name": "node"
+    },
+    {
+      "count": 195,
+      "drift": [],
+      "name": "canonical"
+    },
+    {
+      "count": 19546,
+      "drift": [],
+      "name": "compiler"
+    }
+  ],
+  "control_drift": []
+}

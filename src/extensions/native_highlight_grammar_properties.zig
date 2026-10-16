@@ -1,0 +1,68 @@
+//! Actual highlight.js10.7.3 properties factory; unqualified source.
+const b = @import("native_highlight_lazy_batch3_values.zig");
+pub fn create(e: *b.Engine) !b.c.JSValue {
+    return b.factory(e, "properties", build);
+}
+pub fn build(e: *b.Engine, hljs: b.c.JSValue) !b.c.JSValue {
+    var s: b.Scope = .{ .engine = e };
+    defer s.deinit();
+    const equal = ws0 ++ "[:=]" ++ ws0;
+    const delim = "(" ++ equal ++ "|" ++ ws1 ++ ")";
+    const delimiter = try s.object();
+    try s.put(delimiter, "end", try s.text(delim));
+    try s.put(delimiter, "relevance", b.c.JS_NewInt32(e.context, 0));
+    const value = try b.mode(&s, "string");
+    try s.put(value, "end", try b.rx(&s, "$"));
+    try s.put(value, "relevance", b.c.JS_NewInt32(e.context, 0));
+    const escaped = try s.object();
+    try s.put(escaped, "begin", try s.text(escaped_backslashes));
+    const continuation = try s.object();
+    try s.put(continuation, "begin", try s.text(continued_line));
+    try s.put(value, "contains", try b.list(&s, &.{ escaped, continuation }));
+    try s.put(delimiter, "starts", value);
+    const language = try s.object();
+    try s.put(language, "name", try s.text(".properties"));
+    try s.put(language, "case_insensitive", b.boolean(&s, true));
+    try s.put(language, "illegal", try b.rx(&s, "\\S"));
+    const comment_function = try s.get(hljs, "COMMENT");
+    const contains = try b.list(&s, &.{try s.call(comment_function, hljs, &.{ try s.text("^\\s*[!#]"), try s.text("$") })});
+    const normal = try s.object();
+    try s.put(normal, "returnBegin", b.boolean(&s, true));
+    const first = try s.object();
+    try s.put(first, "begin", try s.text(key_alphanum ++ equal));
+    try s.put(first, "relevance", b.c.JS_NewInt32(e.context, 1));
+    const second = try s.object();
+    try s.put(second, "begin", try s.text(key_alphanum ++ ws1));
+    try s.put(second, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.put(normal, "variants", try b.list(&s, &.{ first, second }));
+    const attr = try b.mode(&s, "attr");
+    try s.put(attr, "begin", try s.text(key_alphanum));
+    try s.put(attr, "endsParent", b.boolean(&s, true));
+    try s.put(attr, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.put(normal, "contains", try b.list(&s, &.{attr}));
+    try s.put(normal, "starts", delimiter);
+    try s.index(contains, 1, normal);
+    const other = try s.object();
+    try s.put(other, "begin", try s.text(key_other ++ delim));
+    try s.put(other, "returnBegin", b.boolean(&s, true));
+    try s.put(other, "relevance", b.c.JS_NewInt32(e.context, 0));
+    const meta = try b.mode(&s, "meta");
+    try s.put(meta, "begin", try s.text(key_other));
+    try s.put(meta, "endsParent", b.boolean(&s, true));
+    try s.put(meta, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.put(other, "contains", try b.list(&s, &.{meta}));
+    try s.put(other, "starts", delimiter);
+    try s.index(contains, 2, other);
+    const empty = try b.mode(&s, "attr");
+    try s.put(empty, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.put(empty, "begin", try s.text(key_other ++ ws0 ++ "$"));
+    try s.index(contains, 3, empty);
+    try s.put(language, "contains", contains);
+    return b.c.JS_DupValue(e.context, language);
+}
+const ws0 = "[ \\t\\f]*";
+const ws1 = "[ \\t\\f]+";
+const key_alphanum = "([^\\\\\\W:= \\t\\f\\n]|\\\\.)+";
+const key_other = "([^\\\\:= \\t\\f\\n]|\\\\.)+";
+const escaped_backslashes = "\\\\\\\\";
+const continued_line = "\\\\\\n";

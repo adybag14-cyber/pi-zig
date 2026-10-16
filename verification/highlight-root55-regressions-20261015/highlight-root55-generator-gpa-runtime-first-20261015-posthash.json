@@ -1,0 +1,62 @@
+{
+  "head": "8685fd09298955e1f2fbae41e7677141b07e7b14",
+  "candidate_before": 6979,
+  "manifests": [
+    {
+      "drift": [],
+      "count": 1967,
+      "name": "source"
+    },
+    {
+      "drift": [],
+      "count": 31064,
+      "name": "dependencies"
+    },
+    {
+      "drift": [],
+      "count": 1774,
+      "name": "node"
+    },
+    {
+      "drift": [],
+      "count": 195,
+      "name": "canonical"
+    },
+    {
+      "drift": [],
+      "count": 19546,
+      "name": "compiler"
+    }
+  ],
+  "completed_utc": "2026-10-15T22:19:03.9695186+00:00",
+  "target": "generator-gpa",
+  "controls": 42,
+  "candidate_after": 6979,
+  "absences": 84,
+  "candidate_drift": [],
+  "absence_drift": [],
+  "phase": "runtime",
+  "inventories": [
+    {
+      "drift": [],
+      "count": 1968,
+      "name": "source"
+    },
+    {
+      "drift": [],
+      "count": 31064,
+      "name": "dependencies"
+    },
+    {
+      "drift": [],
+      "count": 19546,
+      "name": "compiler"
+    },
+    {
+      "drift": [],
+      "count": 1774,
+      "name": "node"
+    }
+  ],
+  "control_drift": []
+}

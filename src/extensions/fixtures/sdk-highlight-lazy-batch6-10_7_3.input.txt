@@ -1,0 +1,59 @@
+const rows=[];
+function record(name,run){try{rows.push({name,value:run()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}}
+function graph(root){
+  const seen=new Map();let next=0;
+  function encode(value){
+    if(value===undefined)return{$undefined:true};
+    if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+    if(typeof value==='number')return Number.isFinite(value)?value:{$number:String(value)};
+    if(typeof value==='function')return{$function:{name:value.name,length:value.length,keys:Reflect.ownKeys(value).map(String),prototype:Object.hasOwn(value,'prototype')}};
+    if(typeof value!=='object')return{$other:typeof value,value:String(value)};
+    if(seen.has(value))return{$ref:seen.get(value)};
+    const id=next++;seen.set(value,id);
+    if(value instanceof RegExp)return{$id:id,$regexp:value.source,flags:value.flags,lastIndex:value.lastIndex,frozen:Object.isFrozen(value)};
+    return{$id:id,kind:Array.isArray(value)?'array':'object',frozen:Object.isFrozen(value),properties:Reflect.ownKeys(value).map(key=>{
+      const d=Object.getOwnPropertyDescriptor(value,key);return{key:String(key),enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,value:encode(d.value)}:{get:encode(d.get),set:encode(d.set)})};
+    })};
+  }
+  return encode(root);
+}
+const names=['dust','autohotkey','sml','smali','apache','basic','lisp','elm','ocaml','tp','crmsh','xl','haml','actionscript','django','vhdl','nginx','axapta','avrasm','tcl'];
+record('actual batch6 twenty factory metadata',()=>names.map(name=>{const fn=highlightLazyFactories[name];return{name,metadata:{name:fn.name,length:fn.length,keys:Reflect.ownKeys(fn).map(String),prototype:Object.hasOwn(fn,'prototype')}}}));
+for(const name of names)record(name+' complete raw grammar graph',()=>graph(highlightLazyFactories[name](highlightCoreAPI)));
+for(const name of names)record(name+' actual live helper getter order',()=>{
+  const trace=[];const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){trace.push(String(key));return Reflect.get(target,key,receiver)}});
+  return{graph:graph(highlightLazyFactories[name](api)),trace};
+});
+for(const name of names)record(name+' actual throwing helper or helper-free factory',()=>{
+  const api=new Proxy(highlightCoreAPI,{get(){throw new TypeError('actual batch6 getter rejected '+name)}});
+  return graph(highlightLazyFactories[name](api));
+});
+for(const name of names)highlightCoreAPI.registerLanguage(name,highlightLazyFactories[name]);
+const samples={
+ dust:['<h1>{title}</h1>{#items}<p>{name}</p>{/items}\n','{! TODO: template !}{?ready}{>partial/}{:else}no{/ready}\n'],
+ autohotkey:['#NoEnv\nMsgBox, Hello\nreturn\n','^j::\nRun, notepad.exe\nSleep, 1000\nreturn ; TODO\n'],
+ sml:['fun square x = x * x;\nval answer = square 42;\n','(* TODO (* nested *) *)\ndatatype item = Empty | Value of int\n'],
+ smali:['.class public Ldemo/Main;\n.super Ljava/lang/Object;\n.method public run()V\n const/4 v0, 0x1\n return-void\n.end method\n','# TODO: bytecode\n.field private name:Ljava/lang/String;\n invoke-virtual {v0}, Ldemo/Main;->run()V\n'],
+ apache:['<VirtualHost *:80>\nServerName example.test\nDocumentRoot /var/www\n</VirtualHost>\n','# TODO: config\nRewriteEngine On\nRewriteRule ^/demo$ /index.php [L]\n'],
+ basic:['10 PRINT "hello"\n20 GOTO 10\n','REM TODO: basic\nFOR I = 1 TO 42\n NEXT I\n'],
+ lisp:['(defun square (x) (* x x))\n(print (square 42))\n','; TODO: lisp\n\'(one :two #\\Space)\n#| nested #| comment |# |#\n'],
+ elm:['module Main exposing (main)\nmain = text "Hello"\n','{- TODO {- nested -} -}\ntype Item = Empty | Value Int\nvalue = if True then 42 else 0\n'],
+ ocaml:['let square x = x * x\nlet value = square 42\n','(* TODO (* nested *) *)\ntype item = Empty | Value of int\n'],
+ tp:['/PROG DEMO\n/MN\n1: CALL WORK ;\n2: R[1:count]=42 ;\n/END\n','! TODO: robot ;\nWAIT DI[1]=ON ;\nJ P[1] 100% CNT100 ;\n'],
+ crmsh:['primitive web ocf:heartbeat:apache params configfile="demo"\n','node 1: alpha\nlocation prefer web 100: alpha\n# TODO: cluster\n'],
+ xl:['import "demo"\nvalue x -> x + 42\n','// TODO: XL\nif true then text <<hello>>\n'],
+ haml:['!!! 5\n%div.container\n  %h1= title\n','-# TODO: template\n%a{ :href => "/demo", :title => "hello" } Link\n'],
+ actionscript:['package demo { public class Item extends Object { } }\n','function greet(name:String, ...args):void { trace("hello"); }\n// TODO\n'],
+ django:['<h1>{{ title|upper }}</h1>\n','{% for item in items %}{{ item.name|default:"none" }}{% empty %}none{% endfor %}{# TODO #}\n'],
+ vhdl:['entity demo is port(clk : in std_logic); end demo;\n','-- TODO: HDL\nsignal value : integer := 16#ff#;\nvalue <= 42 when ready = \'1\' else 0;\n'],
+ nginx:['server { listen 80; server_name example.test; location / { proxy_pass http://backend; } }\n','# TODO: nginx\nset $value "hello ${name}";\nlocation ~* \\.php$ { fastcgi_pass 127.0.0.1:9000; }\n'],
+ axapta:['public class Item extends Object { int value; }\n','ttsbegin;\nselect firstonly item where item.Value == 42;\nttscommit; // TODO\n'],
+ avrasm:['.include "m128def.inc"\nldi r16, 0xff\nout DDRB, r16\n','; TODO: AVR\nloop:\n inc r16\n brne loop\n'],
+ tcl:['proc square {x} { expr {$x * $x} }\nputs [square 42]\n','# TODO: Tcl\nset name "hello $::demo::name"\nputs ${value}\n']
+};
+for(const[name,codes]of Object.entries(samples))for(const[index,code]of codes.entries())record(name+' actual scanner '+index,()=>{
+  const result=highlightCoreAPI.highlight(code,{language:name,ignoreIllegals:false});return{language:result.language,relevance:result.relevance,illegal:result.illegal,value:result.value,code:result.code,tree:JSON.parse(result.emitter.toJSON()),errorRaised:result.errorRaised?{name:result.errorRaised.name,message:result.errorRaised.message}:undefined};
+});
+record('actual batch6 canonical registration and aliases',()=>({registry:highlightCoreAPI.listLanguages(),aliases:[['ahk','autohotkey'],['crm','crmsh'],['pcmk','crmsh'],['tao','xl'],['as','actionscript'],['jinja','django'],['nginxconf','nginx'],['x++','axapta'],['tk','tcl']].map(([alias,name])=>({alias,name,same:highlightCoreAPI.getLanguage(alias)===highlightCoreAPI.getLanguage(name)})),ml:highlightCoreAPI.getLanguage('ml')===highlightCoreAPI.getLanguage('ocaml')}));
+if(rows.length!==102)throw Error('Actual lazy batch6 corpus count '+rows.length);
+globalThis.sdkHighlightLazyBatch6Rows=rows;

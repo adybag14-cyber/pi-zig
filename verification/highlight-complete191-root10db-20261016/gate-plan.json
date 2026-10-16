@@ -1,0 +1,212 @@
+{
+  "scope": "Prepared source-only C33+9h complete191 gate; no execution grant",
+  "root_base": "10dbf9c069f776c02c4deecf593ff00cf7a536f6",
+  "source_candidate": "d01845d01d0f8462894a919353cff8e814961fae",
+  "C": "E2F988956B452EBACDDC1B24AB45E5F70F7AFB4777F7452EDF1457649B2D1D3B",
+  "H": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB",
+  "source_success": 419,
+  "source_import_failure": 13,
+  "source_factory_failure": 13,
+  "grammars": 191,
+  "support_modules": 215,
+  "highlighter_host_GPA22272_newC_qualified": false,
+  "gates": [
+    {
+      "name": "foundation",
+      "prerequisites": [],
+      "compile_deadline_seconds": 1320,
+      "runtime_deadline_seconds": 300,
+      "per_test_deadline_seconds": 120,
+      "guest_await_seconds": 10,
+      "fresh_available_gib": 16,
+      "zero_other_native": true,
+      "jobs": 1,
+      "complete_actual_metadata_required": true
+    },
+    {
+      "name": "async26",
+      "prerequisites": [
+        "foundation"
+      ],
+      "compile_deadline_seconds": 1320,
+      "runtime_deadline_seconds": 300,
+      "per_test_deadline_seconds": 120,
+      "guest_await_seconds": 10,
+      "fresh_available_gib": 16,
+      "zero_other_native": true,
+      "jobs": 1,
+      "complete_actual_metadata_required": true
+    },
+    {
+      "name": "generator",
+      "prerequisites": [
+        "foundation",
+        "async26"
+      ],
+      "compile_deadline_seconds": 1320,
+      "runtime_deadline_seconds": 300,
+      "per_test_deadline_seconds": 120,
+      "guest_await_seconds": 10,
+      "fresh_available_gib": 16,
+      "zero_other_native": true,
+      "jobs": 1,
+      "complete_actual_metadata_required": true
+    },
+    {
+      "name": "generator-gpa",
+      "prerequisites": [
+        "foundation",
+        "async26",
+        "generator"
+      ],
+      "compile_deadline_seconds": 1320,
+      "runtime_deadline_seconds": 300,
+      "per_test_deadline_seconds": 120,
+      "guest_await_seconds": 10,
+      "fresh_available_gib": 16,
+      "zero_other_native": true,
+      "jobs": 1,
+      "complete_actual_metadata_required": true
+    },
+    {
+      "name": "json",
+      "prerequisites": [
+        "foundation",
+        "async26",
+        "generator",
+        "generator-gpa"
+      ],
+      "compile_deadline_seconds": 1320,
+      "runtime_deadline_seconds": 300,
+      "per_test_deadline_seconds": 120,
+      "guest_await_seconds": 10,
+      "fresh_available_gib": 16,
+      "zero_other_native": true,
+      "jobs": 1,
+      "complete_actual_metadata_required": true
+    },
+    {
+      "name": "source51",
+      "prerequisites": [
+        "foundation",
+        "async26",
+        "generator",
+        "generator-gpa",
+        "json"
+      ],
+      "compile_deadline_seconds": 1320,
+      "runtime_deadline_seconds": 300,
+      "per_test_deadline_seconds": 120,
+      "guest_await_seconds": 10,
+      "fresh_available_gib": 16,
+      "zero_other_native": true,
+      "jobs": 1,
+      "complete_actual_metadata_required": true
+    },
+    {
+      "name": "operators",
+      "prerequisites": [
+        "foundation",
+        "async26",
+        "generator",
+        "generator-gpa",
+        "json",
+        "source51"
+      ],
+      "compile_deadline_seconds": 1320,
+      "runtime_deadline_seconds": 300,
+      "per_test_deadline_seconds": 120,
+      "guest_await_seconds": 10,
+      "fresh_available_gib": 16,
+      "zero_other_native": true,
+      "jobs": 1,
+      "complete_actual_metadata_required": true
+    },
+    {
+      "name": "engine",
+      "prerequisites": [
+        "foundation",
+        "async26",
+        "generator",
+        "generator-gpa",
+        "json",
+        "source51",
+        "operators"
+      ],
+      "compile_deadline_seconds": 1320,
+      "runtime_deadline_seconds": 300,
+      "per_test_deadline_seconds": 120,
+      "guest_await_seconds": 10,
+      "fresh_available_gib": 16,
+      "zero_other_native": true,
+      "jobs": 1,
+      "complete_actual_metadata_required": true
+    },
+    {
+      "name": "recovery",
+      "prerequisites": [
+        "foundation",
+        "async26",
+        "generator",
+        "generator-gpa",
+        "json",
+        "source51",
+        "operators",
+        "engine"
+      ],
+      "compile_deadline_seconds": 1320,
+      "runtime_deadline_seconds": 300,
+      "per_test_deadline_seconds": 120,
+      "guest_await_seconds": 10,
+      "fresh_available_gib": 16,
+      "zero_other_native": true,
+      "jobs": 1,
+      "complete_actual_metadata_required": true
+    },
+    {
+      "name": "direct191",
+      "prerequisites": [
+        "foundation",
+        "async26",
+        "generator",
+        "generator-gpa",
+        "json",
+        "source51",
+        "operators",
+        "engine",
+        "recovery"
+      ],
+      "compile_deadline_seconds": 1320,
+      "runtime_deadline_seconds": 300,
+      "per_test_deadline_seconds": 120,
+      "guest_await_seconds": 10,
+      "fresh_available_gib": 16,
+      "zero_other_native": true,
+      "jobs": 1,
+      "complete_actual_metadata_required": true
+    },
+    {
+      "name": "host445",
+      "prerequisites": [
+        "foundation",
+        "async26",
+        "generator",
+        "generator-gpa",
+        "json",
+        "source51",
+        "operators",
+        "engine",
+        "recovery",
+        "direct191"
+      ],
+      "compile_deadline_seconds": 1320,
+      "runtime_deadline_seconds": 300,
+      "per_test_deadline_seconds": 120,
+      "guest_await_seconds": 10,
+      "fresh_available_gib": 16,
+      "zero_other_native": true,
+      "jobs": 1,
+      "complete_actual_metadata_required": true
+    }
+  ]
+}

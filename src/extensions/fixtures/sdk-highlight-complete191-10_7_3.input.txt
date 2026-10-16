@@ -1,0 +1,78 @@
+const rows=[];
+function record(name,run){try{rows.push({name,value:run()})}catch(error){rows.push({name,error:{name:error?.name,message:error?.message,tag:error?.tag}})}}
+function graph(root){
+ const seen=new Map();let next=0;
+ function encode(value){
+  if(value===undefined)return{$undefined:true};
+  if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+  if(typeof value==='number')return Number.isFinite(value)?value:{$number:String(value)};
+  if(typeof value==='function')return{$function:{name:value.name,length:value.length,keys:Reflect.ownKeys(value).map(String),prototype:Object.hasOwn(value,'prototype')}};
+  if(typeof value!=='object')return{$other:typeof value,value:String(value)};
+  if(seen.has(value))return{$ref:seen.get(value)};
+  const id=next++;seen.set(value,id);
+  if(value instanceof RegExp)return{$id:id,$regexp:value.source,flags:value.flags,lastIndex:value.lastIndex,frozen:Object.isFrozen(value)};
+  return{$id:id,kind:Array.isArray(value)?'array':'object',frozen:Object.isFrozen(value),properties:Reflect.ownKeys(value).map(key=>{const d=Object.getOwnPropertyDescriptor(value,key);return{key:String(key),enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,value:encode(d.value)}:{get:encode(d.get),set:encode(d.set)})}})};
+ }
+ return encode(root);
+}
+const mode=globalThis.highlightWholeCase??'success';
+const core=highlightCoreAPI,syntax=highlightSyntaxAPI;
+const eager=core.listLanguages(),oldFactories=Object.fromEntries(eager.map(name=>[name,highlightFactoryFor(name)]));
+const oldJson=core.getLanguage('json');
+record('actual syntax ESM namespace exports and descriptors',()=>({keys:Reflect.ownKeys(syntax).map(String),prototype:Object.getPrototypeOf(syntax),extensible:Object.isExtensible(syntax),tag:Object.prototype.toString.call(syntax)}));
+record('actual initial eager21 registry order',()=>eager);
+record('actual cached loader function metadata',()=>graph(syntax.loadAllHighlightLanguages));
+record('actual eager JSON compilation before complete index',()=>{const result=core.highlight('{"value":42}',{language:'json',ignoreIllegals:false});return{language:result.language,value:result.value,illegal:result.illegal}});
+const events=[],logs=[];let lookups=0,scheduled=0,settled=false;
+const registerDescriptor=Object.getOwnPropertyDescriptor(core,'registerLanguage'),register=core.registerLanguage;
+const originalImmediate=globalThis.setImmediate,originalReverse=Array.prototype.reverse,originalConsole=globalThis.console;
+const originalReason={tag:'original whole191 reason',name:'Error',message:'out of memory'};
+globalThis.console={error(...args){logs.push(['error',...args.map(value=>typeof value==='string'?value:{tag:value?.tag,name:value?.name,message:value?.message})])},log(...args){logs.push(['log',...args.map(String)])},warn(...args){logs.push(['warn',...args.map(String)])}};
+Object.defineProperty(core,'registerLanguage',{configurable:true,enumerable:registerDescriptor.enumerable,get(){
+ events.push(['lookup',++lookups]);
+ if(mode==='lookup_failure'&&lookups===8)throw originalReason;
+ return function(name,definition){
+  events.push(['register',name,definition.name,definition.length]);
+  if(mode==='safe_factory_failure'&&name==='xml')return Reflect.apply(register,this,[name,function failedActualFactory(hljs){throw originalReason}]);
+  return Reflect.apply(register,this,[name,definition]);
+ };
+}});
+Array.prototype.reverse=function(...args){events.push(['reverse',this.length]);return Reflect.apply(originalReverse,this,args)};
+globalThis.setImmediate=function(callback,...args){scheduled++;events.push(['scheduled',args.length]);return Reflect.apply(originalImmediate,this,[function(...incoming){events.push(['immediate']);return Reflect.apply(callback,this,incoming)},...args])};
+let pending,second,loadValue;
+try{
+ pending=syntax.loadAllHighlightLanguages();second=syntax.loadAllHighlightLanguages();pending.then(()=>{settled=true});
+ await Promise.resolve();
+ record('actual loader defers import and caches pending promise',()=>({same:pending===second,scheduled,lookups,settled}));
+ loadValue=await pending;
+}finally{
+ Object.defineProperty(core,'registerLanguage',registerDescriptor);
+ Array.prototype.reverse=originalReverse;globalThis.setImmediate=originalImmediate;globalThis.console=originalConsole;
+}
+record('actual public loader settlement and cached fulfilled promise',()=>({value:loadValue,same:pending===syntax.loadAllHighlightLanguages(),scheduled,settled}));
+record('actual index register getter call and module initialization events',()=>events);
+record('actual index ordinary logger behavior',()=>logs);
+record('actual complete registry order',()=>core.listLanguages());
+record('actual first21 factory cache identities survive full import',()=>eager.map(name=>({name,same:highlightFactoryFor(name)===oldFactories[name]})));
+record('actual complete index resets eager compiled JSON grammar',()=>({replaced:oldJson!==core.getLanguage('json'),currentName:core.getLanguage('json').name}));
+record('actual absent mapped names and canonical support',()=>({graphql:syntax.supportsLanguage('graphql'),hcl:syntax.supportsLanguage('hcl'),plaintext:syntax.supportsLanguage('plaintext'),toml:syntax.supportsLanguage('toml'),xml:syntax.supportsLanguage('xml')}));
+if(mode==='lookup_failure'){
+ record('actual failed import preserves partial registry and cached void barrier',()=>({languages:core.listLanguages(),xml:core.getLanguage('xml')?.name,lookups,logs}));
+ globalThis.sdkHighlightComplete191Rows=rows;
+}else if(mode==='safe_factory_failure'){
+ record('actual factory failure may fulfill import with plaintext fallback',()=>({count:core.listLanguages().length,xml:core.getLanguage('xml').name,html:syntax.supportsLanguage('html'),reason:logs.some(row=>row[1]?.tag===originalReason.tag),lookups}));
+ globalThis.sdkHighlightComplete191Rows=rows;
+}else{
+ const names=core.listLanguages();
+ record('actual complete canonical factory metadata',()=>names.map(name=>({name,factory:graph(highlightFactoryFor(name))})));
+ record('actual index CommonJS namespace and core identity',()=>undefined);
+ const namespace=await highlightIndexNamespace();rows[rows.length-1].value={keys:Reflect.ownKeys(namespace).map(String),defaultSame:namespace.default===core,moduleExportsSame:namespace['module.exports']===core,prototype:Object.getPrototypeOf(namespace),extensible:Object.isExtensible(namespace)};
+ for(const name of names)record(name+' actual registered complete grammar graph',()=>graph(core.getLanguage(name)));
+ function scan(name,code){const result=core.highlight(code,{language:name,ignoreIllegals:false});return{language:result.language,relevance:result.relevance,illegal:result.illegal,value:result.value,code:result.code,tree:result.emitter?JSON.parse(result.emitter.toJSON()):null,errorRaised:result.errorRaised?{name:result.errorRaised.name,message:result.errorRaised.message}:undefined}}
+ for(const name of names)record(name+' actual complete-index minimal scanner',()=>scan(name,'x\n'));
+ const samples={markdown:'# Hello\n\n**bold** and `code`\n',xml:'<div class="demo">Hello &amp; world</div>\n',css:'.demo { color: red; width: 42px; }\n',yaml:'name: demo\nvalues: [true, 42]\n',ini:'[section]\nname = "demo"\n',sql:'SELECT value FROM demo WHERE id = 42;\n',dockerfile:'FROM alpine:3.20\nRUN echo "hello"\n',makefile:'all: demo\n\t@echo "hello"\n',powershell:'$value = Get-Item -Path "demo"\n',protobuf:'syntax = "proto3";\nmessage Item { string name = 1; }\n',haskell:'module Main where\nmain = putStrLn "hello"\n',elixir:'defmodule Demo do\n def square(x), do: x*x\nend\n',clojure:'(defn square [x] (* x x))\n',scheme:'(define (square x) (* x x))\n',qml:'Item { id: root; property int value: 42 }\n',less:'@color: red;\n.demo { color: @color; }\n',scss:'$color: red;\n.demo { color: $color; }\n',pgsql:'SELECT now(), value::text FROM demo;\n',xquery:'for $item in /items/item return $item/name\n',julia:'square(x) = x*x\nprintln(square(42))\n'};
+ for(const[name,code]of Object.entries(samples))record(name+' actual complete-index meaningful scanner',()=>scan(name,code));
+ record('actual complete frontend theme formatting',()=>syntax.highlight('const value = 42;',{language:'javascript',theme:{keyword:text=>'K('+text+')',number:text=>'N('+text+')',default:text=>text}}));
+ for(const name of ['graphql','hcl'])record(name+' actual unknown language after full import',()=>syntax.highlight('value',{language:name}));
+ globalThis.sdkHighlightComplete191Rows=rows;
+}

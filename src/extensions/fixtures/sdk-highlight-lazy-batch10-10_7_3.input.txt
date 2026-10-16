@@ -1,0 +1,120 @@
+const rows=[];
+function record(name,run){try{rows.push({name,value:run()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}}
+function graph(root){
+  const seen=new Map();let next=0;
+  function encode(value){
+    if(value===undefined)return{$undefined:true};
+    if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+    if(typeof value==='number')return Number.isFinite(value)?value:{$number:String(value)};
+    if(typeof value==='function')return{$function:{name:value.name,length:value.length,keys:Reflect.ownKeys(value).map(String),prototype:Object.hasOwn(value,'prototype')}};
+    if(typeof value!=='object')return{$other:typeof value,value:String(value)};
+    if(seen.has(value))return{$ref:seen.get(value)};
+    const id=next++;seen.set(value,id);
+    if(value instanceof RegExp)return{$id:id,$regexp:value.source,flags:value.flags,lastIndex:value.lastIndex,frozen:Object.isFrozen(value)};
+    return{$id:id,kind:Array.isArray(value)?'array':'object',frozen:Object.isFrozen(value),properties:Reflect.ownKeys(value).map(key=>{
+      const d=Object.getOwnPropertyDescriptor(value,key);return{key:String(key),enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,value:encode(d.value)}:{get:encode(d.get),set:encode(d.set)})};
+    })};
+  }
+  return encode(root);
+}
+const names=['livecodeserver','livescript','lsl','mathematica','maxima','mel','nsis','pgsql','reasonml','scss','sqf','sql_more','stan','stata','stylus','vbnet','verilog','vim','x86asm','xquery'];
+record('actual batch10 twenty factory metadata',()=>names.map(name=>{const fn=highlightLazyFactories[name];return{name,metadata:{name:fn.name,length:fn.length,keys:Reflect.ownKeys(fn).map(String),prototype:Object.hasOwn(fn,'prototype')}}}));
+for(const name of names)record(name+' complete raw grammar graph',()=>graph(highlightLazyFactories[name](highlightCoreAPI)));
+for(const name of names)record(name+' actual live helper getter order',()=>{
+  const trace=[];const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){trace.push(String(key));return Reflect.get(target,key,receiver)}});
+  return{graph:graph(highlightLazyFactories[name](api)),trace};
+});
+for(const name of names)record(name+' actual throwing helper or helper-free factory',()=>{
+  const api=new Proxy(highlightCoreAPI,{get(){throw new TypeError('actual batch10 getter rejected '+name)}});
+  return graph(highlightLazyFactories[name](api));
+});
+for(const name of names)highlightCoreAPI.registerLanguage(name,highlightLazyFactories[name]);
+const samples={
+ livecodeserver:['on hello pName\n put "Hello" && pName\nend hello\n','<?lc\n-- TODO: server\nput $_GET["name"] into gName\n?>\n'],
+ livescript:['square = (x) -> x * x\nconsole.log square 42\n','class Item extends Base\n  title: "hello #{name}"\n# TODO: LiveScript\n'],
+ lsl:['default { state_entry() { llSay(0, "Hello"); } }\n','integer count = 42;\nvector origin = ZERO_VECTOR;\n// TODO: LSL\n'],
+ mathematica:['Plot[Sin[x], {x, 0, 2 Pi}]\n','f[x_Integer] := Module[{y = 16^^ff`20}, y + #1 &]\n(* TODO: Wolfram *)\n'],
+ maxima:['integrate(sin(x), x);\nvalue: 42$\n','/* TODO: algebra */\nf(x) := if x > 0 then sqrt(x) else false;\n'],
+ mel:['global proc hello() { print("hello"); }\n','// TODO: Maya\nfloat $value = 42;\npolySphere -radius 2;\n'],
+ nsis:['Name "Demo"\nOutFile "demo.exe"\nSection\n MessageBox MB_OK "Hello"\nSectionEnd\n','!include "MUI2.nsh"\n; TODO: installer\nStrCpy $0 "$INSTDIR\\file"\n'],
+ pgsql:['SELECT count(*) FROM public.items WHERE value IS NOT NULL;\n','CREATE FUNCTION square(x integer) RETURNS integer AS $$ BEGIN RETURN x * x; END; $$ LANGUAGE plpgsql;\n-- TODO: PostgreSQL\n'],
+ reasonml:['let square = (x: int) => x * x;\n','type item = Empty | Value(int);\n/* TODO: Reason */\nlet text = "hello";\n'],
+ scss:['$color: #fff;\n.card:hover { color: $color; margin: 2px; }\n','@media screen and (min-width: 640px) { .grid { display: flex; } }\n// TODO: SCSS\n'],
+ sqf:['_value = 42;\nhint "Hello";\n','// TODO: Arma\nif (isServer) then { publicVariable "ready"; };\n#define VALUE 1\n'],
+ sql_more:['SELECT COUNT(*) FROM items WHERE value IS NOT NULL;\n','-- TODO: dialect\nCREATE TABLE example (id INTEGER PRIMARY KEY, name VARCHAR(64));\n'],
+ stan:['parameters { real mu; }\nmodel { mu ~ normal(0, 1); }\n','// TODO: model\ntransformed data { int n = 42; }\n'],
+ stata:['sysuse auto, clear\nregress price mpg weight\n','* TODO: statistics\nforeach x in price mpg {\n summarize `x\'\n}\n'],
+ stylus:['body\n  color #fff\n  margin 2px\n','@media screen and (min-width: 640px)\n  .card:hover\n    display flex\n// TODO: Stylus\n'],
+ vbnet:['Module Program\n Sub Main()\n  Console.WriteLine("Hello")\n End Sub\nEnd Module\n',"''' <summary>TODO: VB</summary>\nDim value As Integer = &Hff\nDim dateValue = #1/2/2020 12:30 PM#\n"],
+ verilog:['module test(input logic clk);\n always_ff @(posedge clk) begin\n end\nendmodule\n',"`define WIDTH 8\nlogic [7:0] value = 8'hff;\n// TODO: HDL\n"],
+ vim:['function! Hello(name)\n echo "hello " . a:name\nendfunction\n','" TODO: editor\nlet g:value = 42\nset number\n'],
+ x86asm:['section .text\nglobal _start\n_start:\n mov eax, 1\n int 0x80\n','; TODO: assembly\n%define VALUE 42\nmessage db "hello", 0\n'],
+ xquery:['for $item in doc("items.xml")//item\nwhere $item/price > 42\nreturn $item/name\n','(: TODO: query :)\ndeclare function local:square($x as xs:integer) { $x * $x };\n<result>{ local:square(7) }</result>\n']
+};
+for(const[name,codes]of Object.entries(samples))for(const[index,code]of codes.entries())record(name+' actual scanner '+index,()=>{
+  const result=highlightCoreAPI.highlight(code,{language:name,ignoreIllegals:false});return{language:result.language,relevance:result.relevance,illegal:result.illegal,value:result.value,code:result.code,tree:JSON.parse(result.emitter.toJSON()),errorRaised:result.errorRaised?{name:result.errorRaised.name,message:result.errorRaised.message}:undefined};
+});
+record('actual batch10 independent eager21 plus XML registration and aliases',()=>({registry:highlightCoreAPI.listLanguages(),aliases:[['ls','livescript'],['mma','mathematica'],['wl','mathematica'],['postgres','pgsql'],['postgresql','pgsql'],['re','reasonml'],['mysql','sql_more'],['oracle','sql_more'],['stanfuncs','stan'],['do','stata'],['ado','stata'],['styl','stylus'],['vb','vbnet'],['v','verilog'],['sv','verilog'],['svh','verilog'],['xpath','xquery'],['xq','xquery']].map(([alias,name])=>({alias,name,same:highlightCoreAPI.getLanguage(alias)===highlightCoreAPI.getLanguage(name)}))}));
+record('PostgreSQL actual weighted keyword map callback shape',()=>{
+  const trace=[],original=Array.prototype.map;let grammar;
+  Array.prototype.map=function(callback,...rest){trace.push({length:this.length,name:callback.name,arity:callback.length,keys:Reflect.apply(original,Reflect.ownKeys(callback),[String]),prototype:Object.hasOwn(callback,'prototype')});return Reflect.apply(original,this,[callback,...rest])};
+  try{grammar=highlightLazyFactories.pgsql(highlightCoreAPI)}finally{Array.prototype.map=original}
+  return{trace,graph:graph(grammar)};
+});
+record('PostgreSQL actual map callback propagates split rejection',()=>{
+  const original=Array.prototype.map;
+  Array.prototype.map=function(callback){return callback({get split(){throw new RangeError('actual PostgreSQL split rejected')}})};
+  try{return highlightLazyFactories.pgsql(highlightCoreAPI)}finally{Array.prototype.map=original}
+});
+record('ReasonML actual nested split map and join callbacks',()=>{
+  const trace=[],map=Array.prototype.map,join=Array.prototype.join;let grammar;
+  Array.prototype.map=function(callback,...rest){trace.push({kind:'map',length:this.length,name:callback.name,arity:callback.length,prototype:Object.hasOwn(callback,'prototype')});return Reflect.apply(map,this,[callback,...rest])};
+  Array.prototype.join=function(...args){trace.push({kind:'join',length:this.length,args});return Reflect.apply(join,this,args)};
+  try{grammar=highlightLazyFactories.reasonml(highlightCoreAPI)}finally{Array.prototype.map=map;Array.prototype.join=join}
+  return{trace,graph:graph(grammar)};
+});
+record('ReasonML actual nested callback propagates split rejection',()=>{
+  const original=Array.prototype.map;
+  Array.prototype.map=function(callback){return callback({get split(){throw new SyntaxError('actual ReasonML split rejected')}})};
+  try{return highlightLazyFactories.reasonml(highlightCoreAPI)}finally{Array.prototype.map=original}
+});
+record('VB.NET actual regex rest arrays use source map arrows',()=>{
+  const trace=[],map=Array.prototype.map;let grammar;
+  Array.prototype.map=function(callback,...rest){trace.push({length:this.length,name:callback.name,arity:callback.length,keys:Reflect.apply(map,Reflect.ownKeys(callback),[String]),prototype:Object.hasOwn(callback,'prototype')});return Reflect.apply(map,this,[callback,...rest])};
+  try{grammar=highlightLazyFactories.vbnet(highlightCoreAPI)}finally{Array.prototype.map=map}
+  return{trace,graph:graph(grammar)};
+});
+record('Mathematica actual symbol callback shape and accepted rejected symbols',()=>{
+  const grammar=highlightLazyFactories.mathematica(highlightCoreAPI),callback=grammar.contains[4].variants[0]['on:begin'];
+  const calls=[];for(const text of ['Sin','Plot','NotAnActualSystemSymbol','Alpha']){let ignored=0;callback([text],{ignoreMatch(){ignored++}});calls.push({text,ignored})}
+  return{metadata:{name:callback.name,length:callback.length,keys:Reflect.ownKeys(callback).map(String),prototype:Object.hasOwn(callback,'prototype')},calls};
+});
+record('Mathematica actual captured Set has uses live receiver and rejection',()=>{
+  const grammar=highlightLazyFactories.mathematica(highlightCoreAPI),callback=grammar.contains[4].variants[0]['on:begin'],original=Set.prototype.has;
+  Set.prototype.has=function(value){throw new TypeError('actual Mathematica has rejected '+value)};
+  try{return callback(['Sin'],{ignoreMatch(){throw new Error('unexpected ignore')}})}finally{Set.prototype.has=original}
+});
+record('LiveScript actual substitution cyclic graph uses shared expressions',()=>{
+  const grammar=highlightLazyFactories.livescript(highlightCoreAPI),subst=grammar.contains[2].variants[2].contains[1];
+  return{shared:subst.contains[2]===grammar.contains[2],graph:graph(grammar)};
+});
+record('LiveScript actual ordinary assignment observes inherited setter',()=>{
+  const trace=[],descriptor=Object.getOwnPropertyDescriptor(Object.prototype,'contains');let grammar;
+  Object.defineProperty(Object.prototype,'contains',{configurable:true,set(value){trace.push({className:this.className,length:value.length})}});
+  try{grammar=highlightLazyFactories.livescript(highlightCoreAPI)}finally{if(descriptor)Object.defineProperty(Object.prototype,'contains',descriptor);else delete Object.prototype.contains}
+  return{trace,graph:graph(grammar)};
+});
+record('SCSS and Stylus actual module arrays retain identity across calls',()=>{
+  const trace=[],original=Array.prototype.join,receivers=[];
+  Array.prototype.join=function(...args){let id=receivers.indexOf(this);if(id===-1){id=receivers.length;receivers.push(this)}trace.push({id,length:this.length,args});return Reflect.apply(original,this,args)};
+  try{highlightLazyFactories.scss(highlightCoreAPI);highlightLazyFactories.scss(highlightCoreAPI);highlightLazyFactories.stylus(highlightCoreAPI);highlightLazyFactories.stylus(highlightCoreAPI)}finally{Array.prototype.join=original}
+  return trace;
+});
+record('LiveScript actual module builtins retain concat receiver identity',()=>{
+  const trace=[],original=Array.prototype.concat,receivers=[];
+  Array.prototype.concat=function(...args){let id=receivers.indexOf(this);if(id===-1){id=receivers.length;receivers.push(this)}trace.push({id,length:this.length,arity:args.length});return Reflect.apply(original,this,args)};
+  try{highlightLazyFactories.livescript(highlightCoreAPI);highlightLazyFactories.livescript(highlightCoreAPI)}finally{Array.prototype.concat=original}
+  return trace;
+});
+if(rows.length!==113)throw Error('Actual lazy batch10 corpus count '+rows.length);
+globalThis.sdkHighlightLazyBatch10Rows=rows;

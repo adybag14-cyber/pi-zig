@@ -1,0 +1,9 @@
+{
+  "status": "admitted",
+  "heap_mb": 256,
+  "observed_utc": "2026-10-15T21:33:23.6532374+00:00",
+  "free_kib": 20744884,
+  "cases": 13,
+  "max_coordinated_jobs": 4,
+  "required_kib": 2097152
+}

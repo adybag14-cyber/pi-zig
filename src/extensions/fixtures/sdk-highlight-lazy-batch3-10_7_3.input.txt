@@ -1,0 +1,59 @@
+const rows=[];
+function record(name,run){try{rows.push({name,value:run()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}}
+function graph(root){
+  const seen=new Map();let next=0;
+  function encode(value){
+    if(value===undefined)return{$undefined:true};
+    if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+    if(typeof value==='number')return Number.isFinite(value)?value:{$number:String(value)};
+    if(typeof value==='function')return{$function:{name:value.name,length:value.length,keys:Reflect.ownKeys(value).map(String),prototype:Object.hasOwn(value,'prototype')}};
+    if(typeof value!=='object')return{$other:typeof value,value:String(value)};
+    if(seen.has(value))return{$ref:seen.get(value)};
+    const id=next++;seen.set(value,id);
+    if(value instanceof RegExp)return{$id:id,$regexp:value.source,flags:value.flags,lastIndex:value.lastIndex,frozen:Object.isFrozen(value)};
+    return{$id:id,kind:Array.isArray(value)?'array':'object',frozen:Object.isFrozen(value),properties:Reflect.ownKeys(value).map(key=>{
+      const d=Object.getOwnPropertyDescriptor(value,key);return{key:String(key),enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,value:encode(d.value)}:{get:encode(d.get),set:encode(d.set)})};
+    })};
+  }
+  return encode(root);
+}
+const names=['bnf','fix','shell','ldif','csp','golo','profile','clean','taggerscript','subunit','ebnf','flix','leaf','mizar','tap','gherkin','thrift','dsconfig','awk','step21'];
+record('actual batch3 twenty factory metadata',()=>names.map(name=>{const fn=highlightLazyFactories[name];return{name,metadata:{name:fn.name,length:fn.length,keys:Reflect.ownKeys(fn).map(String),prototype:Object.hasOwn(fn,'prototype')}}}));
+for(const name of names)record(name+' complete raw grammar graph',()=>graph(highlightLazyFactories[name](highlightCoreAPI)));
+for(const name of names)record(name+' actual live helper getter order',()=>{
+  const trace=[];const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){trace.push(String(key));return Reflect.get(target,key,receiver)}});
+  return{graph:graph(highlightLazyFactories[name](api)),trace};
+});
+for(const name of names)record(name+' actual throwing helper or helper-free factory',()=>{
+  const api=new Proxy(highlightCoreAPI,{get(){throw new TypeError('actual batch3 getter rejected '+name)}});
+  return graph(highlightLazyFactories[name](api));
+});
+for(const name of names)highlightCoreAPI.registerLanguage(name,highlightLazyFactories[name]);
+const samples={
+  bnf:['<digit> ::= "0" | "1"\n<value> ::= <digit>\n','<expr> ::= <term> // TODO: grammar\n/* note */ "<>&"\n'],
+  fix:['8=FIX.4.4\u00019=12\u000135=D\u0001','8=FIX.4.2\u240135=0\u240110=123\u2401'],
+  shell:['~/work$ echo "$HOME"\nhello\n','  $ printf "%s\\n" "<>&"\n'],
+  ldif:['dn: cn=demo,dc=example,dc=test\ncn: Demo\n# TODO: ldap\n','dn: uid=user,dc=example\nchangetype: modify\nreplace: mail\nmail: user@example.test\n-\n'],
+  csp:["Content-Security-Policy: default-src 'self'; script-src 'none'; img-src https://example.test;","sandbox allow-scripts; report-uri /reports; style-src 'unsafe-inline';"],
+  golo:['module demo\nfunction main = |args| { println("hello") }\n','let values = array[true, false, null]\n@Deprecated\nforeach value in values { print(value) }\n'],
+  profile:['         12 function calls in 0.001 seconds\n ncalls  tottime  cumtime  filename:lineno(function)\n','  1  0.001  0.001 demo.py:42(run)\n  2  0.002  0.003 (built-in method)\n'],
+  clean:['module Hello\nStart = "hello"\n','implementation module Demo\nimport StdEnv\nvalue :: Int\nvalue = if True 42 0 // TODO: clean\n'],
+  taggerscript:['$if(%artist%,$upper(%artist%),Unknown)\n','$noop(comment (nested \\) text))$set(title,%album% - %tracknumber%)\n'],
+  subunit:['test: example\nsuccess: example\n','time: 2026-10-15 12:34:56.125Z\nprogress: push\nprogress: +2\nfailure: example [\ntrace\n]\n'],
+  ebnf:["letter = 'a' | 'b' ;\n(* TODO: grammar *)\n",'special = ? any letter ? .\n'],
+  flix:['def greet(name: String): String = "hello"\n','namespace Demo\ncase class Item(value: Int32)\nlet flag = true // TODO: flix\n'],
+  leaf:['#if(isAdmin) { #title("Hello") }\n','#for(item, items) { #text("<>&") }\n'],
+  mizar:['environ vocabularies NUMBERS;\nbegin\ntheorem ex x st x = x;\n',':: TODO: proof\nproof let x be Real; thus thesis; end;\n'],
+  tap:['TAP version 13\n1..2\nok 1 first\nnot ok 2 second\n# TODO: detail\n','not ok 1 example\n  ---\n  message: "<>&"\n  severity: fail\n  ...\n'],
+  gherkin:['Feature: Login\nScenario: Valid user\nGiven a user\nWhen login succeeds\nThen show home\n','@fast\nScenario Outline: Table\nGiven <name>\nExamples:\n| name |\n| demo |\n'],
+  thrift:['namespace cpp demo\nstruct User { 1: required string name, 2: optional i32 age }\n','service API { void ping() }\nconst bool READY = true\nlist<map<string, i64>> values\n'],
+  dsconfig:['dsconfig create-backend --backend-name demo --set enabled:true\n','dsconfig list-backends --hostname "example.test" --no-prompt # TODO: config\n'],
+  awk:['BEGIN { FS=","; print "hello" }\n{ if ($1 ~ /demo/) print $2 }\n','function total(value) { return value + 42 }\nEND { print NR } # TODO: awk\n'],
+  step21:["ISO-10303-21;\nHEADER;\nFILE_DESCRIPTION(('demo'),'2;1');\nENDSEC;\nDATA;\n#1=ITEM('hello');\nENDSEC;\nEND-ISO-10303-21;\n",'ISO-10303-21;\n/* TODO: model */\nDATA;\n#42=POINT(1.0,2.0,3.0);\nENDSEC;\nEND-ISO-10303-21;\n']
+};
+for(const[name,codes]of Object.entries(samples))for(const[index,code]of codes.entries())record(name+' actual scanner '+index,()=>{
+  const result=highlightCoreAPI.highlight(code,{language:name,ignoreIllegals:false});return{language:result.language,relevance:result.relevance,illegal:result.illegal,value:result.value,code:result.code,tree:JSON.parse(result.emitter.toJSON()),errorRaised:result.errorRaised?{name:result.errorRaised.name,message:result.errorRaised.message}:undefined};
+});
+record('actual batch3 canonical registration and aliases',()=>({registry:highlightCoreAPI.listLanguages(),shell:highlightCoreAPI.getLanguage('console')===highlightCoreAPI.getLanguage('shell'),clean:['icl','dcl'].map(name=>highlightCoreAPI.getLanguage(name)===highlightCoreAPI.getLanguage('clean')),gherkin:highlightCoreAPI.getLanguage('feature')===highlightCoreAPI.getLanguage('gherkin'),step21:['p21','step','stp'].map(name=>highlightCoreAPI.getLanguage(name)===highlightCoreAPI.getLanguage('step21')),dsconfigName:highlightCoreAPI.getLanguage('dsconfig').name}));
+if(rows.length!==102)throw Error('Actual lazy batch3 corpus count '+rows.length);
+globalThis.sdkHighlightLazyBatch3Rows=rows;

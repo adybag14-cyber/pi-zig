@@ -1,0 +1,45 @@
+{
+  "checked_utc": "2026-10-16T12:54:49.8922863+00:00",
+  "parser_errors": 0,
+  "native_execution": false,
+  "inventories": [
+    {
+      "manifest_count": 1967,
+      "drift": [],
+      "actual_count": 1967,
+      "name": "source"
+    },
+    {
+      "manifest_count": 31064,
+      "drift": [],
+      "actual_count": 31064,
+      "name": "dependencies"
+    }
+  ],
+  "terminal_cases": [
+    {
+      "case": 0,
+      "accepted": true
+    },
+    {
+      "case": 1,
+      "accepted": false
+    },
+    {
+      "case": 2,
+      "accepted": false
+    },
+    {
+      "case": 3,
+      "accepted": false
+    },
+    {
+      "case": 4,
+      "accepted": false
+    },
+    {
+      "case": 5,
+      "accepted": false
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+//! Actual highlight.js 10.7.3 static keyword inputs; native factory follows.
+const b = @import("native_highlight_lazy_batch3_values.zig");
+pub fn create(e: *b.Engine) !b.c.JSValue {
+    return b.factory(e, "haxe", build);
+}
+pub fn build(e: *b.Engine, h: b.c.JSValue) !b.c.JSValue {
+    var s: b.Scope = .{ .engine = e };
+    defer s.deinit();
+    const l = try s.object();
+    try s.put(l, "name", try s.text("Haxe"));
+    try s.put(l, "aliases", try b.list(&s, &.{try s.text("hx")}));
+    const kw = try s.object();
+    try s.put(kw, "keyword", try s.text(source_keyword));
+    try s.put(kw, "built_in", try s.text(source_built_in));
+    try s.put(kw, "literal", try s.text(source_literal));
+    try s.put(l, "keywords", kw);
+    const a = try s.array();
+    const str = try b.mode(&s, "string");
+    try s.put(str, "begin", try s.text("'"));
+    try s.put(str, "end", try s.text("'"));
+    const sc = try b.list(&s, &.{try s.get(h, "BACKSLASH_ESCAPE")});
+    const s1 = try b.mode(&s, "subst");
+    try s.put(s1, "begin", try s.text("\\$\\{"));
+    try s.put(s1, "end", try s.text("\\}"));
+    try s.index(sc, 1, s1);
+    const s2 = try b.mode(&s, "subst");
+    try s.put(s2, "begin", try s.text("\\$"));
+    try s.put(s2, "end", try b.rx(&s, "\\W\\}"));
+    try s.index(sc, 2, s2);
+    try s.put(str, "contains", sc);
+    try s.index(a, 0, str);
+    try s.index(a, 1, try s.get(h, "QUOTE_STRING_MODE"));
+    try s.index(a, 2, try s.get(h, "C_LINE_COMMENT_MODE"));
+    try s.index(a, 3, try s.get(h, "C_BLOCK_COMMENT_MODE"));
+    try s.index(a, 4, try s.get(h, "C_NUMBER_MODE"));
+    const meta = try b.mode(&s, "meta");
+    try s.put(meta, "begin", try s.text("@:"));
+    try s.put(meta, "end", try s.text("$"));
+    try s.index(a, 5, meta);
+    const conditional = try b.mode(&s, "meta");
+    try s.put(conditional, "begin", try s.text("#"));
+    try s.put(conditional, "end", try s.text("$"));
+    const mk = try s.object();
+    try s.put(mk, "meta-keyword", try s.text("if else elseif end error"));
+    try s.put(conditional, "keywords", mk);
+    try s.index(a, 6, conditional);
+    for ([_][2][]const u8{ .{ ":[ \t]*", "[^A-Za-z0-9_ \t\\->]" }, .{ ":[ \t]*", "\\W" }, .{ "new *", "\\W" } }, 7..) |p, i| {
+        const m = try b.mode(&s, "type");
+        try s.put(m, "begin", try s.text(p[0]));
+        try s.put(m, "end", try s.text(p[1]));
+        try s.put(m, "excludeBegin", b.boolean(&s, true));
+        try s.put(m, "excludeEnd", b.boolean(&s, true));
+        if (i == 7) try s.put(m, "relevance", b.c.JS_NewInt32(e.context, 0));
+        try s.index(a, @intCast(i), m);
+    }
+    const en = try b.mode(&s, "class");
+    try s.put(en, "beginKeywords", try s.text("enum"));
+    try s.put(en, "end", try s.text("\\{"));
+    try s.put(en, "contains", try b.list(&s, &.{try s.get(h, "TITLE_MODE")}));
+    try s.index(a, 10, en);
+    const abstract = try b.mode(&s, "class");
+    try s.put(abstract, "beginKeywords", try s.text("abstract"));
+    try s.put(abstract, "end", try s.text("[\\{$]"));
+    const ac = try s.array();
+    for ([_][2][]const u8{ .{ "\\(", "\\)" }, .{ "from +", "\\W" }, .{ "to +", "\\W" } }, 0..) |p, i| {
+        const m = try b.mode(&s, "type");
+        try s.put(m, "begin", try s.text(p[0]));
+        try s.put(m, "end", try s.text(p[1]));
+        try s.put(m, "excludeBegin", b.boolean(&s, true));
+        try s.put(m, "excludeEnd", b.boolean(&s, true));
+        try s.index(ac, @intCast(i), m);
+    }
+    try s.index(ac, 3, try s.get(h, "TITLE_MODE"));
+    try s.put(abstract, "contains", ac);
+    const ak = try s.object();
+    try s.put(ak, "keyword", try s.text("abstract from to"));
+    try s.put(abstract, "keywords", ak);
+    try s.index(a, 11, abstract);
+    const cls = try b.mode(&s, "class");
+    try s.put(cls, "begin", try s.text("\\b(class|interface) +"));
+    try s.put(cls, "end", try s.text("[\\{$]"));
+    try s.put(cls, "excludeEnd", b.boolean(&s, true));
+    try s.put(cls, "keywords", try s.text("class interface"));
+    const ext = try b.mode(&s, "keyword");
+    try s.put(ext, "begin", try s.text("\\b(extends|implements) +"));
+    try s.put(ext, "keywords", try s.text("extends implements"));
+    const typename = try b.mode(&s, "type");
+    try s.put(typename, "begin", try s.get(h, "IDENT_RE"));
+    try s.put(typename, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.put(ext, "contains", try b.list(&s, &.{typename}));
+    try s.put(cls, "contains", try b.list(&s, &.{ ext, try s.get(h, "TITLE_MODE") }));
+    try s.index(a, 12, cls);
+    const fun = try b.mode(&s, "function");
+    try s.put(fun, "beginKeywords", try s.text("function"));
+    try s.put(fun, "end", try s.text("\\("));
+    try s.put(fun, "excludeEnd", b.boolean(&s, true));
+    try s.put(fun, "illegal", try s.text("\\S"));
+    try s.put(fun, "contains", try b.list(&s, &.{try s.get(h, "TITLE_MODE")}));
+    try s.index(a, 13, fun);
+    try s.put(l, "contains", a);
+    try s.put(l, "illegal", try b.rx(&s, "</"));
+    return b.c.JS_DupValue(e.context, l);
+}
+const source_keyword = "break case cast catch continue default do dynamic else enum extern for function here if import in inline never new override package private get set public return static super switch this throw trace try typedef untyped using var while Int Float String Bool Dynamic Void Array ";
+const source_built_in = "trace this";
+const source_literal = "true false null _";

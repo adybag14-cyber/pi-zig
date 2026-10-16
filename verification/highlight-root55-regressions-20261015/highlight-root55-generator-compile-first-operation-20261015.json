@@ -1,0 +1,16 @@
+{
+  "name": "highlight-root55-generator-compile-first-operation-20261015",
+  "pid": 74960,
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+  "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoProfile -File C:/Users/adyba/pi-zig-update-evidence-20261003/Run-HighlightRoot55NativePhaseV2-20261015.ps1 -Target generator -Phase compile",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T22:12:29.2918721Z",
+  "launched_utc": "2026-10-15T22:12:29.2882658+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-update-evidence-20261003",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T22:14:02.6556135+00:00"
+}

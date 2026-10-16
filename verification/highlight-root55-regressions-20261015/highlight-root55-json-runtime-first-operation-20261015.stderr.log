@@ -1,0 +1,5 @@
+Exception: C:\Users\adyba\pi-zig-highlight-complete191-root55-20261015\tools\ci\native_qualification_ci.ps1:70
+Line |
+  70 |  . cne 'passed'){throw "Owned terminal $($taskRecord.status): $taskExe"}
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Owned terminal failed: C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\zig.exe

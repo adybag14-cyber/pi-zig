@@ -1,0 +1,355 @@
+{
+  "source": "Actual highlight.js10.7.3 index and unchanged original5ab syntax frontend",
+  "mode": "lookup_failure",
+  "input": "file:///C:/Users/adyba/pi-zig-highlight-complete191-root55-20261015/src/extensions/fixtures/sdk-highlight-complete191-10_7_3.input.txt",
+  "cases": 13,
+  "rows": [
+    {
+      "name": "actual syntax ESM namespace exports and descriptors",
+      "value": {
+        "keys": [
+          "highlight",
+          "loadAllHighlightLanguages",
+          "renderHighlightedHtml",
+          "supportsLanguage",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "prototype": null,
+        "extensible": false,
+        "tag": "[object Module]"
+      }
+    },
+    {
+      "name": "actual initial eager21 registry order",
+      "value": [
+        "python",
+        "java",
+        "go",
+        "javascript",
+        "json",
+        "cpp",
+        "typescript",
+        "php",
+        "ruby",
+        "c",
+        "csharp",
+        "nix",
+        "bash",
+        "rust",
+        "scala",
+        "kotlin",
+        "swift",
+        "dart",
+        "groovy",
+        "perl",
+        "lua"
+      ]
+    },
+    {
+      "name": "actual cached loader function metadata",
+      "value": {
+        "$function": {
+          "name": "loadAllHighlightLanguages",
+          "length": 0,
+          "keys": [
+            "length",
+            "name",
+            "prototype"
+          ],
+          "prototype": true
+        }
+      }
+    },
+    {
+      "name": "actual eager JSON compilation before complete index",
+      "value": {
+        "language": "json",
+        "value": "{<span class=\"hljs-attr\">&quot;value&quot;</span>:<span class=\"hljs-number\">42</span>}",
+        "illegal": false
+      }
+    },
+    {
+      "name": "actual loader defers import and caches pending promise",
+      "value": {
+        "same": true,
+        "scheduled": 1,
+        "lookups": 0,
+        "settled": false
+      }
+    },
+    {
+      "name": "actual public loader settlement and cached fulfilled promise",
+      "value": {
+        "same": true,
+        "scheduled": 1,
+        "settled": true
+      }
+    },
+    {
+      "name": "actual index register getter call and module initialization events",
+      "value": [
+        [
+          "scheduled",
+          0
+        ],
+        [
+          "immediate"
+        ],
+        [
+          "lookup",
+          1
+        ],
+        [
+          "register",
+          "1c",
+          "_1c",
+          1
+        ],
+        [
+          "lookup",
+          2
+        ],
+        [
+          "register",
+          "abnf",
+          "abnf",
+          1
+        ],
+        [
+          "lookup",
+          3
+        ],
+        [
+          "register",
+          "accesslog",
+          "accesslog",
+          1
+        ],
+        [
+          "lookup",
+          4
+        ],
+        [
+          "register",
+          "actionscript",
+          "actionscript",
+          1
+        ],
+        [
+          "lookup",
+          5
+        ],
+        [
+          "register",
+          "ada",
+          "ada",
+          1
+        ],
+        [
+          "lookup",
+          6
+        ],
+        [
+          "register",
+          "angelscript",
+          "angelscript",
+          1
+        ],
+        [
+          "lookup",
+          7
+        ],
+        [
+          "register",
+          "apache",
+          "apache",
+          1
+        ],
+        [
+          "lookup",
+          8
+        ]
+      ]
+    },
+    {
+      "name": "actual index ordinary logger behavior",
+      "value": []
+    },
+    {
+      "name": "actual complete registry order",
+      "value": [
+        "python",
+        "java",
+        "go",
+        "javascript",
+        "json",
+        "cpp",
+        "typescript",
+        "php",
+        "ruby",
+        "c",
+        "csharp",
+        "nix",
+        "bash",
+        "rust",
+        "scala",
+        "kotlin",
+        "swift",
+        "dart",
+        "groovy",
+        "perl",
+        "lua",
+        "1c",
+        "abnf",
+        "accesslog",
+        "actionscript",
+        "ada",
+        "angelscript",
+        "apache"
+      ]
+    },
+    {
+      "name": "actual first21 factory cache identities survive full import",
+      "value": [
+        {
+          "name": "python",
+          "same": true
+        },
+        {
+          "name": "java",
+          "same": true
+        },
+        {
+          "name": "go",
+          "same": true
+        },
+        {
+          "name": "javascript",
+          "same": true
+        },
+        {
+          "name": "json",
+          "same": true
+        },
+        {
+          "name": "cpp",
+          "same": true
+        },
+        {
+          "name": "typescript",
+          "same": true
+        },
+        {
+          "name": "php",
+          "same": true
+        },
+        {
+          "name": "ruby",
+          "same": true
+        },
+        {
+          "name": "c",
+          "same": true
+        },
+        {
+          "name": "csharp",
+          "same": true
+        },
+        {
+          "name": "nix",
+          "same": true
+        },
+        {
+          "name": "bash",
+          "same": true
+        },
+        {
+          "name": "rust",
+          "same": true
+        },
+        {
+          "name": "scala",
+          "same": true
+        },
+        {
+          "name": "kotlin",
+          "same": true
+        },
+        {
+          "name": "swift",
+          "same": true
+        },
+        {
+          "name": "dart",
+          "same": true
+        },
+        {
+          "name": "groovy",
+          "same": true
+        },
+        {
+          "name": "perl",
+          "same": true
+        },
+        {
+          "name": "lua",
+          "same": true
+        }
+      ]
+    },
+    {
+      "name": "actual complete index resets eager compiled JSON grammar",
+      "value": {
+        "replaced": false,
+        "currentName": "JSON"
+      }
+    },
+    {
+      "name": "actual absent mapped names and canonical support",
+      "value": {
+        "graphql": false,
+        "hcl": false,
+        "plaintext": false,
+        "toml": false,
+        "xml": false
+      }
+    },
+    {
+      "name": "actual failed import preserves partial registry and cached void barrier",
+      "value": {
+        "languages": [
+          "python",
+          "java",
+          "go",
+          "javascript",
+          "json",
+          "cpp",
+          "typescript",
+          "php",
+          "ruby",
+          "c",
+          "csharp",
+          "nix",
+          "bash",
+          "rust",
+          "scala",
+          "kotlin",
+          "swift",
+          "dart",
+          "groovy",
+          "perl",
+          "lua",
+          "1c",
+          "abnf",
+          "accesslog",
+          "actionscript",
+          "ada",
+          "angelscript",
+          "apache"
+        ],
+        "lookups": 8,
+        "logs": []
+      }
+    }
+  ]
+}

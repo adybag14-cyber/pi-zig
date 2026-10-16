@@ -1,0 +1,16 @@
+{
+  "free_kib": 22268004,
+  "max_native_roots": 4,
+  "candidate": "8685fd09298955e1f2fbae41e7677141b07e7b14",
+  "required_kib": 16777216,
+  "observed_utc": "2026-10-15T22:14:54.3614237+00:00",
+  "slot": 4,
+  "roots": [
+    {
+      "ProcessId": 67812,
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-highlight-core-b45 -Doptimize=Debug -j1 --test-timeout 120s --summary all"
+    }
+  ],
+  "target": "generator",
+  "phase": "runtime"
+}

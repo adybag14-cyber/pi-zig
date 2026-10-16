@@ -1,0 +1,21 @@
+# Complete191 successor on Root463
+
+This source-only successor starts from exact Root `463bb45337b452b6dd6f7f62858ccfdfa21dbc47`. Three-way cherry-picks preserve the actual191 highlighter implementation and unchanged genuine Source445 from `8685fd09298955e1f2fbae41e7677141b07e7b14`, plus the complete negative/pass packet from `5da41c531461f52ff4bf321369a85c3a938bdfab`. The original Root55 tested worktree and artifacts remain immutable.
+
+Root's newer engine, `native_node_function`, timers, Immediate, stdio, live EventStream f5, JSON/transform Source51, and SDK implementations remain byte-identical to Root463. No older common module was copied over them. Root already includes the corrected Immediate foundation tested at `919ef1d81b71e8dc7774d90e5b5bfe636957779b` and its proof successor `c645ed3b9a900559e98cfdd8b7908ea51275ad4a`.
+
+The previously reviewed nine-hunk highlighter C/header changes merged cleanly. The resulting C SHA256 is `4DD2E0829E52C4385B677261E833442F12A94F04CB2127BFEB4C4CE4C481579D`; the header is `286E31A5965C727788D96F3BCBB05615EFCFA02BD7EE925519F5DBA8752B8350`. Compared with tested Root55 C8239/H EC166, their only additional code is Root463's 42-line DataView/backing-span function and four-line declaration. Compared with Root463, their changes remain the prior highlighter legacy helper/cache and thin-dispatch patch. All new Root interpreter, generator, JSON, operator, and buffer functionality is preserved. These merged bytes are not runtime-qualified.
+
+New explicit gates are prepared:
+
+- `build-extension-engine` compiles the unchanged existing ordinary engine suite separately for actual metadata and its existing `test-extension-engine` runtime.
+- `build/test-native-highlight-root463-engine-recovery` selects all existing engine tests, the existing legacy cancellation and targeted C-VM-budget recovery tests, and two private ordinary-constructor/GC and stack-overflow/recovery controls. The previous Legacy32, Original74, Deep7, nested128, and trusted-OOM foundation target remains unchanged.
+- `build/test-native-highlight-complete191-host` executes the unchanged actual Source419 success and two Source13 failure callers through real native Immediate, index registration, actual module factory identities, and the independent private readiness audit. It introduces no fake queue or implementation body in JavaScript.
+
+The Source445 expected files retain their exact hashes: success `D6D410D29A79FCCC24D2C4690F40D66A34A879E6C3B662C102B4B9B7F9AD17F6`, import failure `5AF3FF3C8BA5433DC6D5945B84A99D08F7AACD2F5FF93A4BF972E58C88AF1BEA`, and factory fallback `C5D2A7A27D1711885B76D74A1CBFFB926B0DA3FEEA65543B354B854350FBAB92`. The actual191 bodies and highlighter support files are unchanged from the frozen candidate.
+
+The original full JSON negative remains a blocker. Its callable GPA failure happened with the older native callback implementation; Root463 now suppresses guest-observable diagnostic formatting inside native callbacks, but this exact test still requires execution. The HTTP20 failure concerns event snapshot timing: early text events observe `durationMs` that genuine Source introduces later. Official b06-to-5ab Git comparison has no changes to either `api/openai-completions.ts` or `utils/event-stream.ts`, so this is not attributed to an upstream behavior change. Static tracing suggests that synchronous decoder push/finish outruns the consumer when the actual SDK producer's async-generator scheduling is absent. That is an inference, not a completed fix.
+
+Source51 is JSON39 plus transform12 and does not qualify HTTP timing. The codec lane owns the actual SDK producer candidate and a fresh genuine HTTP58 capture; those remain separately unqualified. This successor does not add a scheduling fence, relax assertions, or modify any golden to conceal that failure.
+
+Only formatting, AST checks, source comparisons, and Git inspection have run on this successor. No new native compile, test, or Source execution has started. A new coordinated resource grant is required. The merged VM regressions, ordinary engine/legacy recovery, actual191 direct registration, and unchanged Source445 host comparison must pass in that order before any readiness claim. Complete191 readiness, application binding, and full Pi parity remain false.

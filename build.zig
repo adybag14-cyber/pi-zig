@@ -520,6 +520,26 @@ pub fn build(b: *std.Build) void {
     const latest_catalog_data_tests = b.addTest(.{ .root_module = latest_catalog_data_module, .use_llvm = use_llvm, .filters = &.{ "latest pinned Pi ae7 FFA3", "catalog contains only real provider entries", "generated catalog preserves exact upstream identity cardinality", "native catalog projection preserves all existing model metadata", "every provider default resolves to its public catalog identity" } });
     b.step("build-latest-catalog-data", "Compile focused current catalog data regressions").dependOn(&latest_catalog_data_tests.step);
     b.step("test-latest-catalog-data", "Verify complete current catalog provenance metadata projection and native lookup without application runtime compilation").dependOn(&b.addRunArtifact(latest_catalog_data_tests).step);
+    const highlight_complete191_direct = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_complete191_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual complete191"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_complete191_direct.root_module, quickjs, sqlite_lib_dir);
+    highlight_complete191_direct.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-complete191-direct", "Compile private actual191 registration and readiness audit without default application binding").dependOn(&highlight_complete191_direct.step);
+    b.step("test-native-highlight-complete191-direct", "Require actual191 successful factories and preserve guest import/factory failure readiness distinctions").dependOn(&b.addRunArtifact(highlight_complete191_direct).step);
+    const highlight_root55_foundation = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_root55_foundation_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "matches actual Original32", "matches genuine Original74", "nested actual grammar scanner completes128", "match genuine Original deep7", "registration preserves proven host OOM" }, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_root55_foundation.root_module, quickjs, sqlite_lib_dir);
+    highlight_root55_foundation.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-root55-foundation", "Compile actual Legacy32 Original74 Deep7 and trusted-OOM functional gates on additive Root55 VM").dependOn(&highlight_root55_foundation.step);
+    b.step("test-native-highlight-root55-foundation", "Compare unchanged genuine computational and legacy function probes before full191 qualification").dependOn(&b.addRunArtifact(highlight_root55_foundation).step);
+    const highlight_root463_recovery = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_root463_engine_recovery_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "extensions.engine.", "restores inactive frames after actual native enumeration cancellation", "targeted C VM heap budgets", "native Root463 dispatch" }, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_root463_recovery.root_module, quickjs, sqlite_lib_dir);
+    highlight_root463_recovery.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-root463-engine-recovery", "Compile preserved ordinary VM interrupt and legacy cancellation budget recovery gates").dependOn(&highlight_root463_recovery.step);
+    b.step("test-native-highlight-root463-engine-recovery", "Require ordinary VM constructor stack GC interrupt and selected legacy recovery before complete191").dependOn(&b.addRunArtifact(highlight_root463_recovery).step);
+    const highlight_complete191_host = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_complete191_host_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual complete191 host unchanged"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_complete191_host.root_module, quickjs, sqlite_lib_dir);
+    highlight_complete191_host.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-complete191-host", "Compile unchanged genuine Source445 caller against actual native Immediate and whole191 loader").dependOn(&highlight_complete191_host.step);
+    b.step("test-native-highlight-complete191-host", "Compare419 successful and26 failure Source observations with independent private readiness").dependOn(&b.addRunArtifact(highlight_complete191_host).step);
     const program_status_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/program_status_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
@@ -1273,6 +1293,7 @@ pub fn build(b: *std.Build) void {
     const run_engine_tests = b.addRunArtifact(engine_tests);
     const engine_test_step = b.step("test-extension-engine", "Test the directly linked extension-language engine");
     engine_test_step.dependOn(&run_engine_tests.step);
+    b.step("build-extension-engine", "Compile unchanged ordinary engine tests separately for metadata and matching runtime qualification").dependOn(&engine_tests.step);
     const original_oom_tests = b.addTest(.{ .root_module = engine_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native allocation original identity"} });
     b.step("test-native-allocation-original-identity", "Preserve original native OOM identity across cleanup without accepting user or stale causes").dependOn(&b.addRunArtifact(original_oom_tests).step);
     test_step.dependOn(&run_engine_tests.step);
@@ -3112,6 +3133,25 @@ pub fn build(b: *std.Build) void {
     addCompileOnlyGroup(b, "build-native-sdk-session-values", &.{"test-native-sdk-session-values"});
     addCompileOnlyGroup(b, "build-native-sdk-session-events", &.{"test-native-sdk-session-events"});
     addCompileOnlyGroup(b, "build-native-sdk-tool-name-matcher", &.{"test-native-sdk-tool-name-matcher"});
+    // Isolated C33+9h qualification aliases install the exact selected artifact.
+    // Matching cached binaries can be identified without assuming a new cache path.
+    const highlight_gate_artifacts = [_]struct { name: []const u8, artifact: *std.Build.Step.Compile }{
+        .{ .name = "foundation", .artifact = highlight_root55_foundation },
+        .{ .name = "async26", .artifact = native_async_qualification_tests },
+        .{ .name = "generator", .artifact = native_generator_tests },
+        .{ .name = "generator-gpa", .artifact = native_generator_gpa_tests },
+        .{ .name = "json", .artifact = ai_json_tests },
+        .{ .name = "source51", .artifact = ae7_json_transform_tests },
+        .{ .name = "operators", .artifact = native_binary_tests },
+        .{ .name = "engine", .artifact = engine_tests },
+        .{ .name = "recovery", .artifact = highlight_root463_recovery },
+        .{ .name = "direct191", .artifact = highlight_complete191_direct },
+        .{ .name = "host445", .artifact = highlight_complete191_host },
+    };
+    for (highlight_gate_artifacts) |gate| {
+        const installed_name = b.fmt("highlight-root10db-{s}{s}", .{ gate.name, if (target.result.os.tag == .windows) ".exe" else "" });
+        b.step(b.fmt("build-highlight-root10db-{s}", .{gate.name}), "Install exact selected C33+9h qualification artifact without running tests").dependOn(&b.addInstallArtifact(gate.artifact, .{ .dest_sub_path = installed_name }).step);
+    }
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
