@@ -1,4 +1,5 @@
 //! Ordinary Source package resource accumulation, precedence and canonical dedupe.
+const data = @import("native_sdk_package_data.zig");
 const std = @import("std");
 const package_catch = @import("native_sdk_package_catch.zig");
 const em = @import("engine.zig");
@@ -56,9 +57,9 @@ fn entry(scope: *Scope, value: c.JSValue) !c.JSValue {
     const enabled = try scope.get(second, "enabled");
     try it.close();
     const result = try scope.object();
-    try scope.put(result, "path", first);
-    try scope.put(result, "enabled", enabled);
-    try scope.put(result, "metadata", metadata);
+    try data.put(scope.engine, result, "path", first);
+    try data.put(scope.engine, result, "enabled", enabled);
+    try data.put(scope.engine, result, "metadata", metadata);
     return result;
 }
 fn rank(scope: *Scope, metadata: c.JSValue) !i32 {
@@ -114,7 +115,7 @@ fn method(engine: *em.Engine, kind: Method, args: []const c.JSValue, realpath_fu
     switch (kind) {
         .createAccumulator => {
             const result = try scope.object();
-            inline for (.{ "extensions", "skills", "prompts", "themes" }) |field| try scope.put(result, field, try scope.own(try js.builtin(engine, "Map", &.{})));
+            inline for (.{ "extensions", "skills", "prompts", "themes" }) |field| try data.put(scope.engine, result, field, try scope.own(try js.builtin(engine, "Map", &.{})));
             return c.JS_DupValue(engine.context, result);
         },
         .getTargetMap => {
@@ -128,15 +129,15 @@ fn method(engine: *em.Engine, kind: Method, args: []const c.JSValue, realpath_fu
             if (scope.truthy(path) and !scope.truthy(try scope.invoke(first, "has", &.{path}))) {
                 const set = try scope.get(first, "set");
                 const row = try scope.object();
-                try scope.put(row, "metadata", arg(args, 2));
-                try scope.put(row, "enabled", arg(args, 3));
+                try data.put(scope.engine, row, "metadata", arg(args, 2));
+                try data.put(scope.engine, row, "enabled", arg(args, 3));
                 _ = try scope.call(set, first, &.{ path, row });
             }
             return c.pi_js_undefined();
         },
         .toResolvedPaths => {
             const result = try scope.object();
-            inline for (.{ "extensions", "skills", "prompts", "themes" }) |field| try scope.put(result, field, try resolved(&scope, try scope.get(first, field), realpath_function));
+            inline for (.{ "extensions", "skills", "prompts", "themes" }) |field| try data.put(scope.engine, result, field, try resolved(&scope, try scope.get(first, field), realpath_function));
             return c.JS_DupValue(engine.context, result);
         },
     }

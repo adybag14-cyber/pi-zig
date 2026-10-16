@@ -1,6 +1,7 @@
 //! Actual filesystem discovery callers with genuine ignore/glob/Dirent/path
 //! dependencies. Recursive calls cross the native VM function boundary; there
 //! is no silent depth truncation or substitute ignore/glob implementation.
+const data = @import("native_sdk_package_data.zig");
 const std = @import("std");
 const v = @import("native_ai_provider_values.zig");
 const package_catch = @import("native_sdk_package_catch.zig");
@@ -13,20 +14,20 @@ const Method = enum(i32) { prefixIgnorePattern, addIgnoreRules, collectFiles, co
 const Callback = enum(i32) { prefix, boolean, glob_resolve, glob_visible, visible_segment, lexical_sort };
 fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
 fn private(s: *Scope) !c.JSValue { return s.own(try s.engine.checked(c.JS_NewObjectProto(s.engine.context, c.pi_js_null()))); }
-fn required(s: *Scope, target: c.JSValue, namespace: c.JSValue, comptime names: anytype) !void { inline for (names) |name| { const function = try s.get(namespace, name); if (!c.JS_IsFunction(s.engine.context, function)) return error.RequiredActualPackageDiscoveryImport; try s.put(target, name, function); } }
+fn required(s: *Scope, target: c.JSValue, namespace: c.JSValue, comptime names: anytype) !void { inline for (names) |name| { const function = try s.get(namespace, name); if (!c.JS_IsFunction(s.engine.context, function)) return error.RequiredActualPackageDiscoveryImport; try data.put(s.engine, target, name, function); } }
 pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit(); const imports = try private(&s);
     try required(&s, imports, inputs.paths, .{ "join", "resolve", "relative", "dirname" }); try required(&s, imports, inputs.filesystem, .{ "existsSync", "readFileSync", "readdirSync", "statSync", "globSync", "mkdirSync", "chmodSync" });
-    inline for (.{ .{ "ignore", inputs.ignore }, .{ "readPiManifest", inputs.read_pi_manifest }, .{ "homedir", inputs.homedir } }) |entry| { if (!c.JS_IsFunction(engine.context, entry[1])) return error.RequiredActualPackageDiscoveryImport; try s.put(imports, entry[0], entry[1]); }
-    try s.put(imports, "process", inputs.process); try s.put(imports, "sep", try s.get(inputs.paths, "sep"));
-    const patterns = try private(&s); inline for (.{ .{ "extensions", "\\.(ts|js)$" }, .{ "skills", "\\.md$" }, .{ "prompts", "\\.md$" }, .{ "themes", "\\.json$" } }) |entry| try s.put(patterns, entry[0], try regexp(&s, entry[1])); try s.put(imports, "patterns", patterns);
+    inline for (.{ .{ "ignore", inputs.ignore }, .{ "readPiManifest", inputs.read_pi_manifest }, .{ "homedir", inputs.homedir } }) |entry| { if (!c.JS_IsFunction(engine.context, entry[1])) return error.RequiredActualPackageDiscoveryImport; try data.put(s.engine, imports, entry[0], entry[1]); }
+    try data.put(s.engine, imports, "process", inputs.process); try data.put(s.engine, imports, "sep", try s.get(inputs.paths, "sep"));
+    const patterns = try private(&s); inline for (.{ .{ "extensions", "\\.(ts|js)$" }, .{ "skills", "\\.md$" }, .{ "prompts", "\\.md$" }, .{ "themes", "\\.json$" } }) |entry| try data.put(s.engine, patterns, entry[0], try regexp(&s, entry[1])); try data.put(s.engine, imports, "patterns", patterns);
     const exports = try s.object();
     inline for (@typeInfo(Method).@"enum".fields) |field| {
         const length: c_int = switch (@as(Method, @enumFromInt(field.value))) { .getHomeDir => 0, .prefixIgnorePattern, .collectFiles, .collectAutoSkillEntries, .collectResourceFiles, .expandPackageGlob => 2, .addIgnoreRules => 3, .collectSkillEntries => 4, else => 1 };
-        const function = try s.own(try f.create(engine, field.name, length, method, &.{ imports, c.JS_NewInt32(engine.context, field.value) })); try s.put(exports, field.name, function);
+        const function = try s.own(try f.create(engine, field.name, length, method, &.{ imports, c.JS_NewInt32(engine.context, field.value) })); try data.put(s.engine, exports, field.name, function);
         // Source lexical function bindings stay private and stable even when
         // the assembler inspects or exposes the returned namespace object.
-        try s.put(imports, field.name, function);
+        try data.put(s.engine, imports, field.name, function);
     }
     return c.JS_DupValue(engine.context, exports);
 }
@@ -35,7 +36,7 @@ fn imported(s: *Scope, imports: c.JSValue, name: [*:0]const u8, args: []const c.
 fn exists(s: *Scope, imports: c.JSValue, path: c.JSValue) !bool { return s.truthy(try imported(s, imports, "existsSync", &.{path})); }
 fn starts(s: *Scope, value: c.JSValue, prefix: []const u8) !bool { return s.truthy(try s.invoke(value, "startsWith", &.{try s.text(prefix)})); }
 fn posix(s: *Scope, imports: c.JSValue, path: c.JSValue) !c.JSValue { return s.invoke(try s.invoke(path, "split", &.{try s.get(imports, "sep")}), "join", &.{try s.text("/")}); }
-fn dirents(s: *Scope, imports: c.JSValue, dir: c.JSValue) !c.JSValue { const options = try s.object(); try s.put(options, "withFileTypes", c.pi_js_bool(s.engine.context, 1)); return imported(s, imports, "readdirSync", &.{ dir, options }); }
+fn dirents(s: *Scope, imports: c.JSValue, dir: c.JSValue) !c.JSValue { const options = try s.object(); try data.put(s.engine, options, "withFileTypes", c.pi_js_bool(s.engine.context, 1)); return imported(s, imports, "readdirSync", &.{ dir, options }); }
 
 const LinkFlags = struct { directory: c.JSValue, file: c.JSValue };
 fn linkFlags(s: *Scope, imports: c.JSValue, path: c.JSValue, with_directory: bool) !LinkFlags {
@@ -152,7 +153,7 @@ fn ancestors(s: *Scope, imports: c.JSValue, start: c.JSValue) !c.JSValue {
     while (true) { const push = try s.get(result, "push"); _ = try s.call(push, result, &.{try imported(s, imports, "join", &.{ dir, try s.text(".agents"), try s.text("skills") })}); if (s.truthy(git) and s.equal(dir, git)) break; const parent = try imported(s, imports, "dirname", &.{dir}); if (s.equal(parent, dir)) break; dir = parent; } return result;
 }
 fn glob(s: *Scope, imports: c.JSValue, pattern: c.JSValue, root: c.JSValue) !c.JSValue {
-    const options = try s.object(); try s.put(options, "cwd", root); const values = try imported(s, imports, "globSync", &.{ pattern, options }); const resolved = try s.invoke(values, "map", &.{try callback(s, .glob_resolve, &.{ imports, root })}); const visible = try s.invoke(resolved, "filter", &.{try callback(s, .glob_visible, &.{ imports, root })}); return s.invoke(visible, "sort", &.{try callback(s, .lexical_sort, &.{})});
+    const options = try s.object(); try data.put(s.engine, options, "cwd", root); const values = try imported(s, imports, "globSync", &.{ pattern, options }); const resolved = try s.invoke(values, "map", &.{try callback(s, .glob_resolve, &.{ imports, root })}); const visible = try s.invoke(resolved, "filter", &.{try callback(s, .glob_visible, &.{ imports, root })}); return s.invoke(visible, "sort", &.{try callback(s, .lexical_sort, &.{})});
 }
 fn method(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return v.js.capture(engine); const imports = roots[0]; const first = arg(args, 0);
@@ -161,6 +162,6 @@ fn method(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []
         .findGitRepoRoot => try gitRoot(&s, imports, first), .collectAncestorAgentsSkillDirs => try ancestors(&s, imports, first), .collectAutoPromptEntries => try simple(&s, imports, first, ".md"), .collectAutoThemeEntries => try simple(&s, imports, first, ".json"), .resolveExtensionEntries => try extensionEntries(&s, imports, first), .collectAutoExtensionEntries => try extensions(&s, imports, first),
         .collectResourceFiles => blk: { const kind = arg(args, 1); if (try v.eq(&s, kind, "skills")) break :blk try imported(&s, imports, "collectSkillEntries", &.{ first, try s.text("pi") }); if (try v.eq(&s, kind, "extensions")) break :blk try imported(&s, imports, "collectAutoExtensionEntries", &.{first}); const pattern = try s.own(try v.js.getKey(engine, try s.get(imports, "patterns"), kind)); break :blk try imported(&s, imports, "collectFiles", &.{ first, pattern }); }, .expandPackageGlob => try glob(&s, imports, first, arg(args, 1)),
         .getHomeDir => blk: { const home = try s.get(try s.get(try s.get(imports, "process"), "env"), "HOME"); break :blk if (s.truthy(home)) home else try imported(&s, imports, "homedir", &.{}); },
-        .getExtensionTempFolder => blk: { const path = try imported(&s, imports, "join", &.{ first, try s.text("tmp"), try s.text("extensions") }); const options = try s.object(); try s.put(options, "recursive", c.pi_js_bool(engine.context, 1)); try s.put(options, "mode", c.JS_NewInt32(engine.context, 0o700)); _ = try imported(&s, imports, "mkdirSync", &.{ path, options }); _ = try imported(&s, imports, "chmodSync", &.{ path, c.JS_NewInt32(engine.context, 0o700) }); break :blk path; },
+        .getExtensionTempFolder => blk: { const path = try imported(&s, imports, "join", &.{ first, try s.text("tmp"), try s.text("extensions") }); const options = try s.object(); try data.put(s.engine, options, "recursive", c.pi_js_bool(engine.context, 1)); try data.put(s.engine, options, "mode", c.JS_NewInt32(engine.context, 0o700)); _ = try imported(&s, imports, "mkdirSync", &.{ path, options }); _ = try imported(&s, imports, "chmodSync", &.{ path, c.JS_NewInt32(engine.context, 0o700) }); break :blk path; },
     }; return c.JS_DupValue(engine.context, result);
 }

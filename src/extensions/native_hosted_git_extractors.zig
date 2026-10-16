@@ -1,9 +1,10 @@
 //! Actual raw hosts.js extract arrows, before from-url's URI decoding.
+const data = @import("native_sdk_package_data.zig");
 const h = @import("native_hosted_git_template_values.zig");
 const v = h.v; const c = v.c; const Scope = v.Scope;
 fn eq(s: *Scope, value: c.JSValue, name: []const u8) !bool { return v.eq(s, value, name); }
 fn strip(s: *Scope, project: c.JSValue) !c.JSValue { return if (s.truthy(try s.invoke(project, "endsWith", &.{try s.text(".git")}))) s.invoke(project, "slice", &.{ c.JS_NewInt32(s.engine.context, 0), c.JS_NewInt32(s.engine.context, -4) }) else project; }
-fn result(s: *Scope, user: c.JSValue, project: c.JSValue, ref: c.JSValue) !c.JSValue { const value = try s.object(); try s.put(value, "user", user); try s.put(value, "project", project); try s.put(value, "committish", ref); return value; }
+fn result(s: *Scope, user: c.JSValue, project: c.JSValue, ref: c.JSValue) !c.JSValue { const value = try s.object(); try data.put(s.engine, value, "user", user); try data.put(s.engine, value, "project", project); try data.put(s.engine, value, "committish", ref); return value; }
 fn hash(s: *Scope, url: c.JSValue) !c.JSValue { return s.invoke(try s.get(url, "hash"), "slice", &.{c.JS_NewInt32(s.engine.context, 1)}); }
 pub fn extract(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit(); const url = h.arg(args, 0); var kind: i32 = 0; if (c.JS_ToInt32(engine.context, &kind, roots[0]) < 0) return v.js.capture(engine);

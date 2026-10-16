@@ -1,5 +1,6 @@
 //! Actual package pattern orchestration over required real minimatch and path
 //! imports. This is not a replacement minimatch or ignore implementation.
+const data = @import("native_sdk_package_data.zig");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
@@ -11,11 +12,11 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < arg
 fn object(s: *Scope) !c.JSValue { return s.own(try s.engine.checked(c.JS_NewObjectProto(s.engine.context, c.pi_js_null()))); }
 pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit(); const imports = try object(&s);
-    inline for (.{ "relative", "basename", "dirname" }) |name| { const value = try s.get(inputs.paths, name); if (!c.JS_IsFunction(engine.context, value)) return error.RequiredActualPackagePatternImport; try s.put(imports, name, value); }
-    inline for (.{ .{ "normalizePath", inputs.normalize_path }, .{ "minimatch", inputs.minimatch } }) |entry| { if (!c.JS_IsFunction(engine.context, entry[1])) return error.RequiredActualPackagePatternImport; try s.put(imports, entry[0], entry[1]); }
-    const sep = try s.get(inputs.paths, "sep"); if (!c.JS_IsString(sep)) return error.RequiredActualPackagePatternSeparator; try s.put(imports, "sep", sep);
+    inline for (.{ "relative", "basename", "dirname" }) |name| { const value = try s.get(inputs.paths, name); if (!c.JS_IsFunction(engine.context, value)) return error.RequiredActualPackagePatternImport; try data.put(s.engine, imports, name, value); }
+    inline for (.{ .{ "normalizePath", inputs.normalize_path }, .{ "minimatch", inputs.minimatch } }) |entry| { if (!c.JS_IsFunction(engine.context, entry[1])) return error.RequiredActualPackagePatternImport; try data.put(s.engine, imports, entry[0], entry[1]); }
+    const sep = try s.get(inputs.paths, "sep"); if (!c.JS_IsString(sep)) return error.RequiredActualPackagePatternSeparator; try data.put(s.engine, imports, "sep", sep);
     const result = try s.object();
-    inline for (@typeInfo(Method).@"enum".fields) |field| { const kind: Method = @enumFromInt(field.value); const length: c_int = switch (kind) { .matchesAnyPattern, .matchesAnyExactPattern, .isEnabledByOverrides, .applyPatterns, .applyAutoloadDisabledPatterns => 3, else => 1 }; try s.put(result, field.name, try s.own(try f.create(engine, field.name, length, method, &.{ imports, c.JS_NewInt32(engine.context, field.value) }))); }
+    inline for (@typeInfo(Method).@"enum".fields) |field| { const kind: Method = @enumFromInt(field.value); const length: c_int = switch (kind) { .matchesAnyPattern, .matchesAnyExactPattern, .isEnabledByOverrides, .applyPatterns, .applyAutoloadDisabledPatterns => 3, else => 1 }; try data.put(s.engine, result, field.name, try s.own(try f.create(engine, field.name, length, method, &.{ imports, c.JS_NewInt32(engine.context, field.value) }))); }
     return c.JS_DupValue(engine.context, result);
 }
 fn imported(s: *Scope, imports: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue { return s.call(try s.get(imports, name), c.pi_js_undefined(), args); }
@@ -31,13 +32,13 @@ fn callback(s: *Scope, kind: Callback, roots: []const c.JSValue) !c.JSValue {
 fn matches(s: *Scope, imports: c.JSValue, path: c.JSValue, patterns: c.JSValue, base: c.JSValue, exact: bool) !c.JSValue {
     if (exact and s.equal(try s.get(patterns, "length"), c.JS_NewInt32(s.engine.context, 0))) return c.pi_js_bool(s.engine.context, 0);
     const state = try object(s);
-    const rel = try posix(s, imports, try imported(s, imports, "relative", &.{ base, path })); try s.put(state, "relative", rel);
-    const name = try imported(s, imports, "basename", &.{path}); try s.put(state, "name", name);
-    try s.put(state, "absolute", try posix(s, imports, path)); const skill = try v.eq(s, name, "SKILL.md"); try s.put(state, "skill", c.pi_js_bool(s.engine.context, @intFromBool(skill)));
+    const rel = try posix(s, imports, try imported(s, imports, "relative", &.{ base, path })); try data.put(s.engine, state, "relative", rel);
+    const name = try imported(s, imports, "basename", &.{path}); try data.put(s.engine, state, "name", name);
+    try data.put(s.engine, state, "absolute", try posix(s, imports, path)); const skill = try v.eq(s, name, "SKILL.md"); try data.put(s.engine, state, "skill", c.pi_js_bool(s.engine.context, @intFromBool(skill)));
     const parent = if (skill) try imported(s, imports, "dirname", &.{path}) else c.pi_js_undefined();
-    try s.put(state, "parentRelative", if (skill) try posix(s, imports, try imported(s, imports, "relative", &.{ base, parent })) else c.pi_js_undefined());
-    if (!exact) try s.put(state, "parentName", if (skill) try imported(s, imports, "basename", &.{parent}) else c.pi_js_undefined());
-    try s.put(state, "parentAbsolute", if (skill) try posix(s, imports, parent) else c.pi_js_undefined());
+    try data.put(s.engine, state, "parentRelative", if (skill) try posix(s, imports, try imported(s, imports, "relative", &.{ base, parent })) else c.pi_js_undefined());
+    if (!exact) try data.put(s.engine, state, "parentName", if (skill) try imported(s, imports, "basename", &.{parent}) else c.pi_js_undefined());
+    try data.put(s.engine, state, "parentAbsolute", if (skill) try posix(s, imports, parent) else c.pi_js_undefined());
     const some = try s.get(patterns, "some"); return s.call(some, patterns, &.{try callback(s, if (exact) .exact else .glob, &.{ imports, state })});
 }
 fn predicate(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -104,7 +105,7 @@ fn method(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []
     var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return v.js.capture(engine); const imports = roots[0]; const first = arg(args, 0);
     const result = switch (@as(Method, @enumFromInt(raw))) {
         .toPosixPath => try posix(&s, imports, first), .isPattern => c.pi_js_bool(engine.context, @intFromBool(try override(&s, first) or try contains(&s, first, "*") or try contains(&s, first, "?"))), .isOverridePattern => c.pi_js_bool(engine.context, @intFromBool(try override(&s, first))), .hasGlobPattern => c.pi_js_bool(engine.context, @intFromBool(try contains(&s, first, "*") or try contains(&s, first, "?"))),
-        .splitPatterns => blk: { const plain = try s.array(); const patterns = try s.array(); var iterator = try v.iterator(&s, first); defer iterator.deinit(); errdefer iterator.closePreserving(); while (try iterator.next()) |value| { defer engine.freeValue(value); const is_pattern = try override(&s, value) or try contains(&s, value, "*") or try contains(&s, value, "?"); try v.js.push(engine, if (is_pattern) patterns else plain, value); } const value = try s.object(); try s.put(value, "plain", plain); try s.put(value, "patterns", patterns); break :blk value; },
+        .splitPatterns => blk: { const plain = try s.array(); const patterns = try s.array(); var iterator = try v.iterator(&s, first); defer iterator.deinit(); errdefer iterator.closePreserving(); while (try iterator.next()) |value| { defer engine.freeValue(value); const is_pattern = try override(&s, value) or try contains(&s, value, "*") or try contains(&s, value, "?"); try v.js.push(engine, if (is_pattern) patterns else plain, value); } const value = try s.object(); try data.put(s.engine, value, "plain", plain); try data.put(s.engine, value, "patterns", patterns); break :blk value; },
         .normalizeExactPattern => try exactPattern(&s, imports, first), .matchesAnyPattern => try matches(&s, imports, first, arg(args, 1), arg(args, 2), false), .matchesAnyExactPattern => try matches(&s, imports, first, arg(args, 1), arg(args, 2), true), .getOverridePatterns => try overrides(&s, first), .isEnabledByOverrides => try enabled(&s, imports, first, arg(args, 1), arg(args, 2)), .applyPatterns => try apply(&s, imports, first, arg(args, 1), arg(args, 2)), .applyAutoloadDisabledPatterns => try autoload(&s, imports, first, arg(args, 1), arg(args, 2)),
     }; return c.JS_DupValue(engine.context, result);
 }

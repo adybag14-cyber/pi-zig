@@ -1,5 +1,6 @@
 //! Actual package-manager command selection and npm orchestration. Execution
 //! remains on the class's real command transports; no command result is made.
+const data = @import("native_sdk_package_data.zig");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
@@ -22,8 +23,8 @@ pub fn install(engine: *v.em.Engine, prototype: c.JSValue, inputs: Inputs) !void
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const imports = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
-    try s.put(imports, "basename", inputs.basename);
-    try s.put(imports, "existsSync", inputs.exists_sync);
+    try data.put(s.engine, imports, "basename", inputs.basename);
+    try data.put(s.engine, imports, "existsSync", inputs.exists_sync);
     inline for (@typeInfo(Sync).@"enum".fields) |field| {
         const length: c_int = switch (@as(Sync, @enumFromInt(field.value))) { .runNpmCommandSync => 1, .getNpmInstallArgs => 2, else => 0 };
         try define(&s, prototype, field.name, try s.own(try functions.createMethod(engine, field.name, length, sync, &.{ imports, c.JS_NewInt32(engine.context, field.value) })));
@@ -54,8 +55,8 @@ fn npmCommand(s: *Scope, manager: c.JSValue) !c.JSValue {
     const configured = try s.invoke(try s.get(manager, "settingsManager"), "getNpmCommand", &.{});
     if (!s.truthy(configured) or s.equal(try s.get(configured, "length"), c.JS_NewInt32(s.engine.context, 0))) {
         const result = try s.object();
-        try s.put(result, "command", try s.text("npm"));
-        try s.put(result, "args", try s.array());
+        try data.put(s.engine, result, "command", try s.text("npm"));
+        try data.put(s.engine, result, "args", try s.array());
         return result;
     }
     var iterator = try v.iterator(s, configured);
@@ -69,8 +70,8 @@ fn npmCommand(s: *Scope, manager: c.JSValue) !c.JSValue {
     }
     if (!s.truthy(command)) return v.errorText(s, try s.text("Invalid npmCommand: first array entry must be a non-empty command"));
     const result = try s.object();
-    try s.put(result, "command", command);
-    try s.put(result, "args", rest);
+    try data.put(s.engine, result, "command", command);
+    try data.put(s.engine, result, "args", rest);
     return result;
 }
 fn normalized(s: *Scope, imports: c.JSValue, command: c.JSValue) !c.JSValue {

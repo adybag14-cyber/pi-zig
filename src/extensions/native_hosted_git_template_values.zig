@@ -10,11 +10,11 @@ pub fn join(s: *Scope, values: []const c.JSValue) !c.JSValue {
     const all = try s.invoke(args, "every", &.{try s.own(try f.createArrow(s.engine, "", 1, identity, &.{}))}); return if (s.truthy(all)) s.invoke(args, "join", &.{try s.text("")}) else s.text("");
 }
 pub fn encode(s: *Scope, value: c.JSValue) !c.JSValue { return if (s.truthy(value)) s.call(try s.global("encodeURIComponent"), c.pi_js_undefined(), &.{value}) else s.text(""); }
-fn replace(s: *Scope, value: c.JSValue, pattern: []const u8, replacement: []const u8) !c.JSValue {
-    const method = try s.get(value, "replace"); var args = [_]c.JSValue{ try s.text(pattern), try s.text("g") }; const regex = try s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, s.engine.intrinsic_regexp_constructor, 2, &args))); return s.call(method, value, &.{ regex, try s.text(replacement) });
+fn replace(s: *Scope, value: c.JSValue, pattern: []const u8, flags: []const u8, replacement: []const u8) !c.JSValue {
+    const method = try s.get(value, "replace"); var args = [_]c.JSValue{ try s.text(pattern), try s.text(flags) }; const regex = try s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, s.engine.intrinsic_regexp_constructor, 2, &args))); return s.call(method, value, &.{ regex, try s.text(replacement) });
 }
 pub fn format(s: *Scope, value: c.JSValue) !c.JSValue {
-    var result = try s.invoke(value, "toLowerCase", &.{}); result = try replace(s, result, "^\\W+", ""); result = try replace(s, result, "(?<!\\W)\\W+$", ""); result = try replace(s, result, "/", ""); return replace(s, result, "\\W+", "-");
+    var result = try s.invoke(value, "toLowerCase", &.{}); result = try replace(s, result, "^\\W+", "g", ""); result = try replace(s, result, "(?<!\\W)\\W+$", "", ""); result = try replace(s, result, "/", "g", ""); return replace(s, result, "\\W+", "g", "-");
 }
 pub fn hash(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue { var s: Scope = .{ .engine = engine }; defer s.deinit(); return c.JS_DupValue(engine.context, try format(&s, arg(args, 0))); }
 pub fn gistHash(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue { var s: Scope = .{ .engine = engine }; defer s.deinit(); const fragment = arg(args, 0); return c.JS_DupValue(engine.context, if (s.truthy(fragment)) try s.concat(try s.text("file-"), try format(&s, fragment)) else fragment); }

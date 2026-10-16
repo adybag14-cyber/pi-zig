@@ -1,6 +1,7 @@
 //! Actual class resource/filter/manifest callers. Required discovery and
 //! pattern functions must be concrete native Source implementations; absent
 //! helpers are rejected rather than replaced by empty resource arrays.
+const data = @import("native_sdk_package_data.zig");
 const v = @import("native_ai_provider_values.zig");
 const package_catch = @import("native_sdk_package_catch.zig");
 const Scope = v.Scope;
@@ -11,12 +12,12 @@ pub const Inputs = struct { paths: c.JSValue, filesystem: c.JSValue, helpers: c.
 pub const methods = .{ "collectPackageResources", "collectDefaultResources", "applyPackageFilter", "applyPackageDeltaFilter", "collectManifestFiles", "addManifestEntries", "collectFilesFromManifestEntries", "resolveLocalEntries", "collectFilesFromPaths", "resolveLocalExtensionSource" };
 const Method = enum(i32) { collectPackageResources, collectDefaultResources, applyPackageFilter, applyPackageDeltaFilter, collectManifestFiles, addManifestEntries, collectFilesFromManifestEntries, resolveLocalEntries, collectFilesFromPaths, resolveLocalExtensionSource };
 fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
-fn required(s: *Scope, target: c.JSValue, namespace: c.JSValue, comptime names: anytype) !void { inline for (names) |name| { const function = try s.get(namespace, name); if (!c.JS_IsFunction(s.engine.context, function)) return error.RequiredActualPackageResourceImport; try s.put(target, name, function); } }
+fn required(s: *Scope, target: c.JSValue, namespace: c.JSValue, comptime names: anytype) !void { inline for (names) |name| { const function = try s.get(namespace, name); if (!c.JS_IsFunction(s.engine.context, function)) return error.RequiredActualPackageResourceImport; try data.put(s.engine, target, name, function); } }
 pub fn install(engine: *v.em.Engine, prototype: c.JSValue, inputs: Inputs) !void {
     var s: Scope = .{ .engine = engine }; defer s.deinit(); const imports = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
     try required(&s, imports, inputs.paths, .{ "join", "dirname", "resolve" }); try required(&s, imports, inputs.filesystem, .{ "existsSync", "statSync" });
     try required(&s, imports, inputs.helpers, .{ "readPiManifest", "collectResourceFiles", "applyPatterns", "applyAutoloadDisabledPatterns", "isOverridePattern", "hasGlobPattern", "expandPackageGlob", "splitPatterns" });
-    const types = try s.array(); inline for (.{ "extensions", "skills", "prompts", "themes" }, 0..) |name, index| try s.index(types, index, try s.text(name)); try s.put(imports, "types", types);
+    const types = try s.array(); inline for (.{ "extensions", "skills", "prompts", "themes" }, 0..) |name, index| try s.index(types, index, try s.text(name)); try data.put(s.engine, imports, "types", types);
     inline for (@typeInfo(Method).@"enum".fields) |field| {
         const length: c_int = switch (@as(Method, @enumFromInt(field.value))) { .collectManifestFiles, .collectFilesFromPaths => 2, .collectFilesFromManifestEntries => 3, .collectPackageResources, .collectDefaultResources => 4, else => 5 };
         const function = try s.own(try f.createMethod(engine, field.name, length, method, &.{ imports, c.JS_NewInt32(engine.context, field.value) }));
@@ -84,11 +85,11 @@ fn manifestFiles(s: *Scope, manager: c.JSValue, imports: c.JSValue, root: c.JSVa
     if (s.truthy(entries) and try arithmetic.compare(s.engine, .greater, try s.get(entries, "length"), c.JS_NewInt32(s.engine.context, 0))) {
         const files = try s.invoke(manager, "collectFilesFromManifestEntries", &.{ entries, root, kind }); const patterns = try s.invoke(entries, "filter", &.{try s.get(imports, "isOverridePattern")});
         const enabled = if (try arithmetic.compare(s.engine, .greater, try s.get(patterns, "length"), c.JS_NewInt32(s.engine.context, 0))) try imported(s, imports, "applyPatterns", &.{ files, patterns, root }) else try s.own(try v.js.builtin(s.engine, "Set", &.{files}));
-        try s.put(result, "allFiles", try s.invoke(try s.global("Array"), "from", &.{enabled})); try s.put(result, "enabledByManifest", enabled); return result;
+        try data.put(s.engine, result, "allFiles", try s.invoke(try s.global("Array"), "from", &.{enabled})); try data.put(s.engine, result, "enabledByManifest", enabled); return result;
     }
     const dir = try imported(s, imports, "join", &.{ root, kind });
-    if (!try exists(s, imports, dir)) { try s.put(result, "allFiles", try s.array()); try s.put(result, "enabledByManifest", try s.own(try v.js.builtin(s.engine, "Set", &.{}))); return result; }
-    const files = try imported(s, imports, "collectResourceFiles", &.{ dir, kind }); try s.put(result, "allFiles", files); try s.put(result, "enabledByManifest", try s.own(try v.js.builtin(s.engine, "Set", &.{files}))); return result;
+    if (!try exists(s, imports, dir)) { try data.put(s.engine, result, "allFiles", try s.array()); try data.put(s.engine, result, "enabledByManifest", try s.own(try v.js.builtin(s.engine, "Set", &.{}))); return result; }
+    const files = try imported(s, imports, "collectResourceFiles", &.{ dir, kind }); try data.put(s.engine, result, "allFiles", files); try data.put(s.engine, result, "enabledByManifest", try s.own(try v.js.builtin(s.engine, "Set", &.{files}))); return result;
 }
 fn addManifest(s: *Scope, manager: c.JSValue, imports: c.JSValue, args: []const c.JSValue) !void {
     const entries = arg(args, 0); if (!s.truthy(entries)) return;

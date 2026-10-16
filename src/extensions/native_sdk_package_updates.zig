@@ -1,6 +1,7 @@
 //! Actual configured update batching/checking and Source-created async tasks.
 //! Real runWithConcurrency, npm/Git methods and Promise.all retain Source's
 //! ordering and failfast behavior; no command result or update is fabricated.
+const data = @import("native_sdk_package_data.zig");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
@@ -16,13 +17,13 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < arg
 fn private(s: *Scope) !c.JSValue { return s.own(try s.engine.checked(c.JS_NewObjectProto(s.engine.context, c.pi_js_null()))); }
 pub fn install(engine: *v.em.Engine, prototype: c.JSValue, inputs: Inputs) !void {
     if (!c.JS_IsFunction(engine.context, inputs.is_offline) or !c.JS_IsFunction(engine.context, inputs.exists_sync)) return error.RequiredActualPackageUpdateImport;
-    var s: Scope = .{ .engine = engine }; defer s.deinit(); const imports = try private(&s); try s.put(imports, "isOfflineModeEnabled", inputs.is_offline); try s.put(imports, "existsSync", inputs.exists_sync);
+    var s: Scope = .{ .engine = engine }; defer s.deinit(); const imports = try private(&s); try data.put(s.engine, imports, "isOfflineModeEnabled", inputs.is_offline); try data.put(s.engine, imports, "existsSync", inputs.exists_sync);
     inline for (@typeInfo(Method).@"enum".fields) |field| { const value = try s.own(try af.createResumable(engine, field.name, if (field.value == @intFromEnum(Method.checkForAvailableUpdates)) 0 else if (field.value == @intFromEnum(Method.updateNpmBatch)) 2 else 1, run, &.{ imports, c.JS_NewInt32(engine.context, field.value) })); if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, value), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return v.js.capture(engine); }
 }
 fn imported(s: *Scope, imports: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue { return s.call(try s.get(imports, name), c.pi_js_undefined(), args); }
 fn packages(s: *Scope, settings: c.JSValue) !c.JSValue { const values = try s.get(settings, "packages"); return if (v.nullish(values)) s.array() else values; }
 fn appendSpread(s: *Scope, target: c.JSValue, values: c.JSValue) !void { var iterator = try v.iterator(s, values); defer iterator.deinit(); errdefer iterator.closePreserving(); while (try iterator.next()) |value| { defer s.engine.freeValue(value); try s.index(target, try v.length(s, target), value); } }
-fn wait(s: *Scope, job: c.JSValue, stage: i32, pending: c.JSValue) !af.Action { try s.put(job, "stage", c.JS_NewInt32(s.engine.context, stage)); return .{ .awaited = c.JS_DupValue(s.engine.context, pending) }; }
+fn wait(s: *Scope, job: c.JSValue, stage: i32, pending: c.JSValue) !af.Action { try data.put(s.engine, job, "stage", c.JS_NewInt32(s.engine.context, stage)); return .{ .awaited = c.JS_DupValue(s.engine.context, pending) }; }
 fn integer(s: *Scope, object: c.JSValue, key: [*:0]const u8) !i32 { var value: i32 = 0; if (c.JS_ToInt32(s.engine.context, &value, try s.get(object, key)) < 0) return v.js.capture(s.engine); return value; }
 fn callback(s: *Scope, kind: Callback, manager: c.JSValue, imports: c.JSValue) !c.JSValue { return s.own(try f.createArrow(s.engine, "", if (kind == .noop) 0 else 1, mapped, &.{ manager, imports, c.JS_NewInt32(s.engine.context, @intFromEnum(kind)) })); }
 fn makeTask(s: *Scope, manager: c.JSValue, imports: c.JSValue, kind: Task, entry: c.JSValue) !c.JSValue { return s.own(try af.createResumableArrow(s.engine, "", 0, task, &.{ imports, entry, c.JS_NewInt32(s.engine.context, @intFromEnum(kind)) }, manager)); }
@@ -34,11 +35,11 @@ fn mapped(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []
         .spec => if (s.truthy(try s.get(try s.get(entry, "parsed"), "version"))) try s.get(try s.get(entry, "parsed"), "spec") else try s.concat(try s.stringify(try s.get(try s.get(entry, "parsed"), "name")), try s.text("@latest")),
     }; return c.JS_DupValue(engine.context, result);
 }
-fn updateRecord(s: *Scope, source: c.JSValue, parsed: c.JSValue, scope: c.JSValue, npm: bool) !c.JSValue { const result = try s.object(); try s.put(result, "source", source); const display = if (npm) try s.get(parsed, "name") else blk: { const host = try s.stringify(try s.get(parsed, "host")); break :blk try s.concat(try s.concat(host, try s.text("/")), try s.stringify(try s.get(parsed, "path"))); }; try s.put(result, "displayName", display); try s.put(result, "type", try s.text(if (npm) "npm" else "git")); try s.put(result, "scope", scope); return result; }
+fn updateRecord(s: *Scope, source: c.JSValue, parsed: c.JSValue, scope: c.JSValue, npm: bool) !c.JSValue { const result = try s.object(); try data.put(s.engine, result, "source", source); const display = if (npm) try s.get(parsed, "name") else blk: { const host = try s.stringify(try s.get(parsed, "host")); break :blk try s.concat(try s.concat(host, try s.text("/")), try s.stringify(try s.get(parsed, "path"))); }; try data.put(s.engine, result, "displayName", display); try data.put(s.engine, result, "type", try s.text(if (npm) "npm" else "git")); try data.put(s.engine, result, "scope", scope); return result; }
 fn task(engine: *v.em.Engine, manager: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
     if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) }; var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[2]) < 0) return v.js.capture(engine); const kind: Task = @enumFromInt(raw); const entry = roots[1]; const imports = roots[0];
     if (completion == .fulfilled) {
-        if (kind == .npm_check) { const value = try s.object(); try s.put(value, "entry", entry); try s.put(value, "shouldUpdate", input); return .{ .returned = c.JS_DupValue(engine.context, value) }; }
+        if (kind == .npm_check) { const value = try s.object(); try data.put(s.engine, value, "entry", entry); try data.put(s.engine, value, "shouldUpdate", input); return .{ .returned = c.JS_DupValue(engine.context, value) }; }
         if (kind == .available) { if (!s.truthy(input)) return .{ .returned = c.pi_js_undefined() }; return .{ .returned = c.JS_DupValue(engine.context, try updateRecord(&s, try s.get(state.*, "source"), try s.get(state.*, "parsed"), try s.get(entry, "scope"), s.truthy(try s.get(state.*, "npm")))) }; }
         return .{ .returned = c.pi_js_undefined() };
     }
@@ -50,7 +51,7 @@ fn task(engine: *v.em.Engine, manager: c.JSValue, _: []const c.JSValue, roots: [
         .available => {
             const source = if (c.JS_IsString(try s.get(entry, "pkg"))) try s.get(entry, "pkg") else try s.get(try s.get(entry, "pkg"), "source"); const parsed = try s.invoke(manager, "parseSource", &.{source});
             if (try v.eq(&s, try s.get(parsed, "type"), "local") or s.truthy(try s.get(parsed, "pinned"))) return .{ .returned = c.pi_js_undefined() };
-            const job = try body.init(&s, state); try s.put(job, "source", source); try s.put(job, "parsed", parsed); const npm = try v.eq(&s, try s.get(parsed, "type"), "npm"); try s.put(job, "npm", c.pi_js_bool(engine.context, @intFromBool(npm)));
+            const job = try body.init(&s, state); try data.put(s.engine, job, "source", source); try data.put(s.engine, job, "parsed", parsed); const npm = try v.eq(&s, try s.get(parsed, "type"), "npm"); try data.put(s.engine, job, "npm", c.pi_js_bool(engine.context, @intFromBool(npm)));
             const get_path = try s.get(manager, if (npm) "getNpmInstallPath" else "getGitInstallPath"); const path = try s.call(get_path, manager, &.{ parsed, try s.get(entry, "scope") }); if (!s.truthy(try imported(&s, imports, "existsSync", &.{path}))) return .{ .returned = c.pi_js_undefined() };
             return .{ .awaited = c.JS_DupValue(engine.context, if (npm) try s.invoke(manager, "npmHasAvailableUpdate", &.{ parsed, path }) else try s.invoke(manager, "gitHasAvailableUpdate", &.{path})) };
         },
@@ -60,7 +61,7 @@ fn collect(s: *Scope, manager: c.JSValue, values: c.JSValue, settings: c.JSValue
     var iterator = try v.iterator(s, try packages(s, settings)); defer iterator.deinit(); errdefer iterator.closePreserving(); while (try iterator.next()) |pkg| {
         defer s.engine.freeValue(pkg); const source = if (c.JS_IsString(pkg)) pkg else try s.get(pkg, "source");
         if (identity) |key| if (s.truthy(key) and !s.equal(try s.invoke(manager, "getPackageIdentity", &.{ source, try s.text(scope) }), key)) continue;
-        if (matched) |flag| flag.* = true; const row = try s.object(); if (identity != null) try s.put(row, "source", source) else try s.put(row, "pkg", pkg); try s.put(row, "scope", try s.text(scope)); try v.js.push(s.engine, values, row);
+        if (matched) |flag| flag.* = true; const row = try s.object(); if (identity != null) try data.put(s.engine, row, "source", source) else try data.put(s.engine, row, "pkg", pkg); try data.put(s.engine, row, "scope", try s.text(scope)); try v.js.push(s.engine, values, row);
     }
 }
 fn evaluate(s: *Scope, manager: c.JSValue, imports: c.JSValue, args: []const c.JSValue, job: c.JSValue, kind: Method, completion: af.Completion, input: c.JSValue) !af.Action {
@@ -75,15 +76,15 @@ fn evaluate(s: *Scope, manager: c.JSValue, imports: c.JSValue, args: []const c.J
         .updateConfiguredSources => {
             if (s.truthy(try imported(s, imports, "isOfflineModeEnabled", &.{})) or s.equal(try s.get(arg(args, 0), "length"), c.JS_NewInt32(engine.context, 0))) return .{ .returned = c.pi_js_undefined() };
             const npm = try s.array(); const git = try s.array(); var iterator = try v.iterator(s, arg(args, 0)); defer iterator.deinit(); errdefer iterator.closePreserving(); while (try iterator.next()) |entry| {
-                defer engine.freeValue(entry); const parse = try s.get(manager, "parseSource"); const parsed = try s.call(parse, manager, &.{try s.get(entry, "source")}); if (try v.eq(s, try s.get(parsed, "type"), "npm")) { if (!s.truthy(try s.get(parsed, "pinned"))) { const row = try v.spread(s, entry); try s.put(row, "parsed", parsed); try v.js.push(engine, npm, row); } } else if (try v.eq(s, try s.get(parsed, "type"), "git")) { const row = try v.spread(s, entry); try s.put(row, "parsed", parsed); try v.js.push(engine, git, row); }
+                defer engine.freeValue(entry); const parse = try s.get(manager, "parseSource"); const parsed = try s.call(parse, manager, &.{try s.get(entry, "source")}); if (try v.eq(s, try s.get(parsed, "type"), "npm")) { if (!s.truthy(try s.get(parsed, "pinned"))) { const row = try v.spread(s, entry); try data.put(s.engine, row, "parsed", parsed); try v.js.push(engine, npm, row); } } else if (try v.eq(s, try s.get(parsed, "type"), "git")) { const row = try v.spread(s, entry); try data.put(s.engine, row, "parsed", parsed); try v.js.push(engine, git, row); }
             }
-            try s.put(job, "git", git); const checks = try s.invoke(npm, "map", &.{try callback(s, .npm_task, manager, imports)}); return wait(s, job, 2, try s.invoke(manager, "runWithConcurrency", &.{ checks, c.JS_NewInt32(engine.context, 4) }));
+            try data.put(s.engine, job, "git", git); const checks = try s.invoke(npm, "map", &.{try callback(s, .npm_task, manager, imports)}); return wait(s, job, 2, try s.invoke(manager, "runWithConcurrency", &.{ checks, c.JS_NewInt32(engine.context, 4) }));
         },
         .updateNpmBatch => {
             const values = arg(args, 0); const scope = arg(args, 1); if (s.equal(try s.get(values, "length"), c.JS_NewInt32(engine.context, 0))) return .{ .returned = c.pi_js_undefined() };
             const label = if (s.equal(try s.get(values, "length"), c.JS_NewInt32(engine.context, 1))) try s.get(try v.at(s, values, 0), "source") else try s.concat(try s.stringify(scope), try s.text(" npm packages"));
             const message = if (s.equal(try s.get(values, "length"), c.JS_NewInt32(engine.context, 1))) try s.concat(try s.concat(try s.text("Updating "), try s.stringify(try s.get(try v.at(s, values, 0), "source"))), try s.text("...")) else try s.concat(try s.concat(try s.text("Updating "), try s.stringify(scope)), try s.text(" npm packages..."));
-            const specs = try s.invoke(values, "map", &.{try callback(s, .spec, manager, imports)}); const entry = try private(s); try s.put(entry, "specs", specs); try s.put(entry, "scope", scope); const operation = try makeTask(s, manager, imports, .npm_batch, entry); return wait(s, job, 1, try s.invoke(manager, "withProgress", &.{ try s.text("update"), label, message, operation }));
+            const specs = try s.invoke(values, "map", &.{try callback(s, .spec, manager, imports)}); const entry = try private(s); try data.put(s.engine, entry, "specs", specs); try data.put(s.engine, entry, "scope", scope); const operation = try makeTask(s, manager, imports, .npm_batch, entry); return wait(s, job, 1, try s.invoke(manager, "withProgress", &.{ try s.text("update"), label, message, operation }));
         },
         .checkForAvailableUpdates => {
             if (s.truthy(try imported(s, imports, "isOfflineModeEnabled", &.{}))) return .{ .returned = c.JS_DupValue(engine.context, try s.array()) };

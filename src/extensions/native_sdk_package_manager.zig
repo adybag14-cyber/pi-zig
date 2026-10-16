@@ -1,6 +1,7 @@
 //! Ordinary DefaultPackageManager constructor, with live SettingsManager identity.
 //! This private class is assembled only after genuine resolver bodies are added.
 //! Unimplemented public methods are absent rather than returning empty resources.
+const data = @import("native_sdk_package_data.zig");
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
@@ -19,7 +20,7 @@ fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, _: 
     errdefer engine.freeValue(manager);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    inline for (.{ "cwd", "agentDir", "settingsManager", "builtinExtensions", "globalNpmRoot", "globalNpmRootCommandKey", "progressCallback" }) |field| try scope.put(manager, field, c.pi_js_undefined());
+    inline for (.{ "cwd", "agentDir", "settingsManager", "builtinExtensions", "globalNpmRoot", "globalNpmRootCommandKey", "progressCallback" }) |field| try data.put(scope.engine, manager, field, c.pi_js_undefined());
     const options = if (args.len > 0) args[0] else c.pi_js_undefined();
     try scope.set(manager, "cwd", try scope.own(try @import("native_sdk_source_paths.zig").resolve(engine, try scope.get(options, "cwd"), c.pi_js_undefined(), c.pi_js_undefined())));
     try scope.set(manager, "agentDir", try scope.own(try @import("native_sdk_source_paths.zig").resolve(engine, try scope.get(options, "agentDir"), c.pi_js_undefined(), c.pi_js_undefined())));

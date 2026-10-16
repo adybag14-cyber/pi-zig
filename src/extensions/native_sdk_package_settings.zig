@@ -1,5 +1,6 @@
 //! Actual source/settings matching, listing and progress methods. Parsing,
 //! paths, SettingsManager and installed-file checks remain live real imports.
+const data = @import("native_sdk_package_data.zig");
 const v = @import("native_ai_provider_values.zig");
 const package_catch = @import("native_sdk_package_catch.zig");
 const Scope = v.Scope;
@@ -15,7 +16,7 @@ pub fn install(engine: *v.em.Engine, prototype: c.JSValue, inputs: Inputs) !void
     if (!c.JS_IsFunction(engine.context, inputs.exists_sync) or !c.JS_IsFunction(engine.context, inputs.relative)) return error.RequiredActualPackageSettingsImports;
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const imports = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
-    try s.put(imports, "existsSync", inputs.exists_sync); try s.put(imports, "relative", inputs.relative);
+    try data.put(s.engine, imports, "existsSync", inputs.exists_sync); try data.put(s.engine, imports, "relative", inputs.relative);
     inline for (@typeInfo(Method).@"enum".fields) |field| {
         const length: c_int = switch (@as(Method, @enumFromInt(field.value))) { .listConfiguredPackages => 0, .getSourceMatchKeyForInput, .emitProgress => 1, .packageSourcesMatch => 3, else => 2 };
         const value = try s.own(try f.createMethod(engine, field.name, length, method, &.{ imports, c.JS_NewInt32(engine.context, field.value) }));
@@ -59,7 +60,7 @@ fn mutate(s: *Scope, manager: c.JSValue, source: c.JSValue, options: c.JSValue, 
         next = try s.array();
         try append(s, next, current);
         var replacement = normalized;
-        if (!c.JS_IsString(existing)) { replacement = try v.spread(s, existing); try s.put(replacement, "source", normalized); }
+        if (!c.JS_IsString(existing)) { replacement = try v.spread(s, existing); try data.put(s.engine, replacement, "source", normalized); }
         try v.js.setKey(s.engine, next, index, replacement);
     } else { next = try s.array(); try append(s, next, current); try s.index(next, try v.length(s, next), normalized); }
     try save(s, manager, scope, next); return c.pi_js_bool(s.engine.context, 1);
@@ -96,9 +97,9 @@ fn list(s: *Scope, manager: c.JSValue) !c.JSValue {
         var iterator = try v.iterator(s, try packages(s, entry[0])); defer iterator.deinit(); errdefer iterator.closePreserving();
         while (try iterator.next()) |pkg| {
             defer s.engine.freeValue(pkg); const source = if (c.JS_IsString(pkg)) pkg else try s.get(pkg, "source"); const row = try s.object();
-            try s.put(row, "source", source); try s.put(row, "scope", try s.text(entry[1]));
-            try s.put(row, "filtered", c.pi_js_bool(s.engine.context, @intFromBool(c.JS_IsNull(pkg) or (c.JS_IsObject(pkg) and !c.JS_IsFunction(s.engine.context, pkg)))));
-            try s.put(row, "installedPath", try s.invoke(manager, "getInstalledPath", &.{ source, try s.text(entry[1]) }));
+            try data.put(s.engine, row, "source", source); try data.put(s.engine, row, "scope", try s.text(entry[1]));
+            try data.put(s.engine, row, "filtered", c.pi_js_bool(s.engine.context, @intFromBool(c.JS_IsNull(pkg) or (c.JS_IsObject(pkg) and !c.JS_IsFunction(s.engine.context, pkg)))));
+            try data.put(s.engine, row, "installedPath", try s.invoke(manager, "getInstalledPath", &.{ source, try s.text(entry[1]) }));
             // Source uses configuredPackages.push, so preserve its live lookup.
             try v.js.push(s.engine, result, row);
         }
@@ -135,7 +136,7 @@ fn method(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roo
     }; return c.JS_DupValue(engine.context, result);
 }
 fn event(s: *Scope, kind: []const u8, action: c.JSValue, source: c.JSValue, message: ?c.JSValue) !c.JSValue {
-    const value = try s.object(); try s.put(value, "type", try s.text(kind)); try s.put(value, "action", action); try s.put(value, "source", source); if (message) |text| try s.put(value, "message", text); return value;
+    const value = try s.object(); try data.put(s.engine, value, "type", try s.text(kind)); try data.put(s.engine, value, "action", action); try data.put(s.engine, value, "source", source); if (message) |text| try data.put(s.engine, value, "message", text); return value;
 }
 fn progressError(s: *Scope, manager: c.JSValue, args: []const c.JSValue, reason: c.JSValue) !af.Action {
     const instance = c.JS_IsInstanceOf(s.engine.context, reason, try s.global("Error")); if (instance < 0) return v.js.capture(s.engine);
@@ -153,7 +154,7 @@ fn withProgress(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValu
     if (completion == .start) {
         try emitEvent(&s, manager, "start", arg(args, 0), arg(args, 1), arg(args, 2));
         const job = try body.init(&s, state); const generation = engine.native_allocation_generation;
-        try s.put(job, "generation", try s.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
+        try data.put(s.engine, job, "generation", try s.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
         const pending = s.call(arg(args, 3), c.pi_js_undefined(), &.{}) catch |err| { const reason = (try package_catch.take(engine, err, generation)) orelse @import("native_agent_async.zig").reason(engine, err); defer engine.freeValue(reason); return progressError(&s, manager, args, reason); };
         return .{ .awaited = c.JS_DupValue(engine.context, pending) };
     }

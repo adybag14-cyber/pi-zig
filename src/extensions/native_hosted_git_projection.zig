@@ -2,6 +2,7 @@
 //! This namespace does not expose or claim the wider GitHost/template API.
 //! Cache roots are private VM values; successful entries use max-1000 LRU,
 //! while lru-cache 11.4.0 set(undefined) removes rather than negative-caches.
+const data = @import("native_sdk_package_data.zig");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
@@ -14,8 +15,8 @@ pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const constructor = try s.get(inputs.node_url, "URL"); if (!c.JS_IsFunction(engine.context, constructor)) return error.RequiredActualNodeUrlConstructor;
     const entries = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()))); const cache = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
-    try s.put(cache, "entries", entries); try s.put(cache, "size", c.JS_NewInt32(engine.context, 0));
-    const result = try s.object(); try s.put(result, "fromUrl", try s.own(try f.createMethod(engine, "fromUrl", 2, fromUrl, &.{ inputs.node_url, cache })));
+    try data.put(s.engine, cache, "entries", entries); try data.put(s.engine, cache, "size", c.JS_NewInt32(engine.context, 0));
+    const result = try s.object(); try data.put(s.engine, result, "fromUrl", try s.own(try f.createMethod(engine, "fromUrl", 2, fromUrl, &.{ inputs.node_url, cache })));
     return c.JS_DupValue(engine.context, result);
 }
 pub fn starts(s: *Scope, value: c.JSValue, prefix: []const u8) !bool { return s.truthy(try s.invoke(value, "startsWith", &.{try s.text(prefix)})); }
@@ -46,7 +47,7 @@ fn correctProtocol(s: *Scope, input: c.JSValue) !c.JSValue {
 }
 fn lastBefore(s: *Scope, input: c.JSValue, char: []const u8) !c.JSValue { const hash = try index(s, input, "#"); const method = try s.get(input, "lastIndexOf"); const before = if (try cmp(s, .greater, hash, c.JS_NewInt32(s.engine.context, -1))) hash else try s.global("Infinity"); return s.call(method, input, &.{ try s.text(char), before }); }
 pub fn correctUrl(s: *Scope, input: c.JSValue) !c.JSValue {
-    var result = input; const at = try lastBefore(s, result, "@"); const colon = try lastBefore(s, result, ":"); if (try cmp(s, .greater, colon, at)) { const first = try s.stringify(try slice(s, result, c.JS_NewInt32(s.engine.context, 0), colon)); const method = try s.get(result, "slice"); const last = try s.stringify(try s.call(method, result, &.{try offset(s, colon, 1)})); result = try s.concat(try s.concat(first, try s.text("/")), last); }
+    var result = input; const at = try lastBefore(s, result, "@"); const colon = try lastBefore(s, result, ":"); if (try cmp(s, .greater, colon, at)) { const left = try s.concat(try slice(s, result, c.JS_NewInt32(s.engine.context, 0), colon), try s.text("/")); const method = try s.get(result, "slice"); const right = try s.call(method, result, &.{try offset(s, colon, 1)}); result = try s.concat(left, right); }
     if (s.equal(try lastBefore(s, result, ":"), c.JS_NewInt32(s.engine.context, -1)) and s.equal(try index(s, result, "//"), c.JS_NewInt32(s.engine.context, -1))) result = try s.concat(try s.text("git+ssh://"), try s.stringify(result)); return result;
 }
 fn construct(s: *Scope, namespace: c.JSValue, input: c.JSValue) !c.JSValue { const constructor = try s.get(namespace, "URL"); var args = [_]c.JSValue{input}; return s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, constructor, 1, &args))); }
@@ -61,7 +62,7 @@ fn supported(s: *Scope, host: Host, proto: c.JSValue) !bool {
 }
 fn decode(s: *Scope, value: c.JSValue) !c.JSValue { return s.call(try s.global("decodeURIComponent"), c.pi_js_undefined(), &.{value}); }
 fn stripGit(s: *Scope, value: c.JSValue) !c.JSValue { return if (try ends(s, value, ".git")) slice(s, value, c.JS_NewInt32(s.engine.context, 0), c.JS_NewInt32(s.engine.context, -4)) else value; }
-fn field(s: *Scope, host: Host, user: c.JSValue, project: c.JSValue, ref: c.JSValue) !c.JSValue { const result = try s.object(); try s.put(result, "domain", try s.text(domain(host))); try s.put(result, "user", user); try s.put(result, "project", project); try s.put(result, "committish", ref); return result; }
+fn field(s: *Scope, host: Host, user: c.JSValue, project: c.JSValue, ref: c.JSValue) !c.JSValue { const result = try s.object(); try data.put(s.engine, result, "domain", try s.text(domain(host))); try data.put(s.engine, result, "user", user); try data.put(s.engine, result, "project", project); try data.put(s.engine, result, "committish", ref); return result; }
 fn parts(s: *Scope, values: c.JSValue, length: u32) !c.JSValue { const result = try s.array(); var iterator = try v.iterator(s, values); defer iterator.deinit(); errdefer iterator.closePreserving(); var i: u32 = 0; while (i < length) : (i += 1) { const value = if (try iterator.next()) |item| try s.own(item) else c.pi_js_undefined(); try s.index(result, i, value); } try iterator.close(); return result; }
 fn extract(s: *Scope, host: Host, shortcut: bool, parsed: c.JSValue) !c.JSValue {
     var user = c.pi_js_null(); var project = c.pi_js_null(); var ref = c.pi_js_null();
@@ -110,7 +111,7 @@ pub fn count(s: *Scope, cache: c.JSValue) !u32 { var value: u32 = 0; if (c.JS_To
 pub fn find(s: *Scope, entries: c.JSValue, size: u32, key: c.JSValue) !?u32 { for (0..size) |index_value| { var local: Scope = .{ .engine = s.engine }; defer local.deinit(); const row = try v.at(&local, entries, @intCast(index_value)); if (local.equal(try local.get(row, "key"), key)) return @intCast(index_value); } return null; }
 pub fn moveLast(s: *Scope, entries: c.JSValue, size: u32, index_value: u32) !c.JSValue { const row = try v.at(s, entries, index_value); var i = index_value; while (i + 1 < size) : (i += 1) { var local: Scope = .{ .engine = s.engine }; defer local.deinit(); try local.index(entries, i, try v.at(&local, entries, i + 1)); } try s.index(entries, size - 1, row); return s.get(row, "value"); }
 pub fn remove(s: *Scope, cache: c.JSValue, entries: c.JSValue, size: u32, index_value: u32) !void {
-    _ = try moveLast(s, entries, size, index_value); const atom = c.JS_NewAtomUInt32(s.engine.context, size - 1); if (atom == c.JS_ATOM_NULL) return v.js.capture(s.engine); defer c.JS_FreeAtom(s.engine.context, atom); if (c.JS_DeleteProperty(s.engine.context, entries, atom, 0) < 0) return v.js.capture(s.engine); try s.put(cache, "size", c.JS_NewUint32(s.engine.context, size - 1));
+    _ = try moveLast(s, entries, size, index_value); const atom = c.JS_NewAtomUInt32(s.engine.context, size - 1); if (atom == c.JS_ATOM_NULL) return v.js.capture(s.engine); defer c.JS_FreeAtom(s.engine.context, atom); if (c.JS_DeleteProperty(s.engine.context, entries, atom, 0) < 0) return v.js.capture(s.engine); try data.put(s.engine, cache, "size", c.JS_NewUint32(s.engine.context, size - 1));
 }
 fn fromUrl(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     if (!c.JS_IsString(arg(args, 0))) return c.pi_js_undefined(); var s: Scope = .{ .engine = engine }; defer s.deinit(); const input = arg(args, 0); const opts = arg(args, 1);
@@ -120,10 +121,10 @@ fn fromUrl(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: [
     const info = try parseHosted(&s, roots[0], input); if (c.JS_IsUndefined(info)) { size = try count(&s, cache); if (try find(&s, entries, size, key)) |found| try remove(&s, cache, entries, size, found); return info; }
     // A parse can reenter from a live URL/decoder hook. Source cache.set updates
     // an existing key and recency; do not append a duplicate after reentry.
-    size = try count(&s, cache); if (try find(&s, entries, size, key)) |found| { const row = try v.at(&s, entries, found); try s.put(row, "value", info); _ = try moveLast(&s, entries, size, found); }
+    size = try count(&s, cache); if (try find(&s, entries, size, key)) |found| { const row = try v.at(&s, entries, found); try data.put(s.engine, row, "value", info); _ = try moveLast(&s, entries, size, found); }
     else {
-        const row = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()))); try s.put(row, "key", key); try s.put(row, "value", info);
-        if (size == 1000) { _ = try moveLast(&s, entries, size, 0); try s.index(entries, size - 1, row); } else { try s.index(entries, size, row); size += 1; try s.put(cache, "size", c.JS_NewUint32(engine.context, size)); }
+        const row = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()))); try data.put(s.engine, row, "key", key); try data.put(s.engine, row, "value", info);
+        if (size == 1000) { _ = try moveLast(&s, entries, size, 0); try s.index(entries, size - 1, row); } else { try s.index(entries, size, row); size += 1; try data.put(s.engine, cache, "size", c.JS_NewUint32(engine.context, size)); }
     }
     // Source returns cache.get(key), not the transient parse result.
     return c.JS_DupValue(engine.context, try moveLast(&s, entries, size, (try find(&s, entries, size, key)) orelse return error.MissingHostedCacheEntry));

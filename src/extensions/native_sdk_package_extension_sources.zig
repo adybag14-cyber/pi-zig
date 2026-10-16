@@ -1,5 +1,6 @@
 //! Ordinary Source resolveExtensionSources body. Assembly also requires the real
 //! resolvePackageSources body; this module does not stand in for that resolver.
+const data = @import("native_sdk_package_data.zig");
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
@@ -31,8 +32,8 @@ fn mapped(engine: *em.Engine, kind: Callback, input: c.JSValue, selected_scope: 
     defer scope.deinit();
     if (kind == .entry) {
         const result = try scope.object();
-        try scope.put(result, "pkg", input);
-        try scope.put(result, "scope", selected_scope);
+        try data.put(scope.engine, result, "pkg", input);
+        try data.put(scope.engine, result, "scope", selected_scope);
         return c.JS_DupValue(engine.context, result);
     }
     const found = try scope.invoke(input, "startsWith", &.{try scope.text("builtin:")});
@@ -48,7 +49,7 @@ fn initialize(engine: *em.Engine, owner: c.JSValue, manager: c.JSValue, sources:
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const accumulator = try scope.invoke(manager, "createAccumulator", &.{});
-    try scope.put(owner, "accumulator", accumulator);
+    try data.put(scope.engine, owner, "accumulator", accumulator);
     const temporary = if (temp.nullish(options)) c.pi_js_undefined() else try scope.get(options, "temporary");
     const selected_scope = try scope.text(if (scope.truthy(temporary)) "temporary" else selected: {
         const local = if (temp.nullish(options)) c.pi_js_undefined() else try scope.get(options, "local");
@@ -64,9 +65,9 @@ fn initialize(engine: *em.Engine, owner: c.JSValue, manager: c.JSValue, sources:
         const add = try scope.get(manager, "addResource");
         const target = try scope.get(accumulator, "extensions");
         const metadata = try scope.object();
-        try scope.put(metadata, "source", try scope.text("builtin"));
-        try scope.put(metadata, "scope", selected_scope);
-        try scope.put(metadata, "origin", try scope.text("top-level"));
+        try data.put(scope.engine, metadata, "source", try scope.text("builtin"));
+        try data.put(scope.engine, metadata, "scope", selected_scope);
+        try data.put(scope.engine, metadata, "origin", try scope.text("top-level"));
         _ = try scope.call(add, manager, &.{ target, source, metadata, c.pi_js_bool(engine.context, 1) });
     }
     const packages = try collection(&scope, try collection(&scope, sources, "filter", .package, selected_scope), "map", .entry, selected_scope);

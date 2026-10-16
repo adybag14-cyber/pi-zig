@@ -1,4 +1,5 @@
 //! Ordinary Source package path and project-trust helpers.
+const data = @import("native_sdk_package_data.zig");
 const std = @import("std");
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
@@ -54,8 +55,8 @@ fn method(engine: *em.Engine, manager: c.JSValue, kind: Method, args: []const c.
         .resolvePath, .resolvePathFromBase => value: {
             const base = if (kind == .resolvePath) try scope.get(manager, "cwd") else if (args.len > 1) args[1] else c.pi_js_undefined();
             const options = try scope.object();
-            try scope.put(options, "homeDir", try home(&scope));
-            try scope.put(options, "trim", c.pi_js_bool(engine.context, 1));
+            try data.put(scope.engine, options, "homeDir", try home(&scope));
+            try data.put(scope.engine, options, "trim", c.pi_js_bool(engine.context, 1));
             break :value try scope.own(try @import("native_sdk_source_paths.zig").resolve(engine, first, base, options));
         },
     };

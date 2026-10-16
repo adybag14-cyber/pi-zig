@@ -1,5 +1,6 @@
 //! Actual Pi utils/git.ts parser over the separately required concrete hosted
 //! projection. Global URL/decoder and String operations remain Source-visible.
+const data = @import("native_sdk_package_data.zig");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
@@ -10,7 +11,7 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < arg
 pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     if (!c.JS_IsObject(inputs.hosted_git_info) or !c.JS_IsFunction(engine.context, try s.get(inputs.hosted_git_info, "fromUrl"))) return error.RequiredActualHostedGitInfo;
-    const result = try s.object(); try s.put(result, "parseGitUrl", try s.own(try f.create(engine, "parseGitUrl", 1, parse, &.{inputs.hosted_git_info})));
+    const result = try s.object(); try data.put(s.engine, result, "parseGitUrl", try s.own(try f.create(engine, "parseGitUrl", 1, parse, &.{inputs.hosted_git_info})));
     return c.JS_DupValue(engine.context, result);
 }
 fn text(s: *Scope, value: []const u8) !c.JSValue { return s.text(value); }
@@ -24,7 +25,7 @@ fn regex(s: *Scope, pattern: []const u8, flags: []const u8) !c.JSValue { var arg
 fn replace(s: *Scope, value: c.JSValue, pattern: []const u8, replacement: []const u8) !c.JSValue { const method = try s.get(value, "replace"); return s.call(method, value, &.{ try regex(s, pattern, ""), try text(s, replacement) }); }
 fn match(s: *Scope, value: c.JSValue, pattern: []const u8) !c.JSValue { const method = try s.get(value, "match"); return s.call(method, value, &.{try regex(s, pattern, "")}); }
 fn orText(s: *Scope, value: c.JSValue) !c.JSValue { return if (v.nullish(value)) text(s, "") else value; }
-fn splitResult(s: *Scope, repo: c.JSValue, ref: ?c.JSValue) !c.JSValue { const result = try s.object(); try s.put(result, "repo", repo); if (ref) |value| try s.put(result, "ref", value); return result; }
+fn splitResult(s: *Scope, repo: c.JSValue, ref: ?c.JSValue) !c.JSValue { const result = try s.object(); try data.put(s.engine, result, "repo", repo); if (ref) |value| try data.put(s.engine, result, "ref", value); return result; }
 fn url(s: *Scope, input: c.JSValue) !c.JSValue { var args = [_]c.JSValue{input}; return s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, try s.global("URL"), 1, &args))); }
 fn urlSplit(s: *Scope, input: c.JSValue) !c.JSValue {
     const parsed = try url(s, input); const path = try replace(s, try s.get(parsed, "pathname"), "^/+", ""); const separator = try index(s, path, "@");
@@ -68,9 +69,9 @@ fn build(s: *Scope, repo: c.JSValue, host: c.JSValue, path: c.JSValue, ref: c.JS
     if (!s.truthy(host) or !s.truthy(normalized)) return c.pi_js_null();
     if (try @import("native_image_arithmetic.zig").compare(s.engine, .less, try s.get(try s.invoke(normalized, "split", &.{try text(s, "/")}), "length"), c.JS_NewInt32(s.engine.context, 2))) return c.pi_js_null();
     if (try unsafe(s, host, false) or try unsafe(s, normalized, true)) return c.pi_js_null();
-    const result = try s.object(); try s.put(result, "type", try text(s, "git")); try s.put(result, "repo", repo); try s.put(result, "host", host); try s.put(result, "path", normalized); try s.put(result, "ref", ref); try s.put(result, "pinned", try s.call(try s.global("Boolean"), c.pi_js_undefined(), &.{ref})); return result;
+    const result = try s.object(); try data.put(s.engine, result, "type", try text(s, "git")); try data.put(s.engine, result, "repo", repo); try data.put(s.engine, result, "host", host); try data.put(s.engine, result, "path", normalized); try data.put(s.engine, result, "ref", ref); try data.put(s.engine, result, "pinned", try s.call(try s.global("Boolean"), c.pi_js_undefined(), &.{ref})); return result;
 }
-fn genericUrl(s: *Scope, repo: c.JSValue) !c.JSValue { const parsed = try url(s, repo); const result = try s.object(); try s.put(result, "host", try s.get(parsed, "hostname")); try s.put(result, "path", try replace(s, try s.get(parsed, "pathname"), "^/+", "")); return result; }
+fn genericUrl(s: *Scope, repo: c.JSValue) !c.JSValue { const parsed = try url(s, repo); const result = try s.object(); try data.put(s.engine, result, "host", try s.get(parsed, "hostname")); try data.put(s.engine, result, "path", try replace(s, try s.get(parsed, "pathname"), "^/+", "")); return result; }
 fn generic(s: *Scope, input: c.JSValue) !c.JSValue {
     const split = try splitRef(s, input); const original = try s.get(split, "repo"); const ref = try s.get(split, "ref"); var repo = original; var host = try text(s, ""); var path = try text(s, "");
     const scp = try match(s, original, "^git@([^:]+):(.+)$");
@@ -85,16 +86,16 @@ fn generic(s: *Scope, input: c.JSValue) !c.JSValue {
 }
 fn filterBoolean(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue { var s: Scope = .{ .engine = engine }; defer s.deinit(); return c.JS_DupValue(engine.context, try s.call(try s.global("Boolean"), c.pi_js_undefined(), &.{arg(args, 0)})); }
 fn hostedResult(s: *Scope, hosted: c.JSValue, split: c.JSValue, input: c.JSValue, https: bool) !?c.JSValue {
-    const ref = try s.get(split, "ref"); const split_repo = try s.get(split, "repo");
-    const candidates = try s.array(); try s.index(candidates, 0, if (s.truthy(ref)) try s.concat(try s.concat(if (https) try s.concat(try text(s, "https://"), try s.stringify(split_repo)) else try s.stringify(split_repo), try text(s, "#")), try s.stringify(try s.get(split, "ref"))) else c.pi_js_undefined()); try s.index(candidates, 1, if (https) try s.concat(try text(s, "https://"), try s.stringify(input)) else input);
+    const ref = try s.get(split, "ref");
+    const candidates = try s.array(); try s.index(candidates, 0, if (s.truthy(ref)) try s.concat(try s.concat(if (https) try s.concat(try text(s, "https://"), try s.stringify(try s.get(split, "repo"))) else try s.stringify(try s.get(split, "repo")), try text(s, "#")), try s.stringify(try s.get(split, "ref"))) else c.pi_js_undefined()); try s.index(candidates, 1, if (https) try s.concat(try text(s, "https://"), try s.stringify(input)) else input);
     const filtered = try s.invoke(candidates, "filter", &.{try s.own(try f.createArrow(s.engine, "", 1, filterBoolean, &.{}))}); var iterator = try v.iterator(s, filtered); defer iterator.deinit(); errdefer iterator.closePreserving();
     while (try iterator.next()) |item| {
         const candidate = try s.own(item);
         const info = try s.invoke(hosted, "fromUrl", &.{candidate}); if (!s.truthy(info)) continue;
         if (s.truthy(try s.get(split, "ref"))) { const project = try s.get(info, "project"); if (!v.nullish(project) and try includes(s, project, "@")) continue; }
         var prefix = https;
-        if (!https) prefix = !try starts(s, split_repo, "http://") and !try starts(s, split_repo, "https://") and !try starts(s, split_repo, "ssh://") and !try starts(s, split_repo, "git://") and !try starts(s, split_repo, "git@");
-        const repo = if (prefix) try s.concat(try text(s, "https://"), try s.stringify(split_repo)) else split_repo;
+        if (!https) prefix = !try starts(s, try s.get(split, "repo"), "http://") and !try starts(s, try s.get(split, "repo"), "https://") and !try starts(s, try s.get(split, "repo"), "ssh://") and !try starts(s, try s.get(split, "repo"), "git://") and !try starts(s, try s.get(split, "repo"), "git@");
+        const repo = if (prefix) try s.concat(try text(s, "https://"), try s.stringify(try s.get(split, "repo"))) else try s.get(split, "repo");
         const domain = try s.get(info, "domain"); const host = if (s.truthy(domain)) domain else try text(s, "");
         const user = try s.stringify(try s.get(info, "user")); const project = try s.stringify(try s.get(info, "project")); const path = try s.concat(try s.concat(user, try text(s, "/")), project);
         const committish = try s.get(info, "committish"); const split_ref = if (s.truthy(committish)) committish else try s.get(split, "ref");

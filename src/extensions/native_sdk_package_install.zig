@@ -1,5 +1,6 @@
 //! Actual public install/remove/persist and small Git dependency orchestration.
 //! Commands and filesystem effects stay on real imported/live class bindings.
+const data = @import("native_sdk_package_data.zig");
 const v = @import("native_ai_provider_values.zig");
 const package_catch = @import("native_sdk_package_catch.zig");
 const Scope = v.Scope;
@@ -14,7 +15,7 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < arg
 fn private(s: *Scope) !c.JSValue { return s.own(try s.engine.checked(c.JS_NewObjectProto(s.engine.context, c.pi_js_null()))); }
 pub fn install(engine: *v.em.Engine, prototype: c.JSValue, inputs: Inputs) !void {
     var s: Scope = .{ .engine = engine }; defer s.deinit(); const imports = try private(&s);
-    inline for (.{ .{ "existsSync", inputs.exists_sync }, .{ "rmSync", inputs.rm_sync }, .{ "isOfflineModeEnabled", inputs.is_offline } }) |entry| { if (!c.JS_IsFunction(engine.context, entry[1])) return error.RequiredActualPackageInstallImport; try s.put(imports, entry[0], entry[1]); }
+    inline for (.{ .{ "existsSync", inputs.exists_sync }, .{ "rmSync", inputs.rm_sync }, .{ "isOfflineModeEnabled", inputs.is_offline } }) |entry| { if (!c.JS_IsFunction(engine.context, entry[1])) return error.RequiredActualPackageInstallImport; try data.put(s.engine, imports, entry[0], entry[1]); }
     inline for (@typeInfo(Method).@"enum".fields) |field| {
         const length: c_int = if (field.value == @intFromEnum(Method.repairMissingGitDependencies)) 1 else 2;
         const function = try s.own(try af.createResumable(engine, field.name, length, run, &.{ imports, c.JS_NewInt32(engine.context, field.value) }));
@@ -25,12 +26,12 @@ pub fn install(engine: *v.em.Engine, prototype: c.JSValue, inputs: Inputs) !void
 }
 fn imported(s: *Scope, imports: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue { return s.call(try s.get(imports, name), c.pi_js_undefined(), args); }
 fn array(s: *Scope, values: []const c.JSValue) !c.JSValue { const result = try s.array(); for (values, 0..) |value, index| try s.index(result, @intCast(index), value); return result; }
-fn cwd(s: *Scope, path: c.JSValue) !c.JSValue { const options = try s.object(); try s.put(options, "cwd", path); return options; }
-fn forced(s: *Scope, recursive: bool) !c.JSValue { const result = try s.object(); if (recursive) try s.put(result, "recursive", c.pi_js_bool(s.engine.context, 1)); try s.put(result, "force", c.pi_js_bool(s.engine.context, 1)); return result; }
+fn cwd(s: *Scope, path: c.JSValue) !c.JSValue { const options = try s.object(); try data.put(s.engine, options, "cwd", path); return options; }
+fn forced(s: *Scope, recursive: bool) !c.JSValue { const result = try s.object(); if (recursive) try data.put(s.engine, result, "recursive", c.pi_js_bool(s.engine.context, 1)); try data.put(s.engine, result, "force", c.pi_js_bool(s.engine.context, 1)); return result; }
 
 fn remoteCommand(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-    var s: Scope = .{ .engine = engine }; defer s.deinit(); const run_capture = try s.get(manager, "runCommandCapture"); const options = try cwd(&s, arg(args, 0)); try s.put(options, "timeoutMs", c.JS_NewInt32(engine.context, 10000));
-    const env = try s.object(); try s.put(env, "GIT_TERMINAL_PROMPT", try s.text("0")); try s.put(options, "env", env);
+    var s: Scope = .{ .engine = engine }; defer s.deinit(); const run_capture = try s.get(manager, "runCommandCapture"); const options = try cwd(&s, arg(args, 0)); try data.put(s.engine, options, "timeoutMs", c.JS_NewInt32(engine.context, 10000));
+    const env = try s.object(); try data.put(s.engine, env, "GIT_TERMINAL_PROMPT", try s.text("0")); try data.put(s.engine, options, "env", env);
     // Source method is ordinary and returns the exact transport Promise.
     return v.js.call(engine, run_capture, manager, &.{ try s.text("git"), arg(args, 1), options });
 }
@@ -83,7 +84,7 @@ fn run(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots:
         },
         .refreshTemporaryGitSource => {
             if (s.truthy(try imported(&s, imports, "isOfflineModeEnabled", &.{}))) return .{ .returned = c.pi_js_undefined() };
-            const job = try body.init(&s, state); const generation = engine.native_allocation_generation; try s.put(job, "generation", try s.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
+            const job = try body.init(&s, state); const generation = engine.native_allocation_generation; try data.put(s.engine, job, "generation", try s.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
             const pending = progress(&s, manager, imports, kind, arg(args, 0), c.pi_js_undefined(), arg(args, 1)) catch |err| { try package_catch.ignore(engine, err, generation); return .{ .returned = c.pi_js_undefined() }; };
             return .{ .awaited = c.JS_DupValue(engine.context, pending) };
         },

@@ -1,5 +1,6 @@
 //! Actual package source parsing and offline predicates over required concrete
 //! semver, Git URL and path collaborators. No approximate parser is supplied.
+const data = @import("native_sdk_package_data.zig");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
@@ -10,13 +11,13 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < arg
 pub fn install(engine: *v.em.Engine, prototype: c.JSValue, inputs: Inputs) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const imports = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
-    try s.put(imports, "process", inputs.process);
+    try data.put(s.engine, imports, "process", inputs.process);
     inline for (.{ .{ "isLocalPath", inputs.is_local_path }, .{ "parseGitUrl", inputs.parse_git_url }, .{ "valid", inputs.valid }, .{ "validRange", inputs.valid_range } }) |entry| {
         if (!c.JS_IsFunction(engine.context, entry[1])) return error.RequiredActualPackageSourceParserImport;
-        try s.put(imports, entry[0], entry[1]);
+        try data.put(s.engine, imports, entry[0], entry[1]);
     }
     const exports = try s.object();
-    inline for (.{ "isOfflineModeEnabled", "isExactNpmVersion", "getNpmVersionRange" }, 0..) |name, index| try s.put(exports, name, try s.own(try f.create(engine, name, if (index == 0) 0 else 1, predicate, &.{ imports, c.JS_NewInt32(engine.context, @intCast(index)) })));
+    inline for (.{ "isOfflineModeEnabled", "isExactNpmVersion", "getNpmVersionRange" }, 0..) |name, index| try data.put(s.engine, exports, name, try s.own(try f.create(engine, name, if (index == 0) 0 else 1, predicate, &.{ imports, c.JS_NewInt32(engine.context, @intCast(index)) })));
     inline for (methods, 0..) |name, index| {
         const value = try s.own(try f.createMethod(engine, name, 1, parse, &.{ imports, exports, c.JS_NewInt32(engine.context, @intCast(index)) }));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, c.JS_DupValue(engine.context, value), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return v.js.capture(engine);
@@ -45,21 +46,21 @@ fn npmSpec(s: *Scope, spec: c.JSValue) !c.JSValue {
     var args = [_]c.JSValue{ try s.text("^(@?[^@]+(?:/[^@]+)?)(?:@(.+))?$"), try s.text("") };
     const regexp = try s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, s.engine.intrinsic_regexp_constructor, 2, &args)));
     const matched = try s.call(match_method, spec, &.{regexp}); const result = try s.object();
-    if (!s.truthy(matched)) { try s.put(result, "name", spec); return result; }
-    const name = try v.at(s, matched, 1); try s.put(result, "name", if (v.nullish(name)) spec else name); try s.put(result, "version", try v.at(s, matched, 2)); return result;
+    if (!s.truthy(matched)) { try data.put(s.engine, result, "name", spec); return result; }
+    const name = try v.at(s, matched, 1); try data.put(s.engine, result, "name", if (v.nullish(name)) spec else name); try data.put(s.engine, result, "version", try v.at(s, matched, 2)); return result;
 }
 fn source(s: *Scope, manager: c.JSValue, text: c.JSValue, imports: c.JSValue, predicates: c.JSValue) !c.JSValue {
     if (s.truthy(try s.invoke(text, "startsWith", &.{try s.text("npm:")}))) {
         const spec = try s.invoke(try s.invoke(text, "slice", &.{c.JS_NewInt32(s.engine.context, 4)}), "trim", &.{});
         const parsed = try s.invoke(manager, "parseNpmSpec", &.{spec}); const name = try s.get(parsed, "name"); const version = try s.get(parsed, "version");
-        const result = try s.object(); try s.put(result, "type", try s.text("npm")); try s.put(result, "spec", spec); try s.put(result, "name", name); try s.put(result, "version", version);
-        try s.put(result, "range", try s.call(try s.get(predicates, "getNpmVersionRange"), c.pi_js_undefined(), &.{version}));
-        try s.put(result, "pinned", try s.call(try s.get(predicates, "isExactNpmVersion"), c.pi_js_undefined(), &.{version})); return result;
+        const result = try s.object(); try data.put(s.engine, result, "type", try s.text("npm")); try data.put(s.engine, result, "spec", spec); try data.put(s.engine, result, "name", name); try data.put(s.engine, result, "version", version);
+        try data.put(s.engine, result, "range", try s.call(try s.get(predicates, "getNpmVersionRange"), c.pi_js_undefined(), &.{version}));
+        try data.put(s.engine, result, "pinned", try s.call(try s.get(predicates, "isExactNpmVersion"), c.pi_js_undefined(), &.{version})); return result;
     }
     if (!s.truthy(try s.call(try s.get(imports, "isLocalPath"), c.pi_js_undefined(), &.{text}))) {
         const git = try s.call(try s.get(imports, "parseGitUrl"), c.pi_js_undefined(), &.{text}); if (s.truthy(git)) return git;
     }
-    const result = try s.object(); try s.put(result, "type", try s.text("local")); try s.put(result, "path", text); return result;
+    const result = try s.object(); try data.put(s.engine, result, "type", try s.text("local")); try data.put(s.engine, result, "path", text); return result;
 }
 fn parse(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[2]) < 0) return v.js.capture(engine);

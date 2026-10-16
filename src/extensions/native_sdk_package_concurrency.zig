@@ -1,6 +1,7 @@
 //! Actual generic runWithConcurrency<T>: shared cursor, genuine async workers,
 //! live Array.from/Promise.all and ordered sparse results. A failing worker
 //! rejects the outer await without replacing or cancelling the other workers.
+const data = @import("native_sdk_package_data.zig");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
@@ -20,11 +21,11 @@ fn run(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c
     const tasks = arg(args, 0);
     if (s.equal(try s.get(tasks, "length"), c.JS_NewInt32(engine.context, 0))) return .{ .returned = c.JS_DupValue(engine.context, try s.array()) };
     const shared = try body.init(&s, state);
-    try s.put(shared, "tasks", tasks);
+    try data.put(s.engine, shared, "tasks", tasks);
     const array_constructor = try s.global("Array");
     var array_args = [_]c.JSValue{try s.get(tasks, "length")};
     const results = try s.own(try engine.checked(c.JS_CallConstructor(engine.context, array_constructor, 1, &array_args)));
-    try s.put(shared, "results", results); try s.put(shared, "nextIndex", c.JS_NewInt32(engine.context, 0));
+    try data.put(s.engine, shared, "results", results); try data.put(s.engine, shared, "nextIndex", c.JS_NewInt32(engine.context, 0));
     const max_math = try s.global("Math"); const max = try s.get(max_math, "max");
     const min_math = try s.global("Math"); const min = try s.get(min_math, "min");
     const minimum = try s.call(min, min_math, &.{ arg(args, 1), try s.get(tasks, "length") });
@@ -32,7 +33,7 @@ fn run(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c
     const worker = try s.own(try af.createResumableArrow(engine, "worker", 0, work, &.{shared}, c.pi_js_undefined()));
     const promise = try s.global("Promise"); const all = try s.get(promise, "all");
     const array = try s.global("Array"); const from = try s.get(array, "from");
-    const shape = try s.object(); try s.put(shape, "length", worker_count);
+    const shape = try s.object(); try data.put(s.engine, shape, "length", worker_count);
     const start = try s.own(try f.createArrow(engine, "", 0, startWorker, &.{worker}));
     const workers = try s.call(from, array, &.{ shape, start });
     return .{ .awaited = c.JS_DupValue(engine.context, try s.call(all, promise, &.{workers})) };
@@ -51,7 +52,7 @@ fn work(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const
     try s.set(shared, "nextIndex", try s.concat(index, c.JS_NewInt32(engine.context, 1)));
     const tasks = try s.get(shared, "tasks");
     if (try arithmetic.compare(engine, .greater_equal, index, try s.get(tasks, "length"))) return .{ .returned = c.pi_js_undefined() };
-    try s.put(local, "index", index);
+    try data.put(s.engine, local, "index", index);
     const callback = try s.own(try v.js.getKey(engine, tasks, index));
     // tasks[index]() is a property call: its receiver is the tasks array.
     return .{ .awaited = c.JS_DupValue(engine.context, try s.call(callback, tasks, &.{})) };

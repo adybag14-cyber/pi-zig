@@ -1,6 +1,7 @@
 //! Complete actual Source method assembly. Actual ignore/minimatch/semver/Git
 //! and platform inputs remain mandatory. Shape/brand checks are prerequisites,
 //! never a provenance or qualification claim; no default selection happens.
+const data = @import("native_sdk_package_data.zig");
 const std = @import("std");
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
@@ -50,7 +51,7 @@ pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
     try @import("native_sdk_package_settings.zig").install(engine, staging, .{ .exists_sync = exists_sync, .relative = try required(&s, inputs.paths, "relative") });
     try @import("native_sdk_package_storage.zig").install(engine, staging, .{ .paths = inputs.paths, .filesystem = inputs.filesystem, .create_hash = try required(&s, inputs.crypto, "createHash"), .mark_cloud_ignored = try required(&s, inputs.path_utilities, "markPathIgnoredByCloudSync"), .strip_bom = try required(&s, inputs.text, "stripBom"), .config_dir = inputs.config_dir });
     try @import("native_sdk_package_concurrency.zig").install(engine, staging);
-    const resource_helpers = try s.own(try v.js.spread(engine, discovery)); try v.js.spreadInto(engine, resource_helpers, patterns); try s.put(resource_helpers, "readPiManifest", read_manifest);
+    const resource_helpers = try s.own(try v.js.spread(engine, discovery)); try v.js.spreadInto(engine, resource_helpers, patterns); try data.put(s.engine, resource_helpers, "readPiManifest", read_manifest);
     try @import("native_sdk_package_resources.zig").install(engine, staging, .{ .paths = inputs.paths, .filesystem = inputs.filesystem, .helpers = resource_helpers });
     try @import("native_sdk_package_autoload.zig").install(engine, staging, .{ .paths = inputs.paths, .discovery = discovery, .is_enabled_by_overrides = try required(&s, patterns, "isEnabledByOverrides") });
     const offline = try required(&s, source, "isOfflineModeEnabled");
@@ -65,7 +66,7 @@ pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
     const prototype = try s.object();
     const constructor = try s.own(try manager.constructor(engine, prototype));
     inline for (order.names[1..]) |name| try copy(&s, staging, prototype, name);
-    const exports = try s.object(); try s.put(exports, "DefaultPackageManager", constructor); try s.put(exports, "getExtensionTempFolder", try required(&s, discovery, "getExtensionTempFolder"));
-    const graph = try s.object(); try s.put(graph, "exports", exports); try s.put(graph, "patterns", patterns); try s.put(graph, "discovery", discovery); try s.put(graph, "source", source); try s.put(graph, "resourceHelpers", resource_helpers);
+    const exports = try s.object(); try data.put(s.engine, exports, "DefaultPackageManager", constructor); try data.put(s.engine, exports, "getExtensionTempFolder", try required(&s, discovery, "getExtensionTempFolder"));
+    const graph = try s.object(); try data.put(s.engine, graph, "exports", exports); try data.put(s.engine, graph, "patterns", patterns); try data.put(s.engine, graph, "discovery", discovery); try data.put(s.engine, graph, "source", source); try data.put(s.engine, graph, "resourceHelpers", resource_helpers);
     return c.JS_DupValue(engine.context, graph);
 }

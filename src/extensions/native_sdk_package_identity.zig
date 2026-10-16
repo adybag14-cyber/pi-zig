@@ -1,5 +1,6 @@
 //! Original package identity, dedupe and project autoload-delta bodies. Parsing
 //! and package storage remain real dynamic class dependencies, never aliases.
+const data = @import("native_sdk_package_data.zig");
 const std = @import("std");
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
@@ -109,8 +110,8 @@ fn delta(scope: *Scope, manager: c.JSValue, package: c.JSValue, selected_scope: 
     if (!scope.truthy(user)) return c.pi_js_undefined();
     const result = try scope.object();
     const get_source = try scope.get(manager, "getPackageSourceString");
-    try scope.put(result, "source", try scope.call(get_source, manager, &.{try scope.get(user, "pkg")}));
-    try scope.put(result, "scope", try scope.text("user"));
+    try data.put(scope.engine, result, "source", try scope.call(get_source, manager, &.{try scope.get(user, "pkg")}));
+    try data.put(scope.engine, result, "scope", try scope.text("user"));
     return result;
 }
 fn method(engine: *em.Engine, manager: c.JSValue, kind: Method, args: []const c.JSValue) !c.JSValue {

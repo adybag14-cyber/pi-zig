@@ -1,5 +1,6 @@
 //! Actual managed/npm/git storage layout and manifest setup. Every filesystem
 //! effect and command uses the captured real platform or live class method.
+const data = @import("native_sdk_package_data.zig");
 const v = @import("native_ai_provider_values.zig");
 const package_catch = @import("native_sdk_package_catch.zig");
 const Scope = v.Scope;
@@ -10,16 +11,16 @@ pub const methods = .{ "getInstalledNpmVersion", "hasMissingGitDependencies", "g
 const Method = enum(i32) { getInstalledNpmVersion, hasMissingGitDependencies, getGitUpdateMarkerPath, pruneEmptyGitParents, ensureNpmProject, ensureGitIgnore, getNpmInstallRoot, getGlobalNpmRoot, getPnpmGlobalPackagePath, getManagedNpmInstallPath, getLegacyGlobalNpmInstallPath, getNpmInstallPath, getGitInstallPath, getGitInstallRoot, getTemporaryDir, resolveManagedPath };
 fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
 fn required(s: *Scope, target: c.JSValue, namespace: c.JSValue, comptime names: anytype) !void {
-    inline for (names) |name| { const value = try s.get(namespace, name); if (!c.JS_IsFunction(s.engine.context, value)) return error.RequiredActualPackageStorageImport; try s.put(target, name, value); }
+    inline for (names) |name| { const value = try s.get(namespace, name); if (!c.JS_IsFunction(s.engine.context, value)) return error.RequiredActualPackageStorageImport; try data.put(s.engine, target, name, value); }
 }
 pub fn install(engine: *v.em.Engine, prototype: c.JSValue, inputs: Inputs) !void {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const imports = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
     try required(&s, imports, inputs.paths, .{ "join", "dirname", "basename", "resolve" });
     try required(&s, imports, inputs.filesystem, .{ "existsSync", "mkdirSync", "chmodSync", "readdirSync", "readFileSync", "rmSync", "writeFileSync" });
-    inline for (.{ .{ "createHash", inputs.create_hash }, .{ "markPathIgnoredByCloudSync", inputs.mark_cloud_ignored }, .{ "stripBom", inputs.strip_bom } }) |entry| { if (!c.JS_IsFunction(engine.context, entry[1])) return error.RequiredActualPackageStorageImport; try s.put(imports, entry[0], entry[1]); }
+    inline for (.{ .{ "createHash", inputs.create_hash }, .{ "markPathIgnoredByCloudSync", inputs.mark_cloud_ignored }, .{ "stripBom", inputs.strip_bom } }) |entry| { if (!c.JS_IsFunction(engine.context, entry[1])) return error.RequiredActualPackageStorageImport; try data.put(s.engine, imports, entry[0], entry[1]); }
     const separator = try s.get(inputs.paths, "sep"); if (!c.JS_IsString(separator) or !c.JS_IsString(inputs.config_dir)) return error.RequiredActualPackageStorageConstants;
-    try s.put(imports, "sep", separator); try s.put(imports, "configDir", inputs.config_dir);
+    try data.put(s.engine, imports, "sep", separator); try data.put(s.engine, imports, "configDir", inputs.config_dir);
     inline for (@typeInfo(Method).@"enum".fields) |field| {
         const length: c_int = switch (@as(Method, @enumFromInt(field.value))) { .getGlobalNpmRoot => 0, .getTemporaryDir => 3, .pruneEmptyGitParents, .getNpmInstallRoot, .getManagedNpmInstallPath, .getNpmInstallPath, .getGitInstallPath => 2, else => 1 };
         const value = try s.own(try f.createMethod(engine, field.name, length, invoke, &.{ imports, c.JS_NewInt32(engine.context, field.value) }));
@@ -28,7 +29,7 @@ pub fn install(engine: *v.em.Engine, prototype: c.JSValue, inputs: Inputs) !void
 }
 fn imported(s: *Scope, imports: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue { return s.call(try s.get(imports, name), c.pi_js_undefined(), args); }
 fn array(s: *Scope, values: []const c.JSValue) !c.JSValue { const result = try s.array(); for (values, 0..) |value, index| try s.index(result, @intCast(index), value); return result; }
-fn options(s: *Scope, recursive: bool, force: bool) !c.JSValue { const result = try s.object(); if (recursive) try s.put(result, "recursive", c.pi_js_bool(s.engine.context, 1)); if (force) try s.put(result, "force", c.pi_js_bool(s.engine.context, 1)); return result; }
+fn options(s: *Scope, recursive: bool, force: bool) !c.JSValue { const result = try s.object(); if (recursive) try data.put(s.engine, result, "recursive", c.pi_js_bool(s.engine.context, 1)); if (force) try data.put(s.engine, result, "force", c.pi_js_bool(s.engine.context, 1)); return result; }
 fn exists(s: *Scope, imports: c.JSValue, path: c.JSValue) !bool { return s.truthy(try imported(s, imports, "existsSync", &.{path})); }
 
 fn ignored(s: *Scope, manager: c.JSValue, imports: c.JSValue, directory: c.JSValue) !void {
@@ -42,7 +43,7 @@ fn ensureNpm(s: *Scope, manager: c.JSValue, imports: c.JSValue, root: c.JSValue)
     _ = try imported(s, imports, "markPathIgnoredByCloudSync", &.{root}); _ = try s.invoke(manager, "ensureGitIgnore", &.{root});
     const path = try imported(s, imports, "join", &.{ root, try s.text("package.json") });
     if (!try exists(s, imports, path)) {
-        const value = try s.object(); try s.put(value, "name", try s.text("pi-extensions")); try s.put(value, "private", c.pi_js_bool(s.engine.context, 1));
+        const value = try s.object(); try data.put(s.engine, value, "name", try s.text("pi-extensions")); try data.put(s.engine, value, "private", c.pi_js_bool(s.engine.context, 1));
         const write = try s.get(imports, "writeFileSync"); const text = try s.invoke(try s.global("JSON"), "stringify", &.{ value, c.pi_js_null(), c.JS_NewInt32(s.engine.context, 2) });
         _ = try s.call(write, c.pi_js_undefined(), &.{ path, text, try s.text("utf-8") });
     }
@@ -96,7 +97,7 @@ fn managed(s: *Scope, imports: c.JSValue, root: c.JSValue, parts: []const c.JSVa
 fn temp(s: *Scope, manager: c.JSValue, imports: c.JSValue, prefix: c.JSValue, suffix: c.JSValue, ref: c.JSValue) !c.JSValue {
     const resolve_managed = try s.get(manager, "resolveManagedPath");
     const folder = try imported(s, imports, "join", &.{ try s.get(manager, "agentDir"), try s.text("tmp"), try s.text("extensions") });
-    const mkdir_options = try options(s, true, false); try s.put(mkdir_options, "mode", c.JS_NewInt32(s.engine.context, 0o700));
+    const mkdir_options = try options(s, true, false); try data.put(s.engine, mkdir_options, "mode", c.JS_NewInt32(s.engine.context, 0o700));
     _ = try imported(s, imports, "mkdirSync", &.{ folder, mkdir_options }); _ = try imported(s, imports, "chmodSync", &.{ folder, c.JS_NewInt32(s.engine.context, 0o700) });
     const root = try s.call(resolve_managed, manager, &.{ folder, prefix });
     const hash = try imported(s, imports, "createHash", &.{try s.text("sha256")});

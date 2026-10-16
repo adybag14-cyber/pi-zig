@@ -1,6 +1,7 @@
 //! Actual live-settings/default package resolution orchestration. Its Source
 //! pattern helpers and dynamic discovery/transport bodies are mandatory; this
 //! module does not assemble a partial DefaultPackageManager class.
+const data = @import("native_sdk_package_data.zig");
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
@@ -43,8 +44,8 @@ fn packages(scope: *Scope, result: c.JSValue, values: c.JSValue, selected_scope:
         defer scope.engine.freeValue(package);
         const push = try scope.get(result, "push");
         const entry = try scope.object();
-        try scope.put(entry, "pkg", package);
-        try scope.put(entry, "scope", try scope.text(selected_scope));
+        try data.put(scope.engine, entry, "pkg", package);
+        try data.put(scope.engine, entry, "scope", try scope.text(selected_scope));
         _ = try scope.call(push, result, &.{entry});
     }
 }
@@ -53,13 +54,13 @@ fn initialize(engine: *em.Engine, owner: c.JSValue, manager: c.JSValue, on_missi
     defer scope.deinit();
     const imports = try scope.array();
     inline for (0..6) |index| try scope.index(imports, index, roots[index]);
-    try scope.put(owner, "imports", imports);
+    try data.put(scope.engine, owner, "imports", imports);
     const accumulator = try scope.invoke(manager, "createAccumulator", &.{});
-    try scope.put(owner, "accumulator", accumulator);
+    try data.put(scope.engine, owner, "accumulator", accumulator);
     const global = try scope.invoke(try scope.get(manager, "settingsManager"), "getGlobalSettings", &.{});
     const project = try scope.invoke(try scope.get(manager, "settingsManager"), "getProjectSettings", &.{});
-    try scope.put(owner, "global", global);
-    try scope.put(owner, "project", project);
+    try data.put(scope.engine, owner, "global", global);
+    try data.put(scope.engine, owner, "project", project);
     const all = try scope.array();
     try packages(&scope, all, try fallback(&scope, try scope.get(project, "packages")), "project");
     try packages(&scope, all, try fallback(&scope, try scope.get(global, "packages")), "user");
@@ -71,9 +72,9 @@ fn imported(scope: *Scope, owner: c.JSValue, index: u32) !c.JSValue {
 }
 fn metadata(scope: *Scope, selected_scope: []const u8) !c.JSValue {
     const info = try scope.object();
-    try scope.put(info, "source", try scope.text("local"));
-    try scope.put(info, "scope", try scope.text(selected_scope));
-    try scope.put(info, "origin", try scope.text("top-level"));
+    try data.put(scope.engine, info, "source", try scope.text("local"));
+    try data.put(scope.engine, info, "scope", try scope.text(selected_scope));
+    try data.put(scope.engine, info, "origin", try scope.text("top-level"));
     return info;
 }
 fn packagesResolved(engine: *em.Engine, owner: c.JSValue, manager: c.JSValue) !c.JSValue {
@@ -119,9 +120,9 @@ fn builtins(scope: *Scope, owner: c.JSValue, manager: c.JSValue, accumulator: c.
         const add = try scope.get(manager, "addResource");
         const target = try scope.get(accumulator, "extensions");
         const info = try scope.object();
-        try scope.put(info, "source", try scope.text("builtin"));
-        try scope.put(info, "scope", try scope.text(if (c.JS_IsUndefined(enabled)) "user" else "project"));
-        try scope.put(info, "origin", try scope.text("top-level"));
+        try data.put(scope.engine, info, "source", try scope.text("builtin"));
+        try data.put(scope.engine, info, "scope", try scope.text(if (c.JS_IsUndefined(enabled)) "user" else "project"));
+        try data.put(scope.engine, info, "origin", try scope.text("top-level"));
         const final_enabled = if (temp.nullish(enabled)) try scope.call(try imported(scope, owner, 2), c.pi_js_undefined(), &.{ path, try fallback(scope, try scope.get(global, "extensions")), global_base }) else enabled;
         _ = try scope.call(add, manager, &.{ target, path, info, final_enabled });
     }
