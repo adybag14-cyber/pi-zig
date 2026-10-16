@@ -279,6 +279,10 @@ fn identifier(s: *Scope, graph: c.JSValue, nodes: c.JSValue, env: c.JSValue, cod
         const external = try o.lookup(s, env, "External");
         return at(s, external, i);
     }
+    // The pinned schema reducer emits ConstDeclaration("results", "[]")
+    // directly. A raw empty-array literal creates a fresh VM array each time;
+    // captured IR nodes have already taken precedence in evaluate().
+    if (std.mem.eql(u8, bytes, "[]")) return s.array();
     // Pinned items/prefixItems pass `${value}[${index}]` directly, rather
     // than calling EmitGuard.Member. Keep the captured base in the existing
     // IR and read its one canonical numeric property through the real VM.
