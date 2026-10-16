@@ -309,6 +309,7 @@ fn loadGraph(context: ?*c.JSContext, graph: ?*c.JSPiPrivateModuleGraph, name: [*
 }
 pub fn start(engine: *em.Engine, public_session: *Session, base: []const u8, specifier: []const u8, attributes: c.JSValue) !c.JSValue {
     const session = admitted(engine, public_session) orelse return error.InvalidExtensionImportSession;
+    if (session.started) return error.ExtensionImportSessionAlreadyStarted;
     var scope: v.Scope = .{ .engine = engine }; defer scope.deinit();
     const function = try scope.own(try af.createResumable(engine, "importExtensionModule", 0, importBody, &.{session.handle, try scope.text(base), try scope.text(specifier), attributes}));
     return engine.checked(c.JS_Call(engine.context, function, c.pi_js_undefined(), 0, null));

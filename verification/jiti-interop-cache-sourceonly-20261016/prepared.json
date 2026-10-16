@@ -24,13 +24,13 @@
     },
     {
       "path": "src/extensions/native_extension_import_adapter.zig",
-      "sha256": "3203D1349BB4D6D32D5F20E445EC7BA68B2BB24905837E0ABA4D3AB2FD52E6A1",
-      "bytes": 27236
+      "sha256": "4016ADA1056C51568647F17AAC82C41C2648871F79EFE8FACDAE5DDD74EAE6E3",
+      "bytes": 27312
     },
     {
       "path": "src/native_jiti_interop_cache_controls.zig",
-      "sha256": "461A302154D3383215B2670CCC884EC482F462AED51E0D3743FF0816C30437C2",
-      "bytes": 13668
+      "sha256": "45D6594D69282CE94FFACAFD4AE1D82E996451A3592ADEB5653A9F2150B7CB28",
+      "bytes": 15398
     }
   ],
   "protected_files": [
@@ -126,7 +126,7 @@
   "non_NULL_graph_sessions_retained": true,
   "private_graph_reclamation": false,
   "context_memory_resource_policy_qualified": false,
-  "prepared_control_entry_points": 6,
+  "prepared_control_entry_points": 7,
   "prepared_js_programs": 3,
   "actual_compiled_count": null,
   "fmt_ast": false,
@@ -134,5 +134,6 @@
   "native_executed": false,
   "node_reference": false,
   "source_generator": false,
-  "default_selected": false
+  "default_selected": false,
+  "duplicate_start_rejected_before_second_AF": true
 }

@@ -58,6 +58,8 @@ authority roots, private kind entries and the handle are released; a small
 retired SessionRecord tombstone remains until context teardown. Membership
 rejects retired records, and their addresses are never reused, avoiding public
 opaque-handle ABA. Sessions with a non-NULL graph remain untouched and pinned.
+The host start entry rejects started sessions before allocating/calling another
+AF, so a duplicate attempt cannot retire the original pending shared import.
 Shared kind policy remains owned by the hub across sessions. Host-only counters
 distinguish released bindings from retained tombstones; they are not guest fields.
 
@@ -86,10 +88,11 @@ No ModuleDef/capability/context-wide sweep or C rollback occurs here. The vendor
 Engine and async primitives remain unchanged; integration must retain Root's
 current vendor/primitive baseline rather than copy this older isolated tree.
 
-Six prepared entry points cover Source Proxy getter/cache/receiver quirks, raw
+Seven prepared entry points cover Source Proxy getter/cache/receiver quirks, raw
 trap reason and JSON behavior, actual context/Module cache lifecycle, actual
 jitiRequire import method, no-graph binding retirement/old-handle rejection and
-fresh trap native allocation identity. Three JS programs are retained as source;
+fresh trap native allocation identity, and duplicate-start rejection preserving
+the first actual shared import continuation. Three JS programs are retained as source;
 integration controls require actual composed subjects and owned physical paths.
 No fake Node.Module, jitiRequire, provider registry or SDK bootstrap is supplied.
 These are not a Source reference capture or accepted native expected output.

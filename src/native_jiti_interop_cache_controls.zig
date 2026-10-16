@@ -134,6 +134,25 @@ pub fn verifyNoGraphFrontendRetirement(engine: *v.em.Engine, actual_inputs: adap
     try std.testing.expectEqual(before.bindings, final.bindings);
     try std.testing.expectEqual(before.retired_tombstones + 2, final.retired_tombstones);
 }
+/// A duplicate call must not enter a second AF catch and retire the first
+/// invocation's still-live graph-null state. Uses an actual shared physical
+/// module and its actual expected namespace, not a dummy pending importer.
+pub fn verifyPendingSharedDuplicate(engine: *v.em.Engine, actual_inputs: adapter.Inputs, actual_base: []const u8, actual_shared_path: []const u8, actual_namespace: c.JSValue) !void {
+    const session = try adapter.createSession(engine, actual_inputs);
+    const pending = try adapter.start(engine, session, actual_base, actual_shared_path, c.pi_js_undefined()); defer engine.freeValue(pending);
+    try std.testing.expect(c.JS_PromiseState(engine.context, pending) == c.JS_PROMISE_PENDING);
+    const before_duplicate = adapter.retainedResources(engine);
+    try std.testing.expectError(error.ExtensionImportSessionAlreadyStarted, adapter.start(engine, session, actual_base, actual_shared_path, c.pi_js_undefined()));
+    const after_duplicate = adapter.retainedResources(engine);
+    try std.testing.expectEqual(before_duplicate.active_sessions, after_duplicate.active_sessions);
+    try std.testing.expectEqual(before_duplicate.retired_tombstones, after_duplicate.retired_tombstones);
+    try std.testing.expectEqual(before_duplicate.bindings, after_duplicate.bindings);
+    const result = try engine.awaitValue(pending); defer engine.freeValue(result);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, result, actual_namespace));
+    const settled = adapter.retainedResources(engine);
+    try std.testing.expectEqual(before_duplicate.active_sessions - 1, settled.active_sessions);
+    try std.testing.expectEqual(before_duplicate.retired_tombstones + 1, settled.retired_tombstones);
+}
 fn freshAllocation(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     _ = engine.throwNativeOutOfMemory();
     const reason = c.JS_GetException(engine.context); defer engine.freeValue(reason);
