@@ -38,6 +38,7 @@ const SessionRecord = struct {
     graph: ?*c.JSPiPrivateModuleGraph = null,
     private: ?*Entry = null,
     started: bool = false,
+    retired: bool = false,
 };
 const names = [_]struct { name: []const u8, group: u8 }{
     .{ .name = "typebox", .group = 0 }, .{ .name = "@sinclair/typebox", .group = 0 },
@@ -110,7 +111,7 @@ fn admitted(engine: *em.Engine, pointer: *const anyopaque) ?*SessionRecord {
     const owner: *Hub = @ptrCast(@alignCast(raw));
     var cursor = owner.sessions;
     if (owner.shutting_down) return null;
-    while (cursor) |item| : (cursor = item.next) if (@intFromPtr(item) == @intFromPtr(pointer)) return item;
+    while (cursor) |item| : (cursor = item.next) if (@intFromPtr(item) == @intFromPtr(pointer)) return if (item.retired) null else item;
     return null;
 }
 fn checkLoader(session: *SessionRecord) !void {
@@ -204,20 +205,34 @@ fn kindOf(session: *SessionRecord, path: []const u8) !Kind {
     try remember(session, path, kind);
     return kind;
 }
-fn callbackFailure(engine: *em.Engine, err: anyerror, generation: u64) void {
-    if (err == error.JavaScriptException) {
-        if (engine.captured_exception) |reason| if (!c.JS_IsUncatchableError(reason)) {
-            body.rethrowRecognizedAllocation(engine, reason, generation) catch {};
-        };
-        _ = engine.throwCaptured(); return;
+fn currentFailure(engine: *em.Engine, err: anyerror, generation: u64) anyerror {
+    if (err != error.JavaScriptException) return err;
+    if (engine.captured_exception) |reason| {
+        if (c.JS_IsUncatchableError(reason)) return err;
+        body.rethrowRecognizedAllocation(engine, reason, generation) catch |fatal| return fatal;
     }
-    if (err == error.OutOfMemory) {
+    if (c.JS_HasException(engine.context)) {
+        _ = engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context))) catch |actual| return actual;
+        unreachable;
+    }
+    return err;
+}
+fn callbackFailure(engine: *em.Engine, err: anyerror, generation: u64) void {
+    const current = currentFailure(engine, err, generation);
+    if (current == error.JavaScriptException) {
+        if (engine.captured_exception) |reason| {
+            engine.captured_exception = null;
+            _ = c.JS_Throw(engine.context, reason);
+        } else _ = engine.throwCaptured();
+        return;
+    }
+    if (current == error.OutOfMemory) {
         _ = engine.throwNativeOutOfMemory();
         const reason = c.JS_GetException(engine.context);
         c.JS_SetUncatchableError(engine.context, reason);
         _ = c.JS_Throw(engine.context, reason); return;
     }
-    _ = c.JS_ThrowTypeError(engine.context, "Native extension import: %s", @as([*:0]const u8, @errorName(err)));
+    _ = c.JS_ThrowTypeError(engine.context, "Native extension import: %s", @as([*:0]const u8, @errorName(current)));
 }
 fn fromOpaque(raw: ?*anyopaque) *SessionRecord { return @ptrCast(@alignCast(raw.?)); }
 fn normalizeGraph(context: ?*c.JSContext, origin: ?*const c.JSPiModuleOrigin, base: [*c]const u8, specifier: [*c]const u8, attrs: c.JSValue, raw: ?*anyopaque) callconv(.c) [*c]u8 {
@@ -300,13 +315,57 @@ pub fn start(engine: *em.Engine, public_session: *Session, base: []const u8, spe
 }
 fn importBody(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
     const generation = engine.native_allocation_generation;
-    return importInner(engine, roots, state, completion, input) catch |err| {
-        if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
-            if (c.JS_IsUncatchableError(reason)) return err;
-            try body.rethrowRecognizedAllocation(engine, reason, generation);
+    const action = importInner(engine, roots, state, completion, input) catch |err| {
+        const current = currentFailure(engine, err, generation);
+        if (current == error.JavaScriptException) if (engine.captured_exception) |reason| {
+            if (c.JS_IsUncatchableError(reason)) { retireRootWithoutGraph(engine, roots[0]); return current; }
+            engine.captured_exception = null;
+            retireRootWithoutGraph(engine, roots[0]);
+            return .{ .thrown = reason };
         };
-        return body.failureSince(engine, err, generation);
+        retireRootWithoutGraph(engine, roots[0]);
+        return body.failureSince(engine, current, generation);
     };
+    switch (action) { .awaited => {}, else => retireRootWithoutGraph(engine, roots[0]) }
+    return action;
+}
+fn retireRootWithoutGraph(engine: *em.Engine, handle: c.JSValue) void {
+    const raw = engine.native_extension_import_context orelse return;
+    const owner: *Hub = @ptrCast(@alignCast(raw));
+    const pointer = c.JS_GetOpaque(handle, owner.class_id) orelse return;
+    const session = admitted(engine, pointer) orelse return;
+    if (session.graph != null) return; // C callbacks/old closures still own it.
+    session.retired = true;
+    const allocator = owner.allocator();
+    for (session.bindings) |binding| {
+        engine.freeValue(binding.authority);
+        allocator.free(binding.specifier);
+        allocator.free(binding.canonical_name);
+    }
+    allocator.free(session.bindings);
+    session.bindings = &.{};
+    freeEntries(allocator, session.private);
+    session.private = null;
+    _ = c.JS_SetOpaque(session.handle, null);
+    engine.freeValue(session.handle);
+    session.handle = c.pi_js_undefined();
+    // Keep this small tombstone until context teardown. Reusing its address
+    // would let an old public opaque Session token address a new session (ABA).
+}
+pub const RetainedResources = struct { active_sessions: usize = 0, retired_tombstones: usize = 0, bindings: usize = 0, private_entries: usize = 0 };
+/// Host-only prepared ownership accounting; never a guest-visible owner field.
+pub fn retainedResources(engine: *em.Engine) RetainedResources {
+    const raw = engine.native_extension_import_context orelse return .{};
+    const owner: *Hub = @ptrCast(@alignCast(raw));
+    var result: RetainedResources = .{};
+    var cursor = owner.sessions;
+    while (cursor) |session| : (cursor = session.next) {
+        if (session.retired) result.retired_tombstones += 1 else result.active_sessions += 1;
+        result.bindings += session.bindings.len;
+        var entry = session.private;
+        while (entry) |item| : (entry = item.next) result.private_entries += 1;
+    }
+    return result;
 }
 fn importInner(engine: *em.Engine, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
     var scope: v.Scope = .{ .engine = engine }; defer scope.deinit();
