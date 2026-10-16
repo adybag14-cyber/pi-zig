@@ -1,0 +1,25 @@
+{
+  "status": "private_attribute_exact_reason_source_only_prepared_unrun",
+  "parent": "1ac041488527652e12cba297efab1a7ea3f25cc9",
+  "review": "independent_reviewer_confirmed_private_only_strict_equality_and_checker_pending_guards_required",
+  "strict_equality": "explicit_private_boundary_threads_through_private_and_shared_cache_hits_compile_duplicates_request_dedup_and_loader_return_validation; first_enumeration_getter_atomization_failure_stops_before_next_operation",
+  "legacy": "ordinary_wrapper_false_preserves_existing_default_conversion_and_checker_flow",
+  "checker": "static_lexical_origin_and_dynamic_captured_origin_check_pending_exception_immediately_after_checker_before_parser_or_enqueue",
+  "snapshot": "new_private_snapshot_rejects_successful_enumeration_or_getter_with_pending_reason",
+  "dynamic": "private_only_pending_guards_after_specifier_conversion_options_with_enumeration_and_value_getters",
+  "prepared_test_count": 17,
+  "new_test_controls": [
+    "static_dynamic_checkers_negative_success_pending_native_reason_four_combinations_no_selector_or_loader",
+    "private_to_shared_cache_hit_mutable_shared_attributes_getter_and_ToPrimitive_raw_reason_and_old_namespace_stability"
+  ],
+  "c_sha256": "62FB61CAC0CCA1A7A3894239CBBDEFBEB8FB71032282168BA50FA996EE315D3F",
+  "header_sha256": "61F50A35FB85DA7A942F0B1AB5B322A1CB54543C363532A2AE1B242DB8569892",
+  "test_sha256": "D9ACD0CD40BF56BFB16C8AECAFEB9A5899675E5C157008D2BA3C102A73AA737B",
+  "fmt_ast": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "exhaustive_allocation_position_coverage": false,
+  "anchor_only_owner_context_lifetime_tested": false,
+  "production_graph_gc_qualified": false,
+  "default_selected": false
+}

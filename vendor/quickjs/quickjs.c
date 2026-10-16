@@ -1534,6 +1534,8 @@ static JSValue JS_EvalInternal(JSContext *ctx, JSValueConst this_obj,
 static void js_free_module_def(JSContext *ctx, JSModuleDef *m);
 static int js_module_attributes_equal(JSContext *ctx, JSValueConst attr1,
                                       JSValueConst attr2);
+static int js_module_attributes_equal_mode(JSContext *ctx, JSValueConst attr1,
+                                           JSValueConst attr2, bool preserve_first);
 static void js_mark_module_def(JSRuntime *rt, JSModuleDef *m,
                                JS_MarkFunc *mark_func);
 static JSValue js_import_meta(JSContext *ctx);
@@ -31511,7 +31513,9 @@ static int add_req_module_entry(JSContext *ctx, JSModuleDef *m,
     for(i = 0; i < m->req_module_entries_count; i++) {
         rme = &m->req_module_entries[i];
         if (rme->module_name == module_name) {
-            eq = js_module_attributes_equal(ctx, rme->attributes, attributes);
+            eq = m->pi_module_origin
+                ? js_module_attributes_equal_mode(ctx, rme->attributes, attributes, true)
+                : js_module_attributes_equal(ctx, rme->attributes, attributes);
             if (eq < 0)
                 return -1;
             if (eq)
@@ -31765,8 +31769,8 @@ static char *js_default_module_normalize_name(JSContext *ctx,
 /* Two sets of import attributes are equal if they have the same
    key/value pairs; absent attributes are equivalent to an empty set
    (ModuleRequestsEqual). Returns 1, 0 or -1 in case of exception. */
-static int js_module_attributes_equal(JSContext *ctx, JSValueConst attr1,
-                                      JSValueConst attr2)
+static int js_module_attributes_equal_mode(JSContext *ctx, JSValueConst attr1,
+                                           JSValueConst attr2, bool preserve_first)
 {
     JSPropertyEnum *tab = NULL;
     uint32_t len = 0, len2 = 0, i;
@@ -31778,6 +31782,10 @@ static int js_module_attributes_equal(JSContext *ctx, JSValueConst attr1,
         if (JS_GetOwnPropertyNames(ctx, &tab, &len, attr1,
                                    JS_GPN_STRING_MASK | JS_GPN_ENUM_ONLY) < 0)
             return -1;
+        if (preserve_first && JS_HasException(ctx)) {
+            res = -1;
+            goto done;
+        }
     }
     if (JS_IsObject(attr2)) {
         JSPropertyEnum *tab2 = NULL;
@@ -31787,6 +31795,10 @@ static int js_module_attributes_equal(JSContext *ctx, JSValueConst attr1,
             goto done;
         }
         js_free_prop_enum(ctx, tab2, len2);
+        if (preserve_first && JS_HasException(ctx)) {
+            res = -1;
+            goto done;
+        }
     }
     res = 0;
     if (len != len2)
@@ -31797,9 +31809,20 @@ static int js_module_attributes_equal(JSContext *ctx, JSValueConst attr1,
             res = -1;
             goto done;
         }
+        if (preserve_first && JS_HasException(ctx)) {
+            JS_FreeValue(ctx, v1);
+            res = -1;
+            goto done;
+        }
         v2 = JS_GetProperty(ctx, attr2, tab[i].atom);
         if (JS_IsException(v2)) {
             JS_FreeValue(ctx, v1);
+            res = -1;
+            goto done;
+        }
+        if (preserve_first && JS_HasException(ctx)) {
+            JS_FreeValue(ctx, v1);
+            JS_FreeValue(ctx, v2);
             res = -1;
             goto done;
         }
@@ -31810,10 +31833,18 @@ static int js_module_attributes_equal(JSContext *ctx, JSValueConst attr1,
             goto done;
         }
         a1 = JS_ValueToAtom(ctx, v1);
+        if (preserve_first && (a1 == JS_ATOM_NULL || JS_HasException(ctx))) {
+            JS_FreeValue(ctx, v1);
+            JS_FreeValue(ctx, v2);
+            JS_FreeAtom(ctx, a1);
+            res = -1;
+            goto done;
+        }
         a2 = JS_ValueToAtom(ctx, v2);
         JS_FreeValue(ctx, v1);
         JS_FreeValue(ctx, v2);
-        if (a1 == JS_ATOM_NULL || a2 == JS_ATOM_NULL) {
+        if (a1 == JS_ATOM_NULL || a2 == JS_ATOM_NULL ||
+            (preserve_first && JS_HasException(ctx))) {
             JS_FreeAtom(ctx, a1);
             JS_FreeAtom(ctx, a2);
             res = -1;
@@ -31829,6 +31860,12 @@ static int js_module_attributes_equal(JSContext *ctx, JSValueConst attr1,
 done:
     js_free_prop_enum(ctx, tab, len);
     return res;
+}
+
+static int js_module_attributes_equal(JSContext *ctx, JSValueConst attr1,
+                                      JSValueConst attr2)
+{
+    return js_module_attributes_equal_mode(ctx, attr1, attr2, false);
 }
 
 /* Same own enumerable string-key/string-value rules as dynamic import's
@@ -31851,10 +31888,16 @@ static JSValue js_pi_snapshot_module_attributes(JSContext *ctx,
     if (JS_GetOwnPropertyNames(ctx, &atoms, &count, attributes,
                               JS_GPN_STRING_MASK | JS_GPN_ENUM_ONLY) < 0)
         goto fail;
+    if (JS_HasException(ctx))
+        goto fail;
     for (i = 0; i < count; i++) {
         value = JS_GetProperty(ctx, attributes, atoms[i].atom);
         if (JS_IsException(value))
             goto fail;
+        if (JS_HasException(ctx)) {
+            JS_FreeValue(ctx, value);
+            goto fail;
+        }
         if (!JS_IsString(value)) {
             JS_FreeValue(ctx, value);
             JS_ThrowTypeError(ctx, "module attribute values must be strings");
@@ -31877,7 +31920,8 @@ fail:
 
 static JSModuleDef *js_pi_find_loaded_module(JSContext *ctx, JSAtom name,
                                              JSValueConst attributes,
-                                             JSPiPrivateModuleGraph *graph)
+                                             JSPiPrivateModuleGraph *graph,
+                                             bool preserve_first)
 {
     struct list_head *el;
     JSModuleDef *m;
@@ -31888,7 +31932,9 @@ static JSModuleDef *js_pi_find_loaded_module(JSContext *ctx, JSAtom name,
         m = list_entry(el, JSModuleDef, link);
         if (m->module_name == name &&
             (m->pi_module_origin ? m->pi_module_origin->graph : NULL) == graph) {
-            eq = js_module_attributes_equal(ctx, m->attributes, attributes);
+            eq = preserve_first
+                ? js_module_attributes_equal_mode(ctx, m->attributes, attributes, true)
+                : js_module_attributes_equal(ctx, m->attributes, attributes);
             if (eq < 0)
                 return NULL; /* exception */
             if (eq)
@@ -31901,7 +31947,7 @@ static JSModuleDef *js_pi_find_loaded_module(JSContext *ctx, JSAtom name,
 static JSModuleDef *js_find_loaded_module(JSContext *ctx, JSAtom name,
                                           JSValueConst attributes)
 {
-    return js_pi_find_loaded_module(ctx, name, attributes, NULL);
+    return js_pi_find_loaded_module(ctx, name, attributes, NULL, false);
 }
 
 static JSModuleDef *js_find_loaded_module_by_name(JSContext *ctx, JSAtom name)
@@ -31989,8 +32035,8 @@ static JSModuleDef *js_host_resolve_imported_module_origin(JSContext *ctx,
     }
 
     /* first look at the loaded modules */
-    m = graph ? js_pi_find_loaded_module(ctx, module_name, attributes, graph)
-              : js_find_loaded_module(ctx, module_name, attributes);
+    m = importer ? js_pi_find_loaded_module(ctx, module_name, attributes, graph, true)
+                 : js_find_loaded_module(ctx, module_name, attributes);
     if (m) {
         if (graph && (m->pi_module_origin->quarantined ||
                       m->pi_module_origin->failed || m->eval_has_exception)) {
@@ -32032,7 +32078,7 @@ static JSModuleDef *js_host_resolve_imported_module_origin(JSContext *ctx,
             JS_ThrowTypeError(ctx, "Private module loader returned a mismatched definition");
             goto fail;
         }
-        equal = js_module_attributes_equal(ctx, m->attributes, attributes);
+        equal = js_module_attributes_equal_mode(ctx, m->attributes, attributes, true);
         if (equal < 0)
             goto fail;
         if (!equal) {
@@ -32087,7 +32133,7 @@ static JSModuleDef *js_host_resolve_imported_module_origin(JSContext *ctx,
     if (m && JS_IsObject(attributes) && JS_IsUndefined(m->attributes))
         m->attributes = js_dup(attributes);
     if (importer && m) {
-        equal = js_module_attributes_equal(ctx, m->attributes, attributes);
+        equal = js_module_attributes_equal_mode(ctx, m->attributes, attributes, true);
         if (equal < 0)
             goto fail; /* preserve an exact getter/allocation exception */
         if (!equal) {
@@ -33336,6 +33382,8 @@ static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
     specifier_str = JS_ToString(ctx, specifier);
     if (JS_IsException(specifier_str))
         goto exception;
+    if (origin && JS_HasException(ctx))
+        goto exception;
 
     if (!JS_IsUndefined(options)) {
         if (!JS_IsObject(options)) {
@@ -33344,6 +33392,8 @@ static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
         }
         attributes_obj = JS_GetProperty(ctx, options, JS_ATOM_with);
         if (JS_IsException(attributes_obj))
+            goto exception;
+        if (origin && JS_HasException(ctx))
             goto exception;
         if (!JS_IsUndefined(attributes_obj)) {
             JSPropertyEnum *atoms;
@@ -33361,10 +33411,18 @@ static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
                                                JS_GPN_STRING_MASK | JS_GPN_ENUM_ONLY)) {
                 goto exception;
             }
+            if (origin && JS_HasException(ctx)) {
+                JS_FreePropertyEnum(ctx, atoms, atoms_len);
+                goto exception;
+            }
             for(i = 0; i < atoms_len; i++) {
                 val = JS_GetProperty(ctx, attributes_obj, atoms[i].atom);
                 if (JS_IsException(val))
                     goto exception1;
+                if (origin && JS_HasException(ctx)) {
+                    JS_FreeValue(ctx, val);
+                    goto exception1;
+                }
                 if (!JS_IsString(val)) {
                     JS_FreeValue(ctx, val);
                     JS_ThrowTypeError(ctx, "module attribute values must be strings");
@@ -33378,9 +33436,10 @@ static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
                 }
             }
             JS_FreePropertyEnum(ctx, atoms, atoms_len);
-            if (ctx->rt->module_check_attrs &&
-                ctx->rt->module_check_attrs(ctx, ctx->rt->module_loader_opaque, attributes) < 0) {
-                goto exception;
+            if (ctx->rt->module_check_attrs) {
+                int checked = ctx->rt->module_check_attrs(ctx, ctx->rt->module_loader_opaque, attributes);
+                if (checked < 0 || (origin && JS_HasException(ctx)))
+                    goto exception;
             }
             JS_FreeValue(ctx, attributes_obj);
             attributes_obj = JS_UNDEFINED;
@@ -33898,10 +33957,10 @@ static __exception int js_parse_with_clause(JSParseState *s, JSValue *pattribute
         }
     }
     /* check attributes validity if checker function provided */
-    if (!JS_IsUndefined(*pattributes) &&
-        ctx->rt->module_check_attrs &&
-        ctx->rt->module_check_attrs(ctx, ctx->rt->module_loader_opaque, *pattributes) < 0) {
-        return -1;
+    if (!JS_IsUndefined(*pattributes) && ctx->rt->module_check_attrs) {
+        ret = ctx->rt->module_check_attrs(ctx, ctx->rt->module_loader_opaque, *pattributes);
+        if (ret < 0 || (s->cur_func->pi_module_origin && JS_HasException(ctx)))
+            return -1;
     }
     return js_parse_expect(s, '}');
 }
@@ -39709,7 +39768,7 @@ JSValue JS_PiCompilePrivateModule(JSContext *ctx, JSPiPrivateModuleGraph *graph,
         JS_FreeValue(ctx, captured_attributes);
         return JS_EXCEPTION;
     }
-    existing = js_pi_find_loaded_module(ctx, name, captured_attributes, graph);
+    existing = js_pi_find_loaded_module(ctx, name, captured_attributes, graph, true);
     JS_FreeAtom(ctx, name);
     if (existing || JS_HasException(ctx)) {
         JS_FreeValue(ctx, captured_attributes);
