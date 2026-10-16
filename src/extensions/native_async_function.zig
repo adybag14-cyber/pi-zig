@@ -41,7 +41,7 @@ fn invoke(_: ?*c.JSContext, owner: c.JSValue, receiver: c.JSValue, argc: c_int, 
             if (completion != .start) return c.JS_ThrowInternalError(engine.context, "Simple native async body resumed");
             break :blk .{ .returned = callback(engine, receiver, args, captures.values) catch |err| return fail(engine, err) };
         },
-        .body => |body| body(engine, receiver, args, captures.values, &state[0], completion, input) catch |err| return fail(engine, err),
+        .body => |body| body(engine, receiver, args, captures.values, @ptrCast(state), completion, input) catch |err| return fail(engine, err),
     };
     return switch (result) {
         .returned => |value| resultValue(action, c.JS_PI_AF_RETURN, value),
