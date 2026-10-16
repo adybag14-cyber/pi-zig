@@ -1,0 +1,7 @@
+{
+  "status": "actual_physical_fixtures_retained",
+  "root": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\sdk-runtime-helper-source-first-20261016-output.json.physical-files",
+  "files": 3,
+  "baseline_sha256": "49A34C16AF6EE67376E0C8E39391EEF1F3E28C81E3398559A89FC1F95BE3AD25",
+  "after_sha256": "CEB8B9644E490E5EA997C57C9380F9861CB9076AF3DBA5C1F46C61E5C44661E1"
+}

@@ -1,0 +1,33 @@
+{
+  "candidate": "067ba9cecff114b77312f747d241f2ce6e7147b5",
+  "clean": true,
+  "cases": 44,
+  "controls": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\Run-SdkRuntimeHelpersSource-20261016.ps1",
+      "sha256": "DB503332301869EAD95AAD45B516B0EE54639AD8D4C256DAC6964E5CD5A01299"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+      "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\sdk-runtime-helper-probe-inventory-20261016.json",
+      "sha256": "2CC551A055A99DAA1E9811F6AF9CA6B842CF4AAD88F292D86123B99B34956F29"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\verification\\sdk-default-real-assembly-4954-20261016\\capture-runtime-helpers.mjs",
+      "sha256": "BEBC75DAD828088183F9091C3DB5F8CA69F5DC65D3B06039DC74EA0D1084B0D6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\src\\extensions\\fixtures\\sdk-runtime-helpers-4954.input.mjs",
+      "sha256": "A11F691DB81F4E268789B55A32A3C67F31C262822F80E869F5B1AB6E5BEC8580"
+    }
+  ],
+  "source": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "typebox_version": "1.3.27",
+  "actual_package": "1.3.0 with explicit currentSource packageRoot",
+  "slot": "Root LIGHT7",
+  "native_qualification": false,
+  "sealed_utc": "2026-10-16T10:44:15.6421338+00:00"
+}

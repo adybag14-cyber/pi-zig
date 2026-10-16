@@ -89,3 +89,43 @@ Source capture. Further Zig checks were held at Root's serial-runtime request.
 Native semantic compilation/execution, host GPA, C malloc, whole SDK transport
 qualification and default selection remain unrun. No C or shared Root source
 was edited by this lane.
+
+The actual runtime helper closure now has genuine **Source44** evidence at
+`067ba9cecff114b77312f747d241f2ce6e7147b5`. Node PID63940 exited 0; all 44 ordered
+rows passed with zero full posthash/path/control drift and the same 84 absence
+contracts. The freeze includes candidate8413, Source1970, dependency31064,
+Node1774 and compiler19546 files. There are 668 observed TypeBox modules among
+719 retained original module bodies. Three physical files and all 11 original
+file/directory metadata rows remain retained. Expected SHA256:
+`94AEC310834B683D9F70D2F50498C84CFFF03D4EB9E8C5EC18674DC0569663C3`.
+`Validate-Source44Proof.ps1` checks every saved payload/archive body and original
+terminal/freeze/physical receipt. Source44 explicitly selected the actual Source
+coding-agent package.json (version1.3.0), matching the inspected0fb package, so
+the older remote-wrapper PI_PACKAGE_DIR metadata caveat does not apply to it.
+
+`native_sdk_configuration_production` supplies 25 scoped SDK path/package/user
+configuration and coding-agent user-agent bodies. Self-update/worker exports
+remain outside that scoped namespace. `native_sdk_shell_production` supplies
+the eight original shell selection/environment/output/tracked-child bodies,
+requiring real child_process spawn/spawnSync/execSync imports. The actual
+native_sdk_timings module retains its shared Map and import-time PI_TIMING gate.
+No command output, process identity, version or package root is invented.
+
+`native_sdk_runtime_imports.create` now builds filesystem -> configuration ->
+shell -> one shared config-value resolver -> ordinary AuthStorage/FileBackend
+-> timing. AuthStorage and composer retain the same resolver identity/cache.
+The FS/auth lane was intaken from d6599aa2 as959fb4b3; its source/native gates
+remain separate. `native_sdk_default_real_assembly` now requires the actual
+ordinary resource loader constructor explicitly, and never fetches the legacy
+Kind.resource_loader constructor from the SDK namespace.
+
+The loader helper intake9a5a4b3e contains the original8076 source-only bodies.
+`native_sdk_resource_loader_assembly` orders its 37 methods plus constructor
+exactly as current Source. It requires a complete actual DefaultPackageManager,
+actual extension factory initializer/cached importer and actual chalk. It does
+not manufacture missing transport, MCP, exec or empty extension results. Captured
+CONFIG_DIR_NAME/getAgentDir imports replace older hard-coded project roots, and
+its weak runtime-owner registry uses a private GC-marked module without Engine
+edits. All54 scoped Zig files passed pinned0.16 formatting and AST checks before
+the Source44 seal. No semantic native compilation or execution followed, and
+default select remains uncalled.

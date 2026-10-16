@@ -1,0 +1,378 @@
+{
+  "authority": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "packageMetadataAuthority": "C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/coding-agent/package.json",
+  "packageSha256": "83c3bb7619f590c213cc96a24216eb29a819a3ef6dc548607cc037ed276e8dc5",
+  "packageName": "@earendil-works/pi-coding-agent",
+  "packageVersion": "1.3.0",
+  "packageRootOverride": "C:/Users/adyba/pi-upstream-source-4954d76-20261015/packages/coding-agent/",
+  "typeboxVersion": "1.3.27",
+  "typeboxPackageSha256": "c59ddfd977ce941f1e8ee8b0a0b14396c332fa27cc5fa6fa165227ffd5a3992f",
+  "inputSha256": "a11f691db81f4e268789b55a32a3c67f31c262822f80e869f5b1ab6e5bec8580",
+  "modules": {
+    "src/config.ts": "b3b77644910d3fac28a06625e90f993a8c1bc6c9458f148c723e64e0c99eb23e",
+    "src/utils/shell.ts": "c93b05fef8d75072adeff45cdec2abfa2e03eb2910d9755c1edb45ce237e614a",
+    "src/core/timings.ts": "55e4d7f31bdf3727baa4e89f361a6abee9ae4a76f64a30369ea157cb37bbc2b2",
+    "src/utils/pi-user-agent.ts": "cd2329beb4b18fd99f5180d603fd1371c8f50441d4688f7d75918a051e565c26"
+  },
+  "cases": 44,
+  "rows": [
+    {
+      "name": "configuration-startup-metadata",
+      "value": {
+        "PACKAGE_NAME": "@earendil-works/pi-coding-agent",
+        "APP_NAME": "pi",
+        "APP_TITLE": "π",
+        "CONFIG_DIR_NAME": ".pi",
+        "VERSION": "1.3.0",
+        "ENV_AGENT_DIR": "PI_CODING_AGENT_DIR",
+        "ENV_SESSION_DIR": "PI_CODING_AGENT_SESSION_DIR",
+        "isBunBinary": false,
+        "isBunRuntime": false
+      }
+    },
+    {
+      "name": "configuration-function-metadata",
+      "value": {
+        "findNodePackageDir": {
+          "name": "findNodePackageDir",
+          "length": 1
+        },
+        "getPackageDir": {
+          "name": "getPackageDir",
+          "length": 0
+        },
+        "getDocsPath": {
+          "name": "getDocsPath",
+          "length": 0
+        },
+        "getAgentDir": {
+          "name": "getAgentDir",
+          "length": 0
+        },
+        "getBinDir": {
+          "name": "getBinDir",
+          "length": 0
+        },
+        "getShareViewerUrl": {
+          "name": "getShareViewerUrl",
+          "length": 1
+        }
+      }
+    },
+    {
+      "name": "configuration-source-path-getPackageDir",
+      "value": "<fixture>"
+    },
+    {
+      "name": "configuration-source-path-getPackageJsonPath",
+      "value": "<fixture>\\package.json"
+    },
+    {
+      "name": "configuration-source-path-getReadmePath",
+      "value": "<fixture>\\README.md"
+    },
+    {
+      "name": "configuration-source-path-getDocsPath",
+      "value": "<fixture>\\docs"
+    },
+    {
+      "name": "configuration-source-path-getExamplesPath",
+      "value": "<fixture>\\examples"
+    },
+    {
+      "name": "configuration-source-path-getChangelogPath",
+      "value": "<fixture>\\CHANGELOG.md"
+    },
+    {
+      "name": "configuration-source-path-getThemesDir",
+      "value": "<fixture>\\src\\modes\\interactive\\theme"
+    },
+    {
+      "name": "configuration-source-path-getExportTemplateDir",
+      "value": "<fixture>\\src\\core\\export-html"
+    },
+    {
+      "name": "configuration-source-path-getInteractiveAssetsDir",
+      "value": "<fixture>\\src\\modes\\interactive\\assets"
+    },
+    {
+      "name": "configuration-bundled-asset",
+      "value": "<fixture>\\src\\modes\\interactive\\assets\\asset.txt"
+    },
+    {
+      "name": "configuration-user-path-getAgentDir",
+      "value": "<fixture>\\agent"
+    },
+    {
+      "name": "configuration-user-path-getCustomThemesDir",
+      "value": "<fixture>\\agent\\themes"
+    },
+    {
+      "name": "configuration-user-path-getModelsPath",
+      "value": "<fixture>\\agent\\models.json"
+    },
+    {
+      "name": "configuration-user-path-getAuthPath",
+      "value": "<fixture>\\agent\\auth.json"
+    },
+    {
+      "name": "configuration-user-path-getSettingsPath",
+      "value": "<fixture>\\agent\\settings.json"
+    },
+    {
+      "name": "configuration-user-path-getToolsDir",
+      "value": "<fixture>\\agent\\tools"
+    },
+    {
+      "name": "configuration-user-path-getBinDir",
+      "value": "<fixture>\\agent\\bin"
+    },
+    {
+      "name": "configuration-user-path-getPromptsDir",
+      "value": "<fixture>\\agent\\prompts"
+    },
+    {
+      "name": "configuration-user-path-getSessionsDir",
+      "value": "<fixture>\\agent\\sessions"
+    },
+    {
+      "name": "configuration-user-path-getDebugLogPath",
+      "value": "<fixture>\\agent\\pi-debug.log"
+    },
+    {
+      "name": "configuration-default-share",
+      "value": "https://pi.dev/session/#fixture"
+    },
+    {
+      "name": "configuration-custom-share",
+      "value": "https://share.example.test/view#id#fragment"
+    },
+    {
+      "name": "configuration-find-dist-parent",
+      "value": "<fixture>\\package"
+    },
+    {
+      "name": "configuration-find-root",
+      "value": "<fixture>\\package"
+    },
+    {
+      "name": "configuration-find-absent",
+      "value": "C:\\Users\\adyba"
+    },
+    {
+      "name": "configuration-expand-tilde",
+      "value": true
+    },
+    {
+      "name": "configuration-real-session-directory",
+      "value": {
+        "path": "<fixture>\\sessions-agent\\sessions\\--C--sdk-helper-project--",
+        "stable": true,
+        "directory": true
+      }
+    },
+    {
+      "name": "coding-agent-user-agent-shape",
+      "value": true
+    },
+    {
+      "name": "shell-function-metadata",
+      "value": {
+        "getShellConfig": {
+          "name": "getShellConfig",
+          "length": 1
+        },
+        "getPowerShellConfig": {
+          "name": "getPowerShellConfig",
+          "length": 0
+        },
+        "getShellEnv": {
+          "name": "getShellEnv",
+          "length": 0
+        },
+        "sanitizeBinaryOutput": {
+          "name": "sanitizeBinaryOutput",
+          "length": 1
+        },
+        "trackDetachedChildPid": {
+          "name": "trackDetachedChildPid",
+          "length": 1
+        },
+        "untrackDetachedChildPid": {
+          "name": "untrackDetachedChildPid",
+          "length": 1
+        },
+        "killTrackedDetachedChildren": {
+          "name": "killTrackedDetachedChildren",
+          "length": 0
+        },
+        "killProcessTree": {
+          "name": "killProcessTree",
+          "length": 1
+        }
+      }
+    },
+    {
+      "name": "shell-powershell-args",
+      "value": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command"
+      ]
+    },
+    {
+      "name": "shell-custom-real-existing",
+      "value": {
+        "shell": "<fixture>\\existing-shell.exe",
+        "args": [
+          "-c"
+        ]
+      }
+    },
+    {
+      "name": "shell-custom-missing",
+      "value": {
+        "name": "Error",
+        "message": "Custom shell path not found: <fixture>\\absent-shell"
+      }
+    },
+    {
+      "name": "shell-real-default-selection",
+      "value": {
+        "shell": "string",
+        "args": [
+          "-c"
+        ]
+      }
+    },
+    {
+      "name": "shell-real-bin-path",
+      "value": {
+        "key": "Path",
+        "contains": true,
+        "copied": true
+      }
+    },
+    {
+      "name": "shell-sanitize",
+      "value": "ab\t\nc\rdef😀"
+    },
+    {
+      "name": "shell-sanitize-clean",
+      "value": "plain 😀 text"
+    },
+    {
+      "name": "shell-empty-owned-cleanup"
+    },
+    {
+      "name": "timing-main-exact-log",
+      "value": [
+        [
+          "\n--- Startup Timings: main ---"
+        ],
+        [
+          "  first: 1ms"
+        ],
+        [
+          "  second: 1ms"
+        ],
+        [
+          "  TOTAL: 2ms"
+        ],
+        [
+          "-----------------------------\n"
+        ]
+      ]
+    },
+    {
+      "name": "timing-namespace-exact-log",
+      "value": [
+        [
+          "\n--- Startup Timings: main ---"
+        ],
+        [
+          "  first: 1ms"
+        ],
+        [
+          "  second: 1ms"
+        ],
+        [
+          "  TOTAL: 2ms"
+        ],
+        [
+          "-----------------------------\n"
+        ],
+        [
+          "\n--- Startup Timings: extensions ---"
+        ],
+        [
+          "  extension-second: 2ms"
+        ],
+        [
+          "  TOTAL: 2ms"
+        ],
+        [
+          "-----------------------------------\n"
+        ]
+      ]
+    },
+    {
+      "name": "timing-import-time-gate",
+      "value": [
+        [
+          "\n--- Startup Timings: main ---"
+        ],
+        [
+          "  first: 1ms"
+        ],
+        [
+          "  second: 1ms"
+        ],
+        [
+          "  import-gate-remains-enabled: 4ms"
+        ],
+        [
+          "  TOTAL: 6ms"
+        ],
+        [
+          "-----------------------------\n"
+        ],
+        [
+          "\n--- Startup Timings: extensions ---"
+        ],
+        [
+          "  extension-second: 2ms"
+        ],
+        [
+          "  TOTAL: 2ms"
+        ],
+        [
+          "-----------------------------------\n"
+        ]
+      ]
+    },
+    {
+      "name": "timing-clock-raw-reason",
+      "value": true
+    },
+    {
+      "name": "timing-function-metadata",
+      "value": {
+        "resetTimings": {
+          "name": "resetTimings",
+          "length": 0
+        },
+        "time": {
+          "name": "time",
+          "length": 1
+        },
+        "printTimings": {
+          "name": "printTimings",
+          "length": 0
+        }
+      }
+    }
+  ]
+}
