@@ -1,0 +1,212 @@
+[
+  {
+    "sha256": "8E72DD09D2270C608572A7A27C7C3AEDACF41ECCF1CA86D3FB2D278BCE761B72",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\artifact-manifest.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\artifact-manifest.json"
+  },
+  {
+    "sha256": "60A8373221455884668228611215885A284949A3AA759F44195F90468D74AE7A",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\artifact-seal-independent-absence.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\artifact-seal-independent-absence.json"
+  },
+  {
+    "sha256": "DF2F0DF92184782A618A81FAC74A4BB69F53C146B8E4892FB1889EA33C4ADEDF",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\artifact-seal-phase.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\artifact-seal-phase.json"
+  },
+  {
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\artifact-seal.stderr.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\artifact-seal.stderr.log"
+  },
+  {
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\artifact-seal.stdout.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\artifact-seal.stdout.log"
+  },
+  {
+    "sha256": "A40E995F3DBCF8FFAAA9DD3DD45CA4BA848AE329B9DD0D1FDBD0BB087EA75B25",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\before-phase.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\before-phase.json"
+  },
+  {
+    "sha256": "D120F30C3147D1DA120EFF6C1F14159C7DC9FBFDF2440FA9757199CF3C6F9106",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\before.stderr.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\before.stderr.log"
+  },
+  {
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\before.stdout.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\before.stdout.log"
+  },
+  {
+    "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\captured-artifact-freeze.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\captured-artifact-freeze.json"
+  },
+  {
+    "sha256": "BDA4A9F26C4544B1497ED2BEAF5BF582B2C0BB15019CF72126FA8DE135219A01",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\environment-policy.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\environment-policy.json"
+  },
+  {
+    "sha256": "CF8DDF38822FC9B482A011EA9CDE0865B7CB7B8948CC60D3EC123F9F6910B60C",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\expected-absence-before.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\expected-absence-before.json"
+  },
+  {
+    "sha256": "94761972F3F611EF1EBA79D287AD76360D8E83089254B77D3B3EEEB8E2F8FC6B",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\expected-absence-final.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\expected-absence-final.json"
+  },
+  {
+    "sha256": "74FA03FE9E7421C1EF484E84EC29A9E03D69C1A5012949468A0FB855AE30B888",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\final-independent-absence.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\final-independent-absence.json"
+  },
+  {
+    "sha256": "C1D4979F17F9CB061485A6DC4EBDF3C9E9D0F082E030A493FB5769C64418029C",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\final-phase.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\final-phase.json"
+  },
+  {
+    "sha256": "D120F30C3147D1DA120EFF6C1F14159C7DC9FBFDF2440FA9757199CF3C6F9106",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\final.stderr.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\final.stderr.log"
+  },
+  {
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\final.stdout.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\final.stdout.log"
+  },
+  {
+    "sha256": "DC3F29152203D2C2E55D9C3461CB95F655894233A27ADEB3625B681D41D82D2C",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\initial-admission.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\initial-admission.json"
+  },
+  {
+    "sha256": "E095C6B8DB2729A236B72950148207E90356E39497AFF963EDFD4E29CF4C7E8B",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\initial-root-grant.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\initial-root-grant.json"
+  },
+  {
+    "sha256": "96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\Invoke-OwnedModelsClassSource-20261016.ps1",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\Invoke-OwnedModelsClassSource-20261016.ps1"
+  },
+  {
+    "sha256": "CDBE99F0A38BED6288DA0D328D9A5F57BA12351CF51AC387F99EF675DAF4D16F",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\outer-owner.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\outer-owner.json"
+  },
+  {
+    "sha256": "514AE68573715C205EA3AF72B0687594CA82DC1E09A9029CD1DAD2BAF591AF81",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\run-controls.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\run-controls.json"
+  },
+  {
+    "sha256": "0E70168DCF97BE4503FCC68BA685C5F58DDF38C4038DFCA139F7131334773E89",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\supervisor-handoff.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\supervisor-handoff.json"
+  },
+  {
+    "sha256": "5B1C51CDFB1624EDC33DD50E21ADBB37A21EEB06EED2C0BEAB037D2541E82424",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\terminal.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\terminal.json"
+  },
+  {
+    "sha256": "F15B07511B2AC1E3EDE2369BE392E944EA384A75B1B64DD031FCD66E0E34C6F4",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\{06513336-2E4C-416C-8C95-DE5A91D5AA6D}.2.ver0x0000000000000001.db",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\{06513336-2E4C-416C-8C95-DE5A91D5AA6D}.2.ver0x0000000000000001.db"
+  },
+  {
+    "sha256": "A6CE63431F9FF95FAB787700022C6A9BE2528860A7CA7C7ADAC55782A14DD208",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\{6AF0698E-D558-4F6E-9B3C-3716689AF493}.2.ver0x0000000000000001.db",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\{6AF0698E-D558-4F6E-9B3C-3716689AF493}.2.ver0x0000000000000001.db"
+  },
+  {
+    "sha256": "5985D7FF42E8165D40F1D6825CE7A4082DF3E268F659451EE4ACD03B860EFDA1",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\{7720AEC6-0BFC-49DC-B58F-CD1DC6E2FCCA}.2.ver0x0000000000000001.db",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\{7720AEC6-0BFC-49DC-B58F-CD1DC6E2FCCA}.2.ver0x0000000000000001.db"
+  },
+  {
+    "sha256": "B93865EF72F84424D7931957FA6A5F6BB8D02A93EF2AB432AE9FEAE1D3B432EF",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\{84ED569D-EAC2-4928-B327-A86E97C3EC4C}.2.ver0x0000000000000001.db",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\{84ED569D-EAC2-4928-B327-A86E97C3EC4C}.2.ver0x0000000000000001.db"
+  },
+  {
+    "sha256": "26048477E1F40153FB28FD66E18F1D72734C9105F68C9195FD51BD6350D1A8E8",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\{DDF571F2-BE98-426D-8288-1A9A39C3FDA2}.2.ver0x0000000000000001.db",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\{DDF571F2-BE98-426D-8288-1A9A39C3FDA2}.2.ver0x0000000000000001.db"
+  },
+  {
+    "sha256": "288F756CDC26D88A81C8F5D38485F9E8A543D82FB4D4517E723DB0527F035A8A",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\cversions.2.db",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\%SystemDrive%\\ProgramData\\Microsoft\\Windows\\Caches\\cversions.2.db"
+  },
+  {
+    "sha256": "16A735FA9735A4C89B3775002F7EA61D9AF654351E6117970C7F10450C039CB8",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\after-google.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\after-google.json"
+  },
+  {
+    "sha256": "8F277FCBCCB4A71BF7D3EA0920BD2AA9AFA1AF5D63129429CA369226025D85F1",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\after-openai52.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\after-openai52.json"
+  },
+  {
+    "sha256": "B5F6B69E4BB713B3BB06F1CB0CBAEDB00A54AD2C21DB0D852BD3BC3B4E5A9247",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\after-summary30.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\after-summary30.json"
+  },
+  {
+    "sha256": "BE5BAED44694E1C9AE103348BB85FA8F8BB5FB2A0141679B895BA1EAC22E1654",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\after-summary45.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\after-summary45.json"
+  },
+  {
+    "sha256": "2477B8BD31667AC1322211C2ADCA56A5267360063D105A8E8DC9233F60C4D078",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\artifact-seal.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\artifact-seal.json"
+  },
+  {
+    "sha256": "E3A54F23B4942A4174181BEFF634F09BC1B33F7326E704C2447F7AA490207D6B",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\before.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\before.json"
+  },
+  {
+    "sha256": "A1D10E7C20732D15EEE7671AEDBFC2DAC5CDFC34F356C6BA81E9DB76D9D6C898",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\final-fallback.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\final-fallback.json"
+  },
+  {
+    "sha256": "4D624F5FA697725C457ACEEA44A83A354FAA29B3B3FA8C92ACD1FB471650DA11",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\final.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\final.json"
+  },
+  {
+    "sha256": "EC2CFF662DAC4007882E9EE1FF5AD098E5D23FE71FFE9F672D5DB6B825A07B4D",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\google.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\google.json"
+  },
+  {
+    "sha256": "8793BAC02CEEA9959A41A7B2AB24573F918EEBDD78764047540BB28D4322818E",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\openai52.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\openai52.json"
+  },
+  {
+    "sha256": "B6365C016F6C8349F4BC3CC7D0A307FAB1542B91B5F9CD855791321DD66A238E",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\summary30.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\summary30.json"
+  },
+  {
+    "sha256": "30EF261E542A4C4588BF55F89DB3EFED12ADBE3895DEE589D0608756BD36AD70",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\summary45.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\configs\\summary45.json"
+  },
+  {
+    "sha256": "26C46C427FB127DE0A0BBC96F563C6716FE9BD8F0E168B81192D70635A3B1CA5",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\profile\\AppData\\Local\\Microsoft\\PowerShell\\StartupProfileData-NonInteractive",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\second-outer-negative-609b\\root-609b-273-20261016\\profile\\AppData\\Local\\Microsoft\\PowerShell\\StartupProfileData-NonInteractive"
+  }
+]

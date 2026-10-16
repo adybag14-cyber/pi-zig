@@ -1,0 +1,9 @@
+{
+  "phase": "post",
+  "freeze": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Freeze-Latest4ddSource.ps1",
+  "candidate_head": "609b76f4979bfd2943d689e502dff4831b72c030",
+  "additional_controls": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\run-controls.json",
+  "receipt": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\final-fullhash.json",
+  "manifest": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\full-before.json",
+  "mode": "hash"
+}

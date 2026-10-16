@@ -96,6 +96,7 @@ function Child-Environment {
     return @{
         SystemRoot='C:\Windows';WINDIR='C:\Windows';ComSpec='C:\Windows\System32\cmd.exe';
         PATH='C:\Windows\System32;C:\Windows;C:\Program Files\PowerShell\7;C:\Program Files\Git\cmd;C:\Program Files\nodejs';
+        PATHEXT='.EXE';
         TEMP=(Join-Path $taskRun 'temp');TMP=(Join-Path $taskRun 'temp');
         HOME=(Join-Path $taskRun 'profile');USERPROFILE=(Join-Path $taskRun 'profile');
         HOMEDRIVE='C:';HOMEPATH=((Join-Path $taskRun 'profile').Substring(2));

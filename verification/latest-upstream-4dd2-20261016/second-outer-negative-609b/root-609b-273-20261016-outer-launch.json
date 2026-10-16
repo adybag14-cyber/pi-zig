@@ -1,0 +1,9 @@
+{
+  "pid": 12780,
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "created_utc": "2026-10-16T15:13:17.7405954Z",
+  "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Run-Latest4ddSerialCapture.ps1 -CandidateHead 609b76f4979bfd2943d689e502dff4831b72c030 -RunId root-609b-273-20261016 -RootGrant C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-root-grant-609b-20261016.json",
+  "launcher_sha256": "6692F143302F3CAA8C9EBB490C265610D7CE13957AC35A7C329FEA670CDC584A",
+  "run_id": "root-609b-273-20261016",
+  "observed_utc": "2026-10-16T15:13:18.1230155+00:00"
+}
