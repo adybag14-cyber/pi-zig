@@ -100,8 +100,11 @@ fn build(engine: *em.Engine) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const owner = try scope.object();
-    const document = try parse(&scope, @embedFile("../ai/catalog_source.json"), "builtin-catalog.json");
-    const manifest = try parse(&scope, @embedFile("../ai/catalog_builtin_manifest.json"), "builtin-catalog-manifest.json");
+    const source_bytes = @embedFile("../ai/catalog_source.json");
+    const manifest_bytes = @embedFile("../ai/catalog_builtin_manifest.json");
+    try group_order.validateAuthority(source_bytes, manifest_bytes);
+    const document = try parse(&scope, source_bytes, "builtin-catalog.json");
+    const manifest = try parse(&scope, manifest_bytes, "builtin-catalog-manifest.json");
     try scope.put(owner, "generatedAt", try scope.get(manifest, "generatedAt"));
     inline for (.{ "chat", "image", "classifier" }) |kind| {
         const table = try scope.object();
@@ -123,7 +126,11 @@ fn build(engine: *em.Engine) !c.JSValue {
         defer row.deinit();
         const provider = try engine.toString(try row.get(model, "provider"));
         defer engine.gpa.free(provider);
-        if (!group_order.grouped(provider)) try insertModel(&row, owner, model);
+        if (group_order.grouped(provider)) {
+            const api = try engine.toString(try row.get(model, "api"));
+            defer engine.gpa.free(api);
+            try group_order.requireDeclaredApi(provider, api);
+        } else try insertModel(&row, owner, model);
     }
     // The normalized document sorts IDs across APIs. Source flattens each
     // provider's declared API groups in order; retain the same actual model
