@@ -90,7 +90,7 @@ const Plan = struct {
     fn importStatement(p: *Plan, n: c.TSNode) Error!void {
         if (p.options.typescript) for (0..c.ts_node_named_child_count(p.original_root)) |index| {
             const original = c.ts_node_named_child(p.original_root, @intCast(index));
-            if (is(original, "import_statement") and range(original).start == range(n).start and typeOnlySpecifiers(original, p.original)) return p.erase(range(n));
+            if (is(original, "import_statement") and range(original).start == range(n).start and (hasToken(original, "type") or typeOnlySpecifiers(original, p.original))) return p.erase(range(n));
         };
         const src = field(n, "source"); if (c.ts_node_is_null(src)) return error.UnsupportedModuleImport;
         const source_index = try p.sourceIndex(p.text(src)); var has_clause = false;
@@ -140,8 +140,7 @@ const Plan = struct {
                 try p.addExport("default", p.text(name), .class);
                 try p.erase(.{ .start = range(n).start, .end = range(value).start }); return;
             }
-            var expression = value;
-            while (is(expression, "parenthesized_expression") and c.ts_node_named_child_count(expression) == 1) expression = c.ts_node_named_child(expression, 0);
+            const expression = unwrapped(value);
             if (any(expression, &.{ "arrow_function", "function_expression", "class" })) return error.UnsupportedModuleForm;
             try p.addExport("default", "_default", .constant);
             try p.edit(.{ .start = range(n).start, .end = range(value).start }, "var _default = exports[\"default\"] = (");
@@ -220,14 +219,12 @@ const Plan = struct {
         if (function_depth == 0 and is(n, "return_statement")) return error.UnsupportedModuleEvaluation;
         if (function_depth == 0 and is(n, "await_expression") and !p.options.async_mode) return error.UnsupportedModuleEvaluation;
         if (is(n, "call_expression")) {
-            var callee = field(n, "function");
-            while (is(callee, "parenthesized_expression") and c.ts_node_named_child_count(callee) == 1) callee = c.ts_node_named_child(callee, 0);
+            const callee = unwrapped(field(n, "function"));
             if (is(callee, "import") or (is(callee, "identifier") and std.mem.eql(u8, p.text(callee), "eval"))) return error.UnsupportedModuleEvaluation;
         }
         if (any(n, &.{ "assignment_expression", "augmented_assignment_expression" })) try p.writeTarget(field(n, "left"), 0);
         if (is(n, "unary_expression") and hasToken(n, "delete")) {
-            var argument = field(n, "argument");
-            while (is(argument, "parenthesized_expression") and c.ts_node_named_child_count(argument) == 1) argument = c.ts_node_named_child(argument, 0);
+            const argument = unwrapped(field(n, "argument"));
             if (is(argument, "identifier")) return error.UnsupportedModuleEvaluation;
         }
         if (is(n, "update_expression")) try p.writeTarget(field(n, "argument"), 0);
@@ -244,8 +241,13 @@ const Plan = struct {
             // Binding identifiers were checked above and are never rewritten.
             if (!isBindingIdentifier(n, parent)) try p.reference(n);
         } else if (is(n, "shorthand_property_identifier")) try p.reference(n);
-        const next_depth = function_depth + @as(usize, @intFromBool(any(n, &.{ "function_declaration", "generator_function_declaration", "function_expression", "generator_function", "arrow_function", "method_definition" })));
-        for (0..c.ts_node_named_child_count(n)) |index| try p.walk(c.ts_node_named_child(n, @intCast(index)), depth + 1, next_depth);
+        const function_node = any(n, &.{ "function_declaration", "generator_function_declaration", "function_expression", "generator_function", "arrow_function" });
+        for (0..c.ts_node_named_child_count(n)) |index| {
+            const child = c.ts_node_named_child(n, @intCast(index));
+            // Computed method names run in the surrounding evaluation scope.
+            const method_body = is(n, "method_definition") and (same(child, field(n, "parameters")) or same(child, field(n, "body")));
+            try p.walk(child, depth + 1, function_depth + @as(usize, @intFromBool(function_node or method_body)));
+        }
     }
     fn initializeExports(p: *Plan) Error!void {
         for (p.declarations.items) |d| {
@@ -317,9 +319,22 @@ fn flush(writer: *std.Io.Writer, names: []const []const u8) Error!void {
 }
 fn hasToken(n: c.TSNode, token: []const u8) bool { for (0..c.ts_node_child_count(n)) |index| if (is(c.ts_node_child(n, @intCast(index)), token)) return true; return false; }
 fn anonymousInitializer(input: c.TSNode) bool {
-    var n = input;
-    while (is(n, "parenthesized_expression") and c.ts_node_named_child_count(n) == 1) n = c.ts_node_named_child(n, 0);
+    const n = unwrapped(input);
     return is(n, "arrow_function") or (any(n, &.{ "function_expression", "generator_function", "class" }) and c.ts_node_is_null(field(n, "name")));
+}
+fn unwrapped(input: c.TSNode) c.TSNode {
+    var n = input;
+    while (is(n, "parenthesized_expression")) {
+        var only: ?c.TSNode = null;
+        for (0..c.ts_node_named_child_count(n)) |index| {
+            const child = c.ts_node_named_child(n, @intCast(index));
+            if (is(child, "comment")) continue;
+            if (only != null) return n;
+            only = child;
+        }
+        n = only orelse return n;
+    }
+    return n;
 }
 fn same(a: c.TSNode, b: c.TSNode) bool { return !c.ts_node_is_null(a) and !c.ts_node_is_null(b) and range(a).start == range(b).start and range(a).end == range(b).end; }
 fn isBindingIdentifier(n: c.TSNode, parent: c.TSNode) bool {
@@ -338,7 +353,10 @@ fn originalPreflight(n: c.TSNode, source: []const u8, options: Options, depth: u
         if (!identifier(text) or std.mem.eql(u8, text, "_default") or std.mem.startsWith(u8, text, "__pi_cjs_")) return error.UnsupportedModuleIdentifier;
     }
     if (any(n, &.{ "enum_declaration", "internal_module", "import_alias", "export_assignment", "decorator", "using_declaration", "jsx_element", "jsx_self_closing_element", "jsx_fragment" })) return error.UnsupportedModuleRuntimeSyntax;
-    if (!options.typescript and any(n, &.{ "type_annotation", "type_arguments", "type_parameters", "interface_declaration", "type_alias_declaration", "ambient_declaration", "as_expression", "satisfies_expression", "non_null_expression" })) return error.UnsupportedModuleRuntimeSyntax;
+    if (any(n, &.{ "type_assertion", "asserts_annotation", "type_predicate_annotation" })) return error.UnsupportedModuleRuntimeSyntax;
+    if (!options.typescript and any(n, &.{ "type_annotation", "type_arguments", "type_parameters", "interface_declaration", "type_alias_declaration", "ambient_declaration", "as_expression", "satisfies_expression", "non_null_expression", "optional_parameter", "accessibility_modifier", "override_modifier", "implements_clause", "function_signature", "abstract_method_signature" })) return error.UnsupportedModuleRuntimeSyntax;
+    if (!options.typescript and any(n, &.{ "import_statement", "import_specifier", "export_statement", "export_specifier" }) and hasToken(n, "type")) return error.UnsupportedModuleRuntimeSyntax;
+    if (!options.typescript and any(n, &.{ "class", "class_declaration", "method_definition", "public_field_definition" }) and (hasToken(n, "abstract") or hasToken(n, "readonly") or hasToken(n, "?") or hasToken(n, "!"))) return error.UnsupportedModuleRuntimeSyntax;
     if (options.typescript and is(n, "import_specifier")) {
         const name = range(field(n, "name"));
         if (std.mem.eql(u8, source[name.start..name.end], "type")) return error.UnsupportedModuleImport;

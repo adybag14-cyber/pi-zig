@@ -17,7 +17,10 @@
     {"id":"group-duplicate-import-source","typescript":false,"async":false,"filename":"duplicate.js","source":"import { value } from './effect.cjs'; import './effect.cjs'; import { second } from './effect.cjs'; export default function inspect() { return [value, second, globalThis.fixtureTrace]; }","files":{"effect.cjs":"globalThis.fixtureTrace.push('one physical dependency'); module.exports={value:1,second:2};"},"purpose":"A repeated source has one dependency load expression and live shared namespace."},
     {"id":"async-wrapper-raw-completion","typescript":true,"async":true,"filename":"pending.ts","source":"import { value } from './effect.cjs'; await globalThis.fixtureGate; export const ready = value; export default function inspect() { return ready; }","files":{"effect.cjs":"module.exports.value = 42;"},"purpose":"Actual async VM wrapper, sequential awaited jitiImport and no extra adoption wrapper in eval.invoke."},
     {"id":"raw-imported-call-reason","typescript":true,"async":false,"filename":"raw.ts","source":"import { fail } from './raw.cjs'; export default function extension() { return fail(); }","files":{"raw.cjs":"module.exports.fail = function fail() { throw globalThis.fixtureRawReason; };"},"purpose":"Caller supplied raw thrown identity survives the actual imported call."},
-    {"id":"hoisted-function-alias-header","typescript":true,"async":false,"filename":"hoisted.ts","source":"function ready() { return 'ready'; } export { ready as z, ready as a }; export const middle = 1; export default function inspect() { return Object.keys(exports); }","purpose":"Babel creates one hoisted initialization entry keyed by its first alias, not independent sorted function assignments."}
+    {"id":"hoisted-function-alias-header","typescript":true,"async":false,"filename":"hoisted.ts","source":"function ready() { return 'ready'; } export { ready as z, ready as a }; export const middle = 1; export default function inspect() { return Object.keys(exports); }","purpose":"Babel creates one hoisted initialization entry keyed by its first alias, not independent sorted function assignments."},
+    {"id":"comment-parenthesized-arrow-alias-name","typescript":true,"async":false,"filename":"comment-arrow.ts","source":"const original = ( /*owned*/ () => 1 ); export { original as alias }; export default function inspect() { return [original.name, exports.alias === original]; }","purpose":"Comment named nodes do not hide an anonymous initializer; post-declaration publication preserves name original, not alias."},
+    {"id":"whole-type-import-with-comment-value-reference","typescript":true,"async":false,"filename":"whole-type-comment.ts","source":"import /*owned*/ type { Value } from './must-not-exist.cjs'; export const seen = typeof Value;","purpose":"Whole explicit type import erases via its original AST token even with comments and a value reference; no dependency load or import rewrite is added."},
+    {"id":"async-computed-method-name","typescript":true,"async":true,"filename":"computed.ts","source":"export class Named { [await Promise.resolve('owned')]() { return 42; } } export default function inspect() { return new Named().owned(); }","purpose":"Computed method name evaluates in the surrounding async wrapper; method body has its own function scope."}
   ],
   "unsupported_prepare_inputs": [
     {"id":"mutable-export","source":"globalThis.fixtureMarker++; export let value=1; value++;"},
@@ -39,7 +42,21 @@
     {"id":"prototype-export","source":"const value=1; export {value as __proto__};"},
     {"id":"destructured-export","source":"export const first=1, {second}={second:2};"},
     {"id":"multiple-anonymous-initializer-publications","source":"export const first=()=>1, second=()=>2;"},
-    {"id":"no-runtime-export","source":"import './dependency';"}
+    {"id":"no-runtime-export","source":"import './dependency';"},
+    {"id":"comment-parenthesized-direct-eval","source":"export default function extension() { return ( /*owned*/ eval )('typeof __pi_cjs_import_0'); }"},
+    {"id":"comment-parenthesized-default-arrow","source":"export default ( /*owned*/ () => 1 );"},
+    {"id":"comment-parenthesized-default-class","source":"export default ( /*owned*/ class {} );"},
+    {"id":"sync-computed-class-method-await","source":"export class Named { [await Promise.resolve('owned')]() {} }"},
+    {"id":"sync-computed-object-method-await","source":"export const object = { [await Promise.resolve('owned')]() {} };"},
+    {"id":"javascript-optional-parameter","typescript":false,"source":"export default function extension(value?) { return value; }"},
+    {"id":"javascript-readonly-field","typescript":false,"source":"export class Named { readonly value=1; }"},
+    {"id":"javascript-optional-field","typescript":false,"source":"export class Named { value?; }"},
+    {"id":"javascript-definite-field","typescript":false,"source":"export class Named { value!; }"},
+    {"id":"javascript-type-only-specifier","typescript":false,"source":"import { type Value } from './dependency'; export default function extension() {}"},
+    {"id":"javascript-optional-method","typescript":false,"source":"export class Named { value?() {} }"},
+    {"id":"new-target-explicit-boundary","source":"export default function extension() { return new.target; }"},
+    {"id":"angle-type-assertion-unhandled","source":"export const value = <number>1;"},
+    {"id":"predicate-type-erasure-unhandled","source":"export function isValue(value: unknown): value is string { return typeof value === 'string'; }"}
   ],
   "unexecuted_native_callback_checks": [
     "compile/invoke fresh tagged exact identity and already-uncatchable escape",
