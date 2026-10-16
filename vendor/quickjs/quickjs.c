@@ -57133,6 +57133,12 @@ static JSValue js_promise_resolve_thenable_job(JSContext *ctx,
     if (JS_IsException(res)) {
         JSValue error = JS_GetException(ctx);
         res = JS_Call(ctx, args[1], JS_UNDEFINED, 1, vc(&error));
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            fatal = JS_GetException(ctx);
+            JS_FreeValue(ctx, error);
+            goto fatal_cleanup;
+        }
         JS_FreeValue(ctx, error);
     }
     JS_FreeValue(ctx, args[0]);
@@ -57263,11 +57269,22 @@ static JSValue js_promise_resolve_function_call(JSContext *ctx,
     fail_reject:
         error = JS_GetException(ctx);
         fulfill_or_reject_promise(ctx, s->promise, error, true);
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            JSValue fatal = JS_GetException(ctx);
+            JS_FreeValue(ctx, error);
+            return JS_Throw(ctx, fatal);
+        }
         JS_FreeValue(ctx, error);
     } else if (!JS_IsFunction(ctx, then)) {
         JS_FreeValue(ctx, then);
     done:
         fulfill_or_reject_promise(ctx, s->promise, resolution, is_reject);
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            JSValue fatal = JS_GetException(ctx);
+            return JS_Throw(ctx, fatal);
+        }
     } else {
         args[0] = s->promise;
         args[1] = resolution;
