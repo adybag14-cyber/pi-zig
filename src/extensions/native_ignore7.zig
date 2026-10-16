@@ -235,7 +235,7 @@ fn cachedTest(scope: *Scope, receiver: c.JSValue, path: c.JSValue, cache: c.JSVa
     if (try v.js.hasKey(scope.engine, cache, path)) return scope.own(try v.js.getKey(scope.engine, cache, path));
     const parent_path = try parent(scope, path);
     const above = if (scope.truthy(parent_path)) try scope.invoke(receiver, "_t", &.{ parent_path, cache, boolean(scope, check_unignored) }) else c.pi_js_undefined();
-    const result = if (!c.JS_IsUndefined(above) and scope.truthy(try scope.get(above, "ignored"))) above else try scope.invoke(try scope.get(receiver, "_rules"), "test", &.{ path, boolean(scope, check_unignored), try scope.text("regex") });
+    const result = if (scope.truthy(above) and scope.truthy(try scope.get(above, "ignored"))) above else try scope.invoke(try scope.get(receiver, "_rules"), "test", &.{ path, boolean(scope, check_unignored), try scope.text("regex") });
     try v.js.setKey(scope.engine, cache, path, result);
     return result;
 }

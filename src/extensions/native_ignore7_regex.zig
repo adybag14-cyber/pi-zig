@@ -78,7 +78,12 @@ fn bracket(scope: *Scope, pattern: []const u16, start: usize) !?Bracket {
             previous = pattern[index];
         } else if (char == '-' and previous != null and index + 1 < pattern.len and pattern[index + 1] != ']') {
             index += 1;
-            if (pattern[index] == '\\') index += 1;
+            if (pattern[index] == '\\') {
+                index += 1;
+                // Source compares the previous member with undefined (false),
+                // then its next scan iteration returns null for this bracket.
+                if (index >= pattern.len) return null;
+            }
             const to = pattern[index];
             if (previous.? <= to) { try body.append(gpa, '-'); try member(&body, gpa, to); }
             previous = null;
@@ -133,7 +138,15 @@ fn extract(scope: *Scope, value: c.JSValue) !Extracted {
     while (index < pattern.len) {
         const char = pattern[index];
         if (char == '\\') {
-            const escaped = pattern[index + 1]; // checkPattern excludes lone final backslash.
+            // checkPattern admits odd trailing runs >=3, and a pattern getter
+            // can change after checking. Source holds its undefined next unit;
+            // the eventual genuine replace callback performs the coercion.
+            if (index + 1 >= pattern.len) {
+                try hold(scope, &out, sources, c.pi_js_undefined());
+                index += 2;
+                continue;
+            }
+            const escaped = pattern[index + 1];
             if (escaped == '*' or escaped == '[' or escaped == ' ' or escaped == '\\') {
                 try out.appendSlice(scope.engine.gpa, pattern[index .. index + 2]);
             } else {
@@ -289,7 +302,8 @@ fn pin(scope: *Scope, value: c.JSValue) !c.JSValue {
                 if (end >= source.len or depth == 0) break;
             }
             if (end < source.len and (source[end] == '*' or source[end] == '+' or source[end] == '?')) end += 1;
-            token.end = end;
+            // Source's slice(index,end) clamps an off-end escape to length.
+            token.end = @min(end, source.len);
             token.boundary = true;
         } else if (char == '^' or char == '$') token.boundary = true;
         if (token.boundary) {

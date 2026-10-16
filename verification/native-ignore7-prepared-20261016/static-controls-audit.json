@@ -6,9 +6,10 @@
   "originalApiRows": 65,
   "originalCases": 2375,
   "additiveLivePrototypeCases": 12,
-  "totalPlannedCases": 2387,
+  "totalPlannedCases": 2399,
   "actualCapturedCases": null,
   "actualNativeTestMetadata": null,
   "protectedRootCount": 10073,
-  "protectedRootChanges": 0
+  "protectedRootChanges": 0,
+  "independentReviewScannerCases": 12
 }
