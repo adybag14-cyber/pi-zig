@@ -4,8 +4,8 @@
   "products": [
     {
       "path": "src/extensions/native_jiti_eval_module.zig",
-      "sha256": "38E08DE20B7C6F49F567346160C97BB530DC6A40909DABDF13DB4740E4BEDEE2",
-      "bytes": 12010
+      "sha256": "4B4A0380A1F02C918E76843D64F00B03C54F516B29FE8BC3F17F3E655C0C8F9D",
+      "bytes": 12697
     },
     {
       "path": "src/native_jiti_eval_module_controls.zig",
@@ -34,13 +34,13 @@
   "controls": [
     {
       "path": "verification/jiti-transformed-eval-sourceonly-20261017/README.md",
-      "sha256": "05B65BD29C7F88916A4313C59A7316CC525DDAA80B0331196F916945BD3C0D84",
-      "bytes": 5225
+      "sha256": "9821E352738D5DC7E0E14E0ECB2AC023D626606BA378E1492E520C366A3116C4",
+      "bytes": 5852
     },
     {
       "path": "verification/jiti-transformed-eval-sourceonly-20261017/causal-inputs.json",
-      "sha256": "EB2C917C344D51E045AACAAC37E42D4D0D71640081F09E15FA2260B5B6681F27",
-      "bytes": 4883
+      "sha256": "28730689DE663C2EFD03B2E99AE1A35AE9D69D78F115D9C2F3562ED96BCAA802",
+      "bytes": 6066
     },
     {
       "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/src__eval.ts.txt",
@@ -178,7 +178,7 @@
   "protected_drift": 0,
   "native_control_entrypoints": 5,
   "native_guest_programs": 1,
-  "causal_input_count": 12,
+  "causal_input_count": 13,
   "expected": "src/extensions/fixtures/jiti-transformed-eval-2_7.expected.json",
   "expected_absent": true,
   "host_entry": "evaluateTransformed(engine, actual Inputs, real front-end TransformedRequest)",
@@ -204,5 +204,6 @@
   "engine_changed": false,
   "graph2_defaultinterop_reclamation_unqualified": true,
   "error_capture_stack_code_present_c2": true,
-  "error_capture_stack_behavior_qualified": false
+  "error_capture_stack_behavior_qualified": false,
+  "ignored_statement_returns_immediately_freed": true
 }

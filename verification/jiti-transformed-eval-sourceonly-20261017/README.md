@@ -42,6 +42,9 @@ ordinary callable. No manual thenable driver or AF/prototype retagging exists.
 Source's Promise.resolve(evalResult).then(next) returns the actual raw .then
 result, with real live callees/receivers/getters. Async rejection does not gain
 extra synchronous catch cleanup. The next function remains ordinary.
+Ignored push/debug/onError/capture returns are immediately freed by narrow
+statement-call helpers, before later guest callbacks. They never enter the
+enclosing broad Scope's retained values; no shared Scope implementation changes.
 
 The real parse-marker branch preserves three mod.exports and two marker reads
 when truthy, destructuring and template conversion order, actual Error creation,
@@ -61,10 +64,15 @@ Node/V8 filename diagnostics or lone-surrogate stack parity.
 Five prepared native entrypoints require actual subjects and accepted Source
 observations: real Module/cache/export identity, publication-before-async-finish,
 returning onError trace/finish, missing required binding before publication,
-and API12a rejection before publication. Twelve causal inputs specify real
+and API12a rejection before publication. Thirteen causal inputs specify real
 original-source module bodies and actual callbacks/options, including cycles,
 cleanup override, live async reads, raw .then result, parse-marker effects and
 fatal boundaries. They are not expected observations. No new expected exists.
+The additive ignored-return control uses an actual returning onError object,
+genuine FinalizationRegistry cleanup, and bounded actual VM GC/job execution at
+the real loaded setter. It uses no WeakRef kept-object inference or substitute
+factory. This native ownership probe is prepared only; it asserts no portable
+Node GC scheduling oracle and requires complete actual subjects before running.
 The final native allocation/collection/teardown and genuine original Source
 capture still need separate bounded Root grants and complete actual subjects.
 

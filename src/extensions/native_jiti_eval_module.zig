@@ -37,6 +37,16 @@ pub const TransformedRequest = struct {
 fn put(engine: *v.em.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, object, name, c.JS_DupValue(engine.context, value), c.JS_PROP_C_W_E | c.JS_PROP_THROW) < 0) return v.js.capture(engine);
 }
+/// Source expression statements discard their call result before later guest
+/// callbacks. Never put an ignored return in the enclosing broad Scope roots.
+fn callIgnored(engine: *v.em.Engine, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !void {
+    const result = try v.js.call(engine, function, receiver, args);
+    engine.freeValue(result);
+}
+fn invokeIgnored(engine: *v.em.Engine, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !void {
+    const function = try v.js.get(engine, receiver, name); defer engine.freeValue(function);
+    try callIgnored(engine, function, receiver, args);
+}
 fn requireBindings(engine: *v.em.Engine, inputs: Inputs) !void {
     inline for (.{ "module_constructor", "nested_create_jiti", "pathe_dirname", "jiti_require", "debug" }) |field|
         if (!c.JS_IsFunction(engine.context, @field(inputs, field))) return error.RequiredActualJitiEvaluationBinding;
@@ -81,7 +91,7 @@ fn evaluate(engine: *v.em.Engine, inputs: Inputs, request: TransformedRequest) !
             const included_children = try s.get(try s.get(request.context, "parentModule"), "children");
             if (!s.truthy(try s.invoke(included_children, "includes", &.{module}))) {
                 const pushed_children = try s.get(try s.get(request.context, "parentModule"), "children");
-                _ = try s.invoke(pushed_children, "push", &.{module});
+                try invokeIgnored(engine, pushed_children, "push", &.{module});
             }
         }
     }
@@ -114,13 +124,13 @@ fn evaluate(engine: *v.em.Engine, inputs: Inputs, request: TransformedRequest) !
         if (s.equal(try s.get(reason, "name"), try s.text("SyntaxError")) and
             s.truthy(try s.get(request.eval_options, "async")) and
             s.truthy(try s.get(request.context, "nativeImport"))) {
-            _ = try s.call(inputs.debug, c.pi_js_undefined(), &.{ request.context, try s.text("[esm]"), try s.text("[import]"), try s.text("[fallback]"), request.filename });
+            try callIgnored(engine, inputs.debug, c.pi_js_undefined(), &.{ request.context, try s.text("[esm]"), try s.text("[import]"), try s.text("[fallback]"), request.filename });
             // The real esmEval data/temp-file fallback is still absent. Never
             // substitute a fake function or silently take the ordinary catch.
             return error.RequiredActualJitiEsmEval;
         }
         try cache.afterEvalFailure(engine, request.context, request.filename);
-        _ = try s.invoke(request.context, "onError", &.{reason});
+        try invokeIgnored(engine, request.context, "onError", &.{reason});
         // Source onError may return: compiled remains undefined and evaluation
         // then throws its actual TypeError inside the next Source catch.
     }
@@ -131,7 +141,7 @@ fn evaluate(engine: *v.em.Engine, inputs: Inputs, request: TransformedRequest) !
     } else |err| {
         const reason = try takeCaught(engine, err, invoke_generation); defer engine.freeValue(reason);
         try cache.afterEvalFailure(engine, request.context, request.filename);
-        _ = try s.invoke(request.context, "onError", &.{reason});
+        try invokeIgnored(engine, request.context, "onError", &.{reason});
         // Returning onError leaves evalResult undefined, then reaches next().
     }
     if (!s.truthy(try s.get(request.eval_options, "async"))) return v.js.call(engine, next, c.pi_js_undefined(), &.{});
@@ -181,8 +191,8 @@ fn finish(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []con
             // constructor/template effects can replace the global binding.
             const capture_owner = try s.global("Error");
             const capture = try s.get(capture_owner, "captureStackTrace");
-            _ = try s.call(capture, capture_owner, &.{ reason, try s.get(roots[0], "jitiRequire") });
-            _ = try s.invoke(context, "onError", &.{reason});
+            try callIgnored(engine, capture, capture_owner, &.{ reason, try s.get(roots[0], "jitiRequire") });
+            try invokeIgnored(engine, context, "onError", &.{reason});
         }
     }
     return cache.loadedExports(engine, context, module);
