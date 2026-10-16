@@ -1,0 +1,42 @@
+{
+  "status": "source39_v2_controls_sealed_no_admission",
+  "candidate": "c735c1f1b74822f23cca2d79802e27f687ee76e2",
+  "cases": 39,
+  "controls": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\Run-SdkModulePolicySourceV2-20261016.ps1",
+      "sha256": "A7844F41C9CF08BE1491EFAB040EDC0830539F2A7D30F09859EC0B5698502843"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+      "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-probe-inventory-20261016.json",
+      "sha256": "10803529EB33DD6F334A9D1971D5E0EA250DB4A369BB6BA26D2ED50C495D2521"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-observe-20261015.mjs",
+      "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\verification\\sdk-default-real-assembly-4954-20261016\\capture-module-policy-supplement.mjs",
+      "sha256": "20F3D5731460E7B9266E023C6F6A7F414F364370028BE0D58B57D8E1CD4845FC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\verification\\sdk-default-real-assembly-4954-20261016\\module-policy-source39-inventory.json",
+      "sha256": "B65ABE6B46937D2A85EB921045D50A2F07CFC977131FCFAE07BA477ABE2674ED"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\verification\\sdk-default-real-assembly-4954-20261016\\jiti-primary-cache-lifetime-audit.json",
+      "sha256": "E79ED3E78D3F1934388397F2AD5A96716355D2AA464EEABEFA531B7D66174115"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\verification\\sdk-default-real-assembly-4954-20261016\\fresh-root-module-proposal.md",
+      "sha256": "634440803A26A5D264494CAD24C4A9DADE3AD043833EFBFC5854C42FBC5FD1BE"
+    }
+  ],
+  "original_source48_runner_preserved": true,
+  "fmt_ast": false,
+  "source_capture_started": false
+}

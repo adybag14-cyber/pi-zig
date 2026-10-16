@@ -1,0 +1,20 @@
+{
+  "status": "public_source39_prepared_bytes_verified",
+  "head": "c735c1f1b74822f23cca2d79802e27f687ee76e2",
+  "files": [
+    {
+      "path": "verification/sdk-default-real-assembly-4954-20261016/capture-module-policy-supplement.mjs",
+      "sha256": "20F3D5731460E7B9266E023C6F6A7F414F364370028BE0D58B57D8E1CD4845FC"
+    },
+    {
+      "path": "verification/sdk-default-real-assembly-4954-20261016/jiti-primary-cache-lifetime-audit.json",
+      "sha256": "E79ED3E78D3F1934388397F2AD5A96716355D2AA464EEABEFA531B7D66174115"
+    },
+    {
+      "path": "verification/sdk-default-real-assembly-4954-20261016/module-policy-source39-inventory.json",
+      "sha256": "B65ABE6B46937D2A85EB921045D50A2F07CFC977131FCFAE07BA477ABE2674ED"
+    }
+  ],
+  "source_capture_started": false,
+  "native_qualified": false
+}

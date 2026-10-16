@@ -1,0 +1,60 @@
+{
+  "status": "latest4954_reference_prepared_without_source_execution",
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "source_root": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015",
+  "source_tracked_files": 1927,
+  "generated_data_files": 43,
+  "source_full_files": 1970,
+  "generated_data_origin_head": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+  "generated_data_catalog_sha256": "FFA3E98626230F378F80200DEBB736C4A2238B5F2BA246A92CFC7D8E19604678",
+  "generated_data_manifest_sha256": "05A7F9B7D8FC9A28018F38C6EBB4B0321E3C3685FD6BED191730D5B32D9E60AF",
+  "generated_at": "1970-01-01T00:00:00Z",
+  "external_pins": 365,
+  "metadata": 281,
+  "optional_absences": 80,
+  "required_historical_absences": 4,
+  "runtime_rehashed": 31064,
+  "node_rehashed": 1774,
+  "workspaces": 16,
+  "workspace_version": "1.3.0",
+  "source_path_inventory_drift": 0,
+  "tracked_worktree_diff": 0,
+  "prior5ab_and_ae7_source_rehashed_unchanged": true,
+  "junction": {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\node_modules",
+    "raw_target": "\\\\?\\C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules",
+    "resolved_target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules"
+  },
+  "controls": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-full-manifest-20261015.json",
+      "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-runtime-manifest-20261015.json",
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json",
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json",
+      "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs",
+      "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3"
+    }
+  ],
+  "source_execution_performed": false,
+  "build_performed": false,
+  "hydration_executed_in_4954": false,
+  "reused_official_pinned_catalog_qualified": true,
+  "latest4954_namespace_execution_qualified": false,
+  "latest4954_publication_compatibility_gate_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "observed_utc": "2026-10-15T21:52:20.876107+01:00",
+  "observer_node_syntax_check_exit": 0
+}

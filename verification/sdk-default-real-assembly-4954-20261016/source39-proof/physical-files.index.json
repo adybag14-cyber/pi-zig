@@ -1,0 +1,506 @@
+[
+  {
+    "entry": "physical/00/root.cjs",
+    "sha256": "EF20C57F86B1DDB6C78AEF3047DCE5EA39B4A5018287C587FAB8CE77066B8E3A",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-cjs\\root.cjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-cjs\\root.cjs",
+      "sha256": "ef20c57f86b1ddb6c78aef3047dce5ea39b4a5018287c587fab8ce77066b8e3a",
+      "ino": "1407374904544957",
+      "size": "199",
+      "mtimeNs": "1792155894690424000",
+      "ctimeNs": "1792155894690424000",
+      "birthtimeNs": "1792155894681912500"
+    }
+  },
+  {
+    "entry": "physical/01/package.json",
+    "sha256": "DBF8353F77358BC12169B7BB7301E1978D5B503E002EE927229A8993672818FC",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-commonjs\\package.json",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-commonjs\\package.json",
+      "sha256": "dbf8353f77358bc12169b7bb7301e1978d5b503e002ee927229a8993672818fc",
+      "ino": "1407374904544962",
+      "size": "20",
+      "mtimeNs": "1792155894705423600",
+      "ctimeNs": "1792155894705423600",
+      "birthtimeNs": "1792155894705423600"
+    }
+  },
+  {
+    "entry": "physical/02/root.js",
+    "sha256": "EE6BE3C7FCD2780985E2DA572484A0B214E908D5BEEF8173C245ACEAC276F710",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-commonjs\\root.js",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-commonjs\\root.js",
+      "sha256": "ee6be3c7fcd2780985e2da572484a0b214e908d5beef8173c245aceac276f710",
+      "ino": "1407374904544963",
+      "size": "223",
+      "mtimeNs": "1792155894713423800",
+      "ctimeNs": "1792155894713423800",
+      "birthtimeNs": "1792155894706422500"
+    }
+  },
+  {
+    "entry": "physical/03/package.json",
+    "sha256": "1239D4D885DCAD42201A27ED9324F8F0F760B78700D8DB9CED39A511CFFE7EAE",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-esm\\package.json",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-esm\\package.json",
+      "sha256": "1239d4d885dcad42201a27ed9324f8f0f760b78700d8db9ced39a511cffe7eae",
+      "ino": "1407374904544959",
+      "size": "18",
+      "mtimeNs": "1792155894693424200",
+      "ctimeNs": "1792155894693424200",
+      "birthtimeNs": "1792155894693424200"
+    }
+  },
+  {
+    "entry": "physical/04/root.js",
+    "sha256": "A53DA9843120289E03CEC20B91C7030A6D2AFA864B7D430B15D850A716476F59",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-esm\\root.js",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-esm\\root.js",
+      "sha256": "a53da9843120289e03cec20b91c7030a6d2afa864b7d430b15d850a716476f59",
+      "ino": "1688849881255616",
+      "size": "239",
+      "mtimeNs": "1792155894701422700",
+      "ctimeNs": "1792155894701422700",
+      "birthtimeNs": "1792155894694423400"
+    }
+  },
+  {
+    "entry": "physical/05/package.json",
+    "sha256": "CA3D163BAB055381827226140568F3BEF7EAAC187CEBD76878E0B63E9E442356",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-no-type\\package.json",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-no-type\\package.json",
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "ino": "1407374904544965",
+      "size": "3",
+      "mtimeNs": "1792155894716424100",
+      "ctimeNs": "1792155894716424100",
+      "birthtimeNs": "1792155894716424100"
+    }
+  },
+  {
+    "entry": "physical/06/root.js",
+    "sha256": "DA2EB0C8702CD866740D091E15F4772150949DF3B70D61DB851179B77CDDDAA6",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-no-type\\root.js",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-js-no-type\\root.js",
+      "sha256": "da2eb0c8702cd866740d091e15f4772150949df3b70d61db851179b77cdddaa6",
+      "ino": "1407374904544966",
+      "size": "220",
+      "mtimeNs": "1792155894724423000",
+      "ctimeNs": "1792155894724423000",
+      "birthtimeNs": "1792155894717422800"
+    }
+  },
+  {
+    "entry": "physical/07/root.mjs",
+    "sha256": "E4F53C54C2D56B053307361D7DFDD0DABE06C169E09A392CEFD9BE9B0FD32019",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-mjs\\root.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\direct-mjs\\root.mjs",
+      "sha256": "e4f53c54c2d56b053307361d7dfdd0dabe06c169e09a392cefd9be9b0fd32019",
+      "ino": "1688849881255610",
+      "size": "230",
+      "mtimeNs": "1792155894678912500",
+      "ctimeNs": "1792155894678912500",
+      "birthtimeNs": "1792155894661401400"
+    }
+  },
+  {
+    "entry": "physical/08/dependency.cjs",
+    "sha256": "F25419E923046AAC9486DB4CD0612F326B3AFF56124593FB3723F999341856F1",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-cjs\\dependency.cjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-cjs\\dependency.cjs",
+      "sha256": "f25419e923046aac9486db4cd0612f326b3aff56124593fb3723f999341856f1",
+      "ino": "1407374904544978",
+      "size": "201",
+      "mtimeNs": "1792155894889671300",
+      "ctimeNs": "1792155894889671300",
+      "birthtimeNs": "1792155894867653200"
+    }
+  },
+  {
+    "entry": "physical/09/late-root.ts",
+    "sha256": "3772DBC039D0DA985CB1BE028158AA73316341FB332772E5F6AC7724210999A3",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-cjs\\late-root.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-cjs\\late-root.ts",
+      "sha256": "3772dbc039d0da985cb1be028158aa73316341fb332772e5f6ac7724210999a3",
+      "ino": "1407374904544981",
+      "size": "214",
+      "mtimeNs": "1792155894878162700",
+      "ctimeNs": "1792155894878162700",
+      "birthtimeNs": "1792155894878162700"
+    }
+  },
+  {
+    "entry": "physical/10/root.ts",
+    "sha256": "0F799ADB2FF39DA81DD378BD0FBC8B743B5F823ED888794A0D5FC1DEB89902B7",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-cjs\\root.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-cjs\\root.ts",
+      "sha256": "0f799adb2ff39da81dd378bd0fbc8b743b5f823ed888794a0d5fc1deb89902b7",
+      "ino": "1407374904544979",
+      "size": "214",
+      "mtimeNs": "1792155894891670300",
+      "ctimeNs": "1792155894891670300",
+      "birthtimeNs": "1792155894868653500"
+    }
+  },
+  {
+    "entry": "physical/11/dependency.mjs",
+    "sha256": "2A2A0B1E1F952DA66E6F726AB6C7EBB093F2E666638F2E94387347AA5DD431A3",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-esm\\dependency.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-esm\\dependency.mjs",
+      "sha256": "2a2a0b1e1f952da66e6f726ab6c7ebb093f2e666638f2e94387347aa5dd431a3",
+      "ino": "1407374904544984",
+      "size": "212",
+      "mtimeNs": "1792155894924670200",
+      "ctimeNs": "1792155894924670200",
+      "birthtimeNs": "1792155894903672000"
+    }
+  },
+  {
+    "entry": "physical/12/late-root.ts",
+    "sha256": "082CA28D03733FC18D0001FDB59E153F7BB854A3C62068236F3442878AA297EA",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-esm\\late-root.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-esm\\late-root.ts",
+      "sha256": "082ca28d03733fc18d0001fdb59e153f7bb854a3c62068236f3442878aa297ea",
+      "ino": "5066549601793432",
+      "size": "214",
+      "mtimeNs": "1792155894913671000",
+      "ctimeNs": "1792155894913671000",
+      "birthtimeNs": "1792155894913671000"
+    }
+  },
+  {
+    "entry": "physical/13/root.ts",
+    "sha256": "2C8362D605F2F3C9DDFC25866F8F681464957998B5B607D275A4A3EB8AF2C1A0",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-esm\\root.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-esm\\root.ts",
+      "sha256": "2c8362d605f2f3c9ddfc25866f8f681464957998b5b607d275a4a3eb8af2c1a0",
+      "ino": "1407374904544985",
+      "size": "214",
+      "mtimeNs": "1792155894926670900",
+      "ctimeNs": "1792155894926670900",
+      "birthtimeNs": "1792155894904670100"
+    }
+  },
+  {
+    "entry": "physical/14/dependency.ts",
+    "sha256": "BBCC47EFED870D5419028A5106C6B11E9BE1824587C986BEA44291EA22A5B34E",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-ts\\dependency.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-ts\\dependency.ts",
+      "sha256": "bbcc47efed870d5419028a5106c6b11e9be1824587c986bea44291ea22a5b34e",
+      "ino": "1407374904544971",
+      "size": "216",
+      "mtimeNs": "1792155894850651100",
+      "ctimeNs": "1792155894850651100",
+      "birthtimeNs": "1792155894742428100"
+    }
+  },
+  {
+    "entry": "physical/15/late-root.ts",
+    "sha256": "BFEB76F47B1FE58D26D9A094191BDFD89F6E2806C922B76691133149F9F098FD",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-ts\\late-root.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-ts\\late-root.ts",
+      "sha256": "bfeb76f47b1fe58d26d9a094191bdfd89f6e2806c922b76691133149f9f098fd",
+      "ino": "1407374904544974",
+      "size": "213",
+      "mtimeNs": "1792155894830649800",
+      "ctimeNs": "1792155894830649800",
+      "birthtimeNs": "1792155894830649800"
+    }
+  },
+  {
+    "entry": "physical/16/root.ts",
+    "sha256": "92FB74D7C5111509CDCA1B64302CCD4D7B149EF0A5A1337FC1A26A4C31E9BBEF",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-ts\\root.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\dynamic-ts\\root.ts",
+      "sha256": "92fb74d7c5111509cdca1b64302ccd4d7b149ef0a5a1337fc1a26a4c31e9bbef",
+      "ino": "1688849881255628",
+      "size": "213",
+      "mtimeNs": "1792155894851649400",
+      "ctimeNs": "1792155894851649400",
+      "birthtimeNs": "1792155894743427400"
+    }
+  },
+  {
+    "entry": "physical/17/package.json",
+    "sha256": "DBF8353F77358BC12169B7BB7301E1978D5B503E002EE927229A8993672818FC",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\package-transition\\package.json",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\package-transition\\package.json",
+      "sha256": "dbf8353f77358bc12169b7bb7301e1978d5b503e002ee927229a8993672818fc",
+      "ino": "1407374904544968",
+      "size": "20",
+      "mtimeNs": "1792155894738430300",
+      "ctimeNs": "1792155894738430300",
+      "birthtimeNs": "1792155894727423900"
+    }
+  },
+  {
+    "entry": "physical/18/root.js",
+    "sha256": "9BEF2A03978B5C5A8BB3972AC49C7E7D4FB920223FE68BDFEA57A2E7137DF8E3",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\package-transition\\root.js",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\package-transition\\root.js",
+      "sha256": "9bef2a03978b5c5a8bb3972ac49c7e7d4fb920223fe68bdfea57a2e7137df8e3",
+      "ino": "1407374904544969",
+      "size": "129",
+      "mtimeNs": "1792155894739430600",
+      "ctimeNs": "1792155894739430600",
+      "birthtimeNs": "1792155894728423800"
+    }
+  },
+  {
+    "entry": "physical/19/dependency.ts",
+    "sha256": "17D42BF3E66A69FE440D835D2F9D2C5D7FB665FE48DE5A54F5B39F7CBE0D3D90",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\parallel\\dependency.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\parallel\\dependency.ts",
+      "sha256": "17d42bf3e66a69fe440d835d2f9d2c5d7fb665fe48de5a54f5b39f7cbe0d3d90",
+      "ino": "4503599648372741",
+      "size": "181",
+      "mtimeNs": "1792155894957669800",
+      "ctimeNs": "1792155894957669800",
+      "birthtimeNs": "1792155894957669800"
+    }
+  },
+  {
+    "entry": "physical/20/root.ts",
+    "sha256": "6359D2A26571AF45E2018DBBBD4AC46FB97EF89E7339D5E9D7B3BAFEB9B9953D",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\parallel\\root.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\parallel\\root.ts",
+      "sha256": "6359d2a26571af45e2018dbbbd4ac46fb97ef89e7339d5e9d7b3bafeb9b9953d",
+      "ino": "4503599648372742",
+      "size": "86",
+      "mtimeNs": "1792155894958672100",
+      "ctimeNs": "1792155894958672100",
+      "birthtimeNs": "1792155894958672100"
+    }
+  },
+  {
+    "entry": "physical/21/dependency.ts",
+    "sha256": "CAB16400E6F726077B5B85D66AAF9BE28276CDE999F45C54D7ADF77151D56DB9",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\stack\\dependency.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\stack\\dependency.ts",
+      "sha256": "cab16400e6f726077b5b85d66aaf9be28276cde999f45c54d7adf77151d56db9",
+      "ino": "5629499555215162",
+      "size": "88",
+      "mtimeNs": "1792155894944670700",
+      "ctimeNs": "1792155894944670700",
+      "birthtimeNs": "1792155894944670700"
+    }
+  },
+  {
+    "entry": "physical/22/dynamic-root.ts",
+    "sha256": "B9F6FBD24F568E96CC7373FACFE8FF9AE83B33751FE4BB92C24904E62EF5F839",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\stack\\dynamic-root.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\stack\\dynamic-root.ts",
+      "sha256": "b9f6fbd24f568e96cc7373facfe8ff9ae83b33751fe4bb92c24904e62ef5f839",
+      "ino": "2533274811397953",
+      "size": "137",
+      "mtimeNs": "1792155894945670200",
+      "ctimeNs": "1792155894945670200",
+      "birthtimeNs": "1792155894945670200"
+    }
+  },
+  {
+    "entry": "physical/23/root.ts",
+    "sha256": "5986CB602C28E09AB1ECF5B182451BB5DF21E84167531BC59E4F73E0379CC49E",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\stack\\root.ts",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\stack\\root.ts",
+      "sha256": "5986cb602c28e09ab1ecf5b182451bb5df21e84167531bc59e4f73e0379cc49e",
+      "ino": "1970324857976582",
+      "size": "84",
+      "mtimeNs": "1792155894938671900",
+      "ctimeNs": "1792155894938671900",
+      "birthtimeNs": "1792155894937671200"
+    }
+  },
+  {
+    "entry": "physical/24/dynamic-cjs-late-root.c550b7af.mjs",
+    "sha256": "A1EB0CA3FC6C9DC013CF832F8554AD906E62605FE60623A5978E020F25CEC467",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-cjs-late-root.c550b7af.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-cjs-late-root.c550b7af.mjs",
+      "sha256": "a1eb0ca3fc6c9dc013cf832f8554ad906e62605fe60623a5978e020f25cec467",
+      "ino": "1407374904544982",
+      "size": "1089",
+      "mtimeNs": "1792155894885161500",
+      "ctimeNs": "1792155894885161500",
+      "birthtimeNs": "1792155894885161500"
+    }
+  },
+  {
+    "entry": "physical/25/dynamic-cjs-root.d18853cd.mjs",
+    "sha256": "94EE91D4AE6DB2F24B2A12DF18D0DEF6BE6AC208D3F9E63E4CB5402214A64AED",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-cjs-root.d18853cd.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-cjs-root.d18853cd.mjs",
+      "sha256": "94ee91d4ae6db2f24b2a12df18d0def6be6ac208d3f9e63e4cb5402214a64aed",
+      "ino": "1407374904544980",
+      "size": "1089",
+      "mtimeNs": "1792155894898671000",
+      "ctimeNs": "1792155894898671000",
+      "birthtimeNs": "1792155894876161200"
+    }
+  },
+  {
+    "entry": "physical/26/dynamic-esm-late-root.f977aaae.mjs",
+    "sha256": "243A02268BE4CFA867E720083E445895D5FAB1D912DA85A5405F8EE64CEF13F8",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-esm-late-root.f977aaae.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-esm-late-root.f977aaae.mjs",
+      "sha256": "243a02268be4cfa867e720083e445895d5fab1d912da85a5405f8ee64cef13f8",
+      "ino": "5348024578504370",
+      "size": "1089",
+      "mtimeNs": "1792155894920671500",
+      "ctimeNs": "1792155894920671500",
+      "birthtimeNs": "1792155894920671500"
+    }
+  },
+  {
+    "entry": "physical/27/dynamic-esm-root.6b43793f.mjs",
+    "sha256": "46EF7A0CEABF0C3115DF76049C32EB76129C6B6269DDE785A4EC33A9338F9B54",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-esm-root.6b43793f.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-esm-root.6b43793f.mjs",
+      "sha256": "46ef7a0ceabf0c3115df76049c32eb76129c6b6269dde785a4ec33a9338f9b54",
+      "ino": "1407374904544986",
+      "size": "1089",
+      "mtimeNs": "1792155894933671100",
+      "ctimeNs": "1792155894933671100",
+      "birthtimeNs": "1792155894911671100"
+    }
+  },
+  {
+    "entry": "physical/28/dynamic-ts-dependency.b98ee17f.mjs",
+    "sha256": "E92E71712B23325067B53923EFA63B633502F6F16F441DFD315E0820F6D98E2C",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-ts-dependency.b98ee17f.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-ts-dependency.b98ee17f.mjs",
+      "sha256": "e92e71712b23325067b53923efa63b633502f6f16f441dfd315e0820f6d98e2c",
+      "ino": "1407374904544976",
+      "size": "576",
+      "mtimeNs": "1792155894864651900",
+      "ctimeNs": "1792155894864651900",
+      "birthtimeNs": "1792155894847650900"
+    }
+  },
+  {
+    "entry": "physical/29/dynamic-ts-late-root.89d488bd.mjs",
+    "sha256": "8F6753B8AA1827BC3E847CE7C0E1FD5E50FA7B39E26B7AA30101F8C51E273F5A",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-ts-late-root.89d488bd.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-ts-late-root.89d488bd.mjs",
+      "sha256": "8f6753b8aa1827bc3e847ce7c0e1fd5e50fa7b39e26b7aa30101f8c51e273f5a",
+      "ino": "1407374904544975",
+      "size": "1088",
+      "mtimeNs": "1792155894841651300",
+      "ctimeNs": "1792155894841651300",
+      "birthtimeNs": "1792155894841651300"
+    }
+  },
+  {
+    "entry": "physical/30/dynamic-ts-root.3af77ea0.mjs",
+    "sha256": "AC24F088BDA76F535F813B5B67C727F752092D4B21FD67BDA0F7D32F6B495C26",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-ts-root.3af77ea0.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\dynamic-ts-root.3af77ea0.mjs",
+      "sha256": "ac24f088bda76f535f813b5b67c727f752092d4b21fd67bda0f7d32f6b495c26",
+      "ino": "1407374904544973",
+      "size": "1088",
+      "mtimeNs": "1792155894859648900",
+      "ctimeNs": "1792155894859648900",
+      "birthtimeNs": "1792155894828650000"
+    }
+  },
+  {
+    "entry": "physical/31/parallel-dependency.06e2ec7c.mjs",
+    "sha256": "AF17301A626F731C291A05FF399C6423E998FF147462540C276762E68E0661EE",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\parallel-dependency.06e2ec7c.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\parallel-dependency.06e2ec7c.mjs",
+      "sha256": "af17301a626f731c291a05ff399c6423e998ff147462540c276762e68e0661ee",
+      "ino": "1407374904555536",
+      "size": "315",
+      "mtimeNs": "1792155894966674500",
+      "ctimeNs": "1792155894966674500",
+      "birthtimeNs": "1792155894966674500"
+    }
+  },
+  {
+    "entry": "physical/32/parallel-root.cde937ed.mjs",
+    "sha256": "2983CB054925630661E1977160FA31EB7DB188A4CD2E491247BB16067666BAC0",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\parallel-root.cde937ed.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\parallel-root.cde937ed.mjs",
+      "sha256": "2983cb054925630661e1977160fa31eb7db188a4cd2e491247bb16067666bac0",
+      "ino": "1688849881266191",
+      "size": "917",
+      "mtimeNs": "1792155894963675300",
+      "ctimeNs": "1792155894963675300",
+      "birthtimeNs": "1792155894963675300"
+    }
+  },
+  {
+    "entry": "physical/33/stack-dependency.73c6a86c.mjs",
+    "sha256": "C0C8A6E766F972A2BBF11310CFA3314B75522270F1ECC2631BAD9D22AD65A8BD",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\stack-dependency.73c6a86c.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\stack-dependency.73c6a86c.mjs",
+      "sha256": "c0c8a6e766f972a2bbf11310cfa3314b75522270f1ecc2631bad9d22ad65a8bd",
+      "ino": "4222124671661993",
+      "size": "242",
+      "mtimeNs": "1792155894955672400",
+      "ctimeNs": "1792155894955672400",
+      "birthtimeNs": "1792155894955672400"
+    }
+  },
+  {
+    "entry": "physical/34/stack-dynamic-root.15f67107.mjs",
+    "sha256": "0586559D8E9A6024C6867B1130B4C4A21C2867FD097FDE6655128C3F66BB0028",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\stack-dynamic-root.15f67107.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\stack-dynamic-root.15f67107.mjs",
+      "sha256": "0586559d8e9a6024c6867b1130b4c4a21c2867fd097fde6655128c3f66bb0028",
+      "ino": "9288674252453787",
+      "size": "942",
+      "mtimeNs": "1792155894951670500",
+      "ctimeNs": "1792155894951670500",
+      "birthtimeNs": "1792155894951670500"
+    }
+  },
+  {
+    "entry": "physical/35/stack-root.d93846c5.mjs",
+    "sha256": "8CFFDDD3E856D6B0C85A106C0AC68725355AE37B2AEACB7041C4DF63DEA738F3",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\stack-root.d93846c5.mjs",
+    "recorded_metadata": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-module-policy-source39-20261016\\sdk-module-policy-source-first-20261016-output.json.physical-files\\tmp\\jiti\\stack-root.d93846c5.mjs",
+      "sha256": "8cffddd3e856d6b0c85a106c0ac68725355ae37b2aeacb7041c4df63dea738f3",
+      "ino": "3659174718240536",
+      "size": "208",
+      "mtimeNs": "1792155894943670900",
+      "ctimeNs": "1792155894943670900",
+      "birthtimeNs": "1792155894943670900"
+    }
+  }
+]
