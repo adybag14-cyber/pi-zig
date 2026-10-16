@@ -123,7 +123,10 @@ pub fn run(storage: *Storage, args: Arguments) !void {
     sequence += 1;
     while (true) {
         const wait = w.WaitForSingleObject(node.info.process.?, @min(250, Deadline.remaining(node_end)));
-        if (wait == w.wait_object) break;
+        if (wait == w.wait_object) {
+            if (w.GetTickCount64() >= node_end) return error.NodeLateCompletion;
+            break;
+        }
         if (wait != w.wait_timeout) return error.NodeWaitFailed;
         if (w.GetTickCount64() >= node_end) return error.Node300SecondTimeout;
         try @import("deadline.zig").requirePressureMargin();

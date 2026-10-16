@@ -258,6 +258,11 @@ pub const Controller = struct {
                         if (w.WaitForSingleObject(handle, 0) != w.wait_object) return error.NodeExitNotSignaled;
                         var exit_code: u32 = 0;
                         if (w.GetExitCodeProcess(handle, &exit_code) == 0 or exit_code != frame.code) return error.NodeExitMismatch;
+                        // A late signal/frame may arrive while pump/probe work
+                        // crosses the boundary. Loop-entry checks alone cannot
+                        // qualify completion observed after the Node deadline.
+                        if (w.GetTickCount64() >= (self.node_end_ms orelse return error.NodeResumeNotAdmitted))
+                            return error.SupervisorNodeLateCompletion;
                         self.node_exit_code = exit_code;
                         if (w.CloseHandle(handle) == 0) return error.NodeDuplicateCloseFailed;
                         self.node_handle = null;
