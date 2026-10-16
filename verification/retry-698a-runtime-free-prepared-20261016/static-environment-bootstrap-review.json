@@ -1,0 +1,78 @@
+{
+  "mode": "SOURCE_ONLY_BOOTSTRAP_CHECKS_PLUS_ONE_PREVIOUSLY_AUTHORIZED_DIAGNOSTIC",
+  "diagnostic_run": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\source160-env-diagnostic-20261016-5eef4051",
+  "diagnostic_pid": 62300,
+  "diagnostic_exit_code": 1,
+  "diagnostic_absence_zero": true,
+  "diagnostic_values_logged": false,
+  "diagnostic_reset_refused_at_PATH": true,
+  "additional_diagnostics_started": 0,
+  "all19_names_match": true,
+  "other16_values_match": true,
+  "normalization_cases": [
+    {
+      "known_normalization_accepted": true,
+      "matches_one_diagnostic": true,
+      "name": "PATH",
+      "normalized_sha256": "CAB991D3F039CF7E5375242F409AFA0011F4D9F59598F6752B53030940CB1EB6",
+      "exact_form_accepted": true,
+      "arbitrary_addition_rejected": true
+    },
+    {
+      "known_normalization_accepted": true,
+      "matches_one_diagnostic": true,
+      "name": "PATHEXT",
+      "normalized_sha256": "95B1B7026CEB29E67AF26926AB564DB1449147D32CF597A794AFC87A78C8AB81",
+      "exact_form_accepted": true,
+      "arbitrary_addition_rejected": true
+    },
+    {
+      "known_normalization_accepted": true,
+      "matches_one_diagnostic": true,
+      "name": "PSModulePath",
+      "normalized_sha256": "0571E25FA3B08FEFB7B6EC2FFA5DF970C76F7F2CD1F4AE9F53A48905123B233E",
+      "exact_form_accepted": true,
+      "arbitrary_addition_rejected": true
+    }
+  ],
+  "parent_invocation_rejected_before_environment_read_or_write": true,
+  "frontends": [
+    {
+      "script": "Run-RuntimeFreeSource160.ps1",
+      "bootstrap_before_cmdlets": true
+    },
+    {
+      "script": "Invoke-RuntimeFreeSource160Controller.ps1",
+      "bootstrap_before_cmdlets": true
+    },
+    {
+      "script": "Invoke-RuntimeFreeSource160Seal.ps1",
+      "bootstrap_before_cmdlets": true
+    },
+    {
+      "script": "Invoke-RuntimeFreeSource160OriginalOwner.ps1",
+      "bootstrap_before_cmdlets": true
+    }
+  ],
+  "bootstrap_command_asts": [
+    "Get-S160Environment",
+    "Get-S160StartupEnvironmentForms",
+    "Test-S160StartupEnvironmentValue"
+  ],
+  "parser_errors": 0,
+  "node_git_capture_jobs_started": 0,
+  "expected160_authored": false,
+  "recorded_utc": "2026-10-16T21:15:26.5939009+01:00",
+  "tool_hashes": {
+    "Start-RuntimeFreeSource160.ps1": "4B5162AD482D6CBE75106C45B7F90DC66CF007FB206252214A703D01B3A6B4A9",
+    "Run-RuntimeFreeSource160.ps1": "6FF5855EA640E94A707C1BF4AF1DD74A1DCA17EE7B876BEA61C827F17E9A96CF",
+    "Invoke-RuntimeFreeSource160Controller.ps1": "A27FEC6463C1B42BDE99B2F640D13CB1F77E3A83409E1410D22E73A03732FE28",
+    "Invoke-RuntimeFreeSource160Seal.ps1": "3E0F51D6867FE85F2DEB570560B79454377DC8F37263F1FEE58AEA8D248CFB83",
+    "Invoke-RuntimeFreeSource160OriginalOwner.ps1": "C47ACFD443C13823BB1C72CD1378012841E8A4AA2EC4EE9DCBEF2ADCAD18CF02",
+    "RuntimeFreeSource160.Common.ps1": "2FF9B97A30B826F8F7C59ADCC9721B84A4C22C3EF1220CF189D3143F76B92D1F",
+    "Confirm-RuntimeFreeSource160Absent.ps1": "F914F612D937075877E09955CC51A3832E5ABBF7442509B7BAC17B89BEEA926C",
+    "Resolve-RuntimeFreeSource160Controls.ps1": "C328E58AC05580DC5361BAC940D8240BEBD0B40A004113849AE46FD7CB7620BF",
+    "guarded-start-fence.mjs": "1624207CB6A393969235F60C87A516B0CA280AF948F3BA4E11508B1ACD2BF470",
+    "ordered-source160-case-ids.json": "9543A0E058D23177FBB52739B7BB4185AAAC9FC7C830468DB6BE58E303621040"
+  }
+}

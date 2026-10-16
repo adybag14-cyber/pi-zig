@@ -79,18 +79,72 @@ function Get-S160Environment([string]$Run){
     @{
         SystemRoot='C:\Windows';WINDIR='C:\Windows';ComSpec='C:\Windows\System32\cmd.exe';PATHEXT='.EXE';
         PATH='C:\Windows\System32;C:\Windows;C:\Program Files\PowerShell\7;C:\Program Files\Git\cmd;C:\Program Files\nodejs';
-        TEMP=(Join-Path $Run 'temp');TMP=(Join-Path $Run 'temp');HOME=(Join-Path $Run 'profile');USERPROFILE=(Join-Path $Run 'profile');
-        HOMEDRIVE='C:';HOMEPATH=((Join-Path $Run 'profile').Substring(2));APPDATA=(Join-Path $Run 'profile');LOCALAPPDATA=(Join-Path $Run 'profile');
-        PI_CODING_AGENT_DIR=(Join-Path $Run 'profile/agent');NO_COLOR='1';POWERSHELL_TELEMETRY_OPTOUT='1';POWERSHELL_UPDATECHECK='Off';
+        TEMP=[IO.Path]::Combine($Run,'temp');TMP=[IO.Path]::Combine($Run,'temp');HOME=[IO.Path]::Combine($Run,'profile');USERPROFILE=[IO.Path]::Combine($Run,'profile');
+        HOMEDRIVE='C:';HOMEPATH=([IO.Path]::Combine($Run,'profile').Substring(2));APPDATA=[IO.Path]::Combine($Run,'profile');LOCALAPPDATA=[IO.Path]::Combine($Run,'profile');
+        PI_CODING_AGENT_DIR=[IO.Path]::Combine($Run,'profile','agent');NO_COLOR='1';POWERSHELL_TELEMETRY_OPTOUT='1';POWERSHELL_UPDATECHECK='Off';
         PSModulePath='C:\Program Files\PowerShell\7\Modules;C:\Windows\System32\WindowsPowerShell\v1.0\Modules';
-        PI_RETRY698_CAPTURE_CONFIG=(Join-Path $Run 'capture-config.json')
+        PI_RETRY698_CAPTURE_CONFIG=[IO.Path]::Combine($Run,'capture-config.json')
     }
+}
+function Get-S160StartupEnvironmentForms([string]$Run,$Safe){
+    @{PATH=('C:\Program Files\PowerShell\7;'+$Safe.PATH);PATHEXT=($Safe.PATHEXT+';.CPL');PSModulePath=([IO.Path]::Combine($Run,'profile','Documents','PowerShell','Modules')+';C:\Program Files\PowerShell\Modules;'+$Safe.PSModulePath)}
+}
+function Test-S160StartupEnvironmentValue([string]$Name,[string]$Value,$Safe,$Startup){
+    $Name -cin @('PATH','PATHEXT','PSModulePath') -and ($Value -ceq [string]$Safe[$Name] -or $Value -ceq [string]$Startup[$Name])
+}
+function Initialize-S160OwnedChild([string]$ScriptPath){
+    # Pure bootstrap before cmdlet autoload. Never change an invoking parent shell.
+    $allowedScripts=@('Run-RuntimeFreeSource160.ps1','Invoke-RuntimeFreeSource160Controller.ps1','Invoke-RuntimeFreeSource160Seal.ps1','Invoke-RuntimeFreeSource160OriginalOwner.ps1')
+    if([IO.Path]::GetFileName($ScriptPath) -cnotin $allowedScripts -or [IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($ScriptPath)) -ine $PSScriptRoot){throw 'Exact owned Source160 child script required'}
+    $arguments=[Environment]::GetCommandLineArgs();$file=$null
+    for($index=0;$index -lt $arguments.Length-1;$index++){if($arguments[$index] -ieq '-File'){$file=$arguments[$index+1];break}}
+    if(!$file -or $arguments -inotcontains '-NoProfile' -or $arguments -inotcontains '-NonInteractive' -or [IO.Path]::GetFullPath($file) -ine [IO.Path]::GetFullPath($ScriptPath)){throw 'Owned child -File bootstrap required; parent environment preserved'}
+    $config=[Environment]::GetEnvironmentVariable('PI_RETRY698_CAPTURE_CONFIG')
+    if(!$config -or [IO.Path]::GetFileName($config) -cne 'capture-config.json'){throw 'Explicit owned child config environment required'}
+    $run=[IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($config))
+    $directory=[IO.DirectoryInfo]::new($PSScriptRoot)
+    while($directory -and ![IO.File]::Exists([IO.Path]::Combine($directory.FullName,'.pi-zig-workspace.json'))){$directory=$directory.Parent}
+    if(!$directory){throw 'Owned child workspace metadata required'}
+    $layout=[Text.Json.JsonDocument]::Parse([IO.File]::ReadAllText([IO.Path]::Combine($directory.FullName,'.pi-zig-workspace.json')))
+    try{$evidence=$layout.RootElement.GetProperty('evidence').GetString()}finally{$layout.Dispose()}
+    if(!$evidence -or [IO.Path]::IsPathRooted($evidence)){throw 'Contained child evidence metadata required'}
+    $root=[IO.Path]::GetFullPath([IO.Path]::Combine($directory.FullName,$evidence,'retry698a-runtime-free-captures')).TrimEnd('\')
+    if(!$root.StartsWith($directory.FullName+'\',[StringComparison]::OrdinalIgnoreCase) -or !$run.StartsWith($root+'\',[StringComparison]::OrdinalIgnoreCase)){throw 'Owned child environment escaped capture evidence'}
+    $safe=Get-S160Environment $run;$actual=[Environment]::GetEnvironmentVariables()
+    foreach($name in $actual.Keys){if(!$safe.ContainsKey([string]$name)){throw 'Unexpected inherited child environment name'}}
+    $mutated=@('PATH','PATHEXT','PSModulePath')
+    foreach($name in $safe.Keys){if($name -cnotin $mutated -and [Environment]::GetEnvironmentVariable($name) -cne [string]$safe[$name]){throw ('Owned child environment mismatch: '+$name)}}
+    $startup=Get-S160StartupEnvironmentForms $run $safe
+    $rows=[Collections.Generic.List[object]]::new()
+    foreach($name in $mutated){
+        $value=[Environment]::GetEnvironmentVariable($name)
+        if(!(Test-S160StartupEnvironmentValue $name $value $safe $startup)){throw ('Unreviewed child startup normalization: '+$name)}
+        $rows.Add(@{name=$name;actual_sha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($value)));expected_sha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes([string]$safe[$name])));normalization_observed=($value -cne [string]$safe[$name])})
+    }
+    $journal=$run+'.launcher'
+    if(![IO.Directory]::Exists($journal)){throw 'Owned child launcher journal required'}
+    foreach($ownedPath in @($run,$journal)){
+        $part=$ownedPath
+        while($part.Length -ge $directory.FullName.Length){
+            if(([IO.File]::Exists($part) -or [IO.Directory]::Exists($part)) -and ([IO.File]::GetAttributes($part) -band [IO.FileAttributes]::ReparsePoint)){throw 'Owned child bootstrap reparse path rejected'}
+            if($part -ieq $directory.FullName){break};$part=[IO.Path]::GetDirectoryName($part)
+        }
+    }
+    # Accept only the three exact forms confirmed by the one Root-authorized
+    # diagnostic. Restore the original reviewed values; do not retain additions.
+    foreach($name in $mutated){[Environment]::SetEnvironmentVariable($name,[string]$safe[$name],'Process')}
+    foreach($name in $safe.Keys){if([Environment]::GetEnvironmentVariable($name) -cne [string]$safe[$name]){throw ('Owned child bootstrap mismatch: '+$name)}}
+    $report=@{pid=$PID;script=[IO.Path]::GetFileName($ScriptPath);fields=$rows.ToArray();all19_fields_exact_after=$true;environment_names_allowed=19;values_recorded=$false;parent_environment_modified=$false}
+    $options=[Text.Json.JsonSerializerOptions]::new();$options.WriteIndented=$true
+    $bytes=[Text.UTF8Encoding]::new($false).GetBytes([Text.Json.JsonSerializer]::Serialize($report,$report.GetType(),$options))
+    $stream=[IO.File]::Open([IO.Path]::Combine($journal,('bootstrap-'+$PID+'.json')),[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
+    try{$stream.Write($bytes,0,$bytes.Length);$stream.Flush($true)}finally{$stream.Dispose()}
 }
 function Assert-S160Environment([string]$Run){
     $safe=Get-S160Environment $Run
     $actual=@([Environment]::GetEnvironmentVariables().Keys|ForEach-Object{[string]$_})
     if(@($actual|Where-Object {$_ -notin @($safe.Keys)}).Count){throw 'Unexpected inherited outer/worker environment name'}
-    foreach($name in $safe.Keys){if([Environment]::GetEnvironmentVariable($name) -cne [string]$safe[$name]){throw 'Owned environment mismatch'}}
+    foreach($name in $safe.Keys){if([Environment]::GetEnvironmentVariable($name) -cne [string]$safe[$name]){throw ('Owned environment mismatch: '+$name)}}
     return @($actual|Sort-Object)
 }
 function Get-S160Live([int]$ProcessId){

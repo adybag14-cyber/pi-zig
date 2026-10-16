@@ -1,5 +1,6 @@
 param([Parameter(Mandatory)][string]$Config,[Parameter(Mandatory)][string]$ConfigSha256)
-. (Join-Path $PSScriptRoot 'RuntimeFreeSource160.Common.ps1')
+. ($PSScriptRoot+'\RuntimeFreeSource160.Common.ps1')
+Initialize-S160OwnedChild $PSCommandPath
 if((Get-S160Sha $Config) -cne $ConfigSha256){throw 'Exact original-owner invocation config required'}
 $task=Read-S160Json $Config
 Assert-S160Environment $task.run|Out-Null

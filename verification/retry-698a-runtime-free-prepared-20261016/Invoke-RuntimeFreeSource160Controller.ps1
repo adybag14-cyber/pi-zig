@@ -1,5 +1,6 @@
 param([Parameter(Mandatory)][string]$Config,[Parameter(Mandatory)][string]$ConfigSha256)
-. (Join-Path $PSScriptRoot 'RuntimeFreeSource160.Common.ps1')
+. ($PSScriptRoot+'\RuntimeFreeSource160.Common.ps1')
+Initialize-S160OwnedChild $PSCommandPath
 if((Get-S160Sha $Config) -cne $ConfigSha256){throw 'Exact controller config required'}
 $task=Read-S160Json $Config
 $context=New-S160Context $task.run 'controller'

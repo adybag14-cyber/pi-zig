@@ -1,5 +1,6 @@
 param([Parameter(Mandatory)][ValidatePattern('^[0-9a-f]{40}$')][string]$CandidateHead,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9-]{1,70}$')][string]$RunId,[Parameter(Mandatory)][string]$RootGrant,[Parameter(Mandatory)][string]$LaunchClaim,[Parameter(Mandatory)][ValidatePattern('^[A-F0-9]{64}$')][string]$LaunchClaimSha256)
-. (Join-Path $PSScriptRoot 'RuntimeFreeSource160.Common.ps1')
+. ($PSScriptRoot+'\RuntimeFreeSource160.Common.ps1')
+Initialize-S160OwnedChild $PSCommandPath
 $workspace=Get-S160Workspace
 $candidate=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 Assert-S160Contained $candidate $workspace.worktrees|Out-Null

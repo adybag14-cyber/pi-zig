@@ -12,6 +12,9 @@ The first ccf attempt is a preserved pre-Git/Node grant negative. Read
 `STARTUP-CLAIM-SUCCESSOR.md` for the atomic launcher claim and exact startup state
 required by the current supervisor; the blanket existing-run rejection is retained
 at launcher entry and replaced only by strict claim validation in the supervisor.
+The second5cc pre-Git/Node negative is preserved separately. Read
+`ENVIRONMENT-BOOTSTRAP-SUCCESSOR.md` for the one authorized hashes-only diagnostic
+and child-only exact PATH/PATHEXT/PSModulePath restoration before cmdlet autoload.
 
 ## Entry points and bounded ownership
 
