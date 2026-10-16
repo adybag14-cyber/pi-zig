@@ -97,7 +97,7 @@ pub fn create(engine: *em.Engine, actual_imports: c.JSValue, graph: c.JSValue) !
     inline for (.{ "Check", "Errors" }) |name| if (!c.JS_IsFunction(engine.context, try scope.get(validator, name))) return error.RequiredActualModelConfigValidator;
     try scope.put(bindings, "validateModelsConfig", validator);
     const prototype = try scope.object();
-    const ctor = try scope.own(try class.constructor(engine, "ModelConfig", 1, prototype, construct, &.{}));
+    const ctor = try scope.own(try class.constructor(engine, "ModelConfig", 2, prototype, construct, &.{}));
     try scope.put(bindings, "ModelConfig", ctor);
     inline for (.{ "getProvider", "getProviderIds", "getError" }, 0..) |name, index| {
         const function = try scope.own(try engine.checked(c.pi_js_function_magic(engine.context, getter, name, if (index == 0) 1 else 0, index)));
@@ -208,7 +208,9 @@ fn loadedBody(engine: *em.Engine, owner: c.JSValue, content: c.JSValue) !void {
         return flow.settle(engine, owner, false, try emptyConfig(&scope, bindings, message));
     }
     const providers = try scope.own(try js.builtin(engine, "Map", &.{}));
-    const entries = try scope.invoke(try scope.global("Object"), "entries", &.{try scope.get(parsed, "providers")});
+    const object = try scope.global("Object");
+    const entries_function = try scope.get(object, "entries");
+    const entries = try scope.call(entries_function, object, &.{try scope.get(parsed, "providers")});
     var iterator = try js.Iterator.init(engine, entries, try scope.own(try engine.checked(c.JS_GetIteratorSymbol(engine.context))));
     defer iterator.deinit();
     errdefer iterator.closePreserving();
@@ -242,8 +244,10 @@ fn deepFreeze(scope: *Scope, value: c.JSValue) anyerror!c.JSValue {
     return scope.invoke(try scope.global("Object"), "freeze", &.{value});
 }
 fn pathText(scope: *Scope, error_value: c.JSValue) !c.JSValue {
-    const first = try scope.own(try js.builtin(scope.engine, "RegExp", &.{try scope.text("^/")}));
-    const all = try scope.own(try js.builtin(scope.engine, "RegExp", &.{ try scope.text("/"), try scope.text("g") }));
+    const first_args = [_]c.JSValue{try scope.text("^/")};
+    const first = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, scope.engine.intrinsic_regexp_constructor, first_args.len, @constCast(&first_args))));
+    const all_args = [_]c.JSValue{ try scope.text("/"), try scope.text("g") };
+    const all = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, scope.engine.intrinsic_regexp_constructor, all_args.len, @constCast(&all_args))));
     return scope.invoke(try scope.invoke(try scope.get(error_value, "instancePath"), "replace", &.{ first, try scope.text("") }), "replace", &.{ all, try scope.text(".") });
 }
 fn formatPath(scope: *Scope, error_value: c.JSValue) !c.JSValue {

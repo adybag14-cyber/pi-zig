@@ -53,7 +53,7 @@ pub fn create(engine: *em.Engine, actual_imports: c.JSValue) !c.JSValue {
         inline for (std.meta.fields(Method)) |field| {
             const method: Method = @enumFromInt(field.value);
             if (index == 0 and method != .read and method != .write and method != .delete) continue;
-            const length: c_int = if (method == .write or method == .updateReadState) 2 else 1;
+            const length: c_int = if (method == .write or method == .updateReadState) 3 else if (method == .parse) 1 else 2;
             const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, if (index == 0) memoryDispatch else fileDispatch, field.name, length, field.value, 1, @constCast((&[_]c.JSValue{bindings}).ptr))));
             if (method != .parse and method != .updateReadState and method != .reloadFromStorage) try asynchronous(&scope, function);
             if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
