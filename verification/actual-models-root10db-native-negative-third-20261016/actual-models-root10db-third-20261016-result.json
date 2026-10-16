@@ -1,0 +1,75 @@
+{
+  "candidate": "9c4dd6f279966db6ca95c49d7ab96ff394553b3f",
+  "root_base": "10dbf9c069f776c02c4deecf593ff00cf7a536f6",
+  "scope": "Actual Models Source18 auth69 refresh60 factory92 CredentialStore20; shared recorder START/resume OOM and rejected allocation identities",
+  "original_observations": 259,
+  "planned_native_tests": 16,
+  "actual_metadata_count": null,
+  "compile": "failed",
+  "runtime": "not_run",
+  "failure": "Native terminal failed",
+  "full_posthash": {
+    "phase": "final",
+    "candidate": "9c4dd6f279966db6ca95c49d7ab96ff394553b3f",
+    "candidate_files": 9270,
+    "candidate_drift": 0,
+    "candidate_head_drift": false,
+    "vendor_files": 1316,
+    "vendor_subset_of_candidate": true,
+    "vendor_drift": 0,
+    "compiler_files": 19546,
+    "compiler_drift": 0,
+    "references": [
+      {
+        "name": "source",
+        "count": 1970,
+        "drift": 0
+      },
+      {
+        "name": "dependencies",
+        "count": 31064,
+        "drift": 0
+      },
+      {
+        "name": "node_tools",
+        "count": 1774,
+        "drift": 0
+      }
+    ],
+    "path_inventories": [
+      {
+        "name": "source",
+        "count": 1970,
+        "drift": 0
+      },
+      {
+        "name": "dependencies",
+        "count": 31064,
+        "drift": 0
+      },
+      {
+        "name": "node_tools",
+        "count": 1774,
+        "drift": 0
+      },
+      {
+        "name": "compiler",
+        "count": 19546,
+        "drift": 0
+      }
+    ],
+    "controls": 11,
+    "control_drift": 0,
+    "fixtures": 10,
+    "fixture_drift": 0,
+    "absence_records": 84,
+    "absence_drift": 0,
+    "source_head_drift": false,
+    "artifact_drift": 0,
+    "artifacts": [],
+    "observed_utc": "2026-10-16T12:18:47.5670640+00:00"
+  },
+  "public_activation": false,
+  "full_pi_qualified": false,
+  "completed_utc": "2026-10-16T12:18:47.5703364+00:00"
+}
