@@ -1,0 +1,82 @@
+{
+  "status": "primary_jiti_cache_lifetime_audit_source_only",
+  "package_version": "2.7.0",
+  "module_path": "C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/jiti/dist/jiti.cjs",
+  "module_sha256": "A0B3B8D5E06A0519C66B62179E29200533057920F6F11370546E979DACD24C49",
+  "source_loader_options": "moduleCache:false, virtualModules actualVIRTUAL_MODULES, tsconfigPaths:true",
+  "snippets": [
+    {
+      "needle": "const n=e.parentCache||{}",
+      "utf16_offset": 177356,
+      "snippet": "ode:perf_hooks\"),Si=require(\"node:vm\");var Ii=__webpack_require__.n(Si);function jitiRequire(e,t,i){const n=e.parentCache||{};if(t.startsWith(\"node:\"))return nativeImportOrRequire(e,t,i.async);if(t.startsWith(\"file:\"))t=(0,Qe.fileURLToPath)(t);else if(t.startsWith(\"data:\")){if(!i.async)throw new Error(\"`data:` URLs are only supported in ESM context"
+    },
+    {
+      "needle": "if(n[a])",
+      "utf16_offset": 179130,
+      "snippet": "t(a))return debug(e,\"[native]\",i.async?\"[import]\":\"[require]\",a),nativeImportOrRequire(e,a,i.async);if(n[a])return jitiInteropDefault(e,n[a]?.exports);if(e.opts.moduleCache){const t=e.nativeRequire.cache[a];if(t?.loaded)return jitiInteropDefault(e,t.exports)}const l=(0,$e.readFileSync)(a,\"utf8\");return eval_evalModule(e,l,{id:t,filename:a,ext:c,cac"
+    },
+    {
+      "needle": "n[a]",
+      "utf16_offset": 179133,
+      "snippet": "))return debug(e,\"[native]\",i.async?\"[import]\":\"[require]\",a),nativeImportOrRequire(e,a,i.async);if(n[a])return jitiInteropDefault(e,n[a]?.exports);if(e.opts.moduleCache){const t=e.nativeRequire.cache[a];if(t?.loaded)return jitiInteropDefault(e,t.exports)}const l=(0,$e.readFileSync)(a,\"utf8\");return eval_evalModule(e,l,{id:t,filename:a,ext:c,cache:"
+    },
+    {
+      "needle": "n[a]",
+      "utf16_offset": 179166,
+      "snippet": "nc?\"[import]\":\"[require]\",a),nativeImportOrRequire(e,a,i.async);if(n[a])return jitiInteropDefault(e,n[a]?.exports);if(e.opts.moduleCache){const t=e.nativeRequire.cache[a];if(t?.loaded)return jitiInteropDefault(e,t.exports)}const l=(0,$e.readFileSync)(a,\"utf8\");return eval_evalModule(e,l,{id:t,filename:a,ext:c,cache:n,async:i.async})}function native"
+    },
+    {
+      "needle": "moduleCache",
+      "utf16_offset": 178245,
+      "snippet": "ort?\"[import]\":\"[require]\",t),i.async&&e.nativeImport)return e.nativeImport(t).then(i=>(!1===e.opts.moduleCache&&delete e.nativeRequire.cache[t],jitiInteropDefault(e,i))).catch(n=>(debug(e,`[try-native] Using fallback for ${t} because of an error:`,n),jitiRequire({...e,opts:{...e.opts,tryNative:!1}},t,i)));{const i=e.nativeRequire(t);return!1===e.o"
+    },
+    {
+      "needle": "moduleCache",
+      "utf16_offset": 178499,
+      "snippet": "tiRequire({...e,opts:{...e.opts,tryNative:!1}},t,i)));{const i=e.nativeRequire(t);return!1===e.opts.moduleCache&&delete e.nativeRequire.cache[t],jitiInteropDefault(e,i)}}catch(i){debug(e,`[try-native] Using fallback for ${t} because of an error:`,i)}const a=jitiResolve(e,t,i);if(!a&&i.try)return;const c=extname(a);if(\".json\"===c){debug(e,\"[json]\",a"
+    },
+    {
+      "needle": "moduleCache",
+      "utf16_offset": 179191,
+      "snippet": ",a),nativeImportOrRequire(e,a,i.async);if(n[a])return jitiInteropDefault(e,n[a]?.exports);if(e.opts.moduleCache){const t=e.nativeRequire.cache[a];if(t?.loaded)return jitiInteropDefault(e,t.exports)}const l=(0,$e.readFileSync)(a,\"utf8\");return eval_evalModule(e,l,{id:t,filename:a,ext:c,cache:n,async:i.async})}function nativeImportOrRequire(e,t,i){re"
+    },
+    {
+      "needle": "moduleCache",
+      "utf16_offset": 183256,
+      "snippet": "require=O,N.path=pathe_M_eThtNZ_dirname(c),N.paths=Be.Module._nodeModulePaths(N.path),y[c]=N,t.opts.moduleCache&&(t.nativeRequire.cache[c]=N);const F=function(e,t){return`(${t?.async?\"async \":\"\"}function (exports, require, module, __filename, __dirname, jitiImport, jitiESMResolve) { ${e}\\n});`}(i,{async:n.async});try{j=Ii().runInThisContext(F,{file"
+    },
+    {
+      "needle": "nativeImportOrRequire",
+      "utf16_offset": 177414,
+      "snippet": "quire__.n(Si);function jitiRequire(e,t,i){const n=e.parentCache||{};if(t.startsWith(\"node:\"))return nativeImportOrRequire(e,t,i.async);if(t.startsWith(\"file:\"))t=(0,Qe.fileURLToPath)(t);else if(t.startsWith(\"data:\")){if(!i.async)throw new Error(\"`data:` URLs are only supported in ESM context. Use `import` or `jiti.import` instead.\");return debug(e,"
+    },
+    {
+      "needle": "nativeImportOrRequire",
+      "utf16_offset": 177698,
+      "snippet": " context. Use `import` or `jiti.import` instead.\");return debug(e,\"[native]\",\"[data]\",\"[import]\",t),nativeImportOrRequire(e,t,!0)}if(Be.builtinModules.includes(t)||\".pnp.js\"===t)return nativeImportOrRequire(e,t,i.async);if(e.opts.virtualModules&&t in e.opts.virtualModules){debug(e,\"[virtual]\",t);const n=e.opts.virtualModules[t];return i.async?Promi"
+    },
+    {
+      "needle": "nativeImportOrRequire",
+      "utf16_offset": 177783,
+      "snippet": ",\"[import]\",t),nativeImportOrRequire(e,t,!0)}if(Be.builtinModules.includes(t)||\".pnp.js\"===t)return nativeImportOrRequire(e,t,i.async);if(e.opts.virtualModules&&t in e.opts.virtualModules){debug(e,\"[virtual]\",t);const n=e.opts.virtualModules[t];return i.async?Promise.resolve(jitiInteropDefault(e,n)):jitiInteropDefault(e,n)}if(e.opts.tryNative&&!e.o"
+    },
+    {
+      "needle": "nativeImportOrRequire",
+      "utf16_offset": 178976,
+      "snippet": "opts.extensions.includes(c))return debug(e,\"[native]\",\"[unknown]\",i.async?\"[import]\":\"[require]\",a),nativeImportOrRequire(e,a,i.async);if(e.isNativeRe.test(a))return debug(e,\"[native]\",i.async?\"[import]\":\"[require]\",a),nativeImportOrRequire(e,a,i.async);if(n[a])return jitiInteropDefault(e,n[a]?.exports);if(e.opts.moduleCache){const t=e.nativeRequir"
+    },
+    {
+      "needle": "y[c]=N",
+      "utf16_offset": 183242,
+      "snippet": "},!0);let j;N.require=O,N.path=pathe_M_eThtNZ_dirname(c),N.paths=Be.Module._nodeModulePaths(N.path),y[c]=N,t.opts.moduleCache&&(t.nativeRequire.cache[c]=N);const F=function(e,t){return`(${t?.async?\"async \":\"\"}function (exports, require, module, __filename, __dirname, jitiImport, jitiESMResolve) { ${e}\\n});`}(i,{async:n.async});try{j=Ii().runInThisC"
+    },
+    {
+      "needle": "parentCache:y",
+      "utf16_offset": 183053,
+      "snippet": ".children.includes(N)&&t.parentModule.children.push(N));const O=createJiti(c,t.opts,{parentModule:N,parentCache:y,nativeImport:t.nativeImport,onError:t.onError,createRequire:t.createRequire},!0);let j;N.require=O,N.path=pathe_M_eThtNZ_dirname(c),N.paths=Be.Module._nodeModulePaths(N.path),y[c]=N,t.opts.moduleCache&&(t.nativeRequire.cache[c]=N);const"
+    }
+  ],
+  "observed_static_source48": "transformedTS dependencies fresh pernewloaderimport; nativeCJS/JSON/mjs reused",
+  "dynamic_policy": "unobserved; Source39 supplement required beforegraphdesign",
+  "engine_c_changes_authored": false
+}
