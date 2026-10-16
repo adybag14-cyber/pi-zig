@@ -1277,7 +1277,11 @@ test "native require cannot expose private cached state or observe its getters" 
     const private_owner = try engine.eval("({get default(){throw Error('private cache getter must not run')}})", "private-require-owner.js", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(private_owner);
     for ([_][]const u8{ "private-unregistered-state", "\x00private-unregistered-state" }) |name| {
-        try engine.native_module_values.put(engine.gpa, name, c.JS_DupValue(engine.context, private_owner));
+        const retained = c.JS_DupValue(engine.context, private_owner);
+        engine.native_module_values.put(engine.gpa, name, retained) catch |err| {
+            engine.freeValue(retained);
+            return err;
+        };
         const escaped = try engine.requireBuiltin(name);
         defer if (escaped) |value| engine.freeValue(value);
         try std.testing.expect(escaped == null);
