@@ -244,7 +244,33 @@ fn evalArray(s: *Scope, graph: c.JSValue, nodes: c.JSValue, env: c.JSValue, expr
     for (0..try length(s, expressions)) |i| try s.index(out, @intCast(i), (try evaluate(s, graph, nodes, env, try at(s, expressions, @intCast(i)))).value);
     return out;
 }
-fn identifier(s: *Scope, env: c.JSValue, code: c.JSValue) !c.JSValue {
+fn isIdentifierOperand(bytes: []const u8) bool {
+    if (bytes.len == 0 or !(std.ascii.isAlphabetic(bytes[0]) or bytes[0] == '_' or bytes[0] == '$')) return false;
+    for (bytes[1..]) |char| if (!(std.ascii.isAlphanumeric(char) or char == '_' or char == '$')) return false;
+    return true;
+}
+fn indexedStep(s: *Scope, steps: *usize) !void {
+    steps.* +|= 1;
+    if (s.engine.cancelled.load(.acquire) or (steps.* % 256 == 0 and blk: {
+        s.engine.interrupts +|= 1;
+        break :blk s.engine.interrupts > s.engine.options.interrupt_budget;
+    })) {
+        _ = try s.engine.checked(c.JS_ThrowInternalError(s.engine.context, "interrupted"));
+        unreachable;
+    }
+}
+fn capturedIndexedBase(s: *Scope, nodes: c.JSValue, bytes: []const u8) !?c.JSValue {
+    const atom = c.JS_NewAtomLen(s.engine.context, bytes.ptr, bytes.len);
+    if (atom == c.JS_ATOM_NULL) return js.capture(s.engine);
+    defer c.JS_FreeAtom(s.engine.context, atom);
+    const node = try s.engine.checked(c.JS_GetProperty(s.engine.context, nodes, atom));
+    if (!c.JS_IsObject(node)) {
+        s.engine.freeValue(node);
+        return null;
+    }
+    return try s.own(node);
+}
+fn identifier(s: *Scope, graph: c.JSValue, nodes: c.JSValue, env: c.JSValue, code: c.JSValue) !c.JSValue {
     // Names emitted by CreateVariable have this exact fixed lexical form.
     const bytes = try s.engine.toString(code);
     defer s.engine.gpa.free(bytes);
@@ -252,6 +278,42 @@ fn identifier(s: *Scope, env: c.JSValue, code: c.JSValue) !c.JSValue {
         const i = std.fmt.parseInt(u32, bytes[9 .. bytes.len - 1], 10) catch return error.NativeTypeBoxInvalidExternalOperand;
         const external = try o.lookup(s, env, "External");
         return at(s, external, i);
+    }
+    // Pinned items/prefixItems pass `${value}[${index}]` directly, rather
+    // than calling EmitGuard.Member. Keep the captured base in the existing
+    // IR and read its one canonical numeric property through the real VM.
+    if (std.mem.indexOfAny(u8, bytes, "[]") != null) {
+        var remaining: []const u8 = bytes;
+        var indices: std.ArrayList(u32) = .empty;
+        defer indices.deinit(s.engine.gpa);
+        var captured: ?c.JSValue = null;
+        var steps: usize = 0;
+        while (true) {
+            try indexedStep(s, &steps);
+            if (!std.mem.endsWith(u8, remaining, "]")) return error.NativeTypeBoxOperandUnsupported;
+            const opening = std.mem.lastIndexOfScalar(u8, remaining, '[') orelse return error.NativeTypeBoxOperandUnsupported;
+            const suffix = remaining[opening + 1 .. remaining.len - 1];
+            if (opening == 0 or suffix.len == 0 or (suffix.len > 1 and suffix[0] == '0')) return error.NativeTypeBoxOperandUnsupported;
+            for (suffix) |char| if (!std.ascii.isDigit(char)) return error.NativeTypeBoxOperandUnsupported;
+            try indices.append(s.engine.gpa, std.fmt.parseInt(u32, suffix, 10) catch return error.NativeTypeBoxOperandUnsupported);
+            remaining = remaining[0..opening];
+            captured = try capturedIndexedBase(s, nodes, remaining);
+            if (captured != null) break;
+            if (std.mem.startsWith(u8, remaining, "External[") and std.mem.endsWith(u8, remaining, "]")) break;
+            if (std.mem.indexOfAny(u8, remaining, "[]") == null) {
+                if (!isIdentifierOperand(remaining)) return error.NativeTypeBoxOperandUnsupported;
+                break;
+            }
+        }
+        const base_code = try s.text(remaining);
+        var owner = (if (captured) |node| try evaluateCaptured(s, graph, nodes, env, base_code, node) else try evaluate(s, graph, nodes, env, base_code)).value;
+        var index = indices.items.len;
+        while (index > 0) {
+            index -= 1;
+            try indexedStep(s, &steps);
+            owner = try at(s, owner, indices.items[index]);
+        }
+        return owner;
     }
     if (std.mem.eql(u8, bytes, "true")) return o.boolean(s, true);
     if (std.mem.eql(u8, bytes, "false")) return o.boolean(s, false);
@@ -313,9 +375,12 @@ fn arrayStep(e: *Engine, args: []const c.JSValue, op: Op, roots: []const c.JSVal
     return c.JS_DupValue(e.context, result);
 }
 fn evaluate(s: *Scope, graph: c.JSValue, nodes: c.JSValue, env: c.JSValue, code: c.JSValue) anyerror!Result {
-    const e = s.engine;
     const node = try keyGet(s, nodes, code);
-    if (!c.JS_IsObject(node)) return .{ .value = try identifier(s, env, code) };
+    if (!c.JS_IsObject(node)) return .{ .value = try identifier(s, graph, nodes, env, code) };
+    return evaluateCaptured(s, graph, nodes, env, code, node);
+}
+fn evaluateCaptured(s: *Scope, graph: c.JSValue, nodes: c.JSValue, env: c.JSValue, code: c.JSValue, node: c.JSValue) anyerror!Result {
+    const e = s.engine;
     var raw: i32 = 0;
     if (c.JS_ToInt32(e.context, &raw, try field(s, node, "op")) < 0) return js.capture(e);
     const op: Op = @enumFromInt(raw);
@@ -326,7 +391,7 @@ fn evaluate(s: *Scope, graph: c.JSValue, nodes: c.JSValue, env: c.JSValue, code:
             if (c.JS_IsBigInt(a) or c.JS_IsNumber(a)) {
                 const bytes = try e.toString(code);
                 defer e.gpa.free(bytes);
-                const number = std.fmt.parseFloat(f64, bytes) catch return .{ .value = try identifier(s, env, code) };
+                const number = std.fmt.parseFloat(f64, bytes) catch return .{ .value = try identifier(s, graph, nodes, env, code) };
                 return .{ .value = c.JS_NewFloat64(e.context, number) };
             }
             return .{ .value = a };

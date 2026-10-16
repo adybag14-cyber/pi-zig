@@ -115,6 +115,15 @@ fixes have not run on the combined Root. The separate Source69 authentication
 harness and complete Models259 gate remain in the diagnostic/fixes branch;
 their presence or qualification is not implied by this partial intake.
 
+The independently reviewed indexed TypeBox operand repair from `49a54ae9` is
+also intaken as source. It fixes the observed prefix-items Source80 mismatch
+using real numeric VM property reads. Iterative suffix peeling retains one text
+buffer and an index vector, evaluates the captured base once, and avoids adding
+one native frame per suffix. Existing cancellation/budget checks remain active.
+The ten original-source controls are prepared with no expected output yet;
+original compiler/schema/operator inputs and goldens remain unchanged. Neither
+the indexed repair nor the separate operator-stack generator work is qualified.
+
 ## Remaining integration boundaries
 
 The production SDK factory requires actual default ModelRuntime creation, ModelConfig/store classes, provider factories, authentication, resource-loader lifecycle and ordinary AgentSession collaborators. The existing synthetic builtin seeding path is insufficient for default-path parity. The new factory module remains unselected until these real inputs and their native comparisons are complete.

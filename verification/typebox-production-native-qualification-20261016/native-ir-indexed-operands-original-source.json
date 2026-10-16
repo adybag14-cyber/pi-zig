@@ -1,0 +1,17 @@
+[
+  {
+    "path": "build/schema/engine/prefixItems.mjs",
+    "sha256": "DF0B198702A66A5C574C3F4B2E6B0991BB97FB22E0D3FB2EDBCBA1414A5CD479",
+    "calls": [
+      "10:        const isSchema = BuildSchemaPushStack(stack, context, schema, `${value}[${index}]`);"
+    ]
+  },
+  {
+    "path": "build/schema/engine/items.mjs",
+    "sha256": "8094313B44D3B5C08E2B3266B6251AA9C2C887ADA25334182BB4D6C00BDF9ED3",
+    "calls": [
+      "11:        const isSchema = BuildSchemaPushStack(stack, context, schema, `${value}[${index}]`);",
+      "19:        const isSchema = BuildSchemaPushStack(stack, context, schema, `${value}[${index}]`);"
+    ]
+  }
+]
