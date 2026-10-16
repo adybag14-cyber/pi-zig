@@ -1,11 +1,15 @@
-# Verification-only runtime Job Object owner: source implementation in progress
+# Verification-only runtime Job Object owner: controller source draft
 
-This leaf is isolated from product/build.zig and has no executable entry point.
+This leaf is isolated from product/build.zig. It now contains a standalone
+build.zig and main.zig with explicit supervisor/worker modes, plus the actual
+supervisor, worker, transport and read-only final-sealer composition. The source
+has not been compiled, parsed through Zig, run or qualified. The input/control
+packet and native-only fixture implementations remain unfinished.
 Early review of61c15f31 found the create-then-assign suspended-worker orphan
 window. That preserved worker API is inadmissible for execution. Peer closed exact
 v3 design41C8E303ABF6A85471EEAF8BFDB7345C0A89BE6B8DCFA869EF7F444C2BD85711;
 this successor implements creation-time JOB_LIST with no two-step fallback.
-The successor itself still requires implementation review and has no entrypoint.
+The complete successor requires independent implementation review.
 Do not compile, format through Zig, run controls, invoke Node/npm or perform a
 reproduction without Root's separate grants. It is uncompiled source and does
 not establish runtime authority. Original preparation controls12BA, design643CEE
@@ -20,8 +24,9 @@ Implemented source modules:
 
 - win32.zig: direct Windows x86_64 ABI declarations and static layout assertions;
   no OpenJobObject, taskkill, TerminateThread or breakaway declaration/use.
-- deadline.zig: monotonic D-10 cutoff, full300-second Node budget and shared
-  retirement end bounded by D; fresh16GiB and4GiB-pressure checks.
+- deadline.zig: monotonic D900/C890/worker650 boundaries, full300-second Node
+  budget, final240 beginning at early retirement (including its10seconds),
+  fresh16GiB and4GiB-pressure checks. Every completion remains deadline-bound.
 - job.zig: fresh unnamed noninheritable job, queried8/4GiB/64 limits, owned port,
   full kernel membership/accounting, confined termination and explicit zero.
 - command.zig: typed argv serialization/roundtrip and explicit sorted Unicode
@@ -56,15 +61,47 @@ Implemented source modules:
   two-file PATH inventory and separately reviewed cmd. All tooling checks remain
   unexecuted source; additional Node authority is not runtime restoration.
 
-Remaining implementation, not substituted by the old PowerShell owners:
+The concrete controller additions are:
 
-1. Complete protocol transport integration, receipt encoders/atomic terminal
-   publication and the external-watchdog receipt contract.
-2. Full source/tool/cache/link/absence sealing composition, mutable cache diffs,
-   prospective tool closure and reviewed workspace junction/output receipts.
-3. Supervisor timing loop and worker CI/build state machines, with every failure
-   retained and all independent final comparisons asserted.
-4. Native-only failure fixtures and source review of the complete composition.
+- common/transport: pending-operation-only OS wait sets, bounded120-byte frames,
+  authenticated ACK/abort reception, atomic independently running hard watchdog.
+- supervisor: atomic JOB_LIST suspended worker creation, independent worker and
+  Node WMI/kernel/argv/parent/UTC binding, supervisor-pull Node handle, fresh
+  admission before launch/resume, independent300-second Node deadline, bounded
+  kernel member/accounting snapshots and honest advisory/partial metadata.
+- worker/phase: full preflight, exact offline CI/build invocation and sanitized
+  environment, suspended Node handoff/ACK before resume, exact28250 CI output
+  comparison before hidden-lock transfer, and separate16-link preparation.
+- storage/receipts/inputs/seal_set: fixed256MiB storage with separately reclaimed
+  scratch; eleven independent full source/tool/cache/output/link/absence checks,
+  complete physical namespace/hash/difference evidence and mandatory positive
+  assertions. Both phase roots are attempted after a readable first-tree failure.
+- Dedicated supervisor final thread after job retirement, with its240-second
+  allowance measured from early retirement. Unfinished final coverage stays
+  unknown. Positive publication also requires pipe/metadata retirement, output
+  flushes and closed handles, a flushed/stopped/closed ledger and owned job close.
+- Fresh atomic terminal publication has a separate bounded quota. Errors before
+  a complete final seal can produce a negative/unknown-coverage receipt; blocked
+  startup/persistence/publication ultimately exits at the hard watchdog without
+  fabricating a terminal receipt or kernel zero.
+
+Concrete completion gates remaining:
+
+1. Independent review of this whole controller composition and its negative
+   paths, including API/ABI and shared-deadline/I/O lifetime checks. No compiler
+   acceptance or working executable is currently claimed.
+2. Prepare a fresh exact phase-input/control manifest and the separately reviewed
+   private tool closure. No source shim was installed. An external Root receipt
+   must bind launch/terminal or timeout/absence and cannot infer a missing owner
+   receipt as success.
+3. Author native-only fixture executables for CONTROLS.md, then receive distinct
+   Root compilation and execution grants. The control table is a specification,
+   not implemented controls or test results.
+4. Execute those controls on the exact compiled owner and subsequently obtain a
+   separate original19cb CI/build reproduction grant. Preserve every negative.
+
+HOSTED-REPRODUCTION-ASSESSMENT.md records a separately reviewed hosted Windows
+option. It does not install or publish a workflow and does not replace this work.
 
 No launchable stub will be supplied as a completed owner. Complete source review,
 an explicit compilation grant, owned native controls and a later reproduction

@@ -85,13 +85,13 @@ pub const Job = struct {
     pub fn notice(self: *const Job, timeout_ms: u32) !?Notice {
         var message: u32 = 0;
         var key: usize = 0;
-        var raw: ?*w.Overlapped = null;
+        var raw: usize = 0;
         if (w.GetQueuedCompletionStatus(self.port orelse return error.JobClosed, &message, &key, &raw, timeout_ms) == 0) {
             if (w.GetLastError() == w.wait_timeout) return null;
             return error.JobNotificationReadFailed;
         }
         if (key != self.completion_key) return error.UnexpectedCompletionKey;
-        return .{ .message = message, .raw_pid = if (raw) |pointer| @intFromPtr(pointer) else 0 };
+        return .{ .message = message, .raw_pid = raw };
     }
 
     pub fn abort(self: *Job, code: u32) !void {

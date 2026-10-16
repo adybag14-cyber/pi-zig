@@ -25,6 +25,13 @@ pub const Manifest = struct {
         return self;
     }
     pub fn loadJsonl(allocator: std.mem.Allocator, path: []const u8, count: usize) !Manifest {
+        return loadJsonlBounded(allocator, path, count, 40000);
+    }
+    pub fn loadJsonlAny(allocator: std.mem.Allocator, path: []const u8, maximum: usize) !Manifest {
+        if (maximum == 0 or maximum > 65536) return error.ManifestEntryLimit;
+        return loadJsonlBounded(allocator, path, null, maximum);
+    }
+    fn loadJsonlBounded(allocator: std.mem.Allocator, path: []const u8, count: ?usize, maximum: usize) !Manifest {
         const bytes = try files.readBounded(allocator, path, 32 * 1024 * 1024);
         defer allocator.free(bytes);
         var self: Manifest = .{ .allocator = allocator };
@@ -36,9 +43,9 @@ pub const Manifest = struct {
             const parsed = try std.json.parseFromSlice(RelativeRow, allocator, line, .{ .ignore_unknown_fields = true });
             defer parsed.deinit();
             try self.add(parsed.value.relative, parsed.value.sha256);
-            if (self.entries.count() > 40000) return error.ManifestEntryLimit;
+            if (self.entries.count() > maximum) return error.ManifestEntryLimit;
         }
-        if (self.entries.count() != count) return error.ManifestCountMismatch;
+        if (count) |expected| if (self.entries.count() != expected) return error.ManifestCountMismatch;
         return self;
     }
     /// Call only with rows from an already control-hashed immutable manifest.
@@ -67,6 +74,7 @@ pub const Manifest = struct {
 
 pub const Record = union(enum) {
     file: struct { relative: []const u8, sha256: files.Hash, expected: ?files.Hash },
+    directory: struct { relative: []const u8 },
     reparse: struct { relative: []const u8, tag: u32 },
     missing: struct { relative: []const u8, expected: files.Hash },
 };
@@ -83,6 +91,8 @@ pub const Report = struct {
     extras: usize = 0,
     missing: usize = 0,
     reparse_points: usize = 0,
+    physical_directories: usize = 0,
+    actual_file_bytes: u64 = 0,
     inventory_complete: bool = false,
     pub fn requireExact(self: Report, expected_links: usize) !void {
         if (!self.inventory_complete or self.actual != self.required or self.matching != self.required or
@@ -129,12 +139,18 @@ pub fn checkTree(allocator: std.mem.Allocator, root: []const u8, expected: *Mani
                 continue; // Never traverse an unreviewed link.
             }
             if (entry.attributes & w.file_attribute_directory != 0) {
+                result.physical_directories += 1;
+                try sink.write(.{ .directory = .{ .relative = relative } });
                 if (stack.items.len >= 65536) return error.DirectoryStackLimit;
                 try stack.append(allocator, try allocator.dupe(u8, path));
                 continue;
             }
             if (result.actual >= 65536) return error.InventoryFileLimit;
-            const digest = try files.hash(allocator, path);
+            var pinned = try files.Pinned.open(allocator, path);
+            defer pinned.close() catch {};
+            const digest = try pinned.digest(std.crypto.hash.sha2.Sha256);
+            const size = pinned.size;
+            result.actual_file_bytes = std.math.add(u64, result.actual_file_bytes, size) catch return error.InventoryByteCountOverflow;
             result.actual += 1;
             var expected_digest: ?files.Hash = null;
             if (expected.entries.getPtr(relative)) |wanted| {

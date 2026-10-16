@@ -93,7 +93,7 @@ pub fn requireQuietNative(own_supervisor: *const process.KernelIdentity,
             }
         } else {
             const cause = w.GetLastError();
-            if (cause == 87) {
+            if (cause == 87 and entry.pid != 0) {
                 try sink.write_fn(sink.context, .{ .gone_before_probe = .{ .pid = entry.pid, .name = name } });
             } else {
                 // Some unrelated/system images are not queryable. Retain that

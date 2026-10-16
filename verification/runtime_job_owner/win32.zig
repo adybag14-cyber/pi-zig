@@ -159,7 +159,9 @@ pub extern "kernel32" fn QueryInformationJobObject(H, u32, *anyopaque, u32, ?*u3
 pub extern "kernel32" fn IsProcessInJob(H, ?H, *B) callconv(.winapi) B;
 pub extern "kernel32" fn TerminateJobObject(H, u32) callconv(.winapi) B;
 pub extern "kernel32" fn CreateIoCompletionPort(H, ?H, usize, u32) callconv(.winapi) ?H;
-pub extern "kernel32" fn GetQueuedCompletionStatus(H, *u32, *usize, *?*Overlapped, u32) callconv(.winapi) B;
+// Job ports use the LPOVERLAPPED-sized output as an integer PID, not a pointer
+// to aligned OVERLAPPED storage. Preserve raw bits without pointer assumptions.
+pub extern "kernel32" fn GetQueuedCompletionStatus(H, *u32, *usize, *usize, u32) callconv(.winapi) B;
 pub extern "kernel32" fn CreateProcessW([*:0]const u16, [*:0]u16, ?*const Security, ?*const Security, B, u32, ?*const anyopaque, [*:0]const u16, *Startup, *ProcessInfo) callconv(.winapi) B;
 pub extern "kernel32" fn InitializeProcThreadAttributeList(?*anyopaque, u32, u32, *usize) callconv(.winapi) B;
 pub extern "kernel32" fn UpdateProcThreadAttribute(*anyopaque, u32, usize, *anyopaque, usize, ?*anyopaque, ?*usize) callconv(.winapi) B;
@@ -193,6 +195,11 @@ pub extern "kernel32" fn Process32FirstW(H, *ProcessEntry) callconv(.winapi) B;
 pub extern "kernel32" fn Process32NextW(H, *ProcessEntry) callconv(.winapi) B;
 pub extern "kernel32" fn DeviceIoControl(H, u32, ?*const anyopaque, u32, ?*anyopaque, u32, *u32, ?*Overlapped) callconv(.winapi) B;
 pub extern "kernel32" fn GetCommandLineW() callconv(.winapi) [*:0]u16;
+pub extern "kernel32" fn GetModuleFileNameW(?H, [*]u16, u32) callconv(.winapi) u32;
+pub extern "kernel32" fn GetStdHandle(u32) callconv(.winapi) ?H;
+pub extern "kernel32" fn ExitProcess(u32) callconv(.winapi) noreturn;
+pub extern "kernel32" fn MoveFileExW([*:0]const u16, [*:0]const u16, u32) callconv(.winapi) B;
+pub extern "kernel32" fn CopyFileW([*:0]const u16, [*:0]const u16, B) callconv(.winapi) B;
 pub extern "kernel32" fn CompareStringOrdinal([*]const u16, i32, [*]const u16, i32, B) callconv(.winapi) i32;
 pub extern "kernel32" fn CreateThread(?*const Security, usize, *const fn (?*anyopaque) callconv(.winapi) u32, ?*anyopaque, u32, ?*u32) callconv(.winapi) ?H;
 pub extern "kernel32" fn LocalFree(?H) callconv(.winapi) ?H;
