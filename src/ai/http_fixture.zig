@@ -15,7 +15,7 @@ pub const Reply = struct {
     request_observed: ?*std.Io.Event = null,
     response_release: ?*std.Io.Event = null,
 };
-pub const Captured = struct { path: []u8, payload: []u8, method: std.http.Method };
+pub const Captured = struct { path: []u8, payload: []u8, method: std.http.Method, headers: []const std.http.Header };
 pub const PlanServer = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
@@ -52,6 +52,11 @@ pub const PlanServer = struct {
         for (self.captured.items) |record| {
             self.gpa.free(record.path);
             self.gpa.free(record.payload);
+            for (record.headers) |header| {
+                self.gpa.free(header.name);
+                self.gpa.free(header.value);
+            }
+            self.gpa.free(record.headers);
         }
         self.captured.deinit(self.gpa);
         const allocator = self.gpa;
@@ -92,7 +97,29 @@ pub const PlanServer = struct {
             const body_reader = request.readerExpectNone(&.{});
             const payload = try body_reader.allocRemaining(self.gpa, .limited(4 * 1024 * 1024));
             errdefer if (!captured) self.gpa.free(payload);
-            try self.captured.append(self.gpa, .{ .path = path, .payload = payload, .method = request.head.method });
+            var request_headers: std.ArrayList(std.http.Header) = .empty;
+            defer request_headers.deinit(self.gpa);
+            errdefer for (request_headers.items) |header| {
+                self.gpa.free(header.name);
+                self.gpa.free(header.value);
+            };
+            var header_iterator = request.iterateHeaders();
+            while (header_iterator.next()) |header| {
+                const name = try self.gpa.dupe(u8, header.name);
+                errdefer self.gpa.free(name);
+                const value = try self.gpa.dupe(u8, header.value);
+                errdefer self.gpa.free(value);
+                try request_headers.append(self.gpa, .{ .name = name, .value = value });
+            }
+            const owned_headers = try request_headers.toOwnedSlice(self.gpa);
+            errdefer {
+                for (owned_headers) |header| {
+                    self.gpa.free(header.name);
+                    self.gpa.free(header.value);
+                }
+                self.gpa.free(owned_headers);
+            }
+            try self.captured.append(self.gpa, .{ .path = path, .payload = payload, .method = request.head.method, .headers = owned_headers });
             captured = true;
             if (!std.mem.eql(u8, path, reply.path)) return error.UnexpectedFixturePath;
             if (reply.payload_contains) |marker| if (std.mem.indexOf(u8, payload, marker) == null) return error.UnexpectedFixturePayload;
