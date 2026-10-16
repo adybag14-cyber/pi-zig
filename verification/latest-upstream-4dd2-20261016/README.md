@@ -16,6 +16,8 @@ The four Xiaomi defaults become `mimo-v2.6-pro` in typed and VM factory paths. T
 
 The independent durable harness compaction implementation is byte-unchanged upstream and retains its own 0.8 * reserve output cap. The independent bug-report implementation retains its own 4096 cap. Their native files are unchanged. They are separate Source contracts, even though durable/provider consumers of shared tool converters inherit the whitespace fix.
 
+The three VM tool converters now call the live `trim` method, read its returned `length`, and apply the actual VM `> 0` operator. They retain the original selected text rather than serializing the trimmed value. The typed providers share one exact ECMAScript WhiteSpace/LineTerminator classifier; BOM is whitespace, while NEL, MVS and ZWSP remain text. The API owner supplied 52 prepared genuine OpenAI converter records. Its original58 corpus contains exactly three tool-result inputs (image-only, "ok" plus image, "ok"), whose ordinary text-presence choices are unchanged. This static impact audit does not requalify those older captures. Wider existing typed Completions image-companion conversion and typed Google's absent `model.input` capability remain explicit parity limits outside this condition change.
+
 ## Prepared genuine controls
 
 `sdk-summary-latest4dd.input.txt` has 30 distinct original caller cases for actual official exports. It inspects own option keys and `Object.hasOwn(options, "maxTokens")`, raw reasoning/header/env identity, unused reserve Symbols and throwing coercions, throwing model maximum getters, prompt-before-reasoning order, inherited maximum getters, split and prefix-only compaction, inherited/live preparation getters, branch option destructuring and reserve arithmetic, and all ordered default declarations plus mutation. `summary-source-capture.mjs` imports actual Source functions and actual file-operation utilities; only the public stream callback is caller-owned. Branch random session IDs are observed by type/nonempty condition rather than fabricated constants. No Source function is replaced.
@@ -29,3 +31,5 @@ The historical 45-case summary fixture is retained without changes. Its captured
 ## Qualification state
 
 SOURCE ONLY. No Zig (including fmt/AST), Node, Source capture or native execution has run for this packet. No new expected JSON exists. Latest genuine capture requires a separate Root grant and successful terminal/full post validation. Native compile and replay require their own serial lease. The prior Models259 negative artifact, all historical snapshots/goldens/proofs, shared C/Engine/async helpers and Root worktree are untouched.
+
+`protected-scope.json` records ten exact unchanged Git blobs, including C/header, Engine, shared async helpers, historical default/summary fixtures and the durable compaction task. The latest-source option delta does not qualify existing async implementations or transfer earlier native qualification to this candidate.
