@@ -42,7 +42,7 @@ pub const Server = struct {
         self.arena.deinit();
         self.gpa.destroy(self);
     }
-    fn serve(self: *Server) !void {
+    fn serve(self: *Server) anyerror!void {
         const connection = try self.listener.accept(self.io);
         defer connection.close(self.io);
         var read_buffer: [16 * 1024]u8 = undefined;
