@@ -1,0 +1,29 @@
+[
+  {
+    "archive_bytes": 2887394,
+    "index": "native-8bcb73f3-original-packet.index.json",
+    "archive_sha256": "FD361434CE307B7D6CCA0FE92FB679A1C535FA6CCEB056E203DB7CF79184C114",
+    "archive": "native-8bcb73f3-original-packet.zip",
+    "index_sha256": "52A2C6AC6B9F124DCEA945D0D02DFBBBEEDC91E21743CCCF4B843EE6ABA16947",
+    "candidate": "8bcb73f3",
+    "files": 11
+  },
+  {
+    "archive_bytes": 8650114,
+    "index": "native-eb4594b1-original-packet.index.json",
+    "archive_sha256": "60B75E063495B5A58AAB9E72BC04D8FFD1E958E96C162E99F9ACEA56CF864C4B",
+    "archive": "native-eb4594b1-original-packet.zip",
+    "index_sha256": "EC6D1247966393C68C2E3C2FF9C7015021BE67BFFD533548A5DE9602E633882E",
+    "candidate": "eb4594b1",
+    "files": 31
+  },
+  {
+    "archive_bytes": 8648941,
+    "index": "native-b97ad182-original-packet.index.json",
+    "archive_sha256": "0C75B8478771CA921C01487DE7A0FC70455C9E93D05C3FAB8A15E84A1BCACCD6",
+    "archive": "native-b97ad182-original-packet.zip",
+    "index_sha256": "63697DB2A98D63BCEB72FFDD99920D201A7393E820CA67908E08053459A47F4E",
+    "candidate": "b97ad182",
+    "files": 30
+  }
+]

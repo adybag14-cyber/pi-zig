@@ -1,0 +1,101 @@
+{
+  "proposal": "GPA-backed operand frames and must-tail conditional chains; no guard increase or source count change",
+  "pdb_sha256": "29168A7BEA4F1BA36E5F37B407B198BA0290578C131C2696392D77AEC0E332C5",
+  "engine_vm_stack_guard_bytes": 1048576,
+  "extraction": "llvm-pdbutil dump -symbols; actual S_LPROC32 / S_FRAMEPROC records",
+  "frames": [
+    {
+      "callback": "f_0",
+      "name": "Instantiate",
+      "frame_bytes": 1640,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_1",
+      "name": "InstantiateType",
+      "frame_bytes": 2984,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_9",
+      "name": "InstantiateDeferred",
+      "frame_bytes": 35672,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_30",
+      "name": "CanInstantiate",
+      "frame_bytes": 1376,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_31",
+      "name": "",
+      "frame_bytes": 1560,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_32",
+      "name": "",
+      "frame_bytes": 872,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_296",
+      "name": "InstantiateElements",
+      "frame_bytes": 1784,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_297",
+      "name": "InstantiateTypes",
+      "frame_bytes": 1488,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_298",
+      "name": "",
+      "frame_bytes": 1336,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_303",
+      "name": "State",
+      "frame_bytes": 1496,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_450",
+      "name": "InstantiateProperties",
+      "frame_bytes": 1728,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_451",
+      "name": "",
+      "frame_bytes": 1912,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_625",
+      "name": "InstantiateImmediate",
+      "frame_bytes": 18456,
+      "source": "type/engine/instantiate.mjs"
+    },
+    {
+      "callback": "f_686",
+      "name": "WithModifiers",
+      "frame_bytes": 3128,
+      "source": "type/engine/instantiate.mjs"
+    }
+  ],
+  "native_proposal_executed": false,
+  "tool_sha256": "EBEFFD8BC9B9098C14FD087FD4CE7671E755B7570A5326AA625B8F9C01907A04",
+  "artifact": {
+    "path": "C:\\Users\\adyba\\pi-zig-typebox-production-qualification-20261016\\.zig-cache\\o\\5b393d62bed893a26e011ea7a6ef953d\\test.exe",
+    "installed_path": "C:\\Users\\adyba\\pi-zig-typebox-production-qualification-20261016\\zig-out\\bin\\test.exe",
+    "sha256": "86E7BE9189F783DBF1D06207F847830F839DF9B451C9C1D1B422F4E4C039572B"
+  },
+  "pe_reserved_stack_bytes": 16777216,
+  "candidate": "de6d0bfc3d25d30801a6fa72b7d52612ce31fad4"
+}
