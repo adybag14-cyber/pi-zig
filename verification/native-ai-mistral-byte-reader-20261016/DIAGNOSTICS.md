@@ -1,6 +1,6 @@
 # Diagnostic-only producer/consumer and trusted allocation patch
 
-Apply diagnostic-producer-consumer-oom.patch to a new isolated diagnostic
+Apply with git apply --unidiff-zero diagnostic-producer-consumer-oom.patch to a new isolated diagnostic
 successor of b70a7e63, then obtain Root's separate native admission. No execution
 or Zig formatting/AST/compilation has occurred for this patch.
 

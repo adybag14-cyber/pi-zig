@@ -2,46 +2,25 @@ diff --git a/src/extensions/native_agent_async.zig b/src/extensions/native_agent
 index b389d2ce..1bdb4474 100644
 --- a/src/extensions/native_agent_async.zig
 +++ b/src/extensions/native_agent_async.zig
-@@ -52,6 +52,7 @@ pub fn settle(engine: *em.Engine, owner: c.JSValue, rejected: bool, value: c.JSV
- pub fn rejectError(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
-     const raw = reason(engine, err);
-     defer engine.freeValue(raw);
+@@ -54,0 +55 @@ pub fn rejectError(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
 +    @import("std").debug.print("DIAG_FLOW_REJECT err={s} generation={d} raw_tag={d} raw_uncatchable={any} captured_tag={d}\n", .{ @errorName(err), engine.native_allocation_generation, c.pi_js_native_allocation_error_generation(raw), c.JS_IsUncatchableError(raw), if (engine.captured_exception) |value| c.pi_js_native_allocation_error_generation(value) else 0 });
-     try settle(engine, owner, true, raw);
- }
- 
 diff --git a/src/extensions/native_ai_http_worker.zig b/src/extensions/native_ai_http_worker.zig
 index 0567e87f..cc0e8537 100644
 --- a/src/extensions/native_ai_http_worker.zig
 +++ b/src/extensions/native_ai_http_worker.zig
-@@ -332,6 +332,7 @@ pub const Worker = struct {
-         }
-         if (self.input.framing == .bytes) {
-             if (bytes.len == 0) return;
+@@ -334,0 +335 @@ pub const Worker = struct {
 +            std.debug.print("DIAG_HTTP_BYTE t={d} url={s} len={d}\n", .{ std.Io.Clock.awake.now(self.io).toNanoseconds(), self.input.url, bytes.len });
-             return self.push(.{ .bytes = try a.dupe(u8, bytes) });
-         }
-         for (bytes) |byte| {
 diff --git a/src/extensions/native_ai_mistral_generator.zig b/src/extensions/native_ai_mistral_generator.zig
 index 1a926139..ce002100 100644
 --- a/src/extensions/native_ai_mistral_generator.zig
 +++ b/src/extensions/native_ai_mistral_generator.zig
-@@ -109,6 +109,7 @@ fn advance(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completion, i
- }
- fn run(scope: *Scope, owner: c.JSValue, completion: gen.Completion, input: c.JSValue) !gen.Action {
-     const current = try stage(scope, owner);
+@@ -111,0 +112 @@ fn run(scope: *Scope, owner: c.JSValue, completion: gen.Completion, input: c.JSV
 +    if (scope.engine.native_io) |io| @import("std").debug.print("DIAG_MISTRAL_RESUME t={d} stage={s} completion={s} jobs={d} controls={d}\n", .{ @import("std").Io.Clock.awake.now(io).toNanoseconds(), @tagName(current), @tagName(completion), if (scope.engine.progress_probe) |probe| probe.job_attempts else 0, if (scope.engine.progress_probe) |probe| probe.control_pumps else 0 });
-     if (current == .closing and (completion == .fulfilled or completion == .rejected)) {
-         var generation: i64 = 0;
-         if (c.JS_ToInt64(scope.engine.context, &generation, try scope.get(owner, "closeGeneration")) < 0) return v.js.capture(scope.engine);
 diff --git a/src/native_ai_google_mistral_source20_test.zig b/src/native_ai_google_mistral_source20_test.zig
 index f0f44575..46067dfd 100644
 --- a/src/native_ai_google_mistral_source20_test.zig
 +++ b/src/native_ai_google_mistral_source20_test.zig
-@@ -207,7 +207,12 @@ test "native AI Google Mistral Source8 complete injectable request reader host a
-             var scope: v.Scope = .{ .engine = engine };
-             defer scope.deinit();
-             prepareProbe(&scope) catch |err| return engine.nativeAllocationError(err, generation);
+@@ -210 +210,6 @@ test "native AI Google Mistral Source8 complete injectable request reader host a
 -            const checked = engine.evalModule(fetch_control_script, "native-source8-request-reader-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
 +            const checked = engine.evalModule(fetch_control_script, "native-source8-request-reader-allocation.mjs") catch |err| {
 +                const failure: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
@@ -49,17 +28,11 @@ index f0f44575..46067dfd 100644
 +                if (failure.has_induced_failure) std.debug.print("DIAG_SOURCE8_ALLOCATION_STACK {f}\n", .{std.debug.FormatStackTrace{ .stack_trace = failure.getStackTrace() }});
 +                return engine.nativeAllocationError(err, generation);
 +            };
-             engine.freeValue(checked);
-             c.JS_RunGC(engine.runtime);
-         }
 diff --git a/src/native_ai_google_mistral_test.zig b/src/native_ai_google_mistral_test.zig
 index 704c02bc..75734bec 100644
 --- a/src/native_ai_google_mistral_test.zig
 +++ b/src/native_ai_google_mistral_test.zig
-@@ -3,7 +3,16 @@ const em = @import("extensions/engine.zig");
- const sdk = @import("extensions/native_sdk.zig");
- const facade = @import("extensions/native_ai_google_mistral_factory.zig");
- const c = em.c;
+@@ -5,0 +6,8 @@ const c = em.c;
 +fn traceSnapshot(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
 +    const engine = em.Engine.fromContext(context.?);
 +    if (argc == 0) return c.pi_js_undefined();
@@ -68,34 +41,13 @@ index 704c02bc..75734bec 100644
 +    std.debug.print("DIAG_CONSUMER type={s} jobs={d} controls={d}\n", .{ kind, if (engine.progress_probe) |probe| probe.job_attempts else 0, if (engine.progress_probe) |probe| probe.control_pumps else 0 });
 +    return c.pi_js_undefined();
 +}
- fn install(engine: *em.Engine) !void {
+@@ -6,0 +15 @@ fn install(engine: *em.Engine) !void {
 +    if (engine.progress_probe != null) try engine.bindFunction("__diagnosticSnapshotTrace", traceSnapshot, 1);
-     try @import("extensions/native_stream.zig").install(engine);
-     try @import("extensions/node_url.zig").install(engine);
-     const imported = try engine.evalModule("import 'pi-ai';export const loaded=true;", "native-google-mistral-stream-install.mjs");
-@@ -67,6 +76,8 @@ fn source30Http(full_snapshots: bool) !void {
-     for (0..30) |case_index| {
-         const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
-         defer engine.deinit();
+@@ -69,0 +79,2 @@ fn source30Http(full_snapshots: bool) !void {
 +        var diagnostic_progress: em.ProgressProbe = .{};
 +        engine.progress_probe = &diagnostic_progress;
-         engine.native_io = std.testing.io;
-         try install(engine);
-         var scope: v.Scope = .{ .engine = engine };
-@@ -82,6 +93,7 @@ fn source30Http(full_snapshots: bool) !void {
-         const request_count = try v.length(&scope, requests);
-         const name = try engine.toString(try scope.get(input, "name"));
-         defer gpa.free(name);
+@@ -84,0 +96 @@ fn source30Http(full_snapshots: bool) !void {
 +        std.debug.print("DIAG_CASE {s} full={any}\n", .{ name, full_snapshots });
-         var wire: std.ArrayList(u8) = .empty;
-         defer wire.deinit(gpa);
-         var chunk_ends: std.ArrayList(usize) = .empty;
-@@ -157,7 +169,7 @@ fn source30Http(full_snapshots: bool) !void {
-         const checked = engine.evalModule(
-             \\function snapshot(value){if(Array.isArray(value))return value.map(snapshot);if(value&&typeof value==='object'){const out={};for(const[key,item]of Object.entries(value)){if(value.role==='assistant'&&key==='timestamp')out[key]='$TIMESTAMP';else if(value.role==='assistant'&&key==='durationMs')out[key]='$DURATION';else out[key]=snapshot(item)}return out}return value}
-             \\function canonical(value){if(Array.isArray(value))return value.map(canonical);if(value&&typeof value==='object'){const result={};for(const key of Object.keys(value).sort())if(value[key]!==undefined)result[key]=canonical(value[key]);return result}return value}
+@@ -160 +172 @@ fn source30Http(full_snapshots: bool) !void {
 -            \\const item=expected.input,apiName=item.kind==='google'?'google-generative-ai':item.kind==='vertex'?'google-vertex':'mistral-conversations',model={id:item.kind==='mistral'?'mistral-fixture':'gemini-3.1-pro-preview',name:'fixture',provider:item.kind==='vertex'?'google-vertex':item.kind,api:apiName,baseUrl:fixtureBase,reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192,...item.model},context=item.context??{messages:[{role:'system',content:'system',timestamp:0},{role:'user',content:'hello',timestamp:1}]},callbacks=[],events=[],payloads=[],options={apiKey:'fixture-placeholder-key',env:{GOOGLE_CLOUD_PROJECT:'',GCLOUD_PROJECT:'',GOOGLE_CLOUD_LOCATION:'',GOOGLE_APPLICATION_CREDENTIALS:''},maxTokens:1000,maxRetries:0,sessionId:'fixture-session',...item.options,onPayload(payload){callbacks.push('payload');payloads.push(snapshot(payload));if(item.callback==='replace')return {...payload,...(item.kind==='mistral'?{temperature:.25}:{config:{...payload.config,temperature:.25}})};if(item.callback==='async')return Promise.resolve()},onResponse(response){callbacks.push('response:'+response.status+':'+response.headers['x-fixture']);if(item.callback==='throw')throw Error('caller response failed');if(item.callback==='async')return Promise.resolve()},onProviderStreamEvent(chunk){callbacks.push('chunk');if(item.callback==='async')return Promise.resolve()}};let result,syncError;try{const stream=globalThis[item.kind].streamSimple(model,context,options);for await(const event of stream)events.push(snapshot(event));result=snapshot(await stream.result())}catch(error){syncError={name:error.name,message:error.message}}for(const key of ['payloads','callbacks','result','syncError',...(fullSnapshots?['events']:[])]){const actual={payloads,callbacks,events,result,syncError}[key];if(JSON.stringify(canonical(actual))!==JSON.stringify(canonical(expected[key])))throw Error(JSON.stringify({case:item.name,key,actual,expected:expected[key]}))}if(!fullSnapshots){const shape=event=>{const out={...event};delete out.partial;delete out.message;delete out.error;return out};if(JSON.stringify(canonical(events.map(shape)))!==JSON.stringify(canonical(expected.events.map(shape))))throw Error(JSON.stringify({case:item.name,eventShapes:events.map(shape),expected:expected.events.map(shape)}))}export const done=true;
 +            \\const item=expected.input,apiName=item.kind==='google'?'google-generative-ai':item.kind==='vertex'?'google-vertex':'mistral-conversations',model={id:item.kind==='mistral'?'mistral-fixture':'gemini-3.1-pro-preview',name:'fixture',provider:item.kind==='vertex'?'google-vertex':item.kind,api:apiName,baseUrl:fixtureBase,reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192,...item.model},context=item.context??{messages:[{role:'system',content:'system',timestamp:0},{role:'user',content:'hello',timestamp:1}]},callbacks=[],events=[],payloads=[],options={apiKey:'fixture-placeholder-key',env:{GOOGLE_CLOUD_PROJECT:'',GCLOUD_PROJECT:'',GOOGLE_CLOUD_LOCATION:'',GOOGLE_APPLICATION_CREDENTIALS:''},maxTokens:1000,maxRetries:0,sessionId:'fixture-session',...item.options,onPayload(payload){callbacks.push('payload');payloads.push(snapshot(payload));if(item.callback==='replace')return {...payload,...(item.kind==='mistral'?{temperature:.25}:{config:{...payload.config,temperature:.25}})};if(item.callback==='async')return Promise.resolve()},onResponse(response){callbacks.push('response:'+response.status+':'+response.headers['x-fixture']);if(item.callback==='throw')throw Error('caller response failed');if(item.callback==='async')return Promise.resolve()},onProviderStreamEvent(chunk){callbacks.push('chunk');if(item.callback==='async')return Promise.resolve()}};let result,syncError;try{const stream=globalThis[item.kind].streamSimple(model,context,options);for await(const event of stream){events.push(snapshot(event));__diagnosticSnapshotTrace(events[events.length-1].type)}result=snapshot(await stream.result())}catch(error){syncError={name:error.name,message:error.message}}for(const key of ['payloads','callbacks','result','syncError',...(fullSnapshots?['events']:[])]){const actual={payloads,callbacks,events,result,syncError}[key];if(JSON.stringify(canonical(actual))!==JSON.stringify(canonical(expected[key])))throw Error(JSON.stringify({case:item.name,key,actual,expected:expected[key]}))}if(!fullSnapshots){const shape=event=>{const out={...event};delete out.partial;delete out.message;delete out.error;return out};if(JSON.stringify(canonical(events.map(shape)))!==JSON.stringify(canonical(expected.events.map(shape))))throw Error(JSON.stringify({case:item.name,eventShapes:events.map(shape),expected:expected.events.map(shape)}))}export const done=true;
-         , "native-google-mistral-actual-source30.mjs") catch |err| {
-             std.debug.print("Google/Mistral {s}: {s}\n", .{ name, engine.last_error orelse "no diagnostic" });
-             return err;
