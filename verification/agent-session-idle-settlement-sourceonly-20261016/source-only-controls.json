@@ -1,0 +1,88 @@
+{
+  "root_base": "a41a94de0b0ca5e689bb9d59cd31c26b78edeebb",
+  "source_only": true,
+  "zig_invocations": 0,
+  "source_capture_invocations": 0,
+  "native_compile_invocations": 0,
+  "native_runtime_invocations": 0,
+  "unchanged_controls": [
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "unchanged_from_base": true,
+      "git_blob": "5a713e97233c42e64c602f1532838e880214f5c4",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "unchanged_from_base": true,
+      "git_blob": "00be281f64f1a4caa27fbfc94ad55f5345b8019a",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "unchanged_from_base": true,
+      "git_blob": "c220c7537a481f4bd13f8b7b3c755ab0d18a38c2",
+      "sha256": "86945EA3AD9C8DD3CD369C1C233CF6364C4DC2909F8C7132F104723523A92317"
+    },
+    {
+      "path": "src/extensions/native_agent_async.zig",
+      "unchanged_from_base": true,
+      "git_blob": "b389d2ce336d333f0adb97b95fac08a57a0eb921",
+      "sha256": "417EE313A8A36B74B8A25131675DA7F8D8F1EA1EC4A971DFDF975CD9982FE696"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_production.zig",
+      "unchanged_from_base": true,
+      "git_blob": "f6c5cac4376f523d59ec236b8df93d5b8c761859",
+      "sha256": "1C5EB940BCC91CB0D546A62C94BF5EC4187EFF3C9CE11C88A6B4E463EA2E0165"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_declaration_order.zig",
+      "unchanged_from_base": true,
+      "git_blob": "9406d2590b9746d64de449c556658d0907893548",
+      "sha256": "61262B796AF972FD24C45A90783EAB23D694F8B751A7930A98E46A13C6880E17"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-control-e622.json",
+      "unchanged_from_base": true,
+      "git_blob": "4db08e70c914f85c0a8d2fc3c4d3b404d31f415a",
+      "sha256": "3D46361B7F92DB6556F71D3E8B7C7A5F92DB80CAA731EBA0732CC19D407B5171"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-control-e622.input.txt",
+      "unchanged_from_base": true,
+      "git_blob": "079e5cee479e7b133ef067ef9ab43a64cce7edda",
+      "sha256": "71780AA82F430CC0F762C763BD25CCE289D685D788F902FD0A35A9448AA01F59"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-lifecycle-19cb.json",
+      "unchanged_from_base": true,
+      "git_blob": "0d8f6751563768275cdd62e68ee1b51ff6bc65df",
+      "sha256": "9283AA5E327956F04D8C1558E591DC5C352586AEEAC43A011228A747426E1140"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-settled-19cb.input.txt",
+      "unchanged_from_base": true,
+      "git_blob": "409e9134b7f7c491c3bf8ce0c1bddea00eb67988",
+      "sha256": "9458E7606623C196BC32EE036A8CCC1973BBEEB51523420D0E96A486902BF57E"
+    },
+    {
+      "path": "src/native_sdk_session_control_test.zig",
+      "unchanged_from_base": true,
+      "git_blob": "2cc9f343d2dd90acc1519d90c1ddd4425b50c853",
+      "sha256": "B3B26D4C3751A7FF0BBF3A61119C545B9651BC42A4E27D4B73E159775BFC9132"
+    },
+    {
+      "path": "src/native_sdk_session_lifecycle_test.zig",
+      "unchanged_from_base": true,
+      "git_blob": "bedf94376dc07ae4fef8eb8cdbc442142f0d72e5",
+      "sha256": "A24371E8194FDD5061B284987B500D55015BED70F4A93FDEBA650983453F3A90"
+    }
+  ],
+  "sync_control_method_count": 17,
+  "sync_body_helpers_normalized_lf_sha256": "8C8E89860B5CB82047D6AC8D811C90BAE56788EA3046A8E0471EADCE25BD4C7C",
+  "native_qualified": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}
