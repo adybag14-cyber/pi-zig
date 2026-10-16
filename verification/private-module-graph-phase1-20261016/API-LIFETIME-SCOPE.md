@@ -3,6 +3,12 @@ planned surface before C authoring. It is an unqualified, context-lifetime
 prototype. It neither selects SDK defaults nor claims graph garbage collection.
 No Engine classification/cache implementation belongs in this C patch.
 
+Callback code and opaque host storage must outlive the owner context and every
+old graph. The capability borrows that storage and owns no opaque destructor.
+It must never point into a temporary import attempt, retired per-factory SDK
+owner or cleared extension-cache token. Any JS values in host opaque storage
+need separate context-lifetime GC roots; a raw host pointer does not mark them.
+
 The isolated base is 8855fe109f5e4d71a01b80cc8faee9f35d354cd8. The existing C33+9h
 vendor bytes are quickjs.c E2F988956B452EBACDDC1B24AB45E5F70F7AFB4777F7452EDF1457649B2D1D3B
 and quickjs.h 341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB.

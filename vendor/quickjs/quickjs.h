@@ -1311,7 +1311,9 @@ typedef struct JSModuleDef JSModuleDef;
 
 /* Experimental trusted-host private module graphs. Capabilities and origins
    are owned by one context until teardown; this is not graph garbage collection.
-   NULL is the existing shared domain. No generation is exposed to guest code. */
+   NULL is the existing shared domain. No generation is exposed to guest code.
+   Callback code/opaque storage (and separately rooted JS captures, if any)
+   must outlive the context and every old graph; no opaque destructor is owned. */
 typedef struct JSPiPrivateModuleGraph JSPiPrivateModuleGraph;
 typedef struct JSPiModuleOrigin JSPiModuleOrigin;
 /* -1: exception, 0: existing shared domain, 1: importer's private graph. */
