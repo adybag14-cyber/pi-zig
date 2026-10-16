@@ -1,0 +1,1600 @@
+diff --git a/src/extensions/fixtures/async-function-body-node24.input.txt b/src/extensions/fixtures/async-function-body-node24.input.txt
+new file mode 100644
+index 00000000..ff812278
+--- /dev/null
++++ b/src/extensions/fixtures/async-function-body-node24.input.txt
+@@ -0,0 +1,43 @@
++// Controlled caller shared by genuine Node async functions and the native ABI.
++// No network, process spawn, credentials, timers or production facades are used.
++globalThis.asyncBodyRows = [];
++const f = asyncFixtures, rows = asyncBodyRows;
++const shape = fn => ({name:fn.name,length:fn.length,brand:isAsyncFunction(fn),tag:Object.prototype.toString.call(fn),ownNames:Object.getOwnPropertyNames(fn),prototype:Object.hasOwn(fn,'prototype'),constructible:(()=>{try{Reflect.construct(Object,[],fn);return true}catch{return false}})(),descriptors:Object.fromEntries(['length','name'].map(key=>{const d=Object.getOwnPropertyDescriptor(fn,key);return[key,{value:d.value,writable:d.writable,enumerable:d.enumerable,configurable:d.configurable}]}))});
++async function record(name, body) { try { rows.push({name,value:await body()}); } catch(error) { rows.push({name,error:{name:error?.name,message:error?.message}}); } }
++await record('genuine-async-metadata',()=>Object.fromEntries(Object.entries(f).map(([key,value])=>[key,shape(value)])));
++await record('prototype-counterfeit-is-not-async',()=>{const fake=function ordinary(){};Object.setPrototypeOf(fake,Object.getPrototypeOf(f.echo));return{brand:isAsyncFunction(fake),tag:Object.prototype.toString.call(fake)}});
++await record('bound-async-is-not-async-brand',()=>{const bound=f.echo.bind(null,1);return{brand:isAsyncFunction(bound),name:bound.name,length:bound.length,prototype:Object.hasOwn(bound,'prototype')}});
++await record('proxy-async-is-not-async-brand',()=>({brand:isAsyncFunction(new Proxy(f.echo,{})),tag:Object.prototype.toString.call(new Proxy(f.echo,{}))}));
++for(const [label,receiver] of [['undefined',undefined],['null',null],['number',7],['string','hello'],['symbol',Symbol('receiver')],['object',{}]]) await record('strict-receiver-'+label,async()=>{const result=await f.reflect.call(receiver,1,2);return{same:result.thisValue===receiver,type:typeof result.thisValue,args:result.args}});
++await record('strict-rest-arguments-preserve-identities',async()=>{const a={},b=Symbol('arg');const result=await f.reflect(a,b,undefined);return{count:result.args.length,a:result.args[0]===a,b:result.args[1]===b,missing:result.args[2]===undefined}});
++await record('lexical-arrow-ignores-call-receiver',async()=>{const value={};const result=await f.arrow.call({},value);return{sameThis:result.thisValue===asyncFixtureLexical,sameValue:result.value===value}});
++await record('lexical-arrow-ignores-bound-receiver',async()=>{const value={};const result=await f.arrow.bind({})(value);return{sameThis:result.thisValue===asyncFixtureLexical,sameValue:result.value===value}});
++await record('new-target-rejected-before-body',()=>{const trace=[];let error;try{Reflect.construct(f.echo,[1,trace])}catch(e){error=e.name}return{error,trace}});
++await record('own-prototype-does-not-enable-new',()=>{Object.defineProperty(f.echo,'prototype',{value:{},configurable:true});let error;try{Reflect.construct(f.echo,[])}catch(e){error=e.name}delete f.echo.prototype;return{error,brand:isAsyncFunction(f.echo)}});
++await record('body-starts-synchronously',async()=>{const trace=[];const pending=f.echo(7,trace);const before=[...trace];pending.then(()=>trace.push('then'));trace.push('after');const value=await pending;return{before,value,trace}});
++await record('real-outer-promise-identity',async()=>{const marker={};const inner=Promise.resolve(marker),outer=f.echo(inner);return{different:outer!==inner,identity:await outer===marker}});
++await record('return-thenable-getter-and-job-order',async()=>{const trace=[],marker={};const thenable={get then(){trace.push('get');return resolve=>{trace.push('call');resolve(marker)}}};const outer=f.echo(thenable,trace);trace.push('after');const same=await outer===marker;return{same,trace}});
++await record('return-thenable-multiple-settlements',async()=>{const trace=[],value={then(resolve,reject){resolve(3);reject(4);resolve(5);trace.push('end')}};return{value:await f.echo(value),trace}});
++await record('return-throwing-then-getter-preserves-identity',async()=>{const marker={};try{await f.echo({get then(){throw marker}})}catch(error){return error===marker}});
++await record('synchronous-body-throw-becomes-rejection',async()=>{const marker={},trace=[];let pending;try{pending=f.thrower(marker);trace.push('returned')}catch{trace.push('sync-throw')}try{await pending}catch(error){return{same:error===marker,trace}}});
++await record('throw-never-inspects-raw-reason',async()=>{let reads=0;const marker={get stack(){reads++;throw Error('must not read stack')},toString(){reads++;throw Error('must not stringify')}};try{await f.thrower(marker)}catch(error){return{same:error===marker,reads}}});
++await record('await-primitive-resumes-as-job',async()=>{const trace=[],pending=f.awaiter(7,trace);const before=[...trace];trace.push('after');return{before,value:await pending,trace}});
++await record('await-thenable-order',async()=>{const trace=[],value={get then(){trace.push('get');return resolve=>{trace.push('call');resolve(8)}}};const pending=f.awaiter(value,trace);trace.push('after');return{value:await pending,trace}});
++await record('await-intrinsic-promise-bypasses-public-then',async()=>{let reads=0;const value=Promise.resolve(9);Object.defineProperty(value,'then',{get(){reads++;throw Error('public then must not be read')}});return{value:await f.awaiter(value),reads}});
++await record('await-rejection-identity',async()=>{const marker={};try{await f.awaiter(Promise.reject(marker))}catch(error){return error===marker}});
++await record('await-catch-preserves-reason-and-order',async()=>{const trace=[],marker={};const pending=f.catcher(Promise.reject(marker),trace);trace.push('after');const result=await pending;return{same:result.caught===marker,trace}});
++await record('await-poisoned-constructor-enters-body-catch',async()=>{const trace=[],marker={},value=Promise.resolve(1);Object.defineProperty(value,'constructor',{get(){trace.push('constructor');throw marker}});const pending=f.catcher(value,trace);trace.push('after');return{same:(await pending).caught===marker,trace}});
++await record('await-poisoned-constructor-uncaught-identity',async()=>{const marker={},value=Promise.resolve(1);Object.defineProperty(value,'constructor',{get(){throw marker}});try{await f.awaiter(value)}catch(error){return error===marker}});
++await record('await-private-locals-survive-gc',async()=>{let resolve;const value=new Promise(r=>resolve=r),pending=f.stateful(value);runGC();resolve(1);return await pending});
++await record('pending-arguments-receiver-and-captures-survive-gc',async()=>{let resolve;const trace=[],gate=new Promise(r=>resolve=r),pending=f.awaiter(gate,trace);runGC();resolve(11);return{value:await pending,trace}});
++await record('proxy-apply-observes-real-target',async()=>{const trace=[],proxy=new Proxy(f.echo,{apply(target,receiver,args){trace.push({brand:isAsyncFunction(target),count:args.length});return Reflect.apply(target,receiver,args)}});return{value:await proxy(12),trace}});
++await record('proxy-apply-can-override-return-without-async-wrapping',()=>new Proxy(f.echo,{apply(){return 13}})());
++await record('bound-prefix-arguments',async()=>{const receiver={},value={};const result=await f.reflect.bind(receiver,value)(14);return{receiver:result.thisValue===receiver,value:result.args[0]===value,tail:result.args[1]}});
++await record('native-wrapper-toString',()=>({bound:Function.prototype.toString.call(f.echo.bind(null)),proxy:Function.prototype.toString.call(new Proxy(f.echo,{}))}));
++await record('revoked-callable-proxy-toString',()=>{const pair=Proxy.revocable(f.echo,{});pair.revoke();return Function.prototype.toString.call(pair.proxy)});
++await record('toString-does-not-read-public-name',()=>{const fn=f.thrower,before=Function.prototype.toString.call(fn),descriptor=Object.getOwnPropertyDescriptor(fn,'name');Object.defineProperty(fn,'name',{get(){throw Error('must not read name')},configurable:true});let same;try{same=Function.prototype.toString.call(fn)===before}finally{Object.defineProperty(fn,'name',descriptor)}return same});
++await record('creation-realm-promise-prototype-after-gc',async()=>{runGC();const pending=otherAsync();return{other:Object.getPrototypeOf(pending)===otherPromisePrototype,outer:Object.getPrototypeOf(pending)===Promise.prototype,value:await pending,brand:isAsyncFunction(otherAsync)}});
++await record('async-call-ignores-replaced-global-Promise',async()=>{const original=Promise;let calls=0;globalThis.Promise=function(){calls++;throw Error('must not call global Promise')};try{const pending=f.echo(15);return{original:Object.getPrototypeOf(pending)===original.prototype,value:await pending,calls}}finally{globalThis.Promise=original}});
++await record('ordinary-bytecode-function-remains-ordinary',()=>{function ordinary(value){return value}const before=Function.prototype.toString.call(ordinary);return{brand:isAsyncFunction(ordinary),constructible:(()=>{try{Reflect.construct(Object,[],ordinary);return true}catch{return false}})(),result:ordinary(16),same:Function.prototype.toString.call(ordinary)===before}});
++await record('ordinary-bound-proxy-Source-toString',()=>{function ordinary(){}return{bound:Function.prototype.toString.call(ordinary.bind(null)),proxy:Function.prototype.toString.call(new Proxy(ordinary,{}))}});
++await record('return-thenable-reentry-and-gc',async()=>{const trace=[];let nested;const value={get then(){trace.push('get');nested=f.echo(17,trace);runGC();return resolve=>{trace.push('call');resolve(nested)}}};return{value:await f.echo(value,trace),trace}});
+diff --git a/src/extensions/fixtures/async-function-body-node24.json b/src/extensions/fixtures/async-function-body-node24.json
+new file mode 100644
+index 00000000..95c18698
+--- /dev/null
++++ b/src/extensions/fixtures/async-function-body-node24.json
+@@ -0,0 +1,547 @@
++{
++  "runtime": "v24.14.0",
++  "source": "actual Node24 syntax and intrinsic util/types/Promise/vm; no native proposal substituted",
++  "count": 42,
++  "rows": [
++    {
++      "name": "genuine-async-metadata",
++      "value": {
++        "echo": {
++          "name": "echo",
++          "length": 2,
++          "brand": true,
++          "tag": "[object AsyncFunction]",
++          "ownNames": [
++            "length",
++            "name"
++          ],
++          "prototype": false,
++          "constructible": false,
++          "descriptors": {
++            "length": {
++              "value": 2,
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            },
++            "name": {
++              "value": "echo",
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            }
++          }
++        },
++        "thrower": {
++          "name": "thrower",
++          "length": 1,
++          "brand": true,
++          "tag": "[object AsyncFunction]",
++          "ownNames": [
++            "length",
++            "name"
++          ],
++          "prototype": false,
++          "constructible": false,
++          "descriptors": {
++            "length": {
++              "value": 1,
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            },
++            "name": {
++              "value": "thrower",
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            }
++          }
++        },
++        "reflect": {
++          "name": "reflect",
++          "length": 0,
++          "brand": true,
++          "tag": "[object AsyncFunction]",
++          "ownNames": [
++            "length",
++            "name"
++          ],
++          "prototype": false,
++          "constructible": false,
++          "descriptors": {
++            "length": {
++              "value": 0,
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            },
++            "name": {
++              "value": "reflect",
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            }
++          }
++        },
++        "arrow": {
++          "name": "arrow",
++          "length": 1,
++          "brand": true,
++          "tag": "[object AsyncFunction]",
++          "ownNames": [
++            "length",
++            "name"
++          ],
++          "prototype": false,
++          "constructible": false,
++          "descriptors": {
++            "length": {
++              "value": 1,
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            },
++            "name": {
++              "value": "arrow",
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            }
++          }
++        },
++        "awaiter": {
++          "name": "awaiter",
++          "length": 2,
++          "brand": true,
++          "tag": "[object AsyncFunction]",
++          "ownNames": [
++            "length",
++            "name"
++          ],
++          "prototype": false,
++          "constructible": false,
++          "descriptors": {
++            "length": {
++              "value": 2,
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            },
++            "name": {
++              "value": "awaiter",
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            }
++          }
++        },
++        "catcher": {
++          "name": "catcher",
++          "length": 2,
++          "brand": true,
++          "tag": "[object AsyncFunction]",
++          "ownNames": [
++            "length",
++            "name"
++          ],
++          "prototype": false,
++          "constructible": false,
++          "descriptors": {
++            "length": {
++              "value": 2,
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            },
++            "name": {
++              "value": "catcher",
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            }
++          }
++        },
++        "stateful": {
++          "name": "stateful",
++          "length": 1,
++          "brand": true,
++          "tag": "[object AsyncFunction]",
++          "ownNames": [
++            "length",
++            "name"
++          ],
++          "prototype": false,
++          "constructible": false,
++          "descriptors": {
++            "length": {
++              "value": 1,
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            },
++            "name": {
++              "value": "stateful",
++              "writable": false,
++              "enumerable": false,
++              "configurable": true
++            }
++          }
++        }
++      }
++    },
++    {
++      "name": "prototype-counterfeit-is-not-async",
++      "value": {
++        "brand": false,
++        "tag": "[object AsyncFunction]"
++      }
++    },
++    {
++      "name": "bound-async-is-not-async-brand",
++      "value": {
++        "brand": false,
++        "name": "bound echo",
++        "length": 1,
++        "prototype": false
++      }
++    },
++    {
++      "name": "proxy-async-is-not-async-brand",
++      "value": {
++        "brand": false,
++        "tag": "[object AsyncFunction]"
++      }
++    },
++    {
++      "name": "strict-receiver-undefined",
++      "value": {
++        "same": true,
++        "type": "undefined",
++        "args": [
++          1,
++          2
++        ]
++      }
++    },
++    {
++      "name": "strict-receiver-null",
++      "value": {
++        "same": true,
++        "type": "object",
++        "args": [
++          1,
++          2
++        ]
++      }
++    },
++    {
++      "name": "strict-receiver-number",
++      "value": {
++        "same": true,
++        "type": "number",
++        "args": [
++          1,
++          2
++        ]
++      }
++    },
++    {
++      "name": "strict-receiver-string",
++      "value": {
++        "same": true,
++        "type": "string",
++        "args": [
++          1,
++          2
++        ]
++      }
++    },
++    {
++      "name": "strict-receiver-symbol",
++      "value": {
++        "same": true,
++        "type": "symbol",
++        "args": [
++          1,
++          2
++        ]
++      }
++    },
++    {
++      "name": "strict-receiver-object",
++      "value": {
++        "same": true,
++        "type": "object",
++        "args": [
++          1,
++          2
++        ]
++      }
++    },
++    {
++      "name": "strict-rest-arguments-preserve-identities",
++      "value": {
++        "count": 3,
++        "a": true,
++        "b": true,
++        "missing": true
++      }
++    },
++    {
++      "name": "lexical-arrow-ignores-call-receiver",
++      "value": {
++        "sameThis": true,
++        "sameValue": true
++      }
++    },
++    {
++      "name": "lexical-arrow-ignores-bound-receiver",
++      "value": {
++        "sameThis": true,
++        "sameValue": true
++      }
++    },
++    {
++      "name": "new-target-rejected-before-body",
++      "value": {
++        "error": "TypeError",
++        "trace": []
++      }
++    },
++    {
++      "name": "own-prototype-does-not-enable-new",
++      "value": {
++        "error": "TypeError",
++        "brand": true
++      }
++    },
++    {
++      "name": "body-starts-synchronously",
++      "value": {
++        "before": [
++          "body"
++        ],
++        "value": 7,
++        "trace": [
++          "body",
++          "after",
++          "then"
++        ]
++      }
++    },
++    {
++      "name": "real-outer-promise-identity",
++      "value": {
++        "different": true,
++        "identity": true
++      }
++    },
++    {
++      "name": "return-thenable-getter-and-job-order",
++      "value": {
++        "same": true,
++        "trace": [
++          "body",
++          "get",
++          "after",
++          "call"
++        ]
++      }
++    },
++    {
++      "name": "return-thenable-multiple-settlements",
++      "value": {
++        "value": 3,
++        "trace": [
++          "end"
++        ]
++      }
++    },
++    {
++      "name": "return-throwing-then-getter-preserves-identity",
++      "value": true
++    },
++    {
++      "name": "synchronous-body-throw-becomes-rejection",
++      "value": {
++        "same": true,
++        "trace": [
++          "returned"
++        ]
++      }
++    },
++    {
++      "name": "throw-never-inspects-raw-reason",
++      "value": {
++        "same": true,
++        "reads": 0
++      }
++    },
++    {
++      "name": "await-primitive-resumes-as-job",
++      "value": {
++        "before": [
++          "start"
++        ],
++        "value": 7,
++        "trace": [
++          "start",
++          "after",
++          "resumed"
++        ]
++      }
++    },
++    {
++      "name": "await-thenable-order",
++      "value": {
++        "value": 8,
++        "trace": [
++          "start",
++          "get",
++          "after",
++          "call",
++          "resumed"
++        ]
++      }
++    },
++    {
++      "name": "await-intrinsic-promise-bypasses-public-then",
++      "value": {
++        "value": 9,
++        "reads": 0
++      }
++    },
++    {
++      "name": "await-rejection-identity",
++      "value": true
++    },
++    {
++      "name": "await-catch-preserves-reason-and-order",
++      "value": {
++        "same": true,
++        "trace": [
++          "start",
++          "after",
++          "caught"
++        ]
++      }
++    },
++    {
++      "name": "await-poisoned-constructor-enters-body-catch",
++      "value": {
++        "same": true,
++        "trace": [
++          "start",
++          "constructor",
++          "caught",
++          "after"
++        ]
++      }
++    },
++    {
++      "name": "await-poisoned-constructor-uncaught-identity",
++      "value": true
++    },
++    {
++      "name": "await-private-locals-survive-gc",
++      "value": {
++        "tag": "private-local"
++      }
++    },
++    {
++      "name": "pending-arguments-receiver-and-captures-survive-gc",
++      "value": {
++        "value": 11,
++        "trace": [
++          "start",
++          "resumed"
++        ]
++      }
++    },
++    {
++      "name": "proxy-apply-observes-real-target",
++      "value": {
++        "value": 12,
++        "trace": [
++          {
++            "brand": true,
++            "count": 1
++          }
++        ]
++      }
++    },
++    {
++      "name": "proxy-apply-can-override-return-without-async-wrapping",
++      "value": 13
++    },
++    {
++      "name": "bound-prefix-arguments",
++      "value": {
++        "receiver": true,
++        "value": true,
++        "tail": 14
++      }
++    },
++    {
++      "name": "native-wrapper-toString",
++      "value": {
++        "bound": "function () { [native code] }",
++        "proxy": "function () { [native code] }"
++      }
++    },
++    {
++      "name": "revoked-callable-proxy-toString",
++      "value": "function () { [native code] }"
++    },
++    {
++      "name": "toString-does-not-read-public-name",
++      "value": true
++    },
++    {
++      "name": "creation-realm-promise-prototype-after-gc",
++      "value": {
++        "other": true,
++        "outer": false,
++        "value": 42,
++        "brand": true
++      }
++    },
++    {
++      "name": "async-call-ignores-replaced-global-Promise",
++      "value": {
++        "original": true,
++        "value": 15,
++        "calls": 0
++      }
++    },
++    {
++      "name": "ordinary-bytecode-function-remains-ordinary",
++      "value": {
++        "brand": false,
++        "constructible": true,
++        "result": 16,
++        "same": true
++      }
++    },
++    {
++      "name": "ordinary-bound-proxy-Source-toString",
++      "value": {
++        "bound": "function () { [native code] }",
++        "proxy": "function () { [native code] }"
++      }
++    },
++    {
++      "name": "return-thenable-reentry-and-gc",
++      "value": {
++        "value": 17,
++        "trace": [
++          "body",
++          "get",
++          "body",
++          "call"
++        ]
++      }
++    }
++  ]
++}
+diff --git a/src/extensions/native_async_function.zig b/src/extensions/native_async_function.zig
+new file mode 100644
+index 00000000..00be281f
+--- /dev/null
++++ b/src/extensions/native_async_function.zig
+@@ -0,0 +1,97 @@
++//! Proposal-only genuine native AsyncFunction bodies. No prototype branding or
++//! JavaScript wrapper is used. QuickJS owns each outer Promise and real Await.
++const em = @import("engine.zig");
++const c = em.c;
++pub const Callback = *const fn (*em.Engine, c.JSValue, []const c.JSValue, []const c.JSValue) anyerror!c.JSValue;
++pub const Completion = enum(c_int) {
++    start = c.JS_PI_AF_START,
++    fulfilled = c.JS_PI_AF_AWAIT_FULFILLED,
++    rejected = c.JS_PI_AF_AWAIT_REJECTED,
++};
++/// Every payload is owned. returned means `return expression` (adoption);
++/// awaited means a real suspension; thrown preserves the raw reason.
++pub const Action = union(enum) { returned: c.JSValue, awaited: c.JSValue, thrown: c.JSValue };
++pub const Body = *const fn (*em.Engine, c.JSValue, []const c.JSValue, []const c.JSValue, *c.JSValue, Completion, c.JSValue) anyerror!Action;
++const Implementation = union(enum) { callback: Callback, body: Body };
++const Captures = struct { engine: *em.Engine, implementation: Implementation, values: []c.JSValue };
++fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
++    const captures: *Captures = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
++    for (captures.values) |root| c.JS_FreeValueRT(runtime, root);
++    captures.engine.gpa.free(captures.values);
++    captures.engine.gpa.destroy(captures);
++}
++fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
++    const captures: *Captures = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
++    for (captures.values) |root| c.JS_MarkValue(runtime, root, visit);
++}
++fn fail(engine: *em.Engine, err: anyerror) c.JSValue {
++    if (err == error.JavaScriptException) return engine.throwCaptured();
++    if (err == error.OutOfMemory) {
++        _ = engine.throwNativeOutOfMemory();
++        const failure = c.JS_GetException(engine.context);
++        c.JS_SetUncatchableError(engine.context, failure);
++        return c.JS_Throw(engine.context, failure);
++    }
++    return c.JS_ThrowTypeError(engine.context, "Native async body: %s", @as([*:0]const u8, @errorName(err)));
++}
++fn invoke(_: ?*c.JSContext, owner: c.JSValue, receiver: c.JSValue, argc: c_int, argv: [*c]const c.JSValue, raw: c_int, input: c.JSValue, state: [*c]c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
++    const captures: *Captures = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)).?));
++    const engine = captures.engine;
++    engine.native_exception_diagnostics_suppressed += 1;
++    defer engine.native_exception_diagnostics_suppressed -= 1;
++    const args: []const c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
++    const completion: Completion = @enumFromInt(raw);
++    const result: Action = switch (captures.implementation) {
++        .callback => |callback| blk: {
++            if (completion != .start) return c.JS_ThrowInternalError(engine.context, "Simple native async body resumed");
++            break :blk .{ .returned = callback(engine, receiver, args, captures.values) catch |err| return fail(engine, err) };
++        },
++        .body => |body| body(engine, receiver, args, captures.values, @ptrCast(state), completion, input) catch |err| return fail(engine, err),
++    };
++    return switch (result) {
++        .returned => |value| resultValue(action, c.JS_PI_AF_RETURN, value),
++        .awaited => |value| resultValue(action, c.JS_PI_AF_AWAIT, value),
++        .thrown => |value| resultValue(action, c.JS_PI_AF_THROW, value),
++    };
++}
++fn resultValue(action: [*c]c_int, kind: c_int, value: c.JSValue) c.JSValue {
++    action[0] = kind;
++    return value;
++}
++/// Replace the owned per-invocation state slot, consuming next. Borrowed roots,
++/// arguments, receiver and input must be duplicated before storing or returning.
++pub fn replaceState(engine: *em.Engine, state: *c.JSValue, next: c.JSValue) void {
++    engine.freeValue(state.*);
++    state.* = next;
++}
++pub fn create(engine: *em.Engine, name: [*:0]const u8, length: c_int, callback: Callback, roots: []const c.JSValue) !c.JSValue {
++    return createKind(engine, name, length, .{ .callback = callback }, roots, c.pi_js_undefined(), false);
++}
++pub fn createArrow(engine: *em.Engine, name: [*:0]const u8, length: c_int, callback: Callback, roots: []const c.JSValue, lexical_this: c.JSValue) !c.JSValue {
++    return createKind(engine, name, length, .{ .callback = callback }, roots, lexical_this, true);
++}
++pub fn createResumable(engine: *em.Engine, name: [*:0]const u8, length: c_int, body: Body, roots: []const c.JSValue) !c.JSValue {
++    return createKind(engine, name, length, .{ .body = body }, roots, c.pi_js_undefined(), false);
++}
++pub fn createResumableArrow(engine: *em.Engine, name: [*:0]const u8, length: c_int, body: Body, roots: []const c.JSValue, lexical_this: c.JSValue) !c.JSValue {
++    return createKind(engine, name, length, .{ .body = body }, roots, lexical_this, true);
++}
++fn createKind(engine: *em.Engine, name: [*:0]const u8, length: c_int, implementation: Implementation, roots: []const c.JSValue, lexical_this: c.JSValue, arrow: bool) !c.JSValue {
++    var class: c.JSClassID = 0;
++    _ = c.JS_NewClassID(engine.runtime, &class);
++    const definition: c.JSClassDef = .{ .class_name = "Private native AsyncFunction captures", .finalizer = finalizer, .gc_mark = mark };
++    if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
++    const owner = try engine.checked(c.JS_NewObjectClass(engine.context, class));
++    defer engine.freeValue(owner);
++    const values = try engine.gpa.alloc(c.JSValue, roots.len);
++    var attached = false;
++    errdefer if (!attached) engine.gpa.free(values);
++    const captures = try engine.gpa.create(Captures);
++    for (roots, values) |root, *destination| destination.* = c.JS_DupValue(engine.context, root);
++    captures.* = .{ .engine = engine, .implementation = implementation, .values = values };
++    _ = c.JS_SetOpaque(owner, captures);
++    attached = true;
++    // From attachment onward the private holder's finalizer owns host storage.
++    // A C factory failure releases its partial roots before owner is released.
++    return engine.checked(c.JS_PiNewNativeAsyncFunction(engine.context, invoke, owner, lexical_this, if (arrow) c.JS_PI_AF_LEXICAL_THIS else 0, name, length));
++}
+diff --git a/src/native_async_function_body_test.zig b/src/native_async_function_body_test.zig
+new file mode 100644
+index 00000000..9c18ee4f
+--- /dev/null
++++ b/src/native_async_function_body_test.zig
+@@ -0,0 +1,390 @@
++const std = @import("std");
++const em = @import("extensions/engine.zig");
++const af = @import("extensions/native_async_function.zig");
++const Scope = @import("extensions/native_models_stream_scope.zig").Scope;
++const c = em.c;
++fn argument(args: []const c.JSValue, index: usize) c.JSValue {
++    return if (index < args.len) args[index] else c.pi_js_undefined();
++}
++fn trace(scope: *Scope, args: []const c.JSValue, label: []const u8) !void {
++    const target = argument(args, 1);
++    if (!c.JS_IsUndefined(target) and !c.JS_IsNull(target)) _ = try scope.invoke(target, "push", &.{try scope.text(label)});
++}
++fn echo(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    try trace(&scope, args, "body");
++    return c.JS_DupValue(engine.context, argument(args, 0));
++}
++fn thrower(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
++    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, argument(args, 0))));
++}
++fn reflect(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const output = try scope.object();
++    const values = try scope.array();
++    for (args, 0..) |value, i| try scope.index(values, @intCast(i), value);
++    try scope.put(output, "thisValue", receiver);
++    try scope.put(output, "args", values);
++    return c.JS_DupValue(engine.context, output);
++}
++fn arrow(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const output = try scope.object();
++    try scope.put(output, "thisValue", receiver);
++    try scope.put(output, "value", argument(args, 0));
++    return c.JS_DupValue(engine.context, output);
++}
++fn awaited(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, _: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    switch (completion) {
++        .start => {
++            try trace(&scope, args, "start");
++            return .{ .awaited = c.JS_DupValue(engine.context, argument(args, 0)) };
++        },
++        .fulfilled => {
++            try trace(&scope, args, "resumed");
++            return .{ .returned = c.JS_DupValue(engine.context, input) };
++        },
++        .rejected => {
++            if (c.JS_ToBool(engine.context, roots[0]) != 1) return .{ .thrown = c.JS_DupValue(engine.context, input) };
++            try trace(&scope, args, "caught");
++            const result = try scope.object();
++            try scope.put(result, "caught", input);
++            return .{ .returned = c.JS_DupValue(engine.context, result) };
++        },
++    }
++}
++fn stateful(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
++    if (completion == .start) {
++        var scope: Scope = .{ .engine = engine };
++        defer scope.deinit();
++        const local = try scope.object();
++        try scope.put(local, "tag", try scope.text("private-local"));
++        af.replaceState(engine, state, c.JS_DupValue(engine.context, local));
++        return .{ .awaited = c.JS_DupValue(engine.context, argument(args, 0)) };
++    }
++    return if (completion == .fulfilled) .{ .returned = c.JS_DupValue(engine.context, state.*) } else .{ .thrown = c.JS_DupValue(engine.context, input) };
++}
++fn brand(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
++    return c.pi_js_bool(context, @intFromBool(argc > 0 and c.JS_IsAsyncFunction(argv[0])));
++}
++fn runGC(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    c.JS_RunGC(c.JS_GetRuntime(context));
++    return c.pi_js_undefined();
++}
++fn otherBody(context: ?*c.JSContext, _: c.JSValue, _: c.JSValue, _: c_int, _: [*c]const c.JSValue, _: c_int, _: c.JSValue, _: [*c]c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
++    action[0] = c.JS_PI_AF_RETURN;
++    const global = c.JS_GetGlobalObject(context);
++    defer c.JS_FreeValue(context, global);
++    return c.JS_GetPropertyStr(context, global, "realmMarker");
++}
++fn install(engine: *em.Engine) !void {
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
++    const functions = try scope.object();
++    const lexical = try scope.object();
++    try scope.put(lexical, "tag", try scope.text("lexical"));
++    try scope.put(global, "asyncFixtureLexical", lexical);
++    try scope.put(functions, "echo", try scope.own(try af.create(engine, "echo", 2, echo, &.{})));
++    try scope.put(functions, "thrower", try scope.own(try af.create(engine, "thrower", 1, thrower, &.{})));
++    try scope.put(functions, "reflect", try scope.own(try af.create(engine, "reflect", 0, reflect, &.{})));
++    try scope.put(functions, "arrow", try scope.own(try af.createArrow(engine, "arrow", 1, arrow, &.{}, lexical)));
++    try scope.put(functions, "awaiter", try scope.own(try af.createResumable(engine, "awaiter", 2, awaited, &.{c.pi_js_bool(engine.context, 0)})));
++    try scope.put(functions, "catcher", try scope.own(try af.createResumable(engine, "catcher", 2, awaited, &.{c.pi_js_bool(engine.context, 1)})));
++    try scope.put(functions, "stateful", try scope.own(try af.createResumable(engine, "stateful", 1, stateful, &.{})));
++    try scope.put(global, "asyncFixtures", functions);
++    try scope.put(global, "isAsyncFunction", try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, brand, "isAsyncFunction", 1))));
++    try scope.put(global, "runGC", try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, runGC, "runGC", 0))));
++    const other = c.JS_NewContext(engine.runtime) orelse return error.OutOfMemory;
++    defer c.JS_FreeContext(other);
++    const otherGlobal = c.JS_GetGlobalObject(other);
++    defer c.JS_FreeValue(other, otherGlobal);
++    if (c.JS_DefinePropertyValueStr(other, otherGlobal, "realmMarker", c.JS_NewInt32(other, 42), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
++    const promise = c.JS_GetPropertyStr(other, otherGlobal, "Promise");
++    defer c.JS_FreeValue(other, promise);
++    const prototype = c.JS_GetPropertyStr(other, promise, "prototype");
++    defer c.JS_FreeValue(other, prototype);
++    try scope.put(global, "otherPromisePrototype", prototype);
++    const otherFunction = c.JS_PiNewNativeAsyncFunction(other, otherBody, c.pi_js_undefined(), c.pi_js_undefined(), 0, "otherAsync", 0);
++    if (c.JS_IsException(otherFunction)) return error.JavaScriptException;
++    defer c.JS_FreeValue(other, otherFunction);
++    try scope.put(global, "otherAsync", otherFunction);
++}
++test "native async body proposal matches genuine Node observations after independent review and Source capture" {
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    try install(engine);
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const expected = @embedFile("extensions/fixtures/async-function-body-node24.json");
++    const data = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, expected.ptr, expected.len, "async-function-body-node24.json")));
++    try scope.put(try scope.own(c.JS_GetGlobalObject(engine.context)), "asyncBodySource", data);
++    const value = engine.evalModule(@embedFile("extensions/fixtures/async-function-body-node24.input.txt") ++ "\nif(asyncBodySource.runtime!=='v24.14.0'||asyncBodyRows.length!==asyncBodySource.rows.length)throw Error('Source authority');const mismatches=[];for(let i=0;i<asyncBodyRows.length;i++)if(JSON.stringify(asyncBodyRows[i])!==JSON.stringify(asyncBodySource.rows[i]))mismatches.push({case:i,actual:asyncBodyRows[i],expected:asyncBodySource.rows[i]});if(mismatches.length)throw Error(JSON.stringify(mismatches));", "native-async-body-source.mjs") catch |err| {
++        std.debug.print("Native async body proposal: {s}\n", .{engine.last_error orelse @errorName(err)});
++        return err;
++    };
++    engine.freeValue(value);
++    c.JS_RunGC(engine.runtime);
++}
++test "native async body proposal genuine brand strict receiver outer Promise and native toString" {
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    try install(engine);
++    const value = try engine.evalModule(
++        \\const f=asyncFixtures.echo;if(!isAsyncFunction(f)||Object.prototype.toString.call(f)!=='[object AsyncFunction]'||Object.hasOwn(f,'prototype'))throw Error('genuine async brand');const inner=Promise.resolve(7),outer=f(inner);if(outer===inner||await outer!==7)throw Error('real outer promise');const before=Function.prototype.toString.call(f);if(before!=='function echo() { [native code] }')throw Error('native source representation');Object.defineProperty(f,'name',{get(){throw Error('must not read name')},configurable:true});if(Function.prototype.toString.call(f)!==before)throw Error('native source name drift');const receiver={},r=await asyncFixtures.reflect.call(receiver,1,2);if(r.thisValue!==receiver||r.args.join(',')!=='1,2')throw Error('strict receiver/args');export const proved=true;
++    , "native-async-body-brand.mjs");
++    engine.freeValue(value);
++}
++fn hostOOM(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
++    return error.OutOfMemory;
++}
++test "native async body proposal raw host OOM remains uncatchable rather than rejected Promise" {
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    const function = try af.create(engine, "hostOOM", 0, hostOOM, &.{});
++    defer engine.freeValue(function);
++    const result = c.JS_Call(engine.context, function, c.pi_js_undefined(), 0, null);
++    defer engine.freeValue(result);
++    try std.testing.expect(c.JS_IsException(result));
++    const failure = c.JS_GetException(engine.context);
++    defer engine.freeValue(failure);
++    try std.testing.expect(c.JS_IsUncatchableError(failure));
++}
++
++test "native async body proposal Zig host allocation failures release captures and callbacks" {
++    const Probe = struct {
++        fn run(gpa: std.mem.Allocator) !void {
++            const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
++            defer engine.deinit();
++            const generation = engine.native_allocation_generation;
++            install(engine) catch |err| return engine.nativeAllocationError(err, generation);
++            const result = engine.evalModule(
++                \\const marker={},inner=Promise.resolve(marker);if(await asyncFixtures.echo(inner)!==marker)throw Error('return alias');if(await asyncFixtures.awaiter(inner)!==marker)throw Error('await alias');let resolve;const gate=new Promise(r=>resolve=r),local=asyncFixtures.stateful(gate);runGC();resolve(1);if((await local).tag!=='private-local')throw Error('local roots');const raw={};try{await asyncFixtures.thrower(raw);throw Error('missing raw')}catch(e){if(e!==raw)throw e}export const done=true;
++            , "native-async-body-host-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
++            engine.freeValue(result);
++            c.JS_RunGC(engine.runtime);
++        }
++    };
++    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
++}
++
++fn stackProjection(engine: *em.Engine) !c.JSValue {
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const frames = try scope.own(try engine.checked(c.JS_CaptureCurrentStackFrames(engine.context, 1, c.pi_js_undefined(), null, -1, -1, 0)));
++    const first = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, frames, 0)));
++    var filename: c.JSValue = undefined;
++    var name: c.JSValue = undefined;
++    var line: c_int = undefined;
++    var column: c_int = undefined;
++    var native: c_int = undefined;
++    var constructor: c_int = undefined;
++    if (c.JS_ReadCapturedStackFrame(engine.context, first, &filename, &name, &line, &column, &native, &constructor) < 0) return error.InvalidCapturedFrame;
++    _ = try scope.own(filename);
++    _ = try scope.own(name);
++    const output = try scope.object();
++    try scope.put(output, "name", name);
++    try scope.put(output, "filename", filename);
++    try scope.put(output, "line", c.JS_NewInt32(engine.context, line));
++    try scope.put(output, "column", c.JS_NewInt32(engine.context, column));
++    try scope.put(output, "native", c.pi_js_bool(engine.context, native));
++    try scope.put(output, "constructor", c.pi_js_bool(engine.context, constructor));
++    return c.JS_DupValue(engine.context, output);
++}
++fn stackBody(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: af.Completion, _: c.JSValue) !af.Action {
++    if (completion == .start) {
++        af.replaceState(engine, state, try stackProjection(engine));
++        return .{ .awaited = c.pi_js_undefined() };
++    }
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const output = try scope.array();
++    try scope.index(output, 0, state.*);
++    try scope.index(output, 1, try scope.own(try stackProjection(engine)));
++    return .{ .returned = c.JS_DupValue(engine.context, output) };
++}
++test "native async body proposal stack capture preserves native name on start and resume" {
++    const engine = try em.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const function = try scope.own(try af.createResumable(engine, "stackBody", 0, stackBody, &.{}));
++    try scope.put(try scope.own(c.JS_GetGlobalObject(engine.context)), "stackBody", function);
++    const result = try engine.evalModule(
++        \\for(const frame of await stackBody()){if(frame.name!=='stackBody'||frame.native!==true||frame.constructor!==false||frame.filename!==null||frame.line!==-1||frame.column!==-1)throw Error(JSON.stringify(frame))}export const done=true;
++    , "native-async-body-stack.mjs");
++    engine.freeValue(result);
++}
++fn resumedOOM(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, _: *c.JSValue, completion: af.Completion, _: c.JSValue) !af.Action {
++    if (completion == .start) return .{ .awaited = c.pi_js_undefined() };
++    return error.OutOfMemory;
++}
++test "native async body proposal resumed native OOM escapes the job without Promise rejection" {
++    const engine = try em.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    const function = try af.createResumable(engine, "resumedOOM", 0, resumedOOM, &.{});
++    defer engine.freeValue(function);
++    const pending = try engine.checked(c.JS_Call(engine.context, function, c.pi_js_undefined(), 0, null));
++    defer engine.freeValue(pending);
++    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, pending));
++    var context: ?*c.JSContext = null;
++    try std.testing.expect(c.JS_ExecutePendingJob(engine.runtime, &context) < 0);
++    const failure = c.JS_GetException(context orelse engine.context);
++    defer engine.freeValue(failure);
++    try std.testing.expect(c.JS_IsUncatchableError(failure));
++    try std.testing.expect(engine.native_allocation_exception != null);
++    try std.testing.expect(c.JS_IsStrictEqual(engine.context, failure, engine.native_allocation_exception.?));
++    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, pending));
++    c.JS_RunGC(engine.runtime);
++}
++test "native async body proposal ordinary bound proxy and revoked callable source never read guest name" {
++    const engine = try em.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    const result = try engine.evalModule(
++        \\function ordinary(value){return value}const source=Function.prototype.toString.call(ordinary),bound=ordinary.bind(null,7),proxy=new Proxy(ordinary,{get(){throw Error('proxy get must not run')}}),pair=Proxy.revocable(ordinary,{});pair.revoke();Object.defineProperty(bound,'name',{get(){throw Error('bound name must not run')},configurable:true});for(const fn of[bound,proxy,pair.proxy])if(Function.prototype.toString.call(fn)!=='function () { [native code] }')throw Error('wrapper source');if(bound()!==7||proxy(8)!==8||Function.prototype.toString.call(ordinary)!==source)throw Error('ordinary function changed');let threw=false;try{pair.proxy()}catch(e){threw=e instanceof TypeError}if(!threw)throw Error('revoked call');for(const value of[{},new Proxy({},{}),null]){let rejected=false;try{Function.prototype.toString.call(value)}catch(e){rejected=e instanceof TypeError}if(!rejected)throw Error('noncallable accepted')}export const done=true;
++    , "native-async-body-wrapper-source.mjs");
++    engine.freeValue(result);
++}
++fn rawEcho(context: ?*c.JSContext, _: c.JSValue, _: c.JSValue, argc: c_int, argv: [*c]const c.JSValue, _: c_int, _: c.JSValue, _: [*c]c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
++    action[0] = c.JS_PI_AF_RETURN;
++    return c.JS_DupValue(context, if (argc > 0) argv[0] else c.pi_js_undefined());
++}
++test "native async body proposal genuine C factory call and argument pressure failures remain reusable" {
++    const engine = try em.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    defer c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
++    c.JS_SetMemoryLimit(engine.runtime, 1);
++    const failed_factory = c.JS_PiNewNativeAsyncFunction(engine.context, rawEcho, c.pi_js_undefined(), c.pi_js_undefined(), 0, "rawEcho", 1);
++    c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
++    try std.testing.expect(c.JS_IsException(failed_factory));
++    engine.freeValue(c.JS_GetException(engine.context));
++    const function = try engine.checked(c.JS_PiNewNativeAsyncFunction(engine.context, rawEcho, c.pi_js_undefined(), c.pi_js_undefined(), 0, "rawEcho", 1));
++    defer engine.freeValue(function);
++    c.JS_SetMemoryLimit(engine.runtime, 1);
++    const failed_call = c.JS_Call(engine.context, function, c.pi_js_undefined(), 0, null);
++    c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
++    try std.testing.expect(c.JS_IsException(failed_call));
++    engine.freeValue(c.JS_GetException(engine.context));
++    // The 64 KiB copied argument vector exceeds the 16 KiB allowance even
++    // after the invocation state and intrinsic capability have been created.
++    var arguments: [4096]c.JSValue = undefined;
++    for (&arguments) |*value| value.* = c.pi_js_undefined();
++    var usage: c.JSMemoryUsage = undefined;
++    c.JS_RunGC(engine.runtime);
++    c.JS_ComputeMemoryUsage(engine.runtime, &usage);
++    c.JS_SetMemoryLimit(engine.runtime, @as(usize, @intCast(usage.malloc_size)) + 16 * 1024);
++    const failed_arguments = c.JS_Call(engine.context, function, c.pi_js_undefined(), arguments.len, &arguments);
++    c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
++    try std.testing.expect(c.JS_IsException(failed_arguments));
++    engine.freeValue(c.JS_GetException(engine.context));
++    const retried = try engine.checked(c.JS_Call(engine.context, function, c.pi_js_undefined(), 1, &arguments));
++    defer engine.freeValue(retried);
++    try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(engine.context, retried));
++    try std.testing.expect(!c.JS_HasException(engine.context));
++    c.JS_RunGC(engine.runtime);
++}
++fn armAwaitOOM(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
++    c.JS_SetMemoryLimit(c.JS_GetRuntime(context), 1);
++    return c.JS_DupValue(context, roots[0]);
++}
++fn catchAwaitOOM(context: ?*c.JSContext, captures: c.JSValue, _: c.JSValue, _: c_int, argv: [*c]const c.JSValue, completion: c_int, input: c.JSValue, _: [*c]c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
++    if (completion == c.JS_PI_AF_START) {
++        action[0] = c.JS_PI_AF_AWAIT;
++        return c.JS_DupValue(context, argv[0]);
++    }
++    if (completion != c.JS_PI_AF_AWAIT_REJECTED) return c.JS_ThrowInternalError(context, "Expected allocation failure at await");
++    // Updating the pre-existing data property requires no new VM allocation.
++    if (c.JS_SetPropertyStr(context, captures, "caught", c.pi_js_bool(context, 1)) < 0) return c.JS_Throw(context, c.JS_GetException(context));
++    action[0] = c.JS_PI_AF_RETURN;
++    return c.JS_DupValue(context, input);
++}
++test "native async body proposal actual C await handler allocation failure reaches native catch and retires" {
++    const engine = try em.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    defer c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const captures = try scope.object();
++    try scope.put(captures, "caught", c.pi_js_bool(engine.context, 0));
++    const function = try scope.own(try engine.checked(c.JS_PiNewNativeAsyncFunction(engine.context, catchAwaitOOM, captures, c.pi_js_undefined(), 0, "catcher", 1)));
++    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
++    var roots = [_]c.JSValue{try scope.get(global, "Promise")};
++    const input = try scope.own(try engine.checked(c.JS_NewSettledPromise(engine.context, false, c.pi_js_undefined())));
++    const getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, armAwaitOOM, "get constructor", 0, 0, roots.len, &roots));
++    const atom = c.JS_NewAtom(engine.context, "constructor");
++    defer c.JS_FreeAtom(engine.context, atom);
++    if (c.JS_DefinePropertyGetSet(engine.context, input, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
++    var args = [_]c.JSValue{input};
++    // PromiseResolve reuses input. Its constructor getter closes the heap
++    // before js_async_function_resolve_create allocates continuation objects.
++    const pending = c.JS_Call(engine.context, function, c.pi_js_undefined(), args.len, &args);
++    c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
++    defer engine.freeValue(pending);
++    try std.testing.expect(!c.JS_IsException(pending));
++    try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(engine.context, pending));
++    try std.testing.expect(c.JS_ToBool(engine.context, try scope.get(captures, "caught")) == 1);
++    const failure = c.JS_PromiseResult(engine.context, pending);
++    defer engine.freeValue(failure);
++    try std.testing.expect(!c.JS_IsUndefined(failure));
++    try std.testing.expect(!c.JS_HasException(engine.context));
++    c.JS_RunGC(engine.runtime);
++}
++
++fn armAwaitBudget(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, budget: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
++    var usage: c.JSMemoryUsage = undefined;
++    c.JS_ComputeMemoryUsage(c.JS_GetRuntime(context), &usage);
++    c.JS_SetMemoryLimit(c.JS_GetRuntime(context), @as(usize, @intCast(usage.malloc_size)) + @as(usize, @intCast(budget)) + 1);
++    return c.JS_DupValue(context, roots[0]);
++}
++fn budgetAwait(context: ?*c.JSContext, captures: c.JSValue, receiver: c.JSValue, argc: c_int, argv: [*c]const c.JSValue, completion: c_int, input: c.JSValue, state: [*c]c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
++    if (completion == c.JS_PI_AF_AWAIT_FULFILLED) {
++        action[0] = c.JS_PI_AF_RETURN;
++        return c.JS_DupValue(context, input);
++    }
++    return catchAwaitOOM(context, captures, receiver, argc, argv, completion, input, state, action);
++}
++test "native async body proposal bounded C continuation reaction and job allocation pressure never loses suspension" {
++    var caught: usize = 0;
++    var suspended: usize = 0;
++    // A settled input crosses continuation creation, two reaction allocations,
++    // and job enqueue. Fine-grained quotas test those successive C allocations,
++    // independently of the Zig GPA fault-injection test.
++    for (0..129) |step| {
++        const engine = try em.Engine.init(std.testing.allocator, .{});
++        defer engine.deinit();
++        defer c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
++        var scope: Scope = .{ .engine = engine };
++        defer scope.deinit();
++        const captures = try scope.object();
++        try scope.put(captures, "caught", c.pi_js_bool(engine.context, 0));
++        const function = try scope.own(try engine.checked(c.JS_PiNewNativeAsyncFunction(engine.context, budgetAwait, captures, c.pi_js_undefined(), 0, "budgetAwait", 1)));
++        const global = try scope.own(c.JS_GetGlobalObject(engine.context));
++        var roots = [_]c.JSValue{try scope.get(global, "Promise")};
++        const input = try scope.own(try engine.checked(c.JS_NewSettledPromise(engine.context, false, c.pi_js_undefined())));
++        const getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, armAwaitBudget, "get constructor", 0, @intCast(step * 16), roots.len, &roots));
++        const atom = c.JS_NewAtom(engine.context, "constructor");
++        defer c.JS_FreeAtom(engine.context, atom);
++        if (c.JS_DefinePropertyGetSet(engine.context, input, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
++        var args = [_]c.JSValue{input};
++        const pending = c.JS_Call(engine.context, function, c.pi_js_undefined(), args.len, &args);
++        c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
++        defer engine.freeValue(pending);
++        try std.testing.expect(!c.JS_IsException(pending));
++        try std.testing.expect(!c.JS_HasException(engine.context));
++        if (c.JS_PromiseState(engine.context, pending) == c.JS_PROMISE_PENDING) {
++            suspended += 1;
++            try std.testing.expect(c.JS_IsJobPending(engine.runtime));
++            _ = try engine.runReadyJobs(8);
++        }
++        try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(engine.context, pending));
++        if (c.JS_ToBool(engine.context, try scope.get(captures, "caught")) == 1) caught += 1;
++        try std.testing.expect(!c.JS_HasException(engine.context));
++        c.JS_RunGC(engine.runtime);
++    }
++    try std.testing.expect(caught > 0 and suspended > 0);
++}
+diff --git a/src/native_async_function_qualification_test.zig b/src/native_async_function_qualification_test.zig
+new file mode 100644
+index 00000000..f14ff53f
+--- /dev/null
++++ b/src/native_async_function_qualification_test.zig
+@@ -0,0 +1,45 @@
++//! Qualification-only composition; actual C and adapters are unchanged.
++const std = @import("std");
++const em = @import("extensions/engine.zig");
++const Scope = @import("extensions/native_models_stream_scope.zig").Scope;
++const c = em.c;
++comptime {
++    _ = @import("native_async_function_body_test.zig");
++    _ = @import("native_async_generator_test.zig");
++}
++fn viewSpan(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
++    const engine = em.Engine.fromContext(context.?);
++    return viewSpanBody(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| {
++        if (err == error.JavaScriptException) return engine.throwCaptured();
++        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
++        return c.JS_ThrowInternalError(context, "Native span regression: %s", @as([*:0]const u8, @errorName(err)));
++    };
++}
++fn viewSpanBody(engine: *em.Engine, value: c.JSValue) !c.JSValue {
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    var offset: usize = 0;
++    var length: usize = 0;
++    var width: usize = 0;
++    const backing = try scope.own(try engine.checked(c.JS_PiGetArrayBufferViewBuffer(engine.context, value, &offset, &length, &width)));
++    const output = try scope.object();
++    try scope.put(output, "backing", backing);
++    try scope.put(output, "offset", c.JS_NewInt32(engine.context, @intCast(offset)));
++    try scope.put(output, "length", c.JS_NewInt32(engine.context, @intCast(length)));
++    try scope.put(output, "width", c.JS_NewInt32(engine.context, @intCast(width)));
++    return c.JS_DupValue(engine.context, output);
++}
++fn gc(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
++    c.JS_RunGC(c.JS_GetRuntime(context));
++    return c.pi_js_undefined();
++}
++test "native borrowed view span retains backing and tracks DataView typed RAB detach and brand" {
++    const engine = try em.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    try engine.bindFunction("borrowedViewSpan", viewSpan, 1);
++    try engine.bindFunction("spanGC", gc, 0);
++    const result = try engine.evalModule(
++        \\const same=(span,backing,offset,length,width)=>{if(span.backing!==backing||span.offset!==offset||span.length!==length||span.width!==width)throw Error(JSON.stringify({offset:span.offset,length:span.length,width:span.width}))};const buffer=new ArrayBuffer(16);same(borrowedViewSpan(new Uint16Array(buffer,4,3)),buffer,4,6,2);same(borrowedViewSpan(new DataView(buffer,3,7)),buffer,3,7,1);let view=new Uint8Array(buffer,2,5);const retained=borrowedViewSpan(view);view=null;spanGC();new Uint8Array(retained.backing)[2]=19;if(new Uint8Array(buffer)[2]!==19)throw Error('backing detached or copied');const rab=new ArrayBuffer(16,{maxByteLength:32}),typed=new Uint16Array(rab,4),tracking=new DataView(rab,3),fixed=new DataView(rab,8,8);same(borrowedViewSpan(typed),rab,4,12,2);rab.resize(24);same(borrowedViewSpan(typed),rab,4,20,2);same(borrowedViewSpan(tracking),rab,3,21,1);rab.resize(6);let oob=false;try{borrowedViewSpan(fixed)}catch(e){oob=e instanceof TypeError}if(!oob)throw Error('OOB DataView accepted');let reads=0;for(const value of[{},new Proxy(new DataView(buffer),{get(){reads++;throw Error('proxy read')}})]){let rejected=false;try{borrowedViewSpan(value)}catch(e){rejected=e instanceof TypeError}if(!rejected)throw Error('counterfeit view accepted')}if(reads!==0)throw Error('proxy trap');const detached=new Uint8Array(new ArrayBuffer(4));detached.buffer.transfer();let rejected=false;try{borrowedViewSpan(detached)}catch(e){rejected=e instanceof TypeError}if(!rejected)throw Error('detached view accepted');export const done=true;
++    , "native-async-qualification-borrowed-view-span.mjs");
++    engine.freeValue(result);
++}
+diff --git a/vendor/quickjs/quickjs.c b/vendor/quickjs/quickjs.c
+index 12b5a18a..4a51bb04 100644
+--- a/vendor/quickjs/quickjs.c
++++ b/vendor/quickjs/quickjs.c
+@@ -907,6 +907,11 @@ typedef struct JSFunctionBytecode {
+     int pc2line_len;
+     uint8_t *pc2line_buf;
+     char *source;
++    /* Explicit native AsyncFunction body variant. Ordinary compiled/read
++       metadata is zero-initialized, leaving this pointer NULL. cpool[0..1]
++       retains captures/lexical-this with the existing GC and finalizer. */
++    JSPiAsyncFunctionBody *native_async_body;
++    uint8_t native_async_flags;
+ } JSFunctionBytecode;
+ 
+ typedef struct JSBoundFunction {
+@@ -990,6 +995,12 @@ typedef struct JSAsyncFunctionData {
+     JSValue resolving_funcs[2];
+     bool is_active; /* true if the async function state is valid */
+     JSAsyncFunctionState func_state;
++    /* Native-body invocation roots; NULL body keeps the bytecode path intact. */
++    JSPiAsyncFunctionBody *native_body;
++    JSContext *native_ctx;
++    JSValue native_function, native_this, native_state;
++    int native_argc;
++    JSValue *native_argv;
+ } JSAsyncFunctionData;
+ 
+ typedef struct JSReqModuleEntry {
+@@ -6571,6 +6582,9 @@ static JSFunctionBytecode *JS_GetFunctionBytecode(JSValueConst val)
+     p = JS_VALUE_GET_OBJ(val);
+     if (!js_class_has_bytecode(p->class_id))
+         return NULL;
++    if (p->u.func.function_bytecode &&
++        p->u.func.function_bytecode->native_async_body)
++        return NULL; /* Native frames have no bytecode PC/source positions. */
+     return p->u.func.function_bytecode;
+ }
+ 
+@@ -7461,8 +7475,20 @@ static void mark_children(JSRuntime *rt, JSGCObjectHeader *gp,
+     case JS_GC_OBJ_TYPE_ASYNC_FUNCTION:
+         {
+             JSAsyncFunctionData *s = (JSAsyncFunctionData *)gp;
+-            if (s->is_active)
++            if (s->native_body) {
++                int i;
++                if (s->native_ctx)
++                    mark_func(rt, &s->native_ctx->header);
++                if (s->is_active) {
++                    JS_MarkValue(rt, s->native_function, mark_func);
++                    JS_MarkValue(rt, s->native_this, mark_func);
++                    JS_MarkValue(rt, s->native_state, mark_func);
++                    for (i = 0; i < s->native_argc; i++)
++                        JS_MarkValue(rt, s->native_argv[i], mark_func);
++                }
++            } else if (s->is_active) {
+                 async_func_mark(rt, &s->func_state, mark_func);
++            }
+             JS_MarkValue(rt, s->resolving_funcs[0], mark_func);
+             JS_MarkValue(rt, s->resolving_funcs[1], mark_func);
+         }
+@@ -8489,7 +8515,8 @@ static void build_backtrace(JSContext *ctx, JSValueConst error_val,
+         b = NULL;
+         backtrace_barrier = false;
+ 
+-        if (js_class_has_bytecode(p->class_id)) {
++        if (js_class_has_bytecode(p->class_id) &&
++            !p->u.func.function_bytecode->native_async_body) {
+             b = p->u.func.function_bytecode;
+             backtrace_barrier = b->backtrace_barrier;
+         }
+@@ -21751,7 +21778,21 @@ static JSValue js_call_generator_function(JSContext *ctx, JSValueConst func_obj,
+ static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
+ {
+     if (s->is_active) {
+-        async_func_free(rt, &s->func_state);
++        if (s->native_body) {
++            int i;
++            JS_FreeValueRT(rt, s->native_state);
++            JS_FreeValueRT(rt, s->native_this);
++            for (i = 0; i < s->native_argc; i++)
++                JS_FreeValueRT(rt, s->native_argv[i]);
++            js_free_rt(rt, s->native_argv);
++            s->native_state = s->native_this = JS_UNDEFINED;
++            s->native_argv = NULL;
++            s->native_argc = 0;
++            JS_FreeValueRT(rt, s->native_function);
++            s->native_function = JS_UNDEFINED;
++        } else {
++            async_func_free(rt, &s->func_state);
++        }
+         s->is_active = false;
+     }
+ }
+@@ -21761,6 +21802,8 @@ static void js_async_function_free0(JSRuntime *rt, JSAsyncFunctionData *s)
+     js_async_function_terminate(rt, s);
+     JS_FreeValueRT(rt, s->resolving_funcs[0]);
+     JS_FreeValueRT(rt, s->resolving_funcs[1]);
++    if (s->native_ctx)
++        JS_FreeContext(s->native_ctx);
+     remove_gc_object(&s->header);
+     js_free_rt(rt, s);
+ }
+@@ -21817,6 +21860,109 @@ static int js_async_function_resolve_create(JSContext *ctx,
+     return 0;
+ }
+ 
++static JSValue js_native_async_function_step(JSAsyncFunctionData *s,
++    int completion, JSValueConst input, int *action)
++{
++    JSContext *ctx = s->native_ctx;
++    JSFunctionBytecode *b = JS_VALUE_GET_OBJ(s->native_function)->u.func.function_bytecode;
++    JSStackFrame frame = { 0 };
++    JSValue output;
++    if (js_check_stack_overflow(ctx->rt, sizeof(frame)))
++        return JS_ThrowStackOverflow(ctx);
++    if (js_poll_interrupts(ctx))
++        return JS_EXCEPTION;
++    frame.prev_frame = ctx->rt->current_stack_frame;
++    frame.cur_func = s->native_function;
++    frame.arg_buf = s->native_argv;
++    frame.arg_count = min_int(s->native_argc, UINT16_MAX);
++    frame.is_strict_mode = true;
++    frame.cur_gc_obj = &s->header;
++    ctx->rt->current_stack_frame = &frame;
++    output = s->native_body(ctx, b->cpool[0], s->native_this,
++        s->native_argc, vc(s->native_argv), completion, input,
++        &s->native_state, action);
++    ctx->rt->current_stack_frame = frame.prev_frame;
++    return output;
++}
++
++static bool js_native_async_function_resume(JSAsyncFunctionData *s,
++    int completion, JSValueConst input)
++{
++    JSContext *ctx = s->native_ctx;
++    JSValue output, result, promise, resolving_funcs[2], ignored_funcs[2];
++    JSValue resumed_input = JS_UNDEFINED;
++    int action = -1, i, status;
++
++ resume_body:
++    action = -1;
++    output = js_native_async_function_step(s, completion, input, &action);
++    JS_FreeValue(ctx, resumed_input);
++    resumed_input = JS_UNDEFINED;
++    if (JS_IsException(output))
++        goto rejected;
++    if (action == JS_PI_AF_THROW) {
++        JS_Throw(ctx, output);
++        goto rejected;
++    }
++    if (action == JS_PI_AF_RETURN) {
++        /* Genuine AsyncFunction return: the outer capability adopts output.
++           Returning a Promise never returns that Promise's identity. */
++        result = JS_Call(ctx, s->resolving_funcs[0], JS_UNDEFINED, 1, vc(&output));
++        JS_FreeValue(ctx, output);
++        if (JS_IsException(result))
++            goto rejected;
++        JS_FreeValue(ctx, result);
++        js_async_function_terminate(ctx->rt, s);
++        return true;
++    }
++    if (action != JS_PI_AF_AWAIT) {
++        JS_FreeValue(ctx, output);
++        JS_ThrowInternalError(ctx, "Invalid native async function action");
++        goto rejected;
++    }
++    /* Use the same intrinsic PromiseResolve and perform_promise_then as the
++       existing bytecode Await path. No guest .then call or extra capability. */
++    promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&output), 0);
++    JS_FreeValue(ctx, output);
++    if (JS_IsException(promise))
++        goto await_rejected;
++    if (js_async_function_resolve_create(ctx, s, resolving_funcs)) {
++        JS_FreeValue(ctx, promise);
++        goto await_rejected;
++    }
++    ignored_funcs[0] = ignored_funcs[1] = JS_UNDEFINED;
++    status = perform_promise_then(ctx, promise, vc(resolving_funcs), vc(ignored_funcs));
++    JS_FreeValue(ctx, promise);
++    for (i = 0; i < 2; i++)
++        JS_FreeValue(ctx, resolving_funcs[i]);
++    /* The shared settled-Promise helper currently leaves enqueue OOM in the
++       exception slot while returning zero. Do not lose this suspension. */
++    if (!status && !JS_HasException(ctx))
++        return true;
++ await_rejected:
++    /* An abrupt PromiseResolve (e.g. a poisoned constructor) is thrown at
++       the actual await expression, where native catch/finally can handle it. */
++    if (!JS_IsUncatchableError(ctx->rt->current_exception)) {
++        resumed_input = JS_GetException(ctx);
++        input = resumed_input;
++        completion = JS_PI_AF_AWAIT_REJECTED;
++        goto resume_body;
++    }
++ rejected:
++    if (JS_IsUncatchableError(ctx->rt->current_exception)) {
++        js_async_function_terminate(ctx->rt, s);
++        return false;
++    }
++    output = JS_GetException(ctx);
++    result = JS_Call(ctx, s->resolving_funcs[1], JS_UNDEFINED, 1, vc(&output));
++    JS_FreeValue(ctx, output);
++    js_async_function_terminate(ctx->rt, s);
++    if (JS_IsException(result))
++        return false;
++    JS_FreeValue(ctx, result);
++    return true;
++}
++
+ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
+ {
+     bool is_success = true;
+@@ -21901,6 +22047,13 @@ static JSValue js_async_function_resolve_call(JSContext *ctx,
+         arg = argv[0];
+     else
+         arg = JS_UNDEFINED;
++    if (s->native_body) {
++        if (!js_native_async_function_resume(s,
++                is_reject ? JS_PI_AF_AWAIT_REJECTED : JS_PI_AF_AWAIT_FULFILLED,
++                arg))
++            return JS_EXCEPTION;
++        return JS_UNDEFINED;
++    }
+     s->func_state.throw_flag = is_reject;
+     if (is_reject) {
+         JS_Throw(ctx, js_dup(arg));
+@@ -21913,6 +22066,110 @@ static JSValue js_async_function_resolve_call(JSContext *ctx,
+     return JS_UNDEFINED;
+ }
+ 
++JSValue JS_PiNewNativeAsyncFunction(JSContext *ctx,
++    JSPiAsyncFunctionBody *body, JSValueConst captures,
++    JSValueConst lexical_this, int flags, const char *name, int length)
++{
++    JSFunctionBytecode *b;
++    JSValue function, name_value;
++    JSObject *p;
++    size_t offset = (sizeof(*b) + 7) & ~(size_t)7;
++    if (!body || length < 0 || length > UINT16_MAX ||
++        (flags & ~JS_PI_AF_LEXICAL_THIS))
++        return JS_ThrowTypeError(ctx, "Invalid native async function definition");
++    b = js_mallocz(ctx, offset + 2 * sizeof(JSValue));
++    if (!b)
++        return JS_EXCEPTION;
++    JS_REF_COUNT(b) = 1;
++    b->realm = JS_DupContext(ctx);
++    b->is_strict_mode = b->has_simple_parameter_list = true;
++    b->func_kind = JS_FUNC_ASYNC;
++    b->defined_arg_count = length;
++    b->cpool = (JSValue *)((uint8_t *)b + offset);
++    b->cpool_count = 2;
++    b->cpool[0] = js_dup(captures);
++    b->cpool[1] = js_dup(lexical_this);
++    b->native_async_body = body;
++    b->native_async_flags = flags;
++    add_gc_object(ctx->rt, &b->header, JS_GC_OBJ_TYPE_FUNCTION_BYTECODE);
++    b->func_name = JS_NewAtom(ctx, name ? name : "");
++    if (b->func_name == JS_ATOM_NULL) {
++        JS_FreeValue(ctx, JS_MKPTR(JS_TAG_FUNCTION_BYTECODE, b));
++        return JS_EXCEPTION;
++    }
++    function = JS_NewObjectClass(ctx, JS_CLASS_ASYNC_FUNCTION);
++    if (JS_IsException(function)) {
++        JS_FreeValue(ctx, JS_MKPTR(JS_TAG_FUNCTION_BYTECODE, b));
++        return function;
++    }
++    p = JS_VALUE_GET_OBJ(function);
++    p->u.func.function_bytecode = b;
++    p->u.func.var_refs = NULL;
++    p->u.func.home_object = NULL;
++    /* No constructor bit, own prototype, generated JS source or bytecode. */
++    name_value = JS_AtomToString(ctx, b->func_name);
++    if (JS_IsException(name_value)) {
++        JS_FreeValue(ctx, function);
++        return JS_EXCEPTION;
++    }
++    if (JS_DefinePropertyValue(ctx, function, JS_ATOM_length, js_int32(length),
++                               JS_PROP_CONFIGURABLE) < 0) {
++        JS_FreeValue(ctx, name_value);
++        JS_FreeValue(ctx, function);
++        return JS_EXCEPTION;
++    }
++    if (JS_DefinePropertyValue(ctx, function, JS_ATOM_name, name_value,
++                               JS_PROP_CONFIGURABLE) < 0) {
++        JS_FreeValue(ctx, function);
++        return JS_EXCEPTION;
++    }
++    return function;
++}
++
++static JSValue js_native_async_function_call(JSContext *caller,
++    JSValueConst func_obj, JSValueConst this_obj, int argc, JSValueConst *argv)
++{
++    JSFunctionBytecode *b = JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode;
++    JSContext *ctx = b->realm;
++    JSAsyncFunctionData *s;
++    JSValue promise;
++    int i;
++    (void)caller;
++    if (argc < 0 || (size_t)argc > SIZE_MAX / sizeof(JSValue))
++        return JS_ThrowInternalError(ctx, "Invalid native async argument count");
++    s = js_mallocz(ctx, sizeof(*s));
++    if (!s)
++        return JS_EXCEPTION;
++    JS_REF_COUNT(s) = 1;
++    add_gc_object(ctx->rt, &s->header, JS_GC_OBJ_TYPE_ASYNC_FUNCTION);
++    s->native_body = b->native_async_body;
++    s->native_ctx = JS_DupContext(ctx);
++    s->native_function = js_dup(func_obj);
++    s->native_this = js_dup((b->native_async_flags & JS_PI_AF_LEXICAL_THIS)
++                           ? b->cpool[1] : this_obj);
++    s->native_state = JS_UNDEFINED;
++    s->resolving_funcs[0] = s->resolving_funcs[1] = JS_UNDEFINED;
++    s->is_active = true;
++    promise = JS_NewPromiseCapability(ctx, s->resolving_funcs);
++    if (JS_IsException(promise))
++        goto failed;
++    if (argc) {
++        s->native_argv = js_malloc(ctx, sizeof(JSValue) * (size_t)argc);
++        if (!s->native_argv)
++            goto failed;
++        for (i = 0; i < argc; i++)
++            s->native_argv[s->native_argc++] = js_dup(argv[i]);
++    }
++    if (!js_native_async_function_resume(s, JS_PI_AF_START, JS_UNDEFINED))
++        goto failed;
++    js_async_function_free(ctx->rt, s);
++    return promise;
++ failed:
++    JS_FreeValue(ctx, promise);
++    js_async_function_free(ctx->rt, s);
++    return JS_EXCEPTION;
++}
++
+ static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
+                                       JSValueConst this_obj,
+                                       int argc, JSValueConst *argv, int flags)
+@@ -21920,6 +22177,9 @@ static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
+     JSValue promise;
+     JSAsyncFunctionData *s;
+ 
++    if (JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode->native_async_body)
++        return js_native_async_function_call(ctx, func_obj, this_obj, argc, argv);
++
+     s = js_mallocz(ctx, sizeof(*s));
+     if (!s)
+         return JS_EXCEPTION;
+@@ -39354,6 +39614,11 @@ static int JS_WriteFunctionTag(BCWriterState *s, JSValueConst obj)
+     uint32_t flags;
+     int idx, i;
+ 
++    if (b->native_async_body) {
++        JS_ThrowTypeError(s->ctx, "Cannot serialize a native async function body");
++        return -1;
++    }
++
+     bc_put_u8(s, BC_TAG_FUNCTION_BYTECODE);
+     flags = idx = 0;
+     bc_set_flags(&flags, &idx, b->has_prototype, 1);
+@@ -43220,7 +43485,14 @@ static JSValue js_function_toString(JSContext *ctx, JSValueConst this_val,
+         /* `b->source` must be pure ASCII or UTF-8 encoded */
+         if (b->source)
+             return JS_NewStringLen(ctx, b->source, b->source_len);
+-    }
++        if (b->native_async_body)
++            return JS_ConcatString3(ctx, "function ",
++                JS_AtomToString(ctx, b->func_name), "() { [native code] }");
++    }
++    /* Bound and proxy callables have no inspectable body source, regardless
++       of their target or a revoked proxy's property access behavior. */
++    if (p->class_id == JS_CLASS_BOUND_FUNCTION || p->class_id == JS_CLASS_PROXY)
++        return JS_NewString(ctx, "function () { [native code] }");
+     {
+         JSValue name;
+         const char *pref, *suff;
+@@ -64453,7 +64725,8 @@ static void js_new_callsite_data(JSContext *ctx, JSCallSiteData *csd, JSStackFra
+         csd->func_name = JS_NULL;
+ 
+     p = JS_VALUE_GET_OBJ(sf->cur_func);
+-    if (js_class_has_bytecode(p->class_id)) {
++    if (js_class_has_bytecode(p->class_id) &&
++        !p->u.func.function_bytecode->native_async_body) {
+         JSFunctionBytecode *b = p->u.func.function_bytecode;
+         int line_num1, col_num1;
+         line_num1 = find_line_num(ctx, b,
+@@ -64543,7 +64816,8 @@ JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
+             continue;
+         }
+         function = JS_VALUE_GET_OBJ(current->cur_func);
+-        if (js_class_has_bytecode(function->class_id))
++        if (js_class_has_bytecode(function->class_id) &&
++            !function->u.func.function_bytecode->native_async_body)
+             bytecode = function->u.func.function_bytecode;
+         if (bytecode && !current->cur_pc) {
+             /* Preserve the frame without undefined pointer arithmetic. */
+diff --git a/vendor/quickjs/quickjs.h b/vendor/quickjs/quickjs.h
+index ebff788f..7a680107 100644
+--- a/vendor/quickjs/quickjs.h
++++ b/vendor/quickjs/quickjs.h
+@@ -553,6 +553,24 @@ JS_EXTERN JSValue JS_GetAsyncFunctionPrototype(JSContext *ctx);
+    queue and Promise machinery. Inputs/owner/prototype are borrowed; resume
+    returns an owned value or JS_EXCEPTION. The owner and creation realm stay
+    GC-visible until body completion or finalization. */
++/* Native bodies on the genuine AsyncFunction class. No JavaScript wrapper or
++   emitted bytecode executes. All inputs are borrowed; the result is owned.
++   *state is an owned per-invocation root (initially undefined); replacement
++   consumes the new value and must release the previous value. */
++typedef enum JSPiAsyncFunctionCompletion {
++    JS_PI_AF_START, JS_PI_AF_AWAIT_FULFILLED, JS_PI_AF_AWAIT_REJECTED,
++} JSPiAsyncFunctionCompletion;
++typedef enum JSPiAsyncFunctionAction {
++    JS_PI_AF_RETURN, JS_PI_AF_AWAIT, JS_PI_AF_THROW,
++} JSPiAsyncFunctionAction;
++enum { JS_PI_AF_LEXICAL_THIS = 1 };
++typedef JSValue JSPiAsyncFunctionBody(JSContext *ctx, JSValueConst captures,
++    JSValueConst this_obj, int argc, JSValueConst *argv, int completion,
++    JSValueConst input, JSValue *state, int *action);
++JS_EXTERN JSValue JS_PiNewNativeAsyncFunction(JSContext *ctx,
++    JSPiAsyncFunctionBody *body, JSValueConst captures,
++    JSValueConst lexical_this, int flags, const char *name, int length);
++
+ typedef enum JSPiAsyncGeneratorCompletion {
+     JS_PI_AG_START, JS_PI_AG_NEXT, JS_PI_AG_RETURN_INPUT, JS_PI_AG_THROW_INPUT,
+     JS_PI_AG_AWAIT_FULFILLED, JS_PI_AG_AWAIT_REJECTED,
+diff --git a/build.zig b/build.zig
+index bab9c6ba..19836874 100644
+--- a/build.zig
++++ b/build.zig
+@@ -1344,6 +1344,18 @@ pub fn build(b: *std.Build) void {
+     async_function_tests.root_module.addImport("catalog_tool", catalog_tool);
+     const async_function_run = b.addRunArtifact(async_function_tests);
+     b.step("test-native-async-function-intrinsic", "Verify native async function intrinsic identity and owned reference cleanup").dependOn(&async_function_run.step);
++    const native_async_body_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_function_body_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native async body proposal"}, .use_llvm = use_llvm });
++    linkQuickJs(b, native_async_body_tests.root_module, quickjs, sqlite_lib_dir);
++    linkSqlite(native_async_body_tests.root_module, sqlite_lib_dir, sqlite_library);
++    native_async_body_tests.root_module.addImport("catalog_tool", catalog_tool);
++    b.step("build-native-async-function-body-proposal", "Compile reviewed native AsyncFunction body proposal after genuine Source capture").dependOn(&native_async_body_tests.step);
++    b.step("test-native-async-function-body-proposal", "Qualify reviewed genuine native AsyncFunction brand return Await realm and ownership").dependOn(&b.addRunArtifact(native_async_body_tests).step);
++    const native_async_qualification_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_function_qualification_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native async body proposal", "native async generator functional", "native AI JSON actual OpenAI request builder", "native AI JSON OpenAI decoder", "native AI JSON helpers and native partial fallback", "native AI JSON genuine b06 delegates", "native AI JSON private hooks", "native AI JSON ordinary no-hook", "native borrowed view span" }, .use_llvm = use_llvm });
++    linkQuickJs(b, native_async_qualification_tests.root_module, quickjs, sqlite_lib_dir);
++    linkSqlite(native_async_qualification_tests.root_module, sqlite_lib_dir, sqlite_library);
++    native_async_qualification_tests.root_module.addImport("catalog_tool", catalog_tool);
++    b.step("build-native-async-function-qualification", "Compile genuine AsyncFunction Source42 and inherited generator JSON live-view span regression cohort").dependOn(&b.addInstallArtifact(native_async_qualification_tests, .{}).step);
++    b.step("test-native-async-function-qualification", "Run the matching cached qualification cohort with enforced per-test deadlines").dependOn(&b.addRunArtifact(native_async_qualification_tests).step);
+     test_step.dependOn(&async_function_run.step);
+     const async_scope_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_scope_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+     linkQuickJs(b, async_scope_tests.root_module, quickjs, sqlite_lib_dir);

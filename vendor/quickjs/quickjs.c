@@ -907,6 +907,11 @@ typedef struct JSFunctionBytecode {
     int pc2line_len;
     uint8_t *pc2line_buf;
     char *source;
+    /* Explicit native AsyncFunction body variant. Ordinary compiled/read
+       metadata is zero-initialized, leaving this pointer NULL. cpool[0..1]
+       retains captures/lexical-this with the existing GC and finalizer. */
+    JSPiAsyncFunctionBody *native_async_body;
+    uint8_t native_async_flags;
 } JSFunctionBytecode;
 
 typedef struct JSBoundFunction {
@@ -990,6 +995,12 @@ typedef struct JSAsyncFunctionData {
     JSValue resolving_funcs[2];
     bool is_active; /* true if the async function state is valid */
     JSAsyncFunctionState func_state;
+    /* Native-body invocation roots; NULL body keeps the bytecode path intact. */
+    JSPiAsyncFunctionBody *native_body;
+    JSContext *native_ctx;
+    JSValue native_function, native_this, native_state;
+    int native_argc;
+    JSValue *native_argv;
 } JSAsyncFunctionData;
 
 typedef struct JSReqModuleEntry {
@@ -6571,6 +6582,9 @@ static JSFunctionBytecode *JS_GetFunctionBytecode(JSValueConst val)
     p = JS_VALUE_GET_OBJ(val);
     if (!js_class_has_bytecode(p->class_id))
         return NULL;
+    if (p->u.func.function_bytecode &&
+        p->u.func.function_bytecode->native_async_body)
+        return NULL; /* Native frames have no bytecode PC/source positions. */
     return p->u.func.function_bytecode;
 }
 
@@ -7461,8 +7475,20 @@ static void mark_children(JSRuntime *rt, JSGCObjectHeader *gp,
     case JS_GC_OBJ_TYPE_ASYNC_FUNCTION:
         {
             JSAsyncFunctionData *s = (JSAsyncFunctionData *)gp;
-            if (s->is_active)
+            if (s->native_body) {
+                int i;
+                if (s->native_ctx)
+                    mark_func(rt, &s->native_ctx->header);
+                if (s->is_active) {
+                    JS_MarkValue(rt, s->native_function, mark_func);
+                    JS_MarkValue(rt, s->native_this, mark_func);
+                    JS_MarkValue(rt, s->native_state, mark_func);
+                    for (i = 0; i < s->native_argc; i++)
+                        JS_MarkValue(rt, s->native_argv[i], mark_func);
+                }
+            } else if (s->is_active) {
                 async_func_mark(rt, &s->func_state, mark_func);
+            }
             JS_MarkValue(rt, s->resolving_funcs[0], mark_func);
             JS_MarkValue(rt, s->resolving_funcs[1], mark_func);
         }
@@ -8489,7 +8515,8 @@ static void build_backtrace(JSContext *ctx, JSValueConst error_val,
         b = NULL;
         backtrace_barrier = false;
 
-        if (js_class_has_bytecode(p->class_id)) {
+        if (js_class_has_bytecode(p->class_id) &&
+            !p->u.func.function_bytecode->native_async_body) {
             b = p->u.func.function_bytecode;
             backtrace_barrier = b->backtrace_barrier;
         }
@@ -21751,7 +21778,21 @@ static JSValue js_call_generator_function(JSContext *ctx, JSValueConst func_obj,
 static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
 {
     if (s->is_active) {
-        async_func_free(rt, &s->func_state);
+        if (s->native_body) {
+            int i;
+            JS_FreeValueRT(rt, s->native_state);
+            JS_FreeValueRT(rt, s->native_this);
+            for (i = 0; i < s->native_argc; i++)
+                JS_FreeValueRT(rt, s->native_argv[i]);
+            js_free_rt(rt, s->native_argv);
+            s->native_state = s->native_this = JS_UNDEFINED;
+            s->native_argv = NULL;
+            s->native_argc = 0;
+            JS_FreeValueRT(rt, s->native_function);
+            s->native_function = JS_UNDEFINED;
+        } else {
+            async_func_free(rt, &s->func_state);
+        }
         s->is_active = false;
     }
 }
@@ -21761,6 +21802,8 @@ static void js_async_function_free0(JSRuntime *rt, JSAsyncFunctionData *s)
     js_async_function_terminate(rt, s);
     JS_FreeValueRT(rt, s->resolving_funcs[0]);
     JS_FreeValueRT(rt, s->resolving_funcs[1]);
+    if (s->native_ctx)
+        JS_FreeContext(s->native_ctx);
     remove_gc_object(&s->header);
     js_free_rt(rt, s);
 }
@@ -21815,6 +21858,109 @@ static int js_async_function_resolve_create(JSContext *ctx,
         p->u.async_function_data = s;
     }
     return 0;
+}
+
+static JSValue js_native_async_function_step(JSAsyncFunctionData *s,
+    int completion, JSValueConst input, int *action)
+{
+    JSContext *ctx = s->native_ctx;
+    JSFunctionBytecode *b = JS_VALUE_GET_OBJ(s->native_function)->u.func.function_bytecode;
+    JSStackFrame frame = { 0 };
+    JSValue output;
+    if (js_check_stack_overflow(ctx->rt, sizeof(frame)))
+        return JS_ThrowStackOverflow(ctx);
+    if (js_poll_interrupts(ctx))
+        return JS_EXCEPTION;
+    frame.prev_frame = ctx->rt->current_stack_frame;
+    frame.cur_func = s->native_function;
+    frame.arg_buf = s->native_argv;
+    frame.arg_count = min_int(s->native_argc, UINT16_MAX);
+    frame.is_strict_mode = true;
+    frame.cur_gc_obj = &s->header;
+    ctx->rt->current_stack_frame = &frame;
+    output = s->native_body(ctx, b->cpool[0], s->native_this,
+        s->native_argc, vc(s->native_argv), completion, input,
+        &s->native_state, action);
+    ctx->rt->current_stack_frame = frame.prev_frame;
+    return output;
+}
+
+static bool js_native_async_function_resume(JSAsyncFunctionData *s,
+    int completion, JSValueConst input)
+{
+    JSContext *ctx = s->native_ctx;
+    JSValue output, result, promise, resolving_funcs[2], ignored_funcs[2];
+    JSValue resumed_input = JS_UNDEFINED;
+    int action = -1, i, status;
+
+ resume_body:
+    action = -1;
+    output = js_native_async_function_step(s, completion, input, &action);
+    JS_FreeValue(ctx, resumed_input);
+    resumed_input = JS_UNDEFINED;
+    if (JS_IsException(output))
+        goto rejected;
+    if (action == JS_PI_AF_THROW) {
+        JS_Throw(ctx, output);
+        goto rejected;
+    }
+    if (action == JS_PI_AF_RETURN) {
+        /* Genuine AsyncFunction return: the outer capability adopts output.
+           Returning a Promise never returns that Promise's identity. */
+        result = JS_Call(ctx, s->resolving_funcs[0], JS_UNDEFINED, 1, vc(&output));
+        JS_FreeValue(ctx, output);
+        if (JS_IsException(result))
+            goto rejected;
+        JS_FreeValue(ctx, result);
+        js_async_function_terminate(ctx->rt, s);
+        return true;
+    }
+    if (action != JS_PI_AF_AWAIT) {
+        JS_FreeValue(ctx, output);
+        JS_ThrowInternalError(ctx, "Invalid native async function action");
+        goto rejected;
+    }
+    /* Use the same intrinsic PromiseResolve and perform_promise_then as the
+       existing bytecode Await path. No guest .then call or extra capability. */
+    promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&output), 0);
+    JS_FreeValue(ctx, output);
+    if (JS_IsException(promise))
+        goto await_rejected;
+    if (js_async_function_resolve_create(ctx, s, resolving_funcs)) {
+        JS_FreeValue(ctx, promise);
+        goto await_rejected;
+    }
+    ignored_funcs[0] = ignored_funcs[1] = JS_UNDEFINED;
+    status = perform_promise_then(ctx, promise, vc(resolving_funcs), vc(ignored_funcs));
+    JS_FreeValue(ctx, promise);
+    for (i = 0; i < 2; i++)
+        JS_FreeValue(ctx, resolving_funcs[i]);
+    /* The shared settled-Promise helper currently leaves enqueue OOM in the
+       exception slot while returning zero. Do not lose this suspension. */
+    if (!status && !JS_HasException(ctx))
+        return true;
+ await_rejected:
+    /* An abrupt PromiseResolve (e.g. a poisoned constructor) is thrown at
+       the actual await expression, where native catch/finally can handle it. */
+    if (!JS_IsUncatchableError(ctx->rt->current_exception)) {
+        resumed_input = JS_GetException(ctx);
+        input = resumed_input;
+        completion = JS_PI_AF_AWAIT_REJECTED;
+        goto resume_body;
+    }
+ rejected:
+    if (JS_IsUncatchableError(ctx->rt->current_exception)) {
+        js_async_function_terminate(ctx->rt, s);
+        return false;
+    }
+    output = JS_GetException(ctx);
+    result = JS_Call(ctx, s->resolving_funcs[1], JS_UNDEFINED, 1, vc(&output));
+    JS_FreeValue(ctx, output);
+    js_async_function_terminate(ctx->rt, s);
+    if (JS_IsException(result))
+        return false;
+    JS_FreeValue(ctx, result);
+    return true;
 }
 
 static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
@@ -21901,6 +22047,13 @@ static JSValue js_async_function_resolve_call(JSContext *ctx,
         arg = argv[0];
     else
         arg = JS_UNDEFINED;
+    if (s->native_body) {
+        if (!js_native_async_function_resume(s,
+                is_reject ? JS_PI_AF_AWAIT_REJECTED : JS_PI_AF_AWAIT_FULFILLED,
+                arg))
+            return JS_EXCEPTION;
+        return JS_UNDEFINED;
+    }
     s->func_state.throw_flag = is_reject;
     if (is_reject) {
         JS_Throw(ctx, js_dup(arg));
@@ -21913,12 +22066,119 @@ static JSValue js_async_function_resolve_call(JSContext *ctx,
     return JS_UNDEFINED;
 }
 
+JSValue JS_PiNewNativeAsyncFunction(JSContext *ctx,
+    JSPiAsyncFunctionBody *body, JSValueConst captures,
+    JSValueConst lexical_this, int flags, const char *name, int length)
+{
+    JSFunctionBytecode *b;
+    JSValue function, name_value;
+    JSObject *p;
+    size_t offset = (sizeof(*b) + 7) & ~(size_t)7;
+    if (!body || length < 0 || length > UINT16_MAX ||
+        (flags & ~JS_PI_AF_LEXICAL_THIS))
+        return JS_ThrowTypeError(ctx, "Invalid native async function definition");
+    b = js_mallocz(ctx, offset + 2 * sizeof(JSValue));
+    if (!b)
+        return JS_EXCEPTION;
+    JS_REF_COUNT(b) = 1;
+    b->realm = JS_DupContext(ctx);
+    b->is_strict_mode = b->has_simple_parameter_list = true;
+    b->func_kind = JS_FUNC_ASYNC;
+    b->defined_arg_count = length;
+    b->cpool = (JSValue *)((uint8_t *)b + offset);
+    b->cpool_count = 2;
+    b->cpool[0] = js_dup(captures);
+    b->cpool[1] = js_dup(lexical_this);
+    b->native_async_body = body;
+    b->native_async_flags = flags;
+    add_gc_object(ctx->rt, &b->header, JS_GC_OBJ_TYPE_FUNCTION_BYTECODE);
+    b->func_name = JS_NewAtom(ctx, name ? name : "");
+    if (b->func_name == JS_ATOM_NULL) {
+        JS_FreeValue(ctx, JS_MKPTR(JS_TAG_FUNCTION_BYTECODE, b));
+        return JS_EXCEPTION;
+    }
+    function = JS_NewObjectClass(ctx, JS_CLASS_ASYNC_FUNCTION);
+    if (JS_IsException(function)) {
+        JS_FreeValue(ctx, JS_MKPTR(JS_TAG_FUNCTION_BYTECODE, b));
+        return function;
+    }
+    p = JS_VALUE_GET_OBJ(function);
+    p->u.func.function_bytecode = b;
+    p->u.func.var_refs = NULL;
+    p->u.func.home_object = NULL;
+    /* No constructor bit, own prototype, generated JS source or bytecode. */
+    name_value = JS_AtomToString(ctx, b->func_name);
+    if (JS_IsException(name_value)) {
+        JS_FreeValue(ctx, function);
+        return JS_EXCEPTION;
+    }
+    if (JS_DefinePropertyValue(ctx, function, JS_ATOM_length, js_int32(length),
+                               JS_PROP_CONFIGURABLE) < 0) {
+        JS_FreeValue(ctx, name_value);
+        JS_FreeValue(ctx, function);
+        return JS_EXCEPTION;
+    }
+    if (JS_DefinePropertyValue(ctx, function, JS_ATOM_name, name_value,
+                               JS_PROP_CONFIGURABLE) < 0) {
+        JS_FreeValue(ctx, function);
+        return JS_EXCEPTION;
+    }
+    return function;
+}
+
+static JSValue js_native_async_function_call(JSContext *caller,
+    JSValueConst func_obj, JSValueConst this_obj, int argc, JSValueConst *argv)
+{
+    JSFunctionBytecode *b = JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode;
+    JSContext *ctx = b->realm;
+    JSAsyncFunctionData *s;
+    JSValue promise;
+    int i;
+    (void)caller;
+    if (argc < 0 || (size_t)argc > SIZE_MAX / sizeof(JSValue))
+        return JS_ThrowInternalError(ctx, "Invalid native async argument count");
+    s = js_mallocz(ctx, sizeof(*s));
+    if (!s)
+        return JS_EXCEPTION;
+    JS_REF_COUNT(s) = 1;
+    add_gc_object(ctx->rt, &s->header, JS_GC_OBJ_TYPE_ASYNC_FUNCTION);
+    s->native_body = b->native_async_body;
+    s->native_ctx = JS_DupContext(ctx);
+    s->native_function = js_dup(func_obj);
+    s->native_this = js_dup((b->native_async_flags & JS_PI_AF_LEXICAL_THIS)
+                           ? b->cpool[1] : this_obj);
+    s->native_state = JS_UNDEFINED;
+    s->resolving_funcs[0] = s->resolving_funcs[1] = JS_UNDEFINED;
+    s->is_active = true;
+    promise = JS_NewPromiseCapability(ctx, s->resolving_funcs);
+    if (JS_IsException(promise))
+        goto failed;
+    if (argc) {
+        s->native_argv = js_malloc(ctx, sizeof(JSValue) * (size_t)argc);
+        if (!s->native_argv)
+            goto failed;
+        for (i = 0; i < argc; i++)
+            s->native_argv[s->native_argc++] = js_dup(argv[i]);
+    }
+    if (!js_native_async_function_resume(s, JS_PI_AF_START, JS_UNDEFINED))
+        goto failed;
+    js_async_function_free(ctx->rt, s);
+    return promise;
+ failed:
+    JS_FreeValue(ctx, promise);
+    js_async_function_free(ctx->rt, s);
+    return JS_EXCEPTION;
+}
+
 static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
                                       JSValueConst this_obj,
                                       int argc, JSValueConst *argv, int flags)
 {
     JSValue promise;
     JSAsyncFunctionData *s;
+
+    if (JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode->native_async_body)
+        return js_native_async_function_call(ctx, func_obj, this_obj, argc, argv);
 
     s = js_mallocz(ctx, sizeof(*s));
     if (!s)
@@ -39354,6 +39614,11 @@ static int JS_WriteFunctionTag(BCWriterState *s, JSValueConst obj)
     uint32_t flags;
     int idx, i;
 
+    if (b->native_async_body) {
+        JS_ThrowTypeError(s->ctx, "Cannot serialize a native async function body");
+        return -1;
+    }
+
     bc_put_u8(s, BC_TAG_FUNCTION_BYTECODE);
     flags = idx = 0;
     bc_set_flags(&flags, &idx, b->has_prototype, 1);
@@ -43220,7 +43485,14 @@ static JSValue js_function_toString(JSContext *ctx, JSValueConst this_val,
         /* `b->source` must be pure ASCII or UTF-8 encoded */
         if (b->source)
             return JS_NewStringLen(ctx, b->source, b->source_len);
+        if (b->native_async_body)
+            return JS_ConcatString3(ctx, "function ",
+                JS_AtomToString(ctx, b->func_name), "() { [native code] }");
     }
+    /* Bound and proxy callables have no inspectable body source, regardless
+       of their target or a revoked proxy's property access behavior. */
+    if (p->class_id == JS_CLASS_BOUND_FUNCTION || p->class_id == JS_CLASS_PROXY)
+        return JS_NewString(ctx, "function () { [native code] }");
     {
         JSValue name;
         const char *pref, *suff;
@@ -64453,7 +64725,8 @@ static void js_new_callsite_data(JSContext *ctx, JSCallSiteData *csd, JSStackFra
         csd->func_name = JS_NULL;
 
     p = JS_VALUE_GET_OBJ(sf->cur_func);
-    if (js_class_has_bytecode(p->class_id)) {
+    if (js_class_has_bytecode(p->class_id) &&
+        !p->u.func.function_bytecode->native_async_body) {
         JSFunctionBytecode *b = p->u.func.function_bytecode;
         int line_num1, col_num1;
         line_num1 = find_line_num(ctx, b,
@@ -64543,7 +64816,8 @@ JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
             continue;
         }
         function = JS_VALUE_GET_OBJ(current->cur_func);
-        if (js_class_has_bytecode(function->class_id))
+        if (js_class_has_bytecode(function->class_id) &&
+            !function->u.func.function_bytecode->native_async_body)
             bytecode = function->u.func.function_bytecode;
         if (bytecode && !current->cur_pc) {
             /* Preserve the frame without undefined pointer arithmetic. */

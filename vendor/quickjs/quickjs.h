@@ -553,6 +553,24 @@ JS_EXTERN JSValue JS_GetAsyncFunctionPrototype(JSContext *ctx);
    queue and Promise machinery. Inputs/owner/prototype are borrowed; resume
    returns an owned value or JS_EXCEPTION. The owner and creation realm stay
    GC-visible until body completion or finalization. */
+/* Native bodies on the genuine AsyncFunction class. No JavaScript wrapper or
+   emitted bytecode executes. All inputs are borrowed; the result is owned.
+   *state is an owned per-invocation root (initially undefined); replacement
+   consumes the new value and must release the previous value. */
+typedef enum JSPiAsyncFunctionCompletion {
+    JS_PI_AF_START, JS_PI_AF_AWAIT_FULFILLED, JS_PI_AF_AWAIT_REJECTED,
+} JSPiAsyncFunctionCompletion;
+typedef enum JSPiAsyncFunctionAction {
+    JS_PI_AF_RETURN, JS_PI_AF_AWAIT, JS_PI_AF_THROW,
+} JSPiAsyncFunctionAction;
+enum { JS_PI_AF_LEXICAL_THIS = 1 };
+typedef JSValue JSPiAsyncFunctionBody(JSContext *ctx, JSValueConst captures,
+    JSValueConst this_obj, int argc, JSValueConst *argv, int completion,
+    JSValueConst input, JSValue *state, int *action);
+JS_EXTERN JSValue JS_PiNewNativeAsyncFunction(JSContext *ctx,
+    JSPiAsyncFunctionBody *body, JSValueConst captures,
+    JSValueConst lexical_this, int flags, const char *name, int length);
+
 typedef enum JSPiAsyncGeneratorCompletion {
     JS_PI_AG_START, JS_PI_AG_NEXT, JS_PI_AG_RETURN_INPUT, JS_PI_AG_THROW_INPUT,
     JS_PI_AG_AWAIT_FULFILLED, JS_PI_AG_AWAIT_REJECTED,

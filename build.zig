@@ -1349,6 +1349,18 @@ pub fn build(b: *std.Build) void {
     async_function_tests.root_module.addImport("catalog_tool", catalog_tool);
     const async_function_run = b.addRunArtifact(async_function_tests);
     b.step("test-native-async-function-intrinsic", "Verify native async function intrinsic identity and owned reference cleanup").dependOn(&async_function_run.step);
+    const native_async_body_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_function_body_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native async body proposal"}, .use_llvm = use_llvm });
+    linkQuickJs(b, native_async_body_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(native_async_body_tests.root_module, sqlite_lib_dir, sqlite_library);
+    native_async_body_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-async-function-body-proposal", "Compile reviewed native AsyncFunction body proposal after genuine Source capture").dependOn(&native_async_body_tests.step);
+    b.step("test-native-async-function-body-proposal", "Qualify reviewed genuine native AsyncFunction brand return Await realm and ownership").dependOn(&b.addRunArtifact(native_async_body_tests).step);
+    const native_async_qualification_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_function_qualification_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native async body proposal", "native async generator functional", "native AI JSON actual OpenAI request builder", "native AI JSON OpenAI decoder", "native AI JSON helpers and native partial fallback", "native AI JSON genuine b06 delegates", "native AI JSON private hooks", "native AI JSON ordinary no-hook", "native borrowed view span" }, .use_llvm = use_llvm });
+    linkQuickJs(b, native_async_qualification_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(native_async_qualification_tests.root_module, sqlite_lib_dir, sqlite_library);
+    native_async_qualification_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-async-function-qualification", "Compile genuine AsyncFunction Source42 and inherited generator JSON live-view span regression cohort").dependOn(&b.addInstallArtifact(native_async_qualification_tests, .{}).step);
+    b.step("test-native-async-function-qualification", "Run the matching cached qualification cohort with enforced per-test deadlines").dependOn(&b.addRunArtifact(native_async_qualification_tests).step);
     test_step.dependOn(&async_function_run.step);
     const async_scope_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_scope_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     linkQuickJs(b, async_scope_tests.root_module, quickjs, sqlite_lib_dir);

@@ -1,0 +1,1288 @@
+{
+  "qualification": "Windows x86_64 Debug LLVM bounded native AsyncFunction and inherited regression cohort",
+  "tested_head": "d01090424356fde9b2ab89753285f9b4ae2ea0f8",
+  "tested_ref": "refs/heads/checkpoint/native-async-function-debug-qualified-20261016",
+  "tested_public_readback": {
+    "rows": [
+      {
+        "path": "build.zig",
+        "sha256": "56DAD0B12FE9578C6B59224A54CD818BE4B029F2293CC879190FAB6E6E5E377C",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/build.zig",
+        "matches_tested_local": true
+      },
+      {
+        "path": "docs/native-async-function-review.md",
+        "sha256": "1F4A7F6CFD841D9B950CC12088BF60F941A1EF6387B504FAE8EC25793759DA19",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/docs/native-async-function-review.md",
+        "matches_tested_local": true
+      },
+      {
+        "path": "docs/native-async-function-source42-proof.json",
+        "sha256": "62C401AC03B26EABCE7321E0260422E1DEAFD742CA0A35B903685C80E6676709",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/docs/native-async-function-source42-proof.json",
+        "matches_tested_local": true
+      },
+      {
+        "path": "docs/native-async-function-source42-review2-proof.json",
+        "sha256": "7657A885BA581A64C553FC6719F068F8669DA27AE03B25DAAB505BAC114F7169",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/docs/native-async-function-source42-review2-proof.json",
+        "matches_tested_local": true
+      },
+      {
+        "path": "scripts/capture-native-async-function-node24.mjs",
+        "sha256": "D78ACC4AF7CDFA5A377B556EF81521FB92B43992621C6B332C7419EDEA1A3184",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/scripts/capture-native-async-function-node24.mjs",
+        "matches_tested_local": true
+      },
+      {
+        "path": "scripts/capture-native-async-function-node24.ps1",
+        "sha256": "BAE7D2371FB08B9D1FABC73F3B489B0F2AAAB5411A1A7E0A336CAA94C2F9B8C4",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/scripts/capture-native-async-function-node24.ps1",
+        "matches_tested_local": true
+      },
+      {
+        "path": "scripts/observe-native-async-function-node24.mjs",
+        "sha256": "F4F2F8FC803C4EB4D4F369107B0E5A2C157930AB454E1E971DB5EFE5D94D8F5E",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/scripts/observe-native-async-function-node24.mjs",
+        "matches_tested_local": true
+      },
+      {
+        "path": "src/extensions/fixtures/async-function-body-node24.input.txt",
+        "sha256": "5776BF2FA3CD180CD299DB2295875CADE31A2D3FC6A0403A8BD1B171AA7ACFB2",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/src/extensions/fixtures/async-function-body-node24.input.txt",
+        "matches_tested_local": true
+      },
+      {
+        "path": "src/extensions/fixtures/async-function-body-node24.json",
+        "sha256": "52DD975CA6C7CCE1D9BF8BB13B763122862B7849CFAACFAED8906038C3AF9653",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/src/extensions/fixtures/async-function-body-node24.json",
+        "matches_tested_local": true
+      },
+      {
+        "path": "src/extensions/native_async_function.zig",
+        "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/src/extensions/native_async_function.zig",
+        "matches_tested_local": true
+      },
+      {
+        "path": "src/native_async_function_body_test.zig",
+        "sha256": "4828E0BD9F18094EB31B5F9B8A6ED546D27D0EF8952DC0CD21ABB8FBDCE85013",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/src/native_async_function_body_test.zig",
+        "matches_tested_local": true
+      },
+      {
+        "path": "src/native_async_function_qualification_test.zig",
+        "sha256": "B928ABB16DBD7B199F063CBD0EE31FE8C5CA82E2C2AA563236821D40B965E4C2",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/src/native_async_function_qualification_test.zig",
+        "matches_tested_local": true
+      },
+      {
+        "path": "vendor/quickjs/quickjs.c",
+        "sha256": "33DFB18C9A930D3967A089DF0B28B65AF88B7665B7ADD725AED30FCB8F046FD2",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/vendor/quickjs/quickjs.c",
+        "matches_tested_local": true
+      },
+      {
+        "path": "vendor/quickjs/quickjs.h",
+        "sha256": "E3189DA8F918993FB567D07DF32E91CECD12C6666D9E9B1D68A6C65A15CEC37E",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/vendor/quickjs/quickjs.h",
+        "matches_tested_local": true
+      },
+      {
+        "path": "verification/native-async-function-20261016/PREPARED.md",
+        "sha256": "2E2D1B844141179762E22C5338C49138081D01D448520C85C92A0327E9245D79",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/verification/native-async-function-20261016/PREPARED.md",
+        "matches_tested_local": true
+      },
+      {
+        "path": "verification/native-async-function-20261016/expected-async-tests10.json",
+        "sha256": "BB100653D5A48FC8D806F633533A605B830941B45FF8271EBA8ACFA06C784513",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/verification/native-async-function-20261016/expected-async-tests10.json",
+        "matches_tested_local": true
+      },
+      {
+        "path": "verification/native-async-function-20261016/expected-tests25.json",
+        "sha256": "06308310ECAD5B80FD2607C5A1CA46674CC3D500820CF9B6FD82447065CAF697",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/verification/native-async-function-20261016/expected-tests25.json",
+        "matches_tested_local": true
+      },
+      {
+        "path": "verification/native-async-function-20261016/expected-tests26.json",
+        "sha256": "983E620F3D63ED657102F7C5ECC3A35B584572465BC727931EC5FFC123D0781A",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/verification/native-async-function-20261016/expected-tests26.json",
+        "matches_tested_local": true
+      },
+      {
+        "path": "verification/native-async-function-20261016/run-native-pair.ps1",
+        "sha256": "55BD401D412753786B78FD9CD2747F2B83F73FF2B4E834389036A91A3B175365",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/verification/native-async-function-20261016/run-native-pair.ps1",
+        "matches_tested_local": true
+      },
+      {
+        "path": "verification/native-async-function-20261016/source42-authority-pins.json",
+        "sha256": "AD301E9B1F1E8329C022B25943E2DBB6B095844C608D960027513445D490A089",
+        "raw_url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d01090424356fde9b2ab89753285f9b4ae2ea0f8/verification/native-async-function-20261016/source42-authority-pins.json",
+        "matches_tested_local": true
+      }
+    ],
+    "ref": "refs/heads/checkpoint/native-async-function-debug-qualified-20261016",
+    "full_pi_qualified": false,
+    "main_changed": false,
+    "tested_head": "d01090424356fde9b2ab89753285f9b4ae2ea0f8",
+    "qualification": "Windows x86_64 Debug LLVM exact26 bounded cohort only",
+    "raw_files": 20,
+    "release_created": false,
+    "utc": "2026-10-16T10:59:39.2337348+00:00"
+  },
+  "runtime_summary": "Build Summary: 156/156 steps succeeded; 26/26 tests passed",
+  "metadata": {
+    "method": "Actual metadata-only Zig0.16 protocol; query and clean exit, no unit run command",
+    "tests": [
+      "native_async_function_qualification_test.test.native borrowed view span retains backing and tracks DataView typed RAB detach and brand",
+      "extensions.native_durable_storage.test_0",
+      "native_async_function_body_test.test.native async body proposal matches genuine Node observations after independent review and Source capture",
+      "native_async_function_body_test.test.native async body proposal genuine brand strict receiver outer Promise and native toString",
+      "native_async_function_body_test.test.native async body proposal raw host OOM remains uncatchable rather than rejected Promise",
+      "native_async_function_body_test.test.native async body proposal Zig host allocation failures release captures and callbacks",
+      "native_async_function_body_test.test.native async body proposal stack capture preserves native name on start and resume",
+      "native_async_function_body_test.test.native async body proposal resumed native OOM escapes the job without Promise rejection",
+      "native_async_function_body_test.test.native async body proposal ordinary bound proxy and revoked callable source never read guest name",
+      "native_async_function_body_test.test.native async body proposal genuine C factory call and argument pressure failures remain reusable",
+      "native_async_function_body_test.test.native async body proposal actual C await handler allocation failure reaches native catch and retires",
+      "native_async_function_body_test.test.native async body proposal bounded C continuation reaction and job allocation pressure never loses suspension",
+      "native_async_generator_test.test.native async generator functional real intrinsic brand prototype raw yield and explicit await",
+      "native_async_generator_test.test.native async generator functional queued next return throw retain ownership and assimilate thenables",
+      "native_async_generator_test.test.native async generator functional rejection getters start return and abrupt close preserve raw errors",
+      "native_async_generator_test.test.native async generator functional pending owner survives GC",
+      "native_async_generator_test.test.native async generator functional cross realm callback and iterator result ownership",
+      "native_async_generator_test.test.native async generator functional raw VM allocation failures reject and retire without dangling frame",
+      "native_async_generator_test.test.native async generator functional owner retirement and unreachable owner cycles finalize exactly once",
+      "native_async_generator_test.test.native async generator functional completed return handler OOM drains reentrant trailing request",
+      "native_ai_json_parse_test.test.native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads",
+      "native_ai_json_parse_test.test.native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes",
+      "native_ai_json_parse_test.test.native AI JSON helpers and native partial fallback match33 genuine b06 observations",
+      "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+      "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+      "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity"
+    ],
+    "binary_sha256": "4E6A7B95575CC520265F6AC61553616EA27F03DAD2F7D29298644DB0CDD28ED8",
+    "binary": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\16819f04dbefa37239dd727a29bcbfc1\\test.exe",
+    "version": "0.16.0"
+  },
+  "terminal": {
+    "utc": "2026-10-16T10:53:57.8836103+00:00",
+    "owner_sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+    "full_pi_qualified": false,
+    "candidate_head": "d01090424356fde9b2ab89753285f9b4ae2ea0f8",
+    "artifacts": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\zig-out\\bin\\test.exe",
+        "sha256": "4E6A7B95575CC520265F6AC61553616EA27F03DAD2F7D29298644DB0CDD28ED8"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\16819f04dbefa37239dd727a29bcbfc1\\test.exe",
+        "sha256": "4E6A7B95575CC520265F6AC61553616EA27F03DAD2F7D29298644DB0CDD28ED8"
+      }
+    ],
+    "status": "passed",
+    "failure": null,
+    "root_execution_grant": "ROOT-ASYNC26-16GiB-OOMFIX-20261016",
+    "compile": {
+      "pid": 70296,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "argv": [
+        "build",
+        "build-native-async-function-qualification",
+        "-Doptimize=Debug",
+        "-Duse-llvm=true",
+        "-j1",
+        "--test-timeout",
+        "120s",
+        "--summary",
+        "all"
+      ],
+      "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-async-function-qualification -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-16T10:53:03.4854712Z",
+      "launched_utc": "2026-10-16T11:53:03.4842258+01:00",
+      "working_directory": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+      "outer_seconds": 1320,
+      "settle_seconds": 10,
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-16T11:53:15.9819451+01:00"
+    },
+    "native_qualified": true,
+    "reviewed_source_checkpoint": "8f97c86ec8aeb7aa37f1de1b9743505fcedb470e",
+    "posthash_failure": null,
+    "runtime": {
+      "pid": 66908,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "argv": [
+        "build",
+        "test-native-async-function-qualification",
+        "-Doptimize=Debug",
+        "-Duse-llvm=true",
+        "-j1",
+        "--test-timeout",
+        "120s",
+        "--summary",
+        "all"
+      ],
+      "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-async-function-qualification -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-16T10:53:39.5746677Z",
+      "launched_utc": "2026-10-16T11:53:39.5738886+01:00",
+      "working_directory": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+      "outer_seconds": 300,
+      "settle_seconds": 10,
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-16T11:53:46.4553244+01:00"
+    },
+    "actual_test_metadata": {
+      "method": "Actual metadata-only Zig0.16 protocol; query and clean exit, no unit run command",
+      "tests": [
+        "native_async_function_qualification_test.test.native borrowed view span retains backing and tracks DataView typed RAB detach and brand",
+        "extensions.native_durable_storage.test_0",
+        "native_async_function_body_test.test.native async body proposal matches genuine Node observations after independent review and Source capture",
+        "native_async_function_body_test.test.native async body proposal genuine brand strict receiver outer Promise and native toString",
+        "native_async_function_body_test.test.native async body proposal raw host OOM remains uncatchable rather than rejected Promise",
+        "native_async_function_body_test.test.native async body proposal Zig host allocation failures release captures and callbacks",
+        "native_async_function_body_test.test.native async body proposal stack capture preserves native name on start and resume",
+        "native_async_function_body_test.test.native async body proposal resumed native OOM escapes the job without Promise rejection",
+        "native_async_function_body_test.test.native async body proposal ordinary bound proxy and revoked callable source never read guest name",
+        "native_async_function_body_test.test.native async body proposal genuine C factory call and argument pressure failures remain reusable",
+        "native_async_function_body_test.test.native async body proposal actual C await handler allocation failure reaches native catch and retires",
+        "native_async_function_body_test.test.native async body proposal bounded C continuation reaction and job allocation pressure never loses suspension",
+        "native_async_generator_test.test.native async generator functional real intrinsic brand prototype raw yield and explicit await",
+        "native_async_generator_test.test.native async generator functional queued next return throw retain ownership and assimilate thenables",
+        "native_async_generator_test.test.native async generator functional rejection getters start return and abrupt close preserve raw errors",
+        "native_async_generator_test.test.native async generator functional pending owner survives GC",
+        "native_async_generator_test.test.native async generator functional cross realm callback and iterator result ownership",
+        "native_async_generator_test.test.native async generator functional raw VM allocation failures reject and retire without dangling frame",
+        "native_async_generator_test.test.native async generator functional owner retirement and unreachable owner cycles finalize exactly once",
+        "native_async_generator_test.test.native async generator functional completed return handler OOM drains reentrant trailing request",
+        "native_ai_json_parse_test.test.native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads",
+        "native_ai_json_parse_test.test.native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes",
+        "native_ai_json_parse_test.test.native AI JSON helpers and native partial fallback match33 genuine b06 observations",
+        "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+        "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+        "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity"
+      ],
+      "binary_sha256": "4E6A7B95575CC520265F6AC61553616EA27F03DAD2F7D29298644DB0CDD28ED8",
+      "binary": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\16819f04dbefa37239dd727a29bcbfc1\\test.exe",
+      "version": "0.16.0"
+    }
+  },
+  "posthash": {
+    "utc": "2026-10-16T10:53:57.8823535+00:00",
+    "node_pinned_executable_npm_files": 1774,
+    "source_authority": {
+      "captures": 2,
+      "drift": 0,
+      "native_proposal_substituted": false,
+      "runtime": "v24.14.0",
+      "cases": 42
+    },
+    "artifact_drift": [],
+    "candidate_head": "d01090424356fde9b2ab89753285f9b4ae2ea0f8",
+    "vendor_files": 1316,
+    "node_complete_directory_files": 1838,
+    "frozen_registry_drift": [],
+    "authority_drift": [],
+    "control_drift": [],
+    "inventory_errors": [],
+    "compiler_files": 19546,
+    "candidate_files": 8014
+  },
+  "independent_absence": {
+    "current_native_inventory": [],
+    "original_identity_checks": [
+      {
+        "phase": "compile",
+        "record": {
+          "pid": 70296,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+          "argv": [
+            "build",
+            "build-native-async-function-qualification",
+            "-Doptimize=Debug",
+            "-Duse-llvm=true",
+            "-j1",
+            "--test-timeout",
+            "120s",
+            "--summary",
+            "all"
+          ],
+          "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-async-function-qualification -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+          "created_utc": "2026-10-16T10:53:03.4854712Z",
+          "launched_utc": "2026-10-16T10:53:03.4842258+00:00",
+          "working_directory": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+          "outer_seconds": 1320,
+          "settle_seconds": 10,
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-16T10:53:15.9819451+00:00"
+        },
+        "original_identity_present": false,
+        "pid_absent": true,
+        "verified_utc": "2026-10-16T10:54:39.1356793+00:00"
+      },
+      {
+        "phase": "metadata",
+        "record": {
+          "executable": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\16819f04dbefa37239dd727a29bcbfc1\\test.exe",
+          "executable_sha256": "4E6A7B95575CC520265F6AC61553616EA27F03DAD2F7D29298644DB0CDD28ED8",
+          "arguments": [
+            "--listen=-"
+          ],
+          "working_directory": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+          "pid": 66364,
+          "retained_handle": 2620,
+          "created_utc": "2026-10-16T10:53:28.6847893Z",
+          "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+          "timeout_seconds": 30,
+          "status": "passed",
+          "live_identity": {
+            "created_utc": "2026-10-16T10:53:28.6847893Z",
+            "command_line_method": "Win32_Process.CommandLine",
+            "executable": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\16819f04dbefa37239dd727a29bcbfc1\\test.exe",
+            "command_line": "\"C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\16819f04dbefa37239dd727a29bcbfc1\\test.exe\" --listen=-",
+            "pid": 66364
+          },
+          "exit_code": 0,
+          "completed_utc": "2026-10-16T10:53:28.9898905+00:00"
+        },
+        "original_identity_present": false,
+        "pid_absent": true,
+        "verified_utc": "2026-10-16T10:54:39.3893037+00:00"
+      },
+      {
+        "phase": "runtime",
+        "record": {
+          "pid": 66908,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+          "argv": [
+            "build",
+            "test-native-async-function-qualification",
+            "-Doptimize=Debug",
+            "-Duse-llvm=true",
+            "-j1",
+            "--test-timeout",
+            "120s",
+            "--summary",
+            "all"
+          ],
+          "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-async-function-qualification -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+          "created_utc": "2026-10-16T10:53:39.5746677Z",
+          "launched_utc": "2026-10-16T10:53:39.5738886+00:00",
+          "working_directory": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+          "outer_seconds": 300,
+          "settle_seconds": 10,
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-16T10:53:46.4553244+00:00"
+        },
+        "original_identity_present": false,
+        "pid_absent": true,
+        "verified_utc": "2026-10-16T10:54:39.6196257+00:00"
+      }
+    ],
+    "verified_utc": "2026-10-16T10:54:39.8357426+00:00",
+    "zero_current_native": true
+  },
+  "compile_admission": {
+    "phase": "compile",
+    "minimum_available_bytes": 17179869184,
+    "available_bytes": 24657195008,
+    "zero_other_native_required": true,
+    "other_native": [],
+    "root_execution_grant": "ROOT-ASYNC26-16GiB-OOMFIX-20261016",
+    "revised_policy_explicitly_released": false,
+    "jobs": 1,
+    "owner_sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+    "admitted": true,
+    "utc": "2026-10-16T10:53:03.3202616+00:00"
+  },
+  "runtime_admission": {
+    "phase": "runtime",
+    "minimum_available_bytes": 17179869184,
+    "available_bytes": 24297967616,
+    "zero_other_native_required": true,
+    "other_native": [],
+    "root_execution_grant": "ROOT-ASYNC26-16GiB-OOMFIX-20261016",
+    "revised_policy_explicitly_released": false,
+    "jobs": 1,
+    "owner_sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+    "admitted": true,
+    "utc": "2026-10-16T10:53:39.4287885+00:00"
+  },
+  "artifacts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\zig-out\\bin\\test.exe",
+      "sha256": "4E6A7B95575CC520265F6AC61553616EA27F03DAD2F7D29298644DB0CDD28ED8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\16819f04dbefa37239dd727a29bcbfc1\\test.exe",
+      "sha256": "4E6A7B95575CC520265F6AC61553616EA27F03DAD2F7D29298644DB0CDD28ED8"
+    }
+  ],
+  "product_files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "33DFB18C9A930D3967A089DF0B28B65AF88B7665B7ADD725AED30FCB8F046FD2"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "E3189DA8F918993FB567D07DF32E91CECD12C6666D9E9B1D68A6C65A15CEC37E"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "path": "src/native_async_function_body_test.zig",
+      "sha256": "4828E0BD9F18094EB31B5F9B8A6ED546D27D0EF8952DC0CD21ABB8FBDCE85013"
+    },
+    {
+      "path": "src/native_async_function_qualification_test.zig",
+      "sha256": "B928ABB16DBD7B199F063CBD0EE31FE8C5CA82E2C2AA563236821D40B965E4C2"
+    },
+    {
+      "path": "src/extensions/fixtures/async-function-body-node24.input.txt",
+      "sha256": "5776BF2FA3CD180CD299DB2295875CADE31A2D3FC6A0403A8BD1B171AA7ACFB2"
+    },
+    {
+      "path": "src/extensions/fixtures/async-function-body-node24.json",
+      "sha256": "52DD975CA6C7CCE1D9BF8BB13B763122862B7849CFAACFAED8906038C3AF9653"
+    }
+  ],
+  "attempt_ledger": [
+    {
+      "attempt": 1,
+      "prefix": "native-async-function-qualification-Debug-admitted1-20261016",
+      "category": "preflight full Node directory versus canonical manifest",
+      "terminal": null,
+      "preflight_negative": {
+        "node_pinned_executable_npm": 1774,
+        "node_complete_directory": 1838,
+        "compiler": 19546,
+        "native_launched": false,
+        "extra_node_directory_files": [
+          {
+            "relative": "corepack",
+            "path": "C:\\Program Files\\nodejs\\corepack",
+            "sha256": "DCEF0A787C4654AC5C085FAFA3A1E12D60D6F42E0D259C38378B61EF64295FA2"
+          },
+          {
+            "relative": "corepack.cmd",
+            "path": "C:\\Program Files\\nodejs\\corepack.cmd",
+            "sha256": "920630A1D1EC47AEDEA7345E3C868ECDC07E191373497BBF47FBBF5942FBAD4F"
+          },
+          {
+            "relative": "install_tools.bat",
+            "path": "C:\\Program Files\\nodejs\\install_tools.bat",
+            "sha256": "56B0737B893D96C09BBF64ACD701E73D01438F0ACEC81E63C9588D303CF083B4"
+          },
+          {
+            "relative": "node_modules/corepack/CHANGELOG.md",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\CHANGELOG.md",
+            "sha256": "2A5B6EB5B6841894108795D7B32688122B93AF8F5A2000CD2A8E8AF1EC1B349B"
+          },
+          {
+            "relative": "node_modules/corepack/dist/corepack.js",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\dist\\corepack.js",
+            "sha256": "4BD305443B25CCB4C11B0C3F9EEFE65D755AF39F3545BFEC24AF428A1F9451B5"
+          },
+          {
+            "relative": "node_modules/corepack/dist/lib/corepack.cjs",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\dist\\lib\\corepack.cjs",
+            "sha256": "4B6E49E0865EADC470668E55B79CDC6CF8F1E9861CF5CD2A703A740F2501191D"
+          },
+          {
+            "relative": "node_modules/corepack/dist/npm.js",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\dist\\npm.js",
+            "sha256": "599CA9DE4CFEA85ADC567BF62AB427D46CCA48A6FB4EC62B75B75E46D9FDFB45"
+          },
+          {
+            "relative": "node_modules/corepack/dist/npx.js",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\dist\\npx.js",
+            "sha256": "6CF18508540B8B851958645ECC9171FBC162D623F7DD2778BB370C3E4D75DBDB"
+          },
+          {
+            "relative": "node_modules/corepack/dist/pnpm.js",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\dist\\pnpm.js",
+            "sha256": "AB0E1CA4F3F3059571B8FC7A7EFFFE010B719644268EB3B3C6A2A36649B2FA9E"
+          },
+          {
+            "relative": "node_modules/corepack/dist/pnpx.js",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\dist\\pnpx.js",
+            "sha256": "9EEA7AB28D806A2492885E0521B6A70A2A87FFD648FAC1A52265AEA69A422B2E"
+          },
+          {
+            "relative": "node_modules/corepack/dist/yarn.js",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\dist\\yarn.js",
+            "sha256": "A8F5B916DB7870005F6BF2547B42A9B7655BE7D2BBBD78EA177F5FBCC608FBCC"
+          },
+          {
+            "relative": "node_modules/corepack/dist/yarnpkg.js",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\dist\\yarnpkg.js",
+            "sha256": "13F1A08371743DD6EDE3EF47FE4EB3CF150C84C46CB7E7F953747DC701A470A0"
+          },
+          {
+            "relative": "node_modules/corepack/LICENSE.md",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\LICENSE.md",
+            "sha256": "517D52969F11B2B587F2E5116069AEA3887FF08251689A198A857A115F250DBF"
+          },
+          {
+            "relative": "node_modules/corepack/package.json",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\package.json",
+            "sha256": "1CD0227F85E6801A8D7FEED309C525E2D3A5019E60B982124A4243E1227CAE42"
+          },
+          {
+            "relative": "node_modules/corepack/README.md",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\README.md",
+            "sha256": "2E28CBA4998CC9564086542E1863220064EE57EF9CD44570BF5A84D33D427A1D"
+          },
+          {
+            "relative": "node_modules/corepack/shims/corepack",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\corepack",
+            "sha256": "E5020E3430810638B169BBF91B3871644EBC85063CF868065336CF57874ED4EB"
+          },
+          {
+            "relative": "node_modules/corepack/shims/corepack.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\corepack.cmd",
+            "sha256": "C50DC5168EFF5C1E8DD07E179635924B344DD67BF58A69526D44F26803FA199F"
+          },
+          {
+            "relative": "node_modules/corepack/shims/corepack.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\corepack.ps1",
+            "sha256": "F5767E669A68BC4B413FC2E29851E35B69BFB8D85AC971ED637FFD718B4DD6C6"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/corepack",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\corepack",
+            "sha256": "DCEF0A787C4654AC5C085FAFA3A1E12D60D6F42E0D259C38378B61EF64295FA2"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/corepack.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\corepack.cmd",
+            "sha256": "920630A1D1EC47AEDEA7345E3C868ECDC07E191373497BBF47FBBF5942FBAD4F"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/corepack.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\corepack.ps1",
+            "sha256": "0E574C2F8AA767929D09AA3BFEFF1B7C2ADB52BF11C4688A84A685DEA9D38B37"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/npm",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\npm",
+            "sha256": "7D0995F8D9F4A38E678581990F91639A994F2F6C408F8CE70C253B523247E6A0"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/npm.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\npm.cmd",
+            "sha256": "834223F326442C96E0D2480390E2C341F01A1196E342F16FE00EF11B9431370D"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/npm.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\npm.ps1",
+            "sha256": "7D5CF5817176D879ECC1BE899DF87F4336C6338340FFF235BDFE3E2B06F89900"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/npx",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\npx",
+            "sha256": "7A137D2A6B230820D5CDED874EFD6FF9F33626C89B6009B8FE860AB4105544AC"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/npx.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\npx.cmd",
+            "sha256": "8007C6CA3CB132ED22C62AB6A93975EEE5FAC573B6827DE24E0668AD74D2CDE1"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/npx.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\npx.ps1",
+            "sha256": "46634DE44ED20DF02CF753511FB4FB9D6981294EACBC65FFAC5B2249B8C829C4"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/pnpm",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\pnpm",
+            "sha256": "40EE14A59DF032DEA7E883C53859F5E22EF4C345A3210DB8CCDDEB90B5E3D081"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/pnpm.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\pnpm.cmd",
+            "sha256": "045EB4580B746837ECF0091D32384DBF519FA4F33F9F1D4DA9452B8CEA7DC232"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/pnpm.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\pnpm.ps1",
+            "sha256": "01B054AF83035C76551ECFC79084D37396F64B3D09093AFEFBA664ED82268A99"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/pnpx",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\pnpx",
+            "sha256": "3AF5C30D96E1CB65B5F76EF764E1EC7DFC77AC1A50E7090DBAF5CB4696232E91"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/pnpx.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\pnpx.cmd",
+            "sha256": "05AC43E3237B9A146E432C3D785A22822828ACCE122740C0AAD3DEE35221B5C4"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/pnpx.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\pnpx.ps1",
+            "sha256": "CFB36DB014FF235957C3C683DA4FB5C433A74AF543E0EE643241D913B9F305E4"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/yarn",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\yarn",
+            "sha256": "80992F79123B7384C0B76CC3A5F3D8A91ABE64AB8A1E632976846D5D4BC60F9D"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/yarn.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\yarn.cmd",
+            "sha256": "2DAA763E70EAE568FFDD7EDAEB4F9EDEEFF5E8BAD0FC773B1C3D750833629654"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/yarn.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\yarn.ps1",
+            "sha256": "0AD36833606A949E16232C24BC8BE79CE952B14CE13A237CC128BA305546D54A"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/yarnpkg",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\yarnpkg",
+            "sha256": "7AB7608635ADC66F1F1BD4EB14E7736FF16F08D2E158DA5497B5A0786C23CF0D"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/yarnpkg.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\yarnpkg.cmd",
+            "sha256": "30FED702510A977562BAEFA059B3179CE4456D5B9F459671BA420E63AE81743B"
+          },
+          {
+            "relative": "node_modules/corepack/shims/nodewin/yarnpkg.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\nodewin\\yarnpkg.ps1",
+            "sha256": "A07806FB214CF9D600589910B8A9A2392C38D9A3362D6DAB82A79E200AE42051"
+          },
+          {
+            "relative": "node_modules/corepack/shims/npm",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\npm",
+            "sha256": "EA3AEE2DFE4597B57BFB82F0E9B49F7C2CF52FAB95A53EFFEF61893DC30A840C"
+          },
+          {
+            "relative": "node_modules/corepack/shims/npm.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\npm.cmd",
+            "sha256": "727E18574154A52A497D81F840461AC62655D101B2514AB8A3E8ECCD0A3DC991"
+          },
+          {
+            "relative": "node_modules/corepack/shims/npm.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\npm.ps1",
+            "sha256": "1CBD3BF6B69EEF9A3178B91958FC2302D9A9419ED3FC1B56DB348E1189FB35C6"
+          },
+          {
+            "relative": "node_modules/corepack/shims/npx",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\npx",
+            "sha256": "F8867508D854FE2C54FC6C4EA3FFADD566E4B6C10EEFACCAFD6CA46E3A2E1D68"
+          },
+          {
+            "relative": "node_modules/corepack/shims/npx.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\npx.cmd",
+            "sha256": "7B179468496AABF9F4A852A1DA671CC7BF074FBEED88261EE7C3E2BC9B1C9E2D"
+          },
+          {
+            "relative": "node_modules/corepack/shims/npx.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\npx.ps1",
+            "sha256": "6A051206CA2F1B098C9145419722BC98E9B06D3A0B8D831EB0973C3288A4104B"
+          },
+          {
+            "relative": "node_modules/corepack/shims/pnpm",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\pnpm",
+            "sha256": "E8613FFEA821EDC3E7E327B5F619AF3557B4BD030D1312EC303BA8BFD730A0DE"
+          },
+          {
+            "relative": "node_modules/corepack/shims/pnpm.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\pnpm.cmd",
+            "sha256": "B70680EE9E60E9906DC52E53ACDA23FD997AAD01EDDF7FE3FBCDFE28980F88E4"
+          },
+          {
+            "relative": "node_modules/corepack/shims/pnpm.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\pnpm.ps1",
+            "sha256": "8F6B6EF581F5F977602C5BAA1F2A915C9C87745E0ABB23E828C03CE12B4ECD26"
+          },
+          {
+            "relative": "node_modules/corepack/shims/pnpx",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\pnpx",
+            "sha256": "E8F929A8EF099AC88FF53F6694950D60A2908B8012CA93A225461C616ABE950D"
+          },
+          {
+            "relative": "node_modules/corepack/shims/pnpx.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\pnpx.cmd",
+            "sha256": "CD0F0363556A75DA272FA8F6A7E7021DA6A7F9A4396EAE1F0FC7EA318525F1B1"
+          },
+          {
+            "relative": "node_modules/corepack/shims/pnpx.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\pnpx.ps1",
+            "sha256": "7297B748CCD8E83C56F2586C626491D120A14D1FF53A92B7A430258D6660793E"
+          },
+          {
+            "relative": "node_modules/corepack/shims/yarn",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\yarn",
+            "sha256": "40F49A6D757EF5E470484610E7C205784B42F4CCF29DFE0C855479FD5FFCFC95"
+          },
+          {
+            "relative": "node_modules/corepack/shims/yarn.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\yarn.cmd",
+            "sha256": "B5E2D2A4B7818CE047A39A68C9E08E7230B23F7A088E0B1677B3C47EF807FB0F"
+          },
+          {
+            "relative": "node_modules/corepack/shims/yarn.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\yarn.ps1",
+            "sha256": "BAE272EDD5C4378514FD0394B5F8F244FB26731B8319D22925B12DA422124100"
+          },
+          {
+            "relative": "node_modules/corepack/shims/yarnpkg",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\yarnpkg",
+            "sha256": "E4952600DC0EE4905588A7C1351D7D240185CA80D4757036EB40CF539E1BE978"
+          },
+          {
+            "relative": "node_modules/corepack/shims/yarnpkg.cmd",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\yarnpkg.cmd",
+            "sha256": "A7F74B86CC7AC2D5B8D85DD3616FC5A87B87818FFE88681F9BF391DD589DFC1B"
+          },
+          {
+            "relative": "node_modules/corepack/shims/yarnpkg.ps1",
+            "path": "C:\\Program Files\\nodejs\\node_modules\\corepack\\shims\\yarnpkg.ps1",
+            "sha256": "CE1924AF4ACC79317DA0DC382B9D72E68F1198700BD7F7110D33AB8DDB2E3D77"
+          },
+          {
+            "relative": "nodevars.bat",
+            "path": "C:\\Program Files\\nodejs\\nodevars.bat",
+            "sha256": "A2B020E2F641524C6FD1B8EBBCD9EE03C7DC44009F2B78E701E773AD048BE9A5"
+          },
+          {
+            "relative": "npm",
+            "path": "C:\\Program Files\\nodejs\\npm",
+            "sha256": "13372AA943F8EB32C9A8B6F946ED6A49118EDD60051321953288B1F35611AEFB"
+          },
+          {
+            "relative": "npm.cmd",
+            "path": "C:\\Program Files\\nodejs\\npm.cmd",
+            "sha256": "21B46C69AD6E2F231F02A9E120F4BA6C8E75FEF5A45637103002EAB99F888AB8"
+          },
+          {
+            "relative": "npm.ps1",
+            "path": "C:\\Program Files\\nodejs\\npm.ps1",
+            "sha256": "E8AEDC8C76D6CB9423B70EDE071228F7CB1644094C114B8721AE6D121100D4FE"
+          },
+          {
+            "relative": "npx",
+            "path": "C:\\Program Files\\nodejs\\npx",
+            "sha256": "A8BE7733861AEDE8F9C331AD7B60AA225DD085271D6DE68946F0FB5D0717DE09"
+          },
+          {
+            "relative": "npx.cmd",
+            "path": "C:\\Program Files\\nodejs\\npx.cmd",
+            "sha256": "4DD3574F4396FC3B45C52B6AC80FD52BE2DD2660D2A153B4CC807DBBFEEFA7A0"
+          },
+          {
+            "relative": "npx.ps1",
+            "path": "C:\\Program Files\\nodejs\\npx.ps1",
+            "sha256": "0341D1D2EC7818EDF7C5AFFB6446A952F9A28A98689910F89A51C5A6C3A78AD9"
+          }
+        ],
+        "vendor": 1316,
+        "compiler_expected": 19546
+      },
+      "posthash": null,
+      "actual_runtime": "not started"
+    },
+    {
+      "attempt": 2,
+      "prefix": "native-async-function-qualification-Debug-admitted2-20261016",
+      "category": "inherited duplicate build target names",
+      "terminal": {
+        "failure": "Native terminal failed",
+        "runtime": null,
+        "owner_sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+        "actual_test_metadata": null,
+        "candidate_head": "938df1bbb6614d09b3d598fdd6f3cc22d215931e",
+        "native_qualified": false,
+        "status": "failed",
+        "full_pi_qualified": false,
+        "compile": null,
+        "reviewed_source_checkpoint": "8f97c86ec8aeb7aa37f1de1b9743505fcedb470e",
+        "utc": "2026-10-16T10:28:38.7438906+00:00",
+        "artifacts": [],
+        "root_execution_grant": "ROOT-ASYNC25-16GiB-SERIAL-20261016",
+        "posthash_failure": null
+      },
+      "preflight_negative": null,
+      "posthash": {
+        "node_complete_directory_files": 1838,
+        "compiler_files": 19546,
+        "candidate_head": "938df1bbb6614d09b3d598fdd6f3cc22d215931e",
+        "candidate_files": 8013,
+        "vendor_files": 1316,
+        "node_pinned_executable_npm_files": 1774,
+        "utc": "2026-10-16T10:28:38.7421007+00:00",
+        "control_drift": [],
+        "authority_drift": [],
+        "inventory_errors": [],
+        "source_authority": {
+          "drift": 0,
+          "captures": 2,
+          "cases": 42,
+          "runtime": "v24.14.0",
+          "native_proposal_substituted": false
+        },
+        "artifact_drift": [],
+        "frozen_registry_drift": []
+      },
+      "actual_runtime": "not started"
+    },
+    {
+      "attempt": 3,
+      "prefix": "native-async-function-qualification-Debug-admitted3-20261016",
+      "category": "Zig allowzero ABI state pointer",
+      "terminal": {
+        "failure": "Native terminal failed",
+        "utc": "2026-10-16T10:37:00.8259692+00:00",
+        "status": "failed",
+        "full_pi_qualified": false,
+        "reviewed_source_checkpoint": "8f97c86ec8aeb7aa37f1de1b9743505fcedb470e",
+        "actual_test_metadata": null,
+        "candidate_head": "fd5a7c1e6421a395ef6675ae0bae28b1ff419a2b",
+        "root_execution_grant": "ROOT-ASYNC25-16GiB-SERIAL-20261016",
+        "runtime": null,
+        "posthash_failure": null,
+        "compile": {
+          "pid": 47316,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+          "argv": [
+            "build",
+            "build-native-async-function-qualification",
+            "-Doptimize=Debug",
+            "-Duse-llvm=true",
+            "-j1",
+            "--test-timeout",
+            "120s",
+            "--summary",
+            "all"
+          ],
+          "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-async-function-qualification -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+          "created_utc": "2026-10-16T10:31:51.892123Z",
+          "launched_utc": "2026-10-16T11:31:51.8869432+01:00",
+          "working_directory": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+          "outer_seconds": 1320,
+          "settle_seconds": 10,
+          "status": "failed",
+          "exit_code": 1,
+          "completed_utc": "2026-10-16T11:36:45.2588056+01:00"
+        },
+        "artifacts": [],
+        "owner_sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+        "native_qualified": false
+      },
+      "preflight_negative": null,
+      "posthash": {
+        "utc": "2026-10-16T10:37:00.8237403+00:00",
+        "source_authority": {
+          "native_proposal_substituted": false,
+          "captures": 2,
+          "drift": 0,
+          "cases": 42,
+          "runtime": "v24.14.0"
+        },
+        "inventory_errors": [],
+        "control_drift": [],
+        "candidate_head": "fd5a7c1e6421a395ef6675ae0bae28b1ff419a2b",
+        "frozen_registry_drift": [],
+        "artifact_drift": [],
+        "node_pinned_executable_npm_files": 1774,
+        "compiler_files": 19546,
+        "authority_drift": [],
+        "node_complete_directory_files": 1838,
+        "candidate_files": 8013,
+        "vendor_files": 1316
+      },
+      "actual_runtime": "not started"
+    },
+    {
+      "attempt": 4,
+      "prefix": "native-async-function-qualification-Debug-admitted4-20261016",
+      "category": "actual imported metadata count",
+      "terminal": {
+        "posthash_failure": null,
+        "utc": "2026-10-16T10:41:35.1254298+00:00",
+        "native_qualified": false,
+        "root_execution_grant": "ROOT-ASYNC25-16GiB-SERIAL-RETRY4-20261016",
+        "failure": "Exact selected native test count required",
+        "owner_sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+        "reviewed_source_checkpoint": "8f97c86ec8aeb7aa37f1de1b9743505fcedb470e",
+        "candidate_head": "6f2525c20612be6e2672fb18f06d99bb81f20c28",
+        "runtime": null,
+        "actual_test_metadata": null,
+        "artifacts": [
+          {
+            "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\zig-out\\bin\\test.exe",
+            "sha256": "0527E2EC8618F365223242C430382BBC5285570EE4FD4358DCCF7A583EEA7CB0"
+          },
+          {
+            "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\66c4ee82168cd984c76dcea4c74b61c5\\test.exe",
+            "sha256": "0527E2EC8618F365223242C430382BBC5285570EE4FD4358DCCF7A583EEA7CB0"
+          }
+        ],
+        "full_pi_qualified": false,
+        "status": "failed",
+        "compile": {
+          "pid": 53116,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+          "argv": [
+            "build",
+            "build-native-async-function-qualification",
+            "-Doptimize=Debug",
+            "-Duse-llvm=true",
+            "-j1",
+            "--test-timeout",
+            "120s",
+            "--summary",
+            "all"
+          ],
+          "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-async-function-qualification -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+          "created_utc": "2026-10-16T10:40:59.3406371Z",
+          "launched_utc": "2026-10-16T11:40:59.3392203+01:00",
+          "working_directory": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+          "outer_seconds": 1320,
+          "settle_seconds": 10,
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-16T11:41:12.9584896+01:00"
+        }
+      },
+      "preflight_negative": null,
+      "posthash": {
+        "control_drift": [],
+        "authority_drift": [],
+        "frozen_registry_drift": [],
+        "node_pinned_executable_npm_files": 1774,
+        "candidate_files": 8013,
+        "utc": "2026-10-16T10:41:35.1237650+00:00",
+        "source_authority": {
+          "runtime": "v24.14.0",
+          "captures": 2,
+          "drift": 0,
+          "native_proposal_substituted": false,
+          "cases": 42
+        },
+        "artifact_drift": [],
+        "candidate_head": "6f2525c20612be6e2672fb18f06d99bb81f20c28",
+        "node_complete_directory_files": 1838,
+        "compiler_files": 19546,
+        "inventory_errors": [],
+        "vendor_files": 1316
+      },
+      "actual_runtime": "not started"
+    },
+    {
+      "attempt": 5,
+      "prefix": "native-async-function-qualification-Debug-admitted5-20261016",
+      "category": "host OOM not marked uncatchable",
+      "terminal": {
+        "failure": "Native terminal failed",
+        "native_qualified": false,
+        "actual_test_metadata": {
+          "binary": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\66c4ee82168cd984c76dcea4c74b61c5\\test.exe",
+          "tests": [
+            "native_async_function_qualification_test.test.native borrowed view span retains backing and tracks DataView typed RAB detach and brand",
+            "extensions.native_durable_storage.test_0",
+            "native_async_function_body_test.test.native async body proposal matches genuine Node observations after independent review and Source capture",
+            "native_async_function_body_test.test.native async body proposal genuine brand strict receiver outer Promise and native toString",
+            "native_async_function_body_test.test.native async body proposal raw host OOM remains uncatchable rather than rejected Promise",
+            "native_async_function_body_test.test.native async body proposal Zig host allocation failures release captures and callbacks",
+            "native_async_function_body_test.test.native async body proposal stack capture preserves native name on start and resume",
+            "native_async_function_body_test.test.native async body proposal resumed native OOM escapes the job without Promise rejection",
+            "native_async_function_body_test.test.native async body proposal ordinary bound proxy and revoked callable source never read guest name",
+            "native_async_function_body_test.test.native async body proposal genuine C factory call and argument pressure failures remain reusable",
+            "native_async_function_body_test.test.native async body proposal actual C await handler allocation failure reaches native catch and retires",
+            "native_async_function_body_test.test.native async body proposal bounded C continuation reaction and job allocation pressure never loses suspension",
+            "native_async_generator_test.test.native async generator functional real intrinsic brand prototype raw yield and explicit await",
+            "native_async_generator_test.test.native async generator functional queued next return throw retain ownership and assimilate thenables",
+            "native_async_generator_test.test.native async generator functional rejection getters start return and abrupt close preserve raw errors",
+            "native_async_generator_test.test.native async generator functional pending owner survives GC",
+            "native_async_generator_test.test.native async generator functional cross realm callback and iterator result ownership",
+            "native_async_generator_test.test.native async generator functional raw VM allocation failures reject and retire without dangling frame",
+            "native_async_generator_test.test.native async generator functional owner retirement and unreachable owner cycles finalize exactly once",
+            "native_async_generator_test.test.native async generator functional completed return handler OOM drains reentrant trailing request",
+            "native_ai_json_parse_test.test.native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads",
+            "native_ai_json_parse_test.test.native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes",
+            "native_ai_json_parse_test.test.native AI JSON helpers and native partial fallback match33 genuine b06 observations",
+            "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+            "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+            "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity"
+          ],
+          "binary_sha256": "0527E2EC8618F365223242C430382BBC5285570EE4FD4358DCCF7A583EEA7CB0",
+          "version": "0.16.0",
+          "method": "Actual metadata-only Zig0.16 protocol; query and clean exit, no unit run command"
+        },
+        "artifacts": [
+          {
+            "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\zig-out\\bin\\test.exe",
+            "sha256": "0527E2EC8618F365223242C430382BBC5285570EE4FD4358DCCF7A583EEA7CB0"
+          },
+          {
+            "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\66c4ee82168cd984c76dcea4c74b61c5\\test.exe",
+            "sha256": "0527E2EC8618F365223242C430382BBC5285570EE4FD4358DCCF7A583EEA7CB0"
+          }
+        ],
+        "root_execution_grant": "ROOT-ASYNC25-16GiB-SERIAL-RETRY4-20261016",
+        "reviewed_source_checkpoint": "8f97c86ec8aeb7aa37f1de1b9743505fcedb470e",
+        "full_pi_qualified": false,
+        "status": "failed",
+        "candidate_head": "196227d16be3fc491f7e2b56d4ba7580179b9a20",
+        "owner_sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+        "utc": "2026-10-16T10:45:38.9689662+00:00",
+        "runtime": {
+          "pid": 70952,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+          "argv": [
+            "build",
+            "test-native-async-function-qualification",
+            "-Doptimize=Debug",
+            "-Duse-llvm=true",
+            "-j1",
+            "--test-timeout",
+            "120s",
+            "--summary",
+            "all"
+          ],
+          "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-async-function-qualification -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+          "created_utc": "2026-10-16T10:45:15.8436929Z",
+          "launched_utc": "2026-10-16T11:45:15.8427148+01:00",
+          "working_directory": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+          "outer_seconds": 300,
+          "settle_seconds": 10,
+          "status": "failed",
+          "exit_code": 1,
+          "completed_utc": "2026-10-16T11:45:24.4541178+01:00"
+        },
+        "posthash_failure": null,
+        "compile": {
+          "pid": 31536,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+          "argv": [
+            "build",
+            "build-native-async-function-qualification",
+            "-Doptimize=Debug",
+            "-Duse-llvm=true",
+            "-j1",
+            "--test-timeout",
+            "120s",
+            "--summary",
+            "all"
+          ],
+          "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-async-function-qualification -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+          "created_utc": "2026-10-16T10:44:40.0805455Z",
+          "launched_utc": "2026-10-16T11:44:40.0759319+01:00",
+          "working_directory": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+          "outer_seconds": 1320,
+          "settle_seconds": 10,
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-16T11:44:46.4309441+01:00"
+        }
+      },
+      "preflight_negative": null,
+      "posthash": {
+        "artifact_drift": [],
+        "utc": "2026-10-16T10:45:38.9671703+00:00",
+        "frozen_registry_drift": [],
+        "candidate_files": 8014,
+        "compiler_files": 19546,
+        "source_authority": {
+          "native_proposal_substituted": false,
+          "runtime": "v24.14.0",
+          "captures": 2,
+          "drift": 0,
+          "cases": 42
+        },
+        "node_pinned_executable_npm_files": 1774,
+        "vendor_files": 1316,
+        "candidate_head": "196227d16be3fc491f7e2b56d4ba7580179b9a20",
+        "control_drift": [],
+        "authority_drift": [],
+        "inventory_errors": [],
+        "node_complete_directory_files": 1838
+      },
+      "actual_runtime": "24 pass, 1 fail, 1 crash"
+    },
+    {
+      "attempt": 6,
+      "prefix": "native-async-function-qualification-Debug-admitted6-20261016",
+      "category": "bounded native qualification passed",
+      "terminal": {
+        "utc": "2026-10-16T10:53:57.8836103+00:00",
+        "owner_sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+        "full_pi_qualified": false,
+        "candidate_head": "d01090424356fde9b2ab89753285f9b4ae2ea0f8",
+        "artifacts": [
+          {
+            "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\zig-out\\bin\\test.exe",
+            "sha256": "4E6A7B95575CC520265F6AC61553616EA27F03DAD2F7D29298644DB0CDD28ED8"
+          },
+          {
+            "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\16819f04dbefa37239dd727a29bcbfc1\\test.exe",
+            "sha256": "4E6A7B95575CC520265F6AC61553616EA27F03DAD2F7D29298644DB0CDD28ED8"
+          }
+        ],
+        "status": "passed",
+        "failure": null,
+        "root_execution_grant": "ROOT-ASYNC26-16GiB-OOMFIX-20261016",
+        "compile": {
+          "pid": 70296,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+          "argv": [
+            "build",
+            "build-native-async-function-qualification",
+            "-Doptimize=Debug",
+            "-Duse-llvm=true",
+            "-j1",
+            "--test-timeout",
+            "120s",
+            "--summary",
+            "all"
+          ],
+          "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-async-function-qualification -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+          "created_utc": "2026-10-16T10:53:03.4854712Z",
+          "launched_utc": "2026-10-16T11:53:03.4842258+01:00",
+          "working_directory": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+          "outer_seconds": 1320,
+          "settle_seconds": 10,
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-16T11:53:15.9819451+01:00"
+        },
+        "native_qualified": true,
+        "reviewed_source_checkpoint": "8f97c86ec8aeb7aa37f1de1b9743505fcedb470e",
+        "posthash_failure": null,
+        "runtime": {
+          "pid": 66908,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+          "argv": [
+            "build",
+            "test-native-async-function-qualification",
+            "-Doptimize=Debug",
+            "-Duse-llvm=true",
+            "-j1",
+            "--test-timeout",
+            "120s",
+            "--summary",
+            "all"
+          ],
+          "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-async-function-qualification -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+          "created_utc": "2026-10-16T10:53:39.5746677Z",
+          "launched_utc": "2026-10-16T11:53:39.5738886+01:00",
+          "working_directory": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+          "outer_seconds": 300,
+          "settle_seconds": 10,
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-16T11:53:46.4553244+01:00"
+        },
+        "actual_test_metadata": {
+          "method": "Actual metadata-only Zig0.16 protocol; query and clean exit, no unit run command",
+          "tests": [
+            "native_async_function_qualification_test.test.native borrowed view span retains backing and tracks DataView typed RAB detach and brand",
+            "extensions.native_durable_storage.test_0",
+            "native_async_function_body_test.test.native async body proposal matches genuine Node observations after independent review and Source capture",
+            "native_async_function_body_test.test.native async body proposal genuine brand strict receiver outer Promise and native toString",
+            "native_async_function_body_test.test.native async body proposal raw host OOM remains uncatchable rather than rejected Promise",
+            "native_async_function_body_test.test.native async body proposal Zig host allocation failures release captures and callbacks",
+            "native_async_function_body_test.test.native async body proposal stack capture preserves native name on start and resume",
+            "native_async_function_body_test.test.native async body proposal resumed native OOM escapes the job without Promise rejection",
+            "native_async_function_body_test.test.native async body proposal ordinary bound proxy and revoked callable source never read guest name",
+            "native_async_function_body_test.test.native async body proposal genuine C factory call and argument pressure failures remain reusable",
+            "native_async_function_body_test.test.native async body proposal actual C await handler allocation failure reaches native catch and retires",
+            "native_async_function_body_test.test.native async body proposal bounded C continuation reaction and job allocation pressure never loses suspension",
+            "native_async_generator_test.test.native async generator functional real intrinsic brand prototype raw yield and explicit await",
+            "native_async_generator_test.test.native async generator functional queued next return throw retain ownership and assimilate thenables",
+            "native_async_generator_test.test.native async generator functional rejection getters start return and abrupt close preserve raw errors",
+            "native_async_generator_test.test.native async generator functional pending owner survives GC",
+            "native_async_generator_test.test.native async generator functional cross realm callback and iterator result ownership",
+            "native_async_generator_test.test.native async generator functional raw VM allocation failures reject and retire without dangling frame",
+            "native_async_generator_test.test.native async generator functional owner retirement and unreachable owner cycles finalize exactly once",
+            "native_async_generator_test.test.native async generator functional completed return handler OOM drains reentrant trailing request",
+            "native_ai_json_parse_test.test.native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads",
+            "native_ai_json_parse_test.test.native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes",
+            "native_ai_json_parse_test.test.native AI JSON helpers and native partial fallback match33 genuine b06 observations",
+            "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+            "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+            "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity"
+          ],
+          "binary_sha256": "4E6A7B95575CC520265F6AC61553616EA27F03DAD2F7D29298644DB0CDD28ED8",
+          "binary": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\.zig-cache\\o\\16819f04dbefa37239dd727a29bcbfc1\\test.exe",
+          "version": "0.16.0"
+        }
+      },
+      "preflight_negative": null,
+      "posthash": {
+        "utc": "2026-10-16T10:53:57.8823535+00:00",
+        "node_pinned_executable_npm_files": 1774,
+        "source_authority": {
+          "captures": 2,
+          "drift": 0,
+          "native_proposal_substituted": false,
+          "runtime": "v24.14.0",
+          "cases": 42
+        },
+        "artifact_drift": [],
+        "candidate_head": "d01090424356fde9b2ab89753285f9b4ae2ea0f8",
+        "vendor_files": 1316,
+        "node_complete_directory_files": 1838,
+        "frozen_registry_drift": [],
+        "authority_drift": [],
+        "control_drift": [],
+        "inventory_errors": [],
+        "compiler_files": 19546,
+        "candidate_files": 8014
+      },
+      "actual_runtime": "26/26 pass"
+    }
+  ],
+  "archive": {
+    "sha256": "09F829E26BF5C0B2435CAC56285EBD4A979F47A099288C740E5A3548618C62C2",
+    "payload_entries": 221,
+    "file": "native-async-function-debug-evidence.zip",
+    "all_payload_bytes_verified": true,
+    "bytes": 52716904,
+    "manifest_sha256": "7CD6DCE7C6BF070530974F91C697CFCD824F711DB3A61F653D8097167F07CAEC"
+  },
+  "scope_limits": {
+    "root_intake_qualified": false,
+    "full_pi_qualified": false,
+    "main_changed": false,
+    "linux_qualified": false,
+    "release_created": false,
+    "release_safe_qualified": false
+  },
+  "causal_review": {
+    "independent_reviewers": [
+      "Root",
+      "Body"
+    ],
+    "cause": "Engine host OOM helper tags identity but does not mark uncatchable; adapter previously produced ordinary rejection",
+    "shared_promise_unchanged": true,
+    "global_engine_unchanged": true,
+    "assertions_unchanged": true,
+    "C_H_unchanged": true,
+    "fix": "Native AsyncFunction adapter only marks and rethrows the generated private host allocation error; START result gets immediate defer-free"
+  }
+}
