@@ -387,3 +387,146 @@ test "shared thenable fatal ordinary foreign callable and queued GC retain exist
     if (c.JS_ToInt32(h.engine.context, &number, value) < 0) return error.JavaScriptException;
     try std.testing.expectEqual(@as(i32, 31), number);
 }
+
+const ReportKind = enum { fatal, ordinary, historical, lookalike };
+const SettlementProbe = struct {
+    engine: *em.Engine,
+    kind: ReportKind = .fatal,
+    report_value: c.JSValue, // Borrowed test-owned reason, unused for fatal mode.
+    expected_data: ?c.JSValue = null,
+    target: ?c.JSValue = null,
+    reported: ?c.JSValue = null, // Owned Promise observed at the public callback.
+    calls: usize = 0,
+    fn emit(self: *SettlementProbe, context: ?*c.JSContext, promise: c.JSValue) void {
+        if (self.calls != 0) return;
+        if (self.target) |target| if (!c.JS_IsStrictEqual(context, target, promise)) return;
+        self.calls += 1;
+        self.reported = c.JS_DupValue(context, promise);
+        if (self.kind == .fatal) {
+            _ = self.engine.throwNativeOutOfMemory();
+            c.JS_SetUncatchableError(context, self.engine.native_allocation_exception.?);
+        } else {
+            _ = c.JS_Throw(context, c.JS_DupValue(context, self.report_value));
+        }
+    }
+    fn deinit(self: *SettlementProbe) void {
+        if (self.reported) |promise| self.engine.freeValue(promise);
+    }
+};
+fn settlementTracker(context: ?*c.JSContext, promise: c.JSValue, reason: c.JSValue, handled: bool, hook_data: ?*anyopaque) callconv(.c) void {
+    if (handled) return;
+    const probe: *SettlementProbe = @ptrCast(@alignCast(hook_data.?));
+    if (probe.expected_data) |expected| if (!c.JS_IsStrictEqual(context, expected, reason)) return;
+    probe.emit(context, promise);
+}
+fn settlementHook(context: ?*c.JSContext, kind: c.JSPromiseHookType, promise: c.JSValue, _: c.JSValue, hook_data: ?*anyopaque) callconv(.c) void {
+    if (kind != c.JS_PROMISE_HOOK_RESOLVE) return;
+    const probe: *SettlementProbe = @ptrCast(@alignCast(hook_data.?));
+    probe.emit(context, promise);
+}
+fn publicSettlement(h: *Harness, reject_value: bool, value: c.JSValue) !c.JSValue {
+    const constructor = try h.scope.get(h.global, "Promise");
+    const method = try h.scope.get(constructor, if (reject_value) "reject" else "resolve");
+    var args = [_]c.JSValue{value};
+    // Raw public Promise API, deliberately without native AF's C409 wrapper.
+    return c.JS_Call(h.engine.context, method, constructor, args.len, &args);
+}
+fn reportedData(h: *Harness, probe: *const SettlementProbe, expected_state: c_int, expected: c.JSValue) !void {
+    try std.testing.expectEqual(@as(usize, 1), probe.calls);
+    const promise = probe.reported orelse return error.MissingReportedPromise;
+    try std.testing.expectEqual(expected_state, c.JS_PromiseState(h.engine.context, promise));
+    const data = c.JS_PromiseResult(h.engine.context, promise);
+    defer h.engine.freeValue(data);
+    try std.testing.expect(c.JS_IsStrictEqual(h.engine.context, expected, data));
+}
+test "shared thenable fatal ordinary getter conversion tracker fails plain Promise resolve without AF masking" {
+    var h = try Harness.init();
+    defer h.deinit();
+    const ordinary = try h.scope.object();
+    try h.scope.put(h.global, "ordinaryReason", ordinary);
+    const thenable = try h.eval("({get then(){throw ordinaryReason}})");
+    var probe: SettlementProbe = .{ .engine = h.engine, .report_value = c.pi_js_undefined(), .expected_data = ordinary };
+    defer probe.deinit();
+    c.JS_SetHostPromiseRejectionTracker(h.engine.runtime, settlementTracker, &probe);
+    defer c.JS_SetHostPromiseRejectionTracker(h.engine.runtime, null, null);
+    const boundary = h.engine.native_allocation_generation;
+    const result = try publicSettlement(&h, false, thenable);
+    defer h.engine.freeValue(result);
+    const failure = c.JS_GetException(h.engine.context);
+    defer h.engine.freeValue(failure);
+    try reportedData(&h, &probe, c.JS_PROMISE_REJECTED, ordinary);
+    try h.taggedFatal(failure, h.engine.native_allocation_exception.?, boundary);
+    try std.testing.expect(c.JS_IsException(result));
+    try std.testing.expect(!c.JS_IsJobPending(h.engine.runtime));
+}
+test "shared thenable fatal ordinary deferred rejection conversion tracker fails raw adoption job" {
+    var h = try Harness.init();
+    defer h.deinit();
+    const ordinary = try h.scope.object();
+    try h.scope.put(h.global, "ordinaryReason", ordinary);
+    const thenable = try h.eval("({then(){thenCalls++;throw ordinaryReason}})");
+    const pending = h.adopt(thenable);
+    defer h.engine.freeValue(pending);
+    try std.testing.expect(!c.JS_IsException(pending));
+    var probe: SettlementProbe = .{ .engine = h.engine, .report_value = c.pi_js_undefined(), .expected_data = ordinary, .target = pending };
+    defer probe.deinit();
+    c.JS_SetHostPromiseRejectionTracker(h.engine.runtime, settlementTracker, &probe);
+    defer c.JS_SetHostPromiseRejectionTracker(h.engine.runtime, null, null);
+    const boundary = h.engine.native_allocation_generation;
+    // No handler/host await is attached before the actual unhandled conversion.
+    c.JS_RunGC(h.engine.runtime);
+    const job = runJob(h.engine);
+    defer h.engine.freeValue(job.reason);
+    try reportedData(&h, &probe, c.JS_PROMISE_REJECTED, ordinary);
+    try std.testing.expect(c.JS_IsStrictEqual(h.engine.context, probe.reported.?, pending));
+    try h.taggedFatal(job.reason, h.engine.native_allocation_exception.?, boundary);
+    try std.testing.expect(job.status < 0);
+    try std.testing.expectEqual(@as(i32, 1), try h.count());
+}
+test "shared thenable fatal direct public scalar resolve and reject capture only active fatal callbacks" {
+    for ([_]bool{ false, true }) |reject_value| {
+        for ([_]ReportKind{ .fatal, .ordinary, .historical, .lookalike }) |kind| {
+            var h = try Harness.init();
+            defer h.deinit();
+            const report_value = switch (kind) {
+                .fatal => c.pi_js_undefined(),
+                .ordinary => try h.scope.object(),
+                .historical => historical: {
+                    _ = h.engine.throwNativeOutOfMemory();
+                    const value = c.JS_GetException(h.engine.context);
+                    c.JS_ClearUncatchableError(h.engine.context, value);
+                    break :historical try h.scope.own(value);
+                },
+                .lookalike => try h.eval("Object.assign(new Error('out of memory'),{name:'InternalError'})"),
+            };
+            const value = if (reject_value) try h.scope.object() else c.JS_NewInt32(h.engine.context, 41);
+            var probe: SettlementProbe = .{ .engine = h.engine, .kind = kind, .report_value = report_value, .expected_data = if (reject_value) value else null };
+            defer probe.deinit();
+            if (reject_value) c.JS_SetHostPromiseRejectionTracker(h.engine.runtime, settlementTracker, &probe) else c.JS_SetPromiseHook(h.engine.runtime, settlementHook, &probe);
+            defer c.JS_SetHostPromiseRejectionTracker(h.engine.runtime, null, null);
+            defer c.JS_SetPromiseHook(h.engine.runtime, null, null);
+            const boundary = h.engine.native_allocation_generation;
+            const result = try publicSettlement(&h, reject_value, value);
+            defer h.engine.freeValue(result);
+            const had_pending = c.JS_HasException(h.engine.context);
+            const failure = c.JS_GetException(h.engine.context);
+            defer h.engine.freeValue(failure);
+            try std.testing.expect(had_pending);
+            try reportedData(&h, &probe, if (reject_value) c.JS_PROMISE_REJECTED else c.JS_PROMISE_FULFILLED, value);
+            if (kind == .fatal) {
+                try h.taggedFatal(failure, h.engine.native_allocation_exception.?, boundary);
+                try std.testing.expect(c.JS_IsException(result));
+            } else {
+                // Legacy catchable hook/tracker pending behavior is preserved:
+                // the ordinary Promise result is not made a fatal exception.
+                try std.testing.expect(!c.JS_IsException(result));
+                try std.testing.expect(c.JS_IsStrictEqual(h.engine.context, failure, report_value));
+                try std.testing.expectError(error.JavaScriptException, h.engine.checked(c.JS_Throw(h.engine.context, c.JS_DupValue(h.engine.context, failure))));
+                try std.testing.expect(h.engine.nativeAllocationError(error.JavaScriptException, boundary) == error.JavaScriptException);
+                try std.testing.expectEqual(boundary, h.engine.native_allocation_generation);
+            }
+            try std.testing.expect(!c.JS_HasException(h.engine.context));
+            try std.testing.expect(!c.JS_IsJobPending(h.engine.runtime));
+        }
+    }
+}
