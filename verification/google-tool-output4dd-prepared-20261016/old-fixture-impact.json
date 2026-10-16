@@ -1,0 +1,121 @@
+{
+  "method": "Static stored input context.messages roles plus baseline caller context review; no execution",
+  "inputHead": "31cecbdf55ec8b8e6a9a3264fc74746d2e3c7981",
+  "fixtures": [
+    {
+      "path": "src/extensions/fixtures/ai-google-mistral30-5ab.json",
+      "sha256": "6D303AA7A78684992BACB3A6C1E6981782F44E622F3B30212712CB0B59DF1BEB",
+      "rowCount": 30,
+      "rowNames": [
+        "google-plain",
+        "google-thinking-tools",
+        "google-images",
+        "google-unknown-stop",
+        "google-empty",
+        "google-http-error",
+        "google-async-hooks",
+        "google-hook-throws",
+        "google-payload-replace",
+        "google-no-key",
+        "vertex-plain",
+        "vertex-thinking-tools",
+        "vertex-images",
+        "vertex-unknown-stop",
+        "vertex-empty",
+        "vertex-http-error",
+        "vertex-async-hooks",
+        "vertex-hook-throws",
+        "vertex-payload-replace",
+        "vertex-no-key",
+        "mistral-plain",
+        "mistral-thinking-tools",
+        "mistral-images",
+        "mistral-unknown-stop",
+        "mistral-empty",
+        "mistral-http-error",
+        "mistral-async-hooks",
+        "mistral-hook-throws",
+        "mistral-payload-replace",
+        "mistral-no-key"
+      ],
+      "googleVertexRows": [
+        "google-plain",
+        "google-thinking-tools",
+        "google-images",
+        "google-unknown-stop",
+        "google-empty",
+        "google-http-error",
+        "google-async-hooks",
+        "google-hook-throws",
+        "google-payload-replace",
+        "google-no-key",
+        "vertex-plain",
+        "vertex-thinking-tools",
+        "vertex-images",
+        "vertex-unknown-stop",
+        "vertex-empty",
+        "vertex-http-error",
+        "vertex-async-hooks",
+        "vertex-hook-throws",
+        "vertex-payload-replace",
+        "vertex-no-key"
+      ],
+      "explicitToolResultCount": 0
+    },
+    {
+      "path": "src/extensions/fixtures/ai-google-live4-5ab.json",
+      "sha256": "6D16254F88623E82FF66AAFAA53D62945E8EE2969B03E33E1146CDB83A97DE4E",
+      "rowCount": 4,
+      "rowNames": [
+        "google-live-text-signature-getters",
+        "google-live-function-getters",
+        "vertex-live-text-signature-getters",
+        "vertex-live-function-getters"
+      ],
+      "googleVertexRows": [
+        "google-live-text-signature-getters",
+        "google-live-function-getters",
+        "vertex-live-text-signature-getters",
+        "vertex-live-function-getters"
+      ],
+      "explicitToolResultCount": 0
+    },
+    {
+      "path": "src/extensions/fixtures/ai-mistral-framing8-5ab.json",
+      "sha256": "D25B59920666809E7AFBD00BA4D50690F3D5684FE21E17410B4C738A6D95958F",
+      "rowCount": 8,
+      "rowNames": [
+        "mistral-crlf",
+        "mistral-cr-cr",
+        "mistral-mixed-boundary",
+        "mistral-unicode-trimstart",
+        "mistral-multiline-data",
+        "mistral-trailing-event",
+        "mistral-done-ignores-trailer",
+        "mistral-invalid-choices"
+      ],
+      "googleVertexRows": [],
+      "explicitToolResultCount": 0
+    },
+    {
+      "path": "src/extensions/fixtures/ai-mistral-fetch8-5ab.json",
+      "sha256": "441985AEC657B748C126C5F2CCC559CA235541D795726104B7DB4E8C188E4CF6",
+      "rowCount": 8,
+      "rowNames": [
+        "mistral-fetch-normal",
+        "mistral-fetch-onResponse-throws",
+        "mistral-fetch-missing-body",
+        "mistral-fetch-http-error",
+        "mistral-fetch-fetch-rejects",
+        "mistral-fetch-read-rejects",
+        "mistral-fetch-cancel-rejects",
+        "mistral-fetch-abort-after-chunk"
+      ],
+      "googleVertexRows": [],
+      "explicitToolResultCount": 0
+    }
+  ],
+  "affectedExplicitToolResultInputs": [],
+  "currentSourceQualification": false,
+  "goldensModified": false
+}
