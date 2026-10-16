@@ -103,17 +103,21 @@ try{
  if($taskBuild.status -cne 'passed' -or $taskBuild.exit_code -ne 0){throw 'Exact matching build failed; runtime prohibited'}
  $taskBinary=Join-Path $taskRoot 'zig-out\bin\test.exe'
  if(!(Test-Path -LiteralPath $taskBinary -PathType Leaf)){throw 'Matching installed qualification artifact absent'}
- $taskArtifacts=File-Rows @($taskBinary)
+ $taskBinaryHash=(Get-FileHash -LiteralPath $taskBinary).Hash
+ $taskCachedMatches=@(Get-ChildItem -LiteralPath (Join-Path $taskRoot '.zig-cache\o') -Filter test.exe -Recurse -File|Where-Object {(Get-FileHash -LiteralPath $_.FullName).Hash -ceq $taskBinaryHash})
+ if($taskCachedMatches.Count -ne 1){throw 'Exactly one matching cached qualification binary required'}
+ $taskCachedBinary=$taskCachedMatches[0].FullName
+ $taskArtifacts=File-Rows @($taskBinary,$taskCachedBinary)
  Save-Json "$taskBase-artifact-frozen.json" $taskArtifacts
  Admit 'metadata'
- $taskMetadata=Read-CiTestMetadata $taskBinary $taskRoot "$taskBase-metadata-owner" 25
+ $taskMetadata=Read-CiTestMetadata $taskCachedBinary $taskRoot "$taskBase-metadata-owner" 25
  if(@(Compare-Object ($taskExpectedNames|Sort-Object -CaseSensitive) ($taskMetadata.tests|Sort-Object -CaseSensitive) -CaseSensitive).Count){throw 'Actual25 test metadata differs from sealed named cohort'}
  $taskActualAsync=@($taskMetadata.tests|Where-Object {$_ -match '\.test\.native async body proposal'})
  if(@(Compare-Object ($taskAsyncNames|Sort-Object -CaseSensitive) ($taskActualAsync|Sort-Object -CaseSensitive) -CaseSensitive).Count){throw 'Actual10 async metadata names differ from sealed subset'}
  Save-Json "$taskBase-metadata.json" $taskMetadata
  Verify-Frozen 'metadata-between'
  Admit 'runtime'
- & $taskOwner -Executable $taskBinary -WorkingDirectory $taskRoot -Arguments @('--seed=0') -ReceiptBase "$taskBase-runtime" -TimeoutSeconds 300
+ & $taskOwner -Executable $taskZig -WorkingDirectory $taskRoot -Arguments @('build','test-native-async-function-qualification',"-Doptimize=$Optimize",'-Duse-llvm=true','-j1','--test-timeout','120s','--summary','all') -ReceiptBase "$taskBase-runtime" -TimeoutSeconds 300
  $taskRuntime=Get-Content -LiteralPath "$taskBase-runtime.process.json" -Raw|ConvertFrom-Json
  if($taskRuntime.status -cne 'passed' -or $taskRuntime.exit_code -ne 0){throw 'Exact matching runtime failed'}
 }catch{$taskFailure=$_.Exception.Message}finally{

@@ -1355,6 +1355,7 @@ pub fn build(b: *std.Build) void {
     linkSqlite(native_async_qualification_tests.root_module, sqlite_lib_dir, sqlite_library);
     native_async_qualification_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-async-function-qualification", "Compile genuine AsyncFunction Source42 and inherited generator JSON live-view span regression cohort").dependOn(&b.addInstallArtifact(native_async_qualification_tests, .{}).step);
+    b.step("test-native-async-function-qualification", "Run the matching cached qualification cohort with enforced per-test deadlines").dependOn(&b.addRunArtifact(native_async_qualification_tests).step);
     test_step.dependOn(&async_function_run.step);
     const async_scope_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_scope_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     linkQuickJs(b, async_scope_tests.root_module, quickjs, sqlite_lib_dir);
