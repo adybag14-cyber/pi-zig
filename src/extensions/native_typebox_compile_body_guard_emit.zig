@@ -348,7 +348,7 @@ fn body528(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []co
     try s.put(frame, "@this", receiver);
     const v530 = if (args.len > 0) args[0] else c.pi_js_undefined();
     try o.assign(&s, frame, "binding529", v530);
-    const v531 = try s.global("identifierRegExp");
+    const v531 = try o.lookup(&s, frame, "binding481");
     const v532 = try s.text("test");
     const v533 = try s.own(try js.getKey(e, v531, v532));
     const v534 = try o.lookup(&s, frame, "binding529");
@@ -521,12 +521,12 @@ fn body641(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []co
     try s.put(frame, "@this", receiver);
     const v643 = if (args.len > 0) args[0] else c.pi_js_undefined();
     try o.assign(&s, frame, "binding642", v643);
-    const v644 = try s.global("And");
-    const v645 = try s.global("IsObject");
+    const v644 = try o.lookup(&s, frame, "binding483");
+    const v645 = try o.lookup(&s, frame, "binding493");
     const v646 = try o.lookup(&s, frame, "binding642");
     const v647 = try o.call(&s, @src(), v645, c.pi_js_undefined(), &.{v646});
-    const v648 = try s.global("Not");
-    const v649 = try s.global("IsArray");
+    const v648 = try o.lookup(&s, frame, "binding485");
+    const v649 = try o.lookup(&s, frame, "binding486");
     const v650 = try o.lookup(&s, frame, "binding642");
     const v651 = try o.call(&s, @src(), v649, c.pi_js_undefined(), &.{v650});
     const v652 = try o.call(&s, @src(), v648, c.pi_js_undefined(), &.{v651});
@@ -1234,7 +1234,7 @@ fn body1179(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v1187 = try s.concat(v1184, v1186);
     const v1188 = try s.text("");
     const v1189 = try s.concat(v1187, v1188);
-    const v1190 = try s.global("IsIdentifier");
+    const v1190 = try o.lookup(&s, frame, "binding482");
     const v1191 = try o.lookup(&s, frame, "binding1181");
     const v1192 = try o.call(&s, @src(), v1190, c.pi_js_undefined(), &.{v1191});
     const v1194 = conditional1193: {
@@ -1248,7 +1248,7 @@ fn body1179(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
             break :conditional1193 v1200;
         } else {
             const v1201 = try s.text("[");
-            const v1202 = try s.global("Constant");
+            const v1202 = try o.lookup(&s, frame, "binding519");
             const v1203 = try o.lookup(&s, frame, "binding1181");
             const v1204 = try o.call(&s, @src(), v1202, c.pi_js_undefined(), &.{v1203});
             const v1205 = try s.stringify(v1204);
@@ -1431,7 +1431,7 @@ fn body1342(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.
     try o.assign(&s, frame, "binding1344", v1346);
     const v1347 = if (args.len > 1) args[1] else c.pi_js_undefined();
     try o.assign(&s, frame, "binding1345", v1347);
-    const v1348 = try s.global("And");
+    const v1348 = try o.lookup(&s, frame, "binding483");
     const v1349 = try o.lookup(&s, frame, "binding1344");
     const v1350 = try o.lookup(&s, frame, "binding1345");
     const v1351 = try o.call(&s, @src(), v1348, c.pi_js_undefined(), &.{ v1349, v1350 });
@@ -1481,7 +1481,7 @@ fn body1371(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.
     try o.assign(&s, frame, "binding1373", v1375);
     const v1376 = if (args.len > 1) args[1] else c.pi_js_undefined();
     try o.assign(&s, frame, "binding1374", v1376);
-    const v1377 = try s.global("Or");
+    const v1377 = try o.lookup(&s, frame, "binding484");
     const v1378 = try o.lookup(&s, frame, "binding1373");
     const v1379 = try o.lookup(&s, frame, "binding1374");
     const v1380 = try o.call(&s, @src(), v1377, c.pi_js_undefined(), &.{ v1378, v1379 });

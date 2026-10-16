@@ -1,0 +1,30 @@
+{
+  "native_runtime_executed": false,
+  "modules": [
+    "guard/emit.mjs",
+    "guard/guard.mjs"
+  ],
+  "fixed_author_function_sha256": "4B36ECD7B1EF28C19A1B75E2C2E24A97B96A2F3D228FB825001139822562F750",
+  "global_alias_added": false,
+  "golden_adjusted": false,
+  "original_author_function_path": "C:/Users/adyba/tmp-typebox-compile-production-20261016/Author-Functions.ps1",
+  "original_author_function_sha256": "8F4A81F4CCC81A612730B7A3E5925CFE7B2AFFBFBB0D824589C36CCD027D6769",
+  "seed_before_declare": {
+    "guard/guard.mjs": 1718,
+    "guard/emit.mjs": 480
+  },
+  "snapshot_ast_sha256": "F7FB1696D2A61F82F925DCF3FC80B3B2C816DE74C35266F94FF913A1F6B1A5C3",
+  "module_seed_reason": "Preserve original private identifierRegExp binding481 and IsIdentifier482; Guard.IsArray1719",
+  "repair": "Ctx copies parent.vars.get_Keys(), bypassing actual Keys binding collision",
+  "snapshot_ast_path": "C:/Users/adyba/tmp-typebox-compile-production-20261016/reference-asts.json",
+  "source_hashes": [
+    {
+      "sha256": "EE96D04EDC1DD32B1993C0DC47A8157C907E554B2C3F40BA1FDED5FCB33D5F22",
+      "module": "guard/emit.mjs"
+    },
+    {
+      "sha256": "6D244B6026C8820429DC8074124F175C749F01F67AF6B1EF0A5DF053C5BAFE8D",
+      "module": "guard/guard.mjs"
+    }
+  ]
+}
