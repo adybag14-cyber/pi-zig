@@ -46,5 +46,11 @@ for(const manifest of [{repository:'git+https://github.com/manifest/repo.git'},{
  try{Object.defineProperty(Object.prototype,'ref',{configurable:true,get(){const value=`branch-${trace.length+1}`;trace.push(value);return value}});observe('Pi-parser-live-inherited-split-ref-reads',()=>({result:GitAPI.parseGitUrl('https://github.com/ref-observation/repo'),trace}))}
  finally{if(descriptor)Object.defineProperty(Object.prototype,'ref',descriptor);else delete Object.prototype.ref}
 }
+{
+ const descriptor=Object.getOwnPropertyDescriptor(Array.prototype,'0');let reads=0,templateReads=0;
+ const fake={get browseblobtemplate(){templateReads++;return ()=>''}};
+ try{Object.defineProperty(Array.prototype,'0',{configurable:true,get(){reads++;return 'fragment'},set(value){Object.defineProperty(this,'0',{value,writable:true,enumerable:true,configurable:true})}});let caught;try{hosted.prototype.browseFile.call(fake,'path')}catch(error){caught=error};rows.push({name:'browse-rest-index-getter-before-private-brand',reads,templateReads,error:{name:caught?.name,message:caught?.message}})}
+ finally{if(descriptor)Object.defineProperty(Array.prototype,'0',descriptor);else delete Array.prototype[0]}
+}
 globalThis.gitHostFullRows=rows;globalThis.gitHostFullComplete=true;
 globalThis.gitSourceHostedRows=rows;globalThis.gitSourceHostedComplete=true;

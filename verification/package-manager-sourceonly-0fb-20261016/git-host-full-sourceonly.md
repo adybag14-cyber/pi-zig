@@ -62,7 +62,7 @@ genuine comparison gates; static authoring does not establish equivalence.
 descriptors, instance own keys, every host/prototype method, direct template
 getter order, Object.assign argument shape, constructor reentry/cache identity,
 private-brand ordering, subclassing, fromManifest, #fill options, live addHost
-and inherited split-ref reads. It uses the original GitHost and Pi functions;
+inherited split-ref reads and missing-rest-index getter ordering before the private brand. It uses the original GitHost and Pi functions;
 supplied addHost/template callbacks are intentional public-API inputs. It can
 use the already prepared full-observer runner with a fresh seal and grant.
 Expected output is absent, and there is no successful comparison result.
