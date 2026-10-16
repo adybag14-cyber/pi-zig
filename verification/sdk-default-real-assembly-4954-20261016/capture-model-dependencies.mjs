@@ -1,7 +1,6 @@
 // External genuine Source observation only. Never used by native runtime.
 // Requires the Root-owned clean seal, full freezes, observer and Source slot.
-import {readFile,mkdtemp,rm,writeFile} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
+import {readFile,mkdir,readdir,stat,writeFile} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import {pathToFileURL,fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
@@ -21,7 +20,16 @@ const input=resolve(root,'src/extensions/fixtures/sdk-model-dependencies-4954.in
 const inputBytes=await readFile(input);
 const stores=await import(pathToFileURL(pinned+'core/models-store.ts').href);
 const config=await import(pathToFileURL(pinned+'core/model-config.ts').href);
-const directory=await mkdtemp(join(tmpdir(),'pi-sdk-model-dependencies-'));
+const directory=resolve(output+'.physical-files');
+await mkdir(directory); // Exclusive, bounded owner path; preserved after capture.
+async function physicalInventory(){
+  const paths=['',...(await readdir(directory,{recursive:true})).sort()];
+  return await Promise.all(paths.map(async path=>{
+    const absolute=join(directory,path);const metadata=await stat(absolute,{bigint:true});
+    return {path,kind:metadata.isDirectory()?'directory':'file',mode:String(metadata.mode),size:String(metadata.size),ino:String(metadata.ino),mtimeNs:String(metadata.mtimeNs),ctimeNs:String(metadata.ctimeNs),birthtimeNs:String(metadata.birthtimeNs),sha256:metadata.isFile()?createHash('sha256').update(await readFile(absolute)).digest('hex'):undefined};
+  }));
+}
+await writeFile(output+'.physical-before.json',JSON.stringify({directory,inventory:await physicalInventory()},null,2)+'\n',{flag:'wx'});
 try{
   globalThis.ActualSdkModelDependencies={...stores,...config};
   globalThis.ActualSdkModelFixtureDir=directory;
@@ -33,6 +41,5 @@ try{
   delete globalThis.ActualSdkModelDependencies;
   delete globalThis.ActualSdkModelFixtureDir;
   delete globalThis.ActualSdkModelDependencyRows;
-  // directory is the exact mkdtemp result owned exclusively by this capture.
-  await rm(directory,{recursive:true,force:true});
+  await writeFile(output+'.physical-after.json',JSON.stringify({directory,inventory:await physicalInventory()},null,2)+'\n',{flag:'wx'});
 }
