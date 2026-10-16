@@ -1,0 +1,31 @@
+diff --git a/vendor/quickjs/quickjs.c b/vendor/quickjs/quickjs.c
+--- a/vendor/quickjs/quickjs.c
++++ b/vendor/quickjs/quickjs.c
+@@ -17300,6 +17300,13 @@ static JSValue JS_GetIterator(JSContext *ctx, JSValueConst obj, bool is_async)
+     return ret;
+ }
+
++/* Borrow obj. Return the existing engine's owned async iterator or exception.
++   This exposes acquisition only; it does not alter AsyncFromSync semantics. */
++JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj)
++{
++    return JS_GetIterator(ctx, obj, true);
++}
++
+ /* return *pdone = 2 if the iterator object is not parsed */
+ static JSValue JS_IteratorNext2(JSContext *ctx, JSValueConst enum_obj,
+                                 JSValueConst method,
+diff --git a/vendor/quickjs/quickjs.h b/vendor/quickjs/quickjs.h
+--- a/vendor/quickjs/quickjs.h
++++ b/vendor/quickjs/quickjs.h
+@@ -577,6 +577,10 @@
+ JS_EXTERN JSValue JS_GetIteratorSymbol(JSContext *ctx);
+ JS_EXTERN JSValue JS_GetAsyncIteratorSymbol(JSContext *ctx);
++/* Borrow obj; return an owned engine async iterator or JS_EXCEPTION.
++   Includes the engine's genuine AsyncFromSync fallback. */
++JS_EXTERN JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj);
++
+ JS_EXTERN JSValue JS_GetToPrimitiveSymbol(JSContext *ctx);
+
+ /* the following functions are used to select the intrinsic object to
+    save memory */

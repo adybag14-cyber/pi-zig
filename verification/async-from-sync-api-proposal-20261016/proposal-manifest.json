@@ -1,0 +1,91 @@
+{
+  "status": "isolated_source_proposal_not_applied",
+  "base": "b505bea6c476f04839305ef4aa1e4f06c38a70f4",
+  "proposed_abi": "JS_PiGetAsyncIterator(JSContext*, JSValueConst): borrowed input, owned iterator or JS_EXCEPTION",
+  "context_check": "git apply --check on own C12A7/H F3B6 passed; not applied/compiled",
+  "language_observations_prepared": 56,
+  "node_reference_executed": false,
+  "native_tests_executed": false,
+  "tla_peer_review_pending": true,
+  "root_composition_authorized": false,
+  "wrapper_only_parity_claim": false,
+  "static_existing_engine_rejection_handler": "resolve_reject[1] = JS_UNDEFINED",
+  "required_followups": [
+    "Genuine Node rejection-close traces",
+    "Reviewed engine AsyncFromSync rejection close if confirmed",
+    "Actual AF step/body/close phase corrections",
+    "Exact Root C/H rebase plus qualification"
+  ],
+  "unchanged_active_files": [
+    {
+      "file": "vendor/quickjs/quickjs.c",
+      "sha256": "12A7F02AFADA614EE9AED57F8EE87173F95977AD8FE8723177CACFACA7AB855D"
+    },
+    {
+      "file": "vendor/quickjs/quickjs.h",
+      "sha256": "F3B6F51DBDA727A8FAECFE275FC13F283CA3C71E3907593E47B4F8B741318062"
+    },
+    {
+      "file": "src/extensions/native_ai_openai_factory.zig",
+      "sha256": "556E5A34CDDC7B69F184A2DB73E6813C7D800BF5042912B5C0689EF9B9275CEC"
+    },
+    {
+      "file": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "file": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852"
+    },
+    {
+      "file": "src/extensions/fixtures/ai-openai-producer58-ae7.json",
+      "sha256": "CF5274301199C7FA86E670A387D1549ACD4805395C67A4034A88C337537D7650"
+    },
+    {
+      "file": "src/extensions/fixtures/ai-openai-tool-output4dd-native.input.txt",
+      "sha256": "76AF08700DDD0DD8BAE0E96B0D4B8D5701914539B5D190A9A99D3BF4441D16AC"
+    }
+  ],
+  "proposal_files": [
+    {
+      "file": "capture-language-reference.mjs",
+      "sha256": "9470CEBED3F753A5864C77B7321375AE5F83634329CE63D475CB67B26E893C9B",
+      "bytes": 1917
+    },
+    {
+      "file": "factory-consumer-changes.md",
+      "sha256": "05CCE7F65FFC366086D5E28C2524BBBD0878B47FF0D17E7C78A6306FC8BDBBEF",
+      "bytes": 3315
+    },
+    {
+      "file": "for-await-callers.mjs",
+      "sha256": "36EA5D987B13607157C91318E72865D56B806E66B8443854BA040BCDD4D7A83A",
+      "bytes": 6818
+    },
+    {
+      "file": "get-async-iterator.patch",
+      "sha256": "0CA1BB2F2E25F43ED8503AB12667E2AFCFEEAE45810305835DE19D18F13D5D9F",
+      "bytes": 1346
+    },
+    {
+      "file": "language-consumer.mjs",
+      "sha256": "4FF3E1E46F581554663EEA169C8D65F17F2C3F09110785B89EBD90828D0B92D8",
+      "bytes": 389
+    },
+    {
+      "file": "Prepare-OwnedReference.ps1",
+      "sha256": "F2F9E6B11F9FC327808D5C3FA52C54D1EBD6B97AA1FCFFC605157A092AE892DA",
+      "bytes": 1155
+    },
+    {
+      "file": "proposed-native-test.zig",
+      "sha256": "15D0DADCEE93F7FE9B6F36B7F7E90265AC40433D4E0249A1730E2C713EA84474",
+      "bytes": 9608
+    },
+    {
+      "file": "README.md",
+      "sha256": "A9E8CB6B71D4DB9C8CB9B0438247D34F4D8908253DC6551A2D8B51E741D31589",
+      "bytes": 7669
+    }
+  ]
+}
