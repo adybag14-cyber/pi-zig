@@ -92,22 +92,22 @@ const Op = enum(c_int) {
     construct_tick, construct_callback, construct_done,
 };
 fn finalize(rt: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
-    const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    inline for (.{ state.owner, state.error_value, state.decoder_value, state.default_encoding, state.text_encoding, state.after_info, state.transform_callback, state.destroy_record }) |root| c.JS_FreeValueRT(rt, root);
-    for (state.queue.items) |item| { c.JS_FreeValueRT(rt, item.chunk); c.JS_FreeValueRT(rt, item.encoding); c.JS_FreeValueRT(rt, item.callback); }
-    if (state.current) |item| { c.JS_FreeValueRT(rt, item.chunk); c.JS_FreeValueRT(rt, item.encoding); c.JS_FreeValueRT(rt, item.callback); }
-    for (state.end_callbacks.items) |root| c.JS_FreeValueRT(rt, root);
-    for (state.pipes.items) |root| c.JS_FreeValueRT(rt, root);
-    state.queue.deinit(state.engine.gpa); state.end_callbacks.deinit(state.engine.gpa); state.pipes.deinit(state.engine.gpa);
-    state.engine.gpa.destroy(state);
+    const stream_state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    inline for (.{ stream_state.owner, stream_state.error_value, stream_state.decoder_value, stream_state.default_encoding, stream_state.text_encoding, stream_state.after_info, stream_state.transform_callback, stream_state.destroy_record }) |root| c.JS_FreeValueRT(rt, root);
+    for (stream_state.queue.items) |item| { c.JS_FreeValueRT(rt, item.chunk); c.JS_FreeValueRT(rt, item.encoding); c.JS_FreeValueRT(rt, item.callback); }
+    if (stream_state.current) |item| { c.JS_FreeValueRT(rt, item.chunk); c.JS_FreeValueRT(rt, item.encoding); c.JS_FreeValueRT(rt, item.callback); }
+    for (stream_state.end_callbacks.items) |root| c.JS_FreeValueRT(rt, root);
+    for (stream_state.pipes.items) |root| c.JS_FreeValueRT(rt, root);
+    stream_state.queue.deinit(stream_state.engine.gpa); stream_state.end_callbacks.deinit(stream_state.engine.gpa); stream_state.pipes.deinit(stream_state.engine.gpa);
+    stream_state.engine.gpa.destroy(stream_state);
 }
 fn mark(rt: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
-    const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    inline for (.{ state.owner, state.error_value, state.decoder_value, state.default_encoding, state.text_encoding, state.after_info, state.transform_callback, state.destroy_record }) |root| c.JS_MarkValue(rt, root, visit);
-    for (state.queue.items) |item| { c.JS_MarkValue(rt, item.chunk, visit); c.JS_MarkValue(rt, item.encoding, visit); c.JS_MarkValue(rt, item.callback, visit); }
-    if (state.current) |item| { c.JS_MarkValue(rt, item.chunk, visit); c.JS_MarkValue(rt, item.encoding, visit); c.JS_MarkValue(rt, item.callback, visit); }
-    for (state.end_callbacks.items) |root| c.JS_MarkValue(rt, root, visit);
-    for (state.pipes.items) |root| c.JS_MarkValue(rt, root, visit);
+    const stream_state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    inline for (.{ stream_state.owner, stream_state.error_value, stream_state.decoder_value, stream_state.default_encoding, stream_state.text_encoding, stream_state.after_info, stream_state.transform_callback, stream_state.destroy_record }) |root| c.JS_MarkValue(rt, root, visit);
+    for (stream_state.queue.items) |item| { c.JS_MarkValue(rt, item.chunk, visit); c.JS_MarkValue(rt, item.encoding, visit); c.JS_MarkValue(rt, item.callback, visit); }
+    if (stream_state.current) |item| { c.JS_MarkValue(rt, item.chunk, visit); c.JS_MarkValue(rt, item.encoding, visit); c.JS_MarkValue(rt, item.callback, visit); }
+    for (stream_state.end_callbacks.items) |root| c.JS_MarkValue(rt, root, visit);
+    for (stream_state.pipes.items) |root| c.JS_MarkValue(rt, root, visit);
 }
 pub fn owner(engine: *em.Engine) !c.JSValue { return engine.native_module_values.get(module_key) orelse error.NativeNodeStreamsNotInstalled; }
 pub fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
@@ -137,11 +137,11 @@ pub fn emit(scope: *Scope, stream: c.JSValue, name: []const u8, args: []const c.
     try values.appendSlice(scope.engine.gpa, args);
     _ = try scope.invoke(stream, "emit", values.items);
 }
-pub fn tick(scope: *Scope, callback: c.JSValue, args: []const c.JSValue) !void {
+pub fn tick(scope: *Scope, callback_fn: c.JSValue, args: []const c.JSValue) !void {
     const process = try scope.get(try owner(scope.engine), "process");
     var values: std.ArrayList(c.JSValue) = .empty;
     defer values.deinit(scope.engine.gpa);
-    try values.append(scope.engine.gpa, callback); try values.appendSlice(scope.engine.gpa, args);
+    try values.append(scope.engine.gpa, callback_fn); try values.appendSlice(scope.engine.gpa, args);
     _ = try scope.invoke(process, "nextTick", values.items);
 }
 fn callback(scope: *Scope, stream: c.JSValue, op: Op, extra: c.JSValue) !c.JSValue {
