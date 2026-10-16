@@ -1,0 +1,39 @@
+{
+  "source_head": "698a2d23b86a5045dd54554354a5e0cb7e466795",
+  "source_tree": "495eca20433379a8cdd995e53c31278d72886c2b",
+  "parent": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "official_remote": "https://github.com/earendil-works/pi.git",
+  "commits_after_accepted4dd": 1,
+  "changed_files": 3,
+  "insertions": 16,
+  "deletions": 0,
+  "runtime_files": [
+    "packages/ai/src/utils/retry.ts"
+  ],
+  "new_patterns": [
+    "upstream.?request.?failed",
+    "upstream_stream_read_error",
+    "stream was interrupted",
+    "http/?2 stream failed"
+  ],
+  "files": [
+    {
+      "path": "packages/ai/src/utils/retry.ts",
+      "sha256": "D7ACFF8DC7F0EEE04ECB116A79FBB8331337D9F091A0CEEE775D623D7478D448"
+    },
+    {
+      "path": "packages/ai/test/retry.test.ts",
+      "sha256": "DE1D4630EF3E4A9B11D3EB81924157042F6976CB62352F18D7706AC1998C0CE2"
+    },
+    {
+      "path": "packages/ai/CHANGELOG.md",
+      "sha256": "A41CA912325E31ECFA250FA8CD25F355D8B171640D50FA5C1DA43BECE448F222"
+    }
+  ],
+  "caller_case_count": 160,
+  "caller_module_sha256": "84C373D351B8D348EE03A922663DC6C74BC2E5479C29BEB760E4B2AD91248392",
+  "genuine_capture_executed": false,
+  "expected_authored": false,
+  "integration_authority_advanced": false,
+  "accepted4dd_source273_immutable": true
+}

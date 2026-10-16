@@ -1,0 +1,40 @@
+{
+  "candidate": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+  "root_base": "41eb87551e0108bd2eaf3a2caa1c8b5f79900efc",
+  "source_head": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "groups": [
+    {
+      "name": "source",
+      "count": 1970,
+      "nonnull": true
+    },
+    {
+      "name": "runtime",
+      "count": 31064,
+      "nonnull": true
+    },
+    {
+      "name": "node",
+      "count": 1774,
+      "nonnull": true
+    },
+    {
+      "name": "compiler",
+      "count": 19546,
+      "nonnull": true
+    }
+  ],
+  "absences": 84,
+  "gate_observations": [
+    45,
+    30,
+    52,
+    146
+  ],
+  "runtime_status": "recovery_pending",
+  "runtime_authority_usable": false,
+  "execution_authorized": false,
+  "relocation_map_sha256": "64281011985F83C90771A84D878AD712626E0D48A213D8553AFA4B34FFFAFEB5",
+  "elapsed_seconds": 5.7937432,
+  "node_zig_native_jobs_started": 0
+}

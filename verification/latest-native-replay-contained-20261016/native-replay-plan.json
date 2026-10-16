@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "root_base": "41eb87551e0108bd2eaf3a2caa1c8b5f79900efc",
+  "source_head": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "source_records": 273,
+  "native_execution_authorized": false,
+  "runtime_recovery_required": true,
+  "historical_bytes_may_be_rewritten": false,
+  "zig_version": "0.16.0",
+  "zig_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "owner_file": "Invoke-OwnedNativeB919.ps1",
+  "owner_sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+  "limits": { "fresh_available_gib": 16, "workers": 1, "compile_seconds": 1320, "runtime_seconds": 300, "test_seconds": 120, "guest_await_ms": 10000 },
+  "reference_inventories": { "source": 1970, "runtime": 31064, "node": 1774, "compiler": 19546, "absences": 84 },
+  "gates": [
+    {
+      "id": "summary45", "observations": 45,
+      "compile_target": "build-native-sdk-latest4dd-summary45", "replay_target": "test-native-sdk-latest4dd-summary45",
+      "test_source": "src/native_sdk_latest4dd_summary_test.zig",
+      "caller": "src/extensions/fixtures/sdk-summary-generation-b45.input.txt", "caller_sha256": "891FF13852540CADE5ABA7726488CAAE59C9E38BDDF124BE80B948B6BD966B38",
+      "expected": "src/extensions/fixtures/sdk-summary-original45-latest4dd.expected.json", "expected_sha256": "AED51DB78585E898D9CFBDACD27CFE75B09852D4DA27430CE8C559CEDE30DF8C",
+      "required_named_tests": ["native latest4dd summary45 preserves all original45 caller observations and assertions"]
+    },
+    {
+      "id": "summary30", "observations": 30,
+      "compile_target": "build-native-sdk-latest4dd-summary30", "replay_target": "test-native-sdk-latest4dd-summary30",
+      "test_source": "src/native_sdk_latest4dd_summary_test.zig",
+      "caller": "src/extensions/fixtures/sdk-summary-latest4dd.input.txt", "caller_sha256": "B90BF0A24DEF0D9E44494F982E0B214C1F51848D0F863FF69DF54016F3E85E44",
+      "expected": "src/extensions/fixtures/sdk-summary-latest4dd.expected.json", "expected_sha256": "820AD75D3D804E3EABBC9E78D2268DC09C92F485AFCDCC4BB55A26EDA656582B",
+      "required_named_tests": ["native latest4dd summary30 compares all original latest getter option and default-map observations"]
+    },
+    {
+      "id": "openai52", "observations": 52,
+      "compile_target": "build-native-ai-openai-tool-output4dd", "replay_target": "test-native-ai-openai-tool-output4dd",
+      "test_source": "src/native_ai_openai_tool_output4dd_test.zig",
+      "caller": "src/extensions/fixtures/ai-openai-tool-output4dd-native.input.txt", "caller_sha256": "76AF08700DDD0DD8BAE0E96B0D4B8D5701914539B5D190A9A99D3BF4441D16AC",
+      "expected": "src/extensions/fixtures/ai-openai-tool-output4dd.expected.json", "expected_sha256": "B9FA83B3666297E6653163B489B82FE1EF1D7FA5B2E1B3B5423C690E90BCD674",
+      "required_named_tests": ["native OpenAI4dd tool output whitespace live trim relational length and raw reason identity"]
+    },
+    {
+      "id": "google146", "observations": 146,
+      "compile_target": "build-native-ai-google-tool-output4dd", "replay_target": "test-native-ai-google-tool-output4dd",
+      "test_source": "src/native_ai_google_tool_output4dd_test.zig",
+      "caller": "src/extensions/fixtures/ai-google-tool-output4dd-native.input.txt", "caller_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "expected": "src/extensions/fixtures/ai-google-tool-output4dd.expected.json", "expected_sha256": "3F00C88144C6430E6B6B2A162CA005BDF021A679EA727191D9EC09112D573725",
+      "required_named_tests": ["native Google4dd tool output whitespace live trim relational length and raw reason identity", "native Google4dd typed tool output presence preserves bytes and image placeholders"],
+      "additional_typed_wire_combinations": 48
+    }
+  ],
+  "metadata_policy": "Discover and freeze the actual compiled Zig0.16 metadata per artifact; retain every required named test and every imported anonymous test. Observation counts are not executable test counts.",
+  "qualification_policy": "Full relocated original references and explicit84 absences plus candidate/vendor/current Root C-Engine-helper bytes, controls, artifacts and metadata before-between-post; independent owned process absence before handoff. No qualification transfers from the accepted original Source captures or from prior native binaries."
+}
