@@ -198,7 +198,7 @@ pub fn publicField(owner: *State, name: [*:0]const u8) !c.JSValue {
     return if (owner.kind == .agent_session) sessionDataField(owner.engine, owner.data, name) else get(owner.engine, owner.data, name);
 }
 pub fn put(engine: *engine_mod.Engine, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
-    if (c.JS_DefinePropertyValueStr(engine.context, target, name, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    if (c.JS_DefinePropertyValueStr(engine.context, target, name, value, c.JS_PROP_C_W_E) < 0) return js.capture(engine);
 }
 pub fn object(engine: *engine_mod.Engine) !c.JSValue {
     return engine.checked(c.JS_NewObject(engine.context));
@@ -973,11 +973,15 @@ pub fn length(engine: *engine_mod.Engine, value: c.JSValue) !u32 {
     const len = try get(engine, value, "length");
     defer engine.freeValue(len);
     var result: u32 = 0;
-    if (c.JS_ToUint32(engine.context, &result, len) < 0) return error.JavaScriptException;
+    if (c.JS_ToUint32(engine.context, &result, len) < 0) return js.capture(engine);
     return result;
 }
 pub fn append(engine: *engine_mod.Engine, values: c.JSValue, value: c.JSValue) !void {
-    if (c.JS_SetPropertyUint32(engine.context, values, try length(engine, values), value) < 0) return error.JavaScriptException;
+    const index = length(engine, values) catch |err| {
+        engine.freeValue(value);
+        return err;
+    };
+    if (c.JS_SetPropertyUint32(engine.context, values, index, value) < 0) return js.capture(engine);
 }
 pub fn resolveSdkPath(engine: *engine_mod.Engine, value: c.JSValue) ![]u8 {
     const normalized = try @import("native_sdk_settings.zig").normalizePath(engine, value);
