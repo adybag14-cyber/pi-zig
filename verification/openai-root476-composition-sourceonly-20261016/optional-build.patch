@@ -1,0 +1,29 @@
+diff --git a/build.zig b/build.zig
+--- a/build.zig
++++ b/build.zig
+@@ -1871,1 +1871,25 @@
++    const openai_header_contract_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_openai_header_contract_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native OpenAI header contract"}, .use_llvm = use_llvm });
++    linkQuickJs(b, openai_header_contract_tests.root_module, quickjs, sqlite_lib_dir);
++    linkSqlite(openai_header_contract_tests.root_module, sqlite_lib_dir, sqlite_library);
++    openai_header_contract_tests.root_module.addImport("catalog_tool", catalog_tool);
++    b.step("build-native-ai-openai-header-contract", "Compile independent native runtime identity and pinned SDK header merge contracts").dependOn(&openai_header_contract_tests.step);
++    b.step("test-native-ai-openai-header-contract", "Check truthful compiler/engine identity and SDK undefined null append body and protocol override rules").dependOn(&b.addRunArtifact(openai_header_contract_tests).step);
++    const openai_client_options_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_openai_client_options_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native OpenAI constructor options"}, .use_llvm = use_llvm });
++    linkQuickJs(b, openai_client_options_tests.root_module, quickjs, sqlite_lib_dir);
++    linkSqlite(openai_client_options_tests.root_module, sqlite_lib_dir, sqlite_library);
++    openai_client_options_tests.root_module.addImport("catalog_tool", catalog_tool);
++    b.step("build-native-ai-openai-client-options", "Compile accessed SDK constructor env nullable merge and getter-boundary controls").dependOn(&openai_client_options_tests.step);
++    b.step("test-native-ai-openai-client-options", "Check owned dummy env precedence raw throws early merge and payload boundary").dependOn(&b.addRunArtifact(openai_client_options_tests).step);
++    const openai_async_fetch_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_openai_async_fetch_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native OpenAI genuine API and SDK async route"}, .use_llvm = use_llvm });
++    linkQuickJs(b, openai_async_fetch_tests.root_module, quickjs, sqlite_lib_dir);
++    linkSqlite(openai_async_fetch_tests.root_module, sqlite_lib_dir, sqlite_library);
++    openai_async_fetch_tests.root_module.addImport("catalog_tool", catalog_tool);
++    b.step("build-native-ai-openai-async-fetch", "Compile genuine OpenAI IIFE SDK awaits and captured fetch controls").dependOn(&openai_async_fetch_tests.step);
++    b.step("test-native-ai-openai-async-fetch", "Check synchronous public streams private SDK await route and custom fetch identity").dependOn(&b.addRunArtifact(openai_async_fetch_tests).step);
++    const openai_nonstream_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_openai_nonstream_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native OpenAI SDK nonstream response"}, .use_llvm = use_llvm });
++    linkQuickJs(b, openai_nonstream_tests.root_module, quickjs, sqlite_lib_dir);
++    linkSqlite(openai_nonstream_tests.root_module, sqlite_lib_dir, sqlite_library);
++    openai_nonstream_tests.root_module.addImport("catalog_tool", catalog_tool);
++    b.step("build-native-ai-openai-nonstream", "Compile actual SDK nonstream parse awaits and raw response controls").dependOn(&openai_nonstream_tests.step);
++    b.step("test-native-ai-openai-nonstream", "Check JSON text zero binary getter identity and body consumption").dependOn(&b.addRunArtifact(openai_nonstream_tests).step);
+     const actual_provider_factories_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_provider_factories_source_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual provider factories"}, .use_llvm = use_llvm });

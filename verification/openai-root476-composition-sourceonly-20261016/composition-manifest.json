@@ -1,0 +1,268 @@
+{
+  "status": "source-only virtual composition, pending independent review",
+  "root_base": "4766c294e6329a6e74b12f848afcc0f9c7bbfd80",
+  "root_successor": "146dc350364f7679223fb6850c2877a7109a56ef",
+  "source_branch": "a64c0744755c044146005317bc14e3e5e624218c",
+  "product_files": [
+    {
+      "root_before_sha256": null,
+      "file": "src/extensions/native_ai_openai_client_log.zig",
+      "after_sha256": "4CF7FB1D37C7E420921E16B6446E877A326BFDF7FE388A1F21229111F1D6B4CB"
+    },
+    {
+      "root_before_sha256": null,
+      "file": "src/extensions/native_ai_openai_client_options.zig",
+      "after_sha256": "30E435BA1F1DFB5BB3729C29E9EFE5A01FB8C9E887C792343C5C445B70A67E5F"
+    },
+    {
+      "root_before_sha256": "557193B7CF9ACEDBD4F159C0932A3658728E05223B503466FAC1B900C819BCD8",
+      "file": "src/extensions/native_ai_openai_factory.zig",
+      "after_sha256": "9F8D38AB70EBB4889B124DBF8E038DF2C79707D73A88BF5D19FBA8D10CF7B7FF"
+    },
+    {
+      "root_before_sha256": null,
+      "file": "src/extensions/native_ai_openai_sdk_headers.zig",
+      "after_sha256": "D8AB1A6D913593057379F5B26341699040B49358C59D5890DF0D5210B07E7F0D"
+    },
+    {
+      "root_before_sha256": null,
+      "file": "src/extensions/native_ai_openai_sdk_readable.zig",
+      "after_sha256": "02928DBA24FA900E9EC89810F271AB69613546FF2BE603F9A8CB74609FA2D23E"
+    },
+    {
+      "root_before_sha256": null,
+      "file": "src/extensions/native_ai_openai_sdk_request.zig",
+      "after_sha256": "FB35893799E8778B306A8BC727FBC50FE910E960BFED6B6488ECD24055D4992F"
+    }
+  ],
+  "retained_direct_imports": [
+    {
+      "file": "src/extensions/native_agent_async.zig",
+      "root_sha256": "417EE313A8A36B74B8A25131675DA7F8D8F1EA1EC4A971DFDF975CD9982FE696",
+      "decision": "retain Root bytes",
+      "own_sha256": "417EE313A8A36B74B8A25131675DA7F8D8F1EA1EC4A971DFDF975CD9982FE696"
+    },
+    {
+      "file": "src/extensions/native_ai_headers.zig",
+      "root_sha256": "C5C92C2028D75409DD4E551ECEBBF50207A0B70E9A08728476785AADA4160298",
+      "decision": "retain Root bytes",
+      "own_sha256": "C5C92C2028D75409DD4E551ECEBBF50207A0B70E9A08728476785AADA4160298"
+    },
+    {
+      "file": "src/extensions/native_ai_openai_compat_options.zig",
+      "root_sha256": "BF496D9B2242B64A3F66A39162B41BFDA12846D7589D4341B5515C626BD2F41F",
+      "decision": "retain Root bytes",
+      "own_sha256": "BF496D9B2242B64A3F66A39162B41BFDA12846D7589D4341B5515C626BD2F41F"
+    },
+    {
+      "file": "src/extensions/native_ai_openai_decode.zig",
+      "root_sha256": "C54EF963EFA6BC38DFBE92A162322E67A8E600EDAFD8BF4AC0941584F4D4EECB",
+      "decision": "retain Root bytes",
+      "own_sha256": "C54EF963EFA6BC38DFBE92A162322E67A8E600EDAFD8BF4AC0941584F4D4EECB"
+    },
+    {
+      "file": "src/extensions/native_ai_openai_dependencies.zig",
+      "root_sha256": "8250334743401A71BF7A20693F71A0FA88FB02D1750EB2B62907CFAB58DCFD92",
+      "decision": "retain Root bytes",
+      "own_sha256": "8250334743401A71BF7A20693F71A0FA88FB02D1750EB2B62907CFAB58DCFD92"
+    },
+    {
+      "file": "src/extensions/native_ai_openai_request.zig",
+      "root_sha256": "6EC777B0F4C0D7AF18D2E0F3D05689B8133E101F5B0A290E350A2F4F66369B60",
+      "decision": "retain Root bytes",
+      "own_sha256": "6EC777B0F4C0D7AF18D2E0F3D05689B8133E101F5B0A290E350A2F4F66369B60"
+    },
+    {
+      "file": "src/extensions/native_ai_openai_sdk_chunks.zig",
+      "root_sha256": "B209F6A7A06EEFD2FF87EAAF7E989037553DE937274CA2E6CB3C6AE43B197E96",
+      "decision": "retain Root bytes",
+      "own_sha256": "B209F6A7A06EEFD2FF87EAAF7E989037553DE937274CA2E6CB3C6AE43B197E96"
+    },
+    {
+      "file": "src/extensions/native_ai_openai_sdk_error.zig",
+      "root_sha256": "06E2595DF9AC5AF9112B2191D02398C8A4AA0A5646C5D23EDAF8CB7754FE3FB1",
+      "decision": "retain Root bytes",
+      "own_sha256": "06E2595DF9AC5AF9112B2191D02398C8A4AA0A5646C5D23EDAF8CB7754FE3FB1"
+    },
+    {
+      "file": "src/extensions/native_ai_openai_sdk_stream.zig",
+      "root_sha256": "4B6AAF07C1061EF0E2361525C10F323369B15FE3136D35B6401021978A50403E",
+      "decision": "retain Root bytes",
+      "own_sha256": "4B6AAF07C1061EF0E2361525C10F323369B15FE3136D35B6401021978A50403E"
+    },
+    {
+      "file": "src/extensions/native_ai_openai_tools.zig",
+      "root_sha256": "21C18C655C08879BFC7ABC054CA20A069B589402C71AF17420A1A548B58EFA46",
+      "decision": "retain Root bytes",
+      "own_sha256": "21C18C655C08879BFC7ABC054CA20A069B589402C71AF17420A1A548B58EFA46"
+    },
+    {
+      "file": "src/extensions/native_ai_partial_json.zig",
+      "root_sha256": "3F43142EC879860181444734D7F0ED41F1CCF47DDAAB576EB2837786CED2EB7A",
+      "decision": "retain Root bytes",
+      "own_sha256": "3F43142EC879860181444734D7F0ED41F1CCF47DDAAB576EB2837786CED2EB7A"
+    },
+    {
+      "file": "src/extensions/native_ai_provider_retry_request.zig",
+      "root_sha256": "54A104EA686A6A333FF1859C330810732493C0605A447148B19DEF2F3549A6D1",
+      "decision": "retain Root bytes",
+      "own_sha256": "54A104EA686A6A333FF1859C330810732493C0605A447148B19DEF2F3549A6D1"
+    },
+    {
+      "file": "src/extensions/native_ai_provider_transcript.zig",
+      "root_sha256": "A739B9D1C1A3019ED416C762EDAF05F3A5999138E401CBA545435F83EBF9A863",
+      "decision": "retain Root bytes",
+      "own_sha256": "A739B9D1C1A3019ED416C762EDAF05F3A5999138E401CBA545435F83EBF9A863"
+    },
+    {
+      "file": "src/extensions/native_ai_provider_values.zig",
+      "root_sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB",
+      "decision": "retain Root bytes",
+      "own_sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+    },
+    {
+      "file": "src/extensions/native_ai_user_agent.zig",
+      "root_sha256": "EDAA1E722A5910B3952E1D154AF0A45551D7C27E0B4DEA1D7C21A1E324C5F833",
+      "decision": "retain Root bytes",
+      "own_sha256": "EDAA1E722A5910B3952E1D154AF0A45551D7C27E0B4DEA1D7C21A1E324C5F833"
+    },
+    {
+      "file": "src/extensions/native_async_body.zig",
+      "root_sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "decision": "retain Root bytes",
+      "own_sha256": "38C8A1F723C311FA9B1FD099E53A7152E50E8F45D9B9A0ECEC5E03545D7DAB5A"
+    },
+    {
+      "file": "src/extensions/native_async_function.zig",
+      "root_sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "decision": "retain Root bytes",
+      "own_sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "file": "src/extensions/native_image_arithmetic.zig",
+      "root_sha256": "1CF3B862D1665FBFFFE3AC93C281A5C1040B44132C4289EB5F02644706AE2016",
+      "decision": "retain Root bytes",
+      "own_sha256": "1CF3B862D1665FBFFFE3AC93C281A5C1040B44132C4289EB5F02644706AE2016"
+    },
+    {
+      "file": "src/extensions/native_node_function.zig",
+      "root_sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347",
+      "decision": "retain Root bytes",
+      "own_sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347"
+    },
+    {
+      "file": "src/extensions/native_stream.zig",
+      "root_sha256": "FDB5C3E9930572F0D75AD4C6D88AD208CA2C0774270FA1C2839EE9EF59B7C53A",
+      "decision": "retain Root bytes",
+      "own_sha256": "FDB5C3E9930572F0D75AD4C6D88AD208CA2C0774270FA1C2839EE9EF59B7C53A"
+    }
+  ],
+  "preservation_pins": [
+    {
+      "preserved": null,
+      "file": "vendor/quickjs/quickjs.c",
+      "sha256": "F06F1F2A23CB024FF381DB02CF43D1C249DE5848689D005918F7D1FB80BE9B5E"
+    },
+    {
+      "preserved": null,
+      "file": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/native_ai_builtin_apis.zig",
+      "sha256": "6CCEB57B43FC9D4C9B32A20074E5E65CD2B7EC9F03EDCB36045A92DCCC56B882"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/native_ai_models_class.zig",
+      "sha256": "D8211D5D1A85B7DC9402AF5227E561D61DACA9FABBF9D555E972EB19E08B7273"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/fixtures/ai-openai-producer58-ae7.json",
+      "sha256": "CF5274301199C7FA86E670A387D1549ACD4805395C67A4034A88C337537D7650"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/fixtures/ai-openai-full58-native.input.txt",
+      "sha256": "9897105D4290888FDF84F04D412CC93764555A9B5CA166BDEBD3EE19140BC60C"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/fixtures/ai-openai-sdk-producer16-ae7.json",
+      "sha256": "CA3EB48A9A7097EFDBBB19F24953B91402B8F4351E9F2AFDB3C6756DDA76B009"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/fixtures/ai-openai-sdk-producer16-ae7.input.txt",
+      "sha256": "5632A008D6547A016F0E9FD3E9BD4383C73F1570752256E735C9B98137536FE4"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/fixtures/ai-openai-tool-output4dd.expected.json",
+      "sha256": "B9FA83B3666297E6653163B489B82FE1EF1D7FA5B2E1B3B5423C690E90BCD674"
+    },
+    {
+      "preserved": null,
+      "file": "src/extensions/fixtures/ai-openai-tool-output4dd-native.input.txt",
+      "sha256": "76AF08700DDD0DD8BAE0E96B0D4B8D5701914539B5D190A9A99D3BF4441D16AC"
+    }
+  ],
+  "virtual_compositions": [
+    {
+      "product_tree": "91d9048ce8f1aaf429990fd31316f2ffa70618b2",
+      "product_and_optional_controls_tree": "5e84de27eacdd393d273ff3dfbe8625bbe3927e6",
+      "base": "4766c294e6329a6e74b12f848afcc0f9c7bbfd80"
+    },
+    {
+      "product_tree": "61f756db8eb149bd4562a7dab514bb4386441afe",
+      "product_and_optional_controls_tree": "8debcc221f4011e5951e6a23673d0deb17353ab3",
+      "base": "146dc350364f7679223fb6850c2877a7109a56ef"
+    }
+  ],
+  "packet_files": [
+    {
+      "file": "product.patch",
+      "sha256": "7326C800D3F8725B4D2307900601CD9463F154D09CB512B8158325830645BEFD"
+    },
+    {
+      "file": "candidate-factory.zig",
+      "sha256": "9F8D38AB70EBB4889B124DBF8E038DF2C79707D73A88BF5D19FBA8D10CF7B7FF"
+    },
+    {
+      "file": "optional-controls.patch",
+      "sha256": "C254DD3C871872F5F407E0FCDF5AF1A1E89888A5CF52ABEE49FB633A8CE35EBC"
+    },
+    {
+      "file": "optional-build.patch",
+      "sha256": "52A283EC3BB719354C7FB54DD82217C4B18696CA549F3EC5FA192678B969489A"
+    }
+  ],
+  "node_or_zig_or_native_executed": false,
+  "root_checkout_edited": false,
+  "new_c_candidate_composed": false,
+  "source52_expected_retained": true,
+  "source56_executed": false,
+  "native_full58_qualified": false
+}

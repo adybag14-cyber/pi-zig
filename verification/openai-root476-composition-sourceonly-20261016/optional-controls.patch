@@ -1,0 +1,562 @@
+diff --git a/src/extensions/fixtures/ai-openai-async-fetch-native.input.txt b/src/extensions/fixtures/ai-openai-async-fetch-native.input.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..3344c7e5bf8cca0bcb6095c3796343478f91330c
+--- /dev/null
++++ b/src/extensions/fixtures/ai-openai-async-fetch-native.input.txt
+@@ -0,0 +1,75 @@
++// Authored guest controls for the actual native factory/private SDK route.
++// No transport implementation, public SDK proxy, Source trace or golden here.
++const descriptor=Object.getOwnPropertyDescriptor(globalThis,'process'),fetchDescriptor=Object.getOwnPropertyDescriptor(globalThis,'fetch');
++Object.defineProperty(globalThis,'process',{configurable:true,value:{env:{OPENAI_ADMIN_KEY:'',OPENAI_ORG_ID:'',OPENAI_PROJECT_ID:'',OPENAI_WEBHOOK_SECRET:'',OPENAI_LOG:'',OPENAI_CUSTOM_HEADERS:''}}});
++export const observations=[];
++const model={id:'fixture-model',name:'fixture',api:'openai-completions',provider:'openai',baseUrl:'http://127.0.0.1:1/v1',reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:0,cacheWrite:0},contextWindow:32000,maxTokens:4096};
++const context={messages:[{role:'user',content:'fixture-owned-input',timestamp:1}]};
++const wire='data: '+JSON.stringify({id:'fixture-response',model:'fixture-served',choices:[{index:0,delta:{content:'fixture answer'},finish_reason:'stop'}]})+'\n\ndata: [DONE]\n\n';
++function response(){return new Response(wire,{status:200,headers:{'content-type':'text/event-stream','x-fixture':'owned','x-request-id':'fixture-request-id'}})}
++try{
++ for(const globalDefault of [false,true]){
++  const trace=[],caller=new AbortController();let used=0,capturedInit,originalResponse;
++  const value={toString(){trace.push('header coercion');return 'fixture-after-payload'}};
++  function fetcher(url,init){if(this!==undefined)throw Error('Fetch receiver must be undefined');used++;capturedInit=init;trace.push('fetch');if(url!=='http://127.0.0.1:1/v1/chat/completions'||init.method!=='POST'||!(init.headers instanceof Headers)||init.headers.get('x-fixture')!=='fixture-after-payload'||init.headers.get('x-stainless-retry-count')!=='0'||init.signal===caller.signal)throw Error('Actual SDK fetch input');const body=JSON.parse(init.body);if(body.model!=='fixture-replaced')throw Error('Payload replacement lost');originalResponse=response();return Promise.resolve(originalResponse)}
++  Object.defineProperty(fetcher,'call',{configurable:true,get(){trace.push('fetch.call getter');return Function.prototype.call}});
++  Object.defineProperty(globalThis,'fetch',{configurable:true,value:globalDefault?fetcher:function(){throw Error('Explicit fetch precedence')}});
++  const options={apiKey:'fixture-key',headers:{'X-Fixture':value},fetch:globalDefault?undefined:fetcher,signal:caller.signal,maxRetries:0,onPayload(payload){trace.push('payload');Object.defineProperty(globalThis,'fetch',{configurable:true,value:function(){throw Error('Default fetch must remain captured')}});options.fetch=function(){throw Error('Provided fetch must remain captured')};return {...payload,model:'fixture-replaced'}},onResponse(observed){trace.push('response');if(observed.status!==200||observed.headers['x-fixture']!=='owned')throw Error('Response callback projection')},onProviderStreamEvent(){trace.push('chunk')}};
++  const stream=nativeAsyncOpenAI.stream(model,context,options);trace.push('returned');if(stream instanceof Promise||!trace.includes('payload')||trace.includes('fetch'))throw Error('Synchronous public stream and real first Await');
++  const events=[];for await(const event of stream)events.push(event.type);const result=await stream.result();
++  if(used!==1||result.content[0]?.text!=='fixture answer'||result.errorMessage||trace.indexOf('header coercion')<trace.indexOf('payload')||trace.indexOf('fetch.call getter')<trace.indexOf('header coercion')||trace.indexOf('chunk')<trace.indexOf('response'))throw Error('Async route result/order');
++  observations.push({case:globalDefault?'captured global fetch':'captured explicit fetch',trace,events,resultText:result.content[0].text,request:JSON.parse(capturedInit.body),headers:[...capturedInit.headers]});
++ }
++ for(const fallback of [false,true]){
++  const trace=[],res=response(),bytes=res.body;let requestResponse;
++  if(fallback)Object.defineProperty(bytes,Symbol.asyncIterator,{configurable:true,value:undefined});
++  const originalGetReader=bytes.getReader;
++  Object.defineProperty(bytes,'getReader',{configurable:true,value:function(...args){trace.push('getReader');return Reflect.apply(originalGetReader,this,args)}});
++  const fetched=function(){requestResponse=res;return res};
++  const stream=nativeAsyncOpenAI.stream(model,context,{apiKey:'fixture-key',fetch:fetched,maxRetries:0,onResponse(){trace.push('response');if(bytes.locked)throw Error('Body acquired before onResponse')},onProviderStreamEvent(){trace.push('chunk')}});
++  for await(const event of stream){void event}const result=await stream.result();if(requestResponse!==res||result.errorMessage||result.content[0]?.text!=='fixture answer'||trace.includes('getReader')&&trace.indexOf('getReader')<trace.indexOf('response'))throw Error('Actual response body iterator route');
++  observations.push({case:fallback?'reader fallback genuine async methods':'actual stream async iterator',trace,resultText:result.content[0].text,locked:bytes.locked});
++ }
++ for(const boundary of ['header','fetch','fetch.call']){
++  const raw=new Error('fixture-owned-'+boundary),trace=[];
++  function fetched(){trace.push('fetch');if(boundary==='fetch')throw raw;return response()}
++  if(boundary==='fetch.call')Object.defineProperty(fetched,'call',{get(){throw raw}});
++  const header={toString(){trace.push('header');if(boundary==='header')throw raw;return 'owned'}};
++  const pending=nativePrivateSDKRequest({apiKey:'fixture-key',baseURL:model.baseUrl,fetch:fetched,defaultHeaders:{'X-Fixture':header}},{model:'fixture-model',stream:true},{});
++  let caught;try{await pending}catch(error){caught=error}if(boundary==='header'?caught!==raw:caught?.cause!==raw)throw Error('Raw header/fetch reason '+boundary);
++  observations.push({case:boundary,trace,rawSame:boundary==='header'?caught===raw:caught.cause===raw,message:caught.message});
++ }
++ for(const timeout of [undefined,null,-1,.5,'1']){
++  let calls=0;const req={};if(timeout!==undefined)req.timeout=timeout;
++  const fetched=function(){calls++;return response()};let failure,result;
++  try{result=await nativePrivateSDKRequest({apiKey:'fixture-key',baseURL:model.baseUrl,fetch:fetched,defaultHeaders:{}},{model:'fixture-model',stream:true},req)}catch(error){failure=error}
++  if(timeout===undefined){if(failure||calls!==1||result.request_id!=='fixture-request-id')throw Error('Default timeout and withResponse identity');for await(const chunk of result.data){void chunk}}
++  else if(calls!==0||failure?.message!==(timeout===-1?'timeout must be a positive integer':'timeout must be an integer'))throw Error('Timeout validation before fetch');
++  observations.push({case:'timeout',timeout:String(timeout),calls,error:failure?.message});
++ }
++ {
++  const raw=new Error('fixture-inside-IIFE-setup'),trace=[];
++  const bad={...model,get headers(){trace.push('model.headers');throw raw}};
++  const stream=nativeAsyncOpenAI.stream(bad,context,{apiKey:'fixture-key',fetch(){throw Error('Setup failure must skip fetch')},onPayload(){throw Error('Setup failure must skip payload')}});
++  if(stream instanceof Promise||trace.join(',')!=='model.headers')throw Error('IIFE setup remains synchronous until first Await');
++  const events=[];for await(const event of stream)events.push(event.type);const result=await stream.result();if(result.errorMessage!==raw.message||events.at(-1)!=='error')throw Error('Setup throw belongs inside IIFE try');
++  observations.push({case:'IIFE setup catch',trace,events,error:result.errorMessage});
++ }
++ {
++  const raw=new Error('fixture-outside-IIFE-normalization');let seen;
++  try{nativeAsyncOpenAI.stream({...model,get compat(){throw raw}},context,{apiKey:'fixture-key'})}catch(error){seen=error}
++  if(seen!==raw)throw Error('Public normalization raw failure must remain synchronous');observations.push({case:'outside IIFE normalization',rawSame:seen===raw});
++ }
++ {
++  const raw=new Error('fixture-api-key-provider');let used=0;
++  const good=await nativePrivateSDKRequest({apiKey:async()=>{used++;return 'fixture-async-key'},baseURL:model.baseUrl,defaultHeaders:{},fetch(url,init){if(init.headers.get('authorization')!=='Bearer fixture-async-key')throw Error('Async key before headers');return response()}},{model:'fixture-model',stream:true},{});
++  for await(const chunk of good.data){void chunk}if(used!==1)throw Error('Actual key Await boundary');
++  let failure;try{await nativePrivateSDKRequest({apiKey:async()=>{throw raw},baseURL:model.baseUrl,defaultHeaders:{},fetch(){throw Error('Failed key must skip fetch')}},{model:'fixture-model',stream:true},{})}catch(error){failure=error}
++  if(failure?.cause!==raw||failure.message!=="Failed to get token from 'apiKey' function: "+raw.message)throw Error('Actual key catch cause');observations.push({case:'genuine async api key',used,rawSame:failure.cause===raw});
++ }
++ {
++  const trace=[],response=new Response('{"fixture":"nonstream"}',{headers:{'content-type':'application/json','x-fixture':'owned'}});
++  const stream=nativeAsyncOpenAI.stream(model,context,{apiKey:'fixture-key',fetch(url,init){trace.push('fetch');if(JSON.parse(init.body).stream!==false)throw Error('Payload stream=false route');return response},onPayload(payload){trace.push('payload');return {...payload,stream:false}},onResponse(){trace.push('response');if(!response.bodyUsed)throw Error('Nonstream JSON parses before response hook')},onProviderStreamEvent(){throw Error('Nonstream object must not gain SSE chunks')}});
++  const events=[];for await(const event of stream)events.push(event.type);const result=await stream.result();if(result.stopReason!=='error'||!result.errorMessage||events.at(-1)!=='error'||trace.join(',')!=='payload,fetch,response'||response.body.locked)throw Error('Actual nonstream object consumption boundary');observations.push({case:'onPayload changes stream false',trace,events,bodyUsed:response.bodyUsed,locked:response.body.locked,stopReason:result.stopReason});
++ }
++}finally{if(descriptor)Object.defineProperty(globalThis,'process',descriptor);else delete globalThis.process;if(fetchDescriptor)Object.defineProperty(globalThis,'fetch',fetchDescriptor);else delete globalThis.fetch}
+diff --git a/src/extensions/fixtures/ai-openai-client-options-primary.input.txt b/src/extensions/fixtures/ai-openai-client-options-primary.input.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..395815b3f73d33e5ea686f50eeb6077d567eeb72
+--- /dev/null
++++ b/src/extensions/fixtures/ai-openai-client-options-primary.input.txt
+@@ -0,0 +1,66 @@
++// Controlled caller/observer only. Every environment/key/header/log value here
++// is owned dummy data. No host process.env value is read or reported.
++export function observeClientOptionCases(create,merge){
++ const rows=[],target=globalThis;
++ const originals=Object.fromEntries(['process','console','fetch','Deno'].map(key=>[key,Object.getOwnPropertyDescriptor(target,key)]));
++ const arrayOriginal=Object.getOwnPropertyDescriptor(Array,'isArray');
++ const configs=[
++  {name:'owned dummy env defaults'},
++  {name:'env whitespace trimmed',env:{OPENAI_ORG_ID:'  fixture-org  ',OPENAI_PROJECT_ID:'\tfixture-project\t'}},
++  {name:'undefined and null env',env:{OPENAI_ADMIN_KEY:undefined,OPENAI_ORG_ID:null,OPENAI_PROJECT_ID:undefined}},
++  {name:'null process env',nullEnv:true},
++  {name:'undefined baseURL uses env',baseURL:undefined},
++  {name:'null baseURL uses fixed default',baseURL:null},
++  {name:'undefined apiKey uses env',apiKey:undefined},
++  {name:'null apiKey keeps admin ctor credential',apiKey:null},
++  {name:'missing credentials before body defaults',apiKey:null,env:{OPENAI_ADMIN_KEY:null,OPENAI_API_KEY:null}},
++  {name:'custom headers and provider precedence',env:{OPENAI_CUSTOM_HEADERS:'X-Env: fixture-env\nX-Case: fixture-env'},headers:{'X-Case':'fixture-option'}},
++  {name:'undefined header preserves custom env',env:{OPENAI_CUSTOM_HEADERS:'X-Env: fixture-env'},headers:{'X-Env':undefined}},
++  {name:'null header keeps nullable tombstone',env:{OPENAI_CUSTOM_HEADERS:'Authorization: fixture-env-auth'},headers:{Authorization:null}},
++  {name:'default value coerces after payload boundary'},
++  {name:'custom env coerces before payload boundary',env:{OPENAI_CUSTOM_HEADERS:'X-Env: fixture-env'}},
++  {name:'malformed custom header name',env:{OPENAI_CUSTOM_HEADERS:'bad name: fixture-value'}},
++  {name:'malformed custom header value',env:{OPENAI_CUSTOM_HEADERS:'X-Env: fixture\rvalue'}},
++  {name:'raw organization env getter',throwEnv:'OPENAI_ORG_ID'},
++  {name:'raw project trim getter',throwTrim:'OPENAI_PROJECT_ID'},
++  {name:'raw custom env getter',throwEnv:'OPENAI_CUSTOM_HEADERS'},
++  {name:'raw header value before payload',env:{OPENAI_CUSTOM_HEADERS:'X-Env: fixture-env'},throwHeader:true},
++  {name:'raw header value after payload',throwHeader:true},
++  {name:'explicit fetch precedes default getter',throwFetch:true},
++  {name:'null fetch reads global default twice',fetch:null},
++  {name:'global fetch raw getter before custom env',fetch:undefined,throwFetch:true},
++  {name:'invalid log level uses owned logger',env:{OPENAI_LOG:'fixture-invalid-log'}},
++  {name:'off log level captured',env:{OPENAI_LOG:'off'}},
++  {name:'Deno env optional fallback',deno:true},
++  {name:'nonstring env fails trim',env:{OPENAI_ORG_ID:123}},
++  {name:'custom duplicate casing and proto assignment',env:{OPENAI_CUSTOM_HEADERS:'__proto__: fixture-text\nX-Env: first\nx-env: last\nignored line'}},
++  {name:'live Array.isArray getter during custom merge',env:{OPENAI_CUSTOM_HEADERS:'X-Env: fixture-env'},arrayGetter:true},
++  {name:'null process throws before ctor body',nullProcess:true},
++  {name:'truthy nonstring key commits null after validation',apiKey:{fixture:'owned-key'},env:{OPENAI_ADMIN_KEY:null}}
++ ];
++ const own=(value,key)=>Object.prototype.hasOwnProperty.call(value,key);
++ try{for(const config of configs){
++  const trace=[],raw=new Error('fixture raw constructor failure');let phase='constructor',payload=false;
++  Object.defineProperty(Array,'isArray',arrayOriginal);
++  if(config.arrayGetter)Object.defineProperty(Array,'isArray',{configurable:true,get(){trace.push('Array.isArray getter');return function(value){trace.push('Array.isArray call');return arrayOriginal.value(value)}}});
++  const values={OPENAI_BASE_URL:'http://127.0.0.1:1/fixture-env',OPENAI_API_KEY:'fixture-env-key',OPENAI_ADMIN_KEY:'fixture-admin-key',OPENAI_ORG_ID:'fixture-org',OPENAI_PROJECT_ID:'fixture-project',OPENAI_WEBHOOK_SECRET:'fixture-webhook',OPENAI_LOG:'',OPENAI_CUSTOM_HEADERS:'',...config.env};
++  const env=new Proxy(values,{get(object,key){trace.push(['env',String(key)]);if(key===config.throwEnv)throw raw;if(key===config.throwTrim)return {get trim(){trace.push(['trim getter',String(key)]);throw raw}};return object[key]}});
++  const process={get env(){trace.push('process.env');return config.nullEnv?null:env}};
++  Object.defineProperty(target,'process',{configurable:true,get(){trace.push('process');return config.nullProcess?null:config.deno?undefined:process}});
++  Object.defineProperty(target,'Deno',{configurable:true,value:config.deno?{env:{get(name){trace.push(['Deno.env.get',name]);return values[name]}}}:undefined});
++  const logger={error(...args){trace.push(['logger.error',...args])},warn(...args){trace.push(['logger.warn',...args])},info(...args){trace.push(['logger.info',...args])},debug(...args){trace.push(['logger.debug',...args])}};
++  Object.defineProperty(target,'console',{configurable:true,get(){trace.push('console');return logger}});
++  const defaultFetch=function fixtureDefaultFetch(){throw Error('fixture transport must not execute')};
++  Object.defineProperty(target,'fetch',{configurable:true,get(){trace.push('global fetch');if(config.throwFetch)throw raw;return defaultFetch}});
++  const explicitFetch=function fixtureExplicitFetch(){throw Error('fixture transport must not execute')};
++  const headerValue={toString(){trace.push(['header coercion',phase]);if(config.throwHeader)throw raw;return 'fixture-value-'+phase}};
++  const provided={apiKey:own(config,'apiKey')?config.apiKey:'fixture-provided-key',baseURL:own(config,'baseURL')?config.baseURL:'http://127.0.0.1:1/fixture-provided',fetch:own(config,'fetch')?config.fetch:explicitFetch,defaultHeaders:{'User-Agent':'fixture-owned-agent','X-Value':headerValue,...config.headers}};
++  try{
++   const client=create(provided);
++   payload=true;phase='payload';values.OPENAI_ORG_ID='fixture-mutated-org';values.OPENAI_CUSTOM_HEADERS='X-Env: fixture-mutated';
++   const built=client.headersPrepared?{values:client.defaultHeaders,nulls:client.headerNulls}:merge([client.defaultHeaders]);
++   rows.push({name:config.name,payload,baseURL:client.baseURL,apiKey:client.apiKey,adminAPIKey:client.adminAPIKey,organization:client.organization,project:client.project,webhookSecret:client.webhookSecret,logLevel:client.logLevel,fetchIdentity:client.fetch===explicitFetch?'provided':client.fetch===defaultFetch?'global':'other',loggerIdentity:client.logger===logger,headersPrepared:client.headersPrepared,headers:[...built.values.entries()],nulls:[...built.nulls],trace});
++  }catch(error){rows.push({name:config.name,payload,error:{name:error?.name,message:error?.message,rawSame:error===raw},trace})}
++ }}finally{Object.defineProperty(Array,'isArray',arrayOriginal);for(const key of Object.keys(originals)){if(originals[key])Object.defineProperty(target,key,originals[key]);else delete target[key]}}
++ return rows;
++}
+diff --git a/src/extensions/fixtures/ai-openai-nonstream-primary.input.txt b/src/extensions/fixtures/ai-openai-nonstream-primary.input.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..261ddd6fc9fe346a675f706ea268e5ae4a7f3691
+--- /dev/null
++++ b/src/extensions/fixtures/ai-openai-nonstream-primary.input.txt
+@@ -0,0 +1,44 @@
++// Shared authored caller controls for actual SDK defaultParseResponse.
++// No SDK/body/parser implementation is supplied here.
++export async function observeNonstream(parse){
++ const rows=[],quiet={logger:console,logLevel:'off'};
++ async function actual(name,body,headers={},status=200){const response=new Response(body,{status,headers}),props={response,options:{stream:false},requestLogID:'fixture-log',retryOfRequestLogID:undefined,startTime:0};const value=await parse(props,quiet);rows.push({name,type:typeof value,value,requestID:value?._request_id,descriptor:value&&typeof value==='object'?Object.getOwnPropertyDescriptor(value,'_request_id'):undefined,bodyUsed:response.bodyUsed,locked:response.body?.locked??false});return {value,response}}
++ const object=await actual('JSON object','{"fixture":true}',{'content-type':'application/json','x-request-id':'fixture-id'});const d=Object.getOwnPropertyDescriptor(object.value,'_request_id');if(object.value.fixture!==true||d.value!=='fixture-id'||d.enumerable||d.writable||d.configurable||!object.response.bodyUsed||object.response.body.locked)throw Error('JSON annotation/body consumption');
++ for(const [name,body]of [['JSON array','[1,2]'],['JSON number','17'],['JSON null','null'],['JSON string','"fixture"']]){const {value}=await actual(name,body,{'content-type':'application/json','x-request-id':'fixture-id'});if(value!==null&&Object.hasOwn(Object(value),'_request_id'))throw Error('Only eligible JSON object gets requestID')}
++ if((await actual('suffix JSON','{"fixture":true}',{'content-type':'application/problem+json; charset=utf-8'})).value.fixture!==true)throw Error('+json');
++ if((await actual('substring JSON','{"fixture":true}',{'content-type':'text/application/jsonish'})).value.fixture!==true)throw Error('Primary includes comparison');
++ if((await actual('case sensitive fallback','fixture text',{'content-type':'Application/JSON'})).value!=='fixture text'||(await actual('missing type fallback','fixture text')).value!=='fixture text')throw Error('Text fallback');
++ const zero=await actual('exact zero JSON length','not consumed',{'content-type':'application/json','content-length':'0'});if(zero.value!==undefined||zero.response.bodyUsed||zero.response.body.locked)throw Error('Zero JSON skips reader');
++ if((await actual('double zero is not zero','{"fixture":true}',{'content-type':'application/json','content-length':'00'})).value.fixture!==true)throw Error('Exact zero comparison');
++ const empty=await actual('status 204',null,{},204);if(empty.value!==null||empty.response.bodyUsed)throw Error('204 skips reader');
++ {const response=new Response('fixture binary'),value=await parse({response,options:{stream:false,__binaryResponse:true},requestLogID:'fixture-log',startTime:0},quiet);if(value!==response||response.bodyUsed||response.body.locked)throw Error('Binary identity');rows.push({name:'binary',same:value===response,bodyUsed:response.bodyUsed})}
++ {const response=new Response('{invalid',{headers:{'content-type':'application/json'}});let failure;try{await parse({response,options:{stream:false},requestLogID:'fixture-log',startTime:0},quiet)}catch(error){failure=error}if(!(failure instanceof SyntaxError)||!response.bodyUsed||response.body.locked)throw Error('Actual JSON SyntaxError brand and reader release');rows.push({name:'invalid JSON',nameOfError:failure.name,syntaxError:failure instanceof SyntaxError,bodyUsed:response.bodyUsed,locked:response.body.locked})}
++ const boundaries=['props.response','props.requestLogID','props.retryOfRequestLogID','props.startTime','options.stream','status initial','options.binary','headers content-type','headers.get content-type','content-type split getter','content-type split call','split index','trim getter','trim call','includes getter','includes call','endsWith getter','endsWith call','headers content-length','headers.get content-length','json getter','json call','json await rejection','Array.isArray getter','Object.defineProperty getter','headers request-id','headers.get request-id','defineProperty call','url after parse','status after parse','Date.now','startTime valueOf','debug call'];
++ for(const boundary of [undefined,...boundaries]){
++  const trace=[],raw={owned:'fixture raw parse reason'},result={fixture:true},logs=[];let headersRead=0,statusRead=0;
++  const defineDescriptor=Object.getOwnPropertyDescriptor(Object,'defineProperty'),arrayDescriptor=Object.getOwnPropertyDescriptor(Array,'isArray'),nowDescriptor=Object.getOwnPropertyDescriptor(Date,'now'),define=defineDescriptor.value;
++  function hit(name){trace.push(name);if(name===boundary)throw raw}
++  const media={get includes(){hit('includes getter');return function(value){hit('includes call');if(this!==media||value!=='application/json')throw Error('includes receiver');return false}},get endsWith(){hit('endsWith getter');return function(value){hit('endsWith call');if(this!==media||value!=='+json')throw Error('endsWith receiver');return true}}};
++  const term={get trim(){hit('trim getter');return function(){hit('trim call');if(this!==term)throw Error('trim receiver');return media}}};
++  const type={get split(){hit('content-type split getter');return function(delimiter){hit('content-type split call');if(this!==type||delimiter!==';')throw Error('split receiver');return {get 0(){hit('split index');return term}}}}};
++  const headers={get get(){const name=['content-type','content-length','request-id'][headersRead-1];hit('headers.get '+name);return function(key){if(this!==headers)throw Error('headers receiver');if(key==='content-type')return type;if(key==='content-length')return '1';if(key==='x-request-id')return 'fixture-id';throw Error('Unexpected header key')}}};
++  const response={get status(){hit(statusRead++===0?'status initial':'status after parse');return 200},get headers(){hit('headers '+['content-type','content-length','request-id'][headersRead++]);return headers},get json(){hit('json getter');return function(){hit('json call');if(this!==response)throw Error('json receiver');if(boundary==='json await rejection'){trace.push('json await rejection');return Promise.reject(raw)}return Promise.resolve(result)}},get url(){hit('url after parse');return 'http://127.0.0.1:1/fixture'}};
++  const options={get stream(){hit('options.stream');return false},get __binaryResponse(){hit('options.binary');return false}};
++  const props={get response(){hit('props.response');return response},options,get requestLogID(){hit('props.requestLogID');return 'fixture-log'},get retryOfRequestLogID(){hit('props.retryOfRequestLogID');return 'fixture-prior'},get startTime(){hit('props.startTime');return {valueOf(){hit('startTime valueOf');return 10}}}};
++  const logger={error(){},warn(){},info(){},debug(...args){hit('debug call');logs.push(args)}};
++  try{
++   define(Array,'isArray',{configurable:true,get(){hit('Array.isArray getter');return arrayDescriptor.value}});
++   define(Object,'defineProperty',{configurable:true,get(){hit('Object.defineProperty getter');return function(...args){hit('defineProperty call');return Reflect.apply(define,this,args)}}});
++   define(Date,'now',{configurable:true,value:function(){hit('Date.now');return 100}});
++   let value,failure;try{value=await parse(props,{logger,logLevel:'debug'})}catch(error){failure=error}
++   if(boundary!==undefined){if(failure!==raw)throw Error('Raw parse boundary '+boundary);rows.push({name:boundary,trace,rawSame:failure===raw})}
++   else{if(value!==result||value._request_id!=='fixture-id'||logs.length!==1||logs[0][0]!=='[fixture-log] response parsed'||logs[0][1].retryOf!=='fixture-prior'||logs[0][1].durationMs!==90||'retryOfRequestLogID'in logs[0][1])throw Error('Parse identity/diagnostic details');const expected=['props.response','props.requestLogID','props.retryOfRequestLogID','props.startTime','options.stream','status initial','options.binary','headers content-type','headers.get content-type','content-type split getter','content-type split call','split index','trim getter','trim call','includes getter','includes call','endsWith getter','endsWith call','headers content-length','headers.get content-length','json getter','json call','Array.isArray getter','Object.defineProperty getter','headers request-id','headers.get request-id','defineProperty call','url after parse','status after parse','Date.now','startTime valueOf','debug call'];if(JSON.stringify(trace)!==JSON.stringify(expected))throw Error('Primary parse getter order '+JSON.stringify(trace));rows.push({name:'live getter order',trace,same:value===result,requestID:value._request_id,log:logs[0]})}
++  }finally{define(Object,'defineProperty',defineDescriptor);define(Array,'isArray',arrayDescriptor);define(Date,'now',nowDescriptor)}
++ }
++ for(const method of ['json','text'])for(const mode of ['getter','call','reject']){
++  const raw={owned:'fixture raw '+method+' '+mode},trace=[];const response={status:200,url:'http://127.0.0.1:1/fixture',headers:new Headers({'content-type':method==='json'?'application/json':'text/plain'})};Object.defineProperty(response,method,{get(){trace.push('getter');if(mode==='getter')throw raw;return function(){trace.push('call');if(mode==='call')throw raw;return Promise.reject(raw)}}});let failure;try{await parse({response,options:{stream:false},requestLogID:'fixture-log',startTime:0},quiet)}catch(error){failure=error}if(failure!==raw)throw Error('Raw '+method+' '+mode);rows.push({name:method+' '+mode,trace,rawSame:failure===raw});
++ }
++ for(const value of [function fixtureFunction(){},Symbol('fixture-symbol')]){const response={status:200,url:'http://127.0.0.1:1/fixture',headers:new Headers({'content-type':'application/json'}),json(){return value}};const result=await parse({response,options:{stream:false},requestLogID:'fixture-log',startTime:0},quiet);if(result!==value||Object.hasOwn(Object(value),'_request_id'))throw Error('Function/symbol result identity');rows.push({name:'nonobject result '+typeof value,same:result===value})}
++ {const value=Object.freeze({fixture:true}),response={status:200,url:'http://127.0.0.1:1/fixture',headers:new Headers({'content-type':'application/json'}),json(){return value}};let failure;try{await parse({response,options:{stream:false},requestLogID:'fixture-log',startTime:0},quiet)}catch(error){failure=error}if(!(failure instanceof TypeError)||'status'in failure)throw Error('Frozen JSON TypeError must not become SDK status error');rows.push({name:'frozen JSON annotation',typeError:failure instanceof TypeError,statusError:'status'in failure})}
++ return rows;
++}
+diff --git a/src/extensions/fixtures/ai-openai-sdk-headers-primary.input.txt b/src/extensions/fixtures/ai-openai-sdk-headers-primary.input.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..b8d488ea859837c61d882307d34bcc48d20e95a6
+--- /dev/null
++++ b/src/extensions/fixtures/ai-openai-sdk-headers-primary.input.txt
+@@ -0,0 +1,24 @@
++// Guest caller controls for the pinned SDK's real internal/headers export.
++// No provider, transport, runtime identity or expected result is implemented.
++export function observeHeaderCases(build){
++ const rows=[];const record=(name,sources)=>{try{const result=build(sources);rows.push({name,headers:[...result.values.entries()],nulls:[...result.nulls]})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}};
++ record('undefined preserves earlier default',[{Accept:'application/json',Authorization:'Bearer placeholder'},{accept:undefined,authorization:undefined}]);
++ record('null removes earlier default',[{Accept:'application/json',Authorization:'Bearer placeholder'},{accept:null,authorization:null}]);
++ record('case distinct object keys overwrite',[{'X-Test':'base'},{'X-Test':'first','x-test':'last'}]);
++ record('tuple repeated name appends',[{'X-Test':'base'},[['X-Test','first'],['x-test','last']]]);
++ record('record array undefined null and values',[{'X-Test':'base'},{'X-Test':[undefined,'first',null,undefined,'last']}]);
++ record('empty and undefined arrays preserve default',[{'X-Test':'base'},{'X-Test':[],'x-test':[undefined]}]);
++ record('header value trims HTTP whitespace',[{'X-Test':' \tvalue\t '}]);
++ record('JSON body header follows defaults',[{'Content-Type':'application/json'},{'content-type':'application/x-custom'},{'content-type':'application/json'}]);
++ record('request header follows JSON body',[{'Content-Type':'application/json'},{'content-type':'application/x-custom'},{'content-type':'application/json'},{'content-type':'request-level'}]);
++ record('retry and timeout caller precedence',[{'X-Stainless-Retry-Count':'0','X-Stainless-Timeout':'3'},{'x-stainless-retry-count':'caller','x-stainless-timeout':null}]);
++ record('client default spread preserves case key order',[{'User-Agent':'sdk-default'},{'User-Agent':'pi-default',...{'user-agent':'model-lower'},...{'User-Agent':'option-upper'}}]);
++ record('explicit identity headers stay caller owned',[{'User-Agent':'native-default'},{'user-agent':'caller-owned','x-stainless-lang':'caller-language','x-stainless-package-version':'caller-package','x-stainless-os':'caller-os','x-stainless-arch':'caller-arch','x-stainless-runtime':'caller-runtime','x-stainless-runtime-version':'caller-version'}]);
++ record('real Headers source appends normalized entries',[{'X-Test':'base'},new Headers([['X-Test','first'],['x-test','last']])]);
++ record('invalid header name',[{'bad name':'value'}]);
++ record('invalid header value',[{'X-Test':'line\nvalue'}]);
++ record('tuple nonstring header name',[[[1,'value']]]);
++ const raw={raw:true},trace=[];const headers={get 'X-Test'(){trace.push('value getter');throw raw}};try{build([{Accept:'base'},headers]);rows.push({name:'raw record getter identity',unexpectedReturn:true})}catch(error){rows.push({name:'raw record getter identity',same:error===raw,trace:[...trace]})}
++ const value={toString(){trace.push('toString');return ' first '}};trace.length=0;const result=build([{'X-Test':value}]);rows.push({name:'live value coercion',headers:[...result.values.entries()],trace:[...trace]});
++ return rows;
++}
+diff --git a/src/native_ai_openai_async_fetch_test.zig b/src/native_ai_openai_async_fetch_test.zig
+new file mode 100644
+index 0000000000000000000000000000000000000000..b95e8e1b8606fa0b98f0955f12673fc44966f246
+--- /dev/null
++++ b/src/native_ai_openai_async_fetch_test.zig
+@@ -0,0 +1,32 @@
++const std = @import("std");
++const v = @import("extensions/native_ai_provider_values.zig");
++const c = v.c;
++fn privateRequest(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
++    var scope: v.Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const provided = args[0];
++    const client = try scope.own(try @import("extensions/native_ai_openai_client_options.zig").capture(engine, .{ .api_key = try scope.get(provided, "apiKey"), .base_url = try scope.get(provided, "baseURL"), .fetch = try scope.get(provided, "fetch"), .default_headers = try scope.get(provided, "defaultHeaders") }));
++    const options = try v.spread(&scope, args[2]);
++    try scope.put(options, "maxRetries", c.JS_NewInt32(engine.context, 0));
++    return c.JS_DupValue(engine.context, try @import("extensions/native_ai_openai_sdk_request.zig").withResponse(&scope, client, args[1], options));
++}
++test "native OpenAI genuine API and SDK async route uses captured custom fetch and actual Response" {
++    const engine = try v.em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 20000 });
++    defer engine.deinit();
++    engine.native_io = std.testing.io;
++    try @import("extensions/text_encoding.zig").install(engine);
++    try @import("extensions/text_decoder.zig").install(engine);
++    try @import("extensions/native_headers.zig").install(engine);
++    try @import("extensions/abort_signal.zig").install(engine);
++    try @import("extensions/timers.zig").install(engine, std.testing.io);
++    try @import("extensions/console.zig").install(engine, std.testing.io);
++    try @import("extensions/native_web_fetch.zig").install(engine);
++    var scope: v.Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
++    try scope.put(global, "nativeAsyncOpenAI", try scope.own(try @import("extensions/native_ai_openai_factory.zig").create(engine)));
++    try scope.put(global, "nativePrivateSDKRequest", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "privateSDKRequest", 3, privateRequest, &.{})));
++    const result = try engine.evalModule(@embedFile("extensions/fixtures/ai-openai-async-fetch-native.input.txt"), "native-openai-async-fetch-controls.mjs");
++    engine.freeValue(result);
++    c.JS_RunGC(engine.runtime);
++}
+diff --git a/src/native_ai_openai_client_options_test.zig b/src/native_ai_openai_client_options_test.zig
+new file mode 100644
+index 0000000000000000000000000000000000000000..d3cf902c8c95a17af63327357e8e3c575e7e4f7a
+--- /dev/null
++++ b/src/native_ai_openai_client_options_test.zig
+@@ -0,0 +1,56 @@
++const std = @import("std");
++const v = @import("extensions/native_ai_provider_values.zig");
++const client_options = @import("extensions/native_ai_openai_client_options.zig");
++const sdk_headers = @import("extensions/native_ai_openai_sdk_headers.zig");
++const c = v.c;
++fn capture(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
++    var scope: v.Scope = .{ .engine = engine };
++    defer scope.deinit();
++    return client_options.capture(engine, .{ .api_key = try scope.get(args[0], "apiKey"), .base_url = try scope.get(args[0], "baseURL"), .fetch = try scope.get(args[0], "fetch"), .default_headers = try scope.get(args[0], "defaultHeaders") });
++}
++fn merge(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
++    var scope: v.Scope = .{ .engine = engine };
++    defer scope.deinit();
++    var sources: std.ArrayList(c.JSValue) = .empty;
++    defer sources.deinit(engine.gpa);
++    var iterator = try v.iterator(&scope, args[0]);
++    defer iterator.deinit();
++    errdefer iterator.closePreserving();
++    while (try iterator.next()) |source| try sources.append(engine.gpa, try scope.own(source));
++    const built = try sdk_headers.build(engine, sources.items);
++    defer engine.freeValue(built.values);
++    defer engine.freeValue(built.nulls);
++    const result = try scope.object();
++    try scope.put(result, "values", built.values);
++    try scope.put(result, "nulls", built.nulls);
++    return c.JS_DupValue(engine.context, result);
++}
++test "native OpenAI constructor options owned env defaults nullable timing raw getters and provider precedence" {
++    const engine = try v.em.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    try @import("extensions/native_headers.zig").install(engine);
++    try client_options.initialize(engine);
++    var scope: v.Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
++    try scope.put(global, "nativeClientCapture", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "captureClientOptions", 1, capture, &.{})));
++    try scope.put(global, "nativeClientHeaderMerge", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "buildHeaders", 1, merge, &.{})));
++    const result = try engine.evalModule(@embedFile("extensions/fixtures/ai-openai-client-options-primary.input.txt") ++
++        \\const rows=observeClientOptionCases(nativeClientCapture,nativeClientHeaderMerge),cases=Object.fromEntries(rows.map(row=>[row.name,row]));if(rows.length!==32)throw Error('All32 authored constructor controls required');
++        \\const header=(name,key)=>cases[name].headers.find(([k])=>k===key)?.[1];
++        \\const base=cases['owned dummy env defaults'];if(base.error||base.baseURL!=='http://127.0.0.1:1/fixture-provided'||base.apiKey!=='fixture-provided-key'||base.adminAPIKey!=='fixture-admin-key'||base.organization!=='fixture-org'||base.project!=='fixture-project'||base.webhookSecret!=='fixture-webhook'||!base.loggerIdentity||base.fetchIdentity!=='provided'||base.logLevel!=='warn')throw Error('Owned ctor defaults');
++        \\if(cases['env whitespace trimmed'].organization!=='fixture-org'||cases['env whitespace trimmed'].project!=='fixture-project'||cases['undefined and null env'].organization!==null||cases['undefined and null env'].project!==null||cases['null process env'].adminAPIKey!==null)throw Error('Optional env trimming');
++        \\if(cases['undefined baseURL uses env'].baseURL!=='http://127.0.0.1:1/fixture-env'||cases['null baseURL uses fixed default'].baseURL!=='https://api.openai.com/v1'||cases['undefined apiKey uses env'].apiKey!=='fixture-env-key'||cases['null apiKey keeps admin ctor credential'].apiKey!==null)throw Error('Undefined versus null defaults');
++        \\const missing=cases['missing credentials before body defaults'];if(missing.payload||!missing.error?.message.startsWith('Missing credentials.')||missing.trace.includes('console')||missing.trace.some(row=>Array.isArray(row)&&row[1]==='OPENAI_CUSTOM_HEADERS'))throw Error('Constructor validation boundary');
++        \\if(header('custom headers and provider precedence','x-case')!=='fixture-option'||header('undefined header preserves custom env','x-env')!=='fixture-env'||!cases['null header keeps nullable tombstone'].nulls.includes('authorization'))throw Error('Nullable constructor merge');
++        \\if(header('default value coerces after payload boundary','x-value')!=='fixture-value-payload'||header('custom env coerces before payload boundary','x-value')!=='fixture-value-constructor')throw Error('onPayload coercion boundary');
++        \\for(const name of ['malformed custom header name','malformed custom header value','raw organization env getter','raw project trim getter','raw custom env getter','raw header value before payload','global fetch raw getter before custom env'])if(cases[name].payload||!cases[name].error)throw Error(name);
++        \\for(const name of ['raw organization env getter','raw project trim getter','raw custom env getter','raw header value before payload','raw header value after payload','global fetch raw getter before custom env'])if(!cases[name].error.rawSame)throw Error('Raw ctor reason '+name);
++        \\if(!cases['raw header value after payload'].payload||cases['explicit fetch precedes default getter'].error||cases['null fetch reads global default twice'].fetchIdentity!=='global'||cases['null fetch reads global default twice'].trace.filter(row=>row==='global fetch').length!==2)throw Error('Fetch capture boundary');
++        \\if(cases['invalid log level uses owned logger'].trace.filter(row=>Array.isArray(row)&&row[0]==='logger.warn').length!==1||cases['off log level captured'].logLevel!=='off'||cases['Deno env optional fallback'].organization!=='fixture-org'||cases['nonstring env fails trim'].payload||header('custom duplicate casing and proto assignment','x-env')!=='last'||cases['custom duplicate casing and proto assignment'].headers.some(([key])=>key==='__proto__'))throw Error('Ancillary ctor branches');
++        \\const live=cases['live Array.isArray getter during custom merge'];if(live.error||live.trace.filter(row=>row==='Array.isArray getter').length<2||live.trace.filter(row=>row==='Array.isArray getter').length!==live.trace.filter(row=>row==='Array.isArray call').length)throw Error('Retained wrapper must reread live Array.isArray');
++        \\if(cases['null process throws before ctor body'].payload||!cases['null process throws before ctor body'].error||cases['truthy nonstring key commits null after validation'].error||cases['truthy nonstring key commits null after validation'].apiKey!==null)throw Error('Raw credential validation and nullable process');
++        \\export const observations=rows;
++    , "native-openai-client-options-primary-controls.mjs");
++    engine.freeValue(result);
++}
+diff --git a/src/native_ai_openai_full58_test.zig b/src/native_ai_openai_full58_test.zig
+index 573ed1d5956073018df23a7477d191320ad3c13b..5904c595c7d5acea972f36a55fa5f908011f6d22 100644
+--- a/src/native_ai_openai_full58_test.zig
++++ b/src/native_ai_openai_full58_test.zig
+@@ -27,6 +27,8 @@ fn install(scope: *v.Scope) !void {
+     try @import("extensions/native_headers.zig").install(engine);
+     try @import("extensions/abort_signal.zig").install(engine);
+     try @import("extensions/timers.zig").install(engine, std.testing.io);
++    try @import("extensions/console.zig").install(engine, std.testing.io);
++    try @import("extensions/native_web_fetch.zig").install(engine);
+     const loaded = try engine.evalModule("import 'pi-ai';export const loaded=true;", "full58-native-installed-stream.mjs");
+     engine.freeValue(loaded);
+     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+@@ -109,12 +111,50 @@ fn compareWire(name: []const u8, captured: []const fixture.Captured, expected: [
+     }
+     return matches;
+ }
++fn nativeDefaultHeader(record: fixture.Captured, name: []const u8, expected: ?[]const u8) bool {
++    var count: usize = 0;
++    var matches = true;
++    for (record.headers) |header| if (std.ascii.eqlIgnoreCase(header.name, name)) {
++        count += 1;
++        if (expected) |value| matches = matches and std.mem.eql(u8, value, header.value);
++    };
++    return matches and count == (if (expected == null) @as(usize, 0) else 1);
++}
++fn compareNativeDefaults(name: []const u8, captured: []const fixture.Captured, owned_host: []const u8, identity: []const u8) !bool {
++    var matches = true;
++    for (captured, 0..) |record, index| {
++        const length = try std.fmt.allocPrint(std.testing.allocator, "{d}", .{record.payload.len});
++        defer std.testing.allocator.free(length);
++        const current = nativeDefaultHeader(record, "host", owned_host) and
++            nativeDefaultHeader(record, "user-agent", identity) and
++            nativeDefaultHeader(record, "x-stainless-retry-count", "0") and
++            nativeDefaultHeader(record, "content-length", length) and
++            nativeDefaultHeader(record, "content-type", "application/json") and
++            nativeDefaultHeader(record, "connection", "close") and
++            nativeDefaultHeader(record, "accept-encoding", "gzip, deflate") and
++            nativeDefaultHeader(record, "transfer-encoding", null);
++        var identity_absent = true;
++        // This fixed original58 corpus has no caller-owned header overrides.
++        // These are independent native-default assertions, not a projection of
++        // Source's immutable Node header record or a native-generated golden.
++        for ([_][]const u8{ "x-stainless-lang", "x-stainless-package-version", "x-stainless-os", "x-stainless-arch", "x-stainless-runtime", "x-stainless-runtime-version", "accept-language", "sec-fetch-mode" }) |field| {
++            identity_absent = identity_absent and nativeDefaultHeader(record, field, null);
++        }
++        if (!current or !identity_absent) {
++            matches = false;
++            std.debug.print("Source58 independent native identity/protocol contract differs {s}/{d}; owned Host={s} identity={s} UTF8 body length={s}\n", .{ name, index, owned_host, identity, length });
++        }
++    }
++    return matches;
++}
+ test "native OpenAI original Source58 actual fourteen constructors Models Kimi full snapshots and strict raw wire" {
+     const source = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, golden, .{});
+     defer source.deinit();
+     try std.testing.expectEqualStrings("ae7b16d43b7c78c5b6fa3213fdd1215bb339729d", source.value.object.get("sourceHead").?.string);
+     const rows = source.value.object.get("rows").?.array.items;
+     try std.testing.expectEqual(@as(usize, 58), rows.len);
++    const native_identity = try @import("native_ai_openai_header_contract_test.zig").expectedNativeIdentity(std.testing.allocator);
++    defer std.testing.allocator.free(native_identity);
+     const producer_source = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, producer_golden, .{});
+     defer producer_source.deinit();
+     try std.testing.expectEqualStrings("ae7b16d43b7c78c5b6fa3213fdd1215bb339729d", producer_source.value.object.get("sourceHead").?.string);
+@@ -128,6 +168,10 @@ test "native OpenAI original Source58 actual fourteen constructors Models Kimi f
+         var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
+         defer arena.deinit();
+         const requests = row.object.get("requests").?.array.items;
++        const input_fields = row.object.get("input").?.object;
++        inline for (.{ "model", "options" }) |field| if (input_fields.get(field)) |entry| {
++            if (entry.object.get("headers")) |overrides| if (overrides != .null) return error.NativeDefaultHeaderCorpusMustNotContainCallerOverrides;
++        };
+         const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, try replies(arena.allocator(), row.object.get("input").?, requests));
+         defer server.deinit();
+         const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+@@ -169,6 +213,8 @@ test "native OpenAI original Source58 actual fourteen constructors Models Kimi f
+         }
+         try server.finish();
+         if (!compareWire(name, server.captured.items, requests)) all_match = false;
++        const owned_host = try std.fmt.allocPrint(arena.allocator(), "127.0.0.1:{d}", .{server.listener.socket.address.getPort()});
++        if (!try compareNativeDefaults(name, server.captured.items, owned_host, native_identity)) all_match = false;
+         c.JS_RunGC(engine.runtime);
+         try std.testing.expect(!@import("extensions/native_ai_http.zig").pending(engine));
+     }
+diff --git a/src/native_ai_openai_header_contract_test.zig b/src/native_ai_openai_header_contract_test.zig
+new file mode 100644
+index 0000000000000000000000000000000000000000..3b25e318af995c3284f940f516053aee132f4087
+--- /dev/null
++++ b/src/native_ai_openai_header_contract_test.zig
+@@ -0,0 +1,108 @@
++const std = @import("std");
++const builtin = @import("builtin");
++const v = @import("extensions/native_ai_provider_values.zig");
++const sdk_headers = @import("extensions/native_ai_openai_sdk_headers.zig");
++const c = v.c;
++pub fn expectedNativeIdentity(gpa: std.mem.Allocator) ![]u8 {
++    // Expectations come from the pinned compiler and independently read C
++    // version macros/runtime, never from the observed wire/header formatter.
++    try std.testing.expectEqualStrings("0.16.0", builtin.zig_version_string);
++    try std.testing.expectEqual(@as(c_int, 0), c.QJS_VERSION_MAJOR);
++    try std.testing.expectEqual(@as(c_int, 17), c.QJS_VERSION_MINOR);
++    try std.testing.expectEqual(@as(c_int, 0), c.QJS_VERSION_PATCH);
++    try std.testing.expectEqualStrings("0.17.0", std.mem.span(c.JS_GetVersion()));
++    return std.fmt.allocPrint(gpa, "pi-zig/Zig-0.16.0 QuickJS-0.17.0 ({s}; {s})", .{ @tagName(builtin.os.tag), @tagName(builtin.cpu.arch) });
++}
++fn build(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
++    var scope: v.Scope = .{ .engine = engine };
++    defer scope.deinit();
++    var sources: std.ArrayList(c.JSValue) = .empty;
++    defer sources.deinit(engine.gpa);
++    var iterator = try v.iterator(&scope, args[0]);
++    defer iterator.deinit();
++    errdefer iterator.closePreserving();
++    while (try iterator.next()) |source| try sources.append(engine.gpa, try scope.own(source));
++    const built = try sdk_headers.build(engine, sources.items);
++    defer engine.freeValue(built.values);
++    defer engine.freeValue(built.nulls);
++    const result = try scope.object();
++    try scope.put(result, "values", built.values);
++    try scope.put(result, "nulls", built.nulls);
++    return c.JS_DupValue(engine.context, result);
++}
++test "native OpenAI header contract identity comes from pinned Zig target and actual QuickJS runtime" {
++    const engine = try v.em.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    var scope: v.Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const expected = try expectedNativeIdentity(engine.gpa);
++    defer engine.gpa.free(expected);
++    const actual = try scope.own(try @import("extensions/native_ai_user_agent.zig").runtime(&scope));
++    const bytes = try engine.toString(actual);
++    defer engine.gpa.free(bytes);
++    try std.testing.expectEqualStrings(expected, bytes);
++    const spoof = try engine.evalModule("globalThis.process={version:'v24.14.0',versions:{node:'24.14.0'},platform:'win32',arch:'x64'};export const done=true;", "native-header-runtime-identity-spoof.mjs");
++    engine.freeValue(spoof);
++    const after = try scope.own(try @import("extensions/native_ai_user_agent.zig").runtime(&scope));
++    const after_bytes = try engine.toString(after);
++    defer engine.gpa.free(after_bytes);
++    try std.testing.expectEqualStrings(expected, after_bytes);
++}
++test "native OpenAI header contract SDK merge preserves undefined null append body precedence and raw getters" {
++    const engine = try v.em.Engine.init(std.testing.allocator, .{});
++    defer engine.deinit();
++    try @import("extensions/native_headers.zig").install(engine);
++    var scope: v.Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
++    try scope.put(global, "nativeSdkHeaderBuild", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "buildHeaders", 1, build, &.{})));
++    const module = try engine.evalModule(@embedFile("extensions/fixtures/ai-openai-sdk-headers-primary.input.txt") ++
++        \\const rows=observeHeaderCases(nativeSdkHeaderBuild),cases=Object.fromEntries(rows.map(row=>[row.name,row]));
++        \\if(rows.length!==18)throw Error('All original authored SDK header controls required');
++        \\const header=(name,key)=>cases[name].headers.find(([k])=>k===key)?.[1];
++        \\if(header('undefined preserves earlier default','accept')!=='application/json'||header('undefined preserves earlier default','authorization')!=='Bearer placeholder')throw Error('undefined erased previous header');
++        \\if(cases['null removes earlier default'].headers.length||cases['null removes earlier default'].nulls.join(',')!=='accept,authorization')throw Error('null tombstones');
++        \\if(header('case distinct object keys overwrite','x-test')!=='last'||header('tuple repeated name appends','x-test')!=='first, last'||header('record array undefined null and values','x-test')!=='last'||header('empty and undefined arrays preserve default','x-test')!=='base')throw Error('SDK record versus tuple append semantics');
++        \\if(header('header value trims HTTP whitespace','x-test')!=='value'||header('JSON body header follows defaults','content-type')!=='application/json'||header('request header follows JSON body','content-type')!=='request-level')throw Error('normalization and body order');
++        \\if(header('retry and timeout caller precedence','x-stainless-retry-count')!=='caller'||header('retry and timeout caller precedence','x-stainless-timeout')!==undefined||!cases['retry and timeout caller precedence'].nulls.includes('x-stainless-timeout'))throw Error('caller protocol precedence');
++        \\if(header('client default spread preserves case key order','user-agent')!=='model-lower')throw Error('Client Object.assign casing order');
++        \\if(header('explicit identity headers stay caller owned','user-agent')!=='caller-owned'||header('explicit identity headers stay caller owned','x-stainless-runtime')!=='caller-runtime'||cases['explicit identity headers stay caller owned'].headers.length!==7)throw Error('Caller identity header ownership');
++        \\if(header('real Headers source appends normalized entries','x-test')!=='first, last')throw Error('real Headers input');
++        \\for(const name of ['invalid header name','invalid header value','tuple nonstring header name'])if(cases[name].error?.name!=='TypeError')throw Error(name);
++        \\if(!cases['raw record getter identity'].same||cases['raw record getter identity'].trace.join(',')!=='value getter'||header('live value coercion','x-test')!=='first'||cases['live value coercion'].trace.join(',')!=='toString')throw Error('raw getter and value coercion');
++        \\export const observations=rows;
++    , "native-openai-sdk-header-primary-controls.mjs");
++    defer engine.freeValue(module);
++}
++test "native OpenAI header contract allocation failure never becomes a successful partial header merge" {
++    const Probe = struct {
++        fn run(gpa: std.mem.Allocator) !void {
++            const engine = try v.em.Engine.init(gpa, .{});
++            defer engine.deinit();
++            const generation = engine.native_allocation_generation;
++            exercise(engine) catch |err| return engine.nativeAllocationError(err, generation);
++        }
++        fn exercise(engine: *v.em.Engine) !void {
++            try @import("extensions/native_headers.zig").install(engine);
++            var scope: v.Scope = .{ .engine = engine };
++            defer scope.deinit();
++            const defaults = try scope.object();
++            try scope.put(defaults, "Authorization", try scope.text("Bearer placeholder"));
++            try scope.put(defaults, "X-Test", try scope.text("base"));
++            const changed = try scope.object();
++            const values = try scope.array();
++            try scope.index(values, 0, c.pi_js_undefined());
++            try scope.index(values, 1, try scope.text("first"));
++            try scope.index(values, 2, c.pi_js_null());
++            try scope.index(values, 3, try scope.text("last"));
++            try scope.put(changed, "x-test", values);
++            try scope.put(changed, "authorization", c.pi_js_null());
++            const built = try sdk_headers.build(engine, &.{ defaults, changed });
++            defer engine.freeValue(built.values);
++            defer engine.freeValue(built.nulls);
++            const result = try scope.invoke(built.values, "get", &.{try scope.text("x-test")});
++            if (!try v.eq(&scope, result, "last") or !scope.truthy(try scope.invoke(built.nulls, "has", &.{try scope.text("authorization")}))) return error.PartialHeaderMergeEscapedAllocationFailure;
++        }
++    };
++    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
++}
+diff --git a/src/native_ai_openai_nonstream_test.zig b/src/native_ai_openai_nonstream_test.zig
+new file mode 100644
+index 0000000000000000000000000000000000000000..744923cf25180c87344507e8294930522449c0b5
+--- /dev/null
++++ b/src/native_ai_openai_nonstream_test.zig
+@@ -0,0 +1,25 @@
++const std = @import("std");
++const v = @import("extensions/native_ai_provider_values.zig");
++const c = v.c;
++fn parse(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
++    var scope: v.Scope = .{ .engine = engine };
++    defer scope.deinit();
++    return c.JS_DupValue(engine.context, try @import("extensions/native_ai_openai_sdk_request.zig").parseResponse(&scope, args[1], args[0]));
++}
++test "native OpenAI SDK nonstream response raw brands live getters and reader timing" {
++    const engine = try v.em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 20000 });
++    defer engine.deinit();
++    engine.native_io = std.testing.io;
++    try @import("extensions/text_encoding.zig").install(engine);
++    try @import("extensions/text_decoder.zig").install(engine);
++    try @import("extensions/native_headers.zig").install(engine);
++    try @import("extensions/abort_signal.zig").install(engine);
++    try @import("extensions/console.zig").install(engine, std.testing.io);
++    try @import("extensions/native_web_fetch.zig").install(engine);
++    var scope: v.Scope = .{ .engine = engine };
++    defer scope.deinit();
++    try scope.put(try scope.own(c.JS_GetGlobalObject(engine.context)), "nativeSDKParse", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "nativeSDKParse", 2, parse, &.{})));
++    const result = try engine.evalModule(@embedFile("extensions/fixtures/ai-openai-nonstream-primary.input.txt") ++ "export const observations=await observeNonstream(nativeSDKParse);if(observations.length!==57)throw Error('All57 authored nonstream controls required');", "native-openai-nonstream-controls.mjs");
++    engine.freeValue(result);
++    c.JS_RunGC(engine.runtime);
++}
