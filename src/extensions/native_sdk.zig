@@ -1,6 +1,7 @@
 //! Programmatic coding-agent SDK objects, implemented through the C ABI.
 const std = @import("std");
 const engine_mod = @import("engine.zig");
+const js = @import("native_js_values.zig");
 const c = engine_mod.c;
 const Kind = enum(c_int) { session_manager, settings_manager, resource_loader, model_runtime, agent_session, session_runtime, model_registry };
 pub const State = struct {
