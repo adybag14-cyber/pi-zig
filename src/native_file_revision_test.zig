@@ -115,13 +115,15 @@ test "private allocation failures remain errors rather than Source missing revis
     try create(tmp.dir, "allocation", "present");
     const path = try absolute(tmp.dir, "allocation");
     defer std.testing.allocator.free(path);
-    // The native path conversion allocates before the kernel stat, and the
-    // returned decimal string allocates afterward. Both boundaries must keep
-    // a private host OOM distinct from Source's ordinary stat failure result.
-    for (0..2) |index| {
-        var failing: std.testing.FailingAllocator = .init(std.testing.allocator, .{ .fail_index = index });
-        try std.testing.expectError(error.OutOfMemory, revision.revisionAlloc(failing.allocator(), path));
-    }
+    // Path conversion and the returned decimal string both allocate. Exhaust
+    // every actual allocation boundary, including Windows namespace setup.
+    // Private OOM must remain an error and free all preceding allocations.
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, struct {
+        fn probe(gpa: std.mem.Allocator, input: []const u8) !void {
+            const result = (try revision.revisionAlloc(gpa, input)) orelse return error.UnexpectedMissingRevision;
+            defer gpa.free(result);
+        }
+    }.probe, .{path});
 }
 
 test "native revisions equal actual Source bigint stat strings on six retained physical paths" {
