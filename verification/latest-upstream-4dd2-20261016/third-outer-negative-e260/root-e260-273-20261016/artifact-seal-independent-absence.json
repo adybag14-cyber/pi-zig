@@ -1,0 +1,61 @@
+{
+  "observed_utc": "2026-10-16T15:18:09.9742537+00:00",
+  "present": 0,
+  "rows": [
+    {
+      "identity": {
+        "pid": 45004,
+        "parent_pid": 71872,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:17:33.8990860+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-e260-273-20261016\\configs\\before.json -ConfigSha256 B235275CD117EFDD01B445A4EC5C39C786888FC79D66BC1C4A8F875D8F2A7239"
+      },
+      "original_identity_absent": true,
+      "pid_reused": false
+    },
+    {
+      "identity": {
+        "pid": 20152,
+        "parent_pid": 45004,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:17:33.9024850+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true,
+      "pid_reused": false
+    },
+    {
+      "identity": {
+        "pid": 69476,
+        "parent_pid": 71872,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:17:53.2257370+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-e260-273-20261016\\configs\\final.json -ConfigSha256 7199A977F05E8DCA4AE3347DDB6DF81F7CFB8DD986B991958E1BBCAD6F7A8358"
+      },
+      "original_identity_absent": true,
+      "pid_reused": false
+    },
+    {
+      "identity": {
+        "pid": 67288,
+        "parent_pid": 69476,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:17:53.2294700+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true,
+      "pid_reused": false
+    },
+    {
+      "identity": {
+        "pid": 71956,
+        "parent_pid": 71872,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:18:09.0856670+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-e260-273-20261016\\configs\\artifact-seal.json -ConfigSha256 22C6BCEE0346626C563AEB5050B0EAD3BE6747B54E34AEE2EA431D7B1DF95085"
+      },
+      "original_identity_absent": true,
+      "pid_reused": false
+    }
+  ]
+}

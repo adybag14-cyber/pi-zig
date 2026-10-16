@@ -1,0 +1,5 @@
+Exception: C:\Users\adyba\pi-zig-latest-4dd2-models-20261016\verification\latest-upstream-4dd2-20261016\Freeze-Latest4ddSource.ps1:110
+Line |
+ 110 |  if($taskFailures){throw "Full $Phase freeze failed: $taskFailures"}
+     |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Full before freeze failed: 34826

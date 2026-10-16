@@ -21,6 +21,7 @@ function Check-DependencyLink {
 }
 function Read-Rows([string]$Path){
     $taskDocument=Get-Content -LiteralPath $Path -Raw|ConvertFrom-Json
+    if($taskDocument -is [System.Array]){return @($taskDocument)}
     if($taskDocument.inputs){return @($taskDocument.inputs)}
     return @($taskDocument)
 }

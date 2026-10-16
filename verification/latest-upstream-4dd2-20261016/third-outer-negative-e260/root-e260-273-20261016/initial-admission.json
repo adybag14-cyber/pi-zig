@@ -1,0 +1,7 @@
+{
+  "required_free_kib": 16777216,
+  "admitted": true,
+  "manual_root_grant_sha256": "B7463188779AF6319B22577FBE109CFF410E98431BB08440724F1606CAFB49D3",
+  "observed_utc": "2026-10-16T15:17:33.4605524+00:00",
+  "free_kib": 18277332
+}
