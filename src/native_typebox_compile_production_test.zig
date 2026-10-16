@@ -48,3 +48,21 @@ test "actual provider schemas Partial and Memory match genuine Source52 on share
     try @import("native_ai_model_schemas_partial_test.zig").replay(e, try s.get(actual, "Type"), actual, try s.get(actual, "Schemas"), try s.get(actual, "Compiler"), source);
     std.debug.print("TYPEBOX_PROVIDER_SCHEMA_SOURCE_PARITY cases=52 actual_shared_graph=true full_HOST_GPA=false C_malloc_exhaustive=false\n", .{});
 }
+test "actual TypeBox generic operators match complete genuine Source396 on shared compiler graph" {
+    const e = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer e.deinit();
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const bytes = @embedFile("extensions/fixtures/typebox-operators-production.expected.json");
+    const source = try s.own(try e.checked(c.JS_ParseJSON(e.context, bytes.ptr, bytes.len, "genuine-typebox-operators-source396.json")));
+    const actual = try s.own(try graph(e));
+    const global = try s.own(c.JS_GetGlobalObject(e.context));
+    try s.put(global, "gc", try s.own(try e.checked(c.JS_NewCFunction(e.context, gc, "gc", 0))));
+    try s.put(global, "TypeBoxOperatorGraph", actual);
+    try s.put(global, "TypeBoxOperatorSource", source);
+    const pending = try s.own(try e.evalModule(@embedFile("extensions/fixtures/typebox-operators-production.input.txt") ++
+        \\const expected=TypeBoxOperatorSource.rows,actual=TypeBoxOperatorRows;if(TypeBoxOperatorSource.version!=='1.3.27'||TypeBoxOperatorSource.cases!==396||expected.length!==396||actual.length!==396)throw Error('actual TypeBox operator Source396 scope');for(let index=0;index<396;index++){if(JSON.stringify(expected[index])!==JSON.stringify(actual[index]))throw Error(JSON.stringify({scope:'actual shared TypeBox operators',index,expected:expected[index],actual:actual[index]}))}export const pass=true;
+    , "actual-typebox-operators-source396-shared.mjs"));
+    _ = try s.own(try e.awaitValue(pending));
+    std.debug.print("TYPEBOX_OPERATOR_SOURCE_PARITY cases=396 actual_shared_graph=true full_HOST_GPA=false C_malloc_exhaustive=false\n", .{});
+}

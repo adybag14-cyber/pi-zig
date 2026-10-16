@@ -1,0 +1,40 @@
+{
+  "status": "prepared_no_execution_grant",
+  "baseHead": "2851f6feef4be4ff8636a41208e356f74a6f6b74",
+  "ownerReviewStatus": "HOLD: Body9B5 negative requires successor review before execution",
+  "historicalOwnerHead": "898bd4adb03defc1da0d93af763dca06a83197e3",
+  "historicalOwnerSha256": "9B5A40C1399D6685362DB73AD2086070401C79EB1158BAAC9AD75E144601E4FD",
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "sourceFiles": 1970,
+  "runtimeFiles": 31064,
+  "nodeFiles": 1774,
+  "compilerFiles": 19546,
+  "explicitAbsences": 84,
+  "guestAwaitMilliseconds": 10000,
+  "testTimeoutSeconds": 120,
+  "runtimeOuterSeconds": 300,
+  "compileOuterSeconds": 1320,
+  "metadataOuterSeconds": 30,
+  "minimumFreeBytes": 12884901888,
+  "pressureStopBytes": 4294967296,
+  "zeroOtherNative": true,
+  "expectedTests": [
+    "native_typebox_compile_production_test.test.actual TypeBox Compile Validator matches complete genuine Source80",
+    "native_typebox_compile_production_test.test.actual provider schemas Partial and Memory match genuine Source52 on shared compiler graph",
+    "native_typebox_compile_production_test.test.actual TypeBox generic operators match complete genuine Source396 on shared compiler graph",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "exactMetadataRequirement": "Actual Zig0.16 metadata query must match all expected names, including anonymous imported guard; no selected run may be skipped",
+  "fixtures": [
+    {"path":"src/extensions/fixtures/typebox-compile-production.input.mjs","sha256":"B7DC5B8F18B42E70410438DE323B408D4BB268CF45E19BE923952D9097BE60AB"},
+    {"path":"src/extensions/fixtures/typebox-compile-production.json","sha256":"54303EE9477C4632F408963887DD58E5103775D1C8B75B37DF8F27A020984DE2"},
+    {"path":"src/extensions/fixtures/ai-model-schemas-partial-4954.input.mjs","sha256":"2D1C003EBB9AE7042EF9F8834988616B6B13BC611F06D37A0177FD520966B94D"},
+    {"path":"src/extensions/fixtures/ai-model-schemas-partial-4954.json","sha256":"A29A7FF43504C73BA436AA697D284C86F08E67F7965BA99603E100ED5F77D742"},
+    {"path":"src/extensions/fixtures/typebox-operators-production.input.txt","sha256":"37CEEAC103C70BF1C587F03CAA11C5EE4EC0A6AE414222D8653116E94DB5C9AA"},
+    {"path":"src/extensions/fixtures/typebox-operators-production.expected.json","sha256":"888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C"}
+  ],
+  "knownGaps": ["arbitrary guest BuildResult Functions/Entry source replacement", "mutation of compiler argument arrays through overridden join", "native checker WeakMap lifecycle and allocation fault injection"],
+  "nativeCompiled": false,
+  "nativeExecuted": false,
+  "fullPiQualified": false
+}
