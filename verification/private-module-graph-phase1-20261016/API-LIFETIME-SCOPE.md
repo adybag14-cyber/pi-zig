@@ -37,6 +37,41 @@ The proposed public C additions are opaque trusted-host capabilities, not guest
 objects, properties or forgeable string tokens. Names below are the intended
 header surface; exact C declarations will be reviewed with the patch:
 
+```c
+typedef struct JSPiPrivateModuleGraph JSPiPrivateModuleGraph;
+typedef struct JSPiModuleOrigin JSPiModuleOrigin;
+/* -1: exception, 0: existing shared domain, 1: importer's private graph. */
+typedef int JSPiModuleGraphSelectFunc(JSContext *ctx,
+    const JSPiModuleOrigin *importer, const char *canonical_physical_name,
+    JSValueConst attributes, void *opaque);
+typedef JSModuleDef *JSPiModuleGraphLoadFunc(JSContext *ctx,
+    JSPiPrivateModuleGraph *graph, const char *canonical_physical_name,
+    JSValueConst attributes, void *opaque);
+JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph(JSContext *ctx,
+    JSPiModuleGraphSelectFunc *selector, JSPiModuleGraphLoadFunc *loader,
+    void *opaque);
+JSValue JS_PiCompilePrivateModule(JSContext *ctx,
+    JSPiPrivateModuleGraph *graph, const char *source, size_t source_length,
+    const char *physical_filename, JSValueConst attributes);
+/* Borrowed until owner context teardown; attributes NULL when tombstoned. */
+const char *JS_PiModuleOriginFilename(const JSPiModuleOrigin *origin);
+const JSValue *JS_PiModuleOriginAttributes(const JSPiModuleOrigin *origin);
+JSPiPrivateModuleGraph *JS_PiModuleOriginGraph(const JSPiModuleOrigin *origin);
+typedef struct JSPiModuleGraphStats {
+    uint64_t created, linked, evaluated, failed, quarantined;
+} JSPiModuleGraphStats;
+int JS_PiGetPrivateModuleGraphStats(JSContext *ctx,
+    const JSPiPrivateModuleGraph *graph, JSPiModuleGraphStats *stats);
+```
+
+This list is exhaustive for the planned new header surface. Existing public
+evaluation/loader signatures and JSEvalOptions version are unchanged. A caller
+must duplicate an attribute value if retaining it outside the borrowed access;
+no accessor supplies an independent ModuleDef reference or graph ID. Stats
+access validates context membership before reading a capability. Normalization
+uses the existing physical resolver before the selector. A selector cannot
+return an arbitrary capability, and the graph loader never handles shared0.
+
 1. Opaque JSPiPrivateModuleGraph and JSPiModuleOrigin types. A graph belongs to
    one JSContext and captures immutable selector/loader callbacks plus their
    opaque host context at creation. A NULL graph is the existing shared domain0.
