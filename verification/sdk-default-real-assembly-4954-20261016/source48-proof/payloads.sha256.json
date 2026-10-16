@@ -1,0 +1,118 @@
+[
+  {
+    "path": "frozen-inventories.index.json",
+    "sha256": "F6A68887C84138E8D65BA22D55D6B7E283CD4A4D85A9C32EA28445519BFD2863"
+  },
+  {
+    "path": "frozen-inventories.zip",
+    "sha256": "54EDE7CA86DB33B166EFE4B3FF0DEB7DFE7A6CDCFA75E0629651F0C37CB79839"
+  },
+  {
+    "path": "Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+    "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45"
+  },
+  {
+    "path": "observed-modules.index.json",
+    "sha256": "4DFCE391763966737157DE8F1F24A4DA4AE115560C1C2B018E2CFE7E5B06A63F"
+  },
+  {
+    "path": "observed-modules.jsonl",
+    "sha256": "47638D1473194BBC303BFD97FDB4C6006A206C80AD6158260BD56E36E6BD2121"
+  },
+  {
+    "path": "observed-modules.zip",
+    "sha256": "CA4BC58322A6AC6028359A65780DD910B7800535856C41D5BA9616F63345256E"
+  },
+  {
+    "path": "physical-files.index.json",
+    "sha256": "696774F3B1882A080FE919185EA07515A949748EE2F93FE3F469CACAA1CB1D2B"
+  },
+  {
+    "path": "physical-files.zip",
+    "sha256": "0AF312CB07707D7C8FFA246679FE192C48DA744B7502F1805FB7587CA2D91D26"
+  },
+  {
+    "path": "physical-versions.index.json",
+    "sha256": "D34505EFB044C95E97CBF0E033018D9BB7966F418EDB1DAF2EB407ACFF802A31"
+  },
+  {
+    "path": "physical-versions.zip",
+    "sha256": "90314E5B419703F1AC1D3529DE6EF8D88D38743698D327D758FE4BEF412AAE99"
+  },
+  {
+    "path": "Run-SdkLoaderInputsSource-20261016.ps1",
+    "sha256": "331FA1DB066CAAC5BE1FAD0079790E7C0D46E2982A5A518B03D246C25211FB4D"
+  },
+  {
+    "path": "sdk-loader-inputs-prelaunch-seal-20261016.json",
+    "sha256": "9BE0EEE41801A388BE2147CABECB4AB745D56D4A9BBAE2EBCEF6AB4F13DC3213"
+  },
+  {
+    "path": "sdk-loader-inputs-probe-inventory-20261016.json",
+    "sha256": "6C81DECEFEF9CA7AA22C952914B5C3A82C5723C32E203B23B5B5EB40563924AE"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-20261016-admission.json",
+    "sha256": "5E86DFAB4B1603A343476A30644ABD707B99FD09D2168828ED51DC44A9960391"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-20261016-controls-before.json",
+    "sha256": "DD0F667F352580652D349EDAA5BA8C1D94B615C166ABC230868B2E061DBAE8B2"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-20261016-output.json",
+    "sha256": "14EEBD914A04DCBCBCEF24CD8D4509CB22A61FC2C18FB305B81ADE0E25C5DA00"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-20261016-output.json.fresh-root.json",
+    "sha256": "803368AAAAB3A91D0C54DEF9F36469C5BFED7C405FC3E6C50693710AB0E2BC8C"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-20261016-output.json.initializer.json",
+    "sha256": "BBFC4BABDF7001BD5B3DD7FC62F4C51CDAC9743621D658E6084AB1F5A8A5E80A"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-20261016-posthash.json",
+    "sha256": "2E3E99D5E2BB89222EF487F26865FEA2ACA96BA38FD70B7C3C7F295CF5353290"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-20261016.json",
+    "sha256": "5A6FB4C33A1315CC57ED9FBC211A1558389086A87165C8BB42499EC10E6DA4EA"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-20261016.stderr.log",
+    "sha256": "32ADE9AA1B87797F7A07E047D9CE9E8E975D6407CC7D0F5A976F21769B9369DB"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-20261016.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-independent-review.json",
+    "sha256": "DE85F42D4C430C9B90EABE98DBEBE2B7335F87C6508BF34CA8C0E2CEC2E14342"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-manual16GiB-admission.json",
+    "sha256": "C18AA94CA9980D93926638F296289D4324C8DE9E11A1E50AFDCFCE9AA8220881"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-node-absence.json",
+    "sha256": "15E49956A6D7DB2F2674B4276C0AFDDF531F27E15ABA374574165B375538D9B6"
+  },
+  {
+    "path": "sdk-loader-inputs-source-first-root-review.json",
+    "sha256": "553BC83FAFD86E27C99F9639EE91BD6784863B69B71DEC7662F7104E28F4AC3E"
+  },
+  {
+    "path": "source4954-dependency-contract-audit-20261015.json",
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745"
+  },
+  {
+    "path": "source4954-observe-20261015.mjs",
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3"
+  },
+  {
+    "path": "source4954-preparation-readiness-20261015.json",
+    "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7"
+  }
+]

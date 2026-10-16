@@ -1,0 +1,16 @@
+{
+  "name": "sdk-loader-inputs-source-first-20261016",
+  "pid": 75292,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --expose-gc --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\verification\\sdk-default-real-assembly-4954-20261016\\capture-loader-inputs.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-16T12:38:34.4197242Z",
+  "launched_utc": "2026-10-16T12:38:34.4172138+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-4954d76-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-16T12:39:01.1600637+00:00"
+}

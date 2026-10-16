@@ -1,0 +1,37 @@
+{
+  "status": "root_independently_reviewed_genuine_source48",
+  "candidate": "2ee403d48e327930a4637caed6237333c3e0678d",
+  "actual_node_pid": 75292,
+  "actual_node_exit": 0,
+  "wrapper_exit": 1,
+  "wrapper_negative_preserved": "Case-sensitive comparison of the same SHA256 hex digest",
+  "original_rows": 48,
+  "row_order_drift": 0,
+  "physical_versions": 22,
+  "physical_final_files": 25,
+  "module_rows": 1486,
+  "module_current_byte_matches": 1483,
+  "intentional_version_matches": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.cjs",
+      "sha256": "0bfc0567318b1f9103c059d977ec96a7e705af4f4b7c609e5c52c55a7a5cbf5c",
+      "matched_retained_version": "created"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\data.json",
+      "sha256": "3a37782e8974c48eebf2a0517c866ad15641c53b3d31993188796b56aeb79624",
+      "matched_retained_version": "created"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\native-dependency.mjs",
+      "sha256": "340fbabb6a89ec21981e3843a40f4feacb4b4f49c1cb6a394dbbc66ca7b4942d",
+      "matched_retained_version": "created"
+    }
+  ],
+  "full_posthash_drift": 0,
+  "output_sha256": "14EEBD914A04DCBCBCEF24CD8D4509CB22A61FC2C18FB305B81ADE0E25C5DA00",
+  "module_log_sha256": "47638D1473194BBC303BFD97FDB4C6006A206C80AD6158260BD56E36E6BD2121",
+  "expected_absent_at_review": true,
+  "native_qualified": false,
+  "reviewed_utc": "2026-10-16T12:42:59.8971157+00:00"
+}

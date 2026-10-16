@@ -153,3 +153,43 @@ ModelRuntime collaborator is created for these controls. Migration formatting,
 AST, semantic compilation and native execution have not run during Root's
 serial native lease. The primitive's separate26-case qualification does not
 qualify these callers, stores, runtime composition or default selection.
+
+Genuine **Source48** captured actual initializer34 plus jiti reload14 at clean
+candidate `2ee403d48e327930a4637caed6237333c3e0678d`. Node75292 exited0 and an
+independent PID check found it absent. All48 ordered rows were present; full
+Source1970/deps31064/Node1774/compiler19546/candidate8499, control/path and84
+absence postchecks reported zero drift. Admission retained a fresh16GiB check
+in addition to the256MiB heap/300second owned process deadline.
+
+The original wrapper **exited1** because it compared identical SHA256 hex in
+different letter case. That original runner, its controls and negative result
+remain preserved. Root independently reviewed terminal state, row identities,
+all bodies and complete posthash receipts, and explicitly accepted genuine
+Source48 in the retained supplemental Root review. This is supplemental Source
+acceptance, not a wrapper pass. No retry ran. The exact raw accepted output was
+copied only after that review; expected SHA256:
+`14EEBD914A04DCBCBCEF24CD8D4509CB22A61FC2C18FB305B81ADE0E25C5DA00`.
+
+The29-payload packet retains four full frozen inventories,1486 original module
+bodies including668 TypeBox modules,22 physical write versions and25 final
+physical files with original captured metadata. Three observed modules are
+intentional earlier created versions of edited CJS/JSON/native-ESM fixtures;
+their archive bytes come from the original captured write bodies and match
+the load-time observer hashes. They are not checked against later edited
+files. Original physical fixtures and jiti fsCache files remain retained in
+the owned audit directory. Validate-Source48Proof.ps1 is a separate saved-proof
+verifier that canonicalizes hex case, verifies each archived original version
+and requires the explicit supplemental acceptance; it never edits the runner.
+
+Actual metadata is coding-agent1.3.0, TypeBox1.3.27 and jiti2.7.0. The pinned jiti
+package.json SHA256 is
+`AAB8AAFC42D9AEEC14A6E2FE0E15EA1514C0C205A624055A7E776F2EC456283C`.
+The initializer controls retain factory ordinary/thenable/throw timing, commit
+throw then discard, overriding discard throws, failed retained API use, real
+event unsubscribe cleanup, schema/inherited/Proxy getter order and raw reasons.
+Reload controls observe fresh transformed TS roots and transitive TS modules,
+stable old closures and working fresh cycles/TLA. CJS/JSON/native.mjs dependency
+caches persist across same-path edits; stale in-flight extension cache tokens
+cannot overwrite a newer factory. Direct native/CJS root policies remain
+outside those14 cases. Native SDK callers, importer and composition remain
+unqualified, with default selection uncalled and no new Zig jobs run.

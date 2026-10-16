@@ -44,3 +44,15 @@ concurrent fresh roots, stale extension-cache tokens, allocation at each owner
 boundary and exact metadata-map retirement. Only the attempt's private record
 may be retired on failure; no other module or cache entry is cleared. This is
 an API proposal, with no Engine/C edit or native execution in this lane.
+
+Accepted Source48 now resolves part of the policy: original jiti2.7.0 with the
+exact Source resolution options reevaluates transformed TS root and dependency
+modules for each fresh import, including shared dependencies and indirect
+cycles. Old closures continue to reference their original graph. CJS, JSON and
+native.mjs dependency modules remain cached when those same files are edited.
+TLA completes, physical import.meta URL remains stable, and clearing the
+extension cache while an old import is pending leaves the newer factory in
+the cache. Native/CJS/JavaScript direct-root behavior still needs separate
+controls before applying a general root policy. The original wrapper exit1
+hex-case failure is preserved; acceptance comes from the explicit Root
+supplemental review, with actual Node terminal0 and complete posthash0.

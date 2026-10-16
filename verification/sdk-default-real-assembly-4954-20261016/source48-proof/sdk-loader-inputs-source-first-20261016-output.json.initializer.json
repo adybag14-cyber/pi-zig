@@ -1,0 +1,446 @@
+{
+  "authority": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "packageRootOverride": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent",
+  "inputSha256": "c643a735a25571192bddbb9c836c99a6350200e138698516423d62575c63f076",
+  "modules": {
+    "core/extensions/loader.ts": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+    "core/source-info.ts": "52648af6e9bb29858ece4eaeccedd960c5de8a0ac4ec25c0ee851ff00de27f5c"
+  },
+  "cases": 34,
+  "rows": [
+    {
+      "name": "source-information-path-cases",
+      "value": [
+        {
+          "path": "builtin:read",
+          "source": "builtin",
+          "synthetic": true
+        },
+        {
+          "path": "<inline:named>",
+          "source": "inline",
+          "synthetic": true
+        },
+        {
+          "path": "<>",
+          "source": "temporary",
+          "synthetic": true
+        },
+        {
+          "path": "<open",
+          "source": null,
+          "synthetic": true
+        },
+        {
+          "path": "disk/file.ts",
+          "source": null,
+          "synthetic": false
+        }
+      ]
+    },
+    {
+      "name": "source-information-order-defaults",
+      "value": {
+        "keys": [
+          "path",
+          "source",
+          "scope",
+          "origin",
+          "baseDir"
+        ],
+        "value": {
+          "path": "<inline>",
+          "source": "inline",
+          "scope": "temporary",
+          "origin": "top-level"
+        }
+      }
+    },
+    {
+      "name": "initializer-function-metadata",
+      "value": {
+        "name": "loadExtensionFromFactory",
+        "length": 4
+      }
+    },
+    {
+      "name": "actual-runtime-field-order",
+      "value": [
+        "sendMessage",
+        "sendUserMessage",
+        "appendEntry",
+        "setSessionName",
+        "getSessionName",
+        "setLabel",
+        "getActiveTools",
+        "getAllTools",
+        "getSettings",
+        "setActiveTools",
+        "refreshTools",
+        "getCommands",
+        "setModel",
+        "getThinkingLevel",
+        "setThinkingLevel",
+        "flagValues",
+        "pendingProviderRegistrations",
+        "pendingNativeProviderRegistrations",
+        "mcpServers",
+        "pendingVirtualModelRegistrations",
+        "createContext",
+        "assertActive",
+        "invalidate",
+        "trackEventBusSubscription",
+        "registerProvider",
+        "registerNativeProvider",
+        "unregisterProvider",
+        "registerVirtualModel",
+        "unregisterVirtualModel"
+      ]
+    },
+    {
+      "name": "loading-flag-private-pending",
+      "value": {
+        "api": "first",
+        "runtimeHas": false
+      }
+    },
+    {
+      "name": "loading-runtime-queues",
+      "value": {
+        "providers": 0,
+        "mcp": 0,
+        "virtual": 0
+      }
+    },
+    {
+      "name": "created-extension-order",
+      "value": {
+        "keys": [
+          "path",
+          "resolvedPath",
+          "sourceInfo",
+          "handlers",
+          "tools",
+          "messageRenderers",
+          "entryRenderers",
+          "commands",
+          "flags",
+          "shortcuts",
+          "markdownTransformer",
+          "toolRenderers"
+        ],
+        "path": "<inline:actual>",
+        "resolvedPath": "<inline:actual>",
+        "sourceInfo": {
+          "path": "<inline:actual>",
+          "source": "inline",
+          "scope": "temporary",
+          "origin": "top-level"
+        }
+      }
+    },
+    {
+      "name": "tool-getter-order",
+      "value": [
+        "schema",
+        "schema",
+        "schema",
+        "name"
+      ]
+    },
+    {
+      "name": "registration-map-identities",
+      "value": {
+        "tool": true,
+        "toolSource": true,
+        "commandSource": true,
+        "handlerCalls": 1,
+        "handlerIdentity": true,
+        "handlerName": "registeredHandler",
+        "handlerLength": 0,
+        "handlersSize": 0
+      }
+    },
+    {
+      "name": "committed-flag-first-default",
+      "value": {
+        "flag": "first",
+        "registeredDefault": "second"
+      }
+    },
+    {
+      "name": "committed-runtime-queues",
+      "value": {
+        "providers": [
+          {
+            "name": "fixture-provider",
+            "extensionPath": "<inline:actual>"
+          }
+        ],
+        "mcp": [
+          {
+            "name": "fixture-mcp",
+            "extensionPath": "<inline:actual>"
+          }
+        ],
+        "virtual": [
+          {
+            "provider": "fixture-virtual",
+            "id": "route",
+            "routeName": "route",
+            "routeLength": 1,
+            "extensionPath": "<inline:actual>"
+          }
+        ]
+      }
+    },
+    {
+      "name": "api-field-order",
+      "value": [
+        "on",
+        "registerTool",
+        "registerCommand",
+        "registerShortcut",
+        "registerFlag",
+        "registerMessageRenderer",
+        "registerMarkdownTransformer",
+        "registerEntryRenderer",
+        "registerToolRenderer",
+        "getFlag",
+        "sendMessage",
+        "sendUserMessage",
+        "appendEntry",
+        "setSessionName",
+        "getSessionName",
+        "setLabel",
+        "exec",
+        "getActiveTools",
+        "getAllTools",
+        "getSettings",
+        "setActiveTools",
+        "getCommands",
+        "setModel",
+        "getThinkingLevel",
+        "setThinkingLevel",
+        "registerProvider",
+        "unregisterProvider",
+        "registerMcpServer",
+        "unregisterMcpServer",
+        "getMcpServers",
+        "registerVirtualModel",
+        "unregisterVirtualModel",
+        "events"
+      ]
+    },
+    {
+      "name": "active-command-validation",
+      "value": [
+        {
+          "name": "Error",
+          "message": "Command registered by extension \"<inline:actual>\" must have a non-empty string name. Use pi.registerCommand(\"name\", { description, handler })."
+        },
+        {
+          "name": "Error",
+          "message": "Command \"/missing\" registered by extension \"<inline:actual>\" must define handler()."
+        }
+      ]
+    },
+    {
+      "name": "active-tool-validation",
+      "value": [
+        {
+          "name": "Error",
+          "message": "Tool \"invalid\" registered by extension \"<inline:actual>\" must define an object parameter schema."
+        },
+        {
+          "name": "Error",
+          "message": "Tool \"invalid\" registered by extension \"<inline:actual>\" must define an object parameter schema."
+        },
+        {
+          "name": "Error",
+          "message": "Tool \"invalid\" registered by extension \"<inline:actual>\" must define an object parameter schema."
+        },
+        {
+          "name": "Error",
+          "message": "Tool \"invalid\" registered by extension \"<inline:actual>\" must define an object parameter schema."
+        }
+      ]
+    },
+    {
+      "name": "active-flag-validation",
+      "value": {
+        "name": "Error",
+        "message": "Invalid default for flag \"wrong\": expected boolean, got string"
+      }
+    },
+    {
+      "name": "active-provider-required-config",
+      "value": {
+        "name": "Error",
+        "message": "Provider config is required when registering by name"
+      }
+    },
+    {
+      "name": "prebind-action-actual-error",
+      "value": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading."
+      }
+    },
+    {
+      "name": "prebind-set-model-actual-rejection",
+      "value": {
+        "name": "Error",
+        "message": "Extension runtime not initialized"
+      }
+    },
+    {
+      "name": "mcp-list-clone-isolation",
+      "value": []
+    },
+    {
+      "name": "raw-rejection-identity",
+      "value": true
+    },
+    {
+      "name": "discarded-pending-state",
+      "value": {
+        "flag": false,
+        "provider": false,
+        "mcp": false,
+        "events": 0
+      }
+    },
+    {
+      "name": "discarded-api-inactive",
+      "value": {
+        "name": "Error",
+        "message": "Extension \"<inline:failed>\" failed to load and its API is no longer active."
+      }
+    },
+    {
+      "name": "sync-factory-raw-identity",
+      "value": true
+    },
+    {
+      "name": "mcp-ownership-conflict",
+      "value": {
+        "name": "Error",
+        "message": "MCP server \"fixture-mcp\" is already registered by extension \"<inline:actual>\""
+      }
+    },
+    {
+      "name": "mcp-namespace-conflict",
+      "value": {
+        "name": "Error",
+        "message": "MCP server \"fixture_mcp\" conflicts with registered server \"fixture-mcp\""
+      }
+    },
+    {
+      "name": "ordinary-factory-await-order",
+      "value": [
+        "factory",
+        "after-call",
+        "queued",
+        "after-await"
+      ]
+    },
+    {
+      "name": "thenable-factory-await-order",
+      "value": [
+        "factory",
+        "then-get",
+        "after-call",
+        "then-this",
+        "after-await"
+      ]
+    },
+    {
+      "name": "commit-throw-then-discard",
+      "value": {
+        "identity": true,
+        "partialProviders": [
+          "commit-provider"
+        ],
+        "events": 0,
+        "inactive": {
+          "name": "Error",
+          "message": "Extension \"<inline:commit>\" failed to load and its API is no longer active."
+        }
+      }
+    },
+    {
+      "name": "discard-throw-overrides-factory-reason",
+      "value": {
+        "identity": true,
+        "inactive": {
+          "name": "Error",
+          "message": "Extension \"<inline:discard>\" failed to load and its API is no longer active."
+        }
+      }
+    },
+    {
+      "name": "proxy-parameter-raw-getter-reason",
+      "value": {
+        "identity": true,
+        "trace": [
+          "parameters"
+        ]
+      }
+    },
+    {
+      "name": "proxy-flag-read-spread-order",
+      "value": {
+        "trace": [
+          "get:default",
+          "get:default",
+          "get:type",
+          "keys",
+          "descriptor:type",
+          "get:type",
+          "descriptor:default",
+          "get:default",
+          "get:default",
+          "get:default"
+        ],
+        "flag": true
+      }
+    },
+    {
+      "name": "inherited-tool-getter-order",
+      "value": {
+        "trace": [
+          "parameters",
+          "parameters",
+          "parameters",
+          "name"
+        ],
+        "identity": true
+      }
+    },
+    {
+      "name": "inherited-flag-read-spread-order",
+      "value": {
+        "trace": [
+          "default",
+          "default",
+          "type",
+          "default",
+          "default"
+        ],
+        "flag": true,
+        "registeredKeys": [
+          "name",
+          "extensionPath"
+        ]
+      }
+    },
+    {
+      "name": "active-api-runtime-invalidated",
+      "value": {
+        "name": "Error",
+        "message": "fixture-stale"
+      }
+    }
+  ]
+}

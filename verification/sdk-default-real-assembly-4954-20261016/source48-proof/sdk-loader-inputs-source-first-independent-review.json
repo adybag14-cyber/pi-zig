@@ -1,0 +1,46 @@
+{
+  "status": "actual_node_terminal0_fullpost0_wrapper_identity_negative_pending_root_review",
+  "candidate": "2ee403d48e327930a4637caed6237333c3e0678d",
+  "actual_node_pid": 75292,
+  "actual_node_exit": 0,
+  "wrapper_exit": 1,
+  "wrapper_negative": "case-sensitive input hash compares lowercase Node hex to identical uppercase PowerShell hex",
+  "input_hash_equal_ignoring_hex_case": true,
+  "input_sha256": "c643a735a25571192bddbb9c836c99a6350200e138698516423d62575c63f076",
+  "rows": 48,
+  "row_name_drift": [],
+  "full_posthash_drift": 0,
+  "candidate_files": 8499,
+  "original_observed_modules": 1486,
+  "observed_typebox_modules": 668,
+  "current_original_byte_matches": 1483,
+  "intentional_fixture_versions": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.cjs",
+      "sha256": "0BFC0567318B1F9103C059D977EC96A7E705AF4F4B7C609E5C52C55A7A5CBF5C",
+      "load_version": "created",
+      "current_file_intentionally_edited": true
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\data.json",
+      "sha256": "3A37782E8974C48EEBF2A0517C866AD15641C53B3D31993188796B56AEB79624",
+      "load_version": "created",
+      "current_file_intentionally_edited": true
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\native-dependency.mjs",
+      "sha256": "340FBABB6A89EC21981E3843A40F4FEACB4B4F49C1CB6A394DBBC66CA7B4942D",
+      "load_version": "created",
+      "current_file_intentionally_edited": true
+    }
+  ],
+  "physical_write_rows": 22,
+  "physical_final_files": 25,
+  "physical_final_drift": [],
+  "module_log_sha256": "47638D1473194BBC303BFD97FDB4C6006A206C80AD6158260BD56E36E6BD2121",
+  "output_sha256": "14EEBD914A04DCBCBCEF24CD8D4509CB22A61FC2C18FB305B81ADE0E25C5DA00",
+  "expected_still_absent": true,
+  "expected_copied": false,
+  "published": false,
+  "native_qualified": false
+}
