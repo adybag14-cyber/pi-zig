@@ -1,0 +1,1890 @@
+{
+  "status": "accepted_genuine_runtime_free_Source160_capture",
+  "candidate_head": "81ec9d38837bff76f55bcf2f7c538548609e62c9",
+  "source_head": "698a2d23b86a5045dd54554354a5e0cb7e466795",
+  "source_tree": "495eca20433379a8cdd995e53c31278d72886c2b",
+  "cases": 160,
+  "all_records_audited": true,
+  "scalar_matrix_records": 144,
+  "falsy_records": 4,
+  "function_metadata_records": 1,
+  "getter_records": 4,
+  "coercion_records": 4,
+  "live_regexp_records": 3,
+  "raw_sha256": "C7A60845D59D505EF09FC4038E0B05AFCC13F18364C4BD4178D1EA1F93C00530",
+  "closure_sha256": "104758546B0AB3B7121A8EEF99EDE2B856725717A5C01B7E6929C4424CA9841B",
+  "module_observations": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\guarded-start-fence.mjs",
+      "sha256": "C7420CF25640DFFB96B29B91AF30D09DD84CE7851E715DAED71574DBC64EE8D9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016\\capture-retry-698a.mjs",
+      "sha256": "3FBE305D241DD1DCC38B4E63BF7D1F298926EAE3BF74CEFB208740336410D410"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016\\retry-698a-classifier.input.mjs",
+      "sha256": "84C373D351B8D348EE03A922663DC6C74BC2E5479C29BEB760E4B2AD91248392"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016\\packages\\ai\\src\\utils\\retry.ts",
+      "sha256": "D7ACFF8DC7F0EEE04ECB116A79FBB8331337D9F091A0CEEE775D623D7478D448"
+    }
+  ],
+  "attempts": 0,
+  "runtime_dependencies": 0,
+  "network_requests": 0,
+  "npm_imports": 0,
+  "environment_names": 19,
+  "node_pid": 67668,
+  "launcher_os_pid": 70096,
+  "watcher_os_pid": 58228,
+  "root_reported_exec_sessions": [
+    21805,
+    45557
+  ],
+  "watcher_sha256": "6A9BD9824A13F0CC0B38B0AA89F469C142DF9FBD59334251B860A9B796465A03",
+  "watcher_approval_sha256": "16FDA8FD0B29BC1CCEBA41F022077ADBA06124AF34FECB291AA102F58473175A",
+  "node_exit_code": 0,
+  "node_stderr_bytes": 0,
+  "initial_saved_free_kib": 20448980,
+  "root_launcher_initial_policy_kib": 17825792,
+  "phase_floor_kib": 16777216,
+  "before_post_fullseals_zero": true,
+  "source_files": 1970,
+  "node_full_files": 1838,
+  "old_node_subset_files": 1774,
+  "candidate_files": 10524,
+  "control_files": 12,
+  "accepted273_pins": 4,
+  "fresh_unique_input_hashes": 14342,
+  "fresh_input_drift": 0,
+  "kernel_worker_terminals": [
+    {
+      "sha256": "0B2B18D780AE8A48E1DE65AB8372596B9B3AED3713E7BDD3DE0F3A7616BDBF93",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\artifact-terminal.json",
+      "short_git": false,
+      "exit_code": 0,
+      "pid": 82028
+    },
+    {
+      "sha256": "70E8533790AED33912A44DCC6604EAE8E55A4DCC30B3F66007E2B8F3AEFCCA2D",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\before-terminal.json",
+      "short_git": false,
+      "exit_code": 0,
+      "pid": 48424
+    },
+    {
+      "sha256": "D336F62C24371C8AACDDA5E2FA39249CB110FD59FF3FC1CAFA2C2524BFE9EB6A",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\controller-terminal.json",
+      "short_git": false,
+      "exit_code": 0,
+      "pid": 71220
+    },
+    {
+      "sha256": "EC8B4B305E95FB4395B8CB9C53F6B49B89847F3F996AF80A4C838FE4E1120C60",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\original96BE-owner-terminal.json",
+      "short_git": false,
+      "exit_code": 0,
+      "pid": 33020
+    },
+    {
+      "sha256": "97F3889F289724BB0D6BAD9D21D843EE972E24E4DDDD59BD8E247540CCB4E95D",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\post-terminal.json",
+      "short_git": false,
+      "exit_code": 0,
+      "pid": 78928
+    },
+    {
+      "sha256": "8B5AEE7095484B849983367D9E1310E44C05976D1DC0C7FD74684894EBC180F2",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git1-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 82196
+    },
+    {
+      "sha256": "91A51BA86079141B0ACEE0776CCB8C5A2E8F82FB8E869B0661DD152CA647E29B",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git2-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 82648
+    },
+    {
+      "sha256": "15F7C2E5641A61ECEAD10C4C87AC6609905023EB8CA9D84EA115CF6ED7F084A3",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git3-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 32796
+    },
+    {
+      "sha256": "C1BD6D523823B6E2411FAFB36CE873CD5A25E2B5CAAE01D2A1EED24F5321361F",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git4-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 35104
+    },
+    {
+      "sha256": "5A511C1C391ACFF4828026365726584356284A55D03343AC2C5FAAA1A368F184",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git5-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 41344
+    },
+    {
+      "sha256": "5EAF9D5C81DC9FF5E7DE4BCCD9DE3DCF52AF73136E9476C7F16EAE506E4E128D",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git6-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 79516
+    },
+    {
+      "sha256": "B1411C39B39EF01F7004C4461668666621BFA99EFDE182BD9B9BB5860F9DAA93",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git1-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 82256
+    },
+    {
+      "sha256": "499468BDD0FF618331803DAA551923CEA7069EDAC772B2F36B89C66285A19C1C",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git2-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 66096
+    },
+    {
+      "sha256": "A3A2C91F553580A53EF4CC30DE9062DE164F40F85F3FBD277D5D9DCC9FA59728",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git3-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 15556
+    },
+    {
+      "sha256": "D0675AE14108800BE29E5AE5C233822D3F3CA4249BA762831883943E63003039",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git4-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 76824
+    },
+    {
+      "sha256": "CCFDB8017752ED2564FB9B5E6620F9B214D24AA6752AE45EF3B1B84BC7DE8310",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git5-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 81856
+    },
+    {
+      "sha256": "4D151F5BFD89E61C4529160D40D1C4732541FF383FA0D22A2A9C6406AC13AB45",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git6-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 8904
+    },
+    {
+      "sha256": "8EC6050D5B6BE5BDE6C991B4136B5F28C1E8502F5163FBE373C69F5673FDF654",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git1-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 81584
+    },
+    {
+      "sha256": "BB1CE91F733E3B13AC577B35177B73B17840C8F7D86C12DB321F8EA30FEDBA0C",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git2-terminal.json",
+      "short_git": true,
+      "exit_code": 0,
+      "pid": 65348
+    },
+    {
+      "sha256": "08CDBDB51A49C915E32D56555CE1D06BA99D36CA3659BD1EA60DB19FC7F29AC3",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\supervisor-terminal.json",
+      "short_git": false,
+      "exit_code": 0,
+      "pid": 9304
+    }
+  ],
+  "external_artifact_files": 152,
+  "external_artifact_manifest_sha256": "7CF4AC4EC9330468CF7B33DC9A5C704EE35609D318C4569525214B4195E2B1CC",
+  "external_handoff_sha256": "A39CBA3FE1243C6F65229F77787D9791887A807F255AE0AE41C455A3E6C4A756",
+  "watcher_self_sha256": "0EDE063BAD58F8256F33D28A0DD7D0FFE07BD7FEABE168972B56FB0495509D2C",
+  "watcher_terminal_sha256": "D322512811BFC55201C7B908D4E55375370A5B66AE5F4ECFF7B23A25AF431F71",
+  "current_independent_absence": {
+    "rows": [
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 82028,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase artifact",
+          "created_utc": "2026-10-16T22:08:34.093851Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 48424,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase before",
+          "created_utc": "2026-10-16T22:07:35.985712Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 48424,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase before",
+          "created_utc": "2026-10-16T22:07:35.985712Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 74348,
+          "parent_pid": 48424,
+          "executable": "C:\\Windows\\system32\\conhost.exe",
+          "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+          "created_utc": "2026-10-16T22:07:35.989418Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 33020,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160OriginalOwner.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+          "created_utc": "2026-10-16T22:08:06.653092Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 67668,
+          "parent_pid": 33020,
+          "executable": "C:\\Program Files\\nodejs\\node.exe",
+          "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission --allow-fs-read=C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-zig\\.pi-zig-workspace.json --allow-fs-read=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726 --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016\\.pi-zig-workspace.json --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\.pi-zig-workspace.json --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\.pi-zig-workspace.json --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\.pi-zig-workspace.json --allow-fs-write=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726 --import file:///C:/Users/adyba/pi-zig/worktrees/latest-reference/verification/retry-698a-runtime-free-prepared-20261016/guarded-start-fence.mjs C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016\\capture-retry-698a.mjs C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016 C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\source160-raw.json",
+          "created_utc": "2026-10-16T22:08:07.178034Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 78928,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase post",
+          "created_utc": "2026-10-16T22:08:11.390272Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 75416,
+          "parent_pid": 78928,
+          "executable": "C:\\Windows\\system32\\conhost.exe",
+          "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+          "created_utc": "2026-10-16T22:08:11.39374Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 82028,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase artifact",
+          "created_utc": "2026-10-16T22:08:34.093851Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 71220,
+          "parent_pid": 9304,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Controller.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+          "created_utc": "2026-10-16T22:07:34.481611Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 71220,
+          "parent_pid": 9304,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Controller.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+          "created_utc": "2026-10-16T22:07:34.481611Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 33020,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160OriginalOwner.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+          "created_utc": "2026-10-16T22:08:06.653092Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 78928,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase post",
+          "created_utc": "2026-10-16T22:08:11.390272Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 82028,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase artifact",
+          "created_utc": "2026-10-16T22:08:34.093851Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 48424,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase before",
+          "created_utc": "2026-10-16T22:07:35.985712Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 78928,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase post",
+          "created_utc": "2026-10-16T22:08:11.390272Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 71220,
+          "parent_pid": 9304,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Controller.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+          "created_utc": "2026-10-16T22:07:34.481611Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 48928,
+          "parent_pid": 71220,
+          "executable": "C:\\Windows\\system32\\conhost.exe",
+          "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+          "created_utc": "2026-10-16T22:07:34.485633Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 48424,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase before",
+          "created_utc": "2026-10-16T22:07:35.985712Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 74348,
+          "parent_pid": 48424,
+          "executable": "C:\\Windows\\system32\\conhost.exe",
+          "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+          "created_utc": "2026-10-16T22:07:35.989418Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 33020,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160OriginalOwner.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+          "created_utc": "2026-10-16T22:08:06.653092Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 78928,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase post",
+          "created_utc": "2026-10-16T22:08:11.390272Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 75416,
+          "parent_pid": 78928,
+          "executable": "C:\\Windows\\system32\\conhost.exe",
+          "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+          "created_utc": "2026-10-16T22:08:11.39374Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 48424,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase before",
+          "created_utc": "2026-10-16T22:07:35.985712Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 74348,
+          "parent_pid": 48424,
+          "executable": "C:\\Windows\\system32\\conhost.exe",
+          "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+          "created_utc": "2026-10-16T22:07:35.989418Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 33020,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160OriginalOwner.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+          "created_utc": "2026-10-16T22:08:06.653092Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 67668,
+          "parent_pid": 33020,
+          "executable": "C:\\Program Files\\nodejs\\node.exe",
+          "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission --allow-fs-read=C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-zig\\.pi-zig-workspace.json --allow-fs-read=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726 --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016\\.pi-zig-workspace.json --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\.pi-zig-workspace.json --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\.pi-zig-workspace.json --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\.pi-zig-workspace.json --allow-fs-write=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726 --import file:///C:/Users/adyba/pi-zig/worktrees/latest-reference/verification/retry-698a-runtime-free-prepared-20261016/guarded-start-fence.mjs C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016\\capture-retry-698a.mjs C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016 C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\source160-raw.json",
+          "created_utc": "2026-10-16T22:08:07.178034Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 78928,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase post",
+          "created_utc": "2026-10-16T22:08:11.390272Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 75416,
+          "parent_pid": 78928,
+          "executable": "C:\\Windows\\system32\\conhost.exe",
+          "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+          "created_utc": "2026-10-16T22:08:11.39374Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 82028,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase artifact",
+          "created_utc": "2026-10-16T22:08:34.093851Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 9304,
+          "parent_pid": 70096,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Run-RuntimeFreeSource160.ps1 -CandidateHead 81ec9d38837bff76f55bcf2f7c538548609e62c9 -RunId root-source160-81ec-watch-20261016-220726 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016\\root-source160-81ec-watch-20261016-220726.json -LaunchClaim C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\launcher-claim.json -LaunchClaimSha256 6F241E16A4785772D58F4E376DAC23B2DBD9085FD9C469DBAE88481D016B3AE1",
+          "created_utc": "2026-10-16T22:07:27.877117Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 9304,
+          "parent_pid": 70096,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Run-RuntimeFreeSource160.ps1 -CandidateHead 81ec9d38837bff76f55bcf2f7c538548609e62c9 -RunId root-source160-81ec-watch-20261016-220726 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016\\root-source160-81ec-watch-20261016-220726.json -LaunchClaim C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\launcher-claim.json -LaunchClaimSha256 6F241E16A4785772D58F4E376DAC23B2DBD9085FD9C469DBAE88481D016B3AE1",
+          "created_utc": "2026-10-16T22:07:27.877117Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 65668,
+          "parent_pid": 9304,
+          "executable": "C:\\Windows\\system32\\conhost.exe",
+          "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+          "created_utc": "2026-10-16T22:07:27.88036Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 71220,
+          "parent_pid": 9304,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Controller.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+          "created_utc": "2026-10-16T22:07:34.481611Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 48928,
+          "parent_pid": 71220,
+          "executable": "C:\\Windows\\system32\\conhost.exe",
+          "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+          "created_utc": "2026-10-16T22:07:34.485633Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 48424,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase before",
+          "created_utc": "2026-10-16T22:07:35.985712Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 74348,
+          "parent_pid": 48424,
+          "executable": "C:\\Windows\\system32\\conhost.exe",
+          "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+          "created_utc": "2026-10-16T22:07:35.989418Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 78928,
+          "parent_pid": 71220,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1 -Config C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json -ConfigSha256 6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047 -Phase post",
+          "created_utc": "2026-10-16T22:08:11.390272Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 75416,
+          "parent_pid": 78928,
+          "executable": "C:\\Windows\\system32\\conhost.exe",
+          "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+          "created_utc": "2026-10-16T22:08:11.39374Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 70096,
+          "parent_pid": 23620,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -Command \"try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n$taskRoot='C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference'; $taskTools=Join-Path $taskRoot 'verification\\retry-698a-runtime-free-prepared-20261016'; $taskHead=([string](git -C $taskRoot rev-parse HEAD)).Trim(); if($taskHead -cne '81ec9d38837bff76f55bcf2f7c538548609e62c9' -or @(git -C $taskRoot status --porcelain).Count){throw 'Exact clean reviewed source required'}; $taskOs=Get-CimInstance Win32_OperatingSystem; $taskNative=@(Get-CimInstance Win32_Process|Where-Object{$_.Name -in @('zig.exe','build.exe','test.exe') -or ($_.ExecutablePath -and $_.ExecutablePath -match '\\\\(?:\\.zig-cache|zig-out)\\\\')}); if($taskOs.FreePhysicalMemory -lt 17825792 -or $taskNative.Count){throw 'Initial17GiB/native0 headroom required'}; $taskGrant=Get-Content (Join-Path $taskTools 'root-grant.template.json') -Raw|ConvertFrom-Json; foreach($taskPin in $taskGrant.tool_sha256.PSObject.Properties){if((Get-FileHash -LiteralPath (Join-Path $taskTools $taskPin.Name)).Hash -cne $taskPin.Value){throw 'Reviewed control hash mismatch'}}; $taskIssued=[DateTimeOffset]::UtcNow; $taskRun='root-source160-81ec-watch-'+$taskIssued.ToString('yyyyMMdd-HHmmss'); $taskGrant.authorized=$true; $taskGrant.manual_fresh_16gib=$true; $taskGrant.run_id=$taskRun; $taskGrant.candidate_head=$taskHead; $taskGrant.issued_utc=$taskIssued.ToString('o'); $taskGrant.expires_utc=$taskIssued.AddSeconds(240).ToString('o'); $taskGrant.grant_id=[Guid]::NewGuid().ToString('N'); $taskGrantDir='C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016'; $taskGrantFile=Join-Path $taskGrantDir ($taskRun+'.json'); if(Test-Path -LiteralPath $taskGrantFile){throw 'Grant overwrite refused'}; $taskGrant|ConvertTo-Json -Depth 6|Set-Content -LiteralPath $taskGrantFile -Encoding utf8NoBOM; [ordered]@{run_id=$taskRun;head=$taskHead;grant=$taskGrantFile;free_kib=$taskOs.FreePhysicalMemory;initial_minimum_kib=17825792;phase_minimum_kib=16777216;native_roots=0}|ConvertTo-Json; & (Join-Path $taskTools 'Start-RuntimeFreeSource160.ps1') -CandidateHead $taskHead -RunId $taskRun -RootGrant $taskGrantFile\"",
+          "created_utc": "2026-10-16T22:07:25.693942Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 9304,
+          "parent_pid": 70096,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Run-RuntimeFreeSource160.ps1 -CandidateHead 81ec9d38837bff76f55bcf2f7c538548609e62c9 -RunId root-source160-81ec-watch-20261016-220726 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016\\root-source160-81ec-watch-20261016-220726.json -LaunchClaim C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\launcher-claim.json -LaunchClaimSha256 6F241E16A4785772D58F4E376DAC23B2DBD9085FD9C469DBAE88481D016B3AE1",
+          "created_utc": "2026-10-16T22:07:27.877117Z"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      },
+      {
+        "identity_conflict": false,
+        "pid_reused": false,
+        "identity": {
+          "pid": 58228,
+          "parent_pid": 23620,
+          "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -Command \"try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n& 'C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016\\Wait-ApproveSource160.ps1' -RunId 'root-source160-81ec-watch-20261016-220726' -CandidateHead '81ec9d38837bff76f55bcf2f7c538548609e62c9' -RootGrant 'C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016\\root-source160-81ec-watch-20261016-220726.json'\"",
+          "created_utc": "2026-10-16T22:07:35.873144Z",
+          "status": "waiting",
+          "run_id": "root-source160-81ec-watch-20261016-220726",
+          "candidate_head": "81ec9d38837bff76f55bcf2f7c538548609e62c9"
+        },
+        "original_identity_absent": true,
+        "identity_unknown": false
+      }
+    ],
+    "observed_utc": "2026-10-16T22:19:51.2375252+00:00",
+    "present_or_unknown": 0,
+    "partial_rows": [
+      {
+        "observation": {
+          "pid": 82028,
+          "parent_pid": 71220,
+          "created_utc": "2026-10-16T22:08:34.0938518Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1",
+            "-Config",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json",
+            "-ConfigSha256",
+            "6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+            "-Phase",
+            "artifact"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 48424,
+          "parent_pid": 71220,
+          "created_utc": "2026-10-16T22:07:35.9857127Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1",
+            "-Config",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json",
+            "-ConfigSha256",
+            "6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+            "-Phase",
+            "before"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 71220,
+          "parent_pid": 9304,
+          "created_utc": "2026-10-16T22:07:34.4816114Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Controller.ps1",
+            "-Config",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json",
+            "-ConfigSha256",
+            "6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 48424,
+          "parent_pid": 71220,
+          "created_utc": "2026-10-16T22:07:35.9857127Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1",
+            "-Config",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json",
+            "-ConfigSha256",
+            "6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+            "-Phase",
+            "before"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 32796,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:40.820443Z",
+          "missing_executable": true,
+          "missing_command_line": true,
+          "missing_creation": false,
+          "kill_authority": false,
+          "status": "absent_on_requery",
+          "observed_utc": "2026-10-16T23:07:40.9388527+01:00"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 33020,
+          "parent_pid": 71220,
+          "created_utc": "2026-10-16T22:08:06.6530923Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160OriginalOwner.ps1",
+            "-Config",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json",
+            "-ConfigSha256",
+            "6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 78928,
+          "parent_pid": 71220,
+          "created_utc": "2026-10-16T22:08:11.3902727Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1",
+            "-Config",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json",
+            "-ConfigSha256",
+            "6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+            "-Phase",
+            "post"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 75416,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:11.39374Z",
+          "missing_executable": true,
+          "missing_command_line": true,
+          "missing_creation": false,
+          "kill_authority": false,
+          "status": "absent_on_requery",
+          "observed_utc": "2026-10-16T23:08:32.5040692+01:00"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 82028,
+          "parent_pid": 71220,
+          "created_utc": "2026-10-16T22:08:34.0938518Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1",
+            "-Config",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json",
+            "-ConfigSha256",
+            "6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+            "-Phase",
+            "artifact"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 33020,
+          "parent_pid": 71220,
+          "created_utc": "2026-10-16T22:08:06.6530923Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160OriginalOwner.ps1",
+            "-Config",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json",
+            "-ConfigSha256",
+            "6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 78928,
+          "parent_pid": 71220,
+          "created_utc": "2026-10-16T22:08:11.3902727Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Seal.ps1",
+            "-Config",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json",
+            "-ConfigSha256",
+            "6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+            "-Phase",
+            "post"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 82196,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:37.5882328Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "rev-parse",
+            "HEAD"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 82648,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:39.2559839Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "rev-parse",
+            "HEAD^{tree}"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 32796,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:40.8204431Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "status",
+            "--porcelain",
+            "--untracked-files=no"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 35104,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:42.5671056Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "rev-parse",
+            "HEAD"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 41344,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:44.3995704Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "status",
+            "--porcelain"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 79516,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:46.2531541Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "ls-files"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 82196,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:37.5882328Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "rev-parse",
+            "HEAD"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 82648,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:39.2559839Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "rev-parse",
+            "HEAD^{tree}"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 32796,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:40.8204431Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "status",
+            "--porcelain",
+            "--untracked-files=no"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 35104,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:42.5671056Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "rev-parse",
+            "HEAD"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 41344,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:44.3995704Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "status",
+            "--porcelain"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 79516,
+          "parent_pid": 48424,
+          "created_utc": "2026-10-16T22:07:46.2531541Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "ls-files"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 82256,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:12.7493941Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "rev-parse",
+            "HEAD"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 66096,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:14.2872842Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "rev-parse",
+            "HEAD^{tree}"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 15556,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:15.9629582Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "status",
+            "--porcelain",
+            "--untracked-files=no"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 76824,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:17.6377194Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "rev-parse",
+            "HEAD"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 81856,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:19.1729192Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "status",
+            "--porcelain"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 8904,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:20.9100976Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "ls-files"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 82256,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:12.7493941Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "rev-parse",
+            "HEAD"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 66096,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:14.2872842Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "rev-parse",
+            "HEAD^{tree}"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 15556,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:15.9629582Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016",
+            "status",
+            "--porcelain",
+            "--untracked-files=no"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 76824,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:17.6377194Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "rev-parse",
+            "HEAD"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 81856,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:19.1729192Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "status",
+            "--porcelain"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 8904,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:20.9100976Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "ls-files"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "created_utc": "2026-10-16T22:08:07.1780349Z",
+          "origin": "original96BE_node_kernel_record",
+          "kill_authority": false,
+          "pid": 67668
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "created_utc": "2026-10-16T22:08:07.1780349Z",
+          "origin": "node_ready_pid_linked_to_optional_original96BE_record",
+          "kill_authority": false,
+          "pid": 67668
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 81584,
+          "parent_pid": 9304,
+          "created_utc": "2026-10-16T22:07:31.1201982Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "rev-parse",
+            "HEAD"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 65348,
+          "parent_pid": 9304,
+          "created_utc": "2026-10-16T22:07:32.9262117Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "status",
+            "--porcelain"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 81584,
+          "parent_pid": 9304,
+          "created_utc": "2026-10-16T22:07:31.1201982Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "rev-parse",
+            "HEAD"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 65348,
+          "parent_pid": 9304,
+          "created_utc": "2026-10-16T22:07:32.9262117Z",
+          "expected_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+          "executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+          "intended_arguments": [
+            "--no-pager",
+            "--no-optional-locks",
+            "-c",
+            "core.fsmonitor=false",
+            "-c",
+            "core.hooksPath=C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\disabled-git-hooks",
+            "-C",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference",
+            "status",
+            "--porcelain"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "read_only_git_kernel_terminal_live_cim_unavailable"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 71220,
+          "parent_pid": 9304,
+          "created_utc": "2026-10-16T22:07:34.4816114Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Invoke-RuntimeFreeSource160Controller.ps1",
+            "-Config",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json",
+            "-ConfigSha256",
+            "6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 76824,
+          "parent_pid": 78928,
+          "created_utc": "2026-10-16T22:08:17.637719Z",
+          "missing_executable": true,
+          "missing_command_line": true,
+          "missing_creation": false,
+          "kill_authority": false,
+          "status": "absent_on_requery",
+          "observed_utc": "2026-10-16T23:08:17.7215842+01:00"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 9304,
+          "parent_pid": 70096,
+          "created_utc": "2026-10-16T22:07:27.877117Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Run-RuntimeFreeSource160.ps1",
+            "-CandidateHead",
+            "81ec9d38837bff76f55bcf2f7c538548609e62c9",
+            "-RunId",
+            "root-source160-81ec-watch-20261016-220726",
+            "-RootGrant",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016\\root-source160-81ec-watch-20261016-220726.json",
+            "-LaunchClaim",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\launcher-claim.json",
+            "-LaunchClaimSha256",
+            "6F241E16A4785772D58F4E376DAC23B2DBD9085FD9C469DBAE88481D016B3AE1"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      },
+      {
+        "observation": {
+          "pid": 9304,
+          "parent_pid": 70096,
+          "created_utc": "2026-10-16T22:07:27.877117Z",
+          "expected_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "intended_arguments": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\Run-RuntimeFreeSource160.ps1",
+            "-CandidateHead",
+            "81ec9d38837bff76f55bcf2f7c538548609e62c9",
+            "-RunId",
+            "root-source160-81ec-watch-20261016-220726",
+            "-RootGrant",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016\\root-source160-81ec-watch-20261016-220726.json",
+            "-LaunchClaim",
+            "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\launcher-claim.json",
+            "-LaunchClaimSha256",
+            "6F241E16A4785772D58F4E376DAC23B2DBD9085FD9C469DBAE88481D016B3AE1"
+          ],
+          "origin": "retained_direct_launch",
+          "kill_authority": false,
+          "status": "full_parent_argv_kernel_verified"
+        },
+        "original_identity_absent": true,
+        "kill_authority": false
+      }
+    ]
+  },
+  "expected_created": false,
+  "native_replay_executed": false,
+  "native_qualified": false,
+  "runtime_recovery_claimed": false,
+  "global_hold_lifted": false,
+  "new_jobs_launched": false,
+  "observed_utc": "2026-10-16T22:19:51.2444704+00:00"
+}

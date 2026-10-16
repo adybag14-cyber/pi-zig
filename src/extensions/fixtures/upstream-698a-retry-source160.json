@@ -1,0 +1,1048 @@
+{
+  "sourceHead": "698a2d23b86a5045dd54554354a5e0cb7e466795",
+  "sourceTree": "495eca20433379a8cdd995e53c31278d72886c2b",
+  "actualNode": {
+    "version": "v24.14.0",
+    "pid": 67668,
+    "execPath": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "moduleSha256": "D7ACFF8DC7F0EEE04ECB116A79FBB8331337D9F091A0CEEE775D623D7478D448",
+  "callerSha256": "84C373D351B8D348EE03A922663DC6C74BC2E5479C29BEB760E4B2AD91248392",
+  "cases": 160,
+  "rows": [
+    {
+      "id": "error/upstream-space",
+      "stopReason": "error",
+      "errorMessage": "Upstream request failed",
+      "result": true
+    },
+    {
+      "id": "error/upstream-none",
+      "stopReason": "error",
+      "errorMessage": "upstreamrequestfailed",
+      "result": true
+    },
+    {
+      "id": "error/upstream-underscore",
+      "stopReason": "error",
+      "errorMessage": "upstream_request_failed",
+      "result": true
+    },
+    {
+      "id": "error/upstream-punctuation",
+      "stopReason": "error",
+      "errorMessage": "upstream-request.failed",
+      "result": true
+    },
+    {
+      "id": "error/upstream-upper",
+      "stopReason": "error",
+      "errorMessage": "UPSTREAM REQUEST FAILED",
+      "result": true
+    },
+    {
+      "id": "error/upstream-two-spaces",
+      "stopReason": "error",
+      "errorMessage": "upstream  request failed",
+      "result": false
+    },
+    {
+      "id": "error/upstream-newline",
+      "stopReason": "error",
+      "errorMessage": "upstream\nrequest failed",
+      "result": false
+    },
+    {
+      "id": "error/upstream-cr",
+      "stopReason": "error",
+      "errorMessage": "upstream\rrequest failed",
+      "result": false
+    },
+    {
+      "id": "error/upstream-nbsp",
+      "stopReason": "error",
+      "errorMessage": "upstream request failed",
+      "result": true
+    },
+    {
+      "id": "error/upstream-bom",
+      "stopReason": "error",
+      "errorMessage": "upstream﻿request﻿failed",
+      "result": true
+    },
+    {
+      "id": "error/upstream-line-separator",
+      "stopReason": "error",
+      "errorMessage": "upstream request failed",
+      "result": false
+    },
+    {
+      "id": "error/upstream-paragraph-separator",
+      "stopReason": "error",
+      "errorMessage": "upstream request failed",
+      "result": false
+    },
+    {
+      "id": "error/upstream-emoji",
+      "stopReason": "error",
+      "errorMessage": "upstream😀request failed",
+      "result": false
+    },
+    {
+      "id": "error/upstream-nul",
+      "stopReason": "error",
+      "errorMessage": "upstream\u0000request failed",
+      "result": true
+    },
+    {
+      "id": "error/upstream-leading-embedded",
+      "stopReason": "error",
+      "errorMessage": "prefixupstream request failed",
+      "result": true
+    },
+    {
+      "id": "error/upstream-trailing-embedded",
+      "stopReason": "error",
+      "errorMessage": "upstream request failedsuffix",
+      "result": true
+    },
+    {
+      "id": "error/read-error-exact",
+      "stopReason": "error",
+      "errorMessage": "upstream_stream_read_error",
+      "result": true
+    },
+    {
+      "id": "error/read-error-upper",
+      "stopReason": "error",
+      "errorMessage": "UPSTREAM_STREAM_READ_ERROR",
+      "result": true
+    },
+    {
+      "id": "error/read-error-hyphen",
+      "stopReason": "error",
+      "errorMessage": "upstream-stream-read-error",
+      "result": false
+    },
+    {
+      "id": "error/interrupted-exact",
+      "stopReason": "error",
+      "errorMessage": "stream was interrupted",
+      "result": true
+    },
+    {
+      "id": "error/interrupted-upper",
+      "stopReason": "error",
+      "errorMessage": "STREAM WAS INTERRUPTED",
+      "result": true
+    },
+    {
+      "id": "error/interrupted-double-space",
+      "stopReason": "error",
+      "errorMessage": "stream  was interrupted",
+      "result": false
+    },
+    {
+      "id": "error/interrupted-newline",
+      "stopReason": "error",
+      "errorMessage": "stream was\ninterrupted",
+      "result": false
+    },
+    {
+      "id": "error/http-slash",
+      "stopReason": "error",
+      "errorMessage": "Upstream HTTP/2 stream failed",
+      "result": true
+    },
+    {
+      "id": "error/http-no-slash",
+      "stopReason": "error",
+      "errorMessage": "http2 stream failed",
+      "result": true
+    },
+    {
+      "id": "error/http-upper",
+      "stopReason": "error",
+      "errorMessage": "HTTP/2 STREAM FAILED",
+      "result": true
+    },
+    {
+      "id": "error/http-double-slash",
+      "stopReason": "error",
+      "errorMessage": "http//2 stream failed",
+      "result": false
+    },
+    {
+      "id": "error/http-wrong-version",
+      "stopReason": "error",
+      "errorMessage": "http/20 stream failed",
+      "result": false
+    },
+    {
+      "id": "error/http-double-space",
+      "stopReason": "error",
+      "errorMessage": "http/2  stream failed",
+      "result": false
+    },
+    {
+      "id": "error/quota-wins",
+      "stopReason": "error",
+      "errorMessage": "upstream request failed: quota exceeded",
+      "result": false
+    },
+    {
+      "id": "error/billing-wins",
+      "stopReason": "error",
+      "errorMessage": "billing: upstream_stream_read_error",
+      "result": false
+    },
+    {
+      "id": "error/balance-wins",
+      "stopReason": "error",
+      "errorMessage": "stream was interrupted: available balance",
+      "result": false
+    },
+    {
+      "id": "error/legacy-forward",
+      "stopReason": "error",
+      "errorMessage": "unknown: Unable to forward upstream stream",
+      "result": true
+    },
+    {
+      "id": "error/plain-negative",
+      "stopReason": "error",
+      "errorMessage": "ordinary unrelated failure",
+      "result": false
+    },
+    {
+      "id": "error/empty",
+      "stopReason": "error",
+      "errorMessage": "",
+      "result": false
+    },
+    {
+      "id": "error/wrapped-code",
+      "stopReason": "error",
+      "errorMessage": "{\"type\":\"upstream_error\",\"message\":\"Upstream request failed\"}",
+      "result": true
+    },
+    {
+      "id": "stop/upstream-space",
+      "stopReason": "stop",
+      "errorMessage": "Upstream request failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-none",
+      "stopReason": "stop",
+      "errorMessage": "upstreamrequestfailed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-underscore",
+      "stopReason": "stop",
+      "errorMessage": "upstream_request_failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-punctuation",
+      "stopReason": "stop",
+      "errorMessage": "upstream-request.failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-upper",
+      "stopReason": "stop",
+      "errorMessage": "UPSTREAM REQUEST FAILED",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-two-spaces",
+      "stopReason": "stop",
+      "errorMessage": "upstream  request failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-newline",
+      "stopReason": "stop",
+      "errorMessage": "upstream\nrequest failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-cr",
+      "stopReason": "stop",
+      "errorMessage": "upstream\rrequest failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-nbsp",
+      "stopReason": "stop",
+      "errorMessage": "upstream request failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-bom",
+      "stopReason": "stop",
+      "errorMessage": "upstream﻿request﻿failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-line-separator",
+      "stopReason": "stop",
+      "errorMessage": "upstream request failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-paragraph-separator",
+      "stopReason": "stop",
+      "errorMessage": "upstream request failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-emoji",
+      "stopReason": "stop",
+      "errorMessage": "upstream😀request failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-nul",
+      "stopReason": "stop",
+      "errorMessage": "upstream\u0000request failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-leading-embedded",
+      "stopReason": "stop",
+      "errorMessage": "prefixupstream request failed",
+      "result": false
+    },
+    {
+      "id": "stop/upstream-trailing-embedded",
+      "stopReason": "stop",
+      "errorMessage": "upstream request failedsuffix",
+      "result": false
+    },
+    {
+      "id": "stop/read-error-exact",
+      "stopReason": "stop",
+      "errorMessage": "upstream_stream_read_error",
+      "result": false
+    },
+    {
+      "id": "stop/read-error-upper",
+      "stopReason": "stop",
+      "errorMessage": "UPSTREAM_STREAM_READ_ERROR",
+      "result": false
+    },
+    {
+      "id": "stop/read-error-hyphen",
+      "stopReason": "stop",
+      "errorMessage": "upstream-stream-read-error",
+      "result": false
+    },
+    {
+      "id": "stop/interrupted-exact",
+      "stopReason": "stop",
+      "errorMessage": "stream was interrupted",
+      "result": false
+    },
+    {
+      "id": "stop/interrupted-upper",
+      "stopReason": "stop",
+      "errorMessage": "STREAM WAS INTERRUPTED",
+      "result": false
+    },
+    {
+      "id": "stop/interrupted-double-space",
+      "stopReason": "stop",
+      "errorMessage": "stream  was interrupted",
+      "result": false
+    },
+    {
+      "id": "stop/interrupted-newline",
+      "stopReason": "stop",
+      "errorMessage": "stream was\ninterrupted",
+      "result": false
+    },
+    {
+      "id": "stop/http-slash",
+      "stopReason": "stop",
+      "errorMessage": "Upstream HTTP/2 stream failed",
+      "result": false
+    },
+    {
+      "id": "stop/http-no-slash",
+      "stopReason": "stop",
+      "errorMessage": "http2 stream failed",
+      "result": false
+    },
+    {
+      "id": "stop/http-upper",
+      "stopReason": "stop",
+      "errorMessage": "HTTP/2 STREAM FAILED",
+      "result": false
+    },
+    {
+      "id": "stop/http-double-slash",
+      "stopReason": "stop",
+      "errorMessage": "http//2 stream failed",
+      "result": false
+    },
+    {
+      "id": "stop/http-wrong-version",
+      "stopReason": "stop",
+      "errorMessage": "http/20 stream failed",
+      "result": false
+    },
+    {
+      "id": "stop/http-double-space",
+      "stopReason": "stop",
+      "errorMessage": "http/2  stream failed",
+      "result": false
+    },
+    {
+      "id": "stop/quota-wins",
+      "stopReason": "stop",
+      "errorMessage": "upstream request failed: quota exceeded",
+      "result": false
+    },
+    {
+      "id": "stop/billing-wins",
+      "stopReason": "stop",
+      "errorMessage": "billing: upstream_stream_read_error",
+      "result": false
+    },
+    {
+      "id": "stop/balance-wins",
+      "stopReason": "stop",
+      "errorMessage": "stream was interrupted: available balance",
+      "result": false
+    },
+    {
+      "id": "stop/legacy-forward",
+      "stopReason": "stop",
+      "errorMessage": "unknown: Unable to forward upstream stream",
+      "result": false
+    },
+    {
+      "id": "stop/plain-negative",
+      "stopReason": "stop",
+      "errorMessage": "ordinary unrelated failure",
+      "result": false
+    },
+    {
+      "id": "stop/empty",
+      "stopReason": "stop",
+      "errorMessage": "",
+      "result": false
+    },
+    {
+      "id": "stop/wrapped-code",
+      "stopReason": "stop",
+      "errorMessage": "{\"type\":\"upstream_error\",\"message\":\"Upstream request failed\"}",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-space",
+      "stopReason": "aborted",
+      "errorMessage": "Upstream request failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-none",
+      "stopReason": "aborted",
+      "errorMessage": "upstreamrequestfailed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-underscore",
+      "stopReason": "aborted",
+      "errorMessage": "upstream_request_failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-punctuation",
+      "stopReason": "aborted",
+      "errorMessage": "upstream-request.failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-upper",
+      "stopReason": "aborted",
+      "errorMessage": "UPSTREAM REQUEST FAILED",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-two-spaces",
+      "stopReason": "aborted",
+      "errorMessage": "upstream  request failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-newline",
+      "stopReason": "aborted",
+      "errorMessage": "upstream\nrequest failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-cr",
+      "stopReason": "aborted",
+      "errorMessage": "upstream\rrequest failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-nbsp",
+      "stopReason": "aborted",
+      "errorMessage": "upstream request failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-bom",
+      "stopReason": "aborted",
+      "errorMessage": "upstream﻿request﻿failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-line-separator",
+      "stopReason": "aborted",
+      "errorMessage": "upstream request failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-paragraph-separator",
+      "stopReason": "aborted",
+      "errorMessage": "upstream request failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-emoji",
+      "stopReason": "aborted",
+      "errorMessage": "upstream😀request failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-nul",
+      "stopReason": "aborted",
+      "errorMessage": "upstream\u0000request failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-leading-embedded",
+      "stopReason": "aborted",
+      "errorMessage": "prefixupstream request failed",
+      "result": false
+    },
+    {
+      "id": "aborted/upstream-trailing-embedded",
+      "stopReason": "aborted",
+      "errorMessage": "upstream request failedsuffix",
+      "result": false
+    },
+    {
+      "id": "aborted/read-error-exact",
+      "stopReason": "aborted",
+      "errorMessage": "upstream_stream_read_error",
+      "result": false
+    },
+    {
+      "id": "aborted/read-error-upper",
+      "stopReason": "aborted",
+      "errorMessage": "UPSTREAM_STREAM_READ_ERROR",
+      "result": false
+    },
+    {
+      "id": "aborted/read-error-hyphen",
+      "stopReason": "aborted",
+      "errorMessage": "upstream-stream-read-error",
+      "result": false
+    },
+    {
+      "id": "aborted/interrupted-exact",
+      "stopReason": "aborted",
+      "errorMessage": "stream was interrupted",
+      "result": false
+    },
+    {
+      "id": "aborted/interrupted-upper",
+      "stopReason": "aborted",
+      "errorMessage": "STREAM WAS INTERRUPTED",
+      "result": false
+    },
+    {
+      "id": "aborted/interrupted-double-space",
+      "stopReason": "aborted",
+      "errorMessage": "stream  was interrupted",
+      "result": false
+    },
+    {
+      "id": "aborted/interrupted-newline",
+      "stopReason": "aborted",
+      "errorMessage": "stream was\ninterrupted",
+      "result": false
+    },
+    {
+      "id": "aborted/http-slash",
+      "stopReason": "aborted",
+      "errorMessage": "Upstream HTTP/2 stream failed",
+      "result": false
+    },
+    {
+      "id": "aborted/http-no-slash",
+      "stopReason": "aborted",
+      "errorMessage": "http2 stream failed",
+      "result": false
+    },
+    {
+      "id": "aborted/http-upper",
+      "stopReason": "aborted",
+      "errorMessage": "HTTP/2 STREAM FAILED",
+      "result": false
+    },
+    {
+      "id": "aborted/http-double-slash",
+      "stopReason": "aborted",
+      "errorMessage": "http//2 stream failed",
+      "result": false
+    },
+    {
+      "id": "aborted/http-wrong-version",
+      "stopReason": "aborted",
+      "errorMessage": "http/20 stream failed",
+      "result": false
+    },
+    {
+      "id": "aborted/http-double-space",
+      "stopReason": "aborted",
+      "errorMessage": "http/2  stream failed",
+      "result": false
+    },
+    {
+      "id": "aborted/quota-wins",
+      "stopReason": "aborted",
+      "errorMessage": "upstream request failed: quota exceeded",
+      "result": false
+    },
+    {
+      "id": "aborted/billing-wins",
+      "stopReason": "aborted",
+      "errorMessage": "billing: upstream_stream_read_error",
+      "result": false
+    },
+    {
+      "id": "aborted/balance-wins",
+      "stopReason": "aborted",
+      "errorMessage": "stream was interrupted: available balance",
+      "result": false
+    },
+    {
+      "id": "aborted/legacy-forward",
+      "stopReason": "aborted",
+      "errorMessage": "unknown: Unable to forward upstream stream",
+      "result": false
+    },
+    {
+      "id": "aborted/plain-negative",
+      "stopReason": "aborted",
+      "errorMessage": "ordinary unrelated failure",
+      "result": false
+    },
+    {
+      "id": "aborted/empty",
+      "stopReason": "aborted",
+      "errorMessage": "",
+      "result": false
+    },
+    {
+      "id": "aborted/wrapped-code",
+      "stopReason": "aborted",
+      "errorMessage": "{\"type\":\"upstream_error\",\"message\":\"Upstream request failed\"}",
+      "result": false
+    },
+    {
+      "id": "length/upstream-space",
+      "stopReason": "length",
+      "errorMessage": "Upstream request failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-none",
+      "stopReason": "length",
+      "errorMessage": "upstreamrequestfailed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-underscore",
+      "stopReason": "length",
+      "errorMessage": "upstream_request_failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-punctuation",
+      "stopReason": "length",
+      "errorMessage": "upstream-request.failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-upper",
+      "stopReason": "length",
+      "errorMessage": "UPSTREAM REQUEST FAILED",
+      "result": false
+    },
+    {
+      "id": "length/upstream-two-spaces",
+      "stopReason": "length",
+      "errorMessage": "upstream  request failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-newline",
+      "stopReason": "length",
+      "errorMessage": "upstream\nrequest failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-cr",
+      "stopReason": "length",
+      "errorMessage": "upstream\rrequest failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-nbsp",
+      "stopReason": "length",
+      "errorMessage": "upstream request failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-bom",
+      "stopReason": "length",
+      "errorMessage": "upstream﻿request﻿failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-line-separator",
+      "stopReason": "length",
+      "errorMessage": "upstream request failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-paragraph-separator",
+      "stopReason": "length",
+      "errorMessage": "upstream request failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-emoji",
+      "stopReason": "length",
+      "errorMessage": "upstream😀request failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-nul",
+      "stopReason": "length",
+      "errorMessage": "upstream\u0000request failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-leading-embedded",
+      "stopReason": "length",
+      "errorMessage": "prefixupstream request failed",
+      "result": false
+    },
+    {
+      "id": "length/upstream-trailing-embedded",
+      "stopReason": "length",
+      "errorMessage": "upstream request failedsuffix",
+      "result": false
+    },
+    {
+      "id": "length/read-error-exact",
+      "stopReason": "length",
+      "errorMessage": "upstream_stream_read_error",
+      "result": false
+    },
+    {
+      "id": "length/read-error-upper",
+      "stopReason": "length",
+      "errorMessage": "UPSTREAM_STREAM_READ_ERROR",
+      "result": false
+    },
+    {
+      "id": "length/read-error-hyphen",
+      "stopReason": "length",
+      "errorMessage": "upstream-stream-read-error",
+      "result": false
+    },
+    {
+      "id": "length/interrupted-exact",
+      "stopReason": "length",
+      "errorMessage": "stream was interrupted",
+      "result": false
+    },
+    {
+      "id": "length/interrupted-upper",
+      "stopReason": "length",
+      "errorMessage": "STREAM WAS INTERRUPTED",
+      "result": false
+    },
+    {
+      "id": "length/interrupted-double-space",
+      "stopReason": "length",
+      "errorMessage": "stream  was interrupted",
+      "result": false
+    },
+    {
+      "id": "length/interrupted-newline",
+      "stopReason": "length",
+      "errorMessage": "stream was\ninterrupted",
+      "result": false
+    },
+    {
+      "id": "length/http-slash",
+      "stopReason": "length",
+      "errorMessage": "Upstream HTTP/2 stream failed",
+      "result": false
+    },
+    {
+      "id": "length/http-no-slash",
+      "stopReason": "length",
+      "errorMessage": "http2 stream failed",
+      "result": false
+    },
+    {
+      "id": "length/http-upper",
+      "stopReason": "length",
+      "errorMessage": "HTTP/2 STREAM FAILED",
+      "result": false
+    },
+    {
+      "id": "length/http-double-slash",
+      "stopReason": "length",
+      "errorMessage": "http//2 stream failed",
+      "result": false
+    },
+    {
+      "id": "length/http-wrong-version",
+      "stopReason": "length",
+      "errorMessage": "http/20 stream failed",
+      "result": false
+    },
+    {
+      "id": "length/http-double-space",
+      "stopReason": "length",
+      "errorMessage": "http/2  stream failed",
+      "result": false
+    },
+    {
+      "id": "length/quota-wins",
+      "stopReason": "length",
+      "errorMessage": "upstream request failed: quota exceeded",
+      "result": false
+    },
+    {
+      "id": "length/billing-wins",
+      "stopReason": "length",
+      "errorMessage": "billing: upstream_stream_read_error",
+      "result": false
+    },
+    {
+      "id": "length/balance-wins",
+      "stopReason": "length",
+      "errorMessage": "stream was interrupted: available balance",
+      "result": false
+    },
+    {
+      "id": "length/legacy-forward",
+      "stopReason": "length",
+      "errorMessage": "unknown: Unable to forward upstream stream",
+      "result": false
+    },
+    {
+      "id": "length/plain-negative",
+      "stopReason": "length",
+      "errorMessage": "ordinary unrelated failure",
+      "result": false
+    },
+    {
+      "id": "length/empty",
+      "stopReason": "length",
+      "errorMessage": "",
+      "result": false
+    },
+    {
+      "id": "length/wrapped-code",
+      "stopReason": "length",
+      "errorMessage": "{\"type\":\"upstream_error\",\"message\":\"Upstream request failed\"}",
+      "result": false
+    },
+    {
+      "id": "falsy/undefined",
+      "result": false
+    },
+    {
+      "id": "falsy/null",
+      "result": false
+    },
+    {
+      "id": "falsy/zero",
+      "result": false
+    },
+    {
+      "id": "falsy/false",
+      "result": false
+    },
+    {
+      "id": "metadata",
+      "name": "isRetryableAssistantError",
+      "length": 1,
+      "ownPrototype": true
+    },
+    {
+      "id": "getter/stop-getter-throws",
+      "error": {
+        "rawSame": true
+      },
+      "trace": [
+        "stopReason"
+      ]
+    },
+    {
+      "id": "getter/error-first-getter-throws",
+      "error": {
+        "rawSame": true
+      },
+      "trace": [
+        "stopReason",
+        "errorMessage:1"
+      ]
+    },
+    {
+      "id": "getter/error-second-getter-deny",
+      "result": false,
+      "trace": [
+        "stopReason",
+        "errorMessage:1",
+        "errorMessage:2"
+      ]
+    },
+    {
+      "id": "getter/stop-skips-error-getter",
+      "result": false,
+      "trace": [
+        "stopReason"
+      ]
+    },
+    {
+      "id": "coercion/first-allow-second-negative",
+      "result": false,
+      "trace": [
+        {
+          "coercion": 1,
+          "hint": "string"
+        },
+        {
+          "coercion": 2,
+          "hint": "string"
+        }
+      ]
+    },
+    {
+      "id": "coercion/first-deny",
+      "result": false,
+      "trace": [
+        {
+          "coercion": 1,
+          "hint": "string"
+        }
+      ]
+    },
+    {
+      "id": "coercion/first-throws",
+      "error": {
+        "rawSame": true
+      },
+      "trace": [
+        {
+          "coercion": 1,
+          "hint": "string"
+        }
+      ]
+    },
+    {
+      "id": "coercion/second-throws",
+      "error": {
+        "rawSame": true
+      },
+      "trace": [
+        {
+          "coercion": 1,
+          "hint": "string"
+        },
+        {
+          "coercion": 2,
+          "hint": "string"
+        }
+      ]
+    },
+    {
+      "id": "live-regexp/test-getter-forward",
+      "result": true,
+      "trace": [
+        {
+          "event": "test-getter",
+          "source": "GoUsageLimitError|FreeUsageLimitError|Monthly usage limit reached|available balance|insufficient_quota|out of budget|quota exceeded|billing|subscription_sharing_usage_limit_exceeded",
+          "flags": "i"
+        },
+        {
+          "event": "test-call",
+          "source": "GoUsageLimitError|FreeUsageLimitError|Monthly usage limit reached|available balance|insufficient_quota|out of budget|quota exceeded|billing|subscription_sharing_usage_limit_exceeded",
+          "receiverRegExp": true,
+          "value": "upstream request failed"
+        },
+        {
+          "event": "test-getter",
+          "source": "overloaded|server_busy|servers are currently busy|currently experiencing high demand|model is at capacity|rate.?limit|too many requests|429|500|502|503|504|520|524|service.?(?:is.?)?(?:temporarily.?)?unavailable|server.?error|internal.?error|provider.?returned.?(?:an.?)?error|exceeded request buffer limit while retrying upstream|unable to forward upstream|upstream.?request.?failed|upstream_stream_read_error|stream was interrupted|http\\/?2 stream failed|network.?error|connection.?error|connection.?refused|connection.?lost|other side closed|fetch failed|request to \\S+ failed, reason:|getaddrinfo|ENOTFOUND|EAI_AGAIN|upstream.?connect|reset before headers|socket hang up|socket connection was closed|timed? out|timeout|terminated|websocket.?closed|websocket.?error|ended without|stream ended before message_stop|stream ended before a terminal response event|http2 request did not get a response|pending stream has been canceled|retry delay|you can retry your request|try your request again|please retry your request|ResourceExhausted|subscription_sharing_usage_unavailable|subscription_sharing_user_unavailable",
+          "flags": "i"
+        },
+        {
+          "event": "test-call",
+          "source": "overloaded|server_busy|servers are currently busy|currently experiencing high demand|model is at capacity|rate.?limit|too many requests|429|500|502|503|504|520|524|service.?(?:is.?)?(?:temporarily.?)?unavailable|server.?error|internal.?error|provider.?returned.?(?:an.?)?error|exceeded request buffer limit while retrying upstream|unable to forward upstream|upstream.?request.?failed|upstream_stream_read_error|stream was interrupted|http\\/?2 stream failed|network.?error|connection.?error|connection.?refused|connection.?lost|other side closed|fetch failed|request to \\S+ failed, reason:|getaddrinfo|ENOTFOUND|EAI_AGAIN|upstream.?connect|reset before headers|socket hang up|socket connection was closed|timed? out|timeout|terminated|websocket.?closed|websocket.?error|ended without|stream ended before message_stop|stream ended before a terminal response event|http2 request did not get a response|pending stream has been canceled|retry delay|you can retry your request|try your request again|please retry your request|ResourceExhausted|subscription_sharing_usage_unavailable|subscription_sharing_user_unavailable",
+          "receiverRegExp": true,
+          "value": "upstream request failed"
+        }
+      ]
+    },
+    {
+      "id": "live-regexp/test-getter-throws",
+      "error": {
+        "rawSame": true
+      },
+      "trace": [
+        {
+          "event": "test-getter",
+          "source": "GoUsageLimitError|FreeUsageLimitError|Monthly usage limit reached|available balance|insufficient_quota|out of budget|quota exceeded|billing|subscription_sharing_usage_limit_exceeded",
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "live-regexp/test-method-throws",
+      "error": {
+        "rawSame": true
+      },
+      "trace": [
+        {
+          "event": "test-getter",
+          "source": "GoUsageLimitError|FreeUsageLimitError|Monthly usage limit reached|available balance|insufficient_quota|out of budget|quota exceeded|billing|subscription_sharing_usage_limit_exceeded",
+          "flags": "i"
+        },
+        {
+          "event": "test-call",
+          "source": "GoUsageLimitError|FreeUsageLimitError|Monthly usage limit reached|available balance|insufficient_quota|out of budget|quota exceeded|billing|subscription_sharing_usage_limit_exceeded",
+          "receiverRegExp": true,
+          "value": "upstream request failed"
+        }
+      ]
+    }
+  ],
+  "nativeQualified": false
+}

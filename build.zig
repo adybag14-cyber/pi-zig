@@ -808,6 +808,12 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, latest_compaction_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(latest_compaction_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-89-compaction", "Replay actual latest blocking compaction failure, persistent live state and produced-summary cleanup").dependOn(&b.addRunArtifact(latest_compaction_tests).step);
+    const upstream_698a_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_upstream_698a_retry_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native upstream698"} });
+    linkQuickJs(b, upstream_698a_retry_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(upstream_698a_retry_tests.root_module, sqlite_lib_dir, sqlite_library);
+    upstream_698a_retry_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-upstream-698a-retry", "Compare genuine Source698 classifier160 and typed36 observations").dependOn(&b.addRunArtifact(upstream_698a_retry_tests).step);
+    b.step("build-native-upstream-698a-retry", "Compile Source698 retry comparisons independently of runtime").dependOn(&b.addInstallArtifact(upstream_698a_retry_tests, .{}).step);
     const upstream_0fb_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_upstream_0fb_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native upstream0fb"} });
     linkQuickJs(b, upstream_0fb_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(upstream_0fb_tests.root_module, sqlite_lib_dir, sqlite_library);

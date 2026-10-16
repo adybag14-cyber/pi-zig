@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "candidate_root": "C:\\Users\\adyba\\pi-zig\\main",
+  "candidate_head": "38a8e606c159a8e918142b4e1b5210c4af707ac8",
+  "capture_head_frozen": "81ec9d38837bff76f55bcf2f7c538548609e62c9",
+  "source_head": "698a2d23b86a5045dd54554354a5e0cb7e466795",
+  "status": "source-only prepared; capture independent acceptance pending; no expected copied",
+  "raw_source": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\source160-raw.json",
+  "expected_destination": "src/extensions/fixtures/upstream-698a-retry-source160.json",
+  "caller_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016\\retry-698a-classifier.input.mjs",
+  "caller_destination": "src/extensions/fixtures/upstream-698a-retry-source160.input.mjs",
+  "test_prepared": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-native-intake-prepared-38a8e606-20261016\\native_upstream_698a_retry_test.zig.txt",
+  "test_destination": "src/native_upstream_698a_retry_test.zig",
+  "build_snippet": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-native-intake-prepared-38a8e606-20261016\\build-snippet.zig.txt",
+  "proof_destination": "verification/retry-698a-source160-accepted-20261016",
+  "planned_named_tests": 2,
+  "metadata_count": "unknown until exact compiled metadata; imported anonymous tests must be disclosed",
+  "assertion_scope": [
+    "All160 full serialized rows in original order including IDs, metadata, getter/coercion/live RegExp traces and rawSame throws",
+    "Typed36 genuine error-stop string outcomes only; typed original ten unit tests retained"
+  ],
+  "gate": {
+    "execution_authorized": false,
+    "fresh_available_gib": 16,
+    "build": "build-native-upstream-698a-retry",
+    "host_await_ms": 10000,
+    "compile_seconds": 1320,
+    "runtime_seconds": 300,
+    "per_test_seconds": 120,
+    "workers": 1,
+    "runtime": "test-native-upstream-698a-retry"
+  },
+  "required_acceptance": [
+    "Independent exact Source160 raw+closure+before/post/full Node1838/original1774/source1970/candidate/control/old273 proof accepted by Root",
+    "Independent external owner/descendant absence and final artifacts zero",
+    "Create expected and caller only with exclusive file creation and SHA256 equality, preserving raw bytes",
+    "Copy all raw run/journal proof receipts and independent acceptance into new proof directory with exact paths/hashes; no rewriting original captures",
+    "Native snapshot from current Root must contain reviewed C/H/Engine; no capture tool/controller changes",
+    "Complete candidate/compiler/vendor/control/fixture/artifact pre-between-post seals and exact metadata under separate Root native grant"
+  ],
+  "protected": [
+    {
+      "path": "src/ai/retry.zig",
+      "sha256": "3373E226BA4A75A37AF4A1D801E290E3922E8719A31960E756EA04109EED3BE0"
+    },
+    {
+      "path": "src/extensions/native_ai_error_classification.zig",
+      "sha256": "33C525AE7F188D63E446A953B8570F11B7B296DA12D0D9C991CA9B91368B2EC7"
+    },
+    {
+      "path": "src/extensions/retryable-provider-pattern.txt",
+      "sha256": "21DAD18A9386C914C8FC52F7E43D92BEA43EEEAE8494E909279B317608B18247"
+    },
+    {
+      "path": "src/extensions/nonretryable-provider-pattern.txt",
+      "sha256": "F97120E623D8EB0DDCBE322E72C1431BF71550648B5ECAC07D76892BECCACE8D"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "8419BEAED6F26F6231E48CD3837B6E7A9CDE96096EA2C76868438733CBAEA9FB"
+    },
+    {
+      "path": "src/native_upstream_0fb_test.zig",
+      "sha256": "48823322B10023F616BA2525844FCCEA0AB6FB8F9CCE92C83673453852DBE770"
+    }
+  ],
+  "prepared": [
+    {
+      "path": "native_upstream_698a_retry_test.zig.txt",
+      "sha256": "DF6360E2C6781588B3BAC9085C44A5494049F60D80845AB893E982113C44814C"
+    },
+    {
+      "path": "build-snippet.zig.txt",
+      "sha256": "96610095869105D9678B5B8C872F1975EF7B16FC052E3ED57EDF08B04501427F"
+    }
+  ],
+  "untouched": [
+    "Frozen81ec worktree and all capture tooling",
+    "Root main checkout/index",
+    "Original caller and160 IDs",
+    "Typed retry original ten unit tests",
+    "All accepted4dd273 expected/input/assertions",
+    "All historical negative proof packets"
+  ],
+  "no_jobs": [
+    "Node",
+    "Zig fmt",
+    "Zig AST",
+    "Compiler",
+    "Native runtime",
+    "Reference recapture"
+  ],
+  "limitations": [
+    "Direct actual classifier body binding verifies ordinary-function observation surface; whole public namespace/default SDK composition remains a separate gate",
+    "No native compile/runtime qualification asserted",
+    "No expected output authored or copied before acceptance"
+  ]
+}
