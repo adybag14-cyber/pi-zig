@@ -22018,6 +22018,17 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
         /* Genuine AsyncFunction return: the outer capability adopts output.
            Returning a Promise never returns that Promise's identity. */
         result = JS_Call(ctx, s->resolving_funcs[0], JS_UNDEFINED, 1, vc(&output));
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            /* The intrinsic callback can return undefined despite a pending
+               fatal hook/enqueue reason. Retain it before any owned cleanup. */
+            JSValue error = JS_GetException(ctx);
+            JS_FreeValue(ctx, output);
+            JS_FreeValue(ctx, result);
+            js_async_function_terminate(ctx->rt, s);
+            JS_Throw(ctx, error);
+            return false;
+        }
         JS_FreeValue(ctx, output);
         if (JS_IsException(result))
             goto rejected;
@@ -22065,6 +22076,15 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
     }
     output = JS_GetException(ctx);
     result = JS_Call(ctx, s->resolving_funcs[1], JS_UNDEFINED, 1, vc(&output));
+    if (JS_HasException(ctx) &&
+        JS_IsUncatchableError(ctx->rt->current_exception)) {
+        JSValue error = JS_GetException(ctx);
+        JS_FreeValue(ctx, output);
+        JS_FreeValue(ctx, result);
+        js_async_function_terminate(ctx->rt, s);
+        JS_Throw(ctx, error);
+        return false;
+    }
     JS_FreeValue(ctx, output);
     js_async_function_terminate(ctx->rt, s);
     if (JS_IsException(result))
@@ -22302,7 +22322,8 @@ static JSValue js_native_async_function_call(JSContext *caller,
     JSFunctionBytecode *b = JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode;
     JSContext *ctx = b->realm;
     JSAsyncFunctionData *s;
-    JSValue promise;
+    JSValue promise, error;
+    bool fatal;
     int i;
     (void)caller;
     if (argc < 0 || (size_t)argc > SIZE_MAX / sizeof(JSValue))
@@ -22335,8 +22356,15 @@ static JSValue js_native_async_function_call(JSContext *caller,
     js_async_function_free(ctx->rt, s);
     return promise;
  failed:
+    /* A newly failed resolving call may have settled promise with an owned
+       return/rejection value. Preserve its fatal reason over that teardown. */
+    fatal = JS_HasException(ctx) &&
+                 JS_IsUncatchableError(ctx->rt->current_exception);
+    error = fatal ? JS_GetException(ctx) : JS_UNDEFINED;
     JS_FreeValue(ctx, promise);
     js_async_function_free(ctx->rt, s);
+    if (fatal)
+        JS_Throw(ctx, error);
     return JS_EXCEPTION;
 }
 
