@@ -1,0 +1,39 @@
+{
+  "status": "source53_prepared_static_only",
+  "base": "1097e7ff3fa72d3284a762d4ed4cb583ae20072f",
+  "upstream": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "toolchain": "0.16.0",
+  "modules": [
+    {
+      "path": "src/extensions/native_sdk_models_store_production.zig",
+      "sha256": "718EDBE0D4108651C9A5F7087C33B44A9950F4D0C48E3CD0874527A5D5AD9A36"
+    },
+    {
+      "path": "src/extensions/native_sdk_model_config_production.zig",
+      "sha256": "AC47A5D8A2C66B574A2EB00C8B90ADB6119307292208DFE231CD0A4B51B8DE88"
+    },
+    {
+      "path": "src/extensions/native_sdk_model_text_production.zig",
+      "sha256": "EAD65F5429C807C2D7C6999C5443D40D075F2AEA18FE7205AE27E7C9DA550BA6"
+    },
+    {
+      "path": "src/native_sdk_model_dependencies_production_test.zig",
+      "sha256": "7069908F6CDC6561970D2628A1E82BD5D406C500A5130D2CF193B5F873031371"
+    }
+  ],
+  "input_sha256": "75DF02B4378DF0E30C381914ADA6276D8FC82223BB22625B25985C098A1127DA",
+  "source_modules": [
+    {
+      "path": "packages/coding-agent/src/core/models-store.ts",
+      "sha256": "9A93AFB3AD9123E59CB61606E77D431B38BBEB3063AFC0E2974341109F23DB02"
+    },
+    {
+      "path": "packages/coding-agent/src/core/model-config.ts",
+      "sha256": "9F2CF2DE7B8DD503CA4BC68119163C1D9BC8A3BF16CACCFB1207E55B6E1CD97E"
+    }
+  ],
+  "genuine_source_captured": false,
+  "native_compiled": false,
+  "native_qualified": false,
+  "default_selected": false
+}
