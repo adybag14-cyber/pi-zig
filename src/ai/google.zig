@@ -1322,3 +1322,31 @@ test "Google groups consecutive function responses into one user turn" {
     try std.testing.expect(parts[0].object.get("functionResponse") != null);
     try std.testing.expect(parts[1].object.get("functionResponse") != null);
 }
+
+test "native Google4dd typed tool output presence preserves bytes and image placeholders" {
+    const gpa = std.testing.allocator;
+    const cases = [_]struct { text: []const u8, present: bool }{
+        .{ .text = "", .present = false },
+        .{ .text = " \t\r\n\u{a0}\u{1680}\u{2000}\u{200a}\u{2028}\u{2029}\u{202f}\u{205f}\u{3000}\u{feff}", .present = false },
+        .{ .text = "\u{feff}", .present = false },
+        .{ .text = "\u{85}", .present = true },
+        .{ .text = "\u{200b}", .present = true },
+        .{ .text = " \t original \u{feff}\r\n", .present = true },
+    };
+    for ([_][]const u8{ "gemini-3.1-pro-preview", "gemini-2.5-pro" }) |model_id| {
+        for ([_]bool{ false, true }) |with_image| {
+            for ([_]bool{ false, true }) |is_error| {
+                for (cases) |case| {
+                    const messages = [_]ai.ChatMessage{.{ .role = "tool", .content = case.text, .tool_call_id = "fixture-call", .tool_name = "fixture-tool", .tool_is_error = is_error, .image_b64 = if (with_image) "AA==" else null, .image_mime = if (with_image) "image/png" else null }};
+                    const body = try buildRequestBody(gpa, &messages, "[]", "google", model_id);
+                    defer gpa.free(body);
+                    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, body, .{});
+                    defer parsed.deinit();
+                    const response = parsed.value.object.get("contents").?.array.items[0].object.get("parts").?.array.items[0].object.get("functionResponse").?.object.get("response").?;
+                    const expected = if (case.present) case.text else if (with_image) "(see attached image)" else "";
+                    try std.testing.expectEqualStrings(expected, response.object.get(if (is_error) "error" else "output").?.string);
+                }
+            }
+        }
+    }
+}
