@@ -1,0 +1,7 @@
+// Prospective integration only; actual metadata and explicit grant required.
+const dynamic_import_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_dynamic_import_graph0_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"queued Graph0 import"}, .use_llvm = use_llvm });
+linkQuickJs(b, dynamic_import_tests.root_module, quickjs, sqlite_lib_dir);
+linkSqlite(dynamic_import_tests.root_module, sqlite_lib_dir, sqlite_library);
+dynamic_import_tests.root_module.addImport("catalog_tool", catalog_tool);
+b.step("build-native-dynamic-import-graph0", "Compile explicit-base genuine queued import controls").dependOn(&b.addInstallArtifact(dynamic_import_tests, .{}).step);
+b.step("test-native-dynamic-import-graph0", "Run actual metadata-selected queued import controls after explicit grant").dependOn(&b.addRunArtifact(dynamic_import_tests).step);

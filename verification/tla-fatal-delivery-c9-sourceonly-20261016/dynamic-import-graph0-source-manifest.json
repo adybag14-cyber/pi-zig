@@ -1,0 +1,44 @@
+{
+  "status": "source_only_unexecuted",
+  "base": "5141149eee943fcee489f1cd7b78f3e701678e07",
+  "base_c_sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D",
+  "base_h_sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB",
+  "design_review": "async_c_review_resume exact514 closure",
+  "authority": "Root conditional source-only implementation after exact design closure",
+  "executed_jobs": 0,
+  "production_binding_selected": false,
+  "prepared_test_declarations": 6,
+  "actual_compiled_metadata_count": null,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/native_dynamic_import_graph0_test.zig",
+      "bytes": 12444,
+      "sha256": "28ADFDAA094DDAB0CA917A3D9B2EE9E7BD78401A2415A7E66EA247E329E2433C"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/DYNAMIC-IMPORT-GRAPH0-ABI-PROPOSAL.md",
+      "bytes": 8086,
+      "sha256": "115F6085FC04F52FBBBB55BE298CAA07B8FCB58512A3A2FC4B72BF5F9AB9B497"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/DYNAMIC-IMPORT-GRAPH0-IMPLEMENTATION.md",
+      "bytes": 3678,
+      "sha256": "D5258F5706582F8BBA9ED7DABFA6B77329C890CEF5EB679590DB3F061C9F248A"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/build-dynamic-import-graph0-snippet.zig.txt",
+      "bytes": 902,
+      "sha256": "EAE17D304093D1095C1E9F342BF90B6EA298E43CB33F180C6F2F7C693D788CC2"
+    }
+  ]
+}
