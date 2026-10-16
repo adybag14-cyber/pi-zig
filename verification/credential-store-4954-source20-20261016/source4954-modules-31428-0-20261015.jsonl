@@ -1,0 +1,5 @@
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs","sha256":"020361966fea906d9aa07f380f705f1df6755852ccdc5f9a65bdb75580a7e8a3","externalControl":true}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\credential-store-4954-capture-20261016.mjs","sha256":"1e8ea82754b5b818d252044b177e206a869a2f85287391c427a4b25bb4918d99","externalControl":true}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\auth\\credential-store.ts","sha256":"50ebde56b80b5862025e031719006ea303edd9aa80fec780fbc64319bb9e2847","externalControl":false}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\utils\\abort.ts","sha256":"e81dc16de331e82d7f15759b27e38c7d0a3d28955693e0cf157dd52dadea7035","externalControl":false}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\credential-store-4954-cases-20261016.mjs","sha256":"3592c9b423cb5b95d120a705c9236a3341254dc8bc0fb58618b016f55dae40df","externalControl":true}

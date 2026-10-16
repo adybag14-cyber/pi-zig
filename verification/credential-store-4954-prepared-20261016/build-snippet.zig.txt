@@ -1,0 +1,6 @@
+    const credential_store_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_credential_store_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual credential store"}, .use_llvm = use_llvm });
+    linkQuickJs(b, credential_store_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(credential_store_tests.root_module, sqlite_lib_dir, sqlite_library);
+    credential_store_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-credential-store", "Replay actual Source20 ordinary credential class Promise queues borrowed receivers and cancellation").dependOn(&b.addRunArtifact(credential_store_tests).step);
+    b.step("build-native-credential-store", "Compile credential store Source20 replay independently of runtime qualification").dependOn(&credential_store_tests.step);
