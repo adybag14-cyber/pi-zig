@@ -1,0 +1,217 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\.manifest.json",
+    "relative": "packages/ai/src/providers/data/.manifest.json",
+    "sha256": "05A7F9B7D8FC9A28018F38C6EBB4B0321E3C3685FD6BED191730D5B32D9E60AF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\amazon-bedrock.json",
+    "relative": "packages/ai/src/providers/data/amazon-bedrock.json",
+    "sha256": "DF227D426B678E44CD82DEAE1CF433855D6B27F36FEDCFF3EF4FB812FE882868"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\ant-ling.json",
+    "relative": "packages/ai/src/providers/data/ant-ling.json",
+    "sha256": "628FEAB3EF6C7D80CE96F75999804E1D9F05FEC3851E5302E30FFF3B69DB90F6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\anthropic.json",
+    "relative": "packages/ai/src/providers/data/anthropic.json",
+    "sha256": "91F5DA01452C7746645D3405BC91E09F849E4E4687C7C7FF22D8976EAFE64B87"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\azure.json",
+    "relative": "packages/ai/src/providers/data/azure.json",
+    "sha256": "46C4E25B84463C6475E706C581196D2735C35FEB9612D2EFCA0AB932C917D727"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\baseten.json",
+    "relative": "packages/ai/src/providers/data/baseten.json",
+    "sha256": "1FCDAB8DAF2881BD099EB08F9416F7DF5BF39975937D2A63B841542BD032F2E6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\cerebras.json",
+    "relative": "packages/ai/src/providers/data/cerebras.json",
+    "sha256": "3ECCB58C5DE3D0DC7BA49DC6E477BA29F00CB3150CE0A35CC90D59E6B5AB368E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\cloudflare-ai-gateway.json",
+    "relative": "packages/ai/src/providers/data/cloudflare-ai-gateway.json",
+    "sha256": "388AEFD2F1E5C5B0783673DE1ACDA4A7EA8DE853EBB5BEEEEDE9646A90159A2A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\cloudflare-workers-ai.json",
+    "relative": "packages/ai/src/providers/data/cloudflare-workers-ai.json",
+    "sha256": "98B9C8CB412139AE3F5D2F5E49134F8412ED4E139A12BF6CB3AEBA38AACC6BB3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\deepseek.json",
+    "relative": "packages/ai/src/providers/data/deepseek.json",
+    "sha256": "10A296FB3E898F7715C80890C8AF0AF4F5FD58F22DBCD6612FDC5D762157CCDC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\fireworks.json",
+    "relative": "packages/ai/src/providers/data/fireworks.json",
+    "sha256": "8DB3C11F65A5D76260D5040A5DC5A9EF0F35B92DE8505A30907C2355C2837B36"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\github-copilot.json",
+    "relative": "packages/ai/src/providers/data/github-copilot.json",
+    "sha256": "1C7D77A4C320081BB0A80B2C8E185B34F07B73D38E67D20F3DCABCF72F2F8FCD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\google-vertex.json",
+    "relative": "packages/ai/src/providers/data/google-vertex.json",
+    "sha256": "564D692A4292EF12E98C8EC056A39948EA64E10851F5DDAAEBCC37B585545231"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\google.json",
+    "relative": "packages/ai/src/providers/data/google.json",
+    "sha256": "E13D3C51B13028D8253153165F7438EA2F3C3EAA8F209BE952D3E9DED4494B5A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\groq.json",
+    "relative": "packages/ai/src/providers/data/groq.json",
+    "sha256": "910952AD9DAD07856983459D63FCE0148DBA1203EDD7B10D801A77C5824F3405"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\huggingface.json",
+    "relative": "packages/ai/src/providers/data/huggingface.json",
+    "sha256": "6399E958790A9D90C21FB55D1CBEF8569427A1CEB28DE86DADEB3B4454ECFADE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\kimi-coding.json",
+    "relative": "packages/ai/src/providers/data/kimi-coding.json",
+    "sha256": "728D5DDB63EF52130552022D5AE2FD138FDC131FF854AC8C3B10CCAAD355AB39"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\meta.json",
+    "relative": "packages/ai/src/providers/data/meta.json",
+    "sha256": "563F5EC07973F52AB8C3EB26EF91A36AD8A79E950B37174935666CDCB624BF35"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\minimax-cn.json",
+    "relative": "packages/ai/src/providers/data/minimax-cn.json",
+    "sha256": "1BBFBD11C3EDBD141841D3CEF027E12157218F1AEC92477E15772116C1FABE7A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\minimax.json",
+    "relative": "packages/ai/src/providers/data/minimax.json",
+    "sha256": "A4B6864BD97EDDF5749B2E117F643E751EC237408E8E24BEC9E2F947782FA244"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\mistral.json",
+    "relative": "packages/ai/src/providers/data/mistral.json",
+    "sha256": "27AA66C71A0504B53DC87EC194286FA7E70B99747FC8DF9B709B23B3548AFE50"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\moonshotai-cn.json",
+    "relative": "packages/ai/src/providers/data/moonshotai-cn.json",
+    "sha256": "79C9585DC84EE525EBAEBBC78B3C55F3D369EC884D4F943488F1E0B14E3587F5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\moonshotai.json",
+    "relative": "packages/ai/src/providers/data/moonshotai.json",
+    "sha256": "1DA2C4E34F22AEF17A07C974D85BDEE8E1B68B6DC712E3769C935B3F1E7DADCA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\nvidia.json",
+    "relative": "packages/ai/src/providers/data/nvidia.json",
+    "sha256": "FB46994414C25ADAD86C7A4E633339F4927DE98D38E1603251C988C3241AFA56"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\openai-codex.json",
+    "relative": "packages/ai/src/providers/data/openai-codex.json",
+    "sha256": "75DFC2F9E4B1E039978E069D94C983595EF8FF02EB64481901BEDAE5883B1D3F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\openai.json",
+    "relative": "packages/ai/src/providers/data/openai.json",
+    "sha256": "3598D87BD39E40FE6AE44B07ECF3F9D27CB2E745E114C8B0C0FB0A3A84DD8D3E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\opencode-go.json",
+    "relative": "packages/ai/src/providers/data/opencode-go.json",
+    "sha256": "04584E57D8F8A76D9F00A853C4772BCB1A826826C03A54D371B7F78E5F38E277"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\opencode.json",
+    "relative": "packages/ai/src/providers/data/opencode.json",
+    "sha256": "48991098B87C31B7428767A463D481E421AF2D79E38F891868695CD252E7A37D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\openrouter.json",
+    "relative": "packages/ai/src/providers/data/openrouter.json",
+    "sha256": "C7264D9599F80BBDA5CF2914FC235D5B296BF7143F816263E8A5A5F56F658492"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\qwen-token-plan-cn.json",
+    "relative": "packages/ai/src/providers/data/qwen-token-plan-cn.json",
+    "sha256": "2469A4091C474EC3DB0A49A9962D8D2726C074AD9065B96BC4E0C87861C4C6C5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\qwen-token-plan-individual.json",
+    "relative": "packages/ai/src/providers/data/qwen-token-plan-individual.json",
+    "sha256": "0FB7CF64FAF39D1A3B0A884210A86C87084B805EDA15644F5F39293287B959DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\qwen-token-plan.json",
+    "relative": "packages/ai/src/providers/data/qwen-token-plan.json",
+    "sha256": "EFF10620CB577142DE4EC02698D5961A71FDA2FE4F6AE7EA9432BAD9D6844176"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\radius.json",
+    "relative": "packages/ai/src/providers/data/radius.json",
+    "sha256": "47C49F1FFAF2900C8E1E23EE61CB4CBE8C066AE59A4E2D01393C5C9772A1DA04"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\together.json",
+    "relative": "packages/ai/src/providers/data/together.json",
+    "sha256": "52293DF62191C8E799AE3632F8AB1B3F52EE626AEE0280677086627B32864BF7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\typesafe.json",
+    "relative": "packages/ai/src/providers/data/typesafe.json",
+    "sha256": "A4429A2F696D5CC5273969AF61A7310BDA07D6BDCD27BF9AC9C76C534CC43716"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\vercel-ai-gateway.json",
+    "relative": "packages/ai/src/providers/data/vercel-ai-gateway.json",
+    "sha256": "BB62E8A267E0E94BE31CDAD7EA95DBDB1608ADC1AB910341E8761144982940F0"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\xai.json",
+    "relative": "packages/ai/src/providers/data/xai.json",
+    "sha256": "879C49B78B663A52A220AC4EE013E726B10C4F50AAA03BC58EE53A4B54C76928"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\xiaomi-token-plan-ams.json",
+    "relative": "packages/ai/src/providers/data/xiaomi-token-plan-ams.json",
+    "sha256": "8266DC55EF720234373D4FF5434F0B8D40F614300D9E501F7D52935017534C82"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\xiaomi-token-plan-cn.json",
+    "relative": "packages/ai/src/providers/data/xiaomi-token-plan-cn.json",
+    "sha256": "07ADE989C0BD1ECF6ED9EDC32E561C0DD28C317955B82F51E7A1875083906307"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\xiaomi-token-plan-sgp.json",
+    "relative": "packages/ai/src/providers/data/xiaomi-token-plan-sgp.json",
+    "sha256": "6AFAB55C8A37BC4018354AD657C774F0E664AE44CF79BEFB743BC5AE3FC3E9BA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\xiaomi.json",
+    "relative": "packages/ai/src/providers/data/xiaomi.json",
+    "sha256": "93F81B40E4D01F0193DD0B191F6ADA2B851A71D351113067999AB0F9DC3F737E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\zai-coding-cn.json",
+    "relative": "packages/ai/src/providers/data/zai-coding-cn.json",
+    "sha256": "EE5EE705FB6E413A6088DB5E3616C27FCE802A8ECE6C355F1DB35490D787F610"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\ai\\src\\providers\\data\\zai.json",
+    "relative": "packages/ai/src/providers/data/zai.json",
+    "sha256": "58E6642FDFB736F0B9A4A277C760C536A3CEA66A030ABBFB2615F7B2851D5C6F"
+  }
+]

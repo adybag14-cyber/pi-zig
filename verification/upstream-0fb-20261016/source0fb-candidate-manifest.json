@@ -1,0 +1,22 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\ai\\retry.zig",
+    "sha256": "46D1310CEA31AF9DC3E7EAE8A3F5FDC5DC7F2714839469A0A260B7585EBC9F4C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\native_durable_compaction_policy.zig",
+    "sha256": "1E86CAD78F5EB5E656D86B59A4E521E2CFBD9AC728C413DCDAFA707DD2213BCD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\native_durable_compaction_task.zig",
+    "sha256": "7EA53C2FA216CF061885B8EE86A52DA7C3DEFA7DC99E1657919EF62F71EEBF15"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\native_durable_generation_task.zig",
+    "sha256": "908C3E3D8014058B7A4F207973236E1AA06AFDCC5241B3DF99EF9DE30B181DBC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\retryable-provider-pattern.txt",
+    "sha256": "94F6442E0C54DD318C4342258648DB83AC713EE1DC22E8DE20274EAAAA65BC01"
+  }
+]

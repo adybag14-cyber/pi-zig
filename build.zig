@@ -788,6 +788,11 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, latest_compaction_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(latest_compaction_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-89-compaction", "Replay actual latest blocking compaction failure, persistent live state and produced-summary cleanup").dependOn(&b.addRunArtifact(latest_compaction_tests).step);
+    const upstream_0fb_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_upstream_0fb_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native upstream0fb"} });
+    linkQuickJs(b, upstream_0fb_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(upstream_0fb_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-upstream-0fb", "Compare genuine latest0fb policy retry public compaction and tool controls").dependOn(&b.addRunArtifact(upstream_0fb_tests).step);
+    b.step("build-native-upstream-0fb", "Compile latest0fb source comparisons separately from runtime").dependOn(&upstream_0fb_tests.step);
     const inspection_guard_tests = b.addTest(.{ .root_module = latest_compaction_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native durable actual 89 inspection Storage guard"} });
     b.step("test-native-durable-inspection-storage-guard", "Replay actual original read errors fatal close and underway successful-read discard").dependOn(&b.addRunArtifact(inspection_guard_tests).step);
     const schema_tool_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_243_schema_tool_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable actual 243 schema tool error results"} });

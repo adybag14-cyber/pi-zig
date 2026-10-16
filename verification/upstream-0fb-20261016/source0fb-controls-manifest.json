@@ -1,0 +1,30 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\fixtures\\upstream-0fb-policy.input.txt",
+    "sha256": "35CDC946F6170A05F6FFAFA4A3343BEEA40D64650820EB92ADBDE0763B434582"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\fixtures\\upstream-0fb-public.input.txt",
+    "sha256": "6B2D8FDE2E69464D53529402344E96483CE00251B885CFDBB851FFDF68F67AD3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\fixtures\\upstream-0fb-select.input.txt",
+    "sha256": "52EF0868CCDDA613215F6EE2BD717562C12CAD65B14520E703C8D8586AFCABB4"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\source0fb-observe.mjs",
+    "sha256": "A0CB474F1D558D8746072623F502074541D76F084B95650703A8FBCA30D41355"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\capture-source0fb.mjs",
+    "sha256": "2B492A60002057B7CEA1839DB1BE41B76AB88F7DD465DDF761A6CDD911C26732"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\Invoke-ExactSourceProcess.ps1",
+    "sha256": "F5C2F6B102EF2AD266F047BEDD81B6B250757F49C8295A8F9D60D356A526FB28"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\Run-Source0fb.ps1",
+    "sha256": "71D35ED0ED69E6561E95C11712A5C42763C03DB3E73BA4B589BDA5379186D444"
+  }
+]

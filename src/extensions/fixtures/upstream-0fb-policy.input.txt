@@ -1,0 +1,35 @@
+const rows = [];
+const base = {enabled:true,reserveTokens:100,keepRecentTokens:200,backgroundTokens:300};
+for (const [name,settings,model] of [
+  ['defaults',{compaction:base},{get provider(){throw Error('must remain lazy')}}],
+  ['partial-zero-false',{compaction:{...base,modelOverrides:{'p/m':{enabled:false,reserveTokens:0,keepRecentTokens:null}}}},{provider:'p',modelId:'m'}],
+  ['different-exact-model',{compaction:{...base,modelOverrides:{'p/other':{reserveTokens:7}}}},{provider:'p',modelId:'m'}],
+  ['null-entry',{compaction:{...base,modelOverrides:{'p/m':null}}},{provider:'p',modelId:'m'}],
+  ['inherited-entry',{compaction:{...base,modelOverrides:Object.create({'p/m':{backgroundTokens:0}})}},{provider:'p',modelId:'m'}],
+]) rows.push({name,policy:latestPolicy(settings,model)});
+{
+  const trace=[],mark=Symbol('extra');
+  const compaction={get enabled(){trace.push('base-enabled');return true},get modelOverrides(){trace.push('overrides');return {'p/m':{get reserveTokens(){trace.push('override-reserve');return 5}}}},get reserveTokens(){trace.push('base-reserve');return 100},get keepRecentTokens(){trace.push('base-keep');return 200},get backgroundTokens(){trace.push('base-background');return 300},get extra(){trace.push('extra');return 1},get [mark](){trace.push('symbol');return 2}};
+  const model={get provider(){trace.push('provider');return {toString(){trace.push('provider-string');return 'p'}}},get modelId(){trace.push('modelId');return 'm'}};
+  const policy=latestPolicy({get compaction(){trace.push('compaction');return compaction}},model);
+  rows.push({name:'policy-getter-order',policy,trace});
+}
+{
+ const marker={},trace=[];
+ try { latestPolicy({compaction:{get modelOverrides(){trace.push('overrides');return {}},get enabled(){trace.push('throw');throw marker}}},{provider:'p',modelId:'m'});rows.push({name:'throwing-rest',threw:false}); }
+ catch(error){rows.push({name:'throwing-rest',same:error===marker,trace});}
+}
+for (const errorMessage of [
+ 'request to https://oauth2.googleapis.com/token failed, reason:',
+ 'request to https://oauth2.googleapis.com/token failed, reason: connect ECONNREFUSED 127.0.0.1:9',
+ 'REQUEST TO https://example.test/ FAILED, REASON:',
+ 'request to  failed, reason:',
+ 'request to https://example.test/ failed reason:',
+ 'request to https://example.test/\tfailed, reason:',
+ 'request to https://example.test/\u00a0 failed, reason:',
+ 'request to https://example.test/ failed, reason: billing exhausted',
+ 'request to https://example.test/ failed, reason: quota exceeded',
+ 'The service is temporarily unavailable',
+]) rows.push({name:'retry:'+errorMessage,retryable:latestRetry({stopReason:'error',errorMessage})});
+globalThis.upstream0fbRows=rows;
+globalThis.upstream0fbComplete=true;

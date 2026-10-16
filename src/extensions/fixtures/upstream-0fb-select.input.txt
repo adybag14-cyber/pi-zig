@@ -1,0 +1,12 @@
+import {CompactionTask} from '@earendil-works/pi-durable';
+const rows=[];
+for(const scenario of ['select-default','select-override','select-pinned-across-context-hook','select-other-model']){
+ const trace=[],override={keepRecentTokens:150,reserveTokens:500};
+ let settings={stream:{temperature:0.2},compaction:{enabled:false,reserveTokens:100,keepRecentTokens:150,backgroundTokens:0,...(scenario==='select-default'?{}:{modelOverrides:{[scenario==='select-other-model'?'p/other':'p/m']:override}})}};
+ const view={entries:[{id:1},{id:2},{id:3},{id:4}],contributions:[[{role:'user',content:'u1 '+'x'.repeat(797),timestamp:1}],[{role:'assistant',content:[{type:'text',text:'a1'}],timestamp:2}],[{role:'user',content:'u2 '+'x'.repeat(797),timestamp:3}],[{role:'assistant',content:[{type:'text',text:'a2'}],timestamp:4}]]};view.messages=view.contributions.flat();
+ const runtime={conversationId:3,taskId:7,get settings(){trace.push('settings');return settings},agent:async()=>{trace.push('agent');return{model:{provider:'p',modelId:'m'},thinkingLevel:'off'}},models:{getModel:()=>({maxTokens:900})},context:async()=>{trace.push('context');if(scenario==='select-pinned-across-context-hook')settings={stream:{temperature:0.9},compaction:{enabled:true,keepRecentTokens:100000,reserveTokens:9999,backgroundTokens:0}};return view},hooks:{async each(name,callback){trace.push(name);await callback(async selected=>{trace.push({firstKept:selected.firstKept,entries:selected.entries.map(entry=>entry.id)});if(scenario==='select-pinned-across-context-hook')override.reserveTokens=9000;})}},commit:async change=>{trace.push('commit');const next=await change({doc:async()=>({})});trace.push(next);return next}};
+ await CompactionTask.definition.phases.select({input:{reason:'manual'},state:{checkpoint:{phase:'select'}}},runtime,{});
+ rows.push({scenario,trace});
+}
+globalThis.upstream0fbSelectRows=rows;
+globalThis.upstream0fbSelectComplete=true;

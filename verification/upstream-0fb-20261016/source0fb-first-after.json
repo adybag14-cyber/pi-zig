@@ -1,0 +1,11 @@
+{
+  "phase": "after",
+  "utc": "2026-10-16T09:53:30.7144465Z",
+  "hashed_files": 34816,
+  "source": 1970,
+  "dependencies": 31064,
+  "node": 1774,
+  "controls": 3,
+  "candidates": 5,
+  "actual_absences": 84
+}
