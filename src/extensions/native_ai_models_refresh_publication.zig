@@ -167,8 +167,7 @@ fn knownTypes(scope: *Scope, entry: c.JSValue, imports: c.JSValue) !c.JSValue {
 pub fn prepareKnownTypes(engine: *em.Engine, imports: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const known = try scope.object();
-    inline for (.{ "chat", "image", "classifier" }) |name| try scope.put(known, name, c.pi_js_bool(engine.context, 1));
+    const known = try scope.get(imports, "knownModelTypes");
     const predicate = try scope.own(try functions.create(engine, "hasKnownModelType", 1, hasKnownType, &.{ try scope.get(imports, "getModelType"), known }));
     try scope.put(imports, "hasKnownModelType", predicate);
 }
