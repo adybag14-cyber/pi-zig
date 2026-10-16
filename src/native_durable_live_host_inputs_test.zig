@@ -17,7 +17,7 @@ test "8efd captured host supplier calls bare each time and preserves raw throw" 
     const engine = try em.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     const supplier = try engine.eval(
-        \\globalThis.hostProbe={current:{id:1},calls:0,receivers:[],reason:{original:true},fail:false};
+        \\globalThis.hostProbe={current:{id:1},calls:0,receivers:[],coercions:0,reason:{original:true,toString(){hostProbe.coercions++;return 'raw supplier reason'}},fail:false};
         \\(function(){'use strict';hostProbe.calls++;hostProbe.receivers.push(this===undefined);if(hostProbe.fail)throw hostProbe.reason;return hostProbe.current})
     , "8efd-host-supplier-input", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(supplier);
@@ -36,7 +36,7 @@ test "8efd captured host supplier calls bare each time and preserves raw throw" 
     defer engine.freeValue(cause);
     try std.testing.expectError(error.JavaScriptException, host.resolve(engine, supplier));
     try std.testing.expect(c.JS_IsStrictEqual(engine.context, cause, engine.captured_exception.?));
-    const checked = try engine.eval("if(hostProbe.calls!==3||hostProbe.receivers.some(value=>!value))throw Error('supplier call contract');true", "8efd-host-call-contract", c.JS_EVAL_TYPE_GLOBAL);
+    const checked = try engine.eval("if(hostProbe.calls!==3||hostProbe.receivers.some(value=>!value)||hostProbe.coercions!==0)throw Error('supplier call contract');true", "8efd-host-call-contract", c.JS_EVAL_TYPE_GLOBAL);
     engine.freeValue(checked);
 }
 
@@ -65,8 +65,8 @@ test "8efd real tool API retains live models and per-attempt env getters without
     , "8efd-tool-getter-contract", c.JS_EVAL_TYPE_GLOBAL);
     engine.freeValue(checked);
     const caught = try engine.eval(
-        \\const reason={ordinary:true};Object.defineProperty(toolHostProbe.runtime,'models',{get(){throw reason}});
-        \\try{toolHostProbe.api.models;throw Error('missing throw')}catch(error){if(error!==reason)throw error}true
+        \\toolHostProbe.coercions=0;const reason={ordinary:true,toString(){toolHostProbe.coercions++;return 'raw getter reason'}};Object.defineProperty(toolHostProbe.runtime,'models',{get(){throw reason}});
+        \\try{toolHostProbe.api.models;throw Error('missing throw')}catch(error){if(error!==reason)throw error}if(toolHostProbe.coercions!==0)throw Error('diagnostic coercion before guest catch');true
     , "8efd-tool-caught-getter-contract", c.JS_EVAL_TYPE_GLOBAL);
     engine.freeValue(caught);
     try std.testing.expect(engine.captured_exception == null);

@@ -961,6 +961,8 @@ pub const Manager = struct {
         if (native.creation_owner) |harness| @import("native_durable_harness.zig").reportFailure(self.engine, harness, reason);
     }
     fn contextRetentionValue(self: *Manager) !c.JSValue {
+        self.engine.native_exception_diagnostics_suppressed += 1;
+        defer self.engine.native_exception_diagnostics_suppressed -= 1;
         const generation = self.engine.native_allocation_generation;
         const value = @import("native_durable_agent.zig").runtimeSettingsForSession(self.engine, self.session, self.options) catch |err| {
             try self.reportContextFailure(err, generation);
@@ -2111,11 +2113,15 @@ fn runtimeRegistryGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]
 }
 fn runtimeSettingsGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const generation = engine.native_allocation_generation;
     return @import("native_durable_agent.zig").runtimeSettingsForSession(engine, data[0], data[1]) catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
 }
 fn runtimeModelsGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const generation = engine.native_allocation_generation;
     return @import("native_durable_host_inputs.zig").resolve(engine, data[0]) catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
 }

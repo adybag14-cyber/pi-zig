@@ -80,6 +80,8 @@ pub fn submit(engine: *Engine, session: c.JSValue, options: c.JSValue, conversat
 }
 fn admitCommit(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const generation = engine.native_allocation_generation;
     return admitDraft(engine, data[0], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
 }

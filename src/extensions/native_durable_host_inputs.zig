@@ -4,6 +4,8 @@ const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const c = em.c;
 pub fn resolve(engine: *em.Engine, captured: c.JSValue) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     if (!c.JS_IsFunction(engine.context, captured)) return c.JS_DupValue(engine.context, captured);
     const generation = engine.native_allocation_generation;
     return engine.checked(c.JS_Call(engine.context, captured, c.pi_js_undefined(), 0, null)) catch |err| {

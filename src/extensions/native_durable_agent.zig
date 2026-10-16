@@ -393,6 +393,8 @@ pub fn resolveConversation(engine: *Engine, session: c.JSValue, options: c.JSVal
 }
 fn resolvedConversation(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const generation = engine.native_allocation_generation;
     return resolvedConversationOwned(engine, if (argc == 0) c.pi_js_undefined() else argv[0], data[0], data[1], data[2]) catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
 }
@@ -414,6 +416,8 @@ pub fn runtimeSettingsForSession(engine: *Engine, session: c.JSValue, options: c
     return settingsFromSupplier(engine, input);
 }
 fn settingsFromSupplier(engine: *Engine, input: c.JSValue) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const value = try @import("native_durable_host_inputs.zig").resolve(engine, input);
     defer engine.freeValue(value);
     return settings(engine, value);

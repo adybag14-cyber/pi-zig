@@ -79,11 +79,15 @@ fn installGetter(engine: *Engine, api: c.JSValue, comptime name: [:0]const u8, c
 }
 fn modelsGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const generation = engine.native_allocation_generation;
     return vm.get(engine, data[0], "models") catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
 }
 fn environmentGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const generation = engine.native_allocation_generation;
     return vm.get(engine, data[0], "value") catch |err| @import("native_durable_host_inputs.zig").getterFailure(engine, err, generation);
 }
