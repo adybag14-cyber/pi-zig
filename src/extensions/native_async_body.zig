@@ -15,8 +15,8 @@ fn set(s: *Scope, job: c.JSValue, kind: Kind, value: c.JSValue) !void {
     try s.put(job, "nativeAsyncAction", c.JS_NewInt32(s.engine.context, @intFromEnum(kind)));
     try s.put(job, "nativeAsyncValue", value);
 }
-pub fn wait(s: *Scope, job: c.JSValue, value: c.JSValue, stage: c_int) !void {
-    try s.put(job, "nativeAsyncStage", c.JS_NewInt32(s.engine.context, stage));
+pub fn wait(s: *Scope, job: c.JSValue, value: c.JSValue, next_stage: c_int) !void {
+    try s.put(job, "nativeAsyncStage", c.JS_NewInt32(s.engine.context, next_stage));
     try set(s, job, .awaited, value);
 }
 pub fn resolve(s: *Scope, job: c.JSValue, value: c.JSValue) !void {
