@@ -146,6 +146,7 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         const runtime = try scope.get(state, "runtime");
         try put(engine, state, "settings", try scope.get(runtime, "settings"));
         const ref = try scope.get(value, "model");
+        try put(engine, state, "thinkingLevel", try scope.get(value, "thinkingLevel"));
         var intrinsics = try captured(&scope, state);
         if (c.JS_IsUndefined(ref)) return failNoModel(engine, &intrinsics, runtime, try scope.get(state, "context"), try scope.get(state, "liveToken"), ref);
         const model = try scope.invoke(try scope.get(runtime, "models"), "getModel", &.{ try scope.get(ref, "provider"), try scope.get(ref, "modelId") });
@@ -630,7 +631,7 @@ fn preparedCheckpoint(engine: *Engine, state: c.JSValue) !c.JSValue {
     const compacted = try scope.get(old, "compacted");
     if (!c.JS_IsUndefined(compacted)) try put(engine, request, "compacted", compacted);
     try put(engine, request, "model", try scope.get(state, "modelRef"));
-    try put(engine, request, "thinkingLevel", try scope.get(try scope.get(state, "agent"), "thinkingLevel"));
+    try put(engine, request, "thinkingLevel", try scope.get(state, "thinkingLevel"));
     try put(engine, request, "streamOptions", try scope.get(try scope.get(state, "settings"), "stream"));
     try put(engine, request, "cutoff", cutoff);
     const next = try vm.object(engine);
@@ -723,13 +724,17 @@ fn classifyError(engine: *Engine, state: c.JSValue) !c.JSValue {
     const runtime = try scope.get(state, "runtime");
     const message = try scope.get(state, "message");
     const request_value = try scope.get(state, "request");
+    // `classify` allocates a fresh private state for every response. These
+    // pins survive only stage26's awaited overflow context and its no-cut
+    // continuation; neither is written into a durable retry checkpoint.
     var settings = try scope.get(state, "errorSettings");
     var compaction = try scope.get(state, "errorCompaction");
     if (c.JS_IsUndefined(settings)) {
         settings = try scope.get(runtime, "settings");
         try put(engine, state, "errorSettings", settings);
     }
-    const overflow = try @import("native_durable_generation_overflow.zig").errorOverflow(engine, message);
+    const cached_overflow = try scope.get(state, "overflow");
+    const overflow = if (c.JS_IsUndefined(cached_overflow)) try @import("native_durable_generation_overflow.zig").errorOverflow(engine, message) else c.JS_ToBool(engine.context, cached_overflow) != 0;
     if (c.JS_IsUndefined(compaction)) {
         compaction = try scope.own(try @import("native_durable_compaction_policy.zig").resolve(engine, settings, try scope.get(request_value, "model")));
         try put(engine, state, "errorCompaction", compaction);

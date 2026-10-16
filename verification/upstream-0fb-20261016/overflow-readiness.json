@@ -1,0 +1,20 @@
+{
+  "status": "source32_pass_native_deferred",
+  "target_source": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "base_checkpoint": "a25c8a2c09a752e5466b3811d0ee728776c60195",
+  "additional_source_cases": 5,
+  "total_distinct_source_cases": 32,
+  "original27_sha256": "CD378C5BEBFD7884AA6E53A37B36163F73AE6F7AB219262932058E9B22034301",
+  "additional5_sha256": "12140F5F11464977D1774181ACBFE175534B3295FE1977DC14D6E86DB3D2A87B",
+  "observed_source_modules": 735,
+  "workspace_export_mappings": 36,
+  "classification_cache_scope": "Private new createState allocated by classify for every response; pins retained only across stage26 overflow context await, never placed in retry checkpoint.",
+  "source_two_failures": "Same runtime/task; fresh settings after-response1 then after-response2; retry running then overflow waiting.",
+  "native_changes": "Reuse overflow bool during no-cut continuation; pin prepare thinkingLevel at initial source destructure point; add original5 source comparison.",
+  "canonical_zig_format_check": "Held after changes at Root request during serial Body native pair",
+  "native_build_executed": false,
+  "native_runtime_qualified": false,
+  "full_pi_qualified": false,
+  "release_qualified": false,
+  "public_activation": false
+}

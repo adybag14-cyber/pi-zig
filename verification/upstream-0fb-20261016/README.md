@@ -48,3 +48,28 @@ pass. The prepared target is `test-native-upstream-0fb` (compile-only target
 `build-native-upstream-0fb`). No new C source, release, main merge, publication,
 or public activation is included. Source control success does not certify the
 whole Pi implementation or a versioned release.
+
+Additional overflow source proof
+-------------------------------
+
+Five additional source controls passed in a separate bounded run, bringing the
+total to 32 distinct source cases. The original 27 expected rows retain their
+SHA-256 unchanged. The additional output is
+`src/extensions/fixtures/upstream-0fb-overflow-source.json`.
+
+These controls pin request model A, switch the current agent to model B in an
+afterResponse hook, and give A and B opposing policies. Source selects A's
+fresh classification policy: A-enabled/B-disabled waits for compaction, while
+the inverse fails. Another case changes settings and getter-backed overrides
+inside an awaited context read; the previously resolved policy remains fixed.
+A no-cut case reads settings/policy once. Two errors on the same runtime and
+task read new settings separately and move from retry to overflow compaction.
+
+Native error-policy pins belong to the fresh private state allocated by
+`classify()` for each response; they are never copied into a retry checkpoint.
+The no-cut continuation now also reuses the already computed overflow boolean.
+Preparation captures thinkingLevel when upstream destructures the agent,
+before asynchronous context/rendering work. These additions and their native
+test remain uncompiled; Root requested a temporary hold on all Zig commands
+while its serial Body pair runs. The original canonical formatting check
+applies to checkpoint a25c8a2c, not an unverified claim about later changes.

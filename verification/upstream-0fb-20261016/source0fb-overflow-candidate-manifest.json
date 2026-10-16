@@ -1,0 +1,26 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\ai\\retry.zig",
+    "sha256": "63A3ACD7E534A3394B5113351C2FA92D4906F1C0362E4138E0030883B54B61DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\native_durable_compaction_policy.zig",
+    "sha256": "A52DEE8BFC61063BD2E594D97A14D29526C2C217C6162AAA218E892C07BDE5B9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\native_durable_compaction_task.zig",
+    "sha256": "7EA53C2FA216CF061885B8EE86A52DA7C3DEFA7DC99E1657919EF62F71EEBF15"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\native_durable_generation_task.zig",
+    "sha256": "BDE3A0974D073A3747A73481B3347B3AFAB01A97241FF24B163B41EA5875ED89"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\retryable-provider-pattern.txt",
+    "sha256": "94F6442E0C54DD318C4342258648DB83AC713EE1DC22E8DE20274EAAAA65BC01"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\fixtures\\upstream-0fb-source.json",
+    "sha256": "CD378C5BEBFD7884AA6E53A37B36163F73AE6F7AB219262932058E9B22034301"
+  }
+]
