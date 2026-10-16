@@ -1,0 +1,7 @@
+// Prospective integration; no execution grant is implied.
+const native_await_inactive_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_await_inactive_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AF Await inactive"}, .use_llvm = use_llvm });
+linkQuickJs(b, native_await_inactive_tests.root_module, quickjs, sqlite_lib_dir);
+linkSqlite(native_await_inactive_tests.root_module, sqlite_lib_dir, sqlite_library);
+native_await_inactive_tests.root_module.addImport("catalog_tool", catalog_tool);
+b.step("build-native-af-await-inactive", "Compile reviewed native Await queued callback and GC control").dependOn(&b.addInstallArtifact(native_await_inactive_tests, .{}).step);
+b.step("test-native-af-await-inactive", "Run actual metadata-selected native Await lifecycle control after explicit grant").dependOn(&b.addRunArtifact(native_await_inactive_tests).step);

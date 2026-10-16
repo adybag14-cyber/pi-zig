@@ -22225,6 +22225,8 @@ static JSValue js_async_function_resolve_call(JSContext *ctx,
     else
         arg = JS_UNDEFINED;
     if (s->native_body) {
+        if (!s->is_active)
+            return JS_UNDEFINED;
         if (!js_native_async_function_resume(s,
                 is_reject ? JS_PI_AF_AWAIT_REJECTED : JS_PI_AF_AWAIT_FULFILLED,
                 arg))
