@@ -1,0 +1,184 @@
+{
+  "workspace_junctions": [
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\chord",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\chord"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\pi-agent-core",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\agent"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\pi-ai",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\ai"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\pi-codemode",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\codemode"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\pi-coding-agent",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\pi-durable",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\durable"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\pi-env",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\env"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\pi-evals",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\evals"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\pi-mcp",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\mcp"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\pi-telemetry",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\telemetry"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\@earendil-works\\pi-tui",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\pi-extension-custom-provider-anthropic",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\custom-provider-anthropic"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\pi-extension-custom-provider-gitlab-duo",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\custom-provider-gitlab-duo"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\pi-extension-gondolin",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\gondolin"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\pi-extension-sandbox",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\sandbox"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\pi-extension-with-deps",
+      "type": "Junction",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\with-deps"
+    }
+  ],
+  "required_kib": 2097152,
+  "heap_mb": 256,
+  "runner_sha256": "083E2F74B290C6B910889F8B56E85193A364BC377C478C256C1A91EE0848A51B",
+  "candidate_head": "3b7a64806f31d63edb110ebcf38e3db401724654",
+  "free_kib": 15528688,
+  "source_only": true,
+  "status": "admitted",
+  "stale_task_summary_runner_sha256": "4242EB5456F41B45770BFD6AABFA6EFFEE62D5EA6350319AA6059DAFCE5AD9A1",
+  "deadline_seconds": 300,
+  "compiler_distribution_frozen": false,
+  "parent_settle_seconds": 10,
+  "declared_absences": [
+    "node_modules/@biomejs/cli-darwin-arm64",
+    "node_modules/@biomejs/cli-darwin-x64",
+    "node_modules/@biomejs/cli-linux-arm64",
+    "node_modules/@biomejs/cli-linux-arm64-musl",
+    "node_modules/@biomejs/cli-linux-x64",
+    "node_modules/@biomejs/cli-linux-x64-musl",
+    "node_modules/@biomejs/cli-win32-arm64",
+    "node_modules/@earendil-works/gondolin-krun-runner-darwin-arm64",
+    "node_modules/@earendil-works/gondolin-krun-runner-linux-x64",
+    "node_modules/@esbuild/aix-ppc64",
+    "node_modules/@esbuild/android-arm",
+    "node_modules/@esbuild/android-arm64",
+    "node_modules/@esbuild/android-x64",
+    "node_modules/@esbuild/darwin-arm64",
+    "node_modules/@esbuild/darwin-x64",
+    "node_modules/@esbuild/freebsd-arm64",
+    "node_modules/@esbuild/freebsd-x64",
+    "node_modules/@esbuild/linux-arm",
+    "node_modules/@esbuild/linux-arm64",
+    "node_modules/@esbuild/linux-ia32",
+    "node_modules/@esbuild/linux-loong64",
+    "node_modules/@esbuild/linux-mips64el",
+    "node_modules/@esbuild/linux-ppc64",
+    "node_modules/@esbuild/linux-riscv64",
+    "node_modules/@esbuild/linux-s390x",
+    "node_modules/@esbuild/linux-x64",
+    "node_modules/@esbuild/netbsd-arm64",
+    "node_modules/@esbuild/netbsd-x64",
+    "node_modules/@esbuild/openbsd-arm64",
+    "node_modules/@esbuild/openbsd-x64",
+    "node_modules/@esbuild/openharmony-arm64",
+    "node_modules/@esbuild/sunos-x64",
+    "node_modules/@esbuild/win32-arm64",
+    "node_modules/@esbuild/win32-ia32",
+    "node_modules/@napi-rs/wasm-runtime",
+    "node_modules/@rolldown/binding-android-arm64",
+    "node_modules/@rolldown/binding-darwin-arm64",
+    "node_modules/@rolldown/binding-darwin-x64",
+    "node_modules/@rolldown/binding-freebsd-x64",
+    "node_modules/@rolldown/binding-linux-arm-gnueabihf",
+    "node_modules/@rolldown/binding-linux-arm64-gnu",
+    "node_modules/@rolldown/binding-linux-arm64-musl",
+    "node_modules/@rolldown/binding-linux-ppc64-gnu",
+    "node_modules/@rolldown/binding-linux-s390x-gnu",
+    "node_modules/@rolldown/binding-linux-x64-gnu",
+    "node_modules/@rolldown/binding-linux-x64-musl",
+    "node_modules/@rolldown/binding-openharmony-arm64",
+    "node_modules/@rolldown/binding-wasm32-wasi",
+    "node_modules/@rolldown/binding-win32-arm64-msvc",
+    "node_modules/@tybys/wasm-util",
+    "node_modules/@typescript/typescript-aix-ppc64",
+    "node_modules/@typescript/typescript-darwin-arm64",
+    "node_modules/@typescript/typescript-darwin-x64",
+    "node_modules/@typescript/typescript-freebsd-arm64",
+    "node_modules/@typescript/typescript-freebsd-x64",
+    "node_modules/@typescript/typescript-linux-arm",
+    "node_modules/@typescript/typescript-linux-arm64",
+    "node_modules/@typescript/typescript-linux-loong64",
+    "node_modules/@typescript/typescript-linux-mips64el",
+    "node_modules/@typescript/typescript-linux-ppc64",
+    "node_modules/@typescript/typescript-linux-riscv64",
+    "node_modules/@typescript/typescript-linux-s390x",
+    "node_modules/@typescript/typescript-linux-x64",
+    "node_modules/@typescript/typescript-netbsd-arm64",
+    "node_modules/@typescript/typescript-netbsd-x64",
+    "node_modules/@typescript/typescript-openbsd-arm64",
+    "node_modules/@typescript/typescript-openbsd-x64",
+    "node_modules/@typescript/typescript-sunos-x64",
+    "node_modules/@typescript/typescript-win32-arm64",
+    "node_modules/fsevents",
+    "node_modules/lightningcss-android-arm64",
+    "node_modules/lightningcss-darwin-arm64",
+    "node_modules/lightningcss-darwin-x64",
+    "node_modules/lightningcss-freebsd-x64",
+    "node_modules/lightningcss-linux-arm-gnueabihf",
+    "node_modules/lightningcss-linux-arm64-gnu",
+    "node_modules/lightningcss-linux-arm64-musl",
+    "node_modules/lightningcss-linux-x64-gnu",
+    "node_modules/lightningcss-linux-x64-musl",
+    "node_modules/lightningcss-win32-arm64-msvc",
+    "packages/agent/node_modules/@earendil-works/pi-ai/node_modules/typebox",
+    "packages/coding-agent/node_modules/@earendil-works/pi-agent-core/node_modules/typebox",
+    "packages/coding-agent/node_modules/@earendil-works/pi-ai/node_modules/@anthropic-ai/sdk",
+    "packages/coding-agent/node_modules/@earendil-works/pi-ai/node_modules/typebox"
+  ],
+  "observed_utc": "2026-10-16T09:42:14.5247122+00:00",
+  "lane": "Root explicit LIGHT3 Source80",
+  "hash_correction": "Root independently verified current committed runner before explicit LIGHT3 grant"
+}

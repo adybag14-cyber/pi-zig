@@ -1,0 +1,1535 @@
+{
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "runtime": "v24.14.0",
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "argv": [
+    "--max-old-space-size=256",
+    "--expose-gc",
+    "--import",
+    "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-observe-20261015.mjs"
+  ],
+  "authority": "C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox",
+  "version": "1.3.27",
+  "count": 80,
+  "packageSha256": "c59ddfd977ce941f1e8ee8b0a0b14396c332fa27cc5fa6fa165227ffd5a3992f",
+  "inputSha256": "b7dc5b8f18b42e70410438de323b408d4bb268cf45e19be923952d9097be60ab",
+  "actualNodeGC": true,
+  "rows": [
+    {
+      "name": "public-class-and-function-metadata",
+      "value": {
+        "compile": {
+          "name": "Compile",
+          "length": 0,
+          "prototype": true
+        },
+        "code": "const check_0 = ((value) => ((typeof value === \"object\" && value !== null && !(Array.isArray(value))) && (\"x\" in value && typeof value.x === \"string\"))); return (value) => { return check_0(value) }",
+        "validator": {
+          "name": "Validator",
+          "length": 2,
+          "prototype": true
+        },
+        "instance": true,
+        "constructor": true,
+        "own": [
+          "hasCodec",
+          "buildResult",
+          "evaluateResult"
+        ],
+        "prototype": [
+          "constructor",
+          "IsAccelerated",
+          "Context",
+          "Type",
+          "Code",
+          "Check",
+          "Parse",
+          "Errors",
+          "Clean",
+          "Convert",
+          "Create",
+          "Default",
+          "Decode",
+          "Encode"
+        ],
+        "methods": {
+          "IsAccelerated": {
+            "name": "IsAccelerated",
+            "length": 0,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "IsAccelerated",
+                "length": 0,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Context": {
+            "name": "Context",
+            "length": 0,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Context",
+                "length": 0,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Type": {
+            "name": "Type",
+            "length": 0,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Type",
+                "length": 0,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Code": {
+            "name": "Code",
+            "length": 0,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Code",
+                "length": 0,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Check": {
+            "name": "Check",
+            "length": 1,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Check",
+                "length": 1,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Parse": {
+            "name": "Parse",
+            "length": 1,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Parse",
+                "length": 1,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Errors": {
+            "name": "Errors",
+            "length": 1,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Errors",
+                "length": 1,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Clean": {
+            "name": "Clean",
+            "length": 1,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Clean",
+                "length": 1,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Convert": {
+            "name": "Convert",
+            "length": 1,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Convert",
+                "length": 1,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Create": {
+            "name": "Create",
+            "length": 0,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Create",
+                "length": 0,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Default": {
+            "name": "Default",
+            "length": 1,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Default",
+                "length": 1,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Decode": {
+            "name": "Decode",
+            "length": 1,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Decode",
+                "length": 1,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          },
+          "Encode": {
+            "name": "Encode",
+            "length": 1,
+            "prototype": false,
+            "descriptor": {
+              "value": {
+                "name": "Encode",
+                "length": 1,
+                "prototype": false
+              },
+              "writable": true,
+              "enumerable": false,
+              "configurable": true
+            }
+          }
+        },
+        "context": {},
+        "typeSame": true,
+        "accelerated": true,
+        "valid": true,
+        "invalid": false
+      }
+    },
+    {
+      "name": "compile-arity-0",
+      "error": {
+        "name": "Error",
+        "message": "Invalid Arguments"
+      }
+    },
+    {
+      "name": "compile-arity-3",
+      "error": {
+        "name": "Error",
+        "message": "Invalid Arguments"
+      }
+    },
+    {
+      "name": "compile-arity-1",
+      "value": true
+    },
+    {
+      "name": "compile-arity-2",
+      "value": true
+    },
+    {
+      "name": "code-arity-0",
+      "error": {
+        "name": "Error",
+        "message": "Invalid Arguments"
+      }
+    },
+    {
+      "name": "code-arity-3",
+      "error": {
+        "name": "Error",
+        "message": "Invalid Arguments"
+      }
+    },
+    {
+      "name": "code-arity-1",
+      "value": {
+        "External": {
+          "identifier": "External",
+          "variables": []
+        },
+        "Code": "import { Hashing } from \"typebox/system\"\nimport { Format } from \"typebox/format\"\nimport { Guard } from \"typebox/guard\"\n\n// @ts-ignore\nlet External = []\n\n// @ts-ignore\nexport function SetExternal(external) { External = external.variables }\n\n// @ts-ignore\nconst check_0 = ((value) => true);\n\n// @ts-ignore\nexport function Check(value) { return check_0(value) }"
+      }
+    },
+    {
+      "name": "code-arity-2",
+      "value": {
+        "External": {
+          "identifier": "External",
+          "variables": []
+        },
+        "Code": "import { Hashing } from \"typebox/system\"\nimport { Format } from \"typebox/format\"\nimport { Guard } from \"typebox/guard\"\n\n// @ts-ignore\nlet External = []\n\n// @ts-ignore\nexport function SetExternal(external) { External = external.variables }\n\n// @ts-ignore\nconst check_0 = ((value) => true);\n\n// @ts-ignore\nexport function Check(value) { return check_0(value) }"
+      }
+    },
+    {
+      "name": "constructor-explicit-context-identity",
+      "value": {
+        "context": true,
+        "type": true,
+        "good": true,
+        "bad": false
+      }
+    },
+    {
+      "name": "borrowed-method-live-fields",
+      "value": {
+        "out": [
+          "flag",
+          {
+            "a": 1
+          },
+          {
+            "type": "string"
+          },
+          "code",
+          7
+        ],
+        "trace": [
+          "evaluateResult",
+          "accelerated",
+          "buildResult",
+          "context",
+          "buildResult",
+          "schema",
+          "evaluateResult",
+          "code",
+          "evaluateResult",
+          [
+            "check",
+            7
+          ]
+        ]
+      }
+    },
+    {
+      "name": "subclass-constructor-setter-getter-order",
+      "value": {
+        "trace": [
+          [
+            "hasCodec",
+            false
+          ],
+          "setBuild",
+          "getBuild",
+          "setEvaluate"
+        ],
+        "child": true,
+        "validator": true,
+        "valid": true
+      }
+    },
+    {
+      "name": "parse-valid-identity",
+      "value": {
+        "same": true,
+        "decode": true,
+        "encode": true
+      }
+    },
+    {
+      "name": "parse-error-class-and-cause",
+      "value": {
+        "name": "Error",
+        "constructor": "ParseError",
+        "message": "Parse",
+        "own": [
+          "message",
+          "cause"
+        ],
+        "cause": {
+          "source": "Parse",
+          "errors": [
+            {
+              "keyword": "type",
+              "schemaPath": "#/properties/x",
+              "instancePath": "/x",
+              "params": {
+                "type": "number"
+              },
+              "message": "must be number"
+            }
+          ],
+          "value": {
+            "x": "bad"
+          }
+        },
+        "causeDescriptor": {
+          "value": {
+            "source": "Parse",
+            "errors": [
+              {
+                "keyword": "type",
+                "schemaPath": "#/properties/x",
+                "instancePath": "/x",
+                "params": {
+                  "type": "number"
+                },
+                "message": "must be number"
+              }
+            ],
+            "value": {
+              "x": "bad"
+            }
+          },
+          "writable": false,
+          "enumerable": false,
+          "configurable": false
+        },
+        "same": true
+      }
+    },
+    {
+      "name": "corrective-parse-clone-default-convert-clean",
+      "value": {
+        "parsed": {
+          "x": 12,
+          "label": "ok"
+        },
+        "original": {
+          "x": "12",
+          "extra": true
+        },
+        "separate": true
+      }
+    },
+    {
+      "name": "clean-convert-default-create",
+      "value": {
+        "clean": {
+          "x": 2
+        },
+        "cleanSame": true,
+        "convert": {
+          "x": 3
+        },
+        "default": {
+          "x": 4
+        },
+        "defaultSame": true,
+        "create": {
+          "x": 4
+        }
+      }
+    },
+    {
+      "name": "create-function-constructor-symbol-bigint",
+      "value": {
+        "function": {
+          "name": "",
+          "length": 0,
+          "prototype": false
+        },
+        "functionResult": "",
+        "constructor": {
+          "name": "",
+          "length": 0,
+          "prototype": true
+        },
+        "instance": {
+          "x": 0
+        },
+        "symbol": "symbol",
+        "bigint": {
+          "bigint": "0"
+        }
+      }
+    },
+    {
+      "name": "native-captured-scalar-annotation-mutation",
+      "value": {
+        "accelerated": true,
+        "before": [
+          false,
+          true
+        ],
+        "after": [
+          true,
+          true,
+          false
+        ],
+        "typeSame": true
+      }
+    },
+    {
+      "name": "native-captured-scalar-getters-single-build",
+      "value": {
+        "buildTrace": [
+          "minimum",
+          "minimum",
+          "minimum",
+          "minimum"
+        ],
+        "checkTrace": [],
+        "checks": [
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "native-captured-properties-array-and-required-mutation",
+      "value": {
+        "before": true,
+        "numeric": true,
+        "string": false,
+        "full": false
+      }
+    },
+    {
+      "name": "native-captured-exact-optional-settings-snapshot",
+      "value": {
+        "before": true,
+        "after": true,
+        "absent": true
+      }
+    },
+    {
+      "name": "native-captured-const-object-external-live",
+      "value": {
+        "before": [
+          true,
+          false
+        ],
+        "after": [
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "native-captured-enum-object-external-live",
+      "value": {
+        "one": false,
+        "two": true,
+        "three": false
+      }
+    },
+    {
+      "name": "native-captured-reference-target-mutation",
+      "value": {
+        "two": true,
+        "six": true,
+        "text": false,
+        "sameContext": true
+      }
+    },
+    {
+      "name": "native-captured-pattern-snapshot",
+      "value": {
+        "a": true,
+        "b": false
+      }
+    },
+    {
+      "name": "native-captured-refinement-callback-identity-live",
+      "value": {
+        "good": true,
+        "bad": false,
+        "trace": [
+          [
+            "second",
+            4
+          ],
+          [
+            "second",
+            2
+          ],
+          [
+            "second",
+            2
+          ],
+          [
+            "second",
+            2
+          ],
+          [
+            "error2",
+            2
+          ]
+        ],
+        "errors": [
+          {
+            "keyword": "~refine",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "index": 0,
+              "message": "second"
+            },
+            "message": "second"
+          }
+        ]
+      }
+    },
+    {
+      "name": "native-captured-dynamic-max-errors",
+      "value": {
+        "one": [
+          {
+            "keyword": "type",
+            "schemaPath": "#/properties/a",
+            "instancePath": "/a",
+            "params": {
+              "type": "number"
+            },
+            "message": "must be number"
+          }
+        ],
+        "three": [
+          {
+            "keyword": "type",
+            "schemaPath": "#/properties/a",
+            "instancePath": "/a",
+            "params": {
+              "type": "number"
+            },
+            "message": "must be number"
+          },
+          {
+            "keyword": "type",
+            "schemaPath": "#/properties/b",
+            "instancePath": "/b",
+            "params": {
+              "type": "string"
+            },
+            "message": "must be string"
+          },
+          {
+            "keyword": "type",
+            "schemaPath": "#/properties/c",
+            "instancePath": "/c",
+            "params": {
+              "type": "boolean"
+            },
+            "message": "must be boolean"
+          }
+        ]
+      }
+    },
+    {
+      "name": "native-captured-errors-fast-check-public-overrides",
+      "value": {
+        "errors": [],
+        "trace": [
+          "bad"
+        ]
+      }
+    },
+    {
+      "name": "native-captured-nested-value-getter-count",
+      "value": {
+        "check": true,
+        "trace": [
+          "child",
+          "child",
+          "child",
+          "child",
+          "child",
+          "child"
+        ]
+      }
+    },
+    {
+      "name": "native-captured-nested-typeof-object-repeated-expression",
+      "value": {
+        "check": false,
+        "trace": [
+          "child",
+          "child"
+        ]
+      }
+    },
+    {
+      "name": "native-captured-global-helper-getter-before-nested-value",
+      "value": {
+        "check": true,
+        "trace": [
+          "isArray",
+          "isArray",
+          "child"
+        ]
+      }
+    },
+    {
+      "name": "dynamic-live-scalar-annotation-mutation",
+      "value": {
+        "accelerated": false,
+        "before": [
+          false,
+          true
+        ],
+        "after": [
+          false,
+          false,
+          true
+        ],
+        "typeSame": true
+      }
+    },
+    {
+      "name": "dynamic-live-scalar-getters-single-build",
+      "value": {
+        "buildTrace": [
+          "minimum",
+          "minimum",
+          "minimum",
+          "minimum"
+        ],
+        "checkTrace": [
+          "minimum",
+          "minimum",
+          "minimum",
+          "minimum"
+        ],
+        "checks": [
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "dynamic-live-properties-array-and-required-mutation",
+      "value": {
+        "before": true,
+        "numeric": false,
+        "string": false,
+        "full": true
+      }
+    },
+    {
+      "name": "dynamic-live-exact-optional-settings-snapshot",
+      "value": {
+        "before": true,
+        "after": false,
+        "absent": true
+      }
+    },
+    {
+      "name": "dynamic-live-const-object-external-live",
+      "value": {
+        "before": [
+          true,
+          false
+        ],
+        "after": [
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "dynamic-live-enum-object-external-live",
+      "value": {
+        "one": false,
+        "two": true,
+        "three": true
+      }
+    },
+    {
+      "name": "dynamic-live-reference-target-mutation",
+      "value": {
+        "two": false,
+        "six": false,
+        "text": true,
+        "sameContext": true
+      }
+    },
+    {
+      "name": "dynamic-live-pattern-snapshot",
+      "value": {
+        "a": false,
+        "b": true
+      }
+    },
+    {
+      "name": "dynamic-live-refinement-callback-identity-live",
+      "value": {
+        "good": true,
+        "bad": false,
+        "trace": [
+          [
+            "second",
+            4
+          ],
+          [
+            "second",
+            2
+          ],
+          [
+            "second",
+            2
+          ],
+          [
+            "error2",
+            2
+          ]
+        ],
+        "errors": [
+          {
+            "keyword": "~refine",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "index": 0,
+              "message": "second"
+            },
+            "message": "second"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dynamic-live-dynamic-max-errors",
+      "value": {
+        "one": [
+          {
+            "keyword": "type",
+            "schemaPath": "#/properties/a",
+            "instancePath": "/a",
+            "params": {
+              "type": "number"
+            },
+            "message": "must be number"
+          }
+        ],
+        "three": [
+          {
+            "keyword": "type",
+            "schemaPath": "#/properties/a",
+            "instancePath": "/a",
+            "params": {
+              "type": "number"
+            },
+            "message": "must be number"
+          },
+          {
+            "keyword": "type",
+            "schemaPath": "#/properties/b",
+            "instancePath": "/b",
+            "params": {
+              "type": "string"
+            },
+            "message": "must be string"
+          },
+          {
+            "keyword": "type",
+            "schemaPath": "#/properties/c",
+            "instancePath": "/c",
+            "params": {
+              "type": "boolean"
+            },
+            "message": "must be boolean"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dynamic-live-errors-fast-check-public-overrides",
+      "value": {
+        "errors": [
+          {
+            "keyword": "type",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "type": "number"
+            },
+            "message": "must be number"
+          }
+        ],
+        "trace": []
+      }
+    },
+    {
+      "name": "dynamic-live-nested-value-getter-count",
+      "value": {
+        "check": true,
+        "trace": [
+          "child"
+        ]
+      }
+    },
+    {
+      "name": "dynamic-live-nested-typeof-object-repeated-expression",
+      "value": {
+        "check": true,
+        "trace": [
+          "child"
+        ]
+      }
+    },
+    {
+      "name": "dynamic-live-global-helper-getter-before-nested-value",
+      "value": {
+        "check": true,
+        "trace": [
+          "isArray",
+          "isArray",
+          "isArray",
+          "isArray",
+          "isArray",
+          "isArray",
+          "isArray",
+          "child",
+          "isArray",
+          "isArray",
+          "isArray",
+          "isArray",
+          "isArray",
+          "isArray",
+          "isArray",
+          "isArray"
+        ]
+      }
+    },
+    {
+      "name": "schema-boolean-true",
+      "value": {
+        "check": true,
+        "errors": [],
+        "code": "const check_0 = ((value) => true); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-boolean-false",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "boolean",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {},
+            "message": "schema is false"
+          }
+        ],
+        "code": "const check_0 = ((value) => false); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-type-array",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "type",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "message": "must be either string or number"
+          }
+        ],
+        "code": "const check_0 = ((value) => (typeof value === \"string\" || Number.isFinite(value))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-const-bigint",
+      "value": {
+        "check": false,
+        "errors": [],
+        "code": "const check_0 = ((value) => value === 4); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-enum",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "enum",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "allowedValues": [
+                1,
+                "a",
+                null
+              ]
+            },
+            "message": "must be equal to one of the allowed values"
+          }
+        ],
+        "code": "const check_0 = ((value) => ((value === 1 || value === \"a\") || value === null)); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-array-items",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "type",
+            "schemaPath": "#/items",
+            "instancePath": "/1",
+            "params": {
+              "type": "number"
+            },
+            "message": "must be number"
+          }
+        ],
+        "code": "const check_0 = ((value) => (Array.isArray(value) && value.every((element, index) => (Number.isFinite(element))))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-tuple-additional",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "boolean",
+            "schemaPath": "#/additionalItems",
+            "instancePath": "/1",
+            "params": {},
+            "message": "schema is false"
+          }
+        ],
+        "code": "const check_0 = ((value) => (Array.isArray(value) && (value.every((var_2, var_3) => ((var_3 < 1 || false))) && (value.length <= 0 || Number.isFinite(value[0]))))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-prefix-items",
+      "value": {
+        "check": true,
+        "errors": [],
+        "code": "const check_0 = ((value) => (Array.isArray(value) && (value.every((element, index) => (index < 2) || (typeof element === \"boolean\")) && ((value.length <= 0 || typeof value[0] === \"string\") && (value.length <= 1 || Number.isFinite(value[1])))))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-contains",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "contains",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "minContains": 2,
+              "maxContains": 3
+            },
+            "message": "must contain at least 1 valid item"
+          }
+        ],
+        "code": "const check_0 = ((value) => (Array.isArray(value) && (((!(value.length === 0) && value.some((var_4, _) => Number.isFinite(var_4))) && value.reduce((result, var_5, _) => (Number.isFinite(var_5)) ? ++result : result, 0) <= 3) && value.reduce((result, var_6, _) => (Number.isFinite(var_6)) ? ++result : result, 0) >= 2))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-unique",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "uniqueItems",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "duplicateItems": [
+                1
+              ]
+            },
+            "message": "must not have duplicate items"
+          }
+        ],
+        "code": "const check_0 = ((value) => (Array.isArray(value) && new Set(value.map(Hashing.Hash)).size === value.length)); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-object-pattern-properties",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "boolean",
+            "schemaPath": "#/additionalProperties",
+            "instancePath": "/b",
+            "params": {},
+            "message": "schema is false"
+          },
+          {
+            "keyword": "additionalProperties",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "additionalProperties": [
+                "b"
+              ]
+            },
+            "message": "must not have additional properties"
+          },
+          {
+            "keyword": "type",
+            "schemaPath": "#/patternProperties/^a",
+            "instancePath": "/abc",
+            "params": {
+              "type": "number"
+            },
+            "message": "must be number"
+          }
+        ],
+        "code": "const check_0 = ((value) => ((typeof value === \"object\" && value !== null && !(Array.isArray(value))) && (Object.getOwnPropertyNames(value).every((var_7, var_8) => ((External[0].test(var_7) || false))) && Object.entries(value).every(([var_9, var_10], _) => ((!(External[1].test(var_9)) || Number.isFinite(var_10))))))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-property-names",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "pattern",
+            "schemaPath": "#/propertyNames",
+            "instancePath": "/A",
+            "params": {
+              "pattern": "^[a-z]+$"
+            },
+            "message": "must match pattern \"^[a-z]+$\""
+          },
+          {
+            "keyword": "propertyNames",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "propertyNames": [
+                "A"
+              ]
+            },
+            "message": "property names A are invalid"
+          }
+        ],
+        "code": "const check_0 = ((value) => ((typeof value === \"object\" && value !== null && !(Array.isArray(value))) && Object.getOwnPropertyNames(value).every((var_11, var_12) => ((!(typeof var_11 === \"string\") || External[0].test(var_11)))))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-dependencies",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "dependencies",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "property": "a",
+              "dependencies": [
+                "b"
+              ]
+            },
+            "message": "must have properties b when property a is present"
+          }
+        ],
+        "code": "const check_0 = ((value) => ((typeof value === \"object\" && value !== null && !(Array.isArray(value))) && (Object.getOwnPropertyNames(value).length === 0 || (!(\"a\" in value) || \"b\" in value)))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-dependent-required",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "dependentRequired",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "property": "a",
+              "dependencies": [
+                "b"
+              ]
+            },
+            "message": "must have properties b when property a is present"
+          }
+        ],
+        "code": "const check_0 = ((value) => ((typeof value === \"object\" && value !== null && !(Array.isArray(value))) && (Object.getOwnPropertyNames(value).length === 0 || (!(\"a\" in value) || \"b\" in value)))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-dependent-schema",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "required",
+            "schemaPath": "#/dependentSchemas/a",
+            "instancePath": "",
+            "params": {
+              "requiredProperties": [
+                "b"
+              ]
+            },
+            "message": "must have required properties b"
+          }
+        ],
+        "code": "const check_0 = ((value) => ((typeof value === \"object\" && value !== null && !(Array.isArray(value))) && (Object.getOwnPropertyNames(value).length === 0 || (!(\"a\" in value) || (!((typeof value === \"object\" && value !== null && !(Array.isArray(value)))) || \"b\" in value))))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-allof",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "minimum",
+            "schemaPath": "#/allOf/1",
+            "instancePath": "",
+            "params": {
+              "comparison": ">=",
+              "limit": 3
+            },
+            "message": "must be >= 3"
+          }
+        ],
+        "code": "const check_0 = ((value) => (Number.isFinite(value) && (!((Number.isFinite(value) || typeof value === \"bigint\")) || value >= 3))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-anyof",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "type",
+            "schemaPath": "#/anyOf/0",
+            "instancePath": "",
+            "params": {
+              "type": "string"
+            },
+            "message": "must be string"
+          },
+          {
+            "keyword": "type",
+            "schemaPath": "#/anyOf/1",
+            "instancePath": "",
+            "params": {
+              "type": "number"
+            },
+            "message": "must be number"
+          },
+          {
+            "keyword": "anyOf",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {},
+            "message": "must match a schema in anyOf"
+          }
+        ],
+        "code": "const check_0 = ((value) => (typeof value === \"string\" || Number.isFinite(value))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-oneof",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "oneOf",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "passingSchemas": [
+                0,
+                1
+              ]
+            },
+            "message": "must match exactly one schema in oneOf"
+          }
+        ],
+        "code": "const check_0 = ((value) => [Number.isFinite(value), (!((Number.isFinite(value) || typeof value === \"bigint\")) || value >= 3)].reduce((result, var_13, _) => (var_13 === true) ? ++result : result, 0) === 1); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-not",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "not",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {},
+            "message": "must not be valid"
+          }
+        ],
+        "code": "const check_0 = ((value) => !(Number.isFinite(value))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-if-then-else",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "if",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "failingKeyword": "then"
+            },
+            "message": "must match \"then\" schema"
+          }
+        ],
+        "code": "const check_0 = ((value) => (Number.isFinite(value) ? (!((Number.isFinite(value) || typeof value === \"bigint\")) || value >= 3) : typeof value === \"string\")); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-unevaluated-properties",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "unevaluatedProperties",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "unevaluatedProperties": [
+                "y"
+              ]
+            },
+            "message": "must not have unevaluated properties"
+          }
+        ],
+        "code": "const check_0 = ((context, value) => (((!((typeof value === \"object\" && value !== null && !(Array.isArray(value)))) || true) && (() => { const results = []; const context_0 = new CheckContext(); const condition_0 = ((context) => (!((typeof value === \"object\" && value !== null && !(Array.isArray(value)))) || (value.x === undefined || (!(\"x\" in value) || (((context.Push() && Number.isFinite(value.x)) && context.Pop()) && context.AddKey(\"x\"))))))(context_0); if(condition_0) { results.push(context_0) }; return (results.length === 1 && context.Merge(results)); })()) && (!(typeof value === \"object\" && value !== null) || ((context) => { const keys = context.GetKeys(); return Object.entries(value).every(([var_14, var_15], _) => ((keys.has(var_14) || (false && context.AddKey(var_14))))); })(context)))); return (value) => { const context = new CheckContext({}, {}); return check_0(context, value) }"
+      }
+    },
+    {
+      "name": "schema-unevaluated-items",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "unevaluatedItems",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "unevaluatedItems": [
+                1
+              ]
+            },
+            "message": "must not have unevaluated items"
+          }
+        ],
+        "code": "const check_0 = ((context, value) => ((!(Array.isArray(value)) || (value.length <= 0 || (((context.Push() && Number.isFinite(value[0])) && context.Pop()) && context.AddIndex(0)))) && (!(Array.isArray(value)) || ((context) => { const indices = context.GetIndices(); return value.every((var_17, var_16) => (((indices.has(var_16) || false) && context.AddIndex(var_16)))); })(context)))); return (value) => { const context = new CheckContext({}, {}); return check_0(context, value) }"
+      }
+    },
+    {
+      "name": "schema-minmax-properties",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "minProperties",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "limit": 2
+            },
+            "message": "must not have fewer than 2 properties"
+          }
+        ],
+        "code": "const check_0 = ((value) => ((typeof value === \"object\" && value !== null && !(Array.isArray(value))) && (Object.getOwnPropertyNames(value).length >= 2 && Object.getOwnPropertyNames(value).length <= 3))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-minmax-items",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "minItems",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "limit": 2
+            },
+            "message": "must not have fewer than 2 items"
+          }
+        ],
+        "code": "const check_0 = ((value) => (Array.isArray(value) && (value.length <= 3 && value.length >= 2))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-minmax-length",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "minLength",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "limit": 2
+            },
+            "message": "must not have fewer than 2 characters"
+          }
+        ],
+        "code": "const check_0 = ((value) => (typeof value === \"string\" && (Guard.IsMaxLength(value, 3) && Guard.IsMinLength(value, 2)))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-multiple-of",
+      "value": {
+        "check": true,
+        "errors": [],
+        "code": "const check_0 = ((value) => (Number.isFinite(value) && Guard.IsMultipleOf(value, 0.1))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "schema-exclusive-bounds",
+      "value": {
+        "check": false,
+        "errors": [
+          {
+            "keyword": "exclusiveMaximum",
+            "schemaPath": "#",
+            "instancePath": "",
+            "params": {
+              "comparison": "<",
+              "limit": 3
+            },
+            "message": "must be < 3"
+          }
+        ],
+        "code": "const check_0 = ((value) => (Number.isFinite(value) && (value < 3 && value > 1))); return (value) => { return check_0(value) }"
+      }
+    },
+    {
+      "name": "standalone-code-external-sharing",
+      "value": {
+        "code": "import { Hashing } from \"typebox/system\"\nimport { Format } from \"typebox/format\"\nimport { Guard } from \"typebox/guard\"\n\n// @ts-ignore\nlet External = []\n\n// @ts-ignore\nexport function SetExternal(external) { External = external.variables }\n\n// @ts-ignore\nconst check_0 = ((value) => Guard.IsDeepEqual(value, External[0]));\n\n// @ts-ignore\nexport function Check(value) { return check_0(value) }",
+        "identifier": "External",
+        "length": 1,
+        "same": true
+      }
+    },
+    {
+      "name": "getter-error-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "reentrant-getter-build-state",
+      "value": {
+        "nested": true,
+        "code": "const check_0 = ((value) => typeof value === \"string\");\nconst check_1 = ((value) => (Number.isFinite(value) && value >= 2)); return (value) => { return check_1(value) }",
+        "number": true,
+        "string": false
+      }
+    },
+    {
+      "name": "codec-captured-hasCodec-live-callbacks",
+      "value": {
+        "hasCodec": true,
+        "decode": 3,
+        "encode": 3,
+        "trace": [
+          [
+            "decode2",
+            2
+          ],
+          [
+            "encode1",
+            "3"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "codec-added-after-construction",
+      "value": {
+        "hasCodec": false,
+        "decode": 2,
+        "encode": 2
+      }
+    },
+    {
+      "name": "memory-metrics-shared-through-value-operations",
+      "value": {
+        "afterCompile": {
+          "assign": 0,
+          "create": 2,
+          "clone": 0,
+          "discard": 0,
+          "update": 0
+        },
+        "afterParse": {
+          "assign": 0,
+          "create": 3,
+          "clone": 1,
+          "discard": 0,
+          "update": 0
+        }
+      }
+    },
+    {
+      "name": "detached-check-gc-retains-native-ir-external-callback",
+      "value": {
+        "good": true,
+        "bad": false,
+        "trace": [
+          4,
+          1
+        ]
+      }
+    },
+    {
+      "name": "refine-error-thrown-value-identity",
+      "value": {
+        "same": true
+      }
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 //! Actual shared graph and Source replay entry point. No stand-in compiler.
+const std = @import("std");
 const em = @import("extensions/engine.zig");
 const js = @import("extensions/native_js_values.zig");
 const Scope = @import("extensions/native_sdk_prompt_scope.zig").Scope;
@@ -33,4 +34,15 @@ pub fn replay(e: *em.Engine, actual: c.JSValue, source: c.JSValue) !void {
         \\const expected=typeboxCompileProductionSource.rows,actual=typeboxCompileProductionObservation.rows;if(expected.length!==actual.length)throw Error(JSON.stringify({scope:'actual TypeBox Compile',expected:expected.length,actual:actual.length}));for(let index=0;index<expected.length;index++){if(JSON.stringify(expected[index])!==JSON.stringify(actual[index]))throw Error(JSON.stringify({index,expected:expected[index],actual:actual[index]}))}export const pass=true;
     , "actual-typebox-compile-production.mjs"));
     _ = try s.own(try e.awaitValue(pending));
+}
+test "actual TypeBox Compile Validator matches complete genuine Source80" {
+    const e = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer e.deinit();
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const bytes = @embedFile("extensions/fixtures/typebox-compile-production.json");
+    const source = try s.own(try e.checked(c.JS_ParseJSON(e.context, bytes.ptr, bytes.len, "genuine-typebox-compile-source80.json")));
+    const actual = try s.own(try graph(e));
+    try replay(e, actual, source);
+    std.debug.print("TYPEBOX_COMPILE_SOURCE_PARITY cases=80 actual_shared_graph=true native_ir=true full_HOST_GPA=false C_malloc_exhaustive=false\n", .{});
 }

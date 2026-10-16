@@ -1,7 +1,30 @@
 # TypeBox Compile/Validator native production candidate
 
-This checkpoint is **source-only and unqualified**. Source80 has not been run,
-native compilation has not been run, and expected output is absent.
+This checkpoint has **genuine Source80 reference qualification**. The actual
+Node24.14.0 capture passed with terminal exit0, independently absent owned PID,
+and complete pre/post frozen inventory/hash drift0 before its expected output
+was accepted. Native compilation and execution remain unrun and unqualified.
+
+The original source run binds candidate
+`3b7a64806f31d63edb110ebcf38e3db401724654`, source
+`4954d760504c11df9b2cbdc040346107b6a8153d`, complete Source1970,
+runtime31064, Node1774 (actual node.exe and npm subtree), candidate7984 and
+controls9. All84 declared absences and16 actual workspace junction identities
+were checked. `source-full-prehash.zip` retains the original full freeze;
+the observed module ledger is additional evidence. No compiler distribution
+freeze or compiler execution is claimed for this Node-only qualification.
+
+The resumed task summary's capture hash4242EB was stale. Root independently
+verified the committed runner SHA256
+`083E2F74B290C6B910889F8B56E85193A364BC377C478C256C1A91EE0848A51B`
+before the LIGHT3 grant. Input SHA256 is
+`B7DC5B8F18B42E70410438DE323B408D4BB268CF45E19BE923952D9097BE60AB`.
+The accepted genuine expected SHA256 is
+`54303EE9477C4632F408963887DD58E5103775D1C8B75B37DF8F27A020984DE2`.
+Its four Error rows are original invalid Compile/Code arity observations;
+they are not capture failures. `Run-Source80.ps1` refuses expected replay.
+The standalone native test now replays all80 on the actual shared graph with
+10s guest await when granted a native execution slot; it has not been run.
 
 The authority is the actual `typebox@1.3.27` package in the immutable fullruntime
 31064 dependency artifact. The product code contains direct Zig function and
