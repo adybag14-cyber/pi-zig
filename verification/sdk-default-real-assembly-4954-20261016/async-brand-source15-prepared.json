@@ -1,0 +1,42 @@
+{
+  "status": "actual_sdk_async_brand_source15_prepared",
+  "native_migration": "b74757edf2ffb826b00c50879e31db9f1e6603b8",
+  "modules": [
+    {
+      "path": "src/extensions/fixtures/sdk-async-brand-4954.input.mjs",
+      "sha256": "481CCBC3E99325DA870E22A28565F40E8633690F1A7D5A6F4C01FF8B2A69A840"
+    },
+    {
+      "path": "src/native_sdk_async_brand_test.zig",
+      "sha256": "83EF73B039B93C2ED40956E84DBED4A17D3D88B75CC4B0DF6E4821F1D1B21AA5"
+    },
+    {
+      "path": "verification/sdk-default-real-assembly-4954-20261016/capture-sdk-async-brand.mjs",
+      "sha256": "8D5B656D3ECFF899E455E9BB97F06BB6031E3923712CBFEAE55DEF11CCE40999"
+    }
+  ],
+  "cases": 15,
+  "source_brand_authority": "actual node:util.types.isAsyncFunction",
+  "native_brand_authority": "actual JS_IsAsyncFunction VM primitive",
+  "negative_control": "ordinary function assigned AsyncFunction.prototype must remain brandfalse",
+  "classes": [
+    "ModelRuntime",
+    "ModelConfig",
+    "InMemoryCodingAgentModelsStore",
+    "FileModelsStore",
+    "AgentSessionRuntime"
+  ],
+  "checks": [
+    "prototype fieldorder/arity/brand/nonconstructor metadata",
+    "genuine staticModelRuntime.create/ModelConfig.load brands",
+    "memory clone/Promise/microtask ordering",
+    "rawabort identity",
+    "async Reflect.construct rejection"
+  ],
+  "source_captured": false,
+  "expected_created": false,
+  "native_compiled": false,
+  "native_qualified": false,
+  "fmt_ast": false,
+  "prior_source53_source44_unchanged": true
+}
