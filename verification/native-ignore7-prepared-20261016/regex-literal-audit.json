@@ -1,0 +1,96 @@
+{
+  "authoritySha256": "643735013BDCF86DFECA4D38FB74D9A4FAFA7A640AD2D251077862F18B2556FE",
+  "method": "Static data extraction and literal comparison; no Zig or JavaScript execution",
+  "phases": [
+    {
+      "phase": 0,
+      "pattern": "^\\uFEFF",
+      "flags": "",
+      "sourceExact": true
+    },
+    {
+      "phase": 1,
+      "pattern": "[\\r\\n]+$",
+      "flags": "",
+      "sourceExact": true
+    },
+    {
+      "phase": 2,
+      "pattern": "((?:\\\\\\\\)*?)(\\\\? +)$",
+      "flags": "",
+      "sourceExact": true
+    },
+    {
+      "phase": 3,
+      "pattern": "(\\\\+?) ",
+      "flags": "g",
+      "sourceExact": true
+    },
+    {
+      "phase": 4,
+      "pattern": "[\\\\$.|*+(){^]",
+      "flags": "g",
+      "sourceExact": true
+    },
+    {
+      "phase": 5,
+      "pattern": "(?!\\\\)\\?",
+      "flags": "g",
+      "sourceExact": true
+    },
+    {
+      "phase": 6,
+      "pattern": "^\\/",
+      "flags": "",
+      "sourceExact": true
+    },
+    {
+      "phase": 7,
+      "pattern": "\\/",
+      "flags": "g",
+      "sourceExact": true
+    },
+    {
+      "phase": 8,
+      "pattern": "^\\^*(?:\\\\\\*\\\\\\*\\\\\\/)+",
+      "flags": "",
+      "sourceExact": true
+    },
+    {
+      "phase": 9,
+      "pattern": "\\\\\\/\\\\\\*\\\\\\*(?=\\\\\\/|$)",
+      "flags": "g",
+      "sourceExact": true
+    },
+    {
+      "phase": 10,
+      "pattern": "(^|[^\\\\]+)(\\\\\\*)+(?=.+)",
+      "flags": "g",
+      "sourceExact": true
+    },
+    {
+      "phase": 11,
+      "pattern": "(^|[^\\\\])((?:\\\\\\\\)*)\\\\\\*$",
+      "flags": "",
+      "sourceExact": true
+    },
+    {
+      "phase": 12,
+      "pattern": "\\\\\\\\\\\\(?=[$.|*+(){^])",
+      "flags": "g",
+      "sourceExact": true
+    },
+    {
+      "phase": 13,
+      "pattern": "\\\\\\\\",
+      "flags": "g",
+      "sourceExact": true
+    },
+    {
+      "phase": 14,
+      "pattern": "\\\\\\[([^\\]/]*?)(\\\\*)($|\\])",
+      "flags": "g",
+      "sourceExact": true
+    }
+  ]
+}
