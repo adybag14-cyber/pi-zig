@@ -1,0 +1,20 @@
+{
+  "status": "private_module_graph_phase1_api_lifetime_spec_only",
+  "base": "8855fe109f5e4d71a01b80cc8faee9f35d354cd8",
+  "vendor_c_sha256": "E2F988956B452EBACDDC1B24AB45E5F70F7AFB4777F7452EDF1457649B2D1D3B",
+  "vendor_h_sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB",
+  "planned_existing_files": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h"
+  ],
+  "planned_new_test": "src/native_private_module_graph_test.zig",
+  "spec_sha256": "A9DDDC9D99DBE54DD02E14526A6A5D2F143A67D2DBD68F68D3813B137BF580EE",
+  "engine_changed": false,
+  "c_changed": false,
+  "compiler_or_runtime_executed": false,
+  "source48_proof": "76025577a173943bc613283c17d1252d20bc0da8",
+  "source39_proof": "a44aee979f2e67feecea2de8011f2abd1af8e768",
+  "independent_audit": "models_auth_resume immutable6ad architecture review",
+  "production_graph_gc_qualified": false,
+  "default_selected": false
+}
