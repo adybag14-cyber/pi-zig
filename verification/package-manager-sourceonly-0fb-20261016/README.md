@@ -82,3 +82,32 @@ filter/manifest callers over required real discovery/manifest helpers. It does
 not implement minimatch/ignore by approximation and does not select a partial
 class. Native discovery helpers and addAutoDiscoveredResources are still
 required, along with install/update orchestration and full assembly.
+
+The subsequent source-only cluster now authors those discovery and class
+orchestration bodies as well: fifteen filesystem discovery/ignore-rule/ancestor/
+glob helpers, addAutoDiscoveredResources, public install/remove/persist, npm/Git
+version checks, configured batching/availability, clone/ref/dependency repair,
+and resolvePackageSources with a retained real iterator and genuine async
+per-entry missing callback. Existing resolve and resolveExtensionSources reuse
+their actual bodies but replace the old native Promise owner/prototype tag
+with genuine native AsyncFunction entry/Await/return.
+
+Static coverage now includes all 98 actual class declarations. The new assembly
+installs them privately, copies their descriptors in exact supplemental source
+order and rejects missing functions or a wrong intrinsic async brand. Actual
+Source has 33 async class methods. The assembly exports only its completed
+ordinary constructor and the actual getExtensionTempFolder function; it
+performs no application/default selection. This count is source-body coverage,
+not semantic/runtime qualification.
+
+Concrete native ignore, minimatch, semver and hosted-git-info/complete Git URL
+implementations are still required external collaborators. Real filesystem
+glob/Dirent/crypto/path/child-process/frontend-stdio interfaces need their own
+qualification. No empty matcher, parser, transport or resource result is
+provided to construct the graph. Function-shape checks do not prove provenance.
+
+A full class descriptor/field/async-brand control is prepared separately,
+bringing the prepared case count to 50 (43 original, six physical/getter,
+one complete-class case). No expected rows or successful execution exist.
+No formatter, AST, compiler, native, Source or C jobs were run. The package
+constructor, collaborators, ownership and complete application remain unqualified.
