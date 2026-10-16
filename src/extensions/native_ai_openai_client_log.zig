@@ -72,3 +72,63 @@ pub fn parse(scope: *Scope, value: c.JSValue, source_name: []const u8, client: c
     _ = try scope.call(warn, logger, &.{message});
     return c.pi_js_undefined();
 }
+fn spreadHeaders(scope: *Scope, value: c.JSValue) !c.JSValue {
+    const result = try scope.array();
+    var iterator = try v.iterator(scope, value);
+    defer iterator.deinit();
+    errdefer iterator.closePreserving();
+    var index: u32 = 0;
+    while (try iterator.next()) |item| {
+        defer scope.engine.freeValue(item);
+        if (index == 0xffff_ffff) return scope.engine.checked(c.JS_ThrowRangeError(scope.engine.context, "Invalid array length"));
+        if (c.JS_DefinePropertyValueUint32(scope.engine.context, result, index, c.JS_DupValue(scope.engine.context, item), c.JS_PROP_C_W_E) < 0) return v.js.capture(scope.engine);
+        index += 1;
+    }
+    return result;
+}
+pub fn formatDetails(scope: *Scope, details: c.JSValue) !c.JSValue {
+    if (scope.truthy(try scope.get(details, "options"))) {
+        try scope.put(details, "options", try v.spread(scope, try scope.get(details, "options")));
+        try v.remove(scope, try scope.get(details, "options"), "headers");
+    }
+    if (scope.truthy(try scope.get(details, "headers"))) {
+        // The outer call's callee precedes its entire conditional/map argument.
+        const object = try scope.global("Object");
+        const from = try scope.get(object, "fromEntries");
+        const instance = c.JS_IsInstanceOf(scope.engine.context, try scope.get(details, "headers"), try scope.global("Headers"));
+        if (instance < 0) return v.js.capture(scope.engine);
+        const entries = if (instance != 0) try spreadHeaders(scope, try scope.get(details, "headers")) else entries: {
+            const constructor = try scope.global("Object");
+            const function = try scope.get(constructor, "entries");
+            break :entries try scope.call(function, constructor, &.{try scope.get(details, "headers")});
+        };
+        const Redact = struct {
+            fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+                var row: Scope = .{ .engine = engine };
+                defer row.deinit();
+                const fields = try v.js.pair(engine, args[0], try row.own(try engine.checked(c.JS_GetIteratorSymbol(engine.context))));
+                defer for (fields) |value| engine.freeValue(value);
+                var secret = false;
+                inline for (.{ "authorization", "api-key", "x-api-key", "cookie", "set-cookie" }) |name| {
+                    if (!secret) secret = try v.eq(&row, try row.invoke(fields[0], "toLowerCase", &.{}), name);
+                }
+                const result = try row.array();
+                if (c.JS_DefinePropertyValueUint32(engine.context, result, 0, c.JS_DupValue(engine.context, fields[0]), c.JS_PROP_C_W_E) < 0) return v.js.capture(engine);
+                if (c.JS_DefinePropertyValueUint32(engine.context, result, 1, c.JS_DupValue(engine.context, if (secret) try row.text("***") else fields[1]), c.JS_PROP_C_W_E) < 0) return v.js.capture(engine);
+                return c.JS_DupValue(engine.context, result);
+            }
+        };
+        const mapped = try scope.invoke(entries, "map", &.{try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Redact.call, &.{}))});
+        try scope.put(details, "headers", try scope.call(from, object, &.{mapped}));
+    }
+    const atom = c.JS_NewAtom(scope.engine.context, "retryOfRequestLogID");
+    if (atom == c.JS_ATOM_NULL) return v.js.capture(scope.engine);
+    defer c.JS_FreeAtom(scope.engine.context, atom);
+    const exists = c.JS_HasProperty(scope.engine.context, details, atom);
+    if (exists < 0) return v.js.capture(scope.engine);
+    if (exists != 0) {
+        if (scope.truthy(try scope.get(details, "retryOfRequestLogID"))) try scope.put(details, "retryOf", try scope.get(details, "retryOfRequestLogID"));
+        try v.remove(scope, details, "retryOfRequestLogID");
+    }
+    return details;
+}

@@ -67,4 +67,9 @@ try{
   let failure;try{await nativePrivateSDKRequest({apiKey:async()=>{throw raw},baseURL:model.baseUrl,defaultHeaders:{},fetch(){throw Error('Failed key must skip fetch')}},{model:'fixture-model',stream:true},{})}catch(error){failure=error}
   if(failure?.cause!==raw||failure.message!=="Failed to get token from 'apiKey' function: "+raw.message)throw Error('Actual key catch cause');observations.push({case:'genuine async api key',used,rawSame:failure.cause===raw});
  }
+ {
+  const trace=[],response=new Response('{"fixture":"nonstream"}',{headers:{'content-type':'application/json','x-fixture':'owned'}});
+  const stream=nativeAsyncOpenAI.stream(model,context,{apiKey:'fixture-key',fetch(url,init){trace.push('fetch');if(JSON.parse(init.body).stream!==false)throw Error('Payload stream=false route');return response},onPayload(payload){trace.push('payload');return {...payload,stream:false}},onResponse(){trace.push('response');if(!response.bodyUsed)throw Error('Nonstream JSON parses before response hook')},onProviderStreamEvent(){throw Error('Nonstream object must not gain SSE chunks')}});
+  const events=[];for await(const event of stream)events.push(event.type);const result=await stream.result();if(result.stopReason!=='error'||!result.errorMessage||events.at(-1)!=='error'||trace.join(',')!=='payload,fetch,response'||response.body.locked)throw Error('Actual nonstream object consumption boundary');observations.push({case:'onPayload changes stream false',trace,events,bodyUsed:response.bodyUsed,locked:response.body.locked,stopReason:result.stopReason});
+ }
 }finally{if(descriptor)Object.defineProperty(globalThis,'process',descriptor);else delete globalThis.process;if(fetchDescriptor)Object.defineProperty(globalThis,'fetch',fetchDescriptor);else delete globalThis.fetch}

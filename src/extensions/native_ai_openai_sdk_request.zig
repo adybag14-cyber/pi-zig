@@ -9,9 +9,24 @@ const body = @import("native_async_body.zig");
 const headers = @import("native_ai_openai_sdk_headers.zig");
 const log = @import("native_ai_openai_client_log.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
-const Kind = enum { callApiKey, prepareOptions, bearerAuth, authHeaders, buildHeaders, buildRequest, prepareRequest, fetchWithTimeout, fetchWithAuth, makeRequest, shouldRetry, streamBody, defaultParseResponse, withResponse };
+const Kind = enum { callApiKey, prepareOptions, bearerAuth, authHeaders, buildHeaders, buildRequest, prepareRequest, fetchWithTimeout, fetchWithAuth, makeRequest, shouldRetry, parseBody, defaultParseResponse, withResponse };
 fn owned(scope: *Scope, value: c.JSValue) af.Action {
     return .{ .returned = c.JS_DupValue(scope.engine.context, value) };
+}
+fn addRequestID(scope: *Scope, value: c.JSValue, response: c.JSValue) !c.JSValue {
+    if (!scope.truthy(value) or !c.JS_IsObject(value) or c.JS_IsFunction(scope.engine.context, value)) return value;
+    if (scope.truthy(try scope.invoke(try scope.global("Array"), "isArray", &.{value}))) return value;
+    const object = try scope.global("Object");
+    const define = try scope.get(object, "defineProperty");
+    const descriptor = try scope.object();
+    try scope.put(descriptor, "value", try scope.invoke(try scope.get(response, "headers"), "get", &.{try scope.text("x-request-id")}));
+    try scope.put(descriptor, "enumerable", c.JS_NewBool(scope.engine.context, false));
+    return scope.call(define, object, &.{ value, try scope.text("_request_id"), descriptor });
+}
+/// The actual private defaultParseResponse route, also exposed to native
+/// controls without fabricating a public SDK instance or parsing implementation.
+pub fn parseResponse(scope: *Scope, client: c.JSValue, props: c.JSValue) !c.JSValue {
+    return invoke(scope, client, .defaultParseResponse, &.{props});
 }
 fn wait(scope: *Scope, job: c.JSValue, value: c.JSValue, stage: c_int) !af.Action {
     try body.wait(scope, job, value, stage);
@@ -23,9 +38,9 @@ fn invoke(scope: *Scope, client: c.JSValue, comptime kind: Kind, args: []const c
             return dispatch(engine, roots[0], kind, values, slot, completion, input) catch |err| return body.failure(engine, err);
         }
     };
-    const length: c_int = switch (kind) { .callApiKey, .streamBody, .withResponse => 0, .prepareRequest, .defaultParseResponse => 2, .makeRequest => 3, .fetchWithTimeout, .fetchWithAuth => 4, else => 1 };
+    const length: c_int = switch (kind) { .callApiKey, .parseBody, .withResponse => 0, .prepareRequest, .defaultParseResponse => 2, .makeRequest => 3, .fetchWithTimeout, .fetchWithAuth => 4, else => 1 };
     const name: [*:0]const u8 = if (kind == .callApiKey) "_callApiKey" else @tagName(kind);
-    const function = try scope.own(if (kind == .streamBody) try af.createResumableArrow(scope.engine, "", 0, Adapter.run, &.{client}, c.pi_js_undefined()) else try af.createResumable(scope.engine, name, length, Adapter.run, &.{client}));
+    const function = try scope.own(if (kind == .parseBody) try af.createResumableArrow(scope.engine, "", 0, Adapter.run, &.{client}, c.pi_js_undefined()) else try af.createResumable(scope.engine, name, length, Adapter.run, &.{client}));
     return scope.call(function, client, args);
 }
 fn generation(scope: *Scope, job: c.JSValue, completion: af.Completion, input: c.JSValue) !void {
@@ -362,14 +377,55 @@ fn dispatch(engine: *v.em.Engine, client: c.JSValue, comptime kind: Kind, args: 
             return owned(&scope, c.JS_NewBool(engine.context, try arithmetic.compare(engine, .greater_equal, try scope.get(response, "status"), c.JS_NewInt32(engine.context, 500))));
         },
         .makeRequest => return make(&scope, client, job, stage, args, input),
-        .streamBody => {
+        .parseBody => {
+            if (stage == 1) return owned(&scope, try addRequestID(&scope, input, try scope.get(job, "response")));
+            if (stage == 2) return owned(&scope, input);
             const props = argument(args, 0);
-            const response = try scope.get(props, "response");
-            const controller = try scope.get(props, "controller");
-            return owned(&scope, try scope.own(try @import("native_ai_openai_sdk_stream.zig").fromBodyIterator(engine, try @import("native_ai_openai_sdk_readable.zig").deferred(&scope, response, controller), .{ .codec = try scope.own(try @import("native_ai_openai_sdk_chunks.zig").codec(engine)), .controller = controller, .error_factory = try scope.own(try @import("native_ai_openai_sdk_error.zig").factory(engine, try scope.get(response, "headers"))), .logger = try log.loggerFor(&scope, client) })));
+            const response = argument(args, 1);
+            if (scope.truthy(try scope.get(try scope.get(props, "options"), "stream"))) {
+                const controller = try scope.get(props, "controller");
+                return owned(&scope, try scope.own(try @import("native_ai_openai_sdk_stream.zig").fromBodyIterator(engine, try @import("native_ai_openai_sdk_readable.zig").deferred(&scope, response, controller), .{ .codec = try scope.own(try @import("native_ai_openai_sdk_chunks.zig").codec(engine)), .controller = controller, .error_factory = try scope.own(try @import("native_ai_openai_sdk_error.zig").factory(engine, try scope.get(response, "headers"))), .logger = try log.loggerFor(&scope, client) })));
+            }
+            if (scope.equal(try scope.get(response, "status"), c.JS_NewInt32(engine.context, 204))) return owned(&scope, c.pi_js_null());
+            if (scope.truthy(try scope.get(try scope.get(props, "options"), "__binaryResponse"))) return owned(&scope, response);
+            const content_type = try scope.invoke(try scope.get(response, "headers"), "get", &.{try scope.text("content-type")});
+            const media = if (v.nullish(content_type)) c.pi_js_undefined() else media_value: {
+                const first = try v.at(&scope, try scope.invoke(content_type, "split", &.{try scope.text(";")}), 0);
+                break :media_value if (v.nullish(first)) c.pi_js_undefined() else try scope.invoke(first, "trim", &.{});
+            };
+            var is_json = false;
+            if (!v.nullish(media)) {
+                is_json = scope.truthy(try scope.invoke(media, "includes", &.{try scope.text("application/json")}));
+                if (!is_json) is_json = scope.truthy(try scope.invoke(media, "endsWith", &.{try scope.text("+json")}));
+            }
+            if (is_json) {
+                if (try v.eq(&scope, try scope.invoke(try scope.get(response, "headers"), "get", &.{try scope.text("content-length")}), "0")) return owned(&scope, c.pi_js_undefined());
+                try scope.put(job, "response", response);
+                return wait(&scope, job, try scope.invoke(response, "json", &.{}), 1);
+            }
+            return wait(&scope, job, try scope.invoke(response, "text", &.{}), 2);
         },
         .defaultParseResponse => {
-            if (stage == 0) return wait(&scope, job, try invoke(&scope, client, .streamBody, args), 1);
+            if (stage == 0) {
+                const props = argument(args, 0);
+                const response = try scope.get(props, "response");
+                try scope.put(job, "response", response);
+                // Actual outer destructuring precedes the parse IIFE. Keep
+                // these live reads even while detailed diagnostics stay pending.
+                inline for (.{ "requestLogID", "retryOfRequestLogID", "startTime" }) |name| try scope.put(job, name, try scope.get(props, name));
+                return wait(&scope, job, try invoke(&scope, client, .parseBody, &.{ props, response }), 1);
+            }
+            const logger = try log.loggerFor(&scope, client);
+            const debug = try scope.get(logger, "debug");
+            const message = try scope.concat(try scope.concat(try scope.text("["), try scope.stringify(try scope.get(job, "requestLogID"))), try scope.text("] response parsed"));
+            const details = try scope.object();
+            try scope.put(details, "retryOfRequestLogID", try scope.get(job, "retryOfRequestLogID"));
+            const response = try scope.get(job, "response");
+            try scope.put(details, "url", try scope.get(response, "url"));
+            try scope.put(details, "status", try scope.get(response, "status"));
+            try scope.put(details, "body", input);
+            try scope.put(details, "durationMs", try scope.own(try arithmetic.binary(engine, .subtract, try scope.invoke(try scope.global("Date"), "now", &.{}), try scope.get(job, "startTime"))));
+            _ = try scope.call(debug, logger, &.{ message, try log.formatDetails(&scope, details) });
             return owned(&scope, input);
         },
         .withResponse => {

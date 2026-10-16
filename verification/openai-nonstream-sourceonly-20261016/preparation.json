@@ -1,0 +1,38 @@
+{
+  "status": "source_only_unexecuted",
+  "base": "0f48944a4d42d352bda99a212d8d84008558a31e",
+  "primary_authority_basis": "Earlier admitted SDK6.40 read; no partially recovered runtime read",
+  "primary_parse_sha256": "A79745D365C6C0D258C0793BF44B23ECE19A6DFE0AB0C82AA565175F06A359B8",
+  "primary_parse_bytes": 2509,
+  "runtime_status_at_preparation": "recovery_pending",
+  "runtime_manifest_requalified_here": false,
+  "new_shared_caller_cases": 57,
+  "new_shared_caller_sha256": "C04B09C5E503035858F6F6520314CC8CD94B169BD20ABDB9E9FD21065FE285D8",
+  "expected_source_output_exists": false,
+  "node_jobs": 0,
+  "zig_jobs": 0,
+  "native_qualified": false,
+  "immutable_files": [
+    {
+      "path": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-producer58-ae7.json",
+      "sha256": "CF5274301199C7FA86E670A387D1549ACD4805395C67A4034A88C337537D7650"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-tool-output4dd-native.input.txt",
+      "sha256": "76AF08700DDD0DD8BAE0E96B0D4B8D5701914539B5D190A9A99D3BF4441D16AC"
+    },
+    {
+      "path": "verification/openai-tool-output4dd-prepared-20261016/primary-tool-callers.mjs",
+      "sha256": "76AF08700DDD0DD8BAE0E96B0D4B8D5701914539B5D190A9A99D3BF4441D16AC"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    }
+  ],
+  "separate_dependency": "Reviewed native engine GetAsyncIterator/AsyncFromSync ABI; no C edits"
+}
