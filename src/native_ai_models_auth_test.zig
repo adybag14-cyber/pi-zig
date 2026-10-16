@@ -28,7 +28,9 @@ test "native actual Models auth replays genuine Source69 with real defaults and 
     try s.put(actual, "InMemoryCredentialStore", try s.get(core, "InMemoryCredentialStore"));
     const credential_constructor = try s.own(try @import("extensions/native_credentials_store.zig").constructor(engine));
     try std.testing.expect(s.equal(credential_constructor, try s.get(core, "InMemoryCredentialStore")));
-    const imports = try s.own(try @import("extensions/native_ai_auth_abort.zig").create(engine));
+    const abort_exports = try s.own(try @import("extensions/native_ai_auth_abort.zig").create(engine));
+    const imports = try s.object();
+    inline for (.{ "operationSignal", "raceWithAbortSignal" }) |name| try s.put(imports, name, try s.get(abort_exports, name));
     try s.put(imports, "ModelsError", try s.get(models, "ModelsError"));
     const resolver = try s.own(try @import("extensions/native_ai_auth_resolve.zig").create(engine, imports));
     const resolver_again = try s.own(try @import("extensions/native_ai_auth_resolve.zig").create(engine, imports));
