@@ -15,8 +15,30 @@ pub fn argument(args: []const c.JSValue, index: usize) c.JSValue {
 pub fn bind(scope: *Scope, env: c.JSValue, name: [:0]const u8, value: c.JSValue) !void {
     try scope.put(env, name, value);
 }
+/// Module lexical declarations exist before evaluation but cannot be read
+/// until their original initializer executes. The marker is private to the
+/// native lexical environment and is inherited by captured function frames.
+pub fn declare(scope: *Scope, env: c.JSValue, name: [:0]const u8) !void {
+    var marker = try scope.get(env, "@typebox_uninitialized");
+    if (!c.JS_IsObject(marker)) {
+        marker = try scope.object();
+        try scope.put(env, "@typebox_uninitialized", marker);
+    }
+    try scope.put(env, name, marker);
+}
 pub fn get(scope: *Scope, env: c.JSValue, name: [:0]const u8) !c.JSValue {
-    if (try v.js.hasKey(scope.engine, env, try scope.text(name))) return scope.get(env, name);
+    if (try v.js.hasKey(scope.engine, env, try scope.text(name))) {
+        const value = try scope.get(env, name);
+        const marker = try scope.get(env, "@typebox_uninitialized");
+        if (c.JS_IsObject(marker) and scope.equal(value, marker)) {
+            const start = if (std.mem.indexOfScalar(u8, name, '_')) |index| index + 1 else 0;
+            const original = try scope.engine.gpa.dupeZ(u8, name[start..]);
+            defer scope.engine.gpa.free(original);
+            _ = c.JS_ThrowReferenceError(scope.engine.context, "Cannot access '%s' before initialization", original.ptr);
+            return v.js.capture(scope.engine);
+        }
+        return value;
+    }
     return scope.global(name);
 }
 fn ownKey(scope: *Scope, object: c.JSValue, atom_key: c.JSAtom) !bool {
@@ -36,6 +58,9 @@ pub fn assign(scope: *Scope, env: c.JSValue, name: [:0]const u8, value: c.JSValu
     var current = env;
     while (c.JS_IsObject(current)) {
         if (try ownKey(scope, current, atom)) {
+            // Assignment cannot initialize an existing lexical TDZ binding.
+            // Only the original declaration's bind operation initializes it.
+            _ = try get(scope, current, name);
             if (c.JS_SetProperty(scope.engine.context, current, atom, c.JS_DupValue(scope.engine.context, value)) < 0) return v.js.capture(scope.engine);
             return;
         }

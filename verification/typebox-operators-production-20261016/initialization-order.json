@@ -1,0 +1,1160 @@
+{
+  "format": "actual-source-module-initialization-order-v1",
+  "lexicalBindings": 144,
+  "functionsHoisted": true,
+  "lexicalTdzPreserved": true,
+  "rows": [
+    {
+      "module": "type/types/never.mjs",
+      "moduleSha256": "fe1afe85ecc07dc976b187a185d937220255f7350ff5f8442c1bc71092be172c",
+      "binding": "m87_NeverPattern",
+      "name": "NeverPattern",
+      "start": 318,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/types/bigint.mjs",
+      "moduleSha256": "2aa620334a8996f9ff3e1d6f59b9327ba070608e376771c8e14a05846ef4442a",
+      "binding": "m81_BigIntPattern",
+      "name": "BigIntPattern",
+      "start": 283,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/types/integer.mjs",
+      "moduleSha256": "daaf787eb0ac9fc0f63ca12c4ee3b287eae78b3f3b0649ae5c1d044e4eb10e0e",
+      "binding": "m55_IntegerPattern",
+      "name": "IntegerPattern",
+      "start": 283,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/types/literal.mjs",
+      "moduleSha256": "b28c8ba90110ffc21a704b6d806e568223d4e0b56caf08b19393a3d665843179",
+      "binding": "m14_InvalidLiteralValue",
+      "name": "InvalidLiteralValue",
+      "start": 336,
+      "kind": "class"
+    },
+    {
+      "module": "type/types/number.mjs",
+      "moduleSha256": "cdcca9398daa7a766a3bb38cce1b988e5abcd152661b16605fdf113d6ca1a13c",
+      "binding": "m59_NumberPattern",
+      "name": "NumberPattern",
+      "start": 283,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/types/string.mjs",
+      "moduleSha256": "b764ac939637440dd9ef2bc63ba8319cdf4272f20f444e7cbf9d955116b124e2",
+      "binding": "m50_StringPattern",
+      "name": "StringPattern",
+      "start": 314,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/types/record.mjs",
+      "moduleSha256": "af4e50a5c832a83ffe994ef4be80885307aa7ecd97ac577ecaf01529b2b557bd",
+      "binding": "m45_IntegerKey",
+      "name": "IntegerKey",
+      "start": 604,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/types/record.mjs",
+      "moduleSha256": "af4e50a5c832a83ffe994ef4be80885307aa7ecd97ac577ecaf01529b2b557bd",
+      "binding": "m45_NumberKey",
+      "name": "NumberKey",
+      "start": 653,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/types/record.mjs",
+      "moduleSha256": "af4e50a5c832a83ffe994ef4be80885307aa7ecd97ac577ecaf01529b2b557bd",
+      "binding": "m45_StringKey",
+      "name": "StringKey",
+      "start": 700,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/intrinsics/instantiate.mjs",
+      "moduleSha256": "e3c539952d5220f02c606a151bb6db24d1ae653422b0bbc82e20a56bde5cec77",
+      "binding": "m11_CapitalizeMapping",
+      "name": "CapitalizeMapping",
+      "start": 467,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/intrinsics/instantiate.mjs",
+      "moduleSha256": "e3c539952d5220f02c606a151bb6db24d1ae653422b0bbc82e20a56bde5cec77",
+      "binding": "m11_LowercaseMapping",
+      "name": "LowercaseMapping",
+      "start": 545,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/intrinsics/instantiate.mjs",
+      "moduleSha256": "e3c539952d5220f02c606a151bb6db24d1ae653422b0bbc82e20a56bde5cec77",
+      "binding": "m11_UncapitalizeMapping",
+      "name": "UncapitalizeMapping",
+      "start": 602,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/intrinsics/instantiate.mjs",
+      "moduleSha256": "e3c539952d5220f02c606a151bb6db24d1ae653422b0bbc82e20a56bde5cec77",
+      "binding": "m11_UppercaseMapping",
+      "name": "UppercaseMapping",
+      "start": 682,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/helpers/keys.mjs",
+      "moduleSha256": "83d9e5cf35fa8540b236e2b20e08f4c0430cff1eba2dad10bbc30c379353907d",
+      "binding": "m159_integerKeyPattern",
+      "name": "integerKeyPattern",
+      "start": 30,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/indexed/from_object.mjs",
+      "moduleSha256": "347709f410659c88f407d20dbc1a78df5c5a87d850716f58a8e294701bfd989a",
+      "binding": "m160_NumericKeyPattern",
+      "name": "NumericKeyPattern",
+      "start": 985,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/action/readonly_object.mjs",
+      "moduleSha256": "3cc8cdd3a48adedf42cc596da531ac2e682c5b94762c7efffe5b87dd0ae45057",
+      "binding": "m240_ReadonlyType",
+      "name": "ReadonlyType",
+      "start": 840,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/char.mjs",
+      "moduleSha256": "38255d81ab52308eb5e685585a3c3d7d6230211dc5e59ff1fb2fd75d938e5ecf",
+      "binding": "m71_Alpha",
+      "name": "Alpha",
+      "start": 359,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/char.mjs",
+      "moduleSha256": "38255d81ab52308eb5e685585a3c3d7d6230211dc5e59ff1fb2fd75d938e5ecf",
+      "binding": "m71_Zero",
+      "name": "Zero",
+      "start": 455,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/char.mjs",
+      "moduleSha256": "38255d81ab52308eb5e685585a3c3d7d6230211dc5e59ff1fb2fd75d938e5ecf",
+      "binding": "m71_NonZero",
+      "name": "NonZero",
+      "start": 480,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/char.mjs",
+      "moduleSha256": "38255d81ab52308eb5e685585a3c3d7d6230211dc5e59ff1fb2fd75d938e5ecf",
+      "binding": "m71_Digit",
+      "name": "Digit",
+      "start": 527,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/char.mjs",
+      "moduleSha256": "38255d81ab52308eb5e685585a3c3d7d6230211dc5e59ff1fb2fd75d938e5ecf",
+      "binding": "m71_WhiteSpace",
+      "name": "WhiteSpace",
+      "start": 722,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/char.mjs",
+      "moduleSha256": "38255d81ab52308eb5e685585a3c3d7d6230211dc5e59ff1fb2fd75d938e5ecf",
+      "binding": "m71_NewLine",
+      "name": "NewLine",
+      "start": 753,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/char.mjs",
+      "moduleSha256": "38255d81ab52308eb5e685585a3c3d7d6230211dc5e59ff1fb2fd75d938e5ecf",
+      "binding": "m71_UnderScore",
+      "name": "UnderScore",
+      "start": 812,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/char.mjs",
+      "moduleSha256": "38255d81ab52308eb5e685585a3c3d7d6230211dc5e59ff1fb2fd75d938e5ecf",
+      "binding": "m71_Dot",
+      "name": "Dot",
+      "start": 843,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/char.mjs",
+      "moduleSha256": "38255d81ab52308eb5e685585a3c3d7d6230211dc5e59ff1fb2fd75d938e5ecf",
+      "binding": "m71_DollarSign",
+      "name": "DollarSign",
+      "start": 867,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/char.mjs",
+      "moduleSha256": "38255d81ab52308eb5e685585a3c3d7d6230211dc5e59ff1fb2fd75d938e5ecf",
+      "binding": "m71_Hyphen",
+      "name": "Hyphen",
+      "start": 898,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/trim.mjs",
+      "moduleSha256": "eb8c93adaa228adcefdaac0a05e5fb73470a1938925354b3ad842b3ef62bb417",
+      "binding": "m74_LineComment",
+      "name": "LineComment",
+      "start": 153,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/trim.mjs",
+      "moduleSha256": "eb8c93adaa228adcefdaac0a05e5fb73470a1938925354b3ad842b3ef62bb417",
+      "binding": "m74_OpenComment",
+      "name": "OpenComment",
+      "start": 179,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/internal/trim.mjs",
+      "moduleSha256": "eb8c93adaa228adcefdaac0a05e5fb73470a1938925354b3ad842b3ef62bb417",
+      "binding": "m74_CloseComment",
+      "name": "CloseComment",
+      "start": 205,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/unsigned_integer.mjs",
+      "moduleSha256": "e6c13e848e7eacdb0fcecbf5c4281955d0047352b7426f2a837d0c27d70d49eb",
+      "binding": "m103_AllowedDigits",
+      "name": "AllowedDigits",
+      "start": 507,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/ident.mjs",
+      "moduleSha256": "865869ced8ed672b988e6f5f380a4861779a9f342c0bcad6b5c27cbc0c766689",
+      "binding": "m97_Initial",
+      "name": "Initial",
+      "start": 402,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/ident.mjs",
+      "moduleSha256": "865869ced8ed672b988e6f5f380a4861779a9f342c0bcad6b5c27cbc0c766689",
+      "binding": "m97_Remaining",
+      "name": "Remaining",
+      "start": 519,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/token/unsigned_number.mjs",
+      "moduleSha256": "d668b0f9d2da76c4383eeb4f4d70d7d6ce02b40dec655158477020cbf26ec0de",
+      "binding": "m104_AllowedDigits",
+      "name": "AllowedDigits",
+      "start": 471,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_If",
+      "name": "If",
+      "start": 448,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_GenericCallArgumentList_0",
+      "name": "GenericCallArgumentList_0",
+      "start": 2959,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_GenericCallArgumentList",
+      "name": "GenericCallArgumentList",
+      "start": 3218,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_GenericCallArguments",
+      "name": "GenericCallArguments",
+      "start": 3646,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_GenericCall",
+      "name": "GenericCall",
+      "start": 3926,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_OptionalSemiColon",
+      "name": "OptionalSemiColon",
+      "start": 4130,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordString",
+      "name": "KeywordString",
+      "start": 4394,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordNumber",
+      "name": "KeywordNumber",
+      "start": 4522,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordBoolean",
+      "name": "KeywordBoolean",
+      "start": 4650,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordUndefined",
+      "name": "KeywordUndefined",
+      "start": 4781,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordNull",
+      "name": "KeywordNull",
+      "start": 4918,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordInteger",
+      "name": "KeywordInteger",
+      "start": 5040,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordBigInt",
+      "name": "KeywordBigInt",
+      "start": 5171,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordUnknown",
+      "name": "KeywordUnknown",
+      "start": 5299,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordAny",
+      "name": "KeywordAny",
+      "start": 5430,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordObject",
+      "name": "KeywordObject",
+      "start": 5549,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordNever",
+      "name": "KeywordNever",
+      "start": 5677,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordSymbol",
+      "name": "KeywordSymbol",
+      "start": 5802,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordVoid",
+      "name": "KeywordVoid",
+      "start": 5930,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeywordThis",
+      "name": "KeywordThis",
+      "start": 6052,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_TemplateInterpolate",
+      "name": "TemplateInterpolate",
+      "start": 6174,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_TemplateSpan",
+      "name": "TemplateSpan",
+      "start": 6434,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_TemplateBody",
+      "name": "TemplateBody",
+      "start": 6563,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_TemplateLiteralTypes",
+      "name": "TemplateLiteralTypes",
+      "start": 7053,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_TemplateLiteral",
+      "name": "TemplateLiteral",
+      "start": 7322,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Dependent",
+      "name": "Dependent",
+      "start": 7453,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_LiteralBigInt",
+      "name": "LiteralBigInt",
+      "start": 8100,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_LiteralBoolean",
+      "name": "LiteralBoolean",
+      "start": 8219,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_LiteralNumber",
+      "name": "LiteralNumber",
+      "start": 8460,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_LiteralString",
+      "name": "LiteralString",
+      "start": 8579,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_KeyOf",
+      "name": "KeyOf",
+      "start": 8712,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_IndexArray_0",
+      "name": "IndexArray_0",
+      "start": 8956,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_IndexArray",
+      "name": "IndexArray",
+      "start": 9434,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Extends",
+      "name": "Extends",
+      "start": 9547,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Base",
+      "name": "Base",
+      "start": 10011,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_With",
+      "name": "With",
+      "start": 11928,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Factor",
+      "name": "Factor",
+      "start": 12213,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ExprTermTail",
+      "name": "ExprTermTail",
+      "start": 12508,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ExprTerm",
+      "name": "ExprTerm",
+      "start": 12848,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ExprTail",
+      "name": "ExprTail",
+      "start": 13033,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Expr",
+      "name": "Expr",
+      "start": 13363,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ExprReadonly",
+      "name": "ExprReadonly",
+      "start": 13538,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ExprPipe",
+      "name": "ExprPipe",
+      "start": 13740,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_InferType",
+      "name": "InferType",
+      "start": 14171,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Type",
+      "name": "Type",
+      "start": 14659,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PropertyKeyNumber",
+      "name": "PropertyKeyNumber",
+      "start": 14972,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PropertyKeyIdent",
+      "name": "PropertyKeyIdent",
+      "start": 15099,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PropertyKeyQuoted",
+      "name": "PropertyKeyQuoted",
+      "start": 15223,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PropertyKeyIndex",
+      "name": "PropertyKeyIndex",
+      "start": 15364,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PropertyKey",
+      "name": "PropertyKey",
+      "start": 15952,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Readonly",
+      "name": "Readonly",
+      "start": 16312,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Optional",
+      "name": "Optional",
+      "start": 16565,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Property",
+      "name": "Property",
+      "start": 16811,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PropertyDelimiter",
+      "name": "PropertyDelimiter",
+      "start": 17127,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PropertyList_0",
+      "name": "PropertyList_0",
+      "start": 17845,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PropertyList",
+      "name": "PropertyList",
+      "start": 18087,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Properties",
+      "name": "Properties",
+      "start": 18487,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66__Object_",
+      "name": "_Object_",
+      "start": 18736,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ElementNamed",
+      "name": "ElementNamed",
+      "start": 18843,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ElementBase",
+      "name": "ElementBase",
+      "start": 19893,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Element",
+      "name": "Element",
+      "start": 20225,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ElementList_0",
+      "name": "ElementList_0",
+      "start": 20559,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ElementList",
+      "name": "ElementList",
+      "start": 20797,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66__Tuple_",
+      "name": "_Tuple_",
+      "start": 21192,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ParameterReadonlyOptional",
+      "name": "ParameterReadonlyOptional",
+      "start": 21434,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ParameterReadonly",
+      "name": "ParameterReadonly",
+      "start": 21807,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ParameterOptional",
+      "name": "ParameterOptional",
+      "start": 22114,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ParameterType",
+      "name": "ParameterType",
+      "start": 22414,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ParameterBase",
+      "name": "ParameterBase",
+      "start": 22656,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Parameter",
+      "name": "Parameter",
+      "start": 23026,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ParameterList_0",
+      "name": "ParameterList_0",
+      "start": 23368,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_ParameterList",
+      "name": "ParameterList",
+      "start": 23612,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66__Function_",
+      "name": "_Function_",
+      "start": 24015,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66__Constructor_",
+      "name": "_Constructor_",
+      "start": 24354,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_MappedReadonly",
+      "name": "MappedReadonly",
+      "start": 24751,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_MappedOptional",
+      "name": "MappedOptional",
+      "start": 25332,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_MappedAs",
+      "name": "MappedAs",
+      "start": 25892,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66__Mapped_",
+      "name": "_Mapped_",
+      "start": 26177,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Reference",
+      "name": "Reference",
+      "start": 26893,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithBigInt",
+      "name": "WithBigInt",
+      "start": 27003,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithNumber",
+      "name": "WithNumber",
+      "start": 27116,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithBoolean",
+      "name": "WithBoolean",
+      "start": 27229,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithString",
+      "name": "WithString",
+      "start": 27464,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithNull",
+      "name": "WithNull",
+      "start": 27591,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithUndefined",
+      "name": "WithUndefined",
+      "start": 27707,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithProperty",
+      "name": "WithProperty",
+      "start": 27838,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithPropertyList_0",
+      "name": "WithPropertyList_0",
+      "start": 28083,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithPropertyList",
+      "name": "WithPropertyList",
+      "start": 28337,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithObject",
+      "name": "WithObject",
+      "start": 28753,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithElementList_0",
+      "name": "WithElementList_0",
+      "start": 29006,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithElementList",
+      "name": "WithElementList",
+      "start": 29254,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithArray",
+      "name": "WithArray",
+      "start": 29663,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_WithValue",
+      "name": "WithValue",
+      "start": 29913,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PatternBigInt",
+      "name": "PatternBigInt",
+      "start": 30480,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PatternString",
+      "name": "PatternString",
+      "start": 30622,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PatternNumber",
+      "name": "PatternNumber",
+      "start": 30746,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PatternInteger",
+      "name": "PatternInteger",
+      "start": 30901,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PatternNever",
+      "name": "PatternNever",
+      "start": 31044,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PatternText",
+      "name": "PatternText",
+      "start": 31168,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PatternBase",
+      "name": "PatternBase",
+      "start": 31404,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PatternGroup",
+      "name": "PatternGroup",
+      "start": 31933,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PatternUnion",
+      "name": "PatternUnion",
+      "start": 32185,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PatternTerm",
+      "name": "PatternTerm",
+      "start": 32626,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_PatternBody",
+      "name": "PatternBody",
+      "start": 32821,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/script/parser.mjs",
+      "moduleSha256": "3348fece92648b537c3423e8eda8b9936c3c422872b619420b5bb30fe9896123",
+      "binding": "m66_Pattern",
+      "name": "Pattern",
+      "start": 33040,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/evaluate/compare.mjs",
+      "moduleSha256": "5ef1d591a87404035a4cf937b4d789a017baf6d7cd9f95375d0c0f692697cd03",
+      "binding": "m21_CompareResultEqual",
+      "name": "CompareResultEqual",
+      "start": 290,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/evaluate/compare.mjs",
+      "moduleSha256": "5ef1d591a87404035a4cf937b4d789a017baf6d7cd9f95375d0c0f692697cd03",
+      "binding": "m21_CompareResultDisjoint",
+      "name": "CompareResultDisjoint",
+      "start": 338,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/evaluate/compare.mjs",
+      "moduleSha256": "5ef1d591a87404035a4cf937b4d789a017baf6d7cd9f95375d0c0f692697cd03",
+      "binding": "m21_CompareResultLeftInside",
+      "name": "CompareResultLeftInside",
+      "start": 392,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/evaluate/compare.mjs",
+      "moduleSha256": "5ef1d591a87404035a4cf937b4d789a017baf6d7cd9f95375d0c0f692697cd03",
+      "binding": "m21_CompareResultRightInside",
+      "name": "CompareResultRightInside",
+      "start": 451,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/call/instantiate.mjs",
+      "moduleSha256": "58a578de817c6fac2330c96d4e359043df543aa8c9b1ba84c4c7cb675ced4668",
+      "binding": "m258_instantiationDepth",
+      "name": "instantiationDepth",
+      "start": 1006,
+      "kind": "lexical-variable"
+    },
+    {
+      "module": "type/engine/call/instantiate.mjs",
+      "moduleSha256": "58a578de817c6fac2330c96d4e359043df543aa8c9b1ba84c4c7cb675ced4668",
+      "binding": "m258_instantiationCount",
+      "name": "instantiationCount",
+      "start": 1034,
+      "kind": "lexical-variable"
+    }
+  ]
+}

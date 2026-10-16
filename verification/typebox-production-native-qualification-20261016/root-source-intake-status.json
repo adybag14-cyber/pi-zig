@@ -1,0 +1,36 @@
+{
+  "full_pi_qualified": false,
+  "source_intake_only": true,
+  "original_expected_hashes": {
+    "source80": "54303EE9477C4632F408963887DD58E5103775D1C8B75B37DF8F27A020984DE2",
+    "source396": "888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C",
+    "source52": "A29A7FF43504C73BA436AA697D284C86F08E67F7965BA99603E100ED5F77D742"
+  },
+  "public_activation": false,
+  "build_status": "passed",
+  "source396_first_mismatch": 391,
+  "source80_first_mismatch": 14,
+  "artifact": {
+    "path": "C:\\Users\\adyba\\pi-zig-typebox-production-qualification-20261016\\.zig-cache\\o\\86ae29cebb165409687a3be20722b8ee\\test.exe",
+    "sha256": "DEFCB00AFBCC00658DF4BEAA6BFCD8560F9C8EEC2A543ADE5C9DAFD6F57D7EFE",
+    "installed_path": "C:\\Users\\adyba\\pi-zig-typebox-production-qualification-20261016\\zig-out\\bin\\test.exe"
+  },
+  "runtime_status": "failed 1/4; three original replay comparisons failed",
+  "source52_first_mismatch": 50,
+  "runtime_full_posthash_drift": 0,
+  "actual_metadata": [
+    "native_typebox_compile_production_test.test.actual TypeBox Compile Validator matches complete genuine Source80",
+    "native_typebox_compile_production_test.test.actual provider schemas Partial and Memory match genuine Source52 on shared compiler graph",
+    "native_typebox_compile_production_test.test.actual TypeBox generic operators match complete genuine Source396 on shared compiler graph",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "follow_up_proposals": [
+    "7eaacb7e Default reexports source-only",
+    "693669c5 typed native tuple binding source-only"
+  ],
+  "reviewed_product_source": "b97ad182005ec07e9e8a84c94148695ecfcb7b5b",
+  "last_actual_native_candidate": "b97ad182005ec07e9e8a84c94148695ecfcb7b5b",
+  "restored_genuine_source52_input_sha256": "EB4619FFE139943A7227B61D4A793A2B0D24C22F7C1037784AF066E17C7C9B34",
+  "no_root_C33_qualification_transfer": true,
+  "native_C_baseline": "Root2851 C12 inherited component; RootC33/C9 qualification separate"
+}
