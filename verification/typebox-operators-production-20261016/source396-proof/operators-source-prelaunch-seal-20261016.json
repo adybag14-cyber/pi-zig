@@ -1,0 +1,79 @@
+{
+  "candidate": "3ed99011a6f53a7ffb1392fac759ffdf0b0b843b",
+  "clean": true,
+  "cases": 396,
+  "input_sha256": "37CEEAC103C70BF1C587F03CAA11C5EE4EC0A6AE414222D8653116E94DB5C9AA",
+  "source_authority": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "typebox_version": "1.3.27",
+  "package_sha256": "C59DDFD977CE941F1E8EE8B0A0B14396C332FA27CC5FA6FA165227FFD5A3992F",
+  "dependency_roles": {
+    "Source": "actual installed TypeBox Type/Memory/Settings namespaces, one physical authority",
+    "other_lane_native_dependencies": "3851638b/95f3dd29/d1041b56/a482 successors; not qualified by Source-only capture",
+    "native": "operators production + oauth sole Memory/Settings/Evaluate algebra + compiler-owned Codec"
+  },
+  "controls": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-operators-production-20261016\\Run-TypeBoxOperatorsSource-20261016.ps1",
+      "sha256": "8A68FCD861803E0673B6CBECA9892ED25F4FDC8DC8FB1A35B0C9E2CDE4FC9A69"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-operators-production-20261016\\Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+      "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-operators-production-20261016\\operator-probe-inventory-20261016.json",
+      "sha256": "87F06A71A2F58AD45167C3B7FC8CC1452338DB3465450935D61CFE8CCFD05B31"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-operators-production-20261016\\Inventory-OperatorProbes-20261016.mjs",
+      "sha256": "299328C5B3B85813CC62D11E301F5F359D50F4DC777DC06342E7EB9C6BA44AFE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-typebox-operators-production-20261016\\verification\\typebox-operators-production-20261016\\capture-genuine-source.mjs",
+      "sha256": "C7029354C8D02AE9BC2F78B64345B56E66C1C46C299B7BAE3256EA114A0439C3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-typebox-operators-production-20261016\\verification\\typebox-operators-production-20261016\\reachable-closure.json",
+      "sha256": "4E718CCE679A362BCC74A02F6FA717A61240619FA6D1B83BB394706476DC4F93"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-typebox-operators-production-20261016\\src\\extensions\\fixtures\\typebox-operators-production.input.txt",
+      "sha256": "37CEEAC103C70BF1C587F03CAA11C5EE4EC0A6AE414222D8653116E94DB5C9AA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs",
+      "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-preparation-readiness-20261015.json",
+      "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json",
+      "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-full-manifest-20261015.json",
+      "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-runtime-manifest-20261015.json",
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json",
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+    },
+    {
+      "path": "C:\\Program Files\\nodejs\\node.exe",
+      "sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088"
+    }
+  ],
+  "Source_LIGHT_slot": 6,
+  "fresh_ram_gib": 2,
+  "node_heap_mib": 256,
+  "outer_seconds": 300,
+  "settlement_seconds": 10,
+  "native_qualification": false,
+  "sealed_utc": "2026-10-15T23:45:06.4199218+00:00"
+}
