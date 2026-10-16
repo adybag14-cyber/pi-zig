@@ -85,7 +85,7 @@ fn basenameOnly(scope: *Scope, body: c.JSValue) !bool {
     if (c.JS_ToInt32(scope.engine.context, &offset, slash) < 0) return v.js.capture(scope.engine);
     return offset < 0 or offset == @as(i64, try v.length(scope, body)) - 1;
 }
-fn addOne(scope: *Scope, manager: c.JSValue, value: c.JSValue, rule_constructor: c.JSValue, ignore_key: c.JSValue) !void {
+fn addOne(scope: *Scope, manager: c.JSValue, value: c.JSValue, rule_constructor: c.JSValue, ignore_key: c.JSValue, classes: c.JSValue) !void {
     if (scope.truthy(value) and scope.truthy(try scope.own(try v.js.getKey(scope.engine, value, ignore_key)))) {
         const previous = try scope.get(manager, "_rules");
         const concat = try scope.get(previous, "concat");
@@ -110,7 +110,7 @@ fn addOne(scope: *Scope, manager: c.JSValue, value: c.JSValue, rule_constructor:
     var body = if (negative) try scope.invoke(pattern, "substr", &.{c.JS_NewInt32(scope.engine.context, 1)}) else pattern;
     body = try scope.invoke(body, "replace", &.{ try rx.regex(scope, try scope.text("^\\\\!"), ""), try scope.text("!") });
     body = try scope.invoke(body, "replace", &.{ try rx.regex(scope, try scope.text("^\\\\#"), ""), try scope.text("#") });
-    const prefix = try rx.prefix(scope, body);
+    const prefix = try rx.prefix(scope, body, classes);
     var rule_args = [_]c.JSValue{ pattern, mark, body, ignore_case, boolean(scope, negative), prefix };
     const rule = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, rule_constructor, rule_args.len, &rule_args)));
     try scope.set(manager, "_added", boolean(scope, true));
@@ -257,7 +257,7 @@ fn dispatch(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, 
             break :block receiver;
         },
         .addPattern => try scope.invoke(receiver, "add", &.{first}),
-        .add_one => block: { try addOne(&scope, receiver, first, roots[1], roots[2]); break :block c.pi_js_undefined(); },
+        .add_one => block: { try addOne(&scope, receiver, first, roots[1], roots[2], roots[3]); break :block c.pi_js_undefined(); },
         .manager_add => return addManager(&scope, receiver, first),
         .manager_test => try testRules(&scope, receiver, first, scope.truthy(input(args, 1)), try v.eq(&scope, input(args, 2), "checkRegex")),
         .ignores, .test_path => block: {
@@ -321,6 +321,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     const platform = try scope.object();
     try scope.put(platform, "windows", boolean(&scope, @import("builtin").os.tag == .windows));
     const ignore_key = try key(&scope);
+    const classes = try rx.createClasses(&scope);
     const rule_prototype = try scope.object();
     inline for (.{ .{ "regex", Method.rule_regex }, .{ "checkRegex", Method.rule_check_regex }, .{ "_basenameOnly", Method.rule_basename } }) |entry| {
         const descriptor = try scope.object();
@@ -333,7 +334,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     const rule_constructor = try scope.own(try @import("native_class.zig").constructor(engine, "IgnoreRule", 6, rule_prototype, ruleConstruct, &.{}));
     const manager_prototype = try scope.object();
     inline for (.{ .{ "_add", Method.add_one }, .{ "add", Method.manager_add }, .{ "test", Method.manager_test } }) |entry| {
-        const method = try function(&scope, entry[1], entry[0], if (entry[1] == .manager_test) 3 else 1, &.{ rule_constructor, ignore_key }, false);
+        const method = try function(&scope, entry[1], entry[0], if (entry[1] == .manager_test) 3 else 1, &.{ rule_constructor, ignore_key, classes }, false);
         if (c.JS_DefinePropertyValueStr(engine.context, manager_prototype, entry[0], c.JS_DupValue(engine.context, method), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return v.js.capture(engine);
     }
     const manager_constructor = try scope.own(try @import("native_class.zig").constructor(engine, "RuleManager", 1, manager_prototype, managerConstruct, &.{}));

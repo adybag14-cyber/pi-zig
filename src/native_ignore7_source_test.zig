@@ -39,6 +39,7 @@ fn controls(comptime caller: []const u8, name: [*:0]const u8, field: [*:0]const 
     try stringField(&scope, root, "callerSha256", "5d8a62805bd3866fd7742f0f6fa6f3e05411961155f95a7de8d9b60cd19d6363");
     try stringField(&scope, root, "liveCallerSha256", "f18ce5b5c25311e054c50b87a487372ba7e0222371a2427545ff0a90a35b1ef6");
     try stringField(&scope, root, "edgeCallerSha256", "88daf67e655f7b04852f33c1e4aa2cb5c57b62babe5440ed01dd5fb56c83edc1");
+    try stringField(&scope, root, "posixCallerSha256", "5ee2e61d622ba80ea6bda3c433c6ab7abbdb2c7c8abb6c1166e933ad520146ab");
     const node = try scope.get(root, "actualNode");
     try stringField(&scope, node, "version", "v24.14.0");
     try stringField(&scope, node, "platform", "win32");
@@ -47,7 +48,8 @@ fn controls(comptime caller: []const u8, name: [*:0]const u8, field: [*:0]const 
     try countField(&scope, root, "cases", 2375);
     try countField(&scope, root, "liveCases", 12);
     try countField(&scope, root, "edgeCases", 12);
-    try countField(&scope, root, "totalCases", 2399);
+    try countField(&scope, root, "posixCases", 4);
+    try countField(&scope, root, "totalCases", 2403);
     try @import("extensions/native_ignore7.zig").install(engine);
     const imported = try engine.evalModule("import ignore from 'ignore';globalThis.nativeIgnore7=ignore;", "native-ignore7-binding.mjs");
     engine.freeValue(imported);
@@ -64,4 +66,7 @@ test "native ignore7 live prototypes match genuine pinned package observations" 
 }
 test "native ignore7 scanner edges match genuine pinned package observations" {
     try controls(@embedFile("extensions/fixtures/ignore7-scanner-edge-controls.input.txt"), "ignore7ScannerEdgeObservations", "edgeObservations", 12, "scanner edges");
+}
+test "native ignore7 POSIX prototypes match genuine pinned package observations" {
+    try controls(@embedFile("extensions/fixtures/ignore7-posix-prototype-controls.input.txt"), "ignore7PosixPrototypeObservations", "posixObservations", 4, "POSIX prototypes");
 }

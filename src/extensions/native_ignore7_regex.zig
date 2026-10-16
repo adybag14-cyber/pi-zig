@@ -47,20 +47,15 @@ fn member(out: *Units, gpa: std.mem.Allocator, char: u16) !void {
     if (char < 128 and std.mem.indexOfScalar(u8, "\\]^-[", @intCast(char)) != null) try out.append(gpa, '\\');
     try out.append(gpa, char);
 }
-fn posix(name: []const u16) ?[]const u8 {
+pub fn createClasses(scope: *Scope) !c.JSValue {
     const names = .{ "alnum", "alpha", "blank", "cntrl", "digit", "graph", "lower", "print", "punct", "space", "upper", "xdigit" };
     const bodies = .{ "0-9A-Za-z", "A-Za-z", " \\t", "\\x00-\\x1f\\x7f", "0-9", "!-.0-~", "a-z", " -.0-~", "!-.:-@\\[-`{-~", " \\t\\n\\r", "A-Z", "0-9A-Fa-f" };
-    inline for (names, bodies) |key, body| {
-        if (name.len == key.len) {
-            var same = true;
-            for (name, key) |left, right| if (left != right) { same = false; break; };
-            if (same) return body;
-        }
-    }
-    return null;
+    const table = try scope.object();
+    inline for (names, bodies) |name, body| try scope.put(table, name, try scope.text(body));
+    return table;
 }
 const Bracket = struct { end: usize, source: c.JSValue };
-fn bracket(scope: *Scope, pattern: []const u16, start: usize) !?Bracket {
+fn bracket(scope: *Scope, pattern: []const u16, start: usize, table: c.JSValue) !?Bracket {
     const gpa = scope.engine.gpa;
     var index = start + 1;
     var negated = false;
@@ -93,7 +88,16 @@ fn bracket(scope: *Scope, pattern: []const u16, start: usize) !?Bracket {
             while (end < pattern.len and pattern[end] != ']') : (end += 1) {}
             if (end == pattern.len) return null;
             if (end > name_start and pattern[end - 1] == ':') {
-                try ascii(&body, gpa, posix(pattern[name_start .. end - 1]) orelse return null);
+                // The primary class table is an ordinary object. Preserve its
+                // actual inherited key lookup and JS += coercion as well as
+                // its own twelve ASCII class strings.
+                const expanded = try scope.own(try v.js.getKey(scope.engine, table, try text(scope, pattern[name_start .. end - 1])));
+                if (c.JS_IsUndefined(expanded)) return null;
+                const joined = try scope.concat(try text(scope, body.items), expanded);
+                const joined_units = try units(scope, joined);
+                defer gpa.free(joined_units);
+                body.clearRetainingCapacity();
+                try body.appendSlice(gpa, joined_units);
                 previous = null;
                 index = end;
             } else {
@@ -128,7 +132,7 @@ fn hold(scope: *Scope, out: *Units, sources: c.JSValue, source: c.JSValue) !void
     try out.append(scope.engine.gpa, 0);
 }
 const Extracted = struct { source: c.JSValue, sources: c.JSValue };
-fn extract(scope: *Scope, value: c.JSValue) !Extracted {
+fn extract(scope: *Scope, value: c.JSValue, table: c.JSValue) !Extracted {
     const pattern = try units(scope, value);
     defer scope.engine.gpa.free(pattern);
     var out: Units = .empty;
@@ -162,7 +166,7 @@ fn extract(scope: *Scope, value: c.JSValue) !Extracted {
             try hold(scope, &out, sources, try text(scope, &literal));
             index += 1;
         } else if (char == '[') {
-            if (try bracket(scope, pattern, index)) |scanned| {
+            if (try bracket(scope, pattern, index, table)) |scanned| {
                 try hold(scope, &out, sources, scanned.source);
                 index = scanned.end + 1;
             } else {
@@ -236,8 +240,8 @@ fn replace(scope: *Scope, value: c.JSValue, step: Step, extra: ?c.JSValue) !c.JS
     const function = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 0, replaceCallback, &.{ c.JS_NewUint32(scope.engine.context, @intFromEnum(step.kind)), extra orelse try scope.text(step.replacement) }));
     return scope.invoke(value, "replace", &.{ expression, function });
 }
-pub fn prefix(scope: *Scope, pattern: c.JSValue) !c.JSValue {
-    const extracted = try extract(scope, pattern);
+pub fn prefix(scope: *Scope, pattern: c.JSValue, table: c.JSValue) !c.JSValue {
+    const extracted = try extract(scope, pattern, table);
     var source = extracted.source;
     for (steps) |step| source = try replace(scope, source, step, null);
     if (try v.length(scope, source) > 0 and !scope.truthy(try scope.invoke(source, "startsWith", &.{try scope.text("^")}))) {
