@@ -8,10 +8,12 @@ const arithmetic = @import("native_image_arithmetic.zig");
 fn field(s: *Scope, owner: c.JSValue, name: [*:0]const u8) !c.JSValue { return s.get(owner, name); }
 fn put(s: *Scope, owner: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void { try data.put(s.engine, owner, name, value); }
 fn at(s: *Scope, list: c.JSValue, index: c.JSValue) !c.JSValue { return s.own(try v.js.getKey(s.engine, list, index)); }
-fn assign(s: *Scope, list: c.JSValue, index: c.JSValue, value: c.JSValue) !void { const atom = try v.js.atom(s.engine, index); defer c.JS_FreeAtom(s.engine.context, atom); if (c.JS_SetProperty(s.engine.context, list, atom, c.JS_DupValue(s.engine.context, value)) < 0) return v.js.capture(s.engine); }
+fn assignAtom(s: *Scope, list: c.JSValue, atom: c.JSAtom, value: c.JSValue) !void { if (c.JS_SetProperty(s.engine.context, list, atom, c.JS_DupValue(s.engine.context, value)) < 0) return v.js.capture(s.engine); }
+fn assign(s: *Scope, list: c.JSValue, index: c.JSValue, value: c.JSValue) !void { const atom = try v.js.atom(s.engine, index); defer c.JS_FreeAtom(s.engine.context, atom); try assignAtom(s, list, atom, value); }
+fn invokeIgnored(s: *Scope, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !void { const result = try v.js.invoke(s.engine, receiver, name, args); s.engine.freeValue(result); }
 fn adjust(s: *Scope, owner: c.JSValue, name: [*:0]const u8, increase: bool) !c.JSValue { const value = try s.own(try arithmetic.binary(s.engine, if (increase) .add else .subtract, try field(s, owner, name), c.JS_NewInt32(s.engine.context, 1))); try put(s, owner, name, value); return value; }
 fn zero(s: *Scope, value: c.JSValue) bool { return s.equal(value, c.JS_NewInt32(s.engine.context, 0)); }
-fn construct(s: *Scope, constructor: c.JSValue, args: []const c.JSValue) !c.JSValue { return s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, constructor, @intCast(args.len), args.ptr))); }
+fn construct(s: *Scope, constructor: c.JSValue, args: []const c.JSValue) !c.JSValue { return s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, constructor, @intCast(args.len), @constCast(args.ptr)))); }
 fn list(s: *Scope) !c.JSValue { const array = try s.global("Array"); const from = try s.get(array, "from"); const length = try s.object(); try data.put(s.engine, length, "length", c.JS_NewInt32(s.engine.context, 1000)); const value = try s.call(from, array, &.{length}); return s.invoke(value, "fill", &.{c.pi_js_undefined()}); }
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit(); const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
@@ -42,7 +44,7 @@ fn evict(engine: *v.em.Engine, owner: c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit(); const head = try field(&s, owner, "head"); const key = try at(&s, try field(&s, owner, "keys"), head); _ = try at(&s, try field(&s, owner, "values"), head);
     if (s.equal(try field(&s, owner, "size"), c.JS_NewInt32(engine.context, 1))) { try put(&s, owner, "head", c.JS_NewInt32(engine.context, 0)); try put(&s, owner, "tail", c.JS_NewInt32(engine.context, 0)); try put(&s, owner, "freeLength", c.JS_NewInt32(engine.context, 0)); }
     else try put(&s, owner, "head", try at(&s, try field(&s, owner, "next"), head));
-    _ = try s.invoke(try field(&s, owner, "map"), "delete", &.{key}); _ = try adjust(&s, owner, "size", false); return c.JS_DupValue(engine.context, head);
+    try invokeIgnored(&s, try field(&s, owner, "map"), "delete", &.{key}); _ = try adjust(&s, owner, "size", false); return c.JS_DupValue(engine.context, head);
 }
 fn validIndex(engine: *v.em.Engine, owner: c.JSValue, index: c.JSValue) !bool { if (c.JS_IsUndefined(index)) return false; var s: Scope = .{ .engine = engine }; defer s.deinit(); const map = try field(&s, owner, "map"); const method = try s.get(map, "get"); const key = try at(&s, try field(&s, owner, "keys"), index); return s.equal(try s.call(method, map, &.{key}), index); }
 fn clear(s: *Scope, owner: c.JSValue) !void {
@@ -57,15 +59,20 @@ fn clear(s: *Scope, owner: c.JSValue) !void {
             if (s.equal(index, try field(s, owner, "tail"))) break; index = try at(s, try field(s, owner, "next"), index);
         }
     }
-    _ = try s.invoke(try field(s, owner, "map"), "clear", &.{}); _ = try s.invoke(try field(s, owner, "values"), "fill", &.{c.pi_js_undefined()}); _ = try s.invoke(try field(s, owner, "keys"), "fill", &.{c.pi_js_undefined()}); try put(s, owner, "head", c.JS_NewInt32(s.engine.context, 0)); try put(s, owner, "tail", c.JS_NewInt32(s.engine.context, 0)); try put(s, owner, "freeLength", c.JS_NewInt32(s.engine.context, 0)); try put(s, owner, "size", c.JS_NewInt32(s.engine.context, 0));
+    try invokeIgnored(s, try field(s, owner, "map"), "clear", &.{}); try invokeIgnored(s, try field(s, owner, "values"), "fill", &.{c.pi_js_undefined()}); try invokeIgnored(s, try field(s, owner, "keys"), "fill", &.{c.pi_js_undefined()}); try put(s, owner, "head", c.JS_NewInt32(s.engine.context, 0)); try put(s, owner, "tail", c.JS_NewInt32(s.engine.context, 0)); try put(s, owner, "freeLength", c.JS_NewInt32(s.engine.context, 0)); try put(s, owner, "size", c.JS_NewInt32(s.engine.context, 0));
 }
 fn remove(s: *Scope, owner: c.JSValue, key: c.JSValue) !void {
     if (zero(s, try field(s, owner, "size"))) return; const index = try s.invoke(try field(s, owner, "map"), "get", &.{key}); if (c.JS_IsUndefined(index)) return;
     if (s.equal(try field(s, owner, "size"), c.JS_NewInt32(s.engine.context, 1))) return clear(s, owner);
-    _ = try at(s, try field(s, owner, "values"), index); _ = try s.invoke(try field(s, owner, "map"), "delete", &.{key}); try assign(s, try field(s, owner, "keys"), index, c.pi_js_undefined()); try assign(s, try field(s, owner, "values"), index, c.pi_js_undefined());
+    _ = try at(s, try field(s, owner, "values"), index); try invokeIgnored(s, try field(s, owner, "map"), "delete", &.{key}); try assign(s, try field(s, owner, "keys"), index, c.pi_js_undefined()); try assign(s, try field(s, owner, "values"), index, c.pi_js_undefined());
     if (s.equal(index, try field(s, owner, "tail"))) try put(s, owner, "tail", try at(s, try field(s, owner, "prev"), index))
     else if (s.equal(index, try field(s, owner, "head"))) try put(s, owner, "head", try at(s, try field(s, owner, "next"), index))
-    else { const previous = try at(s, try field(s, owner, "prev"), index); try assign(s, try field(s, owner, "next"), previous, try at(s, try field(s, owner, "next"), index)); const next = try at(s, try field(s, owner, "next"), index); try assign(s, try field(s, owner, "prev"), next, try at(s, try field(s, owner, "prev"), index)); }
+    else {
+        const previous = try at(s, try field(s, owner, "prev"), index);
+        { const list_value = try field(s, owner, "next"); const atom = try v.js.atom(s.engine, previous); defer c.JS_FreeAtom(s.engine.context, atom); try assignAtom(s, list_value, atom, try at(s, try field(s, owner, "next"), index)); }
+        const next = try at(s, try field(s, owner, "next"), index);
+        { const list_value = try field(s, owner, "prev"); const atom = try v.js.atom(s.engine, next); defer c.JS_FreeAtom(s.engine.context, atom); try assignAtom(s, list_value, atom, try at(s, try field(s, owner, "prev"), index)); }
+    }
     _ = try adjust(s, owner, "size", false); try pushFree(s, owner, index);
 }
 pub fn set(engine: *v.em.Engine, owner: c.JSValue, key: c.JSValue, value: c.JSValue) !void {
@@ -74,7 +81,9 @@ pub fn set(engine: *v.em.Engine, owner: c.JSValue, key: c.JSValue, value: c.JSVa
     if (c.JS_IsUndefined(index)) {
         index = if (zero(&s, try field(&s, owner, "size"))) try field(&s, owner, "tail") else if (!zero(&s, try field(&s, owner, "freeLength"))) try popFree(&s, owner) else if (s.equal(try field(&s, owner, "size"), c.JS_NewInt32(engine.context, 1000))) try s.own(try evict(engine, owner)) else try field(&s, owner, "size");
         try assign(&s, try field(&s, owner, "keys"), index, key); try assign(&s, try field(&s, owner, "values"), index, value);
-        _ = try s.invoke(try field(&s, owner, "map"), "set", &.{ key, index });
-        try assign(&s, try field(&s, owner, "next"), try field(&s, owner, "tail"), index); try assign(&s, try field(&s, owner, "prev"), index, try field(&s, owner, "tail")); try put(&s, owner, "tail", index); _ = try adjust(&s, owner, "size", true);
+        try invokeIgnored(&s, try field(&s, owner, "map"), "set", &.{ key, index });
+        try assign(&s, try field(&s, owner, "next"), try field(&s, owner, "tail"), index);
+        { const previous = try field(&s, owner, "prev"); const atom = try v.js.atom(engine, index); defer c.JS_FreeAtom(engine.context, atom); try assignAtom(&s, previous, atom, try field(&s, owner, "tail")); }
+        try put(&s, owner, "tail", index); _ = try adjust(&s, owner, "size", true);
     } else { try moveTail(&s, owner, index); const previous = try at(&s, try field(&s, owner, "values"), index); if (!s.equal(value, previous)) try assign(&s, try field(&s, owner, "values"), index, value); }
 }

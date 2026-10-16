@@ -1,0 +1,39 @@
+{
+  "status": "source_only_LRU_review_fixes_checkpoint_then_hold_for_relocation",
+  "base": "15c3e3ab7e2d51537cd54014095eb801e8ce7dc5",
+  "upstream": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "workspace": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016",
+  "requested_relocation_root": "C:\\Users\\adyba\\pi-zig",
+  "old_runtime_currently_present": false,
+  "matching_index_authority_reported_by": "body_validation_resume",
+  "matching_index_sha256": "A1B0CE295FAA12144A37BB69880609D7EBCC6054CE0C105B7CB20C9021FCB217",
+  "matching_index_path": "C:\\Users\\adyba\\pi-upstream-89e5c2c0-20261011\\node_modules\\lru-cache\\dist\\commonjs\\index.js",
+  "full_runtime_authority_currently_verified": false,
+  "source_expected_present": false,
+  "source_execution": false,
+  "zig_format": false,
+  "zig_ast": false,
+  "compile": false,
+  "native_execution": false,
+  "allocator_qualification": false,
+  "source_hook_qualification": false,
+  "engine_shared_C_root_changed": false,
+  "default_selected": false,
+  "full_pi_qualification": false,
+  "pending": [
+    "independent narrow delta review",
+    "additional raw-index/ignored-result controls after relocation hold",
+    "full authority recovery and seals",
+    "Source/native/allocator/integration gates"
+  ],
+  "files": [
+    {
+      "path": "src/extensions/native_hosted_git_lru.zig",
+      "sha256": "AA243D0A376F822D01EFA0B2290C6D58195038A3D7947CE8AB015BCB97F81CBC"
+    },
+    {
+      "path": "verification/package-manager-sourceonly-0fb-20261016/git-host-lru-review-checkpoint.md",
+      "sha256": "BDC594C8682AFBE0C41BF91D51778603B1207520E007427AB3F2AD5074350064"
+    }
+  ]
+}
