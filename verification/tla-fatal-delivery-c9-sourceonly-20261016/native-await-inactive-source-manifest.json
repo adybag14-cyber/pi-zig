@@ -1,0 +1,34 @@
+{
+  "kind": "native-await-inactive-source-only-unexecuted",
+  "base": "fc10f63cc4d6efdfaf62da505ce60f1a998f1032",
+  "base_c_sha256": "C40923F6BF4E0866742930B21A82526B1EE6A9EB391065E5B0FC099BC5279579",
+  "worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\runtime-tla",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "E33481B9435F0B1C2FC88674FFC480A7071C24C05B5A12057E9CD71FBA6FC635"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "path": "src/native_async_await_inactive_test.zig",
+      "sha256": "5259B5776436932933D51BCDE601E79BB78F2E922791B226DD94CDA5442A313B"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/NATIVE-AWAIT-INACTIVE.md",
+      "sha256": "AA44743A1DD33E6A0C9BAE397339E30A747A5C84198CE58BC3DD7A3B00002D82"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/build-native-await-inactive-snippet.zig.txt",
+      "sha256": "CE1646E4F01222BFD66B30754D2EF133AABDF572F31671368C5185A3A2A46CB5"
+    }
+  ],
+  "checks": [
+    "git diff --check only"
+  ],
+  "execution": "No compiler, Zig, formatter, Node, Source generator or native jobs",
+  "review": "Root and independent C-owner before composition/execution",
+  "scope": "Native inactive callback no-op before retired native_function access; no shared thenable changes"
+}

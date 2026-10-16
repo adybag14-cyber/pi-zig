@@ -1,0 +1,7 @@
+// Prospective integration only; actual metadata and explicit grant required.
+const shared_thenable_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_shared_thenable_fatal_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"shared thenable fatal"}, .use_llvm = use_llvm });
+linkQuickJs(b, shared_thenable_tests.root_module, quickjs, sqlite_lib_dir);
+linkSqlite(shared_thenable_tests.root_module, sqlite_lib_dir, sqlite_library);
+shared_thenable_tests.root_module.addImport("catalog_tool", catalog_tool);
+b.step("build-native-shared-thenable-fatal", "Compile reviewed shared thenable active-fatal controls").dependOn(&b.addInstallArtifact(shared_thenable_tests, .{}).step);
+b.step("test-native-shared-thenable-fatal", "Run actual metadata-selected shared thenable controls after explicit grant").dependOn(&b.addRunArtifact(shared_thenable_tests).step);

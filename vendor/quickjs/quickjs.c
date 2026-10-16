@@ -22018,6 +22018,17 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
         /* Genuine AsyncFunction return: the outer capability adopts output.
            Returning a Promise never returns that Promise's identity. */
         result = JS_Call(ctx, s->resolving_funcs[0], JS_UNDEFINED, 1, vc(&output));
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            /* The intrinsic callback can return undefined despite a pending
+               fatal hook/enqueue reason. Retain it before any owned cleanup. */
+            JSValue error = JS_GetException(ctx);
+            JS_FreeValue(ctx, output);
+            JS_FreeValue(ctx, result);
+            js_async_function_terminate(ctx->rt, s);
+            JS_Throw(ctx, error);
+            return false;
+        }
         JS_FreeValue(ctx, output);
         if (JS_IsException(result))
             goto rejected;
@@ -22065,6 +22076,15 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
     }
     output = JS_GetException(ctx);
     result = JS_Call(ctx, s->resolving_funcs[1], JS_UNDEFINED, 1, vc(&output));
+    if (JS_HasException(ctx) &&
+        JS_IsUncatchableError(ctx->rt->current_exception)) {
+        JSValue error = JS_GetException(ctx);
+        JS_FreeValue(ctx, output);
+        JS_FreeValue(ctx, result);
+        js_async_function_terminate(ctx->rt, s);
+        JS_Throw(ctx, error);
+        return false;
+    }
     JS_FreeValue(ctx, output);
     js_async_function_terminate(ctx->rt, s);
     if (JS_IsException(result))
@@ -22205,6 +22225,8 @@ static JSValue js_async_function_resolve_call(JSContext *ctx,
     else
         arg = JS_UNDEFINED;
     if (s->native_body) {
+        if (!s->is_active)
+            return JS_UNDEFINED;
         if (!js_native_async_function_resume(s,
                 is_reject ? JS_PI_AF_AWAIT_REJECTED : JS_PI_AF_AWAIT_FULFILLED,
                 arg))
@@ -22302,7 +22324,8 @@ static JSValue js_native_async_function_call(JSContext *caller,
     JSFunctionBytecode *b = JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode;
     JSContext *ctx = b->realm;
     JSAsyncFunctionData *s;
-    JSValue promise;
+    JSValue promise, error;
+    bool fatal;
     int i;
     (void)caller;
     if (argc < 0 || (size_t)argc > SIZE_MAX / sizeof(JSValue))
@@ -22335,8 +22358,15 @@ static JSValue js_native_async_function_call(JSContext *caller,
     js_async_function_free(ctx->rt, s);
     return promise;
  failed:
+    /* A newly failed resolving call may have settled promise with an owned
+       return/rejection value. Preserve its fatal reason over that teardown. */
+    fatal = JS_HasException(ctx) &&
+                 JS_IsUncatchableError(ctx->rt->current_exception);
+    error = fatal ? JS_GetException(ctx) : JS_UNDEFINED;
     JS_FreeValue(ctx, promise);
     js_async_function_free(ctx->rt, s);
+    if (fatal)
+        JS_Throw(ctx, error);
     return JS_EXCEPTION;
 }
 
@@ -57057,7 +57087,9 @@ static JSValue js_promise_resolve_thenable_job(JSContext *ctx,
                                                int argc, JSValueConst *argv)
 {
     JSValueConst promise, thenable, then;
-    JSValue args[2], res;
+    JSValue args[2] = { JS_UNDEFINED, JS_UNDEFINED };
+    JSValue res = JS_UNDEFINED, fatal = JS_UNDEFINED;
+    bool has_fatal = false;
     JSRuntime *rt;
 
     promise_trace(ctx, "js_promise_resolve_thenable_job\n");
@@ -57072,20 +57104,51 @@ static JSValue js_promise_resolve_thenable_job(JSContext *ctx,
     if (rt->promise_hook) {
         rt->promise_hook(ctx, JS_PROMISE_HOOK_BEFORE, promise, JS_UNDEFINED,
                          rt->promise_hook_opaque);
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            fatal = JS_GetException(ctx);
+            goto fatal_cleanup;
+        }
     }
     res = JS_Call(ctx, then, thenable, 2, vc(args));
+    if (JS_HasException(ctx) &&
+        JS_IsUncatchableError(ctx->rt->current_exception)) {
+        /* Preserve paired AFTER notification and its existing view of the
+           current exception, but retain the first fatal before that hook can
+           consume or replace it. This duplicate does not allocate. */
+        fatal = js_dup(ctx->rt->current_exception);
+        has_fatal = true;
+    }
     if (rt->promise_hook) {
         rt->promise_hook(ctx, JS_PROMISE_HOOK_AFTER, promise, JS_UNDEFINED,
                          rt->promise_hook_opaque);
     }
+    if (!has_fatal && JS_HasException(ctx) &&
+        JS_IsUncatchableError(ctx->rt->current_exception)) {
+        fatal = JS_GetException(ctx);
+        has_fatal = true;
+    }
+    if (has_fatal)
+        goto fatal_cleanup;
     if (JS_IsException(res)) {
         JSValue error = JS_GetException(ctx);
         res = JS_Call(ctx, args[1], JS_UNDEFINED, 1, vc(&error));
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            fatal = JS_GetException(ctx);
+            JS_FreeValue(ctx, error);
+            goto fatal_cleanup;
+        }
         JS_FreeValue(ctx, error);
     }
     JS_FreeValue(ctx, args[0]);
     JS_FreeValue(ctx, args[1]);
     return res;
+ fatal_cleanup:
+    JS_FreeValue(ctx, res);
+    JS_FreeValue(ctx, args[0]);
+    JS_FreeValue(ctx, args[1]);
+    return JS_Throw(ctx, fatal);
 }
 
 static void js_promise_resolve_function_free_resolved(JSRuntime *rt,
@@ -57195,16 +57258,33 @@ static JSValue js_promise_resolve_function_call(JSContext *ctx,
         goto fail_reject;
     }
     then = JS_GetProperty(ctx, resolution, JS_ATOM_then);
+    if (JS_HasException(ctx) &&
+        JS_IsUncatchableError(ctx->rt->current_exception)) {
+        JSValue error = JS_GetException(ctx);
+        JS_FreeValue(ctx, then);
+        return JS_Throw(ctx, error);
+    }
     if (JS_IsException(then)) {
         JSValue error;
     fail_reject:
         error = JS_GetException(ctx);
         fulfill_or_reject_promise(ctx, s->promise, error, true);
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            JSValue fatal = JS_GetException(ctx);
+            JS_FreeValue(ctx, error);
+            return JS_Throw(ctx, fatal);
+        }
         JS_FreeValue(ctx, error);
     } else if (!JS_IsFunction(ctx, then)) {
         JS_FreeValue(ctx, then);
     done:
         fulfill_or_reject_promise(ctx, s->promise, resolution, is_reject);
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            JSValue fatal = JS_GetException(ctx);
+            return JS_Throw(ctx, fatal);
+        }
     } else {
         args[0] = s->promise;
         args[1] = resolution;

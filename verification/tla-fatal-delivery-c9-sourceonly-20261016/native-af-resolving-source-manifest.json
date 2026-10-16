@@ -1,0 +1,38 @@
+{
+  "kind": "native-af-resolving-fatal-source-only-unexecuted",
+  "base": "486b45cbce912396892924cb16d392fb826f47d1",
+  "base_c_sha256": "F06F1F2A23CB024FF381DB02CF43D1C249DE5848689D005918F7D1FB80BE9B5E",
+  "worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\runtime-tla",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "C40923F6BF4E0866742930B21A82526B1EE6A9EB391065E5B0FC099BC5279579"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "path": "src/native_async_resolving_pending_test.zig",
+      "sha256": "85C6523B513AAB29A1E470C02D3FD0CEED13253AD956DD15F0E3A4CEC0A30B70"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/NATIVE-AF-RESOLVING-AUDIT.md",
+      "sha256": "2742F619433AB3502F6C08257B9E30B67C0843BD5E7355AFB50CB3E94107F81F"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/NATIVE-AF-RESOLVING-IMPLEMENTATION.md",
+      "sha256": "5D55815E603A0C27404831AFB1A82F260C43A4F9A78C658BB41882600E3D8F92"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/build-native-af-resolving-snippet.zig.txt",
+      "sha256": "66F59ECC2DD176A892A039F06A535AA4C1A9C7B25CC2821B5FD25FF7CB2E819A"
+    }
+  ],
+  "checks": [
+    "git diff --check only"
+  ],
+  "execution": "No compiler, Zig, formatter, Node, Source generator or native jobs",
+  "review": "Root and independent C-owner required before composition/execution",
+  "scope": "Both native-body resolving-call pending uncatchable reasons; no new module attribution, tags or ABI"
+}
