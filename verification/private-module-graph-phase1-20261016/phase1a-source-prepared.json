@@ -1,0 +1,31 @@
+{
+  "status": "phase1a_private_graph_metadata_source_only_incomplete",
+  "base": "8855fe109f5e4d71a01b80cc8faee9f35d354cd8",
+  "reviewed_spec": "d47b75c66f13a200b64541f045ceb9f1abda721a",
+  "files": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h"
+  ],
+  "c_sha256": "91792343B61C3292C9AAF9B3130BBED2B7C8D9BCDD71F4F6E8F0C3DFAB33CD31",
+  "h_sha256": "820CE369592159DFA71E74F9C38047388B3FD834A075A53665BF54D8F10A09F7",
+  "implemented": [
+    "opaqueheadercapability/callback/accessors/stats",
+    "contextcapabilityrecords/latecontextteardown",
+    "ModuleDefOrigin tombstone",
+    "explicitFD/compiledbytecode/nativeAF/deserializedzero/inheritance metadata",
+    "privateoriginexcludedfromglobalunresolvedsweep"
+  ],
+  "pending": [
+    "CompilePrivateModule declaration not implemented yet",
+    "normalizedimmutableattribute snapshots",
+    "graphlookup+selectorbeforelookup",
+    "exactimportmeta/dynamicjob origin",
+    "scopedfailed-attemptaccounting",
+    "private serializationreject",
+    "native tests"
+  ],
+  "uninvoked": true,
+  "compiler_or_runtime_executed": false,
+  "engine_changed": false,
+  "default_selected": false
+}

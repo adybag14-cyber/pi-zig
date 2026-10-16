@@ -626,6 +626,7 @@ struct JSContext {
     int interrupt_counter;
 
     struct list_head loaded_modules; /* list of JSModuleDef.link */
+    JSPiPrivateModuleGraph *pi_private_module_graphs; /* context lifetime only */
 
     /* if NULL, RegExp compilation is not supported */
     JSValue (*compile_regexp)(JSContext *ctx, JSValueConst pattern,
@@ -913,6 +914,7 @@ typedef struct JSFunctionBytecode {
        retains captures/lexical-this with the existing GC and finalizer. */
     JSPiAsyncFunctionBody *native_async_body;
     uint8_t native_async_flags;
+    JSPiModuleOrigin *pi_module_origin; /* borrowed, context-owned; NULL default */
 } JSFunctionBytecode;
 
 typedef struct JSBoundFunction {
@@ -1051,6 +1053,7 @@ typedef enum {
 struct JSModuleDef {
     JSAtom module_name;
     struct list_head link;
+    JSPiModuleOrigin *pi_module_origin; /* exact definition, never a name guess */
 
     JSReqModuleEntry *req_module_entries;
     int req_module_entries_count;
@@ -1099,6 +1102,25 @@ struct JSModuleDef {
     JSValue eval_exception;
     JSValue meta_obj; /* for import.meta */
     JSValue private_value; /* private value for C modules */
+};
+
+/* Phase1 deliberately follows loaded_modules context ownership. A tagged
+   module JSValue is not an independently marked/freeable graph owner. */
+struct JSPiPrivateModuleGraph {
+    JSPiPrivateModuleGraph *next;
+    JSContext *ctx;
+    JSPiModuleGraphSelectFunc *selector;
+    JSPiModuleGraphLoadFunc *loader;
+    void *opaque;
+    JSPiModuleOrigin *origins;
+};
+
+struct JSPiModuleOrigin {
+    JSPiModuleOrigin *next;
+    JSPiPrivateModuleGraph *graph;
+    JSModuleDef *module; /* tombstoned before definition destruction */
+    char *physical_filename;
+    bool linked, evaluated, failed, quarantined;
 };
 
 typedef struct JSJobEntry {
@@ -2972,6 +2994,7 @@ JSContext *JS_NewContextRaw(JSRuntime *rt)
     ctx->error_stack_trace_limit = js_int32(10);
     ctx->pi_legacy_arguments_poison = JS_UNDEFINED;
     init_list_head(&ctx->loaded_modules);
+    ctx->pi_private_module_graphs = NULL;
     // TODO(bnoordhuis) use getrandom() etc.
     ctx->random_state = rt->pi_deterministic_time
         ? (uint64_t)rt->pi_deterministic_seed + 1
@@ -3096,7 +3119,8 @@ static void js_free_modules(JSContext *ctx, JSFreeModuleEnum flag)
     list_for_each_safe(el, el1, &ctx->loaded_modules) {
         JSModuleDef *m = list_entry(el, JSModuleDef, link);
         if (flag == JS_FREE_MODULE_ALL ||
-            (flag == JS_FREE_MODULE_NOT_RESOLVED && !m->resolved)) {
+            (flag == JS_FREE_MODULE_NOT_RESOLVED && !m->resolved &&
+             !m->pi_module_origin)) {
             js_free_module_def(ctx, m);
         }
     }
@@ -3242,6 +3266,20 @@ void JS_FreeContext(JSContext *ctx)
     js_free_shape_null(ctx->rt, ctx->mapped_arguments_shape);
     js_free_shape_null(ctx->rt, ctx->regexp_shape);
     js_free_shape_null(ctx->rt, ctx->regexp_result_shape);
+
+    /* Definitions, namespaces/autoinit and remaining context values retire
+       before their borrowed origin descriptors. No graph GC is implied. */
+    while (ctx->pi_private_module_graphs) {
+        JSPiPrivateModuleGraph *graph = ctx->pi_private_module_graphs;
+        ctx->pi_private_module_graphs = graph->next;
+        while (graph->origins) {
+            JSPiModuleOrigin *origin = graph->origins;
+            graph->origins = origin->next;
+            js_free(ctx, origin->physical_filename);
+            js_free(ctx, origin);
+        }
+        js_free(ctx, graph);
+    }
 
     list_del(&ctx->link);
     remove_gc_object(&ctx->header);
@@ -22183,6 +22221,7 @@ JSValue JS_PiNewNativeAsyncFunction(JSContext *ctx,
     if (!b)
         return JS_EXCEPTION;
     JS_REF_COUNT(b) = 1;
+    b->pi_module_origin = NULL; /* native AF does not inherit a guest module */
     b->realm = JS_DupContext(ctx);
     b->is_strict_mode = b->has_simple_parameter_list = true;
     b->func_kind = JS_FUNC_ASYNC;
@@ -23173,6 +23212,7 @@ typedef enum JSParseExportEnum {
 
 typedef struct JSFunctionDef {
     JSContext *ctx;
+    JSPiModuleOrigin *pi_module_origin; /* lexical module only */
     struct JSFunctionDef *parent;
     int parent_cpool_idx; /* index in the constant pool of the parent
                              or -1 if none */
@@ -31237,6 +31277,7 @@ static JSModuleDef *js_new_module_def(JSContext *ctx, JSAtom name)
     m->resolving_funcs[1] = JS_UNDEFINED;
     m->private_value = JS_UNDEFINED;
     m->attributes = JS_UNDEFINED;
+    m->pi_module_origin = NULL;
     list_add_tail(&m->link, &ctx->loaded_modules);
     return m;
 }
@@ -31273,6 +31314,15 @@ static void js_mark_module_def(JSRuntime *rt, JSModuleDef *m,
 static void js_free_module_def(JSContext *ctx, JSModuleDef *m)
 {
     int i;
+
+    if (m->pi_module_origin) {
+        JSPiModuleOrigin *origin = m->pi_module_origin;
+        origin->linked |= m->status >= JS_MODULE_STATUS_LINKED;
+        origin->evaluated |= m->status == JS_MODULE_STATUS_EVALUATED;
+        origin->failed |= m->eval_has_exception;
+        origin->module = NULL;
+        m->pi_module_origin = NULL;
+    }
 
     JS_FreeAtom(ctx, m->module_name);
 
@@ -31312,6 +31362,77 @@ static void js_free_module_def(JSContext *ctx, JSModuleDef *m)
     JS_FreeValue(ctx, m->attributes);
     list_del(&m->link);
     js_free(ctx, m);
+}
+
+/* Validate a returned capability by membership before dereferencing it. */
+static bool js_pi_has_private_module_graph(JSContext *ctx,
+                                           const JSPiPrivateModuleGraph *graph)
+{
+    JSPiPrivateModuleGraph *item;
+    for (item = ctx->pi_private_module_graphs; item; item = item->next) {
+        if (item == graph)
+            return true;
+    }
+    return false;
+}
+
+JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph(JSContext *ctx,
+    JSPiModuleGraphSelectFunc *selector, JSPiModuleGraphLoadFunc *loader,
+    void *opaque)
+{
+    JSPiPrivateModuleGraph *graph;
+    if (!selector || !loader) {
+        JS_ThrowTypeError(ctx, "Private module graph callbacks are required");
+        return NULL;
+    }
+    graph = js_mallocz(ctx, sizeof(*graph));
+    if (!graph)
+        return NULL; /* preserve the allocator's exact pending reason */
+    graph->ctx = ctx;
+    graph->selector = selector;
+    graph->loader = loader;
+    graph->opaque = opaque;
+    graph->origins = NULL;
+    graph->next = ctx->pi_private_module_graphs;
+    ctx->pi_private_module_graphs = graph;
+    return graph;
+}
+
+const char *JS_PiModuleOriginFilename(const JSPiModuleOrigin *origin)
+{
+    return origin ? origin->physical_filename : NULL;
+}
+
+const JSValue *JS_PiModuleOriginAttributes(const JSPiModuleOrigin *origin)
+{
+    return origin && origin->module ? &origin->module->attributes : NULL;
+}
+
+JSPiPrivateModuleGraph *JS_PiModuleOriginGraph(const JSPiModuleOrigin *origin)
+{
+    return origin ? origin->graph : NULL;
+}
+
+int JS_PiGetPrivateModuleGraphStats(JSContext *ctx,
+    const JSPiPrivateModuleGraph *graph, JSPiModuleGraphStats *stats)
+{
+    JSPiModuleOrigin *origin;
+    if (!stats || !js_pi_has_private_module_graph(ctx, graph)) {
+        JS_ThrowTypeError(ctx, "Private module graph belongs to another context");
+        return -1;
+    }
+    memset(stats, 0, sizeof(*stats));
+    for (origin = graph->origins; origin; origin = origin->next) {
+        JSModuleDef *m = origin->module;
+        stats->created++;
+        stats->linked += origin->linked ||
+            (m && m->status >= JS_MODULE_STATUS_LINKED);
+        stats->evaluated += origin->evaluated ||
+            (m && m->status == JS_MODULE_STATUS_EVALUATED);
+        stats->failed += origin->failed || (m && m->eval_has_exception);
+        stats->quarantined += origin->quarantined;
+    }
+    return 0;
 }
 
 #ifndef QJS_DISABLE_PARSER
@@ -33896,6 +34017,7 @@ static JSFunctionDef *js_new_function_def(JSContext *ctx,
         return NULL;
 
     fd->ctx = ctx;
+    fd->pi_module_origin = parent ? parent->pi_module_origin : NULL;
     init_list_head(&fd->child_list);
 
     /* insert in parent list */
@@ -37998,6 +38120,8 @@ static JSValue js_create_function(JSContext *ctx, JSFunctionDef *fd)
         goto fail;
     JS_REF_COUNT(b) = 1;
 
+    b->pi_module_origin = fd->pi_module_origin;
+
     b->byte_code_buf = (void *)((uint8_t*)b + byte_code_offset);
     b->byte_code_len = fd->byte_code.size;
     memcpy(b->byte_code_buf, fd->byte_code.buf, fd->byte_code.size);
@@ -40652,6 +40776,7 @@ static JSValue JS_ReadFunctionTag(BCReaderState *s)
     int closure_var_offset, vardefs_offset;
 
     memset(&bc, 0, sizeof(bc));
+    bc.pi_module_origin = NULL; /* never deserialize a private capability */
     //bc.gc_header.mark = 0;
 
     if (bc_get_u16(s, &v16))
