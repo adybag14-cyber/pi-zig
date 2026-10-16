@@ -20,7 +20,7 @@ fn verifySource(source: std.json.Value) !void {
     try std.testing.expectEqualStrings("v24.14.0", try json.asString(try json.required(try json.required(source, "actualNode"), "version")));
     try std.testing.expectEqualStrings("D7ACFF8DC7F0EEE04ECB116A79FBB8331337D9F091A0CEEE775D623D7478D448", try json.asString(try json.required(source, "moduleSha256")));
     try std.testing.expectEqualStrings("84C373D351B8D348EE03A922663DC6C74BC2E5479C29BEB760E4B2AD91248392", try json.asString(try json.required(source, "callerSha256")));
-    try std.testing.expectEqual(@as(i64, 160), (try json.required(source, "cases")).integer);
+    try std.testing.expectEqual(@as(u64, 160), try json.asInteger(try json.required(source, "cases")));
     try std.testing.expectEqual(@as(usize, 160), (try json.required(source, "rows")).array.items.len);
     var digest: [32]u8 = undefined;
     std.crypto.hash.sha2.Sha256.hash(caller, &digest, .{});
