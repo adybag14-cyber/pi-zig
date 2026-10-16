@@ -45,7 +45,22 @@ fn fail(scope: *Scope, job: c.JSValue, reason: c.JSValue) !af.Action {
 fn invokeFactory(scope: *Scope, factory: c.JSValue, load: c.JSValue) !c.JSValue {
     return scope.call(factory, c.pi_js_undefined(), &.{try scope.get(load, "api")});
 }
-fn initialize(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+fn trustedBoundary(engine: *v.em.Engine, err: anyerror, generation: u64) !void {
+    if (err == error.OutOfMemory) return err;
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+        // Mark/rethrow the exact fresh private reason before classification can
+        // turn it into a host error union and allocate a replacement reason.
+        try body.rethrowRecognizedAllocation(engine, reason, generation);
+    };
+}
+fn initialize(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    const generation = engine.native_allocation_generation;
+    return initializeBody(engine, receiver, args, roots, state, completion, input) catch |err| {
+        try trustedBoundary(engine, err, generation);
+        return body.failureSince(engine, err, generation);
+    };
+}
+fn initializeBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const generation = engine.native_allocation_generation;
@@ -57,7 +72,7 @@ fn initialize(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots
         const load = try scope.call(try scope.get(roots[0], "createExtensionAPI"), c.pi_js_undefined(), &.{ value, arg(args, 5), arg(args, 3), arg(args, 4) });
         try scope.put(job, "load", load);
         const factory_result = invokeFactory(&scope, arg(args, 0), load) catch |err| {
-            if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
+            try trustedBoundary(engine, err, generation);
             const reason = try scope.own(@import("native_agent_async.zig").reason(engine, err));
             return fail(&scope, job, reason);
         };
@@ -72,7 +87,7 @@ fn initialize(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots
     }
     // commit is inside Source's try, so a commit failure also discards.
     _ = scope.invoke(try scope.get(job, "load"), "commit", &.{}) catch |err| {
-        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
+        try trustedBoundary(engine, err, generation);
         const reason = try scope.own(@import("native_agent_async.zig").reason(engine, err));
         return fail(&scope, job, reason);
     };
@@ -81,7 +96,14 @@ fn initialize(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots
     _ = try scope.call(try scope.get(roots[0], "time"), c.pi_js_undefined(), &.{ label, try scope.text("extensions") });
     return .{ .returned = c.JS_DupValue(engine.context, value) };
 }
-fn fromFactory(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+fn fromFactory(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    const generation = engine.native_allocation_generation;
+    return fromFactoryBody(engine, receiver, args, roots) catch |err| {
+        try trustedBoundary(engine, err, generation);
+        return err;
+    };
+}
+fn fromFactoryBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const path = if (c.JS_IsUndefined(arg(args, 4))) try scope.text("<inline>") else arg(args, 4);
