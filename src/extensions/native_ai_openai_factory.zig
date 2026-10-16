@@ -92,12 +92,13 @@ fn streamBodyValue(engine: *v.em.Engine, owner: c.JSValue, slot: *c.JSValue, com
         try scope.put(owner, "decoderState", created.owner);
         setup(&scope, owner) catch |err| try failError(&scope, owner, err);
     } else {
+        const stage: Stage = @enumFromInt(try async_body.stage(&scope, owner));
         if (completion == .rejected) {
             var generation: u64 = 0;
-            if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(owner, "generation")) < 0) return v.js.capture(engine);
+            const boundary: [*:0]const u8 = if (stage == .closed) "closeGeneration" else "generation";
+            if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(owner, boundary)) < 0) return v.js.capture(engine);
             try async_body.rethrowRecognizedAllocation(engine, input, generation);
         }
-        const stage: Stage = @enumFromInt(try async_body.stage(&scope, owner));
         if (completion == .rejected) {
             if (stage == .closed) try applyFailure(&scope, owner, try scope.get(owner, "closeReason")) else {
                 if (stage == .next) try scope.put(owner, "iteratorActive", c.JS_NewBool(engine.context, false));
@@ -158,26 +159,34 @@ fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) anyerror!void {
     }
     return fail(scope, owner, reason);
 }
+fn discardCloseError(scope: *Scope, raw_err: anyerror, generation: u64) anyerror!void {
+    if (raw_err == error.OutOfMemory) return raw_err;
+    if (raw_err == error.JavaScriptException) if (scope.engine.captured_exception) |value| {
+        try async_body.rethrowRecognizedAllocation(scope.engine, value, generation);
+        if (c.JS_IsUncatchableError(value)) return raw_err;
+    };
+    if (scope.engine.captured_exception) |value| {
+        scope.engine.captured_exception = null;
+        scope.engine.freeValue(value);
+    }
+}
 fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     if (scope.truthy(try scope.get(owner, "iteratorActive"))) {
         try scope.put(owner, "iteratorActive", c.pi_js_bool(scope.engine.context, 0));
         try scope.put(owner, "closeReason", reason);
         const iterator = try scope.get(owner, "iterator");
+        const get_generation = scope.engine.native_allocation_generation;
         const close = scope.get(iterator, "return") catch |err| {
-            // GetMethod errors replace the original throw; invocation errors
-            // are suppressed by AsyncIteratorClose's original throw.
-            return failError(scope, owner, err);
+            // AsyncIteratorClose preserves the original throw even when
+            // GetMethod fails. Trusted host failures still escape.
+            try discardCloseError(scope, err, get_generation);
+            return applyFailure(scope, owner, reason);
         };
         if (!v.nullish(close)) {
+            const call_generation = scope.engine.native_allocation_generation;
+            try scope.put(owner, "closeGeneration", try scope.own(try scope.engine.checked(c.JS_NewBigUint64(scope.engine.context, call_generation))));
             const result = scope.call(close, iterator, &.{}) catch |err| {
-                if (err == error.OutOfMemory) return err;
-                if (err == error.JavaScriptException) if (scope.engine.captured_exception) |value| {
-                    if (c.JS_IsUncatchableError(value)) return err;
-                };
-                if (scope.engine.captured_exception) |value| {
-                    scope.engine.captured_exception = null;
-                    scope.engine.freeValue(value);
-                }
+                try discardCloseError(scope, err, call_generation);
                 return applyFailure(scope, owner, reason);
             };
             return wait(scope, owner, result, .closed);
@@ -263,6 +272,9 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
     try wait(scope, owner, try scope.call(retry, c.pi_js_undefined(), &.{ request_callback, retry_options }), .ready);
 }
 fn next(scope: *Scope, owner: c.JSValue) !void {
+    // The next call, its Await and result getters precede the loop body.
+    // Their abrupt completions do not perform outer AsyncIteratorClose.
+    try scope.put(owner, "iteratorActive", c.pi_js_bool(scope.engine.context, 0));
     try wait(scope, owner, try scope.call(try scope.get(owner, "nextMethod"), try scope.get(owner, "iterator"), &.{}), .next);
 }
 fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
@@ -302,7 +314,6 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
             if (!c.JS_IsObject(iterator)) return v.js.typeError(scope.engine, "Async iterator is not an object");
             try scope.put(owner, "iterator", iterator);
             try scope.put(owner, "nextMethod", try scope.get(iterator, "next"));
-            try scope.put(owner, "iteratorActive", c.pi_js_bool(scope.engine.context, 1));
             try next(scope, owner);
         },
         .next => {
@@ -313,6 +324,7 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
                 return async_body.resolve(scope, owner, c.pi_js_undefined());
             }
             const frame = try scope.get(value, "value");
+            try scope.put(owner, "iteratorActive", c.pi_js_bool(scope.engine.context, 1));
             try scope.put(owner, "chunk", frame);
             try wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", frame), .chunk);
         },
