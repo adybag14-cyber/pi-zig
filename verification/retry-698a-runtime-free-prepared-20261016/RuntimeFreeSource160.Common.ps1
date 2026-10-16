@@ -28,6 +28,17 @@ function Convert-S160FileUrl([string]$Path){
     if(!$uri.IsFile -or $uri.Host -or $uri.Fragment -or $uri.Query -or $uri.LocalPath -cne $full){throw 'Preload file URL failed exact path round trip'}
     return $uri.AbsoluteUri
 }
+function Get-S160CallerMarkerPolicy([string]$Driver,[string]$Container){
+    $base=[IO.Path]::GetFullPath($Container).TrimEnd('\');$directory=[IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($Driver))
+    $paths=[Collections.Generic.List[string]]::new();$absent=[Collections.Generic.List[string]]::new()
+    while($true){
+        if($directory -ine $base -and !$directory.StartsWith($base+'\',[StringComparison]::OrdinalIgnoreCase)){throw 'Caller marker discovery escaped actual container'}
+        $path=[IO.Path]::Combine($directory,'.pi-zig-workspace.json');$paths.Add($path)
+        if($directory -ieq $base){break}
+        $absent.Add($path);$directory=[IO.Path]::GetDirectoryName($directory)
+    }
+    @{probe_paths=$paths.ToArray();expected_absent=$absent.ToArray();actual_marker=[IO.Path]::Combine($base,'.pi-zig-workspace.json')}
+}
 function Get-S160StartupPolicy {
     @{directories=@('profile','temp','profile\AppData','profile\AppData\Local','profile\AppData\Local\Microsoft','profile\AppData\Local\Microsoft\PowerShell');file='profile\AppData\Local\Microsoft\PowerShell\StartupProfileData-NonInteractive';max_file_bytes=1MB}
 }

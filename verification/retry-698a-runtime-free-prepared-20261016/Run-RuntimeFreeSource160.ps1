@@ -28,6 +28,7 @@ Copy-Item -LiteralPath $RootGrant -Destination (Join-Path $run 'initial-root-gra
 Copy-Item -LiteralPath $resolved.owner -Destination (Join-Path $run 'Invoke-OwnedModelsClassSource-20261016.ps1')
 Write-S160Json (Join-Path $run 'initial-admission.json') @{free_kib=$free;required_free_kib=16MB;source_reserved_kib=2MB;admitted=$true;grant_sha256=Get-S160Sha $RootGrant;observed_utc=$now.ToString('o')}
 $configPath=Join-Path $run 'capture-config.json'
+$markerPolicy=Get-S160CallerMarkerPolicy $resolved.driver $workspace.Container
 $pins=@(
     @{path=(Join-Path $candidate 'src/extensions/fixtures/sdk-summary-latest4dd.expected.json');sha256='820AD75D3D804E3EABBC9E78D2268DC09C92F485AFCDCC4BB55A26EDA656582B'},
     @{path=(Join-Path $candidate 'src/extensions/fixtures/sdk-summary-original45-latest4dd.expected.json');sha256='AED51DB78585E898D9CFBDACD27CFE75B09852D4DA27430CE8C559CEDE30DF8C'},
@@ -43,6 +44,7 @@ $config=[ordered]@{
     own_console_host_path='C:\Windows\system32\conhost.exe';own_console_host_sha256=(Get-S160Sha 'C:\Windows\system32\conhost.exe');own_console_host_command_line='\??\C:\Windows\system32\conhost.exe 0x4';
     classifier_sha256='D7ACFF8DC7F0EEE04ECB116A79FBB8331337D9F091A0CEEE775D623D7478D448';caller_sha256='84C373D351B8D348EE03A922663DC6C74BC2E5479C29BEB760E4B2AD91248392';
     guard=(Join-Path $PSScriptRoot 'guarded-start-fence.mjs');guard_url=(Convert-S160FileUrl (Join-Path $PSScriptRoot 'guarded-start-fence.mjs'));driver=$resolved.driver;capture_control_root=$PSScriptRoot;capture_caller_root=(Split-Path -Parent $resolved.driver);case_ids=(Join-Path $PSScriptRoot 'ordered-source160-case-ids.json');
+    caller_marker_probes=$markerPolicy.probe_paths;caller_marker_absences=$markerPolicy.expected_absent;
     owner_copy=(Join-Path $run 'Invoke-OwnedModelsClassSource-20261016.ps1');owner_invocation=(Join-Path $PSScriptRoot 'Invoke-RuntimeFreeSource160OriginalOwner.ps1');seal_script=(Join-Path $PSScriptRoot 'Invoke-RuntimeFreeSource160Seal.ps1');
     workspace_metadata=(Join-Path $workspace.Container '.pi-zig-workspace.json');relocation_map=$workspace.path_relocations;workspace_resolver=(Join-Path $workspace.main 'tools/workspace/Resolve-PiZigWorkspace.ps1');initial_grant=(Join-Path $run 'initial-root-grant.json');
     launcher_claim=$acceptedClaim.claim_path;launcher_claim_sha256=$acceptedClaim.claim_sha256;launcher_claim_acceptance=$acceptedClaim.acceptance_path;launcher_claim_acceptance_sha256=$acceptedClaim.acceptance_sha256;

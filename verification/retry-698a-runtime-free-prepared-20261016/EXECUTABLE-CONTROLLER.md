@@ -22,6 +22,10 @@ and exact own-console deferral with mandatory final external absence.
 The c072 pre-fence ESM c: protocol negative is preserved. Read
 `PRELOAD-FILE-URL-SUCCESSOR.md`: only --import uses a canonical escaped file URL;
 the CLI entrypoint and filesystem paths stay plain, with matching fence validation.
+The watcher-run marker permission negative and earlier RAM-refusal fallback drift
+are retained. `CALLER-FILESYSTEM-AUDIT.md` lists every explicit Node helper read,
+the five exact ancestor-marker file grants/four absence checks, and immutable
+phase-specific fallback inventories; no container/runtime directory grant is added.
 
 ## Entry points and bounded ownership
 

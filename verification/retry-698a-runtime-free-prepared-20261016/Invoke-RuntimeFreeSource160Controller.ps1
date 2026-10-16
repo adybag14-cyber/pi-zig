@@ -35,6 +35,9 @@ try{
     # The untouched96BE owner inherits only this cleared allowlisted environment.
     $nodeArguments=@('--max-old-space-size=256','--permission')
     foreach($path in @($task.source,$task.capture_control_root,$task.capture_caller_root,$task.workspace_metadata,$task.run)){$nodeArguments+=('--allow-fs-read='+$path)}
+    $markerPolicy=Get-S160CallerMarkerPolicy $task.driver $task.container
+    if((@($task.caller_marker_probes) -join [char]0) -cne ($markerPolicy.probe_paths -join [char]0) -or (@($task.caller_marker_absences) -join [char]0) -cne ($markerPolicy.expected_absent -join [char]0) -or $markerPolicy.actual_marker -cne $task.workspace_metadata){throw 'Exact caller marker probe/absence policy required'}
+    foreach($path in $task.caller_marker_probes){if($path -cne $task.workspace_metadata){$nodeArguments+=('--allow-fs-read='+$path)}}
     if($task.guard_url -cne (Convert-S160FileUrl $task.guard)){throw 'Exact canonical preload file URL required'}
     $nodeArguments+=@(('--allow-fs-write='+$task.run),'--import',$task.guard_url,$task.driver,$task.source,$task.output)
     $nodeCommand=@{Name='source160';Executable=$task.node;WorkingDirectory=$task.run;Arguments=$nodeArguments;TimeoutSeconds=300;SettleSeconds=10}
