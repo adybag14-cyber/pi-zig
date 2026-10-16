@@ -48,6 +48,11 @@ for the original operator391 native call path, C dispatch frames and largest
 fixed frames. This is static artifact measurement, not a dynamic stack-height
 claim. Source128's original counter/error policy remains the runtime authority;
 no C dispatcher or VM guard is changed to force it.
+The PDB tool runs through the existing retained-handle CI owner with a 60-second
+deadline and 10-second termination/pipe settling. Its exception to that owner's
+executable allowlist requires the exact LLVM path and pinned SHA-256. Original
+stdout bytes, stderr, full process identity/terminal receipt and fresh PID
+absence remain preserved before parsing. The B919 build/runtime owner is unchanged.
 
 Preparation has run only source reads, Git operations, hashing, diff checks and
 PowerShell source parsing. No Zig fmt/AST/compile, native runtime, source Node

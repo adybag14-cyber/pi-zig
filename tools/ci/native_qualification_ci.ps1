@@ -40,7 +40,9 @@ function Save-CiOwnedOutput {
 function Invoke-CiOwnedProcess {
  param([string]$Executable,[string[]]$Arguments,[string]$WorkingDirectory,[string]$Receipt,[int]$TimeoutSeconds,[byte[]]$InputBytes=$null)
  $taskExe=(Resolve-Path -LiteralPath $Executable).Path
- if([IO.Path]::GetFileName($taskExe) -notin @('zig','zig.exe','node','node.exe','test','test.exe')){throw 'Unexpected owned executable'}
+ if([IO.Path]::GetFileName($taskExe) -notin @('zig','zig.exe','node','node.exe','test','test.exe')){
+  if($taskExe -cne 'C:\Program Files\LLVM\bin\llvm-pdbutil.exe' -or (Get-FileHash -LiteralPath $taskExe).Hash -cne 'EBEFFD8BC9B9098C14FD087FD4CE7671E755B7570A5326AA625B8F9C01907A04'){throw 'Unexpected owned executable'}
+ }
  $taskStart=[Diagnostics.ProcessStartInfo]::new($taskExe)
  $taskStart.WorkingDirectory=$WorkingDirectory;$taskStart.UseShellExecute=$false;$taskStart.CreateNoWindow=$true
  $taskStart.RedirectStandardOutput=$true;$taskStart.RedirectStandardError=$true;$taskStart.RedirectStandardInput=$true
