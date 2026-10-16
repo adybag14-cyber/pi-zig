@@ -53,6 +53,9 @@ pub const Engine = struct {
     gpa: std.mem.Allocator,
     runtime: *c.JSRuntime,
     native_memory_owner: *anyopaque,
+    // Opt-in extension importer. Context-owned prototype records are private
+    // native storage, never guest module/cache entries or default selection.
+    native_extension_import_context: ?*anyopaque = null,
     context: *c.JSContext,
     options: Options,
     progress_probe: ?*ProgressProbe = null,
@@ -379,8 +382,10 @@ pub const Engine = struct {
         if (self.native_typebox_literal_base) |constructor| self.freeValue(constructor);
         if (self.native_typebox_literal_stack) |getter| self.freeValue(getter);
         self.freeValue(self.commonjs_cache);
+        @import("native_extension_import_adapter.zig").prepareShutdown(self);
         c.JS_FreeContext(self.context);
         c.JS_FreeRuntime(self.runtime);
+        @import("native_extension_import_adapter.zig").finishShutdown(self);
         @import("native_durable_storage.zig").deinit(self);
         c.pi_js_release_memory_owner(self.native_memory_owner);
         if (self.last_error) |message| self.gpa.free(message);
@@ -432,6 +437,20 @@ pub const Engine = struct {
         self.source_loader = loader;
         const normalizer: ?*const c.JSModuleNormalizeFunc = if (loader.normalize != null) normalizeModule else null;
         c.JS_SetModuleLoaderFunc(self.runtime, normalizer, moduleLoader, self);
+    }
+
+    pub fn createExtensionImportSession(self: *Engine, inputs: @import("native_extension_import_adapter.zig").Inputs) !*@import("native_extension_import_adapter.zig").Session {
+        return @import("native_extension_import_adapter.zig").createSession(self, inputs);
+    }
+
+    /// Starts one genuine native async import; the actual caller owns Await.
+    pub fn startExtensionImport(self: *Engine, session: *@import("native_extension_import_adapter.zig").Session, physical_base: []const u8, specifier: []const u8, attributes: c.JSValue) !c.JSValue {
+        return @import("native_extension_import_adapter.zig").start(self, session, physical_base, specifier, attributes);
+    }
+
+    /// Host-only metadata seam for a freshly compiled exact private definition.
+    pub fn initializeExtensionImportMeta(self: *Engine, module: *c.JSModuleDef, physical_filename: []const u8) !void {
+        return self.setImportMeta(module, physical_filename, false);
     }
 
     fn normalizeModule(context: ?*c.JSContext, base: [*c]const u8, name: [*c]const u8, context_data: ?*anyopaque) callconv(.c) [*c]u8 {
