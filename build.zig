@@ -1704,6 +1704,13 @@ pub fn build(b: *std.Build) void {
     subscription_oauth_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-oauth-subscriptions", "Compare genuine Source Copilot Kimi and xAI OAuth public flows and owner roots").dependOn(&b.addRunArtifact(subscription_oauth_tests).step);
     b.step("build-native-ai-oauth-subscriptions", "Compile actual native subscription OAuth facades separately from runtime").dependOn(&subscription_oauth_tests.step);
+    const actual_models_refresh_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_models_refresh_source_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual Models"}, .use_llvm = use_llvm });
+    linkQuickJs(b, actual_models_refresh_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(actual_models_refresh_tests.root_module, sqlite_lib_dir, sqlite_library);
+    actual_models_refresh_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const install_actual_models_refresh_tests = b.addInstallArtifact(actual_models_refresh_tests, .{ .dest_sub_path = if (target.result.os.tag == .windows) "actual-models-refresh-source60-tests.exe" else "actual-models-refresh-source60-tests" });
+    b.step("build-native-actual-models-refresh", "Compile actual ModelsImpl Source60 refresh and publication qualification").dependOn(&install_actual_models_refresh_tests.step);
+    b.step("test-native-actual-models-refresh", "Compare actual ModelsImpl Source60 refresh publication and complete host allocation ownership").dependOn(&b.addRunArtifact(actual_models_refresh_tests).step);
     const ai_http_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_http_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI HTTP"}, .use_llvm = use_llvm });
     const ai_oauth_chatgpt_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_oauth_chatgpt_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI ChatGPT"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_oauth_chatgpt_tests.root_module, quickjs, sqlite_lib_dir);
