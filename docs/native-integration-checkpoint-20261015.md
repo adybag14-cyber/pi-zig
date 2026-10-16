@@ -83,6 +83,38 @@ The later upstream `4dd2b149` delta changes Xiaomi defaults, removes fixed outpu
 
 Root's SDK property-definition, numeric-length conversion and indexed-setter helpers now capture the actual pending VM reason before forwarding failure, preventing stale captured errors from replacing it. Append also releases its owned value when the preceding length operation fails. Independent review checked ownership and existing exception consumers; four focused raw-identity and WeakRef regressions are prepared and unrun. This shared correction does not qualify the complete SDK.
 
+## Contained workspace continuation, 16 October 2026
+
+All retained Pi checkouts, upstream snapshots, evidence and the pinned compiler
+now live under one `pi-zig` container. Root integrates in `main`, agent branches
+use `worktrees`, and references use `upstream`. The workspace consolidation and
+historical relocation journal are published at `2584d41e`. Original proof bytes
+are unchanged. See `docs/workspace-layout.md` for prospective launcher rules.
+
+The original 19cb dependency runtime is missing. Recovery uses a separate staged
+directory and byte-verified retained witnesses; a partial census is not an
+accepted runtime. Acceptance requires the full original 31,064-file inventory,
+hashes, sixteen workspace links and eighty-four explicit absences, followed by
+an independently reviewed receipt bound into each future execution grant.
+
+Official upstream subsequently advanced by one retry-policy commit to
+`698a2d23b86a5045dd54554354a5e0cb7e466795`. The embedded native expression now
+statically equals all fifty-five decoded Source alternatives in exact order.
+The typed helper passed ten standalone Windows Debug unit tests, including new
+gateway separator and quota controls. The full compiler/source seals passed
+and native processes were absent afterward. Its runtime live CIM command line
+was unavailable after the short process exited; this ordinary unit result is
+not a full differential proof. See `docs/upstream-698a-retry.md` and the sealed
+packet for exact evidence. The new Source160 classifier caller is prepared and
+unrun; historical Source273 files remain unchanged.
+
+The reviewed Models publication correction reads `publication.update` once,
+preserves optional-call nullish behavior, and emits the original noncallable
+diagnostic. The existing factory replay initializes real timers. These source
+fixes have not run on the combined Root. The separate Source69 authentication
+harness and complete Models259 gate remain in the diagnostic/fixes branch;
+their presence or qualification is not implied by this partial intake.
+
 ## Remaining integration boundaries
 
 The production SDK factory requires actual default ModelRuntime creation, ModelConfig/store classes, provider factories, authentication, resource-loader lifecycle and ordinary AgentSession collaborators. The existing synthetic builtin seeding path is insufficient for default-path parity. The new factory module remains unselected until these real inputs and their native comparisons are complete.
