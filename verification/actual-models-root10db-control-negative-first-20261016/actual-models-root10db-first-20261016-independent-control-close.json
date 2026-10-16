@@ -1,0 +1,40 @@
+{
+  "candidate": "f0758f9e9e78701b811dd2c8019a1abde1c4af60",
+  "status": "control_negative_closed_before_mutation",
+  "compile_launched": false,
+  "runtime_launched": false,
+  "full_file_posthash": [
+    {
+      "name": "candidate",
+      "count": 9262,
+      "drift": []
+    },
+    {
+      "name": "controls",
+      "count": 11,
+      "drift": []
+    },
+    {
+      "name": "Source",
+      "count": 1970,
+      "drift": []
+    },
+    {
+      "name": "runtime",
+      "count": 31064,
+      "drift": []
+    },
+    {
+      "name": "Node",
+      "count": 1774,
+      "drift": []
+    },
+    {
+      "name": "compiler",
+      "count": 19546,
+      "drift": []
+    }
+  ],
+  "global_native_roots": [],
+  "observed_utc": "2026-10-16T12:09:58.6302549+00:00"
+}

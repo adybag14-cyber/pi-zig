@@ -1,0 +1,15 @@
+{
+  "candidate": "f0758f9e9e78701b811dd2c8019a1abde1c4af60",
+  "root_base": "10dbf9c069f776c02c4deecf593ff00cf7a536f6",
+  "scope": "Actual Models Source18 auth69 refresh60 factory92 CredentialStore20; shared recorder START/resume OOM and rejected allocation identities",
+  "original_observations": 259,
+  "planned_native_tests": 16,
+  "actual_metadata_count": null,
+  "compile": "not_run",
+  "runtime": "not_run",
+  "failure": "Exception calling \".ctor\" with \"1\" argument(s): \"The path is empty. (Parameter 'path')\"",
+  "full_posthash": null,
+  "public_activation": false,
+  "full_pi_qualified": false,
+  "completed_utc": "2026-10-16T12:08:05.8142293+00:00"
+}

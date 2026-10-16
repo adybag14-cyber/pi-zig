@@ -9,7 +9,7 @@ $taskZig='C:/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-windows-0.16.0/zig
 $taskOwner=Join-Path $taskProof 'Invoke-OwnedNativeB919.ps1'
 $taskMetadataHelper=Join-Path $taskPrivate 'tools/ci/native_qualification_ci.ps1'
 $taskSource='C:/Users/adyba/pi-upstream-source-4954d76-20261015'
-$taskRuntime='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012'
+$taskRuntimeRoot='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012'
 $taskCompilerRoot=Split-Path $taskZig
 $taskToolReference=Join-Path $taskEvidence 'durable-latest89-full-inspect-53ae-tool-prehash-20261011.json'
 function Hash-Paths($paths){@($paths|Sort-Object -Unique|ForEach-Object{[ordered]@{path=[IO.Path]::GetFullPath($_);sha256=(Get-FileHash -LiteralPath $_).Hash}})}
@@ -19,8 +19,8 @@ function Candidate-Rows {Hash-Paths @(git -c gc.auto=0 -c maintenance.auto=false
 function Candidate-Drift {param($before) @(Compare-Object @($before|ForEach-Object{"$($_.path):$($_.sha256)"}) @(Candidate-Rows|ForEach-Object{"$($_.path):$($_.sha256)"}))}
 function Native-Roots {@(Get-CimInstance Win32_Process|Where-Object{$_.ExecutablePath-and($_.ExecutablePath.EndsWith('\zig.exe')-or$_.ExecutablePath-like'C:\Users\adyba\pi-zig*\.zig-cache\*\build.exe'-or$_.ExecutablePath-like'C:\Users\adyba\pi-zig*\.zig-cache\*\test.exe')}|Select-Object ProcessId,ParentProcessId,ExecutablePath,CommandLine,@{n='created_utc';e={([DateTimeOffset]$_.CreationDate).UtcDateTime.ToString('o')}})}
 function Admission($phase){[GC]::Collect();[GC]::WaitForPendingFinalizers();[GC]::Collect();$free=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory;$roots=@(Native-Roots);$record=[ordered]@{status=if($free -lt 16MB -or $roots.Count){'admission_failed'}else{'admitted'};candidate=$CandidateHead;root_base='10dbf9c069f776c02c4deecf593ff00cf7a536f6';grant='ROOT-MODELS259-16GiB-SERIAL-20261016';phase=$phase;free_kib=$free;threshold_kib=16MB;max_other_native_roots=0;other_native_roots=$roots;jobs=1;llvm=$true;compile_timeout_seconds=1320;runtime_timeout_seconds=300;test_timeout_seconds=120;host_await_timeout_seconds=10;observed_utc=[DateTimeOffset]::UtcNow.ToString('o')};$record|ConvertTo-Json -Depth 7|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-$phase-admission.json") -Encoding utf8NoBOM;return $record.status -ceq 'admitted'}
-function Absent-Drift {@($taskAbsent|Where-Object{(Test-Path -LiteralPath (Join-Path $taskRuntime $_))-or(Test-Path -LiteralPath (Join-Path $taskSource $_))})}
-function Path-Inventories {@(@{name='source';paths=@(Scoped-Paths $taskSource)},@{name='dependencies';paths=@(Scoped-Paths $taskRuntime)},@{name='node_tools';paths=@([IO.Path]::GetFullPath('C:/Program Files/nodejs/node.exe'))+@(Scoped-Paths 'C:/Program Files/nodejs/node_modules/npm')},@{name='compiler';paths=@(Scoped-Paths $taskCompilerRoot)})}
+function Absent-Drift {@($taskAbsent|Where-Object{(Test-Path -LiteralPath (Join-Path $taskRuntimeRoot $_))-or(Test-Path -LiteralPath (Join-Path $taskSource $_))})}
+function Path-Inventories {@(@{name='source';paths=@(Scoped-Paths $taskSource)},@{name='dependencies';paths=@(Scoped-Paths $taskRuntimeRoot)},@{name='node_tools';paths=@([IO.Path]::GetFullPath('C:/Program Files/nodejs/node.exe'))+@(Scoped-Paths 'C:/Program Files/nodejs/node_modules/npm')},@{name='compiler';paths=@(Scoped-Paths $taskCompilerRoot)})}
 function Inventory-Drift {param($reference,$current) @($reference|ForEach-Object{$old=$_;$now=($current|Where-Object name -ceq $old.name).paths;[ordered]@{name=$old.name;count=$old.paths.Count;drift=@(Compare-Object @($old.paths|Sort-Object) @($now|Sort-Object)).Count}})}
 function Full-Seal($phase){
  $candidate=@(Candidate-Drift $taskBefore);$references=@($taskRefs|ForEach-Object{[ordered]@{name=$_.name;count=$_.rows.Count;drift=@(Drift $_.rows).Count}});$inventories=@(Inventory-Drift $taskInventories (Path-Inventories));$artifacts=@(Drift $taskArtifacts)
