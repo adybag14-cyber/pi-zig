@@ -112,7 +112,7 @@ pub const PlanServer = struct {
                 try request_headers.append(self.gpa, .{ .name = name, .value = value });
             }
             const owned_headers = try request_headers.toOwnedSlice(self.gpa);
-            errdefer {
+            errdefer if (!captured) {
                 for (owned_headers) |header| {
                     self.gpa.free(header.name);
                     self.gpa.free(header.value);

@@ -6,7 +6,7 @@ const js = @import("native_js_values.zig");
 const sdk = @import("native_sdk.zig");
 const temp = @import("native_models_stream_scope.zig");
 const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const asynchronous = @import("native_async_function.zig");
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 pub const builtin_api_ids = [_][]const u8{ "anthropic-messages", "openai-completions", "openai-responses", "openai-codex-responses", "azure-openai-responses", "google-generative-ai", "google-vertex", "mistral-conversations", "bedrock-converse-stream", "pi-messages" };
@@ -88,12 +88,10 @@ pub fn create(engine: *em.Engine, dependencies: Dependencies) !c.JSValue {
             .stream, .streamSimple, .complete, .completeSimple => 3,
             else => 0,
         };
-        const function = if (method == .complete or method == .completeSimple) async_function: {
-            const function = try scope.own(try @import("native_node_function.zig").createArrow(engine, field.name, length, Adapter.call, &.{owner}));
-            const prototype = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-            if (c.JS_SetPrototype(engine.context, function, prototype) < 0) return js.capture(engine);
-            break :async_function function;
-        } else try scope.own(try @import("native_node_function.zig").create(engine, field.name, length, Adapter.call, &.{owner}));
+        const function = if (method == .complete or method == .completeSimple)
+            try scope.own(try asynchronous.create(engine, field.name, length, Adapter.call, &.{owner}))
+        else
+            try scope.own(try @import("native_node_function.zig").create(engine, field.name, length, Adapter.call, &.{owner}));
         try scope.put(exports, field.name, function);
     }
     return c.JS_DupValue(engine.context, exports);
@@ -172,11 +170,7 @@ fn mapProvider(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JS
 }
 fn dispatch(engine: *em.Engine, owner: c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
     if (method == .complete or method == .completeSimple) {
-        const pending = try flow.create(engine, owner);
-        defer engine.freeValue(pending.owner);
-        errdefer engine.freeValue(pending.promise);
-        complete(engine, owner, method == .completeSimple, args, pending.owner) catch |err| try flow.rejectError(engine, pending.owner, err);
-        return pending.promise;
+        return complete(engine, owner, method == .completeSimple, args);
     }
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -213,11 +207,11 @@ fn dispatch(engine: *em.Engine, owner: c.JSValue, method: Method, args: []const 
     }
     return c.pi_js_undefined();
 }
-fn complete(engine: *em.Engine, owner: c.JSValue, simple: bool, args: []const c.JSValue, pending: c.JSValue) !void {
+fn complete(engine: *em.Engine, owner: c.JSValue, simple: bool, args: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const value = try scope.own(try stream(engine, owner, simple, args));
-    try flow.settle(engine, pending, false, try scope.invoke(value, "result", &.{}));
+    return c.JS_DupValue(engine.context, try scope.invoke(value, "result", &.{}));
 }
 fn explicitKey(scope: *Scope, key: c.JSValue) !bool {
     if (!c.JS_IsString(key)) return false;

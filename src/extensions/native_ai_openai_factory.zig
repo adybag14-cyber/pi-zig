@@ -213,6 +213,10 @@ fn mergeHeaders(scope: *Scope, target: c.JSValue, source: c.JSValue) !void {
 fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const result = try scope.object();
     try scope.put(result, "accept", try scope.text("application/json"));
+    // Source disables SDK retries for each outer retryProviderRequest attempt.
+    // Its protocol retry-count header is therefore zero on every SDK request;
+    // caller/model overrides still merge below with ordinary Source precedence.
+    try scope.put(result, "x-stainless-retry-count", try scope.text("0"));
     try scope.put(result, "content-type", try scope.text("application/json"));
     try scope.put(result, "authorization", try scope.concat(try scope.text("Bearer "), try scope.stringify(try scope.get(owner, "apiKey"))));
     const defaults = try scope.object();
