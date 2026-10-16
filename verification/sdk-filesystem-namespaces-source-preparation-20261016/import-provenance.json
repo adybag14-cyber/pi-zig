@@ -1,0 +1,146 @@
+[
+  {
+    "path": "src/extensions/native_auth_file_storage_backend.zig",
+    "origin_head": "1128df3ea1ef2d240c4c21365a56f8882efe1b94",
+    "origin_git_blob": "bb383557db5291bb0a1ea98061b150ad5016a26d",
+    "candidate_git_blob": "bb383557db5291bb0a1ea98061b150ad5016a26d",
+    "exact_origin_bytes": true,
+    "sha256": "264E0FC4CB63F83C252EEC94EB7AC7B8BD7AF0B438A419E9E91D63474061DBD6",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/native_auth_directory_lock.zig",
+    "origin_head": "1128df3ea1ef2d240c4c21365a56f8882efe1b94",
+    "origin_git_blob": "84afceed9eff2057b8d80208bed27fbd08a849b1",
+    "candidate_git_blob": "84afceed9eff2057b8d80208bed27fbd08a849b1",
+    "exact_origin_bytes": true,
+    "sha256": "0802985BA774879706C9E6BC7DD01BDF17B6B1F040B639E28E49AE7C128DADA8",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/native_auth_storage_fs.zig",
+    "origin_head": "1128df3ea1ef2d240c4c21365a56f8882efe1b94",
+    "origin_git_blob": "db4ec2d5f5c468c360e8eb460721bda3a5aad02d",
+    "candidate_git_blob": "2ccd4d8cf35080e22d4d11de7229968d9645ad64",
+    "exact_origin_bytes": false,
+    "sha256": "3AC9886733EFB473A4A25D4B91DCD66598E12406E68F56C8AE7AA72A393F9E00",
+    "scoped_delta": "Fix ordinary string/Buffer/URL path validation using shared native Node boundary; actual ordinary FileAuth class body unchanged"
+  },
+  {
+    "path": "src/extensions/native_sdk_agent_directory.zig",
+    "origin_head": "1128df3ea1ef2d240c4c21365a56f8882efe1b94",
+    "origin_git_blob": "a21a919c59c472dd080064dcd87d07aab94141a6",
+    "candidate_git_blob": "a21a919c59c472dd080064dcd87d07aab94141a6",
+    "exact_origin_bytes": true,
+    "sha256": "8A5810EE87528E63BBDBB82205507FEF93342B1DB2BB1B0A5F0E33ECC6B431B4",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/fixtures/sdk-file-auth-storage-4954.json",
+    "origin_head": "1128df3ea1ef2d240c4c21365a56f8882efe1b94",
+    "origin_git_blob": "4f4d395e8684dbcc45e283d3f51019d955e6884c",
+    "candidate_git_blob": "4f4d395e8684dbcc45e283d3f51019d955e6884c",
+    "exact_origin_bytes": true,
+    "sha256": "32FC19F9835DEFA68E747D4A4AE4C9101C821703738C9D908478800584CD1280",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/fixtures/sdk-file-auth-storage-4954.input.txt",
+    "origin_head": "1128df3ea1ef2d240c4c21365a56f8882efe1b94",
+    "origin_git_blob": "a7099b631aa6de6cdfc75e9f709c058c528318b5",
+    "candidate_git_blob": "a7099b631aa6de6cdfc75e9f709c058c528318b5",
+    "exact_origin_bytes": true,
+    "sha256": "3A32CDF3E68F3C850C7BEE5AD3AEB75342624755DE640659E310A1F3FF11748C",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/native_auth_storage_production.zig",
+    "origin_head": "6489aeab46cf17a9e29177c08b3408bc0e43750b",
+    "origin_git_blob": "8bdd30fc4d15aca1c63e75b0406b1a4743b5bd62",
+    "candidate_git_blob": "8bdd30fc4d15aca1c63e75b0406b1a4743b5bd62",
+    "exact_origin_bytes": true,
+    "sha256": "59A6AF908B1A67AF1BFA25EE9B19F1F3E17ABD82CBDC646C6294F9330618E1E0",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/fixtures/auth-storage-production-4954-cases.input.txt",
+    "origin_head": "6489aeab46cf17a9e29177c08b3408bc0e43750b",
+    "origin_git_blob": "f44d0d3a0801eeb78bd355d85d3bf82639faf851",
+    "candidate_git_blob": "f44d0d3a0801eeb78bd355d85d3bf82639faf851",
+    "exact_origin_bytes": true,
+    "sha256": "37B9335DD93DC49E5C1078A64F23D92973F96CFF90A39FDFD3E58D58B593D47C",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/fixtures/auth-storage-production-4954-source.json",
+    "origin_head": "0774f24203c16f59d2122e862006f0289ba21d6f",
+    "origin_git_blob": "5bf2f7d4513cab87709ea9669330422c21eec8c6",
+    "candidate_git_blob": "5bf2f7d4513cab87709ea9669330422c21eec8c6",
+    "exact_origin_bytes": true,
+    "sha256": "96828F1B1E1F8B275A871352086082E1F38A0B34285D2815E61E0707506E688B",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/native_file_revision.zig",
+    "origin_head": "06f02d4531dddd675682e13f22a823f25b440649",
+    "origin_git_blob": "b34c94cb1aa1f4ff3ff8d334a606bb3e3f7b53f8",
+    "candidate_git_blob": "b34c94cb1aa1f4ff3ff8d334a606bb3e3f7b53f8",
+    "exact_origin_bytes": true,
+    "sha256": "CCF64B823B7ECE32074CC4CDD4322B7395CB0EBCBD255F104FC7C2552ECDE2CE",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/fixtures/file-revision-source-4954.input.txt",
+    "origin_head": "06f02d4531dddd675682e13f22a823f25b440649",
+    "origin_git_blob": "32dcb5e99d6149a52471c31486287023cd99a955",
+    "candidate_git_blob": "32dcb5e99d6149a52471c31486287023cd99a955",
+    "exact_origin_bytes": true,
+    "sha256": "8EB7104DA40207522F4E385FC7F93DF78D1668E01A5F3AEB63AEC0885365ECAE",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/fixtures/file-revision-source-4954.json",
+    "origin_head": "06f02d4531dddd675682e13f22a823f25b440649",
+    "origin_git_blob": "197bb205cb13484e1bba9b8909caa08792439e41",
+    "candidate_git_blob": "197bb205cb13484e1bba9b8909caa08792439e41",
+    "exact_origin_bytes": true,
+    "sha256": "4F8E890DBB214A3F55493E9AB9FD0090F6776DC60CD8B6F9C72182C41BD96F8A",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/native_file_stat.zig",
+    "origin_head": "8beca65dac983c32c8619d2bb3112e5589f3bfb7",
+    "origin_git_blob": "084bbd74f917f9c2643020260bce1977d729ffc9",
+    "candidate_git_blob": "084bbd74f917f9c2643020260bce1977d729ffc9",
+    "exact_origin_bytes": true,
+    "sha256": "690FF99C48D0D30842690A4EF83B1D2008E54970B549BAE4F9707BEE93DB2780",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/node_fs_metadata.zig",
+    "origin_head": "8beca65dac983c32c8619d2bb3112e5589f3bfb7",
+    "origin_git_blob": "cf6b0e80088fa92a26a11de4685881d1a31bf488",
+    "candidate_git_blob": "4f30583a6edbc74a9c23111dfe16e62c3189e0bd",
+    "exact_origin_bytes": false,
+    "sha256": "7C96C4701FB0D45E275EEA3C0DCAAA3E270517AB6B1525D93732B10DA4F8109A",
+    "scoped_delta": "Expose existing path validation and named src/dest labels for concrete shared copy operation"
+  },
+  {
+    "path": "src/extensions/fixtures/node-fs-metadata-24.input.txt",
+    "origin_head": "8beca65dac983c32c8619d2bb3112e5589f3bfb7",
+    "origin_git_blob": "cf227edbddf440ae6ba1608fa18879480d921145",
+    "candidate_git_blob": "cf227edbddf440ae6ba1608fa18879480d921145",
+    "exact_origin_bytes": true,
+    "sha256": "E4E2A717158CCEF322280AE6C4AA94D5AA0AFA1E5FB0BB04A5E0A1208321790E",
+    "scoped_delta": null
+  },
+  {
+    "path": "src/extensions/fixtures/node-fs-metadata-24.json",
+    "origin_head": "8beca65dac983c32c8619d2bb3112e5589f3bfb7",
+    "origin_git_blob": "81dde30106c58bcc47679641afe3947816bad2b9",
+    "candidate_git_blob": "81dde30106c58bcc47679641afe3947816bad2b9",
+    "exact_origin_bytes": true,
+    "sha256": "62B7518C5F9E649C366E8D135C8F536910D75DFC0A8F4AA9A65F81335F5B1E89",
+    "scoped_delta": null
+  }
+]

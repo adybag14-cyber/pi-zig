@@ -1,0 +1,277 @@
+{
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "runtime": "v24.14.0",
+  "inputSha256": "8eb7104da40207522f4e385fc7f93df78d1668e01a5f3aeb63aec0885365ecae",
+  "ownedFixtureRoot": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ",
+  "fixturesRetained": true,
+  "status": "passed",
+  "rows": [
+    {
+      "name": "exact-five-field-order",
+      "value": true
+    },
+    {
+      "name": "repeat-stable",
+      "value": true
+    },
+    {
+      "name": "empty-size-zero",
+      "value": true
+    },
+    {
+      "name": "literal-unicode-space-path",
+      "value": true
+    },
+    {
+      "name": "directory-stat-defined",
+      "value": true
+    },
+    {
+      "name": "missing-undefined",
+      "value": true
+    },
+    {
+      "name": "empty-path-undefined",
+      "value": true
+    },
+    {
+      "name": "embedded-nul-undefined",
+      "value": true
+    },
+    {
+      "name": "number-path-undefined",
+      "value": true
+    },
+    {
+      "name": "undefined-path-undefined",
+      "value": true
+    },
+    {
+      "name": "null-path-undefined",
+      "value": true
+    },
+    {
+      "name": "object-not-coerced",
+      "value": true
+    },
+    {
+      "name": "buffer-path",
+      "value": true
+    },
+    {
+      "name": "uint8array-offset-path",
+      "value": true
+    },
+    {
+      "name": "uint16array-path-undefined",
+      "value": true
+    },
+    {
+      "name": "file-url-path",
+      "value": true
+    },
+    {
+      "name": "non-file-url-undefined",
+      "value": true
+    },
+    {
+      "name": "url-getter-error-suppressed",
+      "value": true
+    },
+    {
+      "name": "user-named-out-of-memory-suppressed",
+      "value": true
+    },
+    {
+      "name": "append-keeps-device-and-inode",
+      "value": true
+    },
+    {
+      "name": "append-size-observed",
+      "value": true
+    },
+    {
+      "name": "same-size-mutation-keeps-identity",
+      "value": true
+    },
+    {
+      "name": "mtime-not-millisecond-rounded",
+      "value": true
+    },
+    {
+      "name": "mtime-beyond-number-integer-precision",
+      "value": true
+    },
+    {
+      "name": "mtime-number-rounding-observation",
+      "value": false
+    },
+    {
+      "name": "ctime-number-rounding-observation",
+      "value": true
+    },
+    {
+      "name": "replacement-identity-changes",
+      "value": true
+    },
+    {
+      "name": "replacement-revision-changes",
+      "value": true
+    },
+    {
+      "name": "cross-directory-identity-distinct",
+      "value": true
+    },
+    {
+      "name": "hard-link-same-revision",
+      "value": true
+    }
+  ],
+  "rawRows": [
+    {
+      "name": "initial",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\left\\entry.json",
+      "revision": "370509649:562949973945107:3:1792106181778827100:1792106181778827100",
+      "fields": [
+        "370509649",
+        "562949973945107",
+        "3",
+        "1792106181778827100",
+        "1792106181778827100"
+      ]
+    },
+    {
+      "name": "empty",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\empty",
+      "revision": "370509649:562949973945109:0:1792106181779826600:1792106181779826600",
+      "fields": [
+        "370509649",
+        "562949973945109",
+        "0",
+        "1792106181779826600",
+        "1792106181779826600"
+      ]
+    },
+    {
+      "name": "literal-spaces",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\ leading é trailing ",
+      "revision": "370509649:562949973945110:14:1792106181780826800:1792106181780826800",
+      "fields": [
+        "370509649",
+        "562949973945110",
+        "14",
+        "1792106181780826800",
+        "1792106181780826800"
+      ]
+    },
+    {
+      "name": "directory",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\left",
+      "revision": "370509649:41939771550411513:0:1792106181778827100:1792106181778827100",
+      "fields": [
+        "370509649",
+        "41939771550411513",
+        "0",
+        "1792106181778827100",
+        "1792106181778827100"
+      ]
+    },
+    {
+      "name": "appended",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\left\\entry.json",
+      "revision": "370509649:562949973945107:12:1792106181782827000:1792106181782827000",
+      "fields": [
+        "370509649",
+        "562949973945107",
+        "12",
+        "1792106181782827000",
+        "1792106181782827000"
+      ]
+    },
+    {
+      "name": "controlled-submillisecond-time",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\left\\entry.json",
+      "revision": "370509649:562949973945107:12:1712345678123456000:1792106181783826900",
+      "fields": [
+        "370509649",
+        "562949973945107",
+        "12",
+        "1712345678123456000",
+        "1792106181783826900"
+      ]
+    },
+    {
+      "name": "replacement",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\left\\entry.json",
+      "revision": "370509649:562949973945111:12:1792106181784827100:1792106181785828500",
+      "fields": [
+        "370509649",
+        "562949973945111",
+        "12",
+        "1792106181784827100",
+        "1792106181785828500"
+      ]
+    },
+    {
+      "name": "cross-directory-same-basename",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\right\\entry.json",
+      "revision": "370509649:562949973945108:3:1792106181779826600:1792106181779826600",
+      "fields": [
+        "370509649",
+        "562949973945108",
+        "3",
+        "1792106181779826600",
+        "1792106181779826600"
+      ]
+    },
+    {
+      "name": "hard-link",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\hard-link",
+      "revision": "370509649:562949973945111:12:1792106181784827100:1792106181785828500",
+      "fields": [
+        "370509649",
+        "562949973945111",
+        "12",
+        "1792106181784827100",
+        "1792106181785828500"
+      ]
+    }
+  ],
+  "symlink": {
+    "status": "host-denied-creation",
+    "code": "EPERM"
+  },
+  "finalFiles": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\left\\entry.json",
+      "revision": "370509649:562949973945111:12:1792106181784827100:1792106181785828500",
+      "sha256": "55a5242e294772794c83946a7616c5b4c9f7bc88c1143276b4dd49cfc9829af6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\right\\entry.json",
+      "revision": "370509649:562949973945108:3:1792106181779826600:1792106181779826600",
+      "sha256": "cba06b5736faf67e54b07b561eae94395e774c517a7d910a54369e1263ccfbd4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\empty",
+      "revision": "370509649:562949973945109:0:1792106181779826600:1792106181779826600",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\ leading é trailing ",
+      "revision": "370509649:562949973945110:14:1792106181780826800:1792106181780826800",
+      "sha256": "1f281cb09ea4db4f5151ad49a118aee8185cfb514d547398654aa107bc51d8cb"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\retained-original",
+      "revision": "370509649:562949973945107:12:1712345678123456000:1792106181784827100",
+      "sha256": "55a5242e294772794c83946a7616c5b4c9f7bc88c1143276b4dd49cfc9829af6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\file-revision-source4954-fixture-KM9dUJ\\hard-link",
+      "revision": "370509649:562949973945111:12:1792106181784827100:1792106181785828500",
+      "sha256": "55a5242e294772794c83946a7616c5b4c9f7bc88c1143276b4dd49cfc9829af6"
+    }
+  ],
+  "count": 30
+}

@@ -1,0 +1,23 @@
+// Caller-only Source control. A Source driver must bind fs/fsp from actual
+// Node24, paths from actual immutable Source4954 utils/paths.ts and retain a
+// fresh owned fixture root. No expected rows or filesystem implementation is
+// supplied here. Native replay must use the genuine native namespaces.
+const {fs,fsp,paths,pathToFileURL}=sdkFilesystemNamespaceAPI,root=sdkFilesystemNamespaceFixtureRoot.replaceAll('\\','/'),rows=[];
+globalThis.sdkFilesystemNamespaceRows=rows;
+function clean(value){return JSON.parse(JSON.stringify(value,(_key,v)=>typeof v==='string'?v.replaceAll('\\','/').replaceAll(root,'<fixture>'):v))}
+function row(name,value){rows.push({case:name,...clean(value)})}
+function error(operation){try{return{value:operation()}}catch(e){return{name:e.name,message:e.message,code:e.code,errno:e.errno,syscall:e.syscall,path:e.path,dest:e.dest,own:Object.getOwnPropertyNames(e).filter(x=>x!=='stack')}}}
+const source=root+'/source.txt',destination=root+'/copied.txt',exclusive=root+'/exclusive.txt';
+fs.writeFileSync(source,'source-content');
+row('actual-promises-module-identity',{same:fsp===fs.promises});
+row('actual-copy-function-shape',{name:fs.copyFileSync.name,length:fs.copyFileSync.length,prototype:Object.hasOwn(fs.copyFileSync,'prototype'),exclusive:fs.constants.COPYFILE_EXCL});
+fs.copyFileSync(source,destination);row('actual-default-copy',{text:fs.readFileSync(destination,'utf8')});
+fs.writeFileSync(destination,'previous');fs.copyFileSync(source,destination);row('actual-default-overwrite',{text:fs.readFileSync(destination,'utf8')});
+fs.copyFileSync(source,exclusive,fs.constants.COPYFILE_EXCL);row('actual-exclusive-create',{text:fs.readFileSync(exclusive,'utf8')});
+row('actual-exclusive-existing-error',{error:error(()=>fs.copyFileSync(source,exclusive,fs.constants.COPYFILE_EXCL)),retained:fs.readFileSync(exclusive,'utf8')});
+row('actual-missing-copy-error',{error:error(()=>fs.copyFileSync(root+'/absent',root+'/absent-copy',fs.constants.COPYFILE_EXCL)),destinationAbsent:!fs.existsSync(root+'/absent-copy')});
+fs.copyFileSync(pathToFileURL(source),pathToFileURL(root+'/url.txt'),fs.constants.COPYFILE_EXCL);row('actual-url-copy',{text:fs.readFileSync(root+'/url.txt','utf8')});
+fs.copyFileSync(Buffer.from(source),Buffer.from(root+'/buffer.txt'),fs.constants.COPYFILE_EXCL);row('actual-buffer-copy',{text:fs.readFileSync(root+'/buffer.txt','utf8')});
+row('actual-promises-read',{text:await fsp.readFile(source,'utf8')});
+row('actual-path-local-prefixes',{values:[' name ','file:///tmp/a','npm:pkg','git:repo','github:org/repo','http://host','https://host','ssh:repo','builtin:read'].map(v=>paths.isLocalPath(v))});
+row('actual-canonical-existing-and-missing',{existing:paths.canonicalizePath(source),missing:paths.canonicalizePath(root+'/missing-path')});
