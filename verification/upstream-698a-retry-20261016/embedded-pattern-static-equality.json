@@ -1,0 +1,8 @@
+{
+  "scope": "Static equality of embedded regexp bytes to decoded upstream string alternatives; no regexp execution",
+  "upstream": "698a2d23b86a5045dd54554354a5e0cb7e466795",
+  "alternatives": 55,
+  "upstream_file_sha256": "D7ACFF8DC7F0EEE04ECB116A79FBB8331337D9F091A0CEEE775D623D7478D448",
+  "embedded_file_sha256": "21DAD18A9386C914C8FC52F7E43D92BEA43EEEAE8494E909279B317608B18247",
+  "equal": true
+}

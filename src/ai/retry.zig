@@ -295,12 +295,55 @@ fn nodeFetchFailure(message: []const u8) bool {
     return false;
 }
 
+fn containsAsciiCaseInsensitive(message: []const u8, literal: []const u8) bool {
+    if (literal.len > message.len) return false;
+    for (0..message.len - literal.len + 1) |start| {
+        if (std.ascii.eqlIgnoreCase(message[start..][0..literal.len], literal)) return true;
+    }
+    return false;
+}
+
+// The upstream regexp's optional dot consumes one non-line-terminator UTF-16
+// code unit. An astral code point occupies two units and cannot be a separator.
+fn gatewaySeparatorEnd(message: []const u8, start: usize) ?usize {
+    if (start == message.len) return null;
+    const length = std.unicode.utf8ByteSequenceLength(message[start]) catch return null;
+    if (length > message.len - start) return null;
+    const point = std.unicode.utf8Decode(message[start..][0..length]) catch return null;
+    if (point > 0xffff or point == 0x0a or point == 0x0d or point == 0x2028 or point == 0x2029) return null;
+    return start + length;
+}
+
+fn gatewayFailure(message: []const u8) bool {
+    inline for (.{ "unable to forward upstream", "upstream_stream_read_error", "stream was interrupted", "http/2 stream failed", "http2 stream failed" }) |literal| {
+        if (containsAsciiCaseInsensitive(message, literal)) return true;
+    }
+    const prefix = "upstream";
+    const middle = "request";
+    const suffix = "failed";
+    if (message.len < prefix.len + middle.len + suffix.len) return false;
+    for (0..message.len - prefix.len + 1) |start| {
+        if (!std.ascii.eqlIgnoreCase(message[start..][0..prefix.len], prefix)) continue;
+        const first = start + prefix.len;
+        for ([_]?usize{ first, gatewaySeparatorEnd(message, first) }) |middle_start_optional| {
+            const middle_start = middle_start_optional orelse continue;
+            if (message.len - middle_start < middle.len or !std.ascii.eqlIgnoreCase(message[middle_start..][0..middle.len], middle)) continue;
+            const second = middle_start + middle.len;
+            for ([_]?usize{ second, gatewaySeparatorEnd(message, second) }) |suffix_start_optional| {
+                const suffix_start = suffix_start_optional orelse continue;
+                if (message.len - suffix_start >= suffix.len and std.ascii.eqlIgnoreCase(message[suffix_start..][0..suffix.len], suffix)) return true;
+            }
+        }
+    }
+    return false;
+}
+
 pub fn isRetryableError(error_message: []const u8) bool {
     if (error_message.len == 0) return false;
     for (non_retryable_patterns) |pattern| {
         if (containsAsciiFold(error_message, pattern)) return false;
     }
-    if (nodeFetchFailure(error_message)) return true;
+    if (nodeFetchFailure(error_message) or gatewayFailure(error_message)) return true;
     for (retryable_patterns) |pattern| {
         if (containsAsciiFold(error_message, pattern)) return true;
     }
@@ -462,6 +505,33 @@ test "upstream 0fb #10996 retries exact node-fetch wording after quota exclusion
         "request to https://example.test/ failed, reason: billing exhausted",
     }) |message| try std.testing.expect(!isRetryableError(message));
     try std.testing.expect(isRetryableError("The service is temporarily unavailable"));
+}
+
+test "upstream 698a gateway failures preserve separator and quota semantics" {
+    for ([_][]const u8{
+        "unknown: Unable to forward upstream stream",
+        "upstream_error: Upstream request failed",
+        "upstream_stream_read_error: Upstream response stream was interrupted",
+        "Upstream HTTP/2 stream failed",
+        "HTTP2 STREAM FAILED",
+        "upstreamrequestfailed",
+        "upstream-request_failed",
+        "upstream\xc2\xa0request\tfailed",
+    }) |message| try std.testing.expect(isRetryableError(message));
+    for ([_][]const u8{
+        "upstream__request failed",
+        "upstream request__failed",
+        "upstream\nrequest failed",
+        "upstream request\rfailed",
+        "upstream\xe2\x80\xa8request failed",
+        "upstream request\xe2\x80\xa9failed",
+        "upstream\xf0\x9f\x98\x80request failed",
+        "HTTP//2 stream failed",
+        "HTTP/2  stream failed",
+        "stream  was interrupted",
+        "upstream request failed: billing exhausted",
+        "upstream_stream_read_error: quota exceeded",
+    }) |message| try std.testing.expect(!isRetryableError(message));
 }
 
 test "retry delay uses saturating exponential backoff" {

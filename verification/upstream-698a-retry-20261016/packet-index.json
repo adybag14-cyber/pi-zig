@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "scope": "Standalone typed retry Debug unit gate only; VM/source differential and whole application unqualified",
+  "upstream": "698a2d23b86a5045dd54554354a5e0cb7e466795",
+  "tests_passed": 10,
+  "compiler_files": 19546,
+  "compiler_drift": 0,
+  "source_control_drift": 0,
+  "native_roots_after": 0,
+  "runtime_live_command_line_available": false,
+  "zip_sha256": "D5871B2851214977D3DEAF4F9C844C589F53EA007EDACF7AD5560EEF6218344C",
+  "entries": [
+    {
+      "entry": "build.zig",
+      "sha256": "841AD657F756FEE712675DA079CE13859033E09E46886DAFEA1505452E5D77EE",
+      "bytes": 414
+    },
+    {
+      "entry": "Run-Retry698a.ps1",
+      "sha256": "16A1B263FA489E6145A568859A12E83646804DE83115303C9A61D7E6339869A2",
+      "bytes": 4931
+    },
+    {
+      "entry": "retry.zig",
+      "sha256": "3373E226BA4A75A37AF4A1D801E290E3922E8719A31960E756EA04109EED3BE0",
+      "bytes": 24237
+    },
+    {
+      "entry": "compiler-before.json",
+      "sha256": "5ECBBBAE9075D1625FE4B81DDE0123AC77B2B4D3E892D8BC7FD726A03FE9F7DF",
+      "bytes": 3179690
+    },
+    {
+      "entry": "compiler-after.json",
+      "sha256": "5ECBBBAE9075D1625FE4B81DDE0123AC77B2B4D3E892D8BC7FD726A03FE9F7DF",
+      "bytes": 3179690
+    },
+    {
+      "entry": "grant.json",
+      "sha256": "CDA184BBC1C4449EDAED6A676F2461C6C454E4EF94E68EC901FFB51721786999",
+      "bytes": 1154
+    },
+    {
+      "entry": "result.json",
+      "sha256": "9E5690B6698648283D8B39458AC084DA528678A3B1B49A9111950D1FC6ADD937",
+      "bytes": 2503
+    },
+    {
+      "entry": "compile.process.json",
+      "sha256": "50D38FED5408A803055F2BFD6B46416DD44A846D74F5D0358E6BA4A0FE3B453F",
+      "bytes": 1516
+    },
+    {
+      "entry": "compile.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "compile.stderr.log",
+      "sha256": "B3CE9B2C9DBBE33B470B3797183B1334BC03D9CD1019741B03517D9634652B55",
+      "bytes": 131
+    },
+    {
+      "entry": "runtime.process.json",
+      "sha256": "19CD0C4B9A1B643AF5554656E62DF01F53177B553FE054AEE15789FFA61233D1",
+      "bytes": 620
+    },
+    {
+      "entry": "runtime.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "runtime.stderr.log",
+      "sha256": "16DABB7C31EFE62717F2017B68731CDFA5A6D9B2A51B6AFA22B7203451DB639A",
+      "bytes": 886
+    },
+    {
+      "entry": "out/bin/test.exe",
+      "sha256": "988CBC71914FDF47FFDF283CAE3EA51C7B327F886E3AF423E581E854562702CD",
+      "bytes": 2137088
+    }
+  ]
+}
