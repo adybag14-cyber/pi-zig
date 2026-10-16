@@ -111,6 +111,7 @@ function Capture-Owned {
         $taskPeakRss=$taskRss
         $taskMetrics=$taskHandles[(Identity-Key $taskIdentity)]
         if($taskMetrics-and(Same-HandleStart $taskIdentity $taskMetrics)){
+            $taskMetrics.Refresh()
             $taskPeakRss=[Math]::Max($taskPeakRss,$taskMetrics.PeakWorkingSet64)
         }
         $taskIdentity.peak_rss_bytes=[Math]::Max($taskIdentity.peak_rss_bytes,$taskPeakRss)
