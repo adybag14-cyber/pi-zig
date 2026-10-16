@@ -424,8 +424,8 @@ pub fn install(engine: *engine_mod.Engine) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, controller_prototype, "abort", c.pi_js_function_magic(engine.context, controllerCall, "abort", 0, 1), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
-    if (c.JS_DefinePropertyValueStr(engine.context, global, "AbortSignal", c.JS_DupValue(engine.context, constructor), c.JS_PROP_C_W_E) < 0 or
-        c.JS_DefinePropertyValueStr(engine.context, global, "AbortController", c.JS_DupValue(engine.context, controller_constructor), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    if (c.JS_DefinePropertyValueStr(engine.context, global, "AbortSignal", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0 or
+        c.JS_DefinePropertyValueStr(engine.context, global, "AbortController", c.JS_DupValue(engine.context, controller_constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     engine.abort_signals_ready = true;
 }
 

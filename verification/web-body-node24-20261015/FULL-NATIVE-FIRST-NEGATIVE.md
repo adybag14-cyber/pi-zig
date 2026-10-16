@@ -1,0 +1,9 @@
+# Complete Body176 first native comparison negative
+
+Exact clean candidate `a05795f357f97db969a88eca3010d2259a60e4e7` compiled under the resumed Root NATIVE1 grant. Owned pinned Zig PID68556 ran UTC2026-10-16T09:38:01.2629179Z to09:40:06.7114910Z, exit0. Matching runtime PID61628 ran UTC09:41:49.5859057Z to09:41:57.4231599Z, exit1. The normal16GiB/-j1/1320compile/300runtime/120test/10host-await bounds were retained.
+
+The complete original input reached its final comparison of all176 rows. Exactly three mismatches remained: global property descriptors for ReadableStream (row3), AbortController (row7), and AbortSignal (row8) were enumerable in the native installation, while the original Node24 descriptors were non-enumerable. Their configurable/writable flags and function names/lengths already matched. The other173 rows matched byte-for-byte through the unchanged JSON projection. Two wrapper tests passed and the complete Body176 test failed; six-GC acceptance lies after that failed assertion and is not claimed as independently passed here.
+
+Both full postchecks reported zero drift across Source1967/runtime31064/Node1774/candidate6197/vendor1316/compiler19546/controls8/authorities18 and the actual368 builtin bodies plus genuine undefined configs entry. All84 original absent dependency paths remained absent. Immutable Body176, Headers189 and Fetch39 expected bytes were unchanged. The prior pause's five owned identities and the resumed build/runtime processes were independently absent after their terminal states.
+
+The byte-for-byte original receipts are retained under `full-native-first-negative`, bound by `full-native-first-negative-ledger.json`. The following narrow native Zig fix changes only those three live global installation flags; original fixture and comparator assertions remain unchanged. This negative is retained before a renewed matching pair. Main/release/activation remain unqualified.

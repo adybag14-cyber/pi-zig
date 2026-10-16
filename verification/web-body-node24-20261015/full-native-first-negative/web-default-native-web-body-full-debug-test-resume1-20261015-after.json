@@ -1,0 +1,51 @@
+[
+  {
+    "manifest": "source5ab-full-manifest-20261015.json",
+    "count": 1967,
+    "drift": 0
+  },
+  {
+    "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "count": 31064,
+    "drift": 0
+  },
+  {
+    "manifest": "root-current8a-npm-tools-before.json",
+    "count": 1774,
+    "drift": 0
+  },
+  {
+    "manifest": "web-default-native-web-body-full-debug-test-resume1-20261015-candidate.json",
+    "count": 6197,
+    "drift": 0
+  },
+  {
+    "manifest": "web-default-native-web-body-full-debug-test-resume1-20261015-vendor.json",
+    "count": 1316,
+    "drift": 0
+  },
+  {
+    "manifest": "web-default-native-web-body-full-debug-test-resume1-20261015-tools.json",
+    "count": 19546,
+    "drift": 0
+  },
+  {
+    "manifest": "web-default-native-web-body-full-debug-test-resume1-20261015-controls.json",
+    "count": 8,
+    "drift": 0
+  },
+  {
+    "manifest": "web-default-native-web-body-full-debug-test-resume1-20261015-authorities.json",
+    "count": 18,
+    "drift": 0
+  },
+  {
+    "manifest": "actual-Body176-Node369-entry-authority",
+    "count": 368,
+    "enumerated_entries": 369,
+    "undefined_configs_entries": 1,
+    "source_cases": 176,
+    "actual_gc_calls": 6,
+    "drift": 0
+  }
+]

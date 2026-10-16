@@ -383,7 +383,7 @@ pub fn install(engine: *js.Engine) !void {
     defer c.JS_FreeAtom(engine.context, tag);
     if (c.JS_DefinePropertyValue(engine.context, prototype, tag, c.JS_DupValue(engine.context, try scope.text("ReadableStream")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
-    try scope.put(global, "ReadableStream", constructor);
+    if (c.JS_DefinePropertyValueStr(engine.context, global, "ReadableStream", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     engine.native_readable_stream_bindings = c.JS_DupValue(engine.context, retained);
 }
 fn invalidPipeArgument(scope: *Scope, name: []const u8, expected: []const u8, value: c.JSValue, instance: bool) anyerror {

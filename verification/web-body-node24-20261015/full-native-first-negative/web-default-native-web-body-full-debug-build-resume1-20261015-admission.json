@@ -1,0 +1,15 @@
+{
+  "minimum_free_bytes": 17179869184,
+  "available_bytes": 18326720512,
+  "existing_native_roots": 1,
+  "existing_native_processes": [
+    {
+      "ProcessId": 53528,
+      "ParentProcessId": 48120,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-ai-google-mistral-fetch-20261015\\.zig-cache\\o\\44ee201e15e0ae11e49a22ae3781c296\\test.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-ai-google-mistral-fetch-20261015\\.zig-cache\\o\\44ee201e15e0ae11e49a22ae3781c296\\test.exe\" --seed=0",
+      "CreationDate": "2026-10-16T10:37:57.839831+01:00"
+    }
+  ],
+  "checked_utc": "2026-10-16T09:38:01.0302241+00:00"
+}
