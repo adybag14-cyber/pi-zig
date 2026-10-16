@@ -1516,11 +1516,12 @@ fn writeResponseInputMessages(
 }
 
 fn writeToolResultOutput(gpa: std.mem.Allocator, w: anytype, msg: ai.ChatMessage, supports_image_input: bool) !void {
+    const has_text = @import("tool_output_text.zig").hasText(msg.content);
     if (msg.hasImages()) {
         if (supports_image_input) {
             try w.writeByte('[');
             var first = true;
-            if (msg.content.len > 0) {
+            if (has_text) {
                 try w.writeAll("{\"type\":\"input_text\",\"text\":");
                 try std.json.Stringify.value(msg.content, .{}, w);
                 try w.writeByte('}');
@@ -1540,14 +1541,14 @@ fn writeToolResultOutput(gpa: std.mem.Allocator, w: anytype, msg: ai.ChatMessage
             try w.writeByte(']');
             return;
         }
-        if (msg.content.len > 0) {
+        if (has_text) {
             try std.json.Stringify.value(msg.content, .{}, w);
         } else {
             try std.json.Stringify.value("(see attached image)", .{}, w);
         }
         return;
     }
-    try std.json.Stringify.value(if (msg.content.len > 0) msg.content else "(no tool output)", .{}, w);
+    try std.json.Stringify.value(if (has_text) msg.content else "(no tool output)", .{}, w);
 }
 
 fn writeReasoningSignature(gpa: std.mem.Allocator, w: anytype, signature: []const u8, first: *bool) !bool {
@@ -2883,6 +2884,32 @@ test "xAI Responses requests encrypted reasoning include even when off" {
     defer gpa.free(body);
     try std.testing.expect(std.mem.indexOf(u8, body, "\"reasoning\":{\"effort\":\"none\"}") != null);
     try std.testing.expect(std.mem.indexOf(u8, body, "\"include\":[\"reasoning.encrypted_content\"]") != null);
+}
+
+test "Responses4dd tool whitespace selects placeholders or images and retains original text" {
+    const gpa = std.testing.allocator;
+    const text = " \t\u{a0}\u{2028}\u{feff}\r\n";
+    for ([_]bool{ false, true }) |image| {
+        for ([_]bool{ false, true }) |vision| {
+            const messages = [_]ai.ChatMessage{.{ .role = "tool", .content = text, .tool_call_id = "fixture-call", .image_b64 = if (image) "AA==" else null, .image_mime = "image/png" }};
+            const body = try buildRequestBody(gpa, "fixture-model", &messages, "[]", .{ .input_image = vision });
+            defer gpa.free(body);
+            var parsed = try std.json.parseFromSlice(std.json.Value, gpa, body, .{});
+            defer parsed.deinit();
+            const output = parsed.value.object.get("input").?.array.items[0].object.get("output").?;
+            if (image and vision) {
+                try std.testing.expectEqual(@as(usize, 1), output.array.items.len);
+                try std.testing.expectEqualStrings("input_image", output.array.items[0].object.get("type").?.string);
+            } else try std.testing.expectEqualStrings(if (image) "(see attached image)" else "(no tool output)", output.string);
+        }
+    }
+    const original = " \t original \u{feff}\n";
+    const messages = [_]ai.ChatMessage{.{ .role = "tool", .content = original, .tool_call_id = "fixture-call" }};
+    const body = try buildRequestBody(gpa, "fixture-model", &messages, "[]", .{});
+    defer gpa.free(body);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, body, .{});
+    defer parsed.deinit();
+    try std.testing.expectEqualStrings(original, parsed.value.object.get("input").?.array.items[0].object.get("output").?.string);
 }
 
 test "Responses tool results preserve images for vision models without user-message conversion" {

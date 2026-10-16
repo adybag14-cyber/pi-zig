@@ -137,10 +137,11 @@ fn toolOutput(scope: *Scope, model: c.JSValue, content: c.JSValue) !c.JSValue {
         if (try v.eq(scope, try scope.get(block, "type"), "text")) try push(scope, texts, try scope.get(block, "text")) else if (try v.eq(scope, try scope.get(block, "type"), "image")) try push(scope, images, block);
     }
     const text = try scope.invoke(texts, "join", &.{try scope.text("\n")});
+    const has_text = try @import("native_image_arithmetic.zig").compare(scope.engine, .greater, try scope.get(try scope.invoke(text, "trim", &.{}), "length"), c.JS_NewInt32(scope.engine.context, 0));
     const has_images = try v.length(scope, images) > 0;
-    if (!has_images or !scope.truthy(try scope.invoke(try scope.get(model, "input"), "includes", &.{try scope.text("image")}))) return v.sanitize(scope, if (scope.truthy(text)) text else try scope.text(if (has_images) "(see attached image)" else "(no tool output)"));
+    if (!has_images or !scope.truthy(try scope.invoke(try scope.get(model, "input"), "includes", &.{try scope.text("image")}))) return v.sanitize(scope, if (has_text) text else try scope.text(if (has_images) "(see attached image)" else "(no tool output)"));
     const output = try scope.array();
-    if (scope.truthy(text)) try push(scope, output, try textPart(scope, text));
+    if (has_text) try push(scope, output, try textPart(scope, text));
     var pics = try v.iterator(scope, images);
     defer pics.deinit();
     errdefer pics.closePreserving();

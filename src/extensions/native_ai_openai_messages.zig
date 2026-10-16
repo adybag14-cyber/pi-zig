@@ -230,9 +230,10 @@ pub fn convert(engine: *v.em.Engine, model: c.JSValue, context: c.JSValue, compa
                 const content = try tool_row.get(tool_message, "content");
                 const text = try tool_row.invoke(try tool_row.invoke(try tool_row.invoke(content, "filter", &.{try function(&tool_row, .text, &.{})}), "map", &.{try function(&tool_row, .text_value, &.{})}), "join", &.{try tool_row.text("\n")});
                 const has_images = tool_row.truthy(try tool_row.invoke(content, "some", &.{try function(&tool_row, .image, &.{})}));
+                const has_text = try @import("native_image_arithmetic.zig").compare(engine, .greater, try tool_row.get(try tool_row.invoke(text, "trim", &.{}), "length"), c.JS_NewInt32(engine.context, 0));
                 const part = try tool_row.object();
                 try tool_row.put(part, "role", try tool_row.text("tool"));
-                try tool_row.put(part, "content", try v.sanitize(&tool_row, if (try v.length(&tool_row, text) > 0) text else try tool_row.text(if (has_images) "(see attached image)" else "(no tool output)")));
+                try tool_row.put(part, "content", try v.sanitize(&tool_row, if (has_text) text else try tool_row.text(if (has_images) "(see attached image)" else "(no tool output)")));
                 try tool_row.put(part, "tool_call_id", try tool_row.get(tool_message, "toolCallId"));
                 if (tool_row.truthy(try tool_row.get(compat, "requiresToolResultName")) and tool_row.truthy(try tool_row.get(tool_message, "toolName"))) try tool_row.put(part, "name", try tool_row.get(tool_message, "toolName"));
                 _ = try tool_row.invoke(result, "push", &.{part});

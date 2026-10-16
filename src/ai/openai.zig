@@ -1605,7 +1605,10 @@ pub fn buildRequestBodyConfigured(
             else
                 try gpa.dupe(u8, msg.thinking.?);
             break :blk replay_content_owned.?;
-        } else msg.content;
+        } else if (std.mem.eql(u8, msg.role, "tool") and !@import("tool_output_text.zig").hasText(msg.content))
+            (if (msg.hasImages()) "(see attached image)" else "(no tool output)")
+        else
+            msg.content;
         const add_cache_to_message = cache_anthropic and
             ((first_instruction_index != null and first_instruction_index.? == msg_index) or
                 (last_cacheable_conversation_index != null and last_cacheable_conversation_index.? == msg_index));
@@ -1867,6 +1870,21 @@ test "LiveSseWriter binds Zig 0.16 backing buffer and releases streamed accumula
     var response = try live.acc.finish();
     defer response.deinit(gpa);
     try std.testing.expectEqualStrings("stream-regression-ok", response.content);
+}
+
+test "OpenAI4dd tool whitespace placeholders preserve original nonempty text and user whitespace" {
+    const gpa = std.testing.allocator;
+    const texts = [_][]const u8{ " \t\r\n\u{a0}\u{2028}\u{feff}", " \t original \u{feff}\n", "\u{85}", "\u{180e}", "\u{200b}" };
+    for (texts, 0..) |text, index| {
+        const messages = [_]ai.ChatMessage{ .{ .role = "user", .content = " \t " }, .{ .role = "tool", .content = text, .tool_call_id = "fixture-call" } };
+        const body = try buildRequestBodyConfigured(gpa, "fixture-model", &messages, "[]", .{});
+        defer gpa.free(body);
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, body, .{});
+        defer parsed.deinit();
+        const rows = parsed.value.object.get("messages").?.array.items;
+        try std.testing.expectEqualStrings(" \t ", rows[0].object.get("content").?.string);
+        try std.testing.expectEqualStrings(if (index == 0) "(no tool output)" else text, rows[1].object.get("content").?.string);
+    }
 }
 
 test "configured OpenAI request applies compat and sampling last" {
