@@ -1,0 +1,45 @@
+{
+  "status": "source_intaken_after_independent_review",
+  "packet_head": "ae0bf0f1ef51a7510f0df03ff6a9cf28f542be29",
+  "reviewed_head": "19db83c5b62d2a1218d6c0e6ff108fe6077d8128",
+  "review_sha256": "F2E785482D8A540F7E243D5A19C2EB68138E80057465992699B6EEB770200DE1",
+  "patch_sha256": "B1D4AE64980C4DFC6E4369A48712CABF0485EEA5D926B6AC0B32548C2C4182F7",
+  "root_base": "65624955eea4da11b1489ff9b1c087ee5f4044bf",
+  "product_files": [
+    {
+      "root_before_sha256": null,
+      "file": "src/extensions/native_ai_openai_client_log.zig",
+      "after_sha256": "4CF7FB1D37C7E420921E16B6446E877A326BFDF7FE388A1F21229111F1D6B4CB"
+    },
+    {
+      "root_before_sha256": null,
+      "file": "src/extensions/native_ai_openai_client_options.zig",
+      "after_sha256": "9ED35977179ADD79C7968C58BF1628017F469019D22BD9311BEB6CB09B19CB2F"
+    },
+    {
+      "root_before_sha256": "557193B7CF9ACEDBD4F159C0932A3658728E05223B503466FAC1B900C819BCD8",
+      "file": "src/extensions/native_ai_openai_factory.zig",
+      "after_sha256": "153C6CF4D661602DC6CFE58EF37FBD029CD8708E00D39FCD3052C70BDDEB5F66"
+    },
+    {
+      "root_before_sha256": null,
+      "file": "src/extensions/native_ai_openai_sdk_headers.zig",
+      "after_sha256": "4228ECB54663C66CAD469EEC1402DD7FCE585F3D4213947D4411816D1019709B"
+    },
+    {
+      "root_before_sha256": null,
+      "file": "src/extensions/native_ai_openai_sdk_readable.zig",
+      "after_sha256": "2FB7ACF78D0242E85797378148831CF73745CE12C9DF9DDED27A8BE266694769"
+    },
+    {
+      "root_before_sha256": null,
+      "file": "src/extensions/native_ai_openai_sdk_request.zig",
+      "after_sha256": "57369A1DCA0984098AF677ABB32B226328EC42F533763AECABA711E76A5C8EF1"
+    }
+  ],
+  "runtime_qualified": false,
+  "optional_build_control_patches_intaken": false,
+  "source52_expected_preserved": true,
+  "c_sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D",
+  "utc": "2026-10-16T21:09:53.5950083+00:00"
+}
