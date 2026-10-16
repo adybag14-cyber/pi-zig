@@ -13,7 +13,7 @@ pub const Error = ts.TransformError || error{
     MissingModuleExportBinding, OverlappingModuleEdit,
 };
 const Range = struct { start: usize, end: usize };
-const Edit = struct { range: Range, text: []u8 };
+const Edit = struct { range: Range, text: []u8, publication: bool = false };
 const Kind = enum { constant, function, class, mutable };
 const Decl = struct { name: []const u8, kind: Kind, name_range: Range, statement: Range, value: ?Range, late_init: bool = false };
 const Export = struct { name: []const u8, local: []const u8, kind: Kind };
@@ -49,8 +49,11 @@ const Plan = struct {
     }
     fn text(p: *Plan, n: c.TSNode) []const u8 { const r = range(n); return p.source[r.start..r.end]; }
     fn edit(p: *Plan, r: Range, text: []const u8) Error!void {
+        return p.editPhase(r, text, false);
+    }
+    fn editPhase(p: *Plan, r: Range, text: []const u8, publication: bool) Error!void {
         const copy = try p.gpa.dupe(u8, text); errdefer p.gpa.free(copy);
-        try p.edits.append(p.gpa, .{ .range = r, .text = copy });
+        try p.edits.append(p.gpa, .{ .range = r, .text = copy, .publication = publication });
     }
     fn erase(p: *Plan, r: Range) Error!void {
         const blank = try p.gpa.dupe(u8, p.source[r.start..r.end]); defer p.gpa.free(blank);
@@ -259,14 +262,14 @@ const Plan = struct {
             if (d.kind == .constant and d.late_init) {
                 for (p.declarations.items) |other| if (other.name_range.start != d.name_range.start and other.statement.start == d.statement.start and other.late_init and p.exported(other.name)) return error.UnsupportedModuleForm;
                 const statement = try std.fmt.allocPrint(p.gpa, ";{s}{s};", .{ prefix.written(), d.name }); defer p.gpa.free(statement);
-                try p.edit(.{ .start = d.statement.end, .end = d.statement.end }, statement);
+                try p.editPhase(.{ .start = d.statement.end, .end = d.statement.end }, statement, true);
             } else if (d.kind == .constant) {
                 const value = d.value orelse return error.UnsupportedModuleForm;
                 try prefix.writer.writeByte('('); try p.edit(.{ .start = value.start, .end = value.start }, prefix.written());
                 try p.edit(.{ .start = value.end, .end = value.end }, ")");
             } else if (d.kind == .class) {
                 const statement = try std.fmt.allocPrint(p.gpa, ";{s}{s};", .{ prefix.written(), d.name }); defer p.gpa.free(statement);
-                try p.edit(.{ .start = d.statement.end, .end = d.statement.end }, statement);
+                try p.editPhase(.{ .start = d.statement.end, .end = d.statement.end }, statement, true);
             }
         }
     }
@@ -306,7 +309,15 @@ const Plan = struct {
             if (src.named) try output.writer.print("var __pi_cjs_import_{d}=", .{index});
             try output.writer.print("{s}({s});", .{ if (p.options.async_mode) "await jitiImport" else "require", src.literal });
         }
-        std.mem.sort(Edit, p.edits.items, {}, struct { fn less(_: void, a: Edit, b: Edit) bool { return a.range.start < b.range.start or (a.range.start == b.range.start and a.range.end < b.range.end); } }.less);
+        std.mem.sort(Edit, p.edits.items, {}, struct {
+            fn less(_: void, a: Edit, b: Edit) bool {
+                if (a.range.start != b.range.start) return a.range.start < b.range.start;
+                if (a.range.end != b.range.end) return a.range.end < b.range.end;
+                // Finish an initializer before publishing its semicolonless
+                // declaration at the same byte offset, independent of visit order.
+                return !a.publication and b.publication;
+            }
+        }.less);
         var offset: usize = 0;
         for (p.edits.items) |e| { if (e.range.start < offset) return error.OverlappingModuleEdit; try output.writer.writeAll(p.source[offset..e.range.start]); try output.writer.writeAll(e.text); offset = e.range.end; }
         try output.writer.writeAll(p.source[offset..]); return output.toOwnedSlice();
@@ -352,7 +363,9 @@ fn originalPreflight(n: c.TSNode, source: []const u8, options: Options, depth: u
         const r = range(n); const text = source[r.start..r.end];
         if (!identifier(text) or std.mem.eql(u8, text, "_default") or std.mem.startsWith(u8, text, "__pi_cjs_")) return error.UnsupportedModuleIdentifier;
     }
-    if (any(n, &.{ "enum_declaration", "internal_module", "import_alias", "export_assignment", "decorator", "using_declaration", "jsx_element", "jsx_self_closing_element", "jsx_fragment" })) return error.UnsupportedModuleRuntimeSyntax;
+    if (options.typescript and any(n, &.{ "interface_declaration", "type_alias_declaration", "ambient_declaration", "type_annotation", "type_arguments", "type_parameters", "implements_clause", "function_signature" })) return erasedIdentifiers(n, source, depth);
+    if (any(n, &.{ "enum_declaration", "internal_module", "import_alias", "export_assignment", "decorator", "using_declaration", "jsx_element", "jsx_self_closing_element", "jsx_fragment", "abstract_class_declaration", "index_signature", "method_signature", "abstract_method_signature" })) return error.UnsupportedModuleRuntimeSyntax;
+    if (is(n, "method_definition") and hasToken(n, "?")) return error.UnsupportedModuleRuntimeSyntax;
     if (any(n, &.{ "type_assertion", "asserts_annotation", "type_predicate_annotation" })) return error.UnsupportedModuleRuntimeSyntax;
     if (!options.typescript and any(n, &.{ "type_annotation", "type_arguments", "type_parameters", "interface_declaration", "type_alias_declaration", "ambient_declaration", "as_expression", "satisfies_expression", "non_null_expression", "optional_parameter", "accessibility_modifier", "override_modifier", "implements_clause", "function_signature", "abstract_method_signature" })) return error.UnsupportedModuleRuntimeSyntax;
     if (!options.typescript and any(n, &.{ "import_statement", "import_specifier", "export_statement", "export_specifier" }) and hasToken(n, "type")) return error.UnsupportedModuleRuntimeSyntax;
@@ -365,6 +378,14 @@ fn originalPreflight(n: c.TSNode, source: []const u8, options: Options, depth: u
     if (any(n, &.{ "required_parameter", "optional_parameter" })) for (0..c.ts_node_named_child_count(n)) |index| if (is(c.ts_node_named_child(n, @intCast(index)), "accessibility_modifier")) return error.UnsupportedModuleRuntimeSyntax;
     if (is(n, "public_field_definition") and (hasToken(n, "declare") or hasToken(n, "abstract"))) return error.UnsupportedModuleRuntimeSyntax;
     for (0..c.ts_node_named_child_count(n)) |index| try originalPreflight(c.ts_node_named_child(n, @intCast(index)), source, options, depth + 1);
+}
+fn erasedIdentifiers(n: c.TSNode, source: []const u8, depth: usize) Error!void {
+    if (depth > 256) return error.TypeScriptNestingLimit;
+    if (any(n, &.{ "identifier", "type_identifier", "statement_identifier" })) {
+        const r = range(n); const text = source[r.start..r.end];
+        if (!identifier(text) or std.mem.eql(u8, text, "_default") or std.mem.startsWith(u8, text, "__pi_cjs_")) return error.UnsupportedModuleIdentifier;
+    }
+    for (0..c.ts_node_named_child_count(n)) |index| try erasedIdentifiers(c.ts_node_named_child(n, @intCast(index)), source, depth + 1);
 }
 fn typeOnlySpecifiers(n: c.TSNode, source: []const u8) bool {
     if (is(n, "import_specifier")) {

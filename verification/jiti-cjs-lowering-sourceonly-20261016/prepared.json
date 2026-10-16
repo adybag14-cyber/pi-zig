@@ -9,8 +9,8 @@
   "products": [
     {
       "file": "src/extensions/native_jiti_cjs_lower.zig",
-      "bytes": 33539,
-      "sha256": "272BBC3F99E3B34AD98FD02651F2FAFA6ED980926B4A3A75A7D0FA3F7BC95C7E",
+      "bytes": 35118,
+      "sha256": "2C86A712ECA2ECD47277B39DCF689C60090E2DC816754C30BD30D5D0958667F0",
       "root_before_exists": false
     },
     {
@@ -129,8 +129,8 @@
       "retained": "Root, never copied from older lane"
     }
   ],
-  "causal_accepted_user_inputs": 17,
-  "unsupported_prepare_inputs": 34,
+  "causal_accepted_user_inputs": 19,
+  "unsupported_prepare_inputs": 39,
   "expected_source_output_exists": false,
   "node_or_zig_or_native_or_ast_or_formatter_or_generator_executed": false,
   "dependency_code_executed": false,
@@ -144,11 +144,11 @@
   "native_allocator_gc_failure_cancellation_qualified": false,
   "packet_files": [
     {
-      "sha256": "C04E0A3B18ECEB10E7720EEF6DE70C5AFE590066A15B40A37529E639AE9A4189",
+      "sha256": "5B349D7F3C602780ACEF286204DB3E6024967C346E4316D9E2D903D87588439B",
       "file": "README.md"
     },
     {
-      "sha256": "248F0872F101DFDCB15BDA4FD9C91EB9DCB1C0CA502F9878EB8F9A0D24BE0546",
+      "sha256": "DE2856F16E151A2AAD67AFC977873DA1B8243538471E4E9FC59BEAAC1C83146A",
       "file": "causal-inputs.json"
     },
     {

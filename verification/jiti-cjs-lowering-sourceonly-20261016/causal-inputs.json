@@ -20,7 +20,9 @@
     {"id":"hoisted-function-alias-header","typescript":true,"async":false,"filename":"hoisted.ts","source":"function ready() { return 'ready'; } export { ready as z, ready as a }; export const middle = 1; export default function inspect() { return Object.keys(exports); }","purpose":"Babel creates one hoisted initialization entry keyed by its first alias, not independent sorted function assignments."},
     {"id":"comment-parenthesized-arrow-alias-name","typescript":true,"async":false,"filename":"comment-arrow.ts","source":"const original = ( /*owned*/ () => 1 ); export { original as alias }; export default function inspect() { return [original.name, exports.alias === original]; }","purpose":"Comment named nodes do not hide an anonymous initializer; post-declaration publication preserves name original, not alias."},
     {"id":"whole-type-import-with-comment-value-reference","typescript":true,"async":false,"filename":"whole-type-comment.ts","source":"import /*owned*/ type { Value } from './must-not-exist.cjs'; export const seen = typeof Value;","purpose":"Whole explicit type import erases via its original AST token even with comments and a value reference; no dependency load or import rewrite is added."},
-    {"id":"async-computed-method-name","typescript":true,"async":true,"filename":"computed.ts","source":"export class Named { [await Promise.resolve('owned')]() { return 42; } } export default function inspect() { return new Named().owned(); }","purpose":"Computed method name evaluates in the surrounding async wrapper; method body has its own function scope."}
+    {"id":"async-computed-method-name","typescript":true,"async":true,"filename":"computed.ts","source":"export class Named { [await Promise.resolve('owned')]() { return 42; } } export default function inspect() { return new Named().owned(); }","purpose":"Computed method name evaluates in the surrounding async wrapper; method body has its own function scope."},
+    {"id":"semicolonless-mixed-initializer-edit-order","typescript":true,"async":false,"filename":"semicolonless.ts","source":"export const first=()=>1, second=2\nexport default function inspect(){return [first.name,second,typeof exports.first]}","purpose":"Initializer closing insertion precedes post-declaration publication at the same source offset, preserving syntax and first's inferred name."},
+    {"id":"erased-interface-signatures-and-index-types","typescript":true,"async":false,"filename":"erased-types.ts","source":"interface Shape { readonly [key: string]: number; method(value: number): boolean; } type Predicate = (value: unknown) => value is string; export default function extension(value: Shape) { return typeof value; }","purpose":"Fully erased interface/type-alias subtrees do not become runtime-position signature failures."}
   ],
   "unsupported_prepare_inputs": [
     {"id":"mutable-export","source":"globalThis.fixtureMarker++; export let value=1; value++;"},
@@ -56,7 +58,12 @@
     {"id":"javascript-optional-method","typescript":false,"source":"export class Named { value?() {} }"},
     {"id":"new-target-explicit-boundary","source":"export default function extension() { return new.target; }"},
     {"id":"angle-type-assertion-unhandled","source":"export const value = <number>1;"},
-    {"id":"predicate-type-erasure-unhandled","source":"export function isValue(value: unknown): value is string { return typeof value === 'string'; }"}
+    {"id":"predicate-type-erasure-unhandled","source":"export function isValue(value: unknown): value is string { return typeof value === 'string'; }"},
+    {"id":"typescript-abstract-runtime-class","typescript":true,"source":"abstract class Base {} export const value=1;"},
+    {"id":"javascript-abstract-runtime-class","typescript":false,"source":"abstract class Base {} export const value=1;"},
+    {"id":"typescript-runtime-class-index-signature","typescript":true,"source":"class Base { [key: string]: number; } export const value=1;"},
+    {"id":"typescript-runtime-class-method-signature","typescript":true,"source":"class Base { method(): number; } export const value=1;"},
+    {"id":"typescript-optional-runtime-method","typescript":true,"source":"export class Named { value?() {} }"}
   ],
   "unexecuted_native_callback_checks": [
     "compile/invoke fresh tagged exact identity and already-uncatchable escape",
