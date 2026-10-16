@@ -14,7 +14,9 @@ const configPath=process.env.PI_RETRY698_CAPTURE_CONFIG;
 if(!configPath)throw Error('Exact owned Source160 config required');
 const config=JSON.parse(fs.readFileSync(configPath));
 const run=fs.realpathSync(config.run);
-const container=fs.realpathSync(config.container);
+// Avoid granting recursive read permission to the container merely to realpath it.
+// The controller already rejects project reparse paths before the child starts.
+const container=resolve(config.container);
 if(!run.startsWith(resolve(container,'evidence')+sep)||process.version!=='v24.14.0')throw Error('Pinned contained Node reference required');
 const runtime=resolve(config.forbidden_runtime),attempts=[],observed=[],resolutions=[];
 const environmentNames=Object.keys(process.env);
@@ -29,6 +31,8 @@ for(const [object,names,prefix] of [[http,['request','get','createServer'],'http
 net.Socket.prototype.connect=deny('net.Socket.connect');
 for(const name of Object.keys(dns))if(name==='lookup'||name==='lookupService'||name.startsWith('resolve'))dns[name]=deny('dns.'+name);
 for(const name of Object.keys(dns.promises))if(name==='lookup'||name==='lookupService'||name.startsWith('resolve'))dns.promises[name]=deny('dns.promises.'+name);
+for(const [Resolver,prefix] of [[dns.Resolver,'dns.Resolver'],[dns.promises.Resolver,'dns.promises.Resolver']])
+ for(const name of Object.getOwnPropertyNames(Resolver.prototype))if(name.startsWith('resolve')||name==='reverse')Resolver.prototype[name]=deny(prefix+'.'+name);
 globalThis.fetch=deny('fetch');globalThis.WebSocket=deny('WebSocket');
 for(const object of [fs,fs.promises])for(const name of ['readFile','readFileSync','open','openSync','realpath','realpathSync','access','accessSync','stat','statSync','lstat','lstatSync'])if(typeof object[name]==='function'){
  const original=object[name];object[name]=function(path,...args){
