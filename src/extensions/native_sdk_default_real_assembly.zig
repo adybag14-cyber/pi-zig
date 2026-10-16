@@ -12,6 +12,9 @@ pub const Inputs = struct {
     compat: c.JSValue,
     agent_core: c.JSValue,
     sdk_namespace: c.JSValue,
+    /// Completed actual ordinary loader constructor from its own assembly.
+    /// Never read the legacy Kind.resource_loader constructor from sdk_namespace.
+    resource_loader: c.JSValue,
     typebox_graph: c.JSValue,
     /// Actual native_ai_provider_factories.create result. It contains all42
     /// ordinary factories, all.ts exports and personalizeOpenRouterCatalog.
@@ -23,6 +26,9 @@ pub const Inputs = struct {
     configuration: c.JSValue,
     process: c.JSValue,
     shell: c.JSValue,
+    /// The one actual resolver namespace created before auth storage. Composer
+    /// and AuthStorage share its cache and exact resolveConfigValue function.
+    config_values: c.JSValue,
     management_http: c.JSValue,
     abort: c.JSValue,
     auth_storage: c.JSValue,
@@ -51,7 +57,9 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     try functions(&scope, imports, inputs.abort, .{ "operationSignal", "raceWithAbortSignal" });
     try functions(&scope, imports, inputs.timing, .{"time"});
     try functions(&scope, imports, inputs.agent_core, .{ "Agent", "setDefaultStreamFn" });
-    try functions(&scope, imports, inputs.sdk_namespace, .{ "SessionManager", "SettingsManager", "DefaultResourceLoader" });
+    try functions(&scope, imports, inputs.sdk_namespace, .{ "SessionManager", "SettingsManager" });
+    if (!c.JS_IsConstructor(engine.context, inputs.resource_loader)) return error.RequiredActualOrdinaryResourceLoader;
+    try scope.put(imports, "DefaultResourceLoader", inputs.resource_loader);
     try functions(&scope, imports, inputs.ai, .{ "createModels", "ModelsError", "lazyStream", "normalizeContext", "clampThinkingLevel", "assertChatModel", "assertImageModel", "assertClassifierModel", "assertClassifierInputSupported", "imageErrorResult", "classifierErrorResult" });
     try scope.put(imports, "streamSimple", try required(&scope, inputs.compat, "streamSimple"));
     try scope.put(imports, "process", inputs.process);
@@ -60,13 +68,8 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     try scope.put(imports, "DefaultAuthStorage", try required(&scope, inputs.auth_storage, "AuthStorage"));
     const text = try scope.own(try @import("native_sdk_model_text_production.zig").create(engine));
     try functions(&scope, imports, text, .{ "stripBom", "stripJsonComments" });
-    const config_values = try scope.object();
-    try @import("native_resolve_config_value_production.zig").install(engine, config_values, .{
-        .process = inputs.process,
-        .getShellConfig = try required(&scope, inputs.shell, "getShellConfig"),
-        .spawnSync = try required(&scope, inputs.shell, "spawnSync"),
-        .execSync = try required(&scope, inputs.shell, "execSync"),
-    });
+    const config_values = inputs.config_values;
+    inline for (.{ "resolveConfigValue", "clearConfigValueCache", "getConfigValueEnvVarNames", "isConfigValueConfigured", "resolveHeadersOrThrow" }) |name| _ = try required(&scope, config_values, name);
     const composer = try scope.object();
     try @import("native_provider_composer_production.zig").install(engine, composer, .{
         .isModelType = try required(&scope, inputs.ai, "isModelType"),
@@ -135,6 +138,9 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     try scope.put(graph, "builtinProviderCatalog", catalog);
     try scope.put(graph, "sharedAi", shared_ai);
     try scope.put(graph, "configValues", config_values);
+    try scope.put(graph, "configuration", inputs.configuration);
+    try scope.put(graph, "shell", inputs.shell);
+    try scope.put(graph, "timing", inputs.timing);
     try scope.put(graph, "composer", composer);
     try scope.put(graph, "virtual", virtual);
     try scope.put(graph, "remote", remote);

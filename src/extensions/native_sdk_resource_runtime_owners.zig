@@ -10,6 +10,7 @@ const Group = @import("native_group.zig").Group;
 const c = em.c;
 const Record = struct { runtime_ref: c.JSValue, scope_ref: c.JSValue };
 const Registry = struct { engine: *em.Engine, records: std.ArrayList(Record) = .empty, seeded: bool = false };
+const registry_module = "pi-native:resource-runtime-owner-registry";
 fn groupFor(engine: *em.Engine) !*Group {
     return @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return error.ActualNativeResourceGroupRequired));
 }
@@ -22,12 +23,38 @@ fn deref(engine: *em.Engine, reference: c.JSValue) !c.JSValue {
     return js.call(engine, engine.native_weak_ref_deref orelse return error.NativeSDKWeakIntrinsicUnavailable, reference, &.{});
 }
 fn registry(engine: *em.Engine) !*Registry {
-    if (engine.native_sdk_resource_runtime_owners) |raw| return @ptrCast(@alignCast(raw));
+    if (engine.native_module_values.get(registry_module)) |owner| return @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return error.InvalidNativeResourceRuntimeRegistry));
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    var class_id: c.JSClassID = 0;
+    _ = c.JS_NewClassID(engine.runtime, &class_id);
+    const definition: c.JSClassDef = .{ .class_name = "Native resource runtime owner registry", .finalizer = finalizeRegistry, .gc_mark = markRegistry };
+    if (c.JS_NewClass(engine.runtime, class_id, &definition) < 0) return error.OutOfMemory;
     const value = try engine.gpa.create(Registry);
+    var attached = false;
+    errdefer if (!attached) engine.gpa.destroy(value);
     value.* = .{ .engine = engine };
-    engine.native_sdk_resource_runtime_owners = value;
-    engine.native_sdk_resource_runtime_owners_deinit = deinit;
+    const owner = try scope.own(try engine.checked(c.JS_NewObjectProtoClass(engine.context, c.JS_NULL, class_id)));
+    _ = c.JS_SetOpaque(owner, value);
+    attached = true;
+    try engine.registerValueModule(registry_module, owner);
     return value;
+}
+fn markRegistry(runtime: ?*c.JSRuntime, owner: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
+    const value: *Registry = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
+    for (value.records.items) |record| {
+        c.JS_MarkValue(runtime, record.runtime_ref, marker);
+        c.JS_MarkValue(runtime, record.scope_ref, marker);
+    }
+}
+fn finalizeRegistry(runtime: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
+    const value: *Registry = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
+    for (value.records.items) |record| {
+        c.JS_FreeValueRT(runtime, record.runtime_ref);
+        c.JS_FreeValueRT(runtime, record.scope_ref);
+    }
+    value.records.deinit(value.engine.gpa);
+    value.engine.gpa.destroy(value);
 }
 fn remove(value: *Registry, index: usize) void {
     const record = value.records.orderedRemove(index);
@@ -105,16 +132,4 @@ pub fn scopeFor(engine: *em.Engine, runtime: c.JSValue) !c.JSValue {
         return value;
     }
     return error.ActualNativeResourceRuntimeOwnerRequired;
-}
-fn deinit(engine: *em.Engine) void {
-    const raw = engine.native_sdk_resource_runtime_owners orelse return;
-    engine.native_sdk_resource_runtime_owners = null;
-    engine.native_sdk_resource_runtime_owners_deinit = null;
-    const value: *Registry = @ptrCast(@alignCast(raw));
-    for (value.records.items) |record| {
-        engine.freeValue(record.runtime_ref);
-        engine.freeValue(record.scope_ref);
-    }
-    value.records.deinit(engine.gpa);
-    engine.gpa.destroy(value);
 }

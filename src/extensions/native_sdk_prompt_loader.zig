@@ -7,8 +7,8 @@ const flow = @import("native_agent_async.zig");
 const spread = @import("native_sdk_resource_spread.zig");
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
-const Import = enum(usize) { exists, stat, readdir, join, resolve, dirname, sep, file };
-pub fn create(engine: *em.Engine) !c.JSValue {
+const Import = enum(usize) { exists, stat, readdir, join, resolve, dirname, sep, file, config_dir };
+pub fn create(engine: *em.Engine, config_dir: c.JSValue) !c.JSValue {
     const io = engine.native_io orelse return error.NativePromptsRequireIo;
     if (!engine.native_module_values.contains("node:fs")) try @import("node_fs.zig").install(engine, io);
     if (!engine.native_module_values.contains("node:path")) try @import("node_path.zig").install(engine, io);
@@ -16,7 +16,7 @@ pub fn create(engine: *em.Engine) !c.JSValue {
     defer scope.deinit();
     const fs = engine.native_module_values.get("node:fs").?;
     const path = engine.native_module_values.get("node:path").?;
-    return @import("native_node_function.zig").create(engine, "loadPromptTemplates", 1, invoke, &.{ try scope.get(fs, "existsSync"), try scope.get(fs, "statSync"), try scope.get(fs, "readdirSync"), try scope.get(path, "join"), try scope.get(path, "resolve"), try scope.get(path, "dirname"), try scope.get(path, "sep"), try scope.own(try @import("native_sdk_prompt_file.zig").create(engine)) });
+    return @import("native_node_function.zig").create(engine, "loadPromptTemplates", 1, invoke, &.{ try scope.get(fs, "existsSync"), try scope.get(fs, "statSync"), try scope.get(fs, "readdirSync"), try scope.get(path, "join"), try scope.get(path, "resolve"), try scope.get(path, "dirname"), try scope.get(path, "sep"), try scope.own(try @import("native_sdk_prompt_file.zig").create(engine)), config_dir });
 }
 fn imported(scope: *Scope, roots: []const c.JSValue, kind: Import, args: []const c.JSValue) !c.JSValue {
     return scope.call(roots[@intFromEnum(kind)], c.pi_js_undefined(), args);
@@ -129,7 +129,7 @@ fn invoke(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []co
     const templates = try scope.array();
     const diagnostics = try scope.array();
     const user = try imported(&scope, roots, .join, &.{ agent, try scope.text("prompts") });
-    const project = try imported(&scope, roots, .resolve, &.{ cwd, try scope.text(".pi"), try scope.text("prompts") });
+    const project = try imported(&scope, roots, .resolve, &.{ cwd, roots[@intFromEnum(Import.config_dir)], try scope.text("prompts") });
     if (scope.truthy(defaults)) {
         try addDirectory(&scope, roots, user, user, project, templates, diagnostics);
         try addDirectory(&scope, roots, project, user, project, templates, diagnostics);

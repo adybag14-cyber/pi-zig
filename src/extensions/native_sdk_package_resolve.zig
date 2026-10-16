@@ -9,7 +9,7 @@ const Scope = temp.Scope;
 const flow = @import("native_agent_async.zig");
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
-pub const Dependencies = struct { apply_autoload_disabled_patterns: c.JSValue, get_override_patterns: c.JSValue, is_enabled_by_overrides: c.JSValue };
+pub const Dependencies = struct { apply_autoload_disabled_patterns: c.JSValue, get_override_patterns: c.JSValue, is_enabled_by_overrides: c.JSValue, config_dir: c.JSValue };
 pub fn install(engine: *em.Engine, prototype: c.JSValue, deps: Dependencies) !void {
     inline for (.{ deps.apply_autoload_disabled_patterns, deps.get_override_patterns, deps.is_enabled_by_overrides }) |function| if (!c.JS_IsFunction(engine.context, function)) return error.NativePackagePatternBodiesRequired;
     if (!engine.native_module_values.contains("node:path")) try @import("node_path.zig").install(engine, engine.native_io orelse return error.NativePackageResolveRequiresIo);
@@ -17,7 +17,7 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue, deps: Dependencies) !vo
     defer scope.deinit();
     const types = try scope.array();
     inline for (.{ "extensions", "skills", "prompts", "themes" }, 0..) |name, index| try scope.index(types, index, try scope.text(name));
-    var roots = [_]c.JSValue{ deps.apply_autoload_disabled_patterns, deps.get_override_patterns, deps.is_enabled_by_overrides, try scope.get(engine.native_module_values.get("node:path").?, "join"), types };
+    var roots = [_]c.JSValue{ deps.apply_autoload_disabled_patterns, deps.get_override_patterns, deps.is_enabled_by_overrides, try scope.get(engine.native_module_values.get("node:path").?, "join"), types, deps.config_dir };
     const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, "resolve", 1, 0, roots.len, &roots)));
     if (c.JS_SetPrototype(engine.context, function, try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)))) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "resolve", c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
@@ -58,7 +58,7 @@ fn initialize(engine: *em.Engine, owner: c.JSValue, manager: c.JSValue, on_missi
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const imports = try scope.array();
-    inline for (0..5) |index| try scope.index(imports, index, roots[index]);
+    inline for (0..6) |index| try scope.index(imports, index, roots[index]);
     try scope.put(owner, "imports", imports);
     const accumulator = try scope.invoke(manager, "createAccumulator", &.{});
     try scope.put(owner, "accumulator", accumulator);
@@ -91,7 +91,7 @@ fn packagesResolved(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, reje
     const global = try scope.get(owner, "global");
     const project = try scope.get(owner, "project");
     const global_base = try scope.get(manager, "agentDir");
-    const project_base = try scope.call(try imported(&scope, owner, 3), c.pi_js_undefined(), &.{ try scope.get(manager, "cwd"), try scope.text(".pi") });
+    const project_base = try scope.call(try imported(&scope, owner, 3), c.pi_js_undefined(), &.{ try scope.get(manager, "cwd"), try imported(&scope, owner, 5) });
     var iterator = try iterable(&scope, try imported(&scope, owner, 4));
     defer iterator.deinit();
     errdefer iterator.closePreserving();

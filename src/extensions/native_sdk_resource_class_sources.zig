@@ -9,8 +9,8 @@ const Scope = temp.Scope;
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 const Method = enum(c_int) { addExtensionConflictDiagnostics, mapSkillPath, applyExtensionSourceInfo, findSourceInfoForPath, getDefaultSourceInfoForPath, dedupePrompts, dedupeThemes, discoverSystemPromptFile, discoverAppendSystemPromptFile, isUnderPath, detectExtensionConflicts };
-const Import = enum(usize) { resolve, join, sep, exists, stat };
-pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
+const Import = enum(usize) { resolve, join, sep, exists, stat, config_dir };
+pub fn install(engine: *em.Engine, prototype: c.JSValue, config_dir: c.JSValue) !void {
     const io = engine.native_io orelse return error.NativeResourceClassRequiresIo;
     if (!engine.native_module_values.contains("node:path")) try @import("node_path.zig").install(engine, io);
     if (!engine.native_module_values.contains("node:fs")) try @import("node_fs.zig").install(engine, io);
@@ -18,7 +18,7 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
     defer scope.deinit();
     const path = engine.native_module_values.get("node:path").?;
     const fs = engine.native_module_values.get("node:fs").?;
-    var roots = [_]c.JSValue{ try scope.get(path, "resolve"), try scope.get(path, "join"), try scope.get(path, "sep"), try scope.get(fs, "existsSync"), try scope.get(fs, "statSync") };
+    var roots = [_]c.JSValue{ try scope.get(path, "resolve"), try scope.get(path, "join"), try scope.get(path, "sep"), try scope.get(fs, "existsSync"), try scope.get(fs, "statSync"), config_dir };
     inline for (std.meta.fields(Method)) |field| {
         const length: c_int = switch (@as(Method, @enumFromInt(field.value))) {
             .mapSkillPath, .applyExtensionSourceInfo, .isUnderPath => 2,
@@ -95,7 +95,7 @@ fn defaultSource(scope: *Scope, roots: [*c]c.JSValue, loader: c.JSValue, path: c
         try scope.index(agent_roots, index, try imported(scope, roots, .join, &.{ try scope.get(loader, "agentDir"), try scope.text(category) }));
     }
     inline for (.{ "skills", "prompts", "themes", "extensions" }, 0..) |category, index| {
-        try scope.index(project_roots, index, try imported(scope, roots, .join, &.{ try scope.get(loader, "cwd"), try scope.text(".pi"), try scope.text(category) }));
+        try scope.index(project_roots, index, try imported(scope, roots, .join, &.{ try scope.get(loader, "cwd"), roots[@intFromEnum(Import.config_dir)], try scope.text(category) }));
     }
     for ([_]c.JSValue{ agent_roots, project_roots }, 0..) |values, scope_index| {
         var it = try iterator(scope, values);
@@ -172,7 +172,7 @@ fn find(scope: *Scope, roots: [*c]c.JSValue, loader: c.JSValue, path: c.JSValue,
     return c.pi_js_undefined();
 }
 fn discover(scope: *Scope, roots: [*c]c.JSValue, loader: c.JSValue, filename: []const u8) !c.JSValue {
-    const project = try imported(scope, roots, .join, &.{ try scope.get(loader, "cwd"), try scope.text(".pi"), try scope.text(filename) });
+    const project = try imported(scope, roots, .join, &.{ try scope.get(loader, "cwd"), roots[@intFromEnum(Import.config_dir)], try scope.text(filename) });
     const settings = try scope.get(loader, "settingsManager");
     if (scope.truthy(try scope.invoke(settings, "isProjectTrusted", &.{})) and scope.truthy(try imported(scope, roots, .exists, &.{project}))) return project;
     const global = try imported(scope, roots, .join, &.{ try scope.get(loader, "agentDir"), try scope.text(filename) });

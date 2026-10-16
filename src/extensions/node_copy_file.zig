@@ -22,7 +22,14 @@ fn failure(engine: *js.Engine, err: anyerror, source: []const u8, destination: [
     if (err == error.OutOfMemory) return err;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const code: []const u8 = switch (err) { error.PathAlreadyExists => "EEXIST", error.FileNotFound => "ENOENT", error.AccessDenied, error.PermissionDenied => "EACCES", error.IsDir => "EISDIR", error.NotDir => "ENOTDIR", else => "EIO" };
+    const code: []const u8 = switch (err) {
+        error.PathAlreadyExists => "EEXIST",
+        error.FileNotFound => "ENOENT",
+        error.AccessDenied, error.PermissionDenied => "EACCES",
+        error.IsDir => "EISDIR",
+        error.NotDir => "ENOTDIR",
+        else => "EIO",
+    };
     const description: []const u8 = if (std.mem.eql(u8, code, "EEXIST")) "file already exists" else if (std.mem.eql(u8, code, "ENOENT")) "no such file or directory" else if (std.mem.eql(u8, code, "EACCES")) "permission denied" else if (std.mem.eql(u8, code, "EISDIR")) "illegal operation on a directory" else if (std.mem.eql(u8, code, "ENOTDIR")) "not a directory" else "i/o error";
     const message = try std.fmt.allocPrint(engine.gpa, "{s}: {s}, copyfile '{s}' -> '{s}'", .{ code, description, source, destination });
     defer engine.gpa.free(message);
@@ -54,7 +61,9 @@ fn copy(engine: *js.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.
 }
 fn copyKernel(engine: *js.Engine, source: []const u8, destination: []const u8, exclusive: bool) !void {
     if (builtin.os.tag == .windows) {
-        const Native = struct { extern "kernel32" fn CopyFileW([*:0]const u16, [*:0]const u16, i32) callconv(.winapi) i32; };
+        const Native = struct {
+            extern "kernel32" fn CopyFileW([*:0]const u16, [*:0]const u16, i32) callconv(.winapi) i32;
+        };
         const source_path = try kernel.windowsNamespacedPath(engine.gpa, source);
         defer engine.gpa.free(source_path);
         const destination_path = try kernel.windowsNamespacedPath(engine.gpa, destination);
@@ -63,7 +72,12 @@ fn copyKernel(engine: *js.Engine, source: []const u8, destination: []const u8, e
         defer engine.gpa.free(source_wide);
         const destination_wide = try std.unicode.wtf8ToWtf16LeAllocZ(engine.gpa, destination_path);
         defer engine.gpa.free(destination_wide);
-        if (Native.CopyFileW(source_wide, destination_wide, @intFromBool(exclusive)) == 0) return switch (std.os.windows.GetLastError()) { .FILE_EXISTS, .ALREADY_EXISTS => error.PathAlreadyExists, .FILE_NOT_FOUND, .PATH_NOT_FOUND => error.FileNotFound, .ACCESS_DENIED => error.AccessDenied, else => error.NativeCopyFileFailed };
+        if (Native.CopyFileW(source_wide, destination_wide, @intFromBool(exclusive)) == 0) return switch (std.os.windows.GetLastError()) {
+            .FILE_EXISTS, .ALREADY_EXISTS => error.PathAlreadyExists,
+            .FILE_NOT_FOUND, .PATH_NOT_FOUND => error.FileNotFound,
+            .ACCESS_DENIED => error.AccessDenied,
+            else => error.NativeCopyFileFailed,
+        };
         return;
     }
     const io = engine.native_io orelse return error.NativeIoUnavailable;
@@ -73,7 +87,10 @@ fn copyKernel(engine: *js.Engine, source: []const u8, destination: []const u8, e
     if (info.kind == .directory) return error.IsDir;
     if (!exclusive) {
         const source_stat = try kernel.read(engine.gpa, source);
-        const destination_stat: ?kernel.Stat = kernel.read(engine.gpa, destination) catch |err| switch (err) { error.FileNotFound => null, else => return err };
+        const destination_stat: ?kernel.Stat = kernel.read(engine.gpa, destination) catch |err| switch (err) {
+            error.FileNotFound => null,
+            else => return err,
+        };
         if (destination_stat) |target| if (source_stat.dev == target.dev and source_stat.ino == target.ino) return;
     }
     const output = try std.Io.Dir.cwd().createFile(io, destination, .{ .exclusive = exclusive, .truncate = true, .permissions = info.permissions });
@@ -81,6 +98,9 @@ fn copyKernel(engine: *js.Engine, source: []const u8, destination: []const u8, e
     var reader: std.Io.File.Reader = .init(input, io, &.{});
     var storage: [4096]u8 = undefined;
     var writer = output.writer(io, &storage);
-    _ = writer.interface.sendFileAll(&reader, .unlimited) catch |err| switch (err) { error.ReadFailed => return reader.err.?, error.WriteFailed => return writer.err.? };
+    _ = writer.interface.sendFileAll(&reader, .unlimited) catch |err| switch (err) {
+        error.ReadFailed => return reader.err.?,
+        error.WriteFailed => return writer.err.?,
+    };
     try writer.flush();
 }

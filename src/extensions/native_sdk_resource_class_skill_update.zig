@@ -5,10 +5,11 @@ const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
 const c = em.c;
-pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
+pub fn install(engine: *em.Engine, prototype: c.JSValue, load_skills: c.JSValue) !void {
+    if (!c.JS_IsFunction(engine.context, load_skills)) return error.RequiredActualSkillLoader;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    var roots = [_]c.JSValue{try scope.own(try @import("native_sdk_skill_loader.zig").create(engine))};
+    var roots = [_]c.JSValue{load_skills};
     const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, "updateSkillsFromPaths", 2, 0, roots.len, &roots));
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "updateSkillsFromPaths", function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }

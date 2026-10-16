@@ -9,8 +9,8 @@ const flow = @import("native_agent_async.zig");
 const spread = @import("native_sdk_resource_spread.zig");
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
-const Import = enum(usize) { exists, stat, canonical, join, resolve, sep, file, agent_dir };
-pub fn create(engine: *em.Engine) !c.JSValue {
+const Import = enum(usize) { exists, stat, canonical, join, resolve, sep, file, agent_dir, config_dir };
+pub fn create(engine: *em.Engine, config_dir: c.JSValue, get_agent_dir: c.JSValue) !c.JSValue {
     const io = engine.native_io orelse return error.NativeSkillsRequireIo;
     if (!engine.native_module_values.contains("node:fs")) try @import("node_fs.zig").install(engine, io);
     if (!engine.native_module_values.contains("node:path")) try @import("node_path.zig").install(engine, io);
@@ -19,7 +19,8 @@ pub fn create(engine: *em.Engine) !c.JSValue {
     const fs = engine.native_module_values.get("node:fs").?;
     const path = engine.native_module_values.get("node:path").?;
     const file = try scope.own(try @import("native_sdk_skill_file.zig").create(engine));
-    return @import("native_node_function.zig").create(engine, "loadSkills", 1, invoke, &.{ try scope.get(fs, "existsSync"), try scope.get(fs, "statSync"), try scope.get(fs, "realpathSync"), try scope.get(path, "join"), try scope.get(path, "resolve"), try scope.get(path, "sep"), file, try scope.own(try @import("native_sdk_agent_directory.zig").create(engine, .{})) });
+    if (!c.JS_IsFunction(engine.context, get_agent_dir)) return error.RequiredActualSkillConfiguration;
+    return @import("native_node_function.zig").create(engine, "loadSkills", 1, invoke, &.{ try scope.get(fs, "existsSync"), try scope.get(fs, "statSync"), try scope.get(fs, "realpathSync"), try scope.get(path, "join"), try scope.get(path, "resolve"), try scope.get(path, "sep"), file, get_agent_dir, config_dir });
 }
 fn imported(scope: *Scope, roots: []const c.JSValue, kind: Import, args: []const c.JSValue) !c.JSValue {
     return scope.call(roots[@intFromEnum(kind)], c.pi_js_undefined(), args);
@@ -160,11 +161,11 @@ fn invoke(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []co
     if (scope.truthy(defaults)) {
         const global = try imported(&scope, roots, .join, &.{ resolved_agent, try scope.text("skills") });
         try add(&scope, roots, try directory(&scope, roots, global, try scope.text("user")), map, real_paths, diagnostics, collisions);
-        const project = try imported(&scope, roots, .resolve, &.{ cwd, try scope.text(".pi"), try scope.text("skills") });
+        const project = try imported(&scope, roots, .resolve, &.{ cwd, roots[@intFromEnum(Import.config_dir)], try scope.text("skills") });
         try add(&scope, roots, try directory(&scope, roots, project, try scope.text("project")), map, real_paths, diagnostics, collisions);
     }
     const user_root = try imported(&scope, roots, .join, &.{ resolved_agent, try scope.text("skills") });
-    const project_root = try imported(&scope, roots, .resolve, &.{ cwd, try scope.text(".pi"), try scope.text("skills") });
+    const project_root = try imported(&scope, roots, .resolve, &.{ cwd, roots[@intFromEnum(Import.config_dir)], try scope.text("skills") });
     var it = try iterator(&scope, paths);
     defer it.deinit();
     errdefer it.closePreserving();

@@ -9,8 +9,8 @@ const theme = @import("native_theme.zig");
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 const Method = enum(c_int) { loadThemes, loadThemesFromDir, loadThemeFromFile };
-const Import = enum(usize) { join, exists, stat, readdir };
-pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
+const Import = enum(usize) { join, exists, stat, readdir, config_dir };
+pub fn install(engine: *em.Engine, prototype: c.JSValue, config_dir: c.JSValue) !void {
     const io = engine.native_io orelse return error.NativeResourceThemesRequireIo;
     if (!engine.native_module_values.contains("node:path")) try @import("node_path.zig").install(engine, io);
     if (!engine.native_module_values.contains("node:fs")) try @import("node_fs.zig").install(engine, io);
@@ -18,7 +18,7 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
     defer scope.deinit();
     const path = engine.native_module_values.get("node:path").?;
     const fs = engine.native_module_values.get("node:fs").?;
-    var roots = [_]c.JSValue{ try scope.get(path, "join"), try scope.get(fs, "existsSync"), try scope.get(fs, "statSync"), try scope.get(fs, "readdirSync") };
+    var roots = [_]c.JSValue{ try scope.get(path, "join"), try scope.get(fs, "existsSync"), try scope.get(fs, "statSync"), try scope.get(fs, "readdirSync"), config_dir };
     inline for (std.meta.fields(Method)) |field| {
         const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, field.name, if (field.value == @intFromEnum(Method.loadThemes)) 3 else 4, field.value, roots.len, &roots));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
@@ -125,7 +125,7 @@ fn load(scope: *Scope, roots: [*c]c.JSValue, loader: c.JSValue, paths: c.JSValue
     if (scope.truthy(defaults)) {
         const dirs = try scope.array();
         try scope.index(dirs, 0, try imported(scope, roots, .join, &.{ try scope.get(loader, "agentDir"), try scope.text("themes") }));
-        try scope.index(dirs, 1, try imported(scope, roots, .join, &.{ try scope.get(loader, "cwd"), try scope.text(".pi"), try scope.text("themes") }));
+        try scope.index(dirs, 1, try imported(scope, roots, .join, &.{ try scope.get(loader, "cwd"), roots[@intFromEnum(Import.config_dir)], try scope.text("themes") }));
         var it = try iterator(scope, dirs);
         defer it.deinit();
         errdefer it.closePreserving();

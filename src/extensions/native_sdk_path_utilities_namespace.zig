@@ -23,7 +23,10 @@ pub fn create(engine: *em.Engine, actual_filesystem: c.JSValue) !c.JSValue {
                 return dispatch(host, args, roots, method);
             }
         };
-        const length: c_int = switch (method) { .getCwdRelativePath, .formatPathRelativeToCwdOrAbsolute => 2, else => 1 };
+        const length: c_int = switch (method) {
+            .getCwdRelativePath, .formatPathRelativeToCwdOrAbsolute => 2,
+            else => 1,
+        };
         try scope.put(result, field.name, try scope.own(try functions.create(engine, field.name, length, Adapter.call, &.{canonical})));
     }
     return c.JS_DupValue(engine.context, result);
