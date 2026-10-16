@@ -10,16 +10,7 @@ fn gc(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv
     return c.pi_js_undefined();
 }
 pub fn graph(e: *em.Engine) !c.JSValue {
-    var s: Scope = .{ .engine = e };
-    defer s.deinit();
-    const shared = try s.own(try @import("extensions/native_typebox_memory.zig").create(e));
-    const types = try s.object();
-    try s.put(shared, "Type", types);
-    try @import("extensions/native_typebox_partial.zig").install(e, types, shared);
-    try @import("extensions/native_typebox_operators_production.zig").install(e, types, shared);
-    const compiler = try s.own(try @import("extensions/native_typebox_compile_production.zig").create(e, shared));
-    try s.put(shared, "Compiler", compiler);
-    return c.JS_DupValue(e.context, shared);
+    return @import("extensions/native_typebox_production_graph.zig").create(e);
 }
 pub fn replay(e: *em.Engine, actual: c.JSValue, source: c.JSValue) !void {
     var s: Scope = .{ .engine = e };
@@ -45,4 +36,15 @@ test "actual TypeBox Compile Validator matches complete genuine Source80" {
     const actual = try s.own(try graph(e));
     try replay(e, actual, source);
     std.debug.print("TYPEBOX_COMPILE_SOURCE_PARITY cases=80 actual_shared_graph=true native_ir=true full_HOST_GPA=false C_malloc_exhaustive=false\n", .{});
+}
+test "actual provider schemas Partial and Memory match genuine Source52 on shared compiler graph" {
+    const e = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer e.deinit();
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const bytes = @embedFile("extensions/fixtures/ai-model-schemas-partial-4954.json");
+    const source = try s.own(try e.checked(c.JS_ParseJSON(e.context, bytes.ptr, bytes.len, "genuine-typebox-schema-source52.json")));
+    const actual = try s.own(try graph(e));
+    try @import("native_ai_model_schemas_partial_test.zig").replay(e, try s.get(actual, "Type"), actual, try s.get(actual, "Schemas"), try s.get(actual, "Compiler"), source);
+    std.debug.print("TYPEBOX_PROVIDER_SCHEMA_SOURCE_PARITY cases=52 actual_shared_graph=true full_HOST_GPA=false C_malloc_exhaustive=false\n", .{});
 }
