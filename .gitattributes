@@ -155,3 +155,4 @@ verification/ai-anthropic5ab-20261015/native-b608-qualified/*.ps1 whitespace=bla
 verification/native-url-constructor-node24-qualified-20261016/*.log whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-url-constructor-node24-qualified-20261016/*.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-url-constructor-node24-source40-20261015/Run-URLConstructorNode24Source-20261015.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/sdk-default-real-assembly-4954-20261016/source53-proof/Run-SdkModelDependenciesSource-20261016.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
