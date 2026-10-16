@@ -1,0 +1,43 @@
+{
+  "status": "actual_transactional_extension_api_initializer_source_only",
+  "base": "4ed83679c266839af540b3a6d47372da1aa743da",
+  "source_module": "packages/coding-agent/src/core/extensions/loader.ts",
+  "source_sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+  "latest0fb_module_identical": true,
+  "source_info_sha256": "52648AF6E9BB29858ECE4EAECCEDD960C5DE8A0AC4EC25C0EE851FF00DE27F5C",
+  "api": "createExtensionAPI with Source registration/delegation/events/commit/discard",
+  "initializer": [
+    "createExtension",
+    "initializeExtension",
+    "loadExtensionFromFactory"
+  ],
+  "required_actual_inputs": [
+    "execCommand",
+    "validateMcpServerConfig",
+    "mcpNamespace",
+    "node:path.dirname",
+    "time"
+  ],
+  "async": "genuine createResumable factory Await; genuine async raw return adoption",
+  "private_state": "nullprototype GC-rooted captures",
+  "public_source_objects": "ordinary objects and Maps with Source property order",
+  "native_files": [
+    {
+      "path": "native_sdk_extension_api.zig",
+      "sha256": "876AE3A06993E9C145EC861FCB73158D0FF5C6A45C6052407E94F2AF6ED90F6F"
+    },
+    {
+      "path": "native_sdk_extension_initializer.zig",
+      "sha256": "62C342C155BE58E1DC94850F7AEDDBF6EED6A65CB3CC7A0D57018467C3B3711F"
+    },
+    {
+      "path": "native_sdk_source_information.zig",
+      "sha256": "6C04C49263D48133F38818F504A4DCD8D903D952CE770C9CB7614E5F0351675B"
+    }
+  ],
+  "fmt_ast": false,
+  "native_compiled": false,
+  "native_tested": false,
+  "genuine_reference_capture": false,
+  "default_selected": false
+}
